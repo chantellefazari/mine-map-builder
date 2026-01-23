@@ -30,7 +30,7 @@ const hierarchyData = {
           label: "Comminution & Process",
           subAreas: [
             { label: "Feed / Reclaim" },
-            { label: "Conveyance" },
+            { label: "Conveying" },
             { label: "Grinding" },
             { label: "Classification" },
           ],
