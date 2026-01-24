@@ -15,6 +15,7 @@ interface CollapsibleTreeNodeProps {
   defaultExpanded?: boolean;
   forceExpanded?: boolean;
   isHighlighted?: boolean;
+  centered?: boolean;
 }
 
 const levelStyles: Record<NodeLevel, string> = {
@@ -45,6 +46,7 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   defaultExpanded = false,
   forceExpanded = false,
   isHighlighted = false,
+  centered = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded || forceExpanded);
   
@@ -66,7 +68,7 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-start">
+    <div className={cn("flex flex-col", centered ? "items-center" : "items-start")}>
       {/* Node itself */}
       <div
         onClick={handleToggle}
@@ -99,12 +101,16 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
 
       {/* Children branch downward */}
       {canExpand && isExpanded && (
-        <div className="flex ml-4 mt-1">
+        <div className={cn("flex mt-1", centered ? "flex-col items-center" : "ml-4")}>
           {/* Vertical connector line */}
-          <div className="w-0.5 bg-connector mr-2 self-stretch" />
+          {centered ? (
+            <div className="w-0.5 h-4 bg-connector" />
+          ) : (
+            <div className="w-0.5 bg-connector mr-2 self-stretch" />
+          )}
           
           {/* Children container */}
-          <div className="flex flex-col gap-1">
+          <div className={cn("flex gap-1", centered ? "flex-row items-start" : "flex-col")}>
             {children}
           </div>
         </div>
