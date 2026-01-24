@@ -37,28 +37,11 @@ const areasData: Area[] = [
       {
         label: "Site Infrastructure",
         systems: [
-          {
-            label: "Site (Top Level)",
-            equipment: [
-              { assetNumber: "SITE-GOLD-001", name: "Gold Plant" },
-            ],
-          },
-          {
-            label: "Admin Building",
-            equipment: [],
-          },
-          {
-            label: "Toilets / Amenities",
-            equipment: [],
-          },
-          {
-            label: "Crib Room",
-            equipment: [],
-          },
-          {
-            label: "Change Rooms",
-            equipment: [],
-          },
+          { label: "Site (Top Level)", equipment: [] },
+          { label: "Admin Building", equipment: [] },
+          { label: "Toilets / Amenities", equipment: [] },
+          { label: "Crib Room", equipment: [] },
+          { label: "Change Rooms", equipment: [] },
         ],
       },
     ],
@@ -70,111 +53,45 @@ const areasData: Area[] = [
       {
         label: "Compressed Air",
         systems: [
-          {
-            label: "Compressed Air System",
-            equipment: [
-              { assetNumber: "CA-COMP-001", name: "HP Air Compressor" },
-              { assetNumber: "CA-COMP-002", name: "HP Air Compressor Piping" },
-              { assetNumber: "CA-COMP-003", name: "HP Air Compressor MCC Cell" },
-              { assetNumber: "CA-COMP-004", name: "HP Air Compressor" },
-              { assetNumber: "CA-COMP-005", name: "HP Air Compressor Piping" },
-              { assetNumber: "CA-COMP-006", name: "HP Air Compressor MCC Cell" },
-              { assetNumber: "CA-DRYR-001", name: "Air Dryer" },
-              { assetNumber: "CA-DRYR-002", name: "Air Receiver" },
-              { assetNumber: "CA-FLTR-001", name: "Air Filter" },
-              { assetNumber: "CA-FLTR-002", name: "Air Filter" },
-              { assetNumber: "CA-VALV-001", name: "Air Distribution Valve" },
-              { assetNumber: "CA-VALV-002", name: "Air Distribution Valve" },
-            ],
-          },
+          { label: "Air Compressors", equipment: [] },
+          { label: "Air Receivers", equipment: [] },
+          { label: "Air Dryers", equipment: [] },
         ],
       },
       {
         label: "Electrical / Controls",
         systems: [
-          {
-            label: "Plant Power Distribution",
-            equipment: [
-              { assetNumber: "EL-MCC-001", name: "Main MCC" },
-              { assetNumber: "EL-MCC-002", name: "Secondary MCC" },
-              { assetNumber: "EL-MCC-003", name: "MCC Distribution Board" },
-            ],
-          },
-          {
-            label: "Instrumentation & Control",
-            equipment: [
-              { assetNumber: "EL-PLC-001", name: "PLC Panel" },
-              { assetNumber: "EL-SCADA-001", name: "SCADA Workstation" },
-              { assetNumber: "EL-UPS-001", name: "UPS System" },
-            ],
-          },
-          {
-            label: "Main Switchboard",
-            equipment: [],
-          },
-          {
-            label: "Substation",
-            equipment: [],
-          },
-          {
-            label: "Distribution Boards",
-            equipment: [],
-          },
-          {
-            label: "MCCs",
-            equipment: [],
-          },
+          { label: "Main Distribution Boards", equipment: [] },
+          { label: "Sub Distribution Boards", equipment: [] },
+          { label: "Control Rooms", equipment: [] },
+          { label: "Control Subrooms", equipment: [] },
+          { label: "Ice Machine Room DB", equipment: [] },
+          { label: "Crib Room L&P DB", equipment: [] },
+          { label: "Lath Container L&P", equipment: [] },
         ],
       },
       {
         label: "Power Generation",
         systems: [
-          {
-            label: "Generator Sets",
-            equipment: [
-              { assetNumber: "PG-GEN-001", name: "Generator Set" },
-              { assetNumber: "PG-GEN-002", name: "Generator Set" },
-            ],
-          },
-          {
-            label: "Fuel System",
-            equipment: [
-              { assetNumber: "PG-FUEL-001", name: "Fuel Tank" },
-              { assetNumber: "PG-FUEL-002", name: "Fuel Pump" },
-            ],
-          },
+          { label: "Generator Sets", equipment: [] },
+          { label: "Fuel Storage", equipment: [] },
+          { label: "Fuel Dispensing Control Board", equipment: [] },
         ],
       },
       {
         label: "Reagents (Lime)",
         systems: [
-          {
-            label: "Lime Handling & Dosing",
-            equipment: [
-              { assetNumber: "RL-SILO-001", name: "Lime Silo" },
-              { assetNumber: "RL-FDR-001", name: "Lime Feeder" },
-              { assetNumber: "RL-PUMP-001", name: "Lime Dosing Pump" },
-            ],
-          },
+          { label: "Lime Storage", equipment: [] },
+          { label: "Lime Dosing", equipment: [] },
+          { label: "Lime Agitation", equipment: [] },
         ],
       },
       {
         label: "Water",
         systems: [
-          {
-            label: "Raw Water",
-            equipment: [
-              { assetNumber: "WT-PUMP-001", name: "Raw Water Pump" },
-              { assetNumber: "WT-TANK-001", name: "Raw Water Tank" },
-            ],
-          },
-          {
-            label: "Process Water",
-            equipment: [
-              { assetNumber: "WT-PUMP-002", name: "Process Water Pump" },
-              { assetNumber: "WT-TANK-002", name: "Process Water Tank" },
-            ],
-          },
+          { label: "Potable Water Tanks", equipment: [] },
+          { label: "Raw Water System", equipment: [] },
+          { label: "Process Water System", equipment: [] },
         ],
       },
     ],
@@ -186,68 +103,34 @@ const areasData: Area[] = [
       {
         label: "Feed / Reclaim",
         systems: [
-          {
-            label: "Reclaimer",
-            equipment: [
-              { assetNumber: "FR-RCLA-001", name: "Reclaimer" },
-              { assetNumber: "FR-RCLA-002", name: "Reclaimer Drive" },
-            ],
-          },
-          {
-            label: "Feed Hopper & Chute",
-            equipment: [
-              { assetNumber: "FR-HOPP-001", name: "Feed Hopper" },
-              { assetNumber: "FR-CHUT-001", name: "Feed Chute" },
-            ],
-          },
+          { label: "Feed Hoppers", equipment: [] },
+          { label: "Reclaim Hoppers", equipment: [] },
+          { label: "Apron Feeders", equipment: [] },
         ],
       },
       {
         label: "Conveying",
         systems: [
-          {
-            label: "Conveyor System",
-            equipment: [
-              { assetNumber: "CV-CNVY-001", name: "Conveyor" },
-              { assetNumber: "CV-CNVY-002", name: "Conveyor" },
-              { assetNumber: "CV-CNVY-003", name: "Conveyor" },
-              { assetNumber: "CV-CNVY-004", name: "Conveyor" },
-              { assetNumber: "CV-CNVY-005", name: "Conveyor" },
-              { assetNumber: "CV-CNVY-006", name: "Conveyor" },
-            ],
-          },
+          { label: "Conveyors", equipment: [] },
+          { label: "Transfer Chutes", equipment: [] },
+          { label: "Drive Systems", equipment: [] },
         ],
       },
       {
         label: "Grinding",
         systems: [
-          {
-            label: "Ball Mill",
-            equipment: [
-              { assetNumber: "RF-BCHU-001", name: "Ball Loading Chute" },
-              { assetNumber: "RF-MILL-001", name: "Ball Mill" },
-            ],
-          },
-          {
-            label: "Mill Bearings & Lubrication",
-            equipment: [
-              { assetNumber: "RF-TRBR-001", name: "Trunnion Bearing Sensor" },
-              { assetNumber: "RF-TRBR-002", name: "Trunnion Bearing Sensor" },
-              { assetNumber: "RF-LUBE-001", name: "Mill Lube System" },
-            ],
-          },
+          { label: "Ball Mill", equipment: [] },
+          { label: "Pinion & Girth Gear", equipment: [] },
+          { label: "Mill Lubrication System", equipment: [] },
+          { label: "Mill Drive Motor", equipment: [] },
         ],
       },
       {
         label: "Classification",
         systems: [
-          {
-            label: "Cyclone Cluster",
-            equipment: [
-              { assetNumber: "CL-CYCL-001", name: "Cyclone Cluster" },
-              { assetNumber: "CL-PUMP-001", name: "Cyclone Feed Pump" },
-            ],
-          },
+          { label: "Cyclones", equipment: [] },
+          { label: "Sumps", equipment: [] },
+          { label: "Cyclone Feed Pumps", equipment: [] },
         ],
       },
     ],
@@ -259,71 +142,43 @@ const areasData: Area[] = [
       {
         label: "Gravity Circuit",
         systems: [
-          {
-            label: "Knelson Concentrator",
-            equipment: [
-              { assetNumber: "GR-KNEL-001", name: "Knelson Concentrator" },
-            ],
-          },
-          {
-            label: "Concentrate Shaking Table",
-            equipment: [
-              { assetNumber: "GR-SHTB-001", name: "Shaking Table" },
-            ],
-          },
+          { label: "Gravity Concentrators", equipment: [] },
+          { label: "Concentrate Pumps", equipment: [] },
         ],
       },
       {
         label: "CIP",
         systems: [
-          {
-            label: "CIP Tanks",
-            equipment: [
-              { assetNumber: "CIP-TANK-001", name: "CIP Tank 1" },
-              { assetNumber: "CIP-TANK-002", name: "CIP Tank 2" },
-            ],
-          },
-          {
-            label: "Pumps",
-            equipment: [
-              { assetNumber: "CIP-PUMP-001", name: "CIP Transfer Pump" },
-            ],
-          },
-          {
-            label: "Safety Showers & Eyewash",
-            equipment: [
-              { assetNumber: "CIP-SAFE-001", name: "CIP Area Safety Shower" },
-            ],
-          },
+          { label: "CIP Tanks", equipment: [] },
+          { label: "Agitators", equipment: [] },
+          { label: "Interstage Screens", equipment: [] },
+          { label: "CIP Pumps", equipment: [] },
         ],
       },
       {
         label: "Elution",
         systems: [
-          {
-            label: "Elution Column",
-            equipment: [
-              { assetNumber: "ELU-COL-001", name: "Elution Column" },
-            ],
-          },
-          {
-            label: "Pumps",
-            equipment: [
-              { assetNumber: "ELU-PUMP-001", name: "Elution Pump" },
-            ],
-          },
+          { label: "Elution Column", equipment: [] },
+          { label: "Heat Exchanger", equipment: [] },
+          { label: "Acid Wash System", equipment: [] },
         ],
       },
       {
         label: "Gold Room",
         systems: [
-          {
-            label: "Smelting & Pouring",
-            equipment: [
-              { assetNumber: "GR-FURN-001", name: "Furnace" },
-              { assetNumber: "GR-POUR-001", name: "Pour Station" },
-            ],
-          },
+          { label: "Electrowinning Cells", equipment: [] },
+          { label: "Smelting Furnace", equipment: [] },
+          { label: "Gold Pour Area", equipment: [] },
+        ],
+      },
+      {
+        label: "Additional Gold Recovery Systems",
+        systems: [
+          { label: "Cyanide Mixing Tank & Agitator", equipment: [] },
+          { label: "Titration Hut", equipment: [] },
+          { label: "Regen Kiln Feed Hopper", equipment: [] },
+          { label: "Regen Kiln Zone Systems", equipment: [] },
+          { label: "Gold Recovery Services Systems", equipment: [] },
         ],
       },
     ],
@@ -335,35 +190,16 @@ const areasData: Area[] = [
       {
         label: "Thickening",
         systems: [
-          {
-            label: "Thickener",
-            equipment: [
-              { assetNumber: "TH-THCK-001", name: "Thickener" },
-            ],
-          },
-          {
-            label: "Pumps",
-            equipment: [
-              { assetNumber: "TH-PUMP-001", name: "Thickener Underflow Pump" },
-            ],
-          },
+          { label: "Thickeners", equipment: [] },
+          { label: "Rakes", equipment: [] },
+          { label: "Underflow Pumps", equipment: [] },
         ],
       },
       {
         label: "Filtering",
         systems: [
-          {
-            label: "Filter System",
-            equipment: [
-              { assetNumber: "FL-FLTR-001", name: "Filter Unit" },
-            ],
-          },
-          {
-            label: "Pumps",
-            equipment: [
-              { assetNumber: "FL-PUMP-001", name: "Filtrate Pump" },
-            ],
-          },
+          { label: "Filters", equipment: [] },
+          { label: "Filtrate Pumps", equipment: [] },
         ],
       },
     ],
@@ -373,53 +209,34 @@ const areasData: Area[] = [
     label: "Support Services",
     subAreas: [
       {
+        label: "Workshop",
+        systems: [
+          { label: "Fixed Plant Workshop Equipment", equipment: [] },
+        ],
+      },
+      {
         label: "Lab",
         systems: [
-          {
-            label: "Sample Prep",
-            equipment: [
-              { assetNumber: "LAB-PREP-001", name: "Sample Prep Bench" },
-            ],
-          },
-          {
-            label: "Lab Equipment",
-            equipment: [
-              { assetNumber: "LAB-EQPT-001", name: "Lab Equipment Set" },
-            ],
-          },
+          { label: "Assay Equipment", equipment: [] },
+          { label: "Sample Prep Equipment", equipment: [] },
         ],
       },
       {
         label: "Mobile Equipment",
         systems: [
-          {
-            label: "Mobile Plant",
-            equipment: [
-              { assetNumber: "MOB-EQPT-001", name: "Mobile Equipment Set" },
-            ],
-          },
+          { label: "Plant Mobile Equipment", equipment: [] },
         ],
       },
       {
-        label: "Light (LV)",
+        label: "Light Vehicles (LV)",
         systems: [
-          {
-            label: "Light Vehicles",
-            equipment: [
-              { assetNumber: "LV-FLIT-001", name: "LV Fleet" },
-            ],
-          },
+          { label: "LV Fleet", equipment: [] },
         ],
       },
       {
-        label: "Heavy (HV)",
+        label: "Heavy Vehicles (HV)",
         systems: [
-          {
-            label: "Heavy Vehicles",
-            equipment: [
-              { assetNumber: "HV-FLIT-001", name: "HV Fleet" },
-            ],
-          },
+          { label: "HV Fleet", equipment: [] },
         ],
       },
     ],
