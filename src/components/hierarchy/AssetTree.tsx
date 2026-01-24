@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { CollapsibleTreeNode, AreaType } from "./CollapsibleTreeNode";
 import { TreeBranch } from "./TreeBranch";
+import { useAssetSearch } from "@/hooks/useAssetSearch";
 
 // Asset hierarchy data structure
 interface Equipment {
@@ -22,6 +23,10 @@ interface Area {
   code: AreaType;
   label: string;
   subAreas: SubArea[];
+}
+
+interface AssetTreeProps {
+  searchQuery?: string;
 }
 
 const areasData: Area[] = [
@@ -389,7 +394,22 @@ const areasData: Area[] = [
   },
 ];
 
-export const AssetTree: React.FC = () => {
+export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
+  const { matchingPaths } = useAssetSearch(areasData, searchQuery);
+  const hasSearch = searchQuery.trim().length > 0;
+
+  // Helper to check if a path should be expanded due to search
+  const shouldExpandForSearch = (pathParts: string[]) => {
+    if (!hasSearch) return false;
+    return matchingPaths.has(pathParts.join("/"));
+  };
+
+  // Helper to check if an item matches search
+  const matchesSearch = (text: string) => {
+    if (!hasSearch) return false;
+    return text.toLowerCase().includes(searchQuery.toLowerCase());
+  };
+
   return (
     <div className="w-full overflow-x-auto py-6">
       <div className="min-w-max px-8">
@@ -399,53 +419,78 @@ export const AssetTree: React.FC = () => {
           <TreeBranch>
             <CollapsibleTreeNode label="Processing Plant" level="plant" hasChildren defaultExpanded>
               {/* Level 3: Areas */}
-              {areasData.map((area, areaIndex) => (
-                <TreeBranch key={area.code} isLast={areaIndex === areasData.length - 1}>
-                  <CollapsibleTreeNode
-                    code={area.code}
-                    label={area.label}
-                    level="area"
-                    areaType={area.code}
-                    hasChildren={area.subAreas.length > 0}
-                    defaultExpanded={false}
-                  >
-                    {/* Level 4: Sub Areas */}
-                    {area.subAreas.map((subArea, subIndex) => (
-                      <TreeBranch key={subIndex} isLast={subIndex === area.subAreas.length - 1}>
-                        <CollapsibleTreeNode
-                          label={subArea.label}
-                          level="subarea"
-                          hasChildren={subArea.systems.length > 0}
-                          defaultExpanded={false}
-                        >
-                          {/* Level 5: Systems */}
-                          {subArea.systems.map((system, sysIndex) => (
-                            <TreeBranch key={sysIndex} isLast={sysIndex === subArea.systems.length - 1}>
-                              <CollapsibleTreeNode
-                                label={system.label}
-                                level="system"
-                                hasChildren={system.equipment.length > 0}
-                                defaultExpanded={false}
-                              >
-                                {/* Level 6: Equipment */}
-                                {system.equipment.map((equip, equipIndex) => (
-                                  <TreeBranch key={equipIndex} isLast={equipIndex === system.equipment.length - 1}>
+              {areasData.map((area, areaIndex) => {
+                const areaPath = [area.code];
+                const areaExpanded = shouldExpandForSearch(areaPath);
+                
+                return (
+                  <TreeBranch key={area.code} isLast={areaIndex === areasData.length - 1}>
+                    <CollapsibleTreeNode
+                      code={area.code}
+                      label={area.label}
+                      level="area"
+                      areaType={area.code}
+                      hasChildren={area.subAreas.length > 0}
+                      defaultExpanded={areaExpanded}
+                      forceExpanded={areaExpanded}
+                      isHighlighted={matchesSearch(area.label) || matchesSearch(area.code)}
+                    >
+                      {/* Level 4: Sub Areas */}
+                      {area.subAreas.map((subArea, subIndex) => {
+                        const subAreaPath = [...areaPath, subArea.label];
+                        const subAreaExpanded = shouldExpandForSearch(subAreaPath);
+                        
+                        return (
+                          <TreeBranch key={subIndex} isLast={subIndex === area.subAreas.length - 1}>
+                            <CollapsibleTreeNode
+                              label={subArea.label}
+                              level="subarea"
+                              hasChildren={subArea.systems.length > 0}
+                              defaultExpanded={subAreaExpanded}
+                              forceExpanded={subAreaExpanded}
+                              isHighlighted={matchesSearch(subArea.label)}
+                            >
+                              {/* Level 5: Systems */}
+                              {subArea.systems.map((system, sysIndex) => {
+                                const systemPath = [...subAreaPath, system.label];
+                                const systemExpanded = shouldExpandForSearch(systemPath);
+                                
+                                return (
+                                  <TreeBranch key={sysIndex} isLast={sysIndex === subArea.systems.length - 1}>
                                     <CollapsibleTreeNode
-                                      label={`${equip.assetNumber} — ${equip.name}`}
-                                      level="equipment"
-                                      hasChildren={false}
-                                    />
+                                      label={system.label}
+                                      level="system"
+                                      hasChildren={system.equipment.length > 0}
+                                      defaultExpanded={systemExpanded}
+                                      forceExpanded={systemExpanded}
+                                      isHighlighted={matchesSearch(system.label)}
+                                    >
+                                      {/* Level 6: Equipment */}
+                                      {system.equipment.map((equip, equipIndex) => {
+                                        const equipLabel = `${equip.assetNumber} — ${equip.name}`;
+                                        return (
+                                          <TreeBranch key={equipIndex} isLast={equipIndex === system.equipment.length - 1}>
+                                            <CollapsibleTreeNode
+                                              label={equipLabel}
+                                              level="equipment"
+                                              hasChildren={false}
+                                              isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name)}
+                                            />
+                                          </TreeBranch>
+                                        );
+                                      })}
+                                    </CollapsibleTreeNode>
                                   </TreeBranch>
-                                ))}
-                              </CollapsibleTreeNode>
-                            </TreeBranch>
-                          ))}
-                        </CollapsibleTreeNode>
-                      </TreeBranch>
-                    ))}
-                  </CollapsibleTreeNode>
-                </TreeBranch>
-              ))}
+                                );
+                              })}
+                            </CollapsibleTreeNode>
+                          </TreeBranch>
+                        );
+                      })}
+                    </CollapsibleTreeNode>
+                  </TreeBranch>
+                );
+              })}
             </CollapsibleTreeNode>
           </TreeBranch>
         </CollapsibleTreeNode>
