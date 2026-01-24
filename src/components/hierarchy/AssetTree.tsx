@@ -43,6 +43,22 @@ const areasData: Area[] = [
               { assetNumber: "SITE-GOLD-001", name: "Gold Plant" },
             ],
           },
+          {
+            label: "Admin Building",
+            equipment: [],
+          },
+          {
+            label: "Toilets / Amenities",
+            equipment: [],
+          },
+          {
+            label: "Crib Room",
+            equipment: [],
+          },
+          {
+            label: "Change Rooms",
+            equipment: [],
+          },
         ],
       },
     ],
