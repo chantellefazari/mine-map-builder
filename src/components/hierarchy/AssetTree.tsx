@@ -150,10 +150,10 @@ const areasData: Area[] = [
         label: "Feed / Reclaim",
         systems: [
           {
-            label: "Ore Reclaimer",
+            label: "Reclaimer",
             equipment: [
-              { assetNumber: "FR-RCLA-001", name: "Ore Reclaimer" },
-              { assetNumber: "FR-RCLA-002", name: "Ore Reclaimer Drive" },
+              { assetNumber: "FR-RCLA-001", name: "Reclaimer" },
+              { assetNumber: "FR-RCLA-002", name: "Reclaimer Drive" },
             ],
           },
           {
