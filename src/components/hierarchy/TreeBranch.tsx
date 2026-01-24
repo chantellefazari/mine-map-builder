@@ -7,12 +7,12 @@ interface TreeBranchProps {
 
 export const TreeBranch: React.FC<TreeBranchProps> = ({ children, isLast = false }) => {
   return (
-    <div className="flex items-center relative">
+    <div className="flex items-start">
       {/* Horizontal connector from vertical line */}
-      <div className="w-3 h-0.5 bg-connector" />
+      <div className="w-3 h-0.5 bg-connector mt-3 -ml-2" />
       
       {/* The child node */}
-      <div className="py-1">
+      <div>
         {children}
       </div>
     </div>
