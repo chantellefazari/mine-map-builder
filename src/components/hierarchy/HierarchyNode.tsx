@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-export type NodeLevel = "site" | "plant" | "area" | "subarea";
+export type NodeLevel = "site" | "plant" | "area" | "subarea" | "system";
 export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP";
 
 interface HierarchyNodeProps {
@@ -18,6 +18,7 @@ const levelStyles: Record<NodeLevel, string> = {
   plant: "bg-level-plant text-white px-6 py-3 text-base font-semibold shadow-md",
   area: "px-5 py-2.5 text-sm font-semibold text-white shadow-md",
   subarea: "bg-card border border-border px-4 py-2 text-sm font-medium text-foreground shadow-sm hover:shadow-md transition-shadow",
+  system: "bg-muted/50 border border-border/50 px-3 py-1.5 text-xs font-normal text-muted-foreground hover:bg-muted transition-colors",
 };
 
 const areaColors: Record<AreaType, string> = {
