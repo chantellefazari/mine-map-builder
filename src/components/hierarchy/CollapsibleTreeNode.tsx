@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronRight, ChevronDown, Minus } from "lucide-react";
 
-export type NodeLevel = "site" | "plant" | "area" | "subarea" | "system" | "equipment";
+export type NodeLevel = "site" | "plant" | "area" | "subarea" | "parentAsset" | "equipment";
 export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP";
 
 interface CollapsibleTreeNodeProps {
@@ -23,7 +23,7 @@ const levelStyles: Record<NodeLevel, string> = {
   plant: "bg-level-plant text-white px-5 py-2.5 text-sm font-semibold shadow-md",
   area: "px-4 py-2 text-xs font-semibold text-white shadow-md",
   subarea: "bg-level-subarea border border-level-system text-level-subarea-foreground px-3 py-1.5 text-xs font-medium shadow-sm hover:shadow-md transition-shadow",
-  system: "bg-level-system border border-level-subarea text-level-system-foreground px-2.5 py-1.5 text-[11px] font-medium hover:brightness-95 transition-all",
+  parentAsset: "bg-level-parent-asset border border-level-subarea text-level-parent-asset-foreground px-2.5 py-1.5 text-[11px] font-semibold hover:brightness-95 transition-all",
   equipment: "bg-level-equipment border border-level-system text-level-equipment-foreground px-2 py-1 text-[10px] font-mono hover:brightness-95 transition-all",
 };
 
