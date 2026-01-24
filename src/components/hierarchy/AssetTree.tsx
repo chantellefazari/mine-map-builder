@@ -412,23 +412,23 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
 
   return (
     <div className="w-full overflow-x-auto py-6">
-      <div className="min-w-max px-8">
-        {/* Root: Site */}
-        <CollapsibleTreeNode label="TCMG" level="site" hasChildren defaultExpanded>
+      <div className="min-w-max flex justify-center">
+        {/* Root: Site - Centered */}
+        <CollapsibleTreeNode label="TCMG" level="site" hasChildren defaultExpanded centered>
           {/* Level 2: Facilities - Mining, Crushing Plant, Processing Plant */}
           
           {/* Mining (placeholder - no areas yet) */}
-          <TreeBranch>
+          <TreeBranch horizontal>
             <CollapsibleTreeNode label="Mining" level="plant" hasChildren={false} />
           </TreeBranch>
           
           {/* Crushing Plant (placeholder - no areas yet) */}
-          <TreeBranch>
+          <TreeBranch horizontal>
             <CollapsibleTreeNode label="Crushing Plant" level="plant" hasChildren={false} />
           </TreeBranch>
           
           {/* Processing Plant */}
-          <TreeBranch isLast>
+          <TreeBranch horizontal>
             <CollapsibleTreeNode label="Processing Plant" level="plant" hasChildren defaultExpanded>
               {/* Level 3: Areas */}
               {areasData.map((area, areaIndex) => {
