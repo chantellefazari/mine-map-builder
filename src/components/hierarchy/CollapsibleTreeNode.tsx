@@ -54,48 +54,44 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   };
 
   return (
-    <div className="flex items-start">
+    <div className="flex flex-col items-start">
       {/* Node itself */}
-      <div className="flex flex-col items-center">
-        <div
-          onClick={handleToggle}
-          className={cn(
-            "rounded-lg flex items-center gap-1.5 whitespace-nowrap select-none",
-            baseStyle,
-            areaColor,
-            canExpand && "cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all"
-          )}
-        >
-          {/* Expand/collapse icon */}
-          {canExpand ? (
-            isExpanded ? (
-              <ChevronDown className="w-3 h-3 opacity-70" />
-            ) : (
-              <ChevronRight className="w-3 h-3 opacity-70" />
-            )
-          ) : level !== "system" && level !== "site" && level !== "plant" ? (
-            <Minus className="w-3 h-3 opacity-40" />
-          ) : null}
-          
-          {code && (
-            <span className="font-mono text-[10px] opacity-80 bg-black/10 px-1 py-0.5 rounded">
-              {code}
-            </span>
-          )}
-          <span>{label}</span>
-        </div>
+      <div
+        onClick={handleToggle}
+        className={cn(
+          "rounded-lg flex items-center gap-1.5 whitespace-nowrap select-none",
+          baseStyle,
+          areaColor,
+          canExpand && "cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all"
+        )}
+      >
+        {/* Expand/collapse icon */}
+        {canExpand ? (
+          isExpanded ? (
+            <ChevronDown className="w-3 h-3 opacity-70" />
+          ) : (
+            <ChevronRight className="w-3 h-3 opacity-70" />
+          )
+        ) : level !== "system" && level !== "site" && level !== "plant" ? (
+          <Minus className="w-3 h-3 opacity-40" />
+        ) : null}
+        
+        {code && (
+          <span className="font-mono text-[10px] opacity-80 bg-black/10 px-1 py-0.5 rounded">
+            {code}
+          </span>
+        )}
+        <span>{label}</span>
       </div>
 
-      {/* Children branch horizontally */}
+      {/* Children branch downward */}
       {canExpand && isExpanded && (
-        <div className="flex items-center ml-1">
-          {/* Horizontal connector line */}
-          <div className="w-4 h-0.5 bg-connector" />
+        <div className="flex ml-4 mt-1">
+          {/* Vertical connector line */}
+          <div className="w-0.5 bg-connector mr-2 self-stretch" />
           
-          {/* Children container - vertical stack for children */}
-          <div className="flex flex-col relative">
-            {/* Vertical line connecting siblings */}
-            <div className="absolute left-0 top-3 bottom-3 w-0.5 bg-connector" />
+          {/* Children container */}
+          <div className="flex flex-col gap-1">
             {children}
           </div>
         </div>
