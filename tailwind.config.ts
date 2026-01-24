@@ -67,6 +67,12 @@ export default {
           "area-rec": "hsl(var(--level-area-rec))",
           "area-tail": "hsl(var(--level-area-tail))",
           "area-sup": "hsl(var(--level-area-sup))",
+          subarea: "hsl(var(--level-subarea))",
+          "subarea-foreground": "hsl(var(--level-subarea-foreground))",
+          system: "hsl(var(--level-system))",
+          "system-foreground": "hsl(var(--level-system-foreground))",
+          equipment: "hsl(var(--level-equipment))",
+          "equipment-foreground": "hsl(var(--level-equipment-foreground))",
         },
         connector: {
           DEFAULT: "hsl(var(--connector))",

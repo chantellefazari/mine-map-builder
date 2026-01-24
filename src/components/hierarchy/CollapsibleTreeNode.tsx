@@ -22,9 +22,9 @@ const levelStyles: Record<NodeLevel, string> = {
   site: "bg-level-site text-white px-6 py-3 text-base font-bold shadow-lg",
   plant: "bg-level-plant text-white px-5 py-2.5 text-sm font-semibold shadow-md",
   area: "px-4 py-2 text-xs font-semibold text-white shadow-md",
-  subarea: "bg-card border border-border px-3 py-1.5 text-xs font-medium text-foreground shadow-sm hover:shadow-md transition-shadow",
-  system: "bg-muted/50 border border-border/50 px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground hover:bg-muted transition-colors",
-  equipment: "bg-accent/30 border border-accent/20 px-2 py-1 text-[10px] font-mono text-accent-foreground/80 hover:bg-accent/50 transition-colors",
+  subarea: "bg-level-subarea border border-level-system text-level-subarea-foreground px-3 py-1.5 text-xs font-medium shadow-sm hover:shadow-md transition-shadow",
+  system: "bg-level-system border border-level-subarea text-level-system-foreground px-2.5 py-1.5 text-[11px] font-medium hover:brightness-95 transition-all",
+  equipment: "bg-level-equipment border border-level-system text-level-equipment-foreground px-2 py-1 text-[10px] font-mono hover:brightness-95 transition-all",
 };
 
 const areaColors: Record<AreaType, string> = {

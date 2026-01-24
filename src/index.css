@@ -38,15 +38,23 @@
 
     --radius: 0.5rem;
 
-    /* Hierarchy Level Colors */
-    --level-site: 220 25% 25%;
-    --level-plant: 200 55% 42%;
-    --level-area-site: 200 18% 46%;
-    --level-area-util: 150 45% 38%;
-    --level-area-com: 25 80% 50%;
-    --level-area-rec: 43 74% 49%;
-    --level-area-tail: 280 40% 45%;
-    --level-area-sup: 210 60% 45%;
+    /* Hierarchy Level Colors - Flowing gradient */
+    --level-site: 220 35% 22%;
+    --level-plant: 195 60% 38%;
+    --level-area-site: 170 45% 42%;
+    --level-area-util: 145 50% 40%;
+    --level-area-com: 35 75% 48%;
+    --level-area-rec: 43 80% 45%;
+    --level-area-tail: 320 45% 48%;
+    --level-area-sup: 260 45% 52%;
+    
+    /* Sub-levels */
+    --level-subarea: 210 25% 94%;
+    --level-subarea-foreground: 210 30% 25%;
+    --level-system: 200 20% 88%;
+    --level-system-foreground: 200 25% 35%;
+    --level-equipment: 190 30% 92%;
+    --level-equipment-foreground: 190 35% 30%;
 
     /* Connector lines */
     --connector: 220 15% 75%;
