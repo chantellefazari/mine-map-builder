@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronRight, ChevronDown, Minus } from "lucide-react";
 
-export type NodeLevel = "site" | "plant" | "area" | "subarea" | "system";
+export type NodeLevel = "site" | "plant" | "area" | "subarea" | "system" | "equipment";
 export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP";
 
 interface CollapsibleTreeNodeProps {
@@ -20,7 +20,8 @@ const levelStyles: Record<NodeLevel, string> = {
   plant: "bg-level-plant text-white px-5 py-2.5 text-sm font-semibold shadow-md",
   area: "px-4 py-2 text-xs font-semibold text-white shadow-md",
   subarea: "bg-card border border-border px-3 py-1.5 text-xs font-medium text-foreground shadow-sm hover:shadow-md transition-shadow",
-  system: "bg-muted/50 border border-border/50 px-2 py-1 text-[10px] font-normal text-muted-foreground hover:bg-muted transition-colors",
+  system: "bg-muted/50 border border-border/50 px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground hover:bg-muted transition-colors",
+  equipment: "bg-accent/30 border border-accent/20 px-2 py-1 text-[10px] font-mono text-accent-foreground/80 hover:bg-accent/50 transition-colors",
 };
 
 const areaColors: Record<AreaType, string> = {
@@ -72,7 +73,7 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
           ) : (
             <ChevronRight className="w-3 h-3 opacity-70" />
           )
-        ) : level !== "system" && level !== "site" && level !== "plant" ? (
+        ) : level !== "equipment" && level !== "site" && level !== "plant" ? (
           <Minus className="w-3 h-3 opacity-40" />
         ) : null}
         

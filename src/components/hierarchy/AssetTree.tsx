@@ -3,8 +3,14 @@ import { CollapsibleTreeNode, AreaType } from "./CollapsibleTreeNode";
 import { TreeBranch } from "./TreeBranch";
 
 // Asset hierarchy data structure
+interface Equipment {
+  assetNumber: string;
+  name: string;
+}
+
 interface System {
   label: string;
+  equipment: Equipment[];
 }
 
 interface SubArea {
@@ -26,10 +32,12 @@ const areasData: Area[] = [
       {
         label: "Site Infrastructure",
         systems: [
-          { label: "Plant Buildings & Structures" },
-          { label: "Access & Laydown Areas" },
-          { label: "Roads & Hardstand" },
-          { label: "Drainage & Bunding" },
+          {
+            label: "Site (Top Level)",
+            equipment: [
+              { assetNumber: "SITE-GOLD-001", name: "Gold Plant" },
+            ],
+          },
         ],
       },
     ],
@@ -41,43 +49,95 @@ const areasData: Area[] = [
       {
         label: "Compressed Air",
         systems: [
-          { label: "Plant Air Compressor System" },
-          { label: "Instrument Air Distribution" },
-          { label: "Air Receivers & Dryers" },
+          {
+            label: "Compressed Air System",
+            equipment: [
+              { assetNumber: "CA-COMP-001", name: "HP Air Compressor" },
+              { assetNumber: "CA-COMP-002", name: "HP Air Compressor Piping" },
+              { assetNumber: "CA-COMP-003", name: "HP Air Compressor MCC Cell" },
+              { assetNumber: "CA-COMP-004", name: "HP Air Compressor" },
+              { assetNumber: "CA-COMP-005", name: "HP Air Compressor Piping" },
+              { assetNumber: "CA-COMP-006", name: "HP Air Compressor MCC Cell" },
+              { assetNumber: "CA-DRYR-001", name: "Air Dryer" },
+              { assetNumber: "CA-DRYR-002", name: "Air Receiver" },
+              { assetNumber: "CA-FLTR-001", name: "Air Filter" },
+              { assetNumber: "CA-FLTR-002", name: "Air Filter" },
+              { assetNumber: "CA-VALV-001", name: "Air Distribution Valve" },
+              { assetNumber: "CA-VALV-002", name: "Air Distribution Valve" },
+            ],
+          },
         ],
       },
       {
         label: "Electrical / Controls",
         systems: [
-          { label: "HV Distribution" },
-          { label: "LV Distribution" },
-          { label: "MCCs" },
-          { label: "PLC & SCADA Infrastructure" },
+          {
+            label: "Plant Power Distribution",
+            equipment: [
+              { assetNumber: "EL-MCC-001", name: "Main MCC" },
+              { assetNumber: "EL-MCC-002", name: "Secondary MCC" },
+              { assetNumber: "EL-MCC-003", name: "MCC Distribution Board" },
+            ],
+          },
+          {
+            label: "Instrumentation & Control",
+            equipment: [
+              { assetNumber: "EL-PLC-001", name: "PLC Panel" },
+              { assetNumber: "EL-SCADA-001", name: "SCADA Workstation" },
+              { assetNumber: "EL-UPS-001", name: "UPS System" },
+            ],
+          },
         ],
       },
       {
         label: "Power Generation",
         systems: [
-          { label: "Generator Sets" },
-          { label: "Fuel Supply System" },
-          { label: "Power Synchronisation System" },
+          {
+            label: "Generator Sets",
+            equipment: [
+              { assetNumber: "PG-GEN-001", name: "Generator Set" },
+              { assetNumber: "PG-GEN-002", name: "Generator Set" },
+            ],
+          },
+          {
+            label: "Fuel System",
+            equipment: [
+              { assetNumber: "PG-FUEL-001", name: "Fuel Tank" },
+              { assetNumber: "PG-FUEL-002", name: "Fuel Pump" },
+            ],
+          },
         ],
       },
       {
         label: "Reagents (Lime)",
         systems: [
-          { label: "Lime Storage" },
-          { label: "Lime Dosing System" },
-          { label: "Lime Transfer & Conveying" },
+          {
+            label: "Lime Handling & Dosing",
+            equipment: [
+              { assetNumber: "RL-SILO-001", name: "Lime Silo" },
+              { assetNumber: "RL-FDR-001", name: "Lime Feeder" },
+              { assetNumber: "RL-PUMP-001", name: "Lime Dosing Pump" },
+            ],
+          },
         ],
       },
       {
         label: "Water",
         systems: [
-          { label: "Raw Water Supply" },
-          { label: "Process Water Distribution" },
-          { label: "Potable Water" },
-          { label: "Fire Water System" },
+          {
+            label: "Raw Water",
+            equipment: [
+              { assetNumber: "WT-PUMP-001", name: "Raw Water Pump" },
+              { assetNumber: "WT-TANK-001", name: "Raw Water Tank" },
+            ],
+          },
+          {
+            label: "Process Water",
+            equipment: [
+              { assetNumber: "WT-PUMP-002", name: "Process Water Pump" },
+              { assetNumber: "WT-TANK-002", name: "Process Water Tank" },
+            ],
+          },
         ],
       },
     ],
@@ -89,33 +149,68 @@ const areasData: Area[] = [
       {
         label: "Feed / Reclaim",
         systems: [
-          { label: "ROM Feed System" },
-          { label: "Ore Reclaimer System" },
-          { label: "Feed Conveyors" },
+          {
+            label: "Ore Reclaimer",
+            equipment: [
+              { assetNumber: "FR-RCLA-001", name: "Ore Reclaimer" },
+              { assetNumber: "FR-RCLA-002", name: "Ore Reclaimer Drive" },
+            ],
+          },
+          {
+            label: "Feed Hopper & Chute",
+            equipment: [
+              { assetNumber: "FR-HOPP-001", name: "Feed Hopper" },
+              { assetNumber: "FR-CHUT-001", name: "Feed Chute" },
+            ],
+          },
         ],
       },
       {
-        label: "Conveying",
+        label: "Conveyance",
         systems: [
-          { label: "Transfer Conveyors" },
-          { label: "Tramp Metal Detection" },
-          { label: "Belt Weighers" },
+          {
+            label: "Conveyor System",
+            equipment: [
+              { assetNumber: "CV-CNVY-001", name: "Conveyor" },
+              { assetNumber: "CV-CNVY-002", name: "Conveyor" },
+              { assetNumber: "CV-CNVY-003", name: "Conveyor" },
+              { assetNumber: "CV-CNVY-004", name: "Conveyor" },
+              { assetNumber: "CV-CNVY-005", name: "Conveyor" },
+              { assetNumber: "CV-CNVY-006", name: "Conveyor" },
+            ],
+          },
         ],
       },
       {
         label: "Grinding",
         systems: [
-          { label: "Mill Drive System" },
-          { label: "Mill Lubrication System" },
-          { label: "Mill Discharge System" },
+          {
+            label: "Ball Mill",
+            equipment: [
+              { assetNumber: "RF-BCHU-001", name: "Ball Loading Chute" },
+              { assetNumber: "RF-MILL-001", name: "Ball Mill" },
+            ],
+          },
+          {
+            label: "Mill Bearings & Lubrication",
+            equipment: [
+              { assetNumber: "RF-TRBR-001", name: "Trunnion Bearing Sensor" },
+              { assetNumber: "RF-TRBR-002", name: "Trunnion Bearing Sensor" },
+              { assetNumber: "RF-LUBE-001", name: "Mill Lube System" },
+            ],
+          },
         ],
       },
       {
         label: "Classification",
         systems: [
-          { label: "Cyclone Feed System" },
-          { label: "Cyclone Cluster" },
-          { label: "Underflow / Overflow Handling" },
+          {
+            label: "Cyclone Cluster",
+            equipment: [
+              { assetNumber: "CL-CYCL-001", name: "Cyclone Cluster" },
+              { assetNumber: "CL-PUMP-001", name: "Cyclone Feed Pump" },
+            ],
+          },
         ],
       },
     ],
@@ -127,32 +222,71 @@ const areasData: Area[] = [
       {
         label: "Gravity Circuit",
         systems: [
-          { label: "Gravity Concentrator" },
-          { label: "Concentrate Handling" },
+          {
+            label: "Knelson Concentrator",
+            equipment: [
+              { assetNumber: "GR-KNEL-001", name: "Knelson Concentrator" },
+            ],
+          },
+          {
+            label: "Concentrate Shaking Table",
+            equipment: [
+              { assetNumber: "GR-SHTB-001", name: "Shaking Table" },
+            ],
+          },
         ],
       },
       {
         label: "CIP",
         systems: [
-          { label: "Adsorption Tanks" },
-          { label: "Carbon Transfer System" },
-          { label: "Interstage Screens" },
+          {
+            label: "CIP Tanks",
+            equipment: [
+              { assetNumber: "CIP-TANK-001", name: "CIP Tank 1" },
+              { assetNumber: "CIP-TANK-002", name: "CIP Tank 2" },
+            ],
+          },
+          {
+            label: "Pumps",
+            equipment: [
+              { assetNumber: "CIP-PUMP-001", name: "CIP Transfer Pump" },
+            ],
+          },
+          {
+            label: "Safety Showers & Eyewash",
+            equipment: [
+              { assetNumber: "CIP-SAFE-001", name: "CIP Area Safety Shower" },
+            ],
+          },
         ],
       },
       {
         label: "Elution",
         systems: [
-          { label: "Elution Column" },
-          { label: "Electrowinning" },
-          { label: "Regeneration Kiln" },
+          {
+            label: "Elution Column",
+            equipment: [
+              { assetNumber: "ELU-COL-001", name: "Elution Column" },
+            ],
+          },
+          {
+            label: "Pumps",
+            equipment: [
+              { assetNumber: "ELU-PUMP-001", name: "Elution Pump" },
+            ],
+          },
         ],
       },
       {
         label: "Gold Room",
         systems: [
-          { label: "Smelting Furnace" },
-          { label: "Bullion Handling" },
-          { label: "Security Systems" },
+          {
+            label: "Smelting & Pouring",
+            equipment: [
+              { assetNumber: "GR-FURN-001", name: "Furnace" },
+              { assetNumber: "GR-POUR-001", name: "Pour Station" },
+            ],
+          },
         ],
       },
     ],
@@ -164,17 +298,35 @@ const areasData: Area[] = [
       {
         label: "Thickening",
         systems: [
-          { label: "Tailings Thickener" },
-          { label: "Flocculant Dosing" },
-          { label: "Thickener Drive & Rake" },
+          {
+            label: "Thickener",
+            equipment: [
+              { assetNumber: "TH-THCK-001", name: "Thickener" },
+            ],
+          },
+          {
+            label: "Pumps",
+            equipment: [
+              { assetNumber: "TH-PUMP-001", name: "Thickener Underflow Pump" },
+            ],
+          },
         ],
       },
       {
         label: "Filtering",
         systems: [
-          { label: "Filter Press" },
-          { label: "Filtrate Return" },
-          { label: "Cake Handling" },
+          {
+            label: "Filter System",
+            equipment: [
+              { assetNumber: "FL-FLTR-001", name: "Filter Unit" },
+            ],
+          },
+          {
+            label: "Pumps",
+            equipment: [
+              { assetNumber: "FL-PUMP-001", name: "Filtrate Pump" },
+            ],
+          },
         ],
       },
     ],
@@ -186,30 +338,51 @@ const areasData: Area[] = [
       {
         label: "Lab",
         systems: [
-          { label: "Sample Prep" },
-          { label: "Assay Equipment" },
+          {
+            label: "Sample Prep",
+            equipment: [
+              { assetNumber: "LAB-PREP-001", name: "Sample Prep Bench" },
+            ],
+          },
+          {
+            label: "Lab Equipment",
+            equipment: [
+              { assetNumber: "LAB-EQPT-001", name: "Lab Equipment Set" },
+            ],
+          },
         ],
       },
       {
         label: "Mobile Equipment",
         systems: [
-          { label: "Loaders" },
-          { label: "Forklifts" },
-          { label: "Support Equipment" },
+          {
+            label: "Mobile Plant",
+            equipment: [
+              { assetNumber: "MOB-EQPT-001", name: "Mobile Equipment Set" },
+            ],
+          },
         ],
       },
       {
-        label: "Light Vehicles (LV)",
+        label: "Light (LV)",
         systems: [
-          { label: "Light Vehicle Fleet" },
-          { label: "LV Maintenance" },
+          {
+            label: "Light Vehicles",
+            equipment: [
+              { assetNumber: "LV-FLIT-001", name: "LV Fleet" },
+            ],
+          },
         ],
       },
       {
-        label: "Heavy Vehicles (HV)",
+        label: "Heavy (HV)",
         systems: [
-          { label: "Heavy Vehicle Fleet" },
-          { label: "HV Maintenance" },
+          {
+            label: "Heavy Vehicles",
+            equipment: [
+              { assetNumber: "HV-FLIT-001", name: "HV Fleet" },
+            ],
+          },
         ],
       },
     ],
@@ -251,8 +424,20 @@ export const AssetTree: React.FC = () => {
                               <CollapsibleTreeNode
                                 label={system.label}
                                 level="system"
-                                hasChildren={false}
-                              />
+                                hasChildren={system.equipment.length > 0}
+                                defaultExpanded={false}
+                              >
+                                {/* Level 6: Equipment */}
+                                {system.equipment.map((equip, equipIndex) => (
+                                  <TreeBranch key={equipIndex} isLast={equipIndex === system.equipment.length - 1}>
+                                    <CollapsibleTreeNode
+                                      label={`${equip.assetNumber} — ${equip.name}`}
+                                      level="equipment"
+                                      hasChildren={false}
+                                    />
+                                  </TreeBranch>
+                                ))}
+                              </CollapsibleTreeNode>
                             </TreeBranch>
                           ))}
                         </CollapsibleTreeNode>

@@ -7,11 +7,13 @@ export const Legend: React.FC = () => {
       <h3 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wide">
         Hierarchy Levels
       </h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <LegendItem level="Level 1" description="Business Entity" colorClass="bg-level-site" />
         <LegendItem level="Level 2" description="Facility" colorClass="bg-level-plant" />
         <LegendItem level="Level 3" description="Major Area" colorClass="bg-primary" />
         <LegendItem level="Level 4" description="Sub-Area" colorClass="bg-card border border-border" />
+        <LegendItem level="Level 5" description="System" colorClass="bg-muted/50 border border-border/50" />
+        <LegendItem level="Level 6" description="Equipment" colorClass="bg-accent/30 border border-accent/20" />
       </div>
       
       <h3 className="text-sm font-semibold text-foreground mt-6 mb-4 uppercase tracking-wide">
