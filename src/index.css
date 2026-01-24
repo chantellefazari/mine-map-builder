@@ -51,6 +51,8 @@
     /* Sub-levels - Flowing gradient */
     --level-subarea: 195 45% 85%;
     --level-subarea-foreground: 200 40% 20%;
+    --level-parent-asset: 180 40% 78%;
+    --level-parent-asset-foreground: 185 45% 18%;
     --level-system: 180 40% 78%;
     --level-system-foreground: 185 45% 18%;
     --level-equipment: 165 35% 88%;

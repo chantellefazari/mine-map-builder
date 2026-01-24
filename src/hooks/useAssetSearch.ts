@@ -5,14 +5,14 @@ interface Equipment {
   name: string;
 }
 
-interface System {
+interface ParentAsset {
   label: string;
   equipment: Equipment[];
 }
 
 interface SubArea {
   label: string;
-  systems: System[];
+  parentAssets: ParentAsset[];
 }
 
 interface Area {
@@ -22,7 +22,7 @@ interface Area {
 }
 
 export interface SearchResult {
-  type: "area" | "subarea" | "system" | "equipment";
+  type: "area" | "subarea" | "parentAsset" | "equipment";
   path: string[];
   label: string;
   assetNumber?: string;
@@ -63,22 +63,22 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
           matchingPaths.add(subAreaPath.join("/"));
         }
 
-        subArea.systems.forEach((system) => {
-          const systemPath = [...subAreaPath, system.label];
+        subArea.parentAssets.forEach((parentAsset) => {
+          const parentAssetPath = [...subAreaPath, parentAsset.label];
           
-          if (system.label.toLowerCase().includes(query)) {
+          if (parentAsset.label.toLowerCase().includes(query)) {
             searchResults.push({
-              type: "system",
-              path: systemPath,
-              label: system.label,
+              type: "parentAsset",
+              path: parentAssetPath,
+              label: parentAsset.label,
             });
             matchingPaths.add(areaPath.join("/"));
             matchingPaths.add(subAreaPath.join("/"));
-            matchingPaths.add(systemPath.join("/"));
+            matchingPaths.add(parentAssetPath.join("/"));
           }
 
-          system.equipment.forEach((equip) => {
-            const equipPath = [...systemPath, equip.assetNumber];
+          parentAsset.equipment.forEach((equip) => {
+            const equipPath = [...parentAssetPath, equip.assetNumber];
             const equipLabel = `${equip.assetNumber} — ${equip.name}`;
             
             if (
@@ -94,7 +94,7 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
               // Add all parent paths to expand them
               matchingPaths.add(areaPath.join("/"));
               matchingPaths.add(subAreaPath.join("/"));
-              matchingPaths.add(systemPath.join("/"));
+              matchingPaths.add(parentAssetPath.join("/"));
               matchingPaths.add(equipPath.join("/"));
             }
           });

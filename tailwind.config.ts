@@ -69,6 +69,8 @@ export default {
           "area-sup": "hsl(var(--level-area-sup))",
           subarea: "hsl(var(--level-subarea))",
           "subarea-foreground": "hsl(var(--level-subarea-foreground))",
+          "parent-asset": "hsl(var(--level-parent-asset))",
+          "parent-asset-foreground": "hsl(var(--level-parent-asset-foreground))",
           system: "hsl(var(--level-system))",
           "system-foreground": "hsl(var(--level-system-foreground))",
           equipment: "hsl(var(--level-equipment))",
