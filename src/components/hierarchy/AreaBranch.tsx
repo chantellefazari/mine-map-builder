@@ -1,8 +1,13 @@
 import React from "react";
 import { HierarchyNode, AreaType } from "./HierarchyNode";
 
+interface System {
+  label: string;
+}
+
 interface SubArea {
   label: string;
+  systems: System[];
 }
 
 interface AreaBranchProps {
@@ -20,30 +25,30 @@ export const AreaBranch: React.FC<AreaBranchProps> = ({ code, label, subAreas })
       {/* Connector line down */}
       <div className="w-0.5 h-4 bg-connector" />
       
-      {/* Sub-areas container */}
-      <div className="relative flex flex-col items-center">
-        {/* Horizontal connector line */}
-        {subAreas.length > 1 && (
-          <div 
-            className="absolute top-0 h-0.5 bg-connector"
-            style={{ 
-              width: `${Math.max((subAreas.length - 1) * 100, 50)}%`,
-              left: '50%',
-              transform: 'translateX(-50%)'
-            }}
-          />
-        )}
-        
-        {/* Sub-areas in vertical stack for cleaner display */}
-        <div className="flex flex-col items-center gap-1">
-          {subAreas.map((subArea, index) => (
-            <div key={index} className="flex flex-col items-center">
-              {/* Vertical connector */}
-              <div className="w-0.5 h-3 bg-connector" />
-              <HierarchyNode label={subArea.label} level="subarea" />
-            </div>
-          ))}
-        </div>
+      {/* Sub-areas in vertical stack */}
+      <div className="flex flex-col items-center gap-1">
+        {subAreas.map((subArea, index) => (
+          <div key={index} className="flex flex-col items-center">
+            {/* Vertical connector to sub-area */}
+            <div className="w-0.5 h-3 bg-connector" />
+            <HierarchyNode label={subArea.label} level="subarea" />
+            
+            {/* Systems under this sub-area */}
+            {subArea.systems.length > 0 && (
+              <div className="flex flex-col items-center">
+                <div className="w-0.5 h-2 bg-connector/60" />
+                <div className="flex flex-col items-center gap-0.5">
+                  {subArea.systems.map((system, sysIndex) => (
+                    <div key={sysIndex} className="flex flex-col items-center">
+                      <div className="w-0.5 h-1.5 bg-connector/40" />
+                      <HierarchyNode label={system.label} level="system" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
