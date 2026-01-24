@@ -166,7 +166,7 @@ const areasData: Area[] = [
         ],
       },
       {
-        label: "Conveyance",
+        label: "Conveying",
         systems: [
           {
             label: "Conveyor System",
