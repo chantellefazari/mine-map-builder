@@ -38,6 +38,12 @@ const areasData: Area[] = [
       {
         label: "Site Infrastructure",
         parentAssets: [
+          { 
+            label: "Gold Plant", 
+            equipment: [
+              { assetNumber: "SITINF001", name: "Gold Plant" },
+            ] 
+          },
           { label: "Admin Building", equipment: [] },
           { label: "Toilets / Amenities", equipment: [] },
           { label: "Crib Room", equipment: [] },
@@ -80,32 +86,12 @@ const areasData: Area[] = [
       {
         label: "Electrical / Controls",
         parentAssets: [
-          { 
-            label: "Main Distribution Board", 
-            equipment: [
-              { assetNumber: "DB001", name: "Main Distribution Board – Main Panel" },
-            ] 
-          },
-          { 
-            label: "Sub Distribution Board 1", 
-            equipment: [
-              { assetNumber: "DB001", name: "Sub Distribution Board 1 – Panel" },
-            ] 
-          },
+          { label: "Main Distribution Board", equipment: [] },
+          { label: "Sub Distribution Board 1", equipment: [] },
           { label: "Control Room 1", equipment: [] },
           { label: "Control Subroom 1", equipment: [] },
-          { 
-            label: "Ice Machine Room DB", 
-            equipment: [
-              { assetNumber: "DB001", name: "Ice Machine Room DB – Panel" },
-            ] 
-          },
-          { 
-            label: "Crib Room L&P DB", 
-            equipment: [
-              { assetNumber: "DB001", name: "Crib Room L&P DB – Panel" },
-            ] 
-          },
+          { label: "Ice Machine Room DB", equipment: [] },
+          { label: "Crib Room L&P DB", equipment: [] },
           { label: "Lath Container L&P", equipment: [] },
         ],
       },
@@ -143,8 +129,14 @@ const areasData: Area[] = [
           { 
             label: "Lime Storage Silo", 
             equipment: [
-              { assetNumber: "TNK001", name: "Lime Storage Silo – Silo" },
+              { assetNumber: "UNKN", name: "Lime Storage Silo" },
               { assetNumber: "VLV001", name: "Lime Storage Silo – Discharge Valve" },
+            ] 
+          },
+          { 
+            label: "Lime Silo Vibrator", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Lime Silo Vibrator" },
             ] 
           },
           { 
@@ -203,24 +195,66 @@ const areasData: Area[] = [
         label: "Feed / Reclaim",
         parentAssets: [
           { 
-            label: "Feed Hopper 1", 
+            label: "Reclaim Hopper", 
             equipment: [
-              { assetNumber: "SWT001", name: "Feed Hopper 1 – Level Switch" },
-              { assetNumber: "VLV001", name: "Feed Hopper 1 – Discharge Gate" },
+              { assetNumber: "RF-HOP001", name: "Reclaim Hopper" },
             ] 
           },
           { 
-            label: "Reclaim Hopper 1", 
+            label: "Reclaim Feeder", 
             equipment: [
-              { assetNumber: "SWT001", name: "Reclaim Hopper 1 – Level Switch" },
+              { assetNumber: "RF-FDR001", name: "Reclaim Feeder" },
+              { assetNumber: "RF-FDR001-LCS001", name: "Reclaim Feeder – LCS" },
+              { assetNumber: "RF-FDR001-MTR001", name: "Reclaim Feeder – Motor" },
+              { assetNumber: "RF-FDR001-MCC001", name: "Reclaim Feeder – MCC Cell" },
+              { assetNumber: "RF-FDR001-GBX001", name: "Reclaim Feeder – Gearbox" },
+              { assetNumber: "RF-FDR001-PWS001", name: "Reclaim Feeder – Pullwire Switch" },
+              { assetNumber: "RF-FDR001-TX001", name: "Reclaim Feeder – Speed Transmitter" },
+              { assetNumber: "RF-FDR001-VLV001", name: "Lime Feeder – Rotary Valve" },
             ] 
           },
           { 
-            label: "Apron Feeder 1", 
+            label: "Feed Hopper", 
             equipment: [
-              { assetNumber: "MTR001", name: "Apron Feeder 1 – Drive Motor" },
-              { assetNumber: "GBX001", name: "Apron Feeder 1 – Gearbox" },
-              { assetNumber: "MCC001", name: "Apron Feeder 1 – MCC Cell" },
+              { assetNumber: "RF-HOP001", name: "Mill Feed Conveyor" },
+              { assetNumber: "RF-HOP001-LCS001", name: "Mill Feed Conveyor – Local Control Station" },
+              { assetNumber: "RF-HOP001-MTR001", name: "Mill Feed Conveyor – Motor" },
+              { assetNumber: "RF-HOP001-MCC001", name: "Mill Feed Conveyor – MCC Cell" },
+              { assetNumber: "RF-HOP001-GBX001", name: "Mill Feed Conveyor – Gearbox" },
+              { assetNumber: "RF-HOP001-USS001", name: "Feed Conveyor – Underspeed Switch" },
+              { assetNumber: "RF-HOP001-WTM001", name: "Ball Mill Feed Conveyor – Weightometer Loadcells" },
+              { assetNumber: "RF-HOP001-WTM002", name: "Ball Mill Feed Conveyor – Weightometer Transmitter" },
+              { assetNumber: "RF-HOP001-PWS001", name: "Feed Conveyor – Pull Wire Switch 1" },
+              { assetNumber: "RF-HOP001-PWS002", name: "Feed Conveyor – Pull Wire Switch 2" },
+              { assetNumber: "RF-HOP001-PWS003", name: "Feed Conveyor – Pull Wire Switch 3" },
+              { assetNumber: "RF-HOP001-PWS004", name: "Feed Conveyor – Pull Wire Switch 4" },
+              { assetNumber: "RF-HOP001-BAS001", name: "Feed Conveyor – Belt Alignment Switch 1" },
+              { assetNumber: "RF-HOP001-BAS002", name: "Feed Conveyor – Belt Alignment Switch 2" },
+              { assetNumber: "RF-HOP001-BAS003", name: "Feed Conveyor – Belt Alignment Switch 3" },
+              { assetNumber: "RF-HOP001-BAS004", name: "Feed Conveyor – Belt Alignment Switch 4" },
+              { assetNumber: "RF-HOP001-CHU001", name: "Ball Mill Feed Chute – High Level Switch" },
+              { assetNumber: "RF-HOP001-CHU002", name: "Mill Feed Conveyor – Discharge Chute" },
+              { assetNumber: "RF-HOP001-CHU003", name: "Mill Feed Chute" },
+              { assetNumber: "RF-HOP001-CHU004", name: "Ball Loading Chute" },
+              { assetNumber: "RF-HOP001-TX001", name: "Feed End Trunnion – Bearing Temp Transmitter" },
+              { assetNumber: "RF-HOP001-SEN001", name: "Feed End Trunnion – Bearing Temp Sensor 1" },
+              { assetNumber: "RF-HOP001-SEN002", name: "Feed End Trunnion – Bearing Temp Sensor 2" },
+              { assetNumber: "RF-HOP001-SEN003", name: "Feed End Trunnion – Bearing Temp Sensor 3" },
+              { assetNumber: "RF-HOP001-TX002", name: "Dis End Trunnion – Bearing Temp Transmitter" },
+              { assetNumber: "RF-HOP001-SEN004", name: "Dis End Trunnion – Bearing Temp Sensor 1" },
+              { assetNumber: "RF-HOP001-SEN005", name: "Dis End Trunnion – Bearing Temp Sensor 2" },
+              { assetNumber: "RF-HOP001-SEN006", name: "Dis End Trunnion – Bearing Temp Sensor 3" },
+              { assetNumber: "RF-HOP001", name: "Primary Mill Feed Boiler Box" },
+              { assetNumber: "RF-HOP001-PMP001", name: "Primary Cyclone Feed Pump A" },
+              { assetNumber: "RF-HOP001-MTR002", name: "Primary Cyclone Feed Pump A – Motor" },
+              { assetNumber: "RF-HOP001-MCC002", name: "Primary Cyclone Feed Pump A – MCC Cell" },
+              { assetNumber: "RF-HOP001-LCS002", name: "Primary Cyclone Feed Pump A – LCS" },
+              { assetNumber: "RF-HOP001-PMP002", name: "Primary Cyclone Feed Pump B" },
+              { assetNumber: "RF-HOP001-MTR003", name: "Primary Cyclone Feed Pump B – Motor" },
+              { assetNumber: "RF-HOP001-MCC003", name: "Primary Cyclone Feed Pump B – MCC Cell" },
+              { assetNumber: "RF-HOP001-LCS003", name: "Primary Cyclone Feed Pump B – LCS" },
+              { assetNumber: "RF-HOP001-VLV001", name: "Primary Cyclone Feed – TechTaylor Valve" },
+              { assetNumber: "RF-HOP001-TX003", name: "Primary Cyclone Feed – Flow Transmitter" },
             ] 
           },
         ],
@@ -231,28 +265,19 @@ const areasData: Area[] = [
           { 
             label: "Conveyor CV01", 
             equipment: [
-              { assetNumber: "MTR001", name: "Conveyor CV01 – Drive Motor" },
-              { assetNumber: "GBX001", name: "Conveyor CV01 – Gearbox" },
-              { assetNumber: "CHU001", name: "Conveyor CV01 – Feed Chute" },
-              { assetNumber: "CHU002", name: "Conveyor CV01 – Discharge Chute" },
-              { assetNumber: "MCC001", name: "Conveyor CV01 – MCC Cell" },
+              { assetNumber: "CV001", name: "Transfer Conveyor" },
+              { assetNumber: "CV001-LCS001", name: "Transfer Conveyor – Local Control Station" },
+              { assetNumber: "CV001-MTR001", name: "Transfer Conveyor – Motor" },
+              { assetNumber: "CV001-MCC001", name: "Transfer Conveyor – MCC Cell" },
+              { assetNumber: "CV001-GBX001", name: "Transfer Conveyor – Gearbox" },
+              { assetNumber: "CV001-PWS001", name: "Transfer Conveyor – Pullwire Switch" },
+              { assetNumber: "CV001", name: "Ball Mill Scatts Conveyor" },
             ] 
           },
           { 
             label: "Conveyor CV02", 
             equipment: [
-              { assetNumber: "MTR001", name: "Conveyor CV02 – Drive Motor" },
-              { assetNumber: "GBX001", name: "Conveyor CV02 – Gearbox" },
-              { assetNumber: "CHU001", name: "Conveyor CV02 – Transfer Chute" },
-              { assetNumber: "MCC001", name: "Conveyor CV02 – MCC Cell" },
-            ] 
-          },
-          { 
-            label: "Conveyor CV03", 
-            equipment: [
-              { assetNumber: "MTR001", name: "Conveyor CV03 – Drive Motor" },
-              { assetNumber: "GBX001", name: "Conveyor CV03 – Gearbox" },
-              { assetNumber: "MCC001", name: "Conveyor CV03 – MCC Cell" },
+              { assetNumber: "CV002-CHU001", name: "Transfer Conveyor – Discharge Chute" },
             ] 
           },
         ],
@@ -263,27 +288,66 @@ const areasData: Area[] = [
           { 
             label: "Ball Mill", 
             equipment: [
-              { assetNumber: "MTR001", name: "Ball Mill – Drive Motor" },
-              { assetNumber: "GBX001", name: "Ball Mill – Gearbox" },
-              { assetNumber: "LUB001", name: "Ball Mill – Lube System" },
-              { assetNumber: "MCC001", name: "Ball Mill – MCC Cell" },
+              { assetNumber: "BM001", name: "Grinding Circuit" },
+              { assetNumber: "BM001", name: "Primary Ball Mill" },
+              { assetNumber: "BM001-MTR001", name: "Primary Ball Mill – Motor" },
+              { assetNumber: "BM001-GBX001", name: "Primary Ball Mill – Gearbox" },
+              { assetNumber: "BM001", name: "Primary Ball Mill – Pinion" },
+              { assetNumber: "BM001-MCC001", name: "Primary Ball Mill – MCC Cell" },
+              { assetNumber: "BM001", name: "Primary Ball Mill – VSD" },
+              { assetNumber: "BM001", name: "Primary Ball Mill – Instruments" },
+              { assetNumber: "BM001", name: "Mill Gear Reducer – Temperature" },
+              { assetNumber: "BM001-VLV001", name: "Mill Discharge End – Water Addition Control Valve" },
+              { assetNumber: "BM001-TX001", name: "Mill Discharge End – Water Addition Flow Transmitter" },
+              { assetNumber: "BM001-TX002", name: "Mill Discharge Hopper – Level Transmitter" },
+              { assetNumber: "BM001", name: "Primary Ball Mill – Gear Reducer" },
+              { assetNumber: "BM001", name: "Ball Mill – Loading Monorail" },
+              { assetNumber: "SS001", name: "Mill Area Safety Shower 1" },
+              { assetNumber: "SS001", name: "Mill Area Safety Shower 2" },
+              { assetNumber: "BM001-PMP001", name: "Primary Ball Mill – Lube Recirculating Pump" },
+              { assetNumber: "BM001-MTR002", name: "Primary Ball Mill – Lube Recirculating Pump Motor" },
+              { assetNumber: "BM001-MCC002", name: "Primary Ball Mill – Lube Recirculating Pump MCC Cell" },
+              { assetNumber: "BM001-LCS001", name: "Primary Ball Mill – Lube Recirculating Pump LCS" },
+              { assetNumber: "BM001-LUB001", name: "Primary Ball Mill – Lube System" },
+              { assetNumber: "BM001-LUB002", name: "Primary Ball Mill – Lube Air Blast Oil Cooler" },
+              { assetNumber: "BM001-MTR003", name: "Primary Ball Mill – Lube Air Blast Oil Cooler Motor" },
+              { assetNumber: "BM001-MCC003", name: "Primary Ball Mill – Lube Air Blast Oil Cooler MCC Cell" },
+              { assetNumber: "BM001-LCS002", name: "Primary Ball Mill – Lube Air Blast Oil Cooler LCS" },
+              { assetNumber: "BM001-PMP002", name: "Primary Ball Mill – Low Pressure Lube Pump A" },
+              { assetNumber: "BM001-MTR004", name: "Primary Ball Mill – Low Pressure Lube Pump A Motor" },
+              { assetNumber: "BM001-MCC004", name: "Primary Ball Mill – Low Pressure Lube Pump A MCC Cell" },
+              { assetNumber: "BM001-LCS003", name: "Primary Ball Mill – Low Pressure Lube Pump A LCS" },
+              { assetNumber: "BM001-PMP003", name: "Primary Ball Mill – Low Pressure Lube Pump B" },
+              { assetNumber: "BM001-MTR005", name: "Primary Ball Mill – Low Pressure Lube Pump B Motor" },
+              { assetNumber: "BM001-MCC005", name: "Primary Ball Mill – Low Pressure Lube Pump B MCC Cell" },
+              { assetNumber: "BM001-LCS004", name: "Primary Ball Mill – Low Pressure Lube Pump B LCS" },
+              { assetNumber: "BM001-PMP004", name: "Primary Ball Mill – High Pressure Lube Pump" },
+              { assetNumber: "BM001-MTR006", name: "Primary Ball Mill – High Pressure Lube Pump Motor" },
+              { assetNumber: "BM001-MCC006", name: "Primary Ball Mill – High Pressure Lube Pump MCC Cell" },
+              { assetNumber: "BM001-LCS005", name: "Primary Ball Mill – High Pressure Lube Pump LCS" },
+              { assetNumber: "BM001-LUB003", name: "Primary Mill – Lube System Instruments" },
+              { assetNumber: "BM001-TX003", name: "Mill Low Pressure – Lube Oil Pressure Transmitter" },
+              { assetNumber: "BM001-TX004", name: "Mill Low Pressure – Lube Oil Flow Transmitter" },
+              { assetNumber: "BM001-TX005", name: "Mill High Pressure – Lift Lube Oil Pressure Transmitter" },
+              { assetNumber: "BM001-LUB004", name: "Mill High Pressure – Lift Lube Oil Flow" },
+              { assetNumber: "BM001-TX006", name: "Mill High Pressure – Lift Lube Oil Flow Transmitter" },
+              { assetNumber: "BM001-LUB005", name: "Mill Lube System – Oil Level" },
+              { assetNumber: "BM001-LUB006", name: "Mill Lube System – Oil Temperature" },
+              { assetNumber: "BM001-LUB007", name: "Primary Ball Mill – Girth Gear Lube System" },
+              { assetNumber: "BM001-PMP005", name: "Primary Ball Mill – Girth Gear Lube System Pump" },
+              { assetNumber: "BM001-LUB008", name: "Primary Ball Mill – Girth Gear Lube Control Panel" },
+              { assetNumber: "BM001-LUB009", name: "Primary Ball Mill – Lube System Filter A" },
+              { assetNumber: "BM001-LUB010", name: "Primary Ball Mill – Lube System Filter B" },
+              { assetNumber: "BM001", name: "Primary Mill – Discharge Hopper" },
             ] 
           },
           { 
-            label: "Mill Discharge Pump", 
+            label: "Grinding Sump", 
             equipment: [
-              { assetNumber: "PMP001", name: "Mill Discharge Pump – Pump" },
-              { assetNumber: "MTR001", name: "Mill Discharge Pump – Motor" },
-              { assetNumber: "MCC001", name: "Mill Discharge Pump – MCC Cell" },
-            ] 
-          },
-          { 
-            label: "Grinding Sump Pump", 
-            equipment: [
-              { assetNumber: "PMP001", name: "Grinding Sump Pump – Pump" },
-              { assetNumber: "MTR001", name: "Grinding Sump Pump – Motor" },
-              { assetNumber: "GBX001", name: "Grinding Sump Pump – Gearbox" },
-              { assetNumber: "MCC001", name: "Grinding Sump Pump – MCC Cell" },
+              { assetNumber: "GRISUM001-PMP001", name: "Grinding Area Sump Pump" },
+              { assetNumber: "GSPMP001-MTR001", name: "Grinding Area Sump Pump – Motor" },
+              { assetNumber: "GSPMP001-MCC001", name: "Grinding Area Sump Pump – MCC Cell" },
+              { assetNumber: "GSPMP001-LCS001", name: "Grinding Area Sump Pump – LCS" },
             ] 
           },
         ],
@@ -294,26 +358,10 @@ const areasData: Area[] = [
           { 
             label: "Cyclone Cluster", 
             equipment: [
-              { assetNumber: "CYC001", name: "Cyclone Cluster – Cyclone 1" },
-              { assetNumber: "CYC002", name: "Cyclone Cluster – Cyclone 2" },
-              { assetNumber: "CYC003", name: "Cyclone Cluster – Cyclone 3" },
-              { assetNumber: "VLV001", name: "Cyclone Cluster – Isolation Valve" },
-            ] 
-          },
-          { 
-            label: "Classification Sump", 
-            equipment: [
-              { assetNumber: "TNK001", name: "Classification Sump – Sump Tank" },
-              { assetNumber: "SWT001", name: "Classification Sump – Level Switch" },
-            ] 
-          },
-          { 
-            label: "Cyclone Feed Pump", 
-            equipment: [
-              { assetNumber: "PMP001", name: "Cyclone Feed Pump – Pump" },
-              { assetNumber: "MTR001", name: "Cyclone Feed Pump – Motor" },
-              { assetNumber: "GBX001", name: "Cyclone Feed Pump – Gearbox" },
-              { assetNumber: "MCC001", name: "Cyclone Feed Pump – MCC Cell" },
+              { assetNumber: "CYC001", name: "Primary Cyclone Cluster" },
+              { assetNumber: "CYC001", name: "Primary Cyclone Cluster – Instruments" },
+              { assetNumber: "CYC001-TX001", name: "Primary Cyclone – Pressure Transmitter" },
+              { assetNumber: "CYC001", name: "Primary Cyclone – Pressure Gauge" },
             ] 
           },
         ],
