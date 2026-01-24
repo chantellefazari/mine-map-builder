@@ -1,4 +1,4 @@
-import { AssetHierarchy } from "@/components/hierarchy/AssetHierarchy";
+import { AssetTree } from "@/components/hierarchy/AssetTree";
 import { Legend } from "@/components/hierarchy/Legend";
 
 const Index = () => {
@@ -50,11 +50,11 @@ const Index = () => {
               Asset Structure
             </h2>
             <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
-              Levels 1–4
+              Levels 1–5 • Click nodes to expand
             </span>
           </div>
           
-          <AssetHierarchy />
+          <AssetTree />
         </div>
 
         {/* Footer Info */}
