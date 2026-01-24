@@ -108,6 +108,22 @@ const areasData: Area[] = [
               { assetNumber: "EL-UPS-001", name: "UPS System" },
             ],
           },
+          {
+            label: "Main Switchboard",
+            equipment: [],
+          },
+          {
+            label: "Substation",
+            equipment: [],
+          },
+          {
+            label: "Distribution Boards",
+            equipment: [],
+          },
+          {
+            label: "MCCs",
+            equipment: [],
+          },
         ],
       },
       {
