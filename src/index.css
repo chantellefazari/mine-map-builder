@@ -48,13 +48,13 @@
     --level-area-tail: 320 45% 48%;
     --level-area-sup: 260 45% 52%;
     
-    /* Sub-levels */
-    --level-subarea: 210 25% 94%;
-    --level-subarea-foreground: 210 30% 25%;
-    --level-system: 200 20% 88%;
-    --level-system-foreground: 200 25% 35%;
-    --level-equipment: 190 30% 92%;
-    --level-equipment-foreground: 190 35% 30%;
+    /* Sub-levels - Flowing gradient */
+    --level-subarea: 195 45% 85%;
+    --level-subarea-foreground: 200 40% 20%;
+    --level-system: 180 40% 78%;
+    --level-system-foreground: 185 45% 18%;
+    --level-equipment: 165 35% 88%;
+    --level-equipment-foreground: 170 40% 22%;
 
     /* Connector lines */
     --connector: 220 15% 75%;
