@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronRight, ChevronDown, Minus } from "lucide-react";
 
@@ -13,6 +13,8 @@ interface CollapsibleTreeNodeProps {
   children?: React.ReactNode;
   hasChildren?: boolean;
   defaultExpanded?: boolean;
+  forceExpanded?: boolean;
+  isHighlighted?: boolean;
 }
 
 const levelStyles: Record<NodeLevel, string> = {
@@ -41,8 +43,17 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   children,
   hasChildren = false,
   defaultExpanded = false,
+  forceExpanded = false,
+  isHighlighted = false,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded || forceExpanded);
+  
+  // React to forceExpanded changes from search
+  useEffect(() => {
+    if (forceExpanded) {
+      setIsExpanded(true);
+    }
+  }, [forceExpanded]);
   
   const baseStyle = levelStyles[level];
   const areaColor = level === "area" && areaType ? areaColors[areaType] : "";
@@ -63,7 +74,8 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
           "rounded-lg flex items-center gap-1.5 whitespace-nowrap select-none",
           baseStyle,
           areaColor,
-          canExpand && "cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all"
+          canExpand && "cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all",
+          isHighlighted && "ring-2 ring-primary ring-offset-2 ring-offset-background"
         )}
       >
         {/* Expand/collapse icon */}

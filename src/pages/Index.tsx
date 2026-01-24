@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { AssetTree } from "@/components/hierarchy/AssetTree";
 import { Legend } from "@/components/hierarchy/Legend";
+import { AssetSearch } from "@/components/hierarchy/AssetSearch";
 
 const Index = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -45,16 +49,19 @@ const Index = () => {
 
         {/* Hierarchy Diagram */}
         <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-foreground">
-              Asset Structure
-            </h2>
-            <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
-              Levels 1–5 • Click nodes to expand
-            </span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-4">
+              <h2 className="text-lg font-semibold text-foreground">
+                Asset Structure
+              </h2>
+              <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
+                Levels 1–6 • Click nodes to expand
+              </span>
+            </div>
+            <AssetSearch value={searchQuery} onChange={setSearchQuery} />
           </div>
           
-          <AssetTree />
+          <AssetTree searchQuery={searchQuery} />
         </div>
 
         {/* Footer Info */}
