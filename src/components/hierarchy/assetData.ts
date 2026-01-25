@@ -1241,7 +1241,6 @@ export const areasData: Area[] = [
               { assetNumber: "SMLT001-HOOD001", name: "Barring Furnace Hood" },
             ] 
           },
-          { label: "Gold Pour Area", equipment: [] },
         ],
       },
     ],

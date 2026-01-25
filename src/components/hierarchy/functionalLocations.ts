@@ -188,7 +188,7 @@ const systemCodes: Record<string, string> = {
   "Calcine System": "CALC",
   "Gold Bullion": "BULL",
   "Smelting Furnace": "SMLT",
-  "Gold Pour Area": "POUR",
+  
   
   // TAIL > Thickening
   "Thickener": "THK",
