@@ -414,7 +414,24 @@ export const areasData: Area[] = [
           { 
             label: "Apron Feeder", 
             equipment: [
-              { assetNumber: "APRN001", name: "Apron Feeder" },
+              { 
+                assetNumber: "APRN001", 
+                name: "Apron Feeder",
+                components: [
+                  {
+                    componentCode: "K-ROL-STR-600B25",
+                    componentType: "Conveyor Roller",
+                    componentName: "Steel Trough Roller",
+                    manufacturer: "N/A"
+                  },
+                  {
+                    componentCode: "K-ROL-SRR-1200B25",
+                    componentType: "Conveyor Roller",
+                    componentName: "Steel Return Roller",
+                    manufacturer: "N/A"
+                  }
+                ]
+              },
               { assetNumber: "APRN001-LCS001", name: "Apron Feeder – LCS" },
               { assetNumber: "APRN001-MCC001", name: "Apron Feeder – MCC Cell" },
               { 
