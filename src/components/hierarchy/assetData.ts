@@ -266,48 +266,40 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "LSILO001", name: "Lime Storage Silo" },
               { assetNumber: "LSILO001-VLV001", name: "Lime Storage Silo – Discharge Valve" },
+              { assetNumber: "LSILO001-VIB001", name: "Lime Storage Silo – Vibrator" },
             ] 
-          },
-          { 
-            label: "Lime Silo Vibrator", 
-            equipment: [
-              { assetNumber: "LSILO001-VIB001", name: "Lime Silo Vibrator" },
-            ]
           },
           { 
             label: "Lime Dosing System", 
             equipment: [
-              { assetNumber: "PMP001", name: "Lime Dosing System – Dosing Pump" },
-              { assetNumber: "AGT001", name: "Lime Dosing System – Mixing Agitator" },
+              { assetNumber: "LDOS001", name: "Lime Dosing System" },
+              { assetNumber: "LDOS001-PMP001", name: "Lime Dosing System – Dosing Pump" },
+              { assetNumber: "LDOS001-AGT001", name: "Lime Dosing System – Mixing Agitator" },
             ] 
           },
           { 
             label: "Lime Agitation Tank", 
             equipment: [
-              { assetNumber: "TNK001", name: "Lime Agitation Tank – Tank" },
-              { assetNumber: "AGT001", name: "Lime Agitation Tank – Agitator" },
-              { assetNumber: "MTR001", name: "Lime Agitation Tank – Agitator Motor" },
-            ] 
-          },
-          { 
-            label: "Reagents", 
-            equipment: [
-              { assetNumber: "REAG001", name: "Reagents" },
+              { assetNumber: "LAGTK001", name: "Lime Agitation Tank" },
+              { assetNumber: "LAGTK001-AGT001", name: "Lime Agitation Tank – Agitator" },
+              { assetNumber: "LAGTK001-MTR001", name: "Lime Agitation Tank – Agitator Motor" },
             ] 
           },
           { 
             label: "Reagent Safety Shower", 
             equipment: [
-              { assetNumber: "REAG-SHW01", name: "Reagent Safety Shower" },
-              { assetNumber: "REAG-SHW02", name: "Reagent Area Safety Shower 1" },
-              { assetNumber: "REAG-SHW03", name: "Reagent Area Safety Shower 2" },
-              { assetNumber: "REAG-SHW04", name: "Reagent Area Safety Shower 3" },
+              { assetNumber: "REAG-SHW001", name: "Reagent Safety Shower 1" },
+              { assetNumber: "REAG-SHW002", name: "Reagent Safety Shower 2" },
+              { assetNumber: "REAG-SHW003", name: "Reagent Safety Shower 3" },
+              { assetNumber: "REAG-SHW004", name: "Reagent Safety Shower 4" },
             ] 
           },
           { 
             label: "Floc System", 
             equipment: [
               { assetNumber: "FLOC001", name: "Floc System" },
+              { assetNumber: "FLOC001-PMP001", name: "Floc System – Dosing Pump" },
+              { assetNumber: "FLOC001-AGT001", name: "Floc System – Mixing Agitator" },
             ] 
           },
         ],
