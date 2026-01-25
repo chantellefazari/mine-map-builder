@@ -1814,7 +1814,30 @@ export const areasData: Area[] = [
           { 
             label: "Elution Column", 
             equipment: [
-              { assetNumber: "ELU-COL001", name: "Elution Column" },
+              { 
+                assetNumber: "ELU-COL001", 
+                name: "Elution Column",
+                components: [
+                  {
+                    componentCode: "YF/18/0857",
+                    componentType: "Column",
+                    componentName: "Elution Column",
+                    manufacturer: "COMO Engineering",
+                    model: "YF/18/0857",
+                    weight: "2.0 tonne capacity",
+                    operatingPressure: "650 kPa design",
+                    displacement: "AS1210:2010 Class 3 | 150°C design temp"
+                  },
+                  {
+                    componentCode: "NFM-FLT",
+                    componentType: "Filter",
+                    componentName: "Elution Column Carbon Filters",
+                    manufacturer: "Non Ferrous Machining",
+                    model: "COMO Proprietary 304SS Column Filters",
+                    displacement: "Qty: 4 | PW63 wedgewire | 0.8 mm aperture"
+                  }
+                ]
+              },
               { assetNumber: "ELU-COL001-FLT001", name: "Elution Column Filters" },
               { assetNumber: "ELU-COL001-INS001", name: "Elution Column Outlet Pressure Gauge" },
               { assetNumber: "ELU-COL001-INS002", name: "Elution Column Inlet Pressure Gauge" },
@@ -1833,8 +1856,37 @@ export const areasData: Area[] = [
           { 
             label: "Elution Area Sump", 
             equipment: [
-              { assetNumber: "ELU-PMP001", name: "Elution Area Sump Pump" },
-              { assetNumber: "ELU-PMP001-MTR001", name: "Elution Area Sump Pump – Motor" },
+              { 
+                assetNumber: "ELU-PMP001", 
+                name: "Elution Column Sump Pump",
+                components: [
+                  {
+                    componentCode: "40PV-SPG",
+                    componentType: "Pump",
+                    componentName: "Elution Sump Pump",
+                    manufacturer: "AUSTRAL",
+                    model: "40 PV SPG Vertical Sump Pump",
+                    serialNumber: "1806010 (M&Q Equipment)"
+                  },
+                  {
+                    componentCode: "AEMBUCADD-132S",
+                    componentType: "Motor",
+                    componentName: "Elution Sump Pump Motor",
+                    manufacturer: "TECO",
+                    model: "AEMBUCADD 132S",
+                    serialNumber: "P3201031001",
+                    voltage: "5.5 kW (7.5 HP) | 4-pole induction"
+                  },
+                  {
+                    componentCode: "SPB-1320x2",
+                    componentType: "Belt Drive",
+                    componentName: "Elution Sump Pump Belt Drive",
+                    manufacturer: "Gates / Equivalent",
+                    model: "SPB 1320 x 2"
+                  }
+                ]
+              },
+              { assetNumber: "ELU-PMP001-MTR001", name: "Elution Column Sump Pump – Motor" },
               { assetNumber: "ELU-PMP001-MCC001", name: "Elution Area Sump Pump – MCC Cell" },
               { assetNumber: "ELU-PMP001-LCS001", name: "Elution Area Sump Pump – LCS" },
             ]
@@ -1879,7 +1931,31 @@ export const areasData: Area[] = [
           { 
             label: "Acid Wash Column", 
             equipment: [
-              { assetNumber: "ACOL001", name: "Acid Wash Column" },
+              { 
+                assetNumber: "ACOL001", 
+                name: "Acid Wash Column",
+                components: [
+                  {
+                    componentCode: "YF/18/0858",
+                    componentType: "Column",
+                    componentName: "Acid Wash Column",
+                    manufacturer: "COMO Engineering",
+                    model: "YF/18/0858",
+                    weight: "2.0 tonne capacity",
+                    oilType: "Bromo Butyl Rubber lining",
+                    operatingPressure: "650 kPa design",
+                    displacement: "AS1210:2010 Class 3 | 150°C design temp"
+                  },
+                  {
+                    componentCode: "ALLOYTECH-FLT",
+                    componentType: "Filter",
+                    componentName: "Acid Wash Column Carbon Filters",
+                    manufacturer: "Alloytech",
+                    model: "Proprietary ABS Column Filters",
+                    displacement: "Qty: 4 | Mesh: 0.8 mm"
+                  }
+                ]
+              },
               { assetNumber: "ACOL001-INS001", name: "Acid Wash Column Inlet Pressure Gauge" },
               { assetNumber: "ACOL001-INS002", name: "Acid Wash Column Discharge Pressure Gauge" },
               { assetNumber: "ACOL001-FLT001", name: "Acid Column Filters" },
@@ -1890,9 +1966,51 @@ export const areasData: Area[] = [
           { 
             label: "HCL Dosing System", 
             equipment: [
-              { assetNumber: "HDOS001-PMP001", name: "HCL Acid Dosing Pump" },
+              { 
+                assetNumber: "HDOS001-PMP001", 
+                name: "HCL Acid Dosing Pump",
+                components: [
+                  {
+                    componentCode: "02-5001-20-400",
+                    componentType: "Pump",
+                    componentName: "HCL Acid Dosing Pump (Installed)",
+                    manufacturer: "WILDEN",
+                    model: "02-5001-20-400",
+                    displacement: "1\" diaphragm | PP & Santoprene wetted"
+                  },
+                  {
+                    componentCode: "VA25-SPARE",
+                    componentType: "Pump",
+                    componentName: "HCL Acid Dosing Pump (Design/Spare)",
+                    manufacturer: "VerderAir",
+                    model: "VA25",
+                    displacement: "Per design specification"
+                  }
+                ]
+              },
               { assetNumber: "HDOS001-VLV001", name: "HCL Dosing Pump Solenoid Valve" },
-              { assetNumber: "HSMP001-PMP001", name: "HCL Area Sump Pump" },
+              { 
+                assetNumber: "HSMP001-PMP001", 
+                name: "HCL Area Sump Pump",
+                components: [
+                  {
+                    componentCode: "HUSKY-2022",
+                    componentType: "Pump",
+                    componentName: "HCL Area Sump Pump (Installed)",
+                    manufacturer: "GRACO",
+                    model: "HUSKY 2022",
+                    displacement: "2\" diaphragm | PP & Santoprene wetted"
+                  },
+                  {
+                    componentCode: "VA50-SPARE",
+                    componentType: "Pump",
+                    componentName: "HCL Area Sump Pump (Design/Spare)",
+                    manufacturer: "VerderAir",
+                    model: "VA50",
+                    displacement: "Per design specification"
+                  }
+                ]
+              },
             ] 
           },
           { 
