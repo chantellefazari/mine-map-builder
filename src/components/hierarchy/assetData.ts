@@ -335,26 +335,6 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "Safety Shower Water Tank", 
-            equipment: [
-              { assetNumber: "SSWT001", name: "Safety Shower Water Tank" },
-              { assetNumber: "SSWT001-PIPE001", name: "Safety Shower Water Tank – Pipework" },
-            ] 
-          },
-          { 
-            label: "Gland Water Tank", 
-            equipment: [
-              { assetNumber: "GWT001", name: "Gland Water Tank" },
-              { assetNumber: "GWT001-PIPE001", name: "Gland Water Tank – Piping" },
-            ] 
-          },
-          { 
-            label: "Andys Dam", 
-            equipment: [
-              { assetNumber: "ADAM001", name: "Andys Dam" },
-            ] 
-          },
-          { 
             label: "Process Water Pond", 
             equipment: [
               { assetNumber: "PWP001", name: "Process Water Pond" },
