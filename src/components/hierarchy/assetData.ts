@@ -9,6 +9,14 @@ export interface Component {
   componentType: string;
   componentName: string;
   manufacturer: string;
+  // Extended attributes (metadata)
+  serialNumber?: string;
+  oilType?: string;
+  oilVolume?: string;
+  inputSpeed?: string;
+  outputSpeed?: string;
+  weight?: string;
+  model?: string;
 }
 
 export interface Equipment {
@@ -663,20 +671,26 @@ export const areasData: Area[] = [
             label: "Ball Mill", 
             equipment: [
               // Ball Mill
+              { assetNumber: "BM001", name: "Primary Ball Mill" },
+              { assetNumber: "BM001-MTR001", name: "Primary Ball Mill – Motor" },
               { 
-                assetNumber: "BM001", 
-                name: "Primary Ball Mill",
+                assetNumber: "BM001-GBX001", 
+                name: "Primary Ball Mill – Gearbox",
                 components: [
                   {
                     componentCode: "BM-GBX-001",
                     componentType: "Gear Reducer / Gearbox",
                     componentName: "Primary Ball Mill Gear Reducer",
-                    manufacturer: "H1 SH 15B"
+                    manufacturer: "H1 SH 15B",
+                    serialNumber: "KHD 4504150638.01.001",
+                    oilType: "VG320",
+                    oilVolume: "190 L",
+                    inputSpeed: "1481 RPM",
+                    outputSpeed: "259.61 RPM",
+                    weight: "3317 kg"
                   }
                 ]
               },
-              { assetNumber: "BM001-MTR001", name: "Primary Ball Mill – Motor" },
-              { assetNumber: "BM001-GBX001", name: "Primary Ball Mill – Gearbox" },
               { assetNumber: "BM001-PIN001", name: "Primary Ball Mill – Pinion" },
               { assetNumber: "BM001-MCC001", name: "Primary Ball Mill – MCC Cell" },
               { assetNumber: "BM001-VSD001", name: "Primary Ball Mill – VSD" },
