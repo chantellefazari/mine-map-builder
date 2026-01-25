@@ -290,42 +290,6 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "Cyanide Monorail", 
-            equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Monorail" },
-            ] 
-          },
-          { 
-            label: "Cyanide Bag Breaker", 
-            equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Bag Breaker" },
-            ] 
-          },
-          { 
-            label: "Caustic Bag Breaker", 
-            equipment: [
-              { assetNumber: "UNKN", name: "Caustic Bag Breaker" },
-            ] 
-          },
-          { 
-            label: "Cyanide Mixing Tank", 
-            equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Mixing Tank" },
-            ] 
-          },
-          { 
-            label: "Cyanide Instruments", 
-            equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Instruments" },
-            ] 
-          },
-          { 
-            label: "Cyanide Solution Storage Tank", 
-            equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Solution Storage Tank" },
-            ] 
-          },
-          { 
             label: "Reagent Safety Shower", 
             equipment: [
               { assetNumber: "UNKN", name: "Reagent Safety Shower" },
@@ -338,14 +302,6 @@ export const areasData: Area[] = [
             label: "Floc System", 
             equipment: [
               { assetNumber: "UNKN", name: "Floc System" },
-            ] 
-          },
-          { 
-            label: "Cyanide Dosing Hut", 
-            equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Dosing Hut" },
-              { assetNumber: "UNKN", name: "Cyanide Dosing Hut 2" },
-              { assetNumber: "UNKN", name: "Reagents Field MCC" },
             ] 
           },
         ],
@@ -935,6 +891,54 @@ export const areasData: Area[] = [
               { assetNumber: "MTR001", name: "CIP Transfer Pump – Motor" },
             ] 
           },
+          { 
+            label: "Cyanide Monorail", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Cyanide Monorail" },
+            ] 
+          },
+          { 
+            label: "Cyanide Bag Breaker", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Cyanide Bag Breaker" },
+            ] 
+          },
+          { 
+            label: "Caustic Bag Breaker", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Caustic Bag Breaker" },
+            ] 
+          },
+          { 
+            label: "Cyanide Mixing Tank", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Cyanide Mixing Tank" },
+              { assetNumber: "TNK001", name: "Cyanide Mixing Tank – Tank" },
+              { assetNumber: "AGT001", name: "Cyanide Mixing Tank – Agitator" },
+              { assetNumber: "MTR001", name: "Cyanide Mixing Tank – Agitator Motor" },
+            ] 
+          },
+          { 
+            label: "Cyanide Instruments", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Cyanide Instruments" },
+            ] 
+          },
+          { 
+            label: "Cyanide Solution Storage Tank", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Cyanide Solution Storage Tank" },
+            ] 
+          },
+          { 
+            label: "Cyanide Dosing Hut", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Cyanide Dosing Hut" },
+              { assetNumber: "UNKN", name: "Cyanide Dosing Hut 2" },
+              { assetNumber: "UNKN", name: "Reagents Field MCC" },
+            ] 
+          },
+          { label: "Titration Hut", equipment: [] },
         ],
       },
       {
@@ -1003,6 +1007,22 @@ export const areasData: Area[] = [
               { assetNumber: "AGT001", name: "Acid Wash System – Agitator" },
             ] 
           },
+          { 
+            label: "Regen Kiln", 
+            equipment: [
+              { assetNumber: "KLN001", name: "Regen Kiln – Kiln" },
+              { assetNumber: "MTR001", name: "Regen Kiln – Drive Motor" },
+              { assetNumber: "GBX001", name: "Regen Kiln – Gearbox" },
+              { assetNumber: "FAN001", name: "Regen Kiln – Combustion Fan" },
+            ] 
+          },
+          { 
+            label: "Regen Kiln Feed Hopper", 
+            equipment: [
+              { assetNumber: "FDR001", name: "Regen Kiln Feed Hopper – Feeder" },
+              { assetNumber: "MTR001", name: "Regen Kiln Feed Hopper – Motor" },
+            ] 
+          },
         ],
       },
       {
@@ -1037,36 +1057,6 @@ export const areasData: Area[] = [
             ] 
           },
           { label: "Gold Pour Area", equipment: [] },
-        ],
-      },
-      {
-        label: "Cyanide & Regen",
-        parentAssets: [
-          { 
-            label: "Cyanide Mixing Tank", 
-            equipment: [
-              { assetNumber: "TNK001", name: "Cyanide Mixing Tank – Tank" },
-              { assetNumber: "AGT001", name: "Cyanide Mixing Tank – Agitator" },
-              { assetNumber: "MTR001", name: "Cyanide Mixing Tank – Agitator Motor" },
-            ] 
-          },
-          { label: "Titration Hut", equipment: [] },
-          { 
-            label: "Regen Kiln", 
-            equipment: [
-              { assetNumber: "KLN001", name: "Regen Kiln – Kiln" },
-              { assetNumber: "MTR001", name: "Regen Kiln – Drive Motor" },
-              { assetNumber: "GBX001", name: "Regen Kiln – Gearbox" },
-              { assetNumber: "FAN001", name: "Regen Kiln – Combustion Fan" },
-            ] 
-          },
-          { 
-            label: "Regen Kiln Feed Hopper", 
-            equipment: [
-              { assetNumber: "FDR001", name: "Regen Kiln Feed Hopper – Feeder" },
-              { assetNumber: "MTR001", name: "Regen Kiln Feed Hopper – Motor" },
-            ] 
-          },
         ],
       },
     ],
