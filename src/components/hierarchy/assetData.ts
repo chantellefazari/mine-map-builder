@@ -32,9 +32,22 @@ export const areasData: Area[] = [
         label: "Site Infrastructure",
         parentAssets: [
           { 
-            label: "Gold Plant", 
+            label: "Site Infrastructure", 
             equipment: [
               { assetNumber: "SITINF001", name: "Gold Plant" },
+              // Part 4 equipment
+              { assetNumber: "SITINF001", name: "Buildings" },
+              { assetNumber: "SITINF001", name: "Admin" },
+              { assetNumber: "SITINF001", name: "Crib" },
+              { assetNumber: "SITINF001", name: "Conference" },
+              { assetNumber: "SITINF001", name: "First Aid Room" },
+              { assetNumber: "SITINF001", name: "Male Toilet" },
+              { assetNumber: "SITINF001", name: "Female Toilet" },
+              { assetNumber: "SITINF001", name: "Male Toilet L&P DB" },
+              { assetNumber: "SITINF001", name: "Admin Office L&P DB 1" },
+              { assetNumber: "SITINF001", name: "Admin Office L&P DB 2" },
+              { assetNumber: "SITINF001", name: "Admin Office L&P DB 3" },
+              { assetNumber: "SITINF001", name: "Admin Office L&P DB 4" },
             ] 
           },
           { label: "Admin Building", equipment: [] },
@@ -118,31 +131,90 @@ export const areasData: Area[] = [
               { assetNumber: "MDB001", name: "Flocc Panel 1" },
               { assetNumber: "MDB001", name: "Flocc Panel 2" },
               { assetNumber: "MDB001", name: "Clarometer Panel" },
+              // Part 4 equipment
+              { assetNumber: "MDB001-MCC009", name: "Filter 1 Stock Tank Agitator – MCC Cell" },
+              { assetNumber: "MDB001", name: "Filter 1 PLC" },
+              { assetNumber: "MDB001", name: "Filter Press 1 Panel" },
+              { assetNumber: "MDB001-MCC010", name: "Filter Press 1 Hydraulic Plate Pack – MCC Cell" },
+              { assetNumber: "MDB001-MCC011", name: "Filter Press 1 Hydraulic TT Plate – MCC Cell" },
+              { assetNumber: "MDB001-MCC012", name: "Filter 2 Stock Tank Agitator – MCC Cell" },
+              { assetNumber: "MDB001", name: "Filter 2 PLC" },
+              { assetNumber: "MDB001", name: "Filter Press 2 Panel" },
+              { assetNumber: "MDB001-MCC013", name: "Filter Press 2 Hydraulic Plate Pack – MCC Cell" },
+              { assetNumber: "MDB001-MCC014", name: "Filter Press 2 Hydraulic TT Plate – MCC Cell" },
+              { assetNumber: "MDB001", name: "Field MCCs" },
+              { assetNumber: "MDB001", name: "Gravity Field MCC" },
+              { assetNumber: "MDB001", name: "Tanks Field MCC 1" },
+              { assetNumber: "MDB001", name: "Tanks Field MCC 2" },
+              { assetNumber: "MDB001", name: "Tanks Field MCC 3" },
+              { assetNumber: "MDB001", name: "Tanks Field MCC 4" },
+              { assetNumber: "MDB001", name: "Services Field MCC" },
+              { assetNumber: "MDB001", name: "Process Water Field MCC" },
+              { assetNumber: "MDB001", name: "Filter Press Field MCC" },
+              { assetNumber: "MDB001", name: "Distribution Boards" },
+              { assetNumber: "MDB001", name: "Ice Machine Room DB" },
+              { assetNumber: "MDB001", name: "Main DB 1" },
+              { assetNumber: "MDB001", name: "Main DB 2" },
+              { assetNumber: "MDB001", name: "MCC-125. L&P" },
+              { assetNumber: "MDB001", name: "MCC-110. L&P" },
+              { assetNumber: "MDB001", name: "MCC-111. L&P" },
+              { assetNumber: "MDB001", name: "MCC-113. L&P" },
+              { assetNumber: "MDB001", name: "MCC-114. L&P" },
+              { assetNumber: "MDB001", name: "MCC-115. L&P" },
+              { assetNumber: "MDB001", name: "MCC-116. L&P" },
+              { assetNumber: "MDB001", name: "MCC-117. L&P" },
+              { assetNumber: "MDB001", name: "MCC-118. L&P" },
+              { assetNumber: "MDB001", name: "MCC-120. L&P" },
+              { assetNumber: "MDB001", name: "MCC-121. L&P" },
+              { assetNumber: "MDB001", name: "MCC-122. L&P" },
+              { assetNumber: "MDB001", name: "MCC-130. L&P" },
+              { assetNumber: "MDB001", name: "Titration Hut L&P DB" },
             ] 
           },
-          { label: "Sub Distribution Board 1", equipment: [] },
+          { 
+            label: "Sub Distribution Board", 
+            equipment: [
+              { assetNumber: "SDB001", name: "Sub-100" },
+              { assetNumber: "SDB001", name: "Sub-100 L&P" },
+              { assetNumber: "SDB001", name: "Sub-100 Essential Board" },
+            ] 
+          },
           { 
             label: "Control Room", 
             equipment: [
               { assetNumber: "CR001", name: "Knelson Concentrator Control Panel" },
               { assetNumber: "CR001", name: "Knelson Area Hoist Control Panel" },
+              { assetNumber: "CR001", name: "Control Room" },
+              { assetNumber: "CR001", name: "Control Room L&P DB" },
             ] 
           },
           { label: "Control Subroom 1", equipment: [] },
-          { label: "Ice Machine Room DB", equipment: [] },
-          { label: "Crib Room L&P DB", equipment: [] },
-          { label: "Lath Container L&P", equipment: [] },
         ],
       },
       {
         label: "Power Generation",
         parentAssets: [
           { 
-            label: "Generator Set 1", 
+            label: "Generator Set", 
             equipment: [
               { assetNumber: "MTR001", name: "Generator Set 1 – Engine" },
               { assetNumber: "ALT001", name: "Generator Set 1 – Alternator" },
               { assetNumber: "DB001", name: "Generator Set 1 – Control Panel" },
+              // Part 4 equipment
+              { assetNumber: "GENSET001", name: "Generators" },
+              { assetNumber: "GENSET001-ASSY001", name: "Power Station Generator 1 500kVA" },
+              { assetNumber: "GENSET001-ASSY002", name: "Power Station Generator 1 500kVA 2" },
+              { assetNumber: "GENSET001-ASSY003", name: "Power Station Generator 1 500kVA 3" },
+              { assetNumber: "GENSET001-ASSY004", name: "Power Station Generator 1 500kVA 4" },
+              { assetNumber: "GENSET001-ASSY005", name: "Power Station Generator 1 500kVA 5" },
+              { assetNumber: "GENSET001-ASSY006", name: "Power Station Generator 1 500kVA 6" },
+              { assetNumber: "GENSET001-ASSY007", name: "Power Station Generator 1 500kVA 7" },
+              { assetNumber: "GENSET001-ASSY008", name: "Power Station Generator 1 500kVA 8" },
+              { assetNumber: "GENSET001", name: "Admin Generator 50kVA" },
+              { assetNumber: "GENSET001", name: "Spare" },
+              { assetNumber: "GENSET001", name: "Lab Generator 30kVA" },
+              { assetNumber: "GENSET001", name: "Juno Bore Generator 200kVA" },
+              { assetNumber: "GENSET001", name: "Mining Workshop 75kVA" },
             ] 
           },
           { 
@@ -250,6 +322,14 @@ export const areasData: Area[] = [
               { assetNumber: "UNKN", name: "Floc System" },
             ] 
           },
+          { 
+            label: "Cyanide Dosing Hut", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Cyanide Dosing Hut" },
+              { assetNumber: "UNKN", name: "Cyanide Dosing Hut 2" },
+              { assetNumber: "UNKN", name: "Reagents Field MCC" },
+            ] 
+          },
         ],
       },
       {
@@ -314,6 +394,29 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "UNKN-HTR001", name: "Hydraulic Oil Heater" },
               { assetNumber: "UNKN-FAN002", name: "Hydraulic Oil Cooling Fan" },
+            ] 
+          },
+        ],
+      },
+      {
+        label: "Fuel Systems",
+        parentAssets: [
+          { 
+            label: "Fuel Dispensing", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Fuel Dispensing control Board" },
+            ] 
+          },
+        ],
+      },
+      {
+        label: "CIP",
+        parentAssets: [
+          { 
+            label: "Main Sub Station", 
+            equipment: [
+              { assetNumber: "UNKN-ASSY001", name: "Main Sub Station" },
+              { assetNumber: "UNKN", name: "RO Plant Main Board" },
             ] 
           },
         ],
@@ -458,7 +561,10 @@ export const areasData: Area[] = [
               { assetNumber: "RF-HOP001-MTR009", name: "Concentrate Shaking Table – Motor" },
               { assetNumber: "RF-HOP001-LCS014", name: "Concentrate Shaking Table – LCS" },
               { assetNumber: "RF-HOP001-GBX007", name: "Concentrate Shaking Table – Gearbox" },
-            ] 
+              // Part 4 equipment
+              { assetNumber: "RF-HOP001", name: "Crusher Fuel Farm 15kVA" },
+              { assetNumber: "RF-HOP001", name: "Mill Feed Conveyor Field MCC" },
+            ]
           },
         ],
       },
@@ -481,7 +587,31 @@ export const areasData: Area[] = [
               { assetNumber: "CV001-GBX002", name: "Filter 1 Extraction – Gearbox" },
               { assetNumber: "CV001", name: "Filter 1 Extraction Conveyor – VFD" },
               { assetNumber: "CV001-MCC002", name: "Filter 1 Extraction Conveyor – MCC Cell" },
-            ] 
+              // Part 4 equipment
+              { assetNumber: "CV001", name: "Filter 2 Extraction Conveyor" },
+              { assetNumber: "CV001-MTR003", name: "Filter 2 Extraction – Motor" },
+              { assetNumber: "CV001-GBX003", name: "Filter 2 Extraction – Gearbox" },
+              { assetNumber: "CV001", name: "Filter 2 Extraction Conveyor – VFD" },
+              { assetNumber: "CV001-MCC003", name: "Filter 2 Extraction Conveyor – MCC Cell" },
+              { assetNumber: "CV001", name: "Tails Filter Press Collection Conveyor" },
+              { assetNumber: "CV001-MTR004", name: "Tails Filter Press Collection Conveyor – Motor" },
+              { assetNumber: "CV001-GBX004", name: "Tails Filter Press Collection Conveyor – Gearbox" },
+              { assetNumber: "CV001-MCC004", name: "Tails Filter Press Collection Conveyor – MCC Cell" },
+              { assetNumber: "CV001", name: "Tails Filter Press Collection Conveyor – VFD" },
+              { assetNumber: "CV001", name: "Tails Filter Press Radial Stacker Conveyor" },
+              { assetNumber: "CV001-MTR005", name: "Tails Filter Press Radial Stacker Conveyor Drive Motor A" },
+              { assetNumber: "CV001-MTR006", name: "Tails Filter Press Radial Stacker Conveyor Drive Motor B" },
+              { assetNumber: "CV001-MTR007", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive Motor A" },
+              { assetNumber: "CV001-MTR008", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive Motor B" },
+              { assetNumber: "CV001", name: "Tails Filter Press Radial Stacker Conveyor Drive Gear Box A" },
+              { assetNumber: "CV001", name: "Tails Filter Press Radial Stacker Conveyor Drive Gear Box B" },
+              { assetNumber: "CV001-GBX005", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive Gearbox A" },
+              { assetNumber: "CV001-GBX006", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive Gearbox B" },
+              { assetNumber: "CV001-MCC005", name: "Tails Filter Press Radial Stacker Conveyor Drive A – MCC Cell" },
+              { assetNumber: "CV001-MCC006", name: "Tails Filter Press Radial Stacker Conveyor Drive B – MCC Cell" },
+              { assetNumber: "CV001-MCC007", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive A – MCC Cell" },
+              { assetNumber: "CV001-MCC008", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive B – MCC Cell" },
+            ]
           },
           { 
             label: "Conveyor CV02", 
@@ -548,7 +678,9 @@ export const areasData: Area[] = [
               { assetNumber: "BM001-LUB009", name: "Primary Ball Mill – Lube System Filter A" },
               { assetNumber: "BM001-LUB010", name: "Primary Ball Mill – Lube System Filter B" },
               { assetNumber: "BM001", name: "Primary Mill – Discharge Hopper" },
-            ] 
+              // Part 4 equipment
+              { assetNumber: "BM001", name: "Mill Area Field MCC" },
+            ]
           },
           { 
             label: "Grinding Sump", 
@@ -748,6 +880,21 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK01-MTR020", name: "Filter 1 Feed Pump – Motor" },
               { assetNumber: "CIP-TK01-PMP028", name: "Filter 1 Feed Pump – VFD" },
               { assetNumber: "CIP-TK01-MCC012", name: "Filter 1 Feed Pump – MCC Cell" },
+              // Part 4 equipment
+              { assetNumber: "CIP-TK01-PMP029", name: "Filter Press 1 Hydraulic Plate Pack Pump" },
+              { assetNumber: "CIP-TK01-PMP030", name: "Filter Press 1 Hydraulic TT Plate Pump" },
+              { assetNumber: "CIP-TK01-PMP031", name: "Filter 2 Feed Pump" },
+              { assetNumber: "CIP-TK01-MTR021", name: "Filter 2 Feed Pump – Motor" },
+              { assetNumber: "CIP-TK01-PMP032", name: "Filter 2 Feed Pump – VFD" },
+              { assetNumber: "CIP-TK01-MCC013", name: "Filter 2 Feed Pump – MCC Cell" },
+              { assetNumber: "CIP-TK01-PMP033", name: "Filter Press 2 Hydraulic Plate Pack Pump" },
+              { assetNumber: "CIP-TK01-PMP034", name: "Filter Press 2 Hydraulic TT Plate Pump" },
+              { assetNumber: "CIP-TK01-PMP035", name: "Filter Area Sump Pump" },
+              { assetNumber: "CIP-TK01-MTR022", name: "Filter Area Sump Pump – Motor" },
+              { assetNumber: "CIP-TK01-PMP036", name: "Filter Area Sump Pump – LCS" },
+              { assetNumber: "CIP-TK01-MCC014", name: "Filter Area Sump Pump – MCC Cell" },
+              { assetNumber: "CIP-TK01", name: "Titration Hut" },
+              { assetNumber: "CIP-TK01", name: "Nobles Natral Sump Generator 30kVA" },
             ] 
           },
           { 
@@ -817,7 +964,9 @@ export const areasData: Area[] = [
               { assetNumber: "ELU-COL001", name: "Regen Kiln Zone 1 Temperature Gauge 1" },
               { assetNumber: "ELU-COL001", name: "Regen Kiln Zone 1 Temperature Gauge 2" },
               { assetNumber: "ELU-COL001", name: "Regen Kiln Feed End Temperature Gauge" },
-            ] 
+              // Part 4 equipment
+              { assetNumber: "ELU-COL001", name: "Elution Area Field MCC" },
+            ]
           },
           { 
             label: "Heat Exchanger", 
@@ -937,6 +1086,8 @@ export const areasData: Area[] = [
               { assetNumber: "THK001", name: "Thickener Hydraulic Pack" },
               { assetNumber: "THK001", name: "Thickener Hydraulic Pack Instruments 1" },
               { assetNumber: "THK001", name: "Thickener Hydraulic Pack Instruments 2" },
+              // Part 4 equipment
+              { assetNumber: "THK001", name: "Thickener Field MCC" },
             ] 
           },
           { 
@@ -993,6 +1144,24 @@ export const areasData: Area[] = [
               { assetNumber: "FP001", name: "Filter Press 1" },
               { assetNumber: "FP001", name: "Filter 1 Stock Tank" },
               { assetNumber: "FP001-AGT001", name: "Filter 1 Stock Tank Agitator" },
+              // Part 4 equipment
+              { assetNumber: "FP001-MTR001", name: "Filter 1 Stock Tank Agitator – Motor" },
+              { assetNumber: "FP001-GBX001", name: "Filter 1 Stock Tank Agitator – Gearbox" },
+              { assetNumber: "FP001", name: "Filter 1 Instruments" },
+              { assetNumber: "FP001-VLV001", name: "Filter 1 Piping and Valves" },
+              { assetNumber: "FP001", name: "Filter Press 1 Hydraulic Pack" },
+              { assetNumber: "FP001-MTR002", name: "Filter Press 1 Hydraulic Plate Pack – Motor" },
+              { assetNumber: "FP001-MTR003", name: "Filter Press 1 Hydraulic TT Plate – Motor" },
+              { assetNumber: "FP001", name: "Filter Press 2" },
+              { assetNumber: "FP001", name: "Filter 2 Stock Tank" },
+              { assetNumber: "FP001-AGT002", name: "Filter 2 Stock Tank Agitator" },
+              { assetNumber: "FP001-MTR004", name: "Filter 2 Stock Tank Agitator – Motor" },
+              { assetNumber: "FP001-GBX002", name: "Filter 2 Stock Tank Agitator – Gearbox" },
+              { assetNumber: "FP001", name: "Filter 2 Instruments" },
+              { assetNumber: "FP001-VLV002", name: "Filter 2 Piping and Valves" },
+              { assetNumber: "FP001", name: "Filter Press 2 Hydraulic Pack" },
+              { assetNumber: "FP001-MTR005", name: "Filter Press 2 Hydraulic Plate Pack – Motor" },
+              { assetNumber: "FP001-MTR006", name: "Filter Press 2 Hydraulic TT Plate – Motor" },
             ] 
           },
           { 
@@ -1021,6 +1190,14 @@ export const areasData: Area[] = [
         parentAssets: [
           { label: "Assay Equipment", equipment: [] },
           { label: "Sample Prep Equipment", equipment: [] },
+          { 
+            label: "Laboratory Systems", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Lab" },
+              { assetNumber: "UNKN", name: "Main DB Lab" },
+              { assetNumber: "UNKN", name: "Lab L&P DB" },
+            ] 
+          },
         ],
       },
       {
@@ -1031,6 +1208,11 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "UNKN", name: "CIP Area Gantry Crane" },
               { assetNumber: "UNKN", name: "Knelson Area Hoist" },
+              // Part 4 equipment
+              { assetNumber: "UNKN", name: "Mobile Equipment" },
+              { assetNumber: "UNKN", name: "25t Franner Crane" },
+              { assetNumber: "UNKN", name: "Workshop" },
+              { assetNumber: "UNKN", name: "Workshop DB" },
             ] 
           },
         ],
@@ -1042,20 +1224,86 @@ export const areasData: Area[] = [
             label: "Services", 
             equipment: [
               { assetNumber: "UNKN", name: "Services" },
+              { assetNumber: "UNKN", name: "Lath Container L&P" },
+              { assetNumber: "UNKN", name: "Crib Room L&P DB" },
+              { assetNumber: "UNKN", name: "Conference Building L&P" },
+              { assetNumber: "UNKN", name: "First Aid Room L&P DB" },
             ] 
           },
         ],
       },
       {
-        label: "Light Vehicles (LV)",
+        label: "Light Vehicles",
         parentAssets: [
-          { label: "LV Fleet", equipment: [] },
+          { 
+            label: "LV Fleet", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Light Vehicle" },
+              { assetNumber: "UNKN", name: "Toyota Hilux 1" },
+              { assetNumber: "UNKN", name: "Toyota Hilux 2" },
+              { assetNumber: "UNKN", name: "Toyota Hilux 3" },
+              { assetNumber: "UNKN", name: "Toyota Hilux 4" },
+              { assetNumber: "UNKN", name: "Toyota Hilux 5" },
+              { assetNumber: "UNKN", name: "Toyota Hilux 6" },
+              { assetNumber: "UNKN", name: "Toyota Hilux 7" },
+              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 1" },
+              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 2" },
+              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 3" },
+              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 4" },
+              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 5" },
+              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 6" },
+              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 7" },
+              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 8" },
+              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 9" },
+              { assetNumber: "UNKN", name: "Ranger Single Cab" },
+              { assetNumber: "UNKN", name: "Kia" },
+              { assetNumber: "UNKN", name: "Toyota Hiace 1" },
+              { assetNumber: "UNKN", name: "Toyota Hiace 2" },
+              { assetNumber: "UNKN", name: "LDV Discovery 9 1" },
+              { assetNumber: "UNKN", name: "LDV Discovery 9 2" },
+              { assetNumber: "UNKN", name: "Fuso TF Canter Flat Top Truck" },
+              { assetNumber: "UNKN", name: "LC Military" },
+            ] 
+          },
         ],
       },
       {
         label: "Heavy Vehicles (HV)",
         parentAssets: [
           { label: "HV Fleet", equipment: [] },
+        ],
+      },
+      {
+        label: "CIP",
+        parentAssets: [
+          { 
+            label: "CIP Mobile Equipment", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Forklift" },
+              { assetNumber: "UNKN", name: "Telehandler" },
+              { assetNumber: "UNKN", name: "Bob Cat" },
+              { assetNumber: "UNKN", name: "Water Truck" },
+              { assetNumber: "UNKN", name: "Service Truck" },
+              { assetNumber: "UNKN", name: "Sino EWP" },
+              { assetNumber: "UNKN", name: "Hire EWP" },
+              { assetNumber: "UNKN", name: "Sino Scissor Lift 1" },
+              { assetNumber: "UNKN", name: "Sino Scissor Lift 2" },
+              { assetNumber: "UNKN", name: "Cat 980 Loader 1" },
+              { assetNumber: "UNKN", name: "Cat 980 Loader 2" },
+              { assetNumber: "UNKN", name: "Cat 980 Loader 3" },
+              { assetNumber: "UNKN", name: "Cat 980 Loader 4" },
+              { assetNumber: "UNKN", name: "Cat 30t Excavator" },
+              { assetNumber: "UNKN", name: "Case Excavator" },
+              { assetNumber: "UNKN", name: "Cat Moxy 1" },
+              { assetNumber: "UNKN", name: "Cat Moxy 2" },
+              { assetNumber: "UNKN", name: "Lighting Tower 1" },
+              { assetNumber: "UNKN", name: "Lighting Tower 2" },
+              { assetNumber: "UNKN", name: "Lighting Tower 3" },
+              { assetNumber: "UNKN", name: "Lighting Tower 4" },
+              { assetNumber: "UNKN", name: "Lighting Tower 5" },
+              { assetNumber: "UNKN", name: "Power Generation" },
+            ] 
+          },
         ],
       },
     ],
