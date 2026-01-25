@@ -1065,7 +1065,22 @@ export const areasData: Area[] = [
           { 
             label: "Gravity Screen", 
             equipment: [
-              { assetNumber: "GSCR001", name: "Gravity Screen" },
+              { 
+                assetNumber: "GSCR001", 
+                name: "Gravity Screen",
+                components: [
+                  {
+                    componentCode: "HS-09/24-24",
+                    componentType: "Linear Vibrating Screen",
+                    componentName: "Vibrating Screen Unit",
+                    manufacturer: "N/A",
+                    model: "0.9 × 2.4 m",
+                    weight: "1280 kg",
+                    displacement: "Apertures: 2.4 mm",
+                    serialNumber: "OF-HS-09/24-24"
+                  }
+                ]
+              },
               { assetNumber: "GSCR001-CHU001", name: "Gravity Screen – Feed Chute" },
               { assetNumber: "GSCR001-CHU002", name: "Gravity Screen – Discharge Chute" },
               { assetNumber: "GSCR001-PAN001", name: "Gravity Screen – Under Pan" },
@@ -1076,7 +1091,21 @@ export const areasData: Area[] = [
           { 
             label: "Knelson Concentrator", 
             equipment: [
-              { assetNumber: "KNLS001", name: "Knelson Concentrator" },
+              { 
+                assetNumber: "KNLS001", 
+                name: "Knelson Concentrator",
+                components: [
+                  {
+                    componentCode: "KC-XD20",
+                    componentType: "Centrifugal Concentrator",
+                    componentName: "Knelson Concentrator Unit",
+                    manufacturer: "CONSEP",
+                    model: "KC-XD20",
+                    pumpFlow: "11–17 m³/h feed",
+                    displacement: "G6 Cone, up to 80 t/h solids, max 6 mm (recommended 2 mm)"
+                  }
+                ]
+              },
               { assetNumber: "KNLS001-CONE001", name: "Knelson Concentrator – Collection Cone" },
               { assetNumber: "KNLS001-MTR001", name: "Knelson Concentrator – Motor" },
               { assetNumber: "KNLS001-MCC001", name: "Knelson Concentrator – MCC Cell" },
@@ -1084,14 +1113,112 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "Concentrate Shaking Table", 
+            label: "Knelson Water Prefilter", 
             equipment: [
-              { assetNumber: "CST001", name: "Concentrate Shaking Table" },
-              { assetNumber: "CST001-MTR001", name: "Concentrate Shaking Table – Motor" },
-              { assetNumber: "CST001-LCS001", name: "Concentrate Shaking Table – LCS" },
-              { assetNumber: "CST001-GBX001", name: "Concentrate Shaking Table – Gearbox" },
-              { assetNumber: "CST001-MCC001", name: "Concentrate Shaking Table – MCC Cell" },
+              { 
+                assetNumber: "KWPF001", 
+                name: "Knelson Water Prefilter",
+                components: [
+                  {
+                    componentCode: "FW050",
+                    componentType: "Automatic Self-Cleaning Water Filter",
+                    componentName: "Prefilter Unit",
+                    manufacturer: "Helix Hydro",
+                    model: "FW050",
+                    pumpFlow: "25 m³/hr",
+                    operatingPressure: "10 bar (max)",
+                    displacement: "DN 2\" (50 mm), Max temp: 65°C"
+                  }
+                ]
+              },
+            ] 
+          },
+          { 
+            label: "Shaking Table", 
+            equipment: [
+              { 
+                assetNumber: "CST001", 
+                name: "Shaking Table",
+                components: [
+                  {
+                    componentCode: "Wilfley #12",
+                    componentType: "Shaking Table",
+                    componentName: "Shaking Table Deck",
+                    manufacturer: "Wilfley",
+                    model: "#12",
+                    displacement: "Deck: 1070 × 2130 mm",
+                    pumpFlow: "265–1900 kg/hr feed rate"
+                  },
+                  {
+                    componentCode: "KTE23 W22",
+                    componentType: "Motor",
+                    componentName: "Shaking Table Motor",
+                    manufacturer: "WEG",
+                    model: "KTE23 W22"
+                  }
+                ]
+              },
+              { assetNumber: "CST001-MTR001", name: "Shaking Table – Motor" },
+              { assetNumber: "CST001-LCS001", name: "Shaking Table – LCS" },
+              { assetNumber: "CST001-GBX001", name: "Shaking Table – Gearbox" },
+              { assetNumber: "CST001-MCC001", name: "Shaking Table – MCC Cell" },
             ]
+          },
+          { 
+            label: "Gravity Tails Pump", 
+            equipment: [
+              { 
+                assetNumber: "GTPMP001", 
+                name: "Gravity Tails Pump",
+                components: [
+                  {
+                    componentCode: "VS-PUMP",
+                    componentType: "Vertical Spindle Pump",
+                    componentName: "Gravity Tails Pump Assembly",
+                    manufacturer: "Metso",
+                    model: "Vertical Spindle (in hopper)"
+                  },
+                  {
+                    componentCode: "AEMBUCDCV",
+                    componentType: "Motor",
+                    componentName: "Gravity Tails Pump Motor",
+                    manufacturer: "TECO",
+                    model: "AEMBUCDCV",
+                    voltage: "2.2 kW",
+                    displacement: "Frame: D100L"
+                  }
+                ]
+              },
+              { assetNumber: "GTPMP001-MTR001", name: "Gravity Tails Pump – Motor" },
+              { assetNumber: "GTPMP001-MCC001", name: "Gravity Tails Pump – MCC Cell" },
+            ] 
+          },
+          { 
+            label: "Trash Screen", 
+            equipment: [
+              { 
+                assetNumber: "TRSCR001", 
+                name: "Trash Screen",
+                components: [
+                  {
+                    componentCode: "HS-1.8x3.6",
+                    componentType: "Linear Motion Vibrating Screen",
+                    componentName: "Trash Screen Unit",
+                    manufacturer: "MINSPEC",
+                    model: "HS-1.8 × 3.6"
+                  },
+                  {
+                    componentCode: "KEE 75-4",
+                    componentType: "Exciter",
+                    componentName: "Trash Screen Exciter",
+                    manufacturer: "URAS",
+                    model: "KEE 75-4"
+                  }
+                ]
+              },
+              { assetNumber: "TRSCR001-EXC001", name: "Trash Screen – Exciter" },
+              { assetNumber: "TRSCR001-MCC001", name: "Trash Screen – MCC Cell" },
+            ] 
           },
         ],
       },
@@ -1103,7 +1230,21 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "CIP-TK01", name: "CIP Leach Tank 1" },
               { assetNumber: "CIP-SHW01", name: "CIP Tails Area Safety Shower" },
-              { assetNumber: "CIP-TK01-AGT001", name: "CIP Leach Tank 1 – Agitator" },
+              { 
+                assetNumber: "CIP-TK01-AGT001", 
+                name: "CIP Leach Tank 1 – Agitator",
+                components: [
+                  {
+                    componentCode: "MC4350/01/1167",
+                    componentType: "Coaxial Gearbox Agitator",
+                    componentName: "Leach Tank 1 Agitator Unit",
+                    manufacturer: "MIXTEC",
+                    model: "MC4350/01/1167",
+                    outputSpeed: "28 RPM",
+                    displacement: "Dual Impellers, Rubber-lined"
+                  }
+                ]
+              },
               { assetNumber: "CIP-TK01-MTR001", name: "CIP Leach Tank 1 – Agitator Motor" },
               { assetNumber: "CIP-TK01-MCC001", name: "CIP Leach Tank 1 – Agitator MCC Cell" },
               { assetNumber: "CIP-TK01-GBX001", name: "CIP Leach Tank 1 – Agitator Gear Box" },
