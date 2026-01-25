@@ -789,10 +789,30 @@ export const areasData: Area[] = [
               { assetNumber: "MILL-SHW01", name: "Mill Area Safety Shower 1" },
               { assetNumber: "MILL-SHW02", name: "Mill Area Safety Shower 2" },
               // Lube System
-              { assetNumber: "BM001-PMP001", name: "Primary Ball Mill – Lube Recirculating Pump" },
-              { assetNumber: "BM001-MTR002", name: "Primary Ball Mill – Lube Recirculating Pump Motor" },
-              { assetNumber: "BM001-MCC002", name: "Primary Ball Mill – Lube Recirculating Pump MCC Cell" },
-              { assetNumber: "BM001-LCS001", name: "Primary Ball Mill – Lube Recirculating Pump LCS" },
+              { 
+                assetNumber: "BM001-PMP001", 
+                name: "Primary Ball Mill – Lube Cooling Recirculating Pump",
+                components: [
+                  {
+                    componentCode: "K16 STE2 / 05MA10",
+                    componentType: "Pump (with Motor)",
+                    componentName: "Lube Cooling Recirculating Pump",
+                    manufacturer: "WEG / PARKER",
+                    model: "K16 STE2",
+                    motorRef: "05MA10 / 1007731720",
+                    pumpRef: "3339111486",
+                    motorSpeed: "1450 rpm",
+                    protection: "IP55",
+                    voltage: "415V",
+                    pumpFlow: "3.36 m³/hr (56 lpm)",
+                    operatingPressure: "12 bar",
+                    displacement: "44 cc/rev"
+                  }
+                ]
+              },
+              { assetNumber: "BM001-MTR002", name: "Primary Ball Mill – Lube Cooling Recirculating Pump Motor" },
+              { assetNumber: "BM001-MCC002", name: "Primary Ball Mill – Lube Cooling Recirculating Pump MCC Cell" },
+              { assetNumber: "BM001-LCS001", name: "Primary Ball Mill – Lube Cooling Recirculating Pump LCS" },
               { 
                 assetNumber: "BM001-LUB001", 
                 name: "Primary Ball Mill – Lube System",
@@ -863,10 +883,40 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "BM001-LUB002", name: "Primary Ball Mill – Lube Air Blast Oil Cooler" },
+              { 
+                assetNumber: "BM001-LUB002", 
+                name: "Primary Ball Mill – Lube Air Blast Oil Cooler",
+                components: [
+                  {
+                    componentCode: "AMPH 100L B4",
+                    componentType: "Air-cooled Oil Cooler",
+                    componentName: "Air Blast Oil Cooler Unit",
+                    manufacturer: "HYDAC",
+                    model: "AMPH 100L B4 – 3kW",
+                    serialNumber: "1900455",
+                    motorRef: "AC-LN75/1.0/F/A1/IBP3",
+                    operatingPressure: "16 bar (max)"
+                  }
+                ]
+              },
               { assetNumber: "BM001-MTR003", name: "Primary Ball Mill – Lube Air Blast Oil Cooler Motor" },
               { assetNumber: "BM001-MCC003", name: "Primary Ball Mill – Lube Air Blast Oil Cooler MCC Cell" },
               { assetNumber: "BM001-LCS002", name: "Primary Ball Mill – Lube Air Blast Oil Cooler LCS" },
+              { 
+                assetNumber: "BM001-LUB011", 
+                name: "Primary Ball Mill – Lube Water Oil Cooler",
+                components: [
+                  {
+                    componentCode: "50EK4/2",
+                    componentType: "Water-Oil Cooler",
+                    componentName: "Lube Water Oil Cooler Unit",
+                    manufacturer: "DYNACOOL",
+                    model: "50EK4/2",
+                    serialNumber: "65/EK1018T",
+                    oilType: "Water-oil cooler"
+                  }
+                ]
+              },
               { 
                 assetNumber: "BM001-PMP002", 
                 name: "Primary Ball Mill – Low Pressure Lube Pump A",
@@ -891,11 +941,51 @@ export const areasData: Area[] = [
               { assetNumber: "BM001-MTR004", name: "Primary Ball Mill – Low Pressure Lube Pump A Motor" },
               { assetNumber: "BM001-MCC004", name: "Primary Ball Mill – Low Pressure Lube Pump A MCC Cell" },
               { assetNumber: "BM001-LCS003", name: "Primary Ball Mill – Low Pressure Lube Pump A LCS" },
-              { assetNumber: "BM001-PMP003", name: "Primary Ball Mill – Low Pressure Lube Pump B" },
+              { 
+                assetNumber: "BM001-PMP003", 
+                name: "Primary Ball Mill – Low Pressure Lube Pump B",
+                components: [
+                  {
+                    componentCode: "L194 W22 / 110UT10",
+                    componentType: "Pump (with Motor)",
+                    componentName: "Low Pressure Lube Pump – Standby",
+                    manufacturer: "WEG / PARKER",
+                    model: "L194 W22",
+                    motorRef: "110UT10 / 1009424607",
+                    pumpRef: "3339111192",
+                    motorSpeed: "1450 rpm",
+                    protection: "IP55",
+                    voltage: "415V",
+                    pumpFlow: "2.16 m³/hr (36 lpm)",
+                    operatingPressure: "15 bar",
+                    displacement: "28 cc/rev"
+                  }
+                ]
+              },
               { assetNumber: "BM001-MTR005", name: "Primary Ball Mill – Low Pressure Lube Pump B Motor" },
               { assetNumber: "BM001-MCC005", name: "Primary Ball Mill – Low Pressure Lube Pump B MCC Cell" },
               { assetNumber: "BM001-LCS004", name: "Primary Ball Mill – Low Pressure Lube Pump B LCS" },
-              { assetNumber: "BM001-PMP004", name: "Primary Ball Mill – High Pressure Lube Pump" },
+              { 
+                assetNumber: "BM001-PMP004", 
+                name: "Primary Ball Mill – High Pressure Lube Pump",
+                components: [
+                  {
+                    componentCode: "L30 STDE2 / 16DEZ09",
+                    componentType: "Pump (with Motor)",
+                    componentName: "High Pressure Lube Pump",
+                    manufacturer: "WEG / PARKER",
+                    model: "L30 STDE2",
+                    motorRef: "16DEZ09 / 1006367134",
+                    pumpRef: "3706030",
+                    motorSpeed: "1450 rpm",
+                    protection: "IP55",
+                    voltage: "415V",
+                    pumpFlow: "0.84 m³/hr (14 lpm)",
+                    operatingPressure: "400 bar",
+                    displacement: "10 cc/rev"
+                  }
+                ]
+              },
               { assetNumber: "BM001-MTR006", name: "Primary Ball Mill – High Pressure Lube Pump Motor" },
               { assetNumber: "BM001-MCC006", name: "Primary Ball Mill – High Pressure Lube Pump MCC Cell" },
               { assetNumber: "BM001-LCS005", name: "Primary Ball Mill – High Pressure Lube Pump LCS" },
