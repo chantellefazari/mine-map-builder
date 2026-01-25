@@ -3,10 +3,24 @@ import { CollapsibleTreeNode } from "./CollapsibleTreeNode";
 import { TreeBranch } from "./TreeBranch";
 import { useAssetSearch } from "@/hooks/useAssetSearch";
 import { areasData, AreaType } from "./assetData";
+import { pidTagMappings } from "./pidTagMappings";
 
 interface AssetTreeProps {
   searchQuery?: string;
 }
+
+// Build a lookup map from asset number to P&ID tags
+const buildPidTagLookup = () => {
+  const lookup = new Map<string, string[]>();
+  pidTagMappings.forEach((mapping) => {
+    const existing = lookup.get(mapping.assetNumber) || [];
+    existing.push(mapping.pidTag);
+    lookup.set(mapping.assetNumber, existing);
+  });
+  return lookup;
+};
+
+const pidTagsByAsset = buildPidTagLookup();
 
 export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
   const { matchingPaths } = useAssetSearch(areasData, searchQuery);
@@ -22,6 +36,22 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
   const matchesSearch = (text: string) => {
     if (!hasSearch) return false;
     return text.toLowerCase().includes(searchQuery.toLowerCase());
+  };
+
+  // Helper to get all P&ID tags for an asset (from both inline and mappings)
+  const getAllPidTags = (assetNumber: string, inlineTags?: string[]) => {
+    const mappedTags = pidTagsByAsset.get(assetNumber) || [];
+    const inline = inlineTags || [];
+    // Combine and deduplicate
+    const allTags = [...new Set([...inline, ...mappedTags])];
+    return allTags;
+  };
+
+  // Helper to check if P&ID tag matches search
+  const pidTagMatchesSearch = (assetNumber: string, inlineTags?: string[]) => {
+    if (!hasSearch) return false;
+    const allTags = getAllPidTags(assetNumber, inlineTags);
+    return allTags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
   };
 
   return (
@@ -111,6 +141,9 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                       {parentAsset.equipment.map((equip, equipIndex) => {
                                         const equipLabel = `${equip.assetNumber} — ${equip.name}`;
                                         const equipId = `equip-${area.code}-${subIndex}-${paIndex}-${equipIndex}`;
+                                        const allPidTags = getAllPidTags(equip.assetNumber, equip.pidTags);
+                                        const isPidMatch = pidTagMatchesSearch(equip.assetNumber, equip.pidTags);
+                                        
                                         return (
                                           <TreeBranch key={equipIndex} isLast={equipIndex === parentAsset.equipment.length - 1}>
                                             <CollapsibleTreeNode
@@ -118,8 +151,8 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                               label={equipLabel}
                                               level="equipment"
                                               hasChildren={false}
-                                              isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || (equip.pidTags?.some(tag => matchesSearch(tag)) ?? false)}
-                                              pidTags={equip.pidTags}
+                                              isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || isPidMatch}
+                                              pidTags={allPidTags}
                                             />
                                           </TreeBranch>
                                         );
