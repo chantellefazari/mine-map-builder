@@ -189,6 +189,16 @@ export const areasData: Area[] = [
             ] 
           },
           { label: "Control Subroom 1", equipment: [] },
+          { 
+            label: "Lighting Towers", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Lighting Tower 1" },
+              { assetNumber: "UNKN", name: "Lighting Tower 2" },
+              { assetNumber: "UNKN", name: "Lighting Tower 3" },
+              { assetNumber: "UNKN", name: "Lighting Tower 4" },
+              { assetNumber: "UNKN", name: "Lighting Tower 5" },
+            ] 
+          },
         ],
       },
       {
@@ -1229,11 +1239,6 @@ export const areasData: Area[] = [
               { assetNumber: "UNKN", name: "Case Excavator" },
               { assetNumber: "UNKN", name: "Cat Moxy 1" },
               { assetNumber: "UNKN", name: "Cat Moxy 2" },
-              { assetNumber: "UNKN", name: "Lighting Tower 1" },
-              { assetNumber: "UNKN", name: "Lighting Tower 2" },
-              { assetNumber: "UNKN", name: "Lighting Tower 3" },
-              { assetNumber: "UNKN", name: "Lighting Tower 4" },
-              { assetNumber: "UNKN", name: "Lighting Tower 5" },
               { assetNumber: "UNKN", name: "Power Generation" },
             ] 
           },
