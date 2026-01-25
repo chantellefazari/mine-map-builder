@@ -1185,16 +1185,16 @@ export const areasData: Area[] = [
           { 
             label: "Electrowinning Cell", 
             equipment: [
-              { assetNumber: "EWCL001-MNR001", name: "Electrowinning Monorail" },
-              { assetNumber: "EWCL001-CELL001", name: "Electrowinning Cell" },
-              { assetNumber: "EWCL001-FAN001", name: "Electrowinning Fan" },
-              { assetNumber: "EWCL001-TK001", name: "Electrowinning Solution Tank" },
-              { assetNumber: "EWCL001-PMP001", name: "Electrowinning Feed Pump" },
-              { assetNumber: "EWCL001-MTR001", name: "Electrowinning Feed Pump – Motor" },
-              { assetNumber: "EWCL001-MCC001", name: "Electrowinning Feed Pump – MCC Cell" },
-              { assetNumber: "EWCL001-LCS001", name: "Electrowinning Feed Pump – LCS" },
-              { assetNumber: "EWCL001-INS001", name: "Electrowinning Flashpot Inlet Temperature Gauge" },
-              { assetNumber: "EWCL001-SWT001", name: "Electrowinning Flashpot High High Level Switch" },
+              { assetNumber: "EWCL001", name: "Electrowinning Cell" },
+              { assetNumber: "EWCL001-MNR001", name: "Electrowinning Cell – Monorail" },
+              { assetNumber: "EWCL001-FAN001", name: "Electrowinning Cell – Extraction Fan" },
+              { assetNumber: "EWCL001-TK001", name: "Electrowinning Cell – Solution Tank" },
+              { assetNumber: "EWCL001-PMP001", name: "Electrowinning Cell – Feed Pump" },
+              { assetNumber: "EWCL001-MTR001", name: "Electrowinning Cell – Feed Pump Motor" },
+              { assetNumber: "EWCL001-MCC001", name: "Electrowinning Cell – Feed Pump MCC Cell" },
+              { assetNumber: "EWCL001-LCS001", name: "Electrowinning Cell – Feed Pump LCS" },
+              { assetNumber: "EWCL001-TG001", name: "Electrowinning Cell – Flashpot Inlet Temperature Gauge" },
+              { assetNumber: "EWCL001-LSH001", name: "Electrowinning Cell – Flashpot High High Level Switch" },
             ] 
           },
           { 
