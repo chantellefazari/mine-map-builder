@@ -297,7 +297,7 @@ export const areasData: Area[] = [
         ],
       },
       {
-        label: "Reagents (Lime)",
+        label: "Reagents",
         parentAssets: [
           { 
             label: "Lime Storage Silo", 
@@ -316,14 +316,6 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "Lime Agitation Tank", 
-            equipment: [
-              { assetNumber: "LAGTK001", name: "Lime Agitation Tank" },
-              { assetNumber: "LAGTK001-AGT001", name: "Lime Agitation Tank – Agitator" },
-              { assetNumber: "LAGTK001-MTR001", name: "Lime Agitation Tank – Agitator Motor" },
-            ] 
-          },
-          { 
             label: "Reagent Safety Shower", 
             equipment: [
               { assetNumber: "REAG-SHW001", name: "Reagent Safety Shower 1" },
@@ -338,6 +330,96 @@ export const areasData: Area[] = [
               { assetNumber: "FLOC001", name: "Floc System" },
               { assetNumber: "FLOC001-PMP001", name: "Floc System – Dosing Pump" },
               { assetNumber: "FLOC001-AGT001", name: "Floc System – Mixing Agitator" },
+            ] 
+          },
+          // Cyanide equipment moved from CIP
+          { 
+            label: "Cyanide Bag Breaker", 
+            equipment: [
+              { assetNumber: "CBB001", name: "Cyanide Bag Breaker" },
+            ] 
+          },
+          { 
+            label: "Caustic Bag Breaker", 
+            equipment: [
+              { assetNumber: "CABB001", name: "Caustic Bag Breaker" },
+            ] 
+          },
+          { 
+            label: "Cyanide Mixing Tank", 
+            equipment: [
+              { assetNumber: "CMIX001", name: "Cyanide Mixing Tank" },
+              { assetNumber: "CMIX001-TK001", name: "Cyanide Mixing Tank – Tank" },
+              { assetNumber: "CMIX001-AGT001", name: "Cyanide Mixing Tank – Agitator" },
+              { assetNumber: "CMIX001-MTR001", name: "Cyanide Mixing Tank – Agitator Motor" },
+              { assetNumber: "CMIX001-AGT002", name: "Cyanide Mixing Tank – Agitator 2" },
+              { assetNumber: "CMIX001-MTR002", name: "Cyanide Mixing Tank – Agitator Motor 2" },
+              { assetNumber: "CMIX001-GBX001", name: "Cyanide Mixing Tank – Agitator Gearbox" },
+              { assetNumber: "CMIX001-LCS001", name: "Cyanide Mixing Tank – Agitator LCS" },
+              { assetNumber: "CMIX001-MCC001", name: "Cyanide Mixing Tank – Agitator MCC Cell" },
+              { assetNumber: "CMIX001-TX001", name: "Cyanide Mixing Tank – Level Transmitter" },
+            ]
+          },
+          { 
+            label: "Cyanide Instruments", 
+            equipment: [
+              { assetNumber: "CINS001", name: "Cyanide Instruments" },
+            ] 
+          },
+          { 
+            label: "Cyanide Solution Storage Tank", 
+            equipment: [
+              { assetNumber: "CSTR001", name: "Cyanide Solution Storage Tank" },
+              { assetNumber: "CSTR001-TX001", name: "Cyanide Solution Storage Tank – Level Transmitter" },
+            ] 
+          },
+          { 
+            label: "Cyanide Dosing System", 
+            equipment: [
+              { assetNumber: "CDOS001", name: "Cyanide Dosing Hut" },
+              { assetNumber: "CDOS002", name: "Cyanide Dosing Hut 2" },
+              { assetNumber: "CDOS001-PMP001", name: "Cyanide Dosing Pump Duty" },
+              { assetNumber: "CDOS001-PMP002", name: "Cyanide Dosing Pump Stand-by" },
+              { assetNumber: "CDOS001-MTR001", name: "Cyanide Dosing Pump Stand-by – Motor" },
+              { assetNumber: "CDOS001-MCC001", name: "Cyanide Dosing Pump Stand-by – MCC Cell" },
+              { assetNumber: "CDOS001-LCS001", name: "Cyanide Dosing Pump Stand-by – LCS" },
+              { assetNumber: "REAG-MCC001", name: "Reagents Field MCC" },
+            ] 
+          },
+          { 
+            label: "Cyanide Transfer System", 
+            equipment: [
+              { assetNumber: "CXFR001-PMP001", name: "Cyanide Transfer Pump" },
+              { assetNumber: "CXFR001-MTR001", name: "Cyanide Transfer Pump – Motor" },
+              { assetNumber: "CXFR001-MCC001", name: "Cyanide Transfer Pump – MCC" },
+              { assetNumber: "CXFR001-LCS001", name: "Cyanide Transfer Pump – LCS" },
+              { assetNumber: "CXFR001-MTR002", name: "Cyanide Transfer Pump – Motor 2" },
+              { assetNumber: "CXFR001-MCC002", name: "Cyanide Transfer Pump – MCC 2" },
+              { assetNumber: "CXFR001-LCS002", name: "Cyanide Transfer Pump – LCS 2" },
+            ] 
+          },
+          { 
+            label: "Cyanide Area Sump", 
+            equipment: [
+              { assetNumber: "CSMP001-PMP001", name: "Cyanide Area Sump Pump" },
+              { assetNumber: "CSMP001-MTR001", name: "Cyanide Area Sump Pump – Motor" },
+              { assetNumber: "CSMP001-MCC001", name: "Cyanide Area Sump Pump – MCC Cell" },
+              { assetNumber: "CSMP001-LCS001", name: "Cyanide Area Sump Pump – LCS" },
+            ] 
+          },
+          { 
+            label: "Caustic Dosing System", 
+            equipment: [
+              { assetNumber: "CAUS001-PMP001", name: "Caustic Dosing Pump" },
+              { assetNumber: "CAUS001-MTR001", name: "Caustic Dosing Pump – Motor" },
+              { assetNumber: "CAUS001-MCC001", name: "Caustic Dosing Pump – MCC Cell" },
+              { assetNumber: "CAUS001-LCS001", name: "Caustic Dosing Pump – LCS" },
+            ] 
+          },
+          { 
+            label: "Titration Hut", 
+            equipment: [
+              { assetNumber: "THUT001", name: "Titration Hut" },
             ] 
           },
         ],
@@ -392,13 +474,21 @@ export const areasData: Area[] = [
         ],
       },
       {
-        label: "Hydraulic Systems",
+        label: "Gland Water",
         parentAssets: [
           { 
-            label: "Hydraulic Oil System", 
+            label: "Gland Water System", 
             equipment: [
-              { assetNumber: "HOIL001-HTR001", name: "Hydraulic Oil Heater" },
-              { assetNumber: "HOIL001-FAN001", name: "Hydraulic Oil Cooling Fan" },
+              { assetNumber: "GWTR001", name: "Gland Water System" },
+              { assetNumber: "GWTR001-TK001", name: "Gland Water Tank" },
+              { assetNumber: "GWTR001-PMP001", name: "Gland Water Pump Duty" },
+              { assetNumber: "GWTR001-MTR001", name: "Gland Water Pump Duty – Motor" },
+              { assetNumber: "GWTR001-MCC001", name: "Gland Water Pump Duty – MCC Cell" },
+              { assetNumber: "GWTR001-LCS001", name: "Gland Water Pump Duty – LCS" },
+              { assetNumber: "GWTR001-PMP002", name: "Gland Water Pump Standby" },
+              { assetNumber: "GWTR001-MTR002", name: "Gland Water Pump Standby – Motor" },
+              { assetNumber: "GWTR001-MCC002", name: "Gland Water Pump Standby – MCC Cell" },
+              { assetNumber: "GWTR001-LCS002", name: "Gland Water Pump Standby – LCS" },
             ] 
           },
         ],
@@ -534,10 +624,10 @@ export const areasData: Area[] = [
               { assetNumber: "MFC001-PWS002", name: "Mill Feed Conveyor – Pull Wire Switch 2" },
               { assetNumber: "MFC001-PWS003", name: "Mill Feed Conveyor – Pull Wire Switch 3" },
               { assetNumber: "MFC001-PWS004", name: "Mill Feed Conveyor – Pull Wire Switch 4" },
-              { assetNumber: "MFC001-BAS001", name: "Mill Feed Conveyor – Belt Alignment Switch 1" },
-              { assetNumber: "MFC001-BAS002", name: "Mill Feed Conveyor – Belt Alignment Switch 2" },
-              { assetNumber: "MFC001-BAS003", name: "Mill Feed Conveyor – Belt Alignment Switch 3" },
-              { assetNumber: "MFC001-BAS004", name: "Mill Feed Conveyor – Belt Alignment Switch 4" },
+              { assetNumber: "MFC001-BAS001", name: "Mill Feed Conveyor – Belt Alignment Drift Switch 1" },
+              { assetNumber: "MFC001-BAS002", name: "Mill Feed Conveyor – Belt Alignment Drift Switch 2" },
+              { assetNumber: "MFC001-BAS003", name: "Mill Feed Conveyor – Belt Alignment Drift Switch 3" },
+              { assetNumber: "MFC001-BAS004", name: "Mill Feed Conveyor – Belt Alignment Drift Switch 4" },
               { assetNumber: "MFC001-CHU001", name: "Mill Feed Conveyor – Discharge Chute" },
               { assetNumber: "MFC001-TX001", name: "Mill Feed Conveyor – Feed End Bearing Temp Transmitter" },
               { assetNumber: "MFC001-SEN001", name: "Mill Feed Conveyor – Feed End Bearing Temp Sensor 1" },
@@ -760,35 +850,20 @@ export const areasData: Area[] = [
               { assetNumber: "BM001-MTR001", name: "Primary Ball Mill – Motor" },
               { 
                 assetNumber: "BM001-GBX001", 
-                name: "Primary Ball Mill – Gearbox",
+                name: "Primary Ball Mill – Pinion & Girth Gear",
                 components: [
                   {
-                    componentCode: "BM-GBX-001",
-                    componentType: "Gear Reducer / Gearbox",
-                    componentName: "Primary Ball Mill Gear Reducer",
-                    manufacturer: "H1 SH 15B",
-                    serialNumber: "KHD 4504150638.01.001",
-                    oilType: "VG320",
-                    oilVolume: "190 L",
-                    inputSpeed: "1481 RPM",
-                    outputSpeed: "259.61 RPM",
-                    weight: "3317 kg"
+                    componentCode: "MC350",
+                    componentType: "Gearbox",
+                    componentName: "Ball Mill Girth Gear",
+                    manufacturer: "MAAG"
                   }
                 ]
               },
-              { assetNumber: "BM001-PIN001", name: "Primary Ball Mill – Pinion" },
               { assetNumber: "BM001-MCC001", name: "Primary Ball Mill – MCC Cell" },
               { assetNumber: "BM001-VSD001", name: "Primary Ball Mill – VSD" },
-              { assetNumber: "BM001-RED001", name: "Primary Ball Mill – Gear Reducer" },
-              { assetNumber: "BM001-RED001-INS001", name: "Mill Gear Reducer – Temperature" },
-              { assetNumber: "BM001-VLV001", name: "Mill Discharge End – Water Addition Control Valve" },
-              { assetNumber: "BM001-TX001", name: "Mill Discharge End – Water Addition Flow Transmitter" },
-              { assetNumber: "BM001-TX002", name: "Mill Discharge Hopper – Level Transmitter" },
-              { assetNumber: "BM001-MNR001", name: "Ball Mill – Loading Monorail" },
-              // Mill Area Safety Showers
-              { assetNumber: "MILL-SHW01", name: "Mill Area Safety Shower 1" },
-              { assetNumber: "MILL-SHW02", name: "Mill Area Safety Shower 2" },
-              // Lube System
+              { assetNumber: "BM001-TX001", name: "Primary Ball Mill – Inlet Bearing Temperature Transmitter" },
+              { assetNumber: "BM001-TX002", name: "Primary Ball Mill – Outlet Bearing Temperature Transmitter" },
               { 
                 assetNumber: "BM001-PMP001", 
                 name: "Primary Ball Mill – Lube Cooling Recirculating Pump",
@@ -1032,6 +1107,9 @@ export const areasData: Area[] = [
               { assetNumber: "BM001-HOP001", name: "Primary Mill – Discharge Hopper" },
               // Part 4 equipment
               { assetNumber: "MILL-MCC001", name: "Mill Area Field MCC" },
+              // Hydraulic Oil System moved from UTL
+              { assetNumber: "HOIL001-HTR001", name: "Hydraulic Oil Heater" },
+              { assetNumber: "HOIL001-FAN001", name: "Hydraulic Oil Cooling Fan" },
             ]
           },
           { 
@@ -1186,16 +1264,15 @@ export const areasData: Area[] = [
                 components: [
                   {
                     componentCode: "KC-XD20",
-                    componentType: "Centrifugal Concentrator",
+                    componentType: "Gravity Concentrator",
                     componentName: "Knelson Concentrator Unit",
                     manufacturer: "CONSEP",
                     model: "KC-XD20",
-                    pumpFlow: "11–17 m³/h feed",
-                    displacement: "G6 Cone, up to 80 t/h solids, max 6 mm (recommended 2 mm)"
+                    pumpFlow: "11–17 m³/h feed, up to 80 t/h solids",
+                    displacement: "G6 Cone, Max size: 6 mm (recommended 2 mm)"
                   }
                 ]
               },
-              { assetNumber: "KNLS001-CONE001", name: "Knelson Concentrator – Collection Cone" },
               { assetNumber: "KNLS001-MTR001", name: "Knelson Concentrator – Motor" },
               { assetNumber: "KNLS001-MCC001", name: "Knelson Concentrator – MCC Cell" },
               { assetNumber: "KNLS001-PMP001", name: "Knelson Concentrator – Water Pump" },
@@ -1280,6 +1357,7 @@ export const areasData: Area[] = [
               },
               { assetNumber: "GTPMP001-MTR001", name: "Gravity Tails Pump – Motor" },
               { assetNumber: "GTPMP001-MCC001", name: "Gravity Tails Pump – MCC Cell" },
+              { assetNumber: "GTPMP001-LCS001", name: "Gravity Tails Pump – LCS" },
             ] 
           },
           { 
@@ -1569,118 +1647,9 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "CSS001-CHU001", name: "Carbon Safety Screen – Underpan Chute" },
-              { assetNumber: "CSS001-CHU002", name: "Carbon Safety Screen – Oversize Chute" },
-              { assetNumber: "CSS001-PMP001", name: "Carbon Safety Screen Sump Pump" },
-            ] 
-          },
-          { 
-            label: "Carbon Safety Sump", 
-            equipment: [
-              { assetNumber: "CSSMP001", name: "Carbon Safety Sump" },
-              { assetNumber: "CSSMP001-PMP001", name: "Carbon Safety Sump Pump" },
-            ] 
-          },
-          { 
-            label: "CIP Transfer Pump", 
-            equipment: [
-              { assetNumber: "CXFR002-PMP001", name: "CIP Transfer Pump – Pump" },
-              { assetNumber: "CXFR002-MTR001", name: "CIP Transfer Pump – Motor" },
-            ] 
-          },
-          { 
-            label: "Cyanide Monorail", 
-            equipment: [
-              { assetNumber: "CMNR001", name: "Cyanide Monorail" },
-            ] 
-          },
-          { 
-            label: "Cyanide Bag Breaker", 
-            equipment: [
-              { assetNumber: "CBB001", name: "Cyanide Bag Breaker" },
-            ] 
-          },
-          { 
-            label: "Caustic Bag Breaker", 
-            equipment: [
-              { assetNumber: "CABB001", name: "Caustic Bag Breaker" },
-            ] 
-          },
-          { 
-            label: "Cyanide Mixing Tank", 
-            equipment: [
-              { assetNumber: "CMIX001", name: "Cyanide Mixing Tank" },
-              { assetNumber: "CMIX001-TK001", name: "Cyanide Mixing Tank – Tank" },
-              { assetNumber: "CMIX001-AGT001", name: "Cyanide Mixing Tank – Agitator" },
-              { assetNumber: "CMIX001-MTR001", name: "Cyanide Mixing Tank – Agitator Motor" },
-              { assetNumber: "CMIX001-AGT002", name: "Cyanide Mixing Tank – Agitator 2" },
-              { assetNumber: "CMIX001-MTR002", name: "Cyanide Mixing Tank – Agitator Motor 2" },
-              { assetNumber: "CMIX001-GBX001", name: "Cyanide Mixing Tank – Agitator Gearbox" },
-              { assetNumber: "CMIX001-LCS001", name: "Cyanide Mixing Tank – Agitator LCS" },
-              { assetNumber: "CMIX001-MCC001", name: "Cyanide Mixing Tank – Agitator MCC Cell" },
-              { assetNumber: "CMIX001-TX001", name: "Cyanide Mixing Tank – Level Transmitter" },
-            ]
-          },
-          { 
-            label: "Cyanide Instruments", 
-            equipment: [
-              { assetNumber: "CINS001", name: "Cyanide Instruments" },
-            ] 
-          },
-          { 
-            label: "Cyanide Solution Storage Tank", 
-            equipment: [
-              { assetNumber: "CSTR001", name: "Cyanide Solution Storage Tank" },
-              { assetNumber: "CSTR001-TX001", name: "Cyanide Solution Storage Tank – Level Transmitter" },
-            ] 
-          },
-          { 
-            label: "Cyanide Dosing System", 
-            equipment: [
-              { assetNumber: "CDOS001", name: "Cyanide Dosing Hut" },
-              { assetNumber: "CDOS002", name: "Cyanide Dosing Hut 2" },
-              { assetNumber: "CDOS001-PMP001", name: "Cyanide Dosing Pump Duty" },
-              { assetNumber: "CDOS001-PMP002", name: "Cyanide Dosing Pump Stand-by" },
-              { assetNumber: "CDOS001-MTR001", name: "Cyanide Dosing Pump Stand-by – Motor" },
-              { assetNumber: "CDOS001-MCC001", name: "Cyanide Dosing Pump Stand-by – MCC Cell" },
-              { assetNumber: "CDOS001-LCS001", name: "Cyanide Dosing Pump Stand-by – LCS" },
-              { assetNumber: "REAG-MCC001", name: "Reagents Field MCC" },
-            ] 
-          },
-          { 
-            label: "Cyanide Transfer System", 
-            equipment: [
-              { assetNumber: "CXFR001-PMP001", name: "Cyanide Transfer Pump" },
-              { assetNumber: "CXFR001-MTR001", name: "Cyanide Transfer Pump – Motor" },
-              { assetNumber: "CXFR001-MCC001", name: "Cyanide Transfer Pump – MCC" },
-              { assetNumber: "CXFR001-LCS001", name: "Cyanide Transfer Pump – LCS" },
-              { assetNumber: "CXFR001-MTR002", name: "Cyanide Transfer Pump – Motor 2" },
-              { assetNumber: "CXFR001-MCC002", name: "Cyanide Transfer Pump – MCC 2" },
-              { assetNumber: "CXFR001-LCS002", name: "Cyanide Transfer Pump – LCS 2" },
-            ] 
-          },
-          { 
-            label: "Cyanide Area Sump", 
-            equipment: [
-              { assetNumber: "CSMP001-PMP001", name: "Cyanide Area Sump Pump" },
-              { assetNumber: "CSMP001-MTR001", name: "Cyanide Area Sump Pump – Motor" },
-              { assetNumber: "CSMP001-MCC001", name: "Cyanide Area Sump Pump – MCC Cell" },
-              { assetNumber: "CSMP001-LCS001", name: "Cyanide Area Sump Pump – LCS" },
-            ] 
-          },
-          { 
-            label: "Caustic Dosing System", 
-            equipment: [
-              { assetNumber: "CAUS001-PMP001", name: "Caustic Dosing Pump" },
-              { assetNumber: "CAUS001-MTR001", name: "Caustic Dosing Pump – Motor" },
-              { assetNumber: "CAUS001-MCC001", name: "Caustic Dosing Pump – MCC Cell" },
-              { assetNumber: "CAUS001-LCS001", name: "Caustic Dosing Pump – LCS" },
-            ] 
-          },
-          { 
-            label: "Titration Hut", 
-            equipment: [
-              { assetNumber: "THUT001", name: "Titration Hut" },
+              { assetNumber: "CSS001-EXC001", name: "Carbon Safety Screen – Exciter" },
+              { assetNumber: "CSS001-LCS001", name: "Carbon Safety Screen – LCS" },
+              { assetNumber: "CSS001-MCC001", name: "Carbon Safety Screen – MCC Cell" },
             ] 
           },
         ],
@@ -1848,6 +1817,9 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "CREG001-HOP001", name: "Regenerated Carbon Quench Hopper" },
               { assetNumber: "CREG001-SWT001", name: "Regenerated Carbon Quench Hopper Low Low Level Switch" },
+              // Carbon Sizing Screen moved here from separate parent
+              { assetNumber: "CSZS001", name: "Carbon Sizing Screen" },
+              { assetNumber: "CSZS001-EXC001", name: "Carbon Sizing Screen Exciter" },
             ] 
           },
           { 
@@ -1858,13 +1830,6 @@ export const areasData: Area[] = [
               { assetNumber: "RCTR001-MTR001", name: "Carbon Transfer Pump – Motor" },
               { assetNumber: "RCTR001-MCC001", name: "Carbon Transfer Pump – MCC Cell" },
               { assetNumber: "RCTR001-LCS001", name: "Carbon Transfer Pump – LCS" },
-            ] 
-          },
-          { 
-            label: "Carbon Sizing Screen", 
-            equipment: [
-              { assetNumber: "CSZS001", name: "Carbon Sizing Screen" },
-              { assetNumber: "CSZS001-EXC001", name: "Carbon Sizing Screen Exciter" },
             ] 
           },
           { 
@@ -1901,7 +1866,7 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "Cathode System", 
+            label: "Cathode Washdown System", 
             equipment: [
               { assetNumber: "CWSH001", name: "High Pressure Cathode Washer" },
               { assetNumber: "CWSH001-BOX001", name: "Cathode Wash Box" },
@@ -1983,10 +1948,6 @@ export const areasData: Area[] = [
               { assetNumber: "CIPPMP-B-MCC001", name: "CIP Tailings Pump B – MCC Cell" },
               { assetNumber: "CIPPMP-B-LCS001", name: "CIP Tailings Pump B – LCS" },
               { assetNumber: "CIPPMP-B-VSD001", name: "CIP Tailings Pump B – VSD" },
-              { assetNumber: "GRVPMP001", name: "Gravity Tails Pump" },
-              { assetNumber: "GRVPMP001-MTR001", name: "Gravity Tails Pump – Motor" },
-              { assetNumber: "GRVPMP001-MCC001", name: "Gravity Tails Pump – MCC Cell" },
-              { assetNumber: "GRVPMP001-LCS001", name: "Gravity Tails Pump – LCS" },
               { assetNumber: "THKUFP-A", name: "Thickener Underflow Pump A" },
               { assetNumber: "THKUFP-A-MTR001", name: "Thickener Underflow Pump A – Motor" },
               { assetNumber: "THKUFP-A-MCC001", name: "Thickener Underflow Pump A – MCC Cell" },
@@ -2009,10 +1970,10 @@ export const areasData: Area[] = [
         ],
       },
       {
-        label: "Filtering",
+        label: "Filter Press 1",
         parentAssets: [
           { 
-            label: "Filter Press", 
+            label: "Tails Filter Press 1", 
             equipment: [
               { assetNumber: "FP001", name: "Tails Filter Press 1" },
               { assetNumber: "FP001-TK001", name: "Filter 1 Stock Tank" },
@@ -2029,6 +1990,16 @@ export const areasData: Area[] = [
               { assetNumber: "FP001-MCC002", name: "Filter Press 1 Hydraulic Plate Pack – MCC Cell" },
               { assetNumber: "FP001-MTR003", name: "Filter Press 1 Hydraulic TT Plate – Motor" },
               { assetNumber: "FP001-MCC003", name: "Filter Press 1 Hydraulic TT Plate – MCC Cell" },
+            ]
+          },
+        ],
+      },
+      {
+        label: "Filter Press 2",
+        parentAssets: [
+          { 
+            label: "Tails Filter Press 2", 
+            equipment: [
               { assetNumber: "FP002", name: "Tails Filter Press 2" },
               { assetNumber: "FP002-TK001", name: "Filter 2 Stock Tank" },
               { assetNumber: "FP002-AGT001", name: "Filter 2 Stock Tank Agitator" },
@@ -2045,13 +2016,6 @@ export const areasData: Area[] = [
               { assetNumber: "FP002-MTR003", name: "Filter Press 2 Hydraulic TT Plate – Motor" },
               { assetNumber: "FP002-MCC003", name: "Filter Press 2 Hydraulic TT Plate – MCC Cell" },
             ]
-          },
-          { 
-            label: "Filtrate Pump", 
-            equipment: [
-              { assetNumber: "FILT001-PMP001", name: "Filtrate Pump – Pump" },
-              { assetNumber: "FILT001-MTR001", name: "Filtrate Pump – Motor" },
-            ] 
           },
         ],
       },
