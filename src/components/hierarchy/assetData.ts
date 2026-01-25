@@ -1379,8 +1379,6 @@ export const areasData: Area[] = [
       {
         label: "Lab",
         parentAssets: [
-          { label: "Assay Equipment", equipment: [] },
-          { label: "Sample Prep Equipment", equipment: [] },
           { 
             label: "Laboratory Systems", 
             equipment: [
