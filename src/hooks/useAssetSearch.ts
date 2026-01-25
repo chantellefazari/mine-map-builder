@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useRef } from "react";
 import { Area } from "@/components/hierarchy/assetData";
 import { pidTagMappings } from "@/components/hierarchy/pidTagMappings";
+
 export interface SearchResult {
   type: "area" | "subarea" | "parentAsset" | "equipment";
   path: string[];
@@ -10,6 +11,32 @@ export interface SearchResult {
   /** P&ID tag that matched the search (if applicable) */
   matchedPidTag?: string;
 }
+
+// Build a lookup map from asset number to P&ID tags for fast searching
+const buildPidTagLookup = () => {
+  const lookup = new Map<string, string[]>();
+  pidTagMappings.forEach((mapping) => {
+    const existing = lookup.get(mapping.assetNumber) || [];
+    existing.push(mapping.pidTag);
+    lookup.set(mapping.assetNumber, existing);
+  });
+  return lookup;
+};
+
+// Build reverse lookup: P&ID tag -> asset numbers
+const buildReversePidLookup = () => {
+  const lookup = new Map<string, string[]>();
+  pidTagMappings.forEach((mapping) => {
+    const normalizedTag = mapping.pidTag.toLowerCase();
+    const existing = lookup.get(normalizedTag) || [];
+    existing.push(mapping.assetNumber);
+    lookup.set(normalizedTag, existing);
+  });
+  return lookup;
+};
+
+const pidTagsByAsset = buildPidTagLookup();
+const assetsByPidTag = buildReversePidLookup();
 
 export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -23,6 +50,18 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
     const searchResults: SearchResult[] = [];
     const matchingPaths = new Set<string>();
     let firstMatchId: string | null = null;
+
+    // Find asset numbers that match P&ID tag search
+    const matchingAssetNumbers = new Set<string>();
+    const matchedPidTagByAsset = new Map<string, string>();
+    
+    // Check all P&ID tags for matches
+    pidTagMappings.forEach((mapping) => {
+      if (mapping.pidTag.toLowerCase().includes(query)) {
+        matchingAssetNumbers.add(mapping.assetNumber);
+        matchedPidTagByAsset.set(mapping.assetNumber, mapping.pidTag);
+      }
+    });
 
     areasData.forEach((area) => {
       const areaPath = [area.code];
@@ -81,10 +120,17 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
             const nameMatch = equip.assetNumber.toLowerCase().includes(query) ||
               equip.name.toLowerCase().includes(query);
             
-            // Check if any P&ID tag matches
-            const matchedPidTag = equip.pidTags?.find(tag => 
+            // Check if any P&ID tag matches (from inline pidTags OR from mappings)
+            const inlinePidMatch = equip.pidTags?.find(tag => 
               tag.toLowerCase().includes(query)
             );
+            
+            // Check if this asset has a P&ID match from the mappings
+            const mappingPidMatch = matchingAssetNumbers.has(equip.assetNumber) 
+              ? matchedPidTagByAsset.get(equip.assetNumber) 
+              : undefined;
+            
+            const matchedPidTag = inlinePidMatch || mappingPidMatch;
             
             if (nameMatch || matchedPidTag) {
               if (!firstMatchId) firstMatchId = equipId;
@@ -132,5 +178,5 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
     };
   }, [results.firstMatchId]);
 
-  return results;
+  return { ...results, pidTagsByAsset };
 };
