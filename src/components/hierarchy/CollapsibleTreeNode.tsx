@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronRight, ChevronDown, Minus, Tag } from "lucide-react";
+import { ChevronRight, ChevronDown, Minus, Tag, Info } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -10,6 +10,17 @@ import {
 
 export type NodeLevel = "site" | "plant" | "area" | "subarea" | "parentAsset" | "equipment" | "component";
 export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP";
+
+interface ComponentSpecs {
+  model?: string;
+  serialNumber?: string;
+  oilType?: string;
+  oilVolume?: string;
+  inputSpeed?: string;
+  outputSpeed?: string;
+  weight?: string;
+  manufacturer?: string;
+}
 
 interface CollapsibleTreeNodeProps {
   id?: string;
@@ -25,6 +36,8 @@ interface CollapsibleTreeNodeProps {
   centered?: boolean;
   /** Legacy P&ID tag references */
   pidTags?: string[];
+  /** Component specifications for tooltip display */
+  componentSpecs?: ComponentSpecs;
 }
 
 const levelStyles: Record<NodeLevel, string> = {
@@ -59,10 +72,12 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   isHighlighted = false,
   centered = false,
   pidTags = [],
+  componentSpecs,
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded || forceExpanded);
   const nodeRef = useRef<HTMLDivElement>(null);
   const hasPidTags = pidTags.length > 0;
+  const hasSpecs = componentSpecs && Object.values(componentSpecs).some(v => v);
   
   // React to forceExpanded changes from search
   useEffect(() => {
@@ -127,32 +142,92 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
       {hasPidTags && (
         <Tag className="w-3 h-3 opacity-60 ml-1" />
       )}
+      
+      {/* Component specs indicator */}
+      {hasSpecs && (
+        <Info className="w-3 h-3 opacity-60 ml-1 text-primary" />
+      )}
     </div>
   );
 
+  // Determine if we need a tooltip (P&ID tags or component specs)
+  const needsTooltip = hasPidTags || hasSpecs;
+
+  const tooltipContent = hasSpecs ? (
+    <div className="space-y-2">
+      <p className="text-xs font-semibold border-b pb-1">Component Specifications</p>
+      <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+        {componentSpecs?.model && (
+          <>
+            <span className="text-muted-foreground">Model:</span>
+            <span className="font-mono">{componentSpecs.model}</span>
+          </>
+        )}
+        {componentSpecs?.serialNumber && (
+          <>
+            <span className="text-muted-foreground">Serial:</span>
+            <span className="font-mono">{componentSpecs.serialNumber}</span>
+          </>
+        )}
+        {componentSpecs?.oilType && (
+          <>
+            <span className="text-muted-foreground">Oil Type:</span>
+            <span className="font-mono">{componentSpecs.oilType}</span>
+          </>
+        )}
+        {componentSpecs?.oilVolume && (
+          <>
+            <span className="text-muted-foreground">Oil Volume:</span>
+            <span className="font-mono">{componentSpecs.oilVolume}</span>
+          </>
+        )}
+        {componentSpecs?.inputSpeed && (
+          <>
+            <span className="text-muted-foreground">Input Speed:</span>
+            <span className="font-mono">{componentSpecs.inputSpeed}</span>
+          </>
+        )}
+        {componentSpecs?.outputSpeed && (
+          <>
+            <span className="text-muted-foreground">Output Speed:</span>
+            <span className="font-mono">{componentSpecs.outputSpeed}</span>
+          </>
+        )}
+        {componentSpecs?.weight && (
+          <>
+            <span className="text-muted-foreground">Weight:</span>
+            <span className="font-mono">{componentSpecs.weight}</span>
+          </>
+        )}
+      </div>
+    </div>
+  ) : hasPidTags ? (
+    <div className="space-y-1">
+      <p className="text-xs font-medium text-muted-foreground">Legacy Reference – P&ID</p>
+      <div className="flex flex-wrap gap-1">
+        {pidTags.map((tag, idx) => (
+          <span 
+            key={idx} 
+            className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  ) : null;
+
   return (
     <div className={cn("flex flex-col", centered ? "items-center" : "items-start")}>
-      {/* Node with optional P&ID tooltip */}
-      {hasPidTags ? (
+      {/* Node with optional tooltip */}
+      {needsTooltip ? (
         <TooltipProvider delayDuration={200}>
           <Tooltip>
             <TooltipTrigger asChild>
               {nodeContent}
             </TooltipTrigger>
-            <TooltipContent side="right" className="max-w-xs">
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground">Legacy Reference – P&ID</p>
-                <div className="flex flex-wrap gap-1">
-                  {pidTags.map((tag, idx) => (
-                    <span 
-                      key={idx} 
-                      className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            <TooltipContent side="right" className="max-w-sm">
+              {tooltipContent}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
