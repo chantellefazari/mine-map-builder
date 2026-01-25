@@ -1135,9 +1135,7 @@ export const areasData: Area[] = [
           { 
             label: "Filter Press", 
             equipment: [
-              { assetNumber: "FP001", name: "Tails Filter Press" },
-              // Part 3 equipment
-              { assetNumber: "FP001-FP001", name: "Filter Press 1" },
+              { assetNumber: "FP001", name: "Tails Filter Press 1" },
               { assetNumber: "FP001-TK001", name: "Filter 1 Stock Tank" },
               { assetNumber: "FP001-AGT001", name: "Filter 1 Stock Tank Agitator" },
               // Part 4 equipment
