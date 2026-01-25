@@ -170,8 +170,16 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                       hasChildren={false}
                                                       isHighlighted={matchesSearch(comp.componentCode) || matchesSearch(comp.componentName) || matchesSearch(comp.manufacturer)}
                                                       componentSpecs={{
-                                                        model: comp.manufacturer,
+                                                        model: comp.model || comp.manufacturer,
                                                         serialNumber: comp.serialNumber,
+                                                        motorRef: comp.motorRef,
+                                                        pumpRef: comp.pumpRef,
+                                                        motorSpeed: comp.motorSpeed,
+                                                        protection: comp.protection,
+                                                        voltage: comp.voltage,
+                                                        pumpFlow: comp.pumpFlow,
+                                                        operatingPressure: comp.operatingPressure,
+                                                        displacement: comp.displacement,
                                                         oilType: comp.oilType,
                                                         oilVolume: comp.oilVolume,
                                                         inputSpeed: comp.inputSpeed,

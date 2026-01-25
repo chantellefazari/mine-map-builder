@@ -20,6 +20,15 @@ interface ComponentSpecs {
   outputSpeed?: string;
   weight?: string;
   manufacturer?: string;
+  // Pump/motor specs
+  motorSpeed?: string;
+  protection?: string;
+  voltage?: string;
+  pumpFlow?: string;
+  operatingPressure?: string;
+  displacement?: string;
+  motorRef?: string;
+  pumpRef?: string;
 }
 
 interface CollapsibleTreeNodeProps {
@@ -167,6 +176,54 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
           <>
             <span className="text-muted-foreground">Serial:</span>
             <span className="font-mono">{componentSpecs.serialNumber}</span>
+          </>
+        )}
+        {componentSpecs?.motorRef && (
+          <>
+            <span className="text-muted-foreground">Motor Ref:</span>
+            <span className="font-mono">{componentSpecs.motorRef}</span>
+          </>
+        )}
+        {componentSpecs?.pumpRef && (
+          <>
+            <span className="text-muted-foreground">Pump Ref:</span>
+            <span className="font-mono">{componentSpecs.pumpRef}</span>
+          </>
+        )}
+        {componentSpecs?.motorSpeed && (
+          <>
+            <span className="text-muted-foreground">Motor Speed:</span>
+            <span className="font-mono">{componentSpecs.motorSpeed}</span>
+          </>
+        )}
+        {componentSpecs?.protection && (
+          <>
+            <span className="text-muted-foreground">Protection:</span>
+            <span className="font-mono">{componentSpecs.protection}</span>
+          </>
+        )}
+        {componentSpecs?.voltage && (
+          <>
+            <span className="text-muted-foreground">Voltage:</span>
+            <span className="font-mono">{componentSpecs.voltage}</span>
+          </>
+        )}
+        {componentSpecs?.pumpFlow && (
+          <>
+            <span className="text-muted-foreground">Pump Flow:</span>
+            <span className="font-mono">{componentSpecs.pumpFlow}</span>
+          </>
+        )}
+        {componentSpecs?.operatingPressure && (
+          <>
+            <span className="text-muted-foreground">Operating Pressure:</span>
+            <span className="font-mono">{componentSpecs.operatingPressure}</span>
+          </>
+        )}
+        {componentSpecs?.displacement && (
+          <>
+            <span className="text-muted-foreground">Displacement:</span>
+            <span className="font-mono">{componentSpecs.displacement}</span>
           </>
         )}
         {componentSpecs?.oilType && (

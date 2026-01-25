@@ -11,12 +11,22 @@ export interface Component {
   manufacturer: string;
   // Extended attributes (metadata)
   serialNumber?: string;
+  model?: string;
+  // Gearbox/rotating equipment specs
   oilType?: string;
   oilVolume?: string;
   inputSpeed?: string;
   outputSpeed?: string;
   weight?: string;
-  model?: string;
+  // Pump/motor specs
+  motorSpeed?: string;
+  protection?: string;
+  voltage?: string;
+  pumpFlow?: string;
+  operatingPressure?: string;
+  displacement?: string;
+  motorRef?: string;
+  pumpRef?: string;
 }
 
 export interface Equipment {
@@ -713,7 +723,27 @@ export const areasData: Area[] = [
               { assetNumber: "BM001-MTR003", name: "Primary Ball Mill – Lube Air Blast Oil Cooler Motor" },
               { assetNumber: "BM001-MCC003", name: "Primary Ball Mill – Lube Air Blast Oil Cooler MCC Cell" },
               { assetNumber: "BM001-LCS002", name: "Primary Ball Mill – Lube Air Blast Oil Cooler LCS" },
-              { assetNumber: "BM001-PMP002", name: "Primary Ball Mill – Low Pressure Lube Pump A" },
+              { 
+                assetNumber: "BM001-PMP002", 
+                name: "Primary Ball Mill – Low Pressure Lube Pump A",
+                components: [
+                  {
+                    componentCode: "L194 W22 / 1SET10",
+                    componentType: "Pump (with Motor)",
+                    componentName: "Low Pressure Lube Pump – Duty",
+                    manufacturer: "N/A",
+                    model: "L194 W22",
+                    motorRef: "1SET10 / 1009158787",
+                    pumpRef: "3339111192",
+                    motorSpeed: "1450 rpm",
+                    protection: "IP55",
+                    voltage: "415V",
+                    pumpFlow: "2.16 m³/hr (36 lpm)",
+                    operatingPressure: "15 bar",
+                    displacement: "28 cc/rev"
+                  }
+                ]
+              },
               { assetNumber: "BM001-MTR004", name: "Primary Ball Mill – Low Pressure Lube Pump A Motor" },
               { assetNumber: "BM001-MCC004", name: "Primary Ball Mill – Low Pressure Lube Pump A MCC Cell" },
               { assetNumber: "BM001-LCS003", name: "Primary Ball Mill – Low Pressure Lube Pump A LCS" },
