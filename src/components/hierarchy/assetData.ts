@@ -175,7 +175,6 @@ export const areasData: Area[] = [
           { 
             label: "Main Distribution Board", 
             equipment: [
-              // Core MDB infrastructure only
               { assetNumber: "MDB001", name: "Main Distribution Board", pidTags: ["E-100-MDB"] },
               { assetNumber: "MDB001-DB001", name: "Ice Machine Room DB" },
               { assetNumber: "MDB001-DB002", name: "Main DB 1" },
@@ -332,7 +331,6 @@ export const areasData: Area[] = [
               { assetNumber: "FLOC001-AGT001", name: "Floc System – Mixing Agitator" },
             ] 
           },
-          // Cyanide equipment moved from CIP
           { 
             label: "Cyanide Bag Breaker", 
             equipment: [
@@ -351,8 +349,8 @@ export const areasData: Area[] = [
               { assetNumber: "CMIX001", name: "Cyanide Mixing Tank" },
               { assetNumber: "CMIX001-TK001", name: "Cyanide Mixing Tank – Tank" },
               { 
-                assetNumber: "CMIX001-AGT001", 
-                name: "Cyanide Mixing Tank – Agitator",
+                assetNumber: "AGT003", 
+                name: "Cyanide Mixing Tank Agitator",
                 components: [
                   {
                     componentCode: "MC4350/02/GBX/1057",
@@ -372,12 +370,21 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "CMIX001-MTR001", name: "Cyanide Mixing Tank – Agitator Motor" },
-              { assetNumber: "CMIX001-AGT002", name: "Cyanide Mixing Tank – Agitator 2" },
-              { assetNumber: "CMIX001-MTR002", name: "Cyanide Mixing Tank – Agitator Motor 2" },
-              { assetNumber: "CMIX001-GBX001", name: "Cyanide Mixing Tank – Agitator Gearbox" },
-              { assetNumber: "CMIX001-LCS001", name: "Cyanide Mixing Tank – Agitator LCS" },
-              { assetNumber: "CMIX001-MCC001", name: "Cyanide Mixing Tank – Agitator MCC Cell" },
+              { 
+                assetNumber: "PMP009", 
+                name: "Cyanide Solution Transfer Pump",
+                components: [
+                  {
+                    componentCode: "CRN20-01",
+                    componentType: "Pump",
+                    componentName: "Cyanide Transfer Pump",
+                    manufacturer: "GRUNDFOS",
+                    model: "CRN20-01 A FGI-G-V-HQQV",
+                    serialNumber: "A96500484P11730"
+                  }
+                ]
+              },
+              { assetNumber: "TNK001", name: "Cyanide Solution Storage Tank" },
               { assetNumber: "CMIX001-TX001", name: "Cyanide Mixing Tank – Level Transmitter" },
             ]
           },
@@ -385,13 +392,6 @@ export const areasData: Area[] = [
             label: "Cyanide Instruments", 
             equipment: [
               { assetNumber: "CINS001", name: "Cyanide Instruments" },
-            ] 
-          },
-          { 
-            label: "Cyanide Solution Storage Tank", 
-            equipment: [
-              { assetNumber: "CSTR001", name: "Cyanide Solution Storage Tank" },
-              { assetNumber: "CSTR001-TX001", name: "Cyanide Solution Storage Tank – Level Transmitter" },
             ] 
           },
           { 
@@ -405,31 +405,6 @@ export const areasData: Area[] = [
               { assetNumber: "CDOS001-MCC001", name: "Cyanide Dosing Pump Stand-by – MCC Cell" },
               { assetNumber: "CDOS001-LCS001", name: "Cyanide Dosing Pump Stand-by – LCS" },
               { assetNumber: "REAG-MCC001", name: "Reagents Field MCC" },
-            ] 
-          },
-          { 
-            label: "Cyanide Transfer System", 
-            equipment: [
-              { 
-                assetNumber: "CXFR001-PMP001", 
-                name: "Cyanide Solution Transfer Pump",
-                components: [
-                  {
-                    componentCode: "CRN20-01",
-                    componentType: "Pump",
-                    componentName: "Cyanide Transfer Pump",
-                    manufacturer: "GRUNDFOS",
-                    model: "CRN20-01 A FGI-G-V-HQQV",
-                    serialNumber: "A96500484P11730"
-                  }
-                ]
-              },
-              { assetNumber: "CXFR001-MTR001", name: "Cyanide Transfer Pump – Motor" },
-              { assetNumber: "CXFR001-MCC001", name: "Cyanide Transfer Pump – MCC" },
-              { assetNumber: "CXFR001-LCS001", name: "Cyanide Transfer Pump – LCS" },
-              { assetNumber: "CXFR001-MTR002", name: "Cyanide Transfer Pump – Motor 2" },
-              { assetNumber: "CXFR001-MCC002", name: "Cyanide Transfer Pump – MCC 2" },
-              { assetNumber: "CXFR001-LCS002", name: "Cyanide Transfer Pump – LCS 2" },
             ] 
           },
           { 
@@ -766,105 +741,10 @@ export const areasData: Area[] = [
             label: "Primary Cyclone Feed Instrumentation", 
             equipment: [
               { assetNumber: "PCFI001-VLV001", name: "Primary Cyclone Feed – TechTaylor Valve" },
-              { assetNumber: "PCFI001-TX001", name: "Primary Cyclone Feed – Flow Transmitter" },
+              { assetNumber: "PCFI001-VLV002", name: "Primary Cyclone Feed – VFD Valve" },
+              { assetNumber: "PCFI001-FM001", name: "Primary Cyclone Feed – Flow Meter" },
+              { assetNumber: "PCFI001-DT001", name: "Primary Cyclone Feed – Density Transmitter" },
             ]
-          },
-        ],
-      },
-      {
-        label: "Conveying",
-        parentAssets: [
-          { 
-            label: "Transfer Conveyor", 
-            equipment: [
-              { 
-                assetNumber: "TRCV001", 
-                name: "Transfer Conveyor",
-                components: [
-                  {
-                    componentCode: "20.0120634001.0001.12",
-                    componentType: "Motor Gearbox",
-                    componentName: "Conveyor Drive Motor Gearbox",
-                    manufacturer: "SEW-EURODRIVE"
-                  },
-                  {
-                    componentCode: "K-ROL-STR-600B25",
-                    componentType: "Conveyor Roller",
-                    componentName: "Steel Trough Roller",
-                    manufacturer: "N/A"
-                  },
-                  {
-                    componentCode: "K-ROL-SRR-600B25",
-                    componentType: "Conveyor Roller",
-                    componentName: "Steel Return Roller",
-                    manufacturer: "N/A"
-                  }
-                ]
-              },
-              { assetNumber: "TRCV001-LCS001", name: "Transfer Conveyor – Local Control Station" },
-              { assetNumber: "TRCV001-MTR001", name: "Transfer Conveyor – Motor" },
-              { assetNumber: "TRCV001-MCC001", name: "Transfer Conveyor – MCC Cell" },
-              { assetNumber: "TRCV001-GBX001", name: "Transfer Conveyor – Gearbox" },
-              { assetNumber: "TRCV001-PWS001", name: "Transfer Conveyor – Pullwire Switch" },
-              { assetNumber: "TRCV001-CHU001", name: "Transfer Conveyor – Discharge Chute" },
-            ]
-          },
-          { 
-            label: "Ball Mill Scatts Conveyor", 
-            equipment: [
-              { assetNumber: "BMSC001", name: "Ball Mill Scatts Conveyor" },
-              { assetNumber: "BMSC001-MTR001", name: "Ball Mill Scatts Conveyor – Motor" },
-              { assetNumber: "BMSC001-GBX001", name: "Ball Mill Scatts Conveyor – Gearbox" },
-              { assetNumber: "BMSC001-MCC001", name: "Ball Mill Scatts Conveyor – MCC Cell" },
-            ] 
-          },
-          { 
-            label: "Filter 1 Extraction Conveyor", 
-            equipment: [
-              { assetNumber: "F1EC001", name: "Filter 1 Extraction Conveyor" },
-              { assetNumber: "F1EC001-MTR001", name: "Filter 1 Extraction Conveyor – Motor" },
-              { assetNumber: "F1EC001-GBX001", name: "Filter 1 Extraction Conveyor – Gearbox" },
-              { assetNumber: "F1EC001-VFD001", name: "Filter 1 Extraction Conveyor – VFD" },
-              { assetNumber: "F1EC001-MCC001", name: "Filter 1 Extraction Conveyor – MCC Cell" },
-            ] 
-          },
-          { 
-            label: "Filter 2 Extraction Conveyor", 
-            equipment: [
-              { assetNumber: "F2EC001", name: "Filter 2 Extraction Conveyor" },
-              { assetNumber: "F2EC001-MTR001", name: "Filter 2 Extraction Conveyor – Motor" },
-              { assetNumber: "F2EC001-GBX001", name: "Filter 2 Extraction Conveyor – Gearbox" },
-              { assetNumber: "F2EC001-VFD001", name: "Filter 2 Extraction Conveyor – VFD" },
-              { assetNumber: "F2EC001-MCC001", name: "Filter 2 Extraction Conveyor – MCC Cell" },
-            ] 
-          },
-          { 
-            label: "Tails Filter Press Collection Conveyor", 
-            equipment: [
-              { assetNumber: "TFPC001", name: "Tails Filter Press Collection Conveyor" },
-              { assetNumber: "TFPC001-MTR001", name: "Tails Filter Press Collection Conveyor – Motor" },
-              { assetNumber: "TFPC001-GBX001", name: "Tails Filter Press Collection Conveyor – Gearbox" },
-              { assetNumber: "TFPC001-MCC001", name: "Tails Filter Press Collection Conveyor – MCC Cell" },
-              { assetNumber: "TFPC001-VFD001", name: "Tails Filter Press Collection Conveyor – VFD" },
-            ] 
-          },
-          { 
-            label: "Tails Filter Press Radial Stacker Conveyor", 
-            equipment: [
-              { assetNumber: "TFRS001", name: "Tails Filter Press Radial Stacker Conveyor" },
-              { assetNumber: "TFRS001-MTR001", name: "Tails Filter Press Radial Stacker – Drive Motor A" },
-              { assetNumber: "TFRS001-MTR002", name: "Tails Filter Press Radial Stacker – Drive Motor B" },
-              { assetNumber: "TFRS001-MTR003", name: "Tails Filter Press Radial Stacker – Wheel Drive Motor A" },
-              { assetNumber: "TFRS001-MTR004", name: "Tails Filter Press Radial Stacker – Wheel Drive Motor B" },
-              { assetNumber: "TFRS001-GBX001", name: "Tails Filter Press Radial Stacker – Drive Gearbox A" },
-              { assetNumber: "TFRS001-GBX002", name: "Tails Filter Press Radial Stacker – Drive Gearbox B" },
-              { assetNumber: "TFRS001-GBX003", name: "Tails Filter Press Radial Stacker – Wheel Drive Gearbox A" },
-              { assetNumber: "TFRS001-GBX004", name: "Tails Filter Press Radial Stacker – Wheel Drive Gearbox B" },
-              { assetNumber: "TFRS001-MCC001", name: "Tails Filter Press Radial Stacker – Drive A MCC Cell" },
-              { assetNumber: "TFRS001-MCC002", name: "Tails Filter Press Radial Stacker – Drive B MCC Cell" },
-              { assetNumber: "TFRS001-MCC003", name: "Tails Filter Press Radial Stacker – Wheel Drive A MCC Cell" },
-              { assetNumber: "TFRS001-MCC004", name: "Tails Filter Press Radial Stacker – Wheel Drive B MCC Cell" },
-            ] 
           },
         ],
       },
@@ -872,54 +752,36 @@ export const areasData: Area[] = [
         label: "Grinding",
         parentAssets: [
           { 
-            label: "Ball Mill", 
+            label: "Primary Ball Mill", 
             equipment: [
-              // Ball Mill
               { assetNumber: "BM001", name: "Primary Ball Mill" },
-              { assetNumber: "BM001-MTR001", name: "Primary Ball Mill – Motor" },
-              { 
-                assetNumber: "BM001-GBX001", 
-                name: "Primary Ball Mill – Pinion & Girth Gear",
+              { assetNumber: "BM001-MTR001", name: "Primary Ball Mill – Main Motor" },
+              { assetNumber: "BM001-GBX001", name: "Primary Ball Mill – Gear Reducer", 
                 components: [
                   {
-                    componentCode: "MC350",
-                    componentType: "Gearbox",
-                    componentName: "Ball Mill Girth Gear",
-                    manufacturer: "MAAG"
+                    componentCode: "H1 SH 15B",
+                    componentType: "Helical Gearbox",
+                    componentName: "Mill Main Gear Reducer",
+                    manufacturer: "SEW-EURODRIVE",
+                    model: "H1 SH 15B",
+                    oilType: "CLP 320",
+                    oilVolume: "45 L"
                   }
                 ]
               },
-              { assetNumber: "BM001-MCC001", name: "Primary Ball Mill – MCC Cell" },
-              { assetNumber: "BM001-VSD001", name: "Primary Ball Mill – VSD" },
-              { assetNumber: "BM001-TX001", name: "Primary Ball Mill – Inlet Bearing Temperature Transmitter" },
-              { assetNumber: "BM001-TX002", name: "Primary Ball Mill – Outlet Bearing Temperature Transmitter" },
+              { assetNumber: "BM001-PIN001", name: "Primary Ball Mill – Pinion" },
+              { assetNumber: "BM001-GIR001", name: "Primary Ball Mill – Girth Gear" },
+              { assetNumber: "BM001-TRN001", name: "Primary Ball Mill – Trunnion" },
+              { assetNumber: "BM001-BRG001", name: "Primary Ball Mill – Feed End Bearing" },
+              { assetNumber: "BM001-BRG002", name: "Primary Ball Mill – Discharge End Bearing" },
+              { assetNumber: "BM001-SEN001", name: "Primary Ball Mill – Feed End Bearing Temp Sensor" },
+              { assetNumber: "BM001-SEN002", name: "Primary Ball Mill – Discharge End Bearing Temp Sensor" },
+              { assetNumber: "BM001-TX001", name: "Primary Ball Mill – Feed End Bearing Temp Transmitter" },
+              { assetNumber: "BM001-TX002", name: "Primary Ball Mill – Discharge End Bearing Temp Transmitter" },
+              // NEW ASSETS - Lube Pumps with simple sequential numbering
               { 
-                assetNumber: "BM001-PMP001", 
-                name: "Primary Ball Mill – Lube Cooling Recirculating Pump",
-                components: [
-                  {
-                    componentCode: "K16 STE2 / 05MA10",
-                    componentType: "Pump (with Motor)",
-                    componentName: "Lube Cooling Recirculating Pump",
-                    manufacturer: "WEG / PARKER",
-                    model: "K16 STE2",
-                    motorRef: "05MA10 / 1007731720",
-                    pumpRef: "3339111486",
-                    motorSpeed: "1450 rpm",
-                    protection: "IP55",
-                    voltage: "415V",
-                    pumpFlow: "3.36 m³/hr (56 lpm)",
-                    operatingPressure: "12 bar",
-                    displacement: "44 cc/rev"
-                  }
-                ]
-              },
-              { assetNumber: "BM001-MTR002", name: "Primary Ball Mill – Lube Cooling Recirculating Pump Motor" },
-              { assetNumber: "BM001-MCC002", name: "Primary Ball Mill – Lube Cooling Recirculating Pump MCC Cell" },
-              { assetNumber: "BM001-LCS001", name: "Primary Ball Mill – Lube Cooling Recirculating Pump LCS" },
-              { 
-                assetNumber: "BM001-LUB001", 
-                name: "Primary Ball Mill – Lube System",
+                assetNumber: "PMP001", 
+                name: "Primary Ball Mill Low Pressure Lube Pump – Duty",
                 components: [
                   {
                     componentCode: "3339111192",
@@ -940,7 +802,29 @@ export const areasData: Area[] = [
                     motorSpeed: "1450 rpm",
                     protection: "IP55",
                     voltage: "415V"
-                  },
+                  }
+                ]
+              },
+              { 
+                assetNumber: "PMP002", 
+                name: "Primary Ball Mill Low Pressure Lube Pump – Standby",
+                components: [
+                  {
+                    componentCode: "3339111192",
+                    componentType: "Pump",
+                    componentName: "Low Pressure Lube Pump – Standby",
+                    manufacturer: "PARKER",
+                    model: "3339111192",
+                    pumpFlow: "2.16 m³/hr (36 lpm)",
+                    operatingPressure: "15 bar",
+                    displacement: "28 cc/rev"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "PMP003", 
+                name: "Primary Ball Mill High Pressure Lube Pump",
+                components: [
                   {
                     componentCode: "3706030",
                     componentType: "Pump",
@@ -950,40 +834,33 @@ export const areasData: Area[] = [
                     pumpFlow: "0.84 m³/hr (14 lpm)",
                     operatingPressure: "400 bar",
                     displacement: "10 cc/rev"
-                  },
-                  {
-                    componentCode: "50EK4/2",
-                    componentType: "Oil Cooler",
-                    componentName: "Lube Oil Cooler",
-                    manufacturer: "DYNACOOL",
-                    model: "50EK4/2",
-                    motorRef: "Fan motor: 3kW",
-                    operatingPressure: "16 bar (max)"
                   }
                 ]
               },
               { 
-                assetNumber: "BM001-LUB002", 
-                name: "Primary Ball Mill – Lube Air Blast Oil Cooler",
+                assetNumber: "PMP004", 
+                name: "Primary Ball Mill Lube Cooling Recirculating Pump",
                 components: [
                   {
-                    componentCode: "AMPH 100L B4",
-                    componentType: "Air-cooled Oil Cooler",
-                    componentName: "Air Blast Oil Cooler Unit",
-                    manufacturer: "HYDAC",
-                    model: "AMPH 100L B4 – 3kW",
-                    serialNumber: "1900455",
-                    motorRef: "AC-LN75/1.0/F/A1/IBP3",
-                    operatingPressure: "16 bar (max)"
+                    componentCode: "K16 STE2 / 05MA10",
+                    componentType: "Pump (with Motor)",
+                    componentName: "Lube Cooling Recirculating Pump",
+                    manufacturer: "WEG / PARKER",
+                    model: "K16 STE2",
+                    motorRef: "05MA10 / 1007731720",
+                    pumpRef: "3339111486",
+                    motorSpeed: "1450 rpm",
+                    protection: "IP55",
+                    voltage: "415V",
+                    pumpFlow: "3.36 m³/hr (56 lpm)",
+                    operatingPressure: "12 bar",
+                    displacement: "44 cc/rev"
                   }
                 ]
               },
-              { assetNumber: "BM001-MTR003", name: "Primary Ball Mill – Lube Air Blast Oil Cooler Motor" },
-              { assetNumber: "BM001-MCC003", name: "Primary Ball Mill – Lube Air Blast Oil Cooler MCC Cell" },
-              { assetNumber: "BM001-LCS002", name: "Primary Ball Mill – Lube Air Blast Oil Cooler LCS" },
               { 
-                assetNumber: "BM001-LUB011", 
-                name: "Primary Ball Mill – Lube Water Oil Cooler",
+                assetNumber: "OCL001", 
+                name: "Primary Ball Mill Lube Water Oil Cooler",
                 components: [
                   {
                     componentCode: "50EK4/2",
@@ -997,88 +874,24 @@ export const areasData: Area[] = [
                 ]
               },
               { 
-                assetNumber: "BM001-PMP002", 
-                name: "Primary Ball Mill – Low Pressure Lube Pump A",
+                assetNumber: "OCL002", 
+                name: "Primary Ball Mill Lube Air Blast Oil Cooler",
                 components: [
                   {
-                    componentCode: "L194 W22 / 1SET10",
-                    componentType: "Pump (with Motor)",
-                    componentName: "Low Pressure Lube Pump – Duty",
-                    manufacturer: "N/A",
-                    model: "L194 W22",
-                    motorRef: "1SET10 / 1009158787",
-                    pumpRef: "3339111192",
-                    motorSpeed: "1450 rpm",
-                    protection: "IP55",
-                    voltage: "415V",
-                    pumpFlow: "2.16 m³/hr (36 lpm)",
-                    operatingPressure: "15 bar",
-                    displacement: "28 cc/rev"
+                    componentCode: "AMPH 100L B4",
+                    componentType: "Air-cooled Oil Cooler",
+                    componentName: "Air Blast Oil Cooler Unit",
+                    manufacturer: "HYDAC",
+                    model: "AMPH 100L B4 – 3kW",
+                    serialNumber: "1900455",
+                    motorRef: "AC-LN75/1.0/F/A1/IBP3",
+                    operatingPressure: "16 bar (max)"
                   }
                 ]
               },
-              { assetNumber: "BM001-MTR004", name: "Primary Ball Mill – Low Pressure Lube Pump A Motor" },
-              { assetNumber: "BM001-MCC004", name: "Primary Ball Mill – Low Pressure Lube Pump A MCC Cell" },
-              { assetNumber: "BM001-LCS003", name: "Primary Ball Mill – Low Pressure Lube Pump A LCS" },
               { 
-                assetNumber: "BM001-PMP003", 
-                name: "Primary Ball Mill – Low Pressure Lube Pump B",
-                components: [
-                  {
-                    componentCode: "L194 W22 / 110UT10",
-                    componentType: "Pump (with Motor)",
-                    componentName: "Low Pressure Lube Pump – Standby",
-                    manufacturer: "WEG / PARKER",
-                    model: "L194 W22",
-                    motorRef: "110UT10 / 1009424607",
-                    pumpRef: "3339111192",
-                    motorSpeed: "1450 rpm",
-                    protection: "IP55",
-                    voltage: "415V",
-                    pumpFlow: "2.16 m³/hr (36 lpm)",
-                    operatingPressure: "15 bar",
-                    displacement: "28 cc/rev"
-                  }
-                ]
-              },
-              { assetNumber: "BM001-MTR005", name: "Primary Ball Mill – Low Pressure Lube Pump B Motor" },
-              { assetNumber: "BM001-MCC005", name: "Primary Ball Mill – Low Pressure Lube Pump B MCC Cell" },
-              { assetNumber: "BM001-LCS004", name: "Primary Ball Mill – Low Pressure Lube Pump B LCS" },
-              { 
-                assetNumber: "BM001-PMP004", 
-                name: "Primary Ball Mill – High Pressure Lube Pump",
-                components: [
-                  {
-                    componentCode: "L30 STDE2 / 16DEZ09",
-                    componentType: "Pump (with Motor)",
-                    componentName: "High Pressure Lube Pump",
-                    manufacturer: "WEG / PARKER",
-                    model: "L30 STDE2",
-                    motorRef: "16DEZ09 / 1006367134",
-                    pumpRef: "3706030",
-                    motorSpeed: "1450 rpm",
-                    protection: "IP55",
-                    voltage: "415V",
-                    pumpFlow: "0.84 m³/hr (14 lpm)",
-                    operatingPressure: "400 bar",
-                    displacement: "10 cc/rev"
-                  }
-                ]
-              },
-              { assetNumber: "BM001-MTR006", name: "Primary Ball Mill – High Pressure Lube Pump Motor" },
-              { assetNumber: "BM001-MCC006", name: "Primary Ball Mill – High Pressure Lube Pump MCC Cell" },
-              { assetNumber: "BM001-LCS005", name: "Primary Ball Mill – High Pressure Lube Pump LCS" },
-              { assetNumber: "BM001-LUB003", name: "Primary Mill – Lube System Instruments" },
-              { assetNumber: "BM001-TX003", name: "Mill Low Pressure – Lube Oil Pressure Transmitter" },
-              { assetNumber: "BM001-TX004", name: "Mill Low Pressure – Lube Oil Flow Transmitter" },
-              { assetNumber: "BM001-TX005", name: "Mill High Pressure – Lift Lube Oil Pressure Transmitter" },
-              { assetNumber: "BM001-LUB004", name: "Mill High Pressure – Lift Lube Oil Flow" },
-              { assetNumber: "BM001-TX006", name: "Mill High Pressure – Lift Lube Oil Flow Transmitter" },
-              { assetNumber: "BM001-LUB005", name: "Mill Lube System – Oil Level" },
-              { assetNumber: "BM001-LUB006", name: "Mill Lube System – Oil Temperature" },
-              { 
-                assetNumber: "BM001-LUB007", 
-                name: "Primary Ball Mill – Girth Gear Lube System",
+                assetNumber: "LBS001", 
+                name: "Primary Ball Mill Girth Gear Lube System",
                 components: [
                   {
                     componentCode: "Fire-Ball 300",
@@ -1104,15 +917,19 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "BM001-PMP005", name: "Primary Ball Mill – Girth Gear Lube System Pump" },
+              { assetNumber: "BM001-LUB003", name: "Primary Mill – Lube System Instruments" },
+              { assetNumber: "BM001-TX003", name: "Mill Low Pressure – Lube Oil Pressure Transmitter" },
+              { assetNumber: "BM001-TX004", name: "Mill Low Pressure – Lube Oil Flow Transmitter" },
+              { assetNumber: "BM001-TX005", name: "Mill High Pressure – Lift Lube Oil Pressure Transmitter" },
+              { assetNumber: "BM001-LUB004", name: "Mill High Pressure – Lift Lube Oil Flow" },
+              { assetNumber: "BM001-TX006", name: "Mill High Pressure – Lift Lube Oil Flow Transmitter" },
+              { assetNumber: "BM001-LUB005", name: "Mill Lube System – Oil Level" },
+              { assetNumber: "BM001-LUB006", name: "Mill Lube System – Oil Temperature" },
               { assetNumber: "BM001-LUB008", name: "Primary Ball Mill – Girth Gear Lube Control Panel" },
               { assetNumber: "BM001-LUB009", name: "Primary Ball Mill – Lube System Filter A" },
               { assetNumber: "BM001-LUB010", name: "Primary Ball Mill – Lube System Filter B" },
-              // Discharge Hopper
               { assetNumber: "BM001-HOP001", name: "Primary Mill – Discharge Hopper" },
-              // Part 4 equipment
               { assetNumber: "MILL-MCC001", name: "Mill Area Field MCC" },
-              // Hydraulic Oil System moved from UTL
               { assetNumber: "HOIL001-HTR001", name: "Hydraulic Oil Heater" },
               { assetNumber: "HOIL001-FAN001", name: "Hydraulic Oil Cooling Fan" },
             ]
@@ -1160,19 +977,17 @@ export const areasData: Area[] = [
           { 
             label: "Cyclone Cluster", 
             equipment: [
+              { assetNumber: "CYC001", name: "Primary Cyclone Cluster" },
+              // NEW ASSETS - Individual Cyclones with simple numbering
               { 
                 assetNumber: "CYC001", 
-                name: "Primary Cyclone Cluster",
-              },
-              { 
-                assetNumber: "CYC001-CYC001", 
-                name: "Primary Cyclone – Operating 1",
+                name: "Primary Cyclone 1",
                 components: [
                   {
                     componentCode: "CVX400-1",
                     componentType: "Cyclone",
                     componentName: "Cyclone Unit",
-                    manufacturer: "Cavex",
+                    manufacturer: "CAVEX",
                     model: "CVX400",
                     pumpFlow: "240 tph @ 61% w/w solids",
                     operatingPressure: "140 kPa",
@@ -1181,14 +996,14 @@ export const areasData: Area[] = [
                 ]
               },
               { 
-                assetNumber: "CYC001-CYC002", 
-                name: "Primary Cyclone – Operating 2",
+                assetNumber: "CYC002", 
+                name: "Primary Cyclone 2",
                 components: [
                   {
                     componentCode: "CVX400-2",
                     componentType: "Cyclone",
                     componentName: "Cyclone Unit",
-                    manufacturer: "Cavex",
+                    manufacturer: "CAVEX",
                     model: "CVX400",
                     pumpFlow: "240 tph @ 61% w/w solids",
                     operatingPressure: "140 kPa",
@@ -1197,14 +1012,14 @@ export const areasData: Area[] = [
                 ]
               },
               { 
-                assetNumber: "CYC001-CYC003", 
-                name: "Primary Cyclone – Standby",
+                assetNumber: "CYC003", 
+                name: "Primary Cyclone 3",
                 components: [
                   {
                     componentCode: "CVX400-3",
                     componentType: "Cyclone",
                     componentName: "Cyclone Unit (Standby)",
-                    manufacturer: "Cavex",
+                    manufacturer: "CAVEX",
                     model: "CVX400",
                     pumpFlow: "240 tph @ 61% w/w solids",
                     operatingPressure: "140 kPa",
@@ -1216,70 +1031,6 @@ export const areasData: Area[] = [
               { assetNumber: "CYC001-TX001", name: "Primary Cyclone – Pressure Transmitter" },
               { assetNumber: "CYC001-PG001", name: "Primary Cyclone – Pressure Gauge" },
               { assetNumber: "CYC001-SPL001", name: "Primary Cyclone Underflow Splitter Box" },
-              { 
-                assetNumber: "CYC001-PMP001", 
-                name: "Primary Mill Cyclone Feed Pump – Duty",
-                components: [
-                  {
-                    componentCode: "8/6 AH",
-                    componentType: "Pump",
-                    componentName: "Pump Wet End",
-                    manufacturer: "AUSTRAL",
-                    model: "8/6 AH",
-                    pumpFlow: "243 m³/hr",
-                    displacement: "SG: 1.62"
-                  },
-                  {
-                    componentCode: "KTE50 W22M / 03JUL24 / 1100388297",
-                    componentType: "Motor",
-                    componentName: "Motor",
-                    manufacturer: "WEG",
-                    model: "KTE50 W22M / 03JUL24 / 1100388297"
-                  },
-                  {
-                    componentCode: "EAM005M / 1811005",
-                    componentType: "Bearing Assembly",
-                    componentName: "Bearing Assembly",
-                    manufacturer: "M&Q Equipment",
-                    model: "EAM005M / 1811005"
-                  }
-                ]
-              },
-              { assetNumber: "CYC001-PMP001-MTR001", name: "Primary Mill Cyclone Feed Pump – Duty Motor" },
-              { assetNumber: "CYC001-PMP001-MCC001", name: "Primary Mill Cyclone Feed Pump – Duty MCC Cell" },
-              { assetNumber: "CYC001-PMP001-LCS001", name: "Primary Mill Cyclone Feed Pump – Duty LCS" },
-              { 
-                assetNumber: "CYC001-PMP002", 
-                name: "Primary Mill Cyclone Feed Pump – Standby",
-                components: [
-                  {
-                    componentCode: "8/6 AH",
-                    componentType: "Pump",
-                    componentName: "Pump Wet End",
-                    manufacturer: "AUSTRAL",
-                    model: "8/6 AH",
-                    pumpFlow: "243 m³/hr",
-                    displacement: "SG: 1.62"
-                  },
-                  {
-                    componentCode: "KTE50 W22M / 03JUL24 / 1100388297",
-                    componentType: "Motor",
-                    componentName: "Motor",
-                    manufacturer: "WEG",
-                    model: "KTE50 W22M / 03JUL24 / 1100388297"
-                  },
-                  {
-                    componentCode: "EAM005M / 1811005",
-                    componentType: "Bearing Assembly",
-                    componentName: "Bearing Assembly",
-                    manufacturer: "M&Q Equipment",
-                    model: "EAM005M / 1811005"
-                  }
-                ]
-              },
-              { assetNumber: "CYC001-PMP002-MTR001", name: "Primary Mill Cyclone Feed Pump – Standby Motor" },
-              { assetNumber: "CYC001-PMP002-MCC001", name: "Primary Mill Cyclone Feed Pump – Standby MCC Cell" },
-              { assetNumber: "CYC001-PMP002-LCS001", name: "Primary Mill Cyclone Feed Pump – Standby LCS" },
             ]
           },
         ],
@@ -1294,62 +1045,31 @@ export const areasData: Area[] = [
         label: "Gravity Circuit",
         parentAssets: [
           { 
-            label: "Gravity Concentrator 1", 
+            label: "Gravity Concentrator", 
             equipment: [
-              { assetNumber: "GCON001-MTR001", name: "Gravity Concentrator 1 – Motor" },
-              { assetNumber: "GCON001-PMP001", name: "Gravity Concentrator 1 – Water Pump" },
-              { assetNumber: "GCON001-MCC001", name: "Gravity Concentrator 1 – MCC Cell" },
-            ] 
-          },
-          { 
-            label: "Concentrate Pump", 
-            equipment: [
-              { assetNumber: "CPMP001-PMP001", name: "Concentrate Pump – Pump" },
-              { assetNumber: "CPMP001-MTR001", name: "Concentrate Pump – Motor" },
-            ] 
-          },
-          { 
-            label: "Gravity Electrowinning", 
-            equipment: [
-              { assetNumber: "GEW001", name: "Gravity Electrowinning" },
-              { assetNumber: "GEW001-FAN001", name: "Gravity Electrowinning – Fan" },
-            ] 
-          },
-          { 
-            label: "Gravity Screen", 
-            equipment: [
+              // NEW ASSETS - Gravity Circuit equipment with simple numbering
               { 
-                assetNumber: "GSCR001", 
+                assetNumber: "SCR001", 
                 name: "Gravity Screen",
                 components: [
                   {
                     componentCode: "OF-HS-09/24-24",
-                    componentType: "Linear Vibrating Screen",
+                    componentType: "Screen",
                     componentName: "Vibrating Screen Unit",
-                    manufacturer: "Overflow",
+                    manufacturer: "OVERFLOW",
                     model: "OF-HS-09/24-24",
                     weight: "1280 kg",
                     displacement: "Size: 0.9 × 2.4 m, Apertures: 2.4 mm"
                   }
                 ]
               },
-              { assetNumber: "GSCR001-CHU001", name: "Gravity Screen – Feed Chute" },
-              { assetNumber: "GSCR001-CHU002", name: "Gravity Screen – Discharge Chute" },
-              { assetNumber: "GSCR001-PAN001", name: "Gravity Screen – Under Pan" },
-              { assetNumber: "GSCR001-MTR001", name: "Gravity Screen – Motor" },
-              { assetNumber: "GSCR001-MCC001", name: "Gravity Screen – MCC Cell" },
-            ] 
-          },
-          { 
-            label: "Knelson Concentrator", 
-            equipment: [
               { 
-                assetNumber: "KNLS001", 
+                assetNumber: "KNC001", 
                 name: "Knelson Concentrator",
                 components: [
                   {
                     componentCode: "KC-XD20",
-                    componentType: "Gravity Concentrator",
+                    componentType: "Concentrator",
                     componentName: "Knelson Concentrator Unit",
                     manufacturer: "CONSEP",
                     model: "KC-XD20",
@@ -1358,23 +1078,15 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "KNLS001-MTR001", name: "Knelson Concentrator – Motor" },
-              { assetNumber: "KNLS001-MCC001", name: "Knelson Concentrator – MCC Cell" },
-              { assetNumber: "KNLS001-PMP001", name: "Knelson Concentrator – Water Pump" },
-            ] 
-          },
-          { 
-            label: "Knelson Water Prefilter", 
-            equipment: [
               { 
-                assetNumber: "KWPF001", 
-                name: "Knelson Water Prefilter",
+                assetNumber: "FLT001", 
+                name: "Knelson Prefilter",
                 components: [
                   {
                     componentCode: "FW050",
-                    componentType: "Automatic Self-Cleaning Water Filter",
+                    componentType: "Filter",
                     componentName: "Prefilter Unit",
-                    manufacturer: "Helix Hydro",
+                    manufacturer: "HELIX HYDRO",
                     model: "FW050",
                     pumpFlow: "25 m³/hr",
                     operatingPressure: "10 bar (max)",
@@ -1382,20 +1094,15 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-            ] 
-          },
-          { 
-            label: "Shaking Table", 
-            equipment: [
               { 
-                assetNumber: "CST001", 
+                assetNumber: "SHK001", 
                 name: "Shaking Table",
                 components: [
                   {
                     componentCode: "Wilfley #12",
                     componentType: "Shaking Table",
                     componentName: "Shaking Table Deck",
-                    manufacturer: "Wilfley",
+                    manufacturer: "WILFLEY",
                     model: "#12",
                     displacement: "Deck: 1070 × 2130 mm",
                     pumpFlow: "265–1900 kg/hr feed rate"
@@ -1409,17 +1116,8 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "CST001-MTR001", name: "Shaking Table – Motor" },
-              { assetNumber: "CST001-LCS001", name: "Shaking Table – LCS" },
-              { assetNumber: "CST001-GBX001", name: "Shaking Table – Gearbox" },
-              { assetNumber: "CST001-MCC001", name: "Shaking Table – MCC Cell" },
-            ]
-          },
-          { 
-            label: "Gravity Tails Pump", 
-            equipment: [
               { 
-                assetNumber: "GTPMP001", 
+                assetNumber: "PMP005", 
                 name: "Gravity Tails Pump",
                 components: [
                   {
@@ -1440,9 +1138,13 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "GTPMP001-MTR001", name: "Gravity Tails Pump – Motor" },
-              { assetNumber: "GTPMP001-MCC001", name: "Gravity Tails Pump – MCC Cell" },
-              { assetNumber: "GTPMP001-LCS001", name: "Gravity Tails Pump – LCS" },
+            ] 
+          },
+          { 
+            label: "Gravity Electrowinning", 
+            equipment: [
+              { assetNumber: "GEW001", name: "Gravity Electrowinning" },
+              { assetNumber: "GEW001-FAN001", name: "Gravity Electrowinning – Fan" },
             ] 
           },
           { 
@@ -1478,13 +1180,14 @@ export const areasData: Area[] = [
         label: "CIP",
         parentAssets: [
           { 
-            label: "CIP Tank 1", 
+            label: "CIP Tanks", 
             equipment: [
+              // CIP Tank 1
               { assetNumber: "CIP-TK01", name: "CIP Leach Tank 1" },
               { assetNumber: "CIP-SHW01", name: "CIP Tails Area Safety Shower" },
               { 
-                assetNumber: "CIP-TK01-AGT001", 
-                name: "CIP Leach Tank 1 – Agitator",
+                assetNumber: "AGT001", 
+                name: "Leach Tank 1 Agitator",
                 components: [
                   {
                     componentCode: "MC4350/01/1167",
@@ -1502,8 +1205,76 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK01-GBX001", name: "CIP Leach Tank 1 – Agitator Gear Box" },
               { assetNumber: "CIP-TK01-LCS001", name: "CIP Leach Tank 1 – Agitator LCS" },
               { assetNumber: "CIP-NZL01", name: "Leach Tank 1 – Air Sparge Nozzles" },
+              { assetNumber: "CIP-ALF01", name: "Carbon Transfer Air Lift 1" },
+              // CIP Tank 2
+              { assetNumber: "CIP-TK02", name: "CIP Leach Tank 2" },
               { 
-                assetNumber: "CIP-PMP001", 
+                assetNumber: "AGT002", 
+                name: "Leach Tank 2 Agitator",
+                components: [
+                  {
+                    componentCode: "MC4350/01/1167",
+                    componentType: "Coaxial Gearbox Agitator",
+                    componentName: "Leach Tank 2 Agitator Unit",
+                    manufacturer: "MIXTEC",
+                    model: "MC4350/01/1167",
+                    outputSpeed: "28 RPM",
+                    displacement: "Dual Impellers, Rubber-lined"
+                  }
+                ]
+              },
+              { assetNumber: "CIP-TK02-MTR001", name: "CIP Leach Tank 2 – Agitator Motor" },
+              { assetNumber: "CIP-TK02-MCC001", name: "CIP Leach Tank 2 – Agitator MCC Cell" },
+              { assetNumber: "CIP-TK02-GBX001", name: "CIP Leach Tank 2 – Agitator Gear Box" },
+              { assetNumber: "CIP-TK02-LCS001", name: "CIP Leach Tank 2 – Agitator LCS" },
+              { assetNumber: "CIP-NZL02", name: "Leach Tank 2 – Air Sparge Nozzles" },
+              { assetNumber: "CIP-ALF02", name: "Carbon Transfer Air Lift 2" },
+              // CIP Tank 3-8 (existing)
+              { assetNumber: "CIP-TK03", name: "CIP Tank 3" },
+              { assetNumber: "CIP-TK03-AGT001", name: "CIP Tank 3 – Agitator" },
+              { assetNumber: "CIP-TK03-MTR001", name: "CIP Tank 3 – Agitator Motor" },
+              { assetNumber: "CIP-TK03-GBX001", name: "CIP Tank 3 – Agitator Gear Box" },
+              { assetNumber: "CIP-TK03-LCS001", name: "CIP Tank 3 – Agitator LCS" },
+              { assetNumber: "CIP-TK03-MCC001", name: "CIP Tank 3 – Agitator MCC Cell" },
+              { assetNumber: "CIP-ALF03", name: "Carbon Transfer Air Lift 3" },
+              { assetNumber: "CIP-TK04", name: "CIP Tank 4" },
+              { assetNumber: "CIP-TK04-AGT001", name: "CIP Tank 4 – Agitator" },
+              { assetNumber: "CIP-TK04-MTR001", name: "CIP Tank 4 – Agitator Motor" },
+              { assetNumber: "CIP-TK04-GBX001", name: "CIP Tank 4 – Agitator Gear Box" },
+              { assetNumber: "CIP-TK04-LCS001", name: "CIP Tank 4 – Agitator LCS" },
+              { assetNumber: "CIP-TK04-MCC001", name: "CIP Tank 4 – Agitator MCC Cell" },
+              { assetNumber: "CIP-ALF04", name: "Carbon Transfer Air Lift 4" },
+              { assetNumber: "CIP-TK05", name: "CIP Tank 5" },
+              { assetNumber: "CIP-TK05-AGT001", name: "CIP Tank 5 – Agitator" },
+              { assetNumber: "CIP-TK05-MTR001", name: "CIP Tank 5 – Agitator Motor" },
+              { assetNumber: "CIP-TK05-GBX001", name: "CIP Tank 5 – Agitator Gear Box" },
+              { assetNumber: "CIP-TK05-LCS001", name: "CIP Tank 5 – Agitator LCS" },
+              { assetNumber: "CIP-TK05-MCC001", name: "CIP Tank 5 – Agitator MCC Cell" },
+              { assetNumber: "CIP-ALF05", name: "Carbon Transfer Air Lift 5" },
+              { assetNumber: "CIP-TK06", name: "CIP Tank 6" },
+              { assetNumber: "CIP-TK06-AGT001", name: "CIP Tank 6 – Agitator" },
+              { assetNumber: "CIP-TK06-MTR001", name: "CIP Tank 6 – Agitator Motor" },
+              { assetNumber: "CIP-TK06-GBX001", name: "CIP Tank 6 – Agitator Gear Box" },
+              { assetNumber: "CIP-TK06-LCS001", name: "CIP Tank 6 – Agitator LCS" },
+              { assetNumber: "CIP-TK06-MCC001", name: "CIP Tank 6 – Agitator MCC Cell" },
+              { assetNumber: "CIP-ALF06", name: "Carbon Transfer Air Lift 6" },
+              { assetNumber: "CIP-TK07", name: "CIP Tank 7" },
+              { assetNumber: "CIP-TK07-AGT001", name: "CIP Tank 7 – Agitator" },
+              { assetNumber: "CIP-TK07-MTR001", name: "CIP Tank 7 – Agitator Motor" },
+              { assetNumber: "CIP-TK07-GBX001", name: "CIP Tank 7 – Agitator Gear Box" },
+              { assetNumber: "CIP-TK07-LCS001", name: "CIP Tank 7 – Agitator LCS" },
+              { assetNumber: "CIP-TK07-MCC001", name: "CIP Tank 7 – Agitator MCC Cell" },
+              { assetNumber: "CIP-ALF07", name: "Carbon Transfer Air Lift 7" },
+              { assetNumber: "CIP-TK08", name: "CIP Tank 8" },
+              { assetNumber: "CIP-TK08-AGT001", name: "CIP Tank 8 – Agitator" },
+              { assetNumber: "CIP-TK08-MTR001", name: "CIP Tank 8 – Agitator Motor" },
+              { assetNumber: "CIP-TK08-GBX001", name: "CIP Tank 8 – Agitator Gear Box" },
+              { assetNumber: "CIP-TK08-LCS001", name: "CIP Tank 8 – Agitator LCS" },
+              { assetNumber: "CIP-TK08-MCC001", name: "CIP Tank 8 – Agitator MCC Cell" },
+              { assetNumber: "CIP-ALF08", name: "Carbon Transfer Air Lift 8" },
+              // NEW ASSETS - CIP Pumps and Screens with simple numbering
+              { 
+                assetNumber: "PMP006", 
                 name: "CIP Area Sump Pump",
                 components: [
                   {
@@ -1528,110 +1299,88 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "CIP-ALF01", name: "Carbon Transfer Air Lift 1" },
-            ] 
-          },
-          { 
-            label: "CIP Tank 2", 
-            equipment: [
-              { assetNumber: "CIP-SHW02", name: "CIP Area Safety Showers" },
-              { assetNumber: "CIP-SHW03", name: "CIP Area Safety Shower 2" },
-              { assetNumber: "CIP-TK02", name: "CIP Leach Tank 2" },
               { 
-                assetNumber: "CIP-TK02-AGT001", 
-                name: "CIP Leach Tank 2 – Agitator",
+                assetNumber: "PMP007", 
+                name: "CIP Tailings Pump – Duty",
                 components: [
                   {
-                    componentCode: "MC4350/01/1167",
-                    componentType: "Coaxial Gearbox Agitator",
-                    componentName: "Leach Tank 2 Agitator Unit",
-                    manufacturer: "MIXTEC",
-                    model: "MC4350/01/1167",
-                    outputSpeed: "28 RPM",
-                    displacement: "Dual Impellers, Rubber-lined"
+                    componentCode: "65QV-SPR1200",
+                    componentType: "Pump",
+                    componentName: "CIP Tailings Pump Wet End",
+                    manufacturer: "WARMAN",
+                    model: "65QV-SPR1200 (Rubber)",
+                    pumpFlow: "137 m³/hr @ 25m TDH"
                   }
                 ]
               },
-              { assetNumber: "CIP-TK02-MTR001", name: "CIP Leach Tank 2 – Agitator Motor" },
-              { assetNumber: "CIP-TK02-MCC001", name: "CIP Leach Tank 2 – Agitator MCC Cell" },
-              { assetNumber: "CIP-TK02-GBX001", name: "CIP Leach Tank 2 – Agitator Gear Box" },
-              { assetNumber: "CIP-TK02-LCS001", name: "CIP Leach Tank 2 – Agitator LCS" },
-              { assetNumber: "CIP-NZL02", name: "Leach Tank 2 – Air Sparge Nozzles" },
-              { assetNumber: "CIP-ALF02", name: "Carbon Transfer Air Lift 2" },
+              { 
+                assetNumber: "PMP008", 
+                name: "CIP Tailings Pump – Standby",
+                components: [
+                  {
+                    componentCode: "65QV-SPR1200",
+                    componentType: "Pump",
+                    componentName: "CIP Tailings Pump Wet End",
+                    manufacturer: "WARMAN",
+                    model: "65QV-SPR1200 (Rubber)",
+                    pumpFlow: "137 m³/hr @ 25m TDH"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "SCR002", 
+                name: "Intertank Screen",
+                components: [
+                  {
+                    componentCode: "WISS-5M2",
+                    componentType: "Wiped Interstage Screen",
+                    componentName: "Intertank Screen Unit (Top Discharge)",
+                    manufacturer: "ALLOYTEC",
+                    model: "Wiped Interstage Screen",
+                    displacement: "Screen Area: 5 m², Aperture: 0.80 mm"
+                  },
+                  {
+                    componentCode: "BONFIGLIOLI-GBX",
+                    componentType: "Gearbox",
+                    componentName: "Intertank Screen Spare Gearbox",
+                    manufacturer: "Bonfiglioli"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "SCR003", 
+                name: "Carbon Safety Screen",
+                components: [
+                  {
+                    componentCode: "OF-HS-18/36",
+                    componentType: "Linear Vibrating Screen",
+                    componentName: "Carbon Safety Screen Unit",
+                    manufacturer: "MINSPEC",
+                    model: "OF-HS-18/36"
+                  },
+                  {
+                    componentCode: "KEE 75-4",
+                    componentType: "Exciter",
+                    componentName: "Carbon Safety Screen Exciter",
+                    manufacturer: "URAS",
+                    model: "KEE 75-4"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "SCR004", 
+                name: "Loaded Carbon Screen",
+                components: [
+                  {
+                    componentCode: "OF-HS-12/24",
+                    componentType: "Linear Motion Vibrating Screen",
+                    componentName: "Loaded Carbon Screen Unit",
+                    manufacturer: "Overflow",
+                    model: "OF-HS-12/24"
+                  }
+                ]
+              },
             ] 
-          },
-          { 
-            label: "CIP Tank 3", 
-            equipment: [
-              { assetNumber: "CIP-SHW04", name: "CIP Area Safety Shower 1" },
-              { assetNumber: "CIP-TK03", name: "CIP Tank 3" },
-              { assetNumber: "CIP-TK03-AGT001", name: "CIP Tank 3 – Agitator" },
-              { assetNumber: "CIP-TK03-MTR001", name: "CIP Tank 3 – Agitator Motor" },
-              { assetNumber: "CIP-TK03-GBX001", name: "CIP Tank 3 – Agitator Gear Box" },
-              { assetNumber: "CIP-TK03-LCS001", name: "CIP Tank 3 – Agitator LCS" },
-              { assetNumber: "CIP-TK03-MCC001", name: "CIP Tank 3 – Agitator MCC Cell" },
-              { assetNumber: "CIP-ALF03", name: "Carbon Transfer Air Lift 3" },
-            ]
-          },
-          { 
-            label: "CIP Tank 4", 
-            equipment: [
-              { assetNumber: "CIP-TK04", name: "CIP Tank 4" },
-              { assetNumber: "CIP-TK04-AGT001", name: "CIP Tank 4 – Agitator" },
-              { assetNumber: "CIP-TK04-MTR001", name: "CIP Tank 4 – Agitator Motor" },
-              { assetNumber: "CIP-TK04-GBX001", name: "CIP Tank 4 – Agitator Gear Box" },
-              { assetNumber: "CIP-TK04-LCS001", name: "CIP Tank 4 – Agitator LCS" },
-              { assetNumber: "CIP-TK04-MCC001", name: "CIP Tank 4 – Agitator MCC Cell" },
-              { assetNumber: "CIP-ALF04", name: "Carbon Transfer Air Lift 4" },
-            ]
-          },
-          { 
-            label: "CIP Tank 5", 
-            equipment: [
-              { assetNumber: "CIP-TK05", name: "CIP Tank 5" },
-              { assetNumber: "CIP-TK05-AGT001", name: "CIP Tank 5 – Agitator" },
-              { assetNumber: "CIP-TK05-MTR001", name: "CIP Tank 5 – Agitator Motor" },
-              { assetNumber: "CIP-TK05-GBX001", name: "CIP Tank 5 – Agitator Gear Box" },
-              { assetNumber: "CIP-TK05-LCS001", name: "CIP Tank 5 – Agitator LCS" },
-              { assetNumber: "CIP-TK05-MCC001", name: "CIP Tank 5 – Agitator MCC Cell" },
-              { assetNumber: "CIP-ALF05", name: "Carbon Transfer Air Lift 5" },
-            ]
-          },
-          { 
-            label: "CIP Tank 6", 
-            equipment: [
-              { assetNumber: "CIP-TK06", name: "CIP Tank 6" },
-              { assetNumber: "CIP-TK06-AGT001", name: "CIP Tank 6 – Agitator" },
-              { assetNumber: "CIP-TK06-MTR001", name: "CIP Tank 6 – Agitator Motor" },
-              { assetNumber: "CIP-TK06-GBX001", name: "CIP Tank 6 – Agitator Gear Box" },
-              { assetNumber: "CIP-TK06-LCS001", name: "CIP Tank 6 – Agitator LCS" },
-              { assetNumber: "CIP-TK06-MCC001", name: "CIP Tank 6 – Agitator MCC Cell" },
-              { assetNumber: "CIP-ALF06", name: "Carbon Transfer Air Lift 6" },
-            ]
-          },
-          { 
-            label: "CIP Tank 7", 
-            equipment: [
-              { assetNumber: "CIP-TK07", name: "CIP Tank 7" },
-              { assetNumber: "CIP-TK07-AGT001", name: "CIP Tank 7 – Agitator" },
-              { assetNumber: "CIP-TK07-MTR001", name: "CIP Tank 7 – Agitator Motor" },
-              { assetNumber: "CIP-TK07-GBX001", name: "CIP Tank 7 – Agitator Gear Box" },
-              { assetNumber: "CIP-TK07-LCS001", name: "CIP Tank 7 – Agitator LCS" },
-              { assetNumber: "CIP-TK07-MCC001", name: "CIP Tank 7 – Agitator MCC Cell" },
-              { assetNumber: "CIP-ALF07", name: "Carbon Transfer Air Lift 7" },
-            ]
-          },
-          { 
-            label: "CIP Tank 8", 
-            equipment: [
-              { assetNumber: "CIP-TK08", name: "CIP Tank 8" },
-              { assetNumber: "CIP-TK08-AGT001", name: "CIP Tank 8 – Agitator" },
-              { assetNumber: "CIP-TK08-MTR001", name: "CIP Tank 8 – Agitator Motor" },
-              { assetNumber: "CIP-TK08-GBX001", name: "CIP Tank 8 – Agitator Gear Box" },
-              { assetNumber: "CIP-TK08-LCS001", name: "CIP Tank 8 – Agitator LCS" },
-              { assetNumber: "CIP-TK08-MCC001", name: "CIP Tank 8 – Agitator MCC Cell" },
-              { assetNumber: "CIP-ALF08", name: "Carbon Transfer Air Lift 8" },
-            ]
           },
           { 
             label: "CIP Feed Trash Screen", 
@@ -1648,164 +1397,6 @@ export const areasData: Area[] = [
               { assetNumber: "CPTS001-CHU001", name: "CIP Feed Trash Screen – Oversize Chute" },
             ] 
           },
-          { 
-            label: "Loaded Carbon Screen", 
-            equipment: [
-              { 
-                assetNumber: "LDCS001", 
-                name: "Loaded Carbon Screen",
-                components: [
-                  {
-                    componentCode: "OF-HS-12/24",
-                    componentType: "Linear Motion Vibrating Screen",
-                    componentName: "Loaded Carbon Screen Unit",
-                    manufacturer: "Overflow",
-                    model: "OF-HS-12/24"
-                  }
-                ]
-              },
-              { assetNumber: "LDCS001-FBX001", name: "Loaded Carbon Screen – Feed Box" },
-              { assetNumber: "LDCS001-EXC001", name: "Loaded Carbon Screen – Exciter A" },
-              { assetNumber: "LDCS001-LCS001", name: "Loaded Carbon Screen – Exciter A LCS" },
-              { assetNumber: "LDCS001-MCC001", name: "Loaded Carbon Screen – Exciter A MCC Cell" },
-              { assetNumber: "LDCS001-EXC002", name: "Loaded Carbon Screen – Exciter B" },
-              { assetNumber: "LDCS001-LCS002", name: "Loaded Carbon Screen – Exciter B LCS" },
-              { assetNumber: "LDCS001-MCC002", name: "Loaded Carbon Screen – Exciter B MCC Cell" },
-              { assetNumber: "LDCS001-SPR001", name: "Loaded Carbon Screen – Spray Bars" },
-              { assetNumber: "LDCS001-PAN001", name: "Loaded Carbon Screen – Underpan" },
-              { assetNumber: "LDCS001-CHU001", name: "Loaded Carbon Screen – Oversize Chute" },
-            ] 
-          },
-          { 
-            label: "CIP Inter Tank Screens", 
-            equipment: [
-              { 
-                assetNumber: "CITS001", 
-                name: "CIP Intertank Screen 1",
-                components: [
-                  {
-                    componentCode: "WISS-5M2",
-                    componentType: "Wiped Interstage Screen",
-                    componentName: "Intertank Screen Unit (Top Discharge)",
-                    manufacturer: "Alloytec",
-                    model: "Wiped Interstage Screen",
-                    displacement: "Screen Area: 5 m², Aperture: 0.80 mm"
-                  },
-                  {
-                    componentCode: "BONFIGLIOLI-GBX",
-                    componentType: "Gearbox",
-                    componentName: "Intertank Screen Spare Gearbox",
-                    manufacturer: "Bonfiglioli"
-                  }
-                ]
-              },
-              { assetNumber: "CITS001-MTR001", name: "CIP Intertank Screen 1 – Motor" },
-              { assetNumber: "CITS001-MCC001", name: "CIP Intertank Screen 1 – MCC Cell" },
-              { assetNumber: "CITS001-GBX001", name: "CIP Intertank Screen 1 – Gearbox" },
-              { assetNumber: "CITS001-LCS001", name: "CIP Intertank Screen 1 – LCS" },
-              { assetNumber: "CITS002", name: "CIP Inter Tank Screen 2" },
-              { assetNumber: "CITS002-MTR001", name: "CIP Inter Tank Screen 2 – Motor" },
-              { assetNumber: "CITS002-MCC001", name: "CIP Inter Tank Screen 2 – MCC Cell" },
-              { assetNumber: "CITS002-GBX001", name: "CIP Inter Tank Screen 2 – Gearbox" },
-              { assetNumber: "CITS002-LCS001", name: "CIP Inter Tank Screen 2 – LCS" },
-              { assetNumber: "CITS003", name: "CIP Inter Tank Screen 3" },
-              { assetNumber: "CITS003-MTR001", name: "CIP Inter Tank Screen 3 – Motor" },
-              { assetNumber: "CITS003-MCC001", name: "CIP Inter Tank Screen 3 – MCC Cell" },
-              { assetNumber: "CITS003-GBX001", name: "CIP Inter Tank Screen 3 – Gearbox" },
-              { assetNumber: "CITS003-LCS001", name: "CIP Inter Tank Screen 3 – LCS" },
-              { assetNumber: "CITS004", name: "CIP Inter Tank Screen 4" },
-              { assetNumber: "CITS004-MTR001", name: "CIP Inter Tank Screen 4 – Motor" },
-              { assetNumber: "CITS004-MCC001", name: "CIP Inter Tank Screen 4 – MCC Cell" },
-              { assetNumber: "CITS004-GBX001", name: "CIP Inter Tank Screen 4 – Gearbox" },
-              { assetNumber: "CITS004-LCS001", name: "CIP Inter Tank Screen 4 – LCS" },
-              { assetNumber: "CITS005", name: "CIP Inter Tank Screen 5" },
-              { assetNumber: "CITS005-MTR001", name: "CIP Inter Tank Screen 5 – Motor" },
-              { assetNumber: "CITS005-MCC001", name: "CIP Inter Tank Screen 5 – MCC Cell" },
-              { assetNumber: "CITS005-GBX001", name: "CIP Inter Tank Screen 5 – Gearbox" },
-              { assetNumber: "CITS005-LCS001", name: "CIP Inter Tank Screen 5 – LCS" },
-              { assetNumber: "CITS006", name: "CIP Inter Tank Screen 6" },
-            ] 
-          },
-          { 
-            label: "Carbon Safety Screen", 
-            equipment: [
-              { assetNumber: "CSS001", name: "Carbon Safety Screen Feed Box" },
-              { 
-                assetNumber: "CSS001-SCR001", 
-                name: "Carbon Safety Screen",
-                components: [
-                  {
-                    componentCode: "OF-HS-18/36",
-                    componentType: "Linear Vibrating Screen",
-                    componentName: "Carbon Safety Screen Unit",
-                    manufacturer: "Minspec",
-                    model: "OF-HS-18/36"
-                  },
-                  {
-                    componentCode: "KEE 75-4",
-                    componentType: "Exciter",
-                    componentName: "Carbon Safety Screen Exciter",
-                    manufacturer: "URAS",
-                    model: "KEE 75-4"
-                  }
-                ]
-              },
-              { assetNumber: "CSS001-EXC001", name: "Carbon Safety Screen – Exciter" },
-              { assetNumber: "CSS001-LCS001", name: "Carbon Safety Screen – LCS" },
-              { assetNumber: "CSS001-MCC001", name: "Carbon Safety Screen – MCC Cell" },
-            ] 
-          },
-          { 
-            label: "CIP Tailings Pumps", 
-            equipment: [
-              { 
-                assetNumber: "CIP-TPMP001", 
-                name: "CIP Tailings Pump – Duty",
-                components: [
-                  {
-                    componentCode: "65QV-SPR1200",
-                    componentType: "Pump",
-                    componentName: "CIP Tails Sump Pump Wet End",
-                    manufacturer: "WARMAN",
-                    model: "65QV-SPR1200 (Rubber)"
-                  },
-                  {
-                    componentCode: "UNKNOWN-MTR",
-                    componentType: "Motor",
-                    componentName: "CIP Tails Sump Pump Motor",
-                    manufacturer: "Unknown",
-                    displacement: "Notes: Motor details to be confirmed onsite"
-                  }
-                ]
-              },
-              { assetNumber: "CIP-TPMP001-MTR001", name: "CIP Tailings Pump Duty – Motor" },
-              { assetNumber: "CIP-TPMP001-MCC001", name: "CIP Tailings Pump Duty – MCC Cell" },
-              { assetNumber: "CIP-TPMP001-LCS001", name: "CIP Tailings Pump Duty – LCS" },
-              { 
-                assetNumber: "CIP-TPMP002", 
-                name: "CIP Tailings Pump – Standby",
-                components: [
-                  {
-                    componentCode: "65QV-SPR1200-STBY",
-                    componentType: "Pump",
-                    componentName: "CIP Tails Sump Pump Wet End (Standby)",
-                    manufacturer: "WARMAN",
-                    model: "65QV-SPR1200 (Rubber)"
-                  },
-                  {
-                    componentCode: "UNKNOWN-MTR-STBY",
-                    componentType: "Motor",
-                    componentName: "CIP Tails Sump Pump Motor (Standby)",
-                    manufacturer: "Unknown",
-                    displacement: "Notes: Motor details to be confirmed onsite"
-                  }
-                ]
-              },
-              { assetNumber: "CIP-TPMP002-MTR001", name: "CIP Tailings Pump Standby – Motor" },
-              { assetNumber: "CIP-TPMP002-MCC001", name: "CIP Tailings Pump Standby – MCC Cell" },
-              { assetNumber: "CIP-TPMP002-LCS001", name: "CIP Tailings Pump Standby – LCS" },
-            ] 
-          },
         ],
       },
       {
@@ -1814,125 +1405,9 @@ export const areasData: Area[] = [
           { 
             label: "Elution Column", 
             equipment: [
+              // NEW ASSETS - Elution equipment with simple numbering
               { 
-                assetNumber: "ELU-COL001", 
-                name: "Elution Column",
-                components: [
-                  {
-                    componentCode: "YF/18/0857",
-                    componentType: "Column",
-                    componentName: "Elution Column",
-                    manufacturer: "COMO Engineering",
-                    model: "YF/18/0857",
-                    weight: "2.0 tonne capacity",
-                    operatingPressure: "650 kPa design",
-                    displacement: "AS1210:2010 Class 3 | 150°C design temp"
-                  },
-                  {
-                    componentCode: "NFM-FLT",
-                    componentType: "Filter",
-                    componentName: "Elution Column Carbon Filters",
-                    manufacturer: "Non Ferrous Machining",
-                    model: "COMO Proprietary 304SS Column Filters",
-                    displacement: "Qty: 4 | PW63 wedgewire | 0.8 mm aperture"
-                  }
-                ]
-              },
-              { assetNumber: "ELU-COL001-FLT001", name: "Elution Column Filters" },
-              { assetNumber: "ELU-COL001-INS001", name: "Elution Column Outlet Pressure Gauge" },
-              { assetNumber: "ELU-COL001-INS002", name: "Elution Column Inlet Pressure Gauge" },
-              { assetNumber: "ELU-COL001-INS003", name: "Elution Column Outlet Temperature Gauge" },
-              { assetNumber: "ELU-COL001-INS004", name: "Elution Column Inlet Temperature Gauge" },
-              { assetNumber: "ELU-MCC001", name: "Elution Area Field MCC" },
-            ]
-          },
-          { 
-            label: "Elution Safety Showers", 
-            equipment: [
-              { assetNumber: "ELU-SHW01", name: "Elution Area Safety Shower 1" },
-              { assetNumber: "ELU-SHW02", name: "Elution Area Safety Shower 2" },
-            ]
-          },
-          { 
-            label: "Elution Area Sump", 
-            equipment: [
-              { 
-                assetNumber: "ELU-PMP001", 
-                name: "Elution Column Sump Pump",
-                components: [
-                  {
-                    componentCode: "40PV-SPG",
-                    componentType: "Pump",
-                    componentName: "Elution Sump Pump",
-                    manufacturer: "AUSTRAL",
-                    model: "40 PV SPG Vertical Sump Pump",
-                    serialNumber: "1806010 (M&Q Equipment)"
-                  },
-                  {
-                    componentCode: "AEMBUCADD-132S",
-                    componentType: "Motor",
-                    componentName: "Elution Sump Pump Motor",
-                    manufacturer: "TECO",
-                    model: "AEMBUCADD 132S",
-                    serialNumber: "P3201031001",
-                    voltage: "5.5 kW (7.5 HP) | 4-pole induction"
-                  },
-                  {
-                    componentCode: "SPB-1320x2",
-                    componentType: "Belt Drive",
-                    componentName: "Elution Sump Pump Belt Drive",
-                    manufacturer: "Gates / Equivalent",
-                    model: "SPB 1320 x 2"
-                  }
-                ]
-              },
-              { assetNumber: "ELU-PMP001-MTR001", name: "Elution Column Sump Pump – Motor" },
-              { assetNumber: "ELU-PMP001-MCC001", name: "Elution Area Sump Pump – MCC Cell" },
-              { assetNumber: "ELU-PMP001-LCS001", name: "Elution Area Sump Pump – LCS" },
-            ]
-          },
-          { 
-            label: "Flashpot", 
-            equipment: [
-              { assetNumber: "FLSH001", name: "Flashpot" },
-              { assetNumber: "FLSH001-INS001", name: "Flashpot Pressure Regulator" },
-            ]
-          },
-          { 
-            label: "Heat Exchanger", 
-            equipment: [
-              { assetNumber: "HEXC001", name: "Elution Recovery Heat Exchanger" },
-              { assetNumber: "HEXC001-DPS001", name: "Elution Heater – Differential Pressure High Switch" },
-              { assetNumber: "HEXC001-PG001", name: "Elution Heater – Inlet Pressure Gauge" },
-              { assetNumber: "HEXC001-PG002", name: "Elution Heater – Outlet Pressure Gauge" },
-              { assetNumber: "HEXC001-PG003", name: "Elution Heat Exchanger – Inlet Pressure Gauge" },
-              { assetNumber: "HEXC001-PG004", name: "Elution Heat Exchanger – Outlet Pressure Gauge" },
-              { assetNumber: "HEXC001-TG001", name: "Elution Heat Exchanger – Inlet Temperature Gauge" },
-              { assetNumber: "HEXC001-TG002", name: "Elution Heat Exchanger – Outlet Temperature Gauge" },
-              { assetNumber: "HEXC001-TG003", name: "Elution Heater – Inlet Temperature Gauge" },
-              { assetNumber: "HEXC001-TG004", name: "Elution Heater – Outlet Temperature Gauge" },
-              { assetNumber: "HEXC001-CTRL001", name: "Elution Heater – Burner Controller" },
-              { assetNumber: "HEXC001-TS001", name: "Elution Heater – Outlet Temperature Sensor" },
-              { assetNumber: "HEXC001-TS002", name: "Elution Heater – Flue Temperature Sensor" },
-              { assetNumber: "HEXC001-FS001", name: "Elution Heater – Inlet Flow Sensor" },
-              { assetNumber: "HEXC001-HTR001", name: "Elution Heater" },
-              { assetNumber: "HEXC001-BRN001", name: "Elution Heater – Burner" },
-            ] 
-          },
-          { 
-            label: "Acid Wash System", 
-            equipment: [
-              { assetNumber: "AWSH001-TK001", name: "Acid Wash System – Acid Tank" },
-              { assetNumber: "AWSH001-PMP001", name: "Acid Wash System – Dosing Pump" },
-              { assetNumber: "AWSH001-AGT001", name: "Acid Wash System – Agitator" },
-              { assetNumber: "AWSH001-SMP001", name: "Acid Wash Sump" },
-            ] 
-          },
-          { 
-            label: "Acid Wash Column", 
-            equipment: [
-              { 
-                assetNumber: "ACOL001", 
+                assetNumber: "COL001", 
                 name: "Acid Wash Column",
                 components: [
                   {
@@ -1945,7 +1420,13 @@ export const areasData: Area[] = [
                     oilType: "Bromo Butyl Rubber lining",
                     operatingPressure: "650 kPa design",
                     displacement: "AS1210:2010 Class 3 | 150°C design temp"
-                  },
+                  }
+                ]
+              },
+              { 
+                assetNumber: "FLT002", 
+                name: "Acid Wash Column Carbon Filters",
+                components: [
                   {
                     componentCode: "ALLOYTECH-FLT",
                     componentType: "Filter",
@@ -1956,18 +1437,8 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "ACOL001-INS001", name: "Acid Wash Column Inlet Pressure Gauge" },
-              { assetNumber: "ACOL001-INS002", name: "Acid Wash Column Discharge Pressure Gauge" },
-              { assetNumber: "ACOL001-FLT001", name: "Acid Column Filters" },
-              { assetNumber: "ACOL001-SEN001", name: "Acid Wash Column HCL Flow Sensor" },
-              { assetNumber: "ACOL001-SWT001", name: "Acid Wash Column High High Level Switch" },
-            ] 
-          },
-          { 
-            label: "HCL Dosing System", 
-            equipment: [
               { 
-                assetNumber: "HDOS001-PMP001", 
+                assetNumber: "PMP010", 
                 name: "HCL Acid Dosing Pump",
                 components: [
                   {
@@ -1988,10 +1459,9 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "HDOS001-VLV001", name: "HCL Dosing Pump Solenoid Valve" },
               { 
-                assetNumber: "HSMP001-PMP001", 
-                name: "HCL Area Sump Pump",
+                assetNumber: "PMP011", 
+                name: "HCL Acid Area Sump Pump",
                 components: [
                   {
                     componentCode: "HUSKY-2022",
@@ -2011,13 +1481,78 @@ export const areasData: Area[] = [
                   }
                 ]
               },
+              { 
+                assetNumber: "COL002", 
+                name: "Elution Column",
+                components: [
+                  {
+                    componentCode: "YF/18/0857",
+                    componentType: "Column",
+                    componentName: "Elution Column",
+                    manufacturer: "COMO Engineering",
+                    model: "YF/18/0857",
+                    weight: "2.0 tonne capacity",
+                    operatingPressure: "650 kPa design",
+                    displacement: "AS1210:2010 Class 3 | 150°C design temp"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "FLT003", 
+                name: "Elution Column Carbon Filters",
+                components: [
+                  {
+                    componentCode: "COMO-304SS",
+                    componentType: "Filter",
+                    componentName: "Elution Column Carbon Filters",
+                    manufacturer: "Non Ferrous Machining",
+                    model: "COMO Proprietary 304SS Column Filters",
+                    displacement: "Qty: 4 | PW63 wedgewire | Aperture: 0.8 mm"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "PMP012", 
+                name: "Elution Column Sump Pump",
+                components: [
+                  {
+                    componentCode: "40 PV SPG",
+                    componentType: "Pump",
+                    componentName: "Elution Column Sump Pump",
+                    manufacturer: "AUSTRAL",
+                    model: "40 PV SPG Vertical Sump Pump",
+                    serialNumber: "M&Q Equipment / 1806010"
+                  },
+                  {
+                    componentCode: "AEMBUCADD 132S",
+                    componentType: "Motor",
+                    componentName: "Elution Column Sump Pump Motor",
+                    manufacturer: "TECO",
+                    model: "AEMBUCADD 132S / P3201031001",
+                    voltage: "5.5 kW (7.5 HP)",
+                    displacement: "4 pole induction motor"
+                  },
+                  {
+                    componentCode: "SPB 1320 x 2",
+                    componentType: "Belt Drive",
+                    componentName: "Elution Column Sump Pump Belt",
+                    manufacturer: "Gates / Equivalent",
+                    model: "SPB 1320 x 2"
+                  }
+                ]
+              },
+              { assetNumber: "PMP013", name: "Antiscalant Dosing Pump – Elution Raw Water" },
+              { assetNumber: "HTR001", name: "Elution Heater" },
+              { assetNumber: "BRN001", name: "Elution Heater Burner" },
+              { assetNumber: "HEX001", name: "Elution Recovery Heat Exchanger" },
+              { assetNumber: "FPT001", name: "Elution Flashpot" },
+              { assetNumber: "PMP014", name: "Eluate Pump" },
             ] 
           },
           { 
             label: "Eluate System", 
             equipment: [
               { assetNumber: "ELUT001-TK001", name: "Eluate Tank" },
-              { assetNumber: "ELUT001-PMP001", name: "Eluate Pump" },
               { assetNumber: "ELUT001-MTR001", name: "Eluate Pump – Motor" },
               { assetNumber: "ELUT001-MCC001", name: "Eluate Pump – MCC Cell" },
               { assetNumber: "ELUT001-LCS001", name: "Eluate Pump – LCS" },
@@ -2089,7 +1624,6 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "CREG001-HOP001", name: "Regenerated Carbon Quench Hopper" },
               { assetNumber: "CREG001-SWT001", name: "Regenerated Carbon Quench Hopper Low Low Level Switch" },
-              // Carbon Sizing Screen moved here from separate parent
               { assetNumber: "CSZS001", name: "Carbon Sizing Screen" },
               { assetNumber: "CSZS001-EXC001", name: "Carbon Sizing Screen Exciter" },
             ] 
@@ -2120,8 +1654,10 @@ export const areasData: Area[] = [
             label: "Electrowinning Cell", 
             equipment: [
               { assetNumber: "EWCL001", name: "Electrowinning Cell" },
+              // NEW ASSETS - Electrowinning equipment with simple numbering
+              { assetNumber: "REC001", name: "Electrowinning Cell Rectifier" },
+              { assetNumber: "FAN001", name: "Electrowinning Cell Fume Extraction Fan" },
               { assetNumber: "EWCL001-MNR001", name: "Electrowinning Cell – Monorail" },
-              { assetNumber: "EWCL001-FAN001", name: "Electrowinning Cell – Extraction Fan" },
               { assetNumber: "EWCL001-TK001", name: "Electrowinning Cell – Solution Tank" },
               { assetNumber: "EWCL001-PMP001", name: "Electrowinning Cell – Feed Pump" },
               { assetNumber: "EWCL001-MTR001", name: "Electrowinning Cell – Feed Pump Motor" },
@@ -2140,9 +1676,10 @@ export const areasData: Area[] = [
           { 
             label: "Cathode Washdown System", 
             equipment: [
-              { assetNumber: "CWSH001", name: "High Pressure Cathode Washer" },
+              { assetNumber: "WSH001", name: "High Pressure Cathode Washer" },
               { assetNumber: "CWSH001-BOX001", name: "Cathode Wash Box" },
-              { assetNumber: "CWSH001-PMP001", name: "Cathode Wash Sludge Pump" },
+              { assetNumber: "PMP015", name: "Cathode Wash Sludge Pump" },
+              { assetNumber: "PMP016", name: "Electrowinning Cell Sludge Pump" },
               { assetNumber: "CWSH001-MTR001", name: "Cathode Wash Sludge Pump – Motor" },
               { assetNumber: "CWSH001-MCC001", name: "Cathode Wash Sludge Pump – MCC Cell" },
               { assetNumber: "CWSH001-LCS001", name: "Cathode Wash Sludge Pump – LCS" },
@@ -2229,64 +1766,72 @@ export const areasData: Area[] = [
               { assetNumber: "THKUFP-B-MTR001", name: "Thickener Underflow Pump B – Motor" },
               { assetNumber: "THKUFP-B-MCC001", name: "Thickener Underflow Pump B – MCC Cell" },
               { assetNumber: "THKUFP-B-LCS001", name: "Thickener Underflow Pump B – LCS" },
-              { assetNumber: "THKUFP-B-VFD001", name: "Thickener Underflow Pump B – VFD" },
-              { assetNumber: "TAILSMP001", name: "Tails Area Sump Pump" },
-              { assetNumber: "TAILSMP001-MTR001", name: "Tails Area Sump Pump – Motor" },
-              { assetNumber: "TAILSMP001-MCC001", name: "Tails Area Sump Pump – MCC Cell" },
-              { assetNumber: "TAILSMP001-LCS001", name: "Tails Area Sump Pump – LCS" },
-              { assetNumber: "THKHYD001", name: "Thickener Hydraulic Pump" },
-              { assetNumber: "THKHYD001-MTR001", name: "Thickener Hydraulic Pump – Motor" },
-              { assetNumber: "THKHYD001-LCS001", name: "Thickener Hydraulic Pump – LCS" },
-            ] 
-          },
-        ],
-      },
-      {
-        label: "Filter Press 1",
-        parentAssets: [
-          { 
-            label: "Tails Filter Press 1", 
-            equipment: [
-              { assetNumber: "FP001", name: "Tails Filter Press 1" },
-              { assetNumber: "FP001-TK001", name: "Filter 1 Stock Tank" },
-              { assetNumber: "FP001-AGT001", name: "Filter 1 Stock Tank Agitator" },
-              { assetNumber: "FP001-MTR001", name: "Filter 1 Stock Tank Agitator – Motor" },
-              { assetNumber: "FP001-GBX001", name: "Filter 1 Stock Tank Agitator – Gearbox" },
-              { assetNumber: "FP001-MCC001", name: "Filter 1 Stock Tank Agitator – MCC Cell" },
-              { assetNumber: "FP001-PLC001", name: "Filter 1 PLC" },
-              { assetNumber: "FP001-INST001", name: "Filter 1 Instruments" },
-              { assetNumber: "FP001-VLV001", name: "Filter 1 Piping and Valves" },
-              { assetNumber: "FP001-PNL001", name: "Filter Press 1 Panel" },
-              { assetNumber: "FP001-HYD001", name: "Filter Press 1 Hydraulic Pack" },
-              { assetNumber: "FP001-MTR002", name: "Filter Press 1 Hydraulic Plate Pack – Motor" },
-              { assetNumber: "FP001-MCC002", name: "Filter Press 1 Hydraulic Plate Pack – MCC Cell" },
-              { assetNumber: "FP001-MTR003", name: "Filter Press 1 Hydraulic TT Plate – Motor" },
-              { assetNumber: "FP001-MCC003", name: "Filter Press 1 Hydraulic TT Plate – MCC Cell" },
+              { assetNumber: "THKUFP-B-VSD001", name: "Thickener Underflow Pump B – VSD" },
             ]
           },
         ],
       },
       {
-        label: "Filter Press 2",
+        label: "Filtering",
         parentAssets: [
           { 
-            label: "Tails Filter Press 2", 
+            label: "Filter Press", 
             equipment: [
-              { assetNumber: "FP002", name: "Tails Filter Press 2" },
-              { assetNumber: "FP002-TK001", name: "Filter 2 Stock Tank" },
-              { assetNumber: "FP002-AGT001", name: "Filter 2 Stock Tank Agitator" },
-              { assetNumber: "FP002-MTR001", name: "Filter 2 Stock Tank Agitator – Motor" },
-              { assetNumber: "FP002-GBX001", name: "Filter 2 Stock Tank Agitator – Gearbox" },
-              { assetNumber: "FP002-MCC001", name: "Filter 2 Stock Tank Agitator – MCC Cell" },
-              { assetNumber: "FP002-PLC001", name: "Filter 2 PLC" },
-              { assetNumber: "FP002-INST001", name: "Filter 2 Instruments" },
-              { assetNumber: "FP002-VLV001", name: "Filter 2 Piping and Valves" },
-              { assetNumber: "FP002-PNL001", name: "Filter Press 2 Panel" },
-              { assetNumber: "FP002-HYD001", name: "Filter Press 2 Hydraulic Pack" },
-              { assetNumber: "FP002-MTR002", name: "Filter Press 2 Hydraulic Plate Pack – Motor" },
-              { assetNumber: "FP002-MCC002", name: "Filter Press 2 Hydraulic Plate Pack – MCC Cell" },
-              { assetNumber: "FP002-MTR003", name: "Filter Press 2 Hydraulic TT Plate – Motor" },
-              { assetNumber: "FP002-MCC003", name: "Filter Press 2 Hydraulic TT Plate – MCC Cell" },
+              { assetNumber: "FP001", name: "Filter Press" },
+              { assetNumber: "FP001-MTR001", name: "Filter Press – HPU Motor" },
+              { assetNumber: "FP001-MCC001", name: "Filter Press – HPU MCC Cell" },
+              { assetNumber: "FP001-LCS001", name: "Filter Press – HPU LCS" },
+              { assetNumber: "FP001-HPU001", name: "Filter Press – Hydraulic Power Unit" },
+              { assetNumber: "FP001-AGT001", name: "Filter Press – Slurry Mixer" },
+              { assetNumber: "FP001-CYL001", name: "Filter Press – Main Cylinder" },
+              { assetNumber: "FP001-TRAY001", name: "Filter Press – Drip Tray" },
+              { assetNumber: "FP001-CLH001", name: "Filter Press – Cloth Hanger" },
+              { assetNumber: "FP001-FRM001", name: "Filter Press – Frame 1" },
+              { assetNumber: "FP001-FRM002", name: "Filter Press – Frame 2" },
+              { assetNumber: "FP001-FRM003", name: "Filter Press – Frame 3" },
+              { assetNumber: "FP001-CHN001", name: "Filter Press – Chain Assembly" },
+            ]
+          },
+          { 
+            label: "Filtrate Pump", 
+            equipment: [
+              { assetNumber: "FILT001-PMP001", name: "Filtrate Pump Duty" },
+              { assetNumber: "FILT001-MTR001", name: "Filtrate Pump Duty – Motor" },
+              { assetNumber: "FILT001-MCC001", name: "Filtrate Pump Duty – MCC Cell" },
+              { assetNumber: "FILT001-LCS001", name: "Filtrate Pump Duty – LCS" },
+              { assetNumber: "FILT001-PMP002", name: "Filtrate Pump Standby" },
+              { assetNumber: "FILT001-MTR002", name: "Filtrate Pump Standby – Motor" },
+              { assetNumber: "FILT001-MCC002", name: "Filtrate Pump Standby – MCC Cell" },
+              { assetNumber: "FILT001-LCS002", name: "Filtrate Pump Standby – LCS" },
+            ]
+          },
+          { 
+            label: "Filter Feed Pump", 
+            equipment: [
+              { assetNumber: "FFD001-PMP001", name: "Filter Feed Pump Duty" },
+              { assetNumber: "FFD001-MTR001", name: "Filter Feed Pump Duty – Motor" },
+              { assetNumber: "FFD001-MCC001", name: "Filter Feed Pump Duty – MCC Cell" },
+              { assetNumber: "FFD001-LCS001", name: "Filter Feed Pump Duty – LCS" },
+              { assetNumber: "FFD001-VSD001", name: "Filter Feed Pump Duty – VSD" },
+              { assetNumber: "FFD001-PMP002", name: "Filter Feed Pump Standby" },
+              { assetNumber: "FFD001-MTR002", name: "Filter Feed Pump Standby – Motor" },
+              { assetNumber: "FFD001-MCC002", name: "Filter Feed Pump Standby – MCC Cell" },
+              { assetNumber: "FFD001-LCS002", name: "Filter Feed Pump Standby – LCS" },
+              { assetNumber: "FFD001-VSD002", name: "Filter Feed Pump Standby – VSD" },
+            ]
+          },
+          { 
+            label: "Tailings Conveyor", 
+            equipment: [
+              { assetNumber: "TC001", name: "Tailings Conveyor" },
+              { assetNumber: "TC001-MTR001", name: "Tailings Conveyor – Motor" },
+              { assetNumber: "TC001-GBX001", name: "Tailings Conveyor – Gearbox" },
+              { assetNumber: "TC001-MCC001", name: "Tailings Conveyor – MCC Cell" },
+              { assetNumber: "TC001-LCS001", name: "Tailings Conveyor – LCS" },
+              { assetNumber: "TC001-PWS001", name: "Tailings Conveyor – Pull Wire Switch 1" },
+              { assetNumber: "TC001-PWS002", name: "Tailings Conveyor – Pull Wire Switch 2" },
+              { assetNumber: "TC001-BAS001", name: "Tailings Conveyor – Belt Alignment Drift Switch 1" },
+              { assetNumber: "TC001-BAS002", name: "Tailings Conveyor – Belt Alignment Drift Switch 2" },
             ]
           },
         ],
@@ -2304,8 +1849,15 @@ export const areasData: Area[] = [
             label: "Workshop", 
             equipment: [
               { assetNumber: "WKSHP001", name: "Workshop" },
-              { assetNumber: "WKSHP001-DB001", name: "Workshop DB" },
-            ]
+              { assetNumber: "WKSHP001-DB001", name: "Workshop L&P DB" },
+              { assetNumber: "WKSHP001-CMP001", name: "Workshop Air Compressor" },
+              { assetNumber: "WKSHP001-WLD001", name: "Workshop Welding Machine 1" },
+              { assetNumber: "WKSHP001-WLD002", name: "Workshop Welding Machine 2" },
+              { assetNumber: "WKSHP001-LAT001", name: "Workshop Lathe" },
+              { assetNumber: "WKSHP001-GRN001", name: "Workshop Grinder" },
+              { assetNumber: "WKSHP001-DRL001", name: "Workshop Drill Press" },
+              { assetNumber: "WKSHP001-HYD001", name: "Workshop Hydraulic Press" },
+            ] 
           },
         ],
       },
@@ -2315,83 +1867,14 @@ export const areasData: Area[] = [
           { 
             label: "Laboratory Systems", 
             equipment: [
-              { assetNumber: "LAB001", name: "Lab" },
-              { assetNumber: "LAB001-DB001", name: "Main DB Lab" },
-              { assetNumber: "LAB001-DB002", name: "Lab L&P DB" },
+              { assetNumber: "LAB001", name: "Laboratory" },
+              { assetNumber: "LAB001-DB001", name: "Laboratory L&P DB" },
+              { assetNumber: "LAB001-FURN001", name: "Laboratory Furnace" },
+              { assetNumber: "LAB001-BAL001", name: "Laboratory Balance" },
+              { assetNumber: "LAB001-CRS001", name: "Laboratory Crusher" },
+              { assetNumber: "LAB001-PULV001", name: "Laboratory Pulverizer" },
             ] 
           },
-        ],
-      },
-      {
-        label: "Mobile Equipment",
-        parentAssets: [
-          { 
-            label: "Plant Mobile Equipment", 
-            equipment: [
-              { assetNumber: "CRN001", name: "CIP Area Gantry Crane" },
-              { assetNumber: "HST001", name: "Knelson Area Hoist" },
-              { assetNumber: "MOB001", name: "Mobile Equipment" },
-              { assetNumber: "CRN002", name: "25t Franner Crane" },
-              { assetNumber: "FLT001", name: "Forklift" },
-              { assetNumber: "TLH001", name: "Telehandler" },
-              { assetNumber: "BOBCAT001", name: "Bob Cat" },
-              { assetNumber: "WTRTK001", name: "Water Truck" },
-              { assetNumber: "SVCTK001", name: "Service Truck" },
-              { assetNumber: "EWP001", name: "Sino EWP" },
-              { assetNumber: "EWP002", name: "Hire EWP" },
-              { assetNumber: "SCLFT001", name: "Sino Scissor Lift 1" },
-              { assetNumber: "SCLFT002", name: "Sino Scissor Lift 2" },
-              { assetNumber: "LDR001", name: "Cat 980 Loader 1" },
-              { assetNumber: "LDR002", name: "Cat 980 Loader 2" },
-              { assetNumber: "LDR003", name: "Cat 980 Loader 3" },
-              { assetNumber: "LDR004", name: "Cat 980 Loader 4" },
-              { assetNumber: "EXC001", name: "Cat 30t Excavator" },
-              { assetNumber: "EXC002", name: "Case Excavator" },
-              { assetNumber: "MOXY001", name: "Cat Moxy 1" },
-              { assetNumber: "MOXY002", name: "Cat Moxy 2" },
-            ]
-          },
-        ],
-      },
-      {
-        label: "Light Vehicles",
-        parentAssets: [
-          { 
-            label: "LV Fleet", 
-            equipment: [
-              { assetNumber: "LV001", name: "Light Vehicle" },
-              { assetNumber: "LV-HILUX001", name: "Toyota Hilux 1" },
-              { assetNumber: "LV-HILUX002", name: "Toyota Hilux 2" },
-              { assetNumber: "LV-HILUX003", name: "Toyota Hilux 3" },
-              { assetNumber: "LV-HILUX004", name: "Toyota Hilux 4" },
-              { assetNumber: "LV-HILUX005", name: "Toyota Hilux 5" },
-              { assetNumber: "LV-HILUX006", name: "Toyota Hilux 6" },
-              { assetNumber: "LV-HILUX007", name: "Toyota Hilux 7" },
-              { assetNumber: "LV-RANGER001", name: "Ford Ranger XL Dual Cab 1" },
-              { assetNumber: "LV-RANGER002", name: "Ford Ranger XL Dual Cab 2" },
-              { assetNumber: "LV-RANGER003", name: "Ford Ranger XL Dual Cab 3" },
-              { assetNumber: "LV-RANGER004", name: "Ford Ranger XL Dual Cab 4" },
-              { assetNumber: "LV-RANGER005", name: "Ford Ranger XL Dual Cab 5" },
-              { assetNumber: "LV-RANGER006", name: "Ford Ranger XL Dual Cab 6" },
-              { assetNumber: "LV-RANGER007", name: "Ford Ranger XL Dual Cab 7" },
-              { assetNumber: "LV-RANGER008", name: "Ford Ranger XL Dual Cab 8" },
-              { assetNumber: "LV-RANGER009", name: "Ford Ranger XL Dual Cab 9" },
-              { assetNumber: "LV-RANGER010", name: "Ranger Single Cab" },
-              { assetNumber: "LV-KIA001", name: "Kia" },
-              { assetNumber: "LV-HIACE001", name: "Toyota Hiace 1" },
-              { assetNumber: "LV-HIACE002", name: "Toyota Hiace 2" },
-              { assetNumber: "LV-LDV001", name: "LDV Discovery 9 1" },
-              { assetNumber: "LV-LDV002", name: "LDV Discovery 9 2" },
-              { assetNumber: "LV-FUSO001", name: "Fuso TF Canter Flat Top Truck" },
-              { assetNumber: "LV-LC001", name: "LC Military" },
-            ] 
-          },
-        ],
-      },
-      {
-        label: "Heavy Vehicles (HV)",
-        parentAssets: [
-          { label: "HV Fleet", equipment: [] },
         ],
       },
     ],
