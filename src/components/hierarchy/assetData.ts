@@ -663,7 +663,18 @@ export const areasData: Area[] = [
             label: "Ball Mill", 
             equipment: [
               // Ball Mill
-              { assetNumber: "BM001", name: "Primary Ball Mill" },
+              { 
+                assetNumber: "BM001", 
+                name: "Primary Ball Mill",
+                components: [
+                  {
+                    componentCode: "BM-GBX-001",
+                    componentType: "Gear Reducer / Gearbox",
+                    componentName: "Primary Ball Mill Gear Reducer",
+                    manufacturer: "H1 SH 15B"
+                  }
+                ]
+              },
               { assetNumber: "BM001-MTR001", name: "Primary Ball Mill – Motor" },
               { assetNumber: "BM001-GBX001", name: "Primary Ball Mill – Gearbox" },
               { assetNumber: "BM001-PIN001", name: "Primary Ball Mill – Pinion" },
