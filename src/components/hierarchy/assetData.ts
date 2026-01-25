@@ -350,7 +350,28 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "CMIX001", name: "Cyanide Mixing Tank" },
               { assetNumber: "CMIX001-TK001", name: "Cyanide Mixing Tank – Tank" },
-              { assetNumber: "CMIX001-AGT001", name: "Cyanide Mixing Tank – Agitator" },
+              { 
+                assetNumber: "CMIX001-AGT001", 
+                name: "Cyanide Mixing Tank – Agitator",
+                components: [
+                  {
+                    componentCode: "MC4350/02/GBX/1057",
+                    componentType: "Coaxial Gearbox Agitator",
+                    componentName: "Cyanide Mixing Tank Agitator Unit",
+                    manufacturer: "MIXTEC",
+                    model: "MC4350/02/GBX/1057",
+                    outputSpeed: "102 RPM",
+                    displacement: "Material: 316SS"
+                  },
+                  {
+                    componentCode: "MTE8 W22M",
+                    componentType: "Motor",
+                    componentName: "Cyanide Mixing Tank Agitator Motor",
+                    manufacturer: "WEG",
+                    model: "MTE8 W22M"
+                  }
+                ]
+              },
               { assetNumber: "CMIX001-MTR001", name: "Cyanide Mixing Tank – Agitator Motor" },
               { assetNumber: "CMIX001-AGT002", name: "Cyanide Mixing Tank – Agitator 2" },
               { assetNumber: "CMIX001-MTR002", name: "Cyanide Mixing Tank – Agitator Motor 2" },
@@ -1608,7 +1629,19 @@ export const areasData: Area[] = [
           { 
             label: "Loaded Carbon Screen", 
             equipment: [
-              { assetNumber: "LDCS001", name: "Loaded Carbon Screen" },
+              { 
+                assetNumber: "LDCS001", 
+                name: "Loaded Carbon Screen",
+                components: [
+                  {
+                    componentCode: "OF-HS-12/24",
+                    componentType: "Linear Motion Vibrating Screen",
+                    componentName: "Loaded Carbon Screen Unit",
+                    manufacturer: "Overflow",
+                    model: "OF-HS-12/24"
+                  }
+                ]
+              },
               { assetNumber: "LDCS001-FBX001", name: "Loaded Carbon Screen – Feed Box" },
               { assetNumber: "LDCS001-EXC001", name: "Loaded Carbon Screen – Exciter A" },
               { assetNumber: "LDCS001-LCS001", name: "Loaded Carbon Screen – Exciter A LCS" },
@@ -1631,10 +1664,16 @@ export const areasData: Area[] = [
                   {
                     componentCode: "WISS-5M2",
                     componentType: "Wiped Interstage Screen",
-                    componentName: "Intertank Screen Unit",
+                    componentName: "Intertank Screen Unit (Top Discharge)",
                     manufacturer: "Alloytec",
                     model: "Wiped Interstage Screen",
                     displacement: "Screen Area: 5 m², Aperture: 0.80 mm"
+                  },
+                  {
+                    componentCode: "BONFIGLIOLI-GBX",
+                    componentType: "Gearbox",
+                    componentName: "Intertank Screen Spare Gearbox",
+                    manufacturer: "Bonfiglioli"
                   }
                 ]
               },
@@ -1692,6 +1731,57 @@ export const areasData: Area[] = [
               { assetNumber: "CSS001-EXC001", name: "Carbon Safety Screen – Exciter" },
               { assetNumber: "CSS001-LCS001", name: "Carbon Safety Screen – LCS" },
               { assetNumber: "CSS001-MCC001", name: "Carbon Safety Screen – MCC Cell" },
+            ] 
+          },
+          { 
+            label: "CIP Tailings Pumps", 
+            equipment: [
+              { 
+                assetNumber: "CIP-TPMP001", 
+                name: "CIP Tailings Pump – Duty",
+                components: [
+                  {
+                    componentCode: "WARMAN-6/4",
+                    componentType: "Pump Wet End",
+                    componentName: "CIP Tailings Pump Wet End",
+                    manufacturer: "Warman",
+                    model: "6/4 AH",
+                    pumpFlow: "137 m³/hr @ 25 m TDH"
+                  },
+                  {
+                    componentCode: "WEG-CIP-TAIL",
+                    componentType: "Motor",
+                    componentName: "CIP Tailings Pump Motor",
+                    manufacturer: "WEG"
+                  }
+                ]
+              },
+              { assetNumber: "CIP-TPMP001-MTR001", name: "CIP Tailings Pump Duty – Motor" },
+              { assetNumber: "CIP-TPMP001-MCC001", name: "CIP Tailings Pump Duty – MCC Cell" },
+              { assetNumber: "CIP-TPMP001-LCS001", name: "CIP Tailings Pump Duty – LCS" },
+              { 
+                assetNumber: "CIP-TPMP002", 
+                name: "CIP Tailings Pump – Standby",
+                components: [
+                  {
+                    componentCode: "WARMAN-6/4",
+                    componentType: "Pump Wet End",
+                    componentName: "CIP Tailings Pump Wet End (Standby)",
+                    manufacturer: "Warman",
+                    model: "6/4 AH",
+                    pumpFlow: "137 m³/hr @ 25 m TDH"
+                  },
+                  {
+                    componentCode: "WEG-CIP-TAIL-STBY",
+                    componentType: "Motor",
+                    componentName: "CIP Tailings Pump Motor (Standby)",
+                    manufacturer: "WEG"
+                  }
+                ]
+              },
+              { assetNumber: "CIP-TPMP002-MTR001", name: "CIP Tailings Pump Standby – Motor" },
+              { assetNumber: "CIP-TPMP002-MCC001", name: "CIP Tailings Pump Standby – MCC Cell" },
+              { assetNumber: "CIP-TPMP002-LCS001", name: "CIP Tailings Pump Standby – LCS" },
             ] 
           },
         ],
