@@ -476,51 +476,72 @@ export const areasData: Area[] = [
         label: "Conveying",
         parentAssets: [
           { 
-            label: "Conveyor CV01", 
+            label: "Transfer Conveyor", 
             equipment: [
-              { assetNumber: "CV001", name: "Transfer Conveyor" },
-              { assetNumber: "CV001-LCS001", name: "Transfer Conveyor – Local Control Station" },
-              { assetNumber: "CV001-MTR001", name: "Transfer Conveyor – Motor" },
-              { assetNumber: "CV001-MCC001", name: "Transfer Conveyor – MCC Cell" },
-              { assetNumber: "CV001-GBX001", name: "Transfer Conveyor – Gearbox" },
-              { assetNumber: "CV001-PWS001", name: "Transfer Conveyor – Pullwire Switch" },
-              { assetNumber: "CV001", name: "Ball Mill Scatts Conveyor" },
-              // Part 3 equipment
-              { assetNumber: "CV001", name: "Filter 1 Extraction Conveyor" },
-              { assetNumber: "CV001-MTR002", name: "Filter 1 Extraction – Motor" },
-              { assetNumber: "CV001-GBX002", name: "Filter 1 Extraction – Gearbox" },
-              { assetNumber: "CV001", name: "Filter 1 Extraction Conveyor – VFD" },
-              { assetNumber: "CV001-MCC002", name: "Filter 1 Extraction Conveyor – MCC Cell" },
-              // Part 4 equipment
-              { assetNumber: "CV001", name: "Filter 2 Extraction Conveyor" },
-              { assetNumber: "CV001-MTR003", name: "Filter 2 Extraction – Motor" },
-              { assetNumber: "CV001-GBX003", name: "Filter 2 Extraction – Gearbox" },
-              { assetNumber: "CV001", name: "Filter 2 Extraction Conveyor – VFD" },
-              { assetNumber: "CV001-MCC003", name: "Filter 2 Extraction Conveyor – MCC Cell" },
-              { assetNumber: "CV001", name: "Tails Filter Press Collection Conveyor" },
-              { assetNumber: "CV001-MTR004", name: "Tails Filter Press Collection Conveyor – Motor" },
-              { assetNumber: "CV001-GBX004", name: "Tails Filter Press Collection Conveyor – Gearbox" },
-              { assetNumber: "CV001-MCC004", name: "Tails Filter Press Collection Conveyor – MCC Cell" },
-              { assetNumber: "CV001", name: "Tails Filter Press Collection Conveyor – VFD" },
-              { assetNumber: "CV001", name: "Tails Filter Press Radial Stacker Conveyor" },
-              { assetNumber: "CV001-MTR005", name: "Tails Filter Press Radial Stacker Conveyor Drive Motor A" },
-              { assetNumber: "CV001-MTR006", name: "Tails Filter Press Radial Stacker Conveyor Drive Motor B" },
-              { assetNumber: "CV001-MTR007", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive Motor A" },
-              { assetNumber: "CV001-MTR008", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive Motor B" },
-              { assetNumber: "CV001", name: "Tails Filter Press Radial Stacker Conveyor Drive Gear Box A" },
-              { assetNumber: "CV001", name: "Tails Filter Press Radial Stacker Conveyor Drive Gear Box B" },
-              { assetNumber: "CV001-GBX005", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive Gearbox A" },
-              { assetNumber: "CV001-GBX006", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive Gearbox B" },
-              { assetNumber: "CV001-MCC005", name: "Tails Filter Press Radial Stacker Conveyor Drive A – MCC Cell" },
-              { assetNumber: "CV001-MCC006", name: "Tails Filter Press Radial Stacker Conveyor Drive B – MCC Cell" },
-              { assetNumber: "CV001-MCC007", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive A – MCC Cell" },
-              { assetNumber: "CV001-MCC008", name: "Tails Filter Press Radial Stacker Conveyor Wheel Drive B – MCC Cell" },
+              { assetNumber: "TRCV001", name: "Transfer Conveyor" },
+              { assetNumber: "TRCV001-LCS001", name: "Transfer Conveyor – Local Control Station" },
+              { assetNumber: "TRCV001-MTR001", name: "Transfer Conveyor – Motor" },
+              { assetNumber: "TRCV001-MCC001", name: "Transfer Conveyor – MCC Cell" },
+              { assetNumber: "TRCV001-GBX001", name: "Transfer Conveyor – Gearbox" },
+              { assetNumber: "TRCV001-PWS001", name: "Transfer Conveyor – Pullwire Switch" },
+              { assetNumber: "TRCV001-CHU001", name: "Transfer Conveyor – Discharge Chute" },
             ]
           },
           { 
-            label: "Conveyor CV02", 
+            label: "Ball Mill Scatts Conveyor", 
             equipment: [
-              { assetNumber: "CV002-CHU001", name: "Transfer Conveyor – Discharge Chute" },
+              { assetNumber: "BMSC001", name: "Ball Mill Scatts Conveyor" },
+              { assetNumber: "BMSC001-MTR001", name: "Ball Mill Scatts Conveyor – Motor" },
+              { assetNumber: "BMSC001-GBX001", name: "Ball Mill Scatts Conveyor – Gearbox" },
+              { assetNumber: "BMSC001-MCC001", name: "Ball Mill Scatts Conveyor – MCC Cell" },
+            ] 
+          },
+          { 
+            label: "Filter 1 Extraction Conveyor", 
+            equipment: [
+              { assetNumber: "F1EC001", name: "Filter 1 Extraction Conveyor" },
+              { assetNumber: "F1EC001-MTR001", name: "Filter 1 Extraction Conveyor – Motor" },
+              { assetNumber: "F1EC001-GBX001", name: "Filter 1 Extraction Conveyor – Gearbox" },
+              { assetNumber: "F1EC001-VFD001", name: "Filter 1 Extraction Conveyor – VFD" },
+              { assetNumber: "F1EC001-MCC001", name: "Filter 1 Extraction Conveyor – MCC Cell" },
+            ] 
+          },
+          { 
+            label: "Filter 2 Extraction Conveyor", 
+            equipment: [
+              { assetNumber: "F2EC001", name: "Filter 2 Extraction Conveyor" },
+              { assetNumber: "F2EC001-MTR001", name: "Filter 2 Extraction Conveyor – Motor" },
+              { assetNumber: "F2EC001-GBX001", name: "Filter 2 Extraction Conveyor – Gearbox" },
+              { assetNumber: "F2EC001-VFD001", name: "Filter 2 Extraction Conveyor – VFD" },
+              { assetNumber: "F2EC001-MCC001", name: "Filter 2 Extraction Conveyor – MCC Cell" },
+            ] 
+          },
+          { 
+            label: "Tails Filter Press Collection Conveyor", 
+            equipment: [
+              { assetNumber: "TFPC001", name: "Tails Filter Press Collection Conveyor" },
+              { assetNumber: "TFPC001-MTR001", name: "Tails Filter Press Collection Conveyor – Motor" },
+              { assetNumber: "TFPC001-GBX001", name: "Tails Filter Press Collection Conveyor – Gearbox" },
+              { assetNumber: "TFPC001-MCC001", name: "Tails Filter Press Collection Conveyor – MCC Cell" },
+              { assetNumber: "TFPC001-VFD001", name: "Tails Filter Press Collection Conveyor – VFD" },
+            ] 
+          },
+          { 
+            label: "Tails Filter Press Radial Stacker Conveyor", 
+            equipment: [
+              { assetNumber: "TFRS001", name: "Tails Filter Press Radial Stacker Conveyor" },
+              { assetNumber: "TFRS001-MTR001", name: "Tails Filter Press Radial Stacker – Drive Motor A" },
+              { assetNumber: "TFRS001-MTR002", name: "Tails Filter Press Radial Stacker – Drive Motor B" },
+              { assetNumber: "TFRS001-MTR003", name: "Tails Filter Press Radial Stacker – Wheel Drive Motor A" },
+              { assetNumber: "TFRS001-MTR004", name: "Tails Filter Press Radial Stacker – Wheel Drive Motor B" },
+              { assetNumber: "TFRS001-GBX001", name: "Tails Filter Press Radial Stacker – Drive Gearbox A" },
+              { assetNumber: "TFRS001-GBX002", name: "Tails Filter Press Radial Stacker – Drive Gearbox B" },
+              { assetNumber: "TFRS001-GBX003", name: "Tails Filter Press Radial Stacker – Wheel Drive Gearbox A" },
+              { assetNumber: "TFRS001-GBX004", name: "Tails Filter Press Radial Stacker – Wheel Drive Gearbox B" },
+              { assetNumber: "TFRS001-MCC001", name: "Tails Filter Press Radial Stacker – Drive A MCC Cell" },
+              { assetNumber: "TFRS001-MCC002", name: "Tails Filter Press Radial Stacker – Drive B MCC Cell" },
+              { assetNumber: "TFRS001-MCC003", name: "Tails Filter Press Radial Stacker – Wheel Drive A MCC Cell" },
+              { assetNumber: "TFRS001-MCC004", name: "Tails Filter Press Radial Stacker – Wheel Drive B MCC Cell" },
             ] 
           },
         ],
