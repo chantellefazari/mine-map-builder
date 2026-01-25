@@ -80,6 +80,10 @@ export default {
           DEFAULT: "hsl(var(--connector))",
           active: "hsl(var(--connector-active))",
         },
+        search: {
+          highlight: "hsl(var(--search-highlight))",
+          glow: "hsl(var(--search-highlight-glow))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

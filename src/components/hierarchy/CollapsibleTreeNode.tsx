@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronRight, ChevronDown, Minus } from "lucide-react";
 
@@ -6,6 +6,7 @@ export type NodeLevel = "site" | "plant" | "area" | "subarea" | "parentAsset" | 
 export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP";
 
 interface CollapsibleTreeNodeProps {
+  id?: string;
   code?: string;
   label: string;
   level: NodeLevel;
@@ -37,6 +38,7 @@ const areaColors: Record<AreaType, string> = {
 };
 
 export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
+  id,
   code,
   label,
   level,
@@ -49,6 +51,7 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   centered = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded || forceExpanded);
+  const nodeRef = useRef<HTMLDivElement>(null);
   
   // React to forceExpanded changes from search
   useEffect(() => {
@@ -56,6 +59,17 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
       setIsExpanded(true);
     }
   }, [forceExpanded]);
+
+  // Pulse animation for highlighted nodes
+  useEffect(() => {
+    if (isHighlighted && nodeRef.current) {
+      nodeRef.current.classList.add("animate-pulse");
+      const timeout = setTimeout(() => {
+        nodeRef.current?.classList.remove("animate-pulse");
+      }, 2000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isHighlighted]);
   
   const baseStyle = levelStyles[level];
   const areaColor = level === "area" && areaType ? areaColors[areaType] : "";
@@ -71,13 +85,15 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
     <div className={cn("flex flex-col", centered ? "items-center" : "items-start")}>
       {/* Node itself */}
       <div
+        id={id}
+        ref={nodeRef}
         onClick={handleToggle}
         className={cn(
-          "rounded-lg flex items-center gap-1.5 whitespace-nowrap select-none",
+          "rounded-lg flex items-center gap-1.5 whitespace-nowrap select-none transition-all duration-300",
           baseStyle,
           areaColor,
-          canExpand && "cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all",
-          isHighlighted && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+          canExpand && "cursor-pointer hover:ring-2 hover:ring-primary/30",
+          isHighlighted && "ring-2 ring-search-highlight ring-offset-2 ring-offset-background shadow-lg shadow-search-glow/40"
         )}
       >
         {/* Expand/collapse icon */}
