@@ -1,25 +1,5 @@
 import { useMemo } from "react";
-
-interface Equipment {
-  assetNumber: string;
-  name: string;
-}
-
-interface ParentAsset {
-  label: string;
-  equipment: Equipment[];
-}
-
-interface SubArea {
-  label: string;
-  parentAssets: ParentAsset[];
-}
-
-interface Area {
-  code: string;
-  label: string;
-  subAreas: SubArea[];
-}
+import { Area, ParentAsset, SubArea, Equipment } from "@/components/hierarchy/assetData";
 
 export interface SearchResult {
   type: "area" | "subarea" | "parentAsset" | "equipment";
