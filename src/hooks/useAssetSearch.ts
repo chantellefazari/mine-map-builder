@@ -156,19 +156,25 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
     return { results: searchResults, matchingPaths, firstMatchId };
   }, [areasData, searchQuery]);
 
-  // Scroll to first match after a short delay to allow expansion
+  // Scroll to first match after a delay to allow tree expansion
   useEffect(() => {
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
     
     if (results.firstMatchId) {
-      scrollTimeoutRef.current = setTimeout(() => {
+      // Try scrolling with increasing delays to ensure DOM has updated
+      const attemptScroll = (attempt: number) => {
         const element = document.getElementById(results.firstMatchId!);
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else if (attempt < 3) {
+          // Retry with longer delay if element not found yet
+          scrollTimeoutRef.current = setTimeout(() => attemptScroll(attempt + 1), 200);
         }
-      }, 150);
+      };
+      
+      scrollTimeoutRef.current = setTimeout(() => attemptScroll(0), 300);
     }
     
     return () => {
