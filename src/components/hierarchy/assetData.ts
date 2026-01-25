@@ -32,27 +32,43 @@ export const areasData: Area[] = [
         label: "Site Infrastructure",
         parentAssets: [
           { 
-            label: "Site Infrastructure", 
+            label: "Gold Plant", 
             equipment: [
               { assetNumber: "SINF001", name: "Gold Plant" },
-              // Part 4 equipment
               { assetNumber: "SINF002", name: "Buildings" },
+            ] 
+          },
+          { 
+            label: "Admin Building", 
+            equipment: [
               { assetNumber: "SINF003", name: "Admin" },
-              { assetNumber: "SINF004", name: "Crib" },
-              { assetNumber: "SINF005", name: "Conference" },
-              { assetNumber: "SINF006", name: "First Aid Room" },
-              { assetNumber: "SINF007", name: "Male Toilet" },
-              { assetNumber: "SINF008", name: "Female Toilet" },
-              { assetNumber: "SINF007-DB001", name: "Male Toilet L&P DB" },
               { assetNumber: "SINF003-DB001", name: "Admin Office L&P DB 1" },
               { assetNumber: "SINF003-DB002", name: "Admin Office L&P DB 2" },
               { assetNumber: "SINF003-DB003", name: "Admin Office L&P DB 3" },
               { assetNumber: "SINF003-DB004", name: "Admin Office L&P DB 4" },
+              { assetNumber: "SINF005", name: "Conference" },
             ] 
           },
-          { label: "Admin Building", equipment: [] },
-          { label: "Toilets / Amenities", equipment: [] },
-          { label: "Crib Room", equipment: [] },
+          { 
+            label: "Toilets / Amenities", 
+            equipment: [
+              { assetNumber: "SINF007", name: "Male Toilet" },
+              { assetNumber: "SINF008", name: "Female Toilet" },
+              { assetNumber: "SINF007-DB001", name: "Male Toilet L&P DB" },
+            ] 
+          },
+          { 
+            label: "Crib Room", 
+            equipment: [
+              { assetNumber: "SINF004", name: "Crib" },
+            ] 
+          },
+          { 
+            label: "First Aid Room", 
+            equipment: [
+              { assetNumber: "SINF006", name: "First Aid Room" },
+            ] 
+          },
           { label: "Change Rooms", equipment: [] },
           { 
             label: "Services", 
