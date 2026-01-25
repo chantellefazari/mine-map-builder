@@ -1070,14 +1070,13 @@ export const areasData: Area[] = [
                 name: "Gravity Screen",
                 components: [
                   {
-                    componentCode: "HS-09/24-24",
+                    componentCode: "OF-HS-09/24-24",
                     componentType: "Linear Vibrating Screen",
                     componentName: "Vibrating Screen Unit",
-                    manufacturer: "N/A",
-                    model: "0.9 × 2.4 m",
+                    manufacturer: "Overflow",
+                    model: "OF-HS-09/24-24",
                     weight: "1280 kg",
-                    displacement: "Apertures: 2.4 mm",
-                    serialNumber: "OF-HS-09/24-24"
+                    displacement: "Size: 0.9 × 2.4 m, Apertures: 2.4 mm"
                   }
                 ]
               },
@@ -1172,18 +1171,18 @@ export const areasData: Area[] = [
                 name: "Gravity Tails Pump",
                 components: [
                   {
-                    componentCode: "VS-PUMP",
+                    componentCode: "VT40 05",
                     componentType: "Vertical Spindle Pump",
                     componentName: "Gravity Tails Pump Assembly",
                     manufacturer: "Metso",
-                    model: "Vertical Spindle (in hopper)"
+                    model: "VT40 05 NR/NR"
                   },
                   {
-                    componentCode: "AEMBUCDCV",
+                    componentCode: "TECO",
                     componentType: "Motor",
                     componentName: "Gravity Tails Pump Motor",
                     manufacturer: "TECO",
-                    model: "AEMBUCDCV",
+                    model: "VT40 05 NR/NR",
                     voltage: "2.2 kW",
                     displacement: "Frame: D100L"
                   }
@@ -1250,7 +1249,32 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK01-GBX001", name: "CIP Leach Tank 1 – Agitator Gear Box" },
               { assetNumber: "CIP-TK01-LCS001", name: "CIP Leach Tank 1 – Agitator LCS" },
               { assetNumber: "CIP-NZL01", name: "Leach Tank 1 – Air Sparge Nozzles" },
-              { assetNumber: "CIP-PMP001", name: "CIP Leach Area Sump Pump" },
+              { 
+                assetNumber: "CIP-PMP001", 
+                name: "CIP Area Sump Pump",
+                components: [
+                  {
+                    componentCode: "65QV-SPR",
+                    componentType: "Vertical Spindle Pump",
+                    componentName: "CIP Sump Pump Assembly",
+                    manufacturer: "Global Pump",
+                    model: "65QV-SPR Vertical Spindle"
+                  },
+                  {
+                    componentCode: "WEG",
+                    componentType: "Motor",
+                    componentName: "CIP Sump Pump Motor",
+                    manufacturer: "WEG"
+                  },
+                  {
+                    componentCode: "SPA 1250",
+                    componentType: "Belt",
+                    componentName: "CIP Sump Pump Belt",
+                    manufacturer: "N/A",
+                    model: "SPA 1250 x 2"
+                  }
+                ]
+              },
               { assetNumber: "CIP-ALF01", name: "Carbon Transfer Air Lift 1" },
             ] 
           },
@@ -1260,7 +1284,21 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-SHW02", name: "CIP Area Safety Showers" },
               { assetNumber: "CIP-SHW03", name: "CIP Area Safety Shower 2" },
               { assetNumber: "CIP-TK02", name: "CIP Leach Tank 2" },
-              { assetNumber: "CIP-TK02-AGT001", name: "CIP Leach Tank 2 – Agitator" },
+              { 
+                assetNumber: "CIP-TK02-AGT001", 
+                name: "CIP Leach Tank 2 – Agitator",
+                components: [
+                  {
+                    componentCode: "MC4350/01/1167",
+                    componentType: "Coaxial Gearbox Agitator",
+                    componentName: "Leach Tank 2 Agitator Unit",
+                    manufacturer: "MIXTEC",
+                    model: "MC4350/01/1167",
+                    outputSpeed: "28 RPM",
+                    displacement: "Dual Impellers, Rubber-lined"
+                  }
+                ]
+              },
               { assetNumber: "CIP-TK02-MTR001", name: "CIP Leach Tank 2 – Agitator Motor" },
               { assetNumber: "CIP-TK02-MCC001", name: "CIP Leach Tank 2 – Agitator MCC Cell" },
               { assetNumber: "CIP-TK02-GBX001", name: "CIP Leach Tank 2 – Agitator Gear Box" },
@@ -1376,11 +1414,24 @@ export const areasData: Area[] = [
           { 
             label: "CIP Inter Tank Screens", 
             equipment: [
-              { assetNumber: "CITS001", name: "CIP Inter Tank Screen 1" },
-              { assetNumber: "CITS001-MTR001", name: "CIP Inter Tank Screen 1 – Motor" },
-              { assetNumber: "CITS001-MCC001", name: "CIP Inter Tank Screen 1 – MCC Cell" },
-              { assetNumber: "CITS001-GBX001", name: "CIP Inter Tank Screen 1 – Gearbox" },
-              { assetNumber: "CITS001-LCS001", name: "CIP Inter Tank Screen 1 – LCS" },
+              { 
+                assetNumber: "CITS001", 
+                name: "CIP Intertank Screen 1",
+                components: [
+                  {
+                    componentCode: "WISS-5M2",
+                    componentType: "Wiped Interstage Screen",
+                    componentName: "Intertank Screen Unit",
+                    manufacturer: "Alloytec",
+                    model: "Wiped Interstage Screen",
+                    displacement: "Screen Area: 5 m², Aperture: 0.80 mm"
+                  }
+                ]
+              },
+              { assetNumber: "CITS001-MTR001", name: "CIP Intertank Screen 1 – Motor" },
+              { assetNumber: "CITS001-MCC001", name: "CIP Intertank Screen 1 – MCC Cell" },
+              { assetNumber: "CITS001-GBX001", name: "CIP Intertank Screen 1 – Gearbox" },
+              { assetNumber: "CITS001-LCS001", name: "CIP Intertank Screen 1 – LCS" },
               { assetNumber: "CITS002", name: "CIP Inter Tank Screen 2" },
               { assetNumber: "CITS002-MTR001", name: "CIP Inter Tank Screen 2 – Motor" },
               { assetNumber: "CITS002-MCC001", name: "CIP Inter Tank Screen 2 – MCC Cell" },
@@ -1408,7 +1459,26 @@ export const areasData: Area[] = [
             label: "Carbon Safety Screen", 
             equipment: [
               { assetNumber: "CSS001", name: "Carbon Safety Screen Feed Box" },
-              { assetNumber: "CSS001-SCR001", name: "Carbon Safety Screen" },
+              { 
+                assetNumber: "CSS001-SCR001", 
+                name: "Carbon Safety Screen",
+                components: [
+                  {
+                    componentCode: "OF-HS-18/36",
+                    componentType: "Linear Vibrating Screen",
+                    componentName: "Carbon Safety Screen Unit",
+                    manufacturer: "Minspec",
+                    model: "OF-HS-18/36"
+                  },
+                  {
+                    componentCode: "KEE 75-4",
+                    componentType: "Exciter",
+                    componentName: "Carbon Safety Screen Exciter",
+                    manufacturer: "URAS",
+                    model: "KEE 75-4"
+                  }
+                ]
+              },
               { assetNumber: "CSS001-CHU001", name: "Carbon Safety Screen – Underpan Chute" },
               { assetNumber: "CSS001-CHU002", name: "Carbon Safety Screen – Oversize Chute" },
               { assetNumber: "CSS001-PMP001", name: "Carbon Safety Screen Sump Pump" },
