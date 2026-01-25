@@ -169,11 +169,11 @@ export const areasData: Area[] = [
           { 
             label: "Control Room", 
             equipment: [
-              { assetNumber: "CR001", name: "Knelson Concentrator Control Panel" },
-              { assetNumber: "CR001", name: "Knelson Area Hoist Control Panel" },
               { assetNumber: "CR001", name: "Control Room" },
-              { assetNumber: "CR001", name: "Control Room L&P DB" },
-            ] 
+              { assetNumber: "CR001-PNL001", name: "Knelson Concentrator Control Panel" },
+              { assetNumber: "CR001-PNL002", name: "Knelson Area Hoist Control Panel" },
+              { assetNumber: "CR001-DB001", name: "Control Room L&P DB" },
+            ]
           },
           { label: "Control Subroom 1", equipment: [] },
           { 
