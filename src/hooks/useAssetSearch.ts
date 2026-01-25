@@ -1,6 +1,6 @@
-import { useMemo, useEffect, useRef, useCallback } from "react";
+import { useMemo, useEffect, useRef } from "react";
 import { Area } from "@/components/hierarchy/assetData";
-
+import { pidTagMappings } from "@/components/hierarchy/pidTagMappings";
 export interface SearchResult {
   type: "area" | "subarea" | "parentAsset" | "equipment";
   path: string[];
