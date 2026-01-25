@@ -1368,7 +1368,7 @@ export const areasData: Area[] = [
         label: "Workshop",
         parentAssets: [
           { 
-            label: "Workshop", 
+            label: "Workshop Electrical", 
             equipment: [
               { assetNumber: "WKSHP001-DB001", name: "Workshop DB" },
             ] 
