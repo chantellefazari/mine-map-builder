@@ -672,14 +672,19 @@ export const areasData: Area[] = [
               { assetNumber: "GSCR001", name: "Gravity Screen" },
               { assetNumber: "GSCR001-CHU001", name: "Gravity Screen – Feed Chute" },
               { assetNumber: "GSCR001-CHU002", name: "Gravity Screen – Discharge Chute" },
-              { assetNumber: "GSCR001", name: "Gravity Screen Under Pan" },
+              { assetNumber: "GSCR001-PAN001", name: "Gravity Screen – Under Pan" },
+              { assetNumber: "GSCR001-MTR001", name: "Gravity Screen – Motor" },
+              { assetNumber: "GSCR001-MCC001", name: "Gravity Screen – MCC Cell" },
             ] 
           },
           { 
             label: "Knelson Concentrator", 
             equipment: [
               { assetNumber: "KNLS001", name: "Knelson Concentrator" },
-              { assetNumber: "KNLS001", name: "Concentrate Collection Cone" },
+              { assetNumber: "KNLS001-CONE001", name: "Knelson Concentrator – Collection Cone" },
+              { assetNumber: "KNLS001-MTR001", name: "Knelson Concentrator – Motor" },
+              { assetNumber: "KNLS001-MCC001", name: "Knelson Concentrator – MCC Cell" },
+              { assetNumber: "KNLS001-PMP001", name: "Knelson Concentrator – Water Pump" },
             ] 
           },
           { 
