@@ -175,7 +175,7 @@ export const areasData: Area[] = [
               { assetNumber: "CR001-DB001", name: "Control Room L&P DB" },
             ]
           },
-          { label: "Control Subroom 1", equipment: [] },
+          
           { 
             label: "Lighting Towers", 
             equipment: [
