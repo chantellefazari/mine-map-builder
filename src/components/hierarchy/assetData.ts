@@ -388,31 +388,31 @@ export const areasData: Area[] = [
           { 
             label: "Reclaim Hopper", 
             equipment: [
-              { assetNumber: "RF-HOP001", name: "Reclaim Hopper" },
+              { assetNumber: "HOP001", name: "Reclaim Hopper" },
             ] 
           },
           { 
             label: "Apron Feeder", 
             equipment: [
-              { assetNumber: "RF-FDR001", name: "Reclaim Feeder" },
-              { assetNumber: "RF-FDR001-LCS001", name: "Reclaim Feeder – LCS" },
-              { assetNumber: "RF-FDR001-MTR001", name: "Reclaim Feeder – Motor" },
-              { assetNumber: "RF-FDR001-MCC001", name: "Reclaim Feeder – MCC Cell" },
-              { assetNumber: "RF-FDR001-GBX001", name: "Reclaim Feeder – Gearbox" },
-              { assetNumber: "RF-FDR001-PWS001", name: "Reclaim Feeder – Pullwire Switch" },
-              { assetNumber: "RF-FDR001-TX001", name: "Reclaim Feeder – Speed Transmitter" },
-              { assetNumber: "RF-FDR001-VLV001", name: "Lime Feeder – Rotary Valve" },
-              { assetNumber: "RF-FDR001", name: "Regen Kiln Screw Feeder" },
+              { assetNumber: "FDR001", name: "Reclaim Feeder" },
+              { assetNumber: "FDR001-LCS001", name: "Reclaim Feeder – LCS" },
+              { assetNumber: "FDR001-MTR001", name: "Reclaim Feeder – Motor" },
+              { assetNumber: "FDR001-MCC001", name: "Reclaim Feeder – MCC Cell" },
+              { assetNumber: "FDR001-GBX001", name: "Reclaim Feeder – Gearbox" },
+              { assetNumber: "FDR001-PWS001", name: "Reclaim Feeder – Pullwire Switch" },
+              { assetNumber: "FDR001-TX001", name: "Reclaim Feeder – Speed Transmitter" },
+              { assetNumber: "FDR001-VLV001", name: "Lime Feeder – Rotary Valve" },
+              { assetNumber: "FDR002", name: "Regen Kiln Screw Feeder" },
             ] 
           },
           { 
             label: "Feed Hopper", 
             equipment: [
-              { assetNumber: "RF-HOP002", name: "Mill Feed Hopper" },
-              { assetNumber: "RF-HOP002-CHU001", name: "Ball Mill Feed Chute – High Level Switch" },
-              { assetNumber: "RF-HOP002-CHU002", name: "Mill Feed Chute" },
-              { assetNumber: "RF-HOP002-CHU003", name: "Ball Loading Chute" },
-              { assetNumber: "RF-HOP002", name: "Primary Mill Feed Boiler Box" },
+              { assetNumber: "HOP002", name: "Mill Feed Hopper" },
+              { assetNumber: "HOP002-CHU001", name: "Ball Mill Feed Chute – High Level Switch" },
+              { assetNumber: "HOP002-CHU002", name: "Mill Feed Chute" },
+              { assetNumber: "HOP002-CHU003", name: "Ball Loading Chute" },
+              { assetNumber: "HOP002-BOX001", name: "Primary Mill Feed Boiler Box" },
             ]
           },
           { 
