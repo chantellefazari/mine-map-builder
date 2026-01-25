@@ -850,18 +850,17 @@ export const areasData: Area[] = [
             label: "Carbon Safety Screen", 
             equipment: [
               { assetNumber: "CSS001", name: "Carbon Safety Screen Feed Box" },
-              { assetNumber: "CSS001", name: "Carbon Safety Screen" },
+              { assetNumber: "CSS001-SCR001", name: "Carbon Safety Screen" },
               { assetNumber: "CSS001-CHU001", name: "Carbon Safety Screen – Underpan Chute" },
               { assetNumber: "CSS001-CHU002", name: "Carbon Safety Screen – Oversize Chute" },
+              { assetNumber: "CSS001-PMP001", name: "Carbon Safety Screen Sump Pump" },
             ] 
           },
           { 
-            label: "Barron Carbon Dewatering Screen", 
+            label: "Carbon Safety Sump", 
             equipment: [
-              { assetNumber: "BCDS001", name: "Barron Carbon Dewatering Screen" },
-              { assetNumber: "BCDS001-EXC001", name: "Barron Carbon Dewatering Screen Excitor" },
-              { assetNumber: "BCDS001-MCC001", name: "Barron Carbon Dewatering Screen – MCC Cell" },
-              { assetNumber: "BCDS001-LCS001", name: "Barron Carbon Dewatering Screen – LCS" },
+              { assetNumber: "CSSMP001", name: "Carbon Safety Sump" },
+              { assetNumber: "CSSMP001-PMP001", name: "Carbon Safety Sump Pump" },
             ] 
           },
           { 
@@ -960,13 +959,6 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "Diesel System", 
-            equipment: [
-              { assetNumber: "DSL001-PMP001", name: "Diesel Pump" },
-              { assetNumber: "DSL001-TK001", name: "Diesel Day Tank" },
-            ] 
-          },
-          { 
             label: "Titration Hut", 
             equipment: [
               { assetNumber: "THUT001", name: "Titration Hut" },
@@ -1006,6 +998,13 @@ export const areasData: Area[] = [
             ]
           },
           { 
+            label: "Flashpot", 
+            equipment: [
+              { assetNumber: "FLSH001", name: "Flashpot" },
+              { assetNumber: "FLSH001-INS001", name: "Flashpot Pressure Regulator" },
+            ]
+          },
+          { 
             label: "Heat Exchanger", 
             equipment: [
               { assetNumber: "HEXC001", name: "Elution Recovery Heat Exchange" },
@@ -1032,6 +1031,7 @@ export const areasData: Area[] = [
               { assetNumber: "AWSH001-TK001", name: "Acid Wash System – Acid Tank" },
               { assetNumber: "AWSH001-PMP001", name: "Acid Wash System – Dosing Pump" },
               { assetNumber: "AWSH001-AGT001", name: "Acid Wash System – Agitator" },
+              { assetNumber: "AWSH001-SMP001", name: "Acid Wash Sump" },
             ] 
           },
           { 
@@ -1070,40 +1070,26 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "Carbon Transfer System", 
+            label: "Diesel System", 
             equipment: [
-              { assetNumber: "CXFR001-PMP001", name: "Carbon Transfer Pump" },
-              { assetNumber: "CXFR001-MTR001", name: "Carbon Transfer Pump – Motor" },
-              { assetNumber: "CXFR001-MCC001", name: "Carbon Transfer Pump – MCC Cell" },
-              { assetNumber: "CXFR001-LCS001", name: "Carbon Transfer Pump – LCS" },
+              { assetNumber: "DSL001-PMP001", name: "Diesel Pump" },
+              { assetNumber: "DSL001-TK001", name: "Diesel Day Tank" },
+              { assetNumber: "DSL001-SVC001", name: "Diesel Service Truck" },
             ] 
           },
+        ],
+      },
+      {
+        label: "Carbon Regeneration",
+        parentAssets: [
           { 
-            label: "Carbon Regen System", 
+            label: "Barren Carbon Dewatering Screen", 
             equipment: [
-              { assetNumber: "CREG001-KLN001", name: "Carbon Regen Kiln" },
-              { assetNumber: "CREG001-HOP001", name: "Regenerated Carbon Quench Hopper" },
-              { assetNumber: "CREG001-SWT001", name: "Regenerated Carbon Quench Hopper Low Low Level Switch" },
+              { assetNumber: "BCDS001", name: "Barren Carbon Dewatering Screen" },
+              { assetNumber: "BCDS001-EXC001", name: "Barren Carbon Dewatering Screen Exciter" },
+              { assetNumber: "BCDS001-MCC001", name: "Barren Carbon Dewatering Screen – MCC Cell" },
+              { assetNumber: "BCDS001-LCS001", name: "Barren Carbon Dewatering Screen – LCS" },
             ] 
-          },
-          { 
-            label: "Regen Kiln", 
-            equipment: [
-              { assetNumber: "KLN001", name: "Regen Kiln – Kiln" },
-              { assetNumber: "KLN001-MTR001", name: "Regen Kiln – Drive Motor" },
-              { assetNumber: "KLN001-GBX001", name: "Regen Kiln – Gearbox" },
-              { assetNumber: "KLN001-FAN001", name: "Regen Kiln – Combustion Fan" },
-              { assetNumber: "KLN001-BRN001", name: "Regen Kiln Burners" },
-              { assetNumber: "KLN001-SEN001", name: "Regen Kiln Feed Screw Inlet Level Sensor" },
-              { assetNumber: "KLN001-INS001", name: "Regen Kiln Zone 2 Temperature Gauge 1" },
-              { assetNumber: "KLN001-INS002", name: "Regen Kiln Zone 2 Temperature Gauge 2" },
-              { assetNumber: "KLN001-INS003", name: "Regen Kiln Zone 3 Temperature Gauge 1" },
-              { assetNumber: "KLN001-INS004", name: "Regen Kiln Zone 3 Temperature Gauge 2" },
-              { assetNumber: "KLN001-SEN002", name: "Regen Kiln Discharge Temperature Sensor" },
-              { assetNumber: "KLN001-INS005", name: "Regen Kiln Zone 1 Temperature Gauge 1" },
-              { assetNumber: "KLN001-INS006", name: "Regen Kiln Zone 1 Temperature Gauge 2" },
-              { assetNumber: "KLN001-INS007", name: "Regen Kiln Feed End Temperature Gauge" },
-            ]
           },
           { 
             label: "Regen Kiln Feed Hopper", 
@@ -1111,7 +1097,63 @@ export const areasData: Area[] = [
               { assetNumber: "RKHP001", name: "Regen Kiln Feed Hopper" },
               { assetNumber: "RKHP001-FDR001", name: "Regen Kiln Feed Hopper – Feeder" },
               { assetNumber: "RKHP001-MTR001", name: "Regen Kiln Feed Hopper – Motor" },
+              { assetNumber: "RKHP001-SEN001", name: "Regen Kiln Feed Screw Inlet Level Sensor" },
             ]
+          },
+          { 
+            label: "Regen Kiln", 
+            equipment: [
+              { assetNumber: "KLN001", name: "Regen Kiln – Kiln" },
+              { assetNumber: "KLN001-MTR001", name: "Regen Kiln – Drive Motor" },
+              { assetNumber: "KLN001-VSD001", name: "Regen Kiln – VSD" },
+              { assetNumber: "KLN001-GBX001", name: "Regen Kiln – Gearbox" },
+              { assetNumber: "KLN001-FAN001", name: "Regen Kiln – Combustion Fan" },
+              { assetNumber: "KLN001-BRN001", name: "Regen Kiln Burners Zone 1" },
+              { assetNumber: "KLN001-BRN002", name: "Regen Kiln Burners Zone 2" },
+              { assetNumber: "KLN001-BRN003", name: "Regen Kiln Burners Zone 3" },
+              { assetNumber: "KLN001-INS001", name: "Regen Kiln Zone 1 Temperature Gauge 1" },
+              { assetNumber: "KLN001-INS002", name: "Regen Kiln Zone 1 Temperature Gauge 2" },
+              { assetNumber: "KLN001-INS003", name: "Regen Kiln Zone 2 Temperature Gauge 1" },
+              { assetNumber: "KLN001-INS004", name: "Regen Kiln Zone 2 Temperature Gauge 2" },
+              { assetNumber: "KLN001-INS005", name: "Regen Kiln Zone 3 Temperature Gauge 1" },
+              { assetNumber: "KLN001-INS006", name: "Regen Kiln Zone 3 Temperature Gauge 2" },
+              { assetNumber: "KLN001-INS007", name: "Regen Kiln Feed End Temperature Gauge" },
+              { assetNumber: "KLN001-SEN001", name: "Regen Kiln Discharge Temperature Sensor" },
+              { assetNumber: "KLN001-DRN001", name: "Regen Kiln Drain Water" },
+              { assetNumber: "KLN001-FLU001", name: "Regen Kiln Discharge Flue" },
+              { assetNumber: "KLN001-FLT001", name: "Regen Kiln Return Filters" },
+            ]
+          },
+          { 
+            label: "Carbon Quench System", 
+            equipment: [
+              { assetNumber: "CREG001-HOP001", name: "Regenerated Carbon Quench Hopper" },
+              { assetNumber: "CREG001-SWT001", name: "Regenerated Carbon Quench Hopper Low Low Level Switch" },
+            ] 
+          },
+          { 
+            label: "Regenerated Carbon Transfer", 
+            equipment: [
+              { assetNumber: "RCTR001-ALF001", name: "Carbon Transfer Air Lift" },
+              { assetNumber: "RCTR001-PMP001", name: "Carbon Transfer Pump" },
+              { assetNumber: "RCTR001-MTR001", name: "Carbon Transfer Pump – Motor" },
+              { assetNumber: "RCTR001-MCC001", name: "Carbon Transfer Pump – MCC Cell" },
+              { assetNumber: "RCTR001-LCS001", name: "Carbon Transfer Pump – LCS" },
+            ] 
+          },
+          { 
+            label: "Carbon Sizing Screen", 
+            equipment: [
+              { assetNumber: "CSZS001", name: "Carbon Sizing Screen" },
+              { assetNumber: "CSZS001-EXC001", name: "Carbon Sizing Screen Exciter" },
+            ] 
+          },
+          { 
+            label: "Regen Area Sump", 
+            equipment: [
+              { assetNumber: "RSMP001-PMP001", name: "Regen Area Sump Pump" },
+              { assetNumber: "RSMP001-MTR001", name: "Regen Area Sump Pump – Motor" },
+            ] 
           },
         ],
       },
