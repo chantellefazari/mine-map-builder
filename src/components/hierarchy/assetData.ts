@@ -1368,6 +1368,13 @@ export const areasData: Area[] = [
         label: "Workshop",
         parentAssets: [
           { label: "Fixed Plant Workshop", equipment: [] },
+          { 
+            label: "Workshop", 
+            equipment: [
+              { assetNumber: "WKSHP001", name: "Workshop" },
+              { assetNumber: "WKSHP001-DB001", name: "Workshop DB" },
+            ] 
+          },
         ],
       },
       {
@@ -1395,8 +1402,6 @@ export const areasData: Area[] = [
               { assetNumber: "HST001", name: "Knelson Area Hoist" },
               { assetNumber: "MOB001", name: "Mobile Equipment" },
               { assetNumber: "CRN002", name: "25t Franner Crane" },
-              { assetNumber: "WKSHP001", name: "Workshop" },
-              { assetNumber: "WKSHP001-DB001", name: "Workshop DB" },
               { assetNumber: "FLT001", name: "Forklift" },
               { assetNumber: "TLH001", name: "Telehandler" },
               { assetNumber: "BOBCAT001", name: "Bob Cat" },
