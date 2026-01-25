@@ -199,6 +199,13 @@ export const areasData: Area[] = [
               { assetNumber: "UNKN", name: "Lighting Tower 5" },
             ] 
           },
+          { 
+            label: "Main Sub Station", 
+            equipment: [
+              { assetNumber: "UNKN-ASSY001", name: "Main Sub Station" },
+              { assetNumber: "UNKN", name: "RO Plant Main Board" },
+            ] 
+          },
         ],
       },
       {
@@ -416,18 +423,6 @@ export const areasData: Area[] = [
             label: "Fuel Dispensing", 
             equipment: [
               { assetNumber: "UNKN", name: "Fuel Dispensing control Board" },
-            ] 
-          },
-        ],
-      },
-      {
-        label: "CIP",
-        parentAssets: [
-          { 
-            label: "Main Sub Station", 
-            equipment: [
-              { assetNumber: "UNKN-ASSY001", name: "Main Sub Station" },
-              { assetNumber: "UNKN", name: "RO Plant Main Board" },
             ] 
           },
         ],
