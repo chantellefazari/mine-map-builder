@@ -470,9 +470,11 @@ export const areasData: Area[] = [
           { 
             label: "Mill Feed Conveyor", 
             equipment: [
+              { assetNumber: "MFC001", name: "Mill Feed Conveyor" },
+              { assetNumber: "MFC001-LCS001", name: "Mill Feed Conveyor – Local Control Station" },
               { 
-                assetNumber: "MFC001", 
-                name: "Mill Feed Conveyor",
+                assetNumber: "MFC001-MTR001", 
+                name: "Mill Feed Conveyor – Motor",
                 components: [
                   {
                     componentCode: "1001919277",
@@ -500,8 +502,6 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "MFC001-LCS001", name: "Mill Feed Conveyor – Local Control Station" },
-              { assetNumber: "MFC001-MTR001", name: "Mill Feed Conveyor – Motor" },
               { assetNumber: "MFC001-MCC001", name: "Mill Feed Conveyor – MCC Cell" },
               { assetNumber: "MFC001-GBX001", name: "Mill Feed Conveyor – Gearbox" },
               { assetNumber: "MFC001-USS001", name: "Mill Feed Conveyor – Underspeed Switch" },
