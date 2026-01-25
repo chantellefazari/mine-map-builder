@@ -620,11 +620,11 @@ export const areasData: Area[] = [
             label: "Cyclone Cluster", 
             equipment: [
               { assetNumber: "CYC001", name: "Primary Cyclone Cluster" },
-              { assetNumber: "CYC001", name: "Primary Cyclone Cluster – Instruments" },
+              { assetNumber: "CYC001-INS001", name: "Primary Cyclone Cluster – Instruments" },
               { assetNumber: "CYC001-TX001", name: "Primary Cyclone – Pressure Transmitter" },
-              { assetNumber: "CYC001", name: "Primary Cyclone – Pressure Gauge" },
-              { assetNumber: "CYC001", name: "Primary Cyclone Underflow Splitter Box" },
-            ] 
+              { assetNumber: "CYC001-PG001", name: "Primary Cyclone – Pressure Gauge" },
+              { assetNumber: "CYC001-SPL001", name: "Primary Cyclone Underflow Splitter Box" },
+            ]
           },
         ],
       },
