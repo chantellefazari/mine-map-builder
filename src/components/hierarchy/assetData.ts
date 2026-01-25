@@ -1213,72 +1213,7 @@ export const areasData: Area[] = [
               { assetNumber: "UNKN", name: "25t Franner Crane" },
               { assetNumber: "UNKN", name: "Workshop" },
               { assetNumber: "UNKN", name: "Workshop DB" },
-            ] 
-          },
-        ],
-      },
-      {
-        label: "Site Infrastructure",
-        parentAssets: [
-          { 
-            label: "Services", 
-            equipment: [
-              { assetNumber: "UNKN", name: "Services" },
-              { assetNumber: "UNKN", name: "Lath Container L&P" },
-              { assetNumber: "UNKN", name: "Crib Room L&P DB" },
-              { assetNumber: "UNKN", name: "Conference Building L&P" },
-              { assetNumber: "UNKN", name: "First Aid Room L&P DB" },
-            ] 
-          },
-        ],
-      },
-      {
-        label: "Light Vehicles",
-        parentAssets: [
-          { 
-            label: "LV Fleet", 
-            equipment: [
-              { assetNumber: "UNKN", name: "Light Vehicle" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 1" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 2" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 3" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 4" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 5" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 6" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 7" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 1" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 2" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 3" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 4" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 5" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 6" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 7" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 8" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 9" },
-              { assetNumber: "UNKN", name: "Ranger Single Cab" },
-              { assetNumber: "UNKN", name: "Kia" },
-              { assetNumber: "UNKN", name: "Toyota Hiace 1" },
-              { assetNumber: "UNKN", name: "Toyota Hiace 2" },
-              { assetNumber: "UNKN", name: "LDV Discovery 9 1" },
-              { assetNumber: "UNKN", name: "LDV Discovery 9 2" },
-              { assetNumber: "UNKN", name: "Fuso TF Canter Flat Top Truck" },
-              { assetNumber: "UNKN", name: "LC Military" },
-            ] 
-          },
-        ],
-      },
-      {
-        label: "Heavy Vehicles (HV)",
-        parentAssets: [
-          { label: "HV Fleet", equipment: [] },
-        ],
-      },
-      {
-        label: "CIP",
-        parentAssets: [
-          { 
-            label: "CIP Mobile Equipment", 
-            equipment: [
+              // Moved from CIP Mobile Equipment
               { assetNumber: "UNKN", name: "Forklift" },
               { assetNumber: "UNKN", name: "Telehandler" },
               { assetNumber: "UNKN", name: "Bob Cat" },
