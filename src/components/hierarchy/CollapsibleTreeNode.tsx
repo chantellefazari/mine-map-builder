@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export type NodeLevel = "site" | "plant" | "area" | "subarea" | "parentAsset" | "equipment";
+export type NodeLevel = "site" | "plant" | "area" | "subarea" | "parentAsset" | "equipment" | "component";
 export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP";
 
 interface CollapsibleTreeNodeProps {
@@ -34,6 +34,7 @@ const levelStyles: Record<NodeLevel, string> = {
   subarea: "bg-level-subarea border border-level-system text-level-subarea-foreground px-3 py-1.5 text-xs font-medium shadow-sm hover:shadow-md transition-shadow",
   parentAsset: "bg-level-parent-asset border border-level-subarea text-level-parent-asset-foreground px-2.5 py-1.5 text-[11px] font-semibold hover:brightness-95 transition-all",
   equipment: "bg-level-equipment border border-level-system text-level-equipment-foreground px-2 py-1 text-[10px] font-mono hover:brightness-95 transition-all",
+  component: "bg-level-component border border-level-component-border text-level-component-foreground px-2 py-1 text-[9px] font-mono hover:brightness-95 transition-all",
 };
 
 const areaColors: Record<AreaType, string> = {

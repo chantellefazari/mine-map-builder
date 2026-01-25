@@ -2,7 +2,7 @@ import React from "react";
 import { CollapsibleTreeNode } from "./CollapsibleTreeNode";
 import { TreeBranch } from "./TreeBranch";
 import { useAssetSearch } from "@/hooks/useAssetSearch";
-import { areasData, AreaType } from "./assetData";
+import { areasData, AreaType, Component } from "./assetData";
 import { pidTagMappings } from "./pidTagMappings";
 
 interface AssetTreeProps {
@@ -143,6 +143,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                         const equipId = `equip-${area.code}-${subIndex}-${paIndex}-${equipIndex}`;
                                         const allPidTags = getAllPidTags(equip.assetNumber, equip.pidTags);
                                         const isPidMatch = pidTagMatchesSearch(equip.assetNumber, equip.pidTags);
+                                        const hasComponents = equip.components && equip.components.length > 0;
                                         
                                         return (
                                           <TreeBranch key={equipIndex} isLast={equipIndex === parentAsset.equipment.length - 1}>
@@ -150,10 +151,29 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                               id={equipId}
                                               label={equipLabel}
                                               level="equipment"
-                                              hasChildren={false}
+                                              hasChildren={hasComponents}
                                               isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || isPidMatch}
                                               pidTags={allPidTags}
-                                            />
+                                            >
+                                              {/* Level 7: Components (OEM parts under equipment) */}
+                                              {hasComponents && equip.components!.map((comp, compIndex) => {
+                                                const compLabel = `${comp.componentCode} — ${comp.componentName}`;
+                                                const compId = `comp-${area.code}-${subIndex}-${paIndex}-${equipIndex}-${compIndex}`;
+                                                
+                                                return (
+                                                  <TreeBranch key={compIndex} isLast={compIndex === equip.components!.length - 1}>
+                                                    <CollapsibleTreeNode
+                                                      id={compId}
+                                                      code={comp.componentType}
+                                                      label={compLabel}
+                                                      level="component"
+                                                      hasChildren={false}
+                                                      isHighlighted={matchesSearch(comp.componentCode) || matchesSearch(comp.componentName) || matchesSearch(comp.manufacturer)}
+                                                    />
+                                                  </TreeBranch>
+                                                );
+                                              })}
+                                            </CollapsibleTreeNode>
                                           </TreeBranch>
                                         );
                                       })}

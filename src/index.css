@@ -57,6 +57,11 @@
     --level-system-foreground: 185 45% 18%;
     --level-equipment: 165 35% 88%;
     --level-equipment-foreground: 170 40% 22%;
+    
+    /* Component level - sits under equipment */
+    --level-component: 200 30% 95%;
+    --level-component-foreground: 200 35% 25%;
+    --level-component-border: 200 25% 80%;
 
     /* Connector lines */
     --connector: 220 15% 75%;

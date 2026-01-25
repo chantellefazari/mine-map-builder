@@ -75,6 +75,9 @@ export default {
           "system-foreground": "hsl(var(--level-system-foreground))",
           equipment: "hsl(var(--level-equipment))",
           "equipment-foreground": "hsl(var(--level-equipment-foreground))",
+          component: "hsl(var(--level-component))",
+          "component-foreground": "hsl(var(--level-component-foreground))",
+          "component-border": "hsl(var(--level-component-border))",
         },
         connector: {
           DEFAULT: "hsl(var(--connector))",

@@ -1,9 +1,23 @@
 // Asset hierarchy data structure - Maintenance-logical model
+
+/** 
+ * Components are OEM-level parts that sit UNDER equipment.
+ * They are not separate assets - they are the internal makeup of an asset.
+ */
+export interface Component {
+  componentCode: string;
+  componentType: string;
+  componentName: string;
+  manufacturer: string;
+}
+
 export interface Equipment {
   assetNumber: string;
   name: string;
   /** Legacy P&ID tag references - searchable but not displayed in hierarchy */
   pidTags?: string[];
+  /** OEM components nested under this equipment */
+  components?: Component[];
 }
 
 export interface ParentAsset {
@@ -402,9 +416,25 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "APRN001", name: "Apron Feeder" },
               { assetNumber: "APRN001-LCS001", name: "Apron Feeder – LCS" },
-              { assetNumber: "APRN001-MTR001", name: "Apron Feeder – Motor" },
               { assetNumber: "APRN001-MCC001", name: "Apron Feeder – MCC Cell" },
-              { assetNumber: "APRN001-GBX001", name: "Apron Feeder – Gearbox" },
+              { 
+                assetNumber: "APRN001-GMR001", 
+                name: "Apron Feeder – Gearmotor",
+                components: [
+                  {
+                    componentCode: "KA107R77",
+                    componentType: "Gearbox",
+                    componentName: "Helical Bevel Gearbox",
+                    manufacturer: "SEW-EURODRIVE"
+                  },
+                  {
+                    componentCode: "DRN112M4/V",
+                    componentType: "Electric Motor",
+                    componentName: "4-Pole IE3 Motor (Vertical Mount)",
+                    manufacturer: "SEW-EURODRIVE"
+                  }
+                ]
+              },
               { assetNumber: "APRN001-PWS001", name: "Apron Feeder – Pullwire Switch" },
               { assetNumber: "APRN001-TX001", name: "Apron Feeder – Speed Transmitter" },
               { assetNumber: "APRN001-VLV001", name: "Apron Feeder – Rotary Valve" },
