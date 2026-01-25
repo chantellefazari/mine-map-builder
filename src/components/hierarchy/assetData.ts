@@ -57,7 +57,7 @@ export const areasData: Area[] = [
           { 
             label: "Services", 
             equipment: [
-              { assetNumber: "UNKN", name: "Services" },
+              { assetNumber: "SVC001", name: "Services" },
             ] 
           },
         ],
@@ -96,20 +96,20 @@ export const areasData: Area[] = [
           { 
             label: "HP Air Compressor", 
             equipment: [
-              { assetNumber: "UNKN", name: "HP Air Compressor" },
-              { assetNumber: "UNKN", name: "HP Air Compressor Piping" },
-              { assetNumber: "UNKN-MCC001", name: "HP Air Compressor – MCC Cell 1" },
-              { assetNumber: "UNKN", name: "HP Air Receiver 1" },
-              { assetNumber: "UNKN", name: "HP Air Compressor 2" },
-              { assetNumber: "UNKN", name: "HP Air Compressor Piping 2" },
-              { assetNumber: "UNKN-MCC002", name: "HP Air Compressor – MCC Cell 2" },
-              { assetNumber: "UNKN", name: "HP Air Receiver 2" },
-              { assetNumber: "UNKN", name: "Filter Area HP Air Compressor" },
-              { assetNumber: "UNKN", name: "HP Air Compressor Piping 3" },
-              { assetNumber: "UNKN-MCC003", name: "HP Air Compressor – MCC Cell 3" },
-              { assetNumber: "UNKN", name: "HP Air Receiver 3" },
-              { assetNumber: "UNKN-MCC004", name: "HP Air Compressor – MCC Cell 4" },
-              { assetNumber: "UNKN", name: "HP Air Receiver 4" },
+              { assetNumber: "HPCOMP001", name: "HP Air Compressor" },
+              { assetNumber: "HPCOMP001-PIPE001", name: "HP Air Compressor Piping" },
+              { assetNumber: "HPCOMP001-MCC001", name: "HP Air Compressor – MCC Cell 1" },
+              { assetNumber: "HPRCV001", name: "HP Air Receiver 1" },
+              { assetNumber: "HPCOMP002", name: "HP Air Compressor 2" },
+              { assetNumber: "HPCOMP002-PIPE001", name: "HP Air Compressor Piping 2" },
+              { assetNumber: "HPCOMP002-MCC001", name: "HP Air Compressor – MCC Cell 2" },
+              { assetNumber: "HPRCV002", name: "HP Air Receiver 2" },
+              { assetNumber: "HPCOMP003", name: "Filter Area HP Air Compressor" },
+              { assetNumber: "HPCOMP003-PIPE001", name: "HP Air Compressor Piping 3" },
+              { assetNumber: "HPCOMP003-MCC001", name: "HP Air Compressor – MCC Cell 3" },
+              { assetNumber: "HPRCV003", name: "HP Air Receiver 3" },
+              { assetNumber: "HPCOMP004-MCC001", name: "HP Air Compressor – MCC Cell 4" },
+              { assetNumber: "HPRCV004", name: "HP Air Receiver 4" },
             ] 
           },
         ],
@@ -192,18 +192,18 @@ export const areasData: Area[] = [
           { 
             label: "Lighting Towers", 
             equipment: [
-              { assetNumber: "UNKN", name: "Lighting Tower 1" },
-              { assetNumber: "UNKN", name: "Lighting Tower 2" },
-              { assetNumber: "UNKN", name: "Lighting Tower 3" },
-              { assetNumber: "UNKN", name: "Lighting Tower 4" },
-              { assetNumber: "UNKN", name: "Lighting Tower 5" },
+              { assetNumber: "LTWR001", name: "Lighting Tower 1" },
+              { assetNumber: "LTWR002", name: "Lighting Tower 2" },
+              { assetNumber: "LTWR003", name: "Lighting Tower 3" },
+              { assetNumber: "LTWR004", name: "Lighting Tower 4" },
+              { assetNumber: "LTWR005", name: "Lighting Tower 5" },
             ] 
           },
           { 
             label: "Main Sub Station", 
             equipment: [
-              { assetNumber: "UNKN-ASSY001", name: "Main Sub Station" },
-              { assetNumber: "UNKN", name: "RO Plant Main Board" },
+              { assetNumber: "MSUB001", name: "Main Sub Station" },
+              { assetNumber: "MSUB001-DB001", name: "RO Plant Main Board" },
             ] 
           },
         ],
@@ -232,7 +232,7 @@ export const areasData: Area[] = [
               { assetNumber: "GENSET001", name: "Lab Generator 30kVA" },
               { assetNumber: "GENSET001", name: "Juno Bore Generator 200kVA" },
               { assetNumber: "GENSET001", name: "Mining Workshop 75kVA" },
-              { assetNumber: "UNKN", name: "Power Generation" },
+              { assetNumber: "PWRGEN001", name: "Power Generation" },
             ]
           },
           { 
@@ -258,14 +258,14 @@ export const areasData: Area[] = [
           { 
             label: "Lime Storage Silo", 
             equipment: [
-              { assetNumber: "UNKN", name: "Lime Storage Silo" },
-              { assetNumber: "VLV001", name: "Lime Storage Silo – Discharge Valve" },
+              { assetNumber: "LIMESILO001", name: "Lime Storage Silo" },
+              { assetNumber: "LIMESILO001-VLV001", name: "Lime Storage Silo – Discharge Valve" },
             ] 
           },
           { 
             label: "Lime Silo Vibrator", 
             equipment: [
-              { assetNumber: "UNKN", name: "Lime Silo Vibrator" },
+              { assetNumber: "LIMESILO001-VIB001", name: "Lime Silo Vibrator" },
             ] 
           },
           { 
@@ -286,22 +286,22 @@ export const areasData: Area[] = [
           { 
             label: "Reagents", 
             equipment: [
-              { assetNumber: "UNKN", name: "Reagents" },
+              { assetNumber: "REAG001", name: "Reagents" },
             ] 
           },
           { 
             label: "Reagent Safety Shower", 
             equipment: [
-              { assetNumber: "UNKN", name: "Reagent Safety Shower" },
-              { assetNumber: "UNKN", name: "Reagent Area Safety Shower 1" },
-              { assetNumber: "UNKN", name: "Reagent Area Safety Shower 2" },
-              { assetNumber: "UNKN", name: "Reagent Area Safety Shower 3" },
+              { assetNumber: "REAG-SHW01", name: "Reagent Safety Shower" },
+              { assetNumber: "REAG-SHW02", name: "Reagent Area Safety Shower 1" },
+              { assetNumber: "REAG-SHW03", name: "Reagent Area Safety Shower 2" },
+              { assetNumber: "REAG-SHW04", name: "Reagent Area Safety Shower 3" },
             ] 
           },
           { 
             label: "Floc System", 
             equipment: [
-              { assetNumber: "UNKN", name: "Floc System" },
+              { assetNumber: "FLOCSYS001", name: "Floc System" },
             ] 
           },
         ],
@@ -366,8 +366,8 @@ export const areasData: Area[] = [
           { 
             label: "Hydraulic Oil System", 
             equipment: [
-              { assetNumber: "UNKN-HTR001", name: "Hydraulic Oil Heater" },
-              { assetNumber: "UNKN-FAN002", name: "Hydraulic Oil Cooling Fan" },
+              { assetNumber: "HYDOIL001-HTR001", name: "Hydraulic Oil Heater" },
+              { assetNumber: "HYDOIL001-FAN001", name: "Hydraulic Oil Cooling Fan" },
             ] 
           },
         ],
@@ -378,7 +378,7 @@ export const areasData: Area[] = [
           { 
             label: "Fuel Dispensing", 
             equipment: [
-              { assetNumber: "UNKN", name: "Fuel Dispensing control Board" },
+              { assetNumber: "FUELDISP001-DB001", name: "Fuel Dispensing control Board" },
             ] 
           },
         ],
@@ -924,19 +924,19 @@ export const areasData: Area[] = [
           { 
             label: "Cyanide Monorail", 
             equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Monorail" },
+              { assetNumber: "CYMNR001", name: "Cyanide Monorail" },
             ] 
           },
           { 
             label: "Cyanide Bag Breaker", 
             equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Bag Breaker" },
+              { assetNumber: "CYBB001", name: "Cyanide Bag Breaker" },
             ] 
           },
           { 
             label: "Caustic Bag Breaker", 
             equipment: [
-              { assetNumber: "UNKN", name: "Caustic Bag Breaker" },
+              { assetNumber: "CAUSBB001", name: "Caustic Bag Breaker" },
             ] 
           },
           { 
@@ -951,21 +951,21 @@ export const areasData: Area[] = [
           { 
             label: "Cyanide Instruments", 
             equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Instruments" },
+              { assetNumber: "CYINS001", name: "Cyanide Instruments" },
             ] 
           },
           { 
             label: "Cyanide Solution Storage Tank", 
             equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Solution Storage Tank" },
+              { assetNumber: "CYSTOR001-TK001", name: "Cyanide Solution Storage Tank" },
             ] 
           },
           { 
             label: "Cyanide Dosing Hut", 
             equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Dosing Hut" },
-              { assetNumber: "UNKN", name: "Cyanide Dosing Hut 2" },
-              { assetNumber: "UNKN", name: "Reagents Field MCC" },
+              { assetNumber: "CYDOS001", name: "Cyanide Dosing Hut" },
+              { assetNumber: "CYDOS002", name: "Cyanide Dosing Hut 2" },
+              { assetNumber: "REAG-MCC001", name: "Reagents Field MCC" },
             ] 
           },
           { label: "Titration Hut", equipment: [] },
@@ -1217,9 +1217,9 @@ export const areasData: Area[] = [
           { 
             label: "Laboratory Systems", 
             equipment: [
-              { assetNumber: "UNKN", name: "Lab" },
-              { assetNumber: "UNKN", name: "Main DB Lab" },
-              { assetNumber: "UNKN", name: "Lab L&P DB" },
+              { assetNumber: "LAB001", name: "Lab" },
+              { assetNumber: "LAB001-DB001", name: "Main DB Lab" },
+              { assetNumber: "LAB001-DB002", name: "Lab L&P DB" },
             ] 
           },
         ],
@@ -1230,29 +1230,29 @@ export const areasData: Area[] = [
           { 
             label: "Plant Mobile Equipment", 
             equipment: [
-              { assetNumber: "UNKN", name: "CIP Area Gantry Crane" },
-              { assetNumber: "UNKN", name: "Knelson Area Hoist" },
-              { assetNumber: "UNKN", name: "Mobile Equipment" },
-              { assetNumber: "UNKN", name: "25t Franner Crane" },
-              { assetNumber: "UNKN", name: "Workshop" },
-              { assetNumber: "UNKN", name: "Workshop DB" },
-              { assetNumber: "UNKN", name: "Forklift" },
-              { assetNumber: "UNKN", name: "Telehandler" },
-              { assetNumber: "UNKN", name: "Bob Cat" },
-              { assetNumber: "UNKN", name: "Water Truck" },
-              { assetNumber: "UNKN", name: "Service Truck" },
-              { assetNumber: "UNKN", name: "Sino EWP" },
-              { assetNumber: "UNKN", name: "Hire EWP" },
-              { assetNumber: "UNKN", name: "Sino Scissor Lift 1" },
-              { assetNumber: "UNKN", name: "Sino Scissor Lift 2" },
-              { assetNumber: "UNKN", name: "Cat 980 Loader 1" },
-              { assetNumber: "UNKN", name: "Cat 980 Loader 2" },
-              { assetNumber: "UNKN", name: "Cat 980 Loader 3" },
-              { assetNumber: "UNKN", name: "Cat 980 Loader 4" },
-              { assetNumber: "UNKN", name: "Cat 30t Excavator" },
-              { assetNumber: "UNKN", name: "Case Excavator" },
-              { assetNumber: "UNKN", name: "Cat Moxy 1" },
-              { assetNumber: "UNKN", name: "Cat Moxy 2" },
+              { assetNumber: "CRN001", name: "CIP Area Gantry Crane" },
+              { assetNumber: "HST001", name: "Knelson Area Hoist" },
+              { assetNumber: "MOB001", name: "Mobile Equipment" },
+              { assetNumber: "CRN002", name: "25t Franner Crane" },
+              { assetNumber: "WKSHP001", name: "Workshop" },
+              { assetNumber: "WKSHP001-DB001", name: "Workshop DB" },
+              { assetNumber: "FLT001", name: "Forklift" },
+              { assetNumber: "TLH001", name: "Telehandler" },
+              { assetNumber: "BOBCAT001", name: "Bob Cat" },
+              { assetNumber: "WTRTK001", name: "Water Truck" },
+              { assetNumber: "SVCTK001", name: "Service Truck" },
+              { assetNumber: "EWP001", name: "Sino EWP" },
+              { assetNumber: "EWP002", name: "Hire EWP" },
+              { assetNumber: "SCLFT001", name: "Sino Scissor Lift 1" },
+              { assetNumber: "SCLFT002", name: "Sino Scissor Lift 2" },
+              { assetNumber: "LDR001", name: "Cat 980 Loader 1" },
+              { assetNumber: "LDR002", name: "Cat 980 Loader 2" },
+              { assetNumber: "LDR003", name: "Cat 980 Loader 3" },
+              { assetNumber: "LDR004", name: "Cat 980 Loader 4" },
+              { assetNumber: "EXC001", name: "Cat 30t Excavator" },
+              { assetNumber: "EXC002", name: "Case Excavator" },
+              { assetNumber: "MOXY001", name: "Cat Moxy 1" },
+              { assetNumber: "MOXY002", name: "Cat Moxy 2" },
             ]
           },
         ],
@@ -1263,11 +1263,11 @@ export const areasData: Area[] = [
           { 
             label: "Services", 
             equipment: [
-              { assetNumber: "UNKN", name: "Services" },
-              { assetNumber: "UNKN", name: "Lath Container L&P" },
-              { assetNumber: "UNKN", name: "Crib Room L&P DB" },
-              { assetNumber: "UNKN", name: "Conference Building L&P" },
-              { assetNumber: "UNKN", name: "First Aid Room L&P DB" },
+              { assetNumber: "SVC002", name: "Services" },
+              { assetNumber: "SVC002-DB001", name: "Lath Container L&P" },
+              { assetNumber: "SVC002-DB002", name: "Crib Room L&P DB" },
+              { assetNumber: "SVC002-DB003", name: "Conference Building L&P" },
+              { assetNumber: "SVC002-DB004", name: "First Aid Room L&P DB" },
             ] 
           },
         ],
@@ -1278,31 +1278,31 @@ export const areasData: Area[] = [
           { 
             label: "LV Fleet", 
             equipment: [
-              { assetNumber: "UNKN", name: "Light Vehicle" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 1" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 2" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 3" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 4" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 5" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 6" },
-              { assetNumber: "UNKN", name: "Toyota Hilux 7" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 1" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 2" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 3" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 4" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 5" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 6" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 7" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 8" },
-              { assetNumber: "UNKN", name: "Ford Ranger XL Dual Cab 9" },
-              { assetNumber: "UNKN", name: "Ranger Single Cab" },
-              { assetNumber: "UNKN", name: "Kia" },
-              { assetNumber: "UNKN", name: "Toyota Hiace 1" },
-              { assetNumber: "UNKN", name: "Toyota Hiace 2" },
-              { assetNumber: "UNKN", name: "LDV Discovery 9 1" },
-              { assetNumber: "UNKN", name: "LDV Discovery 9 2" },
-              { assetNumber: "UNKN", name: "Fuso TF Canter Flat Top Truck" },
-              { assetNumber: "UNKN", name: "LC Military" },
+              { assetNumber: "LV001", name: "Light Vehicle" },
+              { assetNumber: "LV-HILUX001", name: "Toyota Hilux 1" },
+              { assetNumber: "LV-HILUX002", name: "Toyota Hilux 2" },
+              { assetNumber: "LV-HILUX003", name: "Toyota Hilux 3" },
+              { assetNumber: "LV-HILUX004", name: "Toyota Hilux 4" },
+              { assetNumber: "LV-HILUX005", name: "Toyota Hilux 5" },
+              { assetNumber: "LV-HILUX006", name: "Toyota Hilux 6" },
+              { assetNumber: "LV-HILUX007", name: "Toyota Hilux 7" },
+              { assetNumber: "LV-RANGER001", name: "Ford Ranger XL Dual Cab 1" },
+              { assetNumber: "LV-RANGER002", name: "Ford Ranger XL Dual Cab 2" },
+              { assetNumber: "LV-RANGER003", name: "Ford Ranger XL Dual Cab 3" },
+              { assetNumber: "LV-RANGER004", name: "Ford Ranger XL Dual Cab 4" },
+              { assetNumber: "LV-RANGER005", name: "Ford Ranger XL Dual Cab 5" },
+              { assetNumber: "LV-RANGER006", name: "Ford Ranger XL Dual Cab 6" },
+              { assetNumber: "LV-RANGER007", name: "Ford Ranger XL Dual Cab 7" },
+              { assetNumber: "LV-RANGER008", name: "Ford Ranger XL Dual Cab 8" },
+              { assetNumber: "LV-RANGER009", name: "Ford Ranger XL Dual Cab 9" },
+              { assetNumber: "LV-RANGER010", name: "Ranger Single Cab" },
+              { assetNumber: "LV-KIA001", name: "Kia" },
+              { assetNumber: "LV-HIACE001", name: "Toyota Hiace 1" },
+              { assetNumber: "LV-HIACE002", name: "Toyota Hiace 2" },
+              { assetNumber: "LV-LDV001", name: "LDV Discovery 9 1" },
+              { assetNumber: "LV-LDV002", name: "LDV Discovery 9 2" },
+              { assetNumber: "LV-FUSO001", name: "Fuso TF Canter Flat Top Truck" },
+              { assetNumber: "LV-LC001", name: "LC Military" },
             ] 
           },
         ],
