@@ -225,7 +225,8 @@ export const areasData: Area[] = [
               { assetNumber: "GENSET001", name: "Lab Generator 30kVA" },
               { assetNumber: "GENSET001", name: "Juno Bore Generator 200kVA" },
               { assetNumber: "GENSET001", name: "Mining Workshop 75kVA" },
-            ] 
+              { assetNumber: "UNKN", name: "Power Generation" },
+            ]
           },
           { 
             label: "Fuel Storage Tank", 
@@ -1239,8 +1240,7 @@ export const areasData: Area[] = [
               { assetNumber: "UNKN", name: "Case Excavator" },
               { assetNumber: "UNKN", name: "Cat Moxy 1" },
               { assetNumber: "UNKN", name: "Cat Moxy 2" },
-              { assetNumber: "UNKN", name: "Power Generation" },
-            ] 
+            ]
           },
         ],
       },
