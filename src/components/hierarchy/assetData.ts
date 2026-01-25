@@ -41,6 +41,12 @@ export const areasData: Area[] = [
           { label: "Toilets / Amenities", equipment: [] },
           { label: "Crib Room", equipment: [] },
           { label: "Change Rooms", equipment: [] },
+          { 
+            label: "Services", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Services" },
+            ] 
+          },
         ],
       },
     ],
@@ -74,6 +80,25 @@ export const areasData: Area[] = [
               { assetNumber: "VLV001", name: "Air Dryer 1 – Purge Valve" },
             ] 
           },
+          { 
+            label: "HP Air Compressor", 
+            equipment: [
+              { assetNumber: "UNKN", name: "HP Air Compressor" },
+              { assetNumber: "UNKN", name: "HP Air Compressor Piping" },
+              { assetNumber: "UNKN-MCC001", name: "HP Air Compressor – MCC Cell 1" },
+              { assetNumber: "UNKN", name: "HP Air Receiver 1" },
+              { assetNumber: "UNKN", name: "HP Air Compressor 2" },
+              { assetNumber: "UNKN", name: "HP Air Compressor Piping 2" },
+              { assetNumber: "UNKN-MCC002", name: "HP Air Compressor – MCC Cell 2" },
+              { assetNumber: "UNKN", name: "HP Air Receiver 2" },
+              { assetNumber: "UNKN", name: "Filter Area HP Air Compressor" },
+              { assetNumber: "UNKN", name: "HP Air Compressor Piping 3" },
+              { assetNumber: "UNKN-MCC003", name: "HP Air Compressor – MCC Cell 3" },
+              { assetNumber: "UNKN", name: "HP Air Receiver 3" },
+              { assetNumber: "UNKN-MCC004", name: "HP Air Compressor – MCC Cell 4" },
+              { assetNumber: "UNKN", name: "HP Air Receiver 4" },
+            ] 
+          },
         ],
       },
       {
@@ -89,10 +114,20 @@ export const areasData: Area[] = [
               { assetNumber: "MDB001-MCC005", name: "CIP Tank 7 Agitator – MCC Cell" },
               { assetNumber: "MDB001-MCC006", name: "CIP Tank 8 Agitator – MCC Cell" },
               { assetNumber: "MDB001-MCC007", name: "Cyanide Mixing Tank Agitator – MCC Cell" },
+              { assetNumber: "MDB001-MCC008", name: "Concentrate Shaking Table – MCC Cell" },
+              { assetNumber: "MDB001", name: "Flocc Panel 1" },
+              { assetNumber: "MDB001", name: "Flocc Panel 2" },
+              { assetNumber: "MDB001", name: "Clarometer Panel" },
             ] 
           },
           { label: "Sub Distribution Board 1", equipment: [] },
-          { label: "Control Room 1", equipment: [] },
+          { 
+            label: "Control Room", 
+            equipment: [
+              { assetNumber: "CR001", name: "Knelson Concentrator Control Panel" },
+              { assetNumber: "CR001", name: "Knelson Area Hoist Control Panel" },
+            ] 
+          },
           { label: "Control Subroom 1", equipment: [] },
           { label: "Ice Machine Room DB", equipment: [] },
           { label: "Crib Room L&P DB", equipment: [] },
@@ -209,6 +244,12 @@ export const areasData: Area[] = [
               { assetNumber: "UNKN", name: "Reagent Area Safety Shower 3" },
             ] 
           },
+          { 
+            label: "Floc System", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Floc System" },
+            ] 
+          },
         ],
       },
       {
@@ -217,25 +258,62 @@ export const areasData: Area[] = [
           { 
             label: "Potable Water Tank", 
             equipment: [
-              { assetNumber: "TNK001", name: "Potable Water Tank – Tank" },
-              { assetNumber: "PMP001", name: "Potable Water Tank – Booster Pump" },
-              { assetNumber: "SWT001", name: "Potable Water Tank – Level Switch" },
+              { assetNumber: "PWT001", name: "Potable Water Tank" },
+              { assetNumber: "PWT001", name: "Potable Water Pipework" },
+              { assetNumber: "PWT001-PMP001", name: "Potable Water Pump Standby" },
+              { assetNumber: "PWT001-MCC001", name: "Potable Water Pump Standby – MCC Cell" },
+              { assetNumber: "PWT001-LCS001", name: "Potable Water Pump Standby – LCS" },
+              { assetNumber: "PWT001-PMP002", name: "Potable Water Pump Duty" },
+              { assetNumber: "PWT001-MCC002", name: "Potable Water Pump Duty – MCC Cell" },
+              { assetNumber: "PWT001-LCS002", name: "Potable Water Pump Duty – LCS" },
             ] 
           },
           { 
-            label: "Raw Water Pump Station", 
+            label: "Raw Water Tank", 
             equipment: [
-              { assetNumber: "PMP001", name: "Raw Water Pump Station – Pump 1" },
-              { assetNumber: "PMP002", name: "Raw Water Pump Station – Pump 2" },
-              { assetNumber: "MTR001", name: "Raw Water Pump Station – Pump 1 Motor" },
-              { assetNumber: "MTR002", name: "Raw Water Pump Station – Pump 2 Motor" },
+              { assetNumber: "RWT001", name: "Raw Water Storage Tank" },
+              { assetNumber: "RWT001-PMP001", name: "Raw Water Pump Duty" },
+              { assetNumber: "RWT001-MTR001", name: "Raw Water Pump Duty – Motor" },
+              { assetNumber: "RWT001-MCC001", name: "Raw Water Pump Duty – MCC Cell" },
+              { assetNumber: "RWT001-LCS001", name: "Raw Water Pump Duty – LCS" },
+              { assetNumber: "RWT001-PMP002", name: "Raw Water Pump Stand-By" },
+              { assetNumber: "RWT001-MTR002", name: "Raw Water Pump Stand-By – Motor" },
+              { assetNumber: "RWT001-MCC002", name: "Raw Water Pump Stand-By – MCC Cell" },
+              { assetNumber: "RWT001-LCS002", name: "Raw Water Pump Stand-By – LCS" },
             ] 
           },
           { 
             label: "Process Water Tank", 
             equipment: [
-              { assetNumber: "TNK001", name: "Process Water Tank – Tank" },
-              { assetNumber: "PMP001", name: "Process Water Tank – Distribution Pump" },
+              { assetNumber: "PRWT001", name: "Safety Shower Water Tank" },
+              { assetNumber: "PRWT001", name: "Safety Shower Water Tank Pipe Work" },
+              { assetNumber: "PRWT001", name: "Gland Water Tank" },
+              { assetNumber: "PRWT001", name: "Gland Water Piping" },
+              { assetNumber: "PRWT001", name: "Andys Dam" },
+              { assetNumber: "PRWT001", name: "Process Water Pond" },
+              { assetNumber: "PRWT001", name: "Process Water Piping" },
+              { assetNumber: "PRWT001-PMP001", name: "Process Water Pump Duty" },
+              { assetNumber: "PRWT001-MTR001", name: "Process Water Pump Duty – Motor" },
+              { assetNumber: "PRWT001-MCC001", name: "Process Water Pump Duty – MCC Cell" },
+              { assetNumber: "PRWT001-LCS001", name: "Process Water Pump Duty – LCS" },
+              { assetNumber: "PRWT001-SPD001", name: "Process Water Pump Duty – VSD" },
+              { assetNumber: "PRWT001-PMP002", name: "Process Water Pump Stand-By" },
+              { assetNumber: "PRWT001-MTR002", name: "Process Water Pump Stand-By – Motor" },
+              { assetNumber: "PRWT001-MCC002", name: "Process Water Pump Stand-By – MCC Cell" },
+              { assetNumber: "PRWT001-LCS002", name: "Process Water Pump Stand-By – LCS" },
+              { assetNumber: "PRWT001-SPD002", name: "Process Water Pump Stand-By – VSD" },
+            ] 
+          },
+        ],
+      },
+      {
+        label: "Hydraulic Systems",
+        parentAssets: [
+          { 
+            label: "Hydraulic Oil System", 
+            equipment: [
+              { assetNumber: "UNKN-HTR001", name: "Hydraulic Oil Heater" },
+              { assetNumber: "UNKN-FAN002", name: "Hydraulic Oil Cooling Fan" },
             ] 
           },
         ],
@@ -256,7 +334,7 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "Reclaim Feeder", 
+            label: "Apron Feeder", 
             equipment: [
               { assetNumber: "RF-FDR001", name: "Reclaim Feeder" },
               { assetNumber: "RF-FDR001-LCS001", name: "Reclaim Feeder – LCS" },
@@ -266,6 +344,7 @@ export const areasData: Area[] = [
               { assetNumber: "RF-FDR001-PWS001", name: "Reclaim Feeder – Pullwire Switch" },
               { assetNumber: "RF-FDR001-TX001", name: "Reclaim Feeder – Speed Transmitter" },
               { assetNumber: "RF-FDR001-VLV001", name: "Lime Feeder – Rotary Valve" },
+              { assetNumber: "RF-FDR001", name: "Regen Kiln Screw Feeder" },
             ] 
           },
           { 
@@ -311,7 +390,7 @@ export const areasData: Area[] = [
               { assetNumber: "RF-HOP001-LCS003", name: "Primary Cyclone Feed Pump B – LCS" },
               { assetNumber: "RF-HOP001-VLV001", name: "Primary Cyclone Feed – TechTaylor Valve" },
               { assetNumber: "RF-HOP001-TX003", name: "Primary Cyclone Feed – Flow Transmitter" },
-              // NEW Part 2 equipment
+              // Part 2 equipment
               { assetNumber: "RF-HOP001", name: "CIP Trash Screen Feed Box" },
               { assetNumber: "RF-HOP001", name: "CIP Feed Trash Screen" },
               { assetNumber: "RF-HOP001", name: "CIP Feed Trash Screen Exciter A" },
@@ -363,6 +442,22 @@ export const areasData: Area[] = [
               { assetNumber: "RF-HOP001", name: "Carbon Safety Screen" },
               { assetNumber: "RF-HOP001-CHU007", name: "Carbon Safety Screen – Underpan Chute" },
               { assetNumber: "RF-HOP001-CHU008", name: "Carbon Safety Screen – Oversize Chute" },
+              // Part 3 equipment
+              { assetNumber: "RF-HOP001", name: "Barron Carbon Dewatering Screen" },
+              { assetNumber: "RF-HOP001", name: "Barron Carbon Dewatering Screen Excitor" },
+              { assetNumber: "RF-HOP001-MCC013", name: "Barron Carbon Dewatering Screen – MCC Cell" },
+              { assetNumber: "RF-HOP001-LCS013", name: "Barron Carbon Dewatering Screen – LCS" },
+              { assetNumber: "RF-HOP001", name: "Gravity" },
+              { assetNumber: "RF-HOP001", name: "Gravity Screen" },
+              { assetNumber: "RF-HOP001-CHU009", name: "Gravity Screen – Feed Chute" },
+              { assetNumber: "RF-HOP001", name: "Gravity Screen Under Pan" },
+              { assetNumber: "RF-HOP001-CHU010", name: "Gravity Screen – Discharge Chute" },
+              { assetNumber: "RF-HOP001", name: "Knelson Concentrator" },
+              { assetNumber: "RF-HOP001", name: "Concentrate Collection Cone" },
+              { assetNumber: "RF-HOP001", name: "Concentrate Shaking Table" },
+              { assetNumber: "RF-HOP001-MTR009", name: "Concentrate Shaking Table – Motor" },
+              { assetNumber: "RF-HOP001-LCS014", name: "Concentrate Shaking Table – LCS" },
+              { assetNumber: "RF-HOP001-GBX007", name: "Concentrate Shaking Table – Gearbox" },
             ] 
           },
         ],
@@ -380,6 +475,12 @@ export const areasData: Area[] = [
               { assetNumber: "CV001-GBX001", name: "Transfer Conveyor – Gearbox" },
               { assetNumber: "CV001-PWS001", name: "Transfer Conveyor – Pullwire Switch" },
               { assetNumber: "CV001", name: "Ball Mill Scatts Conveyor" },
+              // Part 3 equipment
+              { assetNumber: "CV001", name: "Filter 1 Extraction Conveyor" },
+              { assetNumber: "CV001-MTR002", name: "Filter 1 Extraction – Motor" },
+              { assetNumber: "CV001-GBX002", name: "Filter 1 Extraction – Gearbox" },
+              { assetNumber: "CV001", name: "Filter 1 Extraction Conveyor – VFD" },
+              { assetNumber: "CV001-MCC002", name: "Filter 1 Extraction Conveyor – MCC Cell" },
             ] 
           },
           { 
@@ -569,9 +670,9 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK01-PMP003", name: "Cyanide Transfer Pump – MCC" },
               { assetNumber: "CIP-TK01-LCS009", name: "Cyanide Transfer Pump – LCS" },
               { assetNumber: "CIP-TK01-PMP004", name: "Cyanide Dosing Pump Duty" },
-              { assetNumber: "CIP-TK01-MTR010", name: "Cyanide Transfer Pump – Motor" },
-              { assetNumber: "CIP-TK01-PMP005", name: "Cyanide Transfer Pump – MCC" },
-              { assetNumber: "CIP-TK01-LCS010", name: "Cyanide Transfer Pump – LCS" },
+              { assetNumber: "CIP-TK01-MTR010", name: "Cyanide Transfer Pump – Motor 2" },
+              { assetNumber: "CIP-TK01-PMP005", name: "Cyanide Transfer Pump – MCC 2" },
+              { assetNumber: "CIP-TK01-LCS010", name: "Cyanide Transfer Pump – LCS 2" },
               { assetNumber: "CIP-TK01-PMP006", name: "Cyanide Dosing Pump Stand-by" },
               { assetNumber: "CIP-TK01-MTR011", name: "Cyanide Dosing Pump Stand-by – Motor" },
               { assetNumber: "CIP-TK01-MCC003", name: "Cyanide Dosing Pump Stand-by – MCC Cell" },
@@ -602,6 +703,51 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK01", name: "Acid Wash Column" },
               { assetNumber: "CIP-TK01", name: "Acid Column Filters" },
               { assetNumber: "CIP-TK01", name: "Eluate Tank" },
+              { assetNumber: "CIP-TK01", name: "Carbon Regen Kiln" },
+              { assetNumber: "CIP-TK01", name: "Regenerated Carbon Quench Hopper" },
+              // Part 3 equipment
+              { assetNumber: "CIP-TK01-PMP016", name: "Eluate Pump" },
+              { assetNumber: "CIP-TK01-MTR014", name: "Eluate Pump – Motor" },
+              { assetNumber: "CIP-TK01-MCC006", name: "Eluate Pump – MCC Cell" },
+              { assetNumber: "CIP-TK01-LCS014", name: "Eluate Pump – LCS" },
+              { assetNumber: "CIP-TK01-PMP017", name: "Carbon Transfer Pump" },
+              { assetNumber: "CIP-TK01-MTR015", name: "Carbon Transfer Pump – Motor" },
+              { assetNumber: "CIP-TK01-MCC007", name: "Carbon Transfer Pump – MCC Cell" },
+              { assetNumber: "CIP-TK01-PMP018", name: "Carbon Transfer Pump – LCS" },
+              { assetNumber: "CIP-TK01-SWT002", name: "Regenerated Carbon Quench Hopper Low Low Level Switch" },
+              { assetNumber: "CIP-TK01", name: "High Pressure Cathode Washer" },
+              { assetNumber: "CIP-TK01", name: "Cathode Wash Box" },
+              { assetNumber: "CIP-TK01-PMP019", name: "Cathode Wash Sludge Pump" },
+              { assetNumber: "CIP-TK01-MTR016", name: "Cathode Wash Sludge Pump – Motor" },
+              { assetNumber: "CIP-TK01-MCC008", name: "Cathode Wash Sludge Pump – MCC Cell" },
+              { assetNumber: "CIP-TK01-LCS015", name: "Cathode Wash Sludge Pump – LCS" },
+              { assetNumber: "CIP-TK01", name: "Cathode Winder" },
+              { assetNumber: "CIP-TK01", name: "Cathode Sludge Filter Press" },
+              { assetNumber: "CIP-TK01", name: "Calcine Oven" },
+              { assetNumber: "CIP-TK01", name: "Calcine Oven Hood" },
+              { assetNumber: "CIP-TK01-FAN001", name: "Calcine Oven Extraction Fan" },
+              { assetNumber: "CIP-TK01", name: "Gold Bullion Scale" },
+              { assetNumber: "CIP-TK01", name: "Gold Bullion Scale Bench" },
+              { assetNumber: "CIP-TK01-PMP020", name: "Safety Shower Water Pump Duty" },
+              { assetNumber: "CIP-TK01-MTR017", name: "Safety Shower Water Pump Duty – Motor" },
+              { assetNumber: "CIP-TK01-MCC009", name: "Safety Shower Water Pump Duty – MCC Cell" },
+              { assetNumber: "CIP-TK01-LCS016", name: "Safety Shower Water Pump Duty – LCS" },
+              { assetNumber: "CIP-TK01-PMP021", name: "Safety Shower Water Pump Standby" },
+              { assetNumber: "CIP-TK01-MTR018", name: "Safety Shower Water Pump Standby – Motor" },
+              { assetNumber: "CIP-TK01-MCC010", name: "Safety Shower Water Pump Standby – MCC Cell" },
+              { assetNumber: "CIP-TK01-LCS017", name: "Safety Shower Water Pump Standby – LCS" },
+              { assetNumber: "CIP-TK01-PMP022", name: "Gland Water Pump Duty" },
+              { assetNumber: "CIP-TK01-MTR019", name: "Gland Water Pump Duty – Motor" },
+              { assetNumber: "CIP-TK01-MCC011", name: "Gland Water Pump Duty – MCC Cell" },
+              { assetNumber: "CIP-TK01-LCS018", name: "Gland Water Pump Duty – LCS" },
+              { assetNumber: "CIP-TK01-PMP023", name: "Gland Water Pump Stand-By" },
+              { assetNumber: "CIP-TK01-PMP024", name: "Gland Water Pump Stand-By 2" },
+              { assetNumber: "CIP-TK01-PMP025", name: "Gland Water Pump Stand-By 3" },
+              { assetNumber: "CIP-TK01-PMP026", name: "Gland Water Pump Stand-By 4" },
+              { assetNumber: "CIP-TK01-PMP027", name: "Filter 1 Feed Pump" },
+              { assetNumber: "CIP-TK01-MTR020", name: "Filter 1 Feed Pump – Motor" },
+              { assetNumber: "CIP-TK01-PMP028", name: "Filter 1 Feed Pump – VFD" },
+              { assetNumber: "CIP-TK01-MCC012", name: "Filter 1 Feed Pump – MCC Cell" },
             ] 
           },
           { 
@@ -658,6 +804,19 @@ export const areasData: Area[] = [
               { assetNumber: "ELU-COL001-MTR001", name: "Elution Area Sump Pump – Motor" },
               { assetNumber: "ELU-COL001-MCC001", name: "Elution Area Sump Pump – MCC Cell" },
               { assetNumber: "ELU-COL001-LCS001", name: "Elution Area Sump Pump – LCS" },
+              // Part 3 equipment
+              { assetNumber: "ELU-COL001", name: "Regen Kiln Feed Hopper" },
+              { assetNumber: "ELU-COL001", name: "Regen Kiln Burners" },
+              { assetNumber: "ELU-COL001", name: "Regen Instruments" },
+              { assetNumber: "ELU-COL001-SEN001", name: "Regen Kiln Feed Screw Inlet Level Sensor" },
+              { assetNumber: "ELU-COL001", name: "Regen Kiln Zone 2 Temperature Gauge 1" },
+              { assetNumber: "ELU-COL001", name: "Regen Kiln Zone 2 Temperature Gauge 2" },
+              { assetNumber: "ELU-COL001", name: "Regen Kiln Zone 3 Temperature Gauge 1" },
+              { assetNumber: "ELU-COL001", name: "Regen Kiln Zone 3 Temperature Gauge 2" },
+              { assetNumber: "ELU-COL001-SEN002", name: "Regen Kiln Discharge Temperature Sensor" },
+              { assetNumber: "ELU-COL001", name: "Regen Kiln Zone 1 Temperature Gauge 1" },
+              { assetNumber: "ELU-COL001", name: "Regen Kiln Zone 1 Temperature Gauge 2" },
+              { assetNumber: "ELU-COL001", name: "Regen Kiln Feed End Temperature Gauge" },
             ] 
           },
           { 
@@ -702,14 +861,24 @@ export const areasData: Area[] = [
               { assetNumber: "ELECEL001-CELL001", name: "Electrowinning Cell" },
               { assetNumber: "ELECEL001-FAN001", name: "Electrowinning Fan" },
               { assetNumber: "ELECEL001", name: "Electrowinning Solution Tank" },
+              // Part 3 equipment
+              { assetNumber: "ELECEL001-PMP001", name: "Electrowinning Feed Pump" },
+              { assetNumber: "ELECEL001-MTR001", name: "Electrowinning Feed Pump – Motor" },
+              { assetNumber: "ELECEL001-MCC001", name: "Electrowinning Feed Pump – MCC Cell" },
+              { assetNumber: "ELECEL001-LCS001", name: "Electrowinning Feed Pump – LCS" },
+              { assetNumber: "ELECEL001", name: "Gold Room Instruments" },
+              { assetNumber: "ELECEL001", name: "Electrowinning Flashpot Inlet Temperature Gauge" },
+              { assetNumber: "ELECEL001-SWT001", name: "Electrowinning Flashpot High High Level Switch" },
+              { assetNumber: "ELECEL001", name: "Gold Room Work Bench" },
+              { assetNumber: "ELECEL001", name: "Gold Room Bullion Safe" },
             ] 
           },
           { 
             label: "Smelting Furnace", 
             equipment: [
-              { assetNumber: "FUR001", name: "Smelting Furnace – Furnace" },
-              { assetNumber: "HTR001", name: "Smelting Furnace – Heating Element" },
-              { assetNumber: "FAN001", name: "Smelting Furnace – Extraction Fan" },
+              { assetNumber: "SMEFUR001", name: "Gold Room Barring Furnace" },
+              { assetNumber: "SMEFUR001-FAN001", name: "Barring Furnace Extraction Fan" },
+              { assetNumber: "SMEFUR001", name: "Barring Furnace Hood" },
             ] 
           },
           { label: "Gold Pour Area", equipment: [] },
@@ -762,6 +931,12 @@ export const areasData: Area[] = [
               { assetNumber: "THK001", name: "Tails Instruments" },
               { assetNumber: "THK001", name: "Tails Flow Meter" },
               { assetNumber: "THK001-TX001", name: "CIP Tailings Hopper Level Transmitter" },
+              // Part 3 equipment
+              { assetNumber: "THK001", name: "Tails Thickener" },
+              { assetNumber: "THK001-VLV001", name: "Tails Thickener Piping and Valves" },
+              { assetNumber: "THK001", name: "Thickener Hydraulic Pack" },
+              { assetNumber: "THK001", name: "Thickener Hydraulic Pack Instruments 1" },
+              { assetNumber: "THK001", name: "Thickener Hydraulic Pack Instruments 2" },
             ] 
           },
           { 
@@ -781,6 +956,28 @@ export const areasData: Area[] = [
               { assetNumber: "THK001-MCC003", name: "CIP Tailings Pump B – MCC Cell" },
               { assetNumber: "THK001-LCS002", name: "CIP Tailings Pump B – LCS" },
               { assetNumber: "THK001-SPD002", name: "CIP Tailings Pump B – VSD" },
+              // Part 3 equipment
+              { assetNumber: "THK001-PMP005", name: "Gravity Tails Pump" },
+              { assetNumber: "THK001-MTR004", name: "Gravity Tails Pump – Motor" },
+              { assetNumber: "THK001-MCC004", name: "Gravity Tails Pump – MCC Cell" },
+              { assetNumber: "THK001-LCS003", name: "Gravity Tails Pump – LCS" },
+              { assetNumber: "THK001-PMP006", name: "Thickener Underflow Pump A" },
+              { assetNumber: "THK001-MTR005", name: "Thickener Underflow Pump Duty – Motor" },
+              { assetNumber: "THK001-MCC005", name: "Thickener Underflow Pump Duty – MCC Cell" },
+              { assetNumber: "THK001-LCS004", name: "Thickener Underflow Pump Duty – LCS" },
+              { assetNumber: "THK001-SPD003", name: "Thickener Underflow Duty – VSD" },
+              { assetNumber: "THK001-PMP007", name: "Thickener Underflow Pump B" },
+              { assetNumber: "THK001-MTR006", name: "Thickener Underflow Standby Pump – Motor" },
+              { assetNumber: "THK001-PMP008", name: "Thickener Underflow Standby Pump – MCC" },
+              { assetNumber: "THK001-PMP009", name: "Thickener Underflow Standby Pump – LCS" },
+              { assetNumber: "THK001-PMP010", name: "Thickener Underflow Standby Pump – VFD" },
+              { assetNumber: "THK001-PMP011", name: "Tails Area Sump Pump" },
+              { assetNumber: "THK001-MTR007", name: "Tails Area Sump Pump – Motor" },
+              { assetNumber: "THK001-PMP012", name: "Tails Area Sump Pump – MCC" },
+              { assetNumber: "THK001-LCS005", name: "Tails Area Sump Pump – LCS" },
+              { assetNumber: "THK001-PMP013", name: "Thickener Hydraulic Pump" },
+              { assetNumber: "THK001-MTR008", name: "Thickener Hydraulic Pump – Motor" },
+              { assetNumber: "THK001-LCS006", name: "Thickener Hydraulic Pump – LCS" },
             ] 
           },
         ],
@@ -789,11 +986,13 @@ export const areasData: Area[] = [
         label: "Filtering",
         parentAssets: [
           { 
-            label: "Filter Press 1", 
+            label: "Filter Press", 
             equipment: [
-              { assetNumber: "FLT001", name: "Filter Press 1 – Filter" },
-              { assetNumber: "HPU001", name: "Filter Press 1 – Hydraulic Power Unit" },
-              { assetNumber: "PMP001", name: "Filter Press 1 – Feed Pump" },
+              { assetNumber: "FP001", name: "Tails Filter Press" },
+              // Part 3 equipment
+              { assetNumber: "FP001", name: "Filter Press 1" },
+              { assetNumber: "FP001", name: "Filter 1 Stock Tank" },
+              { assetNumber: "FP001-AGT001", name: "Filter 1 Stock Tank Agitator" },
             ] 
           },
           { 
@@ -831,6 +1030,18 @@ export const areasData: Area[] = [
             label: "Plant Mobile Equipment", 
             equipment: [
               { assetNumber: "UNKN", name: "CIP Area Gantry Crane" },
+              { assetNumber: "UNKN", name: "Knelson Area Hoist" },
+            ] 
+          },
+        ],
+      },
+      {
+        label: "Site Infrastructure",
+        parentAssets: [
+          { 
+            label: "Services", 
+            equipment: [
+              { assetNumber: "UNKN", name: "Services" },
             ] 
           },
         ],
