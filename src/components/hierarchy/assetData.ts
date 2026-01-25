@@ -410,7 +410,20 @@ export const areasData: Area[] = [
           { 
             label: "Cyanide Transfer System", 
             equipment: [
-              { assetNumber: "CXFR001-PMP001", name: "Cyanide Transfer Pump" },
+              { 
+                assetNumber: "CXFR001-PMP001", 
+                name: "Cyanide Solution Transfer Pump",
+                components: [
+                  {
+                    componentCode: "CRN20-01",
+                    componentType: "Pump",
+                    componentName: "Cyanide Transfer Pump",
+                    manufacturer: "GRUNDFOS",
+                    model: "CRN20-01 A FGI-G-V-HQQV",
+                    serialNumber: "A96500484P11730"
+                  }
+                ]
+              },
               { assetNumber: "CXFR001-MTR001", name: "Cyanide Transfer Pump – Motor" },
               { assetNumber: "CXFR001-MCC001", name: "Cyanide Transfer Pump – MCC" },
               { assetNumber: "CXFR001-LCS001", name: "Cyanide Transfer Pump – LCS" },
@@ -1750,18 +1763,18 @@ export const areasData: Area[] = [
                 name: "CIP Tailings Pump – Duty",
                 components: [
                   {
-                    componentCode: "WARMAN-6/4",
-                    componentType: "Pump Wet End",
-                    componentName: "CIP Tailings Pump Wet End",
-                    manufacturer: "Warman",
-                    model: "6/4 AH",
-                    pumpFlow: "137 m³/hr @ 25 m TDH"
+                    componentCode: "65QV-SPR1200",
+                    componentType: "Pump",
+                    componentName: "CIP Tails Sump Pump Wet End",
+                    manufacturer: "WARMAN",
+                    model: "65QV-SPR1200 (Rubber)"
                   },
                   {
-                    componentCode: "WEG-CIP-TAIL",
+                    componentCode: "UNKNOWN-MTR",
                     componentType: "Motor",
-                    componentName: "CIP Tailings Pump Motor",
-                    manufacturer: "WEG"
+                    componentName: "CIP Tails Sump Pump Motor",
+                    manufacturer: "Unknown",
+                    displacement: "Notes: Motor details to be confirmed onsite"
                   }
                 ]
               },
@@ -1773,18 +1786,18 @@ export const areasData: Area[] = [
                 name: "CIP Tailings Pump – Standby",
                 components: [
                   {
-                    componentCode: "WARMAN-6/4",
-                    componentType: "Pump Wet End",
-                    componentName: "CIP Tailings Pump Wet End (Standby)",
-                    manufacturer: "Warman",
-                    model: "6/4 AH",
-                    pumpFlow: "137 m³/hr @ 25 m TDH"
+                    componentCode: "65QV-SPR1200-STBY",
+                    componentType: "Pump",
+                    componentName: "CIP Tails Sump Pump Wet End (Standby)",
+                    manufacturer: "WARMAN",
+                    model: "65QV-SPR1200 (Rubber)"
                   },
                   {
-                    componentCode: "WEG-CIP-TAIL-STBY",
+                    componentCode: "UNKNOWN-MTR-STBY",
                     componentType: "Motor",
-                    componentName: "CIP Tailings Pump Motor (Standby)",
-                    manufacturer: "WEG"
+                    componentName: "CIP Tails Sump Pump Motor (Standby)",
+                    manufacturer: "Unknown",
+                    displacement: "Notes: Motor details to be confirmed onsite"
                   }
                 ]
               },
