@@ -1153,36 +1153,52 @@ export const areasData: Area[] = [
               { 
                 assetNumber: "CYC001", 
                 name: "Primary Cyclone Cluster",
+              },
+              { 
+                assetNumber: "CYC001-CYC001", 
+                name: "Primary Cyclone – Operating 1",
                 components: [
                   {
                     componentCode: "CVX400-1",
                     componentType: "Cyclone",
-                    componentName: "Primary Cyclone 1",
+                    componentName: "Cyclone Unit",
                     manufacturer: "Cavex",
                     model: "CVX400",
                     pumpFlow: "240 tph @ 61% w/w solids",
                     operatingPressure: "140 kPa",
-                    displacement: "Spigot: 100 mm, Vortex: 150 mm, OF: 100 mm, UF: 64 mm"
-                  },
+                    displacement: "Spigot: 100 mm, Vortex: 150 mm"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "CYC001-CYC002", 
+                name: "Primary Cyclone – Operating 2",
+                components: [
                   {
                     componentCode: "CVX400-2",
                     componentType: "Cyclone",
-                    componentName: "Primary Cyclone 2",
+                    componentName: "Cyclone Unit",
                     manufacturer: "Cavex",
                     model: "CVX400",
                     pumpFlow: "240 tph @ 61% w/w solids",
                     operatingPressure: "140 kPa",
-                    displacement: "Spigot: 100 mm, Vortex: 150 mm, OF: 100 mm, UF: 64 mm"
-                  },
+                    displacement: "Spigot: 100 mm, Vortex: 150 mm"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "CYC001-CYC003", 
+                name: "Primary Cyclone – Standby",
+                components: [
                   {
                     componentCode: "CVX400-3",
                     componentType: "Cyclone",
-                    componentName: "Primary Cyclone 3 (Standby)",
+                    componentName: "Cyclone Unit (Standby)",
                     manufacturer: "Cavex",
                     model: "CVX400",
                     pumpFlow: "240 tph @ 61% w/w solids",
                     operatingPressure: "140 kPa",
-                    displacement: "Spigot: 100 mm, Vortex: 150 mm, OF: 100 mm, UF: 64 mm"
+                    displacement: "Spigot: 100 mm, Vortex: 150 mm"
                   }
                 ]
               },
@@ -1190,6 +1206,37 @@ export const areasData: Area[] = [
               { assetNumber: "CYC001-TX001", name: "Primary Cyclone – Pressure Transmitter" },
               { assetNumber: "CYC001-PG001", name: "Primary Cyclone – Pressure Gauge" },
               { assetNumber: "CYC001-SPL001", name: "Primary Cyclone Underflow Splitter Box" },
+              { 
+                assetNumber: "CYC001-PMP001", 
+                name: "Primary Mill Cyclone Feed Pump – Duty",
+                components: [
+                  {
+                    componentCode: "8/6-AH",
+                    componentType: "Pump Wet End",
+                    componentName: "Cyclone Feed Pump Wet End",
+                    manufacturer: "Austral",
+                    model: "8/6 AH Metal",
+                    pumpFlow: "243 m³/hr @ SG 1.62"
+                  },
+                  {
+                    componentCode: "W22-CYC",
+                    componentType: "Motor",
+                    componentName: "Cyclone Feed Pump Motor",
+                    manufacturer: "WEG",
+                    model: "W22"
+                  },
+                  {
+                    componentCode: "SPC 2360",
+                    componentType: "Belt",
+                    componentName: "Cyclone Feed Pump Belt",
+                    manufacturer: "N/A",
+                    model: "SPC 2360 x 4"
+                  }
+                ]
+              },
+              { assetNumber: "CYC001-PMP001-MTR001", name: "Primary Mill Cyclone Feed Pump – Motor" },
+              { assetNumber: "CYC001-PMP001-MCC001", name: "Primary Mill Cyclone Feed Pump – MCC Cell" },
+              { assetNumber: "CYC001-PMP001-LCS001", name: "Primary Mill Cyclone Feed Pump – LCS" },
             ]
           },
         ],
