@@ -471,11 +471,6 @@ export const areasData: Area[] = [
               { assetNumber: "PWP001-VSD002", name: "Process Water Pond – Pump Standby VSD" },
             ] 
           },
-        ],
-      },
-      {
-        label: "Gland Water",
-        parentAssets: [
           { 
             label: "Gland Water System", 
             equipment: [
