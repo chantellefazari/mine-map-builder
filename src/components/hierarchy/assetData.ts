@@ -90,24 +90,24 @@ export const areasData: Area[] = [
           { 
             label: "Air Compressor 1", 
             equipment: [
-              { assetNumber: "MTR001", name: "Air Compressor 1 – Motor" },
-              { assetNumber: "VLV001", name: "Air Compressor 1 – Inlet Valve" },
-              { assetNumber: "VLV002", name: "Air Compressor 1 – Outlet Valve" },
-            ] 
+              { assetNumber: "COMP01-MTR001", name: "Air Compressor 1 – Motor" },
+              { assetNumber: "COMP01-VLV001", name: "Air Compressor 1 – Inlet Valve" },
+              { assetNumber: "COMP01-VLV002", name: "Air Compressor 1 – Outlet Valve" },
+            ]
           },
           { 
             label: "Air Receiver 1", 
             equipment: [
-              { assetNumber: "VLV001", name: "Air Receiver 1 – Drain Valve" },
-              { assetNumber: "SWT001", name: "Air Receiver 1 – Pressure Switch" },
-            ] 
+              { assetNumber: "RCVR01-VLV001", name: "Air Receiver 1 – Drain Valve" },
+              { assetNumber: "RCVR01-SWT001", name: "Air Receiver 1 – Pressure Switch" },
+            ]
           },
           { 
             label: "Air Dryer 1", 
             equipment: [
-              { assetNumber: "HTR001", name: "Air Dryer 1 – Heater" },
-              { assetNumber: "VLV001", name: "Air Dryer 1 – Purge Valve" },
-            ] 
+              { assetNumber: "DRYR01-HTR001", name: "Air Dryer 1 – Heater" },
+              { assetNumber: "DRYR01-VLV001", name: "Air Dryer 1 – Purge Valve" },
+            ]
           },
           { 
             label: "HP Air Compressor", 
