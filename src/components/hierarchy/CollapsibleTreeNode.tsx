@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronRight, ChevronDown, Minus } from "lucide-react";
+import { ChevronRight, ChevronDown, Minus, Tag } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export type NodeLevel = "site" | "plant" | "area" | "subarea" | "parentAsset" | "equipment";
 export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP";
@@ -17,6 +23,8 @@ interface CollapsibleTreeNodeProps {
   forceExpanded?: boolean;
   isHighlighted?: boolean;
   centered?: boolean;
+  /** Legacy P&ID tag references */
+  pidTags?: string[];
 }
 
 const levelStyles: Record<NodeLevel, string> = {
@@ -49,9 +57,11 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   forceExpanded = false,
   isHighlighted = false,
   centered = false,
+  pidTags = [],
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded || forceExpanded);
   const nodeRef = useRef<HTMLDivElement>(null);
+  const hasPidTags = pidTags.length > 0;
   
   // React to forceExpanded changes from search
   useEffect(() => {
@@ -81,39 +91,73 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
     }
   };
 
+  const nodeContent = (
+    <div
+      id={id}
+      ref={nodeRef}
+      onClick={handleToggle}
+      className={cn(
+        "rounded-lg flex items-center gap-1.5 whitespace-nowrap select-none transition-all duration-300",
+        baseStyle,
+        areaColor,
+        canExpand && "cursor-pointer hover:ring-2 hover:ring-primary/30",
+        isHighlighted && "ring-2 ring-search-highlight ring-offset-2 ring-offset-background shadow-lg shadow-search-glow/40"
+      )}
+    >
+      {/* Expand/collapse icon */}
+      {canExpand ? (
+        isExpanded ? (
+          <ChevronDown className="w-3 h-3 opacity-70" />
+        ) : (
+          <ChevronRight className="w-3 h-3 opacity-70" />
+        )
+      ) : level !== "equipment" && level !== "site" && level !== "plant" ? (
+        <Minus className="w-3 h-3 opacity-40" />
+      ) : null}
+      
+      {code && (
+        <span className="font-mono text-[10px] opacity-80 bg-black/10 px-1 py-0.5 rounded">
+          {code}
+        </span>
+      )}
+      <span>{label}</span>
+      
+      {/* P&ID tag indicator */}
+      {hasPidTags && (
+        <Tag className="w-3 h-3 opacity-60 ml-1" />
+      )}
+    </div>
+  );
+
   return (
     <div className={cn("flex flex-col", centered ? "items-center" : "items-start")}>
-      {/* Node itself */}
-      <div
-        id={id}
-        ref={nodeRef}
-        onClick={handleToggle}
-        className={cn(
-          "rounded-lg flex items-center gap-1.5 whitespace-nowrap select-none transition-all duration-300",
-          baseStyle,
-          areaColor,
-          canExpand && "cursor-pointer hover:ring-2 hover:ring-primary/30",
-          isHighlighted && "ring-2 ring-search-highlight ring-offset-2 ring-offset-background shadow-lg shadow-search-glow/40"
-        )}
-      >
-        {/* Expand/collapse icon */}
-        {canExpand ? (
-          isExpanded ? (
-            <ChevronDown className="w-3 h-3 opacity-70" />
-          ) : (
-            <ChevronRight className="w-3 h-3 opacity-70" />
-          )
-        ) : level !== "equipment" && level !== "site" && level !== "plant" ? (
-          <Minus className="w-3 h-3 opacity-40" />
-        ) : null}
-        
-        {code && (
-          <span className="font-mono text-[10px] opacity-80 bg-black/10 px-1 py-0.5 rounded">
-            {code}
-          </span>
-        )}
-        <span>{label}</span>
-      </div>
+      {/* Node with optional P&ID tooltip */}
+      {hasPidTags ? (
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              {nodeContent}
+            </TooltipTrigger>
+            <TooltipContent side="right" className="max-w-xs">
+              <div className="space-y-1">
+                <p className="text-xs font-medium text-muted-foreground">Legacy Reference – P&ID</p>
+                <div className="flex flex-wrap gap-1">
+                  {pidTags.map((tag, idx) => (
+                    <span 
+                      key={idx} 
+                      className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : (
+        nodeContent
+      )}
 
       {/* Children branch downward */}
       {canExpand && isExpanded && (

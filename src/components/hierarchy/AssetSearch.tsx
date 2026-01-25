@@ -14,7 +14,7 @@ export const AssetSearch: React.FC<AssetSearchProps> = ({ value, onChange }) => 
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
       <Input
         type="text"
-        placeholder="Search assets by number or name..."
+        placeholder="Search by asset number, name, or P&ID tag..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="pl-10 pr-10 bg-background"

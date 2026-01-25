@@ -2,6 +2,8 @@
 export interface Equipment {
   assetNumber: string;
   name: string;
+  /** Legacy P&ID tag references - searchable but not displayed in hierarchy */
+  pidTags?: string[];
 }
 
 export interface ParentAsset {
@@ -95,8 +97,8 @@ export const areasData: Area[] = [
             label: "Air Compressor 1", 
             equipment: [
               { assetNumber: "COMP01-MTR001", name: "Air Compressor 1 – Motor" },
-              { assetNumber: "COMP01-VLV001", name: "Air Compressor 1 – Inlet Valve" },
-              { assetNumber: "COMP01-VLV002", name: "Air Compressor 1 – Outlet Valve" },
+              { assetNumber: "COMP01-VLV001", name: "Air Compressor 1 – Inlet Valve", pidTags: ["XV-101A", "HV-101"] },
+              { assetNumber: "COMP01-VLV002", name: "Air Compressor 1 – Outlet Valve", pidTags: ["XV-101B"] },
             ]
           },
           { 
@@ -116,11 +118,11 @@ export const areasData: Area[] = [
           { 
             label: "HP Air Compressor", 
             equipment: [
-              { assetNumber: "HPCP001", name: "HP Air Compressor 1" },
+              { assetNumber: "HPCP001", name: "HP Air Compressor 1", pidTags: ["C-201", "CMP-201A"] },
               { assetNumber: "HPCP001-PIPE001", name: "HP Air Compressor 1 – Piping" },
               { assetNumber: "HPCP001-MCC001", name: "HP Air Compressor 1 – MCC Cell" },
-              { assetNumber: "HPCP001-RCVR001", name: "HP Air Compressor 1 – Receiver" },
-              { assetNumber: "HPCP002", name: "HP Air Compressor 2" },
+              { assetNumber: "HPCP001-RCVR001", name: "HP Air Compressor 1 – Receiver", pidTags: ["V-201"] },
+              { assetNumber: "HPCP002", name: "HP Air Compressor 2", pidTags: ["C-202", "CMP-201B"] },
               { assetNumber: "HPCP002-PIPE001", name: "HP Air Compressor 2 – Piping" },
               { assetNumber: "HPCP002-MCC001", name: "HP Air Compressor 2 – MCC Cell" },
               { assetNumber: "HPCP002-RCVR001", name: "HP Air Compressor 2 – Receiver" },
@@ -142,7 +144,7 @@ export const areasData: Area[] = [
             label: "Main Distribution Board", 
             equipment: [
               // Core MDB infrastructure only
-              { assetNumber: "MDB001", name: "Main Distribution Board" },
+              { assetNumber: "MDB001", name: "Main Distribution Board", pidTags: ["E-100-MDB"] },
               { assetNumber: "MDB001-DB001", name: "Ice Machine Room DB" },
               { assetNumber: "MDB001-DB002", name: "Main DB 1" },
               { assetNumber: "MDB001-DB003", name: "Main DB 2" },
