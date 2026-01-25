@@ -715,7 +715,6 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-NZL01", name: "Leach Tank 1 – Air Sparge Nozzles" },
               { assetNumber: "CIP-PMP001", name: "CIP Leach Area Sump Pump" },
               { assetNumber: "CIP-ALF01", name: "Carbon Transfer Air Lift 1" },
-              { assetNumber: "CIP-ALF02", name: "Carbon Transfer Air Lift 2" },
             ] 
           },
           { 
@@ -730,6 +729,7 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK02-GBX001", name: "CIP Leach Tank 2 – Agitator Gear Box" },
               { assetNumber: "CIP-TK02-LCS001", name: "CIP Leach Tank 2 – Agitator LCS" },
               { assetNumber: "CIP-NZL02", name: "Leach Tank 2 – Air Sparge Nozzles" },
+              { assetNumber: "CIP-ALF02", name: "Carbon Transfer Air Lift 2" },
             ] 
           },
           { 
@@ -754,6 +754,7 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK04-GBX001", name: "CIP Tank 4 – Agitator Gear Box" },
               { assetNumber: "CIP-TK04-LCS001", name: "CIP Tank 4 – Agitator LCS" },
               { assetNumber: "CIP-TK04-MCC001", name: "CIP Tank 4 – Agitator MCC Cell" },
+              { assetNumber: "CIP-ALF04", name: "Carbon Transfer Air Lift 4" },
             ]
           },
           { 
@@ -765,7 +766,7 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK05-GBX001", name: "CIP Tank 5 – Agitator Gear Box" },
               { assetNumber: "CIP-TK05-LCS001", name: "CIP Tank 5 – Agitator LCS" },
               { assetNumber: "CIP-TK05-MCC001", name: "CIP Tank 5 – Agitator MCC Cell" },
-              { assetNumber: "CIP-ALF04", name: "Carbon Transfer Air Lift 4" },
+              { assetNumber: "CIP-ALF05", name: "Carbon Transfer Air Lift 5" },
             ]
           },
           { 
@@ -777,7 +778,7 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK06-GBX001", name: "CIP Tank 6 – Agitator Gear Box" },
               { assetNumber: "CIP-TK06-LCS001", name: "CIP Tank 6 – Agitator LCS" },
               { assetNumber: "CIP-TK06-MCC001", name: "CIP Tank 6 – Agitator MCC Cell" },
-              { assetNumber: "CIP-ALF05", name: "Carbon Transfer Air Lift 5" },
+              { assetNumber: "CIP-ALF06", name: "Carbon Transfer Air Lift 6" },
             ]
           },
           { 
@@ -789,7 +790,7 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK07-GBX001", name: "CIP Tank 7 – Agitator Gear Box" },
               { assetNumber: "CIP-TK07-LCS001", name: "CIP Tank 7 – Agitator LCS" },
               { assetNumber: "CIP-TK07-MCC001", name: "CIP Tank 7 – Agitator MCC Cell" },
-              { assetNumber: "CIP-ALF06", name: "Carbon Transfer Air Lift 6" },
+              { assetNumber: "CIP-ALF07", name: "Carbon Transfer Air Lift 7" },
             ]
           },
           { 
@@ -801,6 +802,7 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK08-GBX001", name: "CIP Tank 8 – Agitator Gear Box" },
               { assetNumber: "CIP-TK08-LCS001", name: "CIP Tank 8 – Agitator LCS" },
               { assetNumber: "CIP-TK08-MCC001", name: "CIP Tank 8 – Agitator MCC Cell" },
+              { assetNumber: "CIP-ALF08", name: "Carbon Transfer Air Lift 8" },
             ]
           },
           { 
