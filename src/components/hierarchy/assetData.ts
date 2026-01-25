@@ -808,32 +808,32 @@ export const areasData: Area[] = [
           { 
             label: "CIP Feed Trash Screen", 
             equipment: [
-              { assetNumber: "CPTS001", name: "CIP Trash Screen Feed Box" },
               { assetNumber: "CPTS001", name: "CIP Feed Trash Screen" },
-              { assetNumber: "CPTS001-EXC001", name: "CIP Feed Trash Screen Exciter A" },
-              { assetNumber: "CPTS001-LCS001", name: "CIP Feed Trash Screen Exciter A – LCS" },
-              { assetNumber: "CPTS001-MCC001", name: "CIP Feed Trash Screen Exciter A – MCC Cell" },
-              { assetNumber: "CPTS001-EXC002", name: "CIP Feed Trash Screen Exciter B" },
-              { assetNumber: "CPTS001-LCS002", name: "CIP Feed Trash Screen Exciter B – LCS" },
-              { assetNumber: "CPTS001-MCC002", name: "CIP Feed Trash Screen Exciter B – MCC Cell" },
-              { assetNumber: "CPTS001", name: "CIP Feed Trash Screen Exciter Spray Bars" },
-              { assetNumber: "CPTS001-CHU001", name: "CIP Trash Screen – Oversize Chute" },
+              { assetNumber: "CPTS001-FBX001", name: "CIP Feed Trash Screen – Feed Box" },
+              { assetNumber: "CPTS001-EXC001", name: "CIP Feed Trash Screen – Exciter A" },
+              { assetNumber: "CPTS001-LCS001", name: "CIP Feed Trash Screen – Exciter A LCS" },
+              { assetNumber: "CPTS001-MCC001", name: "CIP Feed Trash Screen – Exciter A MCC Cell" },
+              { assetNumber: "CPTS001-EXC002", name: "CIP Feed Trash Screen – Exciter B" },
+              { assetNumber: "CPTS001-LCS002", name: "CIP Feed Trash Screen – Exciter B LCS" },
+              { assetNumber: "CPTS001-MCC002", name: "CIP Feed Trash Screen – Exciter B MCC Cell" },
+              { assetNumber: "CPTS001-SPR001", name: "CIP Feed Trash Screen – Spray Bars" },
+              { assetNumber: "CPTS001-CHU001", name: "CIP Feed Trash Screen – Oversize Chute" },
             ] 
           },
           { 
             label: "Loaded Carbon Screen", 
             equipment: [
-              { assetNumber: "LCS001", name: "Loaded Carbon Screen Feedbox" },
-              { assetNumber: "LCS001", name: "Loaded Carbon Screen" },
-              { assetNumber: "LCS001-EXC001", name: "Loaded Carbon Screen Exciter A" },
-              { assetNumber: "LCS001-LCS001", name: "Loaded Carbon Screen Exciter A – LCS" },
-              { assetNumber: "LCS001-MCC001", name: "Loaded Carbon Screen Exciter A – MCC Cell" },
-              { assetNumber: "LCS001-EXC002", name: "Loaded Carbon Screen Exciter B" },
-              { assetNumber: "LCS001-LCS002", name: "Loaded Carbon Screen Exciter B – LCS" },
-              { assetNumber: "LCS001-MCC002", name: "Loaded Carbon Screen Exciter B – MCC Cell" },
-              { assetNumber: "LCS001", name: "Loaded Carbon Screen Exciter Spray Bars" },
-              { assetNumber: "LCS001", name: "Loaded Carbon Screen Underpan" },
-              { assetNumber: "LCS001-CHU001", name: "Loaded Carbon Screen – Oversize Chute" },
+              { assetNumber: "LDCS001", name: "Loaded Carbon Screen" },
+              { assetNumber: "LDCS001-FBX001", name: "Loaded Carbon Screen – Feed Box" },
+              { assetNumber: "LDCS001-EXC001", name: "Loaded Carbon Screen – Exciter A" },
+              { assetNumber: "LDCS001-LCS001", name: "Loaded Carbon Screen – Exciter A LCS" },
+              { assetNumber: "LDCS001-MCC001", name: "Loaded Carbon Screen – Exciter A MCC Cell" },
+              { assetNumber: "LDCS001-EXC002", name: "Loaded Carbon Screen – Exciter B" },
+              { assetNumber: "LDCS001-LCS002", name: "Loaded Carbon Screen – Exciter B LCS" },
+              { assetNumber: "LDCS001-MCC002", name: "Loaded Carbon Screen – Exciter B MCC Cell" },
+              { assetNumber: "LDCS001-SPR001", name: "Loaded Carbon Screen – Spray Bars" },
+              { assetNumber: "LDCS001-PAN001", name: "Loaded Carbon Screen – Underpan" },
+              { assetNumber: "LDCS001-CHU001", name: "Loaded Carbon Screen – Oversize Chute" },
             ] 
           },
           { 
@@ -933,8 +933,8 @@ export const areasData: Area[] = [
           { 
             label: "Cyanide Solution Storage Tank", 
             equipment: [
-              { assetNumber: "CSTR001-TK001", name: "Cyanide Solution Storage Tank" },
-              { assetNumber: "CSTR001-TX001", name: "Cyanide Storage Tank – Level Transmitter" },
+              { assetNumber: "CSTR001", name: "Cyanide Solution Storage Tank" },
+              { assetNumber: "CSTR001-TX001", name: "Cyanide Solution Storage Tank – Level Transmitter" },
             ] 
           },
           { 
