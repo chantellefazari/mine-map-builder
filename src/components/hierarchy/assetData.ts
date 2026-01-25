@@ -531,7 +531,30 @@ export const areasData: Area[] = [
           { 
             label: "Transfer Conveyor", 
             equipment: [
-              { assetNumber: "TRCV001", name: "Transfer Conveyor" },
+              { 
+                assetNumber: "TRCV001", 
+                name: "Transfer Conveyor",
+                components: [
+                  {
+                    componentCode: "20.0120634001.0001.12",
+                    componentType: "Motor Gearbox",
+                    componentName: "Conveyor Drive Motor Gearbox",
+                    manufacturer: "SEW-EURODRIVE"
+                  },
+                  {
+                    componentCode: "K-ROL-STR-600B25",
+                    componentType: "Conveyor Roller",
+                    componentName: "Steel Trough Roller",
+                    manufacturer: "N/A"
+                  },
+                  {
+                    componentCode: "K-ROL-SRR-600B25",
+                    componentType: "Conveyor Roller",
+                    componentName: "Steel Return Roller",
+                    manufacturer: "N/A"
+                  }
+                ]
+              },
               { assetNumber: "TRCV001-LCS001", name: "Transfer Conveyor – Local Control Station" },
               { assetNumber: "TRCV001-MTR001", name: "Transfer Conveyor – Motor" },
               { assetNumber: "TRCV001-MCC001", name: "Transfer Conveyor – MCC Cell" },
