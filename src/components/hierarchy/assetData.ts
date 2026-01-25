@@ -909,67 +909,42 @@ export const areasData: Area[] = [
                 name: "Primary Ball Mill – Lube System",
                 components: [
                   {
-                    componentCode: "L194 W22 / 110UT10",
-                    componentType: "Pump (with Motor)",
-                    componentName: "Low Pressure Lube Pump – Standby",
-                    manufacturer: "WEG / PARKER",
-                    model: "L194 W22",
-                    motorRef: "110UT10 / 1009424607",
-                    pumpRef: "3339111192",
-                    motorSpeed: "1450 rpm",
-                    protection: "IP55",
-                    voltage: "415V",
+                    componentCode: "3339111192",
+                    componentType: "Pump",
+                    componentName: "Low Pressure Lube Pump – Duty",
+                    manufacturer: "PARKER",
+                    model: "3339111192",
                     pumpFlow: "2.16 m³/hr (36 lpm)",
                     operatingPressure: "15 bar",
                     displacement: "28 cc/rev"
                   },
                   {
-                    componentCode: "L30 STDE2 / 16DEZ09",
-                    componentType: "Pump (with Motor)",
-                    componentName: "High Pressure Lube Pump",
-                    manufacturer: "WEG / PARKER",
-                    model: "L30 STDE2",
-                    motorRef: "16DEZ09 / 1006367134",
-                    pumpRef: "3706030 (F11 010 MB CV K 000 000 / 201101190501)",
+                    componentCode: "L194 W22 / 1SE110 / 1009158787",
+                    componentType: "Motor",
+                    componentName: "Low Pressure Lube Pump Motor – Duty",
+                    manufacturer: "WEG",
+                    model: "L194 W22 / 1SE110 / 1009158787",
                     motorSpeed: "1450 rpm",
-                    protection: "IP56",
-                    voltage: "415V",
+                    protection: "IP55",
+                    voltage: "415V"
+                  },
+                  {
+                    componentCode: "3706030",
+                    componentType: "Pump",
+                    componentName: "High Pressure Lube Pump",
+                    manufacturer: "PARKER",
+                    model: "3706030",
                     pumpFlow: "0.84 m³/hr (14 lpm)",
                     operatingPressure: "400 bar",
                     displacement: "10 cc/rev"
                   },
                   {
-                    componentCode: "K16 STE2 / 05MA10",
-                    componentType: "Pump (with Motor)",
-                    componentName: "Lube Cooling Recirculating Pump",
-                    manufacturer: "WEG / PARKER",
-                    model: "K16 STE2",
-                    motorRef: "05MA10 / 1007731720",
-                    pumpRef: "3339111486",
-                    motorSpeed: "1450 rpm",
-                    protection: "IP55",
-                    voltage: "415V",
-                    pumpFlow: "3.36 m³/hr (56 lpm)",
-                    operatingPressure: "12 bar",
-                    displacement: "44 cc/rev"
-                  },
-                  {
                     componentCode: "50EK4/2",
                     componentType: "Oil Cooler",
-                    componentName: "Lube Water Oil Cooler",
+                    componentName: "Lube Oil Cooler",
                     manufacturer: "DYNACOOL",
                     model: "50EK4/2",
-                    serialNumber: "65/EK1018T",
-                    oilType: "Water-oil cooler"
-                  },
-                  {
-                    componentCode: "AMPH 100L B4",
-                    componentType: "Air-cooled Oil Cooler",
-                    componentName: "Lube Air Blast Oil Cooler",
-                    manufacturer: "HYDAC",
-                    model: "AMPH 100L B4 – 3kW",
-                    serialNumber: "1900455",
-                    motorRef: "AC-LN75/1.0/F/A1/IBP3",
+                    motorRef: "Fan motor: 3kW",
                     operatingPressure: "16 bar (max)"
                   }
                 ]
@@ -1093,25 +1068,26 @@ export const areasData: Area[] = [
                 name: "Primary Ball Mill – Girth Gear Lube System",
                 components: [
                   {
-                    componentCode: "3706030",
-                    componentType: "Grease Pump",
-                    componentName: "Girth Gear Grease Pump",
-                    manufacturer: "Fuchs",
-                    model: "3706030"
-                  },
-                  {
                     componentCode: "Fire-Ball 300",
                     componentType: "Grease Pump",
-                    componentName: "Girth Gear Grease Pump (Spare)",
+                    componentName: "Grease Pump",
                     manufacturer: "GRACO",
                     model: "Fire-Ball 300",
-                    serialNumber: "239888 / K434021 / A24E"
+                    serialNumber: "233888 / K434021 / A24E"
+                  },
+                  {
+                    componentCode: "3706030",
+                    componentType: "Pump",
+                    componentName: "High Pressure Grease Pump",
+                    manufacturer: "FUCHS",
+                    model: "3706030"
                   },
                   {
                     componentCode: "ELEC",
                     componentType: "Electrical Components",
-                    componentName: "Girth Gear Lube Electrical Components",
-                    manufacturer: "Fuchs"
+                    componentName: "Electrical Components",
+                    manufacturer: "FUCHS",
+                    displacement: "Notes: Electrical spares associated with grease system"
                   }
                 ]
               },
@@ -1232,32 +1208,65 @@ export const areasData: Area[] = [
                 name: "Primary Mill Cyclone Feed Pump – Duty",
                 components: [
                   {
-                    componentCode: "8/6-AH",
-                    componentType: "Pump Wet End",
-                    componentName: "Cyclone Feed Pump Wet End",
-                    manufacturer: "Austral",
-                    model: "8/6 AH Metal",
-                    pumpFlow: "243 m³/hr @ SG 1.62"
+                    componentCode: "8/6 AH",
+                    componentType: "Pump",
+                    componentName: "Pump Wet End",
+                    manufacturer: "AUSTRAL",
+                    model: "8/6 AH",
+                    pumpFlow: "243 m³/hr",
+                    displacement: "SG: 1.62"
                   },
                   {
-                    componentCode: "W22-CYC",
+                    componentCode: "KTE50 W22M / 03JUL24 / 1100388297",
                     componentType: "Motor",
-                    componentName: "Cyclone Feed Pump Motor",
+                    componentName: "Motor",
                     manufacturer: "WEG",
-                    model: "W22"
+                    model: "KTE50 W22M / 03JUL24 / 1100388297"
                   },
                   {
-                    componentCode: "SPC 2360",
-                    componentType: "Belt",
-                    componentName: "Cyclone Feed Pump Belt",
-                    manufacturer: "N/A",
-                    model: "SPC 2360 x 4"
+                    componentCode: "EAM005M / 1811005",
+                    componentType: "Bearing Assembly",
+                    componentName: "Bearing Assembly",
+                    manufacturer: "M&Q Equipment",
+                    model: "EAM005M / 1811005"
                   }
                 ]
               },
-              { assetNumber: "CYC001-PMP001-MTR001", name: "Primary Mill Cyclone Feed Pump – Motor" },
-              { assetNumber: "CYC001-PMP001-MCC001", name: "Primary Mill Cyclone Feed Pump – MCC Cell" },
-              { assetNumber: "CYC001-PMP001-LCS001", name: "Primary Mill Cyclone Feed Pump – LCS" },
+              { assetNumber: "CYC001-PMP001-MTR001", name: "Primary Mill Cyclone Feed Pump – Duty Motor" },
+              { assetNumber: "CYC001-PMP001-MCC001", name: "Primary Mill Cyclone Feed Pump – Duty MCC Cell" },
+              { assetNumber: "CYC001-PMP001-LCS001", name: "Primary Mill Cyclone Feed Pump – Duty LCS" },
+              { 
+                assetNumber: "CYC001-PMP002", 
+                name: "Primary Mill Cyclone Feed Pump – Standby",
+                components: [
+                  {
+                    componentCode: "8/6 AH",
+                    componentType: "Pump",
+                    componentName: "Pump Wet End",
+                    manufacturer: "AUSTRAL",
+                    model: "8/6 AH",
+                    pumpFlow: "243 m³/hr",
+                    displacement: "SG: 1.62"
+                  },
+                  {
+                    componentCode: "KTE50 W22M / 03JUL24 / 1100388297",
+                    componentType: "Motor",
+                    componentName: "Motor",
+                    manufacturer: "WEG",
+                    model: "KTE50 W22M / 03JUL24 / 1100388297"
+                  },
+                  {
+                    componentCode: "EAM005M / 1811005",
+                    componentType: "Bearing Assembly",
+                    componentName: "Bearing Assembly",
+                    manufacturer: "M&Q Equipment",
+                    model: "EAM005M / 1811005"
+                  }
+                ]
+              },
+              { assetNumber: "CYC001-PMP002-MTR001", name: "Primary Mill Cyclone Feed Pump – Standby Motor" },
+              { assetNumber: "CYC001-PMP002-MCC001", name: "Primary Mill Cyclone Feed Pump – Standby MCC Cell" },
+              { assetNumber: "CYC001-PMP002-LCS001", name: "Primary Mill Cyclone Feed Pump – Standby LCS" },
             ]
           },
         ],
