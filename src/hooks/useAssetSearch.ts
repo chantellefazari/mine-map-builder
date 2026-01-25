@@ -7,6 +7,8 @@ export interface SearchResult {
   label: string;
   assetNumber?: string;
   uniqueId: string;
+  /** P&ID tag that matched the search (if applicable) */
+  matchedPidTag?: string;
 }
 
 export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
@@ -75,10 +77,16 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
             const equipLabel = `${equip.assetNumber} — ${equip.name}`;
             const equipId = `equip-${area.code}-${subIdx}-${paIdx}-${eqIdx}`;
             
-            if (
-              equip.assetNumber.toLowerCase().includes(query) ||
-              equip.name.toLowerCase().includes(query)
-            ) {
+            // Check if asset number or name matches
+            const nameMatch = equip.assetNumber.toLowerCase().includes(query) ||
+              equip.name.toLowerCase().includes(query);
+            
+            // Check if any P&ID tag matches
+            const matchedPidTag = equip.pidTags?.find(tag => 
+              tag.toLowerCase().includes(query)
+            );
+            
+            if (nameMatch || matchedPidTag) {
               if (!firstMatchId) firstMatchId = equipId;
               searchResults.push({
                 type: "equipment",
@@ -86,6 +94,7 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
                 label: equipLabel,
                 assetNumber: equip.assetNumber,
                 uniqueId: equipId,
+                matchedPidTag: matchedPidTag,
               });
               // Add all parent paths to expand them
               matchingPaths.add(areaPath.join("/"));

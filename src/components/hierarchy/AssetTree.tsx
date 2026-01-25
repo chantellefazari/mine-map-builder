@@ -118,7 +118,8 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                               label={equipLabel}
                                               level="equipment"
                                               hasChildren={false}
-                                              isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name)}
+                                              isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || (equip.pidTags?.some(tag => matchesSearch(tag)) ?? false)}
+                                              pidTags={equip.pidTags}
                                             />
                                           </TreeBranch>
                                         );
