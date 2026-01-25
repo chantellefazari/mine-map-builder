@@ -470,18 +470,10 @@ export const areasData: Area[] = [
           { 
             label: "Mill Feed Conveyor", 
             equipment: [
-              { assetNumber: "MFC001", name: "Mill Feed Conveyor" },
-              { assetNumber: "MFC001-LCS001", name: "Mill Feed Conveyor – Local Control Station" },
               { 
-                assetNumber: "MFC001-MTR001", 
-                name: "Mill Feed Conveyor – Motor",
+                assetNumber: "MFC001", 
+                name: "Mill Feed Conveyor",
                 components: [
-                  {
-                    componentCode: "1001919277",
-                    componentType: "Electric Motor",
-                    componentName: "Conveyor Drive Motor",
-                    manufacturer: "KTE30 PHEM"
-                  },
                   {
                     componentCode: "K-ROL-SG-60x125-B",
                     componentType: "Conveyor Roller",
@@ -499,6 +491,19 @@ export const areasData: Area[] = [
                     componentType: "Conveyor Roller",
                     componentName: "Steel Return Roller",
                     manufacturer: "N/A"
+                  }
+                ]
+              },
+              { assetNumber: "MFC001-LCS001", name: "Mill Feed Conveyor – Local Control Station" },
+              { 
+                assetNumber: "MFC001-MTR001", 
+                name: "Mill Feed Conveyor – Motor",
+                components: [
+                  {
+                    componentCode: "1001919277",
+                    componentType: "Electric Motor",
+                    componentName: "Conveyor Drive Motor",
+                    manufacturer: "KTE30 PHEM"
                   }
                 ]
               },
