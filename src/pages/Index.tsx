@@ -72,7 +72,7 @@ const Index = () => {
                     Asset Structure
                   </h2>
                   <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
-                    Levels 1–6 • Click nodes to expand
+                    Levels 1–7 • Click nodes to expand
                   </span>
                 </div>
                 <AssetSearch value={searchQuery} onChange={setSearchQuery} />
