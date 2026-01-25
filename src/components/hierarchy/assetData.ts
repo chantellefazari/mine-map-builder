@@ -74,6 +74,10 @@ export const areasData: Area[] = [
             label: "Services", 
             equipment: [
               { assetNumber: "SVC001", name: "Services" },
+              { assetNumber: "SVC002-DB001", name: "Lath Container L&P" },
+              { assetNumber: "SVC002-DB002", name: "Crib Room L&P DB" },
+              { assetNumber: "SVC002-DB003", name: "Conference Building L&P" },
+              { assetNumber: "SVC002-DB004", name: "First Aid Room L&P DB" },
             ] 
           },
         ],
@@ -1417,21 +1421,6 @@ export const areasData: Area[] = [
               { assetNumber: "MOXY001", name: "Cat Moxy 1" },
               { assetNumber: "MOXY002", name: "Cat Moxy 2" },
             ]
-          },
-        ],
-      },
-      {
-        label: "Site Infrastructure",
-        parentAssets: [
-          { 
-            label: "Services", 
-            equipment: [
-              { assetNumber: "SVC002", name: "Services" },
-              { assetNumber: "SVC002-DB001", name: "Lath Container L&P" },
-              { assetNumber: "SVC002-DB002", name: "Crib Room L&P DB" },
-              { assetNumber: "SVC002-DB003", name: "Conference Building L&P" },
-              { assetNumber: "SVC002-DB004", name: "First Aid Room L&P DB" },
-            ] 
           },
         ],
       },
