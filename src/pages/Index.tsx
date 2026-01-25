@@ -2,6 +2,9 @@ import { useState } from "react";
 import { AssetTree } from "@/components/hierarchy/AssetTree";
 import { Legend } from "@/components/hierarchy/Legend";
 import { AssetSearch } from "@/components/hierarchy/AssetSearch";
+import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocationTable";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TreePine, TableProperties } from "lucide-react";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,25 +47,47 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Legend */}
-        <Legend />
+        {/* Tabs: Asset Tree and Functional Locations */}
+        <Tabs defaultValue="hierarchy" className="w-full">
+          <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsTrigger value="hierarchy" className="gap-2">
+              <TreePine className="h-4 w-4" />
+              Asset Hierarchy
+            </TabsTrigger>
+            <TabsTrigger value="functional-locations" className="gap-2">
+              <TableProperties className="h-4 w-4" />
+              Functional Locations
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Hierarchy Diagram */}
-        <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <div className="flex items-center gap-4">
-              <h2 className="text-lg font-semibold text-foreground">
-                Asset Structure
-              </h2>
-              <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
-                Levels 1–6 • Click nodes to expand
-              </span>
+          <TabsContent value="hierarchy" className="mt-6 space-y-6">
+            {/* Legend */}
+            <Legend />
+
+            {/* Hierarchy Diagram */}
+            <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-4">
+                  <h2 className="text-lg font-semibold text-foreground">
+                    Asset Structure
+                  </h2>
+                  <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
+                    Levels 1–6 • Click nodes to expand
+                  </span>
+                </div>
+                <AssetSearch value={searchQuery} onChange={setSearchQuery} />
+              </div>
+              
+              <AssetTree searchQuery={searchQuery} />
             </div>
-            <AssetSearch value={searchQuery} onChange={setSearchQuery} />
-          </div>
-          
-          <AssetTree searchQuery={searchQuery} />
-        </div>
+          </TabsContent>
+
+          <TabsContent value="functional-locations" className="mt-6">
+            <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
+              <FunctionalLocationTable />
+            </div>
+          </TabsContent>
+        </Tabs>
 
         {/* Footer Info */}
         <div className="text-center text-sm text-muted-foreground py-4">
