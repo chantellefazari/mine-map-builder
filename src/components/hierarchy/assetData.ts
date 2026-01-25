@@ -69,7 +69,7 @@ export const areasData: Area[] = [
               { assetNumber: "SINF006", name: "First Aid Room" },
             ] 
           },
-          { label: "Change Rooms", equipment: [] },
+          
           { 
             label: "Services", 
             equipment: [
