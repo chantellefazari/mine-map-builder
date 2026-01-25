@@ -887,8 +887,8 @@ export const areasData: Area[] = [
           { 
             label: "CIP Transfer Pump", 
             equipment: [
-              { assetNumber: "PMP001", name: "CIP Transfer Pump – Pump" },
-              { assetNumber: "MTR001", name: "CIP Transfer Pump – Motor" },
+              { assetNumber: "CIPXFR001-PMP001", name: "CIP Transfer Pump – Pump" },
+              { assetNumber: "CIPXFR001-MTR001", name: "CIP Transfer Pump – Motor" },
             ] 
           },
           { 
@@ -912,10 +912,10 @@ export const areasData: Area[] = [
           { 
             label: "Cyanide Mixing Tank", 
             equipment: [
-              { assetNumber: "UNKN", name: "Cyanide Mixing Tank" },
-              { assetNumber: "TNK001", name: "Cyanide Mixing Tank – Tank" },
-              { assetNumber: "AGT001", name: "Cyanide Mixing Tank – Agitator" },
-              { assetNumber: "MTR001", name: "Cyanide Mixing Tank – Agitator Motor" },
+              { assetNumber: "CYMIX001", name: "Cyanide Mixing Tank" },
+              { assetNumber: "CYMIX001-TK001", name: "Cyanide Mixing Tank – Tank" },
+              { assetNumber: "CYMIX001-AGT001", name: "Cyanide Mixing Tank – Agitator" },
+              { assetNumber: "CYMIX001-MTR001", name: "Cyanide Mixing Tank – Agitator Motor" },
             ] 
           },
           { 
@@ -1002,25 +1002,25 @@ export const areasData: Area[] = [
           { 
             label: "Acid Wash System", 
             equipment: [
-              { assetNumber: "TNK001", name: "Acid Wash System – Acid Tank" },
-              { assetNumber: "PMP001", name: "Acid Wash System – Dosing Pump" },
-              { assetNumber: "AGT001", name: "Acid Wash System – Agitator" },
+              { assetNumber: "ACIDW001-TK001", name: "Acid Wash System – Acid Tank" },
+              { assetNumber: "ACIDW001-PMP001", name: "Acid Wash System – Dosing Pump" },
+              { assetNumber: "ACIDW001-AGT001", name: "Acid Wash System – Agitator" },
             ] 
           },
           { 
             label: "Regen Kiln", 
             equipment: [
               { assetNumber: "KLN001", name: "Regen Kiln – Kiln" },
-              { assetNumber: "MTR001", name: "Regen Kiln – Drive Motor" },
-              { assetNumber: "GBX001", name: "Regen Kiln – Gearbox" },
-              { assetNumber: "FAN001", name: "Regen Kiln – Combustion Fan" },
+              { assetNumber: "KLN001-MTR001", name: "Regen Kiln – Drive Motor" },
+              { assetNumber: "KLN001-GBX001", name: "Regen Kiln – Gearbox" },
+              { assetNumber: "KLN001-FAN001", name: "Regen Kiln – Combustion Fan" },
             ] 
           },
           { 
             label: "Regen Kiln Feed Hopper", 
             equipment: [
-              { assetNumber: "FDR001", name: "Regen Kiln Feed Hopper – Feeder" },
-              { assetNumber: "MTR001", name: "Regen Kiln Feed Hopper – Motor" },
+              { assetNumber: "RKHOP001-FDR001", name: "Regen Kiln Feed Hopper – Feeder" },
+              { assetNumber: "RKHOP001-MTR001", name: "Regen Kiln Feed Hopper – Motor" },
             ] 
           },
         ],
@@ -1137,25 +1137,25 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "FP001", name: "Tails Filter Press" },
               // Part 3 equipment
-              { assetNumber: "FP001", name: "Filter Press 1" },
-              { assetNumber: "FP001", name: "Filter 1 Stock Tank" },
+              { assetNumber: "FP001-FP001", name: "Filter Press 1" },
+              { assetNumber: "FP001-TK001", name: "Filter 1 Stock Tank" },
               { assetNumber: "FP001-AGT001", name: "Filter 1 Stock Tank Agitator" },
               // Part 4 equipment
               { assetNumber: "FP001-MTR001", name: "Filter 1 Stock Tank Agitator – Motor" },
               { assetNumber: "FP001-GBX001", name: "Filter 1 Stock Tank Agitator – Gearbox" },
-              { assetNumber: "FP001", name: "Filter 1 Instruments" },
+              { assetNumber: "FP001-FP001-INST", name: "Filter 1 Instruments" },
               { assetNumber: "FP001-VLV001", name: "Filter 1 Piping and Valves" },
-              { assetNumber: "FP001", name: "Filter Press 1 Hydraulic Pack" },
+              { assetNumber: "FP001-FP001-HYD", name: "Filter Press 1 Hydraulic Pack" },
               { assetNumber: "FP001-MTR002", name: "Filter Press 1 Hydraulic Plate Pack – Motor" },
               { assetNumber: "FP001-MTR003", name: "Filter Press 1 Hydraulic TT Plate – Motor" },
-              { assetNumber: "FP001", name: "Filter Press 2" },
-              { assetNumber: "FP001", name: "Filter 2 Stock Tank" },
+              { assetNumber: "FP001-FP002", name: "Filter Press 2" },
+              { assetNumber: "FP001-TK002", name: "Filter 2 Stock Tank" },
               { assetNumber: "FP001-AGT002", name: "Filter 2 Stock Tank Agitator" },
               { assetNumber: "FP001-MTR004", name: "Filter 2 Stock Tank Agitator – Motor" },
               { assetNumber: "FP001-GBX002", name: "Filter 2 Stock Tank Agitator – Gearbox" },
-              { assetNumber: "FP001", name: "Filter 2 Instruments" },
+              { assetNumber: "FP001-FP002-INST", name: "Filter 2 Instruments" },
               { assetNumber: "FP001-VLV002", name: "Filter 2 Piping and Valves" },
-              { assetNumber: "FP001", name: "Filter Press 2 Hydraulic Pack" },
+              { assetNumber: "FP001-FP002-HYD", name: "Filter Press 2 Hydraulic Pack" },
               { assetNumber: "FP001-MTR005", name: "Filter Press 2 Hydraulic Plate Pack – Motor" },
               { assetNumber: "FP001-MTR006", name: "Filter Press 2 Hydraulic TT Plate – Motor" },
             ] 
@@ -1163,8 +1163,8 @@ export const areasData: Area[] = [
           { 
             label: "Filtrate Pump", 
             equipment: [
-              { assetNumber: "PMP001", name: "Filtrate Pump – Pump" },
-              { assetNumber: "MTR001", name: "Filtrate Pump – Motor" },
+              { assetNumber: "FILTRT001-PMP001", name: "Filtrate Pump – Pump" },
+              { assetNumber: "FILTRT001-MTR001", name: "Filtrate Pump – Motor" },
             ] 
           },
         ],
