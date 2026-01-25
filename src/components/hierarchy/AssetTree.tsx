@@ -58,10 +58,12 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
               {areasData.map((area, areaIndex) => {
                 const areaPath = [area.code];
                 const areaExpanded = shouldExpandForSearch(areaPath);
+                const areaId = `area-${area.code}`;
                 
                 return (
                   <TreeBranch key={area.code} isLast={areaIndex === areasData.length - 1}>
                     <CollapsibleTreeNode
+                      id={areaId}
                       code={area.code}
                       label={area.label}
                       level="area"
@@ -75,10 +77,12 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                       {area.subAreas.map((subArea, subIndex) => {
                         const subAreaPath = [...areaPath, subArea.label];
                         const subAreaExpanded = shouldExpandForSearch(subAreaPath);
+                        const subAreaId = `subarea-${area.code}-${subIndex}`;
                         
                         return (
                           <TreeBranch key={subIndex} isLast={subIndex === area.subAreas.length - 1}>
                             <CollapsibleTreeNode
+                              id={subAreaId}
                               label={subArea.label}
                               level="subarea"
                               hasChildren={subArea.parentAssets.length > 0}
@@ -90,10 +94,12 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                               {subArea.parentAssets.map((parentAsset, paIndex) => {
                                 const parentAssetPath = [...subAreaPath, parentAsset.label];
                                 const parentAssetExpanded = shouldExpandForSearch(parentAssetPath);
+                                const parentAssetId = `parent-${area.code}-${subIndex}-${paIndex}`;
                                 
                                 return (
                                   <TreeBranch key={paIndex} isLast={paIndex === subArea.parentAssets.length - 1}>
                                     <CollapsibleTreeNode
+                                      id={parentAssetId}
                                       label={parentAsset.label}
                                       level="parentAsset"
                                       hasChildren={parentAsset.equipment.length > 0}
@@ -104,9 +110,11 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                       {/* Level 6: Equipment */}
                                       {parentAsset.equipment.map((equip, equipIndex) => {
                                         const equipLabel = `${equip.assetNumber} — ${equip.name}`;
+                                        const equipId = `equip-${area.code}-${subIndex}-${paIndex}-${equipIndex}`;
                                         return (
                                           <TreeBranch key={equipIndex} isLast={equipIndex === parentAsset.equipment.length - 1}>
                                             <CollapsibleTreeNode
+                                              id={equipId}
                                               label={equipLabel}
                                               level="equipment"
                                               hasChildren={false}
