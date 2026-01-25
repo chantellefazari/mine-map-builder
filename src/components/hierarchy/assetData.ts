@@ -691,7 +691,7 @@ export const areasData: Area[] = [
           { 
             label: "Grinding Sump", 
             equipment: [
-              { assetNumber: "GRISUM001-PMP001", name: "Grinding Area Sump Pump" },
+              { assetNumber: "GSPMP001-PMP001", name: "Grinding Area Sump Pump" },
               { assetNumber: "GSPMP001-MTR001", name: "Grinding Area Sump Pump – Motor" },
               { assetNumber: "GSPMP001-MCC001", name: "Grinding Area Sump Pump – MCC Cell" },
               { assetNumber: "GSPMP001-LCS001", name: "Grinding Area Sump Pump – LCS" },
