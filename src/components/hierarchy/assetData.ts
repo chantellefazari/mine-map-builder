@@ -137,35 +137,8 @@ export const areasData: Area[] = [
           { 
             label: "Main Distribution Board", 
             equipment: [
-              { assetNumber: "MDB001-MCC001", name: "CIP Tank 3 Agitator – MCC Cell" },
-              { assetNumber: "MDB001-MCC002", name: "CIP Tank 4 Agitator – MCC Cell" },
-              { assetNumber: "MDB001-MCC003", name: "CIP Tank 5 Agitator – MCC Cell" },
-              { assetNumber: "MDB001-MCC004", name: "CIP Tank 6 Agitator – MCC Cell" },
-              { assetNumber: "MDB001-MCC005", name: "CIP Tank 7 Agitator – MCC Cell" },
-              { assetNumber: "MDB001-MCC006", name: "CIP Tank 8 Agitator – MCC Cell" },
-              { assetNumber: "MDB001-MCC007", name: "Cyanide Mixing Tank Agitator – MCC Cell" },
-              { assetNumber: "MDB001-MCC008", name: "Concentrate Shaking Table – MCC Cell" },
-              { assetNumber: "MDB001-PNL001", name: "Flocc Panel 1" },
-              { assetNumber: "MDB001-PNL002", name: "Flocc Panel 2" },
-              { assetNumber: "MDB001-PNL003", name: "Clarometer Panel" },
-              { assetNumber: "MDB001-MCC009", name: "Filter 1 Stock Tank Agitator – MCC Cell" },
-              { assetNumber: "MDB001-PLC001", name: "Filter 1 PLC" },
-              { assetNumber: "MDB001-PNL004", name: "Filter Press 1 Panel" },
-              { assetNumber: "MDB001-MCC010", name: "Filter Press 1 Hydraulic Plate Pack – MCC Cell" },
-              { assetNumber: "MDB001-MCC011", name: "Filter Press 1 Hydraulic TT Plate – MCC Cell" },
-              { assetNumber: "MDB001-MCC012", name: "Filter 2 Stock Tank Agitator – MCC Cell" },
-              { assetNumber: "MDB001-PLC002", name: "Filter 2 PLC" },
-              { assetNumber: "MDB001-PNL005", name: "Filter Press 2 Panel" },
-              { assetNumber: "MDB001-MCC013", name: "Filter Press 2 Hydraulic Plate Pack – MCC Cell" },
-              { assetNumber: "MDB001-MCC014", name: "Filter Press 2 Hydraulic TT Plate – MCC Cell" },
-              { assetNumber: "MDB001-FMCC001", name: "Gravity Field MCC" },
-              { assetNumber: "MDB001-FMCC002", name: "Tanks Field MCC 1" },
-              { assetNumber: "MDB001-FMCC003", name: "Tanks Field MCC 2" },
-              { assetNumber: "MDB001-FMCC004", name: "Tanks Field MCC 3" },
-              { assetNumber: "MDB001-FMCC005", name: "Tanks Field MCC 4" },
-              { assetNumber: "MDB001-FMCC006", name: "Services Field MCC" },
-              { assetNumber: "MDB001-FMCC007", name: "Process Water Field MCC" },
-              { assetNumber: "MDB001-FMCC008", name: "Filter Press Field MCC" },
+              // Core MDB infrastructure only
+              { assetNumber: "MDB001", name: "Main Distribution Board" },
               { assetNumber: "MDB001-DB001", name: "Ice Machine Room DB" },
               { assetNumber: "MDB001-DB002", name: "Main DB 1" },
               { assetNumber: "MDB001-DB003", name: "Main DB 2" },
@@ -680,7 +653,8 @@ export const areasData: Area[] = [
               { assetNumber: "CST001-MTR001", name: "Concentrate Shaking Table – Motor" },
               { assetNumber: "CST001-LCS001", name: "Concentrate Shaking Table – LCS" },
               { assetNumber: "CST001-GBX001", name: "Concentrate Shaking Table – Gearbox" },
-            ] 
+              { assetNumber: "CST001-MCC001", name: "Concentrate Shaking Table – MCC Cell" },
+            ]
           },
         ],
       },
@@ -726,8 +700,9 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK03-MTR001", name: "CIP Tank 3 – Agitator Motor" },
               { assetNumber: "CIP-TK03-GBX001", name: "CIP Tank 3 – Agitator Gear Box" },
               { assetNumber: "CIP-TK03-LCS001", name: "CIP Tank 3 – Agitator LCS" },
+              { assetNumber: "CIP-TK03-MCC001", name: "CIP Tank 3 – Agitator MCC Cell" },
               { assetNumber: "CIP-ALF03", name: "Carbon Transfer Air Lift 3" },
-            ] 
+            ]
           },
           { 
             label: "CIP Tank 4", 
@@ -737,7 +712,8 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK04-MTR001", name: "CIP Tank 4 – Agitator Motor" },
               { assetNumber: "CIP-TK04-GBX001", name: "CIP Tank 4 – Agitator Gear Box" },
               { assetNumber: "CIP-TK04-LCS001", name: "CIP Tank 4 – Agitator LCS" },
-            ] 
+              { assetNumber: "CIP-TK04-MCC001", name: "CIP Tank 4 – Agitator MCC Cell" },
+            ]
           },
           { 
             label: "CIP Tank 5", 
@@ -747,8 +723,9 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK05-MTR001", name: "CIP Tank 5 – Agitator Motor" },
               { assetNumber: "CIP-TK05-GBX001", name: "CIP Tank 5 – Agitator Gear Box" },
               { assetNumber: "CIP-TK05-LCS001", name: "CIP Tank 5 – Agitator LCS" },
+              { assetNumber: "CIP-TK05-MCC001", name: "CIP Tank 5 – Agitator MCC Cell" },
               { assetNumber: "CIP-ALF04", name: "Carbon Transfer Air Lift 4" },
-            ] 
+            ]
           },
           { 
             label: "CIP Tank 6", 
@@ -758,8 +735,9 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK06-MTR001", name: "CIP Tank 6 – Agitator Motor" },
               { assetNumber: "CIP-TK06-GBX001", name: "CIP Tank 6 – Agitator Gear Box" },
               { assetNumber: "CIP-TK06-LCS001", name: "CIP Tank 6 – Agitator LCS" },
+              { assetNumber: "CIP-TK06-MCC001", name: "CIP Tank 6 – Agitator MCC Cell" },
               { assetNumber: "CIP-ALF05", name: "Carbon Transfer Air Lift 5" },
-            ] 
+            ]
           },
           { 
             label: "CIP Tank 7", 
@@ -769,8 +747,9 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK07-MTR001", name: "CIP Tank 7 – Agitator Motor" },
               { assetNumber: "CIP-TK07-GBX001", name: "CIP Tank 7 – Agitator Gear Box" },
               { assetNumber: "CIP-TK07-LCS001", name: "CIP Tank 7 – Agitator LCS" },
+              { assetNumber: "CIP-TK07-MCC001", name: "CIP Tank 7 – Agitator MCC Cell" },
               { assetNumber: "CIP-ALF06", name: "Carbon Transfer Air Lift 6" },
-            ] 
+            ]
           },
           { 
             label: "CIP Tank 8", 
@@ -780,7 +759,8 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-TK08-MTR001", name: "CIP Tank 8 – Agitator Motor" },
               { assetNumber: "CIP-TK08-GBX001", name: "CIP Tank 8 – Agitator Gear Box" },
               { assetNumber: "CIP-TK08-LCS001", name: "CIP Tank 8 – Agitator LCS" },
-            ] 
+              { assetNumber: "CIP-TK08-MCC001", name: "CIP Tank 8 – Agitator MCC Cell" },
+            ]
           },
           { 
             label: "CIP Feed Trash Screen", 
@@ -897,8 +877,9 @@ export const areasData: Area[] = [
               { assetNumber: "CMIX001-MTR002", name: "Cyanide Mixing Tank – Agitator Motor 2" },
               { assetNumber: "CMIX001-GBX001", name: "Cyanide Mixing Tank – Agitator Gearbox" },
               { assetNumber: "CMIX001-LCS001", name: "Cyanide Mixing Tank – Agitator LCS" },
+              { assetNumber: "CMIX001-MCC001", name: "Cyanide Mixing Tank – Agitator MCC Cell" },
               { assetNumber: "CMIX001-TX001", name: "Cyanide Mixing Tank – Level Transmitter" },
-            ] 
+            ]
           },
           { 
             label: "Cyanide Instruments", 
@@ -1244,9 +1225,12 @@ export const areasData: Area[] = [
               { assetNumber: "THK001-HYD001", name: "Thickener Hydraulic Pack" },
               { assetNumber: "THK001-HYD001-INS001", name: "Thickener Hydraulic Pack Instruments 1" },
               { assetNumber: "THK001-HYD001-INS002", name: "Thickener Hydraulic Pack Instruments 2" },
-              // Part 4 equipment
+              // Flocc & Clarometer panels
+              { assetNumber: "THK001-PNL001", name: "Flocc Panel 1" },
+              { assetNumber: "THK001-PNL002", name: "Flocc Panel 2" },
+              { assetNumber: "THK001-PNL003", name: "Clarometer Panel" },
               { assetNumber: "THK001-MCC001", name: "Thickener Field MCC" },
-            ] 
+            ]
           },
           { 
             label: "Thickener Underflow Pump", 
@@ -1300,25 +1284,34 @@ export const areasData: Area[] = [
               { assetNumber: "FP001", name: "Tails Filter Press 1" },
               { assetNumber: "FP001-TK001", name: "Filter 1 Stock Tank" },
               { assetNumber: "FP001-AGT001", name: "Filter 1 Stock Tank Agitator" },
-              // Part 4 equipment
               { assetNumber: "FP001-MTR001", name: "Filter 1 Stock Tank Agitator – Motor" },
               { assetNumber: "FP001-GBX001", name: "Filter 1 Stock Tank Agitator – Gearbox" },
-              { assetNumber: "FP001-FP001-INST", name: "Filter 1 Instruments" },
+              { assetNumber: "FP001-MCC001", name: "Filter 1 Stock Tank Agitator – MCC Cell" },
+              { assetNumber: "FP001-PLC001", name: "Filter 1 PLC" },
+              { assetNumber: "FP001-INST001", name: "Filter 1 Instruments" },
               { assetNumber: "FP001-VLV001", name: "Filter 1 Piping and Valves" },
-              { assetNumber: "FP001-FP001-HYD", name: "Filter Press 1 Hydraulic Pack" },
+              { assetNumber: "FP001-PNL001", name: "Filter Press 1 Panel" },
+              { assetNumber: "FP001-HYD001", name: "Filter Press 1 Hydraulic Pack" },
               { assetNumber: "FP001-MTR002", name: "Filter Press 1 Hydraulic Plate Pack – Motor" },
+              { assetNumber: "FP001-MCC002", name: "Filter Press 1 Hydraulic Plate Pack – MCC Cell" },
               { assetNumber: "FP001-MTR003", name: "Filter Press 1 Hydraulic TT Plate – Motor" },
-              { assetNumber: "FP001-FP002", name: "Filter Press 2" },
-              { assetNumber: "FP001-TK002", name: "Filter 2 Stock Tank" },
-              { assetNumber: "FP001-AGT002", name: "Filter 2 Stock Tank Agitator" },
-              { assetNumber: "FP001-MTR004", name: "Filter 2 Stock Tank Agitator – Motor" },
-              { assetNumber: "FP001-GBX002", name: "Filter 2 Stock Tank Agitator – Gearbox" },
-              { assetNumber: "FP001-FP002-INST", name: "Filter 2 Instruments" },
-              { assetNumber: "FP001-VLV002", name: "Filter 2 Piping and Valves" },
-              { assetNumber: "FP001-FP002-HYD", name: "Filter Press 2 Hydraulic Pack" },
-              { assetNumber: "FP001-MTR005", name: "Filter Press 2 Hydraulic Plate Pack – Motor" },
-              { assetNumber: "FP001-MTR006", name: "Filter Press 2 Hydraulic TT Plate – Motor" },
-            ] 
+              { assetNumber: "FP001-MCC003", name: "Filter Press 1 Hydraulic TT Plate – MCC Cell" },
+              { assetNumber: "FP002", name: "Tails Filter Press 2" },
+              { assetNumber: "FP002-TK001", name: "Filter 2 Stock Tank" },
+              { assetNumber: "FP002-AGT001", name: "Filter 2 Stock Tank Agitator" },
+              { assetNumber: "FP002-MTR001", name: "Filter 2 Stock Tank Agitator – Motor" },
+              { assetNumber: "FP002-GBX001", name: "Filter 2 Stock Tank Agitator – Gearbox" },
+              { assetNumber: "FP002-MCC001", name: "Filter 2 Stock Tank Agitator – MCC Cell" },
+              { assetNumber: "FP002-PLC001", name: "Filter 2 PLC" },
+              { assetNumber: "FP002-INST001", name: "Filter 2 Instruments" },
+              { assetNumber: "FP002-VLV001", name: "Filter 2 Piping and Valves" },
+              { assetNumber: "FP002-PNL001", name: "Filter Press 2 Panel" },
+              { assetNumber: "FP002-HYD001", name: "Filter Press 2 Hydraulic Pack" },
+              { assetNumber: "FP002-MTR002", name: "Filter Press 2 Hydraulic Plate Pack – Motor" },
+              { assetNumber: "FP002-MCC002", name: "Filter Press 2 Hydraulic Plate Pack – MCC Cell" },
+              { assetNumber: "FP002-MTR003", name: "Filter Press 2 Hydraulic TT Plate – Motor" },
+              { assetNumber: "FP002-MCC003", name: "Filter Press 2 Hydraulic TT Plate – MCC Cell" },
+            ]
           },
           { 
             label: "Filtrate Pump", 
