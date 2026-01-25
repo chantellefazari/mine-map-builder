@@ -243,16 +243,17 @@ export const areasData: Area[] = [
           { 
             label: "Fuel Storage Tank", 
             equipment: [
-              { assetNumber: "TNK001", name: "Fuel Storage Tank – Main Tank" },
-              { assetNumber: "PMP001", name: "Fuel Storage Tank – Transfer Pump" },
-              { assetNumber: "VLV001", name: "Fuel Storage Tank – Isolation Valve" },
+              { assetNumber: "FSTK001", name: "Fuel Storage Tank – Main Tank" },
+              { assetNumber: "FSTK001-PMP001", name: "Fuel Storage Tank – Transfer Pump" },
+              { assetNumber: "FSTK001-VLV001", name: "Fuel Storage Tank – Isolation Valve" },
             ] 
           },
           { 
             label: "Fuel Dispensing Station", 
             equipment: [
-              { assetNumber: "PMP001", name: "Fuel Dispensing Station – Pump" },
-              { assetNumber: "DB001", name: "Fuel Dispensing Station – Control Board" },
+              { assetNumber: "FDISP001", name: "Fuel Dispensing Station" },
+              { assetNumber: "FDISP001-PMP001", name: "Fuel Dispensing Station – Pump" },
+              { assetNumber: "FDISP001-DB001", name: "Fuel Dispensing Station – Control Board" },
             ] 
           },
         ],
