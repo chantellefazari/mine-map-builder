@@ -553,7 +553,41 @@ export const areasData: Area[] = [
           { 
             label: "Primary Cyclone Feed Pump A", 
             equipment: [
-              { assetNumber: "PCFPA001", name: "Primary Cyclone Feed Pump A" },
+              { 
+                assetNumber: "PCFPA001", 
+                name: "Primary Cyclone Feed Pump A",
+                components: [
+                  {
+                    componentCode: "KTE50 W22M",
+                    componentType: "Motor",
+                    componentName: "Cyclone Feed Pump Motor",
+                    manufacturer: "WEG",
+                    model: "KTE50 W22M",
+                    serialNumber: "03JUL24 / 1100388297"
+                  },
+                  {
+                    componentCode: "8/6 AH",
+                    componentType: "Pump Wet End",
+                    componentName: "Cyclone Feed Pump Wet End",
+                    manufacturer: "Austral",
+                    model: "8/6 AH Metal"
+                  },
+                  {
+                    componentCode: "EA005M",
+                    componentType: "Bearing Assembly",
+                    componentName: "Cyclone Feed Pump Bearings",
+                    manufacturer: "M&Q Equipment",
+                    serialNumber: "EA005M / 1811005"
+                  },
+                  {
+                    componentCode: "SPC 2360",
+                    componentType: "Belt",
+                    componentName: "Cyclone Feed Pump Belt",
+                    manufacturer: "N/A",
+                    model: "SPC 2360 x 4"
+                  }
+                ]
+              },
               { assetNumber: "PCFPA001-MTR001", name: "Primary Cyclone Feed Pump A – Motor" },
               { assetNumber: "PCFPA001-MCC001", name: "Primary Cyclone Feed Pump A – MCC Cell" },
               { assetNumber: "PCFPA001-LCS001", name: "Primary Cyclone Feed Pump A – LCS" },
@@ -562,7 +596,48 @@ export const areasData: Area[] = [
           { 
             label: "Primary Cyclone Feed Pump B", 
             equipment: [
-              { assetNumber: "PCFPB001", name: "Primary Cyclone Feed Pump B" },
+              { 
+                assetNumber: "PCFPB001", 
+                name: "Primary Cyclone Feed Pump B",
+                components: [
+                  {
+                    componentCode: "KTE50 W22M",
+                    componentType: "Motor",
+                    componentName: "Cyclone Feed Pump Motor (Standby)",
+                    manufacturer: "WEG",
+                    model: "KTE50 W22M",
+                    serialNumber: "03JUL24 / 1100388297"
+                  },
+                  {
+                    componentCode: "8/6 AH",
+                    componentType: "Pump Wet End",
+                    componentName: "Cyclone Feed Pump Wet End (Standby)",
+                    manufacturer: "Austral",
+                    model: "8/6 AH Metal"
+                  },
+                  {
+                    componentCode: "EA005M",
+                    componentType: "Bearing Assembly",
+                    componentName: "Cyclone Feed Pump Bearings (Standby)",
+                    manufacturer: "M&Q Equipment",
+                    serialNumber: "EA005M / 1811005"
+                  },
+                  {
+                    componentCode: "SPC 2360",
+                    componentType: "Belt",
+                    componentName: "Cyclone Feed Pump Belt (Standby)",
+                    manufacturer: "N/A",
+                    model: "SPC 2360 x 4"
+                  },
+                  {
+                    componentCode: "GLAND",
+                    componentType: "Gland Packing",
+                    componentName: "Cyclone Feed Pump Gland Packing (Standby)",
+                    manufacturer: "N/A",
+                    model: "Request supplier"
+                  }
+                ]
+              },
               { assetNumber: "PCFPB001-MTR001", name: "Primary Cyclone Feed Pump B – Motor" },
               { assetNumber: "PCFPB001-MCC001", name: "Primary Cyclone Feed Pump B – MCC Cell" },
               { assetNumber: "PCFPB001-LCS001", name: "Primary Cyclone Feed Pump B – LCS" },
@@ -832,7 +907,33 @@ export const areasData: Area[] = [
               { assetNumber: "BM001-TX006", name: "Mill High Pressure – Lift Lube Oil Flow Transmitter" },
               { assetNumber: "BM001-LUB005", name: "Mill Lube System – Oil Level" },
               { assetNumber: "BM001-LUB006", name: "Mill Lube System – Oil Temperature" },
-              { assetNumber: "BM001-LUB007", name: "Primary Ball Mill – Girth Gear Lube System" },
+              { 
+                assetNumber: "BM001-LUB007", 
+                name: "Primary Ball Mill – Girth Gear Lube System",
+                components: [
+                  {
+                    componentCode: "3706030",
+                    componentType: "Grease Pump",
+                    componentName: "Girth Gear Grease Pump",
+                    manufacturer: "Fuchs",
+                    model: "3706030"
+                  },
+                  {
+                    componentCode: "Fire-Ball 300",
+                    componentType: "Grease Pump",
+                    componentName: "Girth Gear Grease Pump (Spare)",
+                    manufacturer: "GRACO",
+                    model: "Fire-Ball 300",
+                    serialNumber: "239888 / K434021 / A24E"
+                  },
+                  {
+                    componentCode: "ELEC",
+                    componentType: "Electrical Components",
+                    componentName: "Girth Gear Lube Electrical Components",
+                    manufacturer: "Fuchs"
+                  }
+                ]
+              },
               { assetNumber: "BM001-PMP005", name: "Primary Ball Mill – Girth Gear Lube System Pump" },
               { assetNumber: "BM001-LUB008", name: "Primary Ball Mill – Girth Gear Lube Control Panel" },
               { assetNumber: "BM001-LUB009", name: "Primary Ball Mill – Lube System Filter A" },
@@ -846,7 +947,33 @@ export const areasData: Area[] = [
           { 
             label: "Grinding Sump", 
             equipment: [
-              { assetNumber: "GSPMP001-PMP001", name: "Grinding Area Sump Pump" },
+              { 
+                assetNumber: "GSPMP001-PMP001", 
+                name: "Grinding Area Sump Pump",
+                components: [
+                  {
+                    componentCode: "HGA 132S-8-4",
+                    componentType: "Motor",
+                    componentName: "Grinding Area Sump Pump Motor",
+                    manufacturer: "CMG",
+                    model: "HGA 132S-8-4"
+                  },
+                  {
+                    componentCode: "65 QV SPG",
+                    componentType: "Pump Assembly",
+                    componentName: "Grinding Area Sump Pump Assembly",
+                    manufacturer: "Warman",
+                    model: "65 QV SPG (Metal)"
+                  },
+                  {
+                    componentCode: "SPB 1320",
+                    componentType: "Belt",
+                    componentName: "Grinding Area Sump Pump Belt",
+                    manufacturer: "N/A",
+                    model: "SPB 1320 x 3"
+                  }
+                ]
+              },
               { assetNumber: "GSPMP001-MTR001", name: "Grinding Area Sump Pump – Motor" },
               { assetNumber: "GSPMP001-MCC001", name: "Grinding Area Sump Pump – MCC Cell" },
               { assetNumber: "GSPMP001-LCS001", name: "Grinding Area Sump Pump – LCS" },
@@ -860,7 +987,42 @@ export const areasData: Area[] = [
           { 
             label: "Cyclone Cluster", 
             equipment: [
-              { assetNumber: "CYC001", name: "Primary Cyclone Cluster" },
+              { 
+                assetNumber: "CYC001", 
+                name: "Primary Cyclone Cluster",
+                components: [
+                  {
+                    componentCode: "CVX400-1",
+                    componentType: "Cyclone",
+                    componentName: "Primary Cyclone 1",
+                    manufacturer: "Cavex",
+                    model: "CVX400",
+                    pumpFlow: "240 tph @ 61% w/w solids",
+                    operatingPressure: "140 kPa",
+                    displacement: "Spigot: 100 mm, Vortex: 150 mm, OF: 100 mm, UF: 64 mm"
+                  },
+                  {
+                    componentCode: "CVX400-2",
+                    componentType: "Cyclone",
+                    componentName: "Primary Cyclone 2",
+                    manufacturer: "Cavex",
+                    model: "CVX400",
+                    pumpFlow: "240 tph @ 61% w/w solids",
+                    operatingPressure: "140 kPa",
+                    displacement: "Spigot: 100 mm, Vortex: 150 mm, OF: 100 mm, UF: 64 mm"
+                  },
+                  {
+                    componentCode: "CVX400-3",
+                    componentType: "Cyclone",
+                    componentName: "Primary Cyclone 3 (Standby)",
+                    manufacturer: "Cavex",
+                    model: "CVX400",
+                    pumpFlow: "240 tph @ 61% w/w solids",
+                    operatingPressure: "140 kPa",
+                    displacement: "Spigot: 100 mm, Vortex: 150 mm, OF: 100 mm, UF: 64 mm"
+                  }
+                ]
+              },
               { assetNumber: "CYC001-INS001", name: "Primary Cyclone Cluster – Instruments" },
               { assetNumber: "CYC001-TX001", name: "Primary Cyclone – Pressure Transmitter" },
               { assetNumber: "CYC001-PG001", name: "Primary Cyclone – Pressure Gauge" },
