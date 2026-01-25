@@ -1365,12 +1365,12 @@ export const areasData: Area[] = [
     label: "Support Services",
     subAreas: [
       {
-        label: "Workshop",
+        label: "Workshop Infrastructure",
         parentAssets: [
           { 
             label: "Workshop", 
             equipment: [
-              { assetNumber: "WKSHP001", name: "Workshop Infrastructure" },
+              { assetNumber: "WKSHP001", name: "Workshop" },
               { assetNumber: "WKSHP001-DB001", name: "Workshop DB" },
             ]
           },
