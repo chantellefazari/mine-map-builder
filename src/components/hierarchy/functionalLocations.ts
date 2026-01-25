@@ -2,6 +2,8 @@
 // Format: TCMG-PP-[AREA]-[SUBAREA]-[SYSTEM]
 // FLs stop at SYSTEM level - Assets do NOT get FL codes
 
+import { areasData } from "./assetData";
+
 export interface FunctionalLocation {
   code: string;
   area: string;
@@ -10,6 +12,16 @@ export interface FunctionalLocation {
   subAreaCode: string;
   systemName: string;
 }
+
+// Area code mapping (approved codes per CMMS standards)
+const areaCodeMapping: Record<string, string> = {
+  "SITE": "SITE",
+  "UTL": "UTL",
+  "COM": "COMM",  // COMM as per approved codes
+  "REC": "GR",    // GR = Gold Recovery as per approved codes
+  "TAIL": "TAIL",
+  "SUP": "SUP",
+};
 
 // Sub-Area code mapping
 const subAreaCodes: Record<string, string> = {
@@ -93,7 +105,7 @@ const systemCodes: Record<string, string> = {
   "Hydraulic Oil System": "HOIL",
   
   // UTL > Fuel Systems
-  "Fuel Dispensing": "FDISP",
+  "Fuel Dispensing": "FDISP2",
   
   // COM > Feed / Reclaim
   "Reclaim Hopper": "RCHOP",
@@ -131,13 +143,14 @@ const systemCodes: Record<string, string> = {
   "CIP Tank 7": "CIPTK07",
   "CIP Tank 8": "CIPTK08",
   "CIP Feed Trash Screen": "CIPFTS",
-  "Loaded Carbon Screen": "LCS",
-  "Inter Tank Screens": "ITS",
+  "Loaded Carbon Screen": "LDCS",
+  "CIP Inter Tank Screens": "ITS",
   "Carbon Safety Screen": "CSS",
   "Carbon Safety Sump": "CSSUMP",
-  "Carbon Transfer System": "CXFR",
+  "CIP Transfer Pump": "CIPXFR",
   "Cyanide Monorail": "CYMNR",
   "Cyanide Bag Breaker": "CYBB",
+  "Caustic Bag Breaker": "CAUBB",
   "Cyanide Mixing Tank": "CYMIX",
   "Cyanide Instruments": "CYINS",
   "Cyanide Solution Storage Tank": "CYSST",
@@ -196,9 +209,6 @@ const systemCodes: Record<string, string> = {
   // SUP > Mobile Equipment
   "Plant Mobile Equipment": "PLNTMOB",
   
-  // SUP > Site Infrastructure (uses different code to distinguish from SITE)
-  // "Services" already defined above for SITE - SUP uses same code
-  
   // SUP > Light Vehicles
   "LV Fleet": "LVFLT",
   
@@ -206,15 +216,25 @@ const systemCodes: Record<string, string> = {
   "HV Fleet": "HVFLT",
 };
 
-// Area code mapping (approved codes)
-const areaCodeMapping: Record<string, string> = {
-  "SITE": "SITE",
-  "UTL": "UTL",
-  "COM": "COMM",  // COMM as per approved codes
-  "REC": "GR",    // GR = Gold Recovery as per approved codes
-  "TAIL": "TAIL",
-  "SUP": "SUP",
-};
+// Generate a unique system code from label if not predefined
+function generateSystemCode(label: string): string {
+  if (systemCodes[label]) {
+    return systemCodes[label];
+  }
+  // Generate code from first letters of each word, max 8 chars
+  const words = label.replace(/[^a-zA-Z0-9\s]/g, '').split(/\s+/);
+  let code = words.map(w => w.substring(0, 2).toUpperCase()).join('');
+  return code.substring(0, 8);
+}
+
+// Generate sub-area code
+function getSubAreaCode(label: string): string {
+  if (subAreaCodes[label]) {
+    return subAreaCodes[label];
+  }
+  // Fallback: first 4 chars uppercase
+  return label.substring(0, 4).toUpperCase().replace(/[^A-Z]/g, '');
+}
 
 // Generate Functional Location code
 export function generateFLCode(
@@ -223,177 +243,52 @@ export function generateFLCode(
   systemLabel: string
 ): string {
   const area = areaCodeMapping[areaCode] || areaCode;
-  const subArea = subAreaCodes[subAreaLabel] || subAreaLabel.substring(0, 4).toUpperCase();
-  const system = systemCodes[systemLabel] || systemLabel.substring(0, 6).toUpperCase().replace(/\s/g, "");
+  const subArea = getSubAreaCode(subAreaLabel);
+  const system = generateSystemCode(systemLabel);
   
   return `TCMG-PP-${area}-${subArea}-${system}`;
 }
 
-// Complete Functional Location Table
-export const functionalLocations: FunctionalLocation[] = [
-  // ========== SITE - Site Infrastructure ==========
-  { code: "TCMG-PP-SITE-INFRA-GPLNT", area: "Site", areaCode: "SITE", subArea: "Site Infrastructure", subAreaCode: "INFRA", systemName: "Gold Plant" },
-  { code: "TCMG-PP-SITE-INFRA-ADMIN", area: "Site", areaCode: "SITE", subArea: "Site Infrastructure", subAreaCode: "INFRA", systemName: "Admin Building" },
-  { code: "TCMG-PP-SITE-INFRA-AMEN", area: "Site", areaCode: "SITE", subArea: "Site Infrastructure", subAreaCode: "INFRA", systemName: "Toilets / Amenities" },
-  { code: "TCMG-PP-SITE-INFRA-CRIB", area: "Site", areaCode: "SITE", subArea: "Site Infrastructure", subAreaCode: "INFRA", systemName: "Crib Room" },
-  { code: "TCMG-PP-SITE-INFRA-FAID", area: "Site", areaCode: "SITE", subArea: "Site Infrastructure", subAreaCode: "INFRA", systemName: "First Aid Room" },
-  { code: "TCMG-PP-SITE-INFRA-CHNG", area: "Site", areaCode: "SITE", subArea: "Site Infrastructure", subAreaCode: "INFRA", systemName: "Change Rooms" },
-  { code: "TCMG-PP-SITE-INFRA-SVCS", area: "Site", areaCode: "SITE", subArea: "Site Infrastructure", subAreaCode: "INFRA", systemName: "Services" },
+// Dynamically generate ALL Functional Locations from asset data
+function generateAllFunctionalLocations(): FunctionalLocation[] {
+  const fls: FunctionalLocation[] = [];
+  const usedCodes = new Set<string>();
+  
+  for (const area of areasData) {
+    const mappedAreaCode = areaCodeMapping[area.code] || area.code;
+    
+    for (const subArea of area.subAreas) {
+      const subAreaCode = getSubAreaCode(subArea.label);
+      
+      for (const parentAsset of subArea.parentAssets) {
+        let systemCode = generateSystemCode(parentAsset.label);
+        let flCode = `TCMG-PP-${mappedAreaCode}-${subAreaCode}-${systemCode}`;
+        
+        // Ensure uniqueness
+        let counter = 1;
+        while (usedCodes.has(flCode)) {
+          counter++;
+          flCode = `TCMG-PP-${mappedAreaCode}-${subAreaCode}-${systemCode}${counter}`;
+        }
+        usedCodes.add(flCode);
+        
+        fls.push({
+          code: flCode,
+          area: area.label,
+          areaCode: mappedAreaCode,
+          subArea: subArea.label,
+          subAreaCode: subAreaCode,
+          systemName: parentAsset.label,
+        });
+      }
+    }
+  }
+  
+  return fls;
+}
 
-  // ========== UTL - Utilities & Power ==========
-  // Compressed Air
-  { code: "TCMG-PP-UTL-COMP-COMP01", area: "Utilities & Power", areaCode: "UTL", subArea: "Compressed Air", subAreaCode: "COMP", systemName: "Air Compressor 1" },
-  { code: "TCMG-PP-UTL-COMP-RCVR01", area: "Utilities & Power", areaCode: "UTL", subArea: "Compressed Air", subAreaCode: "COMP", systemName: "Air Receiver 1" },
-  { code: "TCMG-PP-UTL-COMP-DRYR01", area: "Utilities & Power", areaCode: "UTL", subArea: "Compressed Air", subAreaCode: "COMP", systemName: "Air Dryer 1" },
-  { code: "TCMG-PP-UTL-COMP-HPCOMP", area: "Utilities & Power", areaCode: "UTL", subArea: "Compressed Air", subAreaCode: "COMP", systemName: "HP Air Compressor" },
-  
-  // Electrical / Controls
-  { code: "TCMG-PP-UTL-ELEC-MDB", area: "Utilities & Power", areaCode: "UTL", subArea: "Electrical / Controls", subAreaCode: "ELEC", systemName: "Main Distribution Board" },
-  { code: "TCMG-PP-UTL-ELEC-SDB", area: "Utilities & Power", areaCode: "UTL", subArea: "Electrical / Controls", subAreaCode: "ELEC", systemName: "Sub Distribution Board" },
-  { code: "TCMG-PP-UTL-ELEC-CTRL", area: "Utilities & Power", areaCode: "UTL", subArea: "Electrical / Controls", subAreaCode: "ELEC", systemName: "Control Room" },
-  { code: "TCMG-PP-UTL-ELEC-CTSUB01", area: "Utilities & Power", areaCode: "UTL", subArea: "Electrical / Controls", subAreaCode: "ELEC", systemName: "Control Subroom 1" },
-  { code: "TCMG-PP-UTL-ELEC-LTWR", area: "Utilities & Power", areaCode: "UTL", subArea: "Electrical / Controls", subAreaCode: "ELEC", systemName: "Lighting Towers" },
-  { code: "TCMG-PP-UTL-ELEC-MSUB", area: "Utilities & Power", areaCode: "UTL", subArea: "Electrical / Controls", subAreaCode: "ELEC", systemName: "Main Sub Station" },
-  
-  // Power Generation
-  { code: "TCMG-PP-UTL-PWR-GENSET", area: "Utilities & Power", areaCode: "UTL", subArea: "Power Generation", subAreaCode: "PWR", systemName: "Generator Set" },
-  { code: "TCMG-PP-UTL-PWR-FSTK", area: "Utilities & Power", areaCode: "UTL", subArea: "Power Generation", subAreaCode: "PWR", systemName: "Fuel Storage Tank" },
-  { code: "TCMG-PP-UTL-PWR-FDISP", area: "Utilities & Power", areaCode: "UTL", subArea: "Power Generation", subAreaCode: "PWR", systemName: "Fuel Dispensing Station" },
-  
-  // Reagents (Lime)
-  { code: "TCMG-PP-UTL-REAG-LSILO", area: "Utilities & Power", areaCode: "UTL", subArea: "Reagents (Lime)", subAreaCode: "REAG", systemName: "Lime Storage Silo" },
-  { code: "TCMG-PP-UTL-REAG-LVIB", area: "Utilities & Power", areaCode: "UTL", subArea: "Reagents (Lime)", subAreaCode: "REAG", systemName: "Lime Silo Vibrator" },
-  { code: "TCMG-PP-UTL-REAG-LDOS", area: "Utilities & Power", areaCode: "UTL", subArea: "Reagents (Lime)", subAreaCode: "REAG", systemName: "Lime Dosing System" },
-  { code: "TCMG-PP-UTL-REAG-LAGTK", area: "Utilities & Power", areaCode: "UTL", subArea: "Reagents (Lime)", subAreaCode: "REAG", systemName: "Lime Agitation Tank" },
-  { code: "TCMG-PP-UTL-REAG-REAG", area: "Utilities & Power", areaCode: "UTL", subArea: "Reagents (Lime)", subAreaCode: "REAG", systemName: "Reagents" },
-  { code: "TCMG-PP-UTL-REAG-RSHWR", area: "Utilities & Power", areaCode: "UTL", subArea: "Reagents (Lime)", subAreaCode: "REAG", systemName: "Reagent Safety Shower" },
-  { code: "TCMG-PP-UTL-REAG-FLOC", area: "Utilities & Power", areaCode: "UTL", subArea: "Reagents (Lime)", subAreaCode: "REAG", systemName: "Floc System" },
-  
-  // Water
-  { code: "TCMG-PP-UTL-WTR-PWT", area: "Utilities & Power", areaCode: "UTL", subArea: "Water", subAreaCode: "WTR", systemName: "Potable Water Tank" },
-  { code: "TCMG-PP-UTL-WTR-RWT", area: "Utilities & Power", areaCode: "UTL", subArea: "Water", subAreaCode: "WTR", systemName: "Raw Water Tank" },
-  { code: "TCMG-PP-UTL-WTR-PRWT", area: "Utilities & Power", areaCode: "UTL", subArea: "Water", subAreaCode: "WTR", systemName: "Process Water Tank" },
-  
-  // Hydraulic Systems
-  { code: "TCMG-PP-UTL-HYD-HOIL", area: "Utilities & Power", areaCode: "UTL", subArea: "Hydraulic Systems", subAreaCode: "HYD", systemName: "Hydraulic Oil System" },
-  
-  // Fuel Systems
-  { code: "TCMG-PP-UTL-FUEL-FDISP", area: "Utilities & Power", areaCode: "UTL", subArea: "Fuel Systems", subAreaCode: "FUEL", systemName: "Fuel Dispensing" },
-
-  // ========== COM - Comminution / Process ==========
-  // Feed / Reclaim
-  { code: "TCMG-PP-COMM-FEED-RCHOP", area: "Comminution / Process", areaCode: "COMM", subArea: "Feed / Reclaim", subAreaCode: "FEED", systemName: "Reclaim Hopper" },
-  { code: "TCMG-PP-COMM-FEED-APRFDR", area: "Comminution / Process", areaCode: "COMM", subArea: "Feed / Reclaim", subAreaCode: "FEED", systemName: "Apron Feeder" },
-  { code: "TCMG-PP-COMM-FEED-FDHOP", area: "Comminution / Process", areaCode: "COMM", subArea: "Feed / Reclaim", subAreaCode: "FEED", systemName: "Feed Hopper" },
-  { code: "TCMG-PP-COMM-FEED-MFCV", area: "Comminution / Process", areaCode: "COMM", subArea: "Feed / Reclaim", subAreaCode: "FEED", systemName: "Mill Feed Conveyor" },
-  { code: "TCMG-PP-COMM-FEED-PCFPMP", area: "Comminution / Process", areaCode: "COMM", subArea: "Feed / Reclaim", subAreaCode: "FEED", systemName: "Primary Cyclone Feed Pumps" },
-  
-  // Conveying
-  { code: "TCMG-PP-COMM-CONV-CV01", area: "Comminution / Process", areaCode: "COMM", subArea: "Conveying", subAreaCode: "CONV", systemName: "Conveyor CV01" },
-  { code: "TCMG-PP-COMM-CONV-CV02", area: "Comminution / Process", areaCode: "COMM", subArea: "Conveying", subAreaCode: "CONV", systemName: "Conveyor CV02" },
-  
-  // Grinding
-  { code: "TCMG-PP-COMM-GRIND-BM", area: "Comminution / Process", areaCode: "COMM", subArea: "Grinding", subAreaCode: "GRIND", systemName: "Ball Mill" },
-  { code: "TCMG-PP-COMM-GRIND-GSUMP", area: "Comminution / Process", areaCode: "COMM", subArea: "Grinding", subAreaCode: "GRIND", systemName: "Grinding Sump" },
-  
-  // Classification
-  { code: "TCMG-PP-COMM-CLASS-CYCL", area: "Comminution / Process", areaCode: "COMM", subArea: "Classification", subAreaCode: "CLASS", systemName: "Cyclone Cluster" },
-
-  // ========== REC - Gold Recovery ==========
-  // Gravity Circuit
-  { code: "TCMG-PP-GR-GRAV-GCON01", area: "Gold Recovery", areaCode: "GR", subArea: "Gravity Circuit", subAreaCode: "GRAV", systemName: "Gravity Concentrator 1" },
-  { code: "TCMG-PP-GR-GRAV-CPMP", area: "Gold Recovery", areaCode: "GR", subArea: "Gravity Circuit", subAreaCode: "GRAV", systemName: "Concentrate Pump" },
-  { code: "TCMG-PP-GR-GRAV-GEW", area: "Gold Recovery", areaCode: "GR", subArea: "Gravity Circuit", subAreaCode: "GRAV", systemName: "Gravity Electrowinning" },
-  { code: "TCMG-PP-GR-GRAV-GSCR", area: "Gold Recovery", areaCode: "GR", subArea: "Gravity Circuit", subAreaCode: "GRAV", systemName: "Gravity Screen" },
-  { code: "TCMG-PP-GR-GRAV-KNLS", area: "Gold Recovery", areaCode: "GR", subArea: "Gravity Circuit", subAreaCode: "GRAV", systemName: "Knelson Concentrator" },
-  { code: "TCMG-PP-GR-GRAV-CST", area: "Gold Recovery", areaCode: "GR", subArea: "Gravity Circuit", subAreaCode: "GRAV", systemName: "Concentrate Shaking Table" },
-  
-  // CIP
-  { code: "TCMG-PP-GR-CIP-CIPTK01", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "CIP Tank 1" },
-  { code: "TCMG-PP-GR-CIP-CIPTK02", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "CIP Tank 2" },
-  { code: "TCMG-PP-GR-CIP-CIPTK03", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "CIP Tank 3" },
-  { code: "TCMG-PP-GR-CIP-CIPTK04", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "CIP Tank 4" },
-  { code: "TCMG-PP-GR-CIP-CIPTK05", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "CIP Tank 5" },
-  { code: "TCMG-PP-GR-CIP-CIPTK06", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "CIP Tank 6" },
-  { code: "TCMG-PP-GR-CIP-CIPTK07", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "CIP Tank 7" },
-  { code: "TCMG-PP-GR-CIP-CIPTK08", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "CIP Tank 8" },
-  { code: "TCMG-PP-GR-CIP-CIPFTS", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "CIP Feed Trash Screen" },
-  { code: "TCMG-PP-GR-CIP-LCS", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Loaded Carbon Screen" },
-  { code: "TCMG-PP-GR-CIP-ITS", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Inter Tank Screens" },
-  { code: "TCMG-PP-GR-CIP-CSS", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Carbon Safety Screen" },
-  { code: "TCMG-PP-GR-CIP-CSSUMP", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Carbon Safety Sump" },
-  { code: "TCMG-PP-GR-CIP-CXFR", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Carbon Transfer System" },
-  { code: "TCMG-PP-GR-CIP-CYMNR", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Cyanide Monorail" },
-  { code: "TCMG-PP-GR-CIP-CYBB", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Cyanide Bag Breaker" },
-  { code: "TCMG-PP-GR-CIP-CYMIX", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Cyanide Mixing Tank" },
-  { code: "TCMG-PP-GR-CIP-CYINS", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Cyanide Instruments" },
-  { code: "TCMG-PP-GR-CIP-CYSST", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Cyanide Solution Storage Tank" },
-  { code: "TCMG-PP-GR-CIP-CYDOS", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Cyanide Dosing System" },
-  { code: "TCMG-PP-GR-CIP-CYXFR", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Cyanide Transfer System" },
-  { code: "TCMG-PP-GR-CIP-CYSUMP", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Cyanide Area Sump" },
-  { code: "TCMG-PP-GR-CIP-CAUSDOS", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Caustic Dosing System" },
-  { code: "TCMG-PP-GR-CIP-TITHUT", area: "Gold Recovery", areaCode: "GR", subArea: "CIP", subAreaCode: "CIP", systemName: "Titration Hut" },
-  
-  // Elution
-  { code: "TCMG-PP-GR-ELUT-ELUCOL", area: "Gold Recovery", areaCode: "GR", subArea: "Elution", subAreaCode: "ELUT", systemName: "Elution Column" },
-  { code: "TCMG-PP-GR-ELUT-ELUSHWR", area: "Gold Recovery", areaCode: "GR", subArea: "Elution", subAreaCode: "ELUT", systemName: "Elution Safety Showers" },
-  { code: "TCMG-PP-GR-ELUT-ELUSUMP", area: "Gold Recovery", areaCode: "GR", subArea: "Elution", subAreaCode: "ELUT", systemName: "Elution Area Sump" },
-  { code: "TCMG-PP-GR-ELUT-FLSH", area: "Gold Recovery", areaCode: "GR", subArea: "Elution", subAreaCode: "ELUT", systemName: "Flashpot" },
-  { code: "TCMG-PP-GR-ELUT-HEXC", area: "Gold Recovery", areaCode: "GR", subArea: "Elution", subAreaCode: "ELUT", systemName: "Heat Exchanger" },
-  { code: "TCMG-PP-GR-ELUT-AWSYS", area: "Gold Recovery", areaCode: "GR", subArea: "Elution", subAreaCode: "ELUT", systemName: "Acid Wash System" },
-  { code: "TCMG-PP-GR-ELUT-AWCOL", area: "Gold Recovery", areaCode: "GR", subArea: "Elution", subAreaCode: "ELUT", systemName: "Acid Wash Column" },
-  { code: "TCMG-PP-GR-ELUT-HCLDOS", area: "Gold Recovery", areaCode: "GR", subArea: "Elution", subAreaCode: "ELUT", systemName: "HCL Dosing System" },
-  { code: "TCMG-PP-GR-ELUT-ELUAT", area: "Gold Recovery", areaCode: "GR", subArea: "Elution", subAreaCode: "ELUT", systemName: "Eluate System" },
-  { code: "TCMG-PP-GR-ELUT-DSL", area: "Gold Recovery", areaCode: "GR", subArea: "Elution", subAreaCode: "ELUT", systemName: "Diesel System" },
-  
-  // Carbon Regeneration
-  { code: "TCMG-PP-GR-REGEN-BCDS", area: "Gold Recovery", areaCode: "GR", subArea: "Carbon Regeneration", subAreaCode: "REGEN", systemName: "Barren Carbon Dewatering Screen" },
-  { code: "TCMG-PP-GR-REGEN-RKHOP", area: "Gold Recovery", areaCode: "GR", subArea: "Carbon Regeneration", subAreaCode: "REGEN", systemName: "Regen Kiln Feed Hopper" },
-  { code: "TCMG-PP-GR-REGEN-RKILN", area: "Gold Recovery", areaCode: "GR", subArea: "Carbon Regeneration", subAreaCode: "REGEN", systemName: "Regen Kiln" },
-  { code: "TCMG-PP-GR-REGEN-CQNCH", area: "Gold Recovery", areaCode: "GR", subArea: "Carbon Regeneration", subAreaCode: "REGEN", systemName: "Carbon Quench System" },
-  { code: "TCMG-PP-GR-REGEN-RCXFR", area: "Gold Recovery", areaCode: "GR", subArea: "Carbon Regeneration", subAreaCode: "REGEN", systemName: "Regenerated Carbon Transfer" },
-  { code: "TCMG-PP-GR-REGEN-CSZS", area: "Gold Recovery", areaCode: "GR", subArea: "Carbon Regeneration", subAreaCode: "REGEN", systemName: "Carbon Sizing Screen" },
-  { code: "TCMG-PP-GR-REGEN-RSUMP", area: "Gold Recovery", areaCode: "GR", subArea: "Carbon Regeneration", subAreaCode: "REGEN", systemName: "Regen Area Sump" },
-  
-  // Gold Room
-  { code: "TCMG-PP-GR-GOLD-EW", area: "Gold Recovery", areaCode: "GR", subArea: "Gold Room", subAreaCode: "GOLD", systemName: "Electrowinning Cell" },
-  { code: "TCMG-PP-GR-GOLD-GRSHWR", area: "Gold Recovery", areaCode: "GR", subArea: "Gold Room", subAreaCode: "GOLD", systemName: "Gold Room Safety Shower" },
-  { code: "TCMG-PP-GR-GOLD-CATH", area: "Gold Recovery", areaCode: "GR", subArea: "Gold Room", subAreaCode: "GOLD", systemName: "Cathode System" },
-  { code: "TCMG-PP-GR-GOLD-CALC", area: "Gold Recovery", areaCode: "GR", subArea: "Gold Room", subAreaCode: "GOLD", systemName: "Calcine System" },
-  { code: "TCMG-PP-GR-GOLD-BULL", area: "Gold Recovery", areaCode: "GR", subArea: "Gold Room", subAreaCode: "GOLD", systemName: "Gold Bullion" },
-  { code: "TCMG-PP-GR-GOLD-SMLT", area: "Gold Recovery", areaCode: "GR", subArea: "Gold Room", subAreaCode: "GOLD", systemName: "Smelting Furnace" },
-  { code: "TCMG-PP-GR-GOLD-POUR", area: "Gold Recovery", areaCode: "GR", subArea: "Gold Room", subAreaCode: "GOLD", systemName: "Gold Pour Area" },
-
-  // ========== TAIL - Tailings ==========
-  // Thickening
-  { code: "TCMG-PP-TAIL-THK-THK", area: "Tailings", areaCode: "TAIL", subArea: "Thickening", subAreaCode: "THK", systemName: "Thickener" },
-  { code: "TCMG-PP-TAIL-THK-THKUFP", area: "Tailings", areaCode: "TAIL", subArea: "Thickening", subAreaCode: "THK", systemName: "Thickener Underflow Pump" },
-  
-  // Filtering
-  { code: "TCMG-PP-TAIL-FILT-FP", area: "Tailings", areaCode: "TAIL", subArea: "Filtering", subAreaCode: "FILT", systemName: "Filter Press" },
-  { code: "TCMG-PP-TAIL-FILT-FILTPMP", area: "Tailings", areaCode: "TAIL", subArea: "Filtering", subAreaCode: "FILT", systemName: "Filtrate Pump" },
-
-  // ========== SUP - Support Services ==========
-  // Workshop
-  { code: "TCMG-PP-SUP-WKSHP-FPWKSHP", area: "Support Services", areaCode: "SUP", subArea: "Workshop", subAreaCode: "WKSHP", systemName: "Fixed Plant Workshop" },
-  
-  // Lab
-  { code: "TCMG-PP-SUP-LAB-ASSAY", area: "Support Services", areaCode: "SUP", subArea: "Lab", subAreaCode: "LAB", systemName: "Assay Equipment" },
-  { code: "TCMG-PP-SUP-LAB-SAMPPREP", area: "Support Services", areaCode: "SUP", subArea: "Lab", subAreaCode: "LAB", systemName: "Sample Prep Equipment" },
-  { code: "TCMG-PP-SUP-LAB-LABSYS", area: "Support Services", areaCode: "SUP", subArea: "Lab", subAreaCode: "LAB", systemName: "Laboratory Systems" },
-  
-  // Mobile Equipment
-  { code: "TCMG-PP-SUP-MOBILE-PLNTMOB", area: "Support Services", areaCode: "SUP", subArea: "Mobile Equipment", subAreaCode: "MOBILE", systemName: "Plant Mobile Equipment" },
-  
-  // Site Infrastructure (SUP)
-  { code: "TCMG-PP-SUP-INFRA-SVCS", area: "Support Services", areaCode: "SUP", subArea: "Site Infrastructure", subAreaCode: "INFRA", systemName: "Services" },
-  
-  // Light Vehicles
-  { code: "TCMG-PP-SUP-LV-LVFLT", area: "Support Services", areaCode: "SUP", subArea: "Light Vehicles", subAreaCode: "LV", systemName: "LV Fleet" },
-  
-  // Heavy Vehicles
-  { code: "TCMG-PP-SUP-HV-HVFLT", area: "Support Services", areaCode: "SUP", subArea: "Heavy Vehicles (HV)", subAreaCode: "HV", systemName: "HV Fleet" },
-];
+// Complete Functional Location Table - dynamically generated
+export const functionalLocations: FunctionalLocation[] = generateAllFunctionalLocations();
 
 // Summary statistics
 export const flSummary = {
