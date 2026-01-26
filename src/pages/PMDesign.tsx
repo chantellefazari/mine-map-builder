@@ -24,12 +24,15 @@ import { AirWaterServicesPMDocument } from "@/components/pm-design/AirWaterServi
 import { BottomOfTanksPMDocument } from "@/components/pm-design/BottomOfTanksPMDocument";
 import { DieselFarmPMDocument } from "@/components/pm-design/DieselFarmPMDocument";
 import { FilterPressWeeklyPMDocument } from "@/components/pm-design/FilterPressWeeklyPMDocument";
+import { GoldRoomPMDocument } from "@/components/pm-design/GoldRoomPMDocument";
+import { GreaseOilsPMDocument } from "@/components/pm-design/GreaseOilsPMDocument";
+import { MillWeeklyPMDocument } from "@/components/pm-design/MillWeeklyPMDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -50,12 +53,15 @@ const disciplines = [
         { id: "mill-daily", name: "Mill Daily Inspection" },
         { id: "ro-plant-daily", name: "RO Plant Daily Inspection" }
       ] },
-      "1-week": { count: 5, pms: [
+      "1-week": { count: 8, pms: [
         { id: "acid-elution-weekly", name: "Acid Wash & Elution Weekly Inspection" },
         { id: "air-water-services-weekly", name: "Air & Water Services Weekly Inspection" },
         { id: "bottom-of-tanks-weekly", name: "Bottom of Tanks Weekly Inspection" },
         { id: "diesel-farm-weekly", name: "Diesel Farm Weekly Inspection" },
-        { id: "filter-press-weekly", name: "Filter Press Weekly Inspection" }
+        { id: "filter-press-weekly", name: "Filter Press Weekly Inspection" },
+        { id: "gold-room-weekly", name: "Gold Room Weekly Inspection" },
+        { id: "grease-oils-weekly", name: "Grease & Oils Weekly Inspection" },
+        { id: "mill-weekly", name: "Mill Weekly Inspection" }
       ] },
       "2-week": { count: 0, pms: [] },
       "6-week": { count: 0, pms: [] },
@@ -123,6 +129,9 @@ const PMDesign = () => {
       case "bottom-of-tanks-weekly": return "Bottom of Tanks Weekly Inspection";
       case "diesel-farm-weekly": return "Diesel Farm Weekly Inspection";
       case "filter-press-weekly": return "Filter Press Weekly Inspection";
+      case "gold-room-weekly": return "Gold Room Weekly Inspection";
+      case "grease-oils-weekly": return "Grease & Oils Weekly Inspection";
+      case "mill-weekly": return "Mill Weekly Inspection";
       default: return "PM Document";
     }
   };
@@ -147,12 +156,18 @@ const PMDesign = () => {
         return <DieselFarmPMDocument />;
       case "filter-press-weekly":
         return <FilterPressWeeklyPMDocument />;
+      case "gold-room-weekly":
+        return <GoldRoomPMDocument />;
+      case "grease-oils-weekly":
+        return <GreaseOilsPMDocument />;
+      case "mill-weekly":
+        return <MillWeeklyPMDocument />;
       default:
         return null;
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly"].includes(activeView);
 
   return (
     <SidebarProvider>
