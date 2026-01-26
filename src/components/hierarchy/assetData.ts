@@ -889,6 +889,41 @@ export const areasData: Area[] = [
         ],
       },
       {
+        label: "Conveying",
+        parentAssets: [
+          { 
+            label: "Conveyor CV01", 
+            equipment: [
+              { assetNumber: "CV01", name: "Conveyor CV01" },
+              { assetNumber: "CV01-MTR001", name: "Conveyor CV01 – Motor" },
+              { assetNumber: "CV01-GBX001", name: "Conveyor CV01 – Gearbox" },
+              { assetNumber: "CV01-MCC001", name: "Conveyor CV01 – MCC Cell" },
+              { assetNumber: "CV01-LCS001", name: "Conveyor CV01 – Local Control Station" },
+              { assetNumber: "CV01-PWS001", name: "Conveyor CV01 – Pull Wire Switch 1" },
+              { assetNumber: "CV01-PWS002", name: "Conveyor CV01 – Pull Wire Switch 2" },
+              { assetNumber: "CV01-BAS001", name: "Conveyor CV01 – Belt Alignment Drift Switch 1" },
+              { assetNumber: "CV01-BAS002", name: "Conveyor CV01 – Belt Alignment Drift Switch 2" },
+              { assetNumber: "CV01-USS001", name: "Conveyor CV01 – Underspeed Switch" },
+            ]
+          },
+          { 
+            label: "Conveyor CV02", 
+            equipment: [
+              { assetNumber: "CV02", name: "Conveyor CV02" },
+              { assetNumber: "CV02-MTR001", name: "Conveyor CV02 – Motor" },
+              { assetNumber: "CV02-GBX001", name: "Conveyor CV02 – Gearbox" },
+              { assetNumber: "CV02-MCC001", name: "Conveyor CV02 – MCC Cell" },
+              { assetNumber: "CV02-LCS001", name: "Conveyor CV02 – Local Control Station" },
+              { assetNumber: "CV02-PWS001", name: "Conveyor CV02 – Pull Wire Switch 1" },
+              { assetNumber: "CV02-PWS002", name: "Conveyor CV02 – Pull Wire Switch 2" },
+              { assetNumber: "CV02-BAS001", name: "Conveyor CV02 – Belt Alignment Drift Switch 1" },
+              { assetNumber: "CV02-BAS002", name: "Conveyor CV02 – Belt Alignment Drift Switch 2" },
+              { assetNumber: "CV02-USS001", name: "Conveyor CV02 – Underspeed Switch" },
+            ]
+          },
+        ],
+      },
+      {
         label: "Grinding",
         parentAssets: [
           { 
