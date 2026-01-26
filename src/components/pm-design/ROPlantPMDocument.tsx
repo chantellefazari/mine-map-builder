@@ -20,6 +20,7 @@ import {
   Droplets,
   Gauge
 } from "lucide-react";
+import tennantLogo from "@/assets/tennant-mines-logo.png";
 
 interface Hazard {
   id: string;
@@ -63,8 +64,12 @@ export const ROPlantPMDocument = () => {
     <div className="bg-background min-h-full">
       {/* Document Header */}
       <div className="border-2 border-border">
+        {/* Logo Banner */}
+        <div className="bg-[#2a2a2a] px-6 py-3 flex justify-center">
+          <img src={tennantLogo} alt="Tennant Mines" className="h-12" />
+        </div>
         {/* Title Banner */}
-        <div className="bg-primary text-primary-foreground px-6 py-4 text-center">
+        <div className="bg-primary text-primary-foreground px-6 py-4 text-center border-t border-border">
           <h1 className="text-xl font-bold tracking-wide">Tenant Creek - RO Plant Inspection</h1>
           <p className="text-sm mt-1 opacity-90">Mechanical Running PMs - Daily RO Plant Inspection (Fitter)</p>
         </div>

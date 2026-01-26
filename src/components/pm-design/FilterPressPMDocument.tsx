@@ -33,6 +33,7 @@ import {
   Hand,
   Car
 } from "lucide-react";
+import tennantLogo from "@/assets/tennant-mines-logo.png";
 
 interface InspectionTask {
   task: string;
@@ -189,8 +190,12 @@ export const FilterPressPMDocument = () => {
     <div className="bg-background min-h-full">
       {/* Document Header */}
       <div className="border-2 border-border">
+        {/* Logo Banner */}
+        <div className="bg-[#2a2a2a] px-6 py-3 flex justify-center">
+          <img src={tennantLogo} alt="Tennant Mines" className="h-12" />
+        </div>
         {/* Title Banner */}
-        <div className="bg-primary text-primary-foreground px-6 py-4 text-center">
+        <div className="bg-primary text-primary-foreground px-6 py-4 text-center border-t border-border">
           <h1 className="text-xl font-bold tracking-wide">Tenant Creek Filtration Area - Filter Press</h1>
           <p className="text-sm mt-1 opacity-90">Mechanical Running PMs - Daily Inspection (Fitter)</p>
         </div>
