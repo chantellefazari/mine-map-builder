@@ -344,29 +344,27 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "Cyanide Mixing Tank", 
+            label: "Cyanide Mixing System", 
             equipment: [
               { assetNumber: "CMIX001", name: "Cyanide Mixing Tank" },
               { assetNumber: "CMIX001-TK001", name: "Cyanide Mixing Tank – Tank" },
               { 
-                assetNumber: "AGT003", 
+                assetNumber: "CYN-MIX-AGT-01", 
                 name: "Cyanide Mixing Tank Agitator",
                 components: [
-                  {
-                    componentCode: "MC4350/02/GBX/1057",
-                    componentType: "Coaxial Gearbox Agitator",
-                    componentName: "Cyanide Mixing Tank Agitator Unit",
-                    manufacturer: "MIXTEC",
-                    model: "MC4350/02/GBX/1057",
-                    outputSpeed: "102 RPM",
-                    displacement: "Material: 316SS"
-                  },
                   {
                     componentCode: "MTE8 W22M",
                     componentType: "Motor",
                     componentName: "Cyanide Mixing Tank Agitator Motor",
                     manufacturer: "WEG",
                     model: "MTE8 W22M"
+                  },
+                  {
+                    componentCode: "MC4350",
+                    componentType: "Gearbox",
+                    componentName: "Cyanide Mixing Tank Agitator Gearbox",
+                    manufacturer: "MIXTEC",
+                    model: "MC4350"
                   }
                 ]
               },
@@ -479,20 +477,56 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "Process Water Pond", 
+            label: "Process Water System", 
             equipment: [
               { assetNumber: "PWP001", name: "Process Water Pond" },
               { assetNumber: "PWP001-PIPE001", name: "Process Water Pond – Piping" },
-              { assetNumber: "PWP001-PMP001", name: "Process Water Pond – Pump Duty" },
-              { assetNumber: "PWP001-MTR001", name: "Process Water Pond – Pump Duty Motor" },
-              { assetNumber: "PWP001-MCC001", name: "Process Water Pond – Pump Duty MCC Cell" },
-              { assetNumber: "PWP001-LCS001", name: "Process Water Pond – Pump Duty LCS" },
-              { assetNumber: "PWP001-VSD001", name: "Process Water Pond – Pump Duty VSD" },
-              { assetNumber: "PWP001-PMP002", name: "Process Water Pond – Pump Standby" },
-              { assetNumber: "PWP001-MTR002", name: "Process Water Pond – Pump Standby Motor" },
-              { assetNumber: "PWP001-MCC002", name: "Process Water Pond – Pump Standby MCC Cell" },
-              { assetNumber: "PWP001-LCS002", name: "Process Water Pond – Pump Standby LCS" },
-              { assetNumber: "PWP001-VSD002", name: "Process Water Pond – Pump Standby VSD" },
+              { 
+                assetNumber: "UTL-PW-PMP-D", 
+                name: "Process Water Pump (Duty)",
+                components: [
+                  {
+                    componentCode: "KTE44 W22M",
+                    componentType: "Motor",
+                    componentName: "Process Water Pump Motor (Duty)",
+                    manufacturer: "WEG",
+                    model: "KTE44 W22M"
+                  },
+                  {
+                    componentCode: "150x125-400",
+                    componentType: "Pump",
+                    componentName: "Process Water Pump (Duty)",
+                    manufacturer: "SOUTHERN CROSS",
+                    model: "150x125-400"
+                  }
+                ]
+              },
+              { assetNumber: "PWP001-MCC001", name: "Process Water Pump Duty – MCC Cell" },
+              { assetNumber: "PWP001-LCS001", name: "Process Water Pump Duty – LCS" },
+              { assetNumber: "PWP001-VSD001", name: "Process Water Pump Duty – VSD" },
+              { 
+                assetNumber: "UTL-PW-PMP-S", 
+                name: "Process Water Pump (Standby)",
+                components: [
+                  {
+                    componentCode: "KTE44 W22M-S",
+                    componentType: "Motor",
+                    componentName: "Process Water Pump Motor (Standby)",
+                    manufacturer: "WEG",
+                    model: "KTE44 W22M"
+                  },
+                  {
+                    componentCode: "150x125-400-S",
+                    componentType: "Pump",
+                    componentName: "Process Water Pump (Standby)",
+                    manufacturer: "SOUTHERN CROSS",
+                    model: "150x125-400"
+                  }
+                ]
+              },
+              { assetNumber: "PWP001-MCC002", name: "Process Water Pump Standby – MCC Cell" },
+              { assetNumber: "PWP001-LCS002", name: "Process Water Pump Standby – LCS" },
+              { assetNumber: "PWP001-VSD002", name: "Process Water Pump Standby – VSD" },
             ] 
           },
           { 
@@ -796,103 +830,87 @@ export const areasData: Area[] = [
               { assetNumber: "BM001-SEN002", name: "Primary Ball Mill – Discharge End Bearing Temp Sensor" },
               { assetNumber: "BM001-TX001", name: "Primary Ball Mill – Feed End Bearing Temp Transmitter" },
               { assetNumber: "BM001-TX002", name: "Primary Ball Mill – Discharge End Bearing Temp Transmitter" },
-              // NEW ASSETS - Lube Pumps with simple sequential numbering
+              // NEW ASSETS - Lube Pumps with descriptive asset numbers
               { 
-                assetNumber: "PMP001", 
-                name: "Primary Ball Mill Low Pressure Lube Pump – Duty",
+                assetNumber: "GRD-LP-LPUMP-D", 
+                name: "Primary Ball Mill – Low Pressure Lube Pump (Duty)",
                 components: [
                   {
-                    componentCode: "333911192",
-                    componentType: "Pump",
-                    componentName: "Low Pressure Lube Pump – Duty",
-                    manufacturer: "PARKER",
-                    model: "333911192",
-                    pumpFlow: "2.16 m³/hr (36 lpm)",
-                    operatingPressure: "15 bar",
-                    displacement: "28 cc/rev"
-                  },
-                  {
-                    componentCode: "L194 W22 / 1SET10 / 1009158787",
+                    componentCode: "WEG-LP-MTR-D",
                     componentType: "Motor",
-                    componentName: "Low Pressure Lube Pump Motor – Duty",
+                    componentName: "Low Pressure Lube Pump Motor (Duty)",
                     manufacturer: "WEG",
-                    model: "L194 W22 / 1SET10 / 1009158787",
                     motorSpeed: "1450 rpm",
                     protection: "IP55",
                     voltage: "415V"
+                  },
+                  {
+                    componentCode: "PARKER-LP-PMP-D",
+                    componentType: "Pump",
+                    componentName: "Low Pressure Lube Pump (Duty)",
+                    manufacturer: "PARKER",
+                    pumpFlow: "2.16 m³/hr @ 15 bar",
+                    displacement: "28 cc/rev"
                   }
                 ]
               },
               { 
-                assetNumber: "PMP002", 
-                name: "Primary Ball Mill Low Pressure Lube Pump – Standby",
+                assetNumber: "GRD-LP-LPUMP-S", 
+                name: "Primary Ball Mill – Low Pressure Lube Pump (Standby)",
                 components: [
                   {
-                    componentCode: "333911192",
-                    componentType: "Pump",
-                    componentName: "Low Pressure Lube Pump – Standby",
-                    manufacturer: "PARKER",
-                    model: "333911192",
-                    pumpFlow: "2.16 m³/hr (36 lpm)",
-                    operatingPressure: "15 bar",
-                    displacement: "28 cc/rev"
-                  },
-                  {
-                    componentCode: "L194 W22 / 1SET10 / 1009158787",
+                    componentCode: "WEG-LP-MTR-S",
                     componentType: "Motor",
-                    componentName: "Low Pressure Lube Pump Motor – Standby",
+                    componentName: "Low Pressure Lube Pump Motor (Standby)",
                     manufacturer: "WEG",
-                    model: "L194 W22 / 1SET10 / 1009158787",
                     motorSpeed: "1450 rpm",
                     protection: "IP55",
                     voltage: "415V"
+                  },
+                  {
+                    componentCode: "PARKER-LP-PMP-S",
+                    componentType: "Pump",
+                    componentName: "Low Pressure Lube Pump (Standby)",
+                    manufacturer: "PARKER",
+                    pumpFlow: "2.16 m³/hr @ 15 bar",
+                    displacement: "28 cc/rev"
                   }
                 ]
               },
               { 
-                assetNumber: "PMP003", 
-                name: "Primary Ball Mill High Pressure Lube Pump",
+                assetNumber: "GRD-LP-HPUMP", 
+                name: "Primary Ball Mill – High Pressure Lube Pump",
                 components: [
                   {
-                    componentCode: "3706030",
+                    componentCode: "WEG-HP-MTR",
+                    componentType: "Motor",
+                    componentName: "High Pressure Lube Pump Motor",
+                    manufacturer: "WEG",
+                    motorSpeed: "1450 rpm",
+                    protection: "IP55",
+                    voltage: "415V"
+                  },
+                  {
+                    componentCode: "PARKER-HP-PMP",
                     componentType: "Pump",
                     componentName: "High Pressure Lube Pump",
                     manufacturer: "PARKER",
-                    model: "3706030",
-                    pumpFlow: "0.84 m³/hr (14 lpm)",
-                    operatingPressure: "400 bar",
-                    displacement: "10 cc/rev"
-                  },
-                  {
-                    componentCode: "WEG-HP",
-                    componentType: "Motor",
-                    componentName: "High Pressure Lube Pump Motor",
-                    manufacturer: "WEG"
+                    pumpFlow: "0.84 m³/hr @ 400 bar"
                   }
                 ]
               },
               { 
-                assetNumber: "PMP004", 
-                name: "Primary Ball Mill Lube Cooling Recirculating Pump",
+                assetNumber: "GRD-BM-GBX", 
+                name: "Primary Ball Mill – Gear Reducer",
                 components: [
                   {
-                    componentCode: "333911486",
-                    componentType: "Pump",
-                    componentName: "Lube Cooling Recirculating Pump",
-                    manufacturer: "PARKER",
-                    model: "333911486",
-                    pumpFlow: "3.36 m³/hr (56 lpm)",
-                    operatingPressure: "12 bar",
-                    displacement: "44 cc/rev"
-                  },
-                  {
-                    componentCode: "WEG-RECIRC",
-                    componentType: "Motor",
-                    componentName: "Lube Cooling Recirculating Pump Motor",
-                    manufacturer: "WEG",
-                    motorSpeed: "1450 rpm",
-                    protection: "IP55",
-                    voltage: "415V"
+                    componentCode: "FLENDER-H1SH15B",
+                    componentType: "Gearbox",
+                    componentName: "Mill Main Gear Reducer",
+                    manufacturer: "FLENDER",
+                    model: "H1 SH 15B",
+                    oilType: "VG320",
+                    oilVolume: "190L"
                   }
                 ]
               },
@@ -1367,69 +1385,58 @@ export const areasData: Area[] = [
               { assetNumber: "CIP-ALF08", name: "Carbon Transfer Air Lift 8" },
               // NEW ASSETS - CIP Pumps and Screens with simple numbering
               { 
-                assetNumber: "PMP006", 
-                name: "CIP Area Sump Pump",
+                assetNumber: "CIP-SUMP-PMP-D", 
+                name: "CIP Area Sump Pump (Duty)",
                 components: [
                   {
-                    componentCode: "65QV-SPR1200",
-                    componentType: "Pump",
-                    componentName: "CIP Sump Pump Wet End",
-                    manufacturer: "WARMAN",
-                    model: "65QV-SPR1200"
+                    componentCode: "WEG-CIP-MTR-D",
+                    componentType: "Motor",
+                    componentName: "CIP Area Sump Pump Motor (Duty)",
+                    manufacturer: "WEG"
                   },
                   {
-                    componentCode: "WEG-CIP",
+                    componentCode: "65QV-SPR1200",
+                    componentType: "Pump",
+                    componentName: "CIP Area Sump Pump (Duty)",
+                    manufacturer: "WARMAN",
+                    model: "65QV-SPR1200 (Rubber)"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "CIP-SUMP-PMP-S", 
+                name: "CIP Area Sump Pump (Standby)",
+                components: [
+                  {
+                    componentCode: "WEG-CIP-MTR-S",
                     componentType: "Motor",
-                    componentName: "CIP Sump Pump Motor",
+                    componentName: "CIP Area Sump Pump Motor (Standby)",
                     manufacturer: "WEG"
-                  }
-                ]
-              },
-              { 
-                assetNumber: "PMP007", 
-                name: "CIP Tailings Pump – Duty",
-                components: [
+                  },
                   {
-                    componentCode: "65QV-SPR1200",
+                    componentCode: "65QV-SPR1200-S",
                     componentType: "Pump",
-                    componentName: "CIP Tailings Pump Wet End",
+                    componentName: "CIP Area Sump Pump (Standby)",
                     manufacturer: "WARMAN",
-                    model: "65QV-SPR1200 (Rubber)",
-                    pumpFlow: "137 m³/hr @ 25m TDH"
+                    model: "65QV-SPR1200 (Rubber)"
                   }
                 ]
               },
               { 
-                assetNumber: "PMP008", 
-                name: "CIP Tailings Pump – Standby",
-                components: [
-                  {
-                    componentCode: "65QV-SPR1200",
-                    componentType: "Pump",
-                    componentName: "CIP Tailings Pump Wet End",
-                    manufacturer: "WARMAN",
-                    model: "65QV-SPR1200 (Rubber)",
-                    pumpFlow: "137 m³/hr @ 25m TDH"
-                  }
-                ]
-              },
-              { 
-                assetNumber: "SCR002", 
+                assetNumber: "CIP-SCR-INT", 
                 name: "Intertank Screen",
                 components: [
                   {
-                    componentCode: "WISS-5M2",
-                    componentType: "Wiped Interstage Screen",
-                    componentName: "Intertank Screen Unit (Top Discharge)",
-                    manufacturer: "ALLOYTEC",
-                    model: "Wiped Interstage Screen",
-                    displacement: "Screen Area: 5 m², Aperture: 0.80 mm"
+                    componentCode: "ALLOYTECH-SCR",
+                    componentType: "Screen",
+                    componentName: "Intertank Screen",
+                    manufacturer: "ALLOYTECH"
                   },
                   {
-                    componentCode: "BONFIGLIOLI-GBX",
-                    componentType: "Gearbox",
-                    componentName: "Intertank Screen Spare Gearbox",
-                    manufacturer: "Bonfiglioli"
+                    componentCode: "BONFIGLIOLI-EXC",
+                    componentType: "Exciter",
+                    componentName: "Intertank Screen Exciter",
+                    manufacturer: "BONFIGLIOLI"
                   }
                 ]
               },
@@ -1896,35 +1903,17 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "Gold Bullion", 
+            label: "Gold Room", 
             equipment: [
               { 
-                assetNumber: "SCL001", 
-                name: "Bullion Scale",
-                components: [
-                  {
-                    componentCode: "APP 25/C2",
-                    componentType: "Scale",
-                    componentName: "Bullion Scale",
-                    manufacturer: "N/A",
-                    model: "APP 25/C2"
-                  }
-                ]
+                assetNumber: "GR-SCL-01", 
+                name: "Goldroom Scale"
               },
               { assetNumber: "BULL001-BEN001", name: "Gold Bullion Scale Bench" },
               { assetNumber: "GR-BEN001", name: "Gold Room Work Bench" },
               { 
-                assetNumber: "SAFE001", 
-                name: "Gold Room Safe",
-                components: [
-                  {
-                    componentCode: "KCR7",
-                    componentType: "Safe",
-                    componentName: "Gold Room Safe",
-                    manufacturer: "N/A",
-                    model: "KCR7"
-                  }
-                ]
+                assetNumber: "GR-SAFE-01", 
+                name: "Goldroom Bullion Safe"
               },
             ] 
           },
@@ -1945,8 +1934,8 @@ export const areasData: Area[] = [
                 ]
               },
               { 
-                assetNumber: "FRN001", 
-                name: "Gold Barring Furnace",
+                assetNumber: "GR-FRN-01", 
+                name: "Goldroom Barring Furnace",
                 components: [
                   {
                     componentCode: "A150",
@@ -1954,13 +1943,7 @@ export const areasData: Area[] = [
                     componentName: "Gold Barring Furnace",
                     manufacturer: "COMO",
                     model: "A150"
-                  }
-                ]
-              },
-              { 
-                assetNumber: "BRN002", 
-                name: "Gold Furnace Burner",
-                components: [
+                  },
                   {
                     componentCode: "G2.22 TC",
                     componentType: "Burner",
