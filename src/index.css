@@ -167,3 +167,47 @@
     text-wrap: balance;
   }
 }
+
+/* Print Styles */
+@media print {
+  /* Hide non-essential elements */
+  .print\\:hidden {
+    display: none !important;
+  }
+
+  /* Reset background colors for printing */
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Ensure the document takes full width */
+  main {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Hide sidebar */
+  [data-sidebar] {
+    display: none !important;
+  }
+
+  /* Ensure tables don't break across pages */
+  table {
+    page-break-inside: auto;
+  }
+  
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  /* Page margins */
+  @page {
+    margin: 1cm;
+    size: A4 portrait;
+  }
+}
