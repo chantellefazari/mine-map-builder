@@ -161,9 +161,6 @@ const disciplines = [
         pms: mobileEquipmentWeeklyPMs,
         subgroups: []
       },
-      "2-week": { count: 0, pms: [], subgroups: [] },
-      "6-week": { count: 0, pms: [], subgroups: [] },
-      "12-week": { count: 0, pms: [], subgroups: [] },
     }
   },
 ];
