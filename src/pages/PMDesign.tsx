@@ -20,6 +20,7 @@ import { FilterPressPMDocument } from "@/components/pm-design/FilterPressPMDocum
 import { MillDailyPMDocument } from "@/components/pm-design/MillDailyPMDocument";
 import { ROPlantPMDocument } from "@/components/pm-design/ROPlantPMDocument";
 import { AcidElutionPMDocument } from "@/components/pm-design/AcidElutionPMDocument";
+import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical";
@@ -71,6 +72,7 @@ const PMDesign = () => {
   const [activeView, setActiveView] = useState<ViewType>("filter-press-daily");
   const [expandedDisciplines, setExpandedDisciplines] = useState<Discipline[]>(["mechanical"]);
   const [expandedFrequencies, setExpandedFrequencies] = useState<string[]>(["mechanical-daily", "mechanical-1-week"]);
+  const [showPrintPreview, setShowPrintPreview] = useState(false);
 
   const toggleDiscipline = (disciplineId: Discipline) => {
     setExpandedDisciplines(prev => 
@@ -99,7 +101,18 @@ const PMDesign = () => {
   };
 
   const handlePrint = () => {
-    window.print();
+    setShowPrintPreview(true);
+  };
+
+  const getDocumentTitle = () => {
+    switch (activeView) {
+      case "master": return "Base PM Template";
+      case "filter-press-daily": return "Filter Press Daily Inspection";
+      case "mill-daily": return "Mill Daily Inspection";
+      case "ro-plant-daily": return "RO Plant Daily Inspection";
+      case "acid-elution-weekly": return "Acid Wash & Elution Weekly Inspection";
+      default: return "PM Document";
+    }
   };
 
   const renderPMDocument = () => {
@@ -184,6 +197,15 @@ const PMDesign = () => {
             </div>
           )}
         </main>
+
+        {/* Print Preview Modal */}
+        <PrintPreviewModal
+          isOpen={showPrintPreview}
+          onClose={() => setShowPrintPreview(false)}
+          title={getDocumentTitle()}
+        >
+          {renderPMDocument()}
+        </PrintPreviewModal>
       </div>
     </SidebarProvider>
   );
