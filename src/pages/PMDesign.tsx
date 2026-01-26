@@ -20,12 +20,13 @@ import { FilterPressPMDocument } from "@/components/pm-design/FilterPressPMDocum
 import { MillDailyPMDocument } from "@/components/pm-design/MillDailyPMDocument";
 import { ROPlantPMDocument } from "@/components/pm-design/ROPlantPMDocument";
 import { AcidElutionPMDocument } from "@/components/pm-design/AcidElutionPMDocument";
+import { AirWaterServicesPMDocument } from "@/components/pm-design/AirWaterServicesPMDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -46,8 +47,9 @@ const disciplines = [
         { id: "mill-daily", name: "Mill Daily Inspection" },
         { id: "ro-plant-daily", name: "RO Plant Daily Inspection" }
       ] },
-      "1-week": { count: 1, pms: [
-        { id: "acid-elution-weekly", name: "Acid Wash & Elution Weekly Inspection" }
+      "1-week": { count: 2, pms: [
+        { id: "acid-elution-weekly", name: "Acid Wash & Elution Weekly Inspection" },
+        { id: "air-water-services-weekly", name: "Air & Water Services Weekly Inspection" }
       ] },
       "2-week": { count: 0, pms: [] },
       "6-week": { count: 0, pms: [] },
@@ -111,6 +113,7 @@ const PMDesign = () => {
       case "mill-daily": return "Mill Daily Inspection";
       case "ro-plant-daily": return "RO Plant Daily Inspection";
       case "acid-elution-weekly": return "Acid Wash & Elution Weekly Inspection";
+      case "air-water-services-weekly": return "Air & Water Services Weekly Inspection";
       default: return "PM Document";
     }
   };
@@ -127,12 +130,14 @@ const PMDesign = () => {
         return <ROPlantPMDocument />;
       case "acid-elution-weekly":
         return <AcidElutionPMDocument />;
+      case "air-water-services-weekly":
+        return <AirWaterServicesPMDocument />;
       default:
         return null;
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly"].includes(activeView);
 
   return (
     <SidebarProvider>
