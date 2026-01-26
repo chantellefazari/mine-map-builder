@@ -68,8 +68,8 @@ import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical" | "mobile-equipment";
-type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week" | "1-year";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | "substation-2-weekly" | "ac-inspection-3-monthly" | "generator-yearly-test" | "pull-wire-checks-3-monthly" | "rcd-pushbutton-3-monthly" | "rcd-injection-6-monthly" | `${Discipline}-${FrequencyGroup}`;
+type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week" | "24-week" | "52-week";
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | "substation-2-weekly" | "ac-inspection-12-weekly" | "generator-yearly-test" | "pull-wire-checks-12-weekly" | "rcd-pushbutton-12-weekly" | "rcd-injection-24-weekly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -77,7 +77,8 @@ const frequencyGroups = [
   { id: "2-week" as FrequencyGroup, label: "2 WEEK", shortLabel: "2W" },
   { id: "6-week" as FrequencyGroup, label: "6 WEEK", shortLabel: "6W" },
   { id: "12-week" as FrequencyGroup, label: "12 WEEK", shortLabel: "12W" },
-  { id: "1-year" as FrequencyGroup, label: "1 YEAR", shortLabel: "1Y" },
+  { id: "24-week" as FrequencyGroup, label: "24 WEEK", shortLabel: "24W" },
+  { id: "52-week" as FrequencyGroup, label: "52 WEEK", shortLabel: "52W" },
 ];
 
 // Generator PMs grouped together
@@ -174,21 +175,21 @@ const disciplines = [
         ], 
         subgroups: [] 
       },
-      "6-week": { 
-        pms: [
-          { id: "ac-inspection-3-monthly", name: "Air Conditioner Service" },
-          { id: "pull-wire-checks-3-monthly", name: "Pull Wire Checks" },
-          { id: "rcd-pushbutton-3-monthly", name: "RCD Push-button Test" },
-        ], 
-        subgroups: [] 
-      },
       "12-week": { 
         pms: [
-          { id: "rcd-injection-6-monthly", name: "RCD Injection Test" },
+          { id: "ac-inspection-12-weekly", name: "Air Conditioner Service" },
+          { id: "pull-wire-checks-12-weekly", name: "Pull Wire Checks" },
+          { id: "rcd-pushbutton-12-weekly", name: "RCD Push-button Test" },
         ], 
         subgroups: [] 
       },
-      "1-year": { 
+      "24-week": { 
+        pms: [
+          { id: "rcd-injection-24-weekly", name: "RCD Injection Test" },
+        ], 
+        subgroups: [] 
+      },
+      "52-week": { 
         pms: [
           { id: "generator-yearly-test", name: "Generator Electrical Test" },
         ], 
@@ -299,11 +300,11 @@ const PMDesign = () => {
       case "spare-mill-motor-weekly": return "Spare Mill Motor Inspection Weekly";
       case "visual-zone-checks-weekly": return "Visual Zone Checks Weekly";
       case "substation-2-weekly": return "Substation Inspection (2 Weekly)";
-      case "ac-inspection-3-monthly": return "Air Conditioner Service (3 Monthly)";
-      case "pull-wire-checks-3-monthly": return "Pull Wire Checks (3 Monthly)";
-      case "rcd-pushbutton-3-monthly": return "RCD Push-button Test (3 Monthly)";
-      case "rcd-injection-6-monthly": return "RCD Injection Test (6 Monthly)";
-      case "generator-yearly-test": return "Generator Electrical Inspection (1 Year)";
+      case "ac-inspection-12-weekly": return "Air Conditioner Service (12 Week)";
+      case "pull-wire-checks-12-weekly": return "Pull Wire Checks (12 Week)";
+      case "rcd-pushbutton-12-weekly": return "RCD Push-button Test (12 Week)";
+      case "rcd-injection-24-weekly": return "RCD Injection Test (24 Week)";
+      case "generator-yearly-test": return "Generator Electrical Inspection (52 Week)";
       default: return "PM Document";
     }
   };
@@ -398,15 +399,15 @@ const PMDesign = () => {
         return <VisualZoneChecksPMDocument />;
       case "substation-2-weekly":
         return <SubstationInspectionPMDocument />;
-      case "ac-inspection-3-monthly":
+      case "ac-inspection-12-weekly":
         return <ACInspectionPMDocument />;
       case "generator-yearly-test":
         return <GeneratorYearlyTestPMDocument />;
-      case "pull-wire-checks-3-monthly":
+      case "pull-wire-checks-12-weekly":
         return <PullWireChecksPMDocument />;
-      case "rcd-pushbutton-3-monthly":
+      case "rcd-pushbutton-12-weekly":
         return <RCDPushButtonTestPMDocument />;
-      case "rcd-injection-6-monthly":
+      case "rcd-injection-24-weekly":
         return <RCDInjectionTestPMDocument />;
       default:
         return null;
