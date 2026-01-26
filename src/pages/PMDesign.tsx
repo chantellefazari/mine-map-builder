@@ -55,12 +55,15 @@ import { FieldMCCInspectionsPMDocument } from "@/components/pm-design/FieldMCCIn
 import { FilterPressElectricalPMDocument } from "@/components/pm-design/FilterPressElectricalPMDocument";
 import { IceMachineInspectionPMDocument } from "@/components/pm-design/IceMachineInspectionPMDocument";
 import { PHProbeCalibrationPMDocument } from "@/components/pm-design/PHProbeCalibrationPMDocument";
+import { SafetyShowerInspectionPMDocument } from "@/components/pm-design/SafetyShowerInspectionPMDocument";
+import { SpareMillMotorInspectionPMDocument } from "@/components/pm-design/SpareMillMotorInspectionPMDocument";
+import { VisualZoneChecksPMDocument } from "@/components/pm-design/VisualZoneChecksPMDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical" | "mobile-equipment";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -152,6 +155,9 @@ const disciplines = [
           { id: "filter-press-electrical-weekly", name: "Filter Press Electrical" },
           { id: "ice-machine-weekly", name: "Ice Machine" },
           { id: "ph-probe-calibration-weekly", name: "pH Probe Calibration" },
+          { id: "safety-shower-weekly", name: "Safety Shower Inspection" },
+          { id: "spare-mill-motor-weekly", name: "Spare Mill Motor Inspection" },
+          { id: "visual-zone-checks-weekly", name: "Visual Zone Checks" },
         ], 
         subgroups: [] 
       },
@@ -256,6 +262,9 @@ const PMDesign = () => {
       case "filter-press-electrical-weekly": return "Filter Press Electrical Weekly";
       case "ice-machine-weekly": return "Ice Machine Weekly Inspection";
       case "ph-probe-calibration-weekly": return "pH Probe Calibration Weekly";
+      case "safety-shower-weekly": return "Safety Shower Inspection Weekly";
+      case "spare-mill-motor-weekly": return "Spare Mill Motor Inspection Weekly";
+      case "visual-zone-checks-weekly": return "Visual Zone Checks Weekly";
       default: return "PM Document";
     }
   };
@@ -342,12 +351,18 @@ const PMDesign = () => {
         return <IceMachineInspectionPMDocument />;
       case "ph-probe-calibration-weekly":
         return <PHProbeCalibrationPMDocument />;
+      case "safety-shower-weekly":
+        return <SafetyShowerInspectionPMDocument />;
+      case "spare-mill-motor-weekly":
+        return <SpareMillMotorInspectionPMDocument />;
+      case "visual-zone-checks-weekly":
+        return <VisualZoneChecksPMDocument />;
       default:
         return null;
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "power-station-generator-weekly", "forklift-weekly", "ewp-weekly", "crane-weekly", "water-truck-weekly", "loader-weekly", "telehandler-weekly", "dozer-daily", "excavator-daily", "excavator-weekly", "moxy-daily", "moxy-weekly", "lighting-tower-daily", "service-truck-weekly", "skid-steer-weekly", "field-mcc-inspections-weekly", "filter-press-electrical-weekly", "ice-machine-weekly", "ph-probe-calibration-weekly"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "power-station-generator-weekly", "forklift-weekly", "ewp-weekly", "crane-weekly", "water-truck-weekly", "loader-weekly", "telehandler-weekly", "dozer-daily", "excavator-daily", "excavator-weekly", "moxy-daily", "moxy-weekly", "lighting-tower-daily", "service-truck-weekly", "skid-steer-weekly", "field-mcc-inspections-weekly", "filter-press-electrical-weekly", "ice-machine-weekly", "ph-probe-calibration-weekly", "safety-shower-weekly", "spare-mill-motor-weekly", "visual-zone-checks-weekly"].includes(activeView);
 
   return (
     <SidebarProvider>
