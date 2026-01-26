@@ -18,11 +18,12 @@ import { cn } from "@/lib/utils";
 import { PMBaseMasterTemplate } from "@/components/pm-design/PMBaseMasterTemplate";
 import { FilterPressPMDocument } from "@/components/pm-design/FilterPressPMDocument";
 import { MillDailyPMDocument } from "@/components/pm-design/MillDailyPMDocument";
+import { ROPlantPMDocument } from "@/components/pm-design/ROPlantPMDocument";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -38,9 +39,10 @@ const disciplines = [
     label: "Mechanical PMs", 
     icon: Wrench,
     frequencies: {
-      daily: { count: 2, pms: [
+      daily: { count: 3, pms: [
         { id: "filter-press-daily", name: "Filter Press Daily Inspection" },
-        { id: "mill-daily", name: "Mill Daily Inspection" }
+        { id: "mill-daily", name: "Mill Daily Inspection" },
+        { id: "ro-plant-daily", name: "RO Plant Daily Inspection" }
       ] },
       "1-week": { count: 0, pms: [] },
       "2-week": { count: 0, pms: [] },
@@ -116,6 +118,10 @@ const PMDesign = () => {
           ) : activeView === "mill-daily" ? (
             <div className="p-6 overflow-auto">
               <MillDailyPMDocument />
+            </div>
+          ) : activeView === "ro-plant-daily" ? (
+            <div className="p-6 overflow-auto">
+              <ROPlantPMDocument />
             </div>
           ) : (
             <div className="p-8">
