@@ -34,7 +34,7 @@ import {
   Car
 } from "lucide-react";
 import tennantLogo from "@/assets/tennant-mines-logo.png";
-import tennantBanner from "@/assets/tennant-banner.png";
+import tennantBanner from "@/assets/tennant-banner-new.png";
 
 interface InspectionTask {
   task: string;
