@@ -37,12 +37,13 @@ import { JunoGeneratorPMDocument } from "@/components/pm-design/JunoGeneratorPMD
 import { LabGeneratorPMDocument } from "@/components/pm-design/LabGeneratorPMDocument";
 import { PortableGeneratorsPMDocument } from "@/components/pm-design/PortableGeneratorsPMDocument";
 import { ForkliftWeeklyPMDocument } from "@/components/pm-design/ForkliftWeeklyPMDocument";
+import { EWPWeeklyPMDocument } from "@/components/pm-design/EWPWeeklyPMDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical" | "mobile-equipment";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "forklift-weekly" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "forklift-weekly" | "ewp-weekly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -79,6 +80,7 @@ const otherWeeklyPMs = [
 
 // Mobile Equipment PMs
 const mobileEquipmentPMs = [
+  { id: "ewp-weekly", name: "EWP" },
   { id: "forklift-weekly", name: "Forklift" },
 ];
 
@@ -125,7 +127,7 @@ const disciplines = [
     frequencies: {
       daily: { count: 0, pms: [], subgroups: [] },
       "1-week": { 
-        count: 1, 
+        count: 2, 
         pms: mobileEquipmentPMs,
         subgroups: []
       },
@@ -196,6 +198,7 @@ const PMDesign = () => {
       case "lab-generator-weekly": return "Lab Generator Weekly Inspection";
       case "portable-generators-weekly": return "Portable Generators Weekly Inspection";
       case "forklift-weekly": return "Forklift Weekly Inspection";
+      case "ewp-weekly": return "EWP Weekly Inspection";
       default: return "PM Document";
     }
   };
@@ -246,12 +249,14 @@ const PMDesign = () => {
         return <PortableGeneratorsPMDocument />;
       case "forklift-weekly":
         return <ForkliftWeeklyPMDocument />;
+      case "ewp-weekly":
+        return <EWPWeeklyPMDocument />;
       default:
         return null;
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "forklift-weekly"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "forklift-weekly", "ewp-weekly"].includes(activeView);
 
   return (
     <SidebarProvider>
