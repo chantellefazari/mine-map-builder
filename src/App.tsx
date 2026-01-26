@@ -8,8 +8,7 @@ import AssetTree from "./pages/AssetTree";
 import PMDesign from "./pages/PMDesign";
 import CriticalSpares from "./pages/CriticalSpares";
 import ComponentsOEM from "./pages/ComponentsOEM";
-import MaintenanceStrategy from "./pages/MaintenanceStrategy";
-import OpenItems from "./pages/OpenItems";
+import WorkOrderTemplates from "./pages/WorkOrderTemplates";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,8 +25,7 @@ const App = () => (
           <Route path="/pm-design" element={<PMDesign />} />
           <Route path="/critical-spares" element={<CriticalSpares />} />
           <Route path="/components-oem" element={<ComponentsOEM />} />
-          <Route path="/maintenance-strategy" element={<MaintenanceStrategy />} />
-          <Route path="/open-items" element={<OpenItems />} />
+          <Route path="/work-order-templates" element={<WorkOrderTemplates />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
