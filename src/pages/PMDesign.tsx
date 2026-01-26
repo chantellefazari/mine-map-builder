@@ -15,8 +15,10 @@ import {
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { PMBaseMasterTemplate } from "@/components/pm-design/PMBaseMasterTemplate";
+import { FilterPressPMDocument } from "@/components/pm-design/FilterPressPMDocument";
 
 type FrequencyGroup = "1-week" | "2-week" | "6-week" | "12-week";
+type ViewType = "master" | "filter-press-daily" | FrequencyGroup;
 
 const frequencyGroups = [
   { id: "1-week" as FrequencyGroup, label: "1 WEEK PMs", count: 0 },
@@ -26,7 +28,7 @@ const frequencyGroups = [
 ];
 
 const PMDesign = () => {
-  const [activeView, setActiveView] = useState<"master" | FrequencyGroup>("master");
+  const [activeView, setActiveView] = useState<ViewType>("filter-press-daily");
   const [expandedGroups, setExpandedGroups] = useState<FrequencyGroup[]>([]);
 
   const toggleGroup = (groupId: FrequencyGroup) => {
@@ -84,6 +86,18 @@ const PMDesign = () => {
                     >
                       <FileText className="w-4 h-4" />
                       <span className="font-medium">Base PM Template</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={() => setActiveView("filter-press-daily")}
+                      className={cn(
+                        "w-full justify-start gap-3 px-4 py-3",
+                        activeView === "filter-press-daily" && "bg-primary/10 text-primary border-l-2 border-primary"
+                      )}
+                    >
+                      <FileText className="w-4 h-4" />
+                      <span className="font-medium">Filter Press Daily</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -155,6 +169,10 @@ const PMDesign = () => {
         <main className="flex-1 overflow-auto">
           {activeView === "master" ? (
             <PMBaseMasterTemplate />
+          ) : activeView === "filter-press-daily" ? (
+            <div className="p-6 overflow-auto">
+              <FilterPressPMDocument />
+            </div>
           ) : (
             <div className="p-8">
               <div className="max-w-3xl mx-auto">
