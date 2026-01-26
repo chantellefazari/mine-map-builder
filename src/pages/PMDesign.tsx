@@ -19,11 +19,12 @@ import { PMBaseMasterTemplate } from "@/components/pm-design/PMBaseMasterTemplat
 import { FilterPressPMDocument } from "@/components/pm-design/FilterPressPMDocument";
 import { MillDailyPMDocument } from "@/components/pm-design/MillDailyPMDocument";
 import { ROPlantPMDocument } from "@/components/pm-design/ROPlantPMDocument";
+import { AcidElutionPMDocument } from "@/components/pm-design/AcidElutionPMDocument";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -44,7 +45,9 @@ const disciplines = [
         { id: "mill-daily", name: "Mill Daily Inspection" },
         { id: "ro-plant-daily", name: "RO Plant Daily Inspection" }
       ] },
-      "1-week": { count: 0, pms: [] },
+      "1-week": { count: 1, pms: [
+        { id: "acid-elution-weekly", name: "Acid Wash & Elution Weekly Inspection" }
+      ] },
       "2-week": { count: 0, pms: [] },
       "6-week": { count: 0, pms: [] },
       "12-week": { count: 0, pms: [] },
@@ -67,7 +70,7 @@ const disciplines = [
 const PMDesign = () => {
   const [activeView, setActiveView] = useState<ViewType>("filter-press-daily");
   const [expandedDisciplines, setExpandedDisciplines] = useState<Discipline[]>(["mechanical"]);
-  const [expandedFrequencies, setExpandedFrequencies] = useState<string[]>(["mechanical-daily"]);
+  const [expandedFrequencies, setExpandedFrequencies] = useState<string[]>(["mechanical-daily", "mechanical-1-week"]);
 
   const toggleDiscipline = (disciplineId: Discipline) => {
     setExpandedDisciplines(prev => 
@@ -122,6 +125,10 @@ const PMDesign = () => {
           ) : activeView === "ro-plant-daily" ? (
             <div className="p-6 overflow-auto">
               <ROPlantPMDocument />
+            </div>
+          ) : activeView === "acid-elution-weekly" ? (
+            <div className="p-6 overflow-auto">
+              <AcidElutionPMDocument />
             </div>
           ) : (
             <div className="p-8">

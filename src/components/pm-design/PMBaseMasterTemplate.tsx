@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Toggle } from "@/components/ui/toggle";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 import { 
   AlertTriangle, 
   Shield, 
   HardHat, 
   Wrench, 
   Eye, 
-  MessageSquare,
   Info,
   FileText,
   User,
@@ -18,7 +19,6 @@ import {
   Droplets,
   Wind,
   Thermometer,
-  Lock,
   AlertCircle,
   CheckCircle2,
   Skull,
@@ -29,8 +29,11 @@ import {
   CircleDot,
   MoveHorizontal,
   Hand,
-  Car
+  Car,
+  ClipboardCheck
 } from "lucide-react";
+import tennantBanner from "@/assets/tennant-banner-new.png";
+import tennantIcon from "@/assets/tennant-icon.png";
 
 interface Hazard {
   id: string;
@@ -82,10 +85,20 @@ export const PMBaseMasterTemplate = () => {
 
         {/* Document Container */}
         <div className="border-2 border-border bg-card">
-          {/* Title Banner */}
-          <div className="bg-primary text-primary-foreground px-6 py-4 text-center">
-            <h1 className="text-xl font-bold tracking-wide">[Project/Site Name] - [Equipment Area]</h1>
-            <p className="text-sm mt-1 opacity-90">[Discipline] [PM Mode] PMs - [Frequency] [PM Type]</p>
+          {/* Banner with Title Overlay */}
+          <div className="relative">
+            <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
+            {/* Logo on left side of black section */}
+            <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
+              <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
+            </div>
+            {/* Title on the black section - centered */}
+            <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold tracking-wide text-primary">[Project/Site Name] - [Equipment Area]</h1>
+                <p className="text-base mt-1 text-primary/80">[Discipline] [PM Mode] PMs - [Frequency] [PM Type]</p>
+              </div>
+            </div>
           </div>
 
           {/* Header Information Grid */}
@@ -101,7 +114,7 @@ export const PMBaseMasterTemplate = () => {
               </div>
               <div className="grid grid-cols-[120px_1fr] border-b border-border">
                 <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
-                <div className="px-2 py-1.5 text-muted-foreground italic">[XX]</div>
+                <div className="px-2 py-1.5"></div>
               </div>
               <div className="grid grid-cols-[120px_1fr] border-b border-border">
                 <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area Desc.:</div>
@@ -213,300 +226,320 @@ export const PMBaseMasterTemplate = () => {
                 </div>
               </div>
             </div>
-
-            {/* Isolation Requirements */}
-            <div className="border-b border-border">
-              <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-                <Lock className="w-4 h-4 text-primary" />
-                ISOLATION / LOTO REQUIREMENTS
-              </div>
-              <div className="p-4">
-                <table className="w-full text-sm border-collapse">
-                  <thead>
-                    <tr className="bg-muted/50">
-                      <th className="border border-border px-3 py-2 text-left font-medium w-[30%]">Isolation Type</th>
-                      <th className="border border-border px-3 py-2 text-center font-medium w-[15%]">Required</th>
-                      <th className="border border-border px-3 py-2 text-left font-medium">Details</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="border border-border px-3 py-2 font-medium">Electrical Isolation</td>
-                      <td className="border border-border px-3 py-2 text-center">
-                        <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-300">If Required</Badge>
-                      </td>
-                      <td className="border border-border px-3 py-2 text-muted-foreground italic">[Define when isolation is needed]</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-border px-3 py-2 font-medium">Mechanical Isolation</td>
-                      <td className="border border-border px-3 py-2 text-center">
-                        <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-300">If Required</Badge>
-                      </td>
-                      <td className="border border-border px-3 py-2 text-muted-foreground italic">[Define when isolation is needed]</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-border px-3 py-2 font-medium">Pneumatic Isolation</td>
-                      <td className="border border-border px-3 py-2 text-center">
-                        <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-300">If Required</Badge>
-                      </td>
-                      <td className="border border-border px-3 py-2 text-muted-foreground italic">[Define when isolation is needed]</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-border px-3 py-2 font-medium">Lock-Out / Tag-Out</td>
-                      <td className="border border-border px-3 py-2 text-center">
-                        <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-300">If Required</Badge>
-                      </td>
-                      <td className="border border-border px-3 py-2 text-muted-foreground italic">[Apply personal lock when isolation is in place]</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
           </div>
 
           {/* Tools and PPE Section - Side by Side */}
           <div className="border-b border-border grid md:grid-cols-2">
             {/* Required Tools */}
             <div className="border-r border-border">
-              <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+              <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
                 <Wrench className="w-4 h-4 text-primary" />
-                REQUIRED TOOLS & EQUIPMENT
+                SPECIAL TOOLING REQUIRED
               </div>
               <div className="p-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="tool-1" />
-                    <label htmlFor="tool-1" className="text-sm">Standard Tool Kit</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="tool-2" />
-                    <label htmlFor="tool-2" className="text-sm">Torch/Flashlight</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="tool-3" />
-                    <label htmlFor="tool-3" className="text-sm text-muted-foreground italic">[PM-specific tools...]</label>
-                  </div>
-                </div>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-3">
+                    <Checkbox className="h-4 w-4" />
+                    <span className="text-muted-foreground italic">[Tool 1]</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Checkbox className="h-4 w-4" />
+                    <span className="text-muted-foreground italic">[Tool 2]</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Checkbox className="h-4 w-4" />
+                    <span className="text-muted-foreground italic">[Tool 3]</span>
+                  </li>
+                </ul>
               </div>
             </div>
 
             {/* Required PPE */}
             <div>
-              <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+              <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
                 <HardHat className="w-4 h-4 text-primary" />
                 REQUIRED PPE
               </div>
               <div className="p-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="ppe-1" />
-                    <label htmlFor="ppe-1" className="text-sm">Hard Hat</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="ppe-2" />
-                    <label htmlFor="ppe-2" className="text-sm">Safety Glasses</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="ppe-3" />
-                    <label htmlFor="ppe-3" className="text-sm">Safety Boots</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="ppe-4" />
-                    <label htmlFor="ppe-4" className="text-sm">Hi-Vis Clothing</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="ppe-5" />
-                    <label htmlFor="ppe-5" className="text-sm">Gloves</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="ppe-6" />
-                    <label htmlFor="ppe-6" className="text-sm">Cyanide Monitor</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="ppe-7" />
-                    <label htmlFor="ppe-7" className="text-sm text-muted-foreground italic">[PM-specific PPE...]</label>
-                  </div>
-                </div>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-3">
+                    <Checkbox className="h-4 w-4" defaultChecked />
+                    <span>Steel Cap Boots</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Checkbox className="h-4 w-4" defaultChecked />
+                    <span>Hard Hat</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Checkbox className="h-4 w-4" defaultChecked />
+                    <span>Safety Glasses</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Checkbox className="h-4 w-4" />
+                    <span>Gloves (when required)</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
 
           {/* Pre-Start Checks */}
           <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-primary" />
-              PRE-START CHECKS
+            <div className="bg-green-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-green-600" />
+              <span className="text-green-700">RISK ASSESSMENT</span>
             </div>
             <div className="p-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="pre-1" />
-                    <label htmlFor="pre-1" className="text-sm">TAKE 5 completed</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="pre-2" />
-                    <label htmlFor="pre-2" className="text-sm">Competent to perform this task</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="pre-3" />
-                    <label htmlFor="pre-3" className="text-sm">Correct PPE available and worn</label>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="pre-4" />
-                    <label htmlFor="pre-4" className="text-sm">Tools and equipment available</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="pre-5" />
-                    <label htmlFor="pre-5" className="text-sm">Area safe to proceed</label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="pre-6" />
-                    <label htmlFor="pre-6" className="text-sm">Permits/isolations in place (if required)</label>
-                  </div>
-                </div>
+              <p className="text-sm text-muted-foreground mb-3">Complete one of the following before starting work:</p>
+              <div className="flex flex-wrap gap-2">
+                <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
+                  <Checkbox className="h-4 w-4" />
+                  <span>Take 5</span>
+                </label>
+                <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
+                  <Checkbox className="h-4 w-4" />
+                  <span>JHA</span>
+                </label>
+                <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
+                  <Checkbox className="h-4 w-4" />
+                  <span>SWMS</span>
+                </label>
+                <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
+                  <Checkbox className="h-4 w-4" />
+                  <span>Other</span>
+                </label>
               </div>
             </div>
           </div>
 
-          {/* Procedure */}
+          {/* Procedure Section */}
           <div className="border-b border-border">
             <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <MessageSquare className="w-4 h-4 text-primary" />
+              <ClipboardCheck className="w-4 h-4 text-primary" />
               PROCEDURE
             </div>
-            <div className="p-4 text-sm space-y-2">
+            <div className="px-4 py-3 text-sm leading-relaxed space-y-3">
               <div className="flex gap-3">
                 <span className="font-bold text-primary">1.</span>
-                <span>Conduct pre-start checks and ensure all PPE is worn correctly.</span>
+                <p>Conduct area inspection as per tables below. Record each check with a tick in the appropriate box.</p>
               </div>
               <div className="flex gap-3">
                 <span className="font-bold text-primary">2.</span>
-                <span>Walk the equipment area and complete the inspection checklist.</span>
+                <p>When a defect is identified and it is safe and practical to repair the defect, please do so and make a note of it in the comments section.</p>
               </div>
               <div className="flex gap-3">
                 <span className="font-bold text-primary">3.</span>
-                <span>Record any defects in the comments column and mark as "Defective".</span>
+                <p>If not, report the defect including materials required, trade discipline & estimated repair time for the supervisor to raise a work request.</p>
               </div>
-              <div className="flex gap-3">
-                <span className="font-bold text-primary">4.</span>
-                <span>If urgent attention is required, mark appropriately and notify Supervisor immediately.</span>
-              </div>
-              <div className="flex gap-3">
-                <span className="font-bold text-primary">5.</span>
-                <span>Raise corrective work orders for any defects identified.</span>
-              </div>
-              <div className="flex gap-3">
-                <span className="font-bold text-primary">6.</span>
-                <span>Complete sign-off section upon completion.</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Inspection Tasks Placeholder */}
-          <div className="border-b border-border">
-            <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
-              <Eye className="w-5 h-5 text-primary" />
-              INSPECTION CHECKLIST
-            </div>
-            <div className="p-8 text-center">
-              <div className="border-2 border-dashed border-border rounded-lg p-8">
-                <Eye className="w-10 h-10 text-muted-foreground/40 mx-auto mb-4" />
-                <p className="text-muted-foreground font-medium mb-2">Inspection Tasks</p>
-                <p className="text-sm text-muted-foreground">
-                  Equipment-specific inspection tasks will be defined here.<br />
-                  Tasks are grouped by equipment ID with serviceable/defective status columns.
+              <div className="bg-amber-500/10 border border-amber-300 rounded p-3 mt-3 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <p className="text-amber-700 font-medium text-xs">
+                  NOTE: This is a visual inspection only, the equipment may be live. Exercise caution.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Comments Placeholder */}
-          <div className="border-b border-border">
+          {/* Inspections Header */}
+          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+            <ClipboardCheck className="w-5 h-5 text-primary" />
+            INSPECTIONS
+          </div>
+
+          {/* Inspection Table Placeholder */}
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-muted">
+                <th className="border border-border px-3 py-2 text-left font-semibold w-[45%]">Task</th>
+                <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th>
+                <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th>
+                <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Urgent Attention</th>
+                <th className="border border-border px-3 py-2 text-left font-semibold w-[20%]">Comments</th>
+                <th className="border border-border px-2 py-2 text-center font-semibold w-[5%]">Corrective W/O</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="bg-muted/50">
+                <td colSpan={6} className="border border-border px-3 py-2 font-bold text-primary">
+                  [Equipment ID] - [Equipment Name]
+                </td>
+              </tr>
+              <tr className="hover:bg-muted/30">
+                <td className="border border-border px-3 py-2 text-muted-foreground italic">[Inspection task description]</td>
+                <td className="border border-border px-2 py-2 text-center">
+                  <div className="flex justify-center"><Checkbox className="h-5 w-5" /></div>
+                </td>
+                <td className="border border-border px-2 py-2 text-center">
+                  <div className="flex justify-center"><Checkbox className="h-5 w-5" /></div>
+                </td>
+                <td className="border border-border px-2 py-2 text-center">
+                  <div className="flex justify-center"><Checkbox className="h-5 w-5" /></div>
+                </td>
+                <td className="border border-border px-2 py-2">
+                  <Input className="h-7 text-xs border-0 bg-transparent" placeholder="" />
+                </td>
+                <td className="border border-border px-2 py-2 text-center">
+                  <Input className="h-7 w-16 text-xs mx-auto" placeholder="" />
+                </td>
+              </tr>
+              <tr className="hover:bg-muted/30">
+                <td className="border border-border px-3 py-2 text-muted-foreground italic">[Inspection task description]</td>
+                <td className="border border-border px-2 py-2 text-center">
+                  <div className="flex justify-center"><Checkbox className="h-5 w-5" /></div>
+                </td>
+                <td className="border border-border px-2 py-2 text-center">
+                  <div className="flex justify-center"><Checkbox className="h-5 w-5" /></div>
+                </td>
+                <td className="border border-border px-2 py-2 text-center">
+                  <div className="flex justify-center"><Checkbox className="h-5 w-5" /></div>
+                </td>
+                <td className="border border-border px-2 py-2">
+                  <Input className="h-7 text-xs border-0 bg-transparent" placeholder="" />
+                </td>
+                <td className="border border-border px-2 py-2 text-center">
+                  <Input className="h-7 w-16 text-xs mx-auto" placeholder="" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          {/* Post-Task Activities */}
+          <div className="border-t border-border">
             <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <MessageSquare className="w-4 h-4 text-primary" />
-              COMMENTS
+              <CheckCircle2 className="w-4 h-4 text-primary" />
+              POST-TASK ACTIVITIES
             </div>
             <div className="p-4">
-              <div className="bg-muted/30 rounded border border-border p-4 min-h-[80px]">
-                <p className="text-sm text-muted-foreground italic">Space for technician notes and observations...</p>
+              <div className="grid md:grid-cols-2 gap-2">
+                <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                  <Checkbox className="h-4 w-4" />
+                  <span>Tools removed from area</span>
+                </label>
+                <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                  <Checkbox className="h-4 w-4" />
+                  <span>Guards refitted</span>
+                </label>
+                <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                  <Checkbox className="h-4 w-4" />
+                  <span>Equipment returned to service</span>
+                </label>
+                <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                  <Checkbox className="h-4 w-4" />
+                  <span>Area cleaned / Housekeeping complete</span>
+                </label>
+                <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                  <Checkbox className="h-4 w-4" />
+                  <span>All cabinets closed and secured</span>
+                </label>
               </div>
             </div>
           </div>
 
-          {/* Sign-off & Approval Placeholder */}
-          <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <User className="w-4 h-4 text-primary" />
-              SIGN-OFF & APPROVAL
+          {/* Comments Section */}
+          <div className="border-t border-border">
+            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Comment:</div>
+            <div className="p-3">
+              <Textarea className="min-h-[100px] resize-none" placeholder="Enter comments here..." />
             </div>
-            <div className="p-4">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="border border-border rounded-lg p-4">
-                  <p className="text-sm font-medium mb-3">Completed By</p>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">Name</p>
-                      <div className="border-b border-border h-6"></div>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">Signature</p>
-                      <div className="border-b border-border h-6"></div>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">Date</p>
-                      <div className="border-b border-border h-6"></div>
-                    </div>
+          </div>
+
+          <Separator />
+
+          {/* Sign Off Section */}
+          <div className="border-t border-border">
+            <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Sign Off:</div>
+            <div className="grid grid-cols-2 gap-0">
+              <div className="border-r border-b border-border p-3">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium">Follow up work required:</span>
+                  <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox /> Yes
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox /> No
+                    </label>
                   </div>
                 </div>
-                <div className="border border-border rounded-lg p-4">
-                  <p className="text-sm font-medium mb-3">Supervisor Approval</p>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">Name</p>
-                      <div className="border-b border-border h-6"></div>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">Signature</p>
-                      <div className="border-b border-border h-6"></div>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">Date</p>
-                      <div className="border-b border-border h-6"></div>
-                    </div>
+              </div>
+              <div className="border-b border-border p-3">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium">Document update required:</span>
+                  <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox /> Yes
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <Checkbox /> No
+                    </label>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-0">
+              <div className="grid grid-cols-[80px_1fr] border-r border-b border-border">
+                <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Name:</div>
+                <div className="px-3 py-2"><Input className="h-7" /></div>
+              </div>
+              <div className="grid grid-cols-[80px_1fr] border-b border-border">
+                <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Signature:</div>
+                <div className="px-3 py-2"><Input className="h-7" /></div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-0">
+              <div className="grid grid-cols-[80px_1fr] border-r border-border">
+                <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Date:</div>
+                <div className="px-3 py-2"><Input className="h-7" type="date" /></div>
+              </div>
+              <div className="grid grid-cols-[100px_1fr]">
+                <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">PM Duration:</div>
+                <div className="px-3 py-2"><Input className="h-7" placeholder="hrs" /></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Approval Section */}
+          <div className="border-t border-border">
+            <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Supervisor Approval:</div>
+            <div className="grid grid-cols-3 gap-0">
+              <div className="grid grid-cols-[60px_1fr] border-r border-b border-border">
+                <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Name:</div>
+                <div className="px-3 py-2"><Input className="h-7" /></div>
+              </div>
+              <div className="grid grid-cols-[50px_1fr] border-r border-b border-border">
+                <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Sign:</div>
+                <div className="px-3 py-2"><Input className="h-7" /></div>
+              </div>
+              <div className="grid grid-cols-[50px_1fr] border-b border-border">
+                <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Date:</div>
+                <div className="px-3 py-2"><Input className="h-7" type="date" /></div>
               </div>
             </div>
           </div>
 
           {/* Revision History */}
-          <div>
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">
-              REVISION HISTORY
-            </div>
-            <div className="p-4">
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className="bg-muted/50">
-                    <th className="border border-border px-3 py-2 text-left font-medium w-16">Rev</th>
-                    <th className="border border-border px-3 py-2 text-left font-medium w-28">Date</th>
-                    <th className="border border-border px-3 py-2 text-left font-medium">Description of Change</th>
-                    <th className="border border-border px-3 py-2 text-left font-medium w-32">Author</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border border-border px-3 py-2">0</td>
-                    <td className="border border-border px-3 py-2 text-muted-foreground italic">[Date]</td>
-                    <td className="border border-border px-3 py-2">Initial Release</td>
-                    <td className="border border-border px-3 py-2 text-muted-foreground italic">[Author]</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div className="border-t border-border">
+            <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Revision History:</div>
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-muted/50">
+                  <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Revision No.</th>
+                  <th className="border border-border px-3 py-2 text-left font-medium w-[35%]">Description</th>
+                  <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Created</th>
+                  <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Reviewed</th>
+                  <th className="border border-border px-3 py-2 text-left font-medium w-[20%]">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="border border-border px-3 py-2">0</td>
+                  <td className="border border-border px-3 py-2">Initial Release</td>
+                  <td className="border border-border px-3 py-2"></td>
+                  <td className="border border-border px-3 py-2"></td>
+                  <td className="border border-border px-3 py-2"></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
