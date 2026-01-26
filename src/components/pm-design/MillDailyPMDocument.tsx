@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import tennantLogo from "@/assets/tennant-mines-logo.png";
 import tennantBanner from "@/assets/tennant-banner-new.png";
+import tennantIcon from "@/assets/tennant-icon.png";
 
 interface InspectionTask {
   task: string;
@@ -173,6 +174,10 @@ export const MillDailyPMDocument = () => {
         {/* Banner with Title Overlay */}
         <div className="relative">
           <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
+          {/* Logo on left side of black section */}
+          <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
+            <img src={tennantIcon} alt="Tennant Mines" className="h-10" />
+          </div>
           {/* Title on the black section - centered */}
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
             <div className="text-center">
