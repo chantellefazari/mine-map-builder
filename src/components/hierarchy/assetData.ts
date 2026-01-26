@@ -380,11 +380,26 @@ export const areasData: Area[] = [
                     componentName: "Cyanide Transfer Pump",
                     manufacturer: "GRUNDFOS",
                     model: "CRN20-01 A FGI-G-V-HQQV",
-                    serialNumber: "A96500484P11730"
+                    serialNumber: "A96500484P11730",
+                    motorSpeed: "2789 rpm",
+                    pumpFlow: "50 m³/h @ 9m TDH"
                   }
                 ]
               },
-              { assetNumber: "TNK001", name: "Cyanide Solution Storage Tank" },
+              { 
+                assetNumber: "TNK001", 
+                name: "Cyanide Solution Storage Tank",
+                components: [
+                  {
+                    componentCode: "HDPE-22.5",
+                    componentType: "Storage Tank",
+                    componentName: "Cyanide Solution Storage Tank",
+                    manufacturer: "N/A",
+                    model: "HDPE Tank",
+                    oilVolume: "22.5 m³ capacity"
+                  }
+                ]
+              },
               { assetNumber: "CMIX001-TX001", name: "Cyanide Mixing Tank – Level Transmitter" },
             ]
           },
@@ -760,12 +775,15 @@ export const areasData: Area[] = [
                 components: [
                   {
                     componentCode: "H1 SH 15B",
-                    componentType: "Helical Gearbox",
+                    componentType: "Gear Reducer",
                     componentName: "Mill Main Gear Reducer",
                     manufacturer: "SEW-EURODRIVE",
                     model: "H1 SH 15B",
-                    oilType: "CLP 320",
-                    oilVolume: "45 L"
+                    oilType: "VG320",
+                    oilVolume: "190L",
+                    inputSpeed: "1481 rpm",
+                    outputSpeed: "259.61 rpm",
+                    weight: "3317 kg"
                   }
                 ]
               },
@@ -784,21 +802,21 @@ export const areasData: Area[] = [
                 name: "Primary Ball Mill Low Pressure Lube Pump – Duty",
                 components: [
                   {
-                    componentCode: "3339111192",
+                    componentCode: "333911192",
                     componentType: "Pump",
                     componentName: "Low Pressure Lube Pump – Duty",
                     manufacturer: "PARKER",
-                    model: "3339111192",
+                    model: "333911192",
                     pumpFlow: "2.16 m³/hr (36 lpm)",
                     operatingPressure: "15 bar",
                     displacement: "28 cc/rev"
                   },
                   {
-                    componentCode: "L194 W22 / 1SE110 / 1009158787",
+                    componentCode: "L194 W22 / 1SET10 / 1009158787",
                     componentType: "Motor",
                     componentName: "Low Pressure Lube Pump Motor – Duty",
                     manufacturer: "WEG",
-                    model: "L194 W22 / 1SE110 / 1009158787",
+                    model: "L194 W22 / 1SET10 / 1009158787",
                     motorSpeed: "1450 rpm",
                     protection: "IP55",
                     voltage: "415V"
@@ -810,14 +828,24 @@ export const areasData: Area[] = [
                 name: "Primary Ball Mill Low Pressure Lube Pump – Standby",
                 components: [
                   {
-                    componentCode: "3339111192",
+                    componentCode: "333911192",
                     componentType: "Pump",
                     componentName: "Low Pressure Lube Pump – Standby",
                     manufacturer: "PARKER",
-                    model: "3339111192",
+                    model: "333911192",
                     pumpFlow: "2.16 m³/hr (36 lpm)",
                     operatingPressure: "15 bar",
                     displacement: "28 cc/rev"
+                  },
+                  {
+                    componentCode: "L194 W22 / 1SET10 / 1009158787",
+                    componentType: "Motor",
+                    componentName: "Low Pressure Lube Pump Motor – Standby",
+                    manufacturer: "WEG",
+                    model: "L194 W22 / 1SET10 / 1009158787",
+                    motorSpeed: "1450 rpm",
+                    protection: "IP55",
+                    voltage: "415V"
                   }
                 ]
               },
@@ -834,6 +862,12 @@ export const areasData: Area[] = [
                     pumpFlow: "0.84 m³/hr (14 lpm)",
                     operatingPressure: "400 bar",
                     displacement: "10 cc/rev"
+                  },
+                  {
+                    componentCode: "WEG-HP",
+                    componentType: "Motor",
+                    componentName: "High Pressure Lube Pump Motor",
+                    manufacturer: "WEG"
                   }
                 ]
               },
@@ -842,19 +876,23 @@ export const areasData: Area[] = [
                 name: "Primary Ball Mill Lube Cooling Recirculating Pump",
                 components: [
                   {
-                    componentCode: "K16 STE2 / 05MA10",
-                    componentType: "Pump (with Motor)",
+                    componentCode: "333911486",
+                    componentType: "Pump",
                     componentName: "Lube Cooling Recirculating Pump",
-                    manufacturer: "WEG / PARKER",
-                    model: "K16 STE2",
-                    motorRef: "05MA10 / 1007731720",
-                    pumpRef: "3339111486",
-                    motorSpeed: "1450 rpm",
-                    protection: "IP55",
-                    voltage: "415V",
+                    manufacturer: "PARKER",
+                    model: "333911486",
                     pumpFlow: "3.36 m³/hr (56 lpm)",
                     operatingPressure: "12 bar",
                     displacement: "44 cc/rev"
+                  },
+                  {
+                    componentCode: "WEG-RECIRC",
+                    componentType: "Motor",
+                    componentName: "Lube Cooling Recirculating Pump Motor",
+                    manufacturer: "WEG",
+                    motorSpeed: "1450 rpm",
+                    protection: "IP55",
+                    voltage: "415V"
                   }
                 ]
               },
@@ -978,9 +1016,64 @@ export const areasData: Area[] = [
             label: "Cyclone Cluster", 
             equipment: [
               { assetNumber: "CYC001", name: "Primary Cyclone Cluster" },
-              // NEW ASSETS - Individual Cyclones with simple numbering
+              // Cyclone Feed Pumps
               { 
-                assetNumber: "CYC001", 
+                assetNumber: "CFP001-A", 
+                name: "Cyclone Feed Pump – Duty",
+                components: [
+                  {
+                    componentCode: "KTE50 W22M",
+                    componentType: "Motor",
+                    componentName: "Cyclone Feed Pump Motor – Duty",
+                    manufacturer: "WEG",
+                    model: "KTE50 W22M"
+                  },
+                  {
+                    componentCode: "8/6 AH",
+                    componentType: "Pump Wet End",
+                    componentName: "Cyclone Feed Pump Wet End – Duty",
+                    manufacturer: "AUSTRAL",
+                    model: "8/6 AH Metal"
+                  },
+                  {
+                    componentCode: "SPC 2360 x 4",
+                    componentType: "Belt",
+                    componentName: "Cyclone Feed Pump Belt – Duty",
+                    manufacturer: "N/A",
+                    model: "SPC 2360 x 4"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "CFP001-B", 
+                name: "Cyclone Feed Pump – Standby",
+                components: [
+                  {
+                    componentCode: "KTE50 W22M",
+                    componentType: "Motor",
+                    componentName: "Cyclone Feed Pump Motor – Standby",
+                    manufacturer: "WEG",
+                    model: "KTE50 W22M"
+                  },
+                  {
+                    componentCode: "8/6 AH",
+                    componentType: "Pump Wet End",
+                    componentName: "Cyclone Feed Pump Wet End – Standby",
+                    manufacturer: "AUSTRAL",
+                    model: "8/6 AH Metal"
+                  },
+                  {
+                    componentCode: "SPC 2360 x 4",
+                    componentType: "Belt",
+                    componentName: "Cyclone Feed Pump Belt – Standby",
+                    manufacturer: "N/A",
+                    model: "SPC 2360 x 4"
+                  }
+                ]
+              },
+              // Individual Cyclones
+              { 
+                assetNumber: "CYC001-1", 
                 name: "Primary Cyclone 1",
                 components: [
                   {
@@ -996,7 +1089,7 @@ export const areasData: Area[] = [
                 ]
               },
               { 
-                assetNumber: "CYC002", 
+                assetNumber: "CYC001-2", 
                 name: "Primary Cyclone 2",
                 components: [
                   {
@@ -1012,8 +1105,8 @@ export const areasData: Area[] = [
                 ]
               },
               { 
-                assetNumber: "CYC003", 
-                name: "Primary Cyclone 3",
+                assetNumber: "CYC001-3", 
+                name: "Primary Cyclone 3 (Standby)",
                 components: [
                   {
                     componentCode: "CVX400-3",
@@ -1278,24 +1371,17 @@ export const areasData: Area[] = [
                 name: "CIP Area Sump Pump",
                 components: [
                   {
-                    componentCode: "65QV-SPR",
-                    componentType: "Vertical Spindle Pump",
-                    componentName: "CIP Sump Pump Assembly",
-                    manufacturer: "Global Pump",
-                    model: "65QV-SPR Vertical Spindle"
+                    componentCode: "65QV-SPR1200",
+                    componentType: "Pump",
+                    componentName: "CIP Sump Pump Wet End",
+                    manufacturer: "WARMAN",
+                    model: "65QV-SPR1200"
                   },
                   {
-                    componentCode: "WEG",
+                    componentCode: "WEG-CIP",
                     componentType: "Motor",
                     componentName: "CIP Sump Pump Motor",
                     manufacturer: "WEG"
-                  },
-                  {
-                    componentCode: "SPA 1250",
-                    componentType: "Belt",
-                    componentName: "CIP Sump Pump Belt",
-                    manufacturer: "N/A",
-                    model: "SPA 1250 x 2"
                   }
                 ]
               },
@@ -1541,12 +1627,72 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "PMP013", name: "Antiscalant Dosing Pump – Elution Raw Water" },
-              { assetNumber: "HTR001", name: "Elution Heater" },
-              { assetNumber: "BRN001", name: "Elution Heater Burner" },
-              { assetNumber: "HEX001", name: "Elution Recovery Heat Exchanger" },
+              { 
+                assetNumber: "PMP013", 
+                name: "Antiscalant Dosing Pump – Elution Raw Water",
+                components: [
+                  {
+                    componentCode: "DDA 7.5-16",
+                    componentType: "Dosing Pump",
+                    componentName: "Antiscalant Dosing Pump",
+                    manufacturer: "GRUNDFOS",
+                    model: "DDA 7.5-16"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "HTR001", 
+                name: "Elution Heater",
+                components: [
+                  {
+                    componentCode: "500KW-SS",
+                    componentType: "Direct Heater",
+                    componentName: "Elution Heater Unit",
+                    manufacturer: "N/A",
+                    model: "500kW SS Coil Direct Heater"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "BRN001", 
+                name: "Elution Heater Burner",
+                components: [
+                  {
+                    componentCode: "GX 5/2 TL",
+                    componentType: "Burner",
+                    componentName: "Elution Heater Burner",
+                    manufacturer: "FBR",
+                    model: "GX 5/2 TL"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "HEX001", 
+                name: "Elution Recovery Heat Exchanger",
+                components: [
+                  {
+                    componentCode: "P&F-HEX",
+                    componentType: "Heat Exchanger",
+                    componentName: "Elution Recovery Heat Exchanger",
+                    manufacturer: "N/A",
+                    model: "Plate & Frame Type"
+                  }
+                ]
+              },
               { assetNumber: "FPT001", name: "Elution Flashpot" },
-              { assetNumber: "PMP014", name: "Eluate Pump" },
+              { 
+                assetNumber: "PMP014", 
+                name: "Eluate Pump",
+                components: [
+                  {
+                    componentCode: "CRI20-07",
+                    componentType: "Pump",
+                    componentName: "Eluate Pump",
+                    manufacturer: "GRUNDFOS",
+                    model: "CRI20-07"
+                  }
+                ]
+              },
             ] 
           },
           { 
@@ -1599,6 +1745,25 @@ export const areasData: Area[] = [
             label: "Regen Kiln", 
             equipment: [
               { assetNumber: "KLN001", name: "Regen Kiln – Kiln" },
+              { 
+                assetNumber: "SCRF001", 
+                name: "Regen Kiln Screw Feeder",
+                components: [
+                  {
+                    componentCode: "WEG-SCRF",
+                    componentType: "Motor",
+                    componentName: "Regen Kiln Screw Feeder Motor",
+                    manufacturer: "WEG"
+                  },
+                  {
+                    componentCode: "SCRF-100",
+                    componentType: "Screw Feeder",
+                    componentName: "Regen Kiln Screw Feeder",
+                    manufacturer: "N/A",
+                    pumpFlow: "100 kg/hr capacity"
+                  }
+                ]
+              },
               { assetNumber: "KLN001-MTR001", name: "Regen Kiln – Drive Motor" },
               { assetNumber: "KLN001-VSD001", name: "Regen Kiln – VSD" },
               { assetNumber: "KLN001-GBX001", name: "Regen Kiln – Gearbox" },
@@ -1654,9 +1819,32 @@ export const areasData: Area[] = [
             label: "Electrowinning Cell", 
             equipment: [
               { assetNumber: "EWCL001", name: "Electrowinning Cell" },
-              // NEW ASSETS - Electrowinning equipment with simple numbering
-              { assetNumber: "REC001", name: "Electrowinning Cell Rectifier" },
-              { assetNumber: "FAN001", name: "Electrowinning Cell Fume Extraction Fan" },
+              { 
+                assetNumber: "REC001", 
+                name: "Electrowinning Cell Rectifier",
+                components: [
+                  {
+                    componentCode: "pe3000-6",
+                    componentType: "Rectifier",
+                    componentName: "Electrowinning Cell Rectifier",
+                    manufacturer: "N/A",
+                    model: "pe3000-6"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "FAN001", 
+                name: "Electrowinning Fume Extraction Fan",
+                components: [
+                  {
+                    componentCode: "CHEM160",
+                    componentType: "Extraction Fan",
+                    componentName: "Electrowinning Fume Extraction Fan",
+                    manufacturer: "N/A",
+                    model: "CHEM160"
+                  }
+                ]
+              },
               { assetNumber: "EWCL001-MNR001", name: "Electrowinning Cell – Monorail" },
               { assetNumber: "EWCL001-TK001", name: "Electrowinning Cell – Solution Tank" },
               { assetNumber: "EWCL001-PMP001", name: "Electrowinning Cell – Feed Pump" },
@@ -1665,7 +1853,7 @@ export const areasData: Area[] = [
               { assetNumber: "EWCL001-LCS001", name: "Electrowinning Cell – Feed Pump LCS" },
               { assetNumber: "EWCL001-TG001", name: "Electrowinning Cell – Flashpot Inlet Temperature Gauge" },
               { assetNumber: "EWCL001-LSH001", name: "Electrowinning Cell – Flashpot High High Level Switch" },
-            ] 
+            ]
           },
           { 
             label: "Gold Room Safety Shower", 
@@ -1678,7 +1866,19 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "WSH001", name: "High Pressure Cathode Washer" },
               { assetNumber: "CWSH001-BOX001", name: "Cathode Wash Box" },
-              { assetNumber: "PMP015", name: "Cathode Wash Sludge Pump" },
+              { 
+                assetNumber: "PMP015", 
+                name: "Cathode Wash Sludge Pump",
+                components: [
+                  {
+                    componentCode: "VA25",
+                    componentType: "Pump",
+                    componentName: "Cathode Wash Sludge Pump",
+                    manufacturer: "VerderAir",
+                    model: "VA25"
+                  }
+                ]
+              },
               { assetNumber: "PMP016", name: "Electrowinning Cell Sludge Pump" },
               { assetNumber: "CWSH001-MTR001", name: "Cathode Wash Sludge Pump – Motor" },
               { assetNumber: "CWSH001-MCC001", name: "Cathode Wash Sludge Pump – MCC Cell" },
@@ -1698,17 +1898,91 @@ export const areasData: Area[] = [
           { 
             label: "Gold Bullion", 
             equipment: [
-              { assetNumber: "BULL001-SCL001", name: "Gold Bullion Scale" },
+              { 
+                assetNumber: "SCL001", 
+                name: "Bullion Scale",
+                components: [
+                  {
+                    componentCode: "APP 25/C2",
+                    componentType: "Scale",
+                    componentName: "Bullion Scale",
+                    manufacturer: "N/A",
+                    model: "APP 25/C2"
+                  }
+                ]
+              },
               { assetNumber: "BULL001-BEN001", name: "Gold Bullion Scale Bench" },
               { assetNumber: "GR-BEN001", name: "Gold Room Work Bench" },
-              { assetNumber: "GR-SAFE001", name: "Gold Room Bullion Safe" },
+              { 
+                assetNumber: "SAFE001", 
+                name: "Gold Room Safe",
+                components: [
+                  {
+                    componentCode: "KCR7",
+                    componentType: "Safe",
+                    componentName: "Gold Room Safe",
+                    manufacturer: "N/A",
+                    model: "KCR7"
+                  }
+                ]
+              },
             ] 
           },
           { 
             label: "Smelting Furnace", 
             equipment: [
-              { assetNumber: "SMLT001", name: "Gold Room Barring Furnace" },
-              { assetNumber: "SMLT001-FAN001", name: "Barring Furnace Extraction Fan" },
+              { 
+                assetNumber: "MIX001", 
+                name: "Flux Mixer",
+                components: [
+                  {
+                    componentCode: "WM2.2MIB1",
+                    componentType: "Mixer",
+                    componentName: "Flux Mixer",
+                    manufacturer: "N/A",
+                    model: "WM2.2MIB1"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "FRN001", 
+                name: "Gold Barring Furnace",
+                components: [
+                  {
+                    componentCode: "A150",
+                    componentType: "Furnace",
+                    componentName: "Gold Barring Furnace",
+                    manufacturer: "COMO",
+                    model: "A150"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "BRN002", 
+                name: "Gold Furnace Burner",
+                components: [
+                  {
+                    componentCode: "G2.22 TC",
+                    componentType: "Burner",
+                    componentName: "Gold Furnace Burner",
+                    manufacturer: "FBR",
+                    model: "G2.22 TC"
+                  }
+                ]
+              },
+              { 
+                assetNumber: "FAN002", 
+                name: "Gold Room Fume Extraction Fan",
+                components: [
+                  {
+                    componentCode: "TGAss-779",
+                    componentType: "Extraction Fan",
+                    componentName: "Gold Room Fume Extraction Fan",
+                    manufacturer: "N/A",
+                    model: "TGAss-779"
+                  }
+                ]
+              },
               { assetNumber: "SMLT001-HOOD001", name: "Barring Furnace Hood" },
             ] 
           },
