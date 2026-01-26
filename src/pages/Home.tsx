@@ -8,7 +8,6 @@ const sections = [
     description: "Single source of truth for all plant assets. Hierarchy is locked and validated.",
     icon: TreePine,
     href: "/asset-tree",
-    locked: true,
   },
   {
     title: "Preventive Maintenance (PM) Design",
@@ -16,7 +15,6 @@ const sections = [
     description: "Design PMs by equipment type before linking to assets. Templates, principles, and master list.",
     icon: Wrench,
     href: "/pm-design",
-    locked: false,
   },
   {
     title: "Critical Spares Catalogue",
@@ -24,7 +22,6 @@ const sections = [
     description: "Define critical spares with OEM data, lead times, and stock strategies.",
     icon: Package,
     href: "/critical-spares",
-    locked: false,
   },
   {
     title: "Components & OEM Data",
@@ -32,7 +29,6 @@ const sections = [
     description: "Store motor, gearbox, pump, and reducer specifications for reuse across assets.",
     icon: Cpu,
     href: "/components-oem",
-    locked: false,
   },
   {
     title: "Maintenance Strategy & Rules",
@@ -40,7 +36,6 @@ const sections = [
     description: "PM vs run-to-failure rules, duty/standby philosophy, naming conventions.",
     icon: BookOpen,
     href: "/maintenance-strategy",
-    locked: false,
   },
   {
     title: "Open Items / Decisions / Notes",
@@ -48,7 +43,6 @@ const sections = [
     description: "Unconfirmed details, missing data, assumptions, and items needing site confirmation.",
     icon: FileQuestion,
     href: "/open-items",
-    locked: false,
   },
 ];
 
@@ -76,21 +70,6 @@ const Home = () => {
 
       {/* Main Content */}
       <main className="container py-10">
-        {/* Info Banner */}
-        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-8 flex items-start gap-3">
-          <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <span className="text-primary text-sm font-bold">!</span>
-          </div>
-          <div className="text-sm">
-            <p className="text-foreground font-medium">
-              This is a DESIGN workspace — not a CMMS.
-            </p>
-            <p className="text-muted-foreground mt-1">
-              Scheduling and work orders are handled in a separate AI system. This space is for structure, design, and logic only.
-            </p>
-          </div>
-        </div>
-
         {/* Section Tiles */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sections.map((section) => (
@@ -99,13 +78,6 @@ const Home = () => {
               to={section.href}
               className="group relative bg-card border border-border rounded-lg p-6 hover:border-primary/50 hover:shadow-md transition-all duration-200"
             >
-              {section.locked && (
-                <div className="absolute top-4 right-4">
-                  <span className="text-xs font-mono bg-primary/10 text-primary px-2 py-1 rounded">
-                    LOCKED
-                  </span>
-                </div>
-              )}
               <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <section.icon className="w-6 h-6 text-primary" />
               </div>
