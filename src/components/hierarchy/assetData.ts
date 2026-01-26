@@ -158,7 +158,19 @@ export const areasData: Area[] = [
               { assetNumber: "HPCP002-PIPE001", name: "HP Air Compressor 2 – Piping" },
               { assetNumber: "HPCP002-MCC001", name: "HP Air Compressor 2 – MCC Cell" },
               { assetNumber: "HPCP002-RCVR001", name: "HP Air Compressor 2 – Receiver" },
-              { assetNumber: "HPCP003", name: "HP Air Compressor 3 (Filter Area)" },
+              { 
+                assetNumber: "HPCP003", 
+                name: "HP Air Compressor 3 (Filter Area)",
+                components: [
+                  {
+                    componentCode: "PKG-01",
+                    componentType: "Compressor Package",
+                    componentName: "Compressor Package",
+                    manufacturer: "ATLAS COPCO",
+                    model: "GA22-FF"
+                  }
+                ]
+              },
               { assetNumber: "HPCP003-PIPE001", name: "HP Air Compressor 3 – Piping" },
               { assetNumber: "HPCP003-MCC001", name: "HP Air Compressor 3 – MCC Cell" },
               { assetNumber: "HPCP003-RCVR001", name: "HP Air Compressor 3 – Receiver" },
@@ -327,9 +339,28 @@ export const areasData: Area[] = [
             label: "Floc System", 
             equipment: [
               { assetNumber: "FLOC001", name: "Floc System" },
-              { assetNumber: "FLOC001-PMP001", name: "Floc System – Dosing Pump" },
+              { 
+                assetNumber: "FLOC001-PMP001", 
+                name: "Floc System – Dosing Pump",
+                components: [
+                  {
+                    componentCode: "PMP-01",
+                    componentType: "Progressive Cavity Pump",
+                    componentName: "Dosing Pump",
+                    manufacturer: "SEEPEX",
+                    model: "BN1-6L"
+                  },
+                  {
+                    componentCode: "MTR-01",
+                    componentType: "Motor",
+                    componentName: "Motor",
+                    manufacturer: "NORD",
+                    voltage: "1.1 kW"
+                  }
+                ]
+              },
               { assetNumber: "FLOC001-AGT001", name: "Floc System – Mixing Agitator" },
-            ] 
+            ]
           },
           { 
             label: "Cyanide Bag Breaker", 
@@ -2045,6 +2076,7 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "THK001", name: "Tails Thickener" },
               { assetNumber: "THK001-PIPE001", name: "Tails Thickener – Piping and Valves" },
+              { assetNumber: "THK001-MNR001", name: "Thickener Monorail" },
               { assetNumber: "TAILHOP001", name: "CIP Tailings Hopper" },
               { assetNumber: "TAILHOP001-LT001", name: "CIP Tailings Hopper – Level Transmitter" },
               { assetNumber: "THK001-FM001", name: "Tails Thickener – Flow Meter" },
@@ -2073,7 +2105,19 @@ export const areasData: Area[] = [
           { 
             label: "Thickener Underflow Pump", 
             equipment: [
-              { assetNumber: "CIPSMP001", name: "CIP Tails Area Sump Pump" },
+              { 
+                assetNumber: "CIPSMP001", 
+                name: "CIP Tails Area Sump Pump",
+                components: [
+                  {
+                    componentCode: "PMP-01",
+                    componentType: "Pump",
+                    componentName: "Pump",
+                    manufacturer: "WARMAN",
+                    model: "65QV-SPG (Metal)"
+                  }
+                ]
+              },
               { assetNumber: "CIPSMP001-MTR001", name: "CIP Tails Area Sump Pump – Motor" },
               { assetNumber: "CIPSMP001-MCC001", name: "CIP Tails Area Sump Pump – MCC Cell" },
               { assetNumber: "CIPSMP001-LCS001", name: "CIP Tails Area Sump Pump – LCS" },
@@ -2164,12 +2208,51 @@ export const areasData: Area[] = [
           { 
             label: "Filter Feed Pump", 
             equipment: [
-              { assetNumber: "FFD001-PMP001", name: "Filter Feed Pump Duty" },
+              { 
+                assetNumber: "FFD001-PMP001", 
+                name: "Filter Feed Pump Duty",
+                components: [
+                  {
+                    componentCode: "MTR-01",
+                    componentType: "Motor",
+                    componentName: "Motor",
+                    manufacturer: "ELVEM",
+                    model: "280M4"
+                  },
+                  {
+                    componentCode: "PMP-01",
+                    componentType: "Pump Assembly",
+                    componentName: "Pump Assembly",
+                    manufacturer: "ALFA POMPE",
+                    model: "PSH2100 V/A/A400 (DLT1050-2H)",
+                    displacement: "Bearings: 6218 C3 / 29418-E1-XL / NU2317-E-XL-TVP2 | Lube: Oil bath"
+                  }
+                ]
+              },
               { assetNumber: "FFD001-MTR001", name: "Filter Feed Pump Duty – Motor" },
               { assetNumber: "FFD001-MCC001", name: "Filter Feed Pump Duty – MCC Cell" },
               { assetNumber: "FFD001-LCS001", name: "Filter Feed Pump Duty – LCS" },
               { assetNumber: "FFD001-VSD001", name: "Filter Feed Pump Duty – VSD" },
-              { assetNumber: "FFD001-PMP002", name: "Filter Feed Pump Standby" },
+              { 
+                assetNumber: "FFD001-PMP002", 
+                name: "Filter Feed Pump Standby",
+                components: [
+                  {
+                    componentCode: "MTR-01",
+                    componentType: "Motor",
+                    componentName: "Motor",
+                    manufacturer: "ELVEM",
+                    model: "280M4"
+                  },
+                  {
+                    componentCode: "PMP-01",
+                    componentType: "Pump Assembly",
+                    componentName: "Pump Assembly",
+                    manufacturer: "ALFA POMPE",
+                    model: "PSH2100 V/A/A400 (DLT1050-2H)"
+                  }
+                ]
+              },
               { assetNumber: "FFD001-MTR002", name: "Filter Feed Pump Standby – Motor" },
               { assetNumber: "FFD001-MCC002", name: "Filter Feed Pump Standby – MCC Cell" },
               { assetNumber: "FFD001-LCS002", name: "Filter Feed Pump Standby – LCS" },
@@ -2179,7 +2262,33 @@ export const areasData: Area[] = [
           { 
             label: "Tailings Conveyor", 
             equipment: [
-              { assetNumber: "TC001", name: "Tailings Conveyor" },
+              { 
+                assetNumber: "TC001", 
+                name: "Tailings Conveyor",
+                components: [
+                  {
+                    componentCode: "BLT-01",
+                    componentType: "Conveyor Belt",
+                    componentName: "Conveyor Belt",
+                    manufacturer: "N/A",
+                    model: "1400 x 16000"
+                  },
+                  {
+                    componentCode: "MTR-01",
+                    componentType: "Drive Motor",
+                    componentName: "Drive Motor",
+                    manufacturer: "N/A",
+                    voltage: "15 kW"
+                  },
+                  {
+                    componentCode: "SFT-01",
+                    componentType: "Safety Devices",
+                    componentName: "Safety Devices",
+                    manufacturer: "N/A",
+                    displacement: "Rope safety switches both sides, Scraper belt"
+                  }
+                ]
+              },
               { assetNumber: "TC001-MTR001", name: "Tailings Conveyor – Motor" },
               { assetNumber: "TC001-GBX001", name: "Tailings Conveyor – Gearbox" },
               { assetNumber: "TC001-MCC001", name: "Tailings Conveyor – MCC Cell" },
