@@ -39,56 +39,26 @@ const inspectionData: InspectionSection[] = [
     ]
   },
   {
-    sectionName: "Engine Compartment",
-    items: [
-      { id: "12", description: "Inspect for oil, coolant, or fuel leaks" },
-      { id: "13", description: "Check belts for wear and tension" },
-      { id: "14", description: "Check air filter restriction indicator" },
-      { id: "15", description: "Change/Clean air filter elements as needed" },
-      { id: "16", description: "Inspect air intake hoses and clamps" },
-      { id: "17", description: "Check radiator/cooler areas for dust buildup" },
-      { id: "18", description: "Check turbo and exhaust system for cracks, soot leaks, or loose fittings" },
-    ]
-  },
-  {
-    sectionName: "Electrical System",
-    items: [
-      { id: "19", description: "Battery terminals clean and secure" },
-      { id: "20", description: "Battery isolator functional and in correct position" },
-      { id: "21", description: "Lights and indicators operational" },
-      { id: "22", description: "Control panel functioning correctly" },
-      { id: "23", description: "Wiring secure, no exposed or damaged cables" },
-      { id: "24", description: "Test warning lights and alarms" },
-    ]
-  },
-  {
     sectionName: "Operator Cab / Safety",
     items: [
-      { id: "25", description: "Seat, seatbelt, and controls functioning properly" },
-      { id: "26", description: "Fire extinguisher present and charged" },
-      { id: "27", description: "Horn, backup alarm, and mirrors operational" },
-      { id: "28", description: "Windows and doors operate correctly" },
+      { id: "12", description: "Seat, seatbelt, and controls functioning properly" },
+      { id: "13", description: "Fire extinguisher present and charged" },
+      { id: "14", description: "Horn, backup alarm, and mirrors operational" },
+      { id: "15", description: "Windows and doors operate correctly" },
     ]
   },
   {
     sectionName: "Operational Checks",
     items: [
-      { id: "29", description: "Engine starts smoothly with no unusual noise" },
-      { id: "30", description: "Monitor gauges: oil pressure, coolant temperature, hydraulic pressure" },
-      { id: "31", description: "Observe for unusual noises, vibrations, or smoke" },
-      { id: "32", description: "Shutdown normal with no alarms" },
-    ]
-  },
-  {
-    sectionName: "Auto-Greaser (if equipped)",
-    items: [
-      { id: "33", description: "Verify grease levels and automatic greasing system functioning" },
-      { id: "34", description: "Check all grease points for lubrication" },
+      { id: "16", description: "Engine starts smoothly with no unusual noise" },
+      { id: "17", description: "Monitor gauges: oil pressure, coolant temperature, hydraulic pressure" },
+      { id: "18", description: "Observe for unusual noises, vibrations, or smoke" },
+      { id: "19", description: "Shutdown normal with no alarms" },
     ]
   },
 ];
 
-export const ExcavatorDailyWeeklyPMDocument = () => {
+export const ExcavatorDailyPMDocument = () => {
   const [itemStatus, setItemStatus] = useState<Record<string, "pass" | "fail" | null>>({});
 
   const setStatus = (id: string, status: "pass" | "fail") => {
@@ -106,13 +76,13 @@ export const ExcavatorDailyWeeklyPMDocument = () => {
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
             <div className="text-center">
-              <h1 className="text-2xl font-bold tracking-wide text-primary">Excavator Daily/Weekly Mechanical Inspection</h1>
+              <h1 className="text-2xl font-bold tracking-wide text-primary">Excavator Daily Mechanical Inspection</h1>
             </div>
           </div>
         </div>
 
         {/* Header Information Grid */}
-        <div className="grid grid-cols-4 border-b border-border text-xs">
+        <div className="grid grid-cols-5 border-b border-border text-xs">
           <div className="border-r border-border">
             <div className="bg-muted px-2 py-1.5 font-semibold border-b border-border text-center">Asset Number</div>
             <div className="px-2 py-2 min-h-[32px]"></div>
@@ -125,8 +95,12 @@ export const ExcavatorDailyWeeklyPMDocument = () => {
             <div className="bg-muted px-2 py-1.5 font-semibold border-b border-border text-center">Serial No</div>
             <div className="px-2 py-2 min-h-[32px]"></div>
           </div>
-          <div>
+          <div className="border-r border-border">
             <div className="bg-muted px-2 py-1.5 font-semibold border-b border-border text-center">Hours</div>
+            <div className="px-2 py-2 min-h-[32px]"></div>
+          </div>
+          <div>
+            <div className="bg-muted px-2 py-1.5 font-semibold border-b border-border text-center">Next Service Due</div>
             <div className="px-2 py-2 min-h-[32px]"></div>
           </div>
         </div>
@@ -215,7 +189,7 @@ export const ExcavatorDailyWeeklyPMDocument = () => {
 
         {/* Footer */}
         <div className="bg-muted/30 px-4 py-2 text-xs text-muted-foreground text-center">
-          Tennant Creek Mining Operations - Mobile Equipment Inspection Form
+          Tennant Creek Mining Operations - Mobile Equipment Daily Inspection Form
         </div>
       </div>
     </div>
