@@ -15,8 +15,6 @@ import tennantIcon from "@/assets/tennant-icon.png";
 interface InspectionItem {
   id: string;
   description: string;
-  hasInput?: boolean;
-  inputLabel?: string;
 }
 
 interface InspectionSection {
@@ -26,76 +24,89 @@ interface InspectionSection {
 
 const inspectionData: InspectionSection[] = [
   {
-    sectionName: "Pre-Start Checks",
+    sectionName: "Safety",
     items: [
-      { id: "1", description: "Check fuel level" },
-      { id: "2", description: "Check engine oil level" },
-      { id: "3", description: "Check hydraulic oil level" },
-      { id: "4", description: "Check coolant level" },
-      { id: "5", description: "Check brake fluid level" },
-      { id: "6", description: "Check for any fluid leaks" },
-      { id: "7", description: "Inspect tyres/wheels for damage and wear" },
-      { id: "8", description: "Check tyre pressures" },
+      { id: "1", description: "Load rating plate legible" },
+      { id: "2", description: "Fire extinguisher charged and accessible" },
+      { id: "3", description: "ROPS/FOPS structure undamaged" },
+      { id: "4", description: "Seatbelt functioning" },
+      { id: "5", description: "Flashing beacon / rotating amber light working" },
+      { id: "6", description: "Emergency stop switch operational" },
     ]
   },
   {
-    sectionName: "Safety Devices",
+    sectionName: "Hydraulics",
     items: [
-      { id: "9", description: "Check seat belt operation" },
-      { id: "10", description: "Check horn operation" },
-      { id: "11", description: "Check reversing alarm/beeper" },
-      { id: "12", description: "Check lights - head, tail, indicators" },
-      { id: "13", description: "Check beacon/strobe light" },
-      { id: "14", description: "Check mirrors - clean and secure" },
-      { id: "15", description: "Check fire extinguisher - charged and in date" },
+      { id: "7", description: "Hydraulic oil level" },
+      { id: "8", description: "Lift/tilt/side-shift functions smooth" },
+      { id: "9", description: "Hydraulic hoses not leaking or frayed" },
+      { id: "10", description: "Lift cylinders not leaking" },
+      { id: "11", description: "Steering hydraulics functioning normally" },
     ]
   },
   {
-    sectionName: "Operational Checks",
+    sectionName: "Engine Compartment",
     items: [
-      { id: "16", description: "Check steering operation" },
-      { id: "17", description: "Check foot brake operation" },
-      { id: "18", description: "Check park brake operation" },
-      { id: "19", description: "Check forward/reverse operation" },
-      { id: "20", description: "Check mast operation - lift, lower, tilt" },
-      { id: "21", description: "Check forks for damage/wear" },
-      { id: "22", description: "Check hydraulic hoses and cylinders" },
-      { id: "23", description: "Check chains and chain anchor points" },
-      { id: "24", description: "Check overhead guard integrity" },
-      { id: "25", description: "Check load backrest condition" },
+      { id: "12", description: "Engine oil level" },
+      { id: "13", description: "Coolant level & condition" },
+      { id: "14", description: "Radiator clean, no debris" },
+      { id: "15", description: "Belts condition & tension" },
+      { id: "16", description: "Fuel filter / water separator" },
+      { id: "17", description: "Air filter primary & secondary" },
+      { id: "18", description: "No oil, fuel, or coolant leaks" },
     ]
   },
   {
-    sectionName: "Engine/Electrical",
+    sectionName: "Electrical System",
     items: [
-      { id: "26", description: "Check battery condition and terminals" },
-      { id: "27", description: "Check air filter condition" },
-      { id: "28", description: "Check exhaust system for leaks" },
-      { id: "29", description: "Record engine hours", hasInput: true, inputLabel: "Engine Hours:" },
+      { id: "19", description: "Lights (work lights, beacon) operating" },
+      { id: "20", description: "Battery charger/maintainer operating" },
+      { id: "21", description: "Control panel displays working" },
+      { id: "22", description: "Battery terminals secure and clean" },
+      { id: "23", description: "Wiring secure, no exposed or damaged cables" },
     ]
   },
   {
-    sectionName: "General Condition",
+    sectionName: "Transmission and Driveline",
     items: [
-      { id: "30", description: "Check general cleanliness" },
-      { id: "31", description: "Check for any body damage" },
-      { id: "32", description: "Check operator seat condition" },
-      { id: "33", description: "Check all guards and covers secure" },
-      { id: "34", description: "Check decals/labels legible" },
+      { id: "24", description: "Transmission oil level" },
+      { id: "25", description: "Gear shifting smooth" },
+      { id: "26", description: "Reverse alarm operational" },
+      { id: "27", description: "Gauges & displays working" },
+      { id: "28", description: "Battery isolator switch functional" },
+      { id: "29", description: "Starter isolator functional" },
+      { id: "30", description: "All lubrication points serviced" },
+    ]
+  },
+  {
+    sectionName: "Mast, Carriage and Forks",
+    items: [
+      { id: "31", description: "Mast rails straight" },
+      { id: "32", description: "Mast rollers condition (not seized)" },
+      { id: "33", description: "Chains lubricated, equal tension, no cracks" },
+      { id: "34", description: "Carriage slides smoothly" },
+      { id: "35", description: "Forks straight, not bent" },
+      { id: "36", description: "Locking pins engaged" },
+      { id: "37", description: "Fork wear within limits" },
+      { id: "38", description: "Tilt function smooth" },
+    ]
+  },
+  {
+    sectionName: "Cab",
+    items: [
+      { id: "39", description: "Cab cleanliness" },
+      { id: "40", description: "Mirrors clean and adjusted" },
+      { id: "41", description: "Horn functioning" },
+      { id: "42", description: "Seat condition and adjustment" },
     ]
   },
 ];
 
 export const ForkliftWeeklyPMDocument = () => {
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
-  const [itemStatus, setItemStatus] = useState<Record<string, "pass" | "fail" | null>>({});
+  const [itemStatus, setItemStatus] = useState<Record<string, "ok" | null>>({});
 
-  const toggleItem = (id: string) => {
-    setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const setStatus = (id: string, status: "pass" | "fail") => {
-    setItemStatus(prev => ({ ...prev, [id]: prev[id] === status ? null : status }));
+  const toggleStatus = (id: string) => {
+    setItemStatus(prev => ({ ...prev, [id]: prev[id] === "ok" ? null : "ok" }));
   };
 
   return (
@@ -112,141 +123,97 @@ export const ForkliftWeeklyPMDocument = () => {
           {/* Title on the black section - centered */}
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
             <div className="text-center">
-              <h1 className="text-2xl font-bold tracking-wide text-primary">Forklift Weekly Inspection</h1>
-              <p className="text-base mt-1 text-primary/80">Mechanical Inspection</p>
+              <h1 className="text-2xl font-bold tracking-wide text-primary">Weekly Forklift Mechanical Inspection</h1>
             </div>
           </div>
         </div>
 
-        {/* Header Information Grid */}
-        <div className="grid grid-cols-2 border-b border-border text-xs">
-          {/* Left Column */}
+        {/* Header Information Grid - Mobile Equipment Style */}
+        <div className="grid grid-cols-5 border-b border-border text-xs">
           <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
-                <FileText className="w-3 h-3 text-primary" />
-                Project / Site:
-              </div>
-              <div className="px-2 py-1.5">Tenant Creek</div>
+            <div className="bg-muted px-2 py-1.5 font-semibold border-b border-border text-center">
+              Asset Number
             </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
-              <div className="px-2 py-1.5"></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Equipment Type:</div>
-              <div className="px-2 py-1.5">Forklift</div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
-                <User className="w-3 h-3 text-primary" />
-                Inspected By:
-              </div>
-              <div className="px-2 py-1.5"></div>
-            </div>
+            <div className="px-2 py-2 min-h-[32px]"></div>
           </div>
-
-          {/* Right Column */}
+          <div className="border-r border-border">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-b border-border text-center">
+              Make/Model
+            </div>
+            <div className="px-2 py-2 min-h-[32px]"></div>
+          </div>
+          <div className="border-r border-border">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-b border-border text-center">
+              Serial No
+            </div>
+            <div className="px-2 py-2 min-h-[32px]"></div>
+          </div>
+          <div className="border-r border-border">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-b border-border text-center">
+              Hours
+            </div>
+            <div className="px-2 py-2 min-h-[32px]"></div>
+          </div>
           <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
-              <div className="px-2 py-1.5">Mobile Equipment</div>
+            <div className="bg-muted px-2 py-1.5 font-semibold border-b border-border text-center">
+              Next Service Due
             </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div>
-              <div className="px-2 py-1.5">Weekly Inspection</div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
-                <Calendar className="w-3 h-3 text-primary" />
-                Frequency:
-              </div>
-              <div className="px-2 py-1.5 font-medium">Weekly</div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
-              <div className="px-2 py-1.5"></div>
-            </div>
+            <div className="px-2 py-2 min-h-[32px]"></div>
           </div>
         </div>
 
         {/* Inspection Checklist */}
         <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
-            <ClipboardCheck className="w-5 h-5 text-primary" />
-            INSPECTION CHECKLIST
-          </div>
-
-          {/* Inspection Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="bg-muted border-b border-border">
-                  <th className="px-3 py-2 text-left font-semibold w-12">#</th>
-                  <th className="px-3 py-2 text-left font-semibold">Inspection Item</th>
-                  <th className="px-3 py-2 text-center font-semibold w-16">Pass</th>
-                  <th className="px-3 py-2 text-center font-semibold w-16">Fail</th>
-                  <th className="px-3 py-2 text-left font-semibold w-48">Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {inspectionData.map((section) => (
-                  <>
-                    {/* Section Header */}
-                    <tr key={section.sectionName} className="bg-muted/50">
-                      <td colSpan={5} className="px-3 py-2 font-bold text-sm border-b border-border">
-                        {section.sectionName}
+          {/* Inspection Tables by Section */}
+          {inspectionData.map((section) => (
+            <div key={section.sectionName}>
+              {/* Section Header */}
+              <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+                <ClipboardCheck className="w-4 h-4 text-primary" />
+                {section.sectionName}
+              </div>
+              
+              {/* Section Table */}
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="bg-muted border-b border-border">
+                    <th className="px-3 py-1.5 text-left font-semibold w-12">#</th>
+                    <th className="px-3 py-1.5 text-left font-semibold">Inspection Item</th>
+                    <th className="px-3 py-1.5 text-left font-semibold w-48">Comments</th>
+                    <th className="px-3 py-1.5 text-center font-semibold w-16">OK</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {section.items.map((item, index) => (
+                    <tr key={item.id} className="border-b border-border hover:bg-muted/30">
+                      <td className="px-3 py-1.5 text-center">{index + 1}</td>
+                      <td className="px-3 py-1.5">{item.description}</td>
+                      <td className="px-3 py-1.5">
+                        <Input className="h-6 text-xs" placeholder="" />
+                      </td>
+                      <td className="px-3 py-1.5 text-center">
+                        <Checkbox 
+                          className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+                          checked={itemStatus[item.id] === "ok"}
+                          onCheckedChange={() => toggleStatus(item.id)}
+                        />
                       </td>
                     </tr>
-                    {/* Section Items */}
-                    {section.items.map((item) => (
-                      <tr key={item.id} className="border-b border-border hover:bg-muted/30">
-                        <td className="px-3 py-2 text-center">{item.id}</td>
-                        <td className="px-3 py-2">
-                          <div className="flex flex-col gap-1">
-                            <span>{item.description}</span>
-                            {item.hasInput && (
-                              <div className="flex items-center gap-2 mt-1">
-                                <span className="text-muted-foreground">{item.inputLabel}</span>
-                                <Input className="h-6 w-24 text-xs" />
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-3 py-2 text-center">
-                          <Checkbox 
-                            className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
-                            checked={itemStatus[item.id] === "pass"}
-                            onCheckedChange={() => setStatus(item.id, "pass")}
-                          />
-                        </td>
-                        <td className="px-3 py-2 text-center">
-                          <Checkbox 
-                            className="h-4 w-4 data-[state=checked]:bg-destructive data-[state=checked]:border-destructive"
-                            checked={itemStatus[item.id] === "fail"}
-                            onCheckedChange={() => setStatus(item.id, "fail")}
-                          />
-                        </td>
-                        <td className="px-3 py-2">
-                          <Input className="h-6 text-xs" placeholder="..." />
-                        </td>
-                      </tr>
-                    ))}
-                  </>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
         </div>
 
-        {/* Defects / Actions Required */}
+        {/* Comments Section */}
         <div className="border-b border-border">
-          <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <span className="text-destructive font-bold">DEFECTS / ACTIONS REQUIRED</span>
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">
+            Comments
           </div>
           <div className="p-4">
             <Textarea 
-              placeholder="Record any defects found and actions required..."
+              placeholder="Record any additional comments, defects found, or actions required..."
               className="min-h-[80px] text-sm"
             />
           </div>
@@ -256,41 +223,31 @@ export const ForkliftWeeklyPMDocument = () => {
         <div className="border-b border-border">
           <div className="bg-green-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-green-600" />
-            <span className="text-green-700">SIGN-OFF</span>
+            <span className="text-green-700">Sign-Off</span>
           </div>
-          <div className="grid grid-cols-2 text-xs">
-            <div className="border-r border-border p-4">
-              <div className="space-y-3">
-                <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                  <span className="font-semibold">Inspector Name:</span>
-                  <Input className="h-7 text-xs" />
-                </div>
-                <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                  <span className="font-semibold">Signature:</span>
-                  <div className="h-8 border border-border rounded bg-muted/30"></div>
-                </div>
-                <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                  <span className="font-semibold">Date:</span>
-                  <Input className="h-7 text-xs" type="date" />
-                </div>
-              </div>
-            </div>
-            <div className="p-4">
-              <div className="space-y-3">
-                <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                  <span className="font-semibold">Supervisor:</span>
-                  <Input className="h-7 text-xs" />
-                </div>
-                <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                  <span className="font-semibold">Signature:</span>
-                  <div className="h-8 border border-border rounded bg-muted/30"></div>
-                </div>
-                <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-                  <span className="font-semibold">Date:</span>
-                  <Input className="h-7 text-xs" type="date" />
-                </div>
-              </div>
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="bg-muted border-b border-border">
+                  <th className="px-4 py-2 text-left font-semibold">Checked By</th>
+                  <th className="px-4 py-2 text-left font-semibold">Signature</th>
+                  <th className="px-4 py-2 text-left font-semibold w-32">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-border">
+                  <td className="px-4 py-2">
+                    <Input className="h-7 text-xs" />
+                  </td>
+                  <td className="px-4 py-2">
+                    <div className="h-8 border border-border rounded bg-muted/30"></div>
+                  </td>
+                  <td className="px-4 py-2">
+                    <Input className="h-7 text-xs" type="date" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
