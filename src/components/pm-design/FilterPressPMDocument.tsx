@@ -10,7 +10,17 @@ import {
   FileText,
   ClipboardCheck,
   User,
-  Calendar
+  Calendar,
+  Wrench,
+  Eye,
+  Zap,
+  Droplets,
+  Wind,
+  Thermometer,
+  Lock,
+  AlertCircle,
+  CheckCircle2,
+  Info
 } from "lucide-react";
 
 interface InspectionTask {
@@ -140,9 +150,9 @@ const inspectionData: EquipmentSection[] = [
 
 export const FilterPressPMDocument = () => {
   return (
-    <div className="bg-white min-h-full">
+    <div className="bg-background min-h-full">
       {/* Document Header */}
-      <div className="border-2 border-foreground">
+      <div className="border-2 border-border">
         {/* Title Banner */}
         <div className="bg-primary text-primary-foreground px-6 py-4 text-center">
           <h1 className="text-xl font-bold tracking-wide">Tenant Creek Filtration Area - Filter Press</h1>
@@ -150,26 +160,26 @@ export const FilterPressPMDocument = () => {
         </div>
 
         {/* Header Information Grid */}
-        <div className="grid grid-cols-3 border-b border-foreground">
+        <div className="grid grid-cols-3 border-b border-border">
           {/* Left Column */}
-          <div className="border-r border-foreground">
-            <div className="grid grid-cols-[140px_1fr] border-b border-foreground">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground flex items-center gap-2">
+          <div className="border-r border-border">
+            <div className="grid grid-cols-[140px_1fr] border-b border-border">
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border flex items-center gap-2">
                 <FileText className="w-4 h-4 text-primary" />
                 Project / Site:
               </div>
               <div className="px-3 py-2 text-sm">Tenant Creek</div>
             </div>
-            <div className="grid grid-cols-[140px_1fr] border-b border-foreground">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground">Plant Area Code:</div>
+            <div className="grid grid-cols-[140px_1fr] border-b border-border">
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Plant Area Code:</div>
               <div className="px-3 py-2 text-sm">13</div>
             </div>
-            <div className="grid grid-cols-[140px_1fr] border-b border-foreground">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground">Plant Area Desc.:</div>
+            <div className="grid grid-cols-[140px_1fr] border-b border-border">
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Plant Area Desc.:</div>
               <div className="px-3 py-2 text-sm">Filter Press</div>
             </div>
             <div className="grid grid-cols-[140px_1fr]">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground flex items-center gap-2">
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border flex items-center gap-2">
                 <User className="w-4 h-4 text-primary" />
                 Resource/s:
               </div>
@@ -178,21 +188,21 @@ export const FilterPressPMDocument = () => {
           </div>
 
           {/* Middle Column */}
-          <div className="border-r border-foreground">
-            <div className="grid grid-cols-[100px_1fr] border-b border-foreground">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground">PM Mode:</div>
+          <div className="border-r border-border">
+            <div className="grid grid-cols-[100px_1fr] border-b border-border">
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">PM Mode:</div>
               <div className="px-3 py-2 text-sm">Running</div>
             </div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-foreground">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground">PM Group:</div>
+            <div className="grid grid-cols-[100px_1fr] border-b border-border">
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">PM Group:</div>
               <div className="px-3 py-2 text-sm">Mechanical</div>
             </div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-foreground">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground">PM Type:</div>
+            <div className="grid grid-cols-[100px_1fr] border-b border-border">
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">PM Type:</div>
               <div className="px-3 py-2 text-sm">Inspection (Fitter)</div>
             </div>
             <div className="grid grid-cols-[100px_1fr]">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground flex items-center gap-2">
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-primary" />
                 Frequency:
               </div>
@@ -202,88 +212,336 @@ export const FilterPressPMDocument = () => {
 
           {/* Right Column */}
           <div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-foreground">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground">Document No.:</div>
+            <div className="grid grid-cols-[100px_1fr] border-b border-border">
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Document No.:</div>
               <div className="px-3 py-2 text-sm"></div>
             </div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-foreground">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground">Revision:</div>
+            <div className="grid grid-cols-[100px_1fr] border-b border-border">
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Revision:</div>
               <div className="px-3 py-2 text-sm">0</div>
             </div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-foreground">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground">Day:</div>
+            <div className="grid grid-cols-[100px_1fr] border-b border-border">
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Day:</div>
               <div className="px-3 py-2 text-sm"></div>
             </div>
             <div className="grid grid-cols-[100px_1fr]">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-foreground">Date:</div>
+              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Date:</div>
               <div className="px-3 py-2 text-sm"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* PREPARATION AND INFORMATION Section */}
+        <div className="border-b border-border">
+          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
+            <Info className="w-5 h-5 text-primary" />
+            PREPARATION AND INFORMATION
+          </div>
+          
+          {/* Scope */}
+          <div className="border-b border-border">
+            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+              <Eye className="w-4 h-4 text-primary" />
+              SCOPE
+            </div>
+            <div className="px-4 py-3 text-sm leading-relaxed">
+              <p className="font-medium mb-2">Daily Running Area Inspection – Filter Press Area</p>
+              <p className="text-muted-foreground">
+                To safely carry out mechanical inspection for signs of damage or potential failures that may require maintenance attention.
+              </p>
+            </div>
+          </div>
+
+          {/* Safety Section */}
+          <div className="border-b border-border">
+            <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+              <Shield className="w-5 h-5 text-destructive" />
+              <span className="text-destructive font-bold">SAFETY</span>
+            </div>
+            <div className="px-4 py-4 bg-destructive/5">
+              <div className="flex items-start gap-3 mb-4">
+                <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                <p className="text-sm font-medium">
+                  Before commencing this work complete a <span className="font-bold text-destructive">SMART START</span> every time to check that no abnormal conditions exist.
+                </p>
+              </div>
+              <div className="flex items-start gap-3 mb-4">
+                <HardHat className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                <p className="text-sm">
+                  Always wear the correct PPE. Gas monitor to be carried in plant areas where signed.
+                </p>
+              </div>
+              <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3">
+                <Zap className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+                <p className="text-sm font-bold text-destructive">
+                  NOTE: Always assume the equipment is LIVE until positively isolated, locked and tagged.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Hazard Identification */}
+          <div className="border-b border-border">
+            <div className="bg-amber-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-amber-600" />
+              <span className="text-amber-700 font-bold">HAZARD IDENTIFICATION</span>
+            </div>
+            <div className="p-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="border border-border rounded-lg p-3 flex items-center gap-3 bg-card">
+                  <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Electrical</p>
+                    <p className="text-sm font-medium">Live Equipment</p>
+                  </div>
+                </div>
+                <div className="border border-border rounded-lg p-3 flex items-center gap-3 bg-card">
+                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <Droplets className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Hydraulic</p>
+                    <p className="text-sm font-medium">Pressurized Lines</p>
+                  </div>
+                </div>
+                <div className="border border-border rounded-lg p-3 flex items-center gap-3 bg-card">
+                  <div className="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                    <Wind className="w-5 h-5 text-cyan-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Pneumatic</p>
+                    <p className="text-sm font-medium">Compressed Air</p>
+                  </div>
+                </div>
+                <div className="border border-border rounded-lg p-3 flex items-center gap-3 bg-card">
+                  <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                    <Thermometer className="w-5 h-5 text-red-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Thermal</p>
+                    <p className="text-sm font-medium">Hot Surfaces</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Isolation Requirements */}
+          <div className="border-b border-border">
+            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+              <Lock className="w-4 h-4 text-primary" />
+              ISOLATION / LOTO REQUIREMENTS
+            </div>
+            <div className="p-4">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="bg-muted/50">
+                    <th className="border border-border px-3 py-2 text-left font-medium w-[30%]">Isolation Type</th>
+                    <th className="border border-border px-3 py-2 text-center font-medium w-[15%]">Required</th>
+                    <th className="border border-border px-3 py-2 text-left font-medium">Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="border border-border px-3 py-2 font-medium">Electrical Isolation</td>
+                    <td className="border border-border px-3 py-2 text-center">
+                      <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-300">If Required</Badge>
+                    </td>
+                    <td className="border border-border px-3 py-2 text-muted-foreground">Running inspection - isolate only if intrusive work needed</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-border px-3 py-2 font-medium">Mechanical Isolation</td>
+                    <td className="border border-border px-3 py-2 text-center">
+                      <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-300">If Required</Badge>
+                    </td>
+                    <td className="border border-border px-3 py-2 text-muted-foreground">Isolate rotating equipment before hands-on work</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-border px-3 py-2 font-medium">Pneumatic Isolation</td>
+                    <td className="border border-border px-3 py-2 text-center">
+                      <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-300">If Required</Badge>
+                    </td>
+                    <td className="border border-border px-3 py-2 text-muted-foreground">Bleed air lines before working on rams/actuators</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-border px-3 py-2 font-medium">Lock-Out / Tag-Out</td>
+                    <td className="border border-border px-3 py-2 text-center">
+                      <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-300">If Required</Badge>
+                    </td>
+                    <td className="border border-border px-3 py-2 text-muted-foreground">Apply personal lock when isolation is in place</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* Tools and PPE Section - Side by Side */}
+        <div className="border-b border-border grid md:grid-cols-2">
+          {/* Required Tools */}
+          <div className="border-r border-border">
+            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+              <Wrench className="w-4 h-4 text-primary" />
+              SPECIAL TOOLING REQUIRED
+            </div>
+            <div className="p-4">
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" defaultChecked />
+                  <span>Hand tools / Standard Tool Kit</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" defaultChecked />
+                  <span>Cabinet key</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" defaultChecked />
+                  <span>Wire brush and cleaning rag</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" defaultChecked />
+                  <span>Grease gun</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" />
+                  <span>Torque wrench (if required)</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" />
+                  <span>Multimeter</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" />
+                  <span className="text-muted-foreground">Other: _______________</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Required PPE */}
+          <div>
+            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+              <HardHat className="w-4 h-4 text-primary" />
+              REQUIRED PPE
+            </div>
+            <div className="p-4">
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" defaultChecked />
+                  <span>Hard Hat</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" defaultChecked />
+                  <span>Safety Glasses</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" defaultChecked />
+                  <span>Gloves</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" defaultChecked />
+                  <span>Steel Cap Boots</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" defaultChecked />
+                  <span>Hearing Protection</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" />
+                  <span>Respiratory Protection (if required)</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Checkbox className="h-4 w-4" />
+                  <span className="text-muted-foreground">Other: _______________</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Pre-Start Checks */}
+        <div className="border-b border-border">
+          <div className="bg-green-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-green-600" />
+            <span className="text-green-700">PRE-START CHECKS</span>
+          </div>
+          <div className="p-4">
+            <p className="text-sm text-muted-foreground mb-3">Before starting work, confirm:</p>
+            <div className="grid md:grid-cols-2 gap-2">
+              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                <Checkbox className="h-4 w-4" />
+                <span>Correct permits obtained</span>
+              </label>
+              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                <Checkbox className="h-4 w-4" />
+                <span>Area barricaded and safe</span>
+              </label>
+              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                <Checkbox className="h-4 w-4" />
+                <span>Isolation complete and verified (if required)</span>
+              </label>
+              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                <Checkbox className="h-4 w-4" />
+                <span>Equipment clean and safe to access</span>
+              </label>
+              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                <Checkbox className="h-4 w-4" />
+                <span>Job Safety Analysis (JSA) completed</span>
+              </label>
+              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                <Checkbox className="h-4 w-4" />
+                <span>SMART START completed</span>
+              </label>
             </div>
           </div>
         </div>
 
         {/* Procedure Section */}
-        <div className="border-b border-foreground">
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-foreground flex items-center gap-2">
+        <div className="border-b border-border">
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
             <ClipboardCheck className="w-4 h-4 text-primary" />
-            Procedure:
+            PROCEDURE
           </div>
-          <div className="px-4 py-3 text-sm leading-relaxed">
-            When a defect is identified and it is safe and practical to repair the defect, please do so and make a note of it in the comments section.
-            <br />
-            If not, report the defect including materials required, trade discipline & estimated repair time for the supervisor to raise a work request.
-          </div>
-        </div>
-
-        {/* Safety Notes Section */}
-        <div className="border-b border-foreground">
-          <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-foreground flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-destructive" />
-            <span className="text-destructive">Safety Notes:</span>
-          </div>
-          <div className="px-4 py-3 bg-destructive/5">
-            <div className="space-y-2 text-sm">
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-destructive/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-destructive font-bold text-xs">1</span>
-                </div>
-                <p>Follow safety procedures at all times.</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-destructive/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-destructive font-bold text-xs">2</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-amber-600" />
-                  <p>Isolate equipment where required & ensure use of correct PPE.</p>
-                  <HardHat className="w-4 h-4 text-amber-600" />
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-destructive/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-destructive font-bold text-xs">3</span>
-                </div>
-                <p>Under no circumstances will personnel place themselves in an unsafe position while carrying out these inspection tasks.</p>
-              </div>
+          <div className="px-4 py-3 text-sm leading-relaxed space-y-3">
+            <div className="flex gap-3">
+              <span className="font-bold text-primary">1.</span>
+              <p>Conduct area inspection as per tables below. Record each check with a tick in the appropriate box.</p>
+            </div>
+            <div className="flex gap-3">
+              <span className="font-bold text-primary">2.</span>
+              <p>When a defect is identified and it is safe and practical to repair the defect, please do so and make a note of it in the comments section.</p>
+            </div>
+            <div className="flex gap-3">
+              <span className="font-bold text-primary">3.</span>
+              <p>If not, report the defect including materials required, trade discipline & estimated repair time for the supervisor to raise a work request.</p>
+            </div>
+            <div className="bg-amber-500/10 border border-amber-300 rounded p-3 mt-3 flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              <p className="text-amber-700 font-medium text-xs">
+                NOTE: This is a visual inspection only, the equipment may be live. Exercise caution.
+              </p>
             </div>
           </div>
         </div>
 
         {/* Inspections Header */}
-        <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-foreground flex items-center gap-2">
+        <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
           <ClipboardCheck className="w-5 h-5 text-primary" />
-          Inspections:
+          INSPECTIONS
         </div>
 
         {/* Inspection Table */}
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-muted">
-              <th className="border border-foreground px-3 py-2 text-left font-semibold w-[45%]">Task</th>
-              <th className="border border-foreground px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th>
-              <th className="border border-foreground px-2 py-2 text-center font-semibold w-[10%]">Defective</th>
-              <th className="border border-foreground px-2 py-2 text-center font-semibold w-[10%]">Urgent Attention</th>
-              <th className="border border-foreground px-3 py-2 text-left font-semibold w-[20%]">Comments</th>
-              <th className="border border-foreground px-2 py-2 text-center font-semibold w-[5%]">Corrective W/O</th>
+              <th className="border border-border px-3 py-2 text-left font-semibold w-[45%]">Task</th>
+              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th>
+              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th>
+              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Urgent Attention</th>
+              <th className="border border-border px-3 py-2 text-left font-semibold w-[20%]">Comments</th>
+              <th className="border border-border px-2 py-2 text-center font-semibold w-[5%]">Corrective W/O</th>
             </tr>
           </thead>
           <tbody>
@@ -291,33 +549,33 @@ export const FilterPressPMDocument = () => {
               <>
                 {/* Equipment Header Row */}
                 <tr key={`section-${sectionIndex}`} className="bg-muted/50">
-                  <td colSpan={6} className="border border-foreground px-3 py-2 font-bold text-primary">
+                  <td colSpan={6} className="border border-border px-3 py-2 font-bold text-primary">
                     {section.equipmentId} - {section.equipmentName}
                   </td>
                 </tr>
                 {/* Task Rows */}
                 {section.tasks.map((task, taskIndex) => (
                   <tr key={`task-${sectionIndex}-${taskIndex}`} className="hover:bg-muted/30">
-                    <td className="border border-foreground px-3 py-2">{task.task}</td>
-                    <td className="border border-foreground px-2 py-2 text-center">
+                    <td className="border border-border px-3 py-2">{task.task}</td>
+                    <td className="border border-border px-2 py-2 text-center">
                       <div className="flex justify-center">
                         <Checkbox className="h-5 w-5" />
                       </div>
                     </td>
-                    <td className="border border-foreground px-2 py-2 text-center">
+                    <td className="border border-border px-2 py-2 text-center">
                       <div className="flex justify-center">
                         <Checkbox className="h-5 w-5" />
                       </div>
                     </td>
-                    <td className="border border-foreground px-2 py-2 text-center">
+                    <td className="border border-border px-2 py-2 text-center">
                       <div className="flex justify-center">
                         <Checkbox className="h-5 w-5" />
                       </div>
                     </td>
-                    <td className="border border-foreground px-2 py-2">
+                    <td className="border border-border px-2 py-2">
                       <Input className="h-7 text-xs border-0 bg-transparent" placeholder="" />
                     </td>
-                    <td className="border border-foreground px-2 py-2 text-center">
+                    <td className="border border-border px-2 py-2 text-center">
                       <Input className="h-7 w-16 text-xs mx-auto" placeholder="" />
                     </td>
                   </tr>
@@ -327,9 +585,41 @@ export const FilterPressPMDocument = () => {
           </tbody>
         </table>
 
+        {/* Post-Task Activities */}
+        <div className="border-t border-border">
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-primary" />
+            POST-TASK ACTIVITIES
+          </div>
+          <div className="p-4">
+            <div className="grid md:grid-cols-2 gap-2">
+              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                <Checkbox className="h-4 w-4" />
+                <span>Tools removed from area</span>
+              </label>
+              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                <Checkbox className="h-4 w-4" />
+                <span>Guards refitted</span>
+              </label>
+              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                <Checkbox className="h-4 w-4" />
+                <span>Equipment returned to service</span>
+              </label>
+              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                <Checkbox className="h-4 w-4" />
+                <span>Area cleaned / Housekeeping complete</span>
+              </label>
+              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer">
+                <Checkbox className="h-4 w-4" />
+                <span>All cabinets closed and secured</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
         {/* Comments Section */}
-        <div className="border-t border-foreground">
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-foreground">Comment:</div>
+        <div className="border-t border-border">
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Comment:</div>
           <div className="p-3">
             <Textarea className="min-h-[100px] resize-none" placeholder="Enter comments here..." />
           </div>
@@ -338,10 +628,10 @@ export const FilterPressPMDocument = () => {
         <Separator />
 
         {/* Sign Off Section */}
-        <div className="border-t border-foreground">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-foreground">Sign Off:</div>
+        <div className="border-t border-border">
+          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Sign Off:</div>
           <div className="grid grid-cols-2 gap-0">
-            <div className="border-r border-b border-foreground p-3">
+            <div className="border-r border-b border-border p-3">
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium">Follow up work required:</span>
                 <div className="flex items-center gap-3">
@@ -354,7 +644,7 @@ export const FilterPressPMDocument = () => {
                 </div>
               </div>
             </div>
-            <div className="border-b border-foreground p-3">
+            <div className="border-b border-border p-3">
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium">Document update required:</span>
                 <div className="flex items-center gap-3">
@@ -369,47 +659,47 @@ export const FilterPressPMDocument = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-0">
-            <div className="grid grid-cols-[80px_1fr] border-r border-b border-foreground">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-foreground">Name:</div>
+            <div className="grid grid-cols-[80px_1fr] border-r border-b border-border">
+              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Name:</div>
               <div className="px-3 py-2"><Input className="h-7" /></div>
             </div>
-            <div className="grid grid-cols-[80px_1fr] border-b border-foreground">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-foreground">Signature:</div>
+            <div className="grid grid-cols-[80px_1fr] border-b border-border">
+              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Signature:</div>
               <div className="px-3 py-2"><Input className="h-7" /></div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-0">
-            <div className="grid grid-cols-[80px_1fr] border-r border-foreground">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-foreground">Date:</div>
+            <div className="grid grid-cols-[80px_1fr] border-r border-border">
+              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Date:</div>
               <div className="px-3 py-2"><Input className="h-7" type="date" /></div>
             </div>
             <div className="grid grid-cols-[100px_1fr]">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-foreground">PM Duration:</div>
+              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">PM Duration:</div>
               <div className="px-3 py-2"><Input className="h-7" placeholder="hrs" /></div>
             </div>
           </div>
         </div>
 
         {/* Approval Section */}
-        <div className="border-t border-foreground">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-foreground">Approval:</div>
+        <div className="border-t border-border">
+          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Approval:</div>
           <table className="w-full text-sm border-collapse">
             <tbody>
               <tr>
-                <td className="border border-foreground bg-muted px-3 py-2 font-medium w-[20%]">Supervisor:</td>
-                <td className="border border-foreground px-3 py-2 w-[30%]">
+                <td className="border border-border bg-muted px-3 py-2 font-medium w-[20%]">Supervisor:</td>
+                <td className="border border-border px-3 py-2 w-[30%]">
                   <div className="flex items-center gap-2">
                     <span className="text-muted-foreground text-xs">Name:</span>
                     <Input className="h-7 flex-1" />
                   </div>
                 </td>
-                <td className="border border-foreground px-3 py-2 w-[25%]">
+                <td className="border border-border px-3 py-2 w-[25%]">
                   <div className="flex items-center gap-2">
                     <span className="text-muted-foreground text-xs">Sign:</span>
                     <Input className="h-7 flex-1" />
                   </div>
                 </td>
-                <td className="border border-foreground px-3 py-2 w-[25%]">
+                <td className="border border-border px-3 py-2 w-[25%]">
                   <div className="flex items-center gap-2">
                     <span className="text-muted-foreground text-xs">Date:</span>
                     <Input className="h-7 flex-1" type="date" />
@@ -417,20 +707,20 @@ export const FilterPressPMDocument = () => {
                 </td>
               </tr>
               <tr>
-                <td className="border border-foreground bg-muted px-3 py-2 font-medium">Superintendent/Manager:</td>
-                <td className="border border-foreground px-3 py-2">
+                <td className="border border-border bg-muted px-3 py-2 font-medium">Superintendent/Manager:</td>
+                <td className="border border-border px-3 py-2">
                   <div className="flex items-center gap-2">
                     <span className="text-muted-foreground text-xs">Name:</span>
                     <Input className="h-7 flex-1" />
                   </div>
                 </td>
-                <td className="border border-foreground px-3 py-2">
+                <td className="border border-border px-3 py-2">
                   <div className="flex items-center gap-2">
                     <span className="text-muted-foreground text-xs">Sign:</span>
                     <Input className="h-7 flex-1" />
                   </div>
                 </td>
-                <td className="border border-foreground px-3 py-2">
+                <td className="border border-border px-3 py-2">
                   <div className="flex items-center gap-2">
                     <span className="text-muted-foreground text-xs">Date:</span>
                     <Input className="h-7 flex-1" type="date" />
@@ -442,25 +732,25 @@ export const FilterPressPMDocument = () => {
         </div>
 
         {/* Revision History */}
-        <div className="border-t border-foreground">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-foreground">Revision History:</div>
+        <div className="border-t border-border">
+          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Revision History:</div>
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="bg-muted/50">
-                <th className="border border-foreground px-3 py-2 text-left font-medium w-[15%]">Revision No.</th>
-                <th className="border border-foreground px-3 py-2 text-left font-medium w-[35%]">Description</th>
-                <th className="border border-foreground px-3 py-2 text-left font-medium w-[15%]">Created</th>
-                <th className="border border-foreground px-3 py-2 text-left font-medium w-[15%]">Reviewed</th>
-                <th className="border border-foreground px-3 py-2 text-left font-medium w-[20%]">Date</th>
+                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Revision No.</th>
+                <th className="border border-border px-3 py-2 text-left font-medium w-[35%]">Description</th>
+                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Created</th>
+                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Reviewed</th>
+                <th className="border border-border px-3 py-2 text-left font-medium w-[20%]">Date</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="border border-foreground px-3 py-2">0</td>
-                <td className="border border-foreground px-3 py-2">Initial Release</td>
-                <td className="border border-foreground px-3 py-2"></td>
-                <td className="border border-foreground px-3 py-2"></td>
-                <td className="border border-foreground px-3 py-2"></td>
+                <td className="border border-border px-3 py-2">0</td>
+                <td className="border border-border px-3 py-2">Initial Release</td>
+                <td className="border border-border px-3 py-2"></td>
+                <td className="border border-border px-3 py-2"></td>
+                <td className="border border-border px-3 py-2"></td>
               </tr>
             </tbody>
           </table>
