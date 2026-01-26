@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap } from "lucide-react";
+import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer } from "lucide-react";
 import { 
   Sidebar, 
   SidebarContent, 
@@ -98,6 +98,29 @@ const PMDesign = () => {
     return { discipline: disc?.label, frequency: freq?.label };
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const renderPMDocument = () => {
+    switch (activeView) {
+      case "master":
+        return <PMBaseMasterTemplate />;
+      case "filter-press-daily":
+        return <FilterPressPMDocument />;
+      case "mill-daily":
+        return <MillDailyPMDocument />;
+      case "ro-plant-daily":
+        return <ROPlantPMDocument />;
+      case "acid-elution-weekly":
+        return <AcidElutionPMDocument />;
+      default:
+        return null;
+    }
+  };
+
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly"].includes(activeView);
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
@@ -112,23 +135,20 @@ const PMDesign = () => {
 
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
-        {activeView === "master" ? (
-            <PMBaseMasterTemplate />
-          ) : activeView === "filter-press-daily" ? (
+          {isPMDocument ? (
             <div className="p-6 overflow-auto">
-              <FilterPressPMDocument />
-            </div>
-          ) : activeView === "mill-daily" ? (
-            <div className="p-6 overflow-auto">
-              <MillDailyPMDocument />
-            </div>
-          ) : activeView === "ro-plant-daily" ? (
-            <div className="p-6 overflow-auto">
-              <ROPlantPMDocument />
-            </div>
-          ) : activeView === "acid-elution-weekly" ? (
-            <div className="p-6 overflow-auto">
-              <AcidElutionPMDocument />
+              {/* Print Button */}
+              <div className="flex justify-end mb-4 print:hidden">
+                <Button
+                  onClick={handlePrint}
+                  variant="outline"
+                  className="gap-2"
+                >
+                  <Printer className="w-4 h-4" />
+                  Print Preview
+                </Button>
+              </div>
+              {renderPMDocument()}
             </div>
           ) : (
             <div className="p-8">
