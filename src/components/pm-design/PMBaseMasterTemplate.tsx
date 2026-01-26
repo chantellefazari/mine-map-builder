@@ -100,7 +100,7 @@ export const PMBaseMasterTemplate = () => {
                 <div className="px-3 py-2 text-sm text-muted-foreground italic">[To be defined]</div>
               </div>
               <div className="grid grid-cols-[140px_1fr] border-b border-border">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Plant Area Code:</div>
+                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Asset Number:</div>
                 <div className="px-3 py-2 text-sm text-muted-foreground italic">[XX]</div>
               </div>
               <div className="grid grid-cols-[140px_1fr] border-b border-border">
@@ -141,18 +141,6 @@ export const PMBaseMasterTemplate = () => {
 
             {/* Right Column */}
             <div>
-              <div className="grid grid-cols-[100px_1fr] border-b border-border">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Document No.:</div>
-                <div className="px-3 py-2 text-sm text-muted-foreground italic">[XXX-PM-XXX]</div>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] border-b border-border">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Revision:</div>
-                <div className="px-3 py-2 text-sm">0</div>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] border-b border-border">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Day:</div>
-                <div className="px-3 py-2 text-sm"></div>
-              </div>
               <div className="grid grid-cols-[100px_1fr]">
                 <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Date:</div>
                 <div className="px-3 py-2 text-sm"></div>
