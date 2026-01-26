@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer } from "lucide-react";
+import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck } from "lucide-react";
 import { 
   Sidebar, 
   SidebarContent, 
@@ -36,12 +36,13 @@ import { AndyDamGeneratorPMDocument } from "@/components/pm-design/AndyDamGenera
 import { JunoGeneratorPMDocument } from "@/components/pm-design/JunoGeneratorPMDocument";
 import { LabGeneratorPMDocument } from "@/components/pm-design/LabGeneratorPMDocument";
 import { PortableGeneratorsPMDocument } from "@/components/pm-design/PortableGeneratorsPMDocument";
+import { ForkliftWeeklyPMDocument } from "@/components/pm-design/ForkliftWeeklyPMDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
-type Discipline = "mechanical" | "electrical";
+type Discipline = "mechanical" | "electrical" | "mobile-equipment";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "forklift-weekly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -76,6 +77,11 @@ const otherWeeklyPMs = [
   { id: "top-of-tanks-weekly", name: "Top of Tanks" },
 ];
 
+// Mobile Equipment PMs
+const mobileEquipmentPMs = [
+  { id: "forklift-weekly", name: "Forklift" },
+];
+
 const disciplines = [
   { 
     id: "mechanical" as Discipline, 
@@ -107,6 +113,22 @@ const disciplines = [
     frequencies: {
       daily: { count: 0, pms: [], subgroups: [] },
       "1-week": { count: 0, pms: [], subgroups: [] },
+      "2-week": { count: 0, pms: [], subgroups: [] },
+      "6-week": { count: 0, pms: [], subgroups: [] },
+      "12-week": { count: 0, pms: [], subgroups: [] },
+    }
+  },
+  { 
+    id: "mobile-equipment" as Discipline, 
+    label: "Mobile Equipment", 
+    icon: Truck,
+    frequencies: {
+      daily: { count: 0, pms: [], subgroups: [] },
+      "1-week": { 
+        count: 1, 
+        pms: mobileEquipmentPMs,
+        subgroups: []
+      },
       "2-week": { count: 0, pms: [], subgroups: [] },
       "6-week": { count: 0, pms: [], subgroups: [] },
       "12-week": { count: 0, pms: [], subgroups: [] },
@@ -173,6 +195,7 @@ const PMDesign = () => {
       case "juno-generator-weekly": return "Juno Generator Weekly Inspection";
       case "lab-generator-weekly": return "Lab Generator Weekly Inspection";
       case "portable-generators-weekly": return "Portable Generators Weekly Inspection";
+      case "forklift-weekly": return "Forklift Weekly Inspection";
       default: return "PM Document";
     }
   };
@@ -221,12 +244,14 @@ const PMDesign = () => {
         return <LabGeneratorPMDocument />;
       case "portable-generators-weekly":
         return <PortableGeneratorsPMDocument />;
+      case "forklift-weekly":
+        return <ForkliftWeeklyPMDocument />;
       default:
         return null;
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "forklift-weekly"].includes(activeView);
 
   return (
     <SidebarProvider>
@@ -424,7 +449,8 @@ const PMSidebarContent = ({
                         <div className="flex items-center gap-3">
                           <DisciplineIcon className={cn(
                             "w-4 h-4",
-                            discipline.id === "mechanical" ? "text-orange-500" : "text-blue-500"
+                            discipline.id === "mechanical" ? "text-orange-500" : 
+                            discipline.id === "electrical" ? "text-blue-500" : "text-green-500"
                           )} />
                           {!isCollapsed && <span className="font-semibold">{discipline.label}</span>}
                         </div>
