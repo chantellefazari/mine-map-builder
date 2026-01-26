@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { TreePine, Wrench, Package, Cpu, BookOpen, FileQuestion } from "lucide-react";
+import { TreePine, Wrench, Package, Cpu, ClipboardList } from "lucide-react";
 
 const sections = [
   {
@@ -31,18 +31,11 @@ const sections = [
     href: "/components-oem",
   },
   {
-    title: "Maintenance Strategy & Rules",
-    subtitle: "Philosophy & Standards",
-    description: "PM vs run-to-failure rules, duty/standby philosophy, naming conventions.",
-    icon: BookOpen,
-    href: "/maintenance-strategy",
-  },
-  {
-    title: "Open Items / Decisions / Notes",
-    subtitle: "Tracking & Review",
-    description: "Unconfirmed details, missing data, assumptions, and items needing site confirmation.",
-    icon: FileQuestion,
-    href: "/open-items",
+    title: "Work Order Templates",
+    subtitle: "Standardized Procedures",
+    description: "Pre-defined work order templates for common maintenance tasks and repairs.",
+    icon: ClipboardList,
+    href: "/work-order-templates",
   },
 ];
 
