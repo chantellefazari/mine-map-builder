@@ -436,8 +436,8 @@ export const AirWaterServicesPMDocument = () => {
                         <td className="border border-border px-2 py-2">
                           {task.hasTemp ? (
                             <div className="text-muted-foreground space-y-1">
-                              <div>DE: ___ °C</div>
-                              <div>NDE: ___ °C</div>
+                              <div>DE: _______ °C</div>
+                              <div>NDE: _______ °C</div>
                             </div>
                           ) : null}
                         </td>
