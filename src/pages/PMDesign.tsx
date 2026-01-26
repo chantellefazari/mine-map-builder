@@ -31,12 +31,15 @@ import { PotableWaterPMDocument } from "@/components/pm-design/PotableWaterPMDoc
 import { ReagentsPMDocument } from "@/components/pm-design/ReagentsPMDocument";
 import { ThickenerPMDocument } from "@/components/pm-design/ThickenerPMDocument";
 import { TopOfTanksPMDocument } from "@/components/pm-design/TopOfTanksPMDocument";
+import { AdminGeneratorPMDocument } from "@/components/pm-design/AdminGeneratorPMDocument";
+import { AndyDamGeneratorPMDocument } from "@/components/pm-design/AndyDamGeneratorPMDocument";
+import { JunoGeneratorPMDocument } from "@/components/pm-design/JunoGeneratorPMDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -57,14 +60,17 @@ const disciplines = [
         { id: "mill-daily", name: "Mill Daily Inspection" },
         { id: "ro-plant-daily", name: "RO Plant Daily Inspection" }
       ] },
-      "1-week": { count: 12, pms: [
+      "1-week": { count: 15, pms: [
         { id: "acid-elution-weekly", name: "Acid Wash & Elution Weekly Inspection" },
+        { id: "admin-generator-weekly", name: "Admin Generator Weekly Inspection" },
         { id: "air-water-services-weekly", name: "Air & Water Services Weekly Inspection" },
+        { id: "andy-dam-generator-weekly", name: "Andy Dam Generator Weekly Inspection" },
         { id: "bottom-of-tanks-weekly", name: "Bottom of Tanks Weekly Inspection" },
         { id: "diesel-farm-weekly", name: "Diesel Farm Weekly Inspection" },
         { id: "filter-press-weekly", name: "Filter Press Weekly Inspection" },
         { id: "gold-room-weekly", name: "Gold Room Weekly Inspection" },
         { id: "grease-oils-weekly", name: "Grease & Oils Weekly Inspection" },
+        { id: "juno-generator-weekly", name: "Juno Generator Weekly Inspection" },
         { id: "mill-weekly", name: "Mill Weekly Inspection" },
         { id: "potable-water-weekly", name: "Potable Water Weekly Inspection" },
         { id: "reagents-weekly", name: "Reagents Weekly Inspection" },
@@ -144,6 +150,9 @@ const PMDesign = () => {
       case "reagents-weekly": return "Reagents Weekly Inspection";
       case "thickener-weekly": return "Thickener Weekly Inspection";
       case "top-of-tanks-weekly": return "Top of Tanks Weekly Inspection";
+      case "admin-generator-weekly": return "Admin Generator Weekly Inspection";
+      case "andy-dam-generator-weekly": return "Andy Dam Generator Weekly Inspection";
+      case "juno-generator-weekly": return "Juno Generator Weekly Inspection";
       default: return "PM Document";
     }
   };
@@ -182,12 +191,18 @@ const PMDesign = () => {
         return <ThickenerPMDocument />;
       case "top-of-tanks-weekly":
         return <TopOfTanksPMDocument />;
+      case "admin-generator-weekly":
+        return <AdminGeneratorPMDocument />;
+      case "andy-dam-generator-weekly":
+        return <AndyDamGeneratorPMDocument />;
+      case "juno-generator-weekly":
+        return <JunoGeneratorPMDocument />;
       default:
         return null;
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly"].includes(activeView);
 
   return (
     <SidebarProvider>
