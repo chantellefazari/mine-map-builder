@@ -120,22 +120,21 @@ const disciplines = [
     label: "Mechanical PMs", 
     icon: Wrench,
     frequencies: {
-      daily: { count: 3, pms: [
+      daily: { pms: [
         { id: "filter-press-daily", name: "Filter Press Daily Inspection" },
         { id: "mill-daily", name: "Mill Daily Inspection" },
         { id: "ro-plant-daily", name: "RO Plant Daily Inspection" }
       ], subgroups: [] },
       "1-week": { 
-        count: 17, 
         pms: [], // Individual PMs moved to subgroups
         subgroups: [
           { id: "generators", label: "Generators", pms: generatorPMs },
           { id: "equipment", label: "Equipment", pms: otherWeeklyPMs },
         ]
       },
-      "2-week": { count: 0, pms: [], subgroups: [] },
-      "6-week": { count: 0, pms: [], subgroups: [] },
-      "12-week": { count: 0, pms: [], subgroups: [] },
+      "2-week": { pms: [], subgroups: [] },
+      "6-week": { pms: [], subgroups: [] },
+      "12-week": { pms: [], subgroups: [] },
     }
   },
   { 
@@ -143,11 +142,11 @@ const disciplines = [
     label: "Electrical PMs", 
     icon: Zap,
     frequencies: {
-      daily: { count: 0, pms: [], subgroups: [] },
-      "1-week": { count: 0, pms: [], subgroups: [] },
-      "2-week": { count: 0, pms: [], subgroups: [] },
-      "6-week": { count: 0, pms: [], subgroups: [] },
-      "12-week": { count: 0, pms: [], subgroups: [] },
+      daily: { pms: [], subgroups: [] },
+      "1-week": { pms: [], subgroups: [] },
+      "2-week": { pms: [], subgroups: [] },
+      "6-week": { pms: [], subgroups: [] },
+      "12-week": { pms: [], subgroups: [] },
     }
   },
   { 
@@ -155,15 +154,21 @@ const disciplines = [
     label: "Mobile Equipment", 
     icon: Truck,
     frequencies: {
-      daily: { count: 2, pms: mobileEquipmentDailyPMs, subgroups: [] },
+      daily: { pms: mobileEquipmentDailyPMs, subgroups: [] },
       "1-week": { 
-        count: 6, 
         pms: mobileEquipmentWeeklyPMs,
         subgroups: []
       },
     }
   },
 ];
+
+// Helper to calculate PM count for a frequency
+const getFrequencyCount = (freqData: { pms: any[]; subgroups: { pms: any[] }[] }) => {
+  const directPMs = freqData.pms?.length || 0;
+  const subgroupPMs = freqData.subgroups?.reduce((sum, sg) => sum + (sg.pms?.length || 0), 0) || 0;
+  return directPMs + subgroupPMs;
+};
 
 const PMDesign = () => {
   const [activeView, setActiveView] = useState<ViewType>("filter-press-daily");
@@ -502,7 +507,7 @@ const PMSidebarContent = ({
             <div className="space-y-1 px-2">
               {disciplines.map((discipline) => {
                 const DisciplineIcon = discipline.icon;
-                const totalPMs = Object.values(discipline.frequencies).reduce((sum, f) => sum + f.count, 0);
+                const totalPMs = Object.values(discipline.frequencies).reduce((sum, f) => sum + getFrequencyCount(f), 0);
                 
                 return (
                   <Collapsible
@@ -550,6 +555,8 @@ const PMSidebarContent = ({
                             // Skip if this frequency doesn't exist for this discipline
                             if (!freqData) return null;
                             
+                            const freqCount = getFrequencyCount(freqData);
+                            
                             return (
                               <Collapsible
                                 key={freqKey}
@@ -564,7 +571,7 @@ const PMSidebarContent = ({
                                       activeView === freqKey && "bg-primary/10 text-primary"
                                     )}
                                     onClick={(e) => {
-                                      if (freqData.count === 0) {
+                                      if (freqCount === 0) {
                                         e.stopPropagation();
                                         setActiveView(freqKey as ViewType);
                                       }
@@ -577,13 +584,13 @@ const PMSidebarContent = ({
                                     <div className="flex items-center gap-2">
                                       <span className={cn(
                                         "text-xs px-1.5 py-0.5 rounded",
-                                        freqData.count > 0 
+                                        freqCount > 0 
                                           ? "bg-primary/10 text-primary" 
                                           : "bg-muted text-muted-foreground"
                                       )}>
-                                        {freqData.count}
+                                        {freqCount}
                                       </span>
-                                      {freqData.count > 0 && (
+                                      {freqCount > 0 && (
                                         <ChevronRight 
                                           className={cn(
                                             "w-3.5 h-3.5 text-muted-foreground transition-transform",
@@ -594,7 +601,7 @@ const PMSidebarContent = ({
                                     </div>
                                   </div>
                                 </CollapsibleTrigger>
-                                {freqData.count > 0 && (
+                                {freqCount > 0 && (
                                   <CollapsibleContent>
                                     <div className="ml-5 py-1 pl-3 border-l border-border space-y-1">
                                       {/* Render subgroups if they exist */}
