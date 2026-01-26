@@ -157,14 +157,6 @@ export const SpareMillMotorInspectionPMDocument = () => {
                   <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
                   <span>Conduct <span className="font-bold text-destructive">Take 5</span> and/or <span className="font-bold text-destructive">JSEA</span> as required.</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <Lock className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <span>Ensure isolations and/or 'live testing' safeguards are in place before commencing.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <FileText className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                  <span>Follow OEM instructions and site procedures as required.</span>
-                </li>
               </ul>
             </div>
           </div>
