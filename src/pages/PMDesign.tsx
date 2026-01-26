@@ -27,12 +27,16 @@ import { FilterPressWeeklyPMDocument } from "@/components/pm-design/FilterPressW
 import { GoldRoomPMDocument } from "@/components/pm-design/GoldRoomPMDocument";
 import { GreaseOilsPMDocument } from "@/components/pm-design/GreaseOilsPMDocument";
 import { MillWeeklyPMDocument } from "@/components/pm-design/MillWeeklyPMDocument";
+import { PotableWaterPMDocument } from "@/components/pm-design/PotableWaterPMDocument";
+import { ReagentsPMDocument } from "@/components/pm-design/ReagentsPMDocument";
+import { ThickenerPMDocument } from "@/components/pm-design/ThickenerPMDocument";
+import { TopOfTanksPMDocument } from "@/components/pm-design/TopOfTanksPMDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -53,7 +57,7 @@ const disciplines = [
         { id: "mill-daily", name: "Mill Daily Inspection" },
         { id: "ro-plant-daily", name: "RO Plant Daily Inspection" }
       ] },
-      "1-week": { count: 8, pms: [
+      "1-week": { count: 12, pms: [
         { id: "acid-elution-weekly", name: "Acid Wash & Elution Weekly Inspection" },
         { id: "air-water-services-weekly", name: "Air & Water Services Weekly Inspection" },
         { id: "bottom-of-tanks-weekly", name: "Bottom of Tanks Weekly Inspection" },
@@ -61,7 +65,11 @@ const disciplines = [
         { id: "filter-press-weekly", name: "Filter Press Weekly Inspection" },
         { id: "gold-room-weekly", name: "Gold Room Weekly Inspection" },
         { id: "grease-oils-weekly", name: "Grease & Oils Weekly Inspection" },
-        { id: "mill-weekly", name: "Mill Weekly Inspection" }
+        { id: "mill-weekly", name: "Mill Weekly Inspection" },
+        { id: "potable-water-weekly", name: "Potable Water Weekly Inspection" },
+        { id: "reagents-weekly", name: "Reagents Weekly Inspection" },
+        { id: "thickener-weekly", name: "Thickener Weekly Inspection" },
+        { id: "top-of-tanks-weekly", name: "Top of Tanks Weekly Inspection" }
       ] },
       "2-week": { count: 0, pms: [] },
       "6-week": { count: 0, pms: [] },
@@ -132,6 +140,10 @@ const PMDesign = () => {
       case "gold-room-weekly": return "Gold Room Weekly Inspection";
       case "grease-oils-weekly": return "Grease & Oils Weekly Inspection";
       case "mill-weekly": return "Mill Weekly Inspection";
+      case "potable-water-weekly": return "Potable Water Weekly Inspection";
+      case "reagents-weekly": return "Reagents Weekly Inspection";
+      case "thickener-weekly": return "Thickener Weekly Inspection";
+      case "top-of-tanks-weekly": return "Top of Tanks Weekly Inspection";
       default: return "PM Document";
     }
   };
@@ -162,12 +174,20 @@ const PMDesign = () => {
         return <GreaseOilsPMDocument />;
       case "mill-weekly":
         return <MillWeeklyPMDocument />;
+      case "potable-water-weekly":
+        return <PotableWaterPMDocument />;
+      case "reagents-weekly":
+        return <ReagentsPMDocument />;
+      case "thickener-weekly":
+        return <ThickenerPMDocument />;
+      case "top-of-tanks-weekly":
+        return <TopOfTanksPMDocument />;
       default:
         return null;
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly"].includes(activeView);
 
   return (
     <SidebarProvider>
