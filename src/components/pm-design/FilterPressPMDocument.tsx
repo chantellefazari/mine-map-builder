@@ -194,11 +194,16 @@ export const FilterPressPMDocument = () => {
         {/* Banner with Title Overlay */}
         <div className="relative">
           <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-          <div className="absolute inset-0 flex items-center justify-end pr-8">
+          {/* Title on the black section - right side */}
+          <div className="absolute bottom-0 right-0 h-[60%] flex items-center justify-end pr-8">
             <div className="text-right">
-              <h1 className="text-2xl font-bold tracking-wide text-primary">Tenant Creek Filtration Area - Filter Press</h1>
+              <h1 className="text-xl font-bold tracking-wide text-primary">Tenant Creek Filtration Area - Filter Press</h1>
               <p className="text-sm mt-1 text-primary/80">Mechanical Running PMs - Daily Inspection (Fitter)</p>
             </div>
+          </div>
+          {/* Logo on bottom right */}
+          <div className="absolute bottom-2 left-4">
+            <img src={tennantLogo} alt="Tennant Mines" className="h-10" />
           </div>
         </div>
 
