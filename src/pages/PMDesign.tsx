@@ -45,12 +45,15 @@ import { ExcavatorDailyPMDocument } from "@/components/pm-design/ExcavatorDailyP
 import { ExcavatorWeeklyPMDocument } from "@/components/pm-design/ExcavatorWeeklyPMDocument";
 import { MoxyDailyPMDocument } from "@/components/pm-design/MoxyDailyPMDocument";
 import { MoxyWeeklyPMDocument } from "@/components/pm-design/MoxyWeeklyPMDocument";
+import { DozerDailyPMDocument } from "@/components/pm-design/DozerDailyPMDocument";
+import { PowerStationGeneratorWeeklyPMDocument } from "@/components/pm-design/PowerStationGeneratorWeeklyPMDocument";
+import { TelehandlerWeeklyPMDocument } from "@/components/pm-design/TelehandlerWeeklyPMDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical" | "mobile-equipment";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -67,6 +70,7 @@ const generatorPMs = [
   { id: "juno-generator-weekly", name: "Juno Generator" },
   { id: "lab-generator-weekly", name: "Lab Generator" },
   { id: "portable-generators-weekly", name: "Portable Generators" },
+  { id: "power-station-generator-weekly", name: "Power Station Generator" },
 ];
 
 // Other equipment PMs (non-generator)
@@ -87,6 +91,7 @@ const otherWeeklyPMs = [
 
 // Mobile Equipment Daily PMs
 const mobileEquipmentDailyPMs = [
+  { id: "dozer-daily", name: "CAT D8 Dozer" },
   { id: "excavator-daily", name: "Excavator" },
   { id: "moxy-daily", name: "Moxy" },
 ];
@@ -99,6 +104,7 @@ const mobileEquipmentWeeklyPMs = [
   { id: "forklift-weekly", name: "Forklift" },
   { id: "loader-weekly", name: "Loader" },
   { id: "moxy-weekly", name: "Moxy" },
+  { id: "telehandler-weekly", name: "Telehandler" },
   { id: "water-truck-weekly", name: "Water Truck" },
 ];
 
@@ -215,11 +221,14 @@ const PMDesign = () => {
       case "juno-generator-weekly": return "Juno Generator Weekly Inspection";
       case "lab-generator-weekly": return "Lab Generator Weekly Inspection";
       case "portable-generators-weekly": return "Portable Generators Weekly Inspection";
+      case "power-station-generator-weekly": return "Power Station Generator Weekly Inspection";
       case "forklift-weekly": return "Forklift Weekly Inspection";
       case "ewp-weekly": return "EWP Weekly Inspection";
       case "crane-weekly": return "Crane Weekly Inspection";
       case "water-truck-weekly": return "Water Truck Weekly Inspection";
       case "loader-weekly": return "Loader Weekly Inspection";
+      case "telehandler-weekly": return "Telehandler Weekly Inspection";
+      case "dozer-daily": return "CAT D8 Dozer Daily Inspection";
       case "excavator-daily": return "Excavator Daily Inspection";
       case "excavator-weekly": return "Excavator Weekly Inspection";
       case "moxy-daily": return "Moxy Daily Inspection";
@@ -272,6 +281,8 @@ const PMDesign = () => {
         return <LabGeneratorPMDocument />;
       case "portable-generators-weekly":
         return <PortableGeneratorsPMDocument />;
+      case "power-station-generator-weekly":
+        return <PowerStationGeneratorWeeklyPMDocument />;
       case "forklift-weekly":
         return <ForkliftWeeklyPMDocument />;
       case "ewp-weekly":
@@ -282,6 +293,10 @@ const PMDesign = () => {
         return <WaterTruckWeeklyPMDocument />;
       case "loader-weekly":
         return <LoaderWeeklyPMDocument />;
+      case "telehandler-weekly":
+        return <TelehandlerWeeklyPMDocument />;
+      case "dozer-daily":
+        return <DozerDailyPMDocument />;
       case "excavator-daily":
         return <ExcavatorDailyPMDocument />;
       case "excavator-weekly":
@@ -295,7 +310,7 @@ const PMDesign = () => {
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "forklift-weekly", "ewp-weekly", "crane-weekly", "water-truck-weekly", "loader-weekly", "excavator-daily", "excavator-weekly", "moxy-daily", "moxy-weekly"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "power-station-generator-weekly", "forklift-weekly", "ewp-weekly", "crane-weekly", "water-truck-weekly", "loader-weekly", "telehandler-weekly", "dozer-daily", "excavator-daily", "excavator-weekly", "moxy-daily", "moxy-weekly"].includes(activeView);
 
   return (
     <SidebarProvider>
