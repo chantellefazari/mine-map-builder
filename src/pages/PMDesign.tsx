@@ -17,11 +17,12 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { cn } from "@/lib/utils";
 import { PMBaseMasterTemplate } from "@/components/pm-design/PMBaseMasterTemplate";
 import { FilterPressPMDocument } from "@/components/pm-design/FilterPressPMDocument";
+import { MillDailyPMDocument } from "@/components/pm-design/MillDailyPMDocument";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -37,7 +38,10 @@ const disciplines = [
     label: "Mechanical PMs", 
     icon: Wrench,
     frequencies: {
-      daily: { count: 1, pms: [{ id: "filter-press-daily", name: "Filter Press Daily Inspection" }] },
+      daily: { count: 2, pms: [
+        { id: "filter-press-daily", name: "Filter Press Daily Inspection" },
+        { id: "mill-daily", name: "Mill Daily Inspection" }
+      ] },
       "1-week": { count: 0, pms: [] },
       "2-week": { count: 0, pms: [] },
       "6-week": { count: 0, pms: [] },
@@ -103,11 +107,15 @@ const PMDesign = () => {
 
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
-          {activeView === "master" ? (
+        {activeView === "master" ? (
             <PMBaseMasterTemplate />
           ) : activeView === "filter-press-daily" ? (
             <div className="p-6 overflow-auto">
               <FilterPressPMDocument />
+            </div>
+          ) : activeView === "mill-daily" ? (
+            <div className="p-6 overflow-auto">
+              <MillDailyPMDocument />
             </div>
           ) : (
             <div className="p-8">
