@@ -68,10 +68,6 @@ export const ROPlantPMDocument = () => {
         {/* Banner with Title Overlay */}
         <div className="relative">
           <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-          {/* Logo overlay - smaller and positioned left */}
-          <div className="absolute bottom-2 left-2">
-            <img src={tennantLogo} alt="Tennant Mines" className="h-6" />
-          </div>
           {/* Title on the black section - centered */}
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
             <div className="text-center">
