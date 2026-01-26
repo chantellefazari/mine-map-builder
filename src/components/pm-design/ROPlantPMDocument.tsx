@@ -76,8 +76,8 @@ export const ROPlantPMDocument = () => {
           {/* Title on the black section - centered */}
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
             <div className="text-center">
-              <h1 className="text-3xl font-bold tracking-wide text-primary">Tenant Creek - RO Plant Inspection</h1>
-              <p className="text-lg mt-1 text-primary/80">Mechanical Running PMs - Daily RO Plant Inspection (Fitter)</p>
+              <h1 className="text-2xl font-bold tracking-wide text-primary">Tenant Creek - RO Plant Inspection</h1>
+              <p className="text-base mt-1 text-primary/80">Mechanical Running PMs - Daily RO Plant Inspection (Fitter)</p>
             </div>
           </div>
         </div>
