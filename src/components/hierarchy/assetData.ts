@@ -454,19 +454,55 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "PWT001", name: "Potable Water Tank" },
               { assetNumber: "PWT001-PIPE001", name: "Potable Water Tank – Pipework" },
-              { assetNumber: "PWT001-PMP001", name: "Potable Water Tank – Pump Standby" },
+              { 
+                assetNumber: "PWT001-PMP001", 
+                name: "Potable Water Tank – Pump Standby",
+                components: [
+                  {
+                    componentCode: "MTR-01",
+                    componentType: "Motor",
+                    componentName: "Electric Motor",
+                    manufacturer: "LOWARA",
+                    model: "10SV09F04T/D"
+                  }
+                ]
+              },
               { assetNumber: "PWT001-MCC001", name: "Potable Water Tank – Pump Standby MCC Cell" },
               { assetNumber: "PWT001-LCS001", name: "Potable Water Tank – Pump Standby LCS" },
-              { assetNumber: "PWT001-PMP002", name: "Potable Water Tank – Pump Duty" },
+              { 
+                assetNumber: "PWT001-PMP002", 
+                name: "Potable Water Tank – Pump Duty",
+                components: [
+                  {
+                    componentCode: "MTR-01",
+                    componentType: "Motor",
+                    componentName: "Electric Motor",
+                    manufacturer: "LOWARA",
+                    model: "10SV09F04T/D"
+                  }
+                ]
+              },
               { assetNumber: "PWT001-MCC002", name: "Potable Water Tank – Pump Duty MCC Cell" },
               { assetNumber: "PWT001-LCS002", name: "Potable Water Tank – Pump Duty LCS" },
-            ] 
+            ]
           },
           { 
             label: "Raw Water Tank", 
             equipment: [
               { assetNumber: "RWT001", name: "Raw Water Tank" },
-              { assetNumber: "RWT001-PMP001", name: "Raw Water Tank – Pump Duty" },
+              { 
+                assetNumber: "RWT001-PMP001", 
+                name: "Raw Water Tank – Pump Duty",
+                components: [
+                  {
+                    componentCode: "PMP-01",
+                    componentType: "Pump",
+                    componentName: "Pump",
+                    manufacturer: "GRUNDFOS",
+                    model: "CR45-3-X-FI-E-HQQE"
+                  }
+                ]
+              },
               { assetNumber: "RWT001-MTR001", name: "Raw Water Tank – Pump Duty Motor" },
               { assetNumber: "RWT001-MCC001", name: "Raw Water Tank – Pump Duty MCC Cell" },
               { assetNumber: "RWT001-LCS001", name: "Raw Water Tank – Pump Duty LCS" },
@@ -474,7 +510,7 @@ export const areasData: Area[] = [
               { assetNumber: "RWT001-MTR002", name: "Raw Water Tank – Pump Standby Motor" },
               { assetNumber: "RWT001-MCC002", name: "Raw Water Tank – Pump Standby MCC Cell" },
               { assetNumber: "RWT001-LCS002", name: "Raw Water Tank – Pump Standby LCS" },
-            ] 
+            ]
           },
           { 
             label: "Process Water System", 
@@ -534,15 +570,39 @@ export const areasData: Area[] = [
             equipment: [
               { assetNumber: "GWTR001", name: "Gland Water System" },
               { assetNumber: "GWTR001-TK001", name: "Gland Water Tank" },
-              { assetNumber: "GWTR001-PMP001", name: "Gland Water Pump Duty" },
+              { 
+                assetNumber: "GWTR001-PMP001", 
+                name: "Gland Water Pump Duty",
+                components: [
+                  {
+                    componentCode: "PMP-01",
+                    componentType: "Pump",
+                    componentName: "Pump",
+                    manufacturer: "LOWARA",
+                    model: "10SV09F040T/D"
+                  }
+                ]
+              },
               { assetNumber: "GWTR001-MTR001", name: "Gland Water Pump Duty – Motor" },
               { assetNumber: "GWTR001-MCC001", name: "Gland Water Pump Duty – MCC Cell" },
               { assetNumber: "GWTR001-LCS001", name: "Gland Water Pump Duty – LCS" },
-              { assetNumber: "GWTR001-PMP002", name: "Gland Water Pump Standby" },
+              { 
+                assetNumber: "GWTR001-PMP002", 
+                name: "Gland Water Pump Standby",
+                components: [
+                  {
+                    componentCode: "PMP-01",
+                    componentType: "Pump",
+                    componentName: "Pump",
+                    manufacturer: "LOWARA",
+                    model: "10SV09F040T/D"
+                  }
+                ]
+              },
               { assetNumber: "GWTR001-MTR002", name: "Gland Water Pump Standby – Motor" },
               { assetNumber: "GWTR001-MCC002", name: "Gland Water Pump Standby – MCC Cell" },
               { assetNumber: "GWTR001-LCS002", name: "Gland Water Pump Standby – LCS" },
-            ] 
+            ]
           },
         ],
       },
@@ -1988,7 +2048,20 @@ export const areasData: Area[] = [
               { assetNumber: "TAILHOP001", name: "CIP Tailings Hopper" },
               { assetNumber: "TAILHOP001-LT001", name: "CIP Tailings Hopper – Level Transmitter" },
               { assetNumber: "THK001-FM001", name: "Tails Thickener – Flow Meter" },
-              { assetNumber: "THK001-HYD001", name: "Tails Thickener – Hydraulic Pack" },
+              { 
+                assetNumber: "THK001-HYD001", 
+                name: "Tails Thickener – Hydraulic Pack",
+                components: [
+                  {
+                    componentCode: "HPU-01",
+                    componentType: "Hydraulic Power Unit",
+                    componentName: "Hydraulic Power Unit",
+                    manufacturer: "PARKER",
+                    model: "AEU8-4P-11KW FR160M",
+                    pumpRef: "Rake Drive Pump: PVP23369R29A4, Rake Lift Pump: PGP505A0040CA1H2NE5E3B1B1"
+                  }
+                ]
+              },
               { assetNumber: "THK001-PG001", name: "Tails Thickener – Hydraulic Pack Pressure Gauge 1" },
               { assetNumber: "THK001-PG002", name: "Tails Thickener – Hydraulic Pack Pressure Gauge 2" },
               { assetNumber: "THK001-PNL001", name: "Tails Thickener – Flocc Panel 1" },
@@ -2014,12 +2087,38 @@ export const areasData: Area[] = [
               { assetNumber: "CIPPMP-B-MCC001", name: "CIP Tailings Pump B – MCC Cell" },
               { assetNumber: "CIPPMP-B-LCS001", name: "CIP Tailings Pump B – LCS" },
               { assetNumber: "CIPPMP-B-VSD001", name: "CIP Tailings Pump B – VSD" },
-              { assetNumber: "THKUFP-A", name: "Thickener Underflow Pump A" },
+              { 
+                assetNumber: "THKUFP-A", 
+                name: "Thickener Underflow Pump A",
+                components: [
+                  {
+                    componentCode: "PMP-01",
+                    componentType: "Pump",
+                    componentName: "Pump",
+                    manufacturer: "WARMAN",
+                    model: "75kW / 4P / 1485RPM",
+                    displacement: "Belt: SPC 2360 x 5"
+                  }
+                ]
+              },
               { assetNumber: "THKUFP-A-MTR001", name: "Thickener Underflow Pump A – Motor" },
               { assetNumber: "THKUFP-A-MCC001", name: "Thickener Underflow Pump A – MCC Cell" },
               { assetNumber: "THKUFP-A-LCS001", name: "Thickener Underflow Pump A – LCS" },
               { assetNumber: "THKUFP-A-VSD001", name: "Thickener Underflow Pump A – VSD" },
-              { assetNumber: "THKUFP-B", name: "Thickener Underflow Pump B" },
+              { 
+                assetNumber: "THKUFP-B", 
+                name: "Thickener Underflow Pump B",
+                components: [
+                  {
+                    componentCode: "PMP-01",
+                    componentType: "Pump",
+                    componentName: "Pump",
+                    manufacturer: "WARMAN",
+                    model: "75kW / 4P / 1485RPM",
+                    displacement: "Belt: SPC 2360 x 5"
+                  }
+                ]
+              },
               { assetNumber: "THKUFP-B-MTR001", name: "Thickener Underflow Pump B – Motor" },
               { assetNumber: "THKUFP-B-MCC001", name: "Thickener Underflow Pump B – MCC Cell" },
               { assetNumber: "THKUFP-B-LCS001", name: "Thickener Underflow Pump B – LCS" },
