@@ -168,18 +168,6 @@ export const FilterPressElectricalPMDocument = () => {
                   <FileText className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
                   <span>Follow OEM instructions and site procedures as required.</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                  <span>Read and understand all warning plates on all equipment before on or near the plant.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <User className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                  <span>Ensure Positive Communications and use Spotter where required.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Collect and dispose of rubbish in accordance with site rules.</span>
-                </li>
               </ul>
             </div>
           </div>

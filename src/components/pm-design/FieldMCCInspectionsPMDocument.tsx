@@ -189,30 +189,20 @@ export const FieldMCCInspectionsPMDocument = () => {
               <span className="text-destructive font-bold">SAFETY PRECAUTIONS</span>
             </div>
             <div className="px-4 py-4 bg-destructive/5">
-              <div className="flex items-start gap-3 mb-4">
-                <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-medium">
-                  Conduct <span className="font-bold text-destructive">Take 5</span> and/or <span className="font-bold text-destructive">JSEA</span> as required.
-                </p>
-              </div>
-              <div className="flex items-start gap-3 mb-4">
-                <Lock className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm">
-                  Ensure isolations and/or 'live testing' safeguards are in place before commencing.
-                </p>
-              </div>
-              <div className="flex items-start gap-3 mb-4">
-                <FileText className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <p className="text-sm">
-                  Follow OEM instructions and site procedures as required.
-                </p>
-              </div>
-              <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3">
-                <Zap className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-bold text-destructive">
-                  WARNING: Field MCCs contain LIVE electrical equipment. Exercise extreme caution.
-                </p>
-              </div>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-3">
+                  <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <span>Conduct <span className="font-bold text-destructive">Take 5</span> and/or <span className="font-bold text-destructive">JSEA</span> as required.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Lock className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <span>Ensure isolations and/or 'live testing' safeguards are in place before commencing.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <FileText className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                  <span>Follow OEM instructions and site procedures as required.</span>
+                </li>
+              </ul>
             </div>
           </div>
 
