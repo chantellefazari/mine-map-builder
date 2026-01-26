@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, FileText, Calendar, ChevronRight, Plus } from "lucide-react";
+import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft } from "lucide-react";
 import { 
   Sidebar, 
   SidebarContent, 
@@ -11,16 +11,19 @@ import {
   SidebarMenuItem, 
   SidebarMenuButton,
   SidebarProvider,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { PMBaseMasterTemplate } from "@/components/pm-design/PMBaseMasterTemplate";
 import { FilterPressPMDocument } from "@/components/pm-design/FilterPressPMDocument";
+import { Button } from "@/components/ui/button";
 
-type FrequencyGroup = "1-week" | "2-week" | "6-week" | "12-week";
+type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
 type ViewType = "master" | "filter-press-daily" | FrequencyGroup;
 
 const frequencyGroups = [
+  { id: "daily" as FrequencyGroup, label: "DAILY PMs", count: 1 },
   { id: "1-week" as FrequencyGroup, label: "1 WEEK PMs", count: 0 },
   { id: "2-week" as FrequencyGroup, label: "2 WEEK PMs", count: 0 },
   { id: "6-week" as FrequencyGroup, label: "6 WEEK PMs", count: 0 },
@@ -42,134 +45,18 @@ const PMDesign = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
-        {/* Sidebar */}
-        <Sidebar className="w-64 border-r border-border">
-          <SidebarContent className="pt-4">
-            {/* Back to Home */}
-            <div className="px-4 mb-6">
-              <Link
-                to="/"
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Home
-              </Link>
-            </div>
-
-            {/* Header */}
-            <div className="px-4 mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">PM</span>
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold text-foreground">PM Design</h1>
-                  <p className="text-xs text-muted-foreground">Structure & Templates</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Master Template */}
-            <SidebarGroup>
-              <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4">
-                Template
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      onClick={() => setActiveView("master")}
-                      className={cn(
-                        "w-full justify-start gap-3 px-4 py-3",
-                        activeView === "master" && "bg-primary/10 text-primary border-l-2 border-primary"
-                      )}
-                    >
-                      <FileText className="w-4 h-4" />
-                      <span className="font-medium">Base PM Template</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      onClick={() => setActiveView("filter-press-daily")}
-                      className={cn(
-                        "w-full justify-start gap-3 px-4 py-3",
-                        activeView === "filter-press-daily" && "bg-primary/10 text-primary border-l-2 border-primary"
-                      )}
-                    >
-                      <FileText className="w-4 h-4" />
-                      <span className="font-medium">Filter Press Daily</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-
-            {/* Frequency Groups */}
-            <SidebarGroup className="mt-4">
-              <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4">
-                By Frequency
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <div className="space-y-1 px-2">
-                  {frequencyGroups.map((group) => (
-                    <Collapsible
-                      key={group.id}
-                      open={expandedGroups.includes(group.id)}
-                      onOpenChange={() => toggleGroup(group.id)}
-                    >
-                      <CollapsibleTrigger className="w-full">
-                        <div
-                          className={cn(
-                            "flex items-center justify-between w-full px-2 py-2.5 rounded-md text-sm transition-colors",
-                            "hover:bg-muted/50",
-                            activeView === group.id && "bg-primary/10 text-primary"
-                          )}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveView(group.id);
-                          }}
-                        >
-                          <div className="flex items-center gap-3">
-                            <Calendar className="w-4 h-4 text-muted-foreground" />
-                            <span className="font-medium">{group.label}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                              {group.count}
-                            </span>
-                            <ChevronRight 
-                              className={cn(
-                                "w-4 h-4 text-muted-foreground transition-transform",
-                                expandedGroups.includes(group.id) && "rotate-90"
-                              )} 
-                            />
-                          </div>
-                        </div>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <div className="ml-7 py-2 pl-4 border-l border-border">
-                          <p className="text-xs text-muted-foreground italic">
-                            No PMs added yet
-                          </p>
-                          <button className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 mt-2 transition-colors">
-                            <Plus className="w-3 h-3" />
-                            Add PM
-                          </button>
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  ))}
-                </div>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-        </Sidebar>
+        <PMSidebarContent 
+          activeView={activeView} 
+          setActiveView={setActiveView}
+          expandedGroups={expandedGroups}
+          toggleGroup={toggleGroup}
+        />
 
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
           {activeView === "master" ? (
             <PMBaseMasterTemplate />
-          ) : activeView === "filter-press-daily" ? (
+          ) : activeView === "filter-press-daily" || activeView === "daily" ? (
             <div className="p-6 overflow-auto">
               <FilterPressPMDocument />
             </div>
@@ -202,6 +89,185 @@ const PMDesign = () => {
         </main>
       </div>
     </SidebarProvider>
+  );
+};
+
+// Sidebar Component
+const PMSidebarContent = ({ 
+  activeView, 
+  setActiveView, 
+  expandedGroups, 
+  toggleGroup 
+}: { 
+  activeView: ViewType; 
+  setActiveView: (view: ViewType) => void;
+  expandedGroups: FrequencyGroup[];
+  toggleGroup: (groupId: FrequencyGroup) => void;
+}) => {
+  const { toggleSidebar, state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+
+  return (
+    <Sidebar className="w-64 border-r border-border" collapsible="icon">
+      <SidebarContent className="pt-4">
+        {/* Collapse Toggle */}
+        <div className="px-4 mb-2 flex justify-end">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSidebar}
+            className="h-8 w-8"
+          >
+            {isCollapsed ? (
+              <PanelLeft className="h-4 w-4" />
+            ) : (
+              <PanelLeftClose className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
+
+        {/* Back to Home */}
+        <div className="px-4 mb-6">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {!isCollapsed && "Back to Home"}
+          </Link>
+        </div>
+
+        {/* Header */}
+        {!isCollapsed && (
+          <div className="px-4 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-sm">PM</span>
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-foreground">PM Design</h1>
+                <p className="text-xs text-muted-foreground">Structure & Templates</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Master Template */}
+        <SidebarGroup>
+          {!isCollapsed && (
+            <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4">
+              Template
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => setActiveView("master")}
+                  tooltip="Base PM Template"
+                  className={cn(
+                    "w-full justify-start gap-3 px-4 py-3",
+                    activeView === "master" && "bg-primary/10 text-primary border-l-2 border-primary"
+                  )}
+                >
+                  <FileText className="w-4 h-4" />
+                  {!isCollapsed && <span className="font-medium">Base PM Template</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => setActiveView("filter-press-daily")}
+                  tooltip="Filter Press Daily"
+                  className={cn(
+                    "w-full justify-start gap-3 px-4 py-3",
+                    activeView === "filter-press-daily" && "bg-primary/10 text-primary border-l-2 border-primary"
+                  )}
+                >
+                  <FileText className="w-4 h-4" />
+                  {!isCollapsed && <span className="font-medium">Filter Press Daily</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Frequency Groups */}
+        <SidebarGroup className="mt-4">
+          {!isCollapsed && (
+            <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4">
+              By Frequency
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <div className="space-y-1 px-2">
+              {frequencyGroups.map((group) => (
+                <Collapsible
+                  key={group.id}
+                  open={expandedGroups.includes(group.id)}
+                  onOpenChange={() => toggleGroup(group.id)}
+                >
+                  <CollapsibleTrigger className="w-full">
+                    <div
+                      className={cn(
+                        "flex items-center justify-between w-full px-2 py-2.5 rounded-md text-sm transition-colors",
+                        "hover:bg-muted/50",
+                        activeView === group.id && "bg-primary/10 text-primary"
+                      )}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveView(group.id);
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        {!isCollapsed && <span className="font-medium">{group.label}</span>}
+                      </div>
+                      {!isCollapsed && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                            {group.count}
+                          </span>
+                          <ChevronRight 
+                            className={cn(
+                              "w-4 h-4 text-muted-foreground transition-transform",
+                              expandedGroups.includes(group.id) && "rotate-90"
+                            )} 
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </CollapsibleTrigger>
+                  {!isCollapsed && (
+                    <CollapsibleContent>
+                      <div className="ml-7 py-2 pl-4 border-l border-border">
+                        {group.id === "daily" ? (
+                          <button 
+                            onClick={() => setActiveView("filter-press-daily")}
+                            className="text-xs text-foreground hover:text-primary transition-colors"
+                          >
+                            Filter Press Daily Inspection
+                          </button>
+                        ) : (
+                          <>
+                            <p className="text-xs text-muted-foreground italic">
+                              No PMs added yet
+                            </p>
+                            <button className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 mt-2 transition-colors">
+                              <Plus className="w-3 h-3" />
+                              Add PM
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </CollapsibleContent>
+                  )}
+                </Collapsible>
+              ))}
+            </div>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 };
 
