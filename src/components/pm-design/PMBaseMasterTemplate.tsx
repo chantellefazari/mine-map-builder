@@ -89,61 +89,61 @@ export const PMBaseMasterTemplate = () => {
           </div>
 
           {/* Header Information Grid */}
-          <div className="grid grid-cols-3 border-b border-border">
+          <div className="grid grid-cols-3 border-b border-border text-xs">
             {/* Left Column */}
             <div className="border-r border-border">
-              <div className="grid grid-cols-[140px_1fr] border-b border-border">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-primary" />
+              <div className="grid grid-cols-[120px_1fr] border-b border-border">
+                <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
+                  <FileText className="w-3 h-3 text-primary" />
                   Project / Site:
                 </div>
-                <div className="px-3 py-2 text-sm text-muted-foreground italic">[To be defined]</div>
+                <div className="px-2 py-1.5 text-muted-foreground italic">[To be defined]</div>
               </div>
-              <div className="grid grid-cols-[140px_1fr] border-b border-border">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Asset Number:</div>
-                <div className="px-3 py-2 text-sm text-muted-foreground italic">[XX]</div>
+              <div className="grid grid-cols-[120px_1fr] border-b border-border">
+                <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
+                <div className="px-2 py-1.5 text-muted-foreground italic">[XX]</div>
               </div>
-              <div className="grid grid-cols-[140px_1fr] border-b border-border">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Plant Area Desc.:</div>
-                <div className="px-3 py-2 text-sm text-muted-foreground italic">[Area Description]</div>
+              <div className="grid grid-cols-[120px_1fr] border-b border-border">
+                <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area Desc.:</div>
+                <div className="px-2 py-1.5 text-muted-foreground italic">[Area Description]</div>
               </div>
-              <div className="grid grid-cols-[140px_1fr]">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border flex items-center gap-2">
-                  <User className="w-4 h-4 text-primary" />
+              <div className="grid grid-cols-[120px_1fr]">
+                <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
+                  <User className="w-3 h-3 text-primary" />
                   Resource/s:
                 </div>
-                <div className="px-3 py-2 text-sm text-muted-foreground italic">[Xx Trade (X hrs)]</div>
+                <div className="px-2 py-1.5 text-muted-foreground italic">[Xx Trade (X hrs)]</div>
               </div>
             </div>
 
             {/* Middle Column */}
             <div className="border-r border-border">
-              <div className="grid grid-cols-[100px_1fr] border-b border-border">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">PM Mode:</div>
-                <div className="px-3 py-2 text-sm text-muted-foreground italic">[Running/Shutdown]</div>
+              <div className="grid grid-cols-[80px_1fr] border-b border-border">
+                <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Mode:</div>
+                <div className="px-2 py-1.5 text-muted-foreground italic">[Running/Shutdown]</div>
               </div>
-              <div className="grid grid-cols-[100px_1fr] border-b border-border">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">PM Group:</div>
-                <div className="px-3 py-2 text-sm text-muted-foreground italic">[Mech/Elec/Ops]</div>
+              <div className="grid grid-cols-[80px_1fr] border-b border-border">
+                <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
+                <div className="px-2 py-1.5 text-muted-foreground italic">[Mech/Elec/Ops]</div>
               </div>
-              <div className="grid grid-cols-[100px_1fr] border-b border-border">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">PM Type:</div>
-                <div className="px-3 py-2 text-sm text-muted-foreground italic">[Inspection/Service]</div>
+              <div className="grid grid-cols-[80px_1fr] border-b border-border">
+                <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div>
+                <div className="px-2 py-1.5 text-muted-foreground italic">[Inspection/Service]</div>
               </div>
-              <div className="grid grid-cols-[100px_1fr]">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-primary" />
+              <div className="grid grid-cols-[80px_1fr]">
+                <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
+                  <Calendar className="w-3 h-3 text-primary" />
                   Frequency:
                 </div>
-                <div className="px-3 py-2 text-sm text-muted-foreground italic">[Daily/1W/2W/6W/12W]</div>
+                <div className="px-2 py-1.5 text-muted-foreground italic">[Daily/1W/2W/6W/12W]</div>
               </div>
             </div>
 
             {/* Right Column */}
             <div>
-              <div className="grid grid-cols-[100px_1fr]">
-                <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Date:</div>
-                <div className="px-3 py-2 text-sm"></div>
+              <div className="grid grid-cols-[60px_1fr]">
+                <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
+                <div className="px-2 py-1.5"></div>
               </div>
             </div>
           </div>

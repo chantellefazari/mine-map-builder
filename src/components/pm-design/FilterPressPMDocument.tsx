@@ -203,73 +203,61 @@ export const FilterPressPMDocument = () => {
         </div>
 
         {/* Header Information Grid */}
-        <div className="grid grid-cols-3 border-b border-border">
+        <div className="grid grid-cols-3 border-b border-border text-xs">
           {/* Left Column */}
           <div className="border-r border-border">
-            <div className="grid grid-cols-[140px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border flex items-center gap-2">
-                <FileText className="w-4 h-4 text-primary" />
+            <div className="grid grid-cols-[120px_1fr] border-b border-border">
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
+                <FileText className="w-3 h-3 text-primary" />
                 Project / Site:
               </div>
-              <div className="px-3 py-2 text-sm">Tenant Creek</div>
+              <div className="px-2 py-1.5">Tenant Creek</div>
             </div>
-            <div className="grid grid-cols-[140px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Plant Area Code:</div>
-              <div className="px-3 py-2 text-sm">13</div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border">
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
+              <div className="px-2 py-1.5">13</div>
             </div>
-            <div className="grid grid-cols-[140px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Plant Area Desc.:</div>
-              <div className="px-3 py-2 text-sm">Filter Press</div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border">
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area Desc.:</div>
+              <div className="px-2 py-1.5">Filter Press</div>
             </div>
-            <div className="grid grid-cols-[140px_1fr]">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border flex items-center gap-2">
-                <User className="w-4 h-4 text-primary" />
+            <div className="grid grid-cols-[120px_1fr]">
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
+                <User className="w-3 h-3 text-primary" />
                 Resource/s:
               </div>
-              <div className="px-3 py-2 text-sm">1x Fitter (1 hrs)</div>
+              <div className="px-2 py-1.5">1x Fitter (1 hrs)</div>
             </div>
           </div>
 
           {/* Middle Column */}
           <div className="border-r border-border">
-            <div className="grid grid-cols-[100px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">PM Mode:</div>
-              <div className="px-3 py-2 text-sm">Running</div>
+            <div className="grid grid-cols-[80px_1fr] border-b border-border">
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Mode:</div>
+              <div className="px-2 py-1.5">Running</div>
             </div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">PM Group:</div>
-              <div className="px-3 py-2 text-sm">Mechanical</div>
+            <div className="grid grid-cols-[80px_1fr] border-b border-border">
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
+              <div className="px-2 py-1.5">Mechanical</div>
             </div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">PM Type:</div>
-              <div className="px-3 py-2 text-sm">Inspection (Fitter)</div>
+            <div className="grid grid-cols-[80px_1fr] border-b border-border">
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div>
+              <div className="px-2 py-1.5">Inspection (Fitter)</div>
             </div>
-            <div className="grid grid-cols-[100px_1fr]">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-primary" />
+            <div className="grid grid-cols-[80px_1fr]">
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
+                <Calendar className="w-3 h-3 text-primary" />
                 Frequency:
               </div>
-              <div className="px-3 py-2 text-sm font-medium">Daily</div>
+              <div className="px-2 py-1.5 font-medium">Daily</div>
             </div>
           </div>
 
           {/* Right Column */}
           <div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Document No.:</div>
-              <div className="px-3 py-2 text-sm"></div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Revision:</div>
-              <div className="px-3 py-2 text-sm">0</div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Day:</div>
-              <div className="px-3 py-2 text-sm"></div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr]">
-              <div className="bg-muted px-3 py-2 font-semibold text-sm border-r border-border">Date:</div>
-              <div className="px-3 py-2 text-sm"></div>
+            <div className="grid grid-cols-[60px_1fr]">
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
+              <div className="px-2 py-1.5"></div>
             </div>
           </div>
         </div>
