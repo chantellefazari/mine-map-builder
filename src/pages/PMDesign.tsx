@@ -51,6 +51,31 @@ const frequencyGroups = [
   { id: "12-week" as FrequencyGroup, label: "12 WEEK", shortLabel: "12W" },
 ];
 
+// Generator PMs grouped together
+const generatorPMs = [
+  { id: "admin-generator-weekly", name: "Admin Generator" },
+  { id: "andy-dam-generator-weekly", name: "Andy Dam Generator" },
+  { id: "juno-generator-weekly", name: "Juno Generator" },
+  { id: "lab-generator-weekly", name: "Lab Generator" },
+  { id: "portable-generators-weekly", name: "Portable Generators" },
+];
+
+// Other equipment PMs (non-generator)
+const otherWeeklyPMs = [
+  { id: "acid-elution-weekly", name: "Acid Wash & Elution" },
+  { id: "air-water-services-weekly", name: "Air & Water Services" },
+  { id: "bottom-of-tanks-weekly", name: "Bottom of Tanks" },
+  { id: "diesel-farm-weekly", name: "Diesel Farm" },
+  { id: "filter-press-weekly", name: "Filter Press" },
+  { id: "gold-room-weekly", name: "Gold Room" },
+  { id: "grease-oils-weekly", name: "Grease & Oils" },
+  { id: "mill-weekly", name: "Mill" },
+  { id: "potable-water-weekly", name: "Potable Water" },
+  { id: "reagents-weekly", name: "Reagents" },
+  { id: "thickener-weekly", name: "Thickener" },
+  { id: "top-of-tanks-weekly", name: "Top of Tanks" },
+];
+
 const disciplines = [
   { 
     id: "mechanical" as Discipline, 
@@ -61,29 +86,18 @@ const disciplines = [
         { id: "filter-press-daily", name: "Filter Press Daily Inspection" },
         { id: "mill-daily", name: "Mill Daily Inspection" },
         { id: "ro-plant-daily", name: "RO Plant Daily Inspection" }
-      ] },
-      "1-week": { count: 17, pms: [
-        { id: "acid-elution-weekly", name: "Acid Wash & Elution Weekly Inspection" },
-        { id: "admin-generator-weekly", name: "Admin Generator Weekly Inspection" },
-        { id: "air-water-services-weekly", name: "Air & Water Services Weekly Inspection" },
-        { id: "andy-dam-generator-weekly", name: "Andy Dam Generator Weekly Inspection" },
-        { id: "bottom-of-tanks-weekly", name: "Bottom of Tanks Weekly Inspection" },
-        { id: "diesel-farm-weekly", name: "Diesel Farm Weekly Inspection" },
-        { id: "filter-press-weekly", name: "Filter Press Weekly Inspection" },
-        { id: "gold-room-weekly", name: "Gold Room Weekly Inspection" },
-        { id: "grease-oils-weekly", name: "Grease & Oils Weekly Inspection" },
-        { id: "juno-generator-weekly", name: "Juno Generator Weekly Inspection" },
-        { id: "lab-generator-weekly", name: "Lab Generator Weekly Inspection" },
-        { id: "mill-weekly", name: "Mill Weekly Inspection" },
-        { id: "portable-generators-weekly", name: "Portable Generators Weekly Inspection" },
-        { id: "potable-water-weekly", name: "Potable Water Weekly Inspection" },
-        { id: "reagents-weekly", name: "Reagents Weekly Inspection" },
-        { id: "thickener-weekly", name: "Thickener Weekly Inspection" },
-        { id: "top-of-tanks-weekly", name: "Top of Tanks Weekly Inspection" }
-      ] },
-      "2-week": { count: 0, pms: [] },
-      "6-week": { count: 0, pms: [] },
-      "12-week": { count: 0, pms: [] },
+      ], subgroups: [] },
+      "1-week": { 
+        count: 17, 
+        pms: [], // Individual PMs moved to subgroups
+        subgroups: [
+          { id: "generators", label: "Generators", pms: generatorPMs },
+          { id: "equipment", label: "Equipment", pms: otherWeeklyPMs },
+        ]
+      },
+      "2-week": { count: 0, pms: [], subgroups: [] },
+      "6-week": { count: 0, pms: [], subgroups: [] },
+      "12-week": { count: 0, pms: [], subgroups: [] },
     }
   },
   { 
@@ -91,11 +105,11 @@ const disciplines = [
     label: "Electrical PMs", 
     icon: Zap,
     frequencies: {
-      daily: { count: 0, pms: [] },
-      "1-week": { count: 0, pms: [] },
-      "2-week": { count: 0, pms: [] },
-      "6-week": { count: 0, pms: [] },
-      "12-week": { count: 0, pms: [] },
+      daily: { count: 0, pms: [], subgroups: [] },
+      "1-week": { count: 0, pms: [], subgroups: [] },
+      "2-week": { count: 0, pms: [], subgroups: [] },
+      "6-week": { count: 0, pms: [], subgroups: [] },
+      "12-week": { count: 0, pms: [], subgroups: [] },
     }
   },
 ];
@@ -483,20 +497,67 @@ const PMSidebarContent = ({
                                 {freqData.count > 0 && (
                                   <CollapsibleContent>
                                     <div className="ml-5 py-1 pl-3 border-l border-border space-y-1">
-                                      {freqData.pms.map((pm) => (
-                                        <button
-                                          key={pm.id}
-                                          onClick={() => setActiveView(pm.id as ViewType)}
-                                          className={cn(
-                                            "text-xs text-left w-full py-1.5 px-2 rounded transition-colors",
-                                            activeView === pm.id 
-                                              ? "text-primary bg-primary/10" 
-                                              : "text-foreground hover:text-primary hover:bg-muted/50"
-                                          )}
-                                        >
-                                          {pm.name}
-                                        </button>
-                                      ))}
+                                      {/* Render subgroups if they exist */}
+                                      {freqData.subgroups && freqData.subgroups.length > 0 ? (
+                                        freqData.subgroups.map((subgroup) => (
+                                          <Collapsible
+                                            key={subgroup.id}
+                                            open={expandedFrequencies.includes(`${freqKey}-${subgroup.id}`)}
+                                            onOpenChange={() => toggleFrequency(`${freqKey}-${subgroup.id}`)}
+                                          >
+                                            <CollapsibleTrigger className="w-full">
+                                              <div className="flex items-center justify-between w-full px-2 py-1.5 rounded-md text-xs transition-colors hover:bg-muted/50">
+                                                <span className="font-medium text-muted-foreground">{subgroup.label}</span>
+                                                <div className="flex items-center gap-2">
+                                                  <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary">
+                                                    {subgroup.pms.length}
+                                                  </span>
+                                                  <ChevronRight 
+                                                    className={cn(
+                                                      "w-3 h-3 text-muted-foreground transition-transform",
+                                                      expandedFrequencies.includes(`${freqKey}-${subgroup.id}`) && "rotate-90"
+                                                    )} 
+                                                  />
+                                                </div>
+                                              </div>
+                                            </CollapsibleTrigger>
+                                            <CollapsibleContent>
+                                              <div className="ml-3 py-1 pl-2 border-l border-border/50 space-y-1">
+                                                {subgroup.pms.map((pm) => (
+                                                  <button
+                                                    key={pm.id}
+                                                    onClick={() => setActiveView(pm.id as ViewType)}
+                                                    className={cn(
+                                                      "text-xs text-left w-full py-1.5 px-2 rounded transition-colors",
+                                                      activeView === pm.id 
+                                                        ? "text-primary bg-primary/10" 
+                                                        : "text-foreground hover:text-primary hover:bg-muted/50"
+                                                    )}
+                                                  >
+                                                    {pm.name}
+                                                  </button>
+                                                ))}
+                                              </div>
+                                            </CollapsibleContent>
+                                          </Collapsible>
+                                        ))
+                                      ) : (
+                                        /* Render flat PM list if no subgroups */
+                                        freqData.pms.map((pm) => (
+                                          <button
+                                            key={pm.id}
+                                            onClick={() => setActiveView(pm.id as ViewType)}
+                                            className={cn(
+                                              "text-xs text-left w-full py-1.5 px-2 rounded transition-colors",
+                                              activeView === pm.id 
+                                                ? "text-primary bg-primary/10" 
+                                                : "text-foreground hover:text-primary hover:bg-muted/50"
+                                            )}
+                                          >
+                                            {pm.name}
+                                          </button>
+                                        ))
+                                      )}
                                       <button className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 py-1 transition-colors">
                                         <Plus className="w-3 h-3" />
                                         Add PM
