@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { AssetTree } from "@/components/hierarchy/AssetTree";
+import { Link } from "react-router-dom";
+import { AssetTree as AssetTreeComponent } from "@/components/hierarchy/AssetTree";
 import { Legend } from "@/components/hierarchy/Legend";
 import { AssetSearch } from "@/components/hierarchy/AssetSearch";
 import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocationTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties } from "lucide-react";
+import { TreePine, TableProperties, ArrowLeft } from "lucide-react";
 
-const Index = () => {
+const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
@@ -15,15 +16,26 @@ const Index = () => {
       <header className="border-b border-border bg-card">
         <div className="container py-6">
           <div className="flex items-center gap-4">
+            <Link
+              to="/"
+              className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+            </Link>
             <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shadow-gold">
               <span className="text-primary-foreground font-bold text-lg">TC</span>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                TCMG Asset Hierarchy
-              </h1>
+            <div className="flex-1">
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold text-foreground">
+                  Asset Tree
+                </h1>
+                <span className="text-xs font-mono bg-primary/10 text-primary px-2 py-1 rounded">
+                  LOCKED
+                </span>
+              </div>
               <p className="text-muted-foreground text-sm">
-                Processing Plant Structure — Visual Model
+                TCMG Processing Plant Structure — Single Source of Truth
               </p>
             </div>
           </div>
@@ -39,10 +51,10 @@ const Index = () => {
           </div>
           <div className="text-sm">
             <p className="text-foreground font-medium">
-              This is the foundational asset hierarchy for TCMG Processing Plant.
+              This asset hierarchy is LOCKED and validated for CMMS/D365 readiness.
             </p>
             <p className="text-muted-foreground mt-1">
-              Structure is expandable — each sub-area can be drilled down to Systems → Equipment → Components.
+              Structure follows: Site → Facility → Area → Sub-Area → Parent Asset → Components. No auto-changes permitted.
             </p>
           </div>
         </div>
@@ -78,7 +90,7 @@ const Index = () => {
                 <AssetSearch value={searchQuery} onChange={setSearchQuery} />
               </div>
               
-              <AssetTree searchQuery={searchQuery} />
+              <AssetTreeComponent searchQuery={searchQuery} />
             </div>
           </TabsContent>
 
@@ -88,16 +100,9 @@ const Index = () => {
             </div>
           </TabsContent>
         </Tabs>
-
-        {/* Footer Info */}
-        <div className="text-center text-sm text-muted-foreground py-4">
-          <p>
-            Master data source: Excel • Visual model for iteration & planning
-          </p>
-        </div>
       </main>
     </div>
   );
 };
 
-export default Index;
+export default AssetTree;
