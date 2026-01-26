@@ -27,6 +27,7 @@ import {
   Gauge
 } from "lucide-react";
 import tennantLogo from "@/assets/tennant-mines-logo.png";
+import tennantBanner from "@/assets/tennant-banner.png";
 
 interface InspectionTask {
   task: string;
@@ -169,14 +170,15 @@ export const MillDailyPMDocument = () => {
     <div className="bg-background min-h-full">
       {/* Document Header */}
       <div className="border-2 border-border">
-        {/* Logo Banner */}
-        <div className="bg-[#2a2a2a] px-6 py-3 flex justify-center">
-          <img src={tennantLogo} alt="Tennant Mines" className="h-12" />
-        </div>
-        {/* Title Banner */}
-        <div className="bg-primary text-primary-foreground px-6 py-4 text-center border-t border-border">
-          <h1 className="text-xl font-bold tracking-wide">Tenant Creek - Daily Mill Inspection</h1>
-          <p className="text-sm mt-1 opacity-90">Mechanical Running PMs - Daily Inspection (Fitter)</p>
+        {/* Banner with Title Overlay */}
+        <div className="relative">
+          <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
+          <div className="absolute inset-0 flex items-center justify-end pr-8">
+            <div className="text-right">
+              <h1 className="text-2xl font-bold tracking-wide text-primary">Tenant Creek - Daily Mill Inspection</h1>
+              <p className="text-sm mt-1 text-primary/80">Mechanical Running PMs - Daily Inspection (Fitter)</p>
+            </div>
+          </div>
         </div>
 
         {/* Header Information Grid */}
