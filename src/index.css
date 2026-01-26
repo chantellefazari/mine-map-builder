@@ -38,15 +38,15 @@
 
     --radius: 0.5rem;
 
-    /* Hierarchy Level Colors - Professional Mining theme */
+    /* Hierarchy Level Colors - Vibrant Professional Mining theme */
     --level-site: 0 0% 12%;
-    --level-plant: 45 70% 42%;
-    --level-area-site: 220 25% 35%;
-    --level-area-util: 200 30% 40%;
-    --level-area-com: 35 55% 45%;
-    --level-area-rec: 45 65% 40%;
-    --level-area-tail: 0 35% 42%;
-    --level-area-sup: 180 25% 38%;
+    --level-plant: 45 85% 45%;
+    --level-area-site: 210 65% 50%;
+    --level-area-util: 170 60% 42%;
+    --level-area-com: 35 80% 50%;
+    --level-area-rec: 45 90% 48%;
+    --level-area-tail: 350 65% 55%;
+    --level-area-sup: 270 50% 55%;
     
     /* Sub-levels */
     --level-subarea: 45 30% 90%;
