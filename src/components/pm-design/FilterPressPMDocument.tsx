@@ -238,22 +238,22 @@ export const FilterPressPMDocument = () => {
 
           {/* Right Column */}
           <div>
-            <div className="grid grid-cols-[80px_1fr] border-b border-border">
+            <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
               <div className="px-2 py-1.5">Mechanical</div>
             </div>
-            <div className="grid grid-cols-[80px_1fr] border-b border-border">
+            <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div>
               <div className="px-2 py-1.5">Inspection (Fitter)</div>
             </div>
-            <div className="grid grid-cols-[80px_1fr] border-b border-border">
+            <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
                 <Calendar className="w-3 h-3 text-primary" />
                 Frequency:
               </div>
               <div className="px-2 py-1.5 font-medium">Daily</div>
             </div>
-            <div className="grid grid-cols-[80px_1fr]">
+            <div className="grid grid-cols-[120px_1fr]">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
               <div className="px-2 py-1.5"></div>
             </div>
