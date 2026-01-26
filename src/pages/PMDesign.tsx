@@ -545,7 +545,10 @@ const PMSidebarContent = ({
                         <div className="ml-4 py-1 space-y-0.5">
                           {frequencyGroups.map((freq) => {
                             const freqKey = `${discipline.id}-${freq.id}`;
-                            const freqData = discipline.frequencies[freq.id];
+                            const freqData = discipline.frequencies[freq.id as keyof typeof discipline.frequencies];
+                            
+                            // Skip if this frequency doesn't exist for this discipline
+                            if (!freqData) return null;
                             
                             return (
                               <Collapsible
