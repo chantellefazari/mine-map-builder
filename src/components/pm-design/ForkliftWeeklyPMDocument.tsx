@@ -103,10 +103,10 @@ const inspectionData: InspectionSection[] = [
 ];
 
 export const ForkliftWeeklyPMDocument = () => {
-  const [itemStatus, setItemStatus] = useState<Record<string, "ok" | null>>({});
+  const [itemStatus, setItemStatus] = useState<Record<string, "pass" | "fail" | null>>({});
 
-  const toggleStatus = (id: string) => {
-    setItemStatus(prev => ({ ...prev, [id]: prev[id] === "ok" ? null : "ok" }));
+  const setStatus = (id: string, status: "pass" | "fail") => {
+    setItemStatus(prev => ({ ...prev, [id]: prev[id] === status ? null : status }));
   };
 
   return (
@@ -180,7 +180,8 @@ export const ForkliftWeeklyPMDocument = () => {
                     <th className="px-3 py-1.5 text-left font-semibold w-12">#</th>
                     <th className="px-3 py-1.5 text-left font-semibold">Inspection Item</th>
                     <th className="px-3 py-1.5 text-left font-semibold w-48">Comments</th>
-                    <th className="px-3 py-1.5 text-center font-semibold w-16">OK</th>
+                    <th className="px-3 py-1.5 text-center font-semibold w-12">✓</th>
+                    <th className="px-3 py-1.5 text-center font-semibold w-12">✗</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,8 +195,15 @@ export const ForkliftWeeklyPMDocument = () => {
                       <td className="px-3 py-1.5 text-center">
                         <Checkbox 
                           className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
-                          checked={itemStatus[item.id] === "ok"}
-                          onCheckedChange={() => toggleStatus(item.id)}
+                          checked={itemStatus[item.id] === "pass"}
+                          onCheckedChange={() => setStatus(item.id, "pass")}
+                        />
+                      </td>
+                      <td className="px-3 py-1.5 text-center">
+                        <Checkbox 
+                          className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
+                          checked={itemStatus[item.id] === "fail"}
+                          onCheckedChange={() => setStatus(item.id, "fail")}
                         />
                       </td>
                     </tr>
