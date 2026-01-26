@@ -75,10 +75,6 @@ export const ROPlantPMDocument = () => {
               <p className="text-sm mt-1 text-primary/80">Mechanical Running PMs - Daily RO Plant Inspection (Fitter)</p>
             </div>
           </div>
-          {/* Logo on bottom right */}
-          <div className="absolute bottom-2 right-4">
-            <img src={tennantLogo} alt="Tennant Mines" className="h-8" />
-          </div>
         </div>
 
         {/* Header Information Grid */}
