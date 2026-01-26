@@ -173,11 +173,11 @@ export const MillDailyPMDocument = () => {
         {/* Banner with Title Overlay */}
         <div className="relative">
           <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-          {/* Title on the black section - centered */}
-          <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
+          {/* Title on the black section - offset right to avoid logo */}
+          <div className="absolute bottom-0 left-[35%] right-0 h-[60%] flex items-center justify-center">
             <div className="text-center">
-              <h1 className="text-xl font-bold tracking-wide text-primary">Tenant Creek - Daily Mill Inspection</h1>
-              <p className="text-sm mt-1 text-primary/80">Mechanical Running PMs - Daily Inspection (Fitter)</p>
+              <h1 className="text-2xl font-bold tracking-wide text-primary">Tenant Creek - Daily Mill Inspection</h1>
+              <p className="text-base mt-1 text-primary/80">Mechanical Running PMs - Daily Inspection (Fitter)</p>
             </div>
           </div>
         </div>
