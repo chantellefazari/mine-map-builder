@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Toggle } from "@/components/ui/toggle";
 import { 
   AlertTriangle, 
   Shield, 
@@ -20,7 +22,16 @@ import {
   Lock,
   AlertCircle,
   CheckCircle2,
-  Info
+  Info,
+  Skull,
+  Cog,
+  Volume2,
+  Flame,
+  Weight,
+  CircleDot,
+  MoveHorizontal,
+  Hand,
+  Car
 } from "lucide-react";
 
 interface InspectionTask {
@@ -32,6 +43,28 @@ interface EquipmentSection {
   equipmentName: string;
   tasks: InspectionTask[];
 }
+
+interface Hazard {
+  id: string;
+  icon: React.ReactNode;
+  label: string;
+}
+
+const hazardsList: Hazard[] = [
+  { id: "electrical", icon: <Zap className="w-4 h-4" />, label: "Electrical" },
+  { id: "hydraulic", icon: <Droplets className="w-4 h-4" />, label: "Hydraulic" },
+  { id: "pneumatic", icon: <Wind className="w-4 h-4" />, label: "Pneumatic" },
+  { id: "thermal", icon: <Thermometer className="w-4 h-4" />, label: "Thermal" },
+  { id: "cyanide", icon: <Skull className="w-4 h-4" />, label: "Cyanide" },
+  { id: "mechanical", icon: <Cog className="w-4 h-4" />, label: "Mechanical" },
+  { id: "noise", icon: <Volume2 className="w-4 h-4" />, label: "Noise" },
+  { id: "fire", icon: <Flame className="w-4 h-4" />, label: "Fire" },
+  { id: "gravity", icon: <Weight className="w-4 h-4" />, label: "Gravity" },
+  { id: "pressure", icon: <CircleDot className="w-4 h-4" />, label: "Pressure" },
+  { id: "pinch-points", icon: <MoveHorizontal className="w-4 h-4" />, label: "Pinch Points" },
+  { id: "manual-handling", icon: <Hand className="w-4 h-4" />, label: "Manual Handling" },
+  { id: "mobile-equipment", icon: <Car className="w-4 h-4" />, label: "Mobile Equipment" },
+];
 
 const inspectionData: EquipmentSection[] = [
   {
@@ -149,6 +182,16 @@ const inspectionData: EquipmentSection[] = [
 ];
 
 export const FilterPressPMDocument = () => {
+  const [selectedHazards, setSelectedHazards] = useState<string[]>([]);
+
+  const toggleHazard = (hazardId: string) => {
+    setSelectedHazards(prev => 
+      prev.includes(hazardId) 
+        ? prev.filter(id => id !== hazardId)
+        : [...prev, hazardId]
+    );
+  };
+
   return (
     <div className="bg-background min-h-full">
       {/* Document Header */}
@@ -262,13 +305,13 @@ export const FilterPressPMDocument = () => {
               <div className="flex items-start gap-3 mb-4">
                 <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
                 <p className="text-sm font-medium">
-                  Before commencing this work complete a <span className="font-bold text-destructive">SMART START</span> every time to check that no abnormal conditions exist.
+                  Before commencing this work complete a <span className="font-bold text-destructive">TAKE 5</span> every time to check that no abnormal conditions exist.
                 </p>
               </div>
               <div className="flex items-start gap-3 mb-4">
                 <HardHat className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                 <p className="text-sm">
-                  Always wear the correct PPE. Gas monitor to be carried in plant areas where signed.
+                  Always wear the correct PPE. Cyanide monitor to be carried in plant areas where signed.
                 </p>
               </div>
               <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3">
@@ -285,45 +328,22 @@ export const FilterPressPMDocument = () => {
             <div className="bg-amber-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-amber-600" />
               <span className="text-amber-700 font-bold">HAZARD IDENTIFICATION</span>
+              <span className="text-xs text-muted-foreground ml-2">(Select all that apply)</span>
             </div>
             <div className="p-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="border border-border rounded-lg p-3 flex items-center gap-3 bg-card">
-                  <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-                    <Zap className="w-5 h-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Electrical</p>
-                    <p className="text-sm font-medium">Live Equipment</p>
-                  </div>
-                </div>
-                <div className="border border-border rounded-lg p-3 flex items-center gap-3 bg-card">
-                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <Droplets className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Hydraulic</p>
-                    <p className="text-sm font-medium">Pressurized Lines</p>
-                  </div>
-                </div>
-                <div className="border border-border rounded-lg p-3 flex items-center gap-3 bg-card">
-                  <div className="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
-                    <Wind className="w-5 h-5 text-cyan-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Pneumatic</p>
-                    <p className="text-sm font-medium">Compressed Air</p>
-                  </div>
-                </div>
-                <div className="border border-border rounded-lg p-3 flex items-center gap-3 bg-card">
-                  <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
-                    <Thermometer className="w-5 h-5 text-red-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Thermal</p>
-                    <p className="text-sm font-medium">Hot Surfaces</p>
-                  </div>
-                </div>
+              <div className="flex flex-wrap gap-2">
+                {hazardsList.map((hazard) => (
+                  <Toggle
+                    key={hazard.id}
+                    pressed={selectedHazards.includes(hazard.id)}
+                    onPressedChange={() => toggleHazard(hazard.id)}
+                    className="data-[state=on]:bg-amber-500 data-[state=on]:text-white border border-border px-3 py-2 gap-2"
+                    aria-label={`Toggle ${hazard.label} hazard`}
+                  >
+                    {hazard.icon}
+                    <span className="text-sm font-medium">{hazard.label}</span>
+                  </Toggle>
+                ))}
               </div>
             </div>
           </div>
