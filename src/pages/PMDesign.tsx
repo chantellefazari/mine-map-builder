@@ -21,12 +21,15 @@ import { MillDailyPMDocument } from "@/components/pm-design/MillDailyPMDocument"
 import { ROPlantPMDocument } from "@/components/pm-design/ROPlantPMDocument";
 import { AcidElutionPMDocument } from "@/components/pm-design/AcidElutionPMDocument";
 import { AirWaterServicesPMDocument } from "@/components/pm-design/AirWaterServicesPMDocument";
+import { BottomOfTanksPMDocument } from "@/components/pm-design/BottomOfTanksPMDocument";
+import { DieselFarmPMDocument } from "@/components/pm-design/DieselFarmPMDocument";
+import { FilterPressWeeklyPMDocument } from "@/components/pm-design/FilterPressWeeklyPMDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -47,9 +50,12 @@ const disciplines = [
         { id: "mill-daily", name: "Mill Daily Inspection" },
         { id: "ro-plant-daily", name: "RO Plant Daily Inspection" }
       ] },
-      "1-week": { count: 2, pms: [
+      "1-week": { count: 5, pms: [
         { id: "acid-elution-weekly", name: "Acid Wash & Elution Weekly Inspection" },
-        { id: "air-water-services-weekly", name: "Air & Water Services Weekly Inspection" }
+        { id: "air-water-services-weekly", name: "Air & Water Services Weekly Inspection" },
+        { id: "bottom-of-tanks-weekly", name: "Bottom of Tanks Weekly Inspection" },
+        { id: "diesel-farm-weekly", name: "Diesel Farm Weekly Inspection" },
+        { id: "filter-press-weekly", name: "Filter Press Weekly Inspection" }
       ] },
       "2-week": { count: 0, pms: [] },
       "6-week": { count: 0, pms: [] },
@@ -114,6 +120,9 @@ const PMDesign = () => {
       case "ro-plant-daily": return "RO Plant Daily Inspection";
       case "acid-elution-weekly": return "Acid Wash & Elution Weekly Inspection";
       case "air-water-services-weekly": return "Air & Water Services Weekly Inspection";
+      case "bottom-of-tanks-weekly": return "Bottom of Tanks Weekly Inspection";
+      case "diesel-farm-weekly": return "Diesel Farm Weekly Inspection";
+      case "filter-press-weekly": return "Filter Press Weekly Inspection";
       default: return "PM Document";
     }
   };
@@ -132,12 +141,18 @@ const PMDesign = () => {
         return <AcidElutionPMDocument />;
       case "air-water-services-weekly":
         return <AirWaterServicesPMDocument />;
+      case "bottom-of-tanks-weekly":
+        return <BottomOfTanksPMDocument />;
+      case "diesel-farm-weekly":
+        return <DieselFarmPMDocument />;
+      case "filter-press-weekly":
+        return <FilterPressWeeklyPMDocument />;
       default:
         return null;
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly"].includes(activeView);
 
   return (
     <SidebarProvider>
