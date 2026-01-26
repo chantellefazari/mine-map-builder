@@ -71,7 +71,7 @@ export const ROPlantPMDocument = () => {
           <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
           {/* Logo on left side of black section */}
           <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
-            <img src={tennantIcon} alt="Tennant Mines" className="h-10" />
+            <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
           </div>
           {/* Title on the black section - centered */}
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
