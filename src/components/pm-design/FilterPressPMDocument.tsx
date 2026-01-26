@@ -233,10 +233,6 @@ export const FilterPressPMDocument = () => {
           {/* Middle Column */}
           <div className="border-r border-border">
             <div className="grid grid-cols-[80px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Mode:</div>
-              <div className="px-2 py-1.5">Running</div>
-            </div>
-            <div className="grid grid-cols-[80px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
               <div className="px-2 py-1.5">Mechanical</div>
             </div>
