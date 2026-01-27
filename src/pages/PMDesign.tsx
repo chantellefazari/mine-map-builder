@@ -191,11 +191,16 @@ const disciplines = [
         subgroups: [] 
       },
       "24-week": { 
-        pms: [
-          { id: "rcd-injection-24-weekly", name: "RCD Injection Test" },
-          { id: "rcd-testing-sheets", name: "RCD Testing Sheets" },
-        ], 
-        subgroups: [] 
+        pms: [], 
+        subgroups: [
+          { 
+            id: "rcd-testing", 
+            label: "RCD Testing Sheets", 
+            pms: [
+              { id: "rcd-testing-sheets", name: "All Generators (Tabbed)" },
+            ] 
+          },
+        ]
       },
       "52-week": { 
         pms: [
