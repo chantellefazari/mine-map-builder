@@ -1,4 +1,5 @@
 import { ComponentItem } from "./ComponentsTable";
+import { pidTagMappings } from "../hierarchy/pidTagMappings";
 
 // Generic component templates for each asset type
 // NO OEM data - functional names only
@@ -6,6 +7,25 @@ import { ComponentItem } from "./ComponentsTable";
 
 let idCounter = 1;
 const generateId = () => `COMP-${String(idCounter++).padStart(4, '0')}`;
+
+// Build a lookup map from asset number to P&ID tags
+const buildPidTagLookup = (): Map<string, string[]> => {
+  const lookup = new Map<string, string[]>();
+  pidTagMappings.forEach((mapping) => {
+    const existing = lookup.get(mapping.assetNumber) || [];
+    existing.push(mapping.pidTag);
+    lookup.set(mapping.assetNumber, existing);
+  });
+  return lookup;
+};
+
+const pidTagsByAsset = buildPidTagLookup();
+
+// Get P&ID tag(s) for an asset number
+const getPidTag = (assetNumber: string): string => {
+  const tags = pidTagsByAsset.get(assetNumber) || [];
+  return tags.join(", ");
+};
 
 // Helper to create component entries
 const createComponent = (
@@ -34,7 +54,7 @@ const createComponent = (
   oemManufacturer: "",
   oemModel: "",
   oemSerialNumber: "",
-  pidTag: "",
+  pidTag: getPidTag(assetNumber),
   notes: "",
   status: "Unknown",
 });
