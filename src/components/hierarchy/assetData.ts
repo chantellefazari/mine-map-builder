@@ -894,143 +894,31 @@ export const areasData: Area[] = [
           { 
             label: "Conveyor CV01", 
             equipment: [
-              { 
-                assetNumber: "CV01", 
-                name: "Conveyor CV01",
-                pidTags: ["04-CV-001"],
-                components: [
-                  {
-                    componentCode: "K-ROL-STR-600B25",
-                    componentType: "Conveyor Roller",
-                    componentName: "Steel Trough Roller",
-                    manufacturer: "N/A"
-                  },
-                  {
-                    componentCode: "K-ROL-SRR-1200B25",
-                    componentType: "Conveyor Roller",
-                    componentName: "Steel Return Roller",
-                    manufacturer: "N/A"
-                  },
-                  {
-                    componentCode: "K-ROL-SG-60x125-B",
-                    componentType: "Conveyor Roller",
-                    componentName: "Side Guide Roller",
-                    manufacturer: "N/A"
-                  }
-                ]
-              },
-              { 
-                assetNumber: "CV01-MTR001", 
-                name: "Conveyor CV01 – Motor",
-                pidTags: ["04-CV-001M"],
-                components: [
-                  {
-                    componentCode: "W22-IE3-315S/M",
-                    componentType: "Electric Motor",
-                    componentName: "Conveyor Drive Motor",
-                    manufacturer: "WEG",
-                    model: "W22 IE3",
-                    motorSpeed: "1480 rpm",
-                    protection: "IP55",
-                    voltage: "415V"
-                  }
-                ]
-              },
-              { 
-                assetNumber: "CV01-GBX001", 
-                name: "Conveyor CV01 – Gearbox",
-                pidTags: ["04-CV-001GB"],
-                components: [
-                  {
-                    componentCode: "K167R97",
-                    componentType: "Helical Bevel Gearbox",
-                    componentName: "Conveyor Gearbox",
-                    manufacturer: "SEW-EURODRIVE",
-                    model: "K167R97",
-                    oilType: "CLP 220",
-                    oilVolume: "24L"
-                  }
-                ]
-              },
-              { assetNumber: "CV01-MCC001", name: "Conveyor CV01 – MCC Cell", pidTags: ["04-CV-001MC"] },
-              { assetNumber: "CV01-LCS001", name: "Conveyor CV01 – Local Control Station", pidTags: ["04-CV-001LCS"] },
-              { assetNumber: "CV01-PWS001", name: "Conveyor CV01 – Pull Wire Switch 1", pidTags: ["04-XS-CV01A"] },
-              { assetNumber: "CV01-PWS002", name: "Conveyor CV01 – Pull Wire Switch 2", pidTags: ["04-XS-CV01B"] },
-              { assetNumber: "CV01-BAS001", name: "Conveyor CV01 – Belt Alignment Drift Switch 1", pidTags: ["04-ZS-CV01A"] },
-              { assetNumber: "CV01-BAS002", name: "Conveyor CV01 – Belt Alignment Drift Switch 2", pidTags: ["04-ZS-CV01B"] },
-              { assetNumber: "CV01-USS001", name: "Conveyor CV01 – Underspeed Switch", pidTags: ["04-SS-CV01"] },
-              { assetNumber: "CV01-CHU001", name: "Conveyor CV01 – Discharge Chute", pidTags: ["04-CH-CV01"] },
+              { assetNumber: "CV01", name: "Conveyor CV01" },
+              { assetNumber: "CV01-MTR001", name: "Conveyor CV01 – Motor" },
+              { assetNumber: "CV01-GBX001", name: "Conveyor CV01 – Gearbox" },
+              { assetNumber: "CV01-MCC001", name: "Conveyor CV01 – MCC Cell" },
+              { assetNumber: "CV01-LCS001", name: "Conveyor CV01 – Local Control Station" },
+              { assetNumber: "CV01-PWS001", name: "Conveyor CV01 – Pull Wire Switch 1" },
+              { assetNumber: "CV01-PWS002", name: "Conveyor CV01 – Pull Wire Switch 2" },
+              { assetNumber: "CV01-BAS001", name: "Conveyor CV01 – Belt Alignment Drift Switch 1" },
+              { assetNumber: "CV01-BAS002", name: "Conveyor CV01 – Belt Alignment Drift Switch 2" },
+              { assetNumber: "CV01-USS001", name: "Conveyor CV01 – Underspeed Switch" },
             ]
           },
           { 
             label: "Conveyor CV02", 
             equipment: [
-              { 
-                assetNumber: "CV02", 
-                name: "Conveyor CV02",
-                pidTags: ["04-CV-002"],
-                components: [
-                  {
-                    componentCode: "K-ROL-STR-600B25",
-                    componentType: "Conveyor Roller",
-                    componentName: "Steel Trough Roller",
-                    manufacturer: "N/A"
-                  },
-                  {
-                    componentCode: "K-ROL-SRR-1200B25",
-                    componentType: "Conveyor Roller",
-                    componentName: "Steel Return Roller",
-                    manufacturer: "N/A"
-                  },
-                  {
-                    componentCode: "K-ROL-SG-60x125-B",
-                    componentType: "Conveyor Roller",
-                    componentName: "Side Guide Roller",
-                    manufacturer: "N/A"
-                  }
-                ]
-              },
-              { 
-                assetNumber: "CV02-MTR001", 
-                name: "Conveyor CV02 – Motor",
-                pidTags: ["04-CV-002M"],
-                components: [
-                  {
-                    componentCode: "W22-IE3-315S/M",
-                    componentType: "Electric Motor",
-                    componentName: "Conveyor Drive Motor",
-                    manufacturer: "WEG",
-                    model: "W22 IE3",
-                    motorSpeed: "1480 rpm",
-                    protection: "IP55",
-                    voltage: "415V"
-                  }
-                ]
-              },
-              { 
-                assetNumber: "CV02-GBX001", 
-                name: "Conveyor CV02 – Gearbox",
-                pidTags: ["04-CV-002GB"],
-                components: [
-                  {
-                    componentCode: "K167R97",
-                    componentType: "Helical Bevel Gearbox",
-                    componentName: "Conveyor Gearbox",
-                    manufacturer: "SEW-EURODRIVE",
-                    model: "K167R97",
-                    oilType: "CLP 220",
-                    oilVolume: "24L"
-                  }
-                ]
-              },
-              { assetNumber: "CV02-MCC001", name: "Conveyor CV02 – MCC Cell", pidTags: ["04-CV-002MC"] },
-              { assetNumber: "CV02-LCS001", name: "Conveyor CV02 – Local Control Station", pidTags: ["04-CV-002LCS"] },
-              { assetNumber: "CV02-PWS001", name: "Conveyor CV02 – Pull Wire Switch 1", pidTags: ["04-XS-CV02A"] },
-              { assetNumber: "CV02-PWS002", name: "Conveyor CV02 – Pull Wire Switch 2", pidTags: ["04-XS-CV02B"] },
-              { assetNumber: "CV02-BAS001", name: "Conveyor CV02 – Belt Alignment Drift Switch 1", pidTags: ["04-ZS-CV02A"] },
-              { assetNumber: "CV02-BAS002", name: "Conveyor CV02 – Belt Alignment Drift Switch 2", pidTags: ["04-ZS-CV02B"] },
-              { assetNumber: "CV02-USS001", name: "Conveyor CV02 – Underspeed Switch", pidTags: ["04-SS-CV02"] },
-              { assetNumber: "CV02-CHU001", name: "Conveyor CV02 – Discharge Chute", pidTags: ["04-CH-CV02"] },
+              { assetNumber: "CV02", name: "Conveyor CV02" },
+              { assetNumber: "CV02-MTR001", name: "Conveyor CV02 – Motor" },
+              { assetNumber: "CV02-GBX001", name: "Conveyor CV02 – Gearbox" },
+              { assetNumber: "CV02-MCC001", name: "Conveyor CV02 – MCC Cell" },
+              { assetNumber: "CV02-LCS001", name: "Conveyor CV02 – Local Control Station" },
+              { assetNumber: "CV02-PWS001", name: "Conveyor CV02 – Pull Wire Switch 1" },
+              { assetNumber: "CV02-PWS002", name: "Conveyor CV02 – Pull Wire Switch 2" },
+              { assetNumber: "CV02-BAS001", name: "Conveyor CV02 – Belt Alignment Drift Switch 1" },
+              { assetNumber: "CV02-BAS002", name: "Conveyor CV02 – Belt Alignment Drift Switch 2" },
+              { assetNumber: "CV02-USS001", name: "Conveyor CV02 – Underspeed Switch" },
             ]
           },
         ],
