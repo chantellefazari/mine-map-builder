@@ -892,33 +892,21 @@ export const areasData: Area[] = [
         label: "Conveying",
         parentAssets: [
           { 
-            label: "Conveyor CV01", 
+            label: "Transfer Conveyor", 
             equipment: [
-              { assetNumber: "CV01", name: "Conveyor CV01" },
-              { assetNumber: "CV01-MTR001", name: "Conveyor CV01 – Motor" },
-              { assetNumber: "CV01-GBX001", name: "Conveyor CV01 – Gearbox" },
-              { assetNumber: "CV01-MCC001", name: "Conveyor CV01 – MCC Cell" },
-              { assetNumber: "CV01-LCS001", name: "Conveyor CV01 – Local Control Station" },
-              { assetNumber: "CV01-PWS001", name: "Conveyor CV01 – Pull Wire Switch 1" },
-              { assetNumber: "CV01-PWS002", name: "Conveyor CV01 – Pull Wire Switch 2" },
-              { assetNumber: "CV01-BAS001", name: "Conveyor CV01 – Belt Alignment Drift Switch 1" },
-              { assetNumber: "CV01-BAS002", name: "Conveyor CV01 – Belt Alignment Drift Switch 2" },
-              { assetNumber: "CV01-USS001", name: "Conveyor CV01 – Underspeed Switch" },
+              { assetNumber: "TRCV001", name: "Transfer Conveyor", pidTags: ["04-FE-101"] },
+              { assetNumber: "TRCV001-MTR001", name: "Transfer Conveyor – Motor", pidTags: ["04-FE-101M"] },
+              { assetNumber: "TRCV001-GBX001", name: "Transfer Conveyor – Gearbox", pidTags: ["04-FE-101GB"] },
+              { assetNumber: "TRCV001-MCC001", name: "Transfer Conveyor – MCC Cell", pidTags: ["04-FE-101MC"] },
+              { assetNumber: "TRCV001-LCS001", name: "Transfer Conveyor – Local Control Station", pidTags: ["04-FE-101LCS"] },
+              { assetNumber: "TRCV001-PWS001", name: "Transfer Conveyor – Pull Wire Switch", pidTags: ["04-FE-101PWS"] },
+              { assetNumber: "TRCV001-CHU001", name: "Transfer Conveyor – Discharge Chute", pidTags: ["04-CH-100"] },
             ]
           },
           { 
-            label: "Conveyor CV02", 
+            label: "Ball Mill Scatts Conveyor", 
             equipment: [
-              { assetNumber: "CV02", name: "Conveyor CV02" },
-              { assetNumber: "CV02-MTR001", name: "Conveyor CV02 – Motor" },
-              { assetNumber: "CV02-GBX001", name: "Conveyor CV02 – Gearbox" },
-              { assetNumber: "CV02-MCC001", name: "Conveyor CV02 – MCC Cell" },
-              { assetNumber: "CV02-LCS001", name: "Conveyor CV02 – Local Control Station" },
-              { assetNumber: "CV02-PWS001", name: "Conveyor CV02 – Pull Wire Switch 1" },
-              { assetNumber: "CV02-PWS002", name: "Conveyor CV02 – Pull Wire Switch 2" },
-              { assetNumber: "CV02-BAS001", name: "Conveyor CV02 – Belt Alignment Drift Switch 1" },
-              { assetNumber: "CV02-BAS002", name: "Conveyor CV02 – Belt Alignment Drift Switch 2" },
-              { assetNumber: "CV02-USS001", name: "Conveyor CV02 – Underspeed Switch" },
+              { assetNumber: "BMSC001", name: "Ball Mill Scatts Conveyor", pidTags: ["04-CV-011"] },
             ]
           },
         ],
