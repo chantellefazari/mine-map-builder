@@ -102,7 +102,7 @@ export const MechanicalWorkOrderTemplate = () => {
                     </label>
                     <label className="flex items-center gap-1">
                       <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">Modification</span>
+                      <span className="text-xs">Shutdown</span>
                     </label>
                   </div>
                 </div>
@@ -192,7 +192,17 @@ export const MechanicalWorkOrderTemplate = () => {
               <div>
                 <p className="text-xs font-medium text-gray-600 mb-2">PPE Required:</p>
                 <div className="flex flex-wrap gap-4">
-                  {["Safety Glasses", "Hearing Protection", "Gloves", "Hard Hat", "Steel Caps", "Face Shield", "Respirator"].map((ppe) => (
+                  {/* Always ticked PPE */}
+                  {["Safety Glasses", "Hard Hat", "Steel Caps"].map((ppe) => (
+                    <label key={ppe} className="flex items-center gap-1">
+                      <div className="w-4 h-4 border border-gray-400 bg-gray-100 flex items-center justify-center">
+                        <span className="text-xs font-bold text-gray-700">✓</span>
+                      </div>
+                      <span className="text-xs">{ppe}</span>
+                    </label>
+                  ))}
+                  {/* Optional PPE */}
+                  {["Hearing Protection", "Gloves", "Face Shield", "Respirator"].map((ppe) => (
                     <label key={ppe} className="flex items-center gap-1">
                       <div className="w-4 h-4 border border-gray-400"></div>
                       <span className="text-xs">{ppe}</span>
