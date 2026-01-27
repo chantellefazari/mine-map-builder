@@ -68,7 +68,7 @@ export const MechanicalWorkOrderTemplate = () => {
               <div className="grid grid-cols-2 gap-2">
                 <div className="border border-gray-300 p-2">
                   <span className="text-xs text-gray-500 block">Priority</span>
-                  <div className="flex gap-3 mt-1">
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-1">
                     <label className="flex items-center gap-1">
                       <div className="w-4 h-4 border border-gray-400"></div>
                       <span className="text-xs">Critical</span>
@@ -77,8 +77,6 @@ export const MechanicalWorkOrderTemplate = () => {
                       <div className="w-4 h-4 border border-gray-400"></div>
                       <span className="text-xs">High</span>
                     </label>
-                  </div>
-                  <div className="flex gap-3 mt-1">
                     <label className="flex items-center gap-1">
                       <div className="w-4 h-4 border border-gray-400"></div>
                       <span className="text-xs">Medium</span>
