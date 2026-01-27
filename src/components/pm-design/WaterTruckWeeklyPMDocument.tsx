@@ -156,7 +156,7 @@ export const WaterTruckWeeklyPMDocument = () => {
         </div>
 
         {/* Header Information Grid */}
-        <div className="grid grid-cols-5 border-b border-border text-xs">
+        <div className="grid grid-cols-5 border-t border-b border-border text-xs">
           <div className="border-r border-border">
             <div className="bg-muted px-2 py-1.5 font-semibold border-b border-border text-center">Asset Number</div>
             <div className="px-2 py-2 min-h-[32px]"></div>
