@@ -10,27 +10,9 @@ type TemplateType = "mechanical" | "electrical" | "hydraulic" | "general" | null
 const templateCategories = [
   {
     id: "mechanical" as TemplateType,
-    name: "Mechanical Work Orders",
-    icon: Cog,
-    description: "Pump repairs, gearbox rebuilds, bearing replacements",
-  },
-  {
-    id: "electrical" as TemplateType,
-    name: "Electrical Work Orders",
-    icon: Zap,
-    description: "Motor replacements, cable repairs, switchboard maintenance",
-  },
-  {
-    id: "hydraulic" as TemplateType,
-    name: "Hydraulic Work Orders",
-    icon: Droplets,
-    description: "Cylinder repairs, hose replacements, valve maintenance",
-  },
-  {
-    id: "general" as TemplateType,
-    name: "General Maintenance",
-    icon: Wrench,
-    description: "Fabrication, structural repairs, general tasks",
+    name: "Work Orders",
+    icon: ClipboardList,
+    description: "Standard work order template for all maintenance tasks",
   },
 ];
 

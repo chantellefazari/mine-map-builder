@@ -14,7 +14,7 @@ export const MechanicalWorkOrderTemplate = () => {
     <div className="space-y-4">
       {/* Header with Print Button */}
       <div className="flex items-center justify-between print:hidden">
-        <h2 className="text-xl font-semibold text-foreground">Mechanical Work Order</h2>
+        <h2 className="text-xl font-semibold text-foreground">Work Order</h2>
         <Button onClick={handlePrint} className="gap-2">
           <Printer className="h-4 w-4" />
           Print
@@ -33,8 +33,7 @@ export const MechanicalWorkOrderTemplate = () => {
             </div>
           </div>
           <div className="text-right">
-            <h2 className="text-lg font-bold text-[#D4AF37]">MECHANICAL WORK ORDER</h2>
-            <p className="text-xs text-gray-300">Corrective / Breakdown Maintenance</p>
+            <h2 className="text-lg font-bold text-[#D4AF37]">WORK ORDER</h2>
           </div>
         </div>
 
@@ -130,40 +129,67 @@ export const MechanicalWorkOrderTemplate = () => {
             <div className="bg-amber-100 px-3 py-2 border-b border-gray-300">
               <span className="font-semibold text-amber-800">⚠️ SAFETY REQUIREMENTS</span>
             </div>
-            <div className="p-3">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs font-medium text-gray-600 mb-2">Isolation Required:</p>
-                  <div className="flex gap-4">
-                    <label className="flex items-center gap-1">
-                      <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">Yes</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">No</span>
-                    </label>
+            <div className="p-3 space-y-4">
+              {/* Isolation Details */}
+              <div className="border border-gray-300 p-3">
+                <p className="text-xs font-medium text-gray-600 mb-2">Isolation / LOTO Details:</p>
+                <div className="flex gap-4 mb-3">
+                  <label className="flex items-center gap-1">
+                    <div className="w-4 h-4 border border-gray-400"></div>
+                    <span className="text-xs">Isolation Required</span>
+                  </label>
+                  <label className="flex items-center gap-1">
+                    <div className="w-4 h-4 border border-gray-400"></div>
+                    <span className="text-xs">No Isolation Required</span>
+                  </label>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="border border-gray-300 p-2">
+                    <span className="text-xs text-gray-500 block">Isolation Number</span>
+                    <span className="font-mono font-medium"></span>
+                  </div>
+                  <div className="border border-gray-300 p-2">
+                    <span className="text-xs text-gray-500 block">Isolation Point(s)</span>
+                    <span className="font-medium"></span>
+                  </div>
+                  <div className="border border-gray-300 p-2">
+                    <span className="text-xs text-gray-500 block">Lock Number(s)</span>
+                    <span className="font-medium"></span>
                   </div>
                 </div>
-                <div>
-                  <p className="text-xs font-medium text-gray-600 mb-2">Permit Required:</p>
-                  <div className="flex gap-4">
-                    <label className="flex items-center gap-1">
-                      <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">Hot Work</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">Confined Space</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">Working at Heights</span>
-                    </label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="border border-gray-300 p-2">
+                    <span className="text-xs text-gray-500 block">Isolated By</span>
+                    <span className="font-medium"></span>
+                  </div>
+                  <div className="border border-gray-300 p-2">
+                    <span className="text-xs text-gray-500 block">Date / Time</span>
+                    <span className="font-medium"></span>
                   </div>
                 </div>
               </div>
-              <div className="mt-3">
+
+              {/* Permits */}
+              <div>
+                <p className="text-xs font-medium text-gray-600 mb-2">Permit Required:</p>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-1">
+                    <div className="w-4 h-4 border border-gray-400"></div>
+                    <span className="text-xs">Hot Work</span>
+                  </label>
+                  <label className="flex items-center gap-1">
+                    <div className="w-4 h-4 border border-gray-400"></div>
+                    <span className="text-xs">Confined Space</span>
+                  </label>
+                  <label className="flex items-center gap-1">
+                    <div className="w-4 h-4 border border-gray-400"></div>
+                    <span className="text-xs">Working at Heights</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* PPE */}
+              <div>
                 <p className="text-xs font-medium text-gray-600 mb-2">PPE Required:</p>
                 <div className="flex flex-wrap gap-4">
                   {["Safety Glasses", "Hearing Protection", "Gloves", "Hard Hat", "Steel Caps", "Face Shield", "Respirator"].map((ppe) => (
