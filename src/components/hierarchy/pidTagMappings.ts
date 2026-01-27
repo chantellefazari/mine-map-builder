@@ -744,6 +744,33 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "15-LT-003", assetNumber: "LTW003", description: "Lighting Tower 3", status: "mapped" },
   { pidTag: "15-LT-004", assetNumber: "LTW004", description: "Lighting Tower 4", status: "mapped" },
   { pidTag: "15-LT-005", assetNumber: "LTW005", description: "Lighting Tower 5", status: "mapped" },
+  
+  // ============ CONVEYING ============
+  // Conveyor CV01
+  { pidTag: "04-CV-001", assetNumber: "CV01", description: "Conveyor CV01", status: "mapped" },
+  { pidTag: "04-CV-001M", assetNumber: "CV01-MTR001", description: "Conveyor CV01 Motor", status: "mapped" },
+  { pidTag: "04-CV-001GB", assetNumber: "CV01-GBX001", description: "Conveyor CV01 Gearbox", status: "mapped" },
+  { pidTag: "04-CV-001MC", assetNumber: "CV01-MCC001", description: "Conveyor CV01 MCC Cell", status: "mapped" },
+  { pidTag: "04-CV-001LCS", assetNumber: "CV01-LCS001", description: "Conveyor CV01 Local Control Station", status: "mapped" },
+  { pidTag: "04-XS-CV01A", assetNumber: "CV01-PWS001", description: "Conveyor CV01 Pull Wire Switch 1", status: "mapped" },
+  { pidTag: "04-XS-CV01B", assetNumber: "CV01-PWS002", description: "Conveyor CV01 Pull Wire Switch 2", status: "mapped" },
+  { pidTag: "04-ZS-CV01A", assetNumber: "CV01-BAS001", description: "Conveyor CV01 Belt Alignment Drift Switch 1", status: "mapped" },
+  { pidTag: "04-ZS-CV01B", assetNumber: "CV01-BAS002", description: "Conveyor CV01 Belt Alignment Drift Switch 2", status: "mapped" },
+  { pidTag: "04-SS-CV01", assetNumber: "CV01-USS001", description: "Conveyor CV01 Underspeed Switch", status: "mapped" },
+  { pidTag: "04-CH-CV01", assetNumber: "CV01-CHU001", description: "Conveyor CV01 Discharge Chute", status: "mapped" },
+  
+  // Conveyor CV02
+  { pidTag: "04-CV-002", assetNumber: "CV02", description: "Conveyor CV02", status: "mapped" },
+  { pidTag: "04-CV-002M", assetNumber: "CV02-MTR001", description: "Conveyor CV02 Motor", status: "mapped" },
+  { pidTag: "04-CV-002GB", assetNumber: "CV02-GBX001", description: "Conveyor CV02 Gearbox", status: "mapped" },
+  { pidTag: "04-CV-002MC", assetNumber: "CV02-MCC001", description: "Conveyor CV02 MCC Cell", status: "mapped" },
+  { pidTag: "04-CV-002LCS", assetNumber: "CV02-LCS001", description: "Conveyor CV02 Local Control Station", status: "mapped" },
+  { pidTag: "04-XS-CV02A", assetNumber: "CV02-PWS001", description: "Conveyor CV02 Pull Wire Switch 1", status: "mapped" },
+  { pidTag: "04-XS-CV02B", assetNumber: "CV02-PWS002", description: "Conveyor CV02 Pull Wire Switch 2", status: "mapped" },
+  { pidTag: "04-ZS-CV02A", assetNumber: "CV02-BAS001", description: "Conveyor CV02 Belt Alignment Drift Switch 1", status: "mapped" },
+  { pidTag: "04-ZS-CV02B", assetNumber: "CV02-BAS002", description: "Conveyor CV02 Belt Alignment Drift Switch 2", status: "mapped" },
+  { pidTag: "04-SS-CV02", assetNumber: "CV02-USS001", description: "Conveyor CV02 Underspeed Switch", status: "mapped" },
+  { pidTag: "04-CH-CV02", assetNumber: "CV02-CHU001", description: "Conveyor CV02 Discharge Chute", status: "mapped" },
 ];
 
 // Helper function to get P&ID tags for a given asset number
