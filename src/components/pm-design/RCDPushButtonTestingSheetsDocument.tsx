@@ -82,6 +82,46 @@ const generatorLocations: GeneratorLocation[] = [
       { description: "", rating: "" },
     ]
   },
+  {
+    id: "lab",
+    name: "Lab Generator",
+    assetNumber: "GEN-012",
+    area: "LAB",
+    circuits: [
+      { description: "15A GPO", rating: "16A" },
+      { description: "15A GPO", rating: "16A" },
+      { description: "3 PHASE GPO", rating: "32A" },
+      { description: "3 PHASE GPO", rating: "32A" },
+      { description: "", rating: "" },
+      { description: "", rating: "" },
+    ]
+  },
+  {
+    id: "crusher-workshop",
+    name: "Crusher Workshop Generator",
+    assetNumber: "GEN-013",
+    area: "CRUSHER",
+    circuits: [
+      { description: "RCD", rating: "32A" },
+      { description: "", rating: "" },
+      { description: "", rating: "" },
+      { description: "", rating: "" },
+    ]
+  },
+  {
+    id: "crusher-fuel-farm",
+    name: "Crusher Fuel Farm Generator",
+    assetNumber: "GEN-014",
+    area: "CRUSHER FUEL FARM",
+    circuits: [
+      { description: "3 PHASE GPO", rating: "25A" },
+      { description: "15A GPO", rating: "16A" },
+      { description: "15A GPO", rating: "16A" },
+      { description: "15A GPO", rating: "20A" },
+      { description: "", rating: "" },
+      { description: "", rating: "" },
+    ]
+  },
 ];
 
 interface RCDPushButtonTestSheetProps {
