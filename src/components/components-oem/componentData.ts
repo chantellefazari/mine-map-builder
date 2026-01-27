@@ -1,4 +1,4 @@
-import { ComponentItem } from "./ComponentsTable";
+import type { ComponentItem } from "./ComponentsTable";
 import { pidTagMappings } from "../hierarchy/pidTagMappings";
 
 // Generic component templates for each asset type
@@ -25,6 +25,53 @@ const pidTagsByAsset = buildPidTagLookup();
 const getPidTag = (assetNumber: string): string => {
   const tags = pidTagsByAsset.get(assetNumber) || [];
   return tags.join(", ");
+};
+
+const inferAreaFromPidTag = (pidTag: string): string => {
+  // Most tags follow NN-XXXX format; fall back gracefully for odd tags like "-BA-103".
+  const prefix = pidTag.split("-")[0]?.trim();
+  switch (prefix) {
+    case "04":
+      return "COM";
+    case "05":
+      return "REC";
+    case "06":
+      return "UTL";
+    case "08":
+      return "REC";
+    case "11":
+      return "UTL";
+    case "12":
+    case "13":
+      return "TAIL";
+    case "14":
+    case "15":
+    case "16":
+    case "18":
+      return "SITE";
+    case "17":
+      return "UTL";
+    default:
+      return "";
+  }
+};
+
+const inferComponentTypeFromAssetNumber = (assetNumber: string): {
+  type: string;
+  abbrev: string;
+} => {
+  const upper = assetNumber.toUpperCase();
+
+  if (/-MTR\d+$/.test(upper)) return { type: "Motor", abbrev: "MTR" };
+  if (/-GBX\d+$/.test(upper)) return { type: "Gearbox", abbrev: "GBX" };
+  if (/-VFD\d+$/.test(upper)) return { type: "VFD", abbrev: "VFD" };
+  if (/-MCC\d+$/.test(upper)) return { type: "MCC", abbrev: "MCC" };
+  if (/-LCS\d+$/.test(upper)) return { type: "LCS", abbrev: "LCS" };
+  if (/(^|-)PMP\d+[A-Z]?$/.test(upper) || upper.includes("-PMP")) return { type: "Pump", abbrev: "PMP" };
+  if (upper.includes("-TX") || upper.includes("-SEN") || upper.includes("-PG") || upper.includes("-TG"))
+    return { type: "Instrument", abbrev: "INS" };
+
+  return { type: "Equipment", abbrev: "EQP" };
 };
 
 // Helper to create component entries
@@ -304,7 +351,7 @@ const kilnComponents = (
 ];
 
 // ==================== GENERATE ALL COMPONENTS ====================
-export const initialComponentData: ComponentItem[] = [
+const baseComponentData: ComponentItem[] = [
   // === UTILITIES & POWER ===
   // Compressed Air
   ...compressorComponents("Air Compressor 1", "COMP01", "COMP01 Air Compressor 1", "UTL", "Compressed Air"),
@@ -425,3 +472,37 @@ export const initialComponentData: ComponentItem[] = [
   ...pumpComponents("Filter Feed Pump Standby", "FFD01-PMP02", "FFD01 Filter Feed Pump", "TAIL", "Filtering", "Filtering"),
   ...conveyorComponents("Tailings Conveyor", "TC01", "TC01 Tailings Conveyor", "TAIL", "Filtering"),
 ];
+
+// Also include any P&ID-mapped assets that aren't represented by the generic component templates yet.
+// This makes the P&ID column fully scrollable/searchable using the provided mapping list.
+const existingAssetNumbers = new Set(baseComponentData.map((c) => c.assetNumber));
+
+const pidMappedRows: ComponentItem[] = pidTagMappings
+  .filter((m) => m.status === "mapped")
+  .filter((m) => !existingAssetNumbers.has(m.assetNumber))
+  .map((m) => {
+    const inferred = inferComponentTypeFromAssetNumber(m.assetNumber);
+    const inferredArea = inferAreaFromPidTag(m.pidTag);
+
+    return {
+      id: generateId(),
+      assetName: m.description,
+      assetNumber: m.assetNumber,
+      parentAsset: "",
+      area: inferredArea || "",
+      subArea: "",
+      system: "",
+      componentType: inferred.type,
+      componentName: m.description,
+      componentAbbreviation: inferred.abbrev,
+      componentFunction: "",
+      oemManufacturer: "",
+      oemModel: "",
+      oemSerialNumber: "",
+      pidTag: m.pidTag,
+      notes: "",
+      status: "Identified",
+    };
+  });
+
+export const initialComponentData: ComponentItem[] = [...baseComponentData, ...pidMappedRows];
