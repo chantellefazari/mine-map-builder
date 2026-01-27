@@ -217,7 +217,7 @@ const RCDTestSheet = ({ location, selectedHazards, toggleHazard }: RCDTestSheetP
             <span className="text-blue-700 font-bold">PROCEDURE</span>
           </div>
           <div className="px-4 py-3 bg-blue-500/5 text-sm">
-            <p className="mb-2">Inspection, testing and the recording of results shall be completed in accordance with the requirements of Procedure XYZ.</p>
+            <p className="mb-2">Inspection, testing and the recording of results shall be completed in accordance with site procedures.</p>
             <p>Any equipment failing its test or inspection shall be rectified at the time of test or inspection. If rectification cannot be achieved, the unserviceable circuit shall be <span className="font-bold text-destructive">tagged out of service</span> and the <span className="font-bold">Electrical Supervisor</span> and/or <span className="font-bold">PTCEW</span> notified immediately upon identification.</p>
           </div>
         </div>
