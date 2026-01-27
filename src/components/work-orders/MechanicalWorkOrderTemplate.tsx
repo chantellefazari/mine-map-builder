@@ -21,8 +21,8 @@ export const MechanicalWorkOrderTemplate = () => {
         </Button>
       </div>
 
-      {/* Work Order Document */}
-      <div className="bg-white border border-border rounded-lg shadow-sm print:shadow-none print:border-none">
+      {/* Work Order Document - A4 optimized */}
+      <div className="bg-white border border-border rounded-lg shadow-sm print:shadow-none print:border-none print:w-full print:max-w-none print:m-0 print:p-0">
         {/* Banner Header */}
         <div className="bg-black text-white p-4 flex items-center justify-between print:bg-black">
           <div className="flex items-center gap-3">
