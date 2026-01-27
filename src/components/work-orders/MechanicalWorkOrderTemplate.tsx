@@ -72,21 +72,21 @@ export const MechanicalWorkOrderTemplate = () => {
                   <div className="flex gap-3 mt-1">
                     <label className="flex items-center gap-1">
                       <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">1 - Emergency</span>
+                      <span className="text-xs">Critical</span>
                     </label>
                     <label className="flex items-center gap-1">
                       <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">2 - Urgent</span>
+                      <span className="text-xs">High</span>
                     </label>
                   </div>
                   <div className="flex gap-3 mt-1">
                     <label className="flex items-center gap-1">
                       <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">3 - Normal</span>
+                      <span className="text-xs">Medium</span>
                     </label>
                     <label className="flex items-center gap-1">
                       <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">4 - Planned</span>
+                      <span className="text-xs">Low</span>
                     </label>
                   </div>
                 </div>
@@ -99,7 +99,7 @@ export const MechanicalWorkOrderTemplate = () => {
                     </label>
                     <label className="flex items-center gap-1">
                       <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">Corrective</span>
+                      <span className="text-xs">Planned</span>
                     </label>
                     <label className="flex items-center gap-1">
                       <div className="w-4 h-4 border border-gray-400"></div>
@@ -110,10 +110,6 @@ export const MechanicalWorkOrderTemplate = () => {
               </div>
               <div className="border border-gray-300 p-2">
                 <span className="text-xs text-gray-500 block">Requested By</span>
-                <span className="font-medium"></span>
-              </div>
-              <div className="border border-gray-300 p-2">
-                <span className="text-xs text-gray-500 block">Contact Number</span>
                 <span className="font-medium"></span>
               </div>
             </div>
