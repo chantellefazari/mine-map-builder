@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   AlertTriangle, 
   Shield, 
@@ -396,28 +395,15 @@ export const MotorInspectionsSheetsDocument = () => {
   };
 
   return (
-    <Tabs defaultValue="filter-press" className="w-full">
-      <TabsList className="w-full flex flex-wrap h-auto gap-1 mb-6 bg-muted/50 p-2">
-        {areaData.map((area) => (
-          <TabsTrigger
-            key={area.id}
-            value={area.id}
-            className="text-xs px-3 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-          >
-            {area.name}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-
+    <div className="space-y-8">
       {areaData.map((area) => (
-        <TabsContent key={area.id} value={area.id} className="mt-0">
-          <AreaInspectionSheet 
-            area={area} 
-            selectedHazards={selectedHazards}
-            toggleHazard={toggleHazard}
-          />
-        </TabsContent>
+        <AreaInspectionSheet 
+          key={area.id}
+          area={area} 
+          selectedHazards={selectedHazards}
+          toggleHazard={toggleHazard}
+        />
       ))}
-    </Tabs>
+    </div>
   );
 };
