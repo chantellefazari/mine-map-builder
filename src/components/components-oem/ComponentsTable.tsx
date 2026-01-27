@@ -71,11 +71,14 @@ const componentTypes = [
 
 const componentFunctions = ["Drive", "Support", "Control", "Safety"];
 
+const areas = ["COM", "UTL", "REC", "TAIL", "SUP", "SITE"];
+
 export const ComponentsTable = () => {
   const [components, setComponents] = useState<ComponentItem[]>(initialComponents);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterArea, setFilterArea] = useState<string>("all");
 
   const filteredComponents = components.filter((component) => {
     const matchesSearch =
@@ -85,7 +88,8 @@ export const ComponentsTable = () => {
       component.pidTag.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = filterType === "all" || component.componentType === filterType;
     const matchesStatus = filterStatus === "all" || component.status === filterStatus;
-    return matchesSearch && matchesType && matchesStatus;
+    const matchesArea = filterArea === "all" || component.area === filterArea;
+    return matchesSearch && matchesType && matchesStatus && matchesArea;
   });
 
   return (
@@ -113,6 +117,19 @@ export const ComponentsTable = () => {
               {componentTypes.map((type) => (
                 <SelectItem key={type} value={type}>
                   {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={filterArea} onValueChange={setFilterArea}>
+            <SelectTrigger className="w-32">
+              <SelectValue placeholder="Area" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Areas</SelectItem>
+              {areas.map((area) => (
+                <SelectItem key={area} value={area}>
+                  {area}
                 </SelectItem>
               ))}
             </SelectContent>
