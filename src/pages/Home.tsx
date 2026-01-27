@@ -17,11 +17,11 @@ const sections = [
     href: "/pm-design",
   },
   {
-    title: "Critical Spares Catalogue",
-    subtitle: "Inventory Strategy",
-    description: "Define critical spares with OEM data, lead times, and stock strategies.",
-    icon: Package,
-    href: "/critical-spares",
+    title: "Work Order Templates",
+    subtitle: "Standardized Procedures",
+    description: "Pre-defined work order templates for common maintenance tasks and repairs.",
+    icon: ClipboardList,
+    href: "/work-order-templates",
   },
   {
     title: "Components & OEM Data",
@@ -31,11 +31,11 @@ const sections = [
     href: "/components-oem",
   },
   {
-    title: "Work Order Templates",
-    subtitle: "Standardized Procedures",
-    description: "Pre-defined work order templates for common maintenance tasks and repairs.",
-    icon: ClipboardList,
-    href: "/work-order-templates",
+    title: "Critical Spares Catalogue",
+    subtitle: "Inventory Strategy",
+    description: "Define critical spares with OEM data, lead times, and stock strategies.",
+    icon: Package,
+    href: "/critical-spares",
   },
 ];
 
