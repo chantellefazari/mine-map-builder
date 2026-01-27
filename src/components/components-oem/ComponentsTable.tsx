@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { initialComponentData } from "./componentData";
 
 export interface ComponentItem {
   id: string;
@@ -39,8 +40,9 @@ export interface ComponentItem {
   status: "Unknown" | "Identified" | "Verified after P&ID Walkdown";
 }
 
-// Empty array - data to be added after P&ID walkdowns and engineering verification
-const initialComponents: ComponentItem[] = [];
+// Generic component structure - NO OEM data
+// Data will be enriched after P&ID walkdowns and engineering verification
+const initialComponents: ComponentItem[] = initialComponentData;
 
 const statusColors = {
   "Unknown": "bg-muted text-muted-foreground",
