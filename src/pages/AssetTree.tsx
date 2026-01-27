@@ -4,8 +4,9 @@ import { AssetTree as AssetTreeComponent } from "@/components/hierarchy/AssetTre
 import { Legend } from "@/components/hierarchy/Legend";
 import { AssetSearch } from "@/components/hierarchy/AssetSearch";
 import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocationTable";
+import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties, ArrowLeft } from "lucide-react";
+import { TreePine, TableProperties, ArrowLeft, BookText } from "lucide-react";
 
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -59,9 +60,9 @@ const AssetTree = () => {
           </div>
         </div>
 
-        {/* Tabs: Asset Tree and Functional Locations */}
+        {/* Tabs: Asset Tree, Functional Locations, and Naming Convention */}
         <Tabs defaultValue="hierarchy" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-lg grid-cols-3">
             <TabsTrigger value="hierarchy" className="gap-2">
               <TreePine className="h-4 w-4" />
               Asset Hierarchy
@@ -69,6 +70,10 @@ const AssetTree = () => {
             <TabsTrigger value="functional-locations" className="gap-2">
               <TableProperties className="h-4 w-4" />
               Functional Locations
+            </TabsTrigger>
+            <TabsTrigger value="naming-convention" className="gap-2">
+              <BookText className="h-4 w-4" />
+              Naming Convention
             </TabsTrigger>
           </TabsList>
 
@@ -98,6 +103,10 @@ const AssetTree = () => {
             <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
               <FunctionalLocationTable />
             </div>
+          </TabsContent>
+
+          <TabsContent value="naming-convention" className="mt-6">
+            <NamingConvention />
           </TabsContent>
         </Tabs>
       </main>
