@@ -3,7 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
 import tennantIcon from "@/assets/tennant-icon.png";
 
-export const MechanicalWorkOrderTemplate = () => {
+interface MechanicalWorkOrderTemplateProps {
+  woNumber?: string;
+}
+
+export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTemplateProps) => {
   const [isPrintMode, setIsPrintMode] = useState(false);
 
   const handlePrint = () => {
@@ -14,7 +18,9 @@ export const MechanicalWorkOrderTemplate = () => {
     <div className="space-y-4">
       {/* Header with Print Button */}
       <div className="flex items-center justify-between print:hidden">
-        <h2 className="text-xl font-semibold text-foreground">Work Order</h2>
+        <h2 className="text-xl font-semibold text-foreground">
+          Work Order {woNumber && <span className="text-primary font-mono">({woNumber})</span>}
+        </h2>
         <Button onClick={handlePrint} className="gap-2">
           <Printer className="h-4 w-4" />
           Print
@@ -44,7 +50,7 @@ export const MechanicalWorkOrderTemplate = () => {
               <div className="grid grid-cols-2 gap-2">
                 <div className="border border-gray-300 p-2">
                   <span className="text-xs text-gray-500 block">Work Order No.</span>
-                  <span className="font-mono font-medium">WO-</span>
+                  <span className="font-mono font-medium">{woNumber || "WO-______"}</span>
                 </div>
                 <div className="border border-gray-300 p-2">
                   <span className="text-xs text-gray-500 block">Date Raised</span>
