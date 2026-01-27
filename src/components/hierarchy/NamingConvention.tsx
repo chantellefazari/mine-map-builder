@@ -30,7 +30,7 @@ const equipmentPrefixes = [
   { prefix: "KNC", meaning: "Knelson Concentrator", example: "KNC001", category: "Gravity" },
   { prefix: "MFC", meaning: "Mill Feed Conveyor", example: "MFC001", category: "Feed Systems" },
   { prefix: "RCVR", meaning: "Air Receiver", example: "RCVR01", category: "Utilities" },
-  { prefix: "SCR", meaning: "Screen", example: "SCR001-SCR004", category: "Screening" },
+  { prefix: "SCN", meaning: "Screen", example: "SCN001-SCN004", category: "Screening" },
   { prefix: "SHK", meaning: "Shaking Table", example: "SHK001", category: "Gravity" },
   { prefix: "THK", meaning: "Thickener", example: "THK001", category: "Tailings" },
   { prefix: "TRSCR", meaning: "Trash Screen", example: "TRSCR001", category: "Screening" },
