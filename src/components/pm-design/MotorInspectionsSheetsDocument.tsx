@@ -383,7 +383,11 @@ const AreaInspectionSheet = ({ area, selectedHazards, toggleHazard }: AreaInspec
   </div>
 );
 
-export const MotorInspectionsSheetsDocument = () => {
+interface MotorInspectionsSheetsDocumentProps {
+  areaId?: string;
+}
+
+export const MotorInspectionsSheetsDocument = ({ areaId }: MotorInspectionsSheetsDocumentProps) => {
   const [selectedHazards, setSelectedHazards] = useState<string[]>(["electrical", "mechanical"]);
 
   const toggleHazard = (hazardId: string) => {
@@ -394,9 +398,14 @@ export const MotorInspectionsSheetsDocument = () => {
     );
   };
 
+  // Filter to specific area if provided
+  const areasToShow = areaId 
+    ? areaData.filter(area => area.id === areaId)
+    : areaData;
+
   return (
     <div className="space-y-8">
-      {areaData.map((area) => (
+      {areasToShow.map((area) => (
         <AreaInspectionSheet 
           key={area.id}
           area={area} 
