@@ -194,6 +194,11 @@
   [data-sidebar] {
     display: none !important;
   }
+  
+  /* Hide Work Order sidebar */
+  aside {
+    display: none !important;
+  }
 
   /* Ensure tables don't break across pages */
   table {
@@ -207,7 +212,27 @@
 
   /* Page margins */
   @page {
-    margin: 1cm;
+    margin: 10mm;
     size: A4 portrait;
+  }
+
+  /* Ensure proper text sizing for A4 */
+  .text-xs {
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Force black text for readability */
+  .text-gray-400,
+  .text-gray-500,
+  .text-muted-foreground {
+    color: #666 !important;
+  }
+
+  /* Ensure borders print */
+  .border,
+  .border-gray-300,
+  .border-border {
+    border-color: #ccc !important;
   }
 }
