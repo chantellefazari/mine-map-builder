@@ -76,7 +76,7 @@ import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical" | "mobile-equipment";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week" | "24-week" | "52-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | "substation-2-weekly" | "ac-inspection-12-weekly" | "generator-yearly-test" | "pull-wire-checks-12-weekly" | "rcd-pushbutton-12-weekly" | "rcd-injection-24-weekly" | "rcd-testing-sheets" | "switchboard-52-weekly" | "cable-test-sheet" | "emergency-light-12-weekly" | "filter-press-motor-inspection" | "full-test-sheet" | "motor-inspections-sheets" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | "substation-2-weekly" | "ac-inspection-12-weekly" | "generator-yearly-test" | "pull-wire-checks-12-weekly" | "rcd-pushbutton-12-weekly" | "rcd-injection-24-weekly" | "rcd-testing-admin" | "rcd-testing-juno-bore" | "rcd-testing-andys-dam" | "rcd-testing-lab" | "rcd-testing-crusher-fuel-farm" | "rcd-testing-crusher-workshop" | "switchboard-52-weekly" | "cable-test-sheet" | "emergency-light-12-weekly" | "filter-press-motor-inspection" | "full-test-sheet" | "motor-inspections-filter-press" | "motor-inspections-gold-room" | "motor-inspections-kiln-area" | "motor-inspections-elution" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -200,7 +200,12 @@ const disciplines = [
             id: "rcd-testing", 
             label: "RCD Testing Sheets", 
             pms: [
-              { id: "rcd-testing-sheets", name: "Generator RCD Tests" },
+              { id: "rcd-testing-admin", name: "Admin Generator" },
+              { id: "rcd-testing-juno-bore", name: "Juno Bore Pump Generator" },
+              { id: "rcd-testing-andys-dam", name: "Andy's Dam Generator" },
+              { id: "rcd-testing-lab", name: "Lab Generator" },
+              { id: "rcd-testing-crusher-fuel-farm", name: "Crusher Fuel Farm Generator" },
+              { id: "rcd-testing-crusher-workshop", name: "Crusher Workshop Generator" },
             ] 
           },
         ]
@@ -217,7 +222,10 @@ const disciplines = [
             id: "motor-inspections", 
             label: "Motor Inspections", 
             pms: [
-              { id: "motor-inspections-sheets", name: "All Areas (Tabbed)" },
+              { id: "motor-inspections-filter-press", name: "Filter Press" },
+              { id: "motor-inspections-gold-room", name: "Gold Room" },
+              { id: "motor-inspections-kiln-area", name: "Kiln Area" },
+              { id: "motor-inspections-elution", name: "Elution" },
             ] 
           },
         ]
@@ -331,14 +339,22 @@ const PMDesign = () => {
       case "pull-wire-checks-12-weekly": return "Pull Wire Checks (12 Week)";
       case "rcd-pushbutton-12-weekly": return "RCD Push-button Test (12 Week)";
       case "rcd-injection-24-weekly": return "RCD Injection Test (24 Week)";
-      case "rcd-testing-sheets": return "RCD Testing Sheets (24 Week)";
+      case "rcd-testing-admin": return "Admin Generator RCD Test (24 Week)";
+      case "rcd-testing-juno-bore": return "Juno Bore Pump Generator RCD Test (24 Week)";
+      case "rcd-testing-andys-dam": return "Andy's Dam Generator RCD Test (24 Week)";
+      case "rcd-testing-lab": return "Lab Generator RCD Test (24 Week)";
+      case "rcd-testing-crusher-fuel-farm": return "Crusher Fuel Farm Generator RCD Test (24 Week)";
+      case "rcd-testing-crusher-workshop": return "Crusher Workshop Generator RCD Test (24 Week)";
       case "generator-yearly-test": return "Generator Electrical Inspection (52 Week)";
       case "switchboard-52-weekly": return "Switchboard Inspection (52 Week)";
       case "cable-test-sheet": return "Cable Test Sheet";
       case "emergency-light-12-weekly": return "Emergency Light Test (12 Week)";
       case "filter-press-motor-inspection": return "Filter Press Motor Inspection (52 Week)";
       case "full-test-sheet": return "Full Test Sheet";
-      case "motor-inspections-sheets": return "Motor Inspections (52 Week)";
+      case "motor-inspections-filter-press": return "Filter Press Motor Inspection (52 Week)";
+      case "motor-inspections-gold-room": return "Gold Room Motor Inspection (52 Week)";
+      case "motor-inspections-kiln-area": return "Kiln Area Motor Inspection (52 Week)";
+      case "motor-inspections-elution": return "Elution Motor Inspection (52 Week)";
       default: return "PM Document";
     }
   };
@@ -443,8 +459,18 @@ const PMDesign = () => {
         return <RCDPushButtonTestPMDocument />;
       case "rcd-injection-24-weekly":
         return <RCDInjectionTestPMDocument />;
-      case "rcd-testing-sheets":
-        return <RCDTestingSheetsDocument />;
+      case "rcd-testing-admin":
+        return <RCDTestingSheetsDocument locationId="admin" />;
+      case "rcd-testing-juno-bore":
+        return <RCDTestingSheetsDocument locationId="juno-bore" />;
+      case "rcd-testing-andys-dam":
+        return <RCDTestingSheetsDocument locationId="andys-dam" />;
+      case "rcd-testing-lab":
+        return <RCDTestingSheetsDocument locationId="lab" />;
+      case "rcd-testing-crusher-fuel-farm":
+        return <RCDTestingSheetsDocument locationId="crusher-fuel-farm" />;
+      case "rcd-testing-crusher-workshop":
+        return <RCDTestingSheetsDocument locationId="crusher-workshop" />;
       case "switchboard-52-weekly":
         return <SwitchboardInspectionPMDocument />;
       case "cable-test-sheet":
@@ -455,14 +481,20 @@ const PMDesign = () => {
         return <FilterPressMotorInspectionPMDocument />;
       case "full-test-sheet":
         return <FullTestSheetPMDocument />;
-      case "motor-inspections-sheets":
-        return <MotorInspectionsSheetsDocument />;
+      case "motor-inspections-filter-press":
+        return <MotorInspectionsSheetsDocument areaId="filter-press" />;
+      case "motor-inspections-gold-room":
+        return <MotorInspectionsSheetsDocument areaId="gold-room" />;
+      case "motor-inspections-kiln-area":
+        return <MotorInspectionsSheetsDocument areaId="kiln-area" />;
+      case "motor-inspections-elution":
+        return <MotorInspectionsSheetsDocument areaId="elution" />;
       default:
         return null;
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "power-station-generator-weekly", "forklift-weekly", "ewp-weekly", "crane-weekly", "water-truck-weekly", "loader-weekly", "telehandler-weekly", "dozer-daily", "excavator-daily", "excavator-weekly", "moxy-daily", "moxy-weekly", "lighting-tower-daily", "service-truck-weekly", "skid-steer-weekly", "field-mcc-inspections-weekly", "filter-press-electrical-weekly", "ice-machine-weekly", "ph-probe-calibration-weekly", "safety-shower-weekly", "spare-mill-motor-weekly", "visual-zone-checks-weekly", "substation-2-weekly", "ac-inspection-12-weekly", "pull-wire-checks-12-weekly", "rcd-pushbutton-12-weekly", "rcd-injection-24-weekly", "rcd-testing-sheets", "generator-yearly-test", "switchboard-52-weekly", "cable-test-sheet", "emergency-light-12-weekly", "filter-press-motor-inspection", "full-test-sheet", "motor-inspections-sheets"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "power-station-generator-weekly", "forklift-weekly", "ewp-weekly", "crane-weekly", "water-truck-weekly", "loader-weekly", "telehandler-weekly", "dozer-daily", "excavator-daily", "excavator-weekly", "moxy-daily", "moxy-weekly", "lighting-tower-daily", "service-truck-weekly", "skid-steer-weekly", "field-mcc-inspections-weekly", "filter-press-electrical-weekly", "ice-machine-weekly", "ph-probe-calibration-weekly", "safety-shower-weekly", "spare-mill-motor-weekly", "visual-zone-checks-weekly", "substation-2-weekly", "ac-inspection-12-weekly", "pull-wire-checks-12-weekly", "rcd-pushbutton-12-weekly", "rcd-injection-24-weekly", "rcd-testing-admin", "rcd-testing-juno-bore", "rcd-testing-andys-dam", "rcd-testing-lab", "rcd-testing-crusher-fuel-farm", "rcd-testing-crusher-workshop", "generator-yearly-test", "switchboard-52-weekly", "cable-test-sheet", "emergency-light-12-weekly", "filter-press-motor-inspection", "full-test-sheet", "motor-inspections-filter-press", "motor-inspections-gold-room", "motor-inspections-kiln-area", "motor-inspections-elution"].includes(activeView);
 
   return (
     <SidebarProvider>

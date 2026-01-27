@@ -451,7 +451,11 @@ const RCDTestSheet = ({ location, selectedHazards, toggleHazard }: RCDTestSheetP
   );
 };
 
-export const RCDTestingSheetsDocument = () => {
+interface RCDTestingSheetsDocumentProps {
+  locationId?: string;
+}
+
+export const RCDTestingSheetsDocument = ({ locationId }: RCDTestingSheetsDocumentProps) => {
   const [selectedHazards, setSelectedHazards] = useState<string[]>(["electrical", "arc-flash"]);
 
   const toggleHazard = (hazardId: string) => {
@@ -462,9 +466,14 @@ export const RCDTestingSheetsDocument = () => {
     );
   };
 
+  // Filter to specific location if provided
+  const locationsToShow = locationId 
+    ? generatorLocations.filter(loc => loc.id === locationId)
+    : generatorLocations;
+
   return (
     <div className="space-y-8">
-      {generatorLocations.map((location) => (
+      {locationsToShow.map((location) => (
         <RCDTestSheet 
           key={location.id}
           location={location}
