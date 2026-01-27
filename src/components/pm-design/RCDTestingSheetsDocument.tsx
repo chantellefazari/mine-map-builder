@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   AlertTriangle, 
   Shield, 
@@ -454,7 +453,6 @@ const RCDTestSheet = ({ location, selectedHazards, toggleHazard }: RCDTestSheetP
 
 export const RCDTestingSheetsDocument = () => {
   const [selectedHazards, setSelectedHazards] = useState<string[]>(["electrical", "arc-flash"]);
-  const [activeTab, setActiveTab] = useState("admin");
 
   const toggleHazard = (hazardId: string) => {
     setSelectedHazards(prev => 
@@ -465,30 +463,15 @@ export const RCDTestingSheetsDocument = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="flex flex-wrap h-auto gap-1 bg-muted/50 p-1">
-          {generatorLocations.map((loc) => (
-            <TabsTrigger 
-              key={loc.id} 
-              value={loc.id}
-              className="text-xs px-3 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-            >
-              {loc.area}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        
-        {generatorLocations.map((location) => (
-          <TabsContent key={location.id} value={location.id} className="mt-4">
-            <RCDTestSheet 
-              location={location}
-              selectedHazards={selectedHazards}
-              toggleHazard={toggleHazard}
-            />
-          </TabsContent>
-        ))}
-      </Tabs>
+    <div className="space-y-8">
+      {generatorLocations.map((location) => (
+        <RCDTestSheet 
+          key={location.id}
+          location={location}
+          selectedHazards={selectedHazards}
+          toggleHazard={toggleHazard}
+        />
+      ))}
     </div>
   );
 };
