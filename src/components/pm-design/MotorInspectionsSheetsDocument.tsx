@@ -189,6 +189,16 @@ const areaData: AreaData[] = [
       { description: "Agitator 20", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
     ]
   },
+  {
+    id: "thickener",
+    name: "Thickener",
+    title: "Thickener - Statutory Motor Inspection",
+    subtitle: "& Lubrication",
+    motors: [
+      { description: "Thickener Underflow Pump A", equipmentNumber: "Pump A", brand: "Monarch", flc: "125.2 A", frequency: "50 Hz", power: "75 KW", voltage: "415 V", frameSize: "D250M", rpm: "1485 RPM" },
+      { description: "Thickener Underflow Pump B", equipmentNumber: "Pump B", brand: "Monarch", flc: "125.2 A", frequency: "50 Hz", power: "75 KW", voltage: "415 V", frameSize: "D250M", rpm: "1485 RPM" },
+    ]
+  },
 ];
 
 interface MotorSectionProps {
