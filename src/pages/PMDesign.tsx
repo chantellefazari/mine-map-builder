@@ -826,67 +826,64 @@ const PMSidebarContent = ({
                                 {freqCount > 0 && (
                                   <CollapsibleContent>
                                     <div className="ml-5 py-1 pl-3 border-l border-border space-y-1">
-                                      {/* Render subgroups if they exist */}
-                                      {freqData.subgroups && freqData.subgroups.length > 0 ? (
-                                        freqData.subgroups.map((subgroup) => (
-                                          <Collapsible
-                                            key={subgroup.id}
-                                            open={expandedFrequencies.includes(`${freqKey}-${subgroup.id}`)}
-                                            onOpenChange={() => toggleFrequency(`${freqKey}-${subgroup.id}`)}
-                                          >
-                                            <CollapsibleTrigger className="w-full">
-                                              <div className="flex items-center justify-between w-full px-2 py-1.5 rounded-md text-xs transition-colors hover:bg-muted/50">
-                                                <span className="font-medium text-muted-foreground">{subgroup.label}</span>
-                                                <div className="flex items-center gap-2">
-                                                  <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary">
-                                                    {subgroup.pms.length}
-                                                  </span>
-                                                  <ChevronRight 
-                                                    className={cn(
-                                                      "w-3 h-3 text-muted-foreground transition-transform",
-                                                      expandedFrequencies.includes(`${freqKey}-${subgroup.id}`) && "rotate-90"
-                                                    )} 
-                                                  />
-                                                </div>
+                                      {/* Render direct PMs first */}
+                                      {freqData.pms && freqData.pms.length > 0 && freqData.pms.map((pm) => (
+                                        <button
+                                          key={pm.id}
+                                          onClick={() => setActiveView(pm.id as ViewType)}
+                                          className={cn(
+                                            "text-xs text-left w-full py-1.5 px-2 rounded transition-colors",
+                                            activeView === pm.id 
+                                              ? "text-primary bg-primary/10" 
+                                              : "text-foreground hover:text-primary hover:bg-muted/50"
+                                          )}
+                                        >
+                                          {pm.name}
+                                        </button>
+                                      ))}
+                                      {/* Then render subgroups if they exist */}
+                                      {freqData.subgroups && freqData.subgroups.length > 0 && freqData.subgroups.map((subgroup) => (
+                                        <Collapsible
+                                          key={subgroup.id}
+                                          open={expandedFrequencies.includes(`${freqKey}-${subgroup.id}`)}
+                                          onOpenChange={() => toggleFrequency(`${freqKey}-${subgroup.id}`)}
+                                        >
+                                          <CollapsibleTrigger className="w-full">
+                                            <div className="flex items-center justify-between w-full px-2 py-1.5 rounded-md text-xs transition-colors hover:bg-muted/50">
+                                              <span className="font-medium text-muted-foreground">{subgroup.label}</span>
+                                              <div className="flex items-center gap-2">
+                                                <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary">
+                                                  {subgroup.pms.length}
+                                                </span>
+                                                <ChevronRight 
+                                                  className={cn(
+                                                    "w-3 h-3 text-muted-foreground transition-transform",
+                                                    expandedFrequencies.includes(`${freqKey}-${subgroup.id}`) && "rotate-90"
+                                                  )} 
+                                                />
                                               </div>
-                                            </CollapsibleTrigger>
-                                            <CollapsibleContent>
-                                              <div className="ml-3 py-1 pl-2 border-l border-border/50 space-y-1">
-                                                {subgroup.pms.map((pm) => (
-                                                  <button
-                                                    key={pm.id}
-                                                    onClick={() => setActiveView(pm.id as ViewType)}
-                                                    className={cn(
-                                                      "text-xs text-left w-full py-1.5 px-2 rounded transition-colors",
-                                                      activeView === pm.id 
-                                                        ? "text-primary bg-primary/10" 
-                                                        : "text-foreground hover:text-primary hover:bg-muted/50"
-                                                    )}
-                                                  >
-                                                    {pm.name}
-                                                  </button>
-                                                ))}
-                                              </div>
-                                            </CollapsibleContent>
-                                          </Collapsible>
-                                        ))
-                                      ) : (
-                                        /* Render flat PM list if no subgroups */
-                                        freqData.pms.map((pm) => (
-                                          <button
-                                            key={pm.id}
-                                            onClick={() => setActiveView(pm.id as ViewType)}
-                                            className={cn(
-                                              "text-xs text-left w-full py-1.5 px-2 rounded transition-colors",
-                                              activeView === pm.id 
-                                                ? "text-primary bg-primary/10" 
-                                                : "text-foreground hover:text-primary hover:bg-muted/50"
-                                            )}
-                                          >
-                                            {pm.name}
-                                          </button>
-                                        ))
-                                      )}
+                                            </div>
+                                          </CollapsibleTrigger>
+                                          <CollapsibleContent>
+                                            <div className="ml-3 py-1 pl-2 border-l border-border/50 space-y-1">
+                                              {subgroup.pms.map((pm) => (
+                                                <button
+                                                  key={pm.id}
+                                                  onClick={() => setActiveView(pm.id as ViewType)}
+                                                  className={cn(
+                                                    "text-xs text-left w-full py-1.5 px-2 rounded transition-colors",
+                                                    activeView === pm.id 
+                                                      ? "text-primary bg-primary/10" 
+                                                      : "text-foreground hover:text-primary hover:bg-muted/50"
+                                                  )}
+                                                >
+                                                  {pm.name}
+                                                </button>
+                                              ))}
+                                            </div>
+                                          </CollapsibleContent>
+                                        </Collapsible>
+                                      ))}
                                       <button className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 py-1 transition-colors">
                                         <Plus className="w-3 h-3" />
                                         Add PM
