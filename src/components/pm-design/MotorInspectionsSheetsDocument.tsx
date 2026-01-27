@@ -123,6 +123,72 @@ const areaData: AreaData[] = [
       { description: "Elution Feed Pump" },
     ]
   },
+  {
+    id: "milling-area",
+    name: "Milling Area",
+    title: "Grinding - Statutory Motor Inspection",
+    motors: [
+      { description: "Mill Feed Conveyor", equipmentNumber: "BC-100", brand: "WEG KTE30 PHEM", flc: "20.2 A", frequency: "50 Hz", power: "11 kW", voltage: "415 V", frameSize: "160M", rpm: "1465 RPM", ambientTemp: "40°C" },
+      { description: "Lime Rotary Valve", brand: "WEG KTE 12 W22M", flc: "5.81 A", frequency: "50 Hz", power: "1.5 KW", voltage: "415 V", frameSize: "90L-04", rpm: "1450 RPM", ambientTemp: "40°C" },
+      { description: "Transfer Conveyor", equipmentNumber: "FE-101", brand: "SEW-EURODRIVE KA77/T DRE132M4/RS", flc: "11 A", frequency: "50 Hz", power: "5.5 KW", voltage: "415 V", rpm: "1455 RPM" },
+      { description: "Reclaim Feeder", frequency: "50 Hz", voltage: "415 V" },
+      { description: "Grinding Area Pump", equipmentNumber: "04-PU-120", brand: "WEG KTE 21 W22M", flc: "10.6 A", frequency: "50 Hz", power: "5.5 kW", voltage: "415 V", frameSize: "132S-04", rpm: "1465 RPM", ambientTemp: "40°C" },
+      { description: "Cyclone Feed Pump A (Duty)", equipmentNumber: "PU-102A", brand: "WEG KTE 50 W22M", flc: "183 A", frequency: "50 Hz", power: "110 KW", voltage: "415 V", frameSize: "280S/M", rpm: "1485 RPM", ambientTemp: "40°C" },
+      { description: "Cyclone Feed Pump B (Standby)", equipmentNumber: "PU-102B", brand: "WEG KTE 50 W22M", flc: "183 A", frequency: "50 Hz", power: "110 KW", voltage: "415 V", frameSize: "280S/M", rpm: "1485 RPM", ambientTemp: "40°C" },
+    ]
+  },
+  {
+    id: "pwp",
+    name: "Process Water Pond",
+    title: "Process Water Pond - Statutory Motor Inspection",
+    subtitle: "& Lubrication",
+    motors: [
+      { description: "PWP Pump A", brand: "WEG", flc: "93.4 A", frequency: "50 Hz", power: "55 KW", voltage: "415 V", frameSize: "250 S/M", rpm: "1480 RPM", ambientTemp: "40°C" },
+      { description: "PWP Pump B", brand: "WEG", flc: "93.4 A", frequency: "50 Hz", power: "55 KW", voltage: "415 V", frameSize: "250 S/M", rpm: "1480 RPM", ambientTemp: "40°C" },
+    ]
+  },
+  {
+    id: "services",
+    name: "Services",
+    title: "Services - Statutory Motor Inspection",
+    motors: [
+      { description: "Safety Shower Pump A", equipmentNumber: "PU-205A", brand: "CENTRIPRO", flc: "3.72 A", frequency: "50 Hz", power: "1.1 kW", voltage: "415 V", rpm: "2820 RPM" },
+      { description: "Safety Shower Pump B", equipmentNumber: "PU-205B", brand: "LOWARA SM80B14/311 E3", flc: "4.16 A", frequency: "50 Hz", power: "1.1 kW", voltage: "415 V", rpm: "2900 RPM", ambientTemp: "50°C" },
+      { description: "Potable Water Pump A (Duty)", equipmentNumber: "PU-033A", brand: "LOWARA PLM112RB14S6/340 E3", flc: "7.61 A", frequency: "50 Hz", power: "4.00 kW", voltage: "415 V", rpm: "2910 RPM", ambientTemp: "50°C" },
+      { description: "Potable Water Pump B (Standby)", equipmentNumber: "PU-033B", brand: "LOWARA PLM112RB14S6/240 E3", flc: "7.61 A", frequency: "50 Hz", power: "4.00 kW", voltage: "415 V", rpm: "2910 RPM", ambientTemp: "50°C" },
+      { description: "Gland Water Pump A", equipmentNumber: "PU-135A", brand: "LOWARA", flc: "7.61 A", frequency: "50 Hz", power: "4.00 KW", voltage: "415 V", rpm: "2910 RPM", ambientTemp: "50°C" },
+      { description: "Gland Water Pump B (Standby)", equipmentNumber: "PU-135B", brand: "LOWARA PLM112RB14S6/340 E3", flc: "7.61 A", frequency: "50 Hz", power: "4.00 KW", voltage: "415 V", rpm: "2910 RPM", ambientTemp: "50°C" },
+      { description: "Raw Water Pump A (Duty)", equipmentNumber: "PU-026A", brand: "GRUNDFOSS 85U17524", flc: "21.8 A", frequency: "50 Hz", power: "11.0 KW", voltage: "415 V", rpm: "2940 RPM", ambientTemp: "40°C" },
+    ]
+  },
+  {
+    id: "tanks",
+    name: "Tanks",
+    title: "Tanks - Statutory Motor Inspection",
+    subtitle: "& Lubrication",
+    motors: [
+      { description: "Agitator 1", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 2", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 3", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 4", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 5", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 6", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 7", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 8", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 9", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 10", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 11", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 12", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 13", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 14", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 15", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 16", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 17", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 18", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 19", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+      { description: "Agitator 20", brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C" },
+    ]
+  },
 ];
 
 interface MotorSectionProps {
