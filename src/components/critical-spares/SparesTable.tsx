@@ -19,90 +19,82 @@ import {
 import { Plus, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-interface SpareItem {
+export interface SpareItem {
   id: string;
-  spareName: string;
+  componentName: string;
   componentType: string;
-  oem: string;
+  assetName: string;
+  assetNumber: string;
+  sparePartDescription: string;
   oemPartNumber: string;
-  equipmentType: string;
-  criticality: "A" | "B" | "C";
-  failureImpact: string;
+  spareCriticality: "High" | "Medium" | "Low" | "";
+  reasonCritical: string;
   leadTime: string;
-  stockStrategy: string;
+  storageRequirement: string;
   notes: string;
+  status: "Unknown" | "Confirmed";
 }
 
-const initialSpares: SpareItem[] = [
-  {
-    id: "1",
-    spareName: "Mechanical Seal - 65mm",
-    componentType: "Seal",
-    oem: "John Crane",
-    oemPartNumber: "JC-65-2100",
-    equipmentType: "Centrifugal Pump",
-    criticality: "A",
-    failureImpact: "Pump failure, process stoppage",
-    leadTime: "8 weeks",
-    stockStrategy: "Hold",
-    notes: "Critical for all process pumps",
-  },
-  {
-    id: "2",
-    spareName: "Drive Belt Set - Conveyor",
-    componentType: "Belt",
-    oem: "Gates",
-    oemPartNumber: "8VX1400",
-    equipmentType: "Belt Conveyor",
-    criticality: "B",
-    failureImpact: "Reduced throughput",
-    leadTime: "2 weeks",
-    stockStrategy: "Hold",
-    notes: "Common across multiple conveyors",
-  },
-  {
-    id: "3",
-    spareName: "Bearing 6310-2RS",
-    componentType: "Bearing",
-    oem: "SKF",
-    oemPartNumber: "6310-2RS1",
-    equipmentType: "Motor",
-    criticality: "B",
-    failureImpact: "Motor failure",
-    leadTime: "1 week",
-    stockStrategy: "Hold",
-    notes: "High usage item",
-  },
-];
+// Empty array - data to be added after P&ID walkdowns and engineering verification
+const initialSpares: SpareItem[] = [];
 
 const criticalityColors = {
-  A: "bg-destructive/20 text-destructive",
-  B: "bg-amber-500/20 text-amber-700",
-  C: "bg-muted text-muted-foreground",
+  "High": "bg-destructive/20 text-destructive",
+  "Medium": "bg-amber-500/20 text-amber-700",
+  "Low": "bg-muted text-muted-foreground",
+  "": "",
 };
+
+const statusColors = {
+  "Unknown": "bg-muted text-muted-foreground",
+  "Confirmed": "bg-green-500/20 text-green-700",
+};
+
+const componentTypes = [
+  "Motor",
+  "Gearbox",
+  "Pump",
+  "Valve",
+  "Roller",
+  "Bearing",
+  "Seal",
+  "Coupling",
+  "Belt",
+  "Chain",
+  "Sprocket",
+  "Impeller",
+  "Liner",
+  "Screen",
+  "Sensor",
+  "Actuator",
+];
 
 export const SparesTable = () => {
   const [spares, setSpares] = useState<SpareItem[]>(initialSpares);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCriticality, setFilterCriticality] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
 
   const filteredSpares = spares.filter((spare) => {
     const matchesSearch =
-      spare.spareName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.componentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.assetNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.oemPartNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.oem.toLowerCase().includes(searchQuery.toLowerCase());
+      spare.sparePartDescription.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCriticality =
-      filterCriticality === "all" || spare.criticality === filterCriticality;
-    return matchesSearch && matchesCriticality;
+      filterCriticality === "all" || spare.spareCriticality === filterCriticality;
+    const matchesStatus =
+      filterStatus === "all" || spare.status === filterStatus;
+    return matchesSearch && matchesCriticality && matchesStatus;
   });
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h2 className="text-lg font-semibold text-foreground">
-          Critical Spares Register
+          Critical Spares Catalogue
         </h2>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -118,9 +110,19 @@ export const SparesTable = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
-              <SelectItem value="A">A - Critical</SelectItem>
-              <SelectItem value="B">B - Important</SelectItem>
-              <SelectItem value="C">C - Convenience</SelectItem>
+              <SelectItem value="High">High</SelectItem>
+              <SelectItem value="Medium">Medium</SelectItem>
+              <SelectItem value="Low">Low</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="Unknown">Unknown</SelectItem>
+              <SelectItem value="Confirmed">Confirmed</SelectItem>
             </SelectContent>
           </Select>
           <Button size="sm" className="gap-2">
@@ -130,40 +132,69 @@ export const SparesTable = () => {
         </div>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Spare Name</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>OEM</TableHead>
-            <TableHead>Part Number</TableHead>
-            <TableHead>Equipment Type</TableHead>
-            <TableHead>Criticality</TableHead>
-            <TableHead>Lead Time</TableHead>
-            <TableHead>Strategy</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredSpares.map((spare) => (
-            <TableRow key={spare.id} className="cursor-pointer hover:bg-muted/50">
-              <TableCell className="font-medium">{spare.spareName}</TableCell>
-              <TableCell>{spare.componentType}</TableCell>
-              <TableCell>{spare.oem}</TableCell>
-              <TableCell className="font-mono text-sm">{spare.oemPartNumber}</TableCell>
-              <TableCell>{spare.equipmentType}</TableCell>
-              <TableCell>
-                <Badge variant="secondary" className={criticalityColors[spare.criticality]}>
-                  {spare.criticality}
-                </Badge>
-              </TableCell>
-              <TableCell>{spare.leadTime}</TableCell>
-              <TableCell>{spare.stockStrategy}</TableCell>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="min-w-[140px]">Component Name</TableHead>
+              <TableHead className="min-w-[120px]">Component Type</TableHead>
+              <TableHead className="min-w-[140px]">Asset Name</TableHead>
+              <TableHead className="min-w-[100px]">Asset Number</TableHead>
+              <TableHead className="min-w-[180px]">Spare Part Description</TableHead>
+              <TableHead className="min-w-[120px]">OEM Part Number</TableHead>
+              <TableHead className="min-w-[100px]">Criticality</TableHead>
+              <TableHead className="min-w-[150px]">Reason Critical</TableHead>
+              <TableHead className="min-w-[100px]">Lead Time</TableHead>
+              <TableHead className="min-w-[140px]">Storage Requirement</TableHead>
+              <TableHead className="min-w-[150px]">Notes</TableHead>
+              <TableHead className="min-w-[100px]">Status</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredSpares.map((spare) => (
+              <TableRow key={spare.id} className="cursor-pointer hover:bg-muted/50">
+                <TableCell className="font-medium">{spare.componentName}</TableCell>
+                <TableCell>{spare.componentType}</TableCell>
+                <TableCell>{spare.assetName}</TableCell>
+                <TableCell className="font-mono text-sm">{spare.assetNumber}</TableCell>
+                <TableCell>{spare.sparePartDescription}</TableCell>
+                <TableCell className="font-mono text-sm">{spare.oemPartNumber}</TableCell>
+                <TableCell>
+                  {spare.spareCriticality && (
+                    <Badge variant="secondary" className={criticalityColors[spare.spareCriticality]}>
+                      {spare.spareCriticality}
+                    </Badge>
+                  )}
+                </TableCell>
+                <TableCell className="text-sm">{spare.reasonCritical}</TableCell>
+                <TableCell>{spare.leadTime}</TableCell>
+                <TableCell>{spare.storageRequirement}</TableCell>
+                <TableCell className="text-sm">{spare.notes}</TableCell>
+                <TableCell>
+                  {spare.status && (
+                    <Badge variant="secondary" className={statusColors[spare.status]}>
+                      {spare.status}
+                    </Badge>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
-      {filteredSpares.length === 0 && (
+      {spares.length === 0 && (
+        <div className="text-center py-12 border border-dashed border-border rounded-lg">
+          <div className="text-muted-foreground space-y-2">
+            <p className="font-medium">No critical spares registered yet</p>
+            <p className="text-sm">
+              Spares will be added after P&ID walkdowns and engineering verification.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {spares.length > 0 && filteredSpares.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
           No spares match your search criteria.
         </div>
