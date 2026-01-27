@@ -67,14 +67,14 @@ const conveyorComponents = (
   area: string,
   subArea: string
 ): ComponentItem[] => [
-  createComponent(conveyorName, assetNumber, parentAsset, area, subArea, "Conveying", "Motor", `Motor – ${conveyorName}`, "MTR", "Drive"),
-  createComponent(conveyorName, assetNumber, parentAsset, area, subArea, "Conveying", "Gearbox", `Gearbox – ${conveyorName}`, "GBX", "Drive"),
-  createComponent(conveyorName, assetNumber, parentAsset, area, subArea, "Conveying", "Head Pulley", `Head Pulley – ${conveyorName}`, "HPUL", "Support"),
-  createComponent(conveyorName, assetNumber, parentAsset, area, subArea, "Conveying", "Tail Pulley", `Tail Pulley – ${conveyorName}`, "TPUL", "Support"),
-  createComponent(conveyorName, assetNumber, parentAsset, area, subArea, "Conveying", "Bearing", `Head Pulley Bearing – ${conveyorName}`, "BRG", "Support"),
-  createComponent(conveyorName, assetNumber, parentAsset, area, subArea, "Conveying", "Bearing", `Tail Pulley Bearing – ${conveyorName}`, "BRG", "Support"),
-  createComponent(conveyorName, assetNumber, parentAsset, area, subArea, "Conveying", "Belt", `Belt – ${conveyorName}`, "BLT", "Support"),
-  createComponent(conveyorName, assetNumber, parentAsset, area, subArea, "Conveying", "Coupling", `Coupling – ${conveyorName}`, "CPL", "Drive"),
+  createComponent(conveyorName, `${assetNumber}-MTR01`, parentAsset, area, subArea, "Conveying", "Motor", `Motor – ${conveyorName}`, "MTR", "Drive"),
+  createComponent(conveyorName, `${assetNumber}-GBX01`, parentAsset, area, subArea, "Conveying", "Gearbox", `Gearbox – ${conveyorName}`, "GBX", "Drive"),
+  createComponent(conveyorName, `${assetNumber}-HPUL01`, parentAsset, area, subArea, "Conveying", "Head Pulley", `Head Pulley – ${conveyorName}`, "HPUL", "Support"),
+  createComponent(conveyorName, `${assetNumber}-TPUL01`, parentAsset, area, subArea, "Conveying", "Tail Pulley", `Tail Pulley – ${conveyorName}`, "TPUL", "Support"),
+  createComponent(conveyorName, `${assetNumber}-BRG01`, parentAsset, area, subArea, "Conveying", "Bearing", `Head Pulley Bearing – ${conveyorName}`, "BRG", "Support"),
+  createComponent(conveyorName, `${assetNumber}-BRG02`, parentAsset, area, subArea, "Conveying", "Bearing", `Tail Pulley Bearing – ${conveyorName}`, "BRG", "Support"),
+  createComponent(conveyorName, `${assetNumber}-BLT01`, parentAsset, area, subArea, "Conveying", "Belt", `Belt – ${conveyorName}`, "BLT", "Support"),
+  createComponent(conveyorName, `${assetNumber}-CPL01`, parentAsset, area, subArea, "Conveying", "Coupling", `Coupling – ${conveyorName}`, "CPL", "Drive"),
 ];
 
 // ==================== APRON FEEDER COMPONENTS ====================
@@ -85,13 +85,13 @@ const apronFeederComponents = (
   area: string,
   subArea: string
 ): ComponentItem[] => [
-  createComponent(feederName, assetNumber, parentAsset, area, subArea, "Feed/Reclaim", "Motor", `Motor – ${feederName}`, "MTR", "Drive"),
-  createComponent(feederName, assetNumber, parentAsset, area, subArea, "Feed/Reclaim", "Gearbox", `Gearbox – ${feederName}`, "GBX", "Drive"),
-  createComponent(feederName, assetNumber, parentAsset, area, subArea, "Feed/Reclaim", "Chain", `Chain – ${feederName}`, "CHN", "Support"),
-  createComponent(feederName, assetNumber, parentAsset, area, subArea, "Feed/Reclaim", "Sprocket", `Drive Sprocket – ${feederName}`, "SPK", "Drive"),
-  createComponent(feederName, assetNumber, parentAsset, area, subArea, "Feed/Reclaim", "Sprocket", `Tail Sprocket – ${feederName}`, "SPK", "Support"),
-  createComponent(feederName, assetNumber, parentAsset, area, subArea, "Feed/Reclaim", "Bearing", `Drive Shaft Bearing – ${feederName}`, "BRG", "Support"),
-  createComponent(feederName, assetNumber, parentAsset, area, subArea, "Feed/Reclaim", "Bearing", `Tail Shaft Bearing – ${feederName}`, "BRG", "Support"),
+  createComponent(feederName, `${assetNumber}-MTR01`, parentAsset, area, subArea, "Feed/Reclaim", "Motor", `Motor – ${feederName}`, "MTR", "Drive"),
+  createComponent(feederName, `${assetNumber}-GBX01`, parentAsset, area, subArea, "Feed/Reclaim", "Gearbox", `Gearbox – ${feederName}`, "GBX", "Drive"),
+  createComponent(feederName, `${assetNumber}-CHN01`, parentAsset, area, subArea, "Feed/Reclaim", "Chain", `Chain – ${feederName}`, "CHN", "Support"),
+  createComponent(feederName, `${assetNumber}-SPK01`, parentAsset, area, subArea, "Feed/Reclaim", "Sprocket", `Drive Sprocket – ${feederName}`, "SPK", "Drive"),
+  createComponent(feederName, `${assetNumber}-SPK02`, parentAsset, area, subArea, "Feed/Reclaim", "Sprocket", `Tail Sprocket – ${feederName}`, "SPK", "Support"),
+  createComponent(feederName, `${assetNumber}-BRG01`, parentAsset, area, subArea, "Feed/Reclaim", "Bearing", `Drive Shaft Bearing – ${feederName}`, "BRG", "Support"),
+  createComponent(feederName, `${assetNumber}-BRG02`, parentAsset, area, subArea, "Feed/Reclaim", "Bearing", `Tail Shaft Bearing – ${feederName}`, "BRG", "Support"),
 ];
 
 // ==================== PUMP COMPONENTS ====================
@@ -103,12 +103,12 @@ const pumpComponents = (
   subArea: string,
   system: string
 ): ComponentItem[] => [
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Motor", `Motor – ${pumpName}`, "MTR", "Drive"),
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Pump", `Pump – ${pumpName}`, "PMP", "Drive"),
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Impeller", `Impeller – ${pumpName}`, "IMP", "Support"),
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Seal", `Mechanical Seal – ${pumpName}`, "SEL", "Support"),
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Bearing", `Bearing Assembly – ${pumpName}`, "BRG", "Support"),
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Coupling", `Coupling – ${pumpName}`, "CPL", "Drive"),
+  createComponent(pumpName, `${assetNumber}-MTR01`, parentAsset, area, subArea, system, "Motor", `Motor – ${pumpName}`, "MTR", "Drive"),
+  createComponent(pumpName, `${assetNumber}-PMP01`, parentAsset, area, subArea, system, "Pump", `Pump – ${pumpName}`, "PMP", "Drive"),
+  createComponent(pumpName, `${assetNumber}-IMP01`, parentAsset, area, subArea, system, "Impeller", `Impeller – ${pumpName}`, "IMP", "Support"),
+  createComponent(pumpName, `${assetNumber}-SEL01`, parentAsset, area, subArea, system, "Seal", `Mechanical Seal – ${pumpName}`, "SEL", "Support"),
+  createComponent(pumpName, `${assetNumber}-BRG01`, parentAsset, area, subArea, system, "Bearing", `Bearing Assembly – ${pumpName}`, "BRG", "Support"),
+  createComponent(pumpName, `${assetNumber}-CPL01`, parentAsset, area, subArea, system, "Coupling", `Coupling – ${pumpName}`, "CPL", "Drive"),
 ];
 
 // ==================== SLURRY PUMP COMPONENTS (Belt-Driven) ====================
@@ -120,13 +120,13 @@ const slurryPumpComponents = (
   subArea: string,
   system: string
 ): ComponentItem[] => [
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Motor", `Motor – ${pumpName}`, "MTR", "Drive"),
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Pump", `Pump Wet End – ${pumpName}`, "PMP", "Drive"),
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Impeller", `Impeller – ${pumpName}`, "IMP", "Support"),
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Liner", `Pump Liner – ${pumpName}`, "LNR", "Support"),
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Bearing", `Bearing Assembly – ${pumpName}`, "BRG", "Support"),
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Belt", `Drive Belt – ${pumpName}`, "BLT", "Drive"),
-  createComponent(pumpName, assetNumber, parentAsset, area, subArea, system, "Seal", `Gland Packing – ${pumpName}`, "SEL", "Support"),
+  createComponent(pumpName, `${assetNumber}-MTR01`, parentAsset, area, subArea, system, "Motor", `Motor – ${pumpName}`, "MTR", "Drive"),
+  createComponent(pumpName, `${assetNumber}-PMP01`, parentAsset, area, subArea, system, "Pump", `Pump Wet End – ${pumpName}`, "PMP", "Drive"),
+  createComponent(pumpName, `${assetNumber}-IMP01`, parentAsset, area, subArea, system, "Impeller", `Impeller – ${pumpName}`, "IMP", "Support"),
+  createComponent(pumpName, `${assetNumber}-LNR01`, parentAsset, area, subArea, system, "Liner", `Pump Liner – ${pumpName}`, "LNR", "Support"),
+  createComponent(pumpName, `${assetNumber}-BRG01`, parentAsset, area, subArea, system, "Bearing", `Bearing Assembly – ${pumpName}`, "BRG", "Support"),
+  createComponent(pumpName, `${assetNumber}-BLT01`, parentAsset, area, subArea, system, "Belt", `Drive Belt – ${pumpName}`, "BLT", "Drive"),
+  createComponent(pumpName, `${assetNumber}-SEL01`, parentAsset, area, subArea, system, "Seal", `Gland Packing – ${pumpName}`, "SEL", "Support"),
 ];
 
 // ==================== AGITATOR COMPONENTS ====================
@@ -138,12 +138,12 @@ const agitatorComponents = (
   subArea: string,
   system: string
 ): ComponentItem[] => [
-  createComponent(agitatorName, assetNumber, parentAsset, area, subArea, system, "Motor", `Motor – ${agitatorName}`, "MTR", "Drive"),
-  createComponent(agitatorName, assetNumber, parentAsset, area, subArea, system, "Gearbox", `Gearbox – ${agitatorName}`, "GBX", "Drive"),
-  createComponent(agitatorName, assetNumber, parentAsset, area, subArea, system, "Impeller", `Impeller – ${agitatorName}`, "IMP", "Support"),
-  createComponent(agitatorName, assetNumber, parentAsset, area, subArea, system, "Shaft", `Shaft – ${agitatorName}`, "SHF", "Support"),
-  createComponent(agitatorName, assetNumber, parentAsset, area, subArea, system, "Bearing", `Bearing – ${agitatorName}`, "BRG", "Support"),
-  createComponent(agitatorName, assetNumber, parentAsset, area, subArea, system, "Seal", `Shaft Seal – ${agitatorName}`, "SEL", "Support"),
+  createComponent(agitatorName, `${assetNumber}-MTR01`, parentAsset, area, subArea, system, "Motor", `Motor – ${agitatorName}`, "MTR", "Drive"),
+  createComponent(agitatorName, `${assetNumber}-GBX01`, parentAsset, area, subArea, system, "Gearbox", `Gearbox – ${agitatorName}`, "GBX", "Drive"),
+  createComponent(agitatorName, `${assetNumber}-IMP01`, parentAsset, area, subArea, system, "Impeller", `Impeller – ${agitatorName}`, "IMP", "Support"),
+  createComponent(agitatorName, `${assetNumber}-SHF01`, parentAsset, area, subArea, system, "Shaft", `Shaft – ${agitatorName}`, "SHF", "Support"),
+  createComponent(agitatorName, `${assetNumber}-BRG01`, parentAsset, area, subArea, system, "Bearing", `Bearing – ${agitatorName}`, "BRG", "Support"),
+  createComponent(agitatorName, `${assetNumber}-SEL01`, parentAsset, area, subArea, system, "Seal", `Shaft Seal – ${agitatorName}`, "SEL", "Support"),
 ];
 
 // ==================== BALL MILL COMPONENTS ====================
@@ -154,15 +154,15 @@ const ballMillComponents = (
   area: string,
   subArea: string
 ): ComponentItem[] => [
-  createComponent(millName, assetNumber, parentAsset, area, subArea, "Grinding", "Motor", `Main Motor – ${millName}`, "MTR", "Drive"),
-  createComponent(millName, assetNumber, parentAsset, area, subArea, "Grinding", "Gearbox", `Gear Reducer – ${millName}`, "GBX", "Drive"),
-  createComponent(millName, assetNumber, parentAsset, area, subArea, "Grinding", "Pinion", `Pinion – ${millName}`, "PIN", "Drive"),
-  createComponent(millName, assetNumber, parentAsset, area, subArea, "Grinding", "Girth Gear", `Girth Gear – ${millName}`, "GIR", "Drive"),
-  createComponent(millName, assetNumber, parentAsset, area, subArea, "Grinding", "Trunnion", `Trunnion – ${millName}`, "TRN", "Support"),
-  createComponent(millName, assetNumber, parentAsset, area, subArea, "Grinding", "Bearing", `Feed End Bearing – ${millName}`, "BRG", "Support"),
-  createComponent(millName, assetNumber, parentAsset, area, subArea, "Grinding", "Bearing", `Discharge End Bearing – ${millName}`, "BRG", "Support"),
-  createComponent(millName, assetNumber, parentAsset, area, subArea, "Grinding", "Liner", `Mill Liner – ${millName}`, "LNR", "Support"),
-  createComponent(millName, assetNumber, parentAsset, area, subArea, "Grinding", "Coupling", `Coupling – ${millName}`, "CPL", "Drive"),
+  createComponent(millName, `${assetNumber}-MTR01`, parentAsset, area, subArea, "Grinding", "Motor", `Main Motor – ${millName}`, "MTR", "Drive"),
+  createComponent(millName, `${assetNumber}-GBX01`, parentAsset, area, subArea, "Grinding", "Gearbox", `Gear Reducer – ${millName}`, "GBX", "Drive"),
+  createComponent(millName, `${assetNumber}-PIN01`, parentAsset, area, subArea, "Grinding", "Pinion", `Pinion – ${millName}`, "PIN", "Drive"),
+  createComponent(millName, `${assetNumber}-GIR01`, parentAsset, area, subArea, "Grinding", "Girth Gear", `Girth Gear – ${millName}`, "GIR", "Drive"),
+  createComponent(millName, `${assetNumber}-TRN01`, parentAsset, area, subArea, "Grinding", "Trunnion", `Trunnion – ${millName}`, "TRN", "Support"),
+  createComponent(millName, `${assetNumber}-BRG01`, parentAsset, area, subArea, "Grinding", "Bearing", `Feed End Bearing – ${millName}`, "BRG", "Support"),
+  createComponent(millName, `${assetNumber}-BRG02`, parentAsset, area, subArea, "Grinding", "Bearing", `Discharge End Bearing – ${millName}`, "BRG", "Support"),
+  createComponent(millName, `${assetNumber}-LNR01`, parentAsset, area, subArea, "Grinding", "Liner", `Mill Liner – ${millName}`, "LNR", "Support"),
+  createComponent(millName, `${assetNumber}-CPL01`, parentAsset, area, subArea, "Grinding", "Coupling", `Coupling – ${millName}`, "CPL", "Drive"),
 ];
 
 // ==================== SCREEN COMPONENTS ====================
@@ -174,11 +174,11 @@ const screenComponents = (
   subArea: string,
   system: string
 ): ComponentItem[] => [
-  createComponent(screenName, assetNumber, parentAsset, area, subArea, system, "Motor", `Exciter Motor – ${screenName}`, "MTR", "Drive"),
-  createComponent(screenName, assetNumber, parentAsset, area, subArea, system, "Exciter", `Exciter – ${screenName}`, "EXC", "Drive"),
-  createComponent(screenName, assetNumber, parentAsset, area, subArea, system, "Screen", `Screen Deck – ${screenName}`, "SCN", "Support"),
-  createComponent(screenName, assetNumber, parentAsset, area, subArea, system, "Spring", `Springs – ${screenName}`, "SPR", "Support"),
-  createComponent(screenName, assetNumber, parentAsset, area, subArea, system, "Bearing", `Exciter Bearing – ${screenName}`, "BRG", "Support"),
+  createComponent(screenName, `${assetNumber}-MTR01`, parentAsset, area, subArea, system, "Motor", `Exciter Motor – ${screenName}`, "MTR", "Drive"),
+  createComponent(screenName, `${assetNumber}-EXC01`, parentAsset, area, subArea, system, "Exciter", `Exciter – ${screenName}`, "EXC", "Drive"),
+  createComponent(screenName, `${assetNumber}-SCN01`, parentAsset, area, subArea, system, "Screen", `Screen Deck – ${screenName}`, "SCN", "Support"),
+  createComponent(screenName, `${assetNumber}-SPR01`, parentAsset, area, subArea, system, "Spring", `Springs – ${screenName}`, "SPR", "Support"),
+  createComponent(screenName, `${assetNumber}-BRG01`, parentAsset, area, subArea, system, "Bearing", `Exciter Bearing – ${screenName}`, "BRG", "Support"),
 ];
 
 // ==================== GENERATOR COMPONENTS ====================
@@ -189,13 +189,13 @@ const generatorComponents = (
   area: string,
   subArea: string
 ): ComponentItem[] => [
-  createComponent(genName, assetNumber, parentAsset, area, subArea, "Power Generation", "Engine", `Engine – ${genName}`, "ENG", "Drive"),
-  createComponent(genName, assetNumber, parentAsset, area, subArea, "Power Generation", "Alternator", `Alternator – ${genName}`, "ALT", "Drive"),
-  createComponent(genName, assetNumber, parentAsset, area, subArea, "Power Generation", "Radiator", `Radiator – ${genName}`, "RAD", "Support"),
-  createComponent(genName, assetNumber, parentAsset, area, subArea, "Power Generation", "Filter", `Air Filter – ${genName}`, "FLT", "Support"),
-  createComponent(genName, assetNumber, parentAsset, area, subArea, "Power Generation", "Filter", `Fuel Filter – ${genName}`, "FLT", "Support"),
-  createComponent(genName, assetNumber, parentAsset, area, subArea, "Power Generation", "Filter", `Oil Filter – ${genName}`, "FLT", "Support"),
-  createComponent(genName, assetNumber, parentAsset, area, subArea, "Power Generation", "Belt", `Drive Belt – ${genName}`, "BLT", "Drive"),
+  createComponent(genName, `${assetNumber}-ENG01`, parentAsset, area, subArea, "Power Generation", "Engine", `Engine – ${genName}`, "ENG", "Drive"),
+  createComponent(genName, `${assetNumber}-ALT01`, parentAsset, area, subArea, "Power Generation", "Alternator", `Alternator – ${genName}`, "ALT", "Drive"),
+  createComponent(genName, `${assetNumber}-RAD01`, parentAsset, area, subArea, "Power Generation", "Radiator", `Radiator – ${genName}`, "RAD", "Support"),
+  createComponent(genName, `${assetNumber}-FLT01`, parentAsset, area, subArea, "Power Generation", "Filter", `Air Filter – ${genName}`, "FLT", "Support"),
+  createComponent(genName, `${assetNumber}-FLT02`, parentAsset, area, subArea, "Power Generation", "Filter", `Fuel Filter – ${genName}`, "FLT", "Support"),
+  createComponent(genName, `${assetNumber}-FLT03`, parentAsset, area, subArea, "Power Generation", "Filter", `Oil Filter – ${genName}`, "FLT", "Support"),
+  createComponent(genName, `${assetNumber}-BLT01`, parentAsset, area, subArea, "Power Generation", "Belt", `Drive Belt – ${genName}`, "BLT", "Drive"),
 ];
 
 // ==================== COMPRESSOR COMPONENTS ====================
@@ -206,12 +206,12 @@ const compressorComponents = (
   area: string,
   subArea: string
 ): ComponentItem[] => [
-  createComponent(compName, assetNumber, parentAsset, area, subArea, "Compressed Air", "Motor", `Motor – ${compName}`, "MTR", "Drive"),
-  createComponent(compName, assetNumber, parentAsset, area, subArea, "Compressed Air", "Compressor", `Compressor Element – ${compName}`, "CMP", "Drive"),
-  createComponent(compName, assetNumber, parentAsset, area, subArea, "Compressed Air", "Filter", `Air Filter – ${compName}`, "FLT", "Support"),
-  createComponent(compName, assetNumber, parentAsset, area, subArea, "Compressed Air", "Filter", `Oil Filter – ${compName}`, "FLT", "Support"),
-  createComponent(compName, assetNumber, parentAsset, area, subArea, "Compressed Air", "Separator", `Oil Separator – ${compName}`, "SEP", "Support"),
-  createComponent(compName, assetNumber, parentAsset, area, subArea, "Compressed Air", "Cooler", `Cooler – ${compName}`, "CLR", "Support"),
+  createComponent(compName, `${assetNumber}-MTR01`, parentAsset, area, subArea, "Compressed Air", "Motor", `Motor – ${compName}`, "MTR", "Drive"),
+  createComponent(compName, `${assetNumber}-CMP01`, parentAsset, area, subArea, "Compressed Air", "Compressor", `Compressor Element – ${compName}`, "CMP", "Drive"),
+  createComponent(compName, `${assetNumber}-FLT01`, parentAsset, area, subArea, "Compressed Air", "Filter", `Air Filter – ${compName}`, "FLT", "Support"),
+  createComponent(compName, `${assetNumber}-FLT02`, parentAsset, area, subArea, "Compressed Air", "Filter", `Oil Filter – ${compName}`, "FLT", "Support"),
+  createComponent(compName, `${assetNumber}-SEP01`, parentAsset, area, subArea, "Compressed Air", "Separator", `Oil Separator – ${compName}`, "SEP", "Support"),
+  createComponent(compName, `${assetNumber}-CLR01`, parentAsset, area, subArea, "Compressed Air", "Cooler", `Cooler – ${compName}`, "CLR", "Support"),
 ];
 
 // ==================== THICKENER COMPONENTS ====================
@@ -222,11 +222,11 @@ const thickenerComponents = (
   area: string,
   subArea: string
 ): ComponentItem[] => [
-  createComponent(thkName, assetNumber, parentAsset, area, subArea, "Thickening", "Motor", `Rake Drive Motor – ${thkName}`, "MTR", "Drive"),
-  createComponent(thkName, assetNumber, parentAsset, area, subArea, "Thickening", "Gearbox", `Rake Drive Gearbox – ${thkName}`, "GBX", "Drive"),
-  createComponent(thkName, assetNumber, parentAsset, area, subArea, "Thickening", "Rake", `Rake Assembly – ${thkName}`, "RKE", "Support"),
-  createComponent(thkName, assetNumber, parentAsset, area, subArea, "Thickening", "Hydraulic Pack", `Hydraulic Power Unit – ${thkName}`, "HPU", "Drive"),
-  createComponent(thkName, assetNumber, parentAsset, area, subArea, "Thickening", "Feedwell", `Feedwell – ${thkName}`, "FDW", "Support"),
+  createComponent(thkName, `${assetNumber}-MTR01`, parentAsset, area, subArea, "Thickening", "Motor", `Rake Drive Motor – ${thkName}`, "MTR", "Drive"),
+  createComponent(thkName, `${assetNumber}-GBX01`, parentAsset, area, subArea, "Thickening", "Gearbox", `Rake Drive Gearbox – ${thkName}`, "GBX", "Drive"),
+  createComponent(thkName, `${assetNumber}-RKE01`, parentAsset, area, subArea, "Thickening", "Rake", `Rake Assembly – ${thkName}`, "RKE", "Support"),
+  createComponent(thkName, `${assetNumber}-HPU01`, parentAsset, area, subArea, "Thickening", "Hydraulic Pack", `Hydraulic Power Unit – ${thkName}`, "HPU", "Drive"),
+  createComponent(thkName, `${assetNumber}-FDW01`, parentAsset, area, subArea, "Thickening", "Feedwell", `Feedwell – ${thkName}`, "FDW", "Support"),
 ];
 
 // ==================== FILTER PRESS COMPONENTS ====================
@@ -237,12 +237,12 @@ const filterPressComponents = (
   area: string,
   subArea: string
 ): ComponentItem[] => [
-  createComponent(fpName, assetNumber, parentAsset, area, subArea, "Filtering", "Motor", `HPU Motor – ${fpName}`, "MTR", "Drive"),
-  createComponent(fpName, assetNumber, parentAsset, area, subArea, "Filtering", "Hydraulic Pack", `Hydraulic Power Unit – ${fpName}`, "HPU", "Drive"),
-  createComponent(fpName, assetNumber, parentAsset, area, subArea, "Filtering", "Cylinder", `Main Cylinder – ${fpName}`, "CYL", "Support"),
-  createComponent(fpName, assetNumber, parentAsset, area, subArea, "Filtering", "Filter Cloth", `Filter Cloths – ${fpName}`, "CLT", "Support"),
-  createComponent(fpName, assetNumber, parentAsset, area, subArea, "Filtering", "Filter Plate", `Filter Plates – ${fpName}`, "PLT", "Support"),
-  createComponent(fpName, assetNumber, parentAsset, area, subArea, "Filtering", "Chain", `Plate Shifter Chain – ${fpName}`, "CHN", "Support"),
+  createComponent(fpName, `${assetNumber}-MTR01`, parentAsset, area, subArea, "Filtering", "Motor", `HPU Motor – ${fpName}`, "MTR", "Drive"),
+  createComponent(fpName, `${assetNumber}-HPU01`, parentAsset, area, subArea, "Filtering", "Hydraulic Pack", `Hydraulic Power Unit – ${fpName}`, "HPU", "Drive"),
+  createComponent(fpName, `${assetNumber}-CYL01`, parentAsset, area, subArea, "Filtering", "Cylinder", `Main Cylinder – ${fpName}`, "CYL", "Support"),
+  createComponent(fpName, `${assetNumber}-CLT01`, parentAsset, area, subArea, "Filtering", "Filter Cloth", `Filter Cloths – ${fpName}`, "CLT", "Support"),
+  createComponent(fpName, `${assetNumber}-PLT01`, parentAsset, area, subArea, "Filtering", "Filter Plate", `Filter Plates – ${fpName}`, "PLT", "Support"),
+  createComponent(fpName, `${assetNumber}-CHN01`, parentAsset, area, subArea, "Filtering", "Chain", `Plate Shifter Chain – ${fpName}`, "CHN", "Support"),
 ];
 
 // ==================== CYCLONE COMPONENTS ====================
@@ -253,10 +253,10 @@ const cycloneComponents = (
   area: string,
   subArea: string
 ): ComponentItem[] => [
-  createComponent(cycName, assetNumber, parentAsset, area, subArea, "Classification", "Cyclone", `Cyclone Body – ${cycName}`, "CYC", "Support"),
-  createComponent(cycName, assetNumber, parentAsset, area, subArea, "Classification", "Vortex Finder", `Vortex Finder – ${cycName}`, "VTX", "Support"),
-  createComponent(cycName, assetNumber, parentAsset, area, subArea, "Classification", "Spigot", `Spigot – ${cycName}`, "SPG", "Support"),
-  createComponent(cycName, assetNumber, parentAsset, area, subArea, "Classification", "Liner", `Cyclone Liner – ${cycName}`, "LNR", "Support"),
+  createComponent(cycName, `${assetNumber}-CYC01`, parentAsset, area, subArea, "Classification", "Cyclone", `Cyclone Body – ${cycName}`, "CYC", "Support"),
+  createComponent(cycName, `${assetNumber}-VTX01`, parentAsset, area, subArea, "Classification", "Vortex Finder", `Vortex Finder – ${cycName}`, "VTX", "Support"),
+  createComponent(cycName, `${assetNumber}-SPG01`, parentAsset, area, subArea, "Classification", "Spigot", `Spigot – ${cycName}`, "SPG", "Support"),
+  createComponent(cycName, `${assetNumber}-LNR01`, parentAsset, area, subArea, "Classification", "Liner", `Cyclone Liner – ${cycName}`, "LNR", "Support"),
 ];
 
 // ==================== KNELSON CONCENTRATOR COMPONENTS ====================
@@ -267,10 +267,10 @@ const knelsonComponents = (
   area: string,
   subArea: string
 ): ComponentItem[] => [
-  createComponent(kncName, assetNumber, parentAsset, area, subArea, "Gravity Circuit", "Motor", `Motor – ${kncName}`, "MTR", "Drive"),
-  createComponent(kncName, assetNumber, parentAsset, area, subArea, "Gravity Circuit", "Concentrator", `Cone – ${kncName}`, "CON", "Support"),
-  createComponent(kncName, assetNumber, parentAsset, area, subArea, "Gravity Circuit", "Bearing", `Bearing – ${kncName}`, "BRG", "Support"),
-  createComponent(kncName, assetNumber, parentAsset, area, subArea, "Gravity Circuit", "Seal", `Seal – ${kncName}`, "SEL", "Support"),
+  createComponent(kncName, `${assetNumber}-MTR01`, parentAsset, area, subArea, "Gravity Circuit", "Motor", `Motor – ${kncName}`, "MTR", "Drive"),
+  createComponent(kncName, `${assetNumber}-CON01`, parentAsset, area, subArea, "Gravity Circuit", "Concentrator", `Cone – ${kncName}`, "CON", "Support"),
+  createComponent(kncName, `${assetNumber}-BRG01`, parentAsset, area, subArea, "Gravity Circuit", "Bearing", `Bearing – ${kncName}`, "BRG", "Support"),
+  createComponent(kncName, `${assetNumber}-SEL01`, parentAsset, area, subArea, "Gravity Circuit", "Seal", `Seal – ${kncName}`, "SEL", "Support"),
 ];
 
 // ==================== ELUTION COLUMN COMPONENTS ====================
@@ -281,10 +281,10 @@ const elutionColumnComponents = (
   area: string,
   subArea: string
 ): ComponentItem[] => [
-  createComponent(colName, assetNumber, parentAsset, area, subArea, "Elution", "Column", `Column Vessel – ${colName}`, "COL", "Support"),
-  createComponent(colName, assetNumber, parentAsset, area, subArea, "Elution", "Filter", `Column Filters – ${colName}`, "FLT", "Support"),
-  createComponent(colName, assetNumber, parentAsset, area, subArea, "Elution", "Valve", `Inlet Valve – ${colName}`, "VLV", "Control"),
-  createComponent(colName, assetNumber, parentAsset, area, subArea, "Elution", "Valve", `Outlet Valve – ${colName}`, "VLV", "Control"),
+  createComponent(colName, `${assetNumber}-COL01`, parentAsset, area, subArea, "Elution", "Column", `Column Vessel – ${colName}`, "COL", "Support"),
+  createComponent(colName, `${assetNumber}-FLT01`, parentAsset, area, subArea, "Elution", "Filter", `Column Filters – ${colName}`, "FLT", "Support"),
+  createComponent(colName, `${assetNumber}-VLV01`, parentAsset, area, subArea, "Elution", "Valve", `Inlet Valve – ${colName}`, "VLV", "Control"),
+  createComponent(colName, `${assetNumber}-VLV02`, parentAsset, area, subArea, "Elution", "Valve", `Outlet Valve – ${colName}`, "VLV", "Control"),
 ];
 
 // ==================== KILN COMPONENTS ====================
@@ -295,12 +295,12 @@ const kilnComponents = (
   area: string,
   subArea: string
 ): ComponentItem[] => [
-  createComponent(kilnName, assetNumber, parentAsset, area, subArea, "Regeneration", "Motor", `Kiln Drive Motor – ${kilnName}`, "MTR", "Drive"),
-  createComponent(kilnName, assetNumber, parentAsset, area, subArea, "Regeneration", "Gearbox", `Kiln Gearbox – ${kilnName}`, "GBX", "Drive"),
-  createComponent(kilnName, assetNumber, parentAsset, area, subArea, "Regeneration", "Burner", `Burner – ${kilnName}`, "BRN", "Drive"),
-  createComponent(kilnName, assetNumber, parentAsset, area, subArea, "Regeneration", "Shell", `Kiln Shell – ${kilnName}`, "SHL", "Support"),
-  createComponent(kilnName, assetNumber, parentAsset, area, subArea, "Regeneration", "Tyre", `Kiln Tyre – ${kilnName}`, "TYR", "Support"),
-  createComponent(kilnName, assetNumber, parentAsset, area, subArea, "Regeneration", "Roller", `Support Roller – ${kilnName}`, "ROL", "Support"),
+  createComponent(kilnName, `${assetNumber}-MTR01`, parentAsset, area, subArea, "Regeneration", "Motor", `Kiln Drive Motor – ${kilnName}`, "MTR", "Drive"),
+  createComponent(kilnName, `${assetNumber}-GBX01`, parentAsset, area, subArea, "Regeneration", "Gearbox", `Kiln Gearbox – ${kilnName}`, "GBX", "Drive"),
+  createComponent(kilnName, `${assetNumber}-BRN01`, parentAsset, area, subArea, "Regeneration", "Burner", `Burner – ${kilnName}`, "BRN", "Drive"),
+  createComponent(kilnName, `${assetNumber}-SHL01`, parentAsset, area, subArea, "Regeneration", "Shell", `Kiln Shell – ${kilnName}`, "SHL", "Support"),
+  createComponent(kilnName, `${assetNumber}-TYR01`, parentAsset, area, subArea, "Regeneration", "Tyre", `Kiln Tyre – ${kilnName}`, "TYR", "Support"),
+  createComponent(kilnName, `${assetNumber}-ROL01`, parentAsset, area, subArea, "Regeneration", "Roller", `Support Roller – ${kilnName}`, "ROL", "Support"),
 ];
 
 // ==================== GENERATE ALL COMPONENTS ====================
