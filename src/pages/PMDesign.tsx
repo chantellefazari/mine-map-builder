@@ -69,12 +69,13 @@ import { CableTestSheetPMDocument } from "@/components/pm-design/CableTestSheetP
 import { EmergencyLightTestPMDocument } from "@/components/pm-design/EmergencyLightTestPMDocument";
 import { FilterPressMotorInspectionPMDocument } from "@/components/pm-design/FilterPressMotorInspectionPMDocument";
 import { FullTestSheetPMDocument } from "@/components/pm-design/FullTestSheetPMDocument";
+import { RCDTestingSheetsDocument } from "@/components/pm-design/RCDTestingSheetsDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical" | "mobile-equipment";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week" | "24-week" | "52-week";
-type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | "substation-2-weekly" | "ac-inspection-12-weekly" | "generator-yearly-test" | "pull-wire-checks-12-weekly" | "rcd-pushbutton-12-weekly" | "rcd-injection-24-weekly" | "switchboard-52-weekly" | "cable-test-sheet" | "emergency-light-12-weekly" | "filter-press-motor-inspection" | "full-test-sheet" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | "substation-2-weekly" | "ac-inspection-12-weekly" | "generator-yearly-test" | "pull-wire-checks-12-weekly" | "rcd-pushbutton-12-weekly" | "rcd-injection-24-weekly" | "rcd-testing-sheets" | "switchboard-52-weekly" | "cable-test-sheet" | "emergency-light-12-weekly" | "filter-press-motor-inspection" | "full-test-sheet" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -192,6 +193,7 @@ const disciplines = [
       "24-week": { 
         pms: [
           { id: "rcd-injection-24-weekly", name: "RCD Injection Test" },
+          { id: "rcd-testing-sheets", name: "RCD Testing Sheets" },
         ], 
         subgroups: [] 
       },
@@ -314,6 +316,7 @@ const PMDesign = () => {
       case "pull-wire-checks-12-weekly": return "Pull Wire Checks (12 Week)";
       case "rcd-pushbutton-12-weekly": return "RCD Push-button Test (12 Week)";
       case "rcd-injection-24-weekly": return "RCD Injection Test (24 Week)";
+      case "rcd-testing-sheets": return "RCD Testing Sheets (24 Week)";
       case "generator-yearly-test": return "Generator Electrical Inspection (52 Week)";
       case "switchboard-52-weekly": return "Switchboard Inspection (52 Week)";
       case "cable-test-sheet": return "Cable Test Sheet";
@@ -424,6 +427,8 @@ const PMDesign = () => {
         return <RCDPushButtonTestPMDocument />;
       case "rcd-injection-24-weekly":
         return <RCDInjectionTestPMDocument />;
+      case "rcd-testing-sheets":
+        return <RCDTestingSheetsDocument />;
       case "switchboard-52-weekly":
         return <SwitchboardInspectionPMDocument />;
       case "cable-test-sheet":
@@ -439,7 +444,7 @@ const PMDesign = () => {
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "power-station-generator-weekly", "forklift-weekly", "ewp-weekly", "crane-weekly", "water-truck-weekly", "loader-weekly", "telehandler-weekly", "dozer-daily", "excavator-daily", "excavator-weekly", "moxy-daily", "moxy-weekly", "lighting-tower-daily", "service-truck-weekly", "skid-steer-weekly", "field-mcc-inspections-weekly", "filter-press-electrical-weekly", "ice-machine-weekly", "ph-probe-calibration-weekly", "safety-shower-weekly", "spare-mill-motor-weekly", "visual-zone-checks-weekly", "substation-2-weekly", "ac-inspection-12-weekly", "pull-wire-checks-12-weekly", "rcd-pushbutton-12-weekly", "rcd-injection-24-weekly", "generator-yearly-test", "switchboard-52-weekly", "cable-test-sheet", "emergency-light-12-weekly", "filter-press-motor-inspection", "full-test-sheet"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "power-station-generator-weekly", "forklift-weekly", "ewp-weekly", "crane-weekly", "water-truck-weekly", "loader-weekly", "telehandler-weekly", "dozer-daily", "excavator-daily", "excavator-weekly", "moxy-daily", "moxy-weekly", "lighting-tower-daily", "service-truck-weekly", "skid-steer-weekly", "field-mcc-inspections-weekly", "filter-press-electrical-weekly", "ice-machine-weekly", "ph-probe-calibration-weekly", "safety-shower-weekly", "spare-mill-motor-weekly", "visual-zone-checks-weekly", "substation-2-weekly", "ac-inspection-12-weekly", "pull-wire-checks-12-weekly", "rcd-pushbutton-12-weekly", "rcd-injection-24-weekly", "rcd-testing-sheets", "generator-yearly-test", "switchboard-52-weekly", "cable-test-sheet", "emergency-light-12-weekly", "filter-press-motor-inspection", "full-test-sheet"].includes(activeView);
 
   return (
     <SidebarProvider>
