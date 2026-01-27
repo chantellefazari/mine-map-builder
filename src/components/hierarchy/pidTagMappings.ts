@@ -22,13 +22,13 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "04-SIT-500", assetNumber: "APRN001-TX001", description: "Reclaim Feeder Speed Transmitter", status: "mapped" },
   
   // Transfer Conveyor
-  { pidTag: "04-FE-101", assetNumber: "TRCV001", description: "Transfer Conveyor", status: "mapped" },
-  { pidTag: "04-CH-100", assetNumber: "TRCV001-CHU001", description: "Transfer Conveyor Discharge Chute", status: "mapped" },
-  { pidTag: "04-FE-101LCS", assetNumber: "TRCV001-LCS001", description: "Transfer Conveyor Local Control Station", status: "mapped" },
-  { pidTag: "04-FE-101M", assetNumber: "TRCV001-MTR001", description: "Transfer Conveyor Motor", status: "mapped" },
-  { pidTag: "04-FE-101MC", assetNumber: "TRCV001-MCC001", description: "Transfer Conveyor MCC Cell", status: "mapped" },
-  { pidTag: "04-FE-101GB", assetNumber: "TRCV001-GBX001", description: "Transfer Conveyor Gearbox", status: "mapped" },
-  { pidTag: "04-FE-101PWS", assetNumber: "TRCV001-PWS001", description: "Transfer conveyor Pullwire Switch", status: "mapped" },
+  { pidTag: "04-FE-101", assetNumber: "CV01", description: "Transfer Conveyor", status: "mapped" },
+  { pidTag: "04-CH-100", assetNumber: "CV01-CHU001", description: "Transfer Conveyor Discharge Chute", status: "mapped" },
+  { pidTag: "04-FE-101LCS", assetNumber: "CV01-LCS001", description: "Transfer Conveyor Local Control Station", status: "mapped" },
+  { pidTag: "04-FE-101M", assetNumber: "CV01-MTR001", description: "Transfer Conveyor Motor", status: "mapped" },
+  { pidTag: "04-FE-101MC", assetNumber: "CV01-MCC001", description: "Transfer Conveyor MCC Cell", status: "mapped" },
+  { pidTag: "04-FE-101GB", assetNumber: "CV01-GBX001", description: "Transfer Conveyor Gearbox", status: "mapped" },
+  { pidTag: "04-FE-101PWS", assetNumber: "CV01-PWS001", description: "Transfer Conveyor Pull Wire Switch", status: "mapped" },
   
   // Mill Feed Conveyor
   { pidTag: "04-BC-100", assetNumber: "MFC001", description: "Mill Feed Conveyor", status: "mapped" },
@@ -80,7 +80,7 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "04-PB-105", assetNumber: "FHOP001-BOX001", description: "Primary Mill Feed Boiler Box", status: "mapped" },
   { pidTag: "04-GR-100", assetNumber: "BM001-RED001", description: "Primary Ball Mill Gear Reducer", status: "mapped" },
   { pidTag: "04-MR-100", assetNumber: "BM001-MNR001", description: "Ball Mill Loading Monorail", status: "mapped" },
-  { pidTag: "04-CV-011", assetNumber: "BMSC001", description: "Ball Mill Scatts Conveyor", status: "mapped" },
+  { pidTag: "04-CV-011", assetNumber: "CV02", description: "Ball Mill Scatts Conveyor", status: "mapped" },
   { pidTag: "04-SS-01", assetNumber: "MILL-SHW01", description: "Mill Area Safety Shower 1", status: "mapped" },
   { pidTag: "04-SS-02", assetNumber: "MILL-SHW02", description: "Mill Area Safety Shower 2", status: "mapped" },
   
