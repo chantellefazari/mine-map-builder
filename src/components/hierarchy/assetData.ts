@@ -894,19 +894,19 @@ export const areasData: Area[] = [
           { 
             label: "Transfer Conveyor", 
             equipment: [
-              { assetNumber: "TRCV001", name: "Transfer Conveyor", pidTags: ["04-FE-101"] },
-              { assetNumber: "TRCV001-MTR001", name: "Transfer Conveyor – Motor", pidTags: ["04-FE-101M"] },
-              { assetNumber: "TRCV001-GBX001", name: "Transfer Conveyor – Gearbox", pidTags: ["04-FE-101GB"] },
-              { assetNumber: "TRCV001-MCC001", name: "Transfer Conveyor – MCC Cell", pidTags: ["04-FE-101MC"] },
-              { assetNumber: "TRCV001-LCS001", name: "Transfer Conveyor – Local Control Station", pidTags: ["04-FE-101LCS"] },
-              { assetNumber: "TRCV001-PWS001", name: "Transfer Conveyor – Pull Wire Switch", pidTags: ["04-FE-101PWS"] },
-              { assetNumber: "TRCV001-CHU001", name: "Transfer Conveyor – Discharge Chute", pidTags: ["04-CH-100"] },
+              { assetNumber: "CV01", name: "Transfer Conveyor", pidTags: ["04-FE-101"] },
+              { assetNumber: "CV01-MTR001", name: "Transfer Conveyor – Motor", pidTags: ["04-FE-101M"] },
+              { assetNumber: "CV01-GBX001", name: "Transfer Conveyor – Gearbox", pidTags: ["04-FE-101GB"] },
+              { assetNumber: "CV01-MCC001", name: "Transfer Conveyor – MCC Cell", pidTags: ["04-FE-101MC"] },
+              { assetNumber: "CV01-LCS001", name: "Transfer Conveyor – Local Control Station", pidTags: ["04-FE-101LCS"] },
+              { assetNumber: "CV01-PWS001", name: "Transfer Conveyor – Pull Wire Switch", pidTags: ["04-FE-101PWS"] },
+              { assetNumber: "CV01-CHU001", name: "Transfer Conveyor – Discharge Chute", pidTags: ["04-CH-100"] },
             ]
           },
           { 
             label: "Ball Mill Scatts Conveyor", 
             equipment: [
-              { assetNumber: "BMSC001", name: "Ball Mill Scatts Conveyor", pidTags: ["04-CV-011"] },
+              { assetNumber: "CV02", name: "Ball Mill Scatts Conveyor", pidTags: ["04-CV-011"] },
             ]
           },
         ],
