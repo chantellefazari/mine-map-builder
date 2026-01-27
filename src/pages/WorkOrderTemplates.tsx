@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ClipboardList, ListOrdered } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MechanicalWorkOrderTemplate } from "@/components/work-orders/MechanicalWorkOrderTemplate";
 import { WorkOrderRegister } from "@/components/work-orders/WorkOrderRegister";
 
@@ -20,11 +20,18 @@ const templateCategories = [
 const WorkOrderTemplates = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>(null);
   const [activeTab, setActiveTab] = useState("register");
+  const [allocatedWO, setAllocatedWO] = useState<string | null>(null);
+
+  const handleAllocateWO = (woNumber: string) => {
+    setAllocatedWO(woNumber);
+    setActiveTab("templates");
+    setSelectedTemplate("mechanical");
+  };
 
   const renderTemplate = () => {
     switch (selectedTemplate) {
       case "mechanical":
-        return <MechanicalWorkOrderTemplate />;
+        return <MechanicalWorkOrderTemplate woNumber={allocatedWO || undefined} />;
       default:
         return null;
     }
@@ -91,13 +98,20 @@ const WorkOrderTemplates = () => {
                 </button>
               ))}
             </div>
+
+            {allocatedWO && (
+              <div className="mt-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                <p className="text-xs text-muted-foreground">Current WO:</p>
+                <p className="font-mono font-medium text-primary">{allocatedWO}</p>
+              </div>
+            )}
           </ScrollArea>
         )}
 
         {activeTab === "register" && (
           <div className="flex-1 p-4">
             <p className="text-sm text-muted-foreground">
-              View and manage all work orders with sequential numbering system.
+              Select a work order number to allocate it and open the template.
             </p>
           </div>
         )}
@@ -106,7 +120,7 @@ const WorkOrderTemplates = () => {
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
         {activeTab === "register" ? (
-          <WorkOrderRegister />
+          <WorkOrderRegister onAllocateWO={handleAllocateWO} />
         ) : selectedTemplate ? (
           <div className="p-6">
             {renderTemplate()}
