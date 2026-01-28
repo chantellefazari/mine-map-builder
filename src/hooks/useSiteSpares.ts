@@ -42,21 +42,39 @@ export const useSiteSpares = () => {
   // Fetch all spares from database
   const fetchSpares = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("site_spares")
-      .select("*")
-      .order("created_at", { ascending: true });
+    // NOTE: The backend applies a default 1000-row limit per request.
+    // We page through results to ensure large catalogues (e.g. 1700+ rows)
+    // load fully.
+    const pageSize = 1000;
+    let from = 0;
+    const all: SiteSpareItem[] = [];
 
-    if (error) {
-      console.error("Error fetching spares:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load inventory data.",
-        variant: "destructive",
-      });
-    } else {
-      setSpares(data || []);
+    while (true) {
+      const { data, error } = await supabase
+        .from("site_spares")
+        .select("*")
+        .order("created_at", { ascending: true })
+        .order("id", { ascending: true })
+        .range(from, from + pageSize - 1);
+
+      if (error) {
+        console.error("Error fetching spares:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load inventory data.",
+          variant: "destructive",
+        });
+        break;
+      }
+
+      const batch = data || [];
+      all.push(...batch);
+
+      if (batch.length < pageSize) break;
+      from += pageSize;
     }
+
+    setSpares(all);
     setLoading(false);
   };
 
@@ -88,21 +106,12 @@ export const useSiteSpares = () => {
 
   // Import multiple spares (replaces all existing)
   const importSpares = async (newSpares: Omit<SiteSpareItem, "id">[]) => {
-    // First delete all existing spares
-    const { error: deleteError } = await supabase
-      .from("site_spares")
-      .delete()
-      .neq("id", "00000000-0000-0000-0000-000000000000"); // Delete all rows
-
-    if (deleteError) {
-      console.error("Error clearing spares:", deleteError);
-      toast({
-        title: "Error",
-        description: "Failed to clear existing inventory.",
-        variant: "destructive",
-      });
-      return false;
-    }
+    // SAFETY: Do NOT delete the existing inventory first.
+    // If an insert fails mid-way (network / validation), deleting up-front can
+    // leave the catalogue empty after refresh.
+    // Instead: insert the new rows first, then delete the old rows after a
+    // successful import.
+    const importStartIso = new Date().toISOString();
 
     // Insert new spares in batches of 100
     const batchSize = 100;
@@ -124,6 +133,24 @@ export const useSiteSpares = () => {
         return false;
       }
       insertedCount += batch.length;
+    }
+
+    // Remove the old inventory only after a full successful insert.
+    // New rows will have created_at >= importStartIso (default now()).
+    const { error: cleanupError } = await supabase
+      .from("site_spares")
+      .delete()
+      .or(`created_at.is.null,created_at.lt.${importStartIso}`);
+
+    if (cleanupError) {
+      console.error("Error cleaning up old inventory:", cleanupError);
+      toast({
+        title: "Import completed with warning",
+        description:
+          "New items were imported, but old items could not be removed automatically. Please try importing again or refresh.",
+        variant: "destructive",
+      });
+      // Still refresh so the user sees the newly imported items.
     }
 
     // Refresh the data
