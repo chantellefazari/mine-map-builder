@@ -164,6 +164,7 @@ export const SparesTable = () => {
                 </TableCell>
                 <TableCell className="text-sm">{spare.subArea}</TableCell>
                 <TableCell className="text-sm">{spare.system}</TableCell>
+                <TableCell className="text-sm">{spare.system}</TableCell>
                 <TableCell className="font-medium">{spare.componentName}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {spare.componentType}
