@@ -10,6 +10,7 @@ import CriticalSpares from "./pages/CriticalSpares";
 import SiteSparesCatalogue from "./pages/SiteSparesCatalogue";
 import ComponentsOEM from "./pages/ComponentsOEM";
 import WorkOrderTemplates from "./pages/WorkOrderTemplates";
+import MaintenanceFoundations from "./pages/MaintenanceFoundations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/site-spares" element={<SiteSparesCatalogue />} />
           <Route path="/components-oem" element={<ComponentsOEM />} />
           <Route path="/work-order-templates" element={<WorkOrderTemplates />} />
+          <Route path="/maintenance-foundations" element={<MaintenanceFoundations />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
