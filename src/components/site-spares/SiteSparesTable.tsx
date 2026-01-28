@@ -135,7 +135,7 @@ export const SiteSparesTable = () => {
           <TableHeader>
             <TableRow className="bg-muted/50">
               <TableHead className="min-w-[80px] font-semibold">Priority</TableHead>
-              <TableHead className="min-w-[80px] font-semibold">ID</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">P&ID</TableHead>
               <TableHead className="min-w-[80px] font-semibold">Area</TableHead>
               <TableHead className="min-w-[100px] font-semibold">System</TableHead>
               <TableHead className="min-w-[140px] font-semibold">Parent Asset</TableHead>
@@ -158,7 +158,7 @@ export const SiteSparesTable = () => {
                   </Badge>
                 </TableCell>
                 <TableCell className="font-mono text-sm text-muted-foreground">
-                  {spare.id}
+                  {spare.pidTag || "—"}
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline" className="font-mono text-xs">
