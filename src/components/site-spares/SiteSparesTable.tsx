@@ -61,6 +61,7 @@ export const SiteSparesTable = () => {
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterWarehouse, setFilterWarehouse] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [quickFilter, setQuickFilter] = useState<"all" | "lowStock" | "critical">("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
 
@@ -78,7 +79,14 @@ export const SiteSparesTable = () => {
     const matchesCategory = filterCategory === "all" || spare.category === filterCategory;
     const matchesWarehouse = filterWarehouse === "all" || spare.warehouse_area === filterWarehouse;
     const matchesStatus = filterStatus === "all" || spare.status === filterStatus;
-    return matchesSearch && matchesCategory && matchesWarehouse && matchesStatus;
+    
+    // Quick filter from summary tabs
+    const matchesQuickFilter =
+      quickFilter === "all" ||
+      (quickFilter === "lowStock" && (spare.status === "Low Stock" || spare.status === "Out of Stock")) ||
+      (quickFilter === "critical" && spare.is_critical);
+    
+    return matchesSearch && matchesCategory && matchesWarehouse && matchesStatus && matchesQuickFilter;
   });
 
   // Summary stats
@@ -97,23 +105,44 @@ export const SiteSparesTable = () => {
 
   return (
     <div className="space-y-4">
-      {/* Summary Stats */}
+      {/* Summary Stats - Clickable Filters */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-muted/50 rounded-lg p-4">
+        <div 
+          className={`rounded-lg p-4 cursor-pointer transition-all ${
+            quickFilter === "all" 
+              ? "bg-primary/20 ring-2 ring-primary" 
+              : "bg-muted/50 hover:bg-muted"
+          }`}
+          onClick={() => setQuickFilter("all")}
+        >
           <div className="flex items-center gap-2">
             <Package className="h-5 w-5 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">Total Items</span>
           </div>
           <p className="text-2xl font-bold mt-1">{totalItems}</p>
         </div>
-        <div className="bg-amber-500/10 rounded-lg p-4">
+        <div 
+          className={`rounded-lg p-4 cursor-pointer transition-all ${
+            quickFilter === "lowStock" 
+              ? "bg-amber-500/30 ring-2 ring-amber-500" 
+              : "bg-amber-500/10 hover:bg-amber-500/20"
+          }`}
+          onClick={() => setQuickFilter("lowStock")}
+        >
           <div className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-amber-600" />
             <span className="text-sm text-amber-700">Low/Out of Stock</span>
           </div>
           <p className="text-2xl font-bold mt-1 text-amber-700">{lowStockCount}</p>
         </div>
-        <div className="bg-primary/10 rounded-lg p-4">
+        <div 
+          className={`rounded-lg p-4 cursor-pointer transition-all ${
+            quickFilter === "critical" 
+              ? "bg-primary/30 ring-2 ring-primary" 
+              : "bg-primary/10 hover:bg-primary/20"
+          }`}
+          onClick={() => setQuickFilter("critical")}
+        >
           <div className="flex items-center gap-2">
             <Package className="h-5 w-5 text-primary" />
             <span className="text-sm text-primary">Critical Items</span>
