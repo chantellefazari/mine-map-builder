@@ -137,19 +137,20 @@ export const SiteSparesTable = () => {
           <TableHeader>
             <TableRow className="bg-muted/50">
               <TableHead className="min-w-[80px] font-semibold">Priority</TableHead>
-              <TableHead className="min-w-[120px] font-semibold">Asset Number</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">P&ID</TableHead>
+              <TableHead className="min-w-[140px] font-semibold">Asset Number</TableHead>
               <TableHead className="min-w-[80px] font-semibold">Area</TableHead>
-              <TableHead className="min-w-[120px] font-semibold">Sub-Area</TableHead>
-              <TableHead className="min-w-[160px] font-semibold">System</TableHead>
-              <TableHead className="min-w-[140px] font-semibold">Component</TableHead>
-              <TableHead className="min-w-[200px] font-semibold">Description</TableHead>
-              <TableHead className="min-w-[120px] font-semibold">OEM Part #</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">Manufacturer</TableHead>
-              <TableHead className="min-w-[80px] font-semibold text-center">Min</TableHead>
-              <TableHead className="min-w-[80px] font-semibold text-center">Max</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Sub-Area</TableHead>
+              <TableHead className="min-w-[140px] font-semibold">System</TableHead>
+              <TableHead className="min-w-[140px] font-semibold">Component Name</TableHead>
+              <TableHead className="min-w-[180px] font-semibold">Description</TableHead>
+              <TableHead className="min-w-[120px] font-semibold">Manufacturer</TableHead>
+              <TableHead className="min-w-[180px] font-semibold">OEM Part Number</TableHead>
               <TableHead className="min-w-[80px] font-semibold">Source</TableHead>
-              <TableHead className="min-w-[80px] font-semibold">Status</TableHead>
+              <TableHead className="min-w-[150px] font-semibold">Priority Reason</TableHead>
+              <TableHead className="min-w-[100px] font-semibold text-center">Min Qty</TableHead>
+              <TableHead className="min-w-[100px] font-semibold text-center">Max Qty</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Confidence</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -163,9 +164,6 @@ export const SiteSparesTable = () => {
                 <TableCell className="font-mono text-sm font-medium">
                   {spare.assetNumber || "—"}
                 </TableCell>
-                <TableCell className="font-mono text-sm text-muted-foreground">
-                  {spare.pidTag || "—"}
-                </TableCell>
                 <TableCell>
                   <Badge variant="outline" className="font-mono text-xs">
                     {spare.area}
@@ -174,17 +172,9 @@ export const SiteSparesTable = () => {
                 <TableCell className="text-sm">{spare.subArea || "—"}</TableCell>
                 <TableCell className="text-sm">{spare.system || "—"}</TableCell>
                 <TableCell className="font-medium">{spare.componentName}</TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {spare.sparePartDescription || "—"}
-                </TableCell>
-                <TableCell className="font-mono text-xs">{spare.oemPartNumber || "—"}</TableCell>
-                <TableCell className="text-sm">{spare.manufacturer || "—"}</TableCell>
-                <TableCell className="text-center font-mono text-sm">
-                  {spare.minQty || "—"}
-                </TableCell>
-                <TableCell className="text-center font-mono text-sm">
-                  {spare.maxQty || "—"}
-                </TableCell>
+                <TableCell className="text-sm">{spare.sparePartDescription || "—"}</TableCell>
+                <TableCell className="text-sm font-medium">{spare.manufacturer || "—"}</TableCell>
+                <TableCell className="text-sm font-mono">{spare.oemPartNumber || "—"}</TableCell>
                 <TableCell>
                   {spare.criticalitySource ? (
                     <Badge variant="secondary" className={criticalitySourceColors[spare.criticalitySource] || ""}>
@@ -194,10 +184,102 @@ export const SiteSparesTable = () => {
                     <span className="text-muted-foreground">—</span>
                   )}
                 </TableCell>
-                <TableCell>
-                  <Badge variant="outline" className={siteSpareStatusColors[spare.status] || ""}>
-                    {spare.status}
-                  </Badge>
+                <TableCell className="text-sm text-muted-foreground">
+                  {spare.priorityReason || "—"}
+                </TableCell>
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.minQty || "TBC"}
+                    onValueChange={(value) => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, minQty: value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="TBC">TBC</SelectItem>
+                      <SelectItem value="0">0</SelectItem>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="3">3</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                      <SelectItem value="5">5</SelectItem>
+                      <SelectItem value="6">6</SelectItem>
+                      <SelectItem value="8">8</SelectItem>
+                      <SelectItem value="10">10</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.maxQty || "TBC"}
+                    onValueChange={(value) => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, maxQty: value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="TBC">TBC</SelectItem>
+                      <SelectItem value="0">0</SelectItem>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="3">3</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                      <SelectItem value="5">5</SelectItem>
+                      <SelectItem value="6">6</SelectItem>
+                      <SelectItem value="8">8</SelectItem>
+                      <SelectItem value="10">10</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.confidence || "Low"}
+                    onValueChange={(value: "Low" | "Medium" | "High") => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, confidence: value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-24">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="Low">Low</SelectItem>
+                      <SelectItem value="Medium">Medium</SelectItem>
+                      <SelectItem value="High">High</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.status}
+                    onValueChange={(value: "Provisional" | "Confirmed" | "TBC" | "Active" | "Pending" | "Obsolete") => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, status: value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-28">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="Provisional">Provisional</SelectItem>
+                      <SelectItem value="TBC">TBC</SelectItem>
+                      <SelectItem value="Confirmed">Confirmed</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
               </TableRow>
             ))}
