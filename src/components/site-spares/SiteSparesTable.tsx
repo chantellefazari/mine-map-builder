@@ -135,9 +135,10 @@ export const SiteSparesTable = () => {
           <TableHeader>
             <TableRow className="bg-muted/50">
               <TableHead className="min-w-[80px] font-semibold">Priority</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">Asset #</TableHead>
+              <TableHead className="min-w-[80px] font-semibold">ID</TableHead>
               <TableHead className="min-w-[80px] font-semibold">Area</TableHead>
               <TableHead className="min-w-[100px] font-semibold">System</TableHead>
+              <TableHead className="min-w-[140px] font-semibold">Parent Asset</TableHead>
               <TableHead className="min-w-[140px] font-semibold">Component Name</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Type</TableHead>
               <TableHead className="min-w-[180px] font-semibold">Priority Reason</TableHead>
@@ -156,8 +157,8 @@ export const SiteSparesTable = () => {
                     {spare.priority}
                   </Badge>
                 </TableCell>
-                <TableCell className="font-mono text-sm font-medium">
-                  {spare.parentAsset || "—"}
+                <TableCell className="font-mono text-sm text-muted-foreground">
+                  {spare.id}
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline" className="font-mono text-xs">
@@ -165,6 +166,7 @@ export const SiteSparesTable = () => {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-sm">{spare.system}</TableCell>
+                <TableCell className="font-medium text-sm">{spare.parentAsset}</TableCell>
                 <TableCell className="font-medium">{spare.componentName}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {spare.componentType}
