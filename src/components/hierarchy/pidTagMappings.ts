@@ -17,7 +17,7 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "04-FE-100LCS", assetNumber: "APN01-LCS01", description: "Reclaim Feeder LCS", status: "mapped" },
   { pidTag: "04-FE-100M", assetNumber: "APN01-MTR01", description: "Reclaim Feeder Motor", status: "mapped" },
   { pidTag: "04-FE-100MC", assetNumber: "APN01-MCC01", description: "Reclaim Feeder MCC Cell", status: "mapped" },
-  { pidTag: "04-FE-100GB", assetNumber: "APN01-GBX01", description: "Reclaim Feeder Gearbox", status: "mapped" },
+  { pidTag: "04-FE-100GB", assetNumber: "APN01-GMR01", description: "Reclaim Feeder Gearmotor", status: "mapped" },
   { pidTag: "04-FE-100-PWS", assetNumber: "APN01-PWS01", description: "Reclaim Feeder Pullwire switch", status: "mapped" },
   { pidTag: "04-SIT-500", assetNumber: "APN01-TX01", description: "Reclaim Feeder Speed Transmitter", status: "mapped" },
   
