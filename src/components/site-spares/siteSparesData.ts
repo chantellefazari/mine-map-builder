@@ -66,49 +66,50 @@ export const criticalitySourceColors: Record<string, string> = {
   Assumed: "bg-amber-500/20 text-amber-700",
 };
 
+// Import critical spares data and transform to site spares format
+import { sparesData } from "../critical-spares/sparesData";
+
+// Transform critical spares to site spares format
+const transformedCriticalSpares: SiteSpareItem[] = sparesData.map((item, index) => ({
+  id: `SS-${String(index + 1).padStart(3, "0")}`,
+  area: item.area,
+  areaLabel: item.areaLabel,
+  subArea: item.subArea,
+  system: item.system,
+  parentAsset: item.parentAsset,
+  assetNumber: item.assetNumber,
+  pidTag: item.pidTag,
+  componentName: item.componentName,
+  componentType: item.componentType,
+  sparePartDescription: item.sparePartDescription,
+  oemPartNumber: item.oemPartNumber,
+  manufacturer: item.manufacturer,
+  vendor: item.vendor,
+  assetManufacturer: item.assetManufacturer,
+  assetModel: item.assetModel,
+  priority: item.spareCriticality === "High" ? "HIGH" as const : item.spareCriticality === "Medium" ? "MEDIUM" as const : "LOW" as const,
+  priorityReason: item.reasonCritical,
+  reviewFlag: false,
+  spareCriticality: item.spareCriticality,
+  criticalitySource: item.criticalitySource,
+  reasonCritical: item.reasonCritical,
+  minQty: item.minQty,
+  maxQty: item.maxQty,
+  qtyPerSystem: item.qtyPerSystem,
+  unitPrice: item.unitPrice,
+  uom: item.uom,
+  leadTime: "",
+  storageRequirement: "",
+  notes: item.notes,
+  confidence: item.confidence || "Medium",
+  status: item.status,
+}));
+
 // Site Spares data - MASTER INVENTORY
 // This is the source of truth for ALL site spares
-// Critical Spares Catalogue filters from this list (HIGH + MEDIUM only)
-// Ready for full catalogue input
+// Currently populated from Critical Spares - ready for full catalogue expansion
 export const siteSparesData: SiteSpareItem[] = [
-  // ═══════════════════════════════════════════════════════════════════════════
-  // PLACEHOLDER - Full catalogue to be populated
-  // ═══════════════════════════════════════════════════════════════════════════
-  // Example structure (remove when populating):
-  // {
-  //   id: "SS-001",
-  //   area: "COM",
-  //   areaLabel: "Comminution / Process",
-  //   subArea: "Feed / Reclaim",
-  //   system: "APN01 Apron Feeder",
-  //   parentAsset: "4-FE-100",
-  //   assetNumber: "APN01-GMR01",
-  //   pidTag: "04-FE-100",
-  //   componentName: "Gearmotor",
-  //   componentType: "Motor",
-  //   sparePartDescription: "Apron Feeder Gearmotor",
-  //   oemPartNumber: "SEW-EURODRIVE KA107R77 DRN112M4/V",
-  //   manufacturer: "SEW",
-  //   vendor: "SEW",
-  //   assetManufacturer: "",
-  //   assetModel: "",
-  //   priority: "HIGH",
-  //   priorityReason: "Motor - plant stoppage risk",
-  //   reviewFlag: false,
-  //   spareCriticality: "High",
-  //   criticalitySource: "Confirmed",
-  //   reasonCritical: "Motor - plant stoppage risk",
-  //   minQty: "0",
-  //   maxQty: "1",
-  //   qtyPerSystem: "1",
-  //   unitPrice: "$16,450.00",
-  //   uom: "EA",
-  //   leadTime: "",
-  //   storageRequirement: "",
-  //   notes: "",
-  //   confidence: "Medium",
-  //   status: "Provisional",
-  // },
+  ...transformedCriticalSpares,
 ];
 
 // Helper functions
