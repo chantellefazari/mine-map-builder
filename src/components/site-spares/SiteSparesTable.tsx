@@ -16,13 +16,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, AlertTriangle } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   siteSparesData,
-  siteSpareStatusColors,
-  priorityColors,
-  criticalitySourceColors,
+  stockStatusColors,
+  categoryColors,
+  warehouseAreas,
+  categories,
   type SiteSpareItem,
 } from "./siteSparesData";
 import { AddSpareDialog } from "./AddSpareDialog";
@@ -31,95 +32,124 @@ import { useToast } from "@/hooks/use-toast";
 export const SiteSparesTable = () => {
   const [spares, setSpares] = useState<SiteSpareItem[]>(siteSparesData);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterPriority, setFilterPriority] = useState<string>("all");
-  const [filterArea, setFilterArea] = useState<string>("all");
-  const [filterSubArea, setFilterSubArea] = useState<string>("all");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [filterWarehouse, setFilterWarehouse] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const areas = [...new Set(spares.map((s) => s.area))].sort();
-  const subAreas = filterArea === "all" 
-    ? [...new Set(spares.map((s) => s.subArea))].sort()
-    : [...new Set(spares.filter((s) => s.area === filterArea).map((s) => s.subArea))].sort();
+  const categoryList = Object.keys(categories).sort();
 
   const handleAddSpare = (newSpare: SiteSpareItem) => {
     setSpares((prev) => [...prev, newSpare]);
     toast({
-      title: "Spare Added",
-      description: `${newSpare.componentName} has been added to the catalogue.`,
+      title: "Item Added",
+      description: `${newSpare.description} has been added to inventory.`,
     });
   };
 
   const filteredSpares = spares.filter((spare) => {
     const matchesSearch =
-      spare.componentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.parentAsset.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.assetNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.stockCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.oemPartNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.sparePartDescription.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesPriority = filterPriority === "all" || spare.priority === filterPriority;
-    const matchesArea = filterArea === "all" || spare.area === filterArea;
-    const matchesSubArea = filterSubArea === "all" || spare.subArea === filterSubArea;
-    return matchesSearch && matchesPriority && matchesArea && matchesSubArea;
+      spare.binLocation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.manufacturer.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = filterCategory === "all" || spare.category === filterCategory;
+    const matchesWarehouse = filterWarehouse === "all" || spare.warehouseArea === filterWarehouse;
+    const matchesStatus = filterStatus === "all" || spare.status === filterStatus;
+    return matchesSearch && matchesCategory && matchesWarehouse && matchesStatus;
   });
+
+  // Summary stats
+  const totalItems = spares.length;
+  const lowStockCount = spares.filter(s => s.status === "Low Stock" || s.status === "Out of Stock").length;
+  const criticalCount = spares.filter(s => s.isCritical).length;
 
   return (
     <div className="space-y-4">
+      {/* Summary Stats */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-muted/50 rounded-lg p-4">
+          <div className="flex items-center gap-2">
+            <Package className="h-5 w-5 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Total Items</span>
+          </div>
+          <p className="text-2xl font-bold mt-1">{totalItems}</p>
+        </div>
+        <div className="bg-amber-500/10 rounded-lg p-4">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-amber-600" />
+            <span className="text-sm text-amber-700">Low/Out of Stock</span>
+          </div>
+          <p className="text-2xl font-bold mt-1 text-amber-700">{lowStockCount}</p>
+        </div>
+        <div className="bg-primary/10 rounded-lg p-4">
+          <div className="flex items-center gap-2">
+            <Package className="h-5 w-5 text-primary" />
+            <span className="text-sm text-primary">Critical Items</span>
+          </div>
+          <p className="text-2xl font-bold mt-1 text-primary">{criticalCount}</p>
+        </div>
+      </div>
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h2 className="text-lg font-semibold text-foreground">
-          Site Spares Catalogue ({filteredSpares.length} items)
+          Inventory ({filteredSpares.length} items)
         </h2>
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search spares..."
+              placeholder="Search stock..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9 w-64"
             />
           </div>
-          <Select value={filterArea} onValueChange={(val) => { setFilterArea(val); setFilterSubArea("all"); }}>
+          <Select value={filterCategory} onValueChange={setFilterCategory}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {categoryList.map((cat) => (
+                <SelectItem key={cat} value={cat}>
+                  {cat}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={filterWarehouse} onValueChange={setFilterWarehouse}>
             <SelectTrigger className="w-36">
-              <SelectValue placeholder="Area" />
+              <SelectValue placeholder="Warehouse" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Areas</SelectItem>
-              {areas.map((area) => (
+              {warehouseAreas.map((area) => (
                 <SelectItem key={area} value={area}>
-                  {area}
+                  Area {area}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <Select value={filterSubArea} onValueChange={setFilterSubArea}>
-            <SelectTrigger className="w-44">
-              <SelectValue placeholder="Sub-Area" />
+          <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Sub-Areas</SelectItem>
-              {subAreas.map((subArea) => (
-                <SelectItem key={subArea} value={subArea}>
-                  {subArea}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={filterPriority} onValueChange={setFilterPriority}>
-            <SelectTrigger className="w-32">
-              <SelectValue placeholder="Priority" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Priorities</SelectItem>
-              <SelectItem value="HIGH">High</SelectItem>
-              <SelectItem value="MEDIUM">Medium</SelectItem>
-              <SelectItem value="LOW">Low</SelectItem>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="Active">Active</SelectItem>
+              <SelectItem value="Low Stock">Low Stock</SelectItem>
+              <SelectItem value="Out of Stock">Out of Stock</SelectItem>
+              <SelectItem value="Pending Review">Pending Review</SelectItem>
+              <SelectItem value="Obsolete">Obsolete</SelectItem>
             </SelectContent>
           </Select>
           <Button size="sm" className="gap-2" onClick={() => setAddDialogOpen(true)}>
             <Plus className="h-4 w-4" />
-            Add Spare
+            Add Item
           </Button>
         </div>
       </div>
@@ -131,155 +161,130 @@ export const SiteSparesTable = () => {
         onAddSpare={handleAddSpare}
         existingCount={spares.length}
       />
+
       {/* Table */}
       <div className="overflow-x-auto border rounded-lg">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead className="min-w-[80px] font-semibold">Priority</TableHead>
-              <TableHead className="min-w-[140px] font-semibold">Asset Number</TableHead>
-              <TableHead className="min-w-[80px] font-semibold">Area</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">Sub-Area</TableHead>
-              <TableHead className="min-w-[140px] font-semibold">System</TableHead>
-              <TableHead className="min-w-[140px] font-semibold">Component Name</TableHead>
-              <TableHead className="min-w-[180px] font-semibold">Description</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Stock Code</TableHead>
+              <TableHead className="min-w-[250px] font-semibold">Description</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Category</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Subcategory</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Bin Location</TableHead>
+              <TableHead className="min-w-[80px] font-semibold text-center">On Hand</TableHead>
+              <TableHead className="min-w-[70px] font-semibold text-center">Min</TableHead>
+              <TableHead className="min-w-[70px] font-semibold text-center">Max</TableHead>
+              <TableHead className="min-w-[60px] font-semibold">UOM</TableHead>
               <TableHead className="min-w-[120px] font-semibold">Manufacturer</TableHead>
-              <TableHead className="min-w-[180px] font-semibold">OEM Part Number</TableHead>
-              <TableHead className="min-w-[80px] font-semibold">Source</TableHead>
-              <TableHead className="min-w-[150px] font-semibold">Priority Reason</TableHead>
-              <TableHead className="min-w-[100px] font-semibold text-center">Min Qty</TableHead>
-              <TableHead className="min-w-[100px] font-semibold text-center">Max Qty</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">Confidence</TableHead>
+              <TableHead className="min-w-[120px] font-semibold">OEM Part #</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Status</TableHead>
+              <TableHead className="min-w-[80px] font-semibold text-center">Critical</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredSpares.map((spare) => (
               <TableRow key={spare.id} className="cursor-pointer hover:bg-muted/50">
-                <TableCell>
-                  <Badge variant="secondary" className={priorityColors[spare.priority]}>
-                    {spare.priority}
-                  </Badge>
-                </TableCell>
                 <TableCell className="font-mono text-sm font-medium">
-                  {spare.assetNumber || "—"}
+                  {spare.stockCode}
                 </TableCell>
+                <TableCell className="font-medium">{spare.description}</TableCell>
                 <TableCell>
-                  <Badge variant="outline" className="font-mono text-xs">
-                    {spare.area}
+                  <Badge variant="secondary" className={categoryColors[spare.category] || ""}>
+                    {spare.category}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-sm">{spare.subArea || "—"}</TableCell>
-                <TableCell className="text-sm">{spare.system || "—"}</TableCell>
-                <TableCell className="font-medium">{spare.componentName}</TableCell>
-                <TableCell className="text-sm">{spare.sparePartDescription || "—"}</TableCell>
-                <TableCell className="text-sm font-medium">{spare.manufacturer || "—"}</TableCell>
-                <TableCell className="text-sm font-mono">{spare.oemPartNumber || "—"}</TableCell>
+                <TableCell className="text-sm">{spare.subcategory}</TableCell>
+                <TableCell className="font-mono text-sm">{spare.binLocation}</TableCell>
+                <TableCell className="text-center">
+                  <Input
+                    type="number"
+                    min={0}
+                    value={spare.qtyOnHand}
+                    onChange={(e) => {
+                      const newQty = parseInt(e.target.value) || 0;
+                      const updated = spares.map((s) =>
+                        s.id === spare.id 
+                          ? { ...s, qtyOnHand: newQty, status: newQty === 0 ? "Out of Stock" as const : newQty <= s.minQty ? "Low Stock" as const : "Active" as const } 
+                          : s
+                      );
+                      setSpares(updated);
+                    }}
+                    className="h-8 w-16 text-center"
+                  />
+                </TableCell>
+                <TableCell className="text-center">
+                  <Input
+                    type="number"
+                    min={0}
+                    value={spare.minQty}
+                    onChange={(e) => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, minQty: parseInt(e.target.value) || 0 } : s
+                      );
+                      setSpares(updated);
+                    }}
+                    className="h-8 w-14 text-center"
+                  />
+                </TableCell>
+                <TableCell className="text-center">
+                  <Input
+                    type="number"
+                    min={0}
+                    value={spare.maxQty}
+                    onChange={(e) => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, maxQty: parseInt(e.target.value) || 0 } : s
+                      );
+                      setSpares(updated);
+                    }}
+                    className="h-8 w-14 text-center"
+                  />
+                </TableCell>
+                <TableCell className="text-sm">{spare.uom}</TableCell>
                 <TableCell>
-                  {spare.criticalitySource ? (
-                    <Badge variant="secondary" className={criticalitySourceColors[spare.criticalitySource] || ""}>
-                      {spare.criticalitySource}
-                    </Badge>
-                  ) : (
-                    <span className="text-muted-foreground">—</span>
-                  )}
-                </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {spare.priorityReason || "—"}
-                </TableCell>
-                <TableCell className="p-1">
-                  <Select
-                    value={spare.minQty || "TBC"}
-                    onValueChange={(value) => {
+                  <Input
+                    value={spare.manufacturer}
+                    onChange={(e) => {
                       const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, minQty: value } : s
+                        s.id === spare.id ? { ...s, manufacturer: e.target.value } : s
                       );
                       setSpares(updated);
                     }}
-                  >
-                    <SelectTrigger className="h-8 w-20">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background border shadow-lg z-50">
-                      <SelectItem value="TBC">TBC</SelectItem>
-                      <SelectItem value="0">0</SelectItem>
-                      <SelectItem value="1">1</SelectItem>
-                      <SelectItem value="2">2</SelectItem>
-                      <SelectItem value="3">3</SelectItem>
-                      <SelectItem value="4">4</SelectItem>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="6">6</SelectItem>
-                      <SelectItem value="8">8</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    className="h-8 w-28"
+                    placeholder="—"
+                  />
                 </TableCell>
-                <TableCell className="p-1">
-                  <Select
-                    value={spare.maxQty || "TBC"}
-                    onValueChange={(value) => {
+                <TableCell>
+                  <Input
+                    value={spare.oemPartNumber}
+                    onChange={(e) => {
                       const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, maxQty: value } : s
+                        s.id === spare.id ? { ...s, oemPartNumber: e.target.value } : s
                       );
                       setSpares(updated);
                     }}
-                  >
-                    <SelectTrigger className="h-8 w-20">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background border shadow-lg z-50">
-                      <SelectItem value="TBC">TBC</SelectItem>
-                      <SelectItem value="0">0</SelectItem>
-                      <SelectItem value="1">1</SelectItem>
-                      <SelectItem value="2">2</SelectItem>
-                      <SelectItem value="3">3</SelectItem>
-                      <SelectItem value="4">4</SelectItem>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="6">6</SelectItem>
-                      <SelectItem value="8">8</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    className="h-8 w-28 font-mono text-sm"
+                    placeholder="—"
+                  />
                 </TableCell>
-                <TableCell className="p-1">
-                  <Select
-                    value={spare.confidence || "Low"}
-                    onValueChange={(value: "Low" | "Medium" | "High") => {
+                <TableCell>
+                  <Badge variant="secondary" className={stockStatusColors[spare.status]}>
+                    {spare.status}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-center">
+                  <input
+                    type="checkbox"
+                    checked={spare.isCritical}
+                    onChange={(e) => {
                       const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, confidence: value } : s
+                        s.id === spare.id ? { ...s, isCritical: e.target.checked } : s
                       );
                       setSpares(updated);
                     }}
-                  >
-                    <SelectTrigger className="h-8 w-24">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background border shadow-lg z-50">
-                      <SelectItem value="Low">Low</SelectItem>
-                      <SelectItem value="Medium">Medium</SelectItem>
-                      <SelectItem value="High">High</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </TableCell>
-                <TableCell className="p-1">
-                  <Select
-                    value={spare.status}
-                    onValueChange={(value: "Provisional" | "Confirmed" | "TBC" | "Active" | "Pending" | "Obsolete") => {
-                      const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, status: value } : s
-                      );
-                      setSpares(updated);
-                    }}
-                  >
-                    <SelectTrigger className="h-8 w-28">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background border shadow-lg z-50">
-                      <SelectItem value="Provisional">Provisional</SelectItem>
-                      <SelectItem value="TBC">TBC</SelectItem>
-                      <SelectItem value="Confirmed">Confirmed</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    className="h-4 w-4 rounded border-border"
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -291,9 +296,9 @@ export const SiteSparesTable = () => {
       {spares.length === 0 && (
         <div className="text-center py-12 border border-dashed border-border rounded-lg">
           <div className="text-muted-foreground space-y-2">
-            <p className="font-medium">No spares in the site catalogue yet</p>
+            <p className="font-medium">No items in inventory yet</p>
             <p className="text-sm">
-              Attach your spares list document and I'll populate this catalogue.
+              Add your first item or import from a spreadsheet.
             </p>
           </div>
         </div>
@@ -301,7 +306,7 @@ export const SiteSparesTable = () => {
 
       {spares.length > 0 && filteredSpares.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          No spares match your search criteria.
+          No items match your search criteria.
         </div>
       )}
     </div>
