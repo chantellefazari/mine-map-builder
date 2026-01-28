@@ -16,11 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Flag } from "lucide-react";
+import { Plus, Search, Flag, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   siteSparesData,
   siteSpareStatusColors,
+  priorityColors,
   type SiteSpareItem,
 } from "./siteSparesData";
 
@@ -94,60 +95,58 @@ export const SiteSparesTable = () => {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead className="min-w-[60px] font-semibold">Critical</TableHead>
+              <TableHead className="min-w-[80px] font-semibold">Priority</TableHead>
               <TableHead className="min-w-[80px] font-semibold">ID</TableHead>
               <TableHead className="min-w-[80px] font-semibold">Area</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">Sub-Area</TableHead>
               <TableHead className="min-w-[100px] font-semibold">System</TableHead>
-              <TableHead className="min-w-[160px] font-semibold">Parent Asset</TableHead>
+              <TableHead className="min-w-[140px] font-semibold">Parent Asset</TableHead>
               <TableHead className="min-w-[140px] font-semibold">Component Name</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Type</TableHead>
-              <TableHead className="min-w-[180px] font-semibold">Description</TableHead>
+              <TableHead className="min-w-[180px] font-semibold">Priority Reason</TableHead>
               <TableHead className="min-w-[120px] font-semibold">OEM Part #</TableHead>
-              <TableHead className="min-w-[120px] font-semibold">Manufacturer</TableHead>
-              <TableHead className="min-w-[80px] font-semibold text-center">Min Qty</TableHead>
-              <TableHead className="min-w-[80px] font-semibold text-center">Max Qty</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">Status</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Manufacturer</TableHead>
+              <TableHead className="min-w-[80px] font-semibold text-center">Min</TableHead>
+              <TableHead className="min-w-[80px] font-semibold text-center">Max</TableHead>
+              <TableHead className="min-w-[60px] font-semibold">Review</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredSpares.map((spare) => (
               <TableRow key={spare.id} className="cursor-pointer hover:bg-muted/50">
                 <TableCell>
-                  {spare.isCritical ? (
-                    <Flag className="h-4 w-4 text-destructive fill-destructive/20" />
-                  ) : (
-                    <span className="text-muted-foreground">—</span>
-                  )}
+                  <Badge variant="secondary" className={priorityColors[spare.priority]}>
+                    {spare.priority}
+                  </Badge>
                 </TableCell>
                 <TableCell className="font-mono text-sm text-muted-foreground">
                   {spare.id}
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline" className="font-mono">
+                  <Badge variant="outline" className="font-mono text-xs">
                     {spare.area}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-sm">{spare.subArea}</TableCell>
                 <TableCell className="text-sm">{spare.system}</TableCell>
                 <TableCell className="font-medium text-sm">{spare.parentAsset}</TableCell>
                 <TableCell className="font-medium">{spare.componentName}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {spare.componentType}
                 </TableCell>
-                <TableCell className="text-sm">{spare.sparePartDescription}</TableCell>
-                <TableCell className="font-mono text-sm">{spare.oemPartNumber || "—"}</TableCell>
+                <TableCell className="text-sm text-muted-foreground">{spare.priorityReason}</TableCell>
+                <TableCell className="font-mono text-xs">{spare.oemPartNumber || "—"}</TableCell>
                 <TableCell className="text-sm">{spare.manufacturer || "—"}</TableCell>
-                <TableCell className="text-center font-mono">
+                <TableCell className="text-center font-mono text-sm">
                   {spare.minQty || "—"}
                 </TableCell>
-                <TableCell className="text-center font-mono">
+                <TableCell className="text-center font-mono text-sm">
                   {spare.maxQty || "—"}
                 </TableCell>
                 <TableCell>
-                  <Badge variant="secondary" className={siteSpareStatusColors[spare.status]}>
-                    {spare.status}
-                  </Badge>
+                  {spare.reviewFlag ? (
+                    <AlertTriangle className="h-4 w-4 text-amber-500" />
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
