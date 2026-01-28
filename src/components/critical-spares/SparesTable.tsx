@@ -121,7 +121,7 @@ export const SparesTable = () => {
               <SelectValue placeholder="Criticality" />
             </SelectTrigger>
             <SelectContent className="bg-background border shadow-lg z-50">
-              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="all">All Critical</SelectItem>
               <SelectItem value="High">High</SelectItem>
               <SelectItem value="Medium">Medium</SelectItem>
             </SelectContent>
