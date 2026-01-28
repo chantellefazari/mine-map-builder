@@ -29,7 +29,13 @@ export const SiteSparesTable = () => {
   const [spares] = useState<SiteSpareItem[]>(siteSparesData);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [filterCritical, setFilterCritical] = useState<string>("all");
+  const [filterArea, setFilterArea] = useState<string>("all");
+  const [filterSystem, setFilterSystem] = useState<string>("all");
+
+  const areas = [...new Set(siteSparesData.map((s) => s.area))].sort();
+  const systems = filterArea === "all" 
+    ? [...new Set(siteSparesData.map((s) => s.system))].sort()
+    : [...new Set(siteSparesData.filter((s) => s.area === filterArea).map((s) => s.system))].sort();
 
   const filteredSpares = spares.filter((spare) => {
     const matchesSearch =
@@ -38,11 +44,9 @@ export const SiteSparesTable = () => {
       spare.oemPartNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.sparePartDescription.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === "all" || spare.status === filterStatus;
-    const matchesCritical =
-      filterCritical === "all" ||
-      (filterCritical === "critical" && spare.isCritical) ||
-      (filterCritical === "non-critical" && !spare.isCritical);
-    return matchesSearch && matchesStatus && matchesCritical;
+    const matchesArea = filterArea === "all" || spare.area === filterArea;
+    const matchesSystem = filterSystem === "all" || spare.system === filterSystem;
+    return matchesSearch && matchesStatus && matchesArea && matchesSystem;
   });
 
   return (
@@ -62,18 +66,34 @@ export const SiteSparesTable = () => {
               className="pl-9 w-64"
             />
           </div>
-          <Select value={filterCritical} onValueChange={setFilterCritical}>
+          <Select value={filterArea} onValueChange={(val) => { setFilterArea(val); setFilterSystem("all"); }}>
             <SelectTrigger className="w-36">
-              <SelectValue placeholder="Critical" />
+              <SelectValue placeholder="Area" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Items</SelectItem>
-              <SelectItem value="critical">Critical Only</SelectItem>
-              <SelectItem value="non-critical">Non-Critical</SelectItem>
+              <SelectItem value="all">All Areas</SelectItem>
+              {areas.map((area) => (
+                <SelectItem key={area} value={area}>
+                  {area}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={filterSystem} onValueChange={setFilterSystem}>
+            <SelectTrigger className="w-44">
+              <SelectValue placeholder="System" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Systems</SelectItem>
+              {systems.map((system) => (
+                <SelectItem key={system} value={system}>
+                  {system}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-36">
+            <SelectTrigger className="w-32">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>

@@ -29,6 +29,7 @@ import {
 export const SparesTable = () => {
   const [spares] = useState<SpareItem[]>(sparesData);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterCriticality, setFilterCriticality] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterArea, setFilterArea] = useState<string>("all");
 
@@ -41,10 +42,12 @@ export const SparesTable = () => {
       spare.oemPartNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.sparePartDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.system.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCriticality =
+      filterCriticality === "all" || spare.spareCriticality === filterCriticality;
     const matchesStatus =
       filterStatus === "all" || spare.status === filterStatus;
     const matchesArea = filterArea === "all" || spare.area === filterArea;
-    return matchesSearch && matchesStatus && matchesArea;
+    return matchesSearch && matchesCriticality && matchesStatus && matchesArea;
   });
 
   return (
@@ -89,6 +92,17 @@ export const SparesTable = () => {
                   {area}
                 </SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+          <Select value={filterCriticality} onValueChange={setFilterCriticality}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Criticality" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="High">High</SelectItem>
+              <SelectItem value="Medium">Medium</SelectItem>
+              <SelectItem value="Low">Low</SelectItem>
             </SelectContent>
           </Select>
           <Select value={filterStatus} onValueChange={setFilterStatus}>
