@@ -22,6 +22,7 @@ import {
   siteSparesData,
   siteSpareStatusColors,
   priorityColors,
+  criticalitySourceColors,
   type SiteSpareItem,
 } from "./siteSparesData";
 import { AddSpareDialog } from "./AddSpareDialog";
@@ -30,16 +31,16 @@ import { useToast } from "@/hooks/use-toast";
 export const SiteSparesTable = () => {
   const [spares, setSpares] = useState<SiteSpareItem[]>(siteSparesData);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterPriority, setFilterPriority] = useState<string>("all");
   const [filterArea, setFilterArea] = useState<string>("all");
-  const [filterSystem, setFilterSystem] = useState<string>("all");
+  const [filterSubArea, setFilterSubArea] = useState<string>("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const areas = [...new Set(spares.map((s) => s.area))].sort();
-  const systems = filterArea === "all" 
-    ? [...new Set(spares.map((s) => s.system))].sort()
-    : [...new Set(spares.filter((s) => s.area === filterArea).map((s) => s.system))].sort();
+  const subAreas = filterArea === "all" 
+    ? [...new Set(spares.map((s) => s.subArea))].sort()
+    : [...new Set(spares.filter((s) => s.area === filterArea).map((s) => s.subArea))].sort();
 
   const handleAddSpare = (newSpare: SiteSpareItem) => {
     setSpares((prev) => [...prev, newSpare]);
@@ -53,12 +54,13 @@ export const SiteSparesTable = () => {
     const matchesSearch =
       spare.componentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.parentAsset.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.assetNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.oemPartNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.sparePartDescription.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = filterStatus === "all" || spare.status === filterStatus;
+    const matchesPriority = filterPriority === "all" || spare.priority === filterPriority;
     const matchesArea = filterArea === "all" || spare.area === filterArea;
-    const matchesSystem = filterSystem === "all" || spare.system === filterSystem;
-    return matchesSearch && matchesStatus && matchesArea && matchesSystem;
+    const matchesSubArea = filterSubArea === "all" || spare.subArea === filterSubArea;
+    return matchesSearch && matchesPriority && matchesArea && matchesSubArea;
   });
 
   return (
@@ -78,7 +80,7 @@ export const SiteSparesTable = () => {
               className="pl-9 w-64"
             />
           </div>
-          <Select value={filterArea} onValueChange={(val) => { setFilterArea(val); setFilterSystem("all"); }}>
+          <Select value={filterArea} onValueChange={(val) => { setFilterArea(val); setFilterSubArea("all"); }}>
             <SelectTrigger className="w-36">
               <SelectValue placeholder="Area" />
             </SelectTrigger>
@@ -91,28 +93,28 @@ export const SiteSparesTable = () => {
               ))}
             </SelectContent>
           </Select>
-          <Select value={filterSystem} onValueChange={setFilterSystem}>
+          <Select value={filterSubArea} onValueChange={setFilterSubArea}>
             <SelectTrigger className="w-44">
-              <SelectValue placeholder="System" />
+              <SelectValue placeholder="Sub-Area" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Systems</SelectItem>
-              {systems.map((system) => (
-                <SelectItem key={system} value={system}>
-                  {system}
+              <SelectItem value="all">All Sub-Areas</SelectItem>
+              {subAreas.map((subArea) => (
+                <SelectItem key={subArea} value={subArea}>
+                  {subArea}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
+          <Select value={filterPriority} onValueChange={setFilterPriority}>
             <SelectTrigger className="w-32">
-              <SelectValue placeholder="Status" />
+              <SelectValue placeholder="Priority" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="Active">Active</SelectItem>
-              <SelectItem value="Pending">Pending</SelectItem>
-              <SelectItem value="Obsolete">Obsolete</SelectItem>
+              <SelectItem value="all">All Priorities</SelectItem>
+              <SelectItem value="HIGH">High</SelectItem>
+              <SelectItem value="MEDIUM">Medium</SelectItem>
+              <SelectItem value="LOW">Low</SelectItem>
             </SelectContent>
           </Select>
           <Button size="sm" className="gap-2" onClick={() => setAddDialogOpen(true)}>
@@ -135,18 +137,19 @@ export const SiteSparesTable = () => {
           <TableHeader>
             <TableRow className="bg-muted/50">
               <TableHead className="min-w-[80px] font-semibold">Priority</TableHead>
+              <TableHead className="min-w-[120px] font-semibold">Asset Number</TableHead>
               <TableHead className="min-w-[100px] font-semibold">P&ID</TableHead>
               <TableHead className="min-w-[80px] font-semibold">Area</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">System</TableHead>
-              <TableHead className="min-w-[140px] font-semibold">Parent Asset</TableHead>
-              <TableHead className="min-w-[140px] font-semibold">Component Name</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">Type</TableHead>
-              <TableHead className="min-w-[180px] font-semibold">Priority Reason</TableHead>
+              <TableHead className="min-w-[120px] font-semibold">Sub-Area</TableHead>
+              <TableHead className="min-w-[160px] font-semibold">System</TableHead>
+              <TableHead className="min-w-[140px] font-semibold">Component</TableHead>
+              <TableHead className="min-w-[200px] font-semibold">Description</TableHead>
               <TableHead className="min-w-[120px] font-semibold">OEM Part #</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Manufacturer</TableHead>
               <TableHead className="min-w-[80px] font-semibold text-center">Min</TableHead>
               <TableHead className="min-w-[80px] font-semibold text-center">Max</TableHead>
-              <TableHead className="min-w-[60px] font-semibold">Review</TableHead>
+              <TableHead className="min-w-[80px] font-semibold">Source</TableHead>
+              <TableHead className="min-w-[80px] font-semibold">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -157,6 +160,9 @@ export const SiteSparesTable = () => {
                     {spare.priority}
                   </Badge>
                 </TableCell>
+                <TableCell className="font-mono text-sm font-medium">
+                  {spare.assetNumber || "—"}
+                </TableCell>
                 <TableCell className="font-mono text-sm text-muted-foreground">
                   {spare.pidTag || "—"}
                 </TableCell>
@@ -165,16 +171,12 @@ export const SiteSparesTable = () => {
                     {spare.area}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-sm">{spare.system}</TableCell>
-                <TableCell className="font-medium text-sm">{spare.parentAsset}</TableCell>
+                <TableCell className="text-sm">{spare.subArea || "—"}</TableCell>
+                <TableCell className="text-sm">{spare.system || "—"}</TableCell>
                 <TableCell className="font-medium">{spare.componentName}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  {spare.componentType}
+                  {spare.sparePartDescription || "—"}
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {spare.componentType}
-                </TableCell>
-                <TableCell className="text-sm text-muted-foreground">{spare.priorityReason}</TableCell>
                 <TableCell className="font-mono text-xs">{spare.oemPartNumber || "—"}</TableCell>
                 <TableCell className="text-sm">{spare.manufacturer || "—"}</TableCell>
                 <TableCell className="text-center font-mono text-sm">
@@ -184,11 +186,18 @@ export const SiteSparesTable = () => {
                   {spare.maxQty || "—"}
                 </TableCell>
                 <TableCell>
-                  {spare.reviewFlag ? (
-                    <AlertTriangle className="h-4 w-4 text-amber-500" />
+                  {spare.criticalitySource ? (
+                    <Badge variant="secondary" className={criticalitySourceColors[spare.criticalitySource] || ""}>
+                      {spare.criticalitySource}
+                    </Badge>
                   ) : (
                     <span className="text-muted-foreground">—</span>
                   )}
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline" className={siteSpareStatusColors[spare.status] || ""}>
+                    {spare.status}
+                  </Badge>
                 </TableCell>
               </TableRow>
             ))}

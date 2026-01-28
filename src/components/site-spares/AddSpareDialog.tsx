@@ -26,20 +26,18 @@ interface AddSpareDialogProps {
   existingCount: number;
 }
 
-const areas = [
-  "Grinding",
-  "Leaching",
-  "Adsorption",
-  "Reagents",
-  "Gold System",
-  "Thickener",
-  "Filter Press",
-  "Water Services",
-  "Air Services",
+const areaOptions = [
+  { code: "COM", label: "Comminution / Process" },
+  { code: "REC", label: "Gold Recovery" },
+  { code: "TAIL", label: "Tailings" },
+  { code: "UTL", label: "Utilities" },
+  { code: "SUP", label: "Support Services" },
 ];
 
-const priorities: Array<"HIGH" | "MEDIUM"> = ["HIGH", "MEDIUM"];
-const statuses: Array<"Active" | "Pending" | "Obsolete"> = ["Active", "Pending", "Obsolete"];
+const priorities: Array<"HIGH" | "MEDIUM" | "LOW"> = ["HIGH", "MEDIUM", "LOW"];
+const statuses: Array<"Provisional" | "Confirmed" | "TBC"> = ["Provisional", "Confirmed", "TBC"];
+const confidenceLevels: Array<"Low" | "Medium" | "High"> = ["Low", "Medium", "High"];
+const criticalitySources: Array<"Confirmed" | "Assumed"> = ["Confirmed", "Assumed"];
 
 export const AddSpareDialog = ({
   open,
@@ -49,9 +47,11 @@ export const AddSpareDialog = ({
 }: AddSpareDialogProps) => {
   const [formData, setFormData] = useState({
     area: "",
+    areaLabel: "",
     subArea: "",
     system: "",
     parentAsset: "",
+    assetNumber: "",
     pidTag: "",
     componentName: "",
     componentType: "",
@@ -59,24 +59,44 @@ export const AddSpareDialog = ({
     oemPartNumber: "",
     manufacturer: "",
     vendor: "",
-    priority: "MEDIUM" as "HIGH" | "MEDIUM",
+    priority: "MEDIUM" as "HIGH" | "MEDIUM" | "LOW",
     priorityReason: "",
+    spareCriticality: "" as "High" | "Medium" | "Low" | "",
+    criticalitySource: "" as "Confirmed" | "Assumed" | "",
     minQty: "",
     maxQty: "",
-    status: "Pending" as "Active" | "Pending" | "Obsolete",
+    confidence: "Low" as "Low" | "Medium" | "High",
+    status: "Provisional" as "Provisional" | "Confirmed" | "TBC",
   });
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleAreaChange = (areaCode: string) => {
+    const selectedArea = areaOptions.find(a => a.code === areaCode);
+    setFormData(prev => ({
+      ...prev,
+      area: areaCode,
+      areaLabel: selectedArea?.label || "",
+    }));
+  };
+
   const handleSubmit = () => {
+    // Determine spareCriticality based on priority
+    let spareCrit: "High" | "Medium" | "Low" | "" = "";
+    if (formData.priority === "HIGH") spareCrit = "High";
+    else if (formData.priority === "MEDIUM") spareCrit = "Medium";
+    else if (formData.priority === "LOW") spareCrit = "Low";
+
     const newSpare: SiteSpareItem = {
       id: `SS-${String(existingCount + 1).padStart(3, "0")}`,
       area: formData.area,
+      areaLabel: formData.areaLabel,
       subArea: formData.subArea,
       system: formData.system,
       parentAsset: formData.parentAsset,
+      assetNumber: formData.assetNumber,
       pidTag: formData.pidTag,
       componentName: formData.componentName,
       componentType: formData.componentType,
@@ -89,9 +109,9 @@ export const AddSpareDialog = ({
       priority: formData.priority,
       priorityReason: formData.priorityReason,
       reviewFlag: false,
-      isCritical: formData.priority === "HIGH",
-      spareCriticality: formData.priority === "HIGH" ? "High" : "",
-      reasonCritical: formData.priority === "HIGH" ? formData.priorityReason : "",
+      spareCriticality: spareCrit,
+      criticalitySource: formData.criticalitySource || "Assumed",
+      reasonCritical: formData.priorityReason,
       minQty: formData.minQty,
       maxQty: formData.maxQty,
       qtyPerSystem: "",
@@ -100,6 +120,7 @@ export const AddSpareDialog = ({
       leadTime: "",
       storageRequirement: "",
       notes: "",
+      confidence: formData.confidence,
       status: formData.status,
     };
 
@@ -108,9 +129,11 @@ export const AddSpareDialog = ({
     // Reset form
     setFormData({
       area: "",
+      areaLabel: "",
       subArea: "",
       system: "",
       parentAsset: "",
+      assetNumber: "",
       pidTag: "",
       componentName: "",
       componentType: "",
@@ -120,9 +143,12 @@ export const AddSpareDialog = ({
       vendor: "",
       priority: "MEDIUM",
       priorityReason: "",
+      spareCriticality: "",
+      criticalitySource: "",
       minQty: "",
       maxQty: "",
-      status: "Pending",
+      confidence: "Low",
+      status: "Provisional",
     });
     
     onOpenChange(false);
@@ -141,18 +167,18 @@ export const AddSpareDialog = ({
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          {/* Row 1: Area & System */}
+          {/* Row 1: Area & Sub-Area */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="area">Area *</Label>
-              <Select value={formData.area} onValueChange={(v) => handleChange("area", v)}>
+              <Select value={formData.area} onValueChange={handleAreaChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select area" />
                 </SelectTrigger>
                 <SelectContent>
-                  {areas.map((area) => (
-                    <SelectItem key={area} value={area}>
-                      {area}
+                  {areaOptions.map((area) => (
+                    <SelectItem key={area.code} value={area.code}>
+                      {area.code} - {area.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -164,29 +190,38 @@ export const AddSpareDialog = ({
                 id="subArea"
                 value={formData.subArea}
                 onChange={(e) => handleChange("subArea", e.target.value)}
-                placeholder="e.g., Comminution"
+                placeholder="e.g., Feed / Reclaim, Grinding"
               />
             </div>
           </div>
 
-          {/* Row 2: System & Parent Asset */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Row 2: System & Asset Numbers */}
+          <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="system">System</Label>
               <Input
                 id="system"
                 value={formData.system}
                 onChange={(e) => handleChange("system", e.target.value)}
-                placeholder="e.g., Primary Ball Mill"
+                placeholder="e.g., APN01 Apron Feeder"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="parentAsset">Parent Asset</Label>
+              <Label htmlFor="assetNumber">Asset Number</Label>
+              <Input
+                id="assetNumber"
+                value={formData.assetNumber}
+                onChange={(e) => handleChange("assetNumber", e.target.value)}
+                placeholder="e.g., APN01-GMR01"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="parentAsset">Legacy P&ID Ref</Label>
               <Input
                 id="parentAsset"
                 value={formData.parentAsset}
                 onChange={(e) => handleChange("parentAsset", e.target.value)}
-                placeholder="e.g., 4-ML-100"
+                placeholder="e.g., 4-FE-100"
               />
             </div>
           </div>
@@ -299,8 +334,8 @@ export const AddSpareDialog = ({
             </div>
           </div>
 
-          {/* Row 8: Quantities & Status */}
-          <div className="grid grid-cols-3 gap-4">
+          {/* Row 8: Quantities */}
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="minQty">Min Qty</Label>
               <Input
@@ -318,6 +353,46 @@ export const AddSpareDialog = ({
                 onChange={(e) => handleChange("maxQty", e.target.value)}
                 placeholder="1"
               />
+            </div>
+          </div>
+
+          {/* Row 9: Source, Confidence & Status */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="criticalitySource">Criticality Source</Label>
+              <Select
+                value={formData.criticalitySource}
+                onValueChange={(v) => handleChange("criticalitySource", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select source" />
+                </SelectTrigger>
+                <SelectContent>
+                  {criticalitySources.map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confidence">Confidence</Label>
+              <Select
+                value={formData.confidence}
+                onValueChange={(v) => handleChange("confidence", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select confidence" />
+                </SelectTrigger>
+                <SelectContent>
+                  {confidenceLevels.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
