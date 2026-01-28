@@ -73,19 +73,37 @@ export const ImportSpareDialog = ({
     return location || "";
   };
 
-  // Helper to find a value from row using flexible header matching
+  // Helper to find a value from row using very tolerant header matching.
+  // Excel headers often contain newlines, extra spaces, punctuation, etc.
+  const normalizeHeader = (s: string) =>
+    String(s || "")
+      .toLowerCase()
+      .trim()
+      // remove everything except letters+numbers so "Supplier /\nManufacturer" matches "Supplier/ Manufacturer"
+      .replace(/[^a-z0-9]/g, "");
+
   const getField = (row: Record<string, any>, ...possibleHeaders: string[]): string => {
+    // Exact key match first (fast path)
     for (const header of possibleHeaders) {
-      // Try exact match first
       if (row[header] !== undefined && row[header] !== "") return String(row[header]);
-      // Try case-insensitive and trimmed match
-      const lowerHeader = header.toLowerCase().trim();
-      for (const key of Object.keys(row)) {
-        if (key.toLowerCase().trim() === lowerHeader && row[key] !== undefined && row[key] !== "") {
-          return String(row[key]);
-        }
-      }
     }
+
+    const rowKeys = Object.keys(row);
+    const normalizedRowKeys = rowKeys.map((k) => ({ key: k, n: normalizeHeader(k) }));
+
+    for (const header of possibleHeaders) {
+      const nh = normalizeHeader(header);
+      if (!nh) continue;
+
+      // 1) Normalized exact match
+      const exact = normalizedRowKeys.find((k) => k.n === nh);
+      if (exact && row[exact.key] !== undefined && row[exact.key] !== "") return String(row[exact.key]);
+
+      // 2) Normalized contains match (handles suffixes like "(preferred)" etc.)
+      const contains = normalizedRowKeys.find((k) => k.n.includes(nh) || nh.includes(k.n));
+      if (contains && row[contains.key] !== undefined && row[contains.key] !== "") return String(row[contains.key]);
+    }
+
     return "";
   };
 
