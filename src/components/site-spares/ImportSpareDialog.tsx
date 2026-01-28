@@ -9,31 +9,47 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Upload, FileSpreadsheet, AlertCircle, CheckCircle2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import * as XLSX from "xlsx";
-import { type SiteSpareItem, categories, warehouseAreas } from "./siteSparesData";
+import { type SiteSpareItem } from "@/hooks/useSiteSpares";
+
+// Categories and warehouse areas for mapping
+const categories: Record<string, string[]> = {
+  "Pipe Fitting": ["Ball Valve", "Coupling", "Elbow", "Tee", "Reducer", "Nipple"],
+  "Motor": ["Electric Motor", "Hydraulic Motor", "Vibrator"],
+  "Pump": ["Submersible", "Centrifugal", "Diaphragm", "AODD"],
+  "Valve": ["Butterfly", "Knife Gate", "Ball", "Check"],
+  "Filter": ["Air Filter", "Oil Filter", "Fuel Filter"],
+  "Bearing": ["Pillow Block", "Spherical Roller", "Ball Bearing"],
+  "Electrical": ["Switch", "Cable", "Connector"],
+  "Consumable": ["Gloves", "PPE", "Tape", "Lubricant"],
+};
+
+const warehouseAreas = [
+  "Storage Shelter", "Site Office Laydown Area", "Shutdown Staging Area",
+  "Workshop", "Workshop Laydown Area", "WC01", "WC02", "WC03", "WC04", "WC05",
+  "WC07 (Crushing Area)", "WC08 (Crushing Area)", "WC09 (Crushing Area)",
+  "Crushing Laydown Area", "MCC"
+];
 
 interface ImportSpareDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onImport: (items: SiteSpareItem[]) => void;
-  existingCount: number;
+  onImport: (items: Omit<SiteSpareItem, "id">[]) => Promise<boolean>;
 }
 
 export const ImportSpareDialog = ({
   open,
   onOpenChange,
   onImport,
-  existingCount,
 }: ImportSpareDialogProps) => {
   const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<SiteSpareItem[]>([]);
+  const [preview, setPreview] = useState<Omit<SiteSpareItem, "id">[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast();
 
-  const getStockStatus = (condition: string, qty: number): SiteSpareItem["status"] => {
+  const getStockStatus = (condition: string, qty: number): string => {
     const condLower = (condition || "").toLowerCase();
     if (condLower.includes("repair")) return "Require Repair";
     if (qty === 0) return "Out of Stock";
@@ -43,7 +59,6 @@ export const ImportSpareDialog = ({
   const mapCategory = (cat: string): string => {
     const normalized = (cat || "").trim();
     if (Object.keys(categories).includes(normalized)) return normalized;
-    // Try to match partial
     for (const key of Object.keys(categories)) {
       if (normalized.toLowerCase().includes(key.toLowerCase())) return key;
     }
@@ -51,21 +66,21 @@ export const ImportSpareDialog = ({
   };
 
   const mapWarehouseArea = (location: string): string => {
-    const loc = (location || "").toUpperCase();
+    const loc = (location || "");
     for (const area of warehouseAreas) {
-      if (loc.includes(area)) return area;
+      if (loc.toLowerCase().includes(area.toLowerCase())) return area;
     }
-    return "A";
+    return location || "";
   };
 
-  const parseExcelFile = async (file: File): Promise<SiteSpareItem[]> => {
+  const parseExcelFile = async (file: File): Promise<Omit<SiteSpareItem, "id">[]> => {
     const data = await file.arrayBuffer();
     const workbook = XLSX.read(data, { type: "array" });
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
     const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
-    const items: SiteSpareItem[] = jsonData.map((row: any, index: number) => {
+    const items: Omit<SiteSpareItem, "id">[] = jsonData.map((row: any) => {
       const qty = parseInt(row["QTY"] || row["Qty on Hand"] || row["Quantity"] || row["qty"] || "0") || 0;
       const condition = row["Condition"] || row["condition"] || "";
       const category = row["Category"] || row["category"] || "General";
@@ -79,34 +94,34 @@ export const ImportSpareDialog = ({
       const assetTag = row["Asset Tag / Designation"] || row["Asset Tag"] || row["Designation"] || "";
       const criticalId = row["Critical Spare ID"] || row["CriticalSpareID"] || "";
       const remarks = row["Remarks"] || row["Notes"] || "";
+      
       return {
-        id: `STK-${String(existingCount + index + 1).padStart(4, "0")}`,
-        partNumber: "",
+        part_number: "",
         description: description,
         category: mapCategory(category),
         subcategory: "",
-        warehouseArea: mapWarehouseArea(location),
-        binLocation: binLoc,
+        warehouse_area: mapWarehouseArea(location),
+        bin_location: binLoc,
         aisle: "",
         rack: "",
-        storageType: row["Storage Type"] || "Shelved",
-        qtyOnHand: qty,
-        minQty: 0,
-        maxQty: 0,
-        reorderPoint: 0,
+        storage_type: row["Storage Type"] || "Shelved",
+        qty_on_hand: qty,
+        min_qty: 0,
+        max_qty: 0,
+        reorder_point: 0,
         uom: row["UOM"] || "EA",
-        unitCost: 0,
-        preferredSupplier: "",
-        leadTimeDays: 0,
-        lastPurchaseDate: "",
+        unit_cost: 0,
+        preferred_supplier: "",
+        lead_time_days: 0,
+        last_purchase_date: null,
         manufacturer: manufacturer,
-        oemPartNumber: productCode,
-        alternatePartNumber: "",
+        oem_part_number: productCode,
+        alternate_part_number: "",
         condition: condition,
         status: getStockStatus(condition, qty),
-        isCritical: !!criticalId,
-        criticalSpareId: criticalId,
-        assetTag: assetTag,
+        is_critical: !!criticalId,
+        critical_spare_id: criticalId,
+        asset_tag: assetTag,
         specifications: `${sizeSpec}${sizeSpec && material ? " | " : ""}${material}`,
         notes: remarks,
       };
@@ -137,14 +152,14 @@ export const ImportSpareDialog = ({
     }
   };
 
-  const handleImport = () => {
+  const handleImport = async () => {
     if (preview.length === 0) return;
-    onImport(preview);
-    toast({
-      title: "Import Successful",
-      description: `${preview.length} items have been imported to inventory.`,
-    });
-    handleClose();
+    setIsImporting(true);
+    const success = await onImport(preview);
+    setIsImporting(false);
+    if (success) {
+      handleClose();
+    }
   };
 
   const handleClose = () => {
@@ -197,6 +212,14 @@ export const ImportSpareDialog = ({
             </div>
           )}
 
+          {/* Importing State */}
+          {isImporting && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" />
+              Importing {preview.length} items to database...
+            </div>
+          )}
+
           {/* Error State */}
           {error && (
             <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
@@ -206,7 +229,7 @@ export const ImportSpareDialog = ({
           )}
 
           {/* Preview */}
-          {preview.length > 0 && (
+          {preview.length > 0 && !isImporting && (
             <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
               <div className="flex items-center gap-2 text-sm font-medium text-primary mb-2">
                 <CheckCircle2 className="h-4 w-4" />
@@ -232,14 +255,14 @@ export const ImportSpareDialog = ({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+          <Button variant="outline" onClick={handleClose} disabled={isImporting}>
             Cancel
           </Button>
           <Button
             onClick={handleImport}
-            disabled={preview.length === 0 || isProcessing}
+            disabled={preview.length === 0 || isProcessing || isImporting}
           >
-            Import {preview.length > 0 ? `${preview.length} Items` : ""}
+            {isImporting ? "Importing..." : `Import ${preview.length > 0 ? `${preview.length} Items` : ""}`}
           </Button>
         </DialogFooter>
       </DialogContent>
