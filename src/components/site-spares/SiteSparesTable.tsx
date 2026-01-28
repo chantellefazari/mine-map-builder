@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Flag, AlertTriangle } from "lucide-react";
+import { Plus, Search, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   siteSparesData,
@@ -24,18 +24,30 @@ import {
   priorityColors,
   type SiteSpareItem,
 } from "./siteSparesData";
+import { AddSpareDialog } from "./AddSpareDialog";
+import { useToast } from "@/hooks/use-toast";
 
 export const SiteSparesTable = () => {
-  const [spares] = useState<SiteSpareItem[]>(siteSparesData);
+  const [spares, setSpares] = useState<SiteSpareItem[]>(siteSparesData);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterArea, setFilterArea] = useState<string>("all");
   const [filterSystem, setFilterSystem] = useState<string>("all");
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const { toast } = useToast();
 
-  const areas = [...new Set(siteSparesData.map((s) => s.area))].sort();
+  const areas = [...new Set(spares.map((s) => s.area))].sort();
   const systems = filterArea === "all" 
-    ? [...new Set(siteSparesData.map((s) => s.system))].sort()
-    : [...new Set(siteSparesData.filter((s) => s.area === filterArea).map((s) => s.system))].sort();
+    ? [...new Set(spares.map((s) => s.system))].sort()
+    : [...new Set(spares.filter((s) => s.area === filterArea).map((s) => s.system))].sort();
+
+  const handleAddSpare = (newSpare: SiteSpareItem) => {
+    setSpares((prev) => [...prev, newSpare]);
+    toast({
+      title: "Spare Added",
+      description: `${newSpare.componentName} has been added to the catalogue.`,
+    });
+  };
 
   const filteredSpares = spares.filter((spare) => {
     const matchesSearch =
@@ -103,13 +115,20 @@ export const SiteSparesTable = () => {
               <SelectItem value="Obsolete">Obsolete</SelectItem>
             </SelectContent>
           </Select>
-          <Button size="sm" className="gap-2">
+          <Button size="sm" className="gap-2" onClick={() => setAddDialogOpen(true)}>
             <Plus className="h-4 w-4" />
             Add Spare
           </Button>
         </div>
       </div>
 
+      {/* Add Spare Dialog */}
+      <AddSpareDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+        onAddSpare={handleAddSpare}
+        existingCount={spares.length}
+      />
       {/* Table */}
       <div className="overflow-x-auto border rounded-lg">
         <Table>
