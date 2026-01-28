@@ -66,44 +66,49 @@ export const ImportSpareDialog = ({
     const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
     const items: SiteSpareItem[] = jsonData.map((row: any, index: number) => {
-      const qty = parseInt(row["Qty on Hand"] || row["QtyOnHand"] || row["Quantity"] || row["QTY"] || row["qty"] || "0") || 0;
+      const qty = parseInt(row["QTY"] || row["Qty on Hand"] || row["Quantity"] || row["qty"] || "0") || 0;
       const condition = row["Condition"] || row["condition"] || "";
       const category = row["Category"] || row["category"] || "General";
-      const location = row["Location"] || row["location"] || row["Warehouse"] || "";
-      const binLoc = row["Bin Location"] || row["BIN Location"] || row["Bin"] || "";
-      const sizeSpec = row["Size / Specification"] || row["Size"] || row["Specification"] || "";
+      const location = row["Location"] || row["location"] || "";
+      const binLoc = row["BIN Location"] || row["Bin Location"] || row["Bin"] || "";
+      const sizeSpec = row["Size / Specification"] || row["Size"] || "";
       const material = row["Material / Rating"] || row["Material"] || "";
-      
+      const description = row["Item Description"] || row["Description"] || row["description"] || "";
+      const manufacturer = row["Supplier / Manufacturer"] || row["Manufacturer"] || row["Supplier"] || row["Make"] || "";
+      const productCode = row["Product Code"] || row["OEM Part Number"] || row["Part Number"] || "";
+      const assetTag = row["Asset Tag / Designation"] || row["Asset Tag"] || row["Designation"] || "";
+      const criticalId = row["Critical Spare ID"] || row["CriticalSpareID"] || "";
+      const remarks = row["Remarks"] || row["Notes"] || "";
       return {
         id: `STK-${String(existingCount + index + 1).padStart(4, "0")}`,
-        partNumber: "", // Left empty as requested
-        description: row["Description"] || row["description"] || row["Item Description"] || "",
+        partNumber: "",
+        description: description,
         category: mapCategory(category),
-        subcategory: row["Subcategory"] || row["subcategory"] || row["Sub Category"] || "",
+        subcategory: "",
         warehouseArea: mapWarehouseArea(location),
         binLocation: binLoc,
         aisle: "",
         rack: "",
-        storageType: row["Storage Type"] || row["StorageType"] || "Shelved",
+        storageType: row["Storage Type"] || "Shelved",
         qtyOnHand: qty,
-        minQty: parseInt(row["Min Qty"] || row["MinQty"] || row["Minimum"] || "0") || 0,
-        maxQty: parseInt(row["Max Qty"] || row["MaxQty"] || row["Maximum"] || "0") || 0,
+        minQty: 0,
+        maxQty: 0,
         reorderPoint: 0,
-        uom: row["UOM"] || row["Unit"] || row["Unit of Measure"] || "EA",
+        uom: row["UOM"] || "EA",
         unitCost: 0,
         preferredSupplier: "",
         leadTimeDays: 0,
         lastPurchaseDate: "",
-        manufacturer: row["Manufacturer"] || row["Supplier"] || row["Supplier / Manufacturer"] || row["manufacturer"] || row["supplier"] || row["Make"] || "",
-        oemPartNumber: row["Product Code"] || row["OEM Part Number"] || row["OEM Part #"] || row["Part Number"] || "",
+        manufacturer: manufacturer,
+        oemPartNumber: productCode,
         alternatePartNumber: "",
         condition: condition,
         status: getStockStatus(condition, qty),
-        isCritical: !!(row["Critical Spare ID"] || row["CriticalSpareID"] || row["Critical"]),
-        criticalSpareId: row["Critical Spare ID"] || row["CriticalSpareID"] || "",
-        assetTag: row["Asset Tag"] || row["AssetTag"] || row["Designation"] || "",
+        isCritical: !!criticalId,
+        criticalSpareId: criticalId,
+        assetTag: assetTag,
         specifications: `${sizeSpec}${sizeSpec && material ? " | " : ""}${material}`,
-        notes: row["Remarks"] || row["Notes"] || "",
+        notes: remarks,
       };
     });
 
