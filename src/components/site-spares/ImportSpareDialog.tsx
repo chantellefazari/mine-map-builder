@@ -73,6 +73,22 @@ export const ImportSpareDialog = ({
     return location || "";
   };
 
+  // Helper to find a value from row using flexible header matching
+  const getField = (row: Record<string, any>, ...possibleHeaders: string[]): string => {
+    for (const header of possibleHeaders) {
+      // Try exact match first
+      if (row[header] !== undefined && row[header] !== "") return String(row[header]);
+      // Try case-insensitive and trimmed match
+      const lowerHeader = header.toLowerCase().trim();
+      for (const key of Object.keys(row)) {
+        if (key.toLowerCase().trim() === lowerHeader && row[key] !== undefined && row[key] !== "") {
+          return String(row[key]);
+        }
+      }
+    }
+    return "";
+  };
+
   const parseExcelFile = async (file: File): Promise<Omit<SiteSpareItem, "id">[]> => {
     const data = await file.arrayBuffer();
     const workbook = XLSX.read(data, { type: "array" });
@@ -81,19 +97,19 @@ export const ImportSpareDialog = ({
     const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
     const items: Omit<SiteSpareItem, "id">[] = jsonData.map((row: any) => {
-      const qty = parseInt(row["QTY"] || row["Qty on Hand"] || row["Quantity"] || row["qty"] || "0") || 0;
-      const condition = row["Condition"] || row["condition"] || "";
-      const category = row["Category"] || row["category"] || "General";
-      const location = row["Location"] || row["location"] || "";
-      const binLoc = row["BIN Location"] || row["Bin Location"] || row["Bin"] || "";
-      const sizeSpec = row["Size / Specification"] || row["Size"] || "";
-      const material = row["Material / Rating"] || row["Material"] || "";
-      const description = row["Item Description"] || row["Description"] || row["description"] || "";
-      const manufacturer = row["Supplier / Manufacturer"] || row["Manufacturer"] || row["Supplier"] || row["Make"] || "";
-      const productCode = row["Product Code"] || row["OEM Part Number"] || row["Part Number"] || "";
-      const assetTag = row["Asset Tag / Designation"] || row["Asset Tag"] || row["Designation"] || "";
-      const criticalId = row["Critical Spare ID"] || row["CriticalSpareID"] || "";
-      const remarks = row["Remarks"] || row["Notes"] || "";
+      const qty = parseInt(getField(row, "QTY", "Qty on Hand", "Quantity", "qty") || "0") || 0;
+      const condition = getField(row, "Condition", "condition");
+      const category = getField(row, "Category", "category") || "General";
+      const location = getField(row, "Location", "location");
+      const binLoc = getField(row, "BIN Location", "Bin Location", "Bin");
+      const sizeSpec = getField(row, "Size / Specification", "Size");
+      const material = getField(row, "Material / Rating", "Material");
+      const description = getField(row, "Item Description", "Description", "description");
+      const manufacturer = getField(row, "Supplier / Manufacturer", "Supplier/Manufacturer", "Manufacturer", "Supplier", "Make", "Brand");
+      const productCode = getField(row, "Product Code", "OEM Part Number", "Part Number");
+      const assetTag = getField(row, "Asset Tag / Designation", "Asset Tag", "Designation");
+      const criticalId = getField(row, "Critical Spare ID", "CriticalSpareID");
+      const remarks = getField(row, "Remarks", "Notes");
       
       return {
         part_number: "",
@@ -104,12 +120,12 @@ export const ImportSpareDialog = ({
         bin_location: binLoc,
         aisle: "",
         rack: "",
-        storage_type: row["Storage Type"] || "Shelved",
+        storage_type: getField(row, "Storage Type") || "Shelved",
         qty_on_hand: qty,
         min_qty: 0,
         max_qty: 0,
         reorder_point: 0,
-        uom: row["UOM"] || "EA",
+        uom: getField(row, "UOM") || "EA",
         unit_cost: 0,
         preferred_supplier: "",
         lead_time_days: 0,
