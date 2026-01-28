@@ -185,7 +185,6 @@ export const SparesTable = () => {
                 </TableCell>
                 <TableCell className="text-sm">{spare.subArea}</TableCell>
                 <TableCell className="text-sm">{spare.system}</TableCell>
-                <TableCell className="text-sm">{spare.system}</TableCell>
                 <TableCell className="font-medium">{spare.componentName}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {spare.componentType}
@@ -211,8 +210,8 @@ export const SparesTable = () => {
                     {spare.maxQty || "—"}
                   </span>
                 </TableCell>
-                <TableCell className="text-center font-mono text-sm text-muted-foreground">
-                  {spare.unitPrice || "—"}
+                <TableCell className="text-center text-sm text-muted-foreground">
+                  {"Low"}
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary" className={statusColors[spare.status]}>
