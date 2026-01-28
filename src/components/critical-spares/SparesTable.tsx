@@ -23,6 +23,7 @@ import {
   criticalityColors,
   statusColors,
   confidenceColors,
+  criticalitySourceColors,
   type SpareItem,
 } from "./sparesData";
 
@@ -137,6 +138,7 @@ export const SparesTable = () => {
               <TableHead className="min-w-[100px] font-semibold">Type</TableHead>
               <TableHead className="min-w-[180px] font-semibold">Description</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Criticality</TableHead>
+              <TableHead className="min-w-[80px] font-semibold">Source</TableHead>
               <TableHead className="min-w-[150px] font-semibold">Reason Critical</TableHead>
               <TableHead className="min-w-[100px] font-semibold text-center">Min Qty (Prov.)</TableHead>
               <TableHead className="min-w-[100px] font-semibold text-center">Max Qty (Prov.)</TableHead>
@@ -167,6 +169,13 @@ export const SparesTable = () => {
                   {spare.spareCriticality && (
                     <Badge variant="secondary" className={criticalityColors[spare.spareCriticality]}>
                       {spare.spareCriticality}
+                    </Badge>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {spare.criticalitySource && (
+                    <Badge variant="secondary" className={criticalitySourceColors[spare.criticalitySource]}>
+                      {spare.criticalitySource}
                     </Badge>
                   )}
                 </TableCell>
