@@ -27,33 +27,193 @@ const getPidTag = (assetNumber: string): string => {
   return tags.join(", ");
 };
 
-const inferAreaFromPidTag = (pidTag: string): string => {
-  // Most tags follow NN-XXXX format; fall back gracefully for odd tags like "-BA-103".
+// Infer Area, Sub-Area, System, and Parent Asset from P&ID tag prefix
+const inferMetadataFromPidTag = (
+  pidTag: string,
+  description: string
+): { area: string; subArea: string; system: string; parentAsset: string } => {
   const prefix = pidTag.split("-")[0]?.trim();
+  const descLower = description.toLowerCase();
+
+  // Determine area
+  let area = "";
+  let subArea = "";
+  let system = "";
+  let parentAsset = "";
+
   switch (prefix) {
     case "04":
-      return "COM";
+      area = "COM";
+      // Determine sub-area based on description keywords
+      if (descLower.includes("conveyor") || descLower.includes("feeder")) {
+        subArea = "Feed / Reclaim";
+        system = "Conveying";
+        if (descLower.includes("transfer")) parentAsset = "CV01 Transfer Conveyor";
+        else if (descLower.includes("mill feed")) parentAsset = "MFC01 Mill Feed Conveyor";
+        else if (descLower.includes("reclaim") || descLower.includes("apron")) parentAsset = "APRN01 Apron Feeder";
+        else if (descLower.includes("scatts")) parentAsset = "CV02 Ball Mill Scatts Conveyor";
+      } else if (descLower.includes("mill") || descLower.includes("lube") || descLower.includes("gear")) {
+        subArea = "Grinding";
+        system = "Grinding";
+        parentAsset = "BM01 Primary Ball Mill";
+      } else if (descLower.includes("cyclone")) {
+        subArea = "Classification";
+        system = "Classification";
+        parentAsset = "CYC01 Cyclone Cluster";
+      } else if (descLower.includes("gravity") || descLower.includes("knelson") || descLower.includes("shaking table") || descLower.includes("concentrate")) {
+        subArea = "Gravity Circuit";
+        system = "Gravity Circuit";
+        parentAsset = "GRV-SCR01 Gravity Circuit";
+      } else if (descLower.includes("lime")) {
+        subArea = "Reagents";
+        system = "Reagents";
+        parentAsset = "LSILO01 Lime System";
+      }
+      break;
+
     case "05":
-      return "REC";
+      area = "REC";
+      if (descLower.includes("cip") || descLower.includes("leach") || descLower.includes("tank") || descLower.includes("agitator") || descLower.includes("carbon")) {
+        subArea = "CIP";
+        system = "CIP";
+        // Determine parent based on tank number
+        if (descLower.includes("tank 1") || descLower.includes("tk-001")) parentAsset = "CIP-TK01 CIP Leach Tank 1";
+        else if (descLower.includes("tank 2") || descLower.includes("tk-002")) parentAsset = "CIP-TK02 CIP Leach Tank 2";
+        else if (descLower.includes("tank 3") || descLower.includes("tk-003")) parentAsset = "CIP-TK03 CIP Tank 3";
+        else if (descLower.includes("tank 4") || descLower.includes("tk-004")) parentAsset = "CIP-TK04 CIP Tank 4";
+        else if (descLower.includes("tank 5") || descLower.includes("tk-005")) parentAsset = "CIP-TK05 CIP Tank 5";
+        else if (descLower.includes("tank 6") || descLower.includes("tk-006")) parentAsset = "CIP-TK06 CIP Tank 6";
+        else if (descLower.includes("tank 7") || descLower.includes("tk-007")) parentAsset = "CIP-TK07 CIP Tank 7";
+        else if (descLower.includes("tank 8") || descLower.includes("tk-008")) parentAsset = "CIP-TK08 CIP Tank 8";
+        else if (descLower.includes("trash screen")) parentAsset = "CPTS01 CIP Feed Trash Screen";
+        else if (descLower.includes("loaded carbon")) parentAsset = "SCR04 Loaded Carbon Screen";
+        else if (descLower.includes("safety screen")) parentAsset = "SCR03 Carbon Safety Screen";
+        else if (descLower.includes("intertank") || descLower.includes("inter tank")) parentAsset = "CIP-SCR-INT Intertank Screen";
+        else if (descLower.includes("tailings") || descLower.includes("tails")) parentAsset = "CIP-TAIL CIP Tailings";
+        else parentAsset = "CIP-TK01 CIP Tanks";
+      } else if (descLower.includes("compressor") || descLower.includes("air")) {
+        subArea = "Compressed Air";
+        system = "Compressed Air";
+        parentAsset = "SVC-CMP01 HP Air Compressor";
+      }
+      break;
+
     case "06":
-      return "UTL";
+      area = "UTL";
+      subArea = "Reagents";
+      system = "Reagents";
+      if (descLower.includes("cyanide")) {
+        if (descLower.includes("mixing")) parentAsset = "CMIX01 Cyanide Mixing System";
+        else if (descLower.includes("dosing")) parentAsset = "CDOS01 Cyanide Dosing System";
+        else if (descLower.includes("storage")) parentAsset = "CSTR01 Cyanide Storage";
+        else if (descLower.includes("sump")) parentAsset = "CSMP01 Cyanide Area Sump";
+        else parentAsset = "RGT-CYN Cyanide System";
+      } else if (descLower.includes("caustic")) {
+        parentAsset = "CAUS01 Caustic Dosing System";
+      } else {
+        parentAsset = "RGT-01 Reagents Area";
+      }
+      break;
+
     case "08":
-      return "REC";
+      area = "REC";
+      subArea = "Elution";
+      system = "Elution";
+      if (descLower.includes("electrowinning")) parentAsset = "EWCL01 Electrowinning Cell";
+      else if (descLower.includes("regen") || descLower.includes("kiln")) parentAsset = "CREG01 Carbon Regeneration Kiln";
+      else if (descLower.includes("cathode") || descLower.includes("gold room") || descLower.includes("bullion") || descLower.includes("furnace") || descLower.includes("calcine")) {
+        subArea = "Gold Room";
+        system = "Gold Room";
+        parentAsset = "GR01 Gold Room";
+      } else if (descLower.includes("elution") || descLower.includes("eluate") || descLower.includes("acid wash") || descLower.includes("heater")) {
+        parentAsset = "ELU01 Elution System";
+      } else {
+        parentAsset = "ELU01 Elution Area";
+      }
+      break;
+
     case "11":
-      return "UTL";
+      area = "UTL";
+      subArea = "Water";
+      system = "Water";
+      if (descLower.includes("potable")) parentAsset = "PWT01 Potable Water Tank";
+      else if (descLower.includes("raw water")) parentAsset = "RWT01 Raw Water Tank";
+      else if (descLower.includes("gland")) parentAsset = "GWTR01 Gland Water System";
+      else if (descLower.includes("process water")) parentAsset = "PWP01 Process Water System";
+      else if (descLower.includes("safety shower")) parentAsset = "SSHW01 Safety Shower Water System";
+      else parentAsset = "SVC01 Services";
+      break;
+
     case "12":
+      area = "TAIL";
+      subArea = "Thickening";
+      system = "Thickening";
+      if (descLower.includes("thickener")) parentAsset = "THK01 Thickener";
+      else if (descLower.includes("floc")) parentAsset = "FLOC01 Floc System";
+      else parentAsset = "TAL01 Tails Area";
+      break;
+
     case "13":
-      return "TAIL";
+      area = "TAIL";
+      subArea = "Filtering";
+      system = "Filtering";
+      if (descLower.includes("filter press 1") || descLower.includes("filter 1")) parentAsset = "FP01 Filter Press 1";
+      else if (descLower.includes("filter press 2") || descLower.includes("filter 2")) parentAsset = "FP02 Filter Press 2";
+      else if (descLower.includes("stacker") || descLower.includes("radial")) parentAsset = "CV04 Radial Stacker Conveyor";
+      else if (descLower.includes("collection conveyor")) parentAsset = "CV03 Collection Conveyor";
+      else if (descLower.includes("compressor")) parentAsset = "FLT-CMP01 Filter Area HP Air Compressor";
+      else parentAsset = "FP01 Filter Press";
+      break;
+
     case "14":
     case "15":
+      area = "SITE";
+      subArea = "Mobile Equipment";
+      system = "Mobile Equipment";
+      parentAsset = "MOB01 Mobile Equipment";
+      break;
+
     case "16":
-    case "18":
-      return "SITE";
+      area = "SITE";
+      subArea = "Buildings";
+      system = "Buildings";
+      parentAsset = "BLD01 Buildings";
+      break;
+
     case "17":
-      return "UTL";
+      area = "UTL";
+      subArea = "Power Generation";
+      system = "Power Generation";
+      if (descLower.includes("generator")) {
+        const genMatch = pidTag.match(/GN-0*(\d+)/);
+        if (genMatch) parentAsset = `GEN0${genMatch[1]} Power Station Generator ${genMatch[1]}`;
+        else parentAsset = "GEN01 Generators";
+      } else if (descLower.includes("sub station")) {
+        parentAsset = "SUB01 Main Sub Station";
+      } else {
+        parentAsset = "PWR01 Power Generation";
+      }
+      break;
+
+    case "18":
+      area = "SITE";
+      subArea = "Field MCCs";
+      system = "Electrical";
+      parentAsset = "MCC01 Field MCCs";
+      break;
+
     default:
-      return "";
+      // Distribution boards and misc
+      if (descLower.includes("db") || descLower.includes("distribution") || descLower.includes("l&p") || descLower.includes("mcc")) {
+        area = "SITE";
+        subArea = "Electrical";
+        system = "Electrical";
+        parentAsset = "DB01 Distribution Boards";
+      }
+      break;
   }
+
+  return { area, subArea, system, parentAsset };
 };
 
 const inferComponentTypeFromAssetNumber = (assetNumber: string): {
@@ -62,14 +222,46 @@ const inferComponentTypeFromAssetNumber = (assetNumber: string): {
 } => {
   const upper = assetNumber.toUpperCase();
 
-  if (/-MTR\d+$/.test(upper)) return { type: "Motor", abbrev: "MTR" };
-  if (/-GBX\d+$/.test(upper)) return { type: "Gearbox", abbrev: "GBX" };
-  if (/-VFD\d+$/.test(upper)) return { type: "VFD", abbrev: "VFD" };
-  if (/-MCC\d+$/.test(upper)) return { type: "MCC", abbrev: "MCC" };
-  if (/-LCS\d+$/.test(upper)) return { type: "LCS", abbrev: "LCS" };
-  if (/(^|-)PMP\d+[A-Z]?$/.test(upper) || upper.includes("-PMP")) return { type: "Pump", abbrev: "PMP" };
-  if (upper.includes("-TX") || upper.includes("-SEN") || upper.includes("-PG") || upper.includes("-TG"))
-    return { type: "Instrument", abbrev: "INS" };
+  if (/-MTR\d*$/.test(upper)) return { type: "Motor", abbrev: "MTR" };
+  if (/-GBX\d*$/.test(upper)) return { type: "Gearbox", abbrev: "GBX" };
+  if (/-VFD\d*$/.test(upper)) return { type: "VFD", abbrev: "VFD" };
+  if (/-MCC\d*$/.test(upper)) return { type: "MCC", abbrev: "MCC" };
+  if (/-LCS\d*$/.test(upper)) return { type: "LCS", abbrev: "LCS" };
+  if (/-AGT\d*$/.test(upper)) return { type: "Agitator", abbrev: "AGT" };
+  if (/-EXC\d*$/.test(upper)) return { type: "Exciter", abbrev: "EXC" };
+  if (/-PMP\d*[A-Z]?$/.test(upper) || upper.includes("-PMP")) return { type: "Pump", abbrev: "PMP" };
+  if (/-HPU\d*$/.test(upper)) return { type: "Hydraulic Pack", abbrev: "HPU" };
+  if (/-VLV\d*$/.test(upper)) return { type: "Valve", abbrev: "VLV" };
+  if (/-FLT\d*$/.test(upper)) return { type: "Filter", abbrev: "FLT" };
+  if (/-CHU\d*$/.test(upper)) return { type: "Chute", abbrev: "CHU" };
+  if (/-PNL\d*$/.test(upper) || upper.includes("-PNL")) return { type: "Panel", abbrev: "PNL" };
+  if (/-INS\d*$/.test(upper)) return { type: "Instrument", abbrev: "INS" };
+  if (/-TX\d*$/.test(upper) || /-SEN\d*$/.test(upper)) return { type: "Sensor", abbrev: "SEN" };
+  if (/-PG\d*$/.test(upper) || /-TG\d*$/.test(upper)) return { type: "Gauge", abbrev: "GAU" };
+  if (/-SHW\d*$/.test(upper)) return { type: "Safety Shower", abbrev: "SHW" };
+  if (/-NZL\d*$/.test(upper)) return { type: "Nozzle", abbrev: "NZL" };
+  if (/-AL\d*$/.test(upper)) return { type: "Air Lift", abbrev: "AL" };
+  if (/-SPR\d*$/.test(upper)) return { type: "Spray Bar", abbrev: "SPR" };
+  if (upper.includes("TK") || upper.includes("TANK")) return { type: "Tank", abbrev: "TK" };
+  if (upper.includes("SCR") || upper.includes("SCREEN")) return { type: "Screen", abbrev: "SCR" };
+  if (upper.includes("COL")) return { type: "Column", abbrev: "COL" };
+  if (upper.includes("HTR") || upper.includes("HE-")) return { type: "Heater", abbrev: "HTR" };
+  if (upper.includes("HX")) return { type: "Heat Exchanger", abbrev: "HX" };
+  if (upper.includes("CRN") || upper.includes("HT-")) return { type: "Crane", abbrev: "CRN" };
+  if (upper.includes("MNR") || upper.includes("MR-")) return { type: "Monorail", abbrev: "MNR" };
+  if (upper.includes("BBR")) return { type: "Bag Breaker", abbrev: "BBR" };
+  if (upper.includes("CW")) return { type: "Cathode Winder", abbrev: "CW" };
+  if (upper.includes("EW")) return { type: "Electrowinning Cell", abbrev: "EW" };
+  if (upper.includes("OVN")) return { type: "Oven", abbrev: "OVN" };
+  if (upper.includes("KIL")) return { type: "Kiln", abbrev: "KIL" };
+  if (upper.includes("FAN") || upper.includes("FA-")) return { type: "Fan", abbrev: "FAN" };
+  if (upper.includes("BU-") || upper.includes("BRN")) return { type: "Burner", abbrev: "BRN" };
+  if (upper.includes("GEN") || upper.includes("GN-")) return { type: "Generator", abbrev: "GEN" };
+  if (upper.includes("CMP") || upper.includes("CP-")) return { type: "Compressor", abbrev: "CMP" };
+  if (upper.includes("AR-")) return { type: "Air Receiver", abbrev: "AR" };
+  if (upper.includes("CV-") || upper.includes("CONV")) return { type: "Conveyor", abbrev: "CV" };
+  if (upper.includes("PIP")) return { type: "Piping", abbrev: "PIP" };
+  if (upper.includes("DAM") || upper.includes("PND") || upper.includes("PD-")) return { type: "Pond/Dam", abbrev: "PND" };
 
   return { type: "Equipment", abbrev: "EQP" };
 };
@@ -491,16 +683,16 @@ const pidMappedRows: ComponentItem[] = pidTagMappings
   .filter((m) => !existingAssetNumbers.has(m.assetNumber))
   .map((m) => {
     const inferred = inferComponentTypeFromAssetNumber(m.assetNumber);
-    const inferredArea = inferAreaFromPidTag(m.pidTag);
+    const metadata = inferMetadataFromPidTag(m.pidTag, m.description);
 
     return {
       id: generateId(),
       assetName: m.description,
       assetNumber: m.assetNumber,
-      parentAsset: "",
-      area: inferredArea || "",
-      subArea: "",
-      system: "",
+      parentAsset: metadata.parentAsset,
+      area: metadata.area,
+      subArea: metadata.subArea,
+      system: metadata.system,
       componentType: inferred.type,
       componentName: m.description,
       componentAbbreviation: inferred.abbrev,
