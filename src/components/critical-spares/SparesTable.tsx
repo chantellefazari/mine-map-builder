@@ -16,83 +16,60 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-export interface SpareItem {
-  id: string;
-  componentName: string;
-  componentType: string;
-  assetName: string;
-  assetNumber: string;
-  sparePartDescription: string;
-  oemPartNumber: string;
-  spareCriticality: "High" | "Medium" | "Low" | "";
-  reasonCritical: string;
-  leadTime: string;
-  storageRequirement: string;
-  notes: string;
-  status: "Unknown" | "Confirmed";
-}
-
-// Empty array - data to be added after P&ID walkdowns and engineering verification
-const initialSpares: SpareItem[] = [];
-
-const criticalityColors = {
-  "High": "bg-destructive/20 text-destructive",
-  "Medium": "bg-amber-500/20 text-amber-700",
-  "Low": "bg-muted text-muted-foreground",
-  "": "",
-};
-
-const statusColors = {
-  "Unknown": "bg-muted text-muted-foreground",
-  "Confirmed": "bg-green-500/20 text-green-700",
-};
-
-const componentTypes = [
-  "Motor",
-  "Gearbox",
-  "Pump",
-  "Valve",
-  "Roller",
-  "Bearing",
-  "Seal",
-  "Coupling",
-  "Belt",
-  "Chain",
-  "Sprocket",
-  "Impeller",
-  "Liner",
-  "Screen",
-  "Sensor",
-  "Actuator",
-];
+import {
+  sparesData,
+  criticalityColors,
+  statusColors,
+  confidenceColors,
+  type SpareItem,
+} from "./sparesData";
 
 export const SparesTable = () => {
-  const [spares, setSpares] = useState<SpareItem[]>(initialSpares);
+  const [spares] = useState<SpareItem[]>(sparesData);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCriticality, setFilterCriticality] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterArea, setFilterArea] = useState<string>("all");
+
+  const areas = [...new Set(sparesData.map((s) => s.area))].sort();
 
   const filteredSpares = spares.filter((spare) => {
     const matchesSearch =
       spare.componentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.assetNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.parentAsset.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.oemPartNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.sparePartDescription.toLowerCase().includes(searchQuery.toLowerCase());
+      spare.sparePartDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.system.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCriticality =
       filterCriticality === "all" || spare.spareCriticality === filterCriticality;
     const matchesStatus =
       filterStatus === "all" || spare.status === filterStatus;
-    return matchesSearch && matchesCriticality && matchesStatus;
+    const matchesArea = filterArea === "all" || spare.area === filterArea;
+    return matchesSearch && matchesCriticality && matchesStatus && matchesArea;
   });
 
   return (
     <div className="space-y-4">
+      {/* Provisional Warning Banner */}
+      <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 flex items-start gap-3">
+        <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+        <div className="text-sm">
+          <p className="font-semibold text-amber-700">
+            Provisional Data – Pending P&ID Walkdown & Engineering Review
+          </p>
+          <p className="text-amber-600 mt-1">
+            All quantities are rough/indicative only. Values marked "TBC" require document verification.
+            This register is a baseline, not a final approved spares list.
+          </p>
+        </div>
+      </div>
+
+      {/* Filters */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h2 className="text-lg font-semibold text-foreground">
-          Critical Spares Catalogue
+          Critical Spares Register ({filteredSpares.length} items)
         </h2>
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
@@ -104,6 +81,19 @@ export const SparesTable = () => {
               className="pl-9 w-64"
             />
           </div>
+          <Select value={filterArea} onValueChange={setFilterArea}>
+            <SelectTrigger className="w-32">
+              <SelectValue placeholder="Area" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Areas</SelectItem>
+              {areas.map((area) => (
+                <SelectItem key={area} value={area}>
+                  {area}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={filterCriticality} onValueChange={setFilterCriticality}>
             <SelectTrigger className="w-36">
               <SelectValue placeholder="Criticality" />
@@ -121,7 +111,8 @@ export const SparesTable = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="Unknown">Unknown</SelectItem>
+              <SelectItem value="Provisional">Provisional</SelectItem>
+              <SelectItem value="TBC">TBC</SelectItem>
               <SelectItem value="Confirmed">Confirmed</SelectItem>
             </SelectContent>
           </Select>
@@ -132,33 +123,46 @@ export const SparesTable = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      {/* Table */}
+      <div className="overflow-x-auto border rounded-lg">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="min-w-[140px]">Component Name</TableHead>
-              <TableHead className="min-w-[120px]">Component Type</TableHead>
-              <TableHead className="min-w-[140px]">Asset Name</TableHead>
-              <TableHead className="min-w-[100px]">Asset Number</TableHead>
-              <TableHead className="min-w-[180px]">Spare Part Description</TableHead>
-              <TableHead className="min-w-[120px]">OEM Part Number</TableHead>
-              <TableHead className="min-w-[100px]">Criticality</TableHead>
-              <TableHead className="min-w-[150px]">Reason Critical</TableHead>
-              <TableHead className="min-w-[100px]">Lead Time</TableHead>
-              <TableHead className="min-w-[140px]">Storage Requirement</TableHead>
-              <TableHead className="min-w-[150px]">Notes</TableHead>
-              <TableHead className="min-w-[100px]">Status</TableHead>
+            <TableRow className="bg-muted/50">
+              <TableHead className="min-w-[80px] font-semibold">ID</TableHead>
+              <TableHead className="min-w-[80px] font-semibold">Area</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Sub-Area</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">System</TableHead>
+              <TableHead className="min-w-[160px] font-semibold">Parent Asset</TableHead>
+              <TableHead className="min-w-[140px] font-semibold">Component Name</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Type</TableHead>
+              <TableHead className="min-w-[180px] font-semibold">Description</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Criticality</TableHead>
+              <TableHead className="min-w-[150px] font-semibold">Reason Critical</TableHead>
+              <TableHead className="min-w-[100px] font-semibold text-center">Min Qty (Prov.)</TableHead>
+              <TableHead className="min-w-[100px] font-semibold text-center">Max Qty (Prov.)</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Confidence</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredSpares.map((spare) => (
               <TableRow key={spare.id} className="cursor-pointer hover:bg-muted/50">
+                <TableCell className="font-mono text-sm text-muted-foreground">
+                  {spare.id}
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline" className="font-mono">
+                    {spare.area}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-sm">{spare.subArea}</TableCell>
+                <TableCell className="text-sm">{spare.system}</TableCell>
+                <TableCell className="font-medium text-sm">{spare.parentAsset}</TableCell>
                 <TableCell className="font-medium">{spare.componentName}</TableCell>
-                <TableCell>{spare.componentType}</TableCell>
-                <TableCell>{spare.assetName}</TableCell>
-                <TableCell className="font-mono text-sm">{spare.assetNumber}</TableCell>
-                <TableCell>{spare.sparePartDescription}</TableCell>
-                <TableCell className="font-mono text-sm">{spare.oemPartNumber}</TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  {spare.componentType}
+                </TableCell>
+                <TableCell className="text-sm">{spare.sparePartDescription}</TableCell>
                 <TableCell>
                   {spare.spareCriticality && (
                     <Badge variant="secondary" className={criticalityColors[spare.spareCriticality]}>
@@ -166,16 +170,32 @@ export const SparesTable = () => {
                     </Badge>
                   )}
                 </TableCell>
-                <TableCell className="text-sm">{spare.reasonCritical}</TableCell>
-                <TableCell>{spare.leadTime}</TableCell>
-                <TableCell>{spare.storageRequirement}</TableCell>
-                <TableCell className="text-sm">{spare.notes}</TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  {spare.reasonCritical}
+                </TableCell>
+                <TableCell className="text-center font-mono">
+                  <span className={spare.minQtyProvisional === "TBC" ? "text-muted-foreground" : "font-medium"}>
+                    {spare.minQtyProvisional}
+                  </span>
+                </TableCell>
+                <TableCell className="text-center font-mono">
+                  <span className={spare.maxQtyProvisional === "TBC" ? "text-muted-foreground" : "font-medium"}>
+                    {spare.maxQtyProvisional}
+                  </span>
+                </TableCell>
                 <TableCell>
-                  {spare.status && (
-                    <Badge variant="secondary" className={statusColors[spare.status]}>
-                      {spare.status}
+                  {spare.quantityConfidence ? (
+                    <Badge variant="secondary" className={confidenceColors[spare.quantityConfidence]}>
+                      {spare.quantityConfidence}
                     </Badge>
+                  ) : (
+                    <span className="text-muted-foreground text-sm">—</span>
                   )}
+                </TableCell>
+                <TableCell>
+                  <Badge variant="secondary" className={statusColors[spare.status]}>
+                    {spare.status}
+                  </Badge>
                 </TableCell>
               </TableRow>
             ))}
@@ -183,6 +203,7 @@ export const SparesTable = () => {
         </Table>
       </div>
 
+      {/* Empty States */}
       {spares.length === 0 && (
         <div className="text-center py-12 border border-dashed border-border rounded-lg">
           <div className="text-muted-foreground space-y-2">
@@ -199,6 +220,22 @@ export const SparesTable = () => {
           No spares match your search criteria.
         </div>
       )}
+
+      {/* Legend */}
+      <div className="flex flex-wrap gap-6 text-xs text-muted-foreground border-t pt-4">
+        <div className="flex items-center gap-2">
+          <span className="font-medium">Status:</span>
+          <Badge variant="secondary" className={statusColors["Provisional"]}>Provisional</Badge>
+          <Badge variant="secondary" className={statusColors["TBC"]}>TBC</Badge>
+          <Badge variant="secondary" className={statusColors["Confirmed"]}>Confirmed</Badge>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-medium">Confidence:</span>
+          <Badge variant="secondary" className={confidenceColors["High"]}>High</Badge>
+          <Badge variant="secondary" className={confidenceColors["Medium"]}>Medium</Badge>
+          <Badge variant="secondary" className={confidenceColors["Low"]}>Low</Badge>
+        </div>
+      </div>
     </div>
   );
 };
