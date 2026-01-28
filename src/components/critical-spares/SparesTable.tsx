@@ -22,7 +22,6 @@ import {
   sparesData,
   criticalityColors,
   statusColors,
-  confidenceColors,
   criticalitySourceColors,
   type SpareItem,
 } from "./sparesData";
@@ -183,23 +182,17 @@ export const SparesTable = () => {
                   {spare.reasonCritical}
                 </TableCell>
                 <TableCell className="text-center font-mono">
-                  <span className={spare.minQtyProvisional === "TBC" ? "text-muted-foreground" : "font-medium"}>
-                    {spare.minQtyProvisional}
+                  <span className={spare.minQty === "TBC" ? "text-muted-foreground" : "font-medium"}>
+                    {spare.minQty || "—"}
                   </span>
                 </TableCell>
                 <TableCell className="text-center font-mono">
-                  <span className={spare.maxQtyProvisional === "TBC" ? "text-muted-foreground" : "font-medium"}>
-                    {spare.maxQtyProvisional}
+                  <span className={spare.maxQty === "TBC" ? "text-muted-foreground" : "font-medium"}>
+                    {spare.maxQty || "—"}
                   </span>
                 </TableCell>
-                <TableCell>
-                  {spare.quantityConfidence ? (
-                    <Badge variant="secondary" className={confidenceColors[spare.quantityConfidence]}>
-                      {spare.quantityConfidence}
-                    </Badge>
-                  ) : (
-                    <span className="text-muted-foreground text-sm">—</span>
-                  )}
+                <TableCell className="text-center font-mono text-sm text-muted-foreground">
+                  {spare.unitPrice || "—"}
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary" className={statusColors[spare.status]}>
@@ -239,10 +232,9 @@ export const SparesTable = () => {
           <Badge variant="secondary" className={statusColors["Confirmed"]}>Confirmed</Badge>
         </div>
         <div className="flex items-center gap-2">
-          <span className="font-medium">Confidence:</span>
-          <Badge variant="secondary" className={confidenceColors["High"]}>High</Badge>
-          <Badge variant="secondary" className={confidenceColors["Medium"]}>Medium</Badge>
-          <Badge variant="secondary" className={confidenceColors["Low"]}>Low</Badge>
+          <span className="font-medium">Source:</span>
+          <Badge variant="secondary" className={criticalitySourceColors["Confirmed"]}>Confirmed</Badge>
+          <Badge variant="secondary" className={criticalitySourceColors["Assumed"]}>Assumed</Badge>
         </div>
       </div>
     </div>
