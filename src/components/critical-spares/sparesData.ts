@@ -34,6 +34,7 @@ export interface SpareItem {
   uom: string;
   // Other fields
   notes: string;
+  confidence?: "Low" | "Medium" | "High";
   status: "Provisional" | "Confirmed" | "TBC";
 }
 
