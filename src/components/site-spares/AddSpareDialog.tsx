@@ -80,9 +80,9 @@ export const AddSpareDialog = ({
     }));
   };
 
-  const generateStockCode = (category: string): string => {
-    const prefix = category ? category.substring(0, 3).toUpperCase() : "GEN";
-    return `${prefix}-${String(existingCount + 1).padStart(5, "0")}`;
+  // Part number will be assigned later - not auto-generated
+  const generatePartNumber = (): string => {
+    return "";  // Empty - numbering logic not yet defined
   };
 
   const generateBinLocation = (): string => {
@@ -95,7 +95,7 @@ export const AddSpareDialog = ({
   const handleSubmit = () => {
     const newSpare: SiteSpareItem = {
       id: `STK-${String(existingCount + 1).padStart(4, "0")}`,
-      stockCode: generateStockCode(formData.category),
+      partNumber: generatePartNumber(),
       description: formData.description,
       category: formData.category,
       subcategory: formData.subcategory,
