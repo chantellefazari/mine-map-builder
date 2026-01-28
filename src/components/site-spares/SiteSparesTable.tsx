@@ -188,8 +188,8 @@ export const SiteSparesTable = () => {
             <TableRow className="bg-muted/50">
               <TableHead className="min-w-[100px] font-semibold">Part Number</TableHead>
               <TableHead className="min-w-[250px] font-semibold">Description</TableHead>
+              <TableHead className="min-w-[150px] font-semibold">Size / Specs</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Category</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">Subcategory</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Bin Location</TableHead>
               <TableHead className="min-w-[80px] font-semibold text-center">On Hand</TableHead>
               <TableHead className="min-w-[70px] font-semibold text-center">Min</TableHead>
@@ -208,12 +208,14 @@ export const SiteSparesTable = () => {
                   {spare.partNumber || "—"}
                 </TableCell>
                 <TableCell className="font-medium">{spare.description}</TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  {spare.specifications || "—"}
+                </TableCell>
                 <TableCell>
                   <Badge variant="secondary" className={categoryColors[spare.category] || ""}>
                     {spare.category}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-sm">{spare.subcategory}</TableCell>
                 <TableCell className="font-mono text-sm">{spare.binLocation}</TableCell>
                 <TableCell className="text-center">
                   <Input
