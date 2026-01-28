@@ -473,10 +473,19 @@ const baseComponentData: ComponentItem[] = [
   ...conveyorComponents("Tailings Conveyor", "TC01", "TC01 Tailings Conveyor", "TAIL", "Filtering"),
 ];
 
-// Also include any P&ID-mapped assets that aren't represented by the generic component templates yet.
-// This makes the P&ID column fully scrollable/searchable using the provided mapping list.
+// Enrich template-generated rows with P&ID tags where a mapping exists.
+// Also add any P&ID-mapped assets not covered by the templates.
 const existingAssetNumbers = new Set(baseComponentData.map((c) => c.assetNumber));
 
+// Enrich template rows – ensure pidTag field is populated from the lookup
+const enrichedBaseData: ComponentItem[] = baseComponentData.map((c) => {
+  // If pidTag is already set, keep it; otherwise try to look it up
+  if (c.pidTag) return c;
+  const lookedUp = getPidTag(c.assetNumber);
+  return lookedUp ? { ...c, pidTag: lookedUp } : c;
+});
+
+// Additional rows derived directly from P&ID mappings (assets not in templates)
 const pidMappedRows: ComponentItem[] = pidTagMappings
   .filter((m) => m.status === "mapped")
   .filter((m) => !existingAssetNumbers.has(m.assetNumber))
@@ -505,4 +514,4 @@ const pidMappedRows: ComponentItem[] = pidTagMappings
     };
   });
 
-export const initialComponentData: ComponentItem[] = [...baseComponentData, ...pidMappedRows];
+export const initialComponentData: ComponentItem[] = [...enrichedBaseData, ...pidMappedRows];
