@@ -677,13 +677,125 @@ const enrichedBaseData: ComponentItem[] = baseComponentData.map((c) => {
   return lookedUp ? { ...c, pidTag: lookedUp } : c;
 });
 
+// Fallback metadata inference from description when P&ID prefix doesn't match
+const inferMetadataFromDescription = (
+  description: string
+): { area: string; subArea: string; system: string; parentAsset: string } => {
+  const descLower = description.toLowerCase();
+
+  // Grinding / Mill related
+  if (descLower.includes("mill") || descLower.includes("grinding") || descLower.includes("ball mill")) {
+    return { area: "COM", subArea: "Grinding", system: "Grinding", parentAsset: "BM01 Primary Ball Mill" };
+  }
+  // Conveying
+  if (descLower.includes("conveyor") || descLower.includes("feeder") || descLower.includes("apron")) {
+    return { area: "COM", subArea: "Conveying", system: "Conveying", parentAsset: "CV01 Conveyors" };
+  }
+  // Cyclone / Classification
+  if (descLower.includes("cyclone") || descLower.includes("classification")) {
+    return { area: "COM", subArea: "Classification", system: "Classification", parentAsset: "CYC01 Cyclone Cluster" };
+  }
+  // CIP
+  if (descLower.includes("cip") || descLower.includes("leach") || descLower.includes("agitator") || descLower.includes("carbon")) {
+    return { area: "REC", subArea: "CIP", system: "CIP", parentAsset: "CIP-TK01 CIP Tanks" };
+  }
+  // Elution
+  if (descLower.includes("elution") || descLower.includes("eluate") || descLower.includes("acid wash") || descLower.includes("column")) {
+    return { area: "REC", subArea: "Elution", system: "Elution", parentAsset: "ELU01 Elution System" };
+  }
+  // Gold Room / Electrowinning
+  if (descLower.includes("electrowin") || descLower.includes("gold room") || descLower.includes("cathode") || descLower.includes("furnace") || descLower.includes("bullion")) {
+    return { area: "REC", subArea: "Gold Room", system: "Gold Room", parentAsset: "GR01 Gold Room" };
+  }
+  // Gravity
+  if (descLower.includes("gravity") || descLower.includes("knelson") || descLower.includes("shaking table") || descLower.includes("concentrate")) {
+    return { area: "REC", subArea: "Gravity Circuit", system: "Gravity Circuit", parentAsset: "GRV-SCR01 Gravity Circuit" };
+  }
+  // Regeneration / Kiln
+  if (descLower.includes("regen") || descLower.includes("kiln") || descLower.includes("quench")) {
+    return { area: "REC", subArea: "Regeneration", system: "Regeneration", parentAsset: "CREG01 Carbon Regeneration Kiln" };
+  }
+  // Thickener
+  if (descLower.includes("thickener") || descLower.includes("thk")) {
+    return { area: "TAIL", subArea: "Thickening", system: "Thickening", parentAsset: "THK01 Thickener" };
+  }
+  // Filter Press / Filtering
+  if (descLower.includes("filter") || descLower.includes("filtrate") || descLower.includes("press")) {
+    return { area: "TAIL", subArea: "Filtering", system: "Filtering", parentAsset: "FP01 Filter Press" };
+  }
+  // Tailings
+  if (descLower.includes("tail") || descLower.includes("stacker")) {
+    return { area: "TAIL", subArea: "Tailings", system: "Tailings", parentAsset: "TAL01 Tailings" };
+  }
+  // Reagents / Cyanide / Caustic / Lime
+  if (descLower.includes("cyanide") || descLower.includes("caustic") || descLower.includes("lime") || descLower.includes("reagent") || descLower.includes("floc")) {
+    return { area: "UTL", subArea: "Reagents", system: "Reagents", parentAsset: "RGT01 Reagents" };
+  }
+  // Water
+  if (descLower.includes("water") || descLower.includes("potable") || descLower.includes("gland") || descLower.includes("raw water")) {
+    return { area: "UTL", subArea: "Water", system: "Water", parentAsset: "SVC01 Water Services" };
+  }
+  // Compressed Air
+  if (descLower.includes("compressor") || descLower.includes("air receiver") || descLower.includes("compressed air")) {
+    return { area: "UTL", subArea: "Compressed Air", system: "Compressed Air", parentAsset: "COMP01 Compressed Air" };
+  }
+  // Power / Generators
+  if (descLower.includes("generator") || descLower.includes("power station") || descLower.includes("genset")) {
+    return { area: "UTL", subArea: "Power Generation", system: "Power Generation", parentAsset: "GEN01 Generators" };
+  }
+  // Substation / Electrical
+  if (descLower.includes("substation") || descLower.includes("sub station") || descLower.includes("switchboard") || descLower.includes("transformer")) {
+    return { area: "UTL", subArea: "Electrical", system: "Electrical", parentAsset: "SUB01 Substation" };
+  }
+  // MCC / Distribution
+  if (descLower.includes("mcc") || descLower.includes("distribution") || descLower.includes("db") || descLower.includes("l&p")) {
+    return { area: "SITE", subArea: "Electrical", system: "Electrical", parentAsset: "MCC01 MCCs" };
+  }
+  // Buildings
+  if (descLower.includes("building") || descLower.includes("crib") || descLower.includes("office") || descLower.includes("ablution") || descLower.includes("workshop")) {
+    return { area: "SITE", subArea: "Buildings", system: "Buildings", parentAsset: "BLD01 Buildings" };
+  }
+  // Mobile
+  if (descLower.includes("loader") || descLower.includes("forklift") || descLower.includes("truck") || descLower.includes("excavator") || descLower.includes("dozer")) {
+    return { area: "SITE", subArea: "Mobile Equipment", system: "Mobile Equipment", parentAsset: "MOB01 Mobile Equipment" };
+  }
+  // Pump (generic fallback)
+  if (descLower.includes("pump") || descLower.includes("sump")) {
+    return { area: "COM", subArea: "Process", system: "Process", parentAsset: "PMP01 Pumps" };
+  }
+  // Tank (generic fallback)
+  if (descLower.includes("tank") || descLower.includes("vessel")) {
+    return { area: "COM", subArea: "Process", system: "Process", parentAsset: "TK01 Tanks" };
+  }
+  // Screen (generic fallback)
+  if (descLower.includes("screen")) {
+    return { area: "COM", subArea: "Process", system: "Process", parentAsset: "SCR01 Screens" };
+  }
+  // Valve (generic fallback)
+  if (descLower.includes("valve") || descLower.includes("actuator")) {
+    return { area: "COM", subArea: "Process", system: "Process", parentAsset: "VLV01 Valves" };
+  }
+  // Instrument / Sensor (generic fallback)
+  if (descLower.includes("sensor") || descLower.includes("transmitter") || descLower.includes("gauge") || descLower.includes("instrument")) {
+    return { area: "COM", subArea: "Instrumentation", system: "Instrumentation", parentAsset: "INS01 Instrumentation" };
+  }
+
+  // Ultimate fallback - use generic process classification
+  return { area: "COM", subArea: "Process", system: "Process", parentAsset: "EQP01 Equipment" };
+};
+
 // Additional rows derived directly from P&ID mappings (assets not in templates)
 const pidMappedRows: ComponentItem[] = pidTagMappings
   .filter((m) => m.status === "mapped")
   .filter((m) => !existingAssetNumbers.has(m.assetNumber))
   .map((m) => {
     const inferred = inferComponentTypeFromAssetNumber(m.assetNumber);
-    const metadata = inferMetadataFromPidTag(m.pidTag, m.description);
+    let metadata = inferMetadataFromPidTag(m.pidTag, m.description);
+
+    // If P&ID prefix inference failed, try description-based inference
+    if (!metadata.area || !metadata.parentAsset) {
+      metadata = inferMetadataFromDescription(m.description);
+    }
 
     return {
       id: generateId(),
