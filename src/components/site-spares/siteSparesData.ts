@@ -5,7 +5,7 @@
 export interface SiteSpareItem {
   id: string;
   // Stock identification
-  stockCode: string;          // Internal stock/item code
+  partNumber: string;          // Internal part number (to be assigned)
   description: string;        // Part description
   category: string;           // Category e.g., "Electrical", "Mechanical", "Consumable"
   subcategory: string;        // Subcategory e.g., "Motors", "Bearings", "Fittings"
@@ -612,7 +612,7 @@ const catalogueItems: SiteSpareItem[] = rawCatalogueItems.map((item, index) => {
   
   return {
     id: `STK-${String(index + 1).padStart(4, "0")}`,
-    stockCode: `${category.substring(0, 3).toUpperCase()}-${String(index + 1).padStart(5, "0")}`,
+    partNumber: "",  // To be assigned - part numbering logic not yet defined
     description: item.description,
     category,
     subcategory,

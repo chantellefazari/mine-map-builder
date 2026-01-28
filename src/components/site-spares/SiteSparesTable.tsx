@@ -51,7 +51,7 @@ export const SiteSparesTable = () => {
   const filteredSpares = spares.filter((spare) => {
     const matchesSearch =
       spare.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.stockCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.partNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.oemPartNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.binLocation.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.manufacturer.toLowerCase().includes(searchQuery.toLowerCase());
@@ -167,7 +167,7 @@ export const SiteSparesTable = () => {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead className="min-w-[100px] font-semibold">Stock Code</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Part Number</TableHead>
               <TableHead className="min-w-[250px] font-semibold">Description</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Category</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Subcategory</TableHead>
@@ -185,8 +185,8 @@ export const SiteSparesTable = () => {
           <TableBody>
             {filteredSpares.map((spare) => (
               <TableRow key={spare.id} className="cursor-pointer hover:bg-muted/50">
-                <TableCell className="font-mono text-sm font-medium">
-                  {spare.stockCode}
+                <TableCell className="font-mono text-sm font-medium text-muted-foreground">
+                  {spare.partNumber || "—"}
                 </TableCell>
                 <TableCell className="font-medium">{spare.description}</TableCell>
                 <TableCell>
