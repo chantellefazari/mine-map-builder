@@ -17,7 +17,7 @@ const areaCodes = [
 // Equipment Type Prefixes
 const equipmentPrefixes = [
   // Mechanical
-  { prefix: "APRN", meaning: "Apron Feeder", example: "APRN001", category: "Feed Systems" },
+  { prefix: "APN", meaning: "Apron Feeder", example: "APN001", category: "Feed Systems" },
   { prefix: "BM", meaning: "Ball Mill", example: "BM001", category: "Milling" },
   { prefix: "COMP", meaning: "Air Compressor", example: "COMP01", category: "Utilities" },
   { prefix: "CV", meaning: "Conveyor", example: "CV01, CV02", category: "Material Handling" },
@@ -91,7 +91,7 @@ const equipmentPrefixes = [
 const componentSuffixes = [
   { suffix: "MTR", meaning: "Motor", example: "BM001-MTR001", category: "Rotating" },
   { suffix: "GBX", meaning: "Gearbox", example: "BM001-GBX001", category: "Rotating" },
-  { suffix: "GMR", meaning: "Gearmotor", example: "APRN001-GMR001", category: "Rotating" },
+  { suffix: "GMR", meaning: "Gearmotor", example: "APN001-GMR001", category: "Rotating" },
   { suffix: "VSD", meaning: "Variable Speed Drive", example: "BM001-VSD001", category: "Electrical" },
   { suffix: "MCC", meaning: "Motor Control Centre Cell", example: "BM001-MCC001", category: "Electrical" },
   { suffix: "LCS", meaning: "Local Control Station", example: "BM001-LCS001", category: "Electrical" },
@@ -128,7 +128,7 @@ const instrumentationSuffixes = [
   { suffix: "USS", meaning: "Underspeed Switch", example: "MFC001-USS001", category: "Switches" },
   { suffix: "BAS", meaning: "Belt Alignment Drift Switch", example: "MFC001-BAS001", category: "Safety" },
   { suffix: "HLS", meaning: "High Level Switch", example: "FHOP001-HLS001", category: "Switches" },
-  { suffix: "TX", meaning: "Transmitter", example: "APRN001-TX001", category: "Instrumentation" },
+  { suffix: "TX", meaning: "Transmitter", example: "APN001-TX001", category: "Instrumentation" },
   { suffix: "SEN", meaning: "Sensor", example: "MFC001-SEN001", category: "Instrumentation" },
   { suffix: "FM", meaning: "Flow Meter", example: "THK001-FM001", category: "Instrumentation" },
   { suffix: "DT", meaning: "Density Transmitter", example: "PCFI001-DT001", category: "Instrumentation" },

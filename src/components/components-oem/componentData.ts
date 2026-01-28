@@ -50,7 +50,7 @@ const inferMetadataFromPidTag = (
         system = "Conveying";
         if (descLower.includes("transfer")) parentAsset = "CV01 Transfer Conveyor";
         else if (descLower.includes("mill feed")) parentAsset = "MFC01 Mill Feed Conveyor";
-        else if (descLower.includes("reclaim") || descLower.includes("apron")) parentAsset = "APRN01 Apron Feeder";
+        else if (descLower.includes("reclaim") || descLower.includes("apron")) parentAsset = "APN01 Apron Feeder";
         else if (descLower.includes("scatts")) parentAsset = "CV02 Ball Mill Scatts Conveyor";
       } else if (descLower.includes("mill") || descLower.includes("lube") || descLower.includes("gear")) {
         subArea = "Grinding";
@@ -586,7 +586,7 @@ const baseComponentData: ComponentItem[] = [
 
   // === COMMINUTION / PROCESS ===
   // Feed / Reclaim
-  ...apronFeederComponents("Apron Feeder", "APRN01", "APRN01 Apron Feeder", "COM", "Feed / Reclaim"),
+  ...apronFeederComponents("Apron Feeder", "APN01", "APN01 Apron Feeder", "COM", "Feed / Reclaim"),
   ...conveyorComponents("Mill Feed Conveyor", "MFC01", "MFC01 Mill Feed Conveyor", "COM", "Feed / Reclaim"),
 
   // Conveying

@@ -9,9 +9,9 @@ export interface SpareItem {
   area: string;          // e.g., "COM" or "REC" - matches Area.code
   areaLabel: string;     // e.g., "Comminution / Process" - matches Area.label
   subArea: string;       // e.g., "Feed / Reclaim" - matches SubArea.label
-  system: string;        // e.g., "APRN01 Apron Feeder" - matches ParentAsset.label
+  system: string;        // e.g., "APN01 Apron Feeder" - matches ParentAsset.label
   parentAsset: string;   // Legacy P&ID reference
-  assetNumber: string;   // Modern asset number from tree (e.g., APRN01-GMR01)
+  assetNumber: string;   // Modern asset number from tree (e.g., APN01-GMR01)
   pidTag: string;
   // Component details
   componentName: string;
@@ -45,8 +45,8 @@ export const sparesData: SpareItem[] = [
   // COM - COMMINUTION / PROCESS
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // --- Feed / Reclaim > APRN01 Apron Feeder ---
-  { id: "CS-001", area: "COM", areaLabel: "Comminution / Process", subArea: "Feed / Reclaim", system: "APRN01 Apron Feeder", parentAsset: "4-FE-100", assetNumber: "APRN01-GMR01", pidTag: "04-FE-100", componentName: "Motor", componentType: "Motor", sparePartDescription: "Apron Feeder Gearmotor", oemPartNumber: "SEW-EURODRIVE KA107R77 DRN112M4/V", manufacturer: "SEW", vendor: "SEW", assetManufacturer: "", assetModel: "", spareCriticality: "High", criticalitySource: "Confirmed", reasonCritical: "Motor - plant stoppage risk", minQty: "0", maxQty: "1", qtyPerSystem: "1", unitPrice: "$16,450.00", uom: "EA", notes: "", status: "Provisional" },
+  // --- Feed / Reclaim > APN01 Apron Feeder ---
+  { id: "CS-001", area: "COM", areaLabel: "Comminution / Process", subArea: "Feed / Reclaim", system: "APN01 Apron Feeder", parentAsset: "4-FE-100", assetNumber: "APN01-GMR01", pidTag: "04-FE-100", componentName: "Motor", componentType: "Motor", sparePartDescription: "Apron Feeder Gearmotor", oemPartNumber: "SEW-EURODRIVE KA107R77 DRN112M4/V", manufacturer: "SEW", vendor: "SEW", assetManufacturer: "", assetModel: "", spareCriticality: "High", criticalitySource: "Confirmed", reasonCritical: "Motor - plant stoppage risk", minQty: "0", maxQty: "1", qtyPerSystem: "1", unitPrice: "$16,450.00", uom: "EA", notes: "", status: "Provisional" },
 
   // --- Feed / Reclaim > MFC01 Mill Feed Conveyor ---
   { id: "CS-002", area: "COM", areaLabel: "Comminution / Process", subArea: "Feed / Reclaim", system: "MFC01 Mill Feed Conveyor", parentAsset: "4-BC-100", assetNumber: "MFC01-MTR01", pidTag: "04-BC-100", componentName: "Motor", componentType: "Motor", sparePartDescription: "Mill Feed Conveyor Motor", oemPartNumber: "KTE30 PHEM", manufacturer: "WEG", vendor: "NEWMAN", assetManufacturer: "", assetModel: "", spareCriticality: "High", criticalitySource: "Confirmed", reasonCritical: "Motor - plant stoppage risk", minQty: "0", maxQty: "1", qtyPerSystem: "1", unitPrice: "", uom: "EA", notes: "", status: "Provisional" },
