@@ -4,15 +4,15 @@ import {
   AlertTriangle, 
   CheckCircle2,
   Clock,
-  TrendingUp,
   Zap,
   Wrench,
   Calendar,
   Target,
   ArrowRight,
   Lightbulb,
-  BarChart3,
-  Shield
+  Shield,
+  FileText,
+  Layers
 } from "lucide-react";
 
 export const WorkDefinitionsSection = () => {
@@ -51,20 +51,58 @@ export const WorkDefinitionsSection = () => {
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-              <span className="text-sm">Compare ourselves to industry benchmarks</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
               <span className="text-sm">Identify where to focus improvement efforts</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
               <span className="text-sm">Report consistently to management</span>
             </div>
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <span className="text-sm">Train new team members effectively</span>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground mt-4 italic">
-            These definitions are the foundation of everything that follows in this system.
+        </div>
+
+        {/* How This Connects to What We're Building */}
+        <div className="bg-muted/50 border border-border rounded-lg p-5">
+          <h3 className="font-semibold text-foreground flex items-center gap-2 mb-3">
+            <Layers className="w-5 h-5 text-foreground" />
+            How This Connects to What We're Building
+          </h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            These definitions are the foundation for everything else in this system:
           </p>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="flex items-start gap-3 bg-background rounded-md p-3 border border-border">
+              <FileText className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium">Work Order Templates</p>
+                <p className="text-xs text-muted-foreground">Every work order is classified as Breakdown, Planned, or Shutdown — these definitions tell us which to use</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 bg-background rounded-md p-3 border border-border">
+              <Calendar className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium">PM Design</p>
+                <p className="text-xs text-muted-foreground">All PMs are "Planned Maintenance" — they are scheduled tasks designed to prevent breakdowns</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 bg-background rounded-md p-3 border border-border">
+              <Layers className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium">Asset Hierarchy</p>
+                <p className="text-xs text-muted-foreground">Work is always linked to an asset — the hierarchy tells us exactly what equipment we're working on</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 bg-background rounded-md p-3 border border-border">
+              <Wrench className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium">Spares Catalogue</p>
+                <p className="text-xs text-muted-foreground">Critical spares are stocked to support both breakdown repairs and planned maintenance tasks</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <Separator />
@@ -74,7 +112,7 @@ export const WorkDefinitionsSection = () => {
           <h3 className="font-semibold text-foreground text-lg mb-3">The Two Fundamental Categories</h3>
           <p className="text-sm text-muted-foreground mb-4">
             All maintenance work falls into one of two categories: <strong>Reactive</strong> (we respond to a problem) 
-            or <strong>Proactive</strong> (we prevent a problem). Understanding this distinction is critical.
+            or <strong>Proactive</strong> (we prevent a problem). This is the most important distinction to understand.
           </p>
           
           <div className="grid gap-4 md:grid-cols-2 mb-6">
@@ -82,13 +120,13 @@ export const WorkDefinitionsSection = () => {
               <Zap className="w-8 h-8 text-destructive mx-auto mb-2" />
               <h4 className="font-semibold text-foreground">Reactive Maintenance</h4>
               <p className="text-xs text-muted-foreground mt-1">Responding to failures after they occur</p>
-              <p className="text-xs text-destructive mt-2 font-medium">Goal: Minimise this</p>
+              <p className="text-xs text-muted-foreground mt-2">"Something broke — we need to fix it"</p>
             </div>
             <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-4 text-center">
               <Shield className="w-8 h-8 text-green-600 mx-auto mb-2" />
               <h4 className="font-semibold text-foreground">Proactive Maintenance</h4>
               <p className="text-xs text-muted-foreground mt-1">Preventing failures before they occur</p>
-              <p className="text-xs text-green-600 mt-2 font-medium">Goal: Maximise this</p>
+              <p className="text-xs text-muted-foreground mt-2">"We're doing this so it doesn't break"</p>
             </div>
           </div>
         </div>
@@ -107,12 +145,13 @@ export const WorkDefinitionsSection = () => {
             <div className="bg-background rounded-lg p-4 border border-border">
               <h4 className="font-medium text-foreground text-sm mb-2 flex items-center gap-2">
                 <Target className="w-4 h-4 text-destructive" />
-                Definition
+                What Is It?
               </h4>
               <p className="text-sm text-muted-foreground">
-                Breakdown work is <strong>unplanned maintenance</strong> performed in response to equipment failure 
-                or imminent failure. The equipment has stopped working, is working incorrectly, or poses an 
-                immediate safety or environmental risk if not addressed.
+                Breakdown work is <strong>unplanned maintenance</strong> performed when equipment fails 
+                or is about to fail. The equipment has stopped working, is working incorrectly, or poses an 
+                immediate safety risk if not addressed. This is reactive — we are responding to a problem 
+                that has already happened.
               </p>
             </div>
 
@@ -125,19 +164,19 @@ export const WorkDefinitionsSection = () => {
               <ul className="text-sm text-muted-foreground space-y-2">
                 <li className="flex items-start gap-2">
                   <ArrowRight className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
-                  <span>Equipment fails unexpectedly during operation</span>
+                  <span>Equipment fails unexpectedly during operation (motor trips, pump stops, belt breaks)</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <ArrowRight className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
-                  <span>Operator notices abnormal behaviour (noise, vibration, leaks, alarms)</span>
+                  <span>Operator notices something wrong (unusual noise, vibration, smell, leak, alarm)</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <ArrowRight className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
-                  <span>Safety system trips and requires investigation</span>
+                  <span>Safety system activates and requires investigation before restart</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <ArrowRight className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
-                  <span>Environmental incident requires immediate action</span>
+                  <span>Environmental incident requires immediate action (spill, release)</span>
                 </li>
               </ul>
             </div>
@@ -149,7 +188,7 @@ export const WorkDefinitionsSection = () => {
                 <ul className="text-sm space-y-1.5">
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Unscheduled and urgent</span>
+                    <span>Unscheduled — we didn't plan for this</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
@@ -157,19 +196,15 @@ export const WorkDefinitionsSection = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Requires immediate or priority response</span>
+                    <span>Usually urgent — needs attention now</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Often disrupts production schedules</span>
+                    <span>Often disrupts production</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
                     <span>Parts may not be readily available</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-destructive font-bold">•</span>
-                    <span>May require overtime or call-outs</span>
                   </li>
                 </ul>
               </div>
@@ -178,66 +213,39 @@ export const WorkDefinitionsSection = () => {
                 <ul className="text-sm space-y-1.5">
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Pump seal failure causing product leak</span>
+                    <span>Pump seal fails and causes a leak</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Motor trip due to overload protection</span>
+                    <span>Motor trips on overload protection</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Conveyor belt tear stopping material flow</span>
+                    <span>Conveyor belt tears and stops material flow</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Instrument malfunction giving false readings</span>
+                    <span>Instrument gives false readings</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Gearbox failure with visible damage</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-destructive font-bold">•</span>
-                    <span>Electrical fault causing power loss</span>
+                    <span>Gearbox makes grinding noise and stops</span>
                   </li>
                 </ul>
               </div>
             </div>
 
-            {/* Impact */}
+            {/* In Our System */}
             <div className="bg-destructive/10 rounded-lg p-4 border border-destructive/30">
               <h4 className="font-medium text-foreground text-sm mb-2 flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-destructive" />
-                Why Breakdown Work is Costly
-              </h4>
-              <p className="text-sm text-muted-foreground mb-3">
-                Industry studies consistently show that breakdown maintenance costs <strong>3-5 times more</strong> than 
-                planned maintenance for the same repair. This is because:
-              </p>
-              <div className="grid gap-2 md:grid-cols-2">
-                <ul className="text-sm space-y-1">
-                  <li>• Production is lost during unplanned downtime</li>
-                  <li>• Overtime and call-out costs increase</li>
-                  <li>• Emergency freight for parts is expensive</li>
-                </ul>
-                <ul className="text-sm space-y-1">
-                  <li>• Secondary damage often occurs</li>
-                  <li>• Safety risks are higher in rushed repairs</li>
-                  <li>• Quality of repair may be compromised</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Target */}
-            <div className="bg-amber-500/10 rounded-lg p-4 border border-amber-500/30">
-              <h4 className="font-medium text-foreground text-sm mb-2 flex items-center gap-2">
-                <Target className="w-4 h-4 text-amber-600" />
-                Industry Target
+                <FileText className="w-4 h-4 text-destructive" />
+                In Our System
               </h4>
               <p className="text-sm text-muted-foreground">
-                Best-practice sites target <strong>less than 20%</strong> of total maintenance work hours on breakdowns. 
-                World-class operations achieve <strong>less than 10%</strong>. If your breakdown percentage is higher, 
-                it indicates opportunities to improve preventive maintenance or address chronic equipment issues.
+                When breakdown work occurs, we raise a <strong>Work Order</strong> with Work Type = "Breakdown". 
+                This tells everyone the work was unplanned. We record what failed, what we did to fix it, 
+                and what parts we used. This history helps us understand if we need to improve our PMs or 
+                stock different spares.
               </p>
             </div>
           </div>
@@ -257,12 +265,13 @@ export const WorkDefinitionsSection = () => {
             <div className="bg-background rounded-lg p-4 border border-border">
               <h4 className="font-medium text-foreground text-sm mb-2 flex items-center gap-2">
                 <Target className="w-4 h-4 text-green-600" />
-                Definition
+                What Is It?
               </h4>
               <p className="text-sm text-muted-foreground">
-                Planned maintenance is <strong>scheduled work</strong> designed to prevent equipment failure, 
-                maintain optimal performance, and extend asset life. The work is identified in advance, 
-                resources are pre-arranged, and it is executed at a time that minimises operational impact.
+                Planned maintenance is <strong>scheduled work</strong> designed to prevent equipment failure 
+                and keep things running properly. We know this work is coming, we prepare the resources 
+                (parts, tools, people), and we do it at a time that minimises disruption. This is proactive — 
+                we are preventing problems before they happen.
               </p>
             </div>
 
@@ -277,35 +286,48 @@ export const WorkDefinitionsSection = () => {
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <h5 className="font-medium text-sm text-foreground">Preventive Maintenance (PM)</h5>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Time-based or usage-based tasks performed at fixed intervals regardless of equipment condition. 
-                    Examples: oil changes every 500 hours, belt inspections every week, filter replacements every month.
+                    Tasks done at <strong>fixed intervals</strong> — every week, every month, every 500 hours. 
+                    We do them regardless of whether the equipment looks like it needs it. 
+                    This is what our <strong>PM Design</strong> section builds.
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2 italic">
+                    Examples: Weekly greasing, monthly filter checks, annual overhauls
                   </p>
                 </div>
                 
                 {/* Condition-Based Maintenance */}
                 <div className="border-l-4 border-blue-500 pl-4 py-2">
-                  <h5 className="font-medium text-sm text-foreground">Condition-Based Maintenance (CBM)</h5>
+                  <h5 className="font-medium text-sm text-foreground">Condition-Based Maintenance</h5>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Tasks triggered when equipment condition reaches a defined threshold. 
-                    Examples: replace bearings when vibration exceeds limits, clean filters when differential pressure rises.
+                    Tasks done when <strong>equipment condition</strong> reaches a certain point. 
+                    We monitor something (pressure, temperature, vibration) and act when it crosses a threshold.
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2 italic">
+                    Examples: Replace filter when pressure drop exceeds limit, change oil when analysis shows contamination
                   </p>
                 </div>
                 
                 {/* Predictive Maintenance */}
                 <div className="border-l-4 border-purple-500 pl-4 py-2">
-                  <h5 className="font-medium text-sm text-foreground">Predictive Maintenance (PdM)</h5>
+                  <h5 className="font-medium text-sm text-foreground">Predictive Maintenance</h5>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Uses monitoring technology to predict when failure will occur and schedule intervention before it happens. 
-                    Examples: vibration analysis, thermography, oil analysis, ultrasonic testing.
+                    Uses <strong>monitoring technology</strong> to predict when equipment will fail, 
+                    so we can fix it just before that happens. This is more advanced and requires specialist tools.
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2 italic">
+                    Examples: Vibration analysis, thermal imaging, oil analysis
                   </p>
                 </div>
                 
                 {/* Shutdown Maintenance */}
                 <div className="border-l-4 border-amber-500 pl-4 py-2">
-                  <h5 className="font-medium text-sm text-foreground">Shutdown / Turnaround Maintenance</h5>
+                  <h5 className="font-medium text-sm text-foreground">Shutdown Maintenance</h5>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Major planned events where equipment is taken offline for comprehensive maintenance, inspections, 
-                    or modifications. These are planned months in advance with detailed scopes.
+                    Major planned events where we <strong>stop production</strong> to do comprehensive work 
+                    that can't be done while running. These are planned months in advance.
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2 italic">
+                    Examples: Annual plant shutdown, crusher reline, mill reline
                   </p>
                 </div>
               </div>
@@ -318,27 +340,23 @@ export const WorkDefinitionsSection = () => {
                 <ul className="text-sm space-y-1.5">
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
-                    <span>Scheduled in advance (days, weeks, or months)</span>
+                    <span>Scheduled in advance (days, weeks, months)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
-                    <span>Resources pre-arranged (parts, tools, labour)</span>
+                    <span>Parts and tools are ready before we start</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
-                    <span>Clear scope and procedures defined</span>
+                    <span>Clear scope — we know what we're doing</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
-                    <span>Coordinated with operations for minimal disruption</span>
+                    <span>Coordinated with operations</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
-                    <span>Safety planning completed before work starts</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 font-bold">•</span>
-                    <span>Aims to prevent failures, not react to them</span>
+                    <span>Aims to prevent failures</span>
                   </li>
                 </ul>
               </div>
@@ -355,80 +373,31 @@ export const WorkDefinitionsSection = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
-                    <span>Quarterly vibration analysis on critical pumps</span>
+                    <span>Quarterly RCD testing</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
-                    <span>Annual generator load bank testing</span>
+                    <span>Annual generator load bank test</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
-                    <span>Shutdown overhaul of crushing circuit</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 font-bold">•</span>
-                    <span>Calibration of safety instruments</span>
+                    <span>Shutdown mill reline</span>
                   </li>
                 </ul>
               </div>
             </div>
 
-            {/* Benefits */}
+            {/* In Our System */}
             <div className="bg-green-500/10 rounded-lg p-4 border border-green-500/30">
               <h4 className="font-medium text-foreground text-sm mb-2 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-green-600" />
-                Benefits of Planned Maintenance
-              </h4>
-              <div className="grid gap-2 md:grid-cols-2">
-                <ul className="text-sm space-y-1">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Reduced unplanned downtime</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Lower overall maintenance costs</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Extended equipment life</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Improved safety performance</span>
-                  </li>
-                </ul>
-                <ul className="text-sm space-y-1">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Better spare parts management</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>More predictable resource requirements</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Higher equipment reliability</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Better quality of repairs</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Target */}
-            <div className="bg-primary/10 rounded-lg p-4 border border-primary/30">
-              <h4 className="font-medium text-foreground text-sm mb-2 flex items-center gap-2">
-                <Target className="w-4 h-4 text-primary" />
-                Industry Target
+                <FileText className="w-4 h-4 text-green-600" />
+                In Our System
               </h4>
               <p className="text-sm text-muted-foreground">
-                Best-practice sites aim for <strong>80% or more</strong> of maintenance work hours to be planned. 
-                This includes preventive, predictive, and scheduled corrective work. The remaining time covers 
-                unavoidable breakdowns and urgent work.
+                Our <strong>PM Design</strong> section defines all the preventive maintenance tasks — what to check, 
+                how often, what tools are needed. When these PMs are due, we raise a <strong>Work Order</strong> with 
+                Work Type = "Planned". The PM templates in our system give clear step-by-step instructions so 
+                anyone can complete the task correctly.
               </p>
             </div>
           </div>
@@ -438,10 +407,9 @@ export const WorkDefinitionsSection = () => {
 
         {/* Other Work Types */}
         <div>
-          <h3 className="font-semibold text-foreground text-lg mb-4">Other Work Types You May Encounter</h3>
+          <h3 className="font-semibold text-foreground text-lg mb-4">Other Terms You'll Hear</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            Beyond breakdown and planned maintenance, you will see these terms used on site. Understanding 
-            how they relate to the two fundamental categories helps with consistent classification.
+            People use different words for maintenance work. Here's how the common terms fit into our two main categories:
           </p>
           
           <div className="grid gap-4 md:grid-cols-2">
@@ -452,11 +420,11 @@ export const WorkDefinitionsSection = () => {
                 Corrective Maintenance
               </h4>
               <p className="text-sm text-muted-foreground mb-2">
-                Work to restore equipment to proper operating condition. This can be either:
+                Work to fix something that's not right. This can be either:
               </p>
               <ul className="text-xs text-muted-foreground space-y-1">
-                <li><strong>Planned Corrective:</strong> Defect found during PM, scheduled for later</li>
-                <li><strong>Unplanned Corrective:</strong> Same as breakdown (immediate response)</li>
+                <li><strong>Planned:</strong> We found a problem during a PM and scheduled a fix for later</li>
+                <li><strong>Unplanned:</strong> Same as breakdown — needs fixing now</li>
               </ul>
             </div>
 
@@ -467,9 +435,8 @@ export const WorkDefinitionsSection = () => {
                 Modification / Project Work
               </h4>
               <p className="text-sm text-muted-foreground">
-                Changes to equipment design, capacity, or configuration. This is not maintenance 
-                (restoring to original condition) but improvement work. Should be tracked separately from 
-                maintenance metrics.
+                Changing or upgrading equipment — not maintenance. We're improving something, not restoring it. 
+                This should be tracked separately from maintenance work.
               </p>
             </div>
 
@@ -480,8 +447,8 @@ export const WorkDefinitionsSection = () => {
                 Inspection Work
               </h4>
               <p className="text-sm text-muted-foreground">
-                Checking equipment condition without making repairs. Inspections may be part of a PM 
-                or standalone tasks. They often identify defects that become planned corrective work.
+                Checking equipment condition without doing repairs. Inspections are often part of PMs. 
+                If we find a problem, we raise a separate work order to fix it.
               </p>
             </div>
 
@@ -489,11 +456,11 @@ export const WorkDefinitionsSection = () => {
             <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-4">
               <h4 className="font-medium text-foreground text-sm mb-2 flex items-center gap-2">
                 <Shield className="w-4 h-4 text-green-600" />
-                Statutory / Regulatory Maintenance
+                Statutory Maintenance
               </h4>
               <p className="text-sm text-muted-foreground">
-                Legally required inspections and maintenance (e.g., pressure vessel inspections, 
-                lifting equipment certifications). These are always planned and must be completed on time.
+                Legally required inspections (pressure vessels, lifting equipment, electrical testing). 
+                These are always planned and must be done on time to stay compliant.
               </p>
             </div>
           </div>
@@ -503,15 +470,15 @@ export const WorkDefinitionsSection = () => {
 
         {/* Summary Table */}
         <div className="bg-muted/50 rounded-lg p-5">
-          <h3 className="font-semibold text-foreground mb-4">Quick Reference Summary</h3>
+          <h3 className="font-semibold text-foreground mb-4">Quick Reference</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
                   <th className="text-left py-2 px-3 font-medium">Work Type</th>
                   <th className="text-left py-2 px-3 font-medium">Category</th>
-                  <th className="text-left py-2 px-3 font-medium">Trigger</th>
-                  <th className="text-left py-2 px-3 font-medium">Goal</th>
+                  <th className="text-left py-2 px-3 font-medium">What Triggers It</th>
+                  <th className="text-left py-2 px-3 font-medium">In Plain English</th>
                 </tr>
               </thead>
               <tbody>
@@ -519,31 +486,31 @@ export const WorkDefinitionsSection = () => {
                   <td className="py-2 px-3 font-medium text-destructive">Breakdown</td>
                   <td className="py-2 px-3">Reactive</td>
                   <td className="py-2 px-3">Equipment failure</td>
-                  <td className="py-2 px-3">Restore operation ASAP</td>
+                  <td className="py-2 px-3">It broke, fix it now</td>
                 </tr>
                 <tr className="border-b border-border/50">
                   <td className="py-2 px-3 font-medium text-green-600">Preventive (PM)</td>
                   <td className="py-2 px-3">Proactive</td>
-                  <td className="py-2 px-3">Time/usage interval</td>
-                  <td className="py-2 px-3">Prevent failures</td>
+                  <td className="py-2 px-3">Calendar or hours</td>
+                  <td className="py-2 px-3">Do it every X weeks/months</td>
                 </tr>
                 <tr className="border-b border-border/50">
                   <td className="py-2 px-3 font-medium text-blue-600">Condition-Based</td>
                   <td className="py-2 px-3">Proactive</td>
-                  <td className="py-2 px-3">Condition threshold</td>
-                  <td className="py-2 px-3">Optimise timing</td>
+                  <td className="py-2 px-3">Measurement threshold</td>
+                  <td className="py-2 px-3">Do it when readings say so</td>
                 </tr>
                 <tr className="border-b border-border/50">
                   <td className="py-2 px-3 font-medium text-purple-600">Predictive</td>
                   <td className="py-2 px-3">Proactive</td>
                   <td className="py-2 px-3">Monitoring data</td>
-                  <td className="py-2 px-3">Predict failures</td>
+                  <td className="py-2 px-3">Do it before it fails</td>
                 </tr>
                 <tr>
                   <td className="py-2 px-3 font-medium text-amber-600">Shutdown</td>
                   <td className="py-2 px-3">Proactive</td>
                   <td className="py-2 px-3">Planned event</td>
-                  <td className="py-2 px-3">Major overhauls</td>
+                  <td className="py-2 px-3">Big job, stop everything</td>
                 </tr>
               </tbody>
             </table>
