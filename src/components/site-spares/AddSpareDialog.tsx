@@ -17,7 +17,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type SiteSpareItem } from "./siteSparesData";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  type SiteSpareItem,
+  categories,
+  warehouseAreas,
+  unitsOfMeasure,
+} from "./siteSparesData";
 
 interface AddSpareDialogProps {
   open: boolean;
@@ -26,18 +32,7 @@ interface AddSpareDialogProps {
   existingCount: number;
 }
 
-const areaOptions = [
-  { code: "COM", label: "Comminution / Process" },
-  { code: "REC", label: "Gold Recovery" },
-  { code: "TAIL", label: "Tailings" },
-  { code: "UTL", label: "Utilities" },
-  { code: "SUP", label: "Support Services" },
-];
-
-const priorities: Array<"HIGH" | "MEDIUM" | "LOW"> = ["HIGH", "MEDIUM", "LOW"];
-const statuses: Array<"Provisional" | "Confirmed" | "TBC"> = ["Provisional", "Confirmed", "TBC"];
-const confidenceLevels: Array<"Low" | "Medium" | "High"> = ["Low", "Medium", "High"];
-const criticalitySources: Array<"Confirmed" | "Assumed"> = ["Confirmed", "Assumed"];
+const statuses: Array<SiteSpareItem["status"]> = ["Active", "Low Stock", "Out of Stock", "Pending Review", "Obsolete"];
 
 export const AddSpareDialog = ({
   open,
@@ -46,354 +41,354 @@ export const AddSpareDialog = ({
   existingCount,
 }: AddSpareDialogProps) => {
   const [formData, setFormData] = useState({
-    area: "",
-    areaLabel: "",
-    subArea: "",
-    system: "",
-    parentAsset: "",
-    assetNumber: "",
-    pidTag: "",
-    componentName: "",
-    componentType: "",
-    sparePartDescription: "",
-    oemPartNumber: "",
+    description: "",
+    category: "",
+    subcategory: "",
     manufacturer: "",
-    vendor: "",
-    priority: "MEDIUM" as "HIGH" | "MEDIUM" | "LOW",
-    priorityReason: "",
-    spareCriticality: "" as "High" | "Medium" | "Low" | "",
-    criticalitySource: "" as "Confirmed" | "Assumed" | "",
-    minQty: "",
-    maxQty: "",
-    confidence: "Low" as "Low" | "Medium" | "High",
-    status: "Provisional" as "Provisional" | "Confirmed" | "TBC",
+    oemPartNumber: "",
+    alternatePartNumber: "",
+    specifications: "",
+    warehouseArea: "",
+    aisle: "",
+    rack: "",
+    binLocation: "",
+    qtyOnHand: 0,
+    minQty: 0,
+    maxQty: 0,
+    reorderPoint: 0,
+    uom: "EA",
+    unitCost: 0,
+    preferredSupplier: "",
+    leadTimeDays: 0,
+    status: "Active" as SiteSpareItem["status"],
+    isCritical: false,
+    notes: "",
   });
 
-  const handleChange = (field: string, value: string) => {
+  const categoryList = Object.keys(categories).sort();
+  const subcategoryList = formData.category ? categories[formData.category] || [] : [];
+
+  const handleChange = (field: string, value: string | number | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleAreaChange = (areaCode: string) => {
-    const selectedArea = areaOptions.find(a => a.code === areaCode);
+  const handleCategoryChange = (category: string) => {
     setFormData(prev => ({
       ...prev,
-      area: areaCode,
-      areaLabel: selectedArea?.label || "",
+      category,
+      subcategory: "", // Reset subcategory when category changes
     }));
   };
 
-  const handleSubmit = () => {
-    // Determine spareCriticality based on priority
-    let spareCrit: "High" | "Medium" | "Low" | "" = "";
-    if (formData.priority === "HIGH") spareCrit = "High";
-    else if (formData.priority === "MEDIUM") spareCrit = "Medium";
-    else if (formData.priority === "LOW") spareCrit = "Low";
+  const generateStockCode = (category: string): string => {
+    const prefix = category ? category.substring(0, 3).toUpperCase() : "GEN";
+    return `${prefix}-${String(existingCount + 1).padStart(5, "0")}`;
+  };
 
+  const generateBinLocation = (): string => {
+    if (formData.warehouseArea && formData.aisle && formData.rack) {
+      return `${formData.warehouseArea}-${formData.aisle}-${formData.rack}`;
+    }
+    return "";
+  };
+
+  const handleSubmit = () => {
     const newSpare: SiteSpareItem = {
-      id: `SS-${String(existingCount + 1).padStart(3, "0")}`,
-      area: formData.area,
-      areaLabel: formData.areaLabel,
-      subArea: formData.subArea,
-      system: formData.system,
-      parentAsset: formData.parentAsset,
-      assetNumber: formData.assetNumber,
-      pidTag: formData.pidTag,
-      componentName: formData.componentName,
-      componentType: formData.componentType,
-      sparePartDescription: formData.sparePartDescription,
-      oemPartNumber: formData.oemPartNumber,
+      id: `STK-${String(existingCount + 1).padStart(4, "0")}`,
+      stockCode: generateStockCode(formData.category),
+      description: formData.description,
+      category: formData.category,
+      subcategory: formData.subcategory,
       manufacturer: formData.manufacturer,
-      vendor: formData.vendor,
-      assetManufacturer: "",
-      assetModel: "",
-      priority: formData.priority,
-      priorityReason: formData.priorityReason,
-      reviewFlag: false,
-      spareCriticality: spareCrit,
-      criticalitySource: formData.criticalitySource || "Assumed",
-      reasonCritical: formData.priorityReason,
+      oemPartNumber: formData.oemPartNumber,
+      alternatePartNumber: formData.alternatePartNumber,
+      specifications: formData.specifications,
+      warehouseArea: formData.warehouseArea,
+      aisle: formData.aisle,
+      rack: formData.rack,
+      binLocation: generateBinLocation() || formData.binLocation,
+      qtyOnHand: formData.qtyOnHand,
       minQty: formData.minQty,
       maxQty: formData.maxQty,
-      qtyPerSystem: "",
-      unitPrice: "",
-      uom: "EA",
-      leadTime: "",
-      storageRequirement: "",
-      notes: "",
-      confidence: formData.confidence,
+      reorderPoint: formData.reorderPoint || formData.minQty,
+      uom: formData.uom,
+      unitCost: formData.unitCost,
+      preferredSupplier: formData.preferredSupplier,
+      leadTimeDays: formData.leadTimeDays,
+      lastPurchaseDate: "",
       status: formData.status,
+      isCritical: formData.isCritical,
+      notes: formData.notes,
     };
 
     onAddSpare(newSpare);
     
     // Reset form
     setFormData({
-      area: "",
-      areaLabel: "",
-      subArea: "",
-      system: "",
-      parentAsset: "",
-      assetNumber: "",
-      pidTag: "",
-      componentName: "",
-      componentType: "",
-      sparePartDescription: "",
-      oemPartNumber: "",
+      description: "",
+      category: "",
+      subcategory: "",
       manufacturer: "",
-      vendor: "",
-      priority: "MEDIUM",
-      priorityReason: "",
-      spareCriticality: "",
-      criticalitySource: "",
-      minQty: "",
-      maxQty: "",
-      confidence: "Low",
-      status: "Provisional",
+      oemPartNumber: "",
+      alternatePartNumber: "",
+      specifications: "",
+      warehouseArea: "",
+      aisle: "",
+      rack: "",
+      binLocation: "",
+      qtyOnHand: 0,
+      minQty: 0,
+      maxQty: 0,
+      reorderPoint: 0,
+      uom: "EA",
+      unitCost: 0,
+      preferredSupplier: "",
+      leadTimeDays: 0,
+      status: "Active",
+      isCritical: false,
+      notes: "",
     });
     
     onOpenChange(false);
   };
 
-  const isValid = formData.area && formData.componentName && formData.sparePartDescription;
+  const isValid = formData.description && formData.category;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New Spare</DialogTitle>
+          <DialogTitle>Add Inventory Item</DialogTitle>
           <DialogDescription>
-            Manually add a spare part to the site catalogue. Fields marked with * are required.
+            Add a new item to the stock catalogue. Fields marked with * are required.
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          {/* Row 1: Area & Sub-Area */}
+          {/* Description */}
+          <div className="space-y-2">
+            <Label htmlFor="description">Description *</Label>
+            <Input
+              id="description"
+              value={formData.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+              placeholder="e.g., Deep Groove Ball Bearing 6205 2RS"
+            />
+          </div>
+
+          {/* Category & Subcategory */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="area">Area *</Label>
-              <Select value={formData.area} onValueChange={handleAreaChange}>
+              <Label htmlFor="category">Category *</Label>
+              <Select value={formData.category} onValueChange={handleCategoryChange}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select area" />
+                  <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {areaOptions.map((area) => (
-                    <SelectItem key={area.code} value={area.code}>
-                      {area.code} - {area.label}
+                  {categoryList.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="subArea">Sub-Area</Label>
-              <Input
-                id="subArea"
-                value={formData.subArea}
-                onChange={(e) => handleChange("subArea", e.target.value)}
-                placeholder="e.g., Feed / Reclaim, Grinding"
-              />
+              <Label htmlFor="subcategory">Subcategory</Label>
+              <Select 
+                value={formData.subcategory} 
+                onValueChange={(v) => handleChange("subcategory", v)}
+                disabled={!formData.category}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={formData.category ? "Select subcategory" : "Select category first"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {subcategoryList.map((sub) => (
+                    <SelectItem key={sub} value={sub}>
+                      {sub}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          {/* Row 2: System & Asset Numbers */}
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="system">System</Label>
-              <Input
-                id="system"
-                value={formData.system}
-                onChange={(e) => handleChange("system", e.target.value)}
-                placeholder="e.g., APN01 Apron Feeder"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="assetNumber">Asset Number</Label>
-              <Input
-                id="assetNumber"
-                value={formData.assetNumber}
-                onChange={(e) => handleChange("assetNumber", e.target.value)}
-                placeholder="e.g., APN01-GMR01"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="parentAsset">Legacy P&ID Ref</Label>
-              <Input
-                id="parentAsset"
-                value={formData.parentAsset}
-                onChange={(e) => handleChange("parentAsset", e.target.value)}
-                placeholder="e.g., 4-FE-100"
-              />
-            </div>
-          </div>
-
-          {/* Row 3: Component Name & Type */}
+          {/* Manufacturer & OEM Part Number */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="componentName">Component Name *</Label>
-              <Input
-                id="componentName"
-                value={formData.componentName}
-                onChange={(e) => handleChange("componentName", e.target.value)}
-                placeholder="e.g., Motor"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="componentType">Component Type</Label>
-              <Input
-                id="componentType"
-                value={formData.componentType}
-                onChange={(e) => handleChange("componentType", e.target.value)}
-                placeholder="e.g., Motor, Gearbox, Pump"
-              />
-            </div>
-          </div>
-
-          {/* Row 4: Description */}
-          <div className="space-y-2">
-            <Label htmlFor="sparePartDescription">Spare Part Description *</Label>
-            <Input
-              id="sparePartDescription"
-              value={formData.sparePartDescription}
-              onChange={(e) => handleChange("sparePartDescription", e.target.value)}
-              placeholder="e.g., Primary Ball Mill Motor 1000kW"
-            />
-          </div>
-
-          {/* Row 5: OEM Part Number & Manufacturer */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="oemPartNumber">OEM Part Number</Label>
-              <Input
-                id="oemPartNumber"
-                value={formData.oemPartNumber}
-                onChange={(e) => handleChange("oemPartNumber", e.target.value)}
-                placeholder="e.g., SEW-EURODRIVE KA107"
-              />
-            </div>
             <div className="space-y-2">
               <Label htmlFor="manufacturer">Manufacturer</Label>
               <Input
                 id="manufacturer"
                 value={formData.manufacturer}
                 onChange={(e) => handleChange("manufacturer", e.target.value)}
-                placeholder="e.g., Siemens, Weg, SEW"
+                placeholder="e.g., SKF, Siemens"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="oemPartNumber">OEM Part Number</Label>
+              <Input
+                id="oemPartNumber"
+                value={formData.oemPartNumber}
+                onChange={(e) => handleChange("oemPartNumber", e.target.value)}
+                placeholder="e.g., 6205-2RS1"
               />
             </div>
           </div>
 
-          {/* Row 6: Vendor & P&ID Tag */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="vendor">Vendor</Label>
-              <Input
-                id="vendor"
-                value={formData.vendor}
-                onChange={(e) => handleChange("vendor", e.target.value)}
-                placeholder="e.g., NEWMAN, CBC"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="pidTag">P&ID Tag</Label>
-              <Input
-                id="pidTag"
-                value={formData.pidTag}
-                onChange={(e) => handleChange("pidTag", e.target.value)}
-                placeholder="e.g., 04-ML-100"
-              />
-            </div>
+          {/* Specifications */}
+          <div className="space-y-2">
+            <Label htmlFor="specifications">Specifications</Label>
+            <Input
+              id="specifications"
+              value={formData.specifications}
+              onChange={(e) => handleChange("specifications", e.target.value)}
+              placeholder="e.g., 25x52x15mm, 1000kW, 316 SS"
+            />
           </div>
 
-          {/* Row 7: Priority & Reason */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Warehouse Location */}
+          <div className="grid grid-cols-4 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="priority">Priority</Label>
-              <Select
-                value={formData.priority}
-                onValueChange={(v) => handleChange("priority", v)}
-              >
+              <Label htmlFor="warehouseArea">Warehouse Area</Label>
+              <Select value={formData.warehouseArea} onValueChange={(v) => handleChange("warehouseArea", v)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select priority" />
+                  <SelectValue placeholder="Area" />
                 </SelectTrigger>
                 <SelectContent>
-                  {priorities.map((p) => (
-                    <SelectItem key={p} value={p}>
-                      {p}
+                  {warehouseAreas.map((area) => (
+                    <SelectItem key={area} value={area}>
+                      {area}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="priorityReason">Priority Reason</Label>
+              <Label htmlFor="aisle">Aisle</Label>
               <Input
-                id="priorityReason"
-                value={formData.priorityReason}
-                onChange={(e) => handleChange("priorityReason", e.target.value)}
-                placeholder="e.g., Motor - plant stoppage risk"
+                id="aisle"
+                value={formData.aisle}
+                onChange={(e) => handleChange("aisle", e.target.value)}
+                placeholder="01"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="rack">Rack/Shelf</Label>
+              <Input
+                id="rack"
+                value={formData.rack}
+                onChange={(e) => handleChange("rack", e.target.value)}
+                placeholder="A1"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="binLocation">Bin Location</Label>
+              <Input
+                id="binLocation"
+                value={generateBinLocation() || formData.binLocation}
+                onChange={(e) => handleChange("binLocation", e.target.value)}
+                placeholder="A-01-A1"
+                className="font-mono"
               />
             </div>
           </div>
 
-          {/* Row 8: Quantities */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Quantities */}
+          <div className="grid grid-cols-5 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="qtyOnHand">Qty On Hand</Label>
+              <Input
+                id="qtyOnHand"
+                type="number"
+                min={0}
+                value={formData.qtyOnHand}
+                onChange={(e) => handleChange("qtyOnHand", parseInt(e.target.value) || 0)}
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="minQty">Min Qty</Label>
               <Input
                 id="minQty"
+                type="number"
+                min={0}
                 value={formData.minQty}
-                onChange={(e) => handleChange("minQty", e.target.value)}
-                placeholder="0"
+                onChange={(e) => handleChange("minQty", parseInt(e.target.value) || 0)}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="maxQty">Max Qty</Label>
               <Input
                 id="maxQty"
+                type="number"
+                min={0}
                 value={formData.maxQty}
-                onChange={(e) => handleChange("maxQty", e.target.value)}
-                placeholder="1"
+                onChange={(e) => handleChange("maxQty", parseInt(e.target.value) || 0)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="reorderPoint">Reorder Point</Label>
+              <Input
+                id="reorderPoint"
+                type="number"
+                min={0}
+                value={formData.reorderPoint}
+                onChange={(e) => handleChange("reorderPoint", parseInt(e.target.value) || 0)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="uom">UOM</Label>
+              <Select value={formData.uom} onValueChange={(v) => handleChange("uom", v)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {unitsOfMeasure.map((uom) => (
+                    <SelectItem key={uom} value={uom}>
+                      {uom}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Supplier & Cost */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="preferredSupplier">Preferred Supplier</Label>
+              <Input
+                id="preferredSupplier"
+                value={formData.preferredSupplier}
+                onChange={(e) => handleChange("preferredSupplier", e.target.value)}
+                placeholder="e.g., CBC Bearings"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="unitCost">Unit Cost ($)</Label>
+              <Input
+                id="unitCost"
+                type="number"
+                min={0}
+                step={0.01}
+                value={formData.unitCost}
+                onChange={(e) => handleChange("unitCost", parseFloat(e.target.value) || 0)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="leadTimeDays">Lead Time (days)</Label>
+              <Input
+                id="leadTimeDays"
+                type="number"
+                min={0}
+                value={formData.leadTimeDays}
+                onChange={(e) => handleChange("leadTimeDays", parseInt(e.target.value) || 0)}
               />
             </div>
           </div>
 
-          {/* Row 9: Source, Confidence & Status */}
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="criticalitySource">Criticality Source</Label>
-              <Select
-                value={formData.criticalitySource}
-                onValueChange={(v) => handleChange("criticalitySource", v)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select source" />
-                </SelectTrigger>
-                <SelectContent>
-                  {criticalitySources.map((s) => (
-                    <SelectItem key={s} value={s}>
-                      {s}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confidence">Confidence</Label>
-              <Select
-                value={formData.confidence}
-                onValueChange={(v) => handleChange("confidence", v)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select confidence" />
-                </SelectTrigger>
-                <SelectContent>
-                  {confidenceLevels.map((c) => (
-                    <SelectItem key={c} value={c}>
-                      {c}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          {/* Status & Critical Flag */}
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
               <Select
@@ -412,6 +407,33 @@ export const AddSpareDialog = ({
                 </SelectContent>
               </Select>
             </div>
+            <div className="space-y-2">
+              <Label>Critical Item</Label>
+              <div className="flex items-center space-x-2 h-10">
+                <Checkbox
+                  id="isCritical"
+                  checked={formData.isCritical}
+                  onCheckedChange={(checked) => handleChange("isCritical", !!checked)}
+                />
+                <label
+                  htmlFor="isCritical"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Flag as critical spare
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div className="space-y-2">
+            <Label htmlFor="notes">Notes</Label>
+            <Input
+              id="notes"
+              value={formData.notes}
+              onChange={(e) => handleChange("notes", e.target.value)}
+              placeholder="Additional notes..."
+            />
           </div>
         </div>
 
@@ -420,7 +442,7 @@ export const AddSpareDialog = ({
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={!isValid}>
-            Add Spare
+            Add Item
           </Button>
         </DialogFooter>
       </DialogContent>
