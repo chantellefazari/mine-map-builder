@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
-import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse } from "lucide-react";
+import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen } from "lucide-react";
 
 const sections = [
+  {
+    title: "Maintenance Process Foundations",
+    subtitle: "Definitions & Standards",
+    description: "Foundational rules for maintenance work types, job data standards, numbering, and history structure.",
+    icon: BookOpen,
+    href: "/maintenance-foundations",
+  },
   {
     title: "Asset Tree",
     subtitle: "Locked Structure",
