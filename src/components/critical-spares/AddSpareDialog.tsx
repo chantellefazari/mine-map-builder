@@ -139,7 +139,7 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
           Add Spare
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto overflow-x-visible">
         <DialogHeader>
           <DialogTitle>Add New Critical Spare</DialogTitle>
         </DialogHeader>
@@ -164,7 +164,7 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                   <SelectTrigger>
                     <SelectValue placeholder="Select area..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border shadow-lg z-50">
+                  <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
                     {areaOptions.map((area) => (
                       <SelectItem key={area.code} value={area.code}>
                         {area.code} - {area.label}
@@ -186,7 +186,7 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                   <SelectTrigger>
                     <SelectValue placeholder="Select sub-area..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border shadow-lg z-50">
+                  <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
                     {subAreaOptions.map((subArea) => (
                       <SelectItem key={subArea} value={subArea}>
                         {subArea}
@@ -205,7 +205,7 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                   <SelectTrigger>
                     <SelectValue placeholder="Select system..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border shadow-lg z-50">
+                  <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
                     {systemOptions.map((system) => (
                       <SelectItem key={system} value={system}>
                         {system}
@@ -309,7 +309,7 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border shadow-lg z-50">
+                  <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
                     <SelectItem value="High">High</SelectItem>
                     <SelectItem value="Medium">Medium</SelectItem>
                   </SelectContent>
@@ -324,7 +324,7 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border shadow-lg z-50">
+                  <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
                     <SelectItem value="Confirmed">Confirmed</SelectItem>
                     <SelectItem value="Assumed">Assumed</SelectItem>
                   </SelectContent>
@@ -355,7 +355,7 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border shadow-lg z-50">
+                  <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
                     <SelectItem value="TBC">TBC</SelectItem>
                     <SelectItem value="0">0</SelectItem>
                     <SelectItem value="1">1</SelectItem>
@@ -375,7 +375,7 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border shadow-lg z-50">
+                  <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
                     <SelectItem value="TBC">TBC</SelectItem>
                     <SelectItem value="0">0</SelectItem>
                     <SelectItem value="1">1</SelectItem>
@@ -395,7 +395,7 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border shadow-lg z-50">
+                  <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
                     <SelectItem value="Low">Low</SelectItem>
                     <SelectItem value="Medium">Medium</SelectItem>
                     <SelectItem value="High">High</SelectItem>
@@ -411,7 +411,7 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border shadow-lg z-50">
+                  <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
                     <SelectItem value="Provisional">Provisional</SelectItem>
                     <SelectItem value="TBC">TBC</SelectItem>
                     <SelectItem value="Confirmed">Confirmed</SelectItem>
