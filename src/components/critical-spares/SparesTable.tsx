@@ -200,33 +200,59 @@ export const SparesTable = () => {
                 <TableCell className="text-sm text-muted-foreground">
                   {spare.reasonCritical}
                 </TableCell>
-                <TableCell className="text-center font-mono p-1">
-                  <Input
-                    type="text"
-                    value={spare.minQty || ""}
-                    onChange={(e) => {
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.minQty || "TBC"}
+                    onValueChange={(value) => {
                       const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, minQty: e.target.value } : s
+                        s.id === spare.id ? { ...s, minQty: value } : s
                       );
                       setSpares(updated);
                     }}
-                    placeholder="TBC"
-                    className="h-8 w-20 text-center text-sm"
-                  />
+                  >
+                    <SelectTrigger className="h-8 w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="TBC">TBC</SelectItem>
+                      <SelectItem value="0">0</SelectItem>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="3">3</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                      <SelectItem value="5">5</SelectItem>
+                      <SelectItem value="6">6</SelectItem>
+                      <SelectItem value="8">8</SelectItem>
+                      <SelectItem value="10">10</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
-                <TableCell className="text-center font-mono p-1">
-                  <Input
-                    type="text"
-                    value={spare.maxQty || ""}
-                    onChange={(e) => {
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.maxQty || "TBC"}
+                    onValueChange={(value) => {
                       const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, maxQty: e.target.value } : s
+                        s.id === spare.id ? { ...s, maxQty: value } : s
                       );
                       setSpares(updated);
                     }}
-                    placeholder="TBC"
-                    className="h-8 w-20 text-center text-sm"
-                  />
+                  >
+                    <SelectTrigger className="h-8 w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="TBC">TBC</SelectItem>
+                      <SelectItem value="0">0</SelectItem>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="3">3</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                      <SelectItem value="5">5</SelectItem>
+                      <SelectItem value="6">6</SelectItem>
+                      <SelectItem value="8">8</SelectItem>
+                      <SelectItem value="10">10</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
                 <TableCell className="p-1">
                   <Select
