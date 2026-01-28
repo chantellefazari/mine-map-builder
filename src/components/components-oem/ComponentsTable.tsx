@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -80,17 +80,32 @@ export const ComponentsTable = () => {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterArea, setFilterArea] = useState<string>("all");
 
-  const filteredComponents = components.filter((component) => {
-    const matchesSearch =
-      component.assetName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      component.assetNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      component.componentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      component.pidTag.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = filterType === "all" || component.componentType === filterType;
-    const matchesStatus = filterStatus === "all" || component.status === filterStatus;
-    const matchesArea = filterArea === "all" || component.area === filterArea;
-    return matchesSearch && matchesType && matchesStatus && matchesArea;
-  });
+  const filteredComponents = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    return components.filter((component) => {
+      const matchesSearch =
+        component.assetName.toLowerCase().includes(q) ||
+        component.assetNumber.toLowerCase().includes(q) ||
+        component.componentName.toLowerCase().includes(q) ||
+        component.pidTag.toLowerCase().includes(q);
+      const matchesType = filterType === "all" || component.componentType === filterType;
+      const matchesStatus = filterStatus === "all" || component.status === filterStatus;
+      const matchesArea = filterArea === "all" || component.area === filterArea;
+      return matchesSearch && matchesType && matchesStatus && matchesArea;
+    });
+  }, [components, searchQuery, filterType, filterStatus, filterArea]);
+
+  // Put rows that *have* a P&ID tag at the top so you can scroll and see tags immediately
+  const displayedComponents = useMemo(() => {
+    const list = [...filteredComponents];
+    list.sort((a, b) => {
+      const aHas = Boolean(a.pidTag?.trim());
+      const bHas = Boolean(b.pidTag?.trim());
+      if (aHas !== bHas) return aHas ? -1 : 1;
+      return (a.pidTag || "").localeCompare(b.pidTag || "");
+    });
+    return list;
+  }, [filteredComponents]);
 
   return (
     <div className="space-y-4">
@@ -175,7 +190,7 @@ export const ComponentsTable = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredComponents.map((component) => (
+            {displayedComponents.map((component) => (
               <TableRow key={component.id} className="cursor-pointer hover:bg-muted/50">
                 <TableCell className="font-medium">{component.assetName}</TableCell>
                 <TableCell className="font-mono text-sm">{component.assetNumber}</TableCell>
