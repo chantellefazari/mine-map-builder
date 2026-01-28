@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { type SpareItem } from "./sparesData";
+import { type SpareItem, sparesData } from "./sparesData";
 
 interface AddSpareDialogProps {
   onAddSpare: (spare: SpareItem) => void;
@@ -28,8 +28,8 @@ interface AddSpareDialogProps {
 export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProps) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
-    area: "COM",
-    areaLabel: "Comminution / Process",
+    area: "",
+    areaLabel: "",
     subArea: "",
     system: "",
     parentAsset: "",
@@ -56,15 +56,38 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
     status: "Provisional" as "Provisional" | "Confirmed" | "TBC",
   });
 
-  const areaOptions = [
-    { code: "COM", label: "Comminution / Process" },
-    { code: "REC", label: "Recovery" },
-    { code: "TSF", label: "Tailings Storage" },
-    { code: "WAT", label: "Water Services" },
-    { code: "AIR", label: "Air Services" },
-    { code: "PWR", label: "Power & Electrical" },
-    { code: "INF", label: "Infrastructure" },
-  ];
+  // Build hierarchy options from existing spares data
+  const areaOptions = useMemo(() => {
+    const uniqueAreas = new Map<string, string>();
+    sparesData.forEach((s) => {
+      if (s.area && !uniqueAreas.has(s.area)) {
+        uniqueAreas.set(s.area, s.areaLabel);
+      }
+    });
+    return Array.from(uniqueAreas.entries()).map(([code, label]) => ({ code, label }));
+  }, []);
+
+  const subAreaOptions = useMemo(() => {
+    if (!formData.area) return [];
+    const uniqueSubAreas = new Set<string>();
+    sparesData.forEach((s) => {
+      if (s.area === formData.area && s.subArea) {
+        uniqueSubAreas.add(s.subArea);
+      }
+    });
+    return Array.from(uniqueSubAreas).sort();
+  }, [formData.area]);
+
+  const systemOptions = useMemo(() => {
+    if (!formData.area || !formData.subArea) return [];
+    const uniqueSystems = new Set<string>();
+    sparesData.forEach((s) => {
+      if (s.area === formData.area && s.subArea === formData.subArea && s.system) {
+        uniqueSystems.add(s.system);
+      }
+    });
+    return Array.from(uniqueSystems).sort();
+  }, [formData.area, formData.subArea]);
 
   const handleSubmit = () => {
     const newSpare: SpareItem = {
@@ -75,8 +98,8 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
     setOpen(false);
     // Reset form
     setFormData({
-      area: "COM",
-      areaLabel: "Comminution / Process",
+      area: "",
+      areaLabel: "",
       subArea: "",
       system: "",
       parentAsset: "",
@@ -134,10 +157,12 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                     const selected = areaOptions.find((a) => a.code === value);
                     updateField("area", value);
                     updateField("areaLabel", selected?.label || "");
+                    updateField("subArea", "");
+                    updateField("system", "");
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Select area..." />
                   </SelectTrigger>
                   <SelectContent className="bg-background border shadow-lg z-50">
                     {areaOptions.map((area) => (
@@ -150,21 +175,44 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="subArea">Sub-Area</Label>
-                <Input
-                  id="subArea"
+                <Select
                   value={formData.subArea}
-                  onChange={(e) => updateField("subArea", e.target.value)}
-                  placeholder="e.g., Feed / Reclaim"
-                />
+                  onValueChange={(value) => {
+                    updateField("subArea", value);
+                    updateField("system", "");
+                  }}
+                  disabled={!formData.area}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select sub-area..." />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border shadow-lg z-50">
+                    {subAreaOptions.map((subArea) => (
+                      <SelectItem key={subArea} value={subArea}>
+                        {subArea}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="system">System</Label>
-                <Input
-                  id="system"
+                <Select
                   value={formData.system}
-                  onChange={(e) => updateField("system", e.target.value)}
-                  placeholder="e.g., APN01 Apron Feeder"
-                />
+                  onValueChange={(value) => updateField("system", value)}
+                  disabled={!formData.subArea}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select system..." />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border shadow-lg z-50">
+                    {systemOptions.map((system) => (
+                      <SelectItem key={system} value={system}>
+                        {system}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="assetNumber">Asset Number</Label>
