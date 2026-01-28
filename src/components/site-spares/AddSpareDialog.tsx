@@ -18,50 +18,65 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  type SiteSpareItem,
-  categories,
-  warehouseAreas,
-  unitsOfMeasure,
-} from "./siteSparesData";
+import { type SiteSpareItem } from "@/hooks/useSiteSpares";
+
+// Categories and warehouse areas
+const categories: Record<string, string[]> = {
+  "Pipe Fitting": ["Ball Valve", "Coupling", "Elbow", "Tee", "Reducer", "Nipple"],
+  "Motor": ["Electric Motor", "Hydraulic Motor", "Vibrator"],
+  "Pump": ["Submersible", "Centrifugal", "Diaphragm", "AODD"],
+  "Valve": ["Butterfly", "Knife Gate", "Ball", "Check"],
+  "Filter": ["Air Filter", "Oil Filter", "Fuel Filter"],
+  "Bearing": ["Pillow Block", "Spherical Roller", "Ball Bearing"],
+  "Electrical": ["Switch", "Cable", "Connector"],
+  "Consumable": ["Gloves", "PPE", "Tape", "Lubricant"],
+  "General": [],
+};
+
+const warehouseAreas = [
+  "Storage Shelter", "Site Office Laydown Area", "Shutdown Staging Area",
+  "Workshop", "Workshop Laydown Area", "WC01", "WC02", "WC03", "WC04", "WC05",
+  "WC07 (Crushing Area)", "WC08 (Crushing Area)", "WC09 (Crushing Area)",
+  "Crushing Laydown Area", "MCC"
+];
+
+const unitsOfMeasure = ["EA", "BOX", "PKT", "M", "L", "KG", "SET", "PAIR", "ROLL", "PK"];
+
+const statuses = ["Active", "Low Stock", "Out of Stock", "Pending Review", "Obsolete", "Require Repair"];
 
 interface AddSpareDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddSpare: (spare: SiteSpareItem) => void;
-  existingCount: number;
+  onAddSpare: (spare: Omit<SiteSpareItem, "id">) => void;
 }
-
-const statuses: Array<SiteSpareItem["status"]> = ["Active", "Low Stock", "Out of Stock", "Pending Review", "Obsolete", "Require Repair"];
 
 export const AddSpareDialog = ({
   open,
   onOpenChange,
   onAddSpare,
-  existingCount,
 }: AddSpareDialogProps) => {
   const [formData, setFormData] = useState({
     description: "",
     category: "",
     subcategory: "",
     manufacturer: "",
-    oemPartNumber: "",
-    alternatePartNumber: "",
+    oem_part_number: "",
+    alternate_part_number: "",
     specifications: "",
-    warehouseArea: "",
+    warehouse_area: "",
     aisle: "",
     rack: "",
-    binLocation: "",
-    qtyOnHand: 0,
-    minQty: 0,
-    maxQty: 0,
-    reorderPoint: 0,
+    bin_location: "",
+    qty_on_hand: 0,
+    min_qty: 0,
+    max_qty: 0,
+    reorder_point: 0,
     uom: "EA",
-    unitCost: 0,
-    preferredSupplier: "",
-    leadTimeDays: 0,
-    status: "Active" as SiteSpareItem["status"],
-    isCritical: false,
+    unit_cost: 0,
+    preferred_supplier: "",
+    lead_time_days: 0,
+    status: "Active",
+    is_critical: false,
     notes: "",
   });
 
@@ -76,52 +91,46 @@ export const AddSpareDialog = ({
     setFormData(prev => ({
       ...prev,
       category,
-      subcategory: "", // Reset subcategory when category changes
+      subcategory: "",
     }));
   };
 
-  // Part number will be assigned later - not auto-generated
-  const generatePartNumber = (): string => {
-    return "";  // Empty - numbering logic not yet defined
-  };
-
   const generateBinLocation = (): string => {
-    if (formData.warehouseArea && formData.aisle && formData.rack) {
-      return `${formData.warehouseArea}-${formData.aisle}-${formData.rack}`;
+    if (formData.warehouse_area && formData.aisle && formData.rack) {
+      return `${formData.warehouse_area}-${formData.aisle}-${formData.rack}`;
     }
     return "";
   };
 
   const handleSubmit = () => {
-    const newSpare: SiteSpareItem = {
-      id: `STK-${String(existingCount + 1).padStart(4, "0")}`,
-      partNumber: generatePartNumber(),
+    const newSpare: Omit<SiteSpareItem, "id"> = {
+      part_number: "",
       description: formData.description,
       category: formData.category,
       subcategory: formData.subcategory,
       manufacturer: formData.manufacturer,
-      oemPartNumber: formData.oemPartNumber,
-      alternatePartNumber: formData.alternatePartNumber,
+      oem_part_number: formData.oem_part_number,
+      alternate_part_number: formData.alternate_part_number,
       specifications: formData.specifications,
-      warehouseArea: formData.warehouseArea,
+      warehouse_area: formData.warehouse_area,
       aisle: formData.aisle,
       rack: formData.rack,
-      binLocation: generateBinLocation() || formData.binLocation,
-      storageType: "Shelved",
-      qtyOnHand: formData.qtyOnHand,
-      minQty: formData.minQty,
-      maxQty: formData.maxQty,
-      reorderPoint: formData.reorderPoint || formData.minQty,
+      bin_location: generateBinLocation() || formData.bin_location,
+      storage_type: "Shelved",
+      qty_on_hand: formData.qty_on_hand,
+      min_qty: formData.min_qty,
+      max_qty: formData.max_qty,
+      reorder_point: formData.reorder_point || formData.min_qty,
       uom: formData.uom,
-      unitCost: formData.unitCost,
-      preferredSupplier: formData.preferredSupplier,
-      leadTimeDays: formData.leadTimeDays,
-      lastPurchaseDate: "",
+      unit_cost: formData.unit_cost,
+      preferred_supplier: formData.preferred_supplier,
+      lead_time_days: formData.lead_time_days,
+      last_purchase_date: null,
       status: formData.status,
       condition: "Serviceable",
-      isCritical: formData.isCritical,
-      criticalSpareId: "",
-      assetTag: "",
+      is_critical: formData.is_critical,
+      critical_spare_id: "",
+      asset_tag: "",
       notes: formData.notes,
     };
 
@@ -133,23 +142,23 @@ export const AddSpareDialog = ({
       category: "",
       subcategory: "",
       manufacturer: "",
-      oemPartNumber: "",
-      alternatePartNumber: "",
+      oem_part_number: "",
+      alternate_part_number: "",
       specifications: "",
-      warehouseArea: "",
+      warehouse_area: "",
       aisle: "",
       rack: "",
-      binLocation: "",
-      qtyOnHand: 0,
-      minQty: 0,
-      maxQty: 0,
-      reorderPoint: 0,
+      bin_location: "",
+      qty_on_hand: 0,
+      min_qty: 0,
+      max_qty: 0,
+      reorder_point: 0,
       uom: "EA",
-      unitCost: 0,
-      preferredSupplier: "",
-      leadTimeDays: 0,
+      unit_cost: 0,
+      preferred_supplier: "",
+      lead_time_days: 0,
       status: "Active",
-      isCritical: false,
+      is_critical: false,
       notes: "",
     });
     
@@ -230,11 +239,11 @@ export const AddSpareDialog = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="oemPartNumber">OEM Part Number</Label>
+              <Label htmlFor="oem_part_number">OEM Part Number</Label>
               <Input
-                id="oemPartNumber"
-                value={formData.oemPartNumber}
-                onChange={(e) => handleChange("oemPartNumber", e.target.value)}
+                id="oem_part_number"
+                value={formData.oem_part_number}
+                onChange={(e) => handleChange("oem_part_number", e.target.value)}
                 placeholder="e.g., 6205-2RS1"
               />
             </div>
@@ -254,8 +263,8 @@ export const AddSpareDialog = ({
           {/* Warehouse Location */}
           <div className="grid grid-cols-4 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="warehouseArea">Warehouse Area</Label>
-              <Select value={formData.warehouseArea} onValueChange={(v) => handleChange("warehouseArea", v)}>
+              <Label htmlFor="warehouse_area">Warehouse Area</Label>
+              <Select value={formData.warehouse_area} onValueChange={(v) => handleChange("warehouse_area", v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Area" />
                 </SelectTrigger>
@@ -287,11 +296,11 @@ export const AddSpareDialog = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="binLocation">Bin Location</Label>
+              <Label htmlFor="bin_location">Bin Location</Label>
               <Input
-                id="binLocation"
-                value={generateBinLocation() || formData.binLocation}
-                onChange={(e) => handleChange("binLocation", e.target.value)}
+                id="bin_location"
+                value={generateBinLocation() || formData.bin_location}
+                onChange={(e) => handleChange("bin_location", e.target.value)}
                 placeholder="A-01-A1"
                 className="font-mono"
               />
@@ -301,43 +310,43 @@ export const AddSpareDialog = ({
           {/* Quantities */}
           <div className="grid grid-cols-5 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="qtyOnHand">Qty On Hand</Label>
+              <Label htmlFor="qty_on_hand">Qty On Hand</Label>
               <Input
-                id="qtyOnHand"
+                id="qty_on_hand"
                 type="number"
                 min={0}
-                value={formData.qtyOnHand}
-                onChange={(e) => handleChange("qtyOnHand", parseInt(e.target.value) || 0)}
+                value={formData.qty_on_hand}
+                onChange={(e) => handleChange("qty_on_hand", parseInt(e.target.value) || 0)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="minQty">Min Qty</Label>
+              <Label htmlFor="min_qty">Min Qty</Label>
               <Input
-                id="minQty"
+                id="min_qty"
                 type="number"
                 min={0}
-                value={formData.minQty}
-                onChange={(e) => handleChange("minQty", parseInt(e.target.value) || 0)}
+                value={formData.min_qty}
+                onChange={(e) => handleChange("min_qty", parseInt(e.target.value) || 0)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="maxQty">Max Qty</Label>
+              <Label htmlFor="max_qty">Max Qty</Label>
               <Input
-                id="maxQty"
+                id="max_qty"
                 type="number"
                 min={0}
-                value={formData.maxQty}
-                onChange={(e) => handleChange("maxQty", parseInt(e.target.value) || 0)}
+                value={formData.max_qty}
+                onChange={(e) => handleChange("max_qty", parseInt(e.target.value) || 0)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="reorderPoint">Reorder Point</Label>
+              <Label htmlFor="reorder_point">Reorder Point</Label>
               <Input
-                id="reorderPoint"
+                id="reorder_point"
                 type="number"
                 min={0}
-                value={formData.reorderPoint}
-                onChange={(e) => handleChange("reorderPoint", parseInt(e.target.value) || 0)}
+                value={formData.reorder_point}
+                onChange={(e) => handleChange("reorder_point", parseInt(e.target.value) || 0)}
               />
             </div>
             <div className="space-y-2">
@@ -360,33 +369,33 @@ export const AddSpareDialog = ({
           {/* Supplier & Cost */}
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="preferredSupplier">Preferred Supplier</Label>
+              <Label htmlFor="preferred_supplier">Preferred Supplier</Label>
               <Input
-                id="preferredSupplier"
-                value={formData.preferredSupplier}
-                onChange={(e) => handleChange("preferredSupplier", e.target.value)}
+                id="preferred_supplier"
+                value={formData.preferred_supplier}
+                onChange={(e) => handleChange("preferred_supplier", e.target.value)}
                 placeholder="e.g., CBC Bearings"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="unitCost">Unit Cost ($)</Label>
+              <Label htmlFor="unit_cost">Unit Cost ($)</Label>
               <Input
-                id="unitCost"
+                id="unit_cost"
                 type="number"
                 min={0}
                 step={0.01}
-                value={formData.unitCost}
-                onChange={(e) => handleChange("unitCost", parseFloat(e.target.value) || 0)}
+                value={formData.unit_cost}
+                onChange={(e) => handleChange("unit_cost", parseFloat(e.target.value) || 0)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="leadTimeDays">Lead Time (days)</Label>
+              <Label htmlFor="lead_time_days">Lead Time (days)</Label>
               <Input
-                id="leadTimeDays"
+                id="lead_time_days"
                 type="number"
                 min={0}
-                value={formData.leadTimeDays}
-                onChange={(e) => handleChange("leadTimeDays", parseInt(e.target.value) || 0)}
+                value={formData.lead_time_days}
+                onChange={(e) => handleChange("lead_time_days", parseInt(e.target.value) || 0)}
               />
             </div>
           </div>
@@ -415,12 +424,12 @@ export const AddSpareDialog = ({
               <Label>Critical Item</Label>
               <div className="flex items-center space-x-2 h-10">
                 <Checkbox
-                  id="isCritical"
-                  checked={formData.isCritical}
-                  onCheckedChange={(checked) => handleChange("isCritical", !!checked)}
+                  id="is_critical"
+                  checked={formData.is_critical}
+                  onCheckedChange={(checked) => handleChange("is_critical", !!checked)}
                 />
                 <label
-                  htmlFor="isCritical"
+                  htmlFor="is_critical"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
                   Flag as critical spare

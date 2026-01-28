@@ -16,54 +16,67 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle, Upload } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  siteSparesData,
-  stockStatusColors,
-  categoryColors,
-  warehouseAreas,
-  categories,
-  type SiteSpareItem,
-} from "./siteSparesData";
+import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { AddSpareDialog } from "./AddSpareDialog";
 import { ImportSpareDialog } from "./ImportSpareDialog";
-import { useToast } from "@/hooks/use-toast";
+
+// Status colors for UI
+const stockStatusColors: Record<string, string> = {
+  "Active": "bg-green-500/20 text-green-700",
+  "Low Stock": "bg-amber-500/20 text-amber-700",
+  "Out of Stock": "bg-destructive/20 text-destructive",
+  "Pending Review": "bg-blue-500/20 text-blue-700",
+  "Obsolete": "bg-muted text-muted-foreground",
+  "Require Repair": "bg-orange-500/20 text-orange-700",
+};
+
+// Category colors
+const categoryColors: Record<string, string> = {
+  "Pipe Fitting": "bg-blue-500/20 text-blue-700",
+  "Motor": "bg-purple-500/20 text-purple-700",
+  "Pump": "bg-cyan-500/20 text-cyan-700",
+  "Valve": "bg-green-500/20 text-green-700",
+  "Filter": "bg-teal-500/20 text-teal-700",
+  "Bearing": "bg-orange-500/20 text-orange-700",
+  "Electrical": "bg-blue-600/20 text-blue-800",
+  "Consumable": "bg-green-600/20 text-green-800",
+};
+
+const warehouseAreas = [
+  "Storage Shelter", "Site Office Laydown Area", "Shutdown Staging Area",
+  "Workshop", "Workshop Laydown Area", "WC01", "WC02", "WC03", "WC04", "WC05",
+  "WC07 (Crushing Area)", "WC08 (Crushing Area)", "WC09 (Crushing Area)",
+  "Crushing Laydown Area", "MCC"
+];
+
+const categories = [
+  "Pipe Fitting", "Motor", "Pump", "Valve", "Filter", "Bearing", "Electrical", "Consumable", "General"
+];
 
 export const SiteSparesTable = () => {
-  const [spares, setSpares] = useState<SiteSpareItem[]>(siteSparesData);
+  const { spares, loading, addSpare, importSpares, updateSpare } = useSiteSpares();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterWarehouse, setFilterWarehouse] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
-  const { toast } = useToast();
 
-  const categoryList = Object.keys(categories).sort();
-
-  const handleAddSpare = (newSpare: SiteSpareItem) => {
-    setSpares((prev) => [...prev, newSpare]);
-    toast({
-      title: "Item Added",
-      description: `${newSpare.description} has been added to inventory.`,
-    });
-  };
-
-  const handleImportSpares = (newItems: SiteSpareItem[]) => {
-    // Replace all existing data with imported items
-    setSpares(newItems);
+  const handleAddSpare = async (newSpare: Omit<SiteSpareItem, "id">) => {
+    await addSpare(newSpare);
   };
 
   const filteredSpares = spares.filter((spare) => {
     const matchesSearch =
       spare.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.partNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.oemPartNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.binLocation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.part_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.oem_part_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      spare.bin_location.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spare.manufacturer.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = filterCategory === "all" || spare.category === filterCategory;
-    const matchesWarehouse = filterWarehouse === "all" || spare.warehouseArea === filterWarehouse;
+    const matchesWarehouse = filterWarehouse === "all" || spare.warehouse_area === filterWarehouse;
     const matchesStatus = filterStatus === "all" || spare.status === filterStatus;
     return matchesSearch && matchesCategory && matchesWarehouse && matchesStatus;
   });
@@ -71,7 +84,16 @@ export const SiteSparesTable = () => {
   // Summary stats
   const totalItems = spares.length;
   const lowStockCount = spares.filter(s => s.status === "Low Stock" || s.status === "Out of Stock").length;
-  const criticalCount = spares.filter(s => s.isCritical).length;
+  const criticalCount = spares.filter(s => s.is_critical).length;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-2 text-muted-foreground">Loading inventory...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -121,7 +143,7 @@ export const SiteSparesTable = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              {categoryList.map((cat) => (
+              {categories.map((cat) => (
                 <SelectItem key={cat} value={cat}>
                   {cat}
                 </SelectItem>
@@ -136,7 +158,7 @@ export const SiteSparesTable = () => {
               <SelectItem value="all">All Areas</SelectItem>
               {warehouseAreas.map((area) => (
                 <SelectItem key={area} value={area}>
-                  Area {area}
+                  {area}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -170,15 +192,13 @@ export const SiteSparesTable = () => {
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onAddSpare={handleAddSpare}
-        existingCount={spares.length}
       />
 
       {/* Import Dialog */}
       <ImportSpareDialog
         open={importDialogOpen}
         onOpenChange={setImportDialogOpen}
-        onImport={handleImportSpares}
-        existingCount={0}
+        onImport={importSpares}
       />
 
       {/* Table */}
@@ -205,7 +225,7 @@ export const SiteSparesTable = () => {
             {filteredSpares.map((spare) => (
               <TableRow key={spare.id} className="cursor-pointer hover:bg-muted/50">
                 <TableCell className="font-mono text-sm font-medium text-muted-foreground">
-                  {spare.partNumber || "—"}
+                  {spare.part_number || "—"}
                 </TableCell>
                 <TableCell className="font-medium">{spare.description}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">
@@ -216,20 +236,16 @@ export const SiteSparesTable = () => {
                     {spare.category}
                   </Badge>
                 </TableCell>
-                <TableCell className="font-mono text-sm">{spare.binLocation}</TableCell>
+                <TableCell className="font-mono text-sm">{spare.bin_location}</TableCell>
                 <TableCell className="text-center">
                   <Input
                     type="number"
                     min={0}
-                    value={spare.qtyOnHand}
+                    value={spare.qty_on_hand}
                     onChange={(e) => {
                       const newQty = parseInt(e.target.value) || 0;
-                      const updated = spares.map((s) =>
-                        s.id === spare.id 
-                          ? { ...s, qtyOnHand: newQty, status: newQty === 0 ? "Out of Stock" as const : newQty <= s.minQty ? "Low Stock" as const : "Active" as const } 
-                          : s
-                      );
-                      setSpares(updated);
+                      const newStatus = newQty === 0 ? "Out of Stock" : newQty <= spare.min_qty ? "Low Stock" : "Active";
+                      updateSpare(spare.id, { qty_on_hand: newQty, status: newStatus });
                     }}
                     className="h-8 w-16 text-center"
                   />
@@ -238,12 +254,9 @@ export const SiteSparesTable = () => {
                   <Input
                     type="number"
                     min={0}
-                    value={spare.minQty}
+                    value={spare.min_qty}
                     onChange={(e) => {
-                      const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, minQty: parseInt(e.target.value) || 0 } : s
-                      );
-                      setSpares(updated);
+                      updateSpare(spare.id, { min_qty: parseInt(e.target.value) || 0 });
                     }}
                     className="h-8 w-14 text-center"
                   />
@@ -252,12 +265,9 @@ export const SiteSparesTable = () => {
                   <Input
                     type="number"
                     min={0}
-                    value={spare.maxQty}
+                    value={spare.max_qty}
                     onChange={(e) => {
-                      const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, maxQty: parseInt(e.target.value) || 0 } : s
-                      );
-                      setSpares(updated);
+                      updateSpare(spare.id, { max_qty: parseInt(e.target.value) || 0 });
                     }}
                     className="h-8 w-14 text-center"
                   />
@@ -267,10 +277,7 @@ export const SiteSparesTable = () => {
                   <Input
                     value={spare.manufacturer}
                     onChange={(e) => {
-                      const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, manufacturer: e.target.value } : s
-                      );
-                      setSpares(updated);
+                      updateSpare(spare.id, { manufacturer: e.target.value });
                     }}
                     className="h-8 w-28"
                     placeholder="—"
@@ -278,31 +285,25 @@ export const SiteSparesTable = () => {
                 </TableCell>
                 <TableCell>
                   <Input
-                    value={spare.oemPartNumber}
+                    value={spare.oem_part_number}
                     onChange={(e) => {
-                      const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, oemPartNumber: e.target.value } : s
-                      );
-                      setSpares(updated);
+                      updateSpare(spare.id, { oem_part_number: e.target.value });
                     }}
                     className="h-8 w-28 font-mono text-sm"
                     placeholder="—"
                   />
                 </TableCell>
                 <TableCell>
-                  <Badge variant="secondary" className={stockStatusColors[spare.status]}>
+                  <Badge variant="secondary" className={stockStatusColors[spare.status] || ""}>
                     {spare.status}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-center">
                   <input
                     type="checkbox"
-                    checked={spare.isCritical}
+                    checked={spare.is_critical}
                     onChange={(e) => {
-                      const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, isCritical: e.target.checked } : s
-                      );
-                      setSpares(updated);
+                      updateSpare(spare.id, { is_critical: e.target.checked });
                     }}
                     className="h-4 w-4 rounded border-border"
                   />
@@ -319,7 +320,7 @@ export const SiteSparesTable = () => {
           <div className="text-muted-foreground space-y-2">
             <p className="font-medium">No items in inventory yet</p>
             <p className="text-sm">
-              Add your first item or import from a spreadsheet.
+              Import your stock list using the Import Excel button above.
             </p>
           </div>
         </div>

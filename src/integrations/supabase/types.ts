@@ -14,7 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      site_spares: {
+        Row: {
+          aisle: string | null
+          alternate_part_number: string | null
+          asset_tag: string | null
+          bin_location: string | null
+          category: string | null
+          condition: string | null
+          created_at: string | null
+          critical_spare_id: string | null
+          description: string
+          id: string
+          is_critical: boolean | null
+          last_purchase_date: string | null
+          lead_time_days: number | null
+          manufacturer: string | null
+          max_qty: number | null
+          min_qty: number | null
+          notes: string | null
+          oem_part_number: string | null
+          part_number: string | null
+          preferred_supplier: string | null
+          qty_on_hand: number | null
+          rack: string | null
+          reorder_point: number | null
+          specifications: string | null
+          status: string | null
+          storage_type: string | null
+          subcategory: string | null
+          unit_cost: number | null
+          uom: string | null
+          updated_at: string | null
+          warehouse_area: string | null
+        }
+        Insert: {
+          aisle?: string | null
+          alternate_part_number?: string | null
+          asset_tag?: string | null
+          bin_location?: string | null
+          category?: string | null
+          condition?: string | null
+          created_at?: string | null
+          critical_spare_id?: string | null
+          description: string
+          id?: string
+          is_critical?: boolean | null
+          last_purchase_date?: string | null
+          lead_time_days?: number | null
+          manufacturer?: string | null
+          max_qty?: number | null
+          min_qty?: number | null
+          notes?: string | null
+          oem_part_number?: string | null
+          part_number?: string | null
+          preferred_supplier?: string | null
+          qty_on_hand?: number | null
+          rack?: string | null
+          reorder_point?: number | null
+          specifications?: string | null
+          status?: string | null
+          storage_type?: string | null
+          subcategory?: string | null
+          unit_cost?: number | null
+          uom?: string | null
+          updated_at?: string | null
+          warehouse_area?: string | null
+        }
+        Update: {
+          aisle?: string | null
+          alternate_part_number?: string | null
+          asset_tag?: string | null
+          bin_location?: string | null
+          category?: string | null
+          condition?: string | null
+          created_at?: string | null
+          critical_spare_id?: string | null
+          description?: string
+          id?: string
+          is_critical?: boolean | null
+          last_purchase_date?: string | null
+          lead_time_days?: number | null
+          manufacturer?: string | null
+          max_qty?: number | null
+          min_qty?: number | null
+          notes?: string | null
+          oem_part_number?: string | null
+          part_number?: string | null
+          preferred_supplier?: string | null
+          qty_on_hand?: number | null
+          rack?: string | null
+          reorder_point?: number | null
+          specifications?: string | null
+          status?: string | null
+          storage_type?: string | null
+          subcategory?: string | null
+          unit_cost?: number | null
+          uom?: string | null
+          updated_at?: string | null
+          warehouse_area?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
