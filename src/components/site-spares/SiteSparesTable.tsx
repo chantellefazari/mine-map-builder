@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   siteSparesData,
@@ -27,6 +27,7 @@ import {
   type SiteSpareItem,
 } from "./siteSparesData";
 import { AddSpareDialog } from "./AddSpareDialog";
+import { ImportSpareDialog } from "./ImportSpareDialog";
 import { useToast } from "@/hooks/use-toast";
 
 export const SiteSparesTable = () => {
@@ -36,6 +37,7 @@ export const SiteSparesTable = () => {
   const [filterWarehouse, setFilterWarehouse] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const categoryList = Object.keys(categories).sort();
@@ -46,6 +48,11 @@ export const SiteSparesTable = () => {
       title: "Item Added",
       description: `${newSpare.description} has been added to inventory.`,
     });
+  };
+
+  const handleImportSpares = (newItems: SiteSpareItem[]) => {
+    // Replace all existing data with imported items
+    setSpares(newItems);
   };
 
   const filteredSpares = spares.filter((spare) => {
@@ -147,6 +154,10 @@ export const SiteSparesTable = () => {
               <SelectItem value="Obsolete">Obsolete</SelectItem>
             </SelectContent>
           </Select>
+          <Button size="sm" variant="outline" className="gap-2" onClick={() => setImportDialogOpen(true)}>
+            <Upload className="h-4 w-4" />
+            Import Excel
+          </Button>
           <Button size="sm" className="gap-2" onClick={() => setAddDialogOpen(true)}>
             <Plus className="h-4 w-4" />
             Add Item
@@ -160,6 +171,14 @@ export const SiteSparesTable = () => {
         onOpenChange={setAddDialogOpen}
         onAddSpare={handleAddSpare}
         existingCount={spares.length}
+      />
+
+      {/* Import Dialog */}
+      <ImportSpareDialog
+        open={importDialogOpen}
+        onOpenChange={setImportDialogOpen}
+        onImport={handleImportSpares}
+        existingCount={0}
       />
 
       {/* Table */}
