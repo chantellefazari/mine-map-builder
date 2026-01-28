@@ -283,32 +283,6 @@ export const FoundationsContent = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Constraints Footer */}
-      <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-6">
-        <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-destructive" />
-          This Section Does NOT
-        </h3>
-        <ul className="grid gap-2 md:grid-cols-2 text-sm text-muted-foreground">
-          <li className="flex items-start gap-2">
-            <span className="text-destructive font-bold">✕</span>
-            Link directly to specific assets
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-destructive font-bold">✕</span>
-            Create schedules or work orders
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-destructive font-bold">✕</span>
-            Configure system settings
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-destructive font-bold">✕</span>
-            Define technical PM task steps
-          </li>
-        </ul>
-      </div>
     </div>
   );
 };
