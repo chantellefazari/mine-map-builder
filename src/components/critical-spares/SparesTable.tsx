@@ -228,13 +228,45 @@ export const SparesTable = () => {
                     className="h-8 w-20 text-center text-sm"
                   />
                 </TableCell>
-                <TableCell className="text-center text-sm text-muted-foreground">
-                  {"Low"}
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.confidence || "Low"}
+                    onValueChange={(value: "Low" | "Medium" | "High") => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, confidence: value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-24">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="Low">Low</SelectItem>
+                      <SelectItem value="Medium">Medium</SelectItem>
+                      <SelectItem value="High">High</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
-                <TableCell>
-                  <Badge variant="secondary" className={statusColors[spare.status]}>
-                    {spare.status}
-                  </Badge>
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.status}
+                    onValueChange={(value: "Provisional" | "TBC" | "Confirmed") => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, status: value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-28">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="Provisional">Provisional</SelectItem>
+                      <SelectItem value="TBC">TBC</SelectItem>
+                      <SelectItem value="Confirmed">Confirmed</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
               </TableRow>
             ))}
