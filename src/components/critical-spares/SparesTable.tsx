@@ -32,8 +32,16 @@ export const SparesTable = () => {
   const [filterCriticality, setFilterCriticality] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterArea, setFilterArea] = useState<string>("all");
+  const [filterSubArea, setFilterSubArea] = useState<string>("all");
 
   const areas = [...new Set(sparesData.map((s) => s.area))].sort();
+  
+  // Get sub-areas based on selected area filter
+  const subAreas = [...new Set(
+    sparesData
+      .filter((s) => filterArea === "all" || s.area === filterArea)
+      .map((s) => s.subArea)
+  )].sort();
 
   const filteredSpares = spares.filter((spare) => {
     const matchesSearch =
@@ -47,7 +55,8 @@ export const SparesTable = () => {
     const matchesStatus =
       filterStatus === "all" || spare.status === filterStatus;
     const matchesArea = filterArea === "all" || spare.area === filterArea;
-    return matchesSearch && matchesCriticality && matchesStatus && matchesArea;
+    const matchesSubArea = filterSubArea === "all" || spare.subArea === filterSubArea;
+    return matchesSearch && matchesCriticality && matchesStatus && matchesArea && matchesSubArea;
   });
 
   return (
@@ -94,15 +103,27 @@ export const SparesTable = () => {
               ))}
             </SelectContent>
           </Select>
+          <Select value={filterSubArea} onValueChange={setFilterSubArea}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Sub-Area" />
+            </SelectTrigger>
+            <SelectContent className="bg-background border shadow-lg z-50">
+              <SelectItem value="all">All Sub-Areas</SelectItem>
+              {subAreas.map((subArea) => (
+                <SelectItem key={subArea} value={subArea}>
+                  {subArea}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={filterCriticality} onValueChange={setFilterCriticality}>
             <SelectTrigger className="w-36">
               <SelectValue placeholder="Criticality" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-background border shadow-lg z-50">
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="High">High</SelectItem>
               <SelectItem value="Medium">Medium</SelectItem>
-              <SelectItem value="Low">Low</SelectItem>
             </SelectContent>
           </Select>
           <Select value={filterStatus} onValueChange={setFilterStatus}>
