@@ -215,7 +215,7 @@ export const SiteSparesTable = () => {
               <TableHead className="min-w-[70px] font-semibold text-center">Min</TableHead>
               <TableHead className="min-w-[70px] font-semibold text-center">Max</TableHead>
               <TableHead className="min-w-[60px] font-semibold">UOM</TableHead>
-              <TableHead className="min-w-[120px] font-semibold">Manufacturer</TableHead>
+              <TableHead className="min-w-[120px] font-semibold">Supplier/ Manufacturer</TableHead>
               <TableHead className="min-w-[120px] font-semibold">OEM Part #</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Status</TableHead>
               <TableHead className="min-w-[80px] font-semibold text-center">Critical</TableHead>
