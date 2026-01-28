@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { TreePine, Wrench, Package, Cpu, ClipboardList } from "lucide-react";
+import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse } from "lucide-react";
 
 const sections = [
   {
@@ -33,9 +33,16 @@ const sections = [
   {
     title: "Critical Spares Catalogue",
     subtitle: "Inventory Strategy",
-    description: "Define critical spares with OEM data, lead times, and stock strategies.",
+    description: "Critical spares with OEM data, lead times, and stock strategies. Items flagged from Site Catalogue.",
     icon: Package,
     href: "/critical-spares",
+  },
+  {
+    title: "Site Spares Catalogue",
+    subtitle: "Full Inventory",
+    description: "Complete site spares inventory. Flag items as critical to populate the Critical Spares Catalogue.",
+    icon: Warehouse,
+    href: "/site-spares",
   },
 ];
 

@@ -52,16 +52,16 @@ export const SparesTable = () => {
 
   return (
     <div className="space-y-4">
-      {/* Provisional Warning Banner */}
-      <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 flex items-start gap-3">
-        <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+      {/* Info Banner */}
+      <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 flex items-start gap-3">
+        <AlertTriangle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
         <div className="text-sm">
-          <p className="font-semibold text-amber-700">
-            Provisional Data – Pending P&ID Walkdown & Engineering Review
+          <p className="font-semibold text-foreground">
+            Critical Spares Only
           </p>
-          <p className="text-amber-600 mt-1">
-            All quantities are rough/indicative only. Values marked "TBC" require document verification.
-            This register is a baseline, not a final approved spares list.
+          <p className="text-muted-foreground mt-1">
+            This register contains only items explicitly marked as critical from the Site Spares Catalogue.
+            Criticality ratings marked "Assumed" require user confirmation.
           </p>
         </div>
       </div>
