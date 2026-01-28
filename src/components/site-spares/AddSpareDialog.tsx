@@ -32,7 +32,7 @@ interface AddSpareDialogProps {
   existingCount: number;
 }
 
-const statuses: Array<SiteSpareItem["status"]> = ["Active", "Low Stock", "Out of Stock", "Pending Review", "Obsolete"];
+const statuses: Array<SiteSpareItem["status"]> = ["Active", "Low Stock", "Out of Stock", "Pending Review", "Obsolete", "Require Repair"];
 
 export const AddSpareDialog = ({
   open,
@@ -107,6 +107,7 @@ export const AddSpareDialog = ({
       aisle: formData.aisle,
       rack: formData.rack,
       binLocation: generateBinLocation() || formData.binLocation,
+      storageType: "Shelved",
       qtyOnHand: formData.qtyOnHand,
       minQty: formData.minQty,
       maxQty: formData.maxQty,
@@ -117,7 +118,10 @@ export const AddSpareDialog = ({
       leadTimeDays: formData.leadTimeDays,
       lastPurchaseDate: "",
       status: formData.status,
+      condition: "Serviceable",
       isCritical: formData.isCritical,
+      criticalSpareId: "",
+      assetTag: "",
       notes: formData.notes,
     };
 

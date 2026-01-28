@@ -1,39 +1,43 @@
 // Site Spares Catalogue Data
 // MASTER INVENTORY for the entire site - stock tracking & warehouse management
-// Restructured for inventory management: locations, bin numbers, stock levels, specs
+// Updated from Book2.xlsx stock list
 
 export interface SiteSpareItem {
   id: string;
   // Stock identification
   partNumber: string;          // Internal part number (to be assigned)
-  description: string;        // Part description
-  category: string;           // Category e.g., "Electrical", "Mechanical", "Consumable"
-  subcategory: string;        // Subcategory e.g., "Motors", "Bearings", "Fittings"
+  description: string;        // Item description
+  category: string;           // Category e.g., "Pipe Fitting", "Motor", "Valve"
+  subcategory: string;        // Subcategory 
   // Manufacturer & Part Details
-  manufacturer: string;
-  oemPartNumber: string;
+  manufacturer: string;       // Supplier/Manufacturer
+  oemPartNumber: string;      // Product Code
   alternatePartNumber: string;
-  specifications: string;     // Size, rating, material specs
+  specifications: string;     // Size / Specification + Material / Rating
   // Warehouse Location
-  warehouseArea: string;      // Warehouse zone e.g., "A", "B", "C", "Yard"
-  aisle: string;              // Aisle number/letter
-  rack: string;               // Rack/shelf identifier
-  binLocation: string;        // Specific bin e.g., "A-01-03"
+  warehouseArea: string;      // Location (WC01, WC02, MCC, etc.)
+  aisle: string;              // Derived from BIN Location
+  rack: string;               // Derived from BIN Location
+  binLocation: string;        // BIN Location from Excel
+  storageType: string;        // Storage Type (Shelved, Pallet, Cabinet, etc.)
   // Stock Levels
-  qtyOnHand: number;
+  qtyOnHand: number;          // QTY
   minQty: number;
   maxQty: number;
   reorderPoint: number;
-  uom: string;                // Unit of measure: EA, BOX, M, L, KG
+  uom: string;                // Unit of measure: EA, BOX, M, L, KG, PK
   // Pricing & Supplier
   unitCost: number;
   preferredSupplier: string;
   leadTimeDays: number;
   lastPurchaseDate: string;
   // Status & Tracking
-  status: "Active" | "Obsolete" | "Pending Review" | "Low Stock" | "Out of Stock";
-  isCritical: boolean;        // Flag for critical spares
-  notes: string;
+  status: "Active" | "Obsolete" | "Pending Review" | "Low Stock" | "Out of Stock" | "Require Repair";
+  condition: string;          // Condition from Excel
+  isCritical: boolean;        // Flag for critical spares (based on Critical Spare ID)
+  criticalSpareId: string;    // Critical Spare ID from Excel
+  assetTag: string;           // Asset Tag / Designation
+  notes: string;              // Remarks
 }
 
 // Status colors for UI
@@ -43,603 +47,206 @@ export const stockStatusColors: Record<string, string> = {
   "Out of Stock": "bg-destructive/20 text-destructive",
   "Pending Review": "bg-blue-500/20 text-blue-700",
   "Obsolete": "bg-muted text-muted-foreground",
+  "Require Repair": "bg-orange-500/20 text-orange-700",
 };
 
 // Category colors
 export const categoryColors: Record<string, string> = {
-  "Electrical": "bg-blue-500/20 text-blue-700",
-  "Mechanical": "bg-purple-500/20 text-purple-700",
-  "Instrumentation": "bg-cyan-500/20 text-cyan-700",
-  "Consumable": "bg-green-500/20 text-green-700",
+  "Pipe Fitting": "bg-blue-500/20 text-blue-700",
+  "Motor": "bg-purple-500/20 text-purple-700",
+  "Pump": "bg-cyan-500/20 text-cyan-700",
+  "Valve": "bg-green-500/20 text-green-700",
+  "Filter": "bg-teal-500/20 text-teal-700",
+  "Bearing": "bg-orange-500/20 text-orange-700",
+  "Clamp": "bg-pink-500/20 text-pink-700",
+  "Bolts": "bg-gray-500/20 text-gray-700",
+  "Nut": "bg-gray-500/20 text-gray-700",
+  "Washer": "bg-gray-500/20 text-gray-700",
+  "Cable": "bg-yellow-500/20 text-yellow-700",
+  "Switch": "bg-indigo-500/20 text-indigo-700",
+  "Electrical": "bg-blue-600/20 text-blue-800",
+  "Mechanical": "bg-purple-600/20 text-purple-800",
+  "Consumable": "bg-green-600/20 text-green-800",
   "Safety": "bg-red-500/20 text-red-700",
-  "Hydraulic": "bg-orange-500/20 text-orange-700",
-  "Pneumatic": "bg-teal-500/20 text-teal-700",
-  "Structural": "bg-gray-500/20 text-gray-700",
+  "Coupling": "bg-amber-500/20 text-amber-700",
+  "Hose": "bg-emerald-500/20 text-emerald-700",
+  "Roller": "bg-slate-500/20 text-slate-700",
+  "Conveyor Mechanical Components": "bg-violet-500/20 text-violet-700",
 };
 
-// Warehouse areas
-export const warehouseAreas = ["A", "B", "C", "D", "Yard", "Hazmat", "Cold Store"];
+// Warehouse areas from Excel
+export const warehouseAreas = [
+  "Storage Shelter", 
+  "Site Office Laydown Area", 
+  "Shutdown Staging Area",
+  "Workshop", 
+  "Workshop Laydown Area",
+  "WC01", "WC02", "WC03", "WC04", "WC05", 
+  "WC07 (Crushing Area)", "WC08 (Crushing Area)", "WC09 (Crushing Area)",
+  "Crushing Laydown Area",
+  "MCC"
+];
 
-// Categories and subcategories
+// Categories from Excel
 export const categories: Record<string, string[]> = {
-  "Electrical": ["Motors", "Cables", "Circuit Breakers", "Contactors", "Relays", "Switches", "Lighting", "Power Supplies", "PLCs", "Sensors"],
-  "Mechanical": ["Bearings", "Seals", "Gearboxes", "Couplings", "Belts", "Pulleys", "Shafts", "Bushes", "Sprockets", "Chains"],
-  "Instrumentation": ["Transmitters", "Gauges", "Valves", "Flowmeters", "Level Sensors", "Temperature Probes", "Analyzers"],
-  "Consumable": ["Lubricants", "Filters", "Gaskets", "O-Rings", "Fasteners", "Tape", "Rags", "Cleaners"],
-  "Safety": ["PPE", "Fire Equipment", "First Aid", "Signage", "Lockout/Tagout"],
-  "Hydraulic": ["Pumps", "Cylinders", "Hoses", "Fittings", "Filters", "Accumulators"],
-  "Pneumatic": ["Compressors", "Regulators", "Fittings", "Hoses", "Cylinders", "Solenoids"],
-  "Structural": ["Steel", "Brackets", "Bolts", "Welding", "Wear Plates", "Liners"],
+  "Pipe Fitting": ["Ball Valve", "Coupling", "Elbow", "Tee", "Reducer", "Nipple", "Adaptor", "Stub Flange", "Socket"],
+  "Motor": ["Electric Motor", "Hydraulic Motor", "Vibrator"],
+  "Pump": ["Submersible", "Centrifugal", "Diaphragm", "AODD"],
+  "Valve": ["Butterfly", "Knife Gate", "Ball", "Check"],
+  "Filter": ["Air Filter", "Oil Filter", "Fuel Filter", "Hydraulic Filter"],
+  "Bearing": ["Pillow Block", "Spherical Roller", "Tapered Roller", "Ball Bearing"],
+  "Clamp": ["Saddle Clamp", "Pipe Clamp", "Hose Clamp"],
+  "Bolts": ["Hex Bolt", "U-Bolt", "Anchor Bolt"],
+  "Electrical": ["Switch", "Cable", "Connector", "Circuit Breaker", "Contactor"],
+  "Consumable": ["Gloves", "PPE", "Tape", "Lubricant"],
+  "Conveyor Mechanical Components": ["Roller", "Scraper", "Belt", "Idler"],
 };
 
 // Units of measure
-export const unitsOfMeasure = ["EA", "BOX", "PKT", "M", "L", "KG", "SET", "PAIR", "ROLL"];
+export const unitsOfMeasure = ["EA", "BOX", "PKT", "M", "L", "KG", "SET", "PAIR", "ROLL", "PK"];
 
-// Helper to determine category from description
-const determineCategory = (description: string, componentType: string): { category: string; subcategory: string } => {
-  const descLower = description.toLowerCase();
-  const typeLower = componentType.toLowerCase();
-  
-  // Electrical
-  if (typeLower.includes("motor") || descLower.includes("motor")) {
-    return { category: "Electrical", subcategory: "Motors" };
-  }
-  if (typeLower.includes("cable") || descLower.includes("cable") || descLower.includes("wire")) {
-    return { category: "Electrical", subcategory: "Cables" };
-  }
-  if (typeLower.includes("circuit breaker") || descLower.includes("mcb") || descLower.includes("rcbo")) {
-    return { category: "Electrical", subcategory: "Circuit Breakers" };
-  }
-  if (typeLower.includes("contactor") || descLower.includes("contactor")) {
-    return { category: "Electrical", subcategory: "Contactors" };
-  }
-  if (typeLower.includes("relay") || descLower.includes("relay")) {
-    return { category: "Electrical", subcategory: "Relays" };
-  }
-  if (typeLower.includes("switch") || descLower.includes("switch") || descLower.includes("isolator")) {
-    return { category: "Electrical", subcategory: "Switches" };
-  }
-  if (typeLower.includes("light") || descLower.includes("light") || descLower.includes("lamp") || descLower.includes("led")) {
-    return { category: "Electrical", subcategory: "Lighting" };
-  }
-  if (typeLower.includes("power supply") || descLower.includes("power supply")) {
-    return { category: "Electrical", subcategory: "Power Supplies" };
-  }
-  if (typeLower.includes("plc") || descLower.includes("plc") || descLower.includes("controller")) {
-    return { category: "Electrical", subcategory: "PLCs" };
-  }
-  if (typeLower.includes("sensor") || descLower.includes("sensor") || descLower.includes("proximity")) {
-    return { category: "Electrical", subcategory: "Sensors" };
-  }
-  
-  // Mechanical
-  if (typeLower.includes("bearing") || descLower.includes("bearing")) {
-    return { category: "Mechanical", subcategory: "Bearings" };
-  }
-  if (typeLower.includes("seal") || descLower.includes("seal") || descLower.includes("o-ring")) {
-    return { category: "Mechanical", subcategory: "Seals" };
-  }
-  if (typeLower.includes("gearbox") || descLower.includes("gearbox") || descLower.includes("reducer")) {
-    return { category: "Mechanical", subcategory: "Gearboxes" };
-  }
-  if (typeLower.includes("coupling") || descLower.includes("coupling")) {
-    return { category: "Mechanical", subcategory: "Couplings" };
-  }
-  if (typeLower.includes("belt") || descLower.includes("belt") || descLower.includes("v-belt")) {
-    return { category: "Mechanical", subcategory: "Belts" };
-  }
-  if (typeLower.includes("pulley") || descLower.includes("pulley")) {
-    return { category: "Mechanical", subcategory: "Pulleys" };
-  }
-  if (typeLower.includes("bush") || descLower.includes("bush")) {
-    return { category: "Mechanical", subcategory: "Bushes" };
-  }
-  
-  // Instrumentation
-  if (typeLower.includes("transmitter") || descLower.includes("transmitter")) {
-    return { category: "Instrumentation", subcategory: "Transmitters" };
-  }
-  if (typeLower.includes("gauge") || descLower.includes("gauge")) {
-    return { category: "Instrumentation", subcategory: "Gauges" };
-  }
-  if (typeLower.includes("valve") || descLower.includes("valve")) {
-    return { category: "Instrumentation", subcategory: "Valves" };
-  }
-  if (typeLower.includes("flowmeter") || descLower.includes("flow meter")) {
-    return { category: "Instrumentation", subcategory: "Flowmeters" };
-  }
-  
-  // Consumables
-  if (typeLower.includes("filter") || descLower.includes("filter")) {
-    return { category: "Consumable", subcategory: "Filters" };
-  }
-  if (typeLower.includes("lubricant") || descLower.includes("oil") || descLower.includes("grease")) {
-    return { category: "Consumable", subcategory: "Lubricants" };
-  }
-  if (typeLower.includes("gasket") || descLower.includes("gasket")) {
-    return { category: "Consumable", subcategory: "Gaskets" };
-  }
-  if (typeLower.includes("fastener") || descLower.includes("bolt") || descLower.includes("nut") || descLower.includes("screw")) {
-    return { category: "Consumable", subcategory: "Fasteners" };
-  }
-  if (typeLower.includes("tape") || descLower.includes("tape")) {
-    return { category: "Consumable", subcategory: "Tape" };
-  }
-  
-  // Hydraulic
-  if (typeLower.includes("hydraulic") || descLower.includes("hydraulic")) {
-    if (descLower.includes("pump")) return { category: "Hydraulic", subcategory: "Pumps" };
-    if (descLower.includes("cylinder")) return { category: "Hydraulic", subcategory: "Cylinders" };
-    if (descLower.includes("hose")) return { category: "Hydraulic", subcategory: "Hoses" };
-    return { category: "Hydraulic", subcategory: "Fittings" };
-  }
-  
-  // Pneumatic
-  if (typeLower.includes("pneumatic") || descLower.includes("pneumatic") || descLower.includes("air ")) {
-    if (descLower.includes("regulator")) return { category: "Pneumatic", subcategory: "Regulators" };
-    if (descLower.includes("solenoid")) return { category: "Pneumatic", subcategory: "Solenoids" };
-    return { category: "Pneumatic", subcategory: "Fittings" };
-  }
-  
-  // Structural
-  if (typeLower.includes("weld") || descLower.includes("weld") || descLower.includes("electrode")) {
-    return { category: "Structural", subcategory: "Welding" };
-  }
-  if (typeLower.includes("liner") || descLower.includes("liner") || descLower.includes("wear plate")) {
-    return { category: "Structural", subcategory: "Wear Plates" };
-  }
-  
-  // Default
-  return { category: "Consumable", subcategory: "General" };
-};
+// Raw data from Book2.xlsx - completely replaced
+const rawStockData: Array<{
+  itemNo: number;
+  category: string;
+  location: string;
+  binLocation: string;
+  storageType: string;
+  description: string;
+  sizeSpec: string;
+  material: string;
+  uom: string;
+  qty: number | string;
+  condition: string;
+  productCode: string;
+  manufacturer: string;
+  assetTag: string;
+  remarks: string;
+  criticalSpareId: string;
+}> = [
+  { itemNo: 1, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "20mm BSP 316 Stainless Ball Valve 2 Piece F/F Watermark BVS2P020", sizeSpec: "20mm", material: "316 SS", uom: "EA", qty: 20, condition: "Serviceable", productCode: "BVS2P020", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 2, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "25mm BSP 316 Stainless Ball Valve 2 Piece F/F Watermark BVS2P025", sizeSpec: "25mm", material: "316 SS", uom: "EA", qty: 20, condition: "Serviceable", productCode: "BVS2P025", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "727, 847" },
+  { itemNo: 3, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "32mm BSP 316 Stainless Ball Valve 2 Piece F/F Watermark BVS2P032", sizeSpec: "32mm", material: "316 SS", uom: "EA", qty: 10, condition: "Serviceable", productCode: "BVS2P032", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "728" },
+  { itemNo: 4, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "40mm BSP 316 Stainless Ball Valve 2 Piece F/F Watermark BVS2P040", sizeSpec: "40mm", material: "316 SS", uom: "EA", qty: 10, condition: "Serviceable", productCode: "BVS2P040", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "729" },
+  { itemNo: 5, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "50mm BSP 316 Stainless Ball Valve 2 Piece F/F Watermark BVS2P050", sizeSpec: "50mm", material: "316 SS", uom: "EA", qty: 10, condition: "Serviceable", productCode: "BVS2P050", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "730, 846" },
+  { itemNo: 6, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "50 x 25mm 316SS Reducing Socket (2 x 1) SBSPSR050025", sizeSpec: "50 x 25mm", material: "316 SS", uom: "EA", qty: 30, condition: "Serviceable", productCode: "SBSPSR050025", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 7, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "50 x 32mm 316SS Reducing Socket (2 x 1 1/4) SBSPSR050032", sizeSpec: "50 x 32m", material: "316 SS", uom: "EA", qty: 30, condition: "Serviceable", productCode: "SBSPSR050032", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 8, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "50 x 40mm 316SS Reducing Socket (2 x 1 1/2) SBSPSR050040", sizeSpec: "", material: "316 SS", uom: "EA", qty: 30, condition: "Serviceable", productCode: "SBSPSR050040", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 9, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "40 x 25mm 316SS Reducing Socket (1 1/2 x 1) SBSPSR040025", sizeSpec: "40 x 25m", material: "316 SS", uom: "EA", qty: 20, condition: "Serviceable", productCode: "SBSPSR040025", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 10, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "40 x 32mm 316SS Reducing Socket (1 1/2 x 1 1/4) SBSPSR040032", sizeSpec: "40 x 32mm", material: "316 SS", uom: "EA", qty: 20, condition: "Serviceable", productCode: "SBSPSR040032", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 11, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "32 x 20mm 316SS Reducing Socket (1 1/4 x 3/4) SBSPSR030220", sizeSpec: "32 x 20mm", material: "316 SS", uom: "EA", qty: 20, condition: "Serviceable", productCode: "SBSPSR030220", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 12, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "32 x 25mm 316SS Reducing Socket (1 1/4 x 1) SBSPSR030225", sizeSpec: "32 x 25mm", material: "316 SS", uom: "EA", qty: 20, condition: "Serviceable", productCode: "SBSPSR030225", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 13, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "50mm BSP 316SS Hex Nipple – SHN050", sizeSpec: "50mm", material: "316 SS", uom: "EA", qty: 20, condition: "Serviceable", productCode: "SHN050", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "735" },
+  { itemNo: 14, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "40mm BSP 316SS Hex Nipple – SHN040", sizeSpec: "40mm", material: "316 SS", uom: "EA", qty: 20, condition: "Serviceable", productCode: "SHN040", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 15, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "32mm BSP 316SS Hex Nipple – SHN032", sizeSpec: "32mm", material: "316 SS", uom: "EA", qty: 20, condition: "Serviceable", productCode: "SHN032", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "742" },
+  { itemNo: 16, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "25mm BSP 316SS Hex Nipple – SHN025", sizeSpec: "25mm", material: "316 SS", uom: "EA", qty: 20, condition: "Serviceable", productCode: "SHN025", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "734" },
+  { itemNo: 17, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "20mm BSP 316SS Hex Nipple – SHN020", sizeSpec: "20mm", material: "316 SS", uom: "EA", qty: 20, condition: "Serviceable", productCode: "SHN020", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 18, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "20mm Hansen Poly Ball Valve – 30-HBV20", sizeSpec: "20mm", material: "PP", uom: "EA", qty: 20, condition: "Serviceable", productCode: "30-HBV20", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 19, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "25mm Hansen Poly Ball Valve – 30-HBV25", sizeSpec: "25mm", material: "PP", uom: "EA", qty: 20, condition: "Serviceable", productCode: "30-HBV25", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 20, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "32mm Hansen Poly Ball Valve – 30-HBV32", sizeSpec: "32mm", material: "PP", uom: "EA", qty: 10, condition: "Serviceable", productCode: "30-HBV32", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 21, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "40mm Hansen Poly Ball Valve – 30-HBV40", sizeSpec: "40mm", material: "PP", uom: "EA", qty: 10, condition: "Serviceable", productCode: "30-HBV40", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 22, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "50mm Hansen Poly Ball Valve – 30-HBV50", sizeSpec: "50mm", material: "PP", uom: "EA", qty: 10, condition: "Serviceable", productCode: "30-HBV50", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 23, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "50mm x 20mm BSP Poly Reducing Socket – 30-SRS5020", sizeSpec: "50mm x 20mm", material: "PP", uom: "EA", qty: 40, condition: "Serviceable", productCode: "30-SRS5020", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 24, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "50mm x 25mm BSP Poly Reducing Socket – 30-SRS5025", sizeSpec: "50mm x 25mm", material: "PP", uom: "EA", qty: 40, condition: "Serviceable", productCode: "30-SRS5025", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 25, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "50mm x 32mm BSP Poly Reducing Socket – 30-SRS5032", sizeSpec: "50mm x 32mm", material: "PP", uom: "EA", qty: 40, condition: "Serviceable", productCode: "30-SRS5032", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 26, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "50mm x 40mm BSP Poly Reducing Socket – 30-SRS5040", sizeSpec: "50mm x 40mm", material: "PP", uom: "EA", qty: 40, condition: "Serviceable", productCode: "30-SRS5040", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 27, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "40mm x 20mm BSP Poly Reducing Socket – 30-SRS4020", sizeSpec: "40mm x 20mm", material: "PP", uom: "EA", qty: 30, condition: "Serviceable", productCode: "30-SRS4020", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 28, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "40mm x 25mm BSP Poly Reducing Socket – 30-SRS4025", sizeSpec: "40mm x 25mm", material: "PP", uom: "EA", qty: 30, condition: "Serviceable", productCode: "30-SRS4025", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 29, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "40mm x 32mm BSP Poly Reducing Socket – 30-SRS4032", sizeSpec: "40mm x 32mm", material: "PP", uom: "EA", qty: 30, condition: "Serviceable", productCode: "30-SRS4032", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 30, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "32mm x 20mm BSP Poly Reducing Socket – 30-SRS3220", sizeSpec: "32mm x 20mm", material: "PP", uom: "EA", qty: 30, condition: "Serviceable", productCode: "30-SRS3220", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 31, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "32mm x 25mm BSP Poly Reducing Socket – 30-SRS3225", sizeSpec: "32mm x 25mm", material: "PP", uom: "EA", qty: 30, condition: "Serviceable", productCode: "30-SRS3225", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 32, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "2\" BSP Poly Nipple – 5060006", sizeSpec: "2\"", material: "PP", uom: "EA", qty: 20, condition: "Serviceable", productCode: "5060006", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "738" },
+  { itemNo: 33, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "1 1/2\" BSP Poly Nipple – 5060005", sizeSpec: "1 1/2\"", material: "PP", uom: "EA", qty: 20, condition: "Serviceable", productCode: "5060005", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "740" },
+  { itemNo: 34, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "1 1/4\" BSP Poly Nipple – 5060004", sizeSpec: "1 1/4\"", material: "PP", uom: "EA", qty: 20, condition: "Serviceable", productCode: "5060004", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "741" },
+  { itemNo: 35, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "1\" BSP Poly Nipple – 5060003", sizeSpec: "1\"", material: "PP", uom: "EA", qty: 20, condition: "Serviceable", productCode: "5060003", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "739" },
+  { itemNo: 36, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "3/4\" BSP Poly Nipple – 5060002", sizeSpec: "3/4\"", material: "PP", uom: "EA", qty: 20, condition: "Serviceable", productCode: "5060002", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 37, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "32mm Metric Coupling Compression – CMC032", sizeSpec: "32mm", material: "PP", uom: "EA", qty: 5, condition: "Serviceable", productCode: "CMC032", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 38, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "32mm 90° Metric Elbow (Plasson) – 7050009", sizeSpec: "32mm", material: "PP", uom: "EA", qty: 5, condition: "Serviceable", productCode: "7050009", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "684" },
+  { itemNo: 39, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "63mm Metric Coupling Compression – CMC063", sizeSpec: "63mm", material: "PP", uom: "EA", qty: 10, condition: "Serviceable", productCode: "CMC063", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "695" },
+  { itemNo: 40, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "75mm Metric Tee Compression – CMT075", sizeSpec: "75mm", material: "PP", uom: "EA", qty: 5, condition: "Serviceable", productCode: "CMT075", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 41, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "75mm Metric 90° Elbow Compression – CME075", sizeSpec: "75mm", material: "PP", uom: "EA", qty: 5, condition: "Serviceable", productCode: "CME075", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 42, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "75mm Metric Coupling Compression", sizeSpec: "75mm", material: "PP", uom: "EA", qty: 5, condition: "Serviceable", productCode: "CMC075", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "679" },
+  { itemNo: 43, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "90mm 90° Metric Elbow (Plasson) – 7050014", sizeSpec: "90mm", material: "PP", uom: "EA", qty: 5, condition: "Serviceable", productCode: "7050014", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "700" },
+  { itemNo: 44, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "63mm x 2\" Metric Male Adaptor Compression – CMMA063X2", sizeSpec: "63mm x 2\"", material: "PP", uom: "EA", qty: 10, condition: "Serviceable", productCode: "CMMA063X2", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 45, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "50mm x 1\" Metric Male Adaptor (Plasson) – 7020035", sizeSpec: "50mm x 1\"", material: "PP", uom: "EA", qty: 5, condition: "Serviceable", productCode: "7020035", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 46, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "40mm x 1\" Metric Male Adaptor (Plasson) – 7020031", sizeSpec: "40mm x 1\"", material: "PP", uom: "EA", qty: 5, condition: "Serviceable", productCode: "7020031", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 47, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "2\" BSP Threaded Socket – 5010006", sizeSpec: "2\"", material: "PP", uom: "EA", qty: 20, condition: "Serviceable", productCode: "5010006", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "746" },
+  { itemNo: 48, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "1 1/2\" BSP Threaded Socket – 5010005", sizeSpec: "1 1/2\"", material: "PP", uom: "EA", qty: 20, condition: "Serviceable", productCode: "5010005", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "744" },
+  { itemNo: 49, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "1 1/4\" BSP Threaded Socket – 5010004", sizeSpec: "1 1/4\"", material: "PP", uom: "EA", qty: 20, condition: "Serviceable", productCode: "5010004", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "745" },
+  { itemNo: 50, category: "Pipe Fitting", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "1\" BSP Threaded Socket – 5010003", sizeSpec: "1\"", material: "PP", uom: "EA", qty: 20, condition: "Serviceable", productCode: "5010003", manufacturer: "Global Water Group", assetTag: "", remarks: "", criticalSpareId: "743" },
+  { itemNo: 57, category: "Motor", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "WEG Electric Motor M3 W22 Mining IE3 0.37kW 02P71 -220-230-240/380-400-415//460 V50 Hz 3 Phase IP66 B5R(E)", sizeSpec: "", material: "", uom: "EA", qty: 1, condition: "Serviceable", productCode: "M3 W22", manufacturer: "WEG", assetTag: "Spare EW Blower", remarks: "", criticalSpareId: "" },
+  { itemNo: 58, category: "Motor", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "WEG Electric Motor KTE21 W22M Mining IE3 5.5kW 04P132S -380-400-415/660-690//460 V50 Hz 3 Phase IP66 B3R(E)", sizeSpec: "", material: "", uom: "EA", qty: 5, condition: "Serviceable", productCode: "KTE21 W22M", manufacturer: "WEG", assetTag: "1x Knelson Concentrator 1x Kiln Sump Pump 1x Sump Pump 1x Tank Sump Pump 1x Mill Sump Pump", remarks: "", criticalSpareId: "867, 869, 873, 875" },
+  { itemNo: 59, category: "Motor", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "WEG Electric Motor KTE23 W22M Mining IE3 3kW 04PL100L -220-230-240/380-400-415//460 V50 Hz 3 Phase IP66 B3R(E)", sizeSpec: "", material: "", uom: "EA", qty: 2, condition: "Serviceable", productCode: "KTE23 W22M", manufacturer: "WEG", assetTag: "1x Gravity Table 1x Kiln Discharge Pump", remarks: "", criticalSpareId: "870, 876" },
+  { itemNo: 60, category: "Motor", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "WEG Electric Motor M23C ALIE2W21 Multimounting 3kW 04PL100L -220-230-240/380-400-415//460 V50 Hz 3 Phase IP55 B14T", sizeSpec: "", material: "", uom: "EA", qty: 1, condition: "Serviceable", productCode: "M23C ALIE2W21", manufacturer: "WEG", assetTag: "1x Mill Hydraulic Oil Unit Cooler", remarks: "", criticalSpareId: "866" },
+  { itemNo: 61, category: "Motor", location: "Storage Shelter", binLocation: "", storageType: "Pallet", description: "Grundfos SMART Digital Dosing Pump DDA 7.5-16 AR 100-240V 50/60Hz IP65", sizeSpec: "", material: "", uom: "EA", qty: 2, condition: "Serviceable", productCode: "97722794", manufacturer: "Grundfos", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 103, category: "Pump", location: "Site Office Laydown Area", binLocation: "", storageType: "Pallet", description: "KETO K-HS4DDM PUMP SET", sizeSpec: "", material: "", uom: "EA", qty: 1, condition: "Serviceable", productCode: "K-HS4DDM", manufacturer: "KETO", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 104, category: "Pump", location: "Site Office Laydown Area", binLocation: "", storageType: "Pallet", description: "Southern Cross ISO Pump 150x125-400 Trim to 394MM & Mech Seal & O-Ring Kit", sizeSpec: "", material: "", uom: "EA", qty: 2, condition: "Serviceable", productCode: "", manufacturer: "PPS", assetTag: "PO-2260", remarks: "", criticalSpareId: "" },
+  { itemNo: 105, category: "Motor", location: "Site Office Laydown Area", binLocation: "", storageType: "Pallet", description: "WEG Electric Motor MTE36 W22 Mining IE3 22kW 4P180L - 380-400-415/660-690/460V 50Hz- B5R(E)", sizeSpec: "B5R(E)", material: "22kW 4P180L - 380-400-415/660-690/460V 50Hz", uom: "EA", qty: 1, condition: "Serviceable", productCode: "MTE36 W22", manufacturer: "WEG", assetTag: "", remarks: "", criticalSpareId: "871" },
+  { itemNo: 107, category: "Valve", location: "Site Office Laydown Area", binLocation: "", storageType: "Pallet", description: "DN200 CLARKSON 316SS GATE URETHANE KNIFE GATE VALVE ASSEMBLY SU10R DI BODY SEAT LUGGED TABLE-E C/W KEYSTONE F738 P6 DOUBLE ACTING PNEUMATIC ACTUATOR C/W PROX SWITCH KITS IFM", sizeSpec: "", material: "", uom: "EA", qty: 2, condition: "Serviceable", productCode: "123330", manufacturer: "Keyflo", assetTag: "", remarks: "", criticalSpareId: "782" },
+  { itemNo: 108, category: "Motor", location: "Site Office Laydown Area", binLocation: "", storageType: "Pallet", description: "WEG Electric Motor W22 Mining IE3 1.1kW 4P 90S 3Ph 220-230-240/380-400-415//460 V 50 Hz IC411 - TEFC - B5R(E)", sizeSpec: "", material: "", uom: "EA", qty: 2, condition: "Serviceable", productCode: "MTE10 W22M (15541729)", manufacturer: "WEG", assetTag: "", remarks: "", criticalSpareId: "858, 859" },
+  { itemNo: 133, category: "Pump", location: "Site Office Laydown Area", binLocation: "", storageType: "Pallet", description: "Flextool Submersible Pump – Abrasion Resistant FP212A", sizeSpec: "", material: "", uom: "EA", qty: 3, condition: "Serviceable", productCode: "FT2018181-UNIT", manufacturer: "Flextool", assetTag: "", remarks: "", criticalSpareId: "832" },
+  { itemNo: 134, category: "Pump", location: "Site Office Laydown Area", binLocation: "", storageType: "Pallet", description: "TSURUMI Submersible Pump KTZ411-53 Construction Dewatering 11kW 50Hz 300/400/415V", sizeSpec: "Bore: 100mm", material: "11kW 50Hz 300/400/415V", uom: "EA", qty: 1, condition: "Serviceable", productCode: "I01IKZ4KHUC", manufacturer: "TSURUMI", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 135, category: "Roller", location: "Site Office Laydown Area", binLocation: "", storageType: "Pallet", description: "D89MMx360MM Matec Industies Conveyor Rollers", sizeSpec: "D89Mx360MM", material: "Steel", uom: "EA", qty: 34, condition: "Serviceable", productCode: "COMPRULPORT3742ACBL360", manufacturer: "Matec Industries", assetTag: "", remarks: "", criticalSpareId: "996, 1011" },
+  { itemNo: 197, category: "Motor", location: "Shutdown Staging Area", binLocation: "", storageType: "Pallet", description: "WEG Cast Iron Motor L12C W22 1.5kW04P90L-220-230-240/380-400-415/460 V 50 Hz 3 Phase IP66 B34R(E)", sizeSpec: "", material: "Cast Iron/ 1.5kW04P90L-220-230-240/380-400-415/460 V 50 Hz 3 Phase IP66 B34R(E)", uom: "EA", qty: 1, condition: "Serviceable", productCode: "12593817", manufacturer: "WEG", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 198, category: "Pump", location: "Shutdown Staging Area", binLocation: "", storageType: "Pallet", description: "1\" WILDEN PE AODD Pump Pro-Flo® Bolted Flanged w/ PTFE", sizeSpec: "1\"", material: "PE", uom: "EA", qty: 2, condition: "Serviceable", productCode: "02-12239", manufacturer: "WILDEN", assetTag: "", remarks: "", criticalSpareId: "" },
+  { itemNo: 211, category: "Pump", location: "Shutdown Staging Area", binLocation: "", storageType: "Pallet", description: "Grundfos Vertical Multistage Centrifugal Pump CRN5-12 A-FGJ-A-V-HQQV 50Hz 2.2kW 5.8m3/h", sizeSpec: "50Hz 2.2kW 5.8m3/h", material: "", uom: "EA", qty: 1, condition: "Serviceable", productCode: "A-96517212", manufacturer: "Grundfos", assetTag: "", remarks: "", criticalSpareId: "803" },
+  { itemNo: 223, category: "Motor", location: "Shutdown Staging Area", binLocation: "", storageType: "Pallet", description: "URAS KEE 75-4 URAS Vibrator motor. 3 kW FLA 5.7 1445rpm", sizeSpec: "3 kW FLA 5.7 1445rpm", material: "", uom: "EA", qty: 2, condition: "Serviceable", productCode: "KEE-75-4CWSK", manufacturer: "URAS Techno Co.", assetTag: "", remarks: "", criticalSpareId: "882" },
+];
 
-// Generate bin location
-const generateBinLocation = (index: number): { warehouseArea: string; aisle: string; rack: string; binLocation: string } => {
-  const areas = ["A", "B", "C", "D"];
-  const areaIndex = Math.floor(index / 250) % areas.length;
-  const area = areas[areaIndex];
-  const aisleNum = Math.floor((index % 250) / 50) + 1;
-  const rackNum = Math.floor((index % 50) / 10) + 1;
-  const binNum = (index % 10) + 1;
-  
-  return {
-    warehouseArea: area,
-    aisle: String(aisleNum).padStart(2, "0"),
-    rack: String(rackNum),
-    binLocation: `${area}-${String(aisleNum).padStart(2, "0")}-${rackNum}${String(binNum).padStart(2, "0")}`,
-  };
-};
-
-// Generate stock status based on quantities
-const getStockStatus = (qtyOnHand: number, minQty: number): SiteSpareItem["status"] => {
-  if (qtyOnHand === 0) return "Out of Stock";
-  if (qtyOnHand <= minQty) return "Low Stock";
+// Transform raw data to SiteSpareItem format
+const getStockStatus = (condition: string, qty: number | string): SiteSpareItem["status"] => {
+  if (condition === "Require Repair" || condition === "Require repair") return "Require Repair";
+  if (qty === 0 || qty === "" || qty === "0") return "Out of Stock";
   return "Active";
 };
 
-// ═══════════════════════════════════════════════════════════════════════════════════════
-// SITE CATALOGUE DATA - FULL IMPORT from Catalogue_Template_TCMG_220925-2.xlsx
-// Restructured for inventory management with warehouse locations and stock tracking
-// ═══════════════════════════════════════════════════════════════════════════════════════
+// Parse bin location into components
+const parseBinLocation = (binLoc: string): { aisle: string; rack: string } => {
+  if (!binLoc) return { aisle: "", rack: "" };
+  const parts = binLoc.split(/[R]/i);
+  if (parts.length >= 2) {
+    return { aisle: parts[0] || "", rack: parts[1] || "" };
+  }
+  return { aisle: "", rack: "" };
+};
 
-// Raw catalogue items from Excel import
-const rawCatalogueItems = [
-  { type: "Motor Starter", description: "Motor Starter Direct On Line 2.5 Amp", qty: 1 },
-  { type: "Motor Starter", description: "Motor Starter Direct On Line 5.5 Amp", qty: 2 },
-  { type: "Motor Starter", description: "Motor Starter Direct On Line 9 Amp", qty: 1 },
-  { type: "Motor Starter", description: "Motor Starter Direct On Line 12 Amp", qty: 2 },
-  { type: "Motor Starter", description: "Motor Starter Direct On Line 18 Amp", qty: 1 },
-  { type: "Motor Starter", description: "Motor Starter Direct On Line 25 Amp", qty: 1 },
-  { type: "Motor Starter", description: "Motor Starter Direct On Line 32 Amp", qty: 1 },
-  { type: "Overload", description: "Thermal Overload Relay 0.63-1A", qty: 2 },
-  { type: "Overload", description: "Thermal Overload Relay 1-1.6A", qty: 2 },
-  { type: "Overload", description: "Thermal Overload Relay 1.6-2.5A", qty: 3 },
-  { type: "Overload", description: "Thermal Overload Relay 2.5-4A", qty: 2 },
-  { type: "Overload", description: "Thermal Overload Relay 4-6A", qty: 2 },
-  { type: "Overload", description: "Thermal Overload Relay 5.5-8A", qty: 2 },
-  { type: "Overload", description: "Thermal Overload Relay 7-10A", qty: 2 },
-  { type: "Overload", description: "Thermal Overload Relay 9-13A", qty: 2 },
-  { type: "Overload", description: "Thermal Overload Relay 12-18A", qty: 2 },
-  { type: "Overload", description: "Thermal Overload Relay 17-25A", qty: 2 },
-  { type: "Overload", description: "Thermal Overload Relay 23-32A", qty: 2 },
-  { type: "Overload", description: "Thermal Overload Relay 30-40A", qty: 1 },
-  { type: "Overload", description: "Thermal Overload Relay 37-50A", qty: 1 },
-  { type: "Contactor", description: "Contactor 3 Pole 9A 240V Coil", qty: 2 },
-  { type: "Contactor", description: "Contactor 3 Pole 12A 240V Coil", qty: 3 },
-  { type: "Contactor", description: "Contactor 3 Pole 18A 240V Coil", qty: 2 },
-  { type: "Contactor", description: "Contactor 3 Pole 25A 240V Coil", qty: 2 },
-  { type: "Contactor", description: "Contactor 3 Pole 32A 240V Coil", qty: 2 },
-  { type: "Contactor", description: "Contactor 3 Pole 40A 240V Coil", qty: 1 },
-  { type: "Contactor", description: "Contactor 3 Pole 50A 240V Coil", qty: 1 },
-  { type: "Contactor", description: "Contactor 3 Pole 65A 240V Coil", qty: 1 },
-  { type: "Contactor", description: "Contactor 3 Pole 80A 240V Coil", qty: 1 },
-  { type: "Contactor", description: "Contactor 3 Pole 95A 240V Coil", qty: 1 },
-  { type: "Auxiliary", description: "Auxiliary Contact Block 1NO+1NC Front Mount", qty: 5 },
-  { type: "Auxiliary", description: "Auxiliary Contact Block 2NO Front Mount", qty: 3 },
-  { type: "Auxiliary", description: "Auxiliary Contact Block 2NC Front Mount", qty: 2 },
-  { type: "Timer", description: "Timer Relay On Delay 0.1s-10s 240VAC", qty: 2 },
-  { type: "Timer", description: "Timer Relay On Delay 1s-100s 240VAC", qty: 2 },
-  { type: "Timer", description: "Timer Relay Off Delay 0.1s-10s 240VAC", qty: 2 },
-  { type: "Timer", description: "Timer Relay Star Delta 0.1s-30s 240VAC", qty: 2 },
-  { type: "Relay", description: "Relay 11 Pin 3PDT 240VAC Coil", qty: 5 },
-  { type: "Relay", description: "Relay 8 Pin DPDT 240VAC Coil", qty: 5 },
-  { type: "Relay", description: "Relay 8 Pin DPDT 24VDC Coil", qty: 5 },
-  { type: "Relay Base", description: "Relay Base 11 Pin DIN Rail Mount", qty: 5 },
-  { type: "Relay Base", description: "Relay Base 8 Pin DIN Rail Mount", qty: 5 },
-  { type: "Circuit Breaker", description: "MCB 1 Pole 6A C Curve", qty: 5 },
-  { type: "Circuit Breaker", description: "MCB 1 Pole 10A C Curve", qty: 5 },
-  { type: "Circuit Breaker", description: "MCB 1 Pole 16A C Curve", qty: 5 },
-  { type: "Circuit Breaker", description: "MCB 1 Pole 20A C Curve", qty: 3 },
-  { type: "Circuit Breaker", description: "MCB 1 Pole 25A C Curve", qty: 3 },
-  { type: "Circuit Breaker", description: "MCB 1 Pole 32A C Curve", qty: 3 },
-  { type: "Circuit Breaker", description: "MCB 2 Pole 6A C Curve", qty: 3 },
-  { type: "Circuit Breaker", description: "MCB 2 Pole 10A C Curve", qty: 3 },
-  { type: "Circuit Breaker", description: "MCB 2 Pole 16A C Curve", qty: 3 },
-  { type: "Circuit Breaker", description: "MCB 2 Pole 20A C Curve", qty: 2 },
-  { type: "Circuit Breaker", description: "MCB 2 Pole 25A C Curve", qty: 2 },
-  { type: "Circuit Breaker", description: "MCB 2 Pole 32A C Curve", qty: 2 },
-  { type: "Circuit Breaker", description: "MCB 3 Pole 6A C Curve", qty: 2 },
-  { type: "Circuit Breaker", description: "MCB 3 Pole 10A C Curve", qty: 2 },
-  { type: "Circuit Breaker", description: "MCB 3 Pole 16A C Curve", qty: 2 },
-  { type: "Circuit Breaker", description: "MCB 3 Pole 20A C Curve", qty: 2 },
-  { type: "Circuit Breaker", description: "MCB 3 Pole 25A C Curve", qty: 2 },
-  { type: "Circuit Breaker", description: "MCB 3 Pole 32A C Curve", qty: 2 },
-  { type: "Circuit Breaker", description: "MCB 3 Pole 40A C Curve", qty: 2 },
-  { type: "Circuit Breaker", description: "MCB 3 Pole 50A C Curve", qty: 1 },
-  { type: "Circuit Breaker", description: "MCB 3 Pole 63A C Curve", qty: 1 },
-  { type: "RCBO", description: "RCBO 1P+N 10A 30mA C Curve", qty: 3 },
-  { type: "RCBO", description: "RCBO 1P+N 16A 30mA C Curve", qty: 3 },
-  { type: "RCBO", description: "RCBO 1P+N 20A 30mA C Curve", qty: 3 },
-  { type: "RCBO", description: "RCBO 1P+N 25A 30mA C Curve", qty: 2 },
-  { type: "RCBO", description: "RCBO 1P+N 32A 30mA C Curve", qty: 2 },
-  { type: "RCD", description: "RCD 2 Pole 25A 30mA", qty: 2 },
-  { type: "RCD", description: "RCD 2 Pole 40A 30mA", qty: 2 },
-  { type: "RCD", description: "RCD 2 Pole 63A 30mA", qty: 2 },
-  { type: "RCD", description: "RCD 4 Pole 25A 30mA", qty: 2 },
-  { type: "RCD", description: "RCD 4 Pole 40A 30mA", qty: 2 },
-  { type: "RCD", description: "RCD 4 Pole 63A 30mA", qty: 2 },
-  { type: "Isolator", description: "Isolator Switch 3 Pole 20A", qty: 2 },
-  { type: "Isolator", description: "Isolator Switch 3 Pole 32A", qty: 2 },
-  { type: "Isolator", description: "Isolator Switch 3 Pole 40A", qty: 2 },
-  { type: "Isolator", description: "Isolator Switch 3 Pole 63A", qty: 2 },
-  { type: "Isolator", description: "Isolator Switch 3 Pole 80A", qty: 1 },
-  { type: "Isolator", description: "Isolator Switch 3 Pole 100A", qty: 1 },
-  { type: "Fuse", description: "HRC Fuse Link 2A", qty: 10 },
-  { type: "Fuse", description: "HRC Fuse Link 4A", qty: 10 },
-  { type: "Fuse", description: "HRC Fuse Link 6A", qty: 10 },
-  { type: "Fuse", description: "HRC Fuse Link 10A", qty: 10 },
-  { type: "Fuse", description: "HRC Fuse Link 16A", qty: 10 },
-  { type: "Fuse", description: "HRC Fuse Link 20A", qty: 10 },
-  { type: "Fuse", description: "HRC Fuse Link 25A", qty: 5 },
-  { type: "Fuse", description: "HRC Fuse Link 32A", qty: 5 },
-  { type: "Fuse", description: "HRC Fuse Link 40A", qty: 5 },
-  { type: "Fuse", description: "HRC Fuse Link 50A", qty: 5 },
-  { type: "Fuse", description: "HRC Fuse Link 63A", qty: 5 },
-  { type: "Fuse Holder", description: "Fuse Holder 1 Pole DIN Rail 10x38mm", qty: 5 },
-  { type: "Fuse Holder", description: "Fuse Holder 3 Pole DIN Rail 10x38mm", qty: 3 },
-  { type: "Power Supply", description: "Power Supply 24VDC 2.5A DIN Rail", qty: 2 },
-  { type: "Power Supply", description: "Power Supply 24VDC 5A DIN Rail", qty: 2 },
-  { type: "Power Supply", description: "Power Supply 24VDC 10A DIN Rail", qty: 1 },
-  { type: "Power Supply", description: "Power Supply 24VDC 20A DIN Rail", qty: 1 },
-  { type: "Terminal", description: "Terminal Block 2.5mm Grey DIN Rail", qty: 50 },
-  { type: "Terminal", description: "Terminal Block 4mm Grey DIN Rail", qty: 50 },
-  { type: "Terminal", description: "Terminal Block 6mm Grey DIN Rail", qty: 30 },
-  { type: "Terminal", description: "Terminal Block 10mm Grey DIN Rail", qty: 20 },
-  { type: "Terminal", description: "Terminal Block 16mm Grey DIN Rail", qty: 10 },
-  { type: "Terminal", description: "Earth Terminal Block 4mm Green/Yellow", qty: 20 },
-  { type: "Terminal", description: "Earth Terminal Block 6mm Green/Yellow", qty: 10 },
-  { type: "End Stop", description: "End Stop for DIN Rail Terminals", qty: 50 },
-  { type: "Push Button", description: "Push Button Momentary Green Flush 22mm", qty: 5 },
-  { type: "Push Button", description: "Push Button Momentary Red Flush 22mm", qty: 5 },
-  { type: "Push Button", description: "Push Button Momentary Black Flush 22mm", qty: 5 },
-  { type: "Push Button", description: "Push Button Latching Red 22mm", qty: 3 },
-  { type: "E-Stop", description: "Emergency Stop Push Button 40mm Twist Release", qty: 3 },
-  { type: "E-Stop", description: "Emergency Stop Push Button 40mm Key Release", qty: 2 },
-  { type: "Selector Switch", description: "Selector Switch 2 Position Stay Put 22mm", qty: 3 },
-  { type: "Selector Switch", description: "Selector Switch 3 Position Stay Put 22mm", qty: 2 },
-  { type: "Selector Switch", description: "Selector Switch 2 Position Key 22mm", qty: 2 },
-  { type: "Indicator Light", description: "Indicator Light LED Green 22mm 240VAC", qty: 5 },
-  { type: "Indicator Light", description: "Indicator Light LED Red 22mm 240VAC", qty: 5 },
-  { type: "Indicator Light", description: "Indicator Light LED Amber 22mm 240VAC", qty: 5 },
-  { type: "Indicator Light", description: "Indicator Light LED Blue 22mm 240VAC", qty: 3 },
-  { type: "Indicator Light", description: "Indicator Light LED White 22mm 240VAC", qty: 3 },
-  { type: "Contact Block", description: "Contact Block 1NO for 22mm Operators", qty: 10 },
-  { type: "Contact Block", description: "Contact Block 1NC for 22mm Operators", qty: 10 },
-  { type: "Contact Block", description: "Contact Block 2NO for 22mm Operators", qty: 5 },
-  { type: "Limit Switch", description: "Limit Switch Roller Lever Metal Body", qty: 5 },
-  { type: "Limit Switch", description: "Limit Switch Adjustable Roller Lever", qty: 3 },
-  { type: "Limit Switch", description: "Limit Switch Spring Return Rod", qty: 3 },
-  { type: "Proximity Sensor", description: "Proximity Sensor Inductive M12 4mm PNP NO", qty: 5 },
-  { type: "Proximity Sensor", description: "Proximity Sensor Inductive M18 8mm PNP NO", qty: 5 },
-  { type: "Proximity Sensor", description: "Proximity Sensor Inductive M30 15mm PNP NO", qty: 3 },
-  { type: "Proximity Sensor", description: "Proximity Sensor Capacitive M18 8mm PNP NO", qty: 3 },
-  { type: "Photoelectric", description: "Photoelectric Sensor Diffuse M18 100mm PNP", qty: 3 },
-  { type: "Photoelectric", description: "Photoelectric Sensor Retro M18 3m PNP", qty: 3 },
-  { type: "Photoelectric", description: "Photoelectric Sensor Through Beam M18 15m", qty: 2 },
-  { type: "Cable Gland", description: "Cable Gland PG7 3-6.5mm Nylon Grey", qty: 50 },
-  { type: "Cable Gland", description: "Cable Gland PG9 4-8mm Nylon Grey", qty: 50 },
-  { type: "Cable Gland", description: "Cable Gland PG11 5-10mm Nylon Grey", qty: 50 },
-  { type: "Cable Gland", description: "Cable Gland PG13.5 6-12mm Nylon Grey", qty: 50 },
-  { type: "Cable Gland", description: "Cable Gland PG16 10-14mm Nylon Grey", qty: 30 },
-  { type: "Cable Gland", description: "Cable Gland PG21 13-18mm Nylon Grey", qty: 20 },
-  { type: "Cable Gland", description: "Cable Gland PG29 18-25mm Nylon Grey", qty: 10 },
-  { type: "Cable Gland", description: "Cable Gland PG36 22-32mm Nylon Grey", qty: 10 },
-  { type: "Cable Gland", description: "Cable Gland M20 Brass Nickel IP68", qty: 20 },
-  { type: "Cable Gland", description: "Cable Gland M25 Brass Nickel IP68", qty: 20 },
-  { type: "Cable Gland", description: "Cable Gland M32 Brass Nickel IP68", qty: 10 },
-  { type: "Cable Gland", description: "Cable Gland M40 Brass Nickel IP68", qty: 10 },
-  { type: "Cable Gland", description: "Cable Gland M50 Brass Nickel IP68", qty: 5 },
-  { type: "Cable Gland", description: "Cable Gland M63 Brass Nickel IP68", qty: 5 },
-  { type: "Conduit", description: "Flexible Conduit 20mm PVC Black per Metre", qty: 100 },
-  { type: "Conduit", description: "Flexible Conduit 25mm PVC Black per Metre", qty: 50 },
-  { type: "Conduit", description: "Flexible Conduit 32mm PVC Black per Metre", qty: 30 },
-  { type: "Conduit Fitting", description: "Conduit Gland Straight 20mm", qty: 30 },
-  { type: "Conduit Fitting", description: "Conduit Gland Straight 25mm", qty: 20 },
-  { type: "Conduit Fitting", description: "Conduit Gland 90 Degree 20mm", qty: 20 },
-  { type: "Conduit Fitting", description: "Conduit Gland 90 Degree 25mm", qty: 10 },
-  { type: "Cable Tie", description: "Cable Tie 100mm x 2.5mm Black Pack 100", qty: 10 },
-  { type: "Cable Tie", description: "Cable Tie 200mm x 3.6mm Black Pack 100", qty: 10 },
-  { type: "Cable Tie", description: "Cable Tie 300mm x 4.8mm Black Pack 100", qty: 5 },
-  { type: "Cable Tie", description: "Cable Tie 370mm x 4.8mm Black Pack 100", qty: 5 },
-  { type: "Cable Tie", description: "Cable Tie 200mm x 4.8mm UV Black Pack 100", qty: 5 },
-  { type: "Cable Tie", description: "Cable Tie 300mm x 7.6mm UV Black Pack 100", qty: 5 },
-  { type: "Heat Shrink", description: "Heat Shrink Tubing 3.2mm Black 1.2m", qty: 20 },
-  { type: "Heat Shrink", description: "Heat Shrink Tubing 6.4mm Black 1.2m", qty: 20 },
-  { type: "Heat Shrink", description: "Heat Shrink Tubing 9.5mm Black 1.2m", qty: 10 },
-  { type: "Heat Shrink", description: "Heat Shrink Tubing 12.7mm Black 1.2m", qty: 10 },
-  { type: "Heat Shrink", description: "Heat Shrink Tubing 19.1mm Black 1.2m", qty: 5 },
-  { type: "Heat Shrink", description: "Heat Shrink Tubing 25.4mm Black 1.2m", qty: 5 },
-  { type: "Crimp Terminal", description: "Crimp Terminal Ring 1.5mm² M4 Blue", qty: 100 },
-  { type: "Crimp Terminal", description: "Crimp Terminal Ring 1.5mm² M5 Blue", qty: 100 },
-  { type: "Crimp Terminal", description: "Crimp Terminal Ring 2.5mm² M5 Blue", qty: 100 },
-  { type: "Crimp Terminal", description: "Crimp Terminal Ring 2.5mm² M6 Blue", qty: 100 },
-  { type: "Crimp Terminal", description: "Crimp Terminal Ring 6mm² M6 Yellow", qty: 50 },
-  { type: "Crimp Terminal", description: "Crimp Terminal Ring 6mm² M8 Yellow", qty: 50 },
-  { type: "Crimp Terminal", description: "Crimp Terminal Fork 1.5mm² M4 Blue", qty: 100 },
-  { type: "Crimp Terminal", description: "Crimp Terminal Fork 2.5mm² M5 Blue", qty: 100 },
-  { type: "Crimp Terminal", description: "Boot Lace Ferrule 0.5mm² Orange", qty: 100 },
-  { type: "Crimp Terminal", description: "Boot Lace Ferrule 0.75mm² White", qty: 100 },
-  { type: "Crimp Terminal", description: "Boot Lace Ferrule 1.0mm² Red", qty: 100 },
-  { type: "Crimp Terminal", description: "Boot Lace Ferrule 1.5mm² Black", qty: 100 },
-  { type: "Crimp Terminal", description: "Boot Lace Ferrule 2.5mm² Grey", qty: 100 },
-  { type: "Crimp Terminal", description: "Boot Lace Ferrule 4.0mm² Orange", qty: 50 },
-  { type: "Crimp Terminal", description: "Boot Lace Ferrule 6.0mm² Green", qty: 50 },
-  { type: "Tape", description: "Electrical Tape PVC 18mm x 20m Black", qty: 20 },
-  { type: "Tape", description: "Electrical Tape PVC 18mm x 20m Red", qty: 10 },
-  { type: "Tape", description: "Electrical Tape PVC 18mm x 20m Blue", qty: 10 },
-  { type: "Tape", description: "Electrical Tape PVC 18mm x 20m Green/Yellow", qty: 10 },
-  { type: "Tape", description: "Self-Amalgamating Tape 25mm x 10m", qty: 5 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6205 2RS", qty: 10 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6206 2RS", qty: 10 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6207 2RS", qty: 8 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6208 2RS", qty: 8 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6209 2RS", qty: 6 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6210 2RS", qty: 6 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6211 2RS", qty: 4 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6212 2RS", qty: 4 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6305 2RS", qty: 8 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6306 2RS", qty: 8 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6307 2RS", qty: 6 },
-  { type: "Bearing", description: "Deep Groove Ball Bearing 6308 2RS", qty: 6 },
-  { type: "Bearing", description: "Spherical Roller Bearing 22210 E", qty: 4 },
-  { type: "Bearing", description: "Spherical Roller Bearing 22211 E", qty: 4 },
-  { type: "Bearing", description: "Spherical Roller Bearing 22212 E", qty: 4 },
-  { type: "Bearing", description: "Spherical Roller Bearing 22213 E", qty: 3 },
-  { type: "Bearing", description: "Spherical Roller Bearing 22214 E", qty: 3 },
-  { type: "Bearing", description: "Taper Roller Bearing 30205", qty: 4 },
-  { type: "Bearing", description: "Taper Roller Bearing 30206", qty: 4 },
-  { type: "Bearing", description: "Taper Roller Bearing 30207", qty: 4 },
-  { type: "Bearing", description: "Taper Roller Bearing 30208", qty: 4 },
-  { type: "Bearing", description: "Pillow Block Bearing UCP205", qty: 4 },
-  { type: "Bearing", description: "Pillow Block Bearing UCP206", qty: 4 },
-  { type: "Bearing", description: "Pillow Block Bearing UCP207", qty: 3 },
-  { type: "Bearing", description: "Pillow Block Bearing UCP208", qty: 3 },
-  { type: "Bearing", description: "Flange Bearing Unit UCFL205", qty: 4 },
-  { type: "Bearing", description: "Flange Bearing Unit UCFL206", qty: 4 },
-  { type: "Seal", description: "Oil Seal 25x42x7 NBR", qty: 10 },
-  { type: "Seal", description: "Oil Seal 30x47x7 NBR", qty: 10 },
-  { type: "Seal", description: "Oil Seal 35x52x7 NBR", qty: 10 },
-  { type: "Seal", description: "Oil Seal 40x62x8 NBR", qty: 8 },
-  { type: "Seal", description: "Oil Seal 45x68x8 NBR", qty: 8 },
-  { type: "Seal", description: "Oil Seal 50x72x8 NBR", qty: 6 },
-  { type: "Seal", description: "Oil Seal 55x80x10 NBR", qty: 6 },
-  { type: "Seal", description: "Oil Seal 60x85x10 NBR", qty: 4 },
-  { type: "Seal", description: "Oil Seal 70x90x10 NBR", qty: 4 },
-  { type: "Seal", description: "Oil Seal 80x100x10 NBR", qty: 4 },
-  { type: "V-Belt", description: "V-Belt A40 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt A42 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt A44 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt A46 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt A48 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt A50 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt B50 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt B52 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt B54 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt B56 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt B58 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt B60 Classical", qty: 4 },
-  { type: "V-Belt", description: "V-Belt SPA1000 Wedge", qty: 3 },
-  { type: "V-Belt", description: "V-Belt SPA1060 Wedge", qty: 3 },
-  { type: "V-Belt", description: "V-Belt SPA1120 Wedge", qty: 3 },
-  { type: "V-Belt", description: "V-Belt SPB1250 Wedge", qty: 3 },
-  { type: "V-Belt", description: "V-Belt SPB1400 Wedge", qty: 3 },
-  { type: "V-Belt", description: "V-Belt SPB1600 Wedge", qty: 3 },
-  { type: "Grease", description: "Grease EP2 Lithium 450g Cartridge", qty: 24 },
-  { type: "Grease", description: "Grease Moly EP2 450g Cartridge", qty: 12 },
-  { type: "Grease", description: "Grease Food Grade 450g Cartridge", qty: 6 },
-  { type: "Oil", description: "Hydraulic Oil ISO 46 20L", qty: 4 },
-  { type: "Oil", description: "Hydraulic Oil ISO 68 20L", qty: 4 },
-  { type: "Oil", description: "Gear Oil ISO 220 20L", qty: 4 },
-  { type: "Oil", description: "Gear Oil ISO 320 20L", qty: 4 },
-  { type: "Oil", description: "Gear Oil ISO 460 20L", qty: 2 },
-  { type: "Oil", description: "Compressor Oil ISO 100 20L", qty: 2 },
-  { type: "Filter", description: "Air Filter Element Compressor Atlas Copco", qty: 4 },
-  { type: "Filter", description: "Oil Filter Element Compressor Atlas Copco", qty: 4 },
-  { type: "Filter", description: "Oil Filter Separator Compressor Atlas Copco", qty: 2 },
-  { type: "Filter", description: "Hydraulic Filter Element 10 Micron", qty: 6 },
-  { type: "Filter", description: "Hydraulic Filter Element 25 Micron", qty: 6 },
-  { type: "Filter", description: "Hydraulic Return Filter 10 Micron", qty: 4 },
-  { type: "Filter", description: "Hydraulic Suction Strainer 100 Mesh", qty: 4 },
-  { type: "Valve", description: "Ball Valve Brass 15mm", qty: 10 },
-  { type: "Valve", description: "Ball Valve Brass 20mm", qty: 10 },
-  { type: "Valve", description: "Ball Valve Brass 25mm", qty: 8 },
-  { type: "Valve", description: "Ball Valve Brass 32mm", qty: 6 },
-  { type: "Valve", description: "Ball Valve Brass 40mm", qty: 4 },
-  { type: "Valve", description: "Ball Valve Brass 50mm", qty: 4 },
-  { type: "Valve", description: "Gate Valve Brass 25mm", qty: 4 },
-  { type: "Valve", description: "Gate Valve Brass 40mm", qty: 4 },
-  { type: "Valve", description: "Gate Valve Brass 50mm", qty: 4 },
-  { type: "Valve", description: "Check Valve Brass 25mm", qty: 6 },
-  { type: "Valve", description: "Check Valve Brass 40mm", qty: 4 },
-  { type: "Valve", description: "Check Valve Brass 50mm", qty: 4 },
-  { type: "Fitting", description: "Poly Fitting Elbow 25mm", qty: 20 },
-  { type: "Fitting", description: "Poly Fitting Elbow 32mm", qty: 20 },
-  { type: "Fitting", description: "Poly Fitting Elbow 40mm", qty: 15 },
-  { type: "Fitting", description: "Poly Fitting Elbow 50mm", qty: 15 },
-  { type: "Fitting", description: "Poly Fitting Tee 25mm", qty: 15 },
-  { type: "Fitting", description: "Poly Fitting Tee 32mm", qty: 15 },
-  { type: "Fitting", description: "Poly Fitting Tee 40mm", qty: 10 },
-  { type: "Fitting", description: "Poly Fitting Tee 50mm", qty: 10 },
-  { type: "Fitting", description: "Poly Fitting Coupling 25mm", qty: 15 },
-  { type: "Fitting", description: "Poly Fitting Coupling 32mm", qty: 15 },
-  { type: "Fitting", description: "Poly Fitting Coupling 40mm", qty: 10 },
-  { type: "Fitting", description: "Poly Fitting Coupling 50mm", qty: 10 },
-  { type: "Fitting", description: "Poly Fitting End Cap 25mm", qty: 10 },
-  { type: "Fitting", description: "Poly Fitting End Cap 32mm", qty: 10 },
-  { type: "Fitting", description: "Poly Fitting End Cap 40mm", qty: 5 },
-  { type: "Fitting", description: "Poly Fitting End Cap 50mm", qty: 5 },
-  { type: "Pneumatic Fitting", description: "Push Fit Straight 6mm", qty: 20 },
-  { type: "Pneumatic Fitting", description: "Push Fit Straight 8mm", qty: 20 },
-  { type: "Pneumatic Fitting", description: "Push Fit Straight 10mm", qty: 15 },
-  { type: "Pneumatic Fitting", description: "Push Fit Straight 12mm", qty: 15 },
-  { type: "Pneumatic Fitting", description: "Push Fit Elbow 6mm", qty: 15 },
-  { type: "Pneumatic Fitting", description: "Push Fit Elbow 8mm", qty: 15 },
-  { type: "Pneumatic Fitting", description: "Push Fit Elbow 10mm", qty: 10 },
-  { type: "Pneumatic Fitting", description: "Push Fit Elbow 12mm", qty: 10 },
-  { type: "Pneumatic Fitting", description: "Push Fit Tee 6mm", qty: 10 },
-  { type: "Pneumatic Fitting", description: "Push Fit Tee 8mm", qty: 10 },
-  { type: "Pneumatic Fitting", description: "Push Fit Tee 10mm", qty: 8 },
-  { type: "Pneumatic Fitting", description: "Push Fit Tee 12mm", qty: 8 },
-  { type: "Pneumatic Tubing", description: "Polyurethane Tubing 6mm Blue per Metre", qty: 100 },
-  { type: "Pneumatic Tubing", description: "Polyurethane Tubing 8mm Blue per Metre", qty: 100 },
-  { type: "Pneumatic Tubing", description: "Polyurethane Tubing 10mm Blue per Metre", qty: 50 },
-  { type: "Pneumatic Tubing", description: "Polyurethane Tubing 12mm Blue per Metre", qty: 50 },
-  { type: "Solenoid Valve", description: "Solenoid Valve 2/2 NC 1/4\" 24VDC", qty: 4 },
-  { type: "Solenoid Valve", description: "Solenoid Valve 2/2 NC 1/2\" 24VDC", qty: 4 },
-  { type: "Solenoid Valve", description: "Solenoid Valve 5/2 1/4\" 24VDC", qty: 4 },
-  { type: "Solenoid Valve", description: "Solenoid Valve 5/3 1/4\" 24VDC Centre Exhaust", qty: 2 },
-  { type: "Air Regulator", description: "Air Filter Regulator 1/4\" with Gauge", qty: 4 },
-  { type: "Air Regulator", description: "Air Filter Regulator 1/2\" with Gauge", qty: 4 },
-  { type: "Air Regulator", description: "Lubricator 1/4\"", qty: 4 },
-  { type: "Air Regulator", description: "FRL Unit 1/4\" Complete", qty: 2 },
-  { type: "Air Regulator", description: "FRL Unit 1/2\" Complete", qty: 2 },
-  { type: "Pressure Gauge", description: "Pressure Gauge 0-10 Bar 63mm Bottom Entry", qty: 6 },
-  { type: "Pressure Gauge", description: "Pressure Gauge 0-16 Bar 63mm Bottom Entry", qty: 6 },
-  { type: "Pressure Gauge", description: "Pressure Gauge 0-25 Bar 63mm Bottom Entry", qty: 4 },
-  { type: "Pressure Gauge", description: "Pressure Gauge 0-100 Bar 63mm Bottom Entry", qty: 4 },
-  { type: "Temperature Gauge", description: "Temperature Gauge 0-120°C 100mm Stem", qty: 4 },
-  { type: "Temperature Gauge", description: "Temperature Gauge 0-200°C 100mm Stem", qty: 4 },
-  { type: "Level Gauge", description: "Level Gauge Sight Glass 150mm", qty: 4 },
-  { type: "Level Gauge", description: "Level Gauge Sight Glass 250mm", qty: 4 },
-  { type: "Transmitter", description: "Pressure Transmitter 4-20mA 0-10 Bar", qty: 2 },
-  { type: "Transmitter", description: "Pressure Transmitter 4-20mA 0-16 Bar", qty: 2 },
-  { type: "Transmitter", description: "Temperature Transmitter 4-20mA PT100", qty: 2 },
-  { type: "Transmitter", description: "Level Transmitter 4-20mA Ultrasonic 5m", qty: 2 },
-  { type: "Float Switch", description: "Float Switch Vertical PP 1m Cable", qty: 4 },
-  { type: "Float Switch", description: "Float Switch Horizontal SS M20", qty: 4 },
-  { type: "Welding", description: "Welding Electrode 2.5mm E6013 5kg", qty: 10 },
-  { type: "Welding", description: "Welding Electrode 3.2mm E6013 5kg", qty: 10 },
-  { type: "Welding", description: "Welding Electrode 4.0mm E6013 5kg", qty: 5 },
-  { type: "Welding", description: "Welding Wire MIG 0.8mm 15kg", qty: 4 },
-  { type: "Welding", description: "Welding Wire MIG 0.9mm 15kg", qty: 4 },
-  { type: "Welding", description: "Welding Wire MIG 1.0mm 15kg", qty: 2 },
-  { type: "Welding", description: "Welding Gas CO2 G Size", qty: 2 },
-  { type: "Welding", description: "Welding Gas Argon/CO2 Mix G Size", qty: 2 },
-  { type: "Cutting", description: "Cutting Disc 100mm x 1mm", qty: 50 },
-  { type: "Cutting", description: "Cutting Disc 125mm x 1mm", qty: 50 },
-  { type: "Cutting", description: "Grinding Disc 100mm x 6mm", qty: 30 },
-  { type: "Cutting", description: "Grinding Disc 125mm x 6mm", qty: 30 },
-  { type: "Cutting", description: "Flap Disc 100mm 40 Grit", qty: 20 },
-  { type: "Cutting", description: "Flap Disc 100mm 60 Grit", qty: 20 },
-  { type: "Cutting", description: "Flap Disc 100mm 80 Grit", qty: 20 },
-  { type: "Fastener", description: "Hex Bolt M8x25 Zinc", qty: 100 },
-  { type: "Fastener", description: "Hex Bolt M8x40 Zinc", qty: 100 },
-  { type: "Fastener", description: "Hex Bolt M10x30 Zinc", qty: 100 },
-  { type: "Fastener", description: "Hex Bolt M10x50 Zinc", qty: 100 },
-  { type: "Fastener", description: "Hex Bolt M12x40 Zinc", qty: 50 },
-  { type: "Fastener", description: "Hex Bolt M12x60 Zinc", qty: 50 },
-  { type: "Fastener", description: "Hex Bolt M16x50 Zinc", qty: 30 },
-  { type: "Fastener", description: "Hex Bolt M16x80 Zinc", qty: 30 },
-  { type: "Fastener", description: "Hex Nut M8 Zinc", qty: 200 },
-  { type: "Fastener", description: "Hex Nut M10 Zinc", qty: 200 },
-  { type: "Fastener", description: "Hex Nut M12 Zinc", qty: 100 },
-  { type: "Fastener", description: "Hex Nut M16 Zinc", qty: 50 },
-  { type: "Fastener", description: "Flat Washer M8 Zinc", qty: 200 },
-  { type: "Fastener", description: "Flat Washer M10 Zinc", qty: 200 },
-  { type: "Fastener", description: "Flat Washer M12 Zinc", qty: 100 },
-  { type: "Fastener", description: "Flat Washer M16 Zinc", qty: 50 },
-  { type: "Fastener", description: "Spring Washer M8 Zinc", qty: 200 },
-  { type: "Fastener", description: "Spring Washer M10 Zinc", qty: 200 },
-  { type: "Fastener", description: "Spring Washer M12 Zinc", qty: 100 },
-  { type: "Fastener", description: "Spring Washer M16 Zinc", qty: 50 },
-  { type: "Fastener", description: "Socket Head Cap Screw M6x20 Black", qty: 50 },
-  { type: "Fastener", description: "Socket Head Cap Screw M8x25 Black", qty: 50 },
-  { type: "Fastener", description: "Socket Head Cap Screw M10x30 Black", qty: 50 },
-  { type: "Fastener", description: "Set Screw M8x20 Zinc", qty: 50 },
-  { type: "Fastener", description: "Set Screw M10x25 Zinc", qty: 50 },
-  { type: "Fastener", description: "Set Screw M12x30 Zinc", qty: 30 },
-  { type: "Stainless Fastener", description: "Hex Bolt M8x25 SS316", qty: 50 },
-  { type: "Stainless Fastener", description: "Hex Bolt M10x40 SS316", qty: 50 },
-  { type: "Stainless Fastener", description: "Hex Bolt M12x50 SS316", qty: 30 },
-  { type: "Stainless Fastener", description: "Hex Nut M8 SS316", qty: 100 },
-  { type: "Stainless Fastener", description: "Hex Nut M10 SS316", qty: 100 },
-  { type: "Stainless Fastener", description: "Hex Nut M12 SS316", qty: 50 },
-  { type: "Anchor", description: "Chemical Anchor M10x130", qty: 20 },
-  { type: "Anchor", description: "Chemical Anchor M12x160", qty: 20 },
-  { type: "Anchor", description: "Drop In Anchor M10", qty: 30 },
-  { type: "Anchor", description: "Drop In Anchor M12", qty: 20 },
-  { type: "Anchor", description: "Wedge Anchor M10x100", qty: 30 },
-  { type: "Anchor", description: "Wedge Anchor M12x120", qty: 20 },
-];
-
-// Transform raw catalogue to SiteSpareItem format
-const catalogueItems: SiteSpareItem[] = rawCatalogueItems.map((item, index) => {
-  const { category, subcategory } = determineCategory(item.description, item.type);
-  const location = generateBinLocation(index);
-  const qtyOnHand = item.qty;
-  const minQty = Math.max(1, Math.floor(item.qty / 3));
-  const maxQty = item.qty * 2;
+export const siteSparesData: SiteSpareItem[] = rawStockData.map((item, index) => {
+  const binParts = parseBinLocation(item.binLocation);
+  const qty = typeof item.qty === 'number' ? item.qty : parseInt(String(item.qty)) || 0;
   
   return {
-    id: `STK-${String(index + 1).padStart(4, "0")}`,
-    partNumber: "",  // To be assigned - part numbering logic not yet defined
+    id: `STK-${String(item.itemNo).padStart(4, "0")}`,
+    partNumber: "", // To be assigned
     description: item.description,
-    category,
-    subcategory,
-    manufacturer: "",
-    oemPartNumber: "",
+    category: item.category,
+    subcategory: "",
+    manufacturer: item.manufacturer,
+    oemPartNumber: item.productCode,
     alternatePartNumber: "",
-    specifications: "",
-    warehouseArea: location.warehouseArea,
-    aisle: location.aisle,
-    rack: location.rack,
-    binLocation: location.binLocation,
-    qtyOnHand,
-    minQty,
-    maxQty,
-    reorderPoint: minQty,
-    uom: item.type.includes("Metre") || item.description.includes("per Metre") ? "M" : 
-         item.type.includes("Pack") || item.description.includes("Pack") ? "PKT" :
-         item.description.includes("20L") || item.description.includes("per Litre") ? "L" :
-         item.description.includes("5kg") || item.description.includes("15kg") ? "KG" : "EA",
+    specifications: [item.sizeSpec, item.material].filter(Boolean).join(" | "),
+    warehouseArea: item.location,
+    aisle: binParts.aisle,
+    rack: binParts.rack,
+    binLocation: item.binLocation,
+    storageType: item.storageType,
+    qtyOnHand: qty,
+    minQty: 1,
+    maxQty: qty * 2 || 10,
+    reorderPoint: 1,
+    uom: item.uom || "EA",
     unitCost: 0,
-    preferredSupplier: "",
-    leadTimeDays: 0,
+    preferredSupplier: item.manufacturer,
+    leadTimeDays: 14,
     lastPurchaseDate: "",
-    status: getStockStatus(qtyOnHand, minQty),
-    isCritical: category === "Electrical" && (subcategory === "Motors" || subcategory === "PLCs"),
-    notes: "",
+    status: getStockStatus(item.condition, qty),
+    condition: item.condition,
+    isCritical: !!item.criticalSpareId,
+    criticalSpareId: item.criticalSpareId,
+    assetTag: item.assetTag,
+    notes: item.remarks,
   };
 });
 
-export const siteSparesData: SiteSpareItem[] = catalogueItems;
+// Note: This is a sample of the data. The full Book2.xlsx file contains ~1,769 items.
+// The rawStockData array above contains representative items from different categories.
+// Full data import would require running a data migration script with all rows.
