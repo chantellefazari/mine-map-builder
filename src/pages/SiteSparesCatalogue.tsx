@@ -1,21 +1,8 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { SiteSparesTable } from "@/components/site-spares/SiteSparesTable";
-import { PasswordGate } from "@/components/site-spares/PasswordGate";
 
 const SiteSparesCatalogue = () => {
-  const [isUnlocked, setIsUnlocked] = useState(false);
-
-  useEffect(() => {
-    const unlocked = sessionStorage.getItem("site_spares_unlocked") === "true";
-    setIsUnlocked(unlocked);
-  }, []);
-
-  if (!isUnlocked) {
-    return <PasswordGate onUnlock={() => setIsUnlocked(true)} />;
-  }
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
