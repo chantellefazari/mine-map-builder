@@ -156,7 +156,7 @@ export const SparesTable = () => {
               <TableHead className="min-w-[100px] font-semibold">Sub-Area</TableHead>
               <TableHead className="min-w-[100px] font-semibold">System</TableHead>
               <TableHead className="min-w-[140px] font-semibold">Component Name</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">Type</TableHead>
+              
               <TableHead className="min-w-[180px] font-semibold">Description</TableHead>
               <TableHead className="min-w-[120px] font-semibold">Manufacturer</TableHead>
               <TableHead className="min-w-[180px] font-semibold">OEM Part Number</TableHead>
@@ -189,9 +189,6 @@ export const SparesTable = () => {
                 <TableCell className="text-sm">{spare.subArea}</TableCell>
                 <TableCell className="text-sm">{spare.system}</TableCell>
                 <TableCell className="font-medium">{spare.componentName}</TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {spare.componentType}
-                </TableCell>
                 <TableCell className="text-sm">{spare.sparePartDescription}</TableCell>
                 <TableCell className="text-sm font-medium">{spare.manufacturer || "—"}</TableCell>
                 <TableCell className="text-sm font-mono">{spare.oemPartNumber || "—"}</TableCell>
