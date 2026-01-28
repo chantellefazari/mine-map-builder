@@ -27,7 +27,7 @@ import {
 } from "./sparesData";
 
 export const SparesTable = () => {
-  const [spares] = useState<SpareItem[]>(sparesData);
+  const [spares, setSpares] = useState<SpareItem[]>(sparesData);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCriticality, setFilterCriticality] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -200,15 +200,33 @@ export const SparesTable = () => {
                 <TableCell className="text-sm text-muted-foreground">
                   {spare.reasonCritical}
                 </TableCell>
-                <TableCell className="text-center font-mono">
-                  <span className={spare.minQty === "TBC" ? "text-muted-foreground" : "font-medium"}>
-                    {spare.minQty || "—"}
-                  </span>
+                <TableCell className="text-center font-mono p-1">
+                  <Input
+                    type="text"
+                    value={spare.minQty || ""}
+                    onChange={(e) => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, minQty: e.target.value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                    placeholder="TBC"
+                    className="h-8 w-20 text-center text-sm"
+                  />
                 </TableCell>
-                <TableCell className="text-center font-mono">
-                  <span className={spare.maxQty === "TBC" ? "text-muted-foreground" : "font-medium"}>
-                    {spare.maxQty || "—"}
-                  </span>
+                <TableCell className="text-center font-mono p-1">
+                  <Input
+                    type="text"
+                    value={spare.maxQty || ""}
+                    onChange={(e) => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, maxQty: e.target.value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                    placeholder="TBC"
+                    className="h-8 w-20 text-center text-sm"
+                  />
                 </TableCell>
                 <TableCell className="text-center text-sm text-muted-foreground">
                   {"Low"}
