@@ -128,15 +128,14 @@ export const SparesTable = () => {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead className="min-w-[80px] font-semibold">ID</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Criticality</TableHead>
+              <TableHead className="min-w-[140px] font-semibold">Asset Number</TableHead>
               <TableHead className="min-w-[80px] font-semibold">Area</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Sub-Area</TableHead>
               <TableHead className="min-w-[100px] font-semibold">System</TableHead>
-              <TableHead className="min-w-[160px] font-semibold">Parent Asset</TableHead>
               <TableHead className="min-w-[140px] font-semibold">Component Name</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Type</TableHead>
               <TableHead className="min-w-[180px] font-semibold">Description</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">Criticality</TableHead>
               <TableHead className="min-w-[80px] font-semibold">Source</TableHead>
               <TableHead className="min-w-[150px] font-semibold">Reason Critical</TableHead>
               <TableHead className="min-w-[100px] font-semibold text-center">Min Qty (Prov.)</TableHead>
@@ -148,22 +147,6 @@ export const SparesTable = () => {
           <TableBody>
             {filteredSpares.map((spare) => (
               <TableRow key={spare.id} className="cursor-pointer hover:bg-muted/50">
-                <TableCell className="font-mono text-sm text-muted-foreground">
-                  {spare.id}
-                </TableCell>
-                <TableCell>
-                  <Badge variant="outline" className="font-mono">
-                    {spare.area}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-sm">{spare.subArea}</TableCell>
-                <TableCell className="text-sm">{spare.system}</TableCell>
-                <TableCell className="font-medium text-sm">{spare.parentAsset}</TableCell>
-                <TableCell className="font-medium">{spare.componentName}</TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {spare.componentType}
-                </TableCell>
-                <TableCell className="text-sm">{spare.sparePartDescription}</TableCell>
                 <TableCell>
                   {spare.spareCriticality && (
                     <Badge variant="secondary" className={criticalityColors[spare.spareCriticality]}>
@@ -171,6 +154,21 @@ export const SparesTable = () => {
                     </Badge>
                   )}
                 </TableCell>
+                <TableCell className="font-mono text-sm font-medium">
+                  {spare.assetNumber || "—"}
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline" className="font-mono text-xs">
+                    {spare.area}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-sm">{spare.subArea}</TableCell>
+                <TableCell className="text-sm">{spare.system}</TableCell>
+                <TableCell className="font-medium">{spare.componentName}</TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  {spare.componentType}
+                </TableCell>
+                <TableCell className="text-sm">{spare.sparePartDescription}</TableCell>
                 <TableCell>
                   {spare.criticalitySource && (
                     <Badge variant="secondary" className={criticalitySourceColors[spare.criticalitySource]}>
