@@ -664,10 +664,10 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "APRN01 Apron Feeder", 
+            label: "APN01 Apron Feeder", 
             equipment: [
               { 
-                assetNumber: "APRN01", 
+                assetNumber: "APN01", 
                 name: "Apron Feeder",
                 components: [
                   {
@@ -684,10 +684,10 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "APRN01-LCS01", name: "Apron Feeder – LCS" },
-              { assetNumber: "APRN01-MCC01", name: "Apron Feeder – MCC Cell" },
+              { assetNumber: "APN01-LCS01", name: "Apron Feeder – LCS" },
+              { assetNumber: "APN01-MCC01", name: "Apron Feeder – MCC Cell" },
               { 
-                assetNumber: "APRN01-GMR01", 
+                assetNumber: "APN01-GMR01", 
                 name: "Apron Feeder – Gearmotor",
                 components: [
                   {
@@ -704,9 +704,9 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "APRN01-PWS01", name: "Apron Feeder – Pullwire Switch" },
-              { assetNumber: "APRN01-TX01", name: "Apron Feeder – Speed Transmitter" },
-              { assetNumber: "APRN01-VLV01", name: "Apron Feeder – Rotary Valve" },
+              { assetNumber: "APN01-PWS01", name: "Apron Feeder – Pullwire Switch" },
+              { assetNumber: "APN01-TX01", name: "Apron Feeder – Speed Transmitter" },
+              { assetNumber: "APN01-VLV01", name: "Apron Feeder – Rotary Valve" },
             ] 
           },
           { 

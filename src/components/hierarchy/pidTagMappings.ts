@@ -12,14 +12,14 @@ export interface PidTagMapping {
 export const pidTagMappings: PidTagMapping[] = [
   // ============ GRINDING / COMMINUTION ============
   // Reclaim / Feed System
-  { pidTag: "04-FE-100", assetNumber: "APRN01", description: "Reclaim Feeder", status: "mapped" },
+  { pidTag: "04-FE-100", assetNumber: "APN01", description: "Reclaim Feeder", status: "mapped" },
   { pidTag: "04-PB-099", assetNumber: "RHOP01", description: "Reclaim Hopper", status: "mapped" },
-  { pidTag: "04-FE-100LCS", assetNumber: "APRN01-LCS01", description: "Reclaim Feeder LCS", status: "mapped" },
-  { pidTag: "04-FE-100M", assetNumber: "APRN01-MTR01", description: "Reclaim Feeder Motor", status: "mapped" },
-  { pidTag: "04-FE-100MC", assetNumber: "APRN01-MCC01", description: "Reclaim Feeder MCC Cell", status: "mapped" },
-  { pidTag: "04-FE-100GB", assetNumber: "APRN01-GBX01", description: "Reclaim Feeder Gearbox", status: "mapped" },
-  { pidTag: "04-FE-100-PWS", assetNumber: "APRN01-PWS01", description: "Reclaim Feeder Pullwire switch", status: "mapped" },
-  { pidTag: "04-SIT-500", assetNumber: "APRN01-TX01", description: "Reclaim Feeder Speed Transmitter", status: "mapped" },
+  { pidTag: "04-FE-100LCS", assetNumber: "APN01-LCS01", description: "Reclaim Feeder LCS", status: "mapped" },
+  { pidTag: "04-FE-100M", assetNumber: "APN01-MTR01", description: "Reclaim Feeder Motor", status: "mapped" },
+  { pidTag: "04-FE-100MC", assetNumber: "APN01-MCC01", description: "Reclaim Feeder MCC Cell", status: "mapped" },
+  { pidTag: "04-FE-100GB", assetNumber: "APN01-GBX01", description: "Reclaim Feeder Gearbox", status: "mapped" },
+  { pidTag: "04-FE-100-PWS", assetNumber: "APN01-PWS01", description: "Reclaim Feeder Pullwire switch", status: "mapped" },
+  { pidTag: "04-SIT-500", assetNumber: "APN01-TX01", description: "Reclaim Feeder Speed Transmitter", status: "mapped" },
   
   // Transfer Conveyor
   { pidTag: "04-FE-101", assetNumber: "CV01", description: "Transfer Conveyor", status: "mapped" },
@@ -54,7 +54,7 @@ export const pidTagMappings: PidTagMapping[] = [
   
   // Lime System
   { pidTag: "04-TK-100", assetNumber: "LSILO01", description: "Lime Storage Silo", status: "mapped" },
-  { pidTag: "04-FE-102", assetNumber: "APRN01-VLV01", description: "Lime Feeder Rotary Valve", status: "mapped" },
+  { pidTag: "04-FE-102", assetNumber: "APN01-VLV01", description: "Lime Feeder Rotary Valve", status: "mapped" },
   { pidTag: "-BA-103", assetNumber: "LSILO01-VIB01", description: "Lime Silo Vibrator", status: "mapped" },
   
   // Primary Ball Mill
