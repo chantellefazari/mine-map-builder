@@ -181,17 +181,21 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                     updateField("subArea", value);
                     updateField("system", "");
                   }}
-                  disabled={!formData.area}
+                  disabled={!formData.area || subAreaOptions.length === 0}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select sub-area..." />
+                    <SelectValue placeholder={formData.area ? "Select sub-area..." : "Select area first..."} />
                   </SelectTrigger>
                   <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
-                    {subAreaOptions.map((subArea) => (
-                      <SelectItem key={subArea} value={subArea}>
-                        {subArea}
-                      </SelectItem>
-                    ))}
+                    {subAreaOptions.length > 0 ? (
+                      subAreaOptions.map((subArea) => (
+                        <SelectItem key={subArea} value={subArea}>
+                          {subArea}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-1.5 text-sm text-muted-foreground">No sub-areas available</div>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -200,17 +204,21 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                 <Select
                   value={formData.system}
                   onValueChange={(value) => updateField("system", value)}
-                  disabled={!formData.subArea}
+                  disabled={!formData.subArea || systemOptions.length === 0}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select system..." />
+                    <SelectValue placeholder={formData.subArea ? "Select system..." : "Select sub-area first..."} />
                   </SelectTrigger>
                   <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
-                    {systemOptions.map((system) => (
-                      <SelectItem key={system} value={system}>
-                        {system}
-                      </SelectItem>
-                    ))}
+                    {systemOptions.length > 0 ? (
+                      systemOptions.map((system) => (
+                        <SelectItem key={system} value={system}>
+                          {system}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-1.5 text-sm text-muted-foreground">No systems available</div>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
