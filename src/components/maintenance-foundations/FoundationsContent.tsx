@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { 
   AlertTriangle, 
-  Wrench, 
   FileText, 
   Hash, 
   History, 
@@ -10,6 +9,7 @@ import {
   Info,
   CheckCircle2
 } from "lucide-react";
+import { WorkDefinitionsSection } from "./WorkDefinitionsSection";
 
 export const FoundationsContent = () => {
   return (
@@ -30,86 +30,7 @@ export const FoundationsContent = () => {
       </div>
 
       {/* Section 1: Maintenance Work Definitions */}
-      <Card className="border-border">
-        <CardHeader className="pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-destructive" />
-            </div>
-            <div>
-              <CardTitle className="text-xl">Maintenance Work Definitions</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
-                Clear definitions for work types to ensure consistent classification
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Breakdown Work */}
-          <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-5">
-            <h3 className="font-semibold text-foreground flex items-center gap-2 mb-3">
-              <span className="w-2 h-2 rounded-full bg-destructive"></span>
-              Breakdown Work
-            </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Unplanned maintenance performed in response to equipment failure or malfunction. 
-              Breakdown work is reactive and typically urgent.
-            </p>
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className="bg-background rounded-md p-3 border border-border">
-                <p className="text-xs font-medium text-muted-foreground uppercase mb-1">Characteristics</p>
-                <ul className="text-sm space-y-1">
-                  <li>• Unscheduled and reactive</li>
-                  <li>• Equipment has failed or is failing</li>
-                  <li>• Often requires immediate response</li>
-                  <li>• May impact production or safety</li>
-                </ul>
-              </div>
-              <div className="bg-background rounded-md p-3 border border-border">
-                <p className="text-xs font-medium text-muted-foreground uppercase mb-1">Examples</p>
-                <ul className="text-sm space-y-1">
-                  <li>• Pump seal failure causing leak</li>
-                  <li>• Motor trip due to overload</li>
-                  <li>• Conveyor belt tear</li>
-                  <li>• Instrument malfunction</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Planned Maintenance */}
-          <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-5">
-            <h3 className="font-semibold text-foreground flex items-center gap-2 mb-3">
-              <span className="w-2 h-2 rounded-full bg-green-600"></span>
-              Planned Maintenance
-            </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Scheduled maintenance activities designed to prevent equipment failure and maintain 
-              optimal performance. Planned work is proactive and resourced in advance.
-            </p>
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className="bg-background rounded-md p-3 border border-border">
-                <p className="text-xs font-medium text-muted-foreground uppercase mb-1">Characteristics</p>
-                <ul className="text-sm space-y-1">
-                  <li>• Scheduled in advance</li>
-                  <li>• Resources (parts, labour) pre-arranged</li>
-                  <li>• Based on time, condition, or usage</li>
-                  <li>• Aims to prevent failures</li>
-                </ul>
-              </div>
-              <div className="bg-background rounded-md p-3 border border-border">
-                <p className="text-xs font-medium text-muted-foreground uppercase mb-1">Types</p>
-                <ul className="text-sm space-y-1">
-                  <li>• Preventive Maintenance (PM)</li>
-                  <li>• Condition-based maintenance</li>
-                  <li>• Predictive maintenance</li>
-                  <li>• Shutdown/turnaround work</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <WorkDefinitionsSection />
 
       <Separator />
 
