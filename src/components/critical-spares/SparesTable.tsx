@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, AlertTriangle } from "lucide-react";
+import { Search, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   sparesData,
@@ -25,6 +25,7 @@ import {
   criticalitySourceColors,
   type SpareItem,
 } from "./sparesData";
+import { AddSpareDialog } from "./AddSpareDialog";
 
 export const SparesTable = () => {
   const [spares, setSpares] = useState<SpareItem[]>(sparesData);
@@ -137,10 +138,10 @@ export const SparesTable = () => {
               <SelectItem value="Confirmed">Confirmed</SelectItem>
             </SelectContent>
           </Select>
-          <Button size="sm" className="gap-2">
-            <Plus className="h-4 w-4" />
-            Add Spare
-          </Button>
+          <AddSpareDialog 
+            onAddSpare={(newSpare) => setSpares([...spares, newSpare])} 
+            existingCount={spares.length} 
+          />
         </div>
       </div>
 
