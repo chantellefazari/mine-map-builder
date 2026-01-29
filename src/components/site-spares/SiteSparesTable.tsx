@@ -56,7 +56,7 @@ const categories = [
 ];
 
 export const SiteSparesTable = () => {
-  const { spares, loading, addSpare, importSpares, updateSpare } = useSiteSpares();
+  const { spares, loading, addSpare, importSpares, mergeSpares, updateSpare } = useSiteSpares();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterWarehouse, setFilterWarehouse] = useState<string>("all");
@@ -228,6 +228,8 @@ export const SiteSparesTable = () => {
         open={importDialogOpen}
         onOpenChange={setImportDialogOpen}
         onImport={importSpares}
+        onMerge={mergeSpares}
+        existingSpares={spares}
       />
 
       {/* Table */}

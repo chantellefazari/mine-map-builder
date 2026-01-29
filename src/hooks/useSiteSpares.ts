@@ -163,6 +163,48 @@ export const useSiteSpares = () => {
     return true;
   };
 
+  // Merge multiple spares (adds to existing, doesn't replace)
+  const mergeSpares = async (newSpares: Omit<SiteSpareItem, "id">[]) => {
+    if (newSpares.length === 0) {
+      toast({
+        title: "No Items",
+        description: "No unique items to import.",
+      });
+      return true;
+    }
+
+    // Insert new spares in batches of 100
+    const batchSize = 100;
+    let insertedCount = 0;
+
+    for (let i = 0; i < newSpares.length; i += batchSize) {
+      const batch = newSpares.slice(i, i + batchSize);
+      const { error: insertError } = await supabase
+        .from("site_spares")
+        .insert(batch);
+
+      if (insertError) {
+        console.error("Error inserting batch:", insertError);
+        toast({
+          title: "Error",
+          description: `Failed to merge items (batch ${Math.floor(i / batchSize) + 1}).`,
+          variant: "destructive",
+        });
+        return false;
+      }
+      insertedCount += batch.length;
+    }
+
+    // Refresh the data
+    await fetchSpares();
+
+    toast({
+      title: "Merge Successful",
+      description: `${insertedCount} new items have been added to inventory.`,
+    });
+    return true;
+  };
+
   // Update a spare
   const updateSpare = async (id: string, updates: Partial<SiteSpareItem>) => {
     const { error } = await supabase
@@ -206,6 +248,7 @@ export const useSiteSpares = () => {
     loading,
     addSpare,
     importSpares,
+    mergeSpares,
     updateSpare,
     deleteSpare,
     refetch: fetchSpares,
