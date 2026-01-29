@@ -14,6 +14,7 @@ import { type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
+import { isCriticalItem, classifyCriticality } from "@/utils/criticalityClassification";
 
 // Categories and warehouse areas for mapping
 const categories: Record<string, string[]> = {
@@ -147,6 +148,10 @@ export const ImportSpareDialog = ({
       const criticalId = getField(row, "Critical Spare ID", "CriticalSpareID");
       const remarks = getField(row, "Remarks", "Notes");
       
+      // Auto-classify criticality based on description keywords
+      // If Critical Spare ID is already set, use that; otherwise use keyword classification
+      const autoIsCritical = criticalId ? true : isCriticalItem(description);
+      
       return {
         part_number: "",
         description: description,
@@ -171,7 +176,7 @@ export const ImportSpareDialog = ({
         alternate_part_number: "",
         condition: condition,
         status: getStockStatus(condition, qty),
-        is_critical: !!criticalId,
+        is_critical: autoIsCritical,
         critical_spare_id: criticalId,
         asset_tag: assetTag,
         specifications: `${sizeSpec}${sizeSpec && material ? " | " : ""}${material}`,

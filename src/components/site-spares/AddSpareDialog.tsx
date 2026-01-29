@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { type SiteSpareItem } from "@/hooks/useSiteSpares";
+import { isCriticalItem, classifyCriticality, getCriticalityColor, type CriticalityLevel } from "@/utils/criticalityClassification";
+import { Badge } from "@/components/ui/badge";
 
 // Categories and warehouse areas
 const categories: Record<string, string[]> = {
@@ -79,6 +81,23 @@ export const AddSpareDialog = ({
     is_critical: false,
     notes: "",
   });
+  
+  // Track the auto-detected criticality level
+  const [detectedCriticality, setDetectedCriticality] = useState<CriticalityLevel>("LOW");
+  
+  // Auto-classify criticality when description changes
+  useEffect(() => {
+    if (formData.description) {
+      const level = classifyCriticality(formData.description);
+      setDetectedCriticality(level);
+      // Auto-set is_critical for HIGH items (user can override)
+      if (level === "HIGH" && !formData.is_critical) {
+        setFormData(prev => ({ ...prev, is_critical: true }));
+      }
+    } else {
+      setDetectedCriticality("LOW");
+    }
+  }, [formData.description]);
 
   const categoryList = Object.keys(categories).sort();
   const subcategoryList = formData.category ? categories[formData.category] || [] : [];
@@ -180,13 +199,30 @@ export const AddSpareDialog = ({
         <div className="grid gap-4 py-4">
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description">Description *</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="description">Description *</Label>
+              {formData.description && (
+                <Badge 
+                  variant="outline" 
+                  className={`text-xs ${getCriticalityColor(detectedCriticality)}`}
+                >
+                  {detectedCriticality === "HIGH" ? "🔴 HIGH Criticality" : 
+                   detectedCriticality === "MEDIUM" ? "🟠 MEDIUM Criticality" : 
+                   "🟢 LOW Criticality"}
+                </Badge>
+              )}
+            </div>
             <Input
               id="description"
               value={formData.description}
               onChange={(e) => handleChange("description", e.target.value)}
               placeholder="e.g., Deep Groove Ball Bearing 6205 2RS"
             />
+            {formData.description && detectedCriticality === "HIGH" && (
+              <p className="text-xs text-destructive">
+                Auto-flagged as critical spare (production/safety critical)
+              </p>
+            )}
           </div>
 
           {/* Category & Subcategory */}
@@ -434,6 +470,9 @@ export const AddSpareDialog = ({
                 >
                   Flag as critical spare
                 </label>
+                {detectedCriticality === "HIGH" && formData.is_critical && (
+                  <span className="text-xs text-muted-foreground">(auto-detected)</span>
+                )}
               </div>
             </div>
           </div>
