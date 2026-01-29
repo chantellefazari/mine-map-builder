@@ -131,13 +131,13 @@ export const SupplierRegisterSection = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[180px]">Supplier Name</TableHead>
-                <TableHead className="w-[140px]">Primary Contact</TableHead>
-                <TableHead className="w-[120px]">Phone</TableHead>
-                <TableHead className="w-[160px]">Email</TableHead>
-                <TableHead className="w-[120px]">Location</TableHead>
-                <TableHead className="w-[180px]">What They Supply</TableHead>
-                <TableHead className="w-[100px] text-center">Preferred</TableHead>
+                <TableHead className="min-w-[200px]">Supplier Name</TableHead>
+                <TableHead className="min-w-[150px]">Primary Contact</TableHead>
+                <TableHead className="min-w-[130px]">Phone</TableHead>
+                <TableHead className="min-w-[200px]">Email</TableHead>
+                <TableHead className="min-w-[130px]">Location</TableHead>
+                <TableHead className="min-w-[250px]">What They Supply</TableHead>
+                <TableHead className="w-[80px] text-center">Preferred</TableHead>
                 <TableHead className="w-[80px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -226,15 +226,13 @@ export const SupplierRegisterSection = () => {
                       <>
                         <TableCell className="font-medium">{supplier.name}</TableCell>
                         <TableCell>{supplier.contact}</TableCell>
-                        <TableCell>{supplier.workPhone || supplier.mobile}</TableCell>
-                        <TableCell>{supplier.email}</TableCell>
-                        <TableCell>{(supplier as any).location || "-"}</TableCell>
-                        <TableCell className="max-w-[180px] truncate" title={supplier.whatUsedFor}>
-                          {supplier.whatUsedFor}
-                        </TableCell>
+                        <TableCell className="whitespace-nowrap">{supplier.workPhone || supplier.mobile}</TableCell>
+                        <TableCell className="break-all">{supplier.email}</TableCell>
+                        <TableCell>{supplier.location || "-"}</TableCell>
+                        <TableCell>{supplier.whatUsedFor}</TableCell>
                         <TableCell className="text-center">
-                          {(supplier as any).isPreferred ? (
-                            <CheckCircle2 className="h-5 w-5 text-green-600 mx-auto" />
+                          {supplier.isPreferred ? (
+                            <CheckCircle2 className="h-5 w-5 text-primary mx-auto" />
                           ) : (
                             <span className="text-muted-foreground">-</span>
                           )}
