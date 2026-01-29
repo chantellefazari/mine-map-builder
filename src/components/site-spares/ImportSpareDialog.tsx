@@ -172,20 +172,24 @@ export const ImportSpareDialog = ({
     return items.filter(item => item.description.trim() !== "");
   };
 
-  // Generate a unique key for duplicate detection
-  const getDuplicateKey = (item: { oem_part_number: string; manufacturer: string; description: string }): string => {
+  // Generate a unique key for duplicate detection (Description + OEM Part Number)
+  const getDuplicateKey = (item: { oem_part_number: string; description: string }): string => {
     const oem = (item.oem_part_number || "").toLowerCase().trim();
-    const mfg = (item.manufacturer || "").toLowerCase().trim();
-    // Primary key: OEM + Manufacturer (if both exist)
-    if (oem && mfg) {
-      return `${oem}|${mfg}`;
+    const desc = (item.description || "").toLowerCase().trim();
+    
+    // Primary key: Description + OEM (if both exist)
+    if (desc && oem) {
+      return `${desc}|${oem}`;
     }
-    // Fallback: just OEM if no manufacturer
+    // If only OEM exists
     if (oem) {
       return `oem:${oem}`;
     }
-    // Last resort: description-based matching
-    return `desc:${(item.description || "").toLowerCase().trim().substring(0, 50)}`;
+    // If only description exists (fallback)
+    if (desc) {
+      return `desc:${desc}`;
+    }
+    return "";
   };
 
   const detectDuplicates = (
@@ -357,7 +361,7 @@ export const ImportSpareDialog = ({
             Import & Merge Stock Lists
           </DialogTitle>
           <DialogDescription>
-            Upload multiple Excel files. Duplicates are detected by OEM Part Number + Manufacturer.
+            Upload multiple Excel files. Duplicates are detected by Description + OEM Part Number.
           </DialogDescription>
         </DialogHeader>
 
@@ -469,9 +473,9 @@ export const ImportSpareDialog = ({
               {/* Duplicate Details (if any) */}
               {duplicateCount > 0 && (
                 <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
-                  <p className="text-sm font-medium text-amber-700 mb-2">
-                    Duplicate items (matched by OEM Part # + Manufacturer):
-                  </p>
+                <p className="text-sm font-medium text-amber-700 mb-2">
+                  Duplicate items (matched by Description + OEM Part #):
+                </p>
                   <div className="max-h-24 overflow-y-auto text-xs space-y-1">
                     {preview
                       .filter((d) => d.isDuplicate)
