@@ -39,11 +39,13 @@ interface DuplicateInfo {
   existingItem?: SiteSpareItem;
   batchOriginalItem?: Omit<SiteSpareItem, "id">; // The first occurrence in the batch
   batchOriginalSource?: string; // Source file of the first occurrence
+  batchOriginalIndex?: number; // Index of the first occurrence in preview array
   source: string;
   isDuplicate: boolean;
   duplicateType: "exact" | "partial" | "none";
   matchReason?: string;
-  includeAnyway?: boolean; // User override to include despite being a duplicate
+  // Selection: "import" = use this item, "existing" = skip (use existing/original), "skip" = don't import either
+  selection: "import" | "existing" | "skip";
 }
 
 interface ImportSpareDialogProps {
@@ -263,7 +265,7 @@ export const ImportSpareDialog = ({
         isDuplicate,
         duplicateType: isDuplicate ? ("exact" as const) : ("none" as const),
         matchReason,
-        includeAnyway: false,
+        selection: isDuplicate ? ("existing" as const) : ("import" as const), // Default: keep existing for duplicates
       };
     });
   };
@@ -350,9 +352,9 @@ export const ImportSpareDialog = ({
     }
   };
 
-  const toggleIncludeDuplicate = (index: number) => {
+  const setDuplicateSelection = (index: number, selection: "import" | "existing" | "skip") => {
     setPreview(prev => prev.map((item, i) => 
-      i === index ? { ...item, includeAnyway: !item.includeAnyway } : item
+      i === index ? { ...item, selection } : item
     ));
   };
 
@@ -360,9 +362,11 @@ export const ImportSpareDialog = ({
     if (preview.length === 0) return;
     setIsImporting(true);
 
-    // Get items to import: unique items + duplicates marked to include anyway
+    // Get items to import: 
+    // - All unique items (non-duplicates)
+    // - Duplicates where user selected "import" (use the new item)
     const itemsToImport = preview
-      .filter((d) => !d.isDuplicate || d.includeAnyway)
+      .filter((d) => !d.isDuplicate || d.selection === "import")
       .map((d) => d.item);
 
     const success = onMerge 
@@ -386,8 +390,8 @@ export const ImportSpareDialog = ({
   };
 
   const uniqueCount = preview.filter((d) => !d.isDuplicate).length;
-  const includedDuplicateCount = preview.filter((d) => d.isDuplicate && d.includeAnyway).length;
-  const totalToImport = uniqueCount + includedDuplicateCount;
+  const selectedToImportCount = preview.filter((d) => d.isDuplicate && d.selection === "import").length;
+  const totalToImport = uniqueCount + selectedToImportCount;
   const duplicates = preview.filter((d) => d.isDuplicate);
 
   return (
@@ -534,9 +538,9 @@ export const ImportSpareDialog = ({
                     >
                       <Eye className="h-4 w-4" />
                       Review {duplicateCount} Duplicates Before Import
-                      {includedDuplicateCount > 0 && (
+                      {selectedToImportCount > 0 && (
                         <Badge className="ml-2 bg-primary text-primary-foreground">
-                          {includedDuplicateCount} included
+                          {selectedToImportCount} selected to import
                         </Badge>
                       )}
                     </Button>
@@ -550,10 +554,10 @@ export const ImportSpareDialog = ({
                           Ready to Import {totalToImport} Items
                         </p>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          {includedDuplicateCount > 0 
-                            ? `${uniqueCount} unique + ${includedDuplicateCount} duplicates you chose to include`
+                          {selectedToImportCount > 0 
+                            ? `${uniqueCount} unique + ${selectedToImportCount} duplicates you chose to import`
                             : duplicateCount > 0 
-                              ? `${duplicateCount} duplicates will be skipped (review to override)`
+                              ? `${duplicateCount} duplicates will be skipped (review to select)`
                               : "No duplicates found - all items are unique"
                           }
                         </p>
@@ -571,14 +575,14 @@ export const ImportSpareDialog = ({
                   </div>
 
                   {/* Preview of items to import (collapsed by default) */}
-                  {uniqueCount > 0 && (
+                  {totalToImport > 0 && (
                     <details className="text-xs">
                       <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
                         View items to be imported ({totalToImport})
                       </summary>
                       <div className="mt-2 max-h-24 overflow-y-auto space-y-1 pl-2">
                         {preview
-                          .filter((d) => !d.isDuplicate || d.includeAnyway)
+                          .filter((d) => !d.isDuplicate || d.selection === "import")
                           .slice(0, 10)
                           .map((d, i) => (
                             <div key={i} className="flex items-center gap-2 text-muted-foreground">
@@ -586,9 +590,9 @@ export const ImportSpareDialog = ({
                                 {d.source}
                               </Badge>
                               <span className="truncate">{d.item.description}</span>
-                              {d.isDuplicate && d.includeAnyway && (
+                              {d.isDuplicate && d.selection === "import" && (
                                 <Badge className="text-xs px-1.5 py-0 bg-primary/20 text-primary">
-                                  included
+                                  selected
                                 </Badge>
                               )}
                             </div>
@@ -621,10 +625,10 @@ export const ImportSpareDialog = ({
               {/* Summary Bar */}
               <div className="bg-muted/50 rounded-lg p-3 flex items-center justify-between">
                 <div className="text-sm">
-                  <span className="font-medium">{duplicateCount}</span> duplicates detected
-                  {includedDuplicateCount > 0 && (
+                  <span className="font-medium">{duplicateCount}</span> duplicates to review
+                  {selectedToImportCount > 0 && (
                     <span className="ml-2 text-primary">
-                      ({includedDuplicateCount} marked to include)
+                      ({selectedToImportCount} selected to import)
                     </span>
                   )}
                 </div>
@@ -633,68 +637,67 @@ export const ImportSpareDialog = ({
                     variant="outline"
                     size="sm"
                     onClick={() => setPreview(prev => prev.map(item => 
-                      item.isDuplicate ? { ...item, includeAnyway: true } : item
+                      item.isDuplicate ? { ...item, selection: "import" as const } : item
                     ))}
                   >
-                    Include All
+                    Import All New
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setPreview(prev => prev.map(item => 
-                      item.isDuplicate ? { ...item, includeAnyway: false } : item
+                      item.isDuplicate ? { ...item, selection: "existing" as const } : item
                     ))}
                   >
-                    Exclude All
+                    Keep All Existing
                   </Button>
                 </div>
               </div>
 
               {/* Duplicate List */}
               <ScrollArea className="h-[400px] pr-4">
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {duplicates.map((dup, idx) => {
                     const globalIdx = preview.findIndex(p => p === dup);
                     const isExpanded = expandedDuplicate === globalIdx;
+                    const hasBatchOriginal = !!dup.batchOriginalItem;
+                    const hasExisting = !!dup.existingItem;
                     
                     return (
                       <div
                         key={globalIdx}
                         className={`border rounded-lg overflow-hidden transition-all ${
-                          dup.includeAnyway 
+                          dup.selection === "import" 
                             ? "border-primary/50 bg-primary/5" 
                             : "border-border bg-card"
                         }`}
                       >
-                        {/* Row Header */}
+                        {/* Row Header - Click to expand */}
                         <div 
                           className="flex items-center gap-3 p-3 cursor-pointer hover:bg-muted/50"
                           onClick={() => setExpandedDuplicate(isExpanded ? null : globalIdx)}
                         >
-                          <Checkbox
-                            checked={dup.includeAnyway}
-                            onCheckedChange={(e) => {
-                              e; // consume event
-                              toggleIncludeDuplicate(globalIdx);
-                            }}
-                            onClick={(e) => e.stopPropagation()}
-                          />
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium truncate">{dup.item.description}</p>
-                            <div className="flex items-center gap-2 mt-0.5">
+                            <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                               <Badge variant="outline" className="text-xs">{dup.source}</Badge>
                               <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-700">
                                 matched: {dup.matchReason}
                               </Badge>
+                              {dup.selection === "import" && (
+                                <Badge className="bg-primary text-primary-foreground text-xs">
+                                  <Check className="h-3 w-3 mr-1" />
+                                  Will Import
+                                </Badge>
+                              )}
+                              {dup.selection === "existing" && (
+                                <Badge variant="secondary" className="text-xs">
+                                  Keeping Existing
+                                </Badge>
+                              )}
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            {dup.includeAnyway && (
-                              <Badge className="bg-primary text-primary-foreground text-xs">
-                                <Check className="h-3 w-3 mr-1" />
-                                Include
-                              </Badge>
-                            )}
                             {isExpanded ? (
                               <ChevronUp className="h-4 w-4 text-muted-foreground" />
                             ) : (
@@ -703,15 +706,33 @@ export const ImportSpareDialog = ({
                           </div>
                         </div>
 
-                        {/* Expanded Comparison */}
+                        {/* Expanded Comparison with Selection */}
                         {isExpanded && (
-                          <div className="border-t bg-muted/30 p-4 space-y-3">
+                          <div className="border-t bg-muted/30 p-4 space-y-4">
+                            <p className="text-sm font-medium text-center">Select which item to keep:</p>
+                            
                             <div className="grid grid-cols-2 gap-4">
-                              {/* Import Item */}
-                              <div className="space-y-2">
-                                <p className="text-xs font-semibold text-muted-foreground uppercase">
-                                  From Import ({dup.source})
-                                </p>
+                              {/* Import Item - Selectable */}
+                              <div 
+                                className={`space-y-2 cursor-pointer rounded-lg p-2 transition-all ${
+                                  dup.selection === "import" 
+                                    ? "ring-2 ring-primary bg-primary/10" 
+                                    : "hover:bg-muted/50"
+                                }`}
+                                onClick={() => setDuplicateSelection(globalIdx, "import")}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <p className="text-xs font-semibold text-muted-foreground uppercase">
+                                    New Item ({dup.source})
+                                  </p>
+                                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                    dup.selection === "import" 
+                                      ? "border-primary bg-primary" 
+                                      : "border-muted-foreground"
+                                  }`}>
+                                    {dup.selection === "import" && <Check className="h-3 w-3 text-primary-foreground" />}
+                                  </div>
+                                </div>
                                 <div className="bg-background rounded border p-3 space-y-1 text-sm">
                                   <p><span className="text-muted-foreground">Description:</span> {dup.item.description || "—"}</p>
                                   <p><span className="text-muted-foreground">OEM Part #:</span> {dup.item.oem_part_number || "—"}</p>
@@ -722,50 +743,56 @@ export const ImportSpareDialog = ({
                                 </div>
                               </div>
 
-                              {/* Matched Item (Database or Batch Original) */}
-                              <div className="space-y-2">
-                                <p className="text-xs font-semibold text-muted-foreground uppercase">
-                                  {dup.existingItem 
-                                    ? "Matching Item in Database" 
-                                    : dup.batchOriginalItem 
-                                      ? `First Occurrence (${dup.batchOriginalSource})` 
-                                      : "Duplicate in Same Batch"
-                                  }
-                                </p>
-                                {dup.existingItem ? (
-                                  <div className="bg-background rounded border p-3 space-y-1 text-sm">
-                                    <p><span className="text-muted-foreground">Description:</span> {dup.existingItem.description || "—"}</p>
-                                    <p><span className="text-muted-foreground">OEM Part #:</span> {dup.existingItem.oem_part_number || "—"}</p>
-                                    <p><span className="text-muted-foreground">Manufacturer:</span> {dup.existingItem.manufacturer || "—"}</p>
-                                    <p><span className="text-muted-foreground">Qty:</span> {dup.existingItem.qty_on_hand}</p>
-                                    <p><span className="text-muted-foreground">Location:</span> {dup.existingItem.warehouse_area || "—"}</p>
-                                    <p><span className="text-muted-foreground">Bin:</span> {dup.existingItem.bin_location || "—"}</p>
+                              {/* Existing/Original Item - Selectable */}
+                              <div 
+                                className={`space-y-2 cursor-pointer rounded-lg p-2 transition-all ${
+                                  dup.selection === "existing" 
+                                    ? "ring-2 ring-primary bg-primary/10" 
+                                    : "hover:bg-muted/50"
+                                }`}
+                                onClick={() => setDuplicateSelection(globalIdx, "existing")}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <p className="text-xs font-semibold text-muted-foreground uppercase">
+                                    {hasExisting 
+                                      ? "Existing in Database" 
+                                      : hasBatchOriginal 
+                                        ? `First Occurrence (${dup.batchOriginalSource})` 
+                                        : "Original Item"
+                                    }
+                                  </p>
+                                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                    dup.selection === "existing" 
+                                      ? "border-primary bg-primary" 
+                                      : "border-muted-foreground"
+                                  }`}>
+                                    {dup.selection === "existing" && <Check className="h-3 w-3 text-primary-foreground" />}
                                   </div>
-                                ) : dup.batchOriginalItem ? (
+                                </div>
+                                {hasExisting ? (
                                   <div className="bg-background rounded border p-3 space-y-1 text-sm">
-                                    <p><span className="text-muted-foreground">Description:</span> {dup.batchOriginalItem.description || "—"}</p>
-                                    <p><span className="text-muted-foreground">OEM Part #:</span> {dup.batchOriginalItem.oem_part_number || "—"}</p>
-                                    <p><span className="text-muted-foreground">Manufacturer:</span> {dup.batchOriginalItem.manufacturer || "—"}</p>
-                                    <p><span className="text-muted-foreground">Qty:</span> {dup.batchOriginalItem.qty_on_hand}</p>
-                                    <p><span className="text-muted-foreground">Location:</span> {dup.batchOriginalItem.warehouse_area || "—"}</p>
-                                    <p><span className="text-muted-foreground">Bin:</span> {dup.batchOriginalItem.bin_location || "—"}</p>
+                                    <p><span className="text-muted-foreground">Description:</span> {dup.existingItem!.description || "—"}</p>
+                                    <p><span className="text-muted-foreground">OEM Part #:</span> {dup.existingItem!.oem_part_number || "—"}</p>
+                                    <p><span className="text-muted-foreground">Manufacturer:</span> {dup.existingItem!.manufacturer || "—"}</p>
+                                    <p><span className="text-muted-foreground">Qty:</span> {dup.existingItem!.qty_on_hand}</p>
+                                    <p><span className="text-muted-foreground">Location:</span> {dup.existingItem!.warehouse_area || "—"}</p>
+                                    <p><span className="text-muted-foreground">Bin:</span> {dup.existingItem!.bin_location || "—"}</p>
+                                  </div>
+                                ) : hasBatchOriginal ? (
+                                  <div className="bg-background rounded border p-3 space-y-1 text-sm">
+                                    <p><span className="text-muted-foreground">Description:</span> {dup.batchOriginalItem!.description || "—"}</p>
+                                    <p><span className="text-muted-foreground">OEM Part #:</span> {dup.batchOriginalItem!.oem_part_number || "—"}</p>
+                                    <p><span className="text-muted-foreground">Manufacturer:</span> {dup.batchOriginalItem!.manufacturer || "—"}</p>
+                                    <p><span className="text-muted-foreground">Qty:</span> {dup.batchOriginalItem!.qty_on_hand}</p>
+                                    <p><span className="text-muted-foreground">Location:</span> {dup.batchOriginalItem!.warehouse_area || "—"}</p>
+                                    <p><span className="text-muted-foreground">Bin:</span> {dup.batchOriginalItem!.bin_location || "—"}</p>
                                   </div>
                                 ) : (
                                   <div className="bg-background rounded border p-3 text-sm text-muted-foreground italic">
-                                    Unable to retrieve matching item details
+                                    Keep existing item (skip this import)
                                   </div>
                                 )}
                               </div>
-                            </div>
-
-                            <div className="flex justify-end">
-                              <Button
-                                size="sm"
-                                variant={dup.includeAnyway ? "destructive" : "default"}
-                                onClick={() => toggleIncludeDuplicate(globalIdx)}
-                              >
-                                {dup.includeAnyway ? "Exclude from Import" : "Include Anyway"}
-                              </Button>
                             </div>
                           </div>
                         )}
@@ -783,7 +810,7 @@ export const ImportSpareDialog = ({
                       {totalToImport} items will be imported
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {uniqueCount} unique + {includedDuplicateCount} duplicates included
+                      {uniqueCount} unique + {selectedToImportCount} from duplicates
                     </p>
                   </div>
                   <Button
