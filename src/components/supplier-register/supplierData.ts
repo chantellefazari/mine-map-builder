@@ -2,12 +2,14 @@ export type SupplierType = "OEM" | "Critical Spares Supplier" | "Trade / General
 
 export interface Supplier {
   id: string;
-  supplierName: string;
-  supplierType: SupplierType;
-  whatTheySupply: string;
-  primaryContactName: string;
-  phoneNumber: string;
+  code: string;
+  name: string;
+  contact: string;
+  type: SupplierType;
+  workPhone: string;
+  mobile: string;
   email: string;
+  whatUsedFor: string;
   notes: string;
 }
 

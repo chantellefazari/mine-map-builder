@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { Supplier, SupplierType, supplierTypes, supplyCategories } from "./supplierData";
+import { Supplier, SupplierType, supplierTypes } from "./supplierData";
 
 interface AddSupplierDialogProps {
   onAddSupplier: (supplier: Omit<Supplier, "id">) => void;
@@ -29,36 +29,42 @@ interface AddSupplierDialogProps {
 export const AddSupplierDialog = ({ onAddSupplier }: AddSupplierDialogProps) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
-    supplierName: "",
-    supplierType: "" as SupplierType | "",
-    whatTheySupply: "",
-    primaryContactName: "",
-    phoneNumber: "",
+    code: "",
+    name: "",
+    contact: "",
+    type: "" as SupplierType | "",
+    workPhone: "",
+    mobile: "",
     email: "",
+    whatUsedFor: "",
     notes: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.supplierName || !formData.supplierType) return;
+    if (!formData.name || !formData.type) return;
 
     onAddSupplier({
-      supplierName: formData.supplierName,
-      supplierType: formData.supplierType as SupplierType,
-      whatTheySupply: formData.whatTheySupply,
-      primaryContactName: formData.primaryContactName,
-      phoneNumber: formData.phoneNumber,
+      code: formData.code,
+      name: formData.name,
+      contact: formData.contact,
+      type: formData.type as SupplierType,
+      workPhone: formData.workPhone,
+      mobile: formData.mobile,
       email: formData.email,
+      whatUsedFor: formData.whatUsedFor,
       notes: formData.notes,
     });
 
     setFormData({
-      supplierName: "",
-      supplierType: "",
-      whatTheySupply: "",
-      primaryContactName: "",
-      phoneNumber: "",
+      code: "",
+      name: "",
+      contact: "",
+      type: "",
+      workPhone: "",
+      mobile: "",
       email: "",
+      whatUsedFor: "",
       notes: "",
     });
     setOpen(false);
@@ -72,7 +78,7 @@ export const AddSupplierDialog = ({ onAddSupplier }: AddSupplierDialogProps) => 
           Add Supplier
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[550px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Add New Supplier</DialogTitle>
           <DialogDescription>
@@ -82,13 +88,26 @@ export const AddSupplierDialog = ({ onAddSupplier }: AddSupplierDialogProps) => 
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="supplierName" className="text-right">
-                Supplier Name *
+              <Label htmlFor="code" className="text-right">
+                Code
               </Label>
               <Input
-                id="supplierName"
-                value={formData.supplierName}
-                onChange={(e) => setFormData({ ...formData, supplierName: e.target.value })}
+                id="code"
+                value={formData.code}
+                onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                className="col-span-3"
+                placeholder="Supplier code (e.g. SUP001)"
+              />
+            </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name *
+              </Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="col-span-3"
                 placeholder="Enter supplier name"
                 required
@@ -96,12 +115,25 @@ export const AddSupplierDialog = ({ onAddSupplier }: AddSupplierDialogProps) => 
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="supplierType" className="text-right">
-                Supplier Type *
+              <Label htmlFor="contact" className="text-right">
+                Contact
+              </Label>
+              <Input
+                id="contact"
+                value={formData.contact}
+                onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                className="col-span-3"
+                placeholder="Primary contact name"
+              />
+            </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="type" className="text-right">
+                Type *
               </Label>
               <Select
-                value={formData.supplierType}
-                onValueChange={(value) => setFormData({ ...formData, supplierType: value as SupplierType })}
+                value={formData.type}
+                onValueChange={(value) => setFormData({ ...formData, type: value as SupplierType })}
               >
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Select supplier type" />
@@ -117,39 +149,26 @@ export const AddSupplierDialog = ({ onAddSupplier }: AddSupplierDialogProps) => 
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="whatTheySupply" className="text-right">
-                What They Supply
+              <Label htmlFor="workPhone" className="text-right">
+                Work Phone
               </Label>
               <Input
-                id="whatTheySupply"
-                value={formData.whatTheySupply}
-                onChange={(e) => setFormData({ ...formData, whatTheySupply: e.target.value })}
+                id="workPhone"
+                value={formData.workPhone}
+                onChange={(e) => setFormData({ ...formData, workPhone: e.target.value })}
                 className="col-span-3"
-                placeholder="e.g. Motors, Gearboxes, Electrical"
+                placeholder="+61 X XXXX XXXX"
               />
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="primaryContactName" className="text-right">
-                Primary Contact
+              <Label htmlFor="mobile" className="text-right">
+                Mobile
               </Label>
               <Input
-                id="primaryContactName"
-                value={formData.primaryContactName}
-                onChange={(e) => setFormData({ ...formData, primaryContactName: e.target.value })}
-                className="col-span-3"
-                placeholder="Contact name"
-              />
-            </div>
-
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phoneNumber" className="text-right">
-                Phone Number
-              </Label>
-              <Input
-                id="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                id="mobile"
+                value={formData.mobile}
+                onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
                 className="col-span-3"
                 placeholder="+61 XXX XXX XXX"
               />
@@ -157,7 +176,7 @@ export const AddSupplierDialog = ({ onAddSupplier }: AddSupplierDialogProps) => 
 
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-right">
-                Email Address
+                Email
               </Label>
               <Input
                 id="email"
@@ -166,6 +185,19 @@ export const AddSupplierDialog = ({ onAddSupplier }: AddSupplierDialogProps) => 
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="col-span-3"
                 placeholder="email@supplier.com"
+              />
+            </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="whatUsedFor" className="text-right">
+                What Used For
+              </Label>
+              <Input
+                id="whatUsedFor"
+                value={formData.whatUsedFor}
+                onChange={(e) => setFormData({ ...formData, whatUsedFor: e.target.value })}
+                className="col-span-3"
+                placeholder="e.g. Motors, Gearboxes, Electrical"
               />
             </div>
 
@@ -187,7 +219,7 @@ export const AddSupplierDialog = ({ onAddSupplier }: AddSupplierDialogProps) => 
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={!formData.supplierName || !formData.supplierType}>
+            <Button type="submit" disabled={!formData.name || !formData.type}>
               Add Supplier
             </Button>
           </DialogFooter>
