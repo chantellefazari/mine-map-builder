@@ -12,7 +12,7 @@ import { Upload, FileSpreadsheet, CheckCircle2, AlertTriangle, X } from "lucide-
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import * as XLSX from "xlsx";
-import { Supplier, SupplierType, supplierTypes } from "./supplierData";
+import { Supplier, SupplierType } from "./supplierData";
 
 interface ImportSupplierDialogProps {
   existingSuppliers: Supplier[];
@@ -20,12 +20,14 @@ interface ImportSupplierDialogProps {
 }
 
 interface ParsedSupplier {
-  supplierName: string;
-  supplierType: SupplierType;
-  whatTheySupply: string;
-  primaryContactName: string;
-  phoneNumber: string;
+  code: string;
+  name: string;
+  contact: string;
+  type: SupplierType;
+  workPhone: string;
+  mobile: string;
   email: string;
+  whatUsedFor: string;
   notes: string;
   isDuplicate: boolean;
   matchReason?: string;
@@ -53,24 +55,37 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
   const detectDuplicates = useCallback(
     (suppliers: Omit<ParsedSupplier, "isDuplicate" | "matchReason">[]): ParsedSupplier[] => {
       const existingNames = new Set(
-        existingSuppliers.map((s) => s.supplierName.toLowerCase().trim())
+        existingSuppliers.map((s) => s.name.toLowerCase().trim())
+      );
+      const existingCodes = new Set(
+        existingSuppliers.filter((s) => s.code).map((s) => s.code.toLowerCase().trim())
       );
       const seenNames = new Set<string>();
+      const seenCodes = new Set<string>();
 
       return suppliers.map((supplier) => {
-        const name = supplier.supplierName.toLowerCase().trim();
+        const name = supplier.name.toLowerCase().trim();
+        const code = supplier.code.toLowerCase().trim();
         let isDuplicate = false;
         let matchReason: string | undefined;
 
-        if (name && existingNames.has(name)) {
+        // Check by code first (if exists)
+        if (code && existingCodes.has(code)) {
           isDuplicate = true;
-          matchReason = "exists in register";
+          matchReason = "code exists";
+        } else if (code && seenCodes.has(code)) {
+          isDuplicate = true;
+          matchReason = "duplicate code in file";
+        } else if (name && existingNames.has(name)) {
+          isDuplicate = true;
+          matchReason = "name exists";
         } else if (name && seenNames.has(name)) {
           isDuplicate = true;
-          matchReason = "duplicate in file";
+          matchReason = "duplicate name in file";
         }
 
         if (name) seenNames.add(name);
+        if (code) seenCodes.add(code);
 
         return { ...supplier, isDuplicate, matchReason };
       });
@@ -97,19 +112,23 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
         Object.keys(jsonData[0]).forEach((key) => {
           const normalized = normalizeHeader(key);
           // Map common header variations
-          if (normalized.includes("suppliername") || normalized === "supplier" || normalized === "name") {
-            headerMap[key] = "supplierName";
-          } else if (normalized.includes("type") || normalized.includes("category")) {
-            headerMap[key] = "supplierType";
-          } else if (normalized.includes("supply") || normalized.includes("products") || normalized.includes("services")) {
-            headerMap[key] = "whatTheySupply";
-          } else if (normalized.includes("contact") || normalized.includes("person")) {
-            headerMap[key] = "primaryContactName";
-          } else if (normalized.includes("phone") || normalized.includes("tel") || normalized.includes("mobile")) {
-            headerMap[key] = "phoneNumber";
-          } else if (normalized.includes("email") || normalized.includes("mail")) {
+          if (normalized === "code" || normalized === "suppliercode" || normalized === "supcode") {
+            headerMap[key] = "code";
+          } else if (normalized === "name" || normalized === "suppliername" || normalized === "supplier") {
+            headerMap[key] = "name";
+          } else if (normalized === "contact" || normalized === "contactname" || normalized === "person") {
+            headerMap[key] = "contact";
+          } else if (normalized === "type" || normalized === "suppliertype" || normalized === "category") {
+            headerMap[key] = "type";
+          } else if (normalized === "workphone" || normalized === "phone" || normalized === "tel" || normalized === "landline") {
+            headerMap[key] = "workPhone";
+          } else if (normalized === "mobile" || normalized === "cell" || normalized === "mobilephone") {
+            headerMap[key] = "mobile";
+          } else if (normalized === "email" || normalized === "emailaddress" || normalized === "mail") {
             headerMap[key] = "email";
-          } else if (normalized.includes("note") || normalized.includes("comment") || normalized.includes("remark")) {
+          } else if (normalized === "whatusedfor" || normalized === "usedfor" || normalized === "supply" || normalized === "products" || normalized === "services") {
+            headerMap[key] = "whatUsedFor";
+          } else if (normalized === "notes" || normalized === "comments" || normalized === "remarks") {
             headerMap[key] = "notes";
           }
         });
@@ -126,16 +145,18 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
           });
 
           return {
-            supplierName: mapped.supplierName || "",
-            supplierType: mapped.supplierType ? mapSupplierType(mapped.supplierType) : "Trade / General Supplier",
-            whatTheySupply: mapped.whatTheySupply || "",
-            primaryContactName: mapped.primaryContactName || "",
-            phoneNumber: mapped.phoneNumber || "",
+            code: mapped.code || "",
+            name: mapped.name || "",
+            contact: mapped.contact || "",
+            type: mapped.type ? mapSupplierType(mapped.type) : "Trade / General Supplier",
+            workPhone: mapped.workPhone || "",
+            mobile: mapped.mobile || "",
             email: mapped.email || "",
+            whatUsedFor: mapped.whatUsedFor || "",
             notes: mapped.notes || "",
           };
         })
-        .filter((s) => s.supplierName); // Filter out rows without supplier name
+        .filter((s) => s.name); // Filter out rows without supplier name
 
       const withDuplicates = detectDuplicates(suppliers);
       setParsedData(withDuplicates);
@@ -173,11 +194,11 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
           Import from Excel
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[700px] max-h-[85vh]">
+      <DialogContent className="sm:max-w-[750px] max-h-[85vh]">
         <DialogHeader>
           <DialogTitle>Import Suppliers from Excel</DialogTitle>
           <DialogDescription>
-            Upload an Excel file with supplier information. Duplicates are detected by Supplier Name.
+            Upload an Excel file with supplier information. Duplicates are detected by Code or Name.
           </DialogDescription>
         </DialogHeader>
 
@@ -188,7 +209,7 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
               <FileSpreadsheet className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <p className="text-sm text-muted-foreground mb-4">
                 Upload an Excel file (.xlsx, .xls) with columns like:<br />
-                Supplier Name, Type, What They Supply, Contact, Phone, Email, Notes
+                Code, Name, Contact, Type, Work Phone, Mobile, Email, What Used For
               </p>
               <label htmlFor="supplier-file-upload">
                 <Button asChild disabled={isProcessing}>
@@ -247,10 +268,11 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
                   <thead className="bg-muted/50 sticky top-0">
                     <tr>
                       <th className="text-left p-2 font-medium">Status</th>
-                      <th className="text-left p-2 font-medium">Supplier Name</th>
+                      <th className="text-left p-2 font-medium">Code</th>
+                      <th className="text-left p-2 font-medium">Name</th>
                       <th className="text-left p-2 font-medium">Type</th>
-                      <th className="text-left p-2 font-medium">What They Supply</th>
                       <th className="text-left p-2 font-medium">Contact</th>
+                      <th className="text-left p-2 font-medium">What Used For</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -270,10 +292,11 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
                             </Badge>
                           )}
                         </td>
-                        <td className="p-2 font-medium">{supplier.supplierName}</td>
-                        <td className="p-2">{supplier.supplierType}</td>
-                        <td className="p-2 max-w-[150px] truncate">{supplier.whatTheySupply}</td>
-                        <td className="p-2">{supplier.primaryContactName}</td>
+                        <td className="p-2">{supplier.code}</td>
+                        <td className="p-2 font-medium">{supplier.name}</td>
+                        <td className="p-2">{supplier.type}</td>
+                        <td className="p-2">{supplier.contact}</td>
+                        <td className="p-2 max-w-[150px] truncate">{supplier.whatUsedFor}</td>
                       </tr>
                     ))}
                   </tbody>

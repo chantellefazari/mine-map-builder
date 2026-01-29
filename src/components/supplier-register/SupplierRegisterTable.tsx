@@ -83,12 +83,13 @@ export const SupplierRegisterTable = () => {
 
   const filteredSuppliers = suppliers.filter((supplier) => {
     const matchesSearch =
-      supplier.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      supplier.whatTheySupply.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      supplier.primaryContactName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      supplier.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      supplier.whatUsedFor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      supplier.contact.toLowerCase().includes(searchTerm.toLowerCase()) ||
       supplier.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesType = filterType === "all" || supplier.supplierType === filterType;
+    const matchesType = filterType === "all" || supplier.type === filterType;
 
     return matchesSearch && matchesType;
   });
@@ -131,26 +132,27 @@ export const SupplierRegisterTable = () => {
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg">
+      <div className="border rounded-lg overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[200px]">Supplier Name</TableHead>
-              <TableHead className="w-[180px]">Type</TableHead>
-              <TableHead className="w-[200px]">What They Supply</TableHead>
-              <TableHead className="w-[150px]">Primary Contact</TableHead>
-              <TableHead className="w-[140px]">Phone</TableHead>
-              <TableHead className="w-[180px]">Email</TableHead>
-              <TableHead>Notes</TableHead>
-              <TableHead className="w-[100px] text-right">Actions</TableHead>
+              <TableHead className="w-[80px]">Code</TableHead>
+              <TableHead className="w-[180px]">Name</TableHead>
+              <TableHead className="w-[140px]">Contact</TableHead>
+              <TableHead className="w-[160px]">Type</TableHead>
+              <TableHead className="w-[120px]">Work Phone</TableHead>
+              <TableHead className="w-[120px]">Mobile</TableHead>
+              <TableHead className="w-[160px]">Email</TableHead>
+              <TableHead className="w-[180px]">What Used For</TableHead>
+              <TableHead className="w-[80px] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredSuppliers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
                   {suppliers.length === 0
-                    ? "No suppliers added yet. Click 'Add Supplier' to get started."
+                    ? "No suppliers added yet. Click 'Add Supplier' or 'Import from Excel' to get started."
                     : "No suppliers match your search criteria."}
                 </TableCell>
               </TableRow>
@@ -161,18 +163,36 @@ export const SupplierRegisterTable = () => {
                     <>
                       <TableCell>
                         <Input
-                          value={editData.supplierName}
+                          value={editData.code}
                           onChange={(e) =>
-                            setEditData({ ...editData, supplierName: e.target.value })
+                            setEditData({ ...editData, code: e.target.value })
+                          }
+                          className="h-8"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={editData.name}
+                          onChange={(e) =>
+                            setEditData({ ...editData, name: e.target.value })
+                          }
+                          className="h-8"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={editData.contact}
+                          onChange={(e) =>
+                            setEditData({ ...editData, contact: e.target.value })
                           }
                           className="h-8"
                         />
                       </TableCell>
                       <TableCell>
                         <Select
-                          value={editData.supplierType}
+                          value={editData.type}
                           onValueChange={(value) =>
-                            setEditData({ ...editData, supplierType: value as SupplierType })
+                            setEditData({ ...editData, type: value as SupplierType })
                           }
                         >
                           <SelectTrigger className="h-8">
@@ -189,27 +209,18 @@ export const SupplierRegisterTable = () => {
                       </TableCell>
                       <TableCell>
                         <Input
-                          value={editData.whatTheySupply}
+                          value={editData.workPhone}
                           onChange={(e) =>
-                            setEditData({ ...editData, whatTheySupply: e.target.value })
+                            setEditData({ ...editData, workPhone: e.target.value })
                           }
                           className="h-8"
                         />
                       </TableCell>
                       <TableCell>
                         <Input
-                          value={editData.primaryContactName}
+                          value={editData.mobile}
                           onChange={(e) =>
-                            setEditData({ ...editData, primaryContactName: e.target.value })
-                          }
-                          className="h-8"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          value={editData.phoneNumber}
-                          onChange={(e) =>
-                            setEditData({ ...editData, phoneNumber: e.target.value })
+                            setEditData({ ...editData, mobile: e.target.value })
                           }
                           className="h-8"
                         />
@@ -223,8 +234,8 @@ export const SupplierRegisterTable = () => {
                       </TableCell>
                       <TableCell>
                         <Input
-                          value={editData.notes}
-                          onChange={(e) => setEditData({ ...editData, notes: e.target.value })}
+                          value={editData.whatUsedFor}
+                          onChange={(e) => setEditData({ ...editData, whatUsedFor: e.target.value })}
                           className="h-8"
                         />
                       </TableCell>
@@ -241,18 +252,19 @@ export const SupplierRegisterTable = () => {
                     </>
                   ) : (
                     <>
-                      <TableCell className="font-medium">{supplier.supplierName}</TableCell>
+                      <TableCell className="font-mono text-xs">{supplier.code}</TableCell>
+                      <TableCell className="font-medium">{supplier.name}</TableCell>
+                      <TableCell>{supplier.contact}</TableCell>
                       <TableCell>
-                        <Badge variant={getTypeBadgeVariant(supplier.supplierType)}>
-                          {supplier.supplierType}
+                        <Badge variant={getTypeBadgeVariant(supplier.type)}>
+                          {supplier.type}
                         </Badge>
                       </TableCell>
-                      <TableCell>{supplier.whatTheySupply}</TableCell>
-                      <TableCell>{supplier.primaryContactName}</TableCell>
-                      <TableCell>{supplier.phoneNumber}</TableCell>
+                      <TableCell>{supplier.workPhone}</TableCell>
+                      <TableCell>{supplier.mobile}</TableCell>
                       <TableCell>{supplier.email}</TableCell>
-                      <TableCell className="max-w-[200px] truncate" title={supplier.notes}>
-                        {supplier.notes}
+                      <TableCell className="max-w-[180px] truncate" title={supplier.whatUsedFor}>
+                        {supplier.whatUsedFor}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
