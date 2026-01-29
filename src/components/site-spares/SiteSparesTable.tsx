@@ -74,11 +74,8 @@ export const SiteSparesTable = () => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
 
-  // Helper to get criticality level for a spare
+  // Helper to get criticality level - always use description-based classification
   const getCriticality = (spare: SiteSpareItem): CriticalityLevel => {
-    // If explicitly marked critical, it's HIGH
-    if (spare.is_critical) return "HIGH";
-    // Otherwise classify by description
     return classifyCriticality(spare.description);
   };
 
