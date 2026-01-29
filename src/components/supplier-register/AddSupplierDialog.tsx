@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { Supplier, SupplierType, supplierTypes } from "./supplierData";
+import { Supplier, SupplierType, supplierTypes } from "@/hooks/useSuppliers";
 
 interface AddSupplierDialogProps {
   onAddSupplier: (supplier: Omit<Supplier, "id">) => void;

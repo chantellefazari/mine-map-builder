@@ -10,8 +10,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Trash2, Edit2, Save, X } from "lucide-react";
-import { Supplier, SupplierType, supplierTypes } from "./supplierData";
+import { Search, Trash2, Edit2, Save, X, Loader2 } from "lucide-react";
+import { Supplier, SupplierType, supplierTypes, useSuppliers } from "@/hooks/useSuppliers";
 import { AddSupplierDialog } from "./AddSupplierDialog";
 import { ImportSupplierDialog } from "./ImportSupplierDialog";
 import {
@@ -23,30 +23,22 @@ import {
 } from "@/components/ui/select";
 
 export const SupplierRegisterTable = () => {
-  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const { suppliers, isLoading, addSupplier, importSuppliers, updateSupplier, deleteSupplier } = useSuppliers();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<string>("all");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<Supplier | null>(null);
 
-  const handleAddSupplier = (newSupplier: Omit<Supplier, "id">) => {
-    const supplier: Supplier = {
-      ...newSupplier,
-      id: crypto.randomUUID(),
-    };
-    setSuppliers([...suppliers, supplier]);
+  const handleAddSupplier = async (newSupplier: Omit<Supplier, "id">) => {
+    await addSupplier(newSupplier);
   };
 
-  const handleImportSuppliers = (newSuppliers: Omit<Supplier, "id">[]) => {
-    const suppliersWithIds = newSuppliers.map((s) => ({
-      ...s,
-      id: crypto.randomUUID(),
-    }));
-    setSuppliers([...suppliers, ...suppliersWithIds]);
+  const handleImportSuppliers = async (newSuppliers: Omit<Supplier, "id">[]) => {
+    return await importSuppliers(newSuppliers);
   };
 
-  const handleDeleteSupplier = (id: string) => {
-    setSuppliers(suppliers.filter((s) => s.id !== id));
+  const handleDeleteSupplier = async (id: string) => {
+    await deleteSupplier(id);
   };
 
   const handleStartEdit = (supplier: Supplier) => {
@@ -59,9 +51,9 @@ export const SupplierRegisterTable = () => {
     setEditData(null);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!editData) return;
-    setSuppliers(suppliers.map((s) => (s.id === editData.id ? editData : s)));
+    await updateSupplier(editData);
     setEditingId(null);
     setEditData(null);
   };
@@ -93,6 +85,15 @@ export const SupplierRegisterTable = () => {
 
     return matchesSearch && matchesType;
   });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <span className="ml-2 text-muted-foreground">Loading suppliers...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

@@ -8,15 +8,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Upload, FileSpreadsheet, CheckCircle2, AlertTriangle, X } from "lucide-react";
+import { Upload, FileSpreadsheet, CheckCircle2, AlertTriangle, X, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import * as XLSX from "xlsx";
-import { Supplier, SupplierType } from "./supplierData";
+import { Supplier, SupplierType } from "@/hooks/useSuppliers";
 
 interface ImportSupplierDialogProps {
   existingSuppliers: Supplier[];
-  onImportSuppliers: (suppliers: Omit<Supplier, "id">[]) => void;
+  onImportSuppliers: (suppliers: Omit<Supplier, "id">[]) => Promise<boolean>;
 }
 
 interface ParsedSupplier {
@@ -31,6 +31,9 @@ interface ParsedSupplier {
   notes: string;
   isDuplicate: boolean;
   matchReason?: string;
+  existingMatch?: Supplier;
+  batchOriginalItem?: Omit<Supplier, "id">;
+  selection: "import" | "existing" | "skip";
 }
 
 const normalizeHeader = (header: string): string => {
@@ -43,51 +46,67 @@ const mapSupplierType = (value: string): SupplierType => {
   if (normalized.includes("critical")) return "Critical Spares Supplier";
   if (normalized.includes("service")) return "Service Provider";
   if (normalized.includes("trade") || normalized.includes("general")) return "Trade / General Supplier";
-  return "Trade / General Supplier"; // default
+  return "Trade / General Supplier";
 };
 
 export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: ImportSupplierDialogProps) => {
   const [open, setOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
   const [parsedData, setParsedData] = useState<ParsedSupplier[]>([]);
   const [fileName, setFileName] = useState<string>("");
+  const [showDuplicateReview, setShowDuplicateReview] = useState(false);
+  const [currentDuplicateIndex, setCurrentDuplicateIndex] = useState(0);
 
   const detectDuplicates = useCallback(
-    (suppliers: Omit<ParsedSupplier, "isDuplicate" | "matchReason">[]): ParsedSupplier[] => {
-      const existingNames = new Set(
-        existingSuppliers.map((s) => s.name.toLowerCase().trim())
+    (suppliers: Omit<ParsedSupplier, "isDuplicate" | "matchReason" | "existingMatch" | "batchOriginalItem" | "selection">[]): ParsedSupplier[] => {
+      const existingByName = new Map(
+        existingSuppliers.map((s) => [s.name.toLowerCase().trim(), s])
       );
-      const existingCodes = new Set(
-        existingSuppliers.filter((s) => s.code).map((s) => s.code.toLowerCase().trim())
+      const existingByCode = new Map(
+        existingSuppliers.filter((s) => s.code).map((s) => [s.code.toLowerCase().trim(), s])
       );
-      const seenNames = new Set<string>();
-      const seenCodes = new Set<string>();
+      const seenNames = new Map<string, Omit<Supplier, "id">>();
+      const seenCodes = new Map<string, Omit<Supplier, "id">>();
 
       return suppliers.map((supplier) => {
         const name = supplier.name.toLowerCase().trim();
         const code = supplier.code.toLowerCase().trim();
         let isDuplicate = false;
         let matchReason: string | undefined;
+        let existingMatch: Supplier | undefined;
+        let batchOriginalItem: Omit<Supplier, "id"> | undefined;
 
         // Check by code first (if exists)
-        if (code && existingCodes.has(code)) {
+        if (code && existingByCode.has(code)) {
           isDuplicate = true;
-          matchReason = "code exists";
+          existingMatch = existingByCode.get(code);
+          matchReason = "code exists in database";
         } else if (code && seenCodes.has(code)) {
           isDuplicate = true;
+          batchOriginalItem = seenCodes.get(code);
           matchReason = "duplicate code in file";
-        } else if (name && existingNames.has(name)) {
+        } else if (name && existingByName.has(name)) {
           isDuplicate = true;
-          matchReason = "name exists";
+          existingMatch = existingByName.get(name);
+          matchReason = "name exists in database";
         } else if (name && seenNames.has(name)) {
           isDuplicate = true;
+          batchOriginalItem = seenNames.get(name);
           matchReason = "duplicate name in file";
         }
 
-        if (name) seenNames.add(name);
-        if (code) seenCodes.add(code);
+        if (name) seenNames.set(name, supplier);
+        if (code) seenCodes.set(code, supplier);
 
-        return { ...supplier, isDuplicate, matchReason };
+        return { 
+          ...supplier, 
+          isDuplicate, 
+          matchReason, 
+          existingMatch, 
+          batchOriginalItem,
+          selection: isDuplicate ? "existing" : "import"
+        };
       });
     },
     [existingSuppliers]
@@ -111,7 +130,6 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
       if (jsonData.length > 0) {
         Object.keys(jsonData[0]).forEach((key) => {
           const normalized = normalizeHeader(key);
-          // Map common header variations
           if (normalized === "code" || normalized === "suppliercode" || normalized === "supcode") {
             headerMap[key] = "code";
           } else if (normalized === "name" || normalized === "suppliername" || normalized === "supplier") {
@@ -134,7 +152,7 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
         });
       }
 
-      const suppliers: Omit<ParsedSupplier, "isDuplicate" | "matchReason">[] = jsonData
+      const suppliers = jsonData
         .map((row) => {
           const mapped: Record<string, string> = {};
           Object.entries(row).forEach(([key, value]) => {
@@ -148,7 +166,7 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
             code: mapped.code || "",
             name: mapped.name || "",
             contact: mapped.contact || "",
-            type: mapped.type ? mapSupplierType(mapped.type) : "Trade / General Supplier",
+            type: mapped.type ? mapSupplierType(mapped.type) : "Trade / General Supplier" as SupplierType,
             workPhone: mapped.workPhone || "",
             mobile: mapped.mobile || "",
             email: mapped.email || "",
@@ -156,7 +174,7 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
             notes: mapped.notes || "",
           };
         })
-        .filter((s) => s.name); // Filter out rows without supplier name
+        .filter((s) => s.name);
 
       const withDuplicates = detectDuplicates(suppliers);
       setParsedData(withDuplicates);
@@ -167,24 +185,59 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
     }
   };
 
-  const handleImport = () => {
-    const uniqueSuppliers = parsedData
-      .filter((s) => !s.isDuplicate)
-      .map(({ isDuplicate, matchReason, ...supplier }) => supplier);
+  const duplicates = parsedData.filter((s) => s.isDuplicate);
+  const currentDuplicate = duplicates[currentDuplicateIndex];
 
-    onImportSuppliers(uniqueSuppliers);
-    setParsedData([]);
-    setFileName("");
-    setOpen(false);
+  const handleDuplicateSelection = (selection: "import" | "existing") => {
+    setParsedData((prev) =>
+      prev.map((item) =>
+        item === currentDuplicate ? { ...item, selection } : item
+      )
+    );
+    
+    if (currentDuplicateIndex < duplicates.length - 1) {
+      setCurrentDuplicateIndex((prev) => prev + 1);
+    } else {
+      setShowDuplicateReview(false);
+    }
+  };
+
+  const handleImport = async () => {
+    setIsImporting(true);
+    try {
+      const uniqueSuppliers = parsedData
+        .filter((s) => !s.isDuplicate || s.selection === "import")
+        .map(({ isDuplicate, matchReason, existingMatch, batchOriginalItem, selection, ...supplier }) => supplier);
+
+      const success = await onImportSuppliers(uniqueSuppliers);
+      if (success) {
+        setParsedData([]);
+        setFileName("");
+        setShowDuplicateReview(false);
+        setCurrentDuplicateIndex(0);
+        setOpen(false);
+      }
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   const handleClear = () => {
     setParsedData([]);
     setFileName("");
+    setShowDuplicateReview(false);
+    setCurrentDuplicateIndex(0);
+  };
+
+  const handleStartDuplicateReview = () => {
+    setCurrentDuplicateIndex(0);
+    setShowDuplicateReview(true);
   };
 
   const uniqueCount = parsedData.filter((s) => !s.isDuplicate).length;
-  const duplicateCount = parsedData.filter((s) => s.isDuplicate).length;
+  const duplicateCount = duplicates.length;
+  const importingDuplicates = duplicates.filter((d) => d.selection === "import").length;
+  const totalToImport = uniqueCount + importingDuplicates;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -194,7 +247,7 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
           Import from Excel
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[750px] max-h-[85vh]">
+      <DialogContent className="sm:max-w-[800px] max-h-[85vh]">
         <DialogHeader>
           <DialogTitle>Import Suppliers from Excel</DialogTitle>
           <DialogDescription>
@@ -229,8 +282,125 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
             </div>
           )}
 
-          {/* Results */}
-          {parsedData.length > 0 && (
+          {/* Duplicate Review Mode */}
+          {showDuplicateReview && currentDuplicate && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Reviewing duplicate {currentDuplicateIndex + 1} of {duplicateCount}
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setShowDuplicateReview(false)}>
+                  <X className="h-4 w-4 mr-1" />
+                  Exit Review
+                </Button>
+              </div>
+
+              <div className="bg-muted/30 rounded-lg p-3 mb-2">
+                <p className="text-sm font-medium text-destructive">
+                  Duplicate Reason: {currentDuplicate.matchReason}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {/* New Item */}
+                <div 
+                  className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                    currentDuplicate.selection === "import" 
+                      ? "border-primary bg-primary/5" 
+                      : "border-border hover:border-muted-foreground"
+                  }`}
+                  onClick={() => handleDuplicateSelection("import")}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <Badge variant="outline" className="text-primary border-primary/30">
+                      New (from Excel)
+                    </Badge>
+                    {currentDuplicate.selection === "import" && (
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    )}
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <div><span className="text-muted-foreground">Code:</span> {currentDuplicate.code || "-"}</div>
+                    <div><span className="text-muted-foreground">Name:</span> <strong>{currentDuplicate.name}</strong></div>
+                    <div><span className="text-muted-foreground">Contact:</span> {currentDuplicate.contact || "-"}</div>
+                    <div><span className="text-muted-foreground">Type:</span> {currentDuplicate.type}</div>
+                    <div><span className="text-muted-foreground">Work Phone:</span> {currentDuplicate.workPhone || "-"}</div>
+                    <div><span className="text-muted-foreground">Mobile:</span> {currentDuplicate.mobile || "-"}</div>
+                    <div><span className="text-muted-foreground">Email:</span> {currentDuplicate.email || "-"}</div>
+                    <div><span className="text-muted-foreground">What Used For:</span> {currentDuplicate.whatUsedFor || "-"}</div>
+                  </div>
+                </div>
+
+                {/* Existing/Batch Original Item */}
+                <div 
+                  className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                    currentDuplicate.selection === "existing" 
+                      ? "border-primary bg-primary/5" 
+                      : "border-border hover:border-muted-foreground"
+                  }`}
+                  onClick={() => handleDuplicateSelection("existing")}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <Badge variant="secondary">
+                      {currentDuplicate.existingMatch ? "Existing (Database)" : "First in Batch"}
+                    </Badge>
+                    {currentDuplicate.selection === "existing" && (
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    )}
+                  </div>
+                  {currentDuplicate.existingMatch ? (
+                    <div className="space-y-2 text-sm">
+                      <div><span className="text-muted-foreground">Code:</span> {currentDuplicate.existingMatch.code || "-"}</div>
+                      <div><span className="text-muted-foreground">Name:</span> <strong>{currentDuplicate.existingMatch.name}</strong></div>
+                      <div><span className="text-muted-foreground">Contact:</span> {currentDuplicate.existingMatch.contact || "-"}</div>
+                      <div><span className="text-muted-foreground">Type:</span> {currentDuplicate.existingMatch.type}</div>
+                      <div><span className="text-muted-foreground">Work Phone:</span> {currentDuplicate.existingMatch.workPhone || "-"}</div>
+                      <div><span className="text-muted-foreground">Mobile:</span> {currentDuplicate.existingMatch.mobile || "-"}</div>
+                      <div><span className="text-muted-foreground">Email:</span> {currentDuplicate.existingMatch.email || "-"}</div>
+                      <div><span className="text-muted-foreground">What Used For:</span> {currentDuplicate.existingMatch.whatUsedFor || "-"}</div>
+                    </div>
+                  ) : currentDuplicate.batchOriginalItem ? (
+                    <div className="space-y-2 text-sm">
+                      <div><span className="text-muted-foreground">Code:</span> {currentDuplicate.batchOriginalItem.code || "-"}</div>
+                      <div><span className="text-muted-foreground">Name:</span> <strong>{currentDuplicate.batchOriginalItem.name}</strong></div>
+                      <div><span className="text-muted-foreground">Contact:</span> {currentDuplicate.batchOriginalItem.contact || "-"}</div>
+                      <div><span className="text-muted-foreground">Type:</span> {currentDuplicate.batchOriginalItem.type}</div>
+                      <div><span className="text-muted-foreground">Work Phone:</span> {currentDuplicate.batchOriginalItem.workPhone || "-"}</div>
+                      <div><span className="text-muted-foreground">Mobile:</span> {currentDuplicate.batchOriginalItem.mobile || "-"}</div>
+                      <div><span className="text-muted-foreground">Email:</span> {currentDuplicate.batchOriginalItem.email || "-"}</div>
+                      <div><span className="text-muted-foreground">What Used For:</span> {currentDuplicate.batchOriginalItem.whatUsedFor || "-"}</div>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">No matching record found</div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-between pt-2">
+                <Button 
+                  variant="outline" 
+                  disabled={currentDuplicateIndex === 0}
+                  onClick={() => setCurrentDuplicateIndex((prev) => prev - 1)}
+                >
+                  Previous
+                </Button>
+                <Button 
+                  onClick={() => {
+                    if (currentDuplicateIndex < duplicates.length - 1) {
+                      setCurrentDuplicateIndex((prev) => prev + 1);
+                    } else {
+                      setShowDuplicateReview(false);
+                    }
+                  }}
+                >
+                  {currentDuplicateIndex < duplicates.length - 1 ? "Next" : "Finish Review"}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Results - Not in duplicate review mode */}
+          {parsedData.length > 0 && !showDuplicateReview && (
             <>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -253,17 +423,22 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">Ready to import</p>
                 </div>
-                <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-3">
+                <div 
+                  className={`border rounded-lg p-3 ${duplicateCount > 0 ? "bg-destructive/10 border-destructive/30 cursor-pointer hover:bg-destructive/20" : "bg-muted/50 border-border"}`}
+                  onClick={duplicateCount > 0 ? handleStartDuplicateReview : undefined}
+                >
                   <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-destructive" />
+                    <AlertTriangle className={`h-4 w-4 ${duplicateCount > 0 ? "text-destructive" : "text-muted-foreground"}`} />
                     <span className="text-sm font-medium">{duplicateCount} Duplicates</span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">Will be skipped</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {duplicateCount > 0 ? `Click to review (${importingDuplicates} selected to import)` : "None found"}
+                  </p>
                 </div>
               </div>
 
               {/* Preview Table */}
-              <ScrollArea className="h-[300px] border rounded-lg">
+              <ScrollArea className="h-[250px] border rounded-lg">
                 <table className="w-full text-sm">
                   <thead className="bg-muted/50 sticky top-0">
                     <tr>
@@ -279,12 +454,15 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
                     {parsedData.map((supplier, idx) => (
                       <tr
                         key={idx}
-                        className={supplier.isDuplicate ? "bg-muted/50" : ""}
+                        className={supplier.isDuplicate && supplier.selection !== "import" ? "bg-muted/50 opacity-50" : ""}
                       >
                         <td className="p-2">
                           {supplier.isDuplicate ? (
-                            <Badge variant="outline" className="text-destructive border-destructive/30 text-xs">
-                              {supplier.matchReason}
+                            <Badge 
+                              variant="outline" 
+                              className={`text-xs ${supplier.selection === "import" ? "text-primary border-primary/30" : "text-destructive border-destructive/30"}`}
+                            >
+                              {supplier.selection === "import" ? "import" : "skip"}
                             </Badge>
                           ) : (
                             <Badge variant="outline" className="text-primary border-primary/30 text-xs">
@@ -307,14 +485,25 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
               <div className="bg-primary/5 border-2 border-primary/30 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold">Ready to Import {uniqueCount} Suppliers</p>
+                    <p className="text-sm font-semibold">Ready to Import {totalToImport} Suppliers</p>
                     <p className="text-xs text-muted-foreground">
-                      {duplicateCount > 0 ? `${duplicateCount} duplicates will be skipped` : "No duplicates found"}
+                      {duplicateCount > 0 
+                        ? `${duplicateCount - importingDuplicates} duplicates will be skipped`
+                        : "No duplicates found"}
                     </p>
                   </div>
-                  <Button onClick={handleImport} disabled={uniqueCount === 0 || isProcessing}>
-                    <CheckCircle2 className="h-4 w-4 mr-2" />
-                    Import {uniqueCount} Suppliers
+                  <Button onClick={handleImport} disabled={totalToImport === 0 || isImporting}>
+                    {isImporting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Importing...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="h-4 w-4 mr-2" />
+                        Import {totalToImport} Suppliers
+                      </>
+                    )}
                   </Button>
                 </div>
               </div>
