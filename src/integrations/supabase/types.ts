@@ -116,6 +116,59 @@ export type Database = {
         }
         Relationships: []
       }
+      supplier_catalogue: {
+        Row: {
+          alternate_part_numbers: string
+          component_description: string
+          component_type: string
+          created_at: string
+          id: string
+          notes: string
+          oem_brand: string
+          oem_part_number: string
+          priority_tag: string
+          supplier_id: string | null
+          supplier_name: string
+          updated_at: string
+        }
+        Insert: {
+          alternate_part_numbers?: string
+          component_description: string
+          component_type?: string
+          created_at?: string
+          id?: string
+          notes?: string
+          oem_brand?: string
+          oem_part_number?: string
+          priority_tag?: string
+          supplier_id?: string | null
+          supplier_name?: string
+          updated_at?: string
+        }
+        Update: {
+          alternate_part_numbers?: string
+          component_description?: string
+          component_type?: string
+          created_at?: string
+          id?: string
+          notes?: string
+          oem_brand?: string
+          oem_part_number?: string
+          priority_tag?: string
+          supplier_id?: string | null
+          supplier_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_catalogue_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppliers: {
         Row: {
           code: string
@@ -123,6 +176,8 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          is_preferred: boolean
+          location: string
           mobile: string
           name: string
           notes: string
@@ -137,6 +192,8 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          is_preferred?: boolean
+          location?: string
           mobile?: string
           name: string
           notes?: string
@@ -151,6 +208,8 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          is_preferred?: boolean
+          location?: string
           mobile?: string
           name?: string
           notes?: string

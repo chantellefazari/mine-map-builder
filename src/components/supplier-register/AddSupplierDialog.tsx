@@ -54,6 +54,8 @@ export const AddSupplierDialog = ({ onAddSupplier }: AddSupplierDialogProps) => 
       email: formData.email,
       whatUsedFor: formData.whatUsedFor,
       notes: formData.notes,
+      location: "",
+      isPreferred: false,
     });
 
     setFormData({

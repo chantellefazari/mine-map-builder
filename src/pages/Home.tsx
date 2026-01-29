@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen, Building2 } from "lucide-react";
+import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen, ShoppingCart } from "lucide-react";
 
 const sections = [
   {
@@ -38,11 +38,11 @@ const sections = [
     href: "/components-oem",
   },
   {
-    title: "Supplier Register – Foundation",
-    subtitle: "Who We Buy From",
-    description: "Single source of truth for supplier information. Shows who we buy from and what they supply.",
-    icon: Building2,
-    href: "/supplier-register",
+    title: "Suppliers & Procurement",
+    subtitle: "Vendor & Parts Foundation",
+    description: "Master supplier contacts and OEM parts catalogue. Foundation for procurement and spares standardisation.",
+    icon: ShoppingCart,
+    href: "/suppliers-procurement",
   },
   {
     title: "Critical Spares Catalogue",
