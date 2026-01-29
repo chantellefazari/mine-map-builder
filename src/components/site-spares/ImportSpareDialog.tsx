@@ -38,6 +38,7 @@ interface DuplicateInfo {
   source: string;
   isDuplicate: boolean;
   duplicateType: "exact" | "partial" | "none";
+  matchReason?: string;
 }
 
 interface ImportSpareDialogProps {
@@ -172,74 +173,79 @@ export const ImportSpareDialog = ({
     return items.filter(item => item.description.trim() !== "");
   };
 
-  // Generate a unique key for duplicate detection (Description + OEM Part Number)
-  const getDuplicateKey = (item: { oem_part_number: string; description: string }): string => {
-    const oem = (item.oem_part_number || "").toLowerCase().trim();
-    const desc = (item.description || "").toLowerCase().trim();
-    
-    // Primary key: Description + OEM (if both exist)
-    if (desc && oem) {
-      return `${desc}|${oem}`;
-    }
-    // If only OEM exists
-    if (oem) {
-      return `oem:${oem}`;
-    }
-    // If only description exists (fallback)
-    if (desc) {
-      return `desc:${desc}`;
-    }
-    return "";
-  };
+  // Normalize text for comparison
+  const normalizeText = (text: string): string => 
+    (text || "").toLowerCase().trim();
 
   const detectDuplicates = (
     newItems: { item: Omit<SiteSpareItem, "id">; source: string }[],
     existing: SiteSpareItem[]
   ): DuplicateInfo[] => {
-    // Build lookup maps for existing items
-    const existingByKey = new Map<string, SiteSpareItem>();
+    // Build lookup sets for existing items - separate sets for description and OEM
+    const existingDescriptions = new Set<string>();
+    const existingOEMs = new Set<string>();
+    const existingByDesc = new Map<string, SiteSpareItem>();
+    const existingByOEM = new Map<string, SiteSpareItem>();
+    
     existing.forEach((item) => {
-      const key = getDuplicateKey(item);
-      existingByKey.set(key, item);
+      const desc = normalizeText(item.description);
+      const oem = normalizeText(item.oem_part_number || "");
+      
+      if (desc) {
+        existingDescriptions.add(desc);
+        existingByDesc.set(desc, item);
+      }
+      if (oem) {
+        existingOEMs.add(oem);
+        existingByOEM.set(oem, item);
+      }
     });
 
-    // Track items we've seen in this import batch
-    const seenInBatch = new Map<string, number>();
+    // Track items we've seen in this import batch - separate sets
+    const seenDescriptions = new Set<string>();
+    const seenOEMs = new Set<string>();
 
-    return newItems.map(({ item, source }, index) => {
-      const key = getDuplicateKey(item);
+    return newItems.map(({ item, source }) => {
+      const desc = normalizeText(item.description);
+      const oem = normalizeText(item.oem_part_number || "");
       
-      // Check if duplicate within the import batch
-      const previousIndex = seenInBatch.get(key);
-      if (previousIndex !== undefined) {
-        return {
-          item,
-          source,
-          isDuplicate: true,
-          duplicateType: "exact" as const,
-        };
+      let isDuplicate = false;
+      let existingItem: SiteSpareItem | undefined;
+      let matchReason = "";
+
+      // Check if duplicate within the import batch (either field matches)
+      if (desc && seenDescriptions.has(desc)) {
+        isDuplicate = true;
+        matchReason = "description";
+      } else if (oem && seenOEMs.has(oem)) {
+        isDuplicate = true;
+        matchReason = "OEM part number";
       }
       
-      // Mark as seen
-      seenInBatch.set(key, index);
-      
-      // Check against existing database items
-      const existingItem = existingByKey.get(key);
-      if (existingItem) {
-        return {
-          item,
-          existingItem,
-          source,
-          isDuplicate: true,
-          duplicateType: "exact" as const,
-        };
+      // Check against existing database items (either field matches)
+      if (!isDuplicate) {
+        if (desc && existingDescriptions.has(desc)) {
+          isDuplicate = true;
+          existingItem = existingByDesc.get(desc);
+          matchReason = "description";
+        } else if (oem && existingOEMs.has(oem)) {
+          isDuplicate = true;
+          existingItem = existingByOEM.get(oem);
+          matchReason = "OEM part number";
+        }
       }
+      
+      // Mark as seen for future items in batch
+      if (desc) seenDescriptions.add(desc);
+      if (oem) seenOEMs.add(oem);
       
       return {
         item,
+        existingItem,
         source,
-        isDuplicate: false,
-        duplicateType: "none" as const,
+        isDuplicate,
+        duplicateType: isDuplicate ? ("exact" as const) : ("none" as const),
+        matchReason,
       };
     });
   };
@@ -361,7 +367,7 @@ export const ImportSpareDialog = ({
             Import & Merge Stock Lists
           </DialogTitle>
           <DialogDescription>
-            Upload multiple Excel files. Duplicates are detected by Description + OEM Part Number.
+            Upload multiple Excel files. Items are flagged as duplicates if the Description OR OEM Part Number already exists.
           </DialogDescription>
         </DialogHeader>
 
@@ -474,7 +480,7 @@ export const ImportSpareDialog = ({
               {duplicateCount > 0 && (
                 <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
                   <p className="text-sm font-medium text-amber-700 mb-2">
-                    Duplicate items (matched by Description + OEM Part #):
+                    Duplicate items (matched by Description OR OEM Part #):
                   </p>
                   <div className="max-h-24 overflow-y-auto text-xs space-y-1">
                     {preview
@@ -485,11 +491,11 @@ export const ImportSpareDialog = ({
                           <Badge variant="outline" className="text-xs px-1.5 py-0">
                             {d.source}
                           </Badge>
-                          <span className="truncate">{d.item.description}</span>
-                          {d.item.oem_part_number && (
-                            <span className="text-amber-600 font-mono">
-                              ({d.item.oem_part_number})
-                            </span>
+                          <span className="truncate flex-1">{d.item.description}</span>
+                          {d.matchReason && (
+                            <Badge variant="secondary" className="text-xs px-1.5 py-0 bg-amber-100 text-amber-700">
+                              matched: {d.matchReason}
+                            </Badge>
                           )}
                         </div>
                       ))}
