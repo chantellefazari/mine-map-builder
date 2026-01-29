@@ -445,7 +445,7 @@ export const ImportSpareDialog = ({
 
           {/* Preview with Duplicate Summary */}
           {preview.length > 0 && !isImporting && (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {/* Summary Stats */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-primary/10 rounded-lg p-3">
@@ -454,7 +454,7 @@ export const ImportSpareDialog = ({
                     <span className="text-sm font-medium text-primary">Unique Items</span>
                   </div>
                   <p className="text-2xl font-bold text-primary mt-1">{uniqueCount}</p>
-                  <p className="text-xs text-muted-foreground">Will be imported</p>
+                  <p className="text-xs text-muted-foreground">Ready to import</p>
                 </div>
                 <div className={`rounded-lg p-3 ${duplicateCount > 0 ? "bg-amber-500/10" : "bg-muted/50"}`}>
                   <div className="flex items-center gap-2">
@@ -473,9 +473,9 @@ export const ImportSpareDialog = ({
               {/* Duplicate Details (if any) */}
               {duplicateCount > 0 && (
                 <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
-                <p className="text-sm font-medium text-amber-700 mb-2">
-                  Duplicate items (matched by Description + OEM Part #):
-                </p>
+                  <p className="text-sm font-medium text-amber-700 mb-2">
+                    Duplicate items (matched by Description + OEM Part #):
+                  </p>
                   <div className="max-h-24 overflow-y-auto text-xs space-y-1">
                     {preview
                       .filter((d) => d.isDuplicate)
@@ -502,43 +502,64 @@ export const ImportSpareDialog = ({
                 </div>
               )}
 
-              {/* Preview of items to import */}
-              <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
-                <p className="text-sm font-medium text-primary mb-2">
-                  Items to import:
-                </p>
-                <div className="max-h-24 overflow-y-auto text-xs space-y-1">
-                  {preview
-                    .filter((d) => !d.isDuplicate)
-                    .slice(0, 5)
-                    .map((d, i) => (
-                      <div key={i} className="flex items-center gap-2 text-muted-foreground">
-                        <Badge variant="outline" className="text-xs px-1.5 py-0">
-                          {d.source}
-                        </Badge>
-                        <span className="truncate">{d.item.description}</span>
-                      </div>
-                    ))}
-                  {uniqueCount > 5 && (
-                    <p className="text-muted-foreground">
-                      ... and {uniqueCount - 5} more unique items
+              {/* Clear Action Section */}
+              <div className="bg-primary/5 border-2 border-primary/30 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">
+                      Ready to Import {uniqueCount} Unique Items
                     </p>
-                  )}
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {duplicateCount > 0 
+                        ? `${duplicateCount} duplicates will be skipped automatically`
+                        : "No duplicates found - all items are unique"}
+                    </p>
+                  </div>
+                  <Button
+                    onClick={handleImport}
+                    disabled={uniqueCount === 0 || isProcessing}
+                    size="lg"
+                    className="gap-2"
+                  >
+                    <CheckCircle2 className="h-4 w-4" />
+                    Import {uniqueCount} Items
+                  </Button>
                 </div>
               </div>
+
+              {/* Preview of items to import (collapsed by default) */}
+              {uniqueCount > 0 && (
+                <details className="text-xs">
+                  <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+                    View items to be imported ({uniqueCount})
+                  </summary>
+                  <div className="mt-2 max-h-24 overflow-y-auto space-y-1 pl-2">
+                    {preview
+                      .filter((d) => !d.isDuplicate)
+                      .slice(0, 10)
+                      .map((d, i) => (
+                        <div key={i} className="flex items-center gap-2 text-muted-foreground">
+                          <Badge variant="outline" className="text-xs px-1.5 py-0">
+                            {d.source}
+                          </Badge>
+                          <span className="truncate">{d.item.description}</span>
+                        </div>
+                      ))}
+                    {uniqueCount > 10 && (
+                      <p className="text-muted-foreground">
+                        ... and {uniqueCount - 10} more items
+                      </p>
+                    )}
+                  </div>
+                </details>
+              )}
             </div>
           )}
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={handleClose} disabled={isImporting}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleImport}
-            disabled={uniqueCount === 0 || isProcessing || isImporting}
-          >
-            {isImporting ? "Importing..." : `Import ${uniqueCount} Unique Items`}
+            {preview.length > 0 ? "Cancel" : "Close"}
           </Button>
         </DialogFooter>
       </DialogContent>
