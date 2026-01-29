@@ -11,6 +11,7 @@ import SiteSparesCatalogue from "./pages/SiteSparesCatalogue";
 import ComponentsOEM from "./pages/ComponentsOEM";
 import WorkOrderTemplates from "./pages/WorkOrderTemplates";
 import MaintenanceFoundations from "./pages/MaintenanceFoundations";
+import SupplierRegister from "./pages/SupplierRegister";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/components-oem" element={<ComponentsOEM />} />
           <Route path="/work-order-templates" element={<WorkOrderTemplates />} />
           <Route path="/maintenance-foundations" element={<MaintenanceFoundations />} />
+          <Route path="/supplier-register" element={<SupplierRegister />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
