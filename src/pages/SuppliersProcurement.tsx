@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ShoppingCart } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Building2, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SupplierRegisterSection } from "@/components/suppliers-procurement/SupplierRegisterSection";
 import { SupplierCatalogueSection } from "@/components/suppliers-procurement/SupplierCatalogueSection";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const SuppliersProcurement = () => {
+  const [activeTab, setActiveTab] = useState("register");
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -31,23 +35,51 @@ const SuppliersProcurement = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container py-8 space-y-8">
-        {/* Info Box */}
-        <div className="p-4 bg-muted/50 rounded-lg border border-border">
-          <h2 className="font-semibold text-foreground mb-2">About This Module</h2>
-          <p className="text-sm text-muted-foreground">
-            This module separates <strong>who we buy from</strong> (Supplier Register) from <strong>what they supply</strong> (Supplier Catalogue).
-            Start with the Supplier Register to build your vendor base, then populate the Catalogue with specific parts and OEM data.
-            This structure supports future linking to assets, PMs, and critical spares.
-          </p>
+      {/* Sticky Tabs Navigation */}
+      <div className="sticky top-0 z-10 bg-background border-b border-border">
+        <div className="container">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="h-14 w-full justify-start rounded-none border-0 bg-transparent p-0">
+              <TabsTrigger 
+                value="register" 
+                className="h-14 rounded-none border-b-2 border-transparent px-6 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              >
+                <Building2 className="h-4 w-4 mr-2" />
+                Supplier Register
+              </TabsTrigger>
+              <TabsTrigger 
+                value="catalogue" 
+                className="h-14 rounded-none border-b-2 border-transparent px-6 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              >
+                <Package className="h-4 w-4 mr-2" />
+                Supplier Catalogue & OEM Data
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
+      </div>
 
-        {/* Section 1: Supplier Register */}
-        <SupplierRegisterSection />
-
-        {/* Section 2: Supplier Catalogue */}
-        <SupplierCatalogueSection />
+      {/* Main Content */}
+      <main className="container py-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsContent value="register" className="mt-0">
+            <div className="mb-4 p-4 bg-muted/50 rounded-lg border border-border">
+              <p className="text-sm text-muted-foreground">
+                <strong>Supplier Register</strong> — Master contact list for all suppliers. This is the single source of truth for <em>who we buy from</em>.
+              </p>
+            </div>
+            <SupplierRegisterSection />
+          </TabsContent>
+          
+          <TabsContent value="catalogue" className="mt-0">
+            <div className="mb-4 p-4 bg-muted/50 rounded-lg border border-border">
+              <p className="text-sm text-muted-foreground">
+                <strong>Supplier Catalogue</strong> — Parts and OEM data for <em>what suppliers supply</em>. Visual cards for quick identification during purchasing.
+              </p>
+            </div>
+            <SupplierCatalogueSection />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
