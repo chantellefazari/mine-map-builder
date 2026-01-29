@@ -21,6 +21,14 @@ import { Badge } from "@/components/ui/badge";
 import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { AddSpareDialog } from "./AddSpareDialog";
 import { ImportSpareDialog } from "./ImportSpareDialog";
+import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
+
+// Criticality badge colors
+const criticalityColors: Record<CriticalityLevel, string> = {
+  "HIGH": "bg-destructive/20 text-destructive border-destructive/30",
+  "MEDIUM": "bg-warning/20 text-warning border-warning/30",
+  "LOW": "bg-success/20 text-success border-success/30",
+};
 
 // Status colors for UI
 const stockStatusColors: Record<string, string> = {
@@ -62,8 +70,17 @@ export const SiteSparesTable = () => {
   const [filterWarehouse, setFilterWarehouse] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [quickFilter, setQuickFilter] = useState<"all" | "lowStock" | "critical">("all");
+  const [filterCriticality, setFilterCriticality] = useState<string>("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+
+  // Helper to get criticality level for a spare
+  const getCriticality = (spare: SiteSpareItem): CriticalityLevel => {
+    // If explicitly marked critical, it's HIGH
+    if (spare.is_critical) return "HIGH";
+    // Otherwise classify by description
+    return classifyCriticality(spare.description);
+  };
 
   const handleAddSpare = async (newSpare: Omit<SiteSpareItem, "id">) => {
     await addSpare(newSpare);
@@ -80,19 +97,23 @@ export const SiteSparesTable = () => {
     const matchesWarehouse = filterWarehouse === "all" || spare.warehouse_area === filterWarehouse;
     const matchesStatus = filterStatus === "all" || spare.status === filterStatus;
     
+    // Criticality filter
+    const spareCriticality = getCriticality(spare);
+    const matchesCriticality = filterCriticality === "all" || spareCriticality === filterCriticality;
+    
     // Quick filter from summary tabs
     const matchesQuickFilter =
       quickFilter === "all" ||
       (quickFilter === "lowStock" && (spare.status === "Low Stock" || spare.status === "Out of Stock")) ||
-      (quickFilter === "critical" && spare.is_critical);
+      (quickFilter === "critical" && spareCriticality === "HIGH");
     
-    return matchesSearch && matchesCategory && matchesWarehouse && matchesStatus && matchesQuickFilter;
+    return matchesSearch && matchesCategory && matchesWarehouse && matchesStatus && matchesCriticality && matchesQuickFilter;
   });
 
   // Summary stats
   const totalItems = spares.length;
   const lowStockCount = spares.filter(s => s.status === "Low Stock" || s.status === "Out of Stock").length;
-  const criticalCount = spares.filter(s => s.is_critical).length;
+  const criticalCount = spares.filter(s => getCriticality(s) === "HIGH").length;
 
   if (loading) {
     return (
@@ -205,6 +226,17 @@ export const SiteSparesTable = () => {
               <SelectItem value="Obsolete">Obsolete</SelectItem>
             </SelectContent>
           </Select>
+          <Select value={filterCriticality} onValueChange={setFilterCriticality}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Criticality" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Criticality</SelectItem>
+              <SelectItem value="HIGH">🔴 HIGH</SelectItem>
+              <SelectItem value="MEDIUM">🟠 MEDIUM</SelectItem>
+              <SelectItem value="LOW">🟢 LOW</SelectItem>
+            </SelectContent>
+          </Select>
           <Button size="sm" variant="outline" className="gap-2" onClick={() => setImportDialogOpen(true)}>
             <Upload className="h-4 w-4" />
             Import Excel
@@ -249,7 +281,7 @@ export const SiteSparesTable = () => {
               <TableHead className="min-w-[120px] font-semibold">Supplier/ Manufacturer</TableHead>
               <TableHead className="min-w-[120px] font-semibold">OEM Part #</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Status</TableHead>
-              <TableHead className="min-w-[80px] font-semibold text-center">Critical</TableHead>
+              <TableHead className="min-w-[90px] font-semibold text-center">Criticality</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -330,14 +362,17 @@ export const SiteSparesTable = () => {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-center">
-                  <input
-                    type="checkbox"
-                    checked={spare.is_critical}
-                    onChange={(e) => {
-                      updateSpare(spare.id, { is_critical: e.target.checked });
-                    }}
-                    className="h-4 w-4 rounded border-border"
-                  />
+                  {(() => {
+                    const level = getCriticality(spare);
+                    return (
+                      <Badge 
+                        variant="outline" 
+                        className={`text-xs font-semibold ${criticalityColors[level]}`}
+                      >
+                        {level}
+                      </Badge>
+                    );
+                  })()}
                 </TableCell>
               </TableRow>
             ))}
