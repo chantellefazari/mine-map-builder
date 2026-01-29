@@ -48,9 +48,11 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
     reasonCritical: "",
     minQty: "TBC",
     maxQty: "TBC",
+    qtyOnHand: "TBC",
     qtyPerSystem: "1",
     unitPrice: "",
     uom: "EA",
+    leadTimeDays: "TBC",
     notes: "",
     confidence: "Low" as "Low" | "Medium" | "High",
     status: "Provisional" as "Provisional" | "Confirmed" | "TBC",
@@ -118,9 +120,11 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
       reasonCritical: "",
       minQty: "TBC",
       maxQty: "TBC",
+      qtyOnHand: "TBC",
       qtyPerSystem: "1",
       unitPrice: "",
       uom: "EA",
+      leadTimeDays: "TBC",
       notes: "",
       confidence: "Low",
       status: "Provisional",
@@ -350,9 +354,9 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
             </div>
           </div>
 
-          {/* Quantities Section */}
+          {/* Quantities & Procurement Section */}
           <div className="space-y-3">
-            <h4 className="font-medium text-sm text-muted-foreground">Quantities</h4>
+            <h4 className="font-medium text-sm text-muted-foreground">Quantities & Procurement</h4>
             <div className="grid grid-cols-4 gap-3">
               <div className="space-y-1.5">
                 <Label>Min Qty</Label>
@@ -393,6 +397,58 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
                     <SelectItem value="5">5</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Qty On Hand</Label>
+                <Select
+                  value={formData.qtyOnHand}
+                  onValueChange={(value) => updateField("qtyOnHand", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
+                    <SelectItem value="TBC">TBC</SelectItem>
+                    <SelectItem value="0">0</SelectItem>
+                    <SelectItem value="1">1</SelectItem>
+                    <SelectItem value="2">2</SelectItem>
+                    <SelectItem value="3">3</SelectItem>
+                    <SelectItem value="4">4</SelectItem>
+                    <SelectItem value="5">5</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Lead Time (Days)</Label>
+                <Select
+                  value={formData.leadTimeDays}
+                  onValueChange={(value) => updateField("leadTimeDays", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border shadow-lg z-[200]" position="popper" sideOffset={4}>
+                    <SelectItem value="TBC">TBC</SelectItem>
+                    <SelectItem value="7">7</SelectItem>
+                    <SelectItem value="14">14</SelectItem>
+                    <SelectItem value="21">21</SelectItem>
+                    <SelectItem value="30">30</SelectItem>
+                    <SelectItem value="45">45</SelectItem>
+                    <SelectItem value="60">60</SelectItem>
+                    <SelectItem value="90">90</SelectItem>
+                    <SelectItem value="120">120</SelectItem>
+                    <SelectItem value="180">180</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="unitPrice">Unit Price</Label>
+                <Input
+                  id="unitPrice"
+                  value={formData.unitPrice}
+                  onChange={(e) => updateField("unitPrice", e.target.value)}
+                  placeholder="e.g., $16,450.00"
+                />
               </div>
               <div className="space-y-1.5">
                 <Label>Confidence</Label>
