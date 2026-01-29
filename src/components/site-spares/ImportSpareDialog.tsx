@@ -37,6 +37,8 @@ const warehouseAreas = [
 interface DuplicateInfo {
   item: Omit<SiteSpareItem, "id">;
   existingItem?: SiteSpareItem;
+  batchOriginalItem?: Omit<SiteSpareItem, "id">; // The first occurrence in the batch
+  batchOriginalSource?: string; // Source file of the first occurrence
   source: string;
   isDuplicate: boolean;
   duplicateType: "exact" | "partial" | "none";
@@ -206,9 +208,9 @@ export const ImportSpareDialog = ({
       }
     });
 
-    // Track items we've seen in this import batch - separate sets
-    const seenDescriptions = new Set<string>();
-    const seenOEMs = new Set<string>();
+    // Track items we've seen in this import batch - store the full item info
+    const seenByDesc = new Map<string, { item: Omit<SiteSpareItem, "id">; source: string }>();
+    const seenByOEM = new Map<string, { item: Omit<SiteSpareItem, "id">; source: string }>();
 
     return newItems.map(({ item, source }) => {
       const desc = normalizeText(item.description);
@@ -216,14 +218,22 @@ export const ImportSpareDialog = ({
       
       let isDuplicate = false;
       let existingItem: SiteSpareItem | undefined;
+      let batchOriginalItem: Omit<SiteSpareItem, "id"> | undefined;
+      let batchOriginalSource: string | undefined;
       let matchReason = "";
 
       // Check if duplicate within the import batch (either field matches)
-      if (desc && seenDescriptions.has(desc)) {
+      if (desc && seenByDesc.has(desc)) {
         isDuplicate = true;
+        const original = seenByDesc.get(desc)!;
+        batchOriginalItem = original.item;
+        batchOriginalSource = original.source;
         matchReason = "description (in batch)";
-      } else if (oem && seenOEMs.has(oem)) {
+      } else if (oem && seenByOEM.has(oem)) {
         isDuplicate = true;
+        const original = seenByOEM.get(oem)!;
+        batchOriginalItem = original.item;
+        batchOriginalSource = original.source;
         matchReason = "OEM part number (in batch)";
       }
       
@@ -241,12 +251,14 @@ export const ImportSpareDialog = ({
       }
       
       // Mark as seen for future items in batch
-      if (desc) seenDescriptions.add(desc);
-      if (oem) seenOEMs.add(oem);
+      if (desc && !seenByDesc.has(desc)) seenByDesc.set(desc, { item, source });
+      if (oem && !seenByOEM.has(oem)) seenByOEM.set(oem, { item, source });
       
       return {
         item,
         existingItem,
+        batchOriginalItem,
+        batchOriginalSource,
         source,
         isDuplicate,
         duplicateType: isDuplicate ? ("exact" as const) : ("none" as const),
@@ -710,10 +722,15 @@ export const ImportSpareDialog = ({
                                 </div>
                               </div>
 
-                              {/* Existing Item */}
+                              {/* Matched Item (Database or Batch Original) */}
                               <div className="space-y-2">
                                 <p className="text-xs font-semibold text-muted-foreground uppercase">
-                                  {dup.existingItem ? "Existing in Database" : "Duplicate in Same Batch"}
+                                  {dup.existingItem 
+                                    ? "Matching Item in Database" 
+                                    : dup.batchOriginalItem 
+                                      ? `First Occurrence (${dup.batchOriginalSource})` 
+                                      : "Duplicate in Same Batch"
+                                  }
                                 </p>
                                 {dup.existingItem ? (
                                   <div className="bg-background rounded border p-3 space-y-1 text-sm">
@@ -724,9 +741,18 @@ export const ImportSpareDialog = ({
                                     <p><span className="text-muted-foreground">Location:</span> {dup.existingItem.warehouse_area || "—"}</p>
                                     <p><span className="text-muted-foreground">Bin:</span> {dup.existingItem.bin_location || "—"}</p>
                                   </div>
+                                ) : dup.batchOriginalItem ? (
+                                  <div className="bg-background rounded border p-3 space-y-1 text-sm">
+                                    <p><span className="text-muted-foreground">Description:</span> {dup.batchOriginalItem.description || "—"}</p>
+                                    <p><span className="text-muted-foreground">OEM Part #:</span> {dup.batchOriginalItem.oem_part_number || "—"}</p>
+                                    <p><span className="text-muted-foreground">Manufacturer:</span> {dup.batchOriginalItem.manufacturer || "—"}</p>
+                                    <p><span className="text-muted-foreground">Qty:</span> {dup.batchOriginalItem.qty_on_hand}</p>
+                                    <p><span className="text-muted-foreground">Location:</span> {dup.batchOriginalItem.warehouse_area || "—"}</p>
+                                    <p><span className="text-muted-foreground">Bin:</span> {dup.batchOriginalItem.bin_location || "—"}</p>
+                                  </div>
                                 ) : (
                                   <div className="bg-background rounded border p-3 text-sm text-muted-foreground italic">
-                                    This item appears multiple times in your import file
+                                    Unable to retrieve matching item details
                                   </div>
                                 )}
                               </div>
