@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Trash2, Edit2, Save, X } from "lucide-react";
 import { Supplier, SupplierType, supplierTypes } from "./supplierData";
 import { AddSupplierDialog } from "./AddSupplierDialog";
+import { ImportSupplierDialog } from "./ImportSupplierDialog";
 import {
   Select,
   SelectContent,
@@ -34,6 +35,14 @@ export const SupplierRegisterTable = () => {
       id: crypto.randomUUID(),
     };
     setSuppliers([...suppliers, supplier]);
+  };
+
+  const handleImportSuppliers = (newSuppliers: Omit<Supplier, "id">[]) => {
+    const suppliersWithIds = newSuppliers.map((s) => ({
+      ...s,
+      id: crypto.randomUUID(),
+    }));
+    setSuppliers([...suppliers, ...suppliersWithIds]);
   };
 
   const handleDeleteSupplier = (id: string) => {
@@ -112,7 +121,13 @@ export const SupplierRegisterTable = () => {
             </SelectContent>
           </Select>
         </div>
-        <AddSupplierDialog onAddSupplier={handleAddSupplier} />
+        <div className="flex gap-2">
+          <ImportSupplierDialog
+            existingSuppliers={suppliers}
+            onImportSuppliers={handleImportSuppliers}
+          />
+          <AddSupplierDialog onAddSupplier={handleAddSupplier} />
+        </div>
       </div>
 
       {/* Table */}
