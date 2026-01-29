@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen } from "lucide-react";
+import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen, Building2 } from "lucide-react";
 
 const sections = [
   {
@@ -36,6 +36,13 @@ const sections = [
     description: "Store motor, gearbox, pump, and reducer specifications for reuse across assets.",
     icon: Cpu,
     href: "/components-oem",
+  },
+  {
+    title: "Supplier Register – Foundation",
+    subtitle: "Who We Buy From",
+    description: "Single source of truth for supplier information. Shows who we buy from and what they supply.",
+    icon: Building2,
+    href: "/supplier-register",
   },
   {
     title: "Critical Spares Catalogue",
