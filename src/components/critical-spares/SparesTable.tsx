@@ -156,12 +156,15 @@ export const SparesTable = () => {
               <TableHead className="min-w-[100px] font-semibold">Sub-Area</TableHead>
               <TableHead className="min-w-[100px] font-semibold">System</TableHead>
               <TableHead className="min-w-[140px] font-semibold">Component Name</TableHead>
-              
               <TableHead className="min-w-[180px] font-semibold">Description</TableHead>
               <TableHead className="min-w-[120px] font-semibold">Manufacturer</TableHead>
               <TableHead className="min-w-[180px] font-semibold">OEM Part Number</TableHead>
+              <TableHead className="min-w-[120px] font-semibold">Vendor/Supplier</TableHead>
+              <TableHead className="min-w-[100px] font-semibold text-center">Lead Time (Days)</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Unit Price</TableHead>
               <TableHead className="min-w-[80px] font-semibold">Source</TableHead>
               <TableHead className="min-w-[150px] font-semibold">Reason Critical</TableHead>
+              <TableHead className="min-w-[80px] font-semibold text-center">Qty On Hand</TableHead>
               <TableHead className="min-w-[100px] font-semibold text-center">Min Qty (Prov.)</TableHead>
               <TableHead className="min-w-[100px] font-semibold text-center">Max Qty (Prov.)</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Confidence</TableHead>
@@ -192,6 +195,35 @@ export const SparesTable = () => {
                 <TableCell className="text-sm">{spare.sparePartDescription}</TableCell>
                 <TableCell className="text-sm font-medium">{spare.manufacturer || "—"}</TableCell>
                 <TableCell className="text-sm font-mono">{spare.oemPartNumber || "—"}</TableCell>
+                <TableCell className="text-sm">{spare.vendor || "—"}</TableCell>
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.leadTimeDays || "TBC"}
+                    onValueChange={(value) => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, leadTimeDays: value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="TBC">TBC</SelectItem>
+                      <SelectItem value="7">7</SelectItem>
+                      <SelectItem value="14">14</SelectItem>
+                      <SelectItem value="21">21</SelectItem>
+                      <SelectItem value="30">30</SelectItem>
+                      <SelectItem value="45">45</SelectItem>
+                      <SelectItem value="60">60</SelectItem>
+                      <SelectItem value="90">90</SelectItem>
+                      <SelectItem value="120">120</SelectItem>
+                      <SelectItem value="180">180</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell className="text-sm font-medium">{spare.unitPrice || "TBC"}</TableCell>
                 <TableCell>
                   {spare.criticalitySource && (
                     <Badge variant="secondary" className={criticalitySourceColors[spare.criticalitySource]}>
@@ -201,6 +233,30 @@ export const SparesTable = () => {
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {spare.reasonCritical}
+                </TableCell>
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.qtyOnHand || "TBC"}
+                    onValueChange={(value) => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, qtyOnHand: value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="TBC">TBC</SelectItem>
+                      <SelectItem value="0">0</SelectItem>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="3">3</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                      <SelectItem value="5">5</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
                 <TableCell className="p-1">
                   <Select

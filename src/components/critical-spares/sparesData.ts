@@ -26,12 +26,14 @@ export interface SpareItem {
   spareCriticality: "High" | "Medium" | "Low" | "";
   criticalitySource: "Confirmed" | "Assumed" | "";
   reasonCritical: string;
-  // Quantities
+  // Quantities & Procurement
   minQty: string;
   maxQty: string;
+  qtyOnHand?: string;
   qtyPerSystem: string;
   unitPrice: string;
   uom: string;
+  leadTimeDays?: string;
   // Other fields
   notes: string;
   confidence?: "Low" | "Medium" | "High";
