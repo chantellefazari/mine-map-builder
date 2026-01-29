@@ -312,6 +312,8 @@ export const SiteSparesTable = () => {
               <TableHead className="min-w-[120px] font-semibold">Supplier/ Manufacturer</TableHead>
               <TableHead className="min-w-[120px] font-semibold">OEM Part #</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Status</TableHead>
+              <TableHead className="min-w-[90px] font-semibold text-center">Lead Time</TableHead>
+              <TableHead className="min-w-[100px] font-semibold text-right">Unit Cost</TableHead>
               <TableHead className="min-w-[90px] font-semibold text-center">Criticality</TableHead>
             </TableRow>
           </TableHeader>
@@ -391,6 +393,29 @@ export const SiteSparesTable = () => {
                   <Badge variant="secondary" className={stockStatusColors[spare.status] || ""}>
                     {spare.status}
                   </Badge>
+                </TableCell>
+                <TableCell className="text-center">
+                  <Input
+                    type="number"
+                    min={0}
+                    value={spare.lead_time_days || 0}
+                    onChange={(e) => {
+                      updateSpare(spare.id, { lead_time_days: parseInt(e.target.value) || 0 });
+                    }}
+                    className="h-8 w-16 text-center"
+                  />
+                </TableCell>
+                <TableCell className="text-right">
+                  <Input
+                    type="number"
+                    min={0}
+                    step={0.01}
+                    value={spare.unit_cost || 0}
+                    onChange={(e) => {
+                      updateSpare(spare.id, { unit_cost: parseFloat(e.target.value) || 0 });
+                    }}
+                    className="h-8 w-24 text-right"
+                  />
                 </TableCell>
                 <TableCell className="text-center">
                   {(() => {
