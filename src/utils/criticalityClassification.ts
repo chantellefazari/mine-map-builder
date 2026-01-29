@@ -11,70 +11,90 @@
 export type CriticalityLevel = "HIGH" | "MEDIUM" | "LOW";
 
 // HIGH Criticality Keywords - Production/Safety Critical
+// These must be specific to avoid false positives on fittings/consumables
 const HIGH_KEYWORDS = [
-  // Motors
-  "motor", "drive motor", "mill motor", "conveyor motor",
-  // Gearboxes
-  "gearbox", "gear box", "gear reducer", "reducer",
-  // Pumps
-  "pump", "cip pump", "tailings pump", "process pump", "water pump", "slurry pump",
+  // Motors - specific to drive motors
+  "drive motor", "mill motor", "conveyor motor", "electric motor", "motor assembly",
+  "main motor", "pump motor", "fan motor", "agitator motor", "feeder motor",
+  // Gearboxes - actual gearbox assemblies
+  "gearbox", "gear box", "gear reducer", "speed reducer", "drive gearbox",
+  "reducer gearbox", "helical gearbox", "planetary gearbox",
+  // Major Pumps - not pump parts
+  "slurry pump", "tailings pump", "process pump", "transfer pump", "feed pump",
+  "cip pump", "thickener pump", "reagent pump", "water pump assembly",
   // Mill components
-  "pinion", "girth gear", "mill liner", "ball mill",
+  "pinion", "girth gear", "ball mill", "mill liner",
   // Control systems
-  "plc", "control module", "hmi", "scada", "vfd", "variable frequency", "inverter",
-  // Crushers & Feeders
-  "crusher", "feeder", "apron feeder", "vibrating feeder",
+  "plc", "control module", "hmi panel", "scada", "vfd", "variable frequency drive",
+  "inverter", "soft starter",
+  // Crushers & Feeders - actual units
+  "crusher", "jaw crusher", "cone crusher", "impact crusher",
+  "apron feeder", "vibrating feeder", "belt feeder", "feeder drive",
   // Major equipment
-  "agitator", "thickener", "filter press", "centrifuge",
-  // Electrical critical
-  "transformer", "switchgear", "circuit breaker", "contactor",
+  "agitator", "thickener", "filter press", "centrifuge", "cyclone",
+  // Electrical critical - major items only
+  "transformer", "switchgear", "main breaker", "mcc panel",
 ];
 
 // MEDIUM Criticality Keywords - Reliability/Throughput Impact
 const MEDIUM_KEYWORDS = [
   // Bearings
-  "bearing", "bush", "bushing",
+  "bearing", "pillow block", "spherical roller", "ball bearing", "tapered roller",
+  "bush", "bushing",
   // Seals
-  "seal", "o-ring", "gasket", "packing",
-  // Rollers
-  "roller", "idler", "pulley", "trough roller", "return roller", "guide roller",
-  // Valves
-  "valve", "gate valve", "ball valve", "butterfly valve", "check valve", "solenoid valve",
+  "mechanical seal", "shaft seal", "oil seal", "lip seal", "o-ring", "gasket set", "packing",
+  // Rollers - conveyor components
+  "idler", "return roller", "trough roller", "guide roller", "impact roller",
+  "head pulley", "tail pulley", "snub pulley", "take-up",
+  // Valves - process valves (not fittings)
+  "knife gate", "pinch valve", "slurry valve", "butterfly valve", "ball valve assembly",
+  "check valve", "pressure relief", "control valve", "solenoid valve",
   // Instrumentation
-  "sensor", "transmitter", "gauge", "meter", "probe", "thermocouple", "rtd",
-  "pressure", "flow", "level", "temperature",
-  // Lubrication
-  "lubrication", "oil cooler", "grease pump", "lubrication pump",
+  "transmitter", "pressure gauge", "flow meter", "level sensor", "thermocouple", "rtd",
+  "ph probe", "conductivity", "turbidity",
+  // Lubrication systems
+  "lubrication pump", "oil cooler", "grease pump", "lubrication system",
   // Conveyor components
-  "belt", "conveyor belt", "splice", "scraper", "skirting",
+  "conveyor belt", "splice kit", "belt scraper", "skirting rubber",
   // Screens and liners
-  "screen", "liner", "wear plate", "chute liner",
+  "screen panel", "wear liner", "chute liner", "impact liner",
   // Couplings
-  "coupling", "flexible coupling",
+  "coupling", "flexible coupling", "fluid coupling", "gear coupling",
   // Cylinders
-  "cylinder", "hydraulic cylinder", "pneumatic cylinder",
+  "hydraulic cylinder", "pneumatic cylinder", "actuator",
+  // Pump parts
+  "impeller", "pump casing", "volute", "wear ring", "throat bush",
+  // Motor parts (not whole motors)
+  "motor bearing", "motor fan", "motor terminal",
+  // Electrical components
+  "contactor", "overload relay", "circuit breaker", "fuse",
 ];
 
 // LOW Criticality Keywords - Operational/Consumable
 const LOW_KEYWORDS = [
+  // Pipe fittings - these are NOT critical
+  "socket", "nipple", "elbow", "tee", "reducer", "union", "flange", "blind flange",
+  "pipe fitting", "threaded", "bsp", "npt",
   // Fasteners
-  "bolt", "nut", "washer", "screw", "stud", "fastener", "anchor",
-  // Hoses
-  "hose", "tubing", "pipe fitting", "fitting",
-  // Filters
-  "filter", "filter element", "strainer",
+  "bolt", "nut", "washer", "screw", "stud", "fastener", "anchor", "rivet",
+  // Hoses and tubes
+  "hose", "tubing", "flexible hose", "hydraulic hose", "air hose",
+  // Filters - consumable
+  "filter element", "filter cartridge", "strainer", "air filter", "oil filter", "fuel filter",
   // Grease fittings
   "grease nipple", "zerk", "lubrication fitting",
   // Minor fittings
-  "clamp", "clip", "bracket", "shim",
+  "clamp", "clip", "bracket", "shim", "spacer", "key", "keyway",
   // Electrical consumables
-  "cable tie", "wire", "terminal", "lug", "tape", "heat shrink",
+  "cable tie", "wire", "terminal", "lug", "tape", "heat shrink", "cable gland",
   // PPE-related
-  "ppe", "glove", "safety", "earmuff", "glasses",
-  // Non-critical sensors
-  "indicator", "light", "lamp", "led",
+  "ppe", "glove", "safety", "earmuff", "glasses", "respirator",
+  // Non-critical items
+  "indicator light", "lamp", "led", "signage",
   // General consumables
-  "consumable", "disposable", "cleaning",
+  "consumable", "disposable", "cleaning", "rag", "degreaser",
+  // Small parts
+  "pin", "cotter", "circlip", "snap ring", "dowel",
 ];
 
 /**
@@ -100,23 +120,28 @@ const containsKeyword = (description: string, keywords: string[]): boolean => {
 /**
  * Classify a spare part based on its description
  * 
- * Priority order: HIGH > MEDIUM > LOW
- * If no keywords match, defaults to LOW
+ * Priority order: Check LOW first (to exclude fittings/consumables), then HIGH, then MEDIUM
+ * This prevents false positives where a fitting contains a HIGH keyword
  */
 export const classifyCriticality = (description: string): CriticalityLevel => {
   if (!description) return "LOW";
 
-  // Check HIGH first (most critical)
+  // Check LOW first - these are definitely not critical (fittings, consumables)
+  if (containsKeyword(description, LOW_KEYWORDS)) {
+    return "LOW";
+  }
+
+  // Check HIGH - major equipment/components
   if (containsKeyword(description, HIGH_KEYWORDS)) {
     return "HIGH";
   }
 
-  // Check MEDIUM next
+  // Check MEDIUM - reliability items
   if (containsKeyword(description, MEDIUM_KEYWORDS)) {
     return "MEDIUM";
   }
 
-  // Default to LOW
+  // Default to LOW for unclassified items
   return "LOW";
 };
 
