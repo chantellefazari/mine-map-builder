@@ -29,6 +29,8 @@ interface ParsedSupplier {
   email: string;
   whatUsedFor: string;
   notes: string;
+  location: string;
+  isPreferred: boolean;
   isDuplicate: boolean;
   matchReason?: string;
   existingMatch?: Supplier;
@@ -172,6 +174,8 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
             email: mapped.email || "",
             whatUsedFor: mapped.whatUsedFor || "",
             notes: mapped.notes || "",
+            location: "",
+            isPreferred: false,
           };
         })
         .filter((s) => s.name);

@@ -15,6 +15,8 @@ export interface Supplier {
   email: string;
   whatUsedFor: string;
   notes: string;
+  location: string;
+  isPreferred: boolean;
 }
 
 interface DbSupplier {
@@ -28,6 +30,8 @@ interface DbSupplier {
   email: string;
   what_used_for: string;
   notes: string;
+  location: string;
+  is_preferred: boolean;
 }
 
 const mapDbToSupplier = (row: DbSupplier): Supplier => ({
@@ -41,6 +45,8 @@ const mapDbToSupplier = (row: DbSupplier): Supplier => ({
   email: row.email,
   whatUsedFor: row.what_used_for,
   notes: row.notes,
+  location: row.location,
+  isPreferred: row.is_preferred,
 });
 
 const mapSupplierToDb = (supplier: Omit<Supplier, "id">) => ({
@@ -53,6 +59,8 @@ const mapSupplierToDb = (supplier: Omit<Supplier, "id">) => ({
   email: supplier.email,
   what_used_for: supplier.whatUsedFor,
   notes: supplier.notes,
+  location: supplier.location || "",
+  is_preferred: supplier.isPreferred || false,
 });
 
 export const useSuppliers = () => {
