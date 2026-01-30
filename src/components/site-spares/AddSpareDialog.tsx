@@ -20,20 +20,28 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { isCriticalItem, classifyCriticality, getCriticalityColor, type CriticalityLevel } from "@/utils/criticalityClassification";
+import { classifyCategory, getAllCategories, type SpareCategory } from "@/utils/categoryClassification";
 import { Badge } from "@/components/ui/badge";
 
-// Categories and warehouse areas
-const categories: Record<string, string[]> = {
-  "Bearing": ["Pillow Block", "Spherical Roller", "Ball Bearing"],
-  "Consumable": ["Gloves", "PPE", "Tape", "Lubricant"],
-  "Electrical": ["Switch", "Cable", "Connector"],
+// Categories from classification utility with subcategories
+const categorySubcategories: Record<string, string[]> = {
   "Fastener": ["Bolt", "Nut", "Washer", "Screw", "Stud"],
-  "Filter": ["Air Filter", "Oil Filter", "Fuel Filter"],
-  "General": [],
+  "Pipe Fitting": ["Elbow", "Tee", "Nipple", "Bush", "Reducer", "Flange", "Union", "Coupling"],
+  "Hose & Tubing": ["Hydraulic Hose", "Air Hose", "Water Hose", "Nylon Tubing"],
+  "Belt & Transmission": ["Vee Belt", "Timing Belt", "Serpentine"],
+  "Bearing": ["Pillow Block", "Spherical Roller", "Ball Bearing", "Tapered Roller"],
+  "Seal": ["O-Ring", "Gasket", "Mechanical Seal", "Oil Seal"],
+  "Valve": ["Butterfly", "Knife Gate", "Ball", "Check", "Solenoid"],
+  "Pump": ["Slurry", "Submersible", "Centrifugal", "Diaphragm", "Impeller"],
   "Motor": ["Electric Motor", "Hydraulic Motor", "Vibrator"],
-  "Pipe Fitting": ["Ball Valve", "Coupling", "Elbow", "Tee", "Reducer", "Nipple"],
-  "Pump": ["Submersible", "Centrifugal", "Diaphragm", "AODD"],
-  "Valve": ["Butterfly", "Knife Gate", "Ball", "Check"],
+  "Gearbox": ["Helical", "Planetary", "Worm Gear"],
+  "Filter": ["Air Filter", "Oil Filter", "Fuel Filter", "Filter Press"],
+  "Conveyor": ["Idler", "Roller", "Belt Scraper", "Pulley"],
+  "Instrumentation": ["Transmitter", "Gauge", "Sensor", "Flow Meter"],
+  "Electrical": ["Switch", "Cable", "Connector", "Contactor"],
+  "Mechanical": ["Coupling", "Sprocket", "Chain", "Pulley"],
+  "Consumable": ["Gloves", "PPE", "Lubricant", "Tape"],
+  "General": [],
 };
 
 const warehouseAreas = [
@@ -100,8 +108,8 @@ export const AddSpareDialog = ({
     }
   }, [formData.description]);
 
-  const categoryList = Object.keys(categories).sort();
-  const subcategoryList = formData.category ? categories[formData.category] || [] : [];
+  const categoryList = Object.keys(categorySubcategories).sort();
+  const subcategoryList = formData.category ? categorySubcategories[formData.category] || [] : [];
 
   const handleChange = (field: string, value: string | number | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));

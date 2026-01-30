@@ -5,6 +5,7 @@
 
 import { sparesData, type SpareItem } from "@/components/critical-spares/sparesData";
 import { supabase } from "@/integrations/supabase/client";
+import { classifyCategory } from "@/utils/categoryClassification";
 
 // Parse price string to number (e.g., "$16,450.00" -> 16450)
 const parsePrice = (priceStr: string): number => {
@@ -18,69 +19,14 @@ const mapCriticality = (criticality: string): boolean => {
   return criticality === "High";
 };
 
-// Fastener keywords to detect bolts, nuts, etc.
-const FASTENER_KEYWORDS = [
-  "bolt", "nut", "washer", "screw", "stud", "fastener", "anchor", "rivet",
-  "hex bolt", "cap screw", "set screw", "lock nut", "nyloc", "spring washer"
-];
-
-// Check if description contains fastener keywords
-const isFastener = (description: string): boolean => {
-  const normalized = description.toLowerCase();
-  return FASTENER_KEYWORDS.some((keyword) => {
-    const regex = new RegExp(`(^|\\s|[^a-z])${keyword}($|\\s|[^a-z])`, 'i');
-    return regex.test(normalized);
-  });
-};
-
-// Map component type to category - with fastener detection
-const mapCategory = (componentType: string, description: string = ""): string => {
-  // Check description first for fastener keywords
-  if (isFastener(description)) {
-    return "Fastener";
-  }
-  
-  const categoryMap: Record<string, string> = {
-    "Motor": "Motor",
-    "Gearbox": "Gearbox",
-    "Pump": "Pump",
-    "Valve": "Valve",
-    "Roller": "Bearing", // Group with bearings
-    "Bearing": "Bearing",
-    "Seal": "Consumable",
-    "Coupling": "Mechanical",
-    "Belt": "Consumable",
-    "Impeller": "Pump",
-    "Liner": "Consumable",
-    "Screen": "Mechanical",
-    "Sensor": "Electrical",
-    "Actuator": "Electrical",
-    "Pulley": "Mechanical",
-    "Consumable": "Consumable",
-    "Heater": "Electrical",
-    "Filter": "Filter",
-    "Electrical": "Electrical",
-    "Mechanical": "Mechanical",
-    "Wet End": "Pump",
-    "Pillow Block": "Bearing",
-    "Burner": "Mechanical",
-    "Rectifier": "Electrical",
-    "Air Cooler": "Mechanical",
-    "Agitator": "Mechanical",
-    "Pinion": "Mechanical",
-    "Hydraulic": "Mechanical",
-    "Compressor": "Mechanical",
-    "Generator": "Electrical",
-  };
-  return categoryMap[componentType] || "General";
-};
-
 // Convert SpareItem to site_spares insert format
 export const mapCriticalSpareToSiteSpare = (item: SpareItem) => {
   const description = item.sparePartDescription || `${item.componentName} - ${item.system}`;
+  // Use centralized category classification
+  const category = classifyCategory(description);
   return {
     description,
-    category: mapCategory(item.componentType, description),
+    category,
     subcategory: item.componentType,
     warehouse_area: "", // To be filled during site inventory
     bin_location: "", // To be filled during site inventory
