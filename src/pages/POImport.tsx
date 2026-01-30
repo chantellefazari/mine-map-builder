@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, FileInput, Loader2 } from "lucide-react";
+import { ArrowLeft, FileInput, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { POUploadArea } from "@/components/po-import/POUploadArea";
@@ -9,6 +9,17 @@ import { NormalizedComponentsTable } from "@/components/po-import/NormalizedComp
 import { UploadHistoryTable } from "@/components/po-import/UploadHistoryTable";
 import { ProcessingSummary } from "@/components/po-import/ProcessingSummary";
 import { usePOImport, POLineItem } from "@/hooks/usePOImport";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const POImport = () => {
   const {
@@ -23,6 +34,7 @@ const POImport = () => {
     normalizeAndDeduplicate,
     updateComponent,
     deleteUpload,
+    clearAllData,
     fetchLineItems,
   } = usePOImport();
 
@@ -91,7 +103,7 @@ const POImport = () => {
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                 <FileInput className="h-5 w-5 text-primary" />
               </div>
-              <div>
+              <div className="flex-1">
                 <h1 className="text-xl font-bold text-foreground">
                   PO Import + Component Cleaner
                 </h1>
@@ -99,6 +111,31 @@ const POImport = () => {
                   Extract, normalise, and deduplicate components from purchase order exports
                 </p>
               </div>
+              {(uploads.length > 0 || normalizedComponents.length > 0) && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="sm" className="gap-2">
+                      <Trash2 className="h-4 w-4" />
+                      Clear All Data
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Clear All PO Import Data?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently delete all uploads, PO line items, and normalized components. 
+                        This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={clearAllData} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                        Yes, Clear Everything
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
             </div>
           </div>
         </div>

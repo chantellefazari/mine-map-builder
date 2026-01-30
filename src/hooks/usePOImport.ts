@@ -506,6 +506,35 @@ export const usePOImport = () => {
     }
   };
 
+  const clearAllData = async (): Promise<boolean> => {
+    try {
+      // Delete in order: normalized_components, po_line_items, po_uploads
+      const { error: ncError } = await supabase.from("normalized_components").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+      if (ncError) throw ncError;
+
+      const { error: liError } = await supabase.from("po_line_items").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+      if (liError) throw liError;
+
+      const { error: upError } = await supabase.from("po_uploads").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+      if (upError) throw upError;
+
+      await fetchAll();
+      toast({
+        title: "Success",
+        description: "All PO Import data has been cleared",
+      });
+      return true;
+    } catch (error) {
+      console.error("Error clearing all data:", error);
+      toast({
+        title: "Error",
+        description: "Failed to clear all data",
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
   return {
     uploads,
     lineItems,
@@ -518,6 +547,7 @@ export const usePOImport = () => {
     normalizeAndDeduplicate,
     updateComponent,
     deleteUpload,
+    clearAllData,
     refetch: fetchAll,
     fetchLineItems,
   };
