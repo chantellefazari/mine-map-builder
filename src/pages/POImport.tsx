@@ -7,6 +7,7 @@ import { POUploadArea } from "@/components/po-import/POUploadArea";
 import { RawPOLinesTable } from "@/components/po-import/RawPOLinesTable";
 import { NormalizedComponentsTable } from "@/components/po-import/NormalizedComponentsTable";
 import { UploadHistoryTable } from "@/components/po-import/UploadHistoryTable";
+import { ProcessingSummary } from "@/components/po-import/ProcessingSummary";
 import { usePOImport, POLineItem } from "@/hooks/usePOImport";
 
 const POImport = () => {
@@ -26,6 +27,11 @@ const POImport = () => {
   } = usePOImport();
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [lastProcessingResult, setLastProcessingResult] = useState<{
+    totalLines: number;
+    newCount: number;
+    duplicateCount: number;
+  } | null>(null);
 
   const handleUpload = async (
     metadata: {
@@ -39,6 +45,7 @@ const POImport = () => {
     parsedLineItems: Omit<POLineItem, "id" | "uploadId">[]
   ) => {
     setIsProcessing(true);
+    setLastProcessingResult(null);
     try {
       const uploadId = await createUpload(metadata);
       if (!uploadId) return;
@@ -46,7 +53,14 @@ const POImport = () => {
       const success = await addLineItems(uploadId, parsedLineItems);
       if (!success) return;
 
-      await normalizeAndDeduplicate(uploadId, metadata.supplierName);
+      const result = await normalizeAndDeduplicate(uploadId, metadata.supplierName);
+      if (result.success) {
+        setLastProcessingResult({
+          totalLines: result.totalLines,
+          newCount: result.newCount,
+          duplicateCount: result.duplicateCount,
+        });
+      }
       setSelectedUploadId(uploadId);
       await fetchLineItems(uploadId);
     } finally {
@@ -101,6 +115,12 @@ const POImport = () => {
 
           <TabsContent value="upload" className="space-y-6">
             <POUploadArea onUpload={handleUpload} isProcessing={isProcessing} />
+            <ProcessingSummary
+              totalLines={lastProcessingResult?.totalLines || 0}
+              newCount={lastProcessingResult?.newCount || 0}
+              duplicateCount={lastProcessingResult?.duplicateCount || 0}
+              isVisible={lastProcessingResult !== null}
+            />
             <UploadHistoryTable
               uploads={uploads}
               selectedUploadId={selectedUploadId}

@@ -270,7 +270,7 @@ export const usePOImport = () => {
     }
   };
 
-  const normalizeAndDeduplicate = async (uploadId: string, supplierName: string): Promise<boolean> => {
+  const normalizeAndDeduplicate = async (uploadId: string, supplierName: string): Promise<{ success: boolean; newCount: number; duplicateCount: number; totalLines: number }> => {
     try {
       // Fetch line items for this upload
       const { data: lineItemsData, error: lineError } = await supabase
@@ -289,6 +289,7 @@ export const usePOImport = () => {
       if (existingError) throw existingError;
 
       const newComponents: any[] = [];
+      let duplicateCount = 0;
 
       for (const item of lineItemsData || []) {
         const partNumber = item.part_number?.trim() || "";
@@ -312,6 +313,7 @@ export const usePOImport = () => {
         );
 
         if (existingMatch) {
+          duplicateCount++;
           // Update existing component
           const newTotalOrders = existingMatch.total_orders_in_period + 1;
           const newTotalQty = Number(existingMatch.total_qty_ordered) + Number(item.qty || 0);
@@ -349,6 +351,32 @@ export const usePOImport = () => {
           // Update local array for subsequent iterations
           Object.assign(existingMatch, updateData);
         } else {
+          // Check if this is a duplicate within the current batch
+          const batchDuplicate = newComponents.find(c => c.duplicate_key === duplicateKey);
+          if (batchDuplicate) {
+            duplicateCount++;
+            // Update the batch component
+            batchDuplicate.total_orders_in_period += 1;
+            batchDuplicate.total_qty_ordered += Number(item.qty || 0);
+            batchDuplicate.total_spend += Number(item.total_price || 0);
+            
+            const itemDate = item.po_date ? new Date(item.po_date) : null;
+            const existingDate = batchDuplicate.last_ordered_date ? new Date(batchDuplicate.last_ordered_date) : null;
+            
+            if (itemDate && (!existingDate || itemDate > existingDate)) {
+              batchDuplicate.last_ordered_date = item.po_date;
+              batchDuplicate.last_ordered_po = item.po_number || "";
+              batchDuplicate.last_unit_price = item.unit_price || 0;
+            }
+            
+            if (description && !batchDuplicate.alias_descriptions?.includes(description)) {
+              batchDuplicate.alias_descriptions = batchDuplicate.alias_descriptions 
+                ? `${batchDuplicate.alias_descriptions}\n${description}`
+                : description;
+            }
+            continue;
+          }
+
           // Determine component type from description
           const componentType = inferComponentType(description);
 
@@ -399,11 +427,20 @@ export const usePOImport = () => {
         .eq("id", uploadId);
 
       await fetchAll();
+      
+      const result = {
+        success: true,
+        newCount: newComponents.length,
+        duplicateCount,
+        totalLines: lineItemsData?.length || 0,
+      };
+      
       toast({
-        title: "Success",
-        description: `Processed ${lineItemsData?.length || 0} line items, created ${newComponents.length} new components`,
+        title: "Processing Complete",
+        description: `${result.totalLines} lines processed: ${result.newCount} new components, ${result.duplicateCount} duplicates merged`,
       });
-      return true;
+      
+      return result;
     } catch (error) {
       console.error("Error normalizing components:", error);
       toast({
@@ -411,7 +448,7 @@ export const usePOImport = () => {
         description: "Failed to normalize components",
         variant: "destructive",
       });
-      return false;
+      return { success: false, newCount: 0, duplicateCount: 0, totalLines: 0 };
     }
   };
 
