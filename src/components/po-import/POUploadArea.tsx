@@ -146,6 +146,15 @@ export const POUploadArea = ({ onUpload, isProcessing }: POUploadAreaProps) => {
     setIsParsing(true);
     try {
       const lineItems = await parseExcelFile(selectedFile);
+      
+      if (lineItems.length === 0) {
+        console.warn("No line items extracted from file. Check column headers.");
+        alert("No data was extracted from the file. Please ensure your spreadsheet has columns for: Description, PO Number, Qty, Price, etc.");
+        setIsParsing(false);
+        return;
+      }
+
+      console.log(`Extracted ${lineItems.length} line items from ${selectedFile.name}`);
 
       await onUpload(
         {
@@ -170,6 +179,7 @@ export const POUploadArea = ({ onUpload, isProcessing }: POUploadAreaProps) => {
       }
     } catch (error) {
       console.error("Error parsing file:", error);
+      alert("Failed to parse file. Please check the format.");
     } finally {
       setIsParsing(false);
     }
