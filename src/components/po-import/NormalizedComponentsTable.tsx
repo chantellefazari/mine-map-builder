@@ -33,7 +33,9 @@ import {
   Search,
   ChevronDown,
   ChevronUp,
+  FileSpreadsheet,
 } from "lucide-react";
+import * as XLSX from "xlsx";
 import { NormalizedComponent, componentTypes } from "@/hooks/usePOImport";
 
 interface NormalizedComponentsTableProps {
@@ -78,7 +80,6 @@ export const NormalizedComponentsTable = ({
         c.descriptionCleaned.toLowerCase().includes(query) ||
         c.partNumber.toLowerCase().includes(query) ||
         c.manufacturer.toLowerCase().includes(query) ||
-        c.model.toLowerCase().includes(query) ||
         c.supplier.toLowerCase().includes(query)
       );
     }
@@ -149,67 +150,69 @@ export const NormalizedComponentsTable = ({
   };
 
   const exportToCatalogueFormat = () => {
-    const csvData = filteredComponents.map((c) => ({
+    const data = filteredComponents.map((c) => ({
       "Component Type": c.componentType,
       Manufacturer: c.manufacturer,
-      Model: c.model,
       "Part Number": c.partNumber,
       Description: c.descriptionCleaned,
       Supplier: c.supplier,
+      "Unit Price": c.lastUnitPrice,
       Notes: c.notes,
     }));
 
-    const headers = Object.keys(csvData[0] || {}).join(",");
-    const rows = csvData.map((row) =>
-      Object.values(row)
-        .map((v) => `"${String(v).replace(/"/g, '""')}"`)
-        .join(",")
-    );
-    const csv = [headers, ...rows].join("\n");
-
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "component_catalogue_export.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Components");
+    XLSX.writeFile(wb, "component_catalogue_export.xlsx");
   };
 
-  const exportToCriticalSparesFormat = () => {
-    const csvData = filteredComponents.map((c) => ({
+  const exportForSupplierEnrichment = () => {
+    // Export with empty columns for supplier to fill in
+    const data = filteredComponents.map((c) => ({
       Description: c.descriptionCleaned,
-      Category: c.componentType,
-      Manufacturer: c.manufacturer,
-      "OEM Part Number": c.partNumber,
-      "Preferred Supplier": c.supplier,
-      "Last Unit Price": c.lastUnitPrice,
-      "Last Ordered Date": c.lastOrderedDate || "",
-      Notes: c.notes,
+      "Component Type": c.componentType,
+      "Current Manufacturer": c.manufacturer,
+      "Correct Manufacturer (Supplier to fill)": "",
+      "Current Part Number": c.partNumber,
+      "Correct Part Number (Supplier to fill)": "",
+      "OEM Part Number (Supplier to fill)": "",
+      "Alternate Part Numbers": "",
+      "Lead Time (Days)": "",
+      "Unit Price": c.lastUnitPrice || "",
+      "Updated Price (Supplier to fill)": "",
+      "MOQ": "",
+      "Supplier Notes": "",
     }));
 
-    const headers = Object.keys(csvData[0] || {}).join(",");
-    const rows = csvData.map((row) =>
-      Object.values(row)
-        .map((v) => `"${String(v).replace(/"/g, '""')}"`)
-        .join(",")
-    );
-    const csv = [headers, ...rows].join("\n");
+    const ws = XLSX.utils.json_to_sheet(data);
+    
+    // Set column widths for readability
+    ws["!cols"] = [
+      { wch: 50 }, // Description
+      { wch: 15 }, // Component Type
+      { wch: 20 }, // Current Manufacturer
+      { wch: 30 }, // Correct Manufacturer
+      { wch: 20 }, // Current Part Number
+      { wch: 30 }, // Correct Part Number
+      { wch: 25 }, // OEM Part Number
+      { wch: 25 }, // Alternate Part Numbers
+      { wch: 15 }, // Lead Time
+      { wch: 12 }, // Unit Price
+      { wch: 20 }, // Updated Price
+      { wch: 10 }, // MOQ
+      { wch: 30 }, // Supplier Notes
+    ];
 
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "critical_spares_draft_export.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Parts for Review");
+    XLSX.writeFile(wb, "supplier_enrichment_request.xlsx");
   };
 
   const copyToClipboard = () => {
     const text = filteredComponents
       .map(
         (c) =>
-          `${c.componentType}\t${c.manufacturer}\t${c.model}\t${c.partNumber}\t${c.descriptionCleaned}\t${c.supplier}`
+          `${c.componentType}\t${c.manufacturer}\t${c.partNumber}\t${c.descriptionCleaned}\t${c.supplier}`
       )
       .join("\n");
     navigator.clipboard.writeText(text);
@@ -233,11 +236,11 @@ export const NormalizedComponentsTable = ({
             </Button>
             <Button variant="outline" size="sm" onClick={exportToCatalogueFormat}>
               <Download className="h-4 w-4 mr-1" />
-              Catalogue CSV
+              Export Excel
             </Button>
-            <Button variant="outline" size="sm" onClick={exportToCriticalSparesFormat}>
-              <Download className="h-4 w-4 mr-1" />
-              Spares CSV
+            <Button variant="default" size="sm" onClick={exportForSupplierEnrichment}>
+              <FileSpreadsheet className="h-4 w-4 mr-1" />
+              Supplier Enrichment
             </Button>
           </div>
         </div>
@@ -282,7 +285,6 @@ export const NormalizedComponentsTable = ({
                 <TableRow>
                   <TableHead>Type</TableHead>
                   <TableHead>Manufacturer</TableHead>
-                  <TableHead>Model</TableHead>
                   <TableHead>Part Number</TableHead>
                   <TableHead
                     className="min-w-[250px] cursor-pointer hover:bg-muted/50"
@@ -326,11 +328,6 @@ export const NormalizedComponentsTable = ({
                     </TableCell>
                     <TableCell className="text-sm">
                       {component.manufacturer || (
-                        <span className="text-muted-foreground italic">-</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {component.model || (
                         <span className="text-muted-foreground italic">-</span>
                       )}
                     </TableCell>
