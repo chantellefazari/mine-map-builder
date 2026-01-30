@@ -7,6 +7,7 @@ import { Search, Loader2, Grid3X3, List, Trash2, Package, Image as ImageIcon } f
 import { useSupplierCatalogue, CatalogueItem, priorityTags, componentTypes } from "@/hooks/useSupplierCatalogue";
 import { useSuppliers } from "@/hooks/useSuppliers";
 import { AddCatalogueItemDialog } from "./AddCatalogueItemDialog";
+import { CatalogueCardDropzone } from "./CatalogueCardDropzone";
 import {
   Select,
   SelectContent,
@@ -24,7 +25,7 @@ import {
 } from "@/components/ui/table";
 
 export const SupplierCatalogueSection = () => {
-  const { items, isLoading, addItem, deleteItem } = useSupplierCatalogue();
+  const { items, isLoading, addItem, updateItem, deleteItem } = useSupplierCatalogue();
   const { suppliers } = useSuppliers();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<string>("all");
@@ -161,7 +162,7 @@ export const SupplierCatalogueSection = () => {
         ) : viewMode === "cards" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredItems.map((item) => (
-              <CatalogueCard key={item.id} item={item} onDelete={deleteItem} />
+              <CatalogueCard key={item.id} item={item} onDelete={deleteItem} onUpdate={updateItem} />
             ))}
           </div>
         ) : (
@@ -238,9 +239,10 @@ export const SupplierCatalogueSection = () => {
 interface CatalogueCardProps {
   item: CatalogueItem;
   onDelete: (id: string) => void;
+  onUpdate: (item: CatalogueItem) => Promise<boolean>;
 }
 
-const CatalogueCard = ({ item, onDelete }: CatalogueCardProps) => {
+const CatalogueCard = ({ item, onDelete, onUpdate }: CatalogueCardProps) => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "Critical":
@@ -254,22 +256,19 @@ const CatalogueCard = ({ item, onDelete }: CatalogueCardProps) => {
     }
   };
 
+  const handleImageUpdate = (newUrl: string) => {
+    onUpdate({ ...item, imageUrl: newUrl });
+  };
+
   return (
     <div className={`border rounded-lg overflow-hidden border-l-4 ${getPriorityColor(item.priorityTag)} hover:shadow-md transition-shadow`}>
-      {/* Image Section */}
-      {item.imageUrl ? (
-        <div className="aspect-[4/3] bg-muted">
-          <img 
-            src={item.imageUrl} 
-            alt={item.componentDescription}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      ) : (
-        <div className="aspect-[4/3] bg-muted flex items-center justify-center">
-          <ImageIcon className="h-12 w-12 text-muted-foreground/50" />
-        </div>
-      )}
+      {/* Image Section with Drag & Drop */}
+      <CatalogueCardDropzone
+        imageUrl={item.imageUrl}
+        itemId={item.id}
+        altText={item.componentDescription}
+        onImageUpdate={handleImageUpdate}
+      />
       
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
