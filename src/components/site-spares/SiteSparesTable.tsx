@@ -44,18 +44,13 @@ const stockStatusColors: Record<string, string> = {
   "Require Repair": "bg-orange-500/20 text-orange-700",
 };
 
-// Get categories from classification utility
-const allCategories = getAllCategories().filter(c => c !== "General");
-
+// Warehouse areas list
 const warehouseAreas = [
   "Storage Shelter", "Site Office Laydown Area", "Shutdown Staging Area",
   "Workshop", "Workshop Laydown Area", "WC01", "WC02", "WC03", "WC04", "WC05",
   "WC07 (Crushing Area)", "WC08 (Crushing Area)", "WC09 (Crushing Area)",
   "Crushing Laydown Area", "MCC"
 ];
-
-// Use classification utility categories
-const categories = [...allCategories, "General"];
 
 export const SiteSparesTable = () => {
   const { spares, loading, addSpare, importSpares, mergeSpares, updateSpare } = useSiteSpares();
@@ -68,6 +63,9 @@ export const SiteSparesTable = () => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [importingCritical, setImportingCritical] = useState(false);
+
+  // Derive categories dynamically from actual data (only show categories that have items)
+  const availableCategories = [...new Set(spares.map(s => s.category))].filter(Boolean).sort();
 
   // Helper to get criticality level - always use description-based classification
   const getCriticality = (spare: SiteSpareItem): CriticalityLevel => {
@@ -236,7 +234,7 @@ export const SiteSparesTable = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              {categories.map((cat) => (
+              {availableCategories.map((cat) => (
                 <SelectItem key={cat} value={cat}>
                   {cat}
                 </SelectItem>
