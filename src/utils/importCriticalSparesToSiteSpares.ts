@@ -18,8 +18,28 @@ const mapCriticality = (criticality: string): boolean => {
   return criticality === "High";
 };
 
-// Map component type to category
-const mapCategory = (componentType: string): string => {
+// Fastener keywords to detect bolts, nuts, etc.
+const FASTENER_KEYWORDS = [
+  "bolt", "nut", "washer", "screw", "stud", "fastener", "anchor", "rivet",
+  "hex bolt", "cap screw", "set screw", "lock nut", "nyloc", "spring washer"
+];
+
+// Check if description contains fastener keywords
+const isFastener = (description: string): boolean => {
+  const normalized = description.toLowerCase();
+  return FASTENER_KEYWORDS.some((keyword) => {
+    const regex = new RegExp(`(^|\\s|[^a-z])${keyword}($|\\s|[^a-z])`, 'i');
+    return regex.test(normalized);
+  });
+};
+
+// Map component type to category - with fastener detection
+const mapCategory = (componentType: string, description: string = ""): string => {
+  // Check description first for fastener keywords
+  if (isFastener(description)) {
+    return "Fastener";
+  }
+  
   const categoryMap: Record<string, string> = {
     "Motor": "Motor",
     "Gearbox": "Gearbox",
@@ -57,9 +77,10 @@ const mapCategory = (componentType: string): string => {
 
 // Convert SpareItem to site_spares insert format
 export const mapCriticalSpareToSiteSpare = (item: SpareItem) => {
+  const description = item.sparePartDescription || `${item.componentName} - ${item.system}`;
   return {
-    description: item.sparePartDescription || `${item.componentName} - ${item.system}`,
-    category: mapCategory(item.componentType),
+    description,
+    category: mapCategory(item.componentType, description),
     subcategory: item.componentType,
     warehouse_area: "", // To be filled during site inventory
     bin_location: "", // To be filled during site inventory

@@ -24,15 +24,16 @@ import { Badge } from "@/components/ui/badge";
 
 // Categories and warehouse areas
 const categories: Record<string, string[]> = {
-  "Pipe Fitting": ["Ball Valve", "Coupling", "Elbow", "Tee", "Reducer", "Nipple"],
+  "Bearing": ["Pillow Block", "Spherical Roller", "Ball Bearing"],
+  "Consumable": ["Gloves", "PPE", "Tape", "Lubricant"],
+  "Electrical": ["Switch", "Cable", "Connector"],
+  "Fastener": ["Bolt", "Nut", "Washer", "Screw", "Stud"],
+  "Filter": ["Air Filter", "Oil Filter", "Fuel Filter"],
+  "General": [],
   "Motor": ["Electric Motor", "Hydraulic Motor", "Vibrator"],
+  "Pipe Fitting": ["Ball Valve", "Coupling", "Elbow", "Tee", "Reducer", "Nipple"],
   "Pump": ["Submersible", "Centrifugal", "Diaphragm", "AODD"],
   "Valve": ["Butterfly", "Knife Gate", "Ball", "Check"],
-  "Filter": ["Air Filter", "Oil Filter", "Fuel Filter"],
-  "Bearing": ["Pillow Block", "Spherical Roller", "Ball Bearing"],
-  "Electrical": ["Switch", "Cable", "Connector"],
-  "Consumable": ["Gloves", "PPE", "Tape", "Lubricant"],
-  "General": [],
 };
 
 const warehouseAreas = [
