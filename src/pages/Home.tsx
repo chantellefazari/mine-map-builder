@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
-import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen, ShoppingCart } from "lucide-react";
+import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen, ShoppingCart, FileInput } from "lucide-react";
 
 const sections = [
+  {
+    title: "PO Import + Component Cleaner",
+    subtitle: "Extract & Normalise",
+    description: "Upload PO exports to extract, normalise, and deduplicate components for catalogue population.",
+    icon: FileInput,
+    href: "/po-import",
+  },
   {
     title: "Maintenance Process Foundations",
     subtitle: "Definitions & Standards",

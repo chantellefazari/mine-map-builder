@@ -13,6 +13,7 @@ import WorkOrderTemplates from "./pages/WorkOrderTemplates";
 import MaintenanceFoundations from "./pages/MaintenanceFoundations";
 import SupplierRegister from "./pages/SupplierRegister";
 import SuppliersProcurement from "./pages/SuppliersProcurement";
+import POImport from "./pages/POImport";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/maintenance-foundations" element={<MaintenanceFoundations />} />
           <Route path="/supplier-register" element={<SupplierRegister />} />
           <Route path="/suppliers-procurement" element={<SuppliersProcurement />} />
+          <Route path="/po-import" element={<POImport />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
