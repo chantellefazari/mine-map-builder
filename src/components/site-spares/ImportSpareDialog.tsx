@@ -191,6 +191,23 @@ export const ImportSpareDialog = ({
   const normalizeText = (text: string): string => 
     (text || "").toLowerCase().trim();
 
+  // Calculate a "completeness score" for an item - higher = more complete data
+  const calculateCompleteness = (item: Omit<SiteSpareItem, "id"> | SiteSpareItem): number => {
+    let score = 0;
+    if (item.description?.trim()) score += 1;
+    if (item.oem_part_number?.trim()) score += 3; // OEM part number is very valuable
+    if (item.manufacturer?.trim()) score += 2;
+    if (item.specifications?.trim()) score += 1;
+    if (item.bin_location?.trim()) score += 1;
+    if (item.warehouse_area?.trim()) score += 1;
+    if (item.asset_tag?.trim()) score += 1;
+    if (item.critical_spare_id?.trim()) score += 2;
+    if (item.condition?.trim()) score += 1;
+    if ((item.qty_on_hand ?? 0) > 0) score += 1;
+    if (item.notes?.trim()) score += 1;
+    return score;
+  };
+
   const detectDuplicates = (
     newItems: { item: Omit<SiteSpareItem, "id">; source: string }[],
     existing: SiteSpareItem[]
@@ -215,11 +232,13 @@ export const ImportSpareDialog = ({
       }
     });
 
-    // Track items we've seen in this import batch - store the full item info
-    const seenByDesc = new Map<string, { item: Omit<SiteSpareItem, "id">; source: string }>();
-    const seenByOEM = new Map<string, { item: Omit<SiteSpareItem, "id">; source: string }>();
+    // Track items we've seen in this import batch - store the full item info with index
+    const seenByDesc = new Map<string, { item: Omit<SiteSpareItem, "id">; source: string; index: number }>();
+    const seenByOEM = new Map<string, { item: Omit<SiteSpareItem, "id">; source: string; index: number }>();
 
-    return newItems.map(({ item, source }) => {
+    const results: DuplicateInfo[] = [];
+
+    newItems.forEach(({ item, source }, currentIndex) => {
       const desc = normalizeText(item.description);
       const oem = normalizeText(item.oem_part_number || "");
       
@@ -227,6 +246,7 @@ export const ImportSpareDialog = ({
       let existingItem: SiteSpareItem | undefined;
       let batchOriginalItem: Omit<SiteSpareItem, "id"> | undefined;
       let batchOriginalSource: string | undefined;
+      let batchOriginalIndex: number | undefined;
       let matchReason = "";
 
       // Check if duplicate within the import batch (either field matches)
@@ -235,12 +255,14 @@ export const ImportSpareDialog = ({
         const original = seenByDesc.get(desc)!;
         batchOriginalItem = original.item;
         batchOriginalSource = original.source;
+        batchOriginalIndex = original.index;
         matchReason = "description (in batch)";
       } else if (oem && seenByOEM.has(oem)) {
         isDuplicate = true;
         const original = seenByOEM.get(oem)!;
         batchOriginalItem = original.item;
         batchOriginalSource = original.source;
+        batchOriginalIndex = original.index;
         matchReason = "OEM part number (in batch)";
       }
       
@@ -256,23 +278,69 @@ export const ImportSpareDialog = ({
           matchReason = "OEM part number (in database)";
         }
       }
+
+      // Determine selection based on completeness
+      let selection: "import" | "existing" | "skip" = "import";
       
-      // Mark as seen for future items in batch
-      if (desc && !seenByDesc.has(desc)) seenByDesc.set(desc, { item, source });
-      if (oem && !seenByOEM.has(oem)) seenByOEM.set(oem, { item, source });
+      if (isDuplicate) {
+        const currentScore = calculateCompleteness(item);
+        
+        if (batchOriginalItem) {
+          // Duplicate within batch - compare completeness
+          const originalScore = calculateCompleteness(batchOriginalItem);
+          if (currentScore > originalScore) {
+            // This item is more complete - import this one, mark original to skip
+            selection = "import";
+            // Update the original item's selection to skip (it has less data)
+            if (batchOriginalIndex !== undefined && results[batchOriginalIndex]) {
+              results[batchOriginalIndex].selection = "skip";
+            }
+          } else {
+            // Original is more complete or equal - skip this one
+            selection = "skip";
+          }
+        } else if (existingItem) {
+          // Duplicate with database - compare completeness
+          const existingScore = calculateCompleteness(existingItem);
+          if (currentScore > existingScore) {
+            // New item is more complete - import it
+            selection = "import";
+          } else {
+            // Existing is more complete or equal - keep existing
+            selection = "existing";
+          }
+        }
+      }
       
-      return {
+      // Mark as seen for future items in batch (update if this is more complete)
+      if (desc) {
+        const existing = seenByDesc.get(desc);
+        if (!existing || calculateCompleteness(item) > calculateCompleteness(existing.item)) {
+          seenByDesc.set(desc, { item, source, index: currentIndex });
+        }
+      }
+      if (oem) {
+        const existing = seenByOEM.get(oem);
+        if (!existing || calculateCompleteness(item) > calculateCompleteness(existing.item)) {
+          seenByOEM.set(oem, { item, source, index: currentIndex });
+        }
+      }
+      
+      results.push({
         item,
         existingItem,
         batchOriginalItem,
         batchOriginalSource,
+        batchOriginalIndex,
         source,
         isDuplicate,
         duplicateType: isDuplicate ? ("exact" as const) : ("none" as const),
         matchReason,
-        selection: isDuplicate ? ("existing" as const) : ("import" as const), // Default: keep existing for duplicates
-      };
+        selection,
+      });
     });
+
+    return results;
   };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
