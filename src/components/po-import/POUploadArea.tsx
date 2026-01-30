@@ -79,7 +79,7 @@ export const POUploadArea = ({ onUpload, isProcessing }: POUploadAreaProps) => {
             model: findColumn(["model", "modelnumber", "modelno"]),
             partNumber: findColumn(["partnumber", "partno", "part", "sku", "itemno"]),
             qty: findColumn(["qty", "quantity", "qtyordered"]),
-            unitPrice: findColumn(["unitprice", "price", "unitcost", "cost"]),
+            unitPrice: findColumn(["unitprice", "price", "unitcost", "cost", "rate"]),
             totalPrice: findColumn(["totalprice", "total", "amount", "linetotal", "extended"]),
             supplier: findColumn(["supplier", "vendor"]),
           };
