@@ -298,19 +298,6 @@ export const NormalizedComponentsTable = ({
                   </TableHead>
                   <TableHead className="text-right">Last PO</TableHead>
                   <TableHead className="text-right">Unit Price</TableHead>
-                  <TableHead
-                    className="text-right cursor-pointer hover:bg-muted/50"
-                    onClick={() => toggleSort("totalOrdersInPeriod")}
-                  >
-                    Orders <SortIcon field="totalOrdersInPeriod" />
-                  </TableHead>
-                  <TableHead className="text-right">Total Qty</TableHead>
-                  <TableHead
-                    className="text-right cursor-pointer hover:bg-muted/50"
-                    onClick={() => toggleSort("totalSpend")}
-                  >
-                    Total Spend <SortIcon field="totalSpend" />
-                  </TableHead>
                   <TableHead>Flags</TableHead>
                 </TableRow>
               </TableHeader>
@@ -379,17 +366,6 @@ export const NormalizedComponentsTable = ({
                     </TableCell>
                     <TableCell className="text-xs text-right">
                       {formatCurrency(component.lastUnitPrice)}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Badge variant={component.totalOrdersInPeriod > 1 ? "default" : "outline"}>
-                        {component.totalOrdersInPeriod}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {component.totalQtyOrdered}
-                    </TableCell>
-                    <TableCell className="text-right font-medium">
-                      {formatCurrency(component.totalSpend)}
                     </TableCell>
                     <TableCell>
                       {component.reviewFlag && (
