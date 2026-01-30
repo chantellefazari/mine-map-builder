@@ -114,12 +114,14 @@ export const POUploadArea = ({ onUpload, isProcessing }: POUploadAreaProps) => {
               return parseFloat(str) || 0;
             };
 
+            const rawManufacturer = colMap.manufacturer >= 0 ? String(row[colMap.manufacturer] || "") : "";
+            
             lineItems.push({
               poNumber: colMap.poNumber >= 0 ? String(row[colMap.poNumber] || "") : "",
               poDate: colMap.poDate >= 0 ? parseDate(row[colMap.poDate]) : null,
               supplier: colMap.supplier >= 0 ? String(row[colMap.supplier] || "") : "",
               itemDescription: description,
-              manufacturer: colMap.manufacturer >= 0 ? String(row[colMap.manufacturer] || "") : "",
+              manufacturer: rawManufacturer.trim() || supplierName.trim(), // Use supplier name if manufacturer is empty
               model: colMap.model >= 0 ? String(row[colMap.model] || "") : "",
               partNumber: colMap.partNumber >= 0 ? String(row[colMap.partNumber] || "") : "",
               qty: colMap.qty >= 0 ? parseNumber(row[colMap.qty]) : 1,
