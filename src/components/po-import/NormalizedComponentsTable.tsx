@@ -52,8 +52,12 @@ export const NormalizedComponentsTable = ({
 }: NormalizedComponentsTableProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<FilterType>("all");
+  const [selectedSupplier, setSelectedSupplier] = useState<string>("all");
   const [sortField, setSortField] = useState<SortField>("lastOrderedDate");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+
+  // Get unique suppliers for the filter dropdown
+  const uniqueSuppliers = [...new Set(components.map((c) => c.supplier).filter(Boolean))].sort();
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-AU", {
@@ -72,8 +76,11 @@ export const NormalizedComponentsTable = ({
     });
   };
 
-  // Apply filters
+  // Apply supplier filter first
   let filteredComponents = components.filter((c) => {
+    if (selectedSupplier !== "all" && c.supplier !== selectedSupplier) {
+      return false;
+    }
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       return (
@@ -182,7 +189,10 @@ export const NormalizedComponentsTable = ({
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Parts for Review");
-    XLSX.writeFile(wb, "supplier_enrichment_request.xlsx");
+    
+    // Include supplier name in filename if filtered
+    const supplierSuffix = selectedSupplier !== "all" ? `_${selectedSupplier.replace(/[^a-zA-Z0-9]/g, "_")}` : "";
+    XLSX.writeFile(wb, `supplier_enrichment${supplierSuffix}.xlsx`);
   };
 
   const copyToClipboard = () => {
@@ -225,6 +235,19 @@ export const NormalizedComponentsTable = ({
       <CardContent className="space-y-4">
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-3">
+          <Select value={selectedSupplier} onValueChange={setSelectedSupplier}>
+            <SelectTrigger className="w-full md:w-[220px]">
+              <SelectValue placeholder="Select Supplier" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Suppliers</SelectItem>
+              {uniqueSuppliers.map((supplier) => (
+                <SelectItem key={supplier} value={supplier || ""}>
+                  {supplier}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
