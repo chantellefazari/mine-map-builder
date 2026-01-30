@@ -167,40 +167,17 @@ export const NormalizedComponentsTable = ({
   };
 
   const exportForSupplierEnrichment = () => {
-    // Export with empty columns for supplier to fill in
     const data = filteredComponents.map((c) => ({
       Description: c.descriptionCleaned,
-      "Component Type": c.componentType,
-      "Current Manufacturer": c.manufacturer,
-      "Correct Manufacturer (Supplier to fill)": "",
-      "Current Part Number": c.partNumber,
-      "Correct Part Number (Supplier to fill)": "",
-      "OEM Part Number (Supplier to fill)": "",
-      "Alternate Part Numbers": "",
-      "Lead Time (Days)": "",
-      "Unit Price": c.lastUnitPrice || "",
-      "Updated Price (Supplier to fill)": "",
-      "MOQ": "",
-      "Supplier Notes": "",
+      "OEM Part Number": "",
     }));
 
     const ws = XLSX.utils.json_to_sheet(data);
     
     // Set column widths for readability
     ws["!cols"] = [
-      { wch: 50 }, // Description
-      { wch: 15 }, // Component Type
-      { wch: 20 }, // Current Manufacturer
-      { wch: 30 }, // Correct Manufacturer
-      { wch: 20 }, // Current Part Number
-      { wch: 30 }, // Correct Part Number
+      { wch: 60 }, // Description
       { wch: 25 }, // OEM Part Number
-      { wch: 25 }, // Alternate Part Numbers
-      { wch: 15 }, // Lead Time
-      { wch: 12 }, // Unit Price
-      { wch: 20 }, // Updated Price
-      { wch: 10 }, // MOQ
-      { wch: 30 }, // Supplier Notes
     ];
 
     const wb = XLSX.utils.book_new();
