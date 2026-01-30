@@ -275,8 +275,9 @@ export const NormalizedComponentsTable = ({
             No components to display. Process PO uploads to populate this table.
           </div>
         ) : (
-          <ScrollArea className="h-[500px]">
-            <Table>
+          <div className="overflow-x-auto">
+            <ScrollArea className="h-[500px]">
+              <Table className="min-w-[1200px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>Type</TableHead>
@@ -382,8 +383,9 @@ export const NormalizedComponentsTable = ({
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
-          </ScrollArea>
+              </Table>
+            </ScrollArea>
+          </div>
         )}
       </CardContent>
     </Card>
