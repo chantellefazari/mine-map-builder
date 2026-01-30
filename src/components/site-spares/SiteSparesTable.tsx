@@ -52,6 +52,7 @@ const categoryColors: Record<string, string> = {
   "Bearing": "bg-orange-500/20 text-orange-700",
   "Electrical": "bg-blue-600/20 text-blue-800",
   "Consumable": "bg-green-600/20 text-green-800",
+  "Fastener": "bg-slate-500/20 text-slate-700",
 };
 
 const warehouseAreas = [
@@ -62,7 +63,7 @@ const warehouseAreas = [
 ];
 
 const categories = [
-  "Pipe Fitting", "Motor", "Pump", "Valve", "Filter", "Bearing", "Electrical", "Consumable", "General"
+  "Pipe Fitting", "Motor", "Pump", "Valve", "Filter", "Bearing", "Electrical", "Consumable", "Fastener", "General"
 ];
 
 export const SiteSparesTable = () => {
