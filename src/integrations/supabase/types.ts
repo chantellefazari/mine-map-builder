@@ -14,6 +14,196 @@ export type Database = {
   }
   public: {
     Tables: {
+      normalized_components: {
+        Row: {
+          alias_descriptions: string | null
+          component_type: string
+          created_at: string
+          description_cleaned: string
+          duplicate_key: string | null
+          id: string
+          is_master: boolean | null
+          last_ordered_date: string | null
+          last_ordered_po: string | null
+          last_unit_price: number | null
+          linked_asset: string | null
+          manufacturer: string | null
+          model: string | null
+          notes: string | null
+          part_number: string | null
+          review_flag: boolean | null
+          supplier: string | null
+          total_orders_in_period: number | null
+          total_qty_ordered: number | null
+          total_spend: number | null
+          updated_at: string
+          upload_id: string | null
+        }
+        Insert: {
+          alias_descriptions?: string | null
+          component_type?: string
+          created_at?: string
+          description_cleaned: string
+          duplicate_key?: string | null
+          id?: string
+          is_master?: boolean | null
+          last_ordered_date?: string | null
+          last_ordered_po?: string | null
+          last_unit_price?: number | null
+          linked_asset?: string | null
+          manufacturer?: string | null
+          model?: string | null
+          notes?: string | null
+          part_number?: string | null
+          review_flag?: boolean | null
+          supplier?: string | null
+          total_orders_in_period?: number | null
+          total_qty_ordered?: number | null
+          total_spend?: number | null
+          updated_at?: string
+          upload_id?: string | null
+        }
+        Update: {
+          alias_descriptions?: string | null
+          component_type?: string
+          created_at?: string
+          description_cleaned?: string
+          duplicate_key?: string | null
+          id?: string
+          is_master?: boolean | null
+          last_ordered_date?: string | null
+          last_ordered_po?: string | null
+          last_unit_price?: number | null
+          linked_asset?: string | null
+          manufacturer?: string | null
+          model?: string | null
+          notes?: string | null
+          part_number?: string | null
+          review_flag?: boolean | null
+          supplier?: string | null
+          total_orders_in_period?: number | null
+          total_qty_ordered?: number | null
+          total_spend?: number | null
+          updated_at?: string
+          upload_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "normalized_components_upload_id_fkey"
+            columns: ["upload_id"]
+            isOneToOne: false
+            referencedRelation: "po_uploads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      po_line_items: {
+        Row: {
+          created_at: string
+          extra_references: string | null
+          id: string
+          item_description: string
+          manufacturer: string | null
+          model: string | null
+          part_number: string | null
+          po_date: string | null
+          po_number: string | null
+          qty: number | null
+          row_index: number | null
+          supplier: string | null
+          total_price: number | null
+          unit_price: number | null
+          upload_id: string
+        }
+        Insert: {
+          created_at?: string
+          extra_references?: string | null
+          id?: string
+          item_description: string
+          manufacturer?: string | null
+          model?: string | null
+          part_number?: string | null
+          po_date?: string | null
+          po_number?: string | null
+          qty?: number | null
+          row_index?: number | null
+          supplier?: string | null
+          total_price?: number | null
+          unit_price?: number | null
+          upload_id: string
+        }
+        Update: {
+          created_at?: string
+          extra_references?: string | null
+          id?: string
+          item_description?: string
+          manufacturer?: string | null
+          model?: string | null
+          part_number?: string | null
+          po_date?: string | null
+          po_number?: string | null
+          qty?: number | null
+          row_index?: number | null
+          supplier?: string | null
+          total_price?: number | null
+          unit_price?: number | null
+          upload_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "po_line_items_upload_id_fkey"
+            columns: ["upload_id"]
+            isOneToOne: false
+            referencedRelation: "po_uploads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      po_uploads: {
+        Row: {
+          category: string
+          created_at: string
+          date_range_covered: string | null
+          file_name: string | null
+          file_type: string | null
+          id: string
+          notes: string | null
+          processed_at: string | null
+          status: string | null
+          supplier_name: string
+          updated_at: string
+          uploaded_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          date_range_covered?: string | null
+          file_name?: string | null
+          file_type?: string | null
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          status?: string | null
+          supplier_name: string
+          updated_at?: string
+          uploaded_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          date_range_covered?: string | null
+          file_name?: string | null
+          file_type?: string | null
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          status?: string | null
+          supplier_name?: string
+          updated_at?: string
+          uploaded_at?: string
+        }
+        Relationships: []
+      }
       site_spares: {
         Row: {
           aisle: string | null
