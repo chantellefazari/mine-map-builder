@@ -123,6 +123,7 @@ export type Database = {
           component_type: string
           created_at: string
           id: string
+          image_url: string | null
           notes: string
           oem_brand: string
           oem_part_number: string
@@ -137,6 +138,7 @@ export type Database = {
           component_type?: string
           created_at?: string
           id?: string
+          image_url?: string | null
           notes?: string
           oem_brand?: string
           oem_part_number?: string
@@ -151,6 +153,7 @@ export type Database = {
           component_type?: string
           created_at?: string
           id?: string
+          image_url?: string | null
           notes?: string
           oem_brand?: string
           oem_part_number?: string
