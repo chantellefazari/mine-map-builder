@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Loader2, Grid3X3, List, Trash2, Edit2, Package } from "lucide-react";
+import { Search, Loader2, Grid3X3, List, Trash2, Package, Image as ImageIcon } from "lucide-react";
 import { useSupplierCatalogue, CatalogueItem, priorityTags, componentTypes } from "@/hooks/useSupplierCatalogue";
 import { useSuppliers } from "@/hooks/useSuppliers";
 import { AddCatalogueItemDialog } from "./AddCatalogueItemDialog";
@@ -169,6 +169,7 @@ export const SupplierCatalogueSection = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[60px]">Photo</TableHead>
                   <TableHead>Supplier</TableHead>
                   <TableHead>OEM / Brand</TableHead>
                   <TableHead>Type</TableHead>
@@ -181,6 +182,19 @@ export const SupplierCatalogueSection = () => {
               <TableBody>
                 {filteredItems.map((item) => (
                   <TableRow key={item.id}>
+                    <TableCell>
+                      {item.imageUrl ? (
+                        <img 
+                          src={item.imageUrl} 
+                          alt={item.componentDescription}
+                          className="w-10 h-10 object-cover rounded"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 bg-muted rounded flex items-center justify-center">
+                          <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      )}
+                    </TableCell>
                     <TableCell className="font-medium">{item.supplierName}</TableCell>
                     <TableCell>{item.oemBrand}</TableCell>
                     <TableCell>{item.componentType}</TableCell>
@@ -241,20 +255,36 @@ const CatalogueCard = ({ item, onDelete }: CatalogueCardProps) => {
   };
 
   return (
-    <div className={`border rounded-lg p-4 border-l-4 ${getPriorityColor(item.priorityTag)} hover:shadow-md transition-shadow`}>
-      <div className="flex justify-between items-start mb-2">
-        <Badge variant="outline" className="text-xs">
-          {item.componentType}
-        </Badge>
-        <Button
-          size="icon"
-          variant="ghost"
-          className="h-6 w-6 text-muted-foreground hover:text-destructive"
-          onClick={() => onDelete(item.id)}
-        >
-          <Trash2 className="h-3 w-3" />
-        </Button>
-      </div>
+    <div className={`border rounded-lg overflow-hidden border-l-4 ${getPriorityColor(item.priorityTag)} hover:shadow-md transition-shadow`}>
+      {/* Image Section */}
+      {item.imageUrl ? (
+        <div className="aspect-[4/3] bg-muted">
+          <img 
+            src={item.imageUrl} 
+            alt={item.componentDescription}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ) : (
+        <div className="aspect-[4/3] bg-muted flex items-center justify-center">
+          <ImageIcon className="h-12 w-12 text-muted-foreground/50" />
+        </div>
+      )}
+      
+      <div className="p-4">
+        <div className="flex justify-between items-start mb-2">
+          <Badge variant="outline" className="text-xs">
+            {item.componentType}
+          </Badge>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-6 w-6 text-muted-foreground hover:text-destructive"
+            onClick={() => onDelete(item.id)}
+          >
+            <Trash2 className="h-3 w-3" />
+          </Button>
+        </div>
       
       <h4 className="font-semibold text-sm mb-1 line-clamp-2">
         {item.componentDescription}
@@ -281,13 +311,14 @@ const CatalogueCard = ({ item, onDelete }: CatalogueCardProps) => {
         </p>
       )}
 
-      <div className="mt-3 pt-2 border-t">
-        <Badge 
-          variant={item.priorityTag === "Critical" ? "destructive" : item.priorityTag === "Medium" ? "default" : "secondary"}
-          className="text-xs"
-        >
-          {item.priorityTag}
-        </Badge>
+        <div className="mt-3 pt-2 border-t">
+          <Badge 
+            variant={item.priorityTag === "Critical" ? "destructive" : item.priorityTag === "Medium" ? "default" : "secondary"}
+            className="text-xs"
+          >
+            {item.priorityTag}
+          </Badge>
+        </div>
       </div>
     </div>
   );

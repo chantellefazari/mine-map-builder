@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CatalogueImageUpload } from "./CatalogueImageUpload";
 
 interface AddCatalogueItemDialogProps {
   suppliers: Supplier[];
@@ -39,6 +40,7 @@ export const AddCatalogueItemDialog = ({ suppliers, onAddItem }: AddCatalogueIte
     alternatePartNumbers: "",
     notes: "",
     priorityTag: "Medium" as PriorityTag,
+    imageUrl: "",
   });
 
   const handleSupplierChange = (supplierId: string) => {
@@ -67,6 +69,7 @@ export const AddCatalogueItemDialog = ({ suppliers, onAddItem }: AddCatalogueIte
       alternatePartNumbers: formData.alternatePartNumbers,
       notes: formData.notes,
       priorityTag: formData.priorityTag,
+      imageUrl: formData.imageUrl,
     };
 
     const success = await onAddItem(newItem);
@@ -82,6 +85,7 @@ export const AddCatalogueItemDialog = ({ suppliers, onAddItem }: AddCatalogueIte
         alternatePartNumbers: "",
         notes: "",
         priorityTag: "Medium",
+        imageUrl: "",
       });
     }
   };
@@ -102,6 +106,12 @@ export const AddCatalogueItemDialog = ({ suppliers, onAddItem }: AddCatalogueIte
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Image Upload */}
+          <CatalogueImageUpload
+            imageUrl={formData.imageUrl}
+            onImageChange={(url) => setFormData({ ...formData, imageUrl: url })}
+          />
+
           <div className="space-y-2">
             <Label htmlFor="supplier">Supplier (from register)</Label>
             <Select value={formData.supplierId || "manual"} onValueChange={handleSupplierChange}>

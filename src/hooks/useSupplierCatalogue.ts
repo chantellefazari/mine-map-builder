@@ -15,6 +15,7 @@ export interface CatalogueItem {
   alternatePartNumbers: string;
   notes: string;
   priorityTag: PriorityTag;
+  imageUrl: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -30,6 +31,7 @@ interface DbCatalogueItem {
   alternate_part_numbers: string;
   notes: string;
   priority_tag: string;
+  image_url: string;
   created_at: string;
   updated_at: string;
 }
@@ -45,6 +47,7 @@ const mapDbToCatalogueItem = (row: DbCatalogueItem): CatalogueItem => ({
   alternatePartNumbers: row.alternate_part_numbers,
   notes: row.notes,
   priorityTag: row.priority_tag as PriorityTag,
+  imageUrl: row.image_url,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -59,6 +62,7 @@ const mapCatalogueItemToDb = (item: Omit<CatalogueItem, "id" | "createdAt" | "up
   alternate_part_numbers: item.alternatePartNumbers,
   notes: item.notes,
   priority_tag: item.priorityTag,
+  image_url: item.imageUrl,
 });
 
 export const useSupplierCatalogue = () => {
