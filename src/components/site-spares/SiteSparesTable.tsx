@@ -16,14 +16,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { AddSpareDialog } from "./AddSpareDialog";
 import { ImportSpareDialog } from "./ImportSpareDialog";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
+import { classifyCategory, getCategoryColor, getAllCategories, type SpareCategory } from "@/utils/categoryClassification";
 import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesToSiteSpares";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 // Criticality badge colors
 const criticalityColors: Record<CriticalityLevel, string> = {
@@ -42,18 +44,8 @@ const stockStatusColors: Record<string, string> = {
   "Require Repair": "bg-orange-500/20 text-orange-700",
 };
 
-// Category colors
-const categoryColors: Record<string, string> = {
-  "Pipe Fitting": "bg-blue-500/20 text-blue-700",
-  "Motor": "bg-purple-500/20 text-purple-700",
-  "Pump": "bg-cyan-500/20 text-cyan-700",
-  "Valve": "bg-green-500/20 text-green-700",
-  "Filter": "bg-teal-500/20 text-teal-700",
-  "Bearing": "bg-orange-500/20 text-orange-700",
-  "Electrical": "bg-blue-600/20 text-blue-800",
-  "Consumable": "bg-green-600/20 text-green-800",
-  "Fastener": "bg-slate-500/20 text-slate-700",
-};
+// Get categories from classification utility
+const allCategories = getAllCategories().filter(c => c !== "General");
 
 const warehouseAreas = [
   "Storage Shelter", "Site Office Laydown Area", "Shutdown Staging Area",
@@ -62,9 +54,8 @@ const warehouseAreas = [
   "Crushing Laydown Area", "MCC"
 ];
 
-const categories = [
-  "Pipe Fitting", "Motor", "Pump", "Valve", "Filter", "Bearing", "Electrical", "Consumable", "Fastener", "General"
-];
+// Use classification utility categories
+const categories = [...allCategories, "General"];
 
 export const SiteSparesTable = () => {
   const { spares, loading, addSpare, importSpares, mergeSpares, updateSpare } = useSiteSpares();
@@ -81,6 +72,36 @@ export const SiteSparesTable = () => {
   // Helper to get criticality level - always use description-based classification
   const getCriticality = (spare: SiteSpareItem): CriticalityLevel => {
     return classifyCriticality(spare.description);
+  };
+
+  // Reclassify all items in database based on description
+  const handleReclassifyAll = async () => {
+    const itemsToUpdate = spares.filter(spare => {
+      const correctCategory = classifyCategory(spare.description);
+      return spare.category !== correctCategory && correctCategory !== "General";
+    });
+
+    if (itemsToUpdate.length === 0) {
+      toast.info("All items are already correctly categorized");
+      return;
+    }
+
+    toast.loading(`Reclassifying ${itemsToUpdate.length} items...`, { id: "reclassify" });
+
+    let updated = 0;
+    for (const spare of itemsToUpdate) {
+      const newCategory = classifyCategory(spare.description);
+      const { error } = await supabase
+        .from("site_spares")
+        .update({ category: newCategory })
+        .eq("id", spare.id);
+      
+      if (!error) updated++;
+    }
+
+    toast.dismiss("reclassify");
+    toast.success(`Reclassified ${updated} items to correct categories`);
+    window.location.reload();
   };
 
   const handleAddSpare = async (newSpare: Omit<SiteSpareItem, "id">) => {
@@ -269,6 +290,15 @@ export const SiteSparesTable = () => {
             {importingCritical ? <Loader2 className="h-4 w-4 animate-spin" /> : <Database className="h-4 w-4" />}
             Import Critical Spares
           </Button>
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="gap-2" 
+            onClick={handleReclassifyAll}
+          >
+            <RefreshCw className="h-4 w-4" />
+            Reclassify Categories
+          </Button>
           <Button size="sm" variant="outline" className="gap-2" onClick={() => setImportDialogOpen(true)}>
             <Upload className="h-4 w-4" />
             Import Excel
@@ -329,7 +359,7 @@ export const SiteSparesTable = () => {
                   {spare.specifications || "—"}
                 </TableCell>
                 <TableCell>
-                  <Badge variant="secondary" className={categoryColors[spare.category] || ""}>
+                  <Badge variant="secondary" className={getCategoryColor(spare.category as SpareCategory)}>
                     {spare.category}
                   </Badge>
                 </TableCell>
