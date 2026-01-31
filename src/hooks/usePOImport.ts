@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { cleanDescription, isNoiseRow, extractPartNumbers } from "@/utils/descriptionCleaner";
 
 export interface POUpload {
   id: string;
@@ -292,10 +293,27 @@ export const usePOImport = () => {
       let duplicateCount = 0;
 
       for (const item of lineItemsData || []) {
-        const partNumber = item.part_number?.trim() || "";
+        const rawDescription = item.item_description?.trim() || "";
+        
+        // Skip noise rows (headers, totals, etc.)
+        if (isNoiseRow(rawDescription)) {
+          continue;
+        }
+        
+        // Clean the description to remove lead times, pricing notes, etc.
+        const description = cleanDescription(rawDescription);
+        
+        // Try to extract part number from description if not provided
+        let partNumber = item.part_number?.trim() || "";
+        if (!partNumber) {
+          const extractedPNs = extractPartNumbers(rawDescription);
+          if (extractedPNs.length > 0) {
+            partNumber = extractedPNs[0];
+          }
+        }
+        
         const manufacturer = item.manufacturer?.trim() || "";
         const model = item.model?.trim() || "";
-        const description = item.item_description?.trim() || "";
 
         // Generate duplicate key
         let duplicateKey = "";
