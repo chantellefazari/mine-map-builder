@@ -5,7 +5,8 @@ import {
   Package,
   ClipboardList,
   Shield,
-  FileText
+  FileText,
+  ListOrdered
 } from "lucide-react";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
@@ -13,6 +14,7 @@ import { JobNumberingSection } from "./JobNumberingSection";
 import { PMStandardsSection } from "./PMStandardsSection";
 import { SparesStrategySection } from "./SparesStrategySection";
 import { DataGovernanceSection } from "./DataGovernanceSection";
+import { SitePartNumberingSection } from "./SitePartNumberingSection";
 
 export const FoundationsContent = () => {
   return (
@@ -27,6 +29,11 @@ export const FoundationsContent = () => {
           <Hash className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Functional Location Codes</span>
           <span className="sm:hidden">FL Codes</span>
+        </TabsTrigger>
+        <TabsTrigger value="part-numbering" className="flex items-center gap-2 text-xs">
+          <ListOrdered className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Site Part Numbering Standards</span>
+          <span className="sm:hidden">Part #</span>
         </TabsTrigger>
         <TabsTrigger value="wo-numbering" className="flex items-center gap-2 text-xs">
           <FileText className="w-3.5 h-3.5" />
@@ -56,6 +63,10 @@ export const FoundationsContent = () => {
 
       <TabsContent value="functional-locations">
         <AssetNumberingSection />
+      </TabsContent>
+
+      <TabsContent value="part-numbering">
+        <SitePartNumberingSection />
       </TabsContent>
 
       <TabsContent value="wo-numbering">
