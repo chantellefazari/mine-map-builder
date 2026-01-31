@@ -7,27 +7,30 @@ import {
   Zap, 
   Shield, 
   Target, 
-  Clock, 
-  ArrowRight,
   Wrench,
-  Calendar,
-  AlertTriangle
+  AlertTriangle,
+  ClipboardList
 } from "lucide-react";
 
 export const JobNumberingSection = () => {
-  const jobFields = [
+  const mandatoryFields = [
     { field: "Work Order Number", desc: "Unique identifier for traceability" },
     { field: "Work Type", desc: "Breakdown, Planned, Shutdown, etc." },
     { field: "Priority", desc: "Critical, High, Medium, Low" },
-    { field: "Asset/Equipment ID", desc: "What is being worked on" },
+    { field: "Asset / Equipment ID", desc: "What is being worked on" },
     { field: "Functional Location", desc: "Where in the hierarchy" },
     { field: "Short Description", desc: "Clear summary of the work" },
     { field: "Long Description", desc: "Detailed scope and findings" },
-    { field: "Reported Date/Time", desc: "When issue was raised" },
-    { field: "Completed Date/Time", desc: "When work was finished" },
+    { field: "Reported Date & Time", desc: "When issue was raised" },
+    { field: "Completed Date & Time", desc: "When work was finished" },
     { field: "Assigned Trade", desc: "Responsible discipline" },
     { field: "Performed By", desc: "Who completed the work" },
-    { field: "Parts Used", desc: "Materials consumed (if any)" },
+    { field: "Parts Used", desc: "Materials consumed (if applicable)" },
+  ];
+
+  const optionalFields = [
+    { field: "Failure Cause", desc: "Mechanical, Electrical, Instrument, Process, Unknown" },
+    { field: "Follow-up Required", desc: "Yes / No" },
   ];
 
   return (
@@ -50,15 +53,24 @@ export const JobNumberingSection = () => {
         <CardContent className="space-y-4">
           <div className="bg-muted/50 rounded-lg p-5 space-y-4">
             <div>
+              <h4 className="font-medium text-foreground mb-2">Purpose</h4>
+              <p className="text-sm text-muted-foreground">
+                Define how work orders are uniquely numbered, controlled, and traced across the site.
+              </p>
+            </div>
+
+            <Separator />
+
+            <div>
               <h4 className="font-medium text-foreground mb-2">Numbering Format</h4>
               <p className="text-sm text-muted-foreground mb-3">
-                All work orders use a standardised 6-digit sequential numbering system:
+                All work orders use a standardised 6-digit sequential format:
               </p>
               <div className="inline-block bg-background border border-border rounded-lg px-4 py-2">
                 <code className="text-lg font-mono font-bold text-primary">WO-XXXXXX</code>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Example: WO-000001, WO-000150, WO-001234
+                Examples: WO-000001, WO-000150, WO-001234
               </p>
             </div>
 
@@ -73,19 +85,23 @@ export const JobNumberingSection = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold text-primary">2.</span>
-                  <span><strong>Sequential:</strong> Numbers are allocated in sequence from a central register</span>
+                  <span><strong>Sequential:</strong> Numbers are allocated strictly in numerical order from a central register</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold text-primary">3.</span>
-                  <span><strong>Controlled:</strong> Numbers are reserved before work begins, not after</span>
+                  <span><strong>Controlled:</strong> Work order numbers are reserved before work begins, not after completion</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold text-primary">4.</span>
-                  <span><strong>Traceable:</strong> Every number links to documented work and history</span>
+                  <span><strong>Traceable:</strong> Every work order number links to documented maintenance history</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold text-primary">5.</span>
-                  <span><strong>No Gaps:</strong> Unused numbers should be recorded with a reason</span>
+                  <span><strong>No Gaps:</strong> Unused or cancelled numbers must be recorded with a reason</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="font-bold text-primary">6.</span>
+                  <span><strong>Single Source of Truth:</strong> Work order numbers are generated from one controlled system only</span>
                 </li>
               </ul>
             </div>
@@ -103,20 +119,33 @@ export const JobNumberingSection = () => {
             <div>
               <CardTitle className="text-xl">Minimum Job Data Standards</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                Mandatory fields required for every maintenance job to ensure quality and traceability
+                Define the minimum information required for every maintenance job
               </p>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
           <div className="bg-muted/50 rounded-lg p-5">
-            <p className="text-sm text-muted-foreground mb-4">
-              Every maintenance job — whether breakdown or planned — must capture these fields as a minimum standard:
-            </p>
+            <h4 className="font-medium text-foreground mb-3">Mandatory Fields</h4>
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-              {jobFields.map((item, index) => (
+              {mandatoryFields.map((item, index) => (
                 <div key={index} className="flex items-start gap-2 bg-background rounded-md p-3 border border-border">
                   <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium">{item.field}</p>
+                    <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-muted/50 rounded-lg p-5">
+            <h4 className="font-medium text-foreground mb-3">Optional Fields (captured where practical)</h4>
+            <div className="grid gap-3 md:grid-cols-2">
+              {optionalFields.map((item, index) => (
+                <div key={index} className="flex items-start gap-2 bg-background rounded-md p-3 border border-border">
+                  <CheckCircle2 className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-sm font-medium">{item.field}</p>
                     <p className="text-xs text-muted-foreground">{item.desc}</p>
@@ -181,12 +210,11 @@ export const JobNumberingSection = () => {
               <div className="bg-background rounded-lg p-4 border border-border">
                 <h4 className="font-medium text-foreground text-sm mb-2 flex items-center gap-2">
                   <Target className="w-4 h-4 text-destructive" />
-                  What Is It?
+                  Definition
                 </h4>
                 <p className="text-sm text-muted-foreground">
-                  Breakdown work is <strong>unplanned maintenance</strong> performed when equipment fails 
-                  or is about to fail. The equipment has stopped working, is working incorrectly, or poses an 
-                  immediate safety risk if not addressed.
+                  Unplanned maintenance performed when equipment has failed, is failing, or poses an 
+                  immediate safety or production risk.
                 </p>
               </div>
 
@@ -196,7 +224,7 @@ export const JobNumberingSection = () => {
                   <ul className="text-sm space-y-1.5">
                     <li className="flex items-start gap-2">
                       <span className="text-destructive font-bold">•</span>
-                      <span>Unscheduled — we didn't plan for this</span>
+                      <span>Unscheduled</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-destructive font-bold">•</span>
@@ -204,7 +232,7 @@ export const JobNumberingSection = () => {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-destructive font-bold">•</span>
-                      <span>Usually urgent — needs attention now</span>
+                      <span>Usually urgent</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-destructive font-bold">•</span>
@@ -213,23 +241,23 @@ export const JobNumberingSection = () => {
                   </ul>
                 </div>
                 <div className="bg-background rounded-md p-4 border border-border">
-                  <h4 className="text-xs font-medium text-muted-foreground uppercase mb-2">Real Examples</h4>
+                  <h4 className="text-xs font-medium text-muted-foreground uppercase mb-2">Examples</h4>
                   <ul className="text-sm space-y-1.5">
                     <li className="flex items-start gap-2">
                       <span className="text-destructive font-bold">•</span>
-                      <span>Pump seal fails and causes a leak</span>
+                      <span>Pump seal failure causing leakage</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-destructive font-bold">•</span>
-                      <span>Motor trips on overload protection</span>
+                      <span>Motor tripping on overload</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-destructive font-bold">•</span>
-                      <span>Conveyor belt tears and stops material flow</span>
+                      <span>Conveyor belt tear stopping material flow</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-destructive font-bold">•</span>
-                      <span>Gearbox makes grinding noise and stops</span>
+                      <span>Gearbox failure or abnormal noise</span>
                     </li>
                   </ul>
                 </div>
@@ -248,52 +276,94 @@ export const JobNumberingSection = () => {
               <div className="bg-background rounded-lg p-4 border border-border">
                 <h4 className="font-medium text-foreground text-sm mb-2 flex items-center gap-2">
                   <Target className="w-4 h-4 text-green-600" />
-                  What Is It?
+                  Definition
                 </h4>
                 <p className="text-sm text-muted-foreground">
-                  Planned maintenance is <strong>scheduled work</strong> designed to prevent equipment failure 
-                  and keep things running properly. We know this work is coming, we prepare the resources 
-                  (parts, tools, people), and we do it at a time that minimises disruption.
+                  Scheduled maintenance performed to prevent failure and maintain reliability.
                 </p>
               </div>
 
               <div className="bg-background rounded-lg p-4 border border-border">
                 <h4 className="font-medium text-foreground text-sm mb-3 flex items-center gap-2">
                   <Wrench className="w-4 h-4 text-green-600" />
-                  Types of Planned Maintenance
+                  Types
                 </h4>
                 <div className="grid gap-3">
                   <div className="border-l-4 border-green-500 pl-4 py-2">
-                    <h5 className="font-medium text-sm text-foreground">Preventive Maintenance (PM)</h5>
+                    <h5 className="font-medium text-sm text-foreground">Preventive Maintenance</h5>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Tasks done at <strong>fixed intervals</strong> — every week, every month, every 500 hours.
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1 italic">
-                      Examples: Weekly greasing, monthly filter checks, annual overhauls
+                      Fixed-interval tasks (weekly, monthly, annual)
                     </p>
                   </div>
                   
                   <div className="border-l-4 border-blue-500 pl-4 py-2">
                     <h5 className="font-medium text-sm text-foreground">Condition-Based Maintenance</h5>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Tasks done when <strong>equipment condition</strong> reaches a certain point.
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1 italic">
-                      Examples: Replace filter when pressure drop exceeds limit
+                      Triggered by condition thresholds
                     </p>
                   </div>
                   
                   <div className="border-l-4 border-amber-500 pl-4 py-2">
                     <h5 className="font-medium text-sm text-foreground">Shutdown Maintenance</h5>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Major planned events where we <strong>stop production</strong> to do comprehensive work.
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1 italic">
-                      Examples: Annual plant shutdown, crusher reline, mill reline
+                      Planned major maintenance events
                     </p>
                   </div>
                 </div>
               </div>
+
+              <div className="bg-background rounded-md p-3 border border-border">
+                <p className="text-xs text-muted-foreground italic">
+                  Note: PM frequencies are reviewed and adjusted based on equipment history and performance.
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Baseline PM List Card */}
+      <Card className="border-border">
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+              <ClipboardList className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <CardTitle className="text-xl">Baseline PM List</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                Document what planned maintenance currently exists on site
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="bg-muted/50 rounded-lg p-5 space-y-4">
+            <div>
+              <h4 className="font-medium text-foreground mb-2">Purpose</h4>
+              <p className="text-sm text-muted-foreground">
+                Document what planned maintenance currently exists on site as a baseline reference.
+              </p>
+            </div>
+
+            <Separator />
+
+            <div>
+              <h4 className="font-medium text-foreground mb-2">Content</h4>
+              <ul className="text-sm space-y-2">
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span>List of PMs currently in use</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span>Used as a baseline reference only</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span>Not a future-state design</span>
+                </li>
+              </ul>
             </div>
           </div>
         </CardContent>
