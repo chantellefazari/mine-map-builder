@@ -44,7 +44,7 @@ interface NormalizedComponentsTableProps {
 }
 
 type SortField = "lastOrderedDate" | "totalSpend" | "totalOrdersInPeriod" | "descriptionCleaned";
-type FilterType = "all" | "duplicates" | "missingPartNumber" | "missingManufacturer" | "orderedOnce";
+type FilterType = "all" | "duplicates" | "missingPartNumber" | "orderedOnce";
 
 export const NormalizedComponentsTable = ({
   components,
@@ -86,7 +86,6 @@ export const NormalizedComponentsTable = ({
       return (
         c.descriptionCleaned.toLowerCase().includes(query) ||
         c.partNumber.toLowerCase().includes(query) ||
-        c.manufacturer.toLowerCase().includes(query) ||
         c.supplier.toLowerCase().includes(query)
       );
     }
@@ -107,9 +106,6 @@ export const NormalizedComponentsTable = ({
       break;
     case "missingPartNumber":
       filteredComponents = filteredComponents.filter((c) => !c.partNumber);
-      break;
-    case "missingManufacturer":
-      filteredComponents = filteredComponents.filter((c) => !c.manufacturer || !c.model);
       break;
     case "orderedOnce":
       filteredComponents = filteredComponents.filter((c) => c.totalOrdersInPeriod === 1);
@@ -159,7 +155,6 @@ export const NormalizedComponentsTable = ({
   const exportToCatalogueFormat = () => {
     const data = filteredComponents.map((c) => ({
       "Component Type": c.componentType,
-      Manufacturer: c.manufacturer,
       "Part Number": c.partNumber,
       Description: c.descriptionCleaned,
       Supplier: c.supplier,
@@ -199,7 +194,7 @@ export const NormalizedComponentsTable = ({
     const text = filteredComponents
       .map(
         (c) =>
-          `${c.componentType}\t${c.manufacturer}\t${c.partNumber}\t${c.descriptionCleaned}\t${c.supplier}`
+          `${c.componentType}\t${c.partNumber}\t${c.descriptionCleaned}\t${c.supplier}`
       )
       .join("\n");
     navigator.clipboard.writeText(text);
@@ -266,7 +261,6 @@ export const NormalizedComponentsTable = ({
               <SelectItem value="all">All Items</SelectItem>
               <SelectItem value="duplicates">Duplicates Found</SelectItem>
               <SelectItem value="missingPartNumber">Missing Part Number</SelectItem>
-              <SelectItem value="missingManufacturer">Missing Manufacturer</SelectItem>
               <SelectItem value="orderedOnce">Ordered Once Only</SelectItem>
             </SelectContent>
           </Select>
@@ -284,10 +278,9 @@ export const NormalizedComponentsTable = ({
               <TableHeader>
                 <TableRow>
                   <TableHead>Type</TableHead>
-                  <TableHead>Manufacturer</TableHead>
                   <TableHead>Part Number</TableHead>
                   <TableHead
-                    className="min-w-[250px] cursor-pointer hover:bg-muted/50"
+                    className="min-w-[300px] cursor-pointer hover:bg-muted/50"
                     onClick={() => toggleSort("descriptionCleaned")}
                   >
                     Description <SortIcon field="descriptionCleaned" />
@@ -325,11 +318,6 @@ export const NormalizedComponentsTable = ({
                           ))}
                         </SelectContent>
                       </Select>
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {component.manufacturer || (
-                        <span className="text-muted-foreground italic">-</span>
-                      )}
                     </TableCell>
                     <TableCell className="font-mono text-xs">
                       {component.partNumber || (
