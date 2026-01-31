@@ -157,6 +157,8 @@ export const SparesTable = () => {
               <TableHead className="min-w-[100px] font-semibold">System</TableHead>
               <TableHead className="min-w-[140px] font-semibold">Component Name</TableHead>
               <TableHead className="min-w-[180px] font-semibold">Description</TableHead>
+              <TableHead className="min-w-[100px] font-semibold text-center">Min Qty (Prov.)</TableHead>
+              <TableHead className="min-w-[100px] font-semibold text-center">Max Qty (Prov.)</TableHead>
               <TableHead className="min-w-[120px] font-semibold">Manufacturer</TableHead>
               <TableHead className="min-w-[180px] font-semibold">OEM Part Number</TableHead>
               <TableHead className="min-w-[120px] font-semibold">Vendor/Supplier</TableHead>
@@ -165,8 +167,6 @@ export const SparesTable = () => {
               <TableHead className="min-w-[80px] font-semibold">Source</TableHead>
               <TableHead className="min-w-[150px] font-semibold">Reason Critical</TableHead>
               <TableHead className="min-w-[80px] font-semibold text-center">Qty On Hand</TableHead>
-              <TableHead className="min-w-[100px] font-semibold text-center">Min Qty (Prov.)</TableHead>
-              <TableHead className="min-w-[100px] font-semibold text-center">Max Qty (Prov.)</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Confidence</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Status</TableHead>
             </TableRow>
@@ -193,6 +193,60 @@ export const SparesTable = () => {
                 <TableCell className="text-sm">{spare.system}</TableCell>
                 <TableCell className="font-medium">{spare.componentName}</TableCell>
                 <TableCell className="text-sm">{spare.sparePartDescription}</TableCell>
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.minQty || "TBC"}
+                    onValueChange={(value) => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, minQty: value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="TBC">TBC</SelectItem>
+                      <SelectItem value="0">0</SelectItem>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="3">3</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                      <SelectItem value="5">5</SelectItem>
+                      <SelectItem value="6">6</SelectItem>
+                      <SelectItem value="8">8</SelectItem>
+                      <SelectItem value="10">10</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell className="p-1">
+                  <Select
+                    value={spare.maxQty || "TBC"}
+                    onValueChange={(value) => {
+                      const updated = spares.map((s) =>
+                        s.id === spare.id ? { ...s, maxQty: value } : s
+                      );
+                      setSpares(updated);
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="TBC">TBC</SelectItem>
+                      <SelectItem value="0">0</SelectItem>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="3">3</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                      <SelectItem value="5">5</SelectItem>
+                      <SelectItem value="6">6</SelectItem>
+                      <SelectItem value="8">8</SelectItem>
+                      <SelectItem value="10">10</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </TableCell>
                 <TableCell className="text-sm font-medium">{spare.manufacturer || "—"}</TableCell>
                 <TableCell className="text-sm font-mono">{spare.oemPartNumber || "—"}</TableCell>
                 <TableCell className="text-sm">{spare.vendor || "—"}</TableCell>
@@ -255,60 +309,6 @@ export const SparesTable = () => {
                       <SelectItem value="3">3</SelectItem>
                       <SelectItem value="4">4</SelectItem>
                       <SelectItem value="5">5</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </TableCell>
-                <TableCell className="p-1">
-                  <Select
-                    value={spare.minQty || "TBC"}
-                    onValueChange={(value) => {
-                      const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, minQty: value } : s
-                      );
-                      setSpares(updated);
-                    }}
-                  >
-                    <SelectTrigger className="h-8 w-20">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background border shadow-lg z-50">
-                      <SelectItem value="TBC">TBC</SelectItem>
-                      <SelectItem value="0">0</SelectItem>
-                      <SelectItem value="1">1</SelectItem>
-                      <SelectItem value="2">2</SelectItem>
-                      <SelectItem value="3">3</SelectItem>
-                      <SelectItem value="4">4</SelectItem>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="6">6</SelectItem>
-                      <SelectItem value="8">8</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </TableCell>
-                <TableCell className="p-1">
-                  <Select
-                    value={spare.maxQty || "TBC"}
-                    onValueChange={(value) => {
-                      const updated = spares.map((s) =>
-                        s.id === spare.id ? { ...s, maxQty: value } : s
-                      );
-                      setSpares(updated);
-                    }}
-                  >
-                    <SelectTrigger className="h-8 w-20">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background border shadow-lg z-50">
-                      <SelectItem value="TBC">TBC</SelectItem>
-                      <SelectItem value="0">0</SelectItem>
-                      <SelectItem value="1">1</SelectItem>
-                      <SelectItem value="2">2</SelectItem>
-                      <SelectItem value="3">3</SelectItem>
-                      <SelectItem value="4">4</SelectItem>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="6">6</SelectItem>
-                      <SelectItem value="8">8</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
                     </SelectContent>
                   </Select>
                 </TableCell>
