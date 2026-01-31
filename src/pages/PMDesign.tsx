@@ -156,9 +156,6 @@ const disciplines = [
           { id: "equipment", label: "Equipment", pms: otherWeeklyPMs },
         ]
       },
-      "2-week": { pms: [], subgroups: [] },
-      "6-week": { pms: [], subgroups: [] },
-      "12-week": { pms: [], subgroups: [] },
     }
   },
   { 
