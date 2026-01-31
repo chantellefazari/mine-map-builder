@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -272,9 +272,9 @@ export const NormalizedComponentsTable = ({
             No components to display. Process PO uploads to populate this table.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <ScrollArea className="h-[500px]">
-              <Table className="min-w-[1200px]">
+          <ScrollArea className="h-[500px] w-full">
+            <div className="min-w-[1200px]">
+              <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Type</TableHead>
@@ -369,8 +369,9 @@ export const NormalizedComponentsTable = ({
                 ))}
               </TableBody>
               </Table>
-            </ScrollArea>
-          </div>
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         )}
       </CardContent>
     </Card>
