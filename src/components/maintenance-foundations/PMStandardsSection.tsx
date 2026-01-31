@@ -56,14 +56,6 @@ export const PMStandardsSection = () => {
 
   return (
     <div className="space-y-6">
-      {/* Governance Warning */}
-      <Alert className="border-amber-500/50 bg-amber-500/10">
-        <AlertTriangle className="h-4 w-4 text-amber-600" />
-        <AlertDescription className="text-amber-800 dark:text-amber-200">
-          <strong>This section is governance and design reference only.</strong> It must NOT create schedules, link assets, modify PMs, or change any existing data.
-        </AlertDescription>
-      </Alert>
-
       {/* Purpose Card */}
       <Card className="border-border">
         <CardHeader className="pb-4">
