@@ -108,13 +108,61 @@ export const HierarchyRulesSection = () => {
           </div>
         </div>
 
-        {/* Functional Location Note */}
+        {/* Functional Location Codes */}
         <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
           <h4 className="font-medium text-foreground mb-2">Functional Location Codes</h4>
           <p className="text-sm text-muted-foreground">
             Functional Locations follow the format <code className="font-mono bg-muted px-1 rounded">TCMG-PP-[AREA]-[SUBAREA]-[SYSTEM]</code>. 
             Duty/Standby pairs and grouped identical units (e.g., CIP Tanks 1-8) share a single parent FL code to optimise maintenance tracking.
           </p>
+        </div>
+
+        {/* Asset ID Numbering Format */}
+        <div className="bg-muted/50 rounded-lg p-5 space-y-4">
+          <h4 className="font-medium text-foreground">Asset ID Format</h4>
+          <p className="text-sm text-muted-foreground">
+            All maintainable assets use a shortened double-digit sequential numbering system:
+          </p>
+          <div className="inline-block bg-background border border-border rounded-lg px-4 py-2">
+            <code className="text-lg font-mono font-bold text-primary">[AREA]-[TYPE][NN]</code>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2 mt-4">
+            <div className="bg-background rounded-md p-3 border border-border">
+              <p className="text-sm font-medium">Examples</p>
+              <ul className="text-xs text-muted-foreground mt-1 space-y-1">
+                <li><code className="font-mono">APRN01-CV01</code> — Transfer Conveyor 01</li>
+                <li><code className="font-mono">GRND01-BM01</code> — Ball Mill 01</li>
+                <li><code className="font-mono">FILT01-FP01</code> — Filter Press 01</li>
+              </ul>
+            </div>
+            <div className="bg-background rounded-md p-3 border border-border">
+              <p className="text-sm font-medium">Equipment Abbreviations</p>
+              <ul className="text-xs text-muted-foreground mt-1 space-y-1">
+                <li><code className="font-mono">CV</code> — Conveyor</li>
+                <li><code className="font-mono">PP</code> — Pump</li>
+                <li><code className="font-mono">MTR</code> — Motor</li>
+                <li><code className="font-mono">GBX</code> — Gearbox</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Asset Numbering Rules */}
+        <div className="grid gap-3 md:grid-cols-2">
+          {[
+            { rule: "Unique", desc: "No duplicate asset numbers across site" },
+            { rule: "Sequential", desc: "Numbers allocated in order within each area" },
+            { rule: "No Gaps", desc: "Unused numbers documented with reason" },
+            { rule: "Immutable", desc: "Once assigned, numbers are never reused or changed" },
+          ].map((item, index) => (
+            <div key={index} className="flex items-start gap-2 bg-background rounded-md p-3 border border-border">
+              <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium">{item.rule}</p>
+                <p className="text-xs text-muted-foreground">{item.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>
