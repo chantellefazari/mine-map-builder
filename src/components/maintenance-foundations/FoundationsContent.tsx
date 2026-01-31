@@ -23,10 +23,10 @@ export const FoundationsContent = () => {
           <span className="hidden sm:inline">Asset Hierarchy & Parent-Child Rules</span>
           <span className="sm:hidden">Hierarchy</span>
         </TabsTrigger>
-        <TabsTrigger value="part-numbering" className="flex items-center gap-2 text-xs">
+        <TabsTrigger value="functional-locations" className="flex items-center gap-2 text-xs">
           <Hash className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Part Numbering Standards</span>
-          <span className="sm:hidden">Parts #</span>
+          <span className="hidden sm:inline">Functional Location Codes</span>
+          <span className="sm:hidden">FL Codes</span>
         </TabsTrigger>
         <TabsTrigger value="wo-numbering" className="flex items-center gap-2 text-xs">
           <FileText className="w-3.5 h-3.5" />
@@ -54,7 +54,7 @@ export const FoundationsContent = () => {
         <HierarchyRulesSection />
       </TabsContent>
 
-      <TabsContent value="part-numbering">
+      <TabsContent value="functional-locations">
         <AssetNumberingSection />
       </TabsContent>
 
