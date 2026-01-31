@@ -10,6 +10,11 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { WorkDefinitionsSection } from "./WorkDefinitionsSection";
+import { AssetNumberingSection } from "./AssetNumberingSection";
+import { HierarchyRulesSection } from "./HierarchyRulesSection";
+import { SparesStrategySection } from "./SparesStrategySection";
+import { PMStandardsSection } from "./PMStandardsSection";
+import { DataGovernanceSection } from "./DataGovernanceSection";
 
 export const FoundationsContent = () => {
   return (
@@ -283,6 +288,31 @@ export const FoundationsContent = () => {
           </div>
         </CardContent>
       </Card>
+
+      <Separator />
+
+      {/* Section 6: Asset & Part Numbering Standards */}
+      <AssetNumberingSection />
+
+      <Separator />
+
+      {/* Section 7: Asset Hierarchy & Parent-Child Rules */}
+      <HierarchyRulesSection />
+
+      <Separator />
+
+      {/* Section 8: Spare Parts Strategy & Criticality */}
+      <SparesStrategySection />
+
+      <Separator />
+
+      {/* Section 9: PM Template & Frequency Standards */}
+      <PMStandardsSection />
+
+      <Separator />
+
+      {/* Section 10: Data Governance & Change Control */}
+      <DataGovernanceSection />
     </div>
   );
 };
