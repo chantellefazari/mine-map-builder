@@ -257,12 +257,6 @@ export const PMStandardsSection = () => {
         </CardContent>
       </Card>
 
-      {/* Governance Statement */}
-      <div className="bg-muted/50 border border-border rounded-lg p-4">
-        <p className="text-sm text-center text-muted-foreground">
-          <strong>Governance Statement:</strong> This section defines PM design standards only. It does not modify existing PMs, schedules, or asset data.
-        </p>
-      </div>
     </div>
   );
 };
