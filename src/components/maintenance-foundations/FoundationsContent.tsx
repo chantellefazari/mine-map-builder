@@ -37,8 +37,8 @@ export const FoundationsContent = () => {
         </TabsTrigger>
         <TabsTrigger value="job-numbering" className="flex items-center gap-2 text-xs">
           <Hash className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Job Numbering</span>
-          <span className="sm:hidden">Numbering</span>
+          <span className="hidden sm:inline">WO Numbering</span>
+          <span className="sm:hidden">WO #</span>
         </TabsTrigger>
         <TabsTrigger value="history" className="flex items-center gap-2 text-xs">
           <History className="w-3.5 h-3.5" />

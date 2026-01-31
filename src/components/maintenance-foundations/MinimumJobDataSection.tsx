@@ -3,7 +3,7 @@ import { FileText, CheckCircle2 } from "lucide-react";
 
 export const MinimumJobDataSection = () => {
   const jobFields = [
-    { field: "Job Number", desc: "Unique identifier for traceability" },
+    { field: "Work Order Number", desc: "Unique identifier for traceability" },
     { field: "Work Type", desc: "Breakdown, Planned, Shutdown, etc." },
     { field: "Priority", desc: "Critical, High, Medium, Low" },
     { field: "Asset/Equipment ID", desc: "What is being worked on" },

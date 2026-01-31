@@ -11,9 +11,9 @@ export const JobNumberingSection = () => {
             <Hash className="w-5 h-5 text-amber-600" />
           </div>
           <div>
-            <CardTitle className="text-xl">Job Numbering Rules</CardTitle>
+            <CardTitle className="text-xl">Work Order Numbering Rules</CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              Standards for unique job numbering and traceability
+              Standards for unique work order numbering and traceability
             </p>
           </div>
         </div>
@@ -40,7 +40,7 @@ export const JobNumberingSection = () => {
             <ul className="text-sm space-y-2">
               <li className="flex items-start gap-2">
                 <span className="font-bold text-primary">1.</span>
-                <span><strong>Unique:</strong> Each job number must be unique and never reused</span>
+                <span><strong>Unique:</strong> Each work order number must be unique and never reused</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="font-bold text-primary">2.</span>
