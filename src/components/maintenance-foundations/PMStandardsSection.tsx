@@ -14,7 +14,7 @@ export const PMStandardsSection = () => {
   const frequencyStandards = [
     {
       discipline: "Mechanical",
-      frequencies: ["Daily", "1-Week", "2-Week", "6-Week", "12-Week"],
+      frequencies: ["Daily", "1-Week"],
       color: "text-blue-600",
     },
     {
