@@ -1,17 +1,21 @@
 /**
  * Description Cleaner Utility
  * Strips irrelevant information from PO line item descriptions
- * to extract only the essential component identification data
+ * and parses single-column PO exports into structured data
  */
 
 // Patterns to remove from descriptions (case-insensitive)
 const REMOVAL_PATTERNS: RegExp[] = [
   // Lead times
   /\b\d+[-\s]*(day|week|wk|month|mth)s?\s*(lead\s*time|l\/?t|delivery|del)?\b/gi,
-  /\blead\s*time\s*[:=]?\s*\d+\s*(day|week|wk|month|mth)s?\b/gi,
+  /\blead\s*time\s*[:=]?\s*\d+[-\s]*(day|week|wk|month|mth)s?\b/gi,
   /\bl\/?t\s*[:=]?\s*\d+\s*(day|week|wk|month|mth)?s?\b/gi,
   /\bdelivery\s*[:=]?\s*\d+\s*(day|week|wk|month|mth)s?\b/gi,
   /\b(ex[-\s]*stock|in[-\s]*stock|available|avail\.?)\b/gi,
+  /\bleadtime\s*[:=]?\s*\d+[-\s]*(day|week|wk|month|mth)s?\b/gi,
+  /\bleadtime\s*[:=]?\s*\d+[-\s]?\d*\s*(day|week|wk|month|mth)s?\s*(ex\s+\w+)?/gi,
+  /\bex\s+\w+\b/gi, // "EX TOWNSVILLE" etc.
+  /\(please\s+note[^)]*\)/gi, // Remove "(PLEASE NOTE...)" clauses
   
   // Pricing notes (we already capture price separately)
   /\bunit\s*price\s*[:=]?\s*\$?[\d,]+\.?\d*\b/gi,
@@ -27,6 +31,10 @@ const REMOVAL_PATTERNS: RegExp[] = [
   
   // Freight/shipping references
   /\b(freight|shipping|postage)\s*(included|incl\.?|extra|excl\.?)?\b/gi,
+  /\bfreight\s+customers\s+dispatch[^-]*-\s*acc:\s*\w+/gi,
+  /\badmin@[\w.]+\b/gi,
+  /\bwith\s+pickup\s+details[^-]*\b/gi,
+  /\bweights\s+and\s+dims\b/gi,
   /\bfob\b/gi,
   /\bcif\b/gi,
   /\bexw\b/gi,
@@ -61,6 +69,7 @@ const REMOVAL_PATTERNS: RegExp[] = [
   /\btba\b/gi,
   /\bn\/?a\b/gi,
   /\bnot\s*applicable\b/gi,
+  /\bacc:\s*\w+\b/gi,
   
   // Trailing/leading punctuation after cleanup
   /^[\s,;:\-\|\/]+/,
@@ -88,6 +97,127 @@ const NOISE_PHRASES = [
   "brand new",
   "unused",
 ];
+
+// Patterns that indicate a row is just noise (not a component)
+const NOISE_ROW_PATTERNS = [
+  /^freight\s+customers/i,
+  /^dispatch\s+email/i,
+  /^admin@/i,
+  /^acc:\s*\w+$/i,
+  /^please\s+note/i,
+  /^note:/i,
+  /^total[:\s]/i,
+  /^subtotal/i,
+  /^shipping/i,
+  /^delivery/i,
+];
+
+/**
+ * Parse a single-column PO line that contains description + P/N + other data all in one
+ * Format example: "DN150 KEYSTONE F990 CUEU BUTTERFLY VALVE P/N: 2042126+11125768 CAST IRON BODY..."
+ */
+export interface ParsedPOLine {
+  description: string;
+  partNumber: string;
+  manufacturer: string;
+  model: string;
+  size: string;
+  isNoise: boolean;
+}
+
+/**
+ * Known manufacturer/brand patterns to extract
+ */
+const MANUFACTURER_PATTERNS: { pattern: RegExp; name: string }[] = [
+  { pattern: /\bKEYSTONE\b/i, name: "Keystone" },
+  { pattern: /\bCLARKSON\b/i, name: "Clarkson" },
+  { pattern: /\bSMC\b/i, name: "SMC" },
+  { pattern: /\bFISHER\b/i, name: "Fisher" },
+  { pattern: /\bGRUNDFOS\b/i, name: "Grundfos" },
+  { pattern: /\bFLOWSERVE\b/i, name: "Flowserve" },
+  { pattern: /\bSIEMENS\b/i, name: "Siemens" },
+  { pattern: /\bABB\b/i, name: "ABB" },
+  { pattern: /\bSKF\b/i, name: "SKF" },
+  { pattern: /\bNSK\b/i, name: "NSK" },
+  { pattern: /\bFAG\b/i, name: "FAG" },
+  { pattern: /\bTIMKEN\b/i, name: "Timken" },
+  { pattern: /\bWARMAN\b/i, name: "Warman" },
+  { pattern: /\bWEIR\b/i, name: "Weir" },
+  { pattern: /\bMETSO\b/i, name: "Metso" },
+  { pattern: /\bSANDVIK\b/i, name: "Sandvik" },
+  { pattern: /\bATLAS COPCO\b/i, name: "Atlas Copco" },
+  { pattern: /\bPARKER\b/i, name: "Parker" },
+  { pattern: /\bFESTO\b/i, name: "Festo" },
+  { pattern: /\bNORGREN\b/i, name: "Norgren" },
+  { pattern: /\bBURKERT\b/i, name: "Burkert" },
+  { pattern: /\bDANFOSS\b/i, name: "Danfoss" },
+  { pattern: /\bBANDIT\b/i, name: "Bandit" },
+  { pattern: /\bGATES\b/i, name: "Gates" },
+  { pattern: /\bCONTINENTAL\b/i, name: "Continental" },
+  { pattern: /\bGOODYEAR\b/i, name: "Goodyear" },
+];
+
+/**
+ * Parse a single-column PO line into structured data
+ */
+export const parseSingleColumnLine = (rawLine: string): ParsedPOLine => {
+  const result: ParsedPOLine = {
+    description: "",
+    partNumber: "",
+    manufacturer: "",
+    model: "",
+    size: "",
+    isNoise: false,
+  };
+
+  if (!rawLine || rawLine.trim().length < 5) {
+    result.isNoise = true;
+    return result;
+  }
+
+  // Check if this is a noise row
+  for (const pattern of NOISE_ROW_PATTERNS) {
+    if (pattern.test(rawLine.trim())) {
+      result.isNoise = true;
+      return result;
+    }
+  }
+
+  let line = rawLine.trim();
+
+  // Extract part number (P/N: format)
+  const pnMatch = line.match(/P\/N\s*[:=]?\s*([\w\-\+]+)/i);
+  if (pnMatch) {
+    result.partNumber = pnMatch[1].trim();
+    // Remove P/N from line for cleaner description
+    line = line.replace(/P\/N\s*[:=]?\s*[\w\-\+]+/i, " ");
+  }
+
+  // Extract size (DN50, DN80, DN150, DN200, etc. or 1/4", 1/2", etc.)
+  const sizeMatch = line.match(/\b(DN\d+|[\d\/]+[""]?)\b/i);
+  if (sizeMatch) {
+    result.size = sizeMatch[1];
+  }
+
+  // Extract manufacturer
+  for (const { pattern, name } of MANUFACTURER_PATTERNS) {
+    if (pattern.test(line)) {
+      result.manufacturer = name;
+      break;
+    }
+  }
+
+  // Extract model (alphanumeric codes like F990, KGD, F738, VH212-02)
+  const modelMatch = line.match(/\b([A-Z]\d{2,}[A-Z]?[-\d]*|[A-Z]{2,}\d+[-\w]*)\b/i);
+  if (modelMatch && modelMatch[1] !== result.partNumber) {
+    result.model = modelMatch[1];
+  }
+
+  // Clean description
+  result.description = cleanDescription(line);
+
+  return result;
+};
 
 /**
  * Clean a description by removing irrelevant information
@@ -132,27 +262,27 @@ export const extractPartNumbers = (description: string): string[] => {
   if (!description) return [];
   
   const patterns = [
+    // P/N: format (most reliable)
+    /P\/N\s*[:=]?\s*([\w\-\+]+)/gi,
     // Common part number patterns
     /\b[A-Z]{2,4}[-\s]?\d{4,}[-\s]?[A-Z0-9]*\b/gi,  // ABC-12345 or ABC12345-XY
     /\b\d{3,}[-\s]?[A-Z]{2,}[-\s]?\d*\b/gi,         // 12345-ABC or 12345ABC
     /\b[A-Z]\d{5,}\b/gi,                              // A123456
     /\b\d{5,}[A-Z]\b/gi,                              // 123456A
-    /\bP\/N\s*[:=]?\s*[\w\-]+\b/gi,                  // P/N: ABC123
-    /\bPART\s*#?\s*[:=]?\s*[\w\-]+\b/gi,            // Part# ABC123
+    /\bPART\s*#?\s*[:=]?\s*([\w\-]+)\b/gi,            // Part# ABC123
   ];
   
   const found: Set<string> = new Set();
   
   for (const pattern of patterns) {
-    const matches = description.match(pattern);
-    if (matches) {
-      matches.forEach(m => {
-        // Clean up the match
-        const cleaned = m.replace(/^(P\/N|PART\s*#?)\s*[:=]?\s*/i, "").trim();
-        if (cleaned.length >= 4) {
-          found.add(cleaned.toUpperCase());
-        }
-      });
+    const matches = description.matchAll(pattern);
+    for (const match of matches) {
+      // Use capture group if available, otherwise full match
+      const value = match[1] || match[0];
+      const cleaned = value.replace(/^(P\/N|PART\s*#?)\s*[:=]?\s*/i, "").trim();
+      if (cleaned.length >= 4) {
+        found.add(cleaned.toUpperCase());
+      }
     }
   }
   
@@ -166,6 +296,16 @@ export const extractPartNumbers = (description: string): string[] => {
  */
 export const isNoiseRow = (description: string): boolean => {
   if (!description) return true;
+  
+  const trimmed = description.trim();
+  
+  // Too short
+  if (trimmed.length < 5) return true;
+  
+  // Check noise patterns
+  for (const pattern of NOISE_ROW_PATTERNS) {
+    if (pattern.test(trimmed)) return true;
+  }
   
   const cleaned = cleanDescription(description);
   
@@ -208,4 +348,5 @@ export default {
   cleanDescription,
   extractPartNumbers,
   isNoiseRow,
+  parseSingleColumnLine,
 };

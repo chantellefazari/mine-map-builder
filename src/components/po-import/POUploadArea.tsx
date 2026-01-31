@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, FileSpreadsheet, Loader2 } from "lucide-react";
 import { poCategories, POLineItem } from "@/hooks/usePOImport";
+import { parseSingleColumnLine, isNoiseRow } from "@/utils/descriptionCleaner";
 import * as XLSX from "xlsx";
 
 interface POUploadAreaProps {
@@ -56,11 +57,12 @@ export const POUploadArea = ({ onUpload, isProcessing }: POUploadAreaProps) => {
           const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
           const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }) as any[][];
 
-          if (jsonData.length < 2) {
+          if (jsonData.length < 1) {
             resolve([]);
             return;
           }
 
+          // Try to detect if this is a structured file with headers or single-column format
           const headers = (jsonData[0] || []).map((h: any) =>
             String(h || "").toLowerCase().replace(/[^a-z0-9]/g, "")
           );
@@ -71,68 +73,20 @@ export const POUploadArea = ({ onUpload, isProcessing }: POUploadAreaProps) => {
             );
           };
 
-          const colMap = {
-            poNumber: findColumn(["ponumber", "purchaseorder", "orderno", "pono"]),
-            poDate: findColumn(["podate", "orderdate", "date"]),
-            description: findColumn(["description", "itemdescription", "desc", "item"]),
-            manufacturer: findColumn(["manufacturer", "mfr", "brand", "make"]),
-            model: findColumn(["model", "modelnumber", "modelno"]),
-            partNumber: findColumn(["partnumber", "partno", "part", "sku", "itemno"]),
-            qty: findColumn(["qty", "quantity", "qtyordered"]),
-            unitPrice: findColumn(["unitprice", "price", "unitcost", "cost", "rate"]),
-            totalPrice: findColumn(["totalprice", "total", "amount", "linetotal", "extended"]),
-            supplier: findColumn(["supplier", "vendor"]),
-          };
+          // Check if we have recognizable column headers
+          const hasDescriptionColumn = findColumn(["description", "itemdescription", "desc", "item"]) >= 0;
+          const hasPOColumn = findColumn(["ponumber", "purchaseorder", "orderno", "pono"]) >= 0;
+          const hasPriceColumn = findColumn(["unitprice", "price", "unitcost", "cost", "rate", "total"]) >= 0;
+          
+          const hasStructuredHeaders = hasDescriptionColumn || (hasPOColumn && hasPriceColumn);
 
-          const lineItems: Omit<POLineItem, "id" | "uploadId">[] = [];
-
-          for (let i = 1; i < jsonData.length; i++) {
-            const row = jsonData[i];
-            if (!row || row.length === 0) continue;
-
-            const description = colMap.description >= 0 ? String(row[colMap.description] || "") : "";
-            if (!description.trim()) continue;
-
-            const parseDate = (val: any): string | null => {
-              if (!val) return null;
-              if (typeof val === "number") {
-                const date = XLSX.SSF.parse_date_code(val);
-                if (date) {
-                  return `${date.y}-${String(date.m).padStart(2, "0")}-${String(date.d).padStart(2, "0")}`;
-                }
-              }
-              const parsed = new Date(val);
-              if (!isNaN(parsed.getTime())) {
-                return parsed.toISOString().split("T")[0];
-              }
-              return null;
-            };
-
-            const parseNumber = (val: any): number => {
-              if (typeof val === "number") return val;
-              const str = String(val || "0").replace(/[^0-9.-]/g, "");
-              return parseFloat(str) || 0;
-            };
-
-            const rawManufacturer = colMap.manufacturer >= 0 ? String(row[colMap.manufacturer] || "") : "";
-            
-            lineItems.push({
-              poNumber: colMap.poNumber >= 0 ? String(row[colMap.poNumber] || "") : "",
-              poDate: colMap.poDate >= 0 ? parseDate(row[colMap.poDate]) : null,
-              supplier: colMap.supplier >= 0 ? String(row[colMap.supplier] || "") : "",
-              itemDescription: description,
-              manufacturer: rawManufacturer.trim() || supplierName.trim(), // Use supplier name if manufacturer is empty
-              model: colMap.model >= 0 ? String(row[colMap.model] || "") : "",
-              partNumber: colMap.partNumber >= 0 ? String(row[colMap.partNumber] || "") : "",
-              qty: colMap.qty >= 0 ? parseNumber(row[colMap.qty]) : 1,
-              unitPrice: colMap.unitPrice >= 0 ? parseNumber(row[colMap.unitPrice]) : 0,
-              totalPrice: colMap.totalPrice >= 0 ? parseNumber(row[colMap.totalPrice]) : 0,
-              extraReferences: "",
-              rowIndex: i - 1,
-            });
+          if (hasStructuredHeaders) {
+            // Use standard column-based parsing
+            resolve(parseStructuredFile(jsonData, headers, supplierName));
+          } else {
+            // Single-column format: each row is a complete description blob
+            resolve(parseSingleColumnFile(jsonData, supplierName));
           }
-
-          resolve(lineItems);
         } catch (error) {
           reject(error);
         }
@@ -140,6 +94,124 @@ export const POUploadArea = ({ onUpload, isProcessing }: POUploadAreaProps) => {
       reader.onerror = reject;
       reader.readAsArrayBuffer(file);
     });
+  };
+
+  // Parse structured files with proper column headers
+  const parseStructuredFile = (
+    jsonData: any[][],
+    headers: string[],
+    defaultSupplier: string
+  ): Omit<POLineItem, "id" | "uploadId">[] => {
+    const findColumn = (patterns: string[]): number => {
+      return headers.findIndex((h) =>
+        patterns.some((p) => h.includes(p))
+      );
+    };
+
+    const colMap = {
+      poNumber: findColumn(["ponumber", "purchaseorder", "orderno", "pono"]),
+      poDate: findColumn(["podate", "orderdate", "date"]),
+      description: findColumn(["description", "itemdescription", "desc", "item"]),
+      manufacturer: findColumn(["manufacturer", "mfr", "brand", "make"]),
+      model: findColumn(["model", "modelnumber", "modelno"]),
+      partNumber: findColumn(["partnumber", "partno", "part", "sku", "itemno"]),
+      qty: findColumn(["qty", "quantity", "qtyordered"]),
+      unitPrice: findColumn(["unitprice", "price", "unitcost", "cost", "rate"]),
+      totalPrice: findColumn(["totalprice", "total", "amount", "linetotal", "extended"]),
+      supplier: findColumn(["supplier", "vendor"]),
+    };
+
+    const lineItems: Omit<POLineItem, "id" | "uploadId">[] = [];
+
+    for (let i = 1; i < jsonData.length; i++) {
+      const row = jsonData[i];
+      if (!row || row.length === 0) continue;
+
+      const description = colMap.description >= 0 ? String(row[colMap.description] || "") : "";
+      if (!description.trim()) continue;
+
+      const parseDate = (val: any): string | null => {
+        if (!val) return null;
+        if (typeof val === "number") {
+          const date = XLSX.SSF.parse_date_code(val);
+          if (date) {
+            return `${date.y}-${String(date.m).padStart(2, "0")}-${String(date.d).padStart(2, "0")}`;
+          }
+        }
+        const parsed = new Date(val);
+        if (!isNaN(parsed.getTime())) {
+          return parsed.toISOString().split("T")[0];
+        }
+        return null;
+      };
+
+      const parseNumber = (val: any): number => {
+        if (typeof val === "number") return val;
+        const str = String(val || "0").replace(/[^0-9.-]/g, "");
+        return parseFloat(str) || 0;
+      };
+
+      const rawManufacturer = colMap.manufacturer >= 0 ? String(row[colMap.manufacturer] || "") : "";
+      
+      lineItems.push({
+        poNumber: colMap.poNumber >= 0 ? String(row[colMap.poNumber] || "") : "",
+        poDate: colMap.poDate >= 0 ? parseDate(row[colMap.poDate]) : null,
+        supplier: colMap.supplier >= 0 ? String(row[colMap.supplier] || "") : "",
+        itemDescription: description,
+        manufacturer: rawManufacturer.trim() || defaultSupplier.trim(),
+        model: colMap.model >= 0 ? String(row[colMap.model] || "") : "",
+        partNumber: colMap.partNumber >= 0 ? String(row[colMap.partNumber] || "") : "",
+        qty: colMap.qty >= 0 ? parseNumber(row[colMap.qty]) : 1,
+        unitPrice: colMap.unitPrice >= 0 ? parseNumber(row[colMap.unitPrice]) : 0,
+        totalPrice: colMap.totalPrice >= 0 ? parseNumber(row[colMap.totalPrice]) : 0,
+        extraReferences: "",
+        rowIndex: i - 1,
+      });
+    }
+
+    return lineItems;
+  };
+
+  // Parse single-column files where each row is a complete description blob
+  const parseSingleColumnFile = (
+    jsonData: any[][],
+    defaultSupplier: string
+  ): Omit<POLineItem, "id" | "uploadId">[] => {
+    const lineItems: Omit<POLineItem, "id" | "uploadId">[] = [];
+    let rowIndex = 0;
+
+    for (const row of jsonData) {
+      // Get the first non-empty cell in the row as the description
+      const rawDescription = row.find((cell) => cell && String(cell).trim().length > 0);
+      if (!rawDescription) continue;
+
+      const rawLine = String(rawDescription).trim();
+      
+      // Skip noise rows (freight notes, admin emails, etc.)
+      if (isNoiseRow(rawLine)) continue;
+
+      // Parse the single-column line to extract structured data
+      const parsed = parseSingleColumnLine(rawLine);
+      
+      if (parsed.isNoise) continue;
+
+      lineItems.push({
+        poNumber: "",
+        poDate: null,
+        supplier: "",
+        itemDescription: parsed.description || rawLine,
+        manufacturer: parsed.manufacturer || defaultSupplier.trim(),
+        model: parsed.model || "",
+        partNumber: parsed.partNumber || "",
+        qty: 1,
+        unitPrice: 0,
+        totalPrice: 0,
+        extraReferences: parsed.size ? `Size: ${parsed.size}` : "",
+        rowIndex: rowIndex++,
+      });
+    }
+
+    return lineItems;
   };
 
   const handleUpload = async () => {
