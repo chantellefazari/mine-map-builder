@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, Search, Loader2, ImageIcon, AlertTriangle } from "lucide-react";
-import { useVisualPartsCatalogue } from "@/hooks/useVisualPartsCatalogue";
+import { useVisualPartsCatalogueSafe } from "@/hooks/useVisualPartsCatalogueSafe";
 import { VisualPartCard } from "./VisualPartCard";
 import { AddVisualPartDialog } from "./AddVisualPartDialog";
 import { PART_CATEGORIES, CRITICALITY_LEVELS } from "./visualPartsConstants";
@@ -23,7 +23,7 @@ export const VisualPartsCatalogue = () => {
     deletePart,
     addImageToPart,
     removeImageFromPart,
-  } = useVisualPartsCatalogue();
+  } = useVisualPartsCatalogueSafe();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
