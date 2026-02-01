@@ -150,6 +150,7 @@ export const VisualPartsCatalogue = () => {
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onAdd={addPart}
+        onAddImage={addImageToPart}
       />
 
       {/* Parts Grid */}

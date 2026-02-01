@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,58 +11,72 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { PART_CATEGORIES, CRITICALITY_LEVELS } from "./visualPartsConstants";
+import { ImageIcon, Upload, X } from "lucide-react";
 import type { NewVisualPart } from "@/hooks/useVisualPartsCatalogue";
 
 interface AddVisualPartDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAdd: (part: NewVisualPart) => Promise<any>;
+  onAddImage?: (partId: string, file: File) => Promise<void>;
 }
 
 export const AddVisualPartDialog = ({
   open,
   onOpenChange,
   onAdd,
+  onAddImage,
 }: AddVisualPartDialogProps) => {
-  const [sitePartNumber, setSitePartNumber] = useState("");
   const [partName, setPartName] = useState("");
-  const [category, setCategory] = useState("General");
-  const [associatedAsset, setAssociatedAsset] = useState("");
-  const [criticality, setCriticality] = useState("Non-Critical");
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
+  const [previewImage, setPreviewImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const resetForm = () => {
-    setSitePartNumber("");
     setPartName("");
-    setCategory("General");
-    setAssociatedAsset("");
-    setCriticality("Non-Critical");
     setNotes("");
+    setPreviewImage(null);
+    setPreviewUrl(null);
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      setPreviewImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setPreviewImage(null);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!sitePartNumber.trim() || !partName.trim()) return;
+    if (!partName.trim()) return;
 
     setSaving(true);
+    
+    // Auto-generate site part number (timestamp-based for now)
+    const autoPartNumber = `TMP-${Date.now().toString(36).toUpperCase()}`;
+    
     const result = await onAdd({
-      site_part_number: sitePartNumber.trim(),
+      site_part_number: autoPartNumber,
       part_name: partName.trim(),
-      category,
-      associated_asset: associatedAsset.trim(),
-      criticality,
+      category: "General",
+      associated_asset: "",
+      criticality: "Non-Critical",
       notes: notes.trim(),
       image_urls: [],
     });
+
+    if (result && previewImage && onAddImage) {
+      await onAddImage(result.id, previewImage);
+    }
 
     setSaving(false);
     if (result) {
@@ -77,27 +91,55 @@ export const AddVisualPartDialog = ({
         <DialogHeader>
           <DialogTitle>Add Part to Visual Catalogue</DialogTitle>
           <DialogDescription>
-            Create a new entry in the site's visual parts catalogue.
+            Add a description and photo. You can fill in other details later.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Image Upload */}
           <div className="space-y-2">
-            <Label htmlFor="sitePartNumber">Site Part Number *</Label>
-            <Input
-              id="sitePartNumber"
-              value={sitePartNumber}
-              onChange={(e) => setSitePartNumber(e.target.value)}
-              placeholder="e.g. 100101"
-              required
+            <Label>Photo</Label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageSelect}
             />
-            <p className="text-xs text-muted-foreground">
-              Site-defined numeric code (SSCCNN format)
-            </p>
+            
+            {previewUrl ? (
+              <div className="relative aspect-video rounded-lg overflow-hidden border border-border">
+                <img
+                  src={previewUrl}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-2 right-2 h-7 w-7"
+                  onClick={handleRemoveImage}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <div
+                className="aspect-video rounded-lg border-2 border-dashed border-border bg-muted/50 flex flex-col items-center justify-center cursor-pointer hover:bg-muted transition-colors"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <ImageIcon className="h-10 w-10 text-muted-foreground mb-2" />
+                <span className="text-sm text-muted-foreground">
+                  Click to add photo
+                </span>
+              </div>
+            )}
           </div>
 
+          {/* Part Description */}
           <div className="space-y-2">
-            <Label htmlFor="partName">Part Name *</Label>
+            <Label htmlFor="partName">Description *</Label>
             <Input
               id="partName"
               value={partName}
@@ -107,56 +149,15 @@ export const AddVisualPartDialog = ({
             />
           </div>
 
+          {/* Notes (optional) */}
           <div className="space-y-2">
-            <Label>Category</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PART_CATEGORIES.map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="associatedAsset">Associated Asset / System</Label>
-            <Input
-              id="associatedAsset"
-              value={associatedAsset}
-              onChange={(e) => setAssociatedAsset(e.target.value)}
-              placeholder="e.g. PP-04 Mill Discharge Pump"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Criticality</Label>
-            <Select value={criticality} onValueChange={setCriticality}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {CRITICALITY_LEVELS.map((level) => (
-                  <SelectItem key={level} value={level}>
-                    {level}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
+            <Label htmlFor="notes">Notes (optional)</Label>
             <Textarea
               id="notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Install location, handling notes, common failure info..."
-              className="min-h-[80px]"
+              placeholder="Any additional info..."
+              className="min-h-[60px]"
             />
           </div>
 
@@ -164,7 +165,7 @@ export const AddVisualPartDialog = ({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={saving || !sitePartNumber.trim() || !partName.trim()}>
+            <Button type="submit" disabled={saving || !partName.trim()}>
               {saving ? "Adding..." : "Add Part"}
             </Button>
           </DialogFooter>
