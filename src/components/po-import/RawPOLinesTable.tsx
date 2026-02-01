@@ -67,7 +67,6 @@ export const RawPOLinesTable = ({ lineItems, selectedUploadId }: RawPOLinesTable
                   <TableHead>Model</TableHead>
                   <TableHead>Part Number</TableHead>
                   <TableHead className="text-right">Qty</TableHead>
-                  <TableHead className="text-right">Unit Price</TableHead>
                   <TableHead className="text-right">Total</TableHead>
                 </TableRow>
               </TableHeader>
@@ -98,9 +97,6 @@ export const RawPOLinesTable = ({ lineItems, selectedUploadId }: RawPOLinesTable
                     </TableCell>
                     <TableCell className="text-right">
                       {item.qty}
-                    </TableCell>
-                    <TableCell className="text-right text-xs">
-                      {formatCurrency(item.unitPrice)}
                     </TableCell>
                     <TableCell className="text-right text-xs font-medium">
                       {formatCurrency(item.totalPrice)}
