@@ -135,11 +135,31 @@ export const useVisualPartsCatalogue = () => {
     const imageUrl = await uploadImage(partId, file);
     if (!imageUrl) return;
 
-    const part = parts.find((p) => p.id === partId);
-    if (!part) return;
+    // Fetch the current part from DB to get accurate image_urls (handles race condition with new parts)
+    const { data: currentPart } = await supabase
+      .from("visual_parts_catalogue")
+      .select("image_urls")
+      .eq("id", partId)
+      .single();
 
-    const newImageUrls = [...part.image_urls, imageUrl];
-    await updatePart(partId, { image_urls: newImageUrls });
+    const existingUrls = currentPart?.image_urls || [];
+    const newImageUrls = [...existingUrls, imageUrl];
+    
+    const { error } = await supabase
+      .from("visual_parts_catalogue")
+      .update({ image_urls: newImageUrls })
+      .eq("id", partId);
+
+    if (error) {
+      console.error("Error updating image urls:", error);
+      toast.error("Failed to save image");
+      return;
+    }
+
+    // Update local state
+    setParts((prev) =>
+      prev.map((p) => (p.id === partId ? { ...p, image_urls: newImageUrls } : p))
+    );
     toast.success("Image added");
   };
 
