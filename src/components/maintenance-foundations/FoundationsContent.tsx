@@ -6,7 +6,8 @@ import {
   ClipboardList,
   Shield,
   FileText,
-  ListOrdered
+  ListOrdered,
+  Container
 } from "lucide-react";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
@@ -15,6 +16,7 @@ import { PMStandardsSection } from "./PMStandardsSection";
 import { SparesStrategySection } from "./SparesStrategySection";
 import { DataGovernanceSection } from "./DataGovernanceSection";
 import { SitePartNumberingSection } from "./SitePartNumberingSection";
+import { ContainerStockingSection } from "./ContainerStockingSection";
 
 export const FoundationsContent = () => {
   return (
@@ -50,6 +52,11 @@ export const FoundationsContent = () => {
           <span className="hidden sm:inline">Spare Parts Strategy & Criticality</span>
           <span className="sm:hidden">Spares</span>
         </TabsTrigger>
+        <TabsTrigger value="container-stocking" className="flex items-center gap-2 text-xs">
+          <Container className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Container Stocking Scope</span>
+          <span className="sm:hidden">Containers</span>
+        </TabsTrigger>
         <TabsTrigger value="governance" className="flex items-center gap-2 text-xs">
           <Shield className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Data Governance & Change Control</span>
@@ -79,6 +86,10 @@ export const FoundationsContent = () => {
 
       <TabsContent value="spares">
         <SparesStrategySection />
+      </TabsContent>
+
+      <TabsContent value="container-stocking">
+        <ContainerStockingSection />
       </TabsContent>
 
       <TabsContent value="governance">
