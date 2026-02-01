@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ImageIcon, Upload, Clipboard } from "lucide-react";
@@ -16,11 +16,16 @@ export const CatalogueCardDropzone = ({
   altText,
   onImageUpdate,
 }: CatalogueCardDropzoneProps) => {
+  const isMac =
+    typeof navigator !== "undefined" && /mac/i.test(navigator.platform || "");
+  const pasteShortcut = isMac ? "Cmd" : "Ctrl";
+
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const isHoveredRef = useRef(false);
+  const [isPasteArmed, setIsPasteArmed] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const pasteCatcherRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
 
   const handleUpload = useCallback(async (file: File) => {
@@ -76,40 +81,46 @@ export const CatalogueCardDropzone = ({
     }
   }, [itemId, onImageUpdate, toast]);
 
-  // Handle paste from clipboard - use ref to avoid stale closure
-  const handlePaste = useCallback(async (e: ClipboardEvent) => {
-    if (!isHoveredRef.current) return;
-    
-    const items = e.clipboardData?.items;
-    if (!items) return;
+  const armPaste = useCallback(() => {
+    setIsPasteArmed(true);
+    // Focus an actual editable element so Cmd/Ctrl+V reliably fires a paste event.
+    // This avoids browser behavior where paste won't fire if nothing editable is focused.
+    pasteCatcherRef.current?.focus();
+  }, []);
 
-    for (const item of items) {
-      if (item.type.startsWith("image/")) {
-        e.preventDefault();
-        const file = item.getAsFile();
-        if (file) {
-          await handleUpload(file);
+  const disarmPaste = useCallback(() => {
+    setIsPasteArmed(false);
+  }, []);
+
+  const handlePasteFromCatcher = useCallback(
+    async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      if (!isPasteArmed) return;
+
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (const item of items) {
+        if (item.type.startsWith("image/")) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          if (file) {
+            await handleUpload(file);
+          }
+          // Clear the catcher so it stays "empty".
+          e.currentTarget.value = "";
+          return;
         }
-        return;
       }
-    }
-  }, [handleUpload]);
 
-  useEffect(() => {
-    document.addEventListener("paste", handlePaste);
-    return () => document.removeEventListener("paste", handlePaste);
-  }, [handlePaste]);
-
-  // Keep ref in sync with state
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    isHoveredRef.current = true;
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    isHoveredRef.current = false;
-  };
+      // If user pasted non-image content while armed, give a gentle hint.
+      toast({
+        title: "No image in clipboard",
+        description: "Copy an image (not a file path/text), then paste again.",
+        variant: "destructive",
+      });
+    },
+    [handleUpload, isPasteArmed, toast],
+  );
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -129,7 +140,7 @@ export const CatalogueCardDropzone = ({
     setIsDragOver(false);
   };
 
-  const handleClick = () => {
+  const handleBrowse = () => {
     const input = document.createElement("input");
     input.type = "file";
     input.accept = "image/*";
@@ -157,10 +168,31 @@ export const CatalogueCardDropzone = ({
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
-      onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onClick={armPaste}
+      onDoubleClick={handleBrowse}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        disarmPaste();
+      }}
     >
+      {/*
+        Hidden paste catcher:
+        Browsers typically only fire the paste event to a focused editable element.
+        We focus this when the user clicks the photo area, then Cmd/Ctrl+V works.
+      */}
+      <textarea
+        ref={pasteCatcherRef}
+        tabIndex={-1}
+        aria-hidden="true"
+        className="absolute inset-0 opacity-0 pointer-events-none"
+        defaultValue=""
+        onChange={() => {
+          // noop (we only use this element to capture paste events)
+        }}
+        onPaste={handlePasteFromCatcher}
+      />
+
       {imageUrl ? (
         <>
           <img
@@ -172,7 +204,9 @@ export const CatalogueCardDropzone = ({
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <div className="text-white text-center">
               <Upload className="h-6 w-6 mx-auto mb-1" />
-              <span className="text-xs">Drop, paste, or click</span>
+              <span className="text-xs">
+                Click then {pasteShortcut}+V • Double-click to browse
+              </span>
             </div>
           </div>
         </>
@@ -186,7 +220,9 @@ export const CatalogueCardDropzone = ({
           ) : isHovered ? (
             <>
               <Clipboard className="h-10 w-10 mb-2" />
-              <span className="text-xs">Ctrl+V to paste</span>
+              <span className="text-xs">
+                Click then {pasteShortcut}+V
+              </span>
             </>
           ) : (
             <>
