@@ -82,7 +82,7 @@ export const VisualPartCard = ({
     <Card className="overflow-hidden">
       {/* Image Section */}
       <div
-        className={`relative aspect-square bg-muted cursor-pointer ${
+        className={`relative aspect-[4/3] bg-muted cursor-pointer ${
           isDragOver ? "ring-2 ring-primary ring-inset bg-primary/10" : ""
         }`}
         onDrop={handleDrop}
@@ -168,8 +168,11 @@ export const VisualPartCard = ({
       </div>
 
       <CardContent className="p-4 space-y-3">
-        {/* Criticality Badge */}
+        {/* Part Number + Criticality Badge */}
         <div className="flex items-center gap-2">
+          <Badge variant="outline" className="font-mono text-xs">
+            {part.site_part_number.startsWith("TMP-") ? "000000" : part.site_part_number}
+          </Badge>
           <Badge className={getCriticalityColor(part.criticality)}>
             {part.criticality}
           </Badge>
