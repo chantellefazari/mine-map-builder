@@ -168,11 +168,8 @@ export const VisualPartCard = ({
       </div>
 
       <CardContent className="p-4 space-y-3">
-        {/* Site Part Number */}
+        {/* Criticality Badge */}
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="font-mono text-sm">
-            {part.site_part_number}
-          </Badge>
           <Badge className={getCriticalityColor(part.criticality)}>
             {part.criticality}
           </Badge>
