@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ImageIcon, Upload, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { getImageFileFromDataTransfer } from "@/utils/getImageFileFromDataTransfer";
+import { ImageIcon, X } from "lucide-react";
 import type { NewVisualPart } from "@/hooks/useVisualPartsCatalogue";
 
 interface AddVisualPartDialogProps {
@@ -30,24 +32,72 @@ export const AddVisualPartDialog = ({
   const [partName, setPartName] = useState("");
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
   const [previewImage, setPreviewImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const resetForm = () => {
     setPartName("");
     setNotes("");
+    setIsDragOver(false);
     setPreviewImage(null);
     setPreviewUrl(null);
   };
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+  const setPreviewFromFile = useCallback(
+    (file: File) => {
+      if (!file.type.startsWith("image/")) {
+        toast({
+          title: "Invalid file type",
+          description: "Please use an image file (JPG, PNG, etc.)",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please use an image under 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
       setPreviewImage(file);
       setPreviewUrl(URL.createObjectURL(file));
-    }
+    },
+    [previewUrl, toast]
+  );
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setPreviewFromFile(file);
   };
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragOver(false);
+
+      const file = getImageFileFromDataTransfer(e.dataTransfer);
+      if (file) {
+        setPreviewFromFile(file);
+        return;
+      }
+
+      toast({
+        title: "No image file detected",
+        description:
+          "Please drag an image file from your computer (Explorer/Finder). Dragging from a webpage often doesn't include a file.",
+        variant: "destructive",
+      });
+    },
+    [setPreviewFromFile, toast]
+  );
 
   const handleRemoveImage = () => {
     setPreviewImage(null);
@@ -126,12 +176,27 @@ export const AddVisualPartDialog = ({
               </div>
             ) : (
               <div
-                className="aspect-video rounded-lg border-2 border-dashed border-border bg-muted/50 flex flex-col items-center justify-center cursor-pointer hover:bg-muted transition-colors"
+                className={`aspect-video rounded-lg border-2 border-dashed border-border bg-muted/50 flex flex-col items-center justify-center cursor-pointer hover:bg-muted transition-colors ${
+                  isDragOver ? "ring-2 ring-primary ring-inset bg-primary/10" : ""
+                }`}
                 onClick={() => fileInputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragOver(true);
+                }}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  setIsDragOver(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  setIsDragOver(false);
+                }}
               >
                 <ImageIcon className="h-10 w-10 text-muted-foreground mb-2" />
                 <span className="text-sm text-muted-foreground">
-                  Click to add photo
+                  Drag & drop or click to add photo
                 </span>
               </div>
             )}
