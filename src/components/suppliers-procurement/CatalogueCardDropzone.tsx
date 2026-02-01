@@ -19,6 +19,7 @@ export const CatalogueCardDropzone = ({
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const isHoveredRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -75,9 +76,9 @@ export const CatalogueCardDropzone = ({
     }
   }, [itemId, onImageUpdate, toast]);
 
-  // Handle paste from clipboard
+  // Handle paste from clipboard - use ref to avoid stale closure
   const handlePaste = useCallback(async (e: ClipboardEvent) => {
-    if (!isHovered) return;
+    if (!isHoveredRef.current) return;
     
     const items = e.clipboardData?.items;
     if (!items) return;
@@ -92,12 +93,23 @@ export const CatalogueCardDropzone = ({
         return;
       }
     }
-  }, [isHovered, handleUpload]);
+  }, [handleUpload]);
 
   useEffect(() => {
     document.addEventListener("paste", handlePaste);
     return () => document.removeEventListener("paste", handlePaste);
   }, [handlePaste]);
+
+  // Keep ref in sync with state
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    isHoveredRef.current = true;
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    isHoveredRef.current = false;
+  };
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -146,8 +158,8 @@ export const CatalogueCardDropzone = ({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onClick={handleClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {imageUrl ? (
         <>
