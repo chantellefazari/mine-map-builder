@@ -416,6 +416,45 @@ export type Database = {
         }
         Relationships: []
       }
+      visual_parts_catalogue: {
+        Row: {
+          associated_asset: string | null
+          category: string
+          created_at: string
+          criticality: string
+          id: string
+          image_urls: string[] | null
+          notes: string | null
+          part_name: string
+          site_part_number: string
+          updated_at: string
+        }
+        Insert: {
+          associated_asset?: string | null
+          category?: string
+          created_at?: string
+          criticality?: string
+          id?: string
+          image_urls?: string[] | null
+          notes?: string | null
+          part_name: string
+          site_part_number: string
+          updated_at?: string
+        }
+        Update: {
+          associated_asset?: string | null
+          category?: string
+          created_at?: string
+          criticality?: string
+          id?: string
+          image_urls?: string[] | null
+          notes?: string | null
+          part_name?: string
+          site_part_number?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
