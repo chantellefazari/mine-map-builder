@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import AssetTree from "./pages/AssetTree";
 import PMDesign from "./pages/PMDesign";
+import StoresWarehouseDesign from "./pages/StoresWarehouseDesign";
 import CriticalSpares from "./pages/CriticalSpares";
 import SiteSparesCatalogue from "./pages/SiteSparesCatalogue";
 import ComponentsOEM from "./pages/ComponentsOEM";
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/supplier-register" element={<SupplierRegister />} />
           <Route path="/suppliers-procurement" element={<SuppliersProcurement />} />
           <Route path="/po-import" element={<POImport />} />
+          <Route path="/stores-warehouse-design" element={<StoresWarehouseDesign />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
