@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen, ShoppingCart, FileInput } from "lucide-react";
+import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen, ShoppingCart, FileInput, Building2 } from "lucide-react";
 
 const sections = [
   {
@@ -8,6 +8,13 @@ const sections = [
     description: "Upload PO exports to extract, normalise, and deduplicate components for catalogue population.",
     icon: FileInput,
     href: "/po-import",
+  },
+  {
+    title: "Stores & Warehouse Design",
+    subtitle: "Design & Governance",
+    description: "Logical design, rules, and structure for TCMG stores and warehouse setup before physical build.",
+    icon: Building2,
+    href: "/stores-warehouse-design",
   },
   {
     title: "Maintenance Process Foundations",
