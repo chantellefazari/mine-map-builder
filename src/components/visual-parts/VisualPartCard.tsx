@@ -179,10 +179,10 @@ export const VisualPartCard = ({
         </div>
 
         {/* Part Name */}
-        <Input
+        <Textarea
           value={part.part_name}
           onChange={(e) => onUpdate(part.id, { part_name: e.target.value })}
-          className="font-semibold text-sm h-8"
+          className="font-semibold text-sm min-h-[60px] resize-none"
           placeholder="Part Name"
         />
 
