@@ -18,7 +18,7 @@ export const CatalogueCardDropzone = ({
 }: CatalogueCardDropzoneProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -77,7 +77,7 @@ export const CatalogueCardDropzone = ({
 
   // Handle paste from clipboard
   const handlePaste = useCallback(async (e: ClipboardEvent) => {
-    if (!isFocused) return;
+    if (!isHovered) return;
     
     const items = e.clipboardData?.items;
     if (!items) return;
@@ -92,7 +92,7 @@ export const CatalogueCardDropzone = ({
         return;
       }
     }
-  }, [isFocused, handleUpload]);
+  }, [isHovered, handleUpload]);
 
   useEffect(() => {
     document.addEventListener("paste", handlePaste);
@@ -139,16 +139,15 @@ export const CatalogueCardDropzone = ({
   return (
     <div
       ref={containerRef}
-      tabIndex={0}
       className={`aspect-[4/3] bg-muted cursor-pointer transition-all relative group outline-none ${
         isDragOver ? "ring-2 ring-primary ring-inset bg-primary/10" : ""
-      } ${isFocused ? "ring-2 ring-primary/50 ring-inset" : ""}`}
+      } ${isHovered ? "ring-2 ring-primary/50 ring-inset" : ""}`}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onClick={handleClick}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {imageUrl ? (
         <>
@@ -172,7 +171,7 @@ export const CatalogueCardDropzone = ({
               <Upload className="h-10 w-10 mb-2" />
               <span className="text-xs">Drop image here</span>
             </>
-          ) : isFocused ? (
+          ) : isHovered ? (
             <>
               <Clipboard className="h-10 w-10 mb-2" />
               <span className="text-xs">Ctrl+V to paste</span>
