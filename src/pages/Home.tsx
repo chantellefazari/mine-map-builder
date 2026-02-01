@@ -10,13 +10,6 @@ const sections = [
     href: "/po-import",
   },
   {
-    title: "Stores & Warehouse Design",
-    subtitle: "Design & Governance",
-    description: "Logical design, rules, and structure for TCMG stores and warehouse setup before physical build.",
-    icon: Building2,
-    href: "/stores-warehouse-design",
-  },
-  {
     title: "Maintenance Process Foundations",
     subtitle: "Definitions & Standards",
     description: "Foundational rules for maintenance work types, job data standards, numbering, and history structure.",
@@ -57,6 +50,13 @@ const sections = [
     description: "Master supplier contacts and OEM parts catalogue. Foundation for procurement and spares standardisation.",
     icon: ShoppingCart,
     href: "/suppliers-procurement",
+  },
+  {
+    title: "Stores & Warehouse Design",
+    subtitle: "Design & Governance",
+    description: "Logical design, rules, and structure for TCMG stores and warehouse setup before physical build.",
+    icon: Building2,
+    href: "/stores-warehouse-design",
   },
   {
     title: "Critical Spares Catalogue",
