@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ImageIcon, Upload } from "lucide-react";
+import { Loader2, ImageIcon, Upload, Clipboard } from "lucide-react";
 
 interface CatalogueCardDropzoneProps {
   imageUrl: string;
@@ -18,13 +18,15 @@ export const CatalogueCardDropzone = ({
 }: CatalogueCardDropzoneProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const handleUpload = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) {
       toast({
         title: "Invalid file type",
-        description: "Please drop an image file (JPG, PNG, etc.)",
+        description: "Please use an image file (JPG, PNG, etc.)",
         variant: "destructive",
       });
       return;
@@ -42,7 +44,7 @@ export const CatalogueCardDropzone = ({
     setIsUploading(true);
 
     try {
-      const fileExt = file.name.split(".").pop();
+      const fileExt = file.name.split(".").pop() || "png";
       const fileName = `${itemId}-${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
@@ -72,6 +74,30 @@ export const CatalogueCardDropzone = ({
       setIsUploading(false);
     }
   }, [itemId, onImageUpdate, toast]);
+
+  // Handle paste from clipboard
+  const handlePaste = useCallback(async (e: ClipboardEvent) => {
+    if (!isFocused) return;
+    
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (const item of items) {
+      if (item.type.startsWith("image/")) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          await handleUpload(file);
+        }
+        return;
+      }
+    }
+  }, [isFocused, handleUpload]);
+
+  useEffect(() => {
+    document.addEventListener("paste", handlePaste);
+    return () => document.removeEventListener("paste", handlePaste);
+  }, [handlePaste]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -112,13 +138,17 @@ export const CatalogueCardDropzone = ({
 
   return (
     <div
-      className={`aspect-[4/3] bg-muted cursor-pointer transition-all relative group ${
+      ref={containerRef}
+      tabIndex={0}
+      className={`aspect-[4/3] bg-muted cursor-pointer transition-all relative group outline-none ${
         isDragOver ? "ring-2 ring-primary ring-inset bg-primary/10" : ""
-      }`}
+      } ${isFocused ? "ring-2 ring-primary/50 ring-inset" : ""}`}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onClick={handleClick}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
     >
       {imageUrl ? (
         <>
@@ -131,7 +161,7 @@ export const CatalogueCardDropzone = ({
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <div className="text-white text-center">
               <Upload className="h-6 w-6 mx-auto mb-1" />
-              <span className="text-xs">Drop or click to replace</span>
+              <span className="text-xs">Drop, paste, or click</span>
             </div>
           </div>
         </>
@@ -142,10 +172,15 @@ export const CatalogueCardDropzone = ({
               <Upload className="h-10 w-10 mb-2" />
               <span className="text-xs">Drop image here</span>
             </>
+          ) : isFocused ? (
+            <>
+              <Clipboard className="h-10 w-10 mb-2" />
+              <span className="text-xs">Ctrl+V to paste</span>
+            </>
           ) : (
             <>
               <ImageIcon className="h-10 w-10 mb-2" />
-              <span className="text-xs">Drag image or click</span>
+              <span className="text-xs">Drag, paste, or click</span>
             </>
           )}
         </div>
