@@ -82,7 +82,7 @@ export const VisualPartCard = ({
     <Card className="overflow-hidden">
       {/* Image Section */}
       <div
-        className={`relative aspect-[4/3] bg-muted cursor-pointer ${
+        className={`relative aspect-[4/3] bg-white cursor-pointer ${
           isDragOver ? "ring-2 ring-primary ring-inset bg-primary/10" : ""
         }`}
         onDrop={handleDrop}
