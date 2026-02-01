@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ImageIcon, Upload, Clipboard } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CatalogueCardDropzoneProps {
   imageUrl: string;
@@ -27,6 +28,27 @@ export const CatalogueCardDropzone = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const pasteCatcherRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
+
+  const getImageFileFromDataTransfer = useCallback((dt: DataTransfer | null): File | null => {
+    if (!dt) return null;
+
+    // Most common case: dragging a file from the OS file browser.
+    if (dt.files && dt.files.length > 0) {
+      const f = dt.files[0];
+      return f && f.type?.startsWith("image/") ? f : null;
+    }
+
+    // Fallback (some browsers/sources expose items only).
+    const items = Array.from(dt.items ?? []);
+    for (const item of items) {
+      if (item.kind === "file" && item.type.startsWith("image/")) {
+        const f = item.getAsFile();
+        if (f) return f;
+      }
+    }
+
+    return null;
+  }, []);
 
   const handleUpload = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -125,12 +147,27 @@ export const CatalogueCardDropzone = ({
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    
-    const file = e.dataTransfer.files[0];
-    if (file) handleUpload(file);
-  }, [handleUpload]);
+
+    const file = getImageFileFromDataTransfer(e.dataTransfer);
+    if (file) {
+      void handleUpload(file);
+      return;
+    }
+
+    toast({
+      title: "No image file detected",
+      description:
+        "Please drag an image file from your computer (Explorer/Finder). Dragging from a webpage often doesn't provide a file.",
+      variant: "destructive",
+    });
+  }, [getImageFileFromDataTransfer, handleUpload, toast]);
 
   const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(true);
   };
@@ -166,10 +203,10 @@ export const CatalogueCardDropzone = ({
         isDragOver ? "ring-2 ring-primary ring-inset bg-primary/10" : ""
       } ${isHovered ? "ring-2 ring-primary/50 ring-inset" : ""}`}
       onDrop={handleDrop}
+      onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onClick={armPaste}
-      onDoubleClick={handleBrowse}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
@@ -205,8 +242,22 @@ export const CatalogueCardDropzone = ({
             <div className="text-white text-center">
               <Upload className="h-6 w-6 mx-auto mb-1" />
               <span className="text-xs">
-                Click then {pasteShortcut}+V • Double-click to browse
+                Click then {pasteShortcut}+V
               </span>
+              <div className="mt-2 flex justify-center">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleBrowse();
+                  }}
+                >
+                  Browse file…
+                </Button>
+              </div>
             </div>
           </div>
         </>
@@ -223,6 +274,20 @@ export const CatalogueCardDropzone = ({
               <span className="text-xs">
                 Click then {pasteShortcut}+V
               </span>
+              <div className="mt-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleBrowse();
+                  }}
+                >
+                  Browse file…
+                </Button>
+              </div>
             </>
           ) : (
             <>
