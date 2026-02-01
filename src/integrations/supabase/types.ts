@@ -22,6 +22,7 @@ export type Database = {
           description_cleaned: string
           duplicate_key: string | null
           id: string
+          image_url: string | null
           is_master: boolean | null
           last_ordered_date: string | null
           last_ordered_po: string | null
@@ -46,6 +47,7 @@ export type Database = {
           description_cleaned: string
           duplicate_key?: string | null
           id?: string
+          image_url?: string | null
           is_master?: boolean | null
           last_ordered_date?: string | null
           last_ordered_po?: string | null
@@ -70,6 +72,7 @@ export type Database = {
           description_cleaned?: string
           duplicate_key?: string | null
           id?: string
+          image_url?: string | null
           is_master?: boolean | null
           last_ordered_date?: string | null
           last_ordered_po?: string | null

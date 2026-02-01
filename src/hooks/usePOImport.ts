@@ -424,6 +424,7 @@ export const usePOImport = () => {
           existingComponents?.push({ 
             ...newComponent, 
             id: "temp",
+            image_url: null,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           });
