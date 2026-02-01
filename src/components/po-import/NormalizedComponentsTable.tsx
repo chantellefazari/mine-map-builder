@@ -158,7 +158,6 @@ export const NormalizedComponentsTable = ({
       "Part Number": c.partNumber,
       Description: c.descriptionCleaned,
       Supplier: c.supplier,
-      "Unit Price": c.lastUnitPrice,
       Notes: c.notes,
     }));
 
@@ -293,7 +292,6 @@ export const NormalizedComponentsTable = ({
                     Last Ordered <SortIcon field="lastOrderedDate" />
                   </TableHead>
                   <TableHead className="text-right">Last PO</TableHead>
-                  <TableHead className="text-right">Unit Price</TableHead>
                   <TableHead>Flags</TableHead>
                 </TableRow>
               </TableHeader>
@@ -349,9 +347,6 @@ export const NormalizedComponentsTable = ({
                     </TableCell>
                     <TableCell className="font-mono text-xs text-right">
                       {component.lastOrderedPo || "-"}
-                    </TableCell>
-                    <TableCell className="text-xs text-right">
-                      {formatCurrency(component.lastUnitPrice)}
                     </TableCell>
                     <TableCell>
                       {component.reviewFlag && (
