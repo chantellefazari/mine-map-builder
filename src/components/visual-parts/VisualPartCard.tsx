@@ -167,7 +167,7 @@ export const VisualPartCard = ({
         )}
       </div>
 
-      <CardContent className="p-4 space-y-3">
+      <CardContent className="p-3 space-y-2">
         {/* Part Number + Criticality Badge */}
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="font-mono text-xs">
@@ -182,7 +182,7 @@ export const VisualPartCard = ({
         <Input
           value={part.part_name}
           onChange={(e) => onUpdate(part.id, { part_name: e.target.value })}
-          className="font-semibold"
+          className="font-semibold text-sm h-8"
           placeholder="Part Name"
         />
 
@@ -191,7 +191,7 @@ export const VisualPartCard = ({
           value={part.category}
           onValueChange={(val) => onUpdate(part.id, { category: val })}
         >
-          <SelectTrigger className="h-9">
+          <SelectTrigger className="h-8 text-xs">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -207,8 +207,8 @@ export const VisualPartCard = ({
         <Input
           value={part.associated_asset}
           onChange={(e) => onUpdate(part.id, { associated_asset: e.target.value })}
-          placeholder="Associated Asset / System"
-          className="text-sm"
+          placeholder="Asset / System"
+          className="text-xs h-8"
         />
 
         {/* Criticality */}
@@ -216,7 +216,7 @@ export const VisualPartCard = ({
           value={part.criticality}
           onValueChange={(val) => onUpdate(part.id, { criticality: val })}
         >
-          <SelectTrigger className="h-9">
+          <SelectTrigger className="h-8 text-xs">
             <SelectValue placeholder="Criticality" />
           </SelectTrigger>
           <SelectContent>
@@ -232,8 +232,8 @@ export const VisualPartCard = ({
         <Textarea
           value={part.notes}
           onChange={(e) => onUpdate(part.id, { notes: e.target.value })}
-          placeholder="Notes (install location, handling, failure info...)"
-          className="text-sm min-h-[60px]"
+          placeholder="Notes..."
+          className="text-xs min-h-[50px]"
         />
 
         {/* Delete Button */}
