@@ -18,17 +18,17 @@ export const StoreLocationCodingSection = () => {
   ];
 
   const examples = [
-    { code: "C01-ME-01", description: "Container 1, Mechanical zone, position 01" },
+    { code: "C01-ME-A1", description: "Container 1, Mechanical zone, shelf A bin 1" },
     { code: "C01-BR-A3", description: "Container 1, Bearings, shelf A bin 3" },
-    { code: "C02-EL-02", description: "Container 2, Electrical zone, position 02" },
-    { code: "C03-IN-B1", description: "Container 3, Instrumentation, shelf B bin 1" },
-    { code: "C01-FT-05", description: "Container 1, Fasteners, position 05" }
+    { code: "C02-EL-B2", description: "Container 2, Electrical zone, shelf B bin 2" },
+    { code: "C03-IN-C1", description: "Container 3, Instrumentation, shelf C bin 1" },
+    { code: "C01-FT-D4", description: "Container 1, Fasteners, shelf D bin 4" }
   ];
 
   const codeStructure = [
     { segment: "Container", format: "CXX", meaning: "Physical storage container", example: "C01, C02, C03, C04..." },
     { segment: "Zone", format: "XX", meaning: "Functional grouping of parts", example: "ME, EL, IN, BR, FT..." },
-    { segment: "Position", format: "NN or AX", meaning: "Exact storage location (shelf/bin)", example: "01, 02, A1, A2, B1..." }
+    { segment: "Position", format: "XN", meaning: "Shelf letter + bin number", example: "A1, A2, B1, B2, C3..." }
   ];
 
   return (
@@ -158,10 +158,10 @@ export const StoreLocationCodingSection = () => {
         <CardContent>
           <div className="bg-muted/50 rounded-lg p-4">
             <p className="text-sm text-muted-foreground mb-3">
-              Can be numeric or alphanumeric (e.g. shelf/bin):
+              Alphanumeric format: Shelf letter (A–Z) + bin number (1–9):
             </p>
             <div className="flex flex-wrap gap-2">
-              {["01", "02", "03", "A1", "A2", "B1", "B2", "C1"].map((code, index) => (
+              {["A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "D1"].map((code, index) => (
                 <span
                   key={index}
                   className="px-3 py-1.5 rounded-md text-sm bg-background border border-border font-mono font-medium"
