@@ -500,13 +500,28 @@ export const usePOImport = () => {
 
   const deleteUpload = async (uploadId: string): Promise<boolean> => {
     try {
+      // Delete associated normalized_components first
+      const { error: ncError } = await supabase
+        .from("normalized_components")
+        .delete()
+        .eq("upload_id", uploadId);
+      if (ncError) throw ncError;
+
+      // Delete associated po_line_items
+      const { error: liError } = await supabase
+        .from("po_line_items")
+        .delete()
+        .eq("upload_id", uploadId);
+      if (liError) throw liError;
+
+      // Finally delete the upload itself
       const { error } = await supabase.from("po_uploads").delete().eq("id", uploadId);
       if (error) throw error;
 
       await fetchAll();
       toast({
         title: "Success",
-        description: "Upload and associated data deleted",
+        description: "Upload and all associated components deleted",
       });
       return true;
     } catch (error) {
