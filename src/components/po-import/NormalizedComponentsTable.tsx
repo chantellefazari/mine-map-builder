@@ -36,6 +36,7 @@ import {
   FileSpreadsheet,
   Layers,
   Trash2,
+  Upload,
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import { NormalizedComponent, componentTypes } from "@/hooks/usePOImport";
@@ -43,6 +44,7 @@ import { extractCorePart, extractCoreIdentifiers } from "@/utils/corePartExtract
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { PART_CATEGORIES } from "@/components/visual-parts/visualPartsConstants";
 
 interface NormalizedComponentsTableProps {
   components: NormalizedComponent[];
@@ -66,6 +68,7 @@ export const NormalizedComponentsTable = ({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Get unique suppliers for the filter dropdown
   const uniqueSuppliers = [...new Set(components.map((c) => c.supplier).filter(Boolean))].sort();
@@ -294,6 +297,101 @@ export const NormalizedComponentsTable = ({
     }
   };
 
+  // Map component types to visual parts categories
+  const mapToCategory = (componentType: string): string => {
+    const typeMap: Record<string, string> = {
+      "Pump": "Pump Component",
+      "Valve": "Valve",
+      "Bearing": "Bearing",
+      "Seal": "Seal",
+      "Belt": "Belt / Chain",
+      "Filter": "Filter",
+      "Motor": "Motor Component",
+      "Gearbox": "Gearbox Component",
+      "Electrical": "Electrical",
+      "Hydraulic": "Hydraulic",
+      "Pneumatic": "Pneumatic",
+      "Instrumentation": "Instrumentation",
+      "Fastener": "Fastener",
+      "Liner": "Liner",
+      "Wear Part": "Wear Part",
+    };
+    return typeMap[componentType] || "General";
+  };
+
+  const exportToVisualParts = async () => {
+    const itemsToExport = selectedIds.size > 0 
+      ? filteredComponents.filter(c => selectedIds.has(c.id))
+      : filteredComponents;
+
+    if (itemsToExport.length === 0) {
+      toast({
+        title: "No items to export",
+        description: "Select items or ensure there are components to export",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsExporting(true);
+    try {
+      // Check for existing parts to avoid duplicates
+      const { data: existingParts } = await supabase
+        .from("visual_parts_catalogue")
+        .select("site_part_number");
+
+      const existingNumbers = new Set(existingParts?.map(p => p.site_part_number) || []);
+
+      // Prepare items for insert, skipping duplicates
+      const newItems = itemsToExport
+        .filter(c => {
+          const partNum = c.partNumber || `TMP-${c.id.slice(0, 8)}`;
+          return !existingNumbers.has(partNum);
+        })
+        .map(c => ({
+          site_part_number: c.partNumber || `TMP-${c.id.slice(0, 8)}`,
+          part_name: c.descriptionCleaned,
+          category: mapToCategory(c.componentType),
+          criticality: "Non-Critical",
+          associated_asset: c.linkedAsset || null,
+          notes: c.notes || null,
+          image_urls: null,
+        }));
+
+      if (newItems.length === 0) {
+        toast({
+          title: "All items already exist",
+          description: "These components are already in the Visual Parts Catalogue",
+        });
+        setIsExporting(false);
+        return;
+      }
+
+      const { error } = await supabase
+        .from("visual_parts_catalogue")
+        .insert(newItems);
+
+      if (error) throw error;
+
+      const skipped = itemsToExport.length - newItems.length;
+      toast({
+        title: "Exported to Visual Parts",
+        description: `${newItems.length} parts added${skipped > 0 ? `, ${skipped} duplicates skipped` : ""}`,
+      });
+
+      setSelectedIds(new Set());
+    } catch (error) {
+      console.error("Error exporting to visual parts:", error);
+      toast({
+        title: "Export failed",
+        description: "Failed to export components to Visual Parts Catalogue",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return null;
     return sortDirection === "desc" ? (
@@ -384,6 +482,15 @@ export const NormalizedComponentsTable = ({
             <Button variant="default" size="sm" onClick={exportForSupplierEnrichment}>
               <FileSpreadsheet className="h-4 w-4 mr-1" />
               Supplier Enrichment
+            </Button>
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              onClick={exportToVisualParts}
+              disabled={isExporting}
+            >
+              <Upload className="h-4 w-4 mr-1" />
+              {isExporting ? "Exporting..." : `Export to Visual Parts${selectedIds.size > 0 ? ` (${selectedIds.size})` : ""}`}
             </Button>
           </div>
         </div>
