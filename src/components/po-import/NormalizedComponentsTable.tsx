@@ -466,6 +466,7 @@ export const NormalizedComponentsTable = ({
                     Last Ordered <SortIcon field="lastOrderedDate" />
                   </TableHead>
                   <TableHead className="text-right">Last PO</TableHead>
+                  <TableHead className="text-right">Unit Price</TableHead>
                   <TableHead>Flags</TableHead>
                 </TableRow>
               </TableHeader>
@@ -533,6 +534,9 @@ export const NormalizedComponentsTable = ({
                     </TableCell>
                     <TableCell className="font-mono text-xs text-right">
                       {component.lastOrderedPo || "-"}
+                    </TableCell>
+                    <TableCell className="text-right text-xs font-medium">
+                      {formatCurrency(component.lastUnitPrice)}
                     </TableCell>
                     <TableCell>
                       {component.reviewFlag && (
