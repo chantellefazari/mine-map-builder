@@ -167,7 +167,12 @@ export const PartsComparisonDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+      {/*
+        Note: DialogContent base styles include `grid`, and Tailwind class order
+        doesn't guarantee `flex` overrides it. Use `!flex` to force a flex layout
+        so our ScrollArea can take a constrained height and scroll properly.
+      */}
+      <DialogContent className="max-w-4xl max-h-[85vh] !flex !flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle>Parts Comparison: Visual Catalogue vs Site Spares</DialogTitle>
         </DialogHeader>
@@ -249,7 +254,7 @@ export const PartsComparisonDialog = ({
             </Tabs>
 
             {/* Detailed Results */}
-            <ScrollArea className="flex-1 min-h-0">
+            <ScrollArea className="h-[45vh] sm:h-[55vh]">
               <div className="space-y-2 pr-4">
                 {filteredResults.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground">
