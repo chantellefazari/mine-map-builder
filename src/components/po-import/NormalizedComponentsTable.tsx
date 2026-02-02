@@ -297,26 +297,11 @@ export const NormalizedComponentsTable = ({
     }
   };
 
-  // Map component types to visual parts categories
-  const mapToCategory = (componentType: string): string => {
-    const typeMap: Record<string, string> = {
-      "Pump": "Pump Component",
-      "Valve": "Valve",
-      "Bearing": "Bearing",
-      "Seal": "Seal",
-      "Belt": "Belt / Chain",
-      "Filter": "Filter",
-      "Motor": "Motor Component",
-      "Gearbox": "Gearbox Component",
-      "Electrical": "Electrical",
-      "Hydraulic": "Hydraulic",
-      "Pneumatic": "Pneumatic",
-      "Instrumentation": "Instrumentation",
-      "Fastener": "Fastener",
-      "Liner": "Liner",
-      "Wear Part": "Wear Part",
-    };
-    return typeMap[componentType] || "General";
+  // Smart category classification using supplier + description
+  const classifyCategory = (description: string, supplier?: string | null): string => {
+    // Import inline to avoid circular deps
+    const { classifyVisualPartCategory } = require("@/utils/visualPartsClassification");
+    return classifyVisualPartCategory(description, supplier);
   };
 
   const exportToVisualParts = async () => {
@@ -360,7 +345,7 @@ export const NormalizedComponentsTable = ({
         .map(c => ({
           site_part_number: c.partNumber || `TMP-${c.id.slice(0, 8)}`,
           part_name: c.descriptionCleaned,
-          category: mapToCategory(c.componentType),
+          category: classifyCategory(c.descriptionCleaned, c.supplier),
           criticality: "Non-Critical",
           associated_asset: c.linkedAsset || null,
           notes: c.notes || null,
