@@ -131,7 +131,8 @@ export const RawPOLinesTable = ({
 
   // Count stats
   const noiseCount = lineStatus.filter((s) => s?.status === "noise").length;
-  const duplicateCount = duplicateGroups.size;
+  const duplicateGroupCount = duplicateGroups.size;
+  const duplicateLineCount = lineStatus.filter((s) => s?.status === "duplicate").length;
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-AU", {
@@ -162,7 +163,7 @@ export const RawPOLinesTable = ({
             </Badge>
           </CardTitle>
           <div className="flex items-center gap-2">
-            {duplicateCount > 0 && (
+            {duplicateGroupCount > 0 && (
               <Button
                 variant={groupDuplicates ? "default" : "outline"}
                 size="sm"
@@ -179,10 +180,10 @@ export const RawPOLinesTable = ({
                 {noiseCount} filtered
               </Badge>
             )}
-            {duplicateCount > 0 && (
-              <Badge variant="outline" className="text-amber-600 border-amber-300">
+            {duplicateGroupCount > 0 && (
+              <Badge variant="outline" className="border-amber-400 bg-amber-50">
                 <Copy className="h-3 w-3 mr-1" />
-                {duplicateCount} duplicate groups
+                {duplicateLineCount} lines in {duplicateGroupCount} groups
               </Badge>
             )}
           </div>
