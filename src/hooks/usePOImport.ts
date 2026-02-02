@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { cleanDescription, isNoiseRow, extractPartNumbers } from "@/utils/descriptionCleaner";
+import { generateSmartDuplicateKey, extractCorePart } from "@/utils/corePartExtractor";
 
 export interface POUpload {
   id: string;
@@ -315,15 +316,9 @@ export const usePOImport = () => {
         const manufacturer = item.manufacturer?.trim() || "";
         const model = item.model?.trim() || "";
 
-        // Generate duplicate key
-        let duplicateKey = "";
-        if (partNumber) {
-          duplicateKey = `PN:${partNumber.toUpperCase()}`;
-        } else if (manufacturer && model) {
-          duplicateKey = `MM:${manufacturer.toUpperCase()}|${model.toUpperCase()}`;
-        } else {
-          duplicateKey = `DESC:${description.substring(0, 50).toUpperCase()}`;
-        }
+        // Generate smart duplicate key using core part extraction
+        // This strips asset-specific suffixes and focuses on model numbers/specs
+        const duplicateKey = generateSmartDuplicateKey(partNumber, manufacturer, model, description);
 
         // Check for existing component with same key
         const existingMatch = existingComponents?.find(
