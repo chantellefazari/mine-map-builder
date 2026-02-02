@@ -110,6 +110,7 @@ const NOISE_ROW_PATTERNS = [
   /^subtotal/i,
   /^shipping/i,
   /^delivery/i,
+  /less\s*inv(oice)?/i, // Filter out "less invoice" credit lines
 ];
 
 /**

@@ -174,6 +174,7 @@ const POImport = () => {
             <RawPOLinesTable
               lineItems={lineItems}
               selectedUploadId={selectedUploadId}
+              normalizedComponents={normalizedComponents}
             />
           </TabsContent>
 
