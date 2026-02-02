@@ -427,6 +427,7 @@ export type Database = {
           notes: string | null
           part_name: string
           site_part_number: string
+          supplier: string | null
           updated_at: string
         }
         Insert: {
@@ -439,6 +440,7 @@ export type Database = {
           notes?: string | null
           part_name: string
           site_part_number: string
+          supplier?: string | null
           updated_at?: string
         }
         Update: {
@@ -451,6 +453,7 @@ export type Database = {
           notes?: string | null
           part_name?: string
           site_part_number?: string
+          supplier?: string | null
           updated_at?: string
         }
         Relationships: []

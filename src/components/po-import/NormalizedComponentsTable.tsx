@@ -349,6 +349,7 @@ export const NormalizedComponentsTable = ({
           criticality: "Non-Critical",
           associated_asset: c.linkedAsset || null,
           notes: c.notes || null,
+          supplier: c.supplier || "",
           image_urls: null,
         }));
 

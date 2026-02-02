@@ -10,6 +10,7 @@ export interface VisualPart {
   associated_asset: string;
   criticality: string;
   notes: string;
+  supplier: string;
   image_urls: string[];
   created_at: string;
   updated_at: string;

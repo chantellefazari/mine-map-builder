@@ -121,6 +121,7 @@ export const AddVisualPartDialog = ({
       associated_asset: "",
       criticality: "Non-Critical",
       notes: notes.trim(),
+      supplier: "",
       image_urls: [],
     });
 
