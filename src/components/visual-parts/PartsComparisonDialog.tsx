@@ -10,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ComparisonResult {
   visualPart: {
@@ -254,14 +253,16 @@ export const PartsComparisonDialog = ({
             </Tabs>
 
             {/* Detailed Results */}
-            <ScrollArea className="h-[45vh] sm:h-[55vh]">
-              <div className="space-y-2 pr-4">
-                {filteredResults.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No parts in this category.
-                  </div>
-                ) : (
-                  filteredResults.map((result) => (
+            <div
+              key={filterType}
+              className="h-[45vh] sm:h-[55vh] overflow-y-auto pr-4 space-y-2 overscroll-contain"
+            >
+              {filteredResults.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No parts in this category.
+                </div>
+              ) : (
+                filteredResults.map((result) => (
                   <div
                     key={result.visualPart.id}
                     className="flex items-center gap-3 p-3 border rounded-lg bg-card"
@@ -298,8 +299,8 @@ export const PartsComparisonDialog = ({
                         result.matchType === "exact"
                           ? "default"
                           : result.matchType === "partial"
-                          ? "secondary"
-                          : "destructive"
+                            ? "secondary"
+                            : "destructive"
                       }
                       className="flex-shrink-0"
                     >
@@ -308,10 +309,9 @@ export const PartsComparisonDialog = ({
                       {result.matchType === "none" && "No Match"}
                     </Badge>
                   </div>
-                  ))
-                )}
-              </div>
-            </ScrollArea>
+                ))
+              )}
+            </div>
 
             <div className="flex justify-end pt-4 border-t">
               <Button variant="outline" onClick={() => onOpenChange(false)}>
