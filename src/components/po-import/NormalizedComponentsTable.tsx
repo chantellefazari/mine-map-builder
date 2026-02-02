@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -34,9 +34,11 @@ import {
   ChevronDown,
   ChevronUp,
   FileSpreadsheet,
+  Layers,
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import { NormalizedComponent, componentTypes } from "@/hooks/usePOImport";
+import { extractCorePart, extractCoreIdentifiers } from "@/utils/corePartExtractor";
 
 interface NormalizedComponentsTableProps {
   components: NormalizedComponent[];
@@ -44,7 +46,7 @@ interface NormalizedComponentsTableProps {
 }
 
 type SortField = "lastOrderedDate" | "totalSpend" | "totalOrdersInPeriod" | "descriptionCleaned";
-type FilterType = "all" | "duplicates" | "missingPartNumber" | "orderedOnce";
+type FilterType = "all" | "duplicates" | "missingPartNumber" | "orderedOnce" | "groupSimilar";
 
 export const NormalizedComponentsTable = ({
   components,
@@ -58,6 +60,65 @@ export const NormalizedComponentsTable = ({
 
   // Get unique suppliers for the filter dropdown
   const uniqueSuppliers = [...new Set(components.map((c) => c.supplier).filter(Boolean))].sort();
+
+  // Generate similarity groups for the "Group Similar" filter
+  const similarityGroups = useMemo(() => {
+    const groups = new Map<string, NormalizedComponent[]>();
+    
+    components.forEach((c) => {
+      // Extract core part from description
+      const corePart = extractCorePart(c.descriptionCleaned);
+      const identifiers = extractCoreIdentifiers(c.descriptionCleaned);
+      
+      // Create a group key from the first few identifiers or core part
+      let groupKey = identifiers.slice(0, 2).join("|").toUpperCase();
+      if (!groupKey && corePart) {
+        // Use first 40 chars of core part as fallback
+        groupKey = corePart.substring(0, 40).toUpperCase();
+      }
+      if (!groupKey) {
+        groupKey = `UNGROUPED_${c.id}`;
+      }
+      
+      if (!groups.has(groupKey)) {
+        groups.set(groupKey, []);
+      }
+      groups.get(groupKey)!.push(c);
+    });
+    
+    return groups;
+  }, [components]);
+
+  // Get groups with more than one item (potential duplicates)
+  const duplicateGroups = useMemo(() => {
+    const result = new Map<string, NormalizedComponent[]>();
+    similarityGroups.forEach((items, key) => {
+      if (items.length > 1) {
+        result.set(key, items);
+      }
+    });
+    return result;
+  }, [similarityGroups]);
+
+  // Create a lookup for component -> group key
+  const componentGroupKey = useMemo(() => {
+    const lookup = new Map<string, string>();
+    similarityGroups.forEach((items, key) => {
+      items.forEach(item => lookup.set(item.id, key));
+    });
+    return lookup;
+  }, [similarityGroups]);
+
+  // Color palette for groups (cycling through)
+  const groupColors = [
+    "bg-amber-50 border-l-4 border-l-amber-400",
+    "bg-blue-50 border-l-4 border-l-blue-400",
+    "bg-green-50 border-l-4 border-l-green-400",
+    "bg-purple-50 border-l-4 border-l-purple-400",
+    "bg-pink-50 border-l-4 border-l-pink-400",
+    "bg-cyan-50 border-l-4 border-l-cyan-400",
+    "bg-orange-50 border-l-4 border-l-orange-400",
+  ];
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-AU", {
@@ -110,10 +171,27 @@ export const NormalizedComponentsTable = ({
     case "orderedOnce":
       filteredComponents = filteredComponents.filter((c) => c.totalOrdersInPeriod === 1);
       break;
+    case "groupSimilar":
+      // Only show components that belong to groups with 2+ items
+      const duplicateGroupIds = new Set<string>();
+      duplicateGroups.forEach((items) => {
+        items.forEach(item => duplicateGroupIds.add(item.id));
+      });
+      filteredComponents = filteredComponents.filter((c) => duplicateGroupIds.has(c.id));
+      break;
   }
 
   // Apply sorting
   filteredComponents = [...filteredComponents].sort((a, b) => {
+    // When grouping similar, sort by group key first to keep similar items together
+    if (filterType === "groupSimilar") {
+      const keyA = componentGroupKey.get(a.id) || "";
+      const keyB = componentGroupKey.get(b.id) || "";
+      if (keyA !== keyB) {
+        return keyA.localeCompare(keyB);
+      }
+    }
+    
     let comparison = 0;
     switch (sortField) {
       case "lastOrderedDate":
@@ -133,6 +211,19 @@ export const NormalizedComponentsTable = ({
     }
     return sortDirection === "desc" ? -comparison : comparison;
   });
+
+  // Assign group colors for visual distinction
+  const groupColorAssignments = useMemo(() => {
+    const assignments = new Map<string, string>();
+    let colorIndex = 0;
+    
+    duplicateGroups.forEach((_, key) => {
+      assignments.set(key, groupColors[colorIndex % groupColors.length]);
+      colorIndex++;
+    });
+    
+    return assignments;
+  }, [duplicateGroups]);
 
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
@@ -252,12 +343,18 @@ export const NormalizedComponentsTable = ({
             />
           </div>
           <Select value={filterType} onValueChange={(v) => setFilterType(v as FilterType)}>
-            <SelectTrigger className="w-full md:w-[200px]">
+            <SelectTrigger className="w-full md:w-[220px]">
               <Filter className="h-4 w-4 mr-2" />
               <SelectValue placeholder="Filter" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Items</SelectItem>
+              <SelectItem value="groupSimilar">
+                <span className="flex items-center gap-2">
+                  <Layers className="h-4 w-4" />
+                  Group Similar ({duplicateGroups.size} groups)
+                </span>
+              </SelectItem>
               <SelectItem value="duplicates">Duplicates Found</SelectItem>
               <SelectItem value="missingPartNumber">Missing Part Number</SelectItem>
               <SelectItem value="orderedOnce">Ordered Once Only</SelectItem>
@@ -296,8 +393,14 @@ export const NormalizedComponentsTable = ({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredComponents.map((component) => (
-                  <TableRow key={component.id}>
+                {filteredComponents.map((component) => {
+                  const groupKey = componentGroupKey.get(component.id);
+                  const groupColor = filterType === "groupSimilar" && groupKey 
+                    ? groupColorAssignments.get(groupKey) 
+                    : "";
+                  
+                  return (
+                    <TableRow key={component.id} className={groupColor}>
                     <TableCell>
                       <Select
                         value={component.componentType}
@@ -361,7 +464,8 @@ export const NormalizedComponentsTable = ({
                       )}
                     </TableCell>
                   </TableRow>
-                ))}
+                  );
+                })}
               </TableBody>
               </Table>
             </div>
