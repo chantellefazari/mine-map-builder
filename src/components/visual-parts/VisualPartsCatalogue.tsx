@@ -8,10 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Loader2, ImageIcon, AlertTriangle, RefreshCw } from "lucide-react";
+import { Plus, Search, Loader2, ImageIcon, AlertTriangle, RefreshCw, GitCompare } from "lucide-react";
 import { useVisualPartsCatalogueSafe } from "@/hooks/useVisualPartsCatalogueSafe";
 import { VisualPartCard } from "./VisualPartCard";
 import { AddVisualPartDialog } from "./AddVisualPartDialog";
+import { PartsComparisonDialog } from "./PartsComparisonDialog";
 import { PART_CATEGORIES, CRITICALITY_LEVELS } from "./visualPartsConstants";
 import { classifyVisualPartCategory } from "@/utils/visualPartsClassification";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,6 +35,7 @@ export const VisualPartsCatalogue = () => {
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterCriticality, setFilterCriticality] = useState<string>("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [comparisonDialogOpen, setComparisonDialogOpen] = useState(false);
   const [isReclassifying, setIsReclassifying] = useState(false);
 
   const filteredParts = parts.filter((part) => {
@@ -213,6 +215,14 @@ export const VisualPartsCatalogue = () => {
               Reclassify ({generalCount})
             </Button>
           )}
+          <Button
+            variant="outline"
+            onClick={() => setComparisonDialogOpen(true)}
+            className="gap-2"
+          >
+            <GitCompare className="h-4 w-4" />
+            Compare to Inventory
+          </Button>
           <Button onClick={() => setAddDialogOpen(true)} className="gap-2">
             <Plus className="h-4 w-4" />
             Add Part
@@ -220,12 +230,16 @@ export const VisualPartsCatalogue = () => {
         </div>
       </div>
 
-      {/* Add Dialog */}
+      {/* Dialogs */}
       <AddVisualPartDialog
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onAdd={addPart}
         onAddImage={addImageToPart}
+      />
+      <PartsComparisonDialog
+        open={comparisonDialogOpen}
+        onOpenChange={setComparisonDialogOpen}
       />
 
       {/* Parts Grid */}
