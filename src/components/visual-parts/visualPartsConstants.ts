@@ -6,7 +6,7 @@ export const PART_CATEGORIES = [
   "Liner",
   "Electrical",
   "Bearing",
-  "Seal",
+  "Seal / Gasket",
   "Belt / Chain",
   "Filter",
   "Motor Component",

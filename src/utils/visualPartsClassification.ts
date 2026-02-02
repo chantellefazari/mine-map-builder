@@ -15,7 +15,7 @@ export type VisualPartCategory =
   | "Liner"
   | "Electrical"
   | "Bearing"
-  | "Seal"
+  | "Seal / Gasket"
   | "Belt / Chain"
   | "Filter"
   | "Motor Component"
@@ -98,7 +98,7 @@ const DESCRIPTION_KEYWORDS: Record<VisualPartCategory, string[]> = {
     "cylindrical roller", "angular contact", "skf", "nsk", "ntn",
   ],
   
-  "Seal": [
+  "Seal / Gasket": [
     "seal", "o-ring", "gasket", "packing", "gland packing", "mechanical seal",
     "shaft seal", "oil seal", "lip seal", "diaphragm seal", "gasket set",
     "o ring", "seal kit", "viton", "epdm", "ptfe seal", "sigma", "sigma533",
@@ -185,7 +185,7 @@ const DESCRIPTION_KEYWORDS: Record<VisualPartCategory, string[]> = {
 // Priority order for description matching (more specific first)
 const CATEGORY_PRIORITY: VisualPartCategory[] = [
   "Fastener",
-  "Seal",
+  "Seal / Gasket",
   "Bearing",
   "Belt / Chain",
   "Filter",
