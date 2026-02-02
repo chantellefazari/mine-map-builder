@@ -182,12 +182,8 @@ export const RawPOLinesTable = ({
                         <TableCell className="text-sm">
                           {item.model || "-"}
                         </TableCell>
-                        <TableCell className="font-mono text-xs">
-                          {item.partNumber || (
-                            <Badge variant="outline" className="text-orange-600 border-orange-300">
-                              Missing
-                            </Badge>
-                          )}
+                        <TableCell className="font-mono text-xs text-muted-foreground">
+                          {item.partNumber || "Missing Part"}
                         </TableCell>
                         <TableCell className="text-right">
                           {item.qty}
