@@ -451,6 +451,7 @@ export const NormalizedComponentsTable = ({
                     />
                   </TableHead>
                   <TableHead>Type</TableHead>
+                  <TableHead>Part Number</TableHead>
                   <TableHead
                     className="min-w-[300px] cursor-pointer hover:bg-muted/50"
                     onClick={() => toggleSort("descriptionCleaned")}
@@ -501,8 +502,11 @@ export const NormalizedComponentsTable = ({
                               </SelectItem>
                             ))}
                           </SelectContent>
-                        </Select>
-                      </TableCell>
+                      </Select>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs">
+                      {component.partNumber || "-"}
+                    </TableCell>
                     <TableCell className="text-sm">
                       {component.descriptionCleaned}
                       {component.aliasDescriptions && (
