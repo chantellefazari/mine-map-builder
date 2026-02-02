@@ -106,7 +106,7 @@ export const VisualPartCard = ({
             <img
               src={part.image_urls[currentImageIndex]}
               alt={part.part_name}
-              className="w-full h-full object-contain object-center"
+              className="w-full h-full object-cover object-center"
             />
             {/* Image navigation */}
             {part.image_urls.length > 1 && (
