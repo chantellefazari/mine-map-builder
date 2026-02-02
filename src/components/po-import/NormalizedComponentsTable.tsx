@@ -335,18 +335,27 @@ export const NormalizedComponentsTable = ({
 
     setIsExporting(true);
     try {
-      // Check for existing parts to avoid duplicates
+      // Check for existing parts to avoid duplicates - check both part number AND description
       const { data: existingParts } = await supabase
         .from("visual_parts_catalogue")
-        .select("site_part_number");
+        .select("site_part_number, part_name");
 
       const existingNumbers = new Set(existingParts?.map(p => p.site_part_number) || []);
+      const existingDescriptions = new Set(
+        existingParts?.map(p => p.part_name.toLowerCase().trim()) || []
+      );
 
-      // Prepare items for insert, skipping duplicates
+      // Prepare items for insert, skipping duplicates by part number OR description
       const newItems = itemsToExport
         .filter(c => {
           const partNum = c.partNumber || `TMP-${c.id.slice(0, 8)}`;
-          return !existingNumbers.has(partNum);
+          const descLower = c.descriptionCleaned.toLowerCase().trim();
+          
+          // Skip if part number exists OR description matches an existing part
+          if (existingNumbers.has(partNum)) return false;
+          if (existingDescriptions.has(descLower)) return false;
+          
+          return true;
         })
         .map(c => ({
           site_part_number: c.partNumber || `TMP-${c.id.slice(0, 8)}`,
@@ -361,7 +370,7 @@ export const NormalizedComponentsTable = ({
       if (newItems.length === 0) {
         toast({
           title: "All items already exist",
-          description: "These components are already in the Visual Parts Catalogue",
+          description: "These components are already in the Visual Parts Catalogue (matched by part number or description)",
         });
         setIsExporting(false);
         return;
