@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -10,7 +10,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { FileText, Copy, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { FileText, Copy, AlertTriangle, Layers } from "lucide-react";
 import { POLineItem, NormalizedComponent } from "@/hooks/usePOImport";
 import { isNoiseRow } from "@/utils/descriptionCleaner";
 
@@ -20,11 +21,24 @@ interface RawPOLinesTableProps {
   normalizedComponents?: NormalizedComponent[];
 }
 
+// Color palette for duplicate groups
+const groupColors = [
+  "bg-amber-50 border-l-4 border-l-amber-400",
+  "bg-blue-50 border-l-4 border-l-blue-400",
+  "bg-green-50 border-l-4 border-l-green-400",
+  "bg-purple-50 border-l-4 border-l-purple-400",
+  "bg-pink-50 border-l-4 border-l-pink-400",
+  "bg-cyan-50 border-l-4 border-l-cyan-400",
+  "bg-orange-50 border-l-4 border-l-orange-400",
+];
+
 export const RawPOLinesTable = ({ 
   lineItems, 
   selectedUploadId,
   normalizedComponents = [],
 }: RawPOLinesTableProps) => {
+  const [groupDuplicates, setGroupDuplicates] = useState(false);
+
   const filteredItems = selectedUploadId
     ? lineItems.filter((item) => item.uploadId === selectedUploadId)
     : lineItems;
@@ -44,31 +58,80 @@ export const RawPOLinesTable = ({
     return set;
   }, [normalizedComponents]);
 
-  // Identify which lines are noise, duplicates, or new
-  const lineStatus = useMemo(() => {
+  // Identify which lines are noise, duplicates, or new, and group key
+  const { lineStatus, duplicateGroups, groupColorMap } = useMemo(() => {
     const seen = new Map<string, number>(); // description -> first index
-    const statuses: Map<string, "noise" | "duplicate" | "new">[] = [];
+    const descCount = new Map<string, number>(); // description -> count
+    const statuses: { status: "noise" | "duplicate" | "new"; groupKey: string }[] = [];
     
+    // First pass: count occurrences
+    filteredItems.forEach((item) => {
+      const desc = item.itemDescription?.trim() || "";
+      const descLower = desc.toLowerCase();
+      if (!isNoiseRow(desc)) {
+        descCount.set(descLower, (descCount.get(descLower) || 0) + 1);
+      }
+    });
+
+    // Second pass: assign statuses
     filteredItems.forEach((item, idx) => {
       const desc = item.itemDescription?.trim() || "";
       const descLower = desc.toLowerCase();
       
       if (isNoiseRow(desc)) {
-        statuses[idx] = new Map([["status", "noise"]]);
+        statuses[idx] = { status: "noise", groupKey: "" };
       } else if (seen.has(descLower)) {
-        statuses[idx] = new Map([["status", "duplicate"]]);
+        statuses[idx] = { status: "duplicate", groupKey: descLower };
       } else {
         seen.set(descLower, idx);
-        statuses[idx] = new Map([["status", "new"]]);
+        // Mark as "new" but if it has duplicates later, still assign groupKey
+        statuses[idx] = { 
+          status: (descCount.get(descLower) || 0) > 1 ? "duplicate" : "new", 
+          groupKey: (descCount.get(descLower) || 0) > 1 ? descLower : "" 
+        };
       }
     });
+
+    // Find all groups with duplicates
+    const groups = new Set<string>();
+    statuses.forEach((s) => {
+      if (s.groupKey) groups.add(s.groupKey);
+    });
+
+    // Assign colors to groups
+    const colorMap = new Map<string, string>();
+    let colorIdx = 0;
+    groups.forEach((key) => {
+      colorMap.set(key, groupColors[colorIdx % groupColors.length]);
+      colorIdx++;
+    });
     
-    return statuses;
+    return { lineStatus: statuses, duplicateGroups: groups, groupColorMap: colorMap };
   }, [filteredItems]);
 
+  // Sort items to group duplicates together when enabled
+  const displayItems = useMemo(() => {
+    if (!groupDuplicates) {
+      return filteredItems.map((item, idx) => ({ item, originalIdx: idx }));
+    }
+
+    // Sort by groupKey to cluster duplicates
+    const itemsWithIdx = filteredItems.map((item, idx) => ({ item, originalIdx: idx }));
+    return itemsWithIdx.sort((a, b) => {
+      const groupA = lineStatus[a.originalIdx]?.groupKey || "";
+      const groupB = lineStatus[b.originalIdx]?.groupKey || "";
+      
+      // Put items with groups first, sorted by group
+      if (groupA && !groupB) return -1;
+      if (!groupA && groupB) return 1;
+      if (groupA && groupB) return groupA.localeCompare(groupB);
+      return 0;
+    });
+  }, [filteredItems, groupDuplicates, lineStatus]);
+
   // Count stats
-  const noiseCount = lineStatus.filter((s) => s?.get("status") === "noise").length;
-  const duplicateCount = lineStatus.filter((s) => s?.get("status") === "duplicate").length;
+  const noiseCount = lineStatus.filter((s) => s?.status === "noise").length;
+  const duplicateCount = duplicateGroups.size;
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-AU", {
@@ -98,22 +161,31 @@ export const RawPOLinesTable = ({
               {filteredItems.length} items
             </Badge>
           </CardTitle>
-          {(noiseCount > 0 || duplicateCount > 0) && (
-            <div className="flex gap-2 text-sm">
-              {noiseCount > 0 && (
-                <Badge variant="outline" className="text-muted-foreground">
-                  <AlertTriangle className="h-3 w-3 mr-1" />
-                  {noiseCount} filtered
-                </Badge>
-              )}
-              {duplicateCount > 0 && (
-                <Badge variant="outline" className="text-amber-600 border-amber-300">
-                  <Copy className="h-3 w-3 mr-1" />
-                  {duplicateCount} duplicates
-                </Badge>
-              )}
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {duplicateCount > 0 && (
+              <Button
+                variant={groupDuplicates ? "default" : "outline"}
+                size="sm"
+                onClick={() => setGroupDuplicates(!groupDuplicates)}
+                className="gap-1"
+              >
+                <Layers className="h-3 w-3" />
+                {groupDuplicates ? "Grouped" : "Group Duplicates"}
+              </Button>
+            )}
+            {noiseCount > 0 && (
+              <Badge variant="outline" className="text-muted-foreground">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                {noiseCount} filtered
+              </Badge>
+            )}
+            {duplicateCount > 0 && (
+              <Badge variant="outline" className="text-amber-600 border-amber-300">
+                <Copy className="h-3 w-3 mr-1" />
+                {duplicateCount} duplicate groups
+              </Badge>
+            )}
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -139,13 +211,19 @@ export const RawPOLinesTable = ({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredItems.map((item, idx) => {
-                    const status = lineStatus[idx]?.get("status");
+                  {displayItems.map(({ item, originalIdx }) => {
+                    const statusInfo = lineStatus[originalIdx];
+                    const status = statusInfo?.status;
+                    const groupKey = statusInfo?.groupKey || "";
+                    const groupColor = groupKey ? groupColorMap.get(groupKey) : "";
+                    
                     const rowClass = status === "noise" 
                       ? "bg-muted/50 text-muted-foreground line-through" 
-                      : status === "duplicate" 
-                        ? "bg-amber-50 border-l-4 border-l-amber-400" 
-                        : "";
+                      : groupDuplicates && groupColor
+                        ? groupColor
+                        : status === "duplicate" 
+                          ? "bg-amber-50 border-l-4 border-l-amber-400" 
+                          : "";
                     
                     return (
                       <TableRow key={item.id} className={rowClass}>
