@@ -279,6 +279,9 @@ export const PartsComparisonDialog = ({
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0 flex-shrink-0">
+                          Visual
+                        </Badge>
                         <span className="font-mono text-sm text-muted-foreground">
                           {result.visualPart.site_part_number}
                         </span>
@@ -287,9 +290,19 @@ export const PartsComparisonDialog = ({
                         </span>
                       </div>
                       {result.matchedSiteSpare && (
-                        <p className="text-sm text-muted-foreground truncate mt-1">
-                          ↳ Matched: {result.matchedSiteSpare.part_number || "—"}{" "}
-                          {result.matchedSiteSpare.description}
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="outline" className="text-[10px] px-1.5 py-0 flex-shrink-0 bg-primary/5">
+                            Inventory
+                          </Badge>
+                          <span className="text-sm text-muted-foreground truncate">
+                            {result.matchedSiteSpare.part_number || "—"}{" "}
+                            {result.matchedSiteSpare.description}
+                          </span>
+                        </div>
+                      )}
+                      {result.matchType === "none" && (
+                        <p className="text-sm text-muted-foreground mt-1 italic">
+                          Not found in Site Spares Inventory
                         </p>
                       )}
                     </div>
