@@ -203,6 +203,14 @@ export const VisualPartCard = ({
           </SelectContent>
         </Select>
 
+        {/* Supplier */}
+        <Input
+          value={part.supplier || ""}
+          onChange={(e) => onUpdate(part.id, { supplier: e.target.value })}
+          placeholder="Supplier"
+          className="text-xs h-8"
+        />
+
         {/* Associated Asset */}
         <Input
           value={part.associated_asset}

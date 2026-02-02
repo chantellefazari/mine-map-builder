@@ -6,8 +6,9 @@ import type { NewVisualPart, VisualPart } from "@/hooks/useVisualPartsCatalogue"
 function normalizePart(row: any): VisualPart {
   return {
     ...(row as VisualPart),
-    // Backend types allow null; UI expects array.
+    // Backend types allow null; UI expects array/string.
     image_urls: (row?.image_urls ?? []) as string[],
+    supplier: (row?.supplier ?? "") as string,
   };
 }
 
