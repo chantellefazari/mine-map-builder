@@ -8,13 +8,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Loader2, ImageIcon, AlertTriangle } from "lucide-react";
+import { Plus, Search, Loader2, ImageIcon, AlertTriangle, RefreshCw } from "lucide-react";
 import { useVisualPartsCatalogueSafe } from "@/hooks/useVisualPartsCatalogueSafe";
 import { VisualPartCard } from "./VisualPartCard";
 import { AddVisualPartDialog } from "./AddVisualPartDialog";
 import { PART_CATEGORIES, CRITICALITY_LEVELS } from "./visualPartsConstants";
+import { classifyVisualPartCategory } from "@/utils/visualPartsClassification";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export const VisualPartsCatalogue = () => {
+  const { toast } = useToast();
   const {
     parts,
     loading,
@@ -23,12 +27,14 @@ export const VisualPartsCatalogue = () => {
     deletePart,
     addImageToPart,
     removeImageFromPart,
+    refetch,
   } = useVisualPartsCatalogueSafe();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterCriticality, setFilterCriticality] = useState<string>("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [isReclassifying, setIsReclassifying] = useState(false);
 
   const filteredParts = parts.filter((part) => {
     const matchesSearch =
@@ -44,6 +50,60 @@ export const VisualPartsCatalogue = () => {
   const totalParts = parts.length;
   const highCriticalCount = parts.filter((p) => p.criticality === "High").length;
   const partsWithImages = parts.filter((p) => p.image_urls.length > 0).length;
+  const generalCount = parts.filter((p) => p.category === "General").length;
+
+  // Reclassify all "General" parts using smart classification
+  const handleReclassifyCategories = async () => {
+    const generalParts = parts.filter((p) => p.category === "General");
+    if (generalParts.length === 0) {
+      toast({
+        title: "No items to reclassify",
+        description: "All parts already have specific categories",
+      });
+      return;
+    }
+
+    setIsReclassifying(true);
+    let updated = 0;
+
+    try {
+      for (const part of generalParts) {
+        const newCategory = classifyVisualPartCategory(part.part_name, null);
+        if (newCategory !== "General") {
+          const { error } = await supabase
+            .from("visual_parts_catalogue")
+            .update({ category: newCategory })
+            .eq("id", part.id);
+          
+          if (!error) {
+            updated++;
+          }
+        }
+      }
+
+      if (updated > 0) {
+        toast({
+          title: "Categories updated",
+          description: `${updated} parts reclassified based on descriptions`,
+        });
+        refetch();
+      } else {
+        toast({
+          title: "No changes made",
+          description: "Could not determine specific categories for any General items",
+        });
+      }
+    } catch (error) {
+      console.error("Error reclassifying:", error);
+      toast({
+        title: "Reclassification failed",
+        description: "An error occurred while updating categories",
+        variant: "destructive",
+      });
+    } finally {
+      setIsReclassifying(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -138,6 +198,21 @@ export const VisualPartsCatalogue = () => {
               ))}
             </SelectContent>
           </Select>
+          {generalCount > 0 && (
+            <Button 
+              variant="outline" 
+              onClick={handleReclassifyCategories} 
+              disabled={isReclassifying}
+              className="gap-2"
+            >
+              {isReclassifying ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <RefreshCw className="h-4 w-4" />
+              )}
+              Reclassify ({generalCount})
+            </Button>
+          )}
           <Button onClick={() => setAddDialogOpen(true)} className="gap-2">
             <Plus className="h-4 w-4" />
             Add Part
