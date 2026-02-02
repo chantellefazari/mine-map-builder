@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -36,6 +37,7 @@ export const PartsComparisonDialog = ({
 }: PartsComparisonDialogProps) => {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<ComparisonResult[]>([]);
+  const [filterType, setFilterType] = useState<"all" | "exact" | "partial" | "none">("all");
   const [stats, setStats] = useState({
     totalVisual: 0,
     totalSiteSpares: 0,
@@ -158,6 +160,11 @@ export const PartsComparisonDialog = ({
       ? Math.round((matchedCount / stats.totalVisual) * 100)
       : 0;
 
+  const filteredResults = results.filter((r) => {
+    if (filterType === "all") return true;
+    return r.matchType === filterType;
+  });
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
@@ -220,10 +227,36 @@ export const PartsComparisonDialog = ({
               </span>
             </div>
 
+            {/* Filter Tabs */}
+            <Tabs value={filterType} onValueChange={(v) => setFilterType(v as any)} className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="all" className="text-xs">
+                  All ({results.length})
+                </TabsTrigger>
+                <TabsTrigger value="exact" className="text-xs">
+                  <CheckCircle2 className="h-3 w-3 mr-1 text-success" />
+                  Exact ({stats.exactMatches})
+                </TabsTrigger>
+                <TabsTrigger value="partial" className="text-xs">
+                  <AlertCircle className="h-3 w-3 mr-1 text-warning" />
+                  Partial ({stats.partialMatches})
+                </TabsTrigger>
+                <TabsTrigger value="none" className="text-xs">
+                  <XCircle className="h-3 w-3 mr-1 text-destructive" />
+                  No Match ({stats.noMatch})
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
             {/* Detailed Results */}
             <ScrollArea className="flex-1 min-h-0">
               <div className="space-y-2 pr-4">
-                {results.map((result) => (
+                {filteredResults.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No parts in this category.
+                  </div>
+                ) : (
+                  filteredResults.map((result) => (
                   <div
                     key={result.visualPart.id}
                     className="flex items-center gap-3 p-3 border rounded-lg bg-card"
@@ -270,7 +303,8 @@ export const PartsComparisonDialog = ({
                       {result.matchType === "none" && "No Match"}
                     </Badge>
                   </div>
-                ))}
+                  ))
+                )}
               </div>
             </ScrollArea>
 
