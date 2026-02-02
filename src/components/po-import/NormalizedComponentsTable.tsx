@@ -504,8 +504,8 @@ export const NormalizedComponentsTable = ({
                           </SelectContent>
                       </Select>
                     </TableCell>
-                    <TableCell className="font-mono text-xs">
-                      {component.partNumber || "-"}
+                    <TableCell className="font-mono text-xs text-muted-foreground">
+                      {component.partNumber || "Missing Part"}
                     </TableCell>
                     <TableCell className="text-sm">
                       {component.descriptionCleaned}
