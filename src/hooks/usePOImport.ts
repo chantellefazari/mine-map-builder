@@ -304,14 +304,9 @@ export const usePOImport = () => {
         // Clean the description to remove lead times, pricing notes, etc.
         const description = cleanDescription(rawDescription);
         
-        // Try to extract part number from description if not provided
-        let partNumber = item.part_number?.trim() || "";
-        if (!partNumber) {
-          const extractedPNs = extractPartNumbers(rawDescription);
-          if (extractedPNs.length > 0) {
-            partNumber = extractedPNs[0];
-          }
-        }
+        // Part numbers are intentionally left blank - site uses custom numbering system
+        // Description serves as primary identifier for ordering
+        const partNumber = "";
         
         const manufacturer = item.manufacturer?.trim() || "";
         const model = item.model?.trim() || "";
@@ -398,7 +393,7 @@ export const usePOImport = () => {
             component_type: componentType,
             manufacturer: manufacturer,
             model: model,
-            part_number: partNumber,
+            part_number: "", // Always blank - site uses custom numbering system
             description_cleaned: description,
             supplier: supplierName,
             last_ordered_date: item.po_date || null,
@@ -408,7 +403,7 @@ export const usePOImport = () => {
             total_qty_ordered: item.qty || 0,
             total_spend: item.total_price || 0,
             notes: "",
-            review_flag: !partNumber || !manufacturer,
+            review_flag: !manufacturer, // Only flag if manufacturer missing
             alias_descriptions: "",
             linked_asset: "",
             duplicate_key: duplicateKey,
