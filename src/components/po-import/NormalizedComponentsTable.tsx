@@ -35,14 +35,19 @@ import {
   ChevronUp,
   FileSpreadsheet,
   Layers,
+  Trash2,
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import { NormalizedComponent, componentTypes } from "@/hooks/usePOImport";
 import { extractCorePart, extractCoreIdentifiers } from "@/utils/corePartExtractor";
+import { Checkbox } from "@/components/ui/checkbox";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface NormalizedComponentsTableProps {
   components: NormalizedComponent[];
   onUpdateComponent: (id: string, updates: Partial<NormalizedComponent>) => Promise<boolean>;
+  onRefetch: () => void;
 }
 
 type SortField = "lastOrderedDate" | "totalSpend" | "totalOrdersInPeriod" | "descriptionCleaned";
@@ -51,12 +56,16 @@ type FilterType = "all" | "duplicates" | "missingPartNumber" | "orderedOnce" | "
 export const NormalizedComponentsTable = ({
   components,
   onUpdateComponent,
+  onRefetch,
 }: NormalizedComponentsTableProps) => {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [selectedSupplier, setSelectedSupplier] = useState<string>("all");
   const [sortField, setSortField] = useState<SortField>("lastOrderedDate");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Get unique suppliers for the filter dropdown
   const uniqueSuppliers = [...new Set(components.map((c) => c.supplier).filter(Boolean))].sort();
@@ -225,6 +234,57 @@ export const NormalizedComponentsTable = ({
     return assignments;
   }, [duplicateGroups]);
 
+  const toggleSelection = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredComponents.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredComponents.map((c) => c.id)));
+    }
+  };
+
+  const deleteSelected = async () => {
+    if (selectedIds.size === 0) return;
+    
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from("normalized_components")
+        .delete()
+        .in("id", Array.from(selectedIds));
+
+      if (error) throw error;
+
+      toast({
+        title: "Deleted",
+        description: `${selectedIds.size} duplicate(s) removed`,
+      });
+      
+      setSelectedIds(new Set());
+      onRefetch();
+    } catch (error) {
+      console.error("Error deleting components:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete selected components",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -302,6 +362,17 @@ export const NormalizedComponentsTable = ({
             </Badge>
           </CardTitle>
           <div className="flex flex-wrap gap-2">
+            {selectedIds.size > 0 && (
+              <Button 
+                variant="destructive" 
+                size="sm" 
+                onClick={deleteSelected}
+                disabled={isDeleting}
+              >
+                <Trash2 className="h-4 w-4 mr-1" />
+                Delete Selected ({selectedIds.size})
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={copyToClipboard}>
               <Copy className="h-4 w-4 mr-1" />
               Copy
@@ -373,6 +444,12 @@ export const NormalizedComponentsTable = ({
               <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[40px]">
+                    <Checkbox
+                      checked={selectedIds.size === filteredComponents.length && filteredComponents.length > 0}
+                      onCheckedChange={toggleSelectAll}
+                    />
+                  </TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Part Number</TableHead>
                   <TableHead
@@ -401,25 +478,31 @@ export const NormalizedComponentsTable = ({
                   
                   return (
                     <TableRow key={component.id} className={groupColor}>
-                    <TableCell>
-                      <Select
-                        value={component.componentType}
-                        onValueChange={(v) =>
-                          onUpdateComponent(component.id, { componentType: v })
-                        }
-                      >
-                        <SelectTrigger className="h-8 w-[100px] text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {componentTypes.map((type) => (
-                            <SelectItem key={type} value={type}>
-                              {type}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedIds.has(component.id)}
+                          onCheckedChange={() => toggleSelection(component.id)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Select
+                          value={component.componentType}
+                          onValueChange={(v) =>
+                            onUpdateComponent(component.id, { componentType: v })
+                          }
+                        >
+                          <SelectTrigger className="h-8 w-[100px] text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {componentTypes.map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
                     <TableCell className="font-mono text-xs">
                       {component.partNumber || (
                         <Badge variant="outline" className="text-orange-600 border-orange-300">

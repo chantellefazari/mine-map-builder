@@ -36,6 +36,7 @@ const POImport = () => {
     deleteUpload,
     clearAllData,
     fetchLineItems,
+    refetch,
   } = usePOImport();
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -180,6 +181,7 @@ const POImport = () => {
             <NormalizedComponentsTable
               components={normalizedComponents}
               onUpdateComponent={updateComponent}
+              onRefetch={refetch}
             />
           </TabsContent>
         </Tabs>
