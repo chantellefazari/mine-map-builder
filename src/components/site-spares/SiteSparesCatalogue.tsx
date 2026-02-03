@@ -8,12 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon } from "lucide-react";
 import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { AddSpareDialog } from "./AddSpareDialog";
 import { ImportSpareDialog } from "./ImportSpareDialog";
 import { SiteSpareCard } from "./SiteSpareCard";
 import { SiteSpareDetailDialog } from "./SiteSpareDetailDialog";
+import { OrphanedImageRecovery } from "./OrphanedImageRecovery";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
 import { classifyCategory } from "@/utils/categoryClassification";
 import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesToSiteSpares";
@@ -52,6 +53,7 @@ export const SiteSparesCatalogue = () => {
   const [importingCritical, setImportingCritical] = useState(false);
   const [selectedSpare, setSelectedSpare] = useState<SiteSpareItem | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [showImageRecovery, setShowImageRecovery] = useState(false);
 
   // Derive categories dynamically from actual data
   const availableCategories = [...new Set(spares.map((s) => s.category))].filter(Boolean).sort();
@@ -370,6 +372,15 @@ export const SiteSparesCatalogue = () => {
             <Upload className="h-4 w-4" />
             Import Excel
           </Button>
+          <Button 
+            size="sm" 
+            variant={showImageRecovery ? "default" : "outline"} 
+            className="gap-2" 
+            onClick={() => setShowImageRecovery(!showImageRecovery)}
+          >
+            <ImageIcon className="h-4 w-4" />
+            {showImageRecovery ? "Hide Image Recovery" : "Recover Images"}
+          </Button>
           <Button size="sm" className="gap-2" onClick={() => setAddDialogOpen(true)}>
             <Plus className="h-4 w-4" />
             Add Item
@@ -394,6 +405,13 @@ export const SiteSparesCatalogue = () => {
         onDelete={deleteSpare}
       />
 
+      {/* Image Recovery Tool */}
+      {showImageRecovery && (
+        <OrphanedImageRecovery 
+          spares={spares} 
+          onImageAssigned={refetch} 
+        />
+      )}
       {/* Card Grid */}
       {filteredSpares.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
