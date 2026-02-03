@@ -47,6 +47,7 @@ export const SiteSparesCatalogue = () => {
   const [filterWarehouse, setFilterWarehouse] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterCriticality, setFilterCriticality] = useState<string>("all");
+  const [filterSupplier, setFilterSupplier] = useState<string>("all");
   const [quickFilter, setQuickFilter] = useState<"all" | "lowStock" | "critical">("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
@@ -57,6 +58,9 @@ export const SiteSparesCatalogue = () => {
 
   // Derive categories dynamically from actual data
   const availableCategories = [...new Set(spares.map((s) => s.category))].filter(Boolean).sort();
+  
+  // Derive suppliers dynamically from actual data
+  const availableSuppliers = [...new Set(spares.map((s) => s.preferred_supplier))].filter(Boolean).sort();
 
   const getCriticality = (spare: SiteSpareItem): CriticalityLevel => {
     return classifyCriticality(spare.description);
@@ -166,6 +170,7 @@ export const SiteSparesCatalogue = () => {
     filterWarehouse !== "all" ||
     filterStatus !== "all" ||
     filterCriticality !== "all" ||
+    filterSupplier !== "all" ||
     quickFilter !== "all";
 
   const clearFilters = () => {
@@ -174,6 +179,7 @@ export const SiteSparesCatalogue = () => {
     setFilterWarehouse("all");
     setFilterStatus("all");
     setFilterCriticality("all");
+    setFilterSupplier("all");
     setQuickFilter("all");
   };
 
@@ -187,6 +193,7 @@ export const SiteSparesCatalogue = () => {
     const matchesCategory = filterCategory === "all" || spare.category === filterCategory;
     const matchesWarehouse = filterWarehouse === "all" || spare.warehouse_area === filterWarehouse;
     const matchesStatus = filterStatus === "all" || spare.status === filterStatus;
+    const matchesSupplier = filterSupplier === "all" || spare.preferred_supplier === filterSupplier;
 
     const spareCriticality = getCriticality(spare);
     const matchesCriticality = filterCriticality === "all" || spareCriticality === filterCriticality;
@@ -196,7 +203,7 @@ export const SiteSparesCatalogue = () => {
       (quickFilter === "lowStock" && (spare.status === "Low Stock" || spare.status === "Out of Stock")) ||
       (quickFilter === "critical" && spareCriticality === "HIGH");
 
-    return matchesSearch && matchesCategory && matchesWarehouse && matchesStatus && matchesCriticality && matchesQuickFilter;
+    return matchesSearch && matchesCategory && matchesWarehouse && matchesStatus && matchesCriticality && matchesSupplier && matchesQuickFilter;
   });
 
   // Summary stats
@@ -334,6 +341,19 @@ export const SiteSparesCatalogue = () => {
               <SelectItem value="HIGH">🔴 HIGH</SelectItem>
               <SelectItem value="MEDIUM">🟠 MEDIUM</SelectItem>
               <SelectItem value="LOW">🟢 LOW</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterSupplier} onValueChange={setFilterSupplier}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Supplier" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Suppliers</SelectItem>
+              {availableSuppliers.map((sup) => (
+                <SelectItem key={sup} value={sup}>
+                  {sup}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           {hasActiveFilters && (
