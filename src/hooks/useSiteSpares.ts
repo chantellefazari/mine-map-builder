@@ -186,7 +186,7 @@ export const useSiteSpares = () => {
     return true;
   };
 
-  // Merge multiple spares (adds to existing, doesn't replace)
+  // Merge multiple spares (adds to existing, preserves photos from existing records)
   const mergeSpares = async (newSpares: Omit<SiteSpareItem, "id">[]) => {
     if (newSpares.length === 0) {
       toast({
@@ -196,12 +196,36 @@ export const useSiteSpares = () => {
       return true;
     }
 
+    // Build a lookup of existing items with photos by normalized description
+    const normalizeDesc = (d: string) => (d || "").toLowerCase().trim();
+    const existingWithPhotos = new Map<string, string[]>();
+    
+    spares.forEach((s) => {
+      if (s.image_urls && s.image_urls.length > 0) {
+        const key = normalizeDesc(s.description);
+        if (key) {
+          existingWithPhotos.set(key, s.image_urls);
+        }
+      }
+    });
+
+    // Preserve photos from existing records when merging
+    const sparesWithPhotos = newSpares.map((spare) => {
+      const key = normalizeDesc(spare.description);
+      const existingPhotos = existingWithPhotos.get(key);
+      
+      if (existingPhotos && existingPhotos.length > 0 && (!spare.image_urls || spare.image_urls.length === 0)) {
+        return { ...spare, image_urls: existingPhotos };
+      }
+      return spare;
+    });
+
     // Insert new spares in batches of 100
     const batchSize = 100;
     let insertedCount = 0;
 
-    for (let i = 0; i < newSpares.length; i += batchSize) {
-      const batch = newSpares.slice(i, i + batchSize);
+    for (let i = 0; i < sparesWithPhotos.length; i += batchSize) {
+      const batch = sparesWithPhotos.slice(i, i + batchSize);
       const { error: insertError } = await supabase
         .from("site_spares")
         .insert(batch);
