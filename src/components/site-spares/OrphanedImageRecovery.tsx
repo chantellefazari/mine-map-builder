@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Search, Check, X, Image as ImageIcon, Loader2 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { type SiteSpareItem } from "@/hooks/useSiteSpares";
 
@@ -37,32 +38,45 @@ export const OrphanedImageRecovery = ({ spares, onImageAssigned }: OrphanedImage
     fetchOrphanedImages();
   }, []);
 
+  const [loadingProgress, setLoadingProgress] = useState(0);
+
   const fetchOrphanedImages = async () => {
     setLoading(true);
+    setLoadingProgress(0);
     try {
-      // List all files in the visual-parts-images bucket
+      // List all folders in the bucket
       const { data: allFiles, error } = await supabase.storage
         .from("visual-parts-images")
         .list("", { limit: 500, sortBy: { column: "created_at", order: "desc" } });
 
       if (error) throw error;
 
-      // Get files from subfolders (each image is in a UUID folder)
+      // Filter to only folders (id === null means it's a folder)
+      const folders = (allFiles || []).filter(f => f.id === null);
+      const totalFolders = folders.length;
+      
+      // Fetch all folder contents in PARALLEL (much faster!)
+      const batchSize = 20; // Process 20 folders at a time
       const images: OrphanedImage[] = [];
       
-      for (const folder of allFiles || []) {
-        if (folder.id === null) {
-          // This is a folder, list its contents
-          const { data: files } = await supabase.storage
-            .from("visual-parts-images")
-            .list(folder.name, { limit: 10 });
-          
-          for (const file of files || []) {
+      for (let i = 0; i < folders.length; i += batchSize) {
+        const batch = folders.slice(i, i + batchSize);
+        
+        const results = await Promise.all(
+          batch.map(folder => 
+            supabase.storage
+              .from("visual-parts-images")
+              .list(folder.name, { limit: 10 })
+          )
+        );
+        
+        results.forEach((result, idx) => {
+          const folder = batch[idx];
+          for (const file of result.data || []) {
             if (file.name && !file.name.startsWith('.')) {
               const path = `${folder.name}/${file.name}`;
               const url = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/visual-parts-images/${path}`;
               
-              // Only include if NOT already assigned to a site spare
               if (!assignedUrls.has(url)) {
                 images.push({
                   name: path,
@@ -72,7 +86,9 @@ export const OrphanedImageRecovery = ({ spares, onImageAssigned }: OrphanedImage
               }
             }
           }
-        }
+        });
+        
+        setLoadingProgress(Math.min(100, Math.round(((i + batch.length) / totalFolders) * 100)));
       }
 
       setOrphanedImages(images);
@@ -147,9 +163,13 @@ export const OrphanedImageRecovery = ({ spares, onImageAssigned }: OrphanedImage
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div className="flex flex-col items-center justify-center py-12 gap-4">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        <span className="ml-2 text-muted-foreground">Loading orphaned images...</span>
+        <span className="text-muted-foreground">Loading orphaned images...</span>
+        <div className="w-64">
+          <Progress value={loadingProgress} className="h-2" />
+          <p className="text-xs text-muted-foreground text-center mt-1">{loadingProgress}%</p>
+        </div>
       </div>
     );
   }
