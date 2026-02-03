@@ -25,7 +25,9 @@ export type VisualPartCategory =
   | "Pneumatic"
   | "Structural"
   | "Wear Part"
-  | "Safety Equipment";
+  | "Safety Equipment"
+  | "Tooling"
+  | "Rigging";
 
 // Supplier specialization mappings
 // Based on known supplier categories at Tennant Creek
@@ -61,6 +63,17 @@ const SUPPLIER_CATEGORY_MAP: Record<string, VisualPartCategory> = {
   
   // Matec = Filter press components
   "matec": "Filter",
+  
+  // Sydney Tools = Tooling
+  "sydney tools": "Tooling",
+  "sydneytools": "Tooling",
+  
+  // ALL RIG = Rigging
+  "all rig": "Rigging",
+  "allrig": "Rigging",
+  
+  // Mixtec = Gearbox Component
+  "mixtec": "Gearbox Component",
 };
 
 // Description keyword mappings for Visual Parts categories
@@ -179,6 +192,17 @@ const DESCRIPTION_KEYWORDS: Record<VisualPartCategory, string[]> = {
     "harness", "lanyard", "helmet", "safety shower", "eyewash",
   ],
   
+  "Tooling": [
+    "tool", "drill", "grinder", "saw", "wrench", "socket", "hammer",
+    "screwdriver", "plier", "spanner", "cutting tool", "power tool",
+  ],
+  
+  "Rigging": [
+    "rigging", "shackle", "sling", "chain block", "hoist", "lifting",
+    "d-shackle", "bow shackle", "wire rope", "turnbuckle", "eye bolt",
+    "swivel", "hook", "load binder",
+  ],
+  
   "General": [],
 };
 
@@ -201,6 +225,8 @@ const CATEGORY_PRIORITY: VisualPartCategory[] = [
   "Pneumatic",
   "Structural",
   "Safety Equipment",
+  "Tooling",
+  "Rigging",
   "General",
 ];
 

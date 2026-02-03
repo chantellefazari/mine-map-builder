@@ -17,6 +17,8 @@ export const PART_CATEGORIES = [
   "Structural",
   "Wear Part",
   "Safety Equipment",
+  "Tooling",
+  "Rigging",
 ] as const;
 
 export const CRITICALITY_LEVELS = ["HIGH", "MEDIUM", "LOW"] as const;
