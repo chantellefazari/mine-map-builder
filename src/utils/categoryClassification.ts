@@ -13,14 +13,18 @@ export type SpareCategory =
   | "Filter"
   | "Gearbox"
   | "Hose & Tubing"
+  | "Hydraulic"
+  | "Instrumentation"
+  | "Liner"
   | "Mechanical"
   | "Motor Component"
   | "Pipe Fitting"
+  | "Pneumatic"
   | "Pump Component"
+  | "Seal"
   | "Valve"
   | "Conveyor Component"
-  | "Instrumentation"
-  | "Seal"
+  | "Wear Part"
   | "General";
 
 // Category keyword mappings - checked in priority order
@@ -138,10 +142,33 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
   
   // Consumables - PPE, lubricants, cleaning
   "Consumable": [
-    "glove", "ppe", "safety", "respirator", "earmuff", "glasses",
+    "glove", "ppe", "respirator", "earmuff", "glasses",
     "lubricant", "grease", "oil", "degreaser", "cleaning", "rag",
     "tape", "adhesive", "sealant", "paint", "marker",
     "grease nipple", "zerk", "divider valve",
+  ],
+  
+  // Hydraulic components
+  "Hydraulic": [
+    "hydraulic", "hydraulic valve", "hydraulic pump", "hydraulic motor",
+    "hydraulic cylinder", "hydraulic fitting", "hydraulic oil",
+  ],
+  
+  // Pneumatic components
+  "Pneumatic": [
+    "pneumatic", "air cylinder", "air valve", "pneumatic fitting",
+    "pneumatic actuator", "air regulator", "frl",
+  ],
+  
+  // Liners
+  "Liner": [
+    "liner", "wear liner", "chute liner", "mill liner", "rubber liner",
+  ],
+  
+  // Wear Parts
+  "Wear Part": [
+    "wear part", "wear plate", "wear ring", "wear strip", "impact plate",
+    "screen panel", "screen mesh", "crusher liner",
   ],
   
   // General - fallback (no keywords)
@@ -163,6 +190,10 @@ const CATEGORY_PRIORITY: SpareCategory[] = [
   "Gearbox",
   "Instrumentation",
   "Electrical",
+  "Hydraulic",
+  "Pneumatic",
+  "Liner",
+  "Wear Part",
   "Mechanical",
   "Consumable",
   "General",
@@ -307,6 +338,14 @@ export const getCategoryColor = (category: SpareCategory): string => {
       return "bg-zinc-100 text-zinc-700 border-zinc-200";
     case "Consumable":
       return "bg-green-100 text-green-700 border-green-200";
+    case "Hydraulic":
+      return "bg-red-100 text-red-700 border-red-200";
+    case "Pneumatic":
+      return "bg-blue-100 text-blue-700 border-blue-200";
+    case "Liner":
+      return "bg-stone-100 text-stone-700 border-stone-200";
+    case "Wear Part":
+      return "bg-amber-100 text-amber-700 border-amber-200";
     default:
       return "bg-gray-100 text-gray-700 border-gray-200";
   }
