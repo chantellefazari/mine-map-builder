@@ -219,6 +219,7 @@ export type Database = {
           critical_spare_id: string | null
           description: string
           id: string
+          image_urls: string[] | null
           is_critical: boolean | null
           last_purchase_date: string | null
           lead_time_days: number | null
@@ -252,6 +253,7 @@ export type Database = {
           critical_spare_id?: string | null
           description: string
           id?: string
+          image_urls?: string[] | null
           is_critical?: boolean | null
           last_purchase_date?: string | null
           lead_time_days?: number | null
@@ -285,6 +287,7 @@ export type Database = {
           critical_spare_id?: string | null
           description?: string
           id?: string
+          image_urls?: string[] | null
           is_critical?: boolean | null
           last_purchase_date?: string | null
           lead_time_days?: number | null

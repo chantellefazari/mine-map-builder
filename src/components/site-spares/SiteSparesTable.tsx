@@ -16,11 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, ImageIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { AddSpareDialog } from "./AddSpareDialog";
 import { ImportSpareDialog } from "./ImportSpareDialog";
+import { SpareImageCell } from "./SpareImageCell";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
 import { classifyCategory, getCategoryColor, getAllCategories, type SpareCategory } from "@/utils/categoryClassification";
 import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesToSiteSpares";
@@ -329,6 +330,9 @@ export const SiteSparesTable = () => {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
+              <TableHead className="w-10 font-semibold text-center">
+                <ImageIcon className="h-4 w-4 mx-auto text-muted-foreground" />
+              </TableHead>
               <TableHead className="min-w-[100px] font-semibold">Part Number</TableHead>
               <TableHead className="min-w-[250px] font-semibold">Description</TableHead>
               <TableHead className="min-w-[150px] font-semibold">Size / Specs</TableHead>
@@ -349,6 +353,14 @@ export const SiteSparesTable = () => {
           <TableBody>
             {filteredSpares.map((spare) => (
               <TableRow key={spare.id} className="cursor-pointer hover:bg-muted/50">
+                <TableCell className="text-center p-1">
+                  <SpareImageCell
+                    spareId={spare.id}
+                    imageUrls={spare.image_urls || []}
+                    spareName={spare.description}
+                    onImagesChange={(urls) => updateSpare(spare.id, { image_urls: urls })}
+                  />
+                </TableCell>
                 <TableCell className="font-mono text-sm font-medium text-muted-foreground">
                   {spare.part_number || "—"}
                 </TableCell>
