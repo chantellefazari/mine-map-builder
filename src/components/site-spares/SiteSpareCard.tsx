@@ -192,7 +192,7 @@ export const SiteSpareCard = ({
             <img
               src={imageUrls[currentImageIndex]}
               alt={spare.description}
-              className="absolute inset-0 w-full h-full object-contain"
+              className="absolute inset-0 w-full h-full object-cover"
             />
             {imageUrls.length > 1 && (
               <>
