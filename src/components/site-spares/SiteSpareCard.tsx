@@ -191,11 +191,9 @@ export const SiteSpareCard = ({
       <CardContent className="p-2.5 space-y-1.5">
         {/* Part Number + Criticality Badges */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          {spare.part_number && (
-            <Badge variant="outline" className="font-mono text-[10px] h-5">
-              {spare.part_number}
-            </Badge>
-          )}
+          <Badge variant="outline" className="font-mono text-[10px] h-5">
+            {spare.part_number || "000000"}
+          </Badge>
           <Badge className={`text-[9px] h-4 px-1.5 ${criticalityColors[criticality]}`}>
             {criticality}
           </Badge>
