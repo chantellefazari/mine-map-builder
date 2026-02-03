@@ -1,0 +1,533 @@
+import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { ChevronLeft, ChevronRight, Trash2, Upload, X, ImageIcon } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import type { SiteSpareItem } from "@/hooks/useSiteSpares";
+import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
+
+// Criticality badge colors
+const criticalityColors: Record<CriticalityLevel, string> = {
+  HIGH: "bg-destructive/20 text-destructive border-destructive/30",
+  MEDIUM: "bg-warning/20 text-warning border-warning/30",
+  LOW: "bg-success/20 text-success border-success/30",
+};
+
+// Status options
+const statusOptions = [
+  "Active",
+  "Low Stock",
+  "Out of Stock",
+  "Pending Review",
+  "Obsolete",
+  "Require Repair",
+];
+
+// Warehouse areas
+const warehouseAreas = [
+  "Storage Shelter",
+  "Site Office Laydown Area",
+  "Shutdown Staging Area",
+  "Workshop",
+  "Workshop Laydown Area",
+  "WC01",
+  "WC02",
+  "WC03",
+  "WC04",
+  "WC05",
+  "WC07 (Crushing Area)",
+  "WC08 (Crushing Area)",
+  "WC09 (Crushing Area)",
+  "Crushing Laydown Area",
+  "MCC",
+];
+
+interface SiteSpareDetailDialogProps {
+  spare: SiteSpareItem | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onUpdate: (id: string, updates: Partial<SiteSpareItem>) => void;
+  onDelete: (id: string) => void;
+}
+
+export const SiteSpareDetailDialog = ({
+  spare,
+  open,
+  onOpenChange,
+  onUpdate,
+  onDelete,
+}: SiteSpareDetailDialogProps) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [localSpare, setLocalSpare] = useState<SiteSpareItem | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    if (spare) {
+      setLocalSpare(spare);
+      setCurrentImageIndex(0);
+    }
+  }, [spare]);
+
+  if (!localSpare) return null;
+
+  const imageUrls = localSpare.image_urls || [];
+  const criticality = classifyCriticality(localSpare.description);
+
+  const handleFieldChange = (field: keyof SiteSpareItem, value: any) => {
+    setLocalSpare((prev) => prev ? { ...prev, [field]: value } : null);
+  };
+
+  const handleFieldBlur = (field: keyof SiteSpareItem) => {
+    if (localSpare && spare) {
+      const value = localSpare[field];
+      if (value !== spare[field]) {
+        onUpdate(spare.id, { [field]: value });
+      }
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !spare) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const fileExt = (file.name?.split(".").pop() || "png").toLowerCase();
+      const fileName = `site-spares/${spare.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("visual-parts-images")
+        .upload(fileName, file, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from("visual-parts-images")
+        .getPublicUrl(fileName);
+
+      const currentUrls = spare.image_urls || [];
+      const newUrls = [...currentUrls, urlData.publicUrl];
+      onUpdate(spare.id, { image_urls: newUrls });
+      setLocalSpare((prev) => prev ? { ...prev, image_urls: newUrls } : null);
+      toast.success("Image uploaded");
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Failed to upload image");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleRemoveImage = async (urlToRemove: string) => {
+    if (!spare) return;
+    try {
+      const path = urlToRemove.split("/visual-parts-images/")[1];
+      if (path) {
+        await supabase.storage.from("visual-parts-images").remove([path]);
+      }
+      const currentUrls = localSpare.image_urls || [];
+      const newUrls = currentUrls.filter((url) => url !== urlToRemove);
+      onUpdate(spare.id, { image_urls: newUrls });
+      setLocalSpare((prev) => prev ? { ...prev, image_urls: newUrls } : null);
+      setCurrentImageIndex(0);
+      toast.success("Image removed");
+    } catch (error) {
+      console.error("Remove error:", error);
+    }
+  };
+
+  const nextImage = () => {
+    if (imageUrls.length > 1) {
+      setCurrentImageIndex((prev) => (prev + 1) % imageUrls.length);
+    }
+  };
+
+  const prevImage = () => {
+    if (imageUrls.length > 1) {
+      setCurrentImageIndex((prev) =>
+        prev === 0 ? imageUrls.length - 1 : prev - 1
+      );
+    }
+  };
+
+  const handleDelete = () => {
+    if (spare) {
+      onDelete(spare.id);
+      onOpenChange(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-base">
+            {localSpare.part_number && (
+              <Badge variant="outline" className="font-mono text-xs">
+                {localSpare.part_number}
+              </Badge>
+            )}
+            <Badge className={`text-[10px] ${criticalityColors[criticality]}`}>
+              {criticality}
+            </Badge>
+            <span className="truncate">{localSpare.description.slice(0, 50)}{localSpare.description.length > 50 ? "..." : ""}</span>
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Image Section */}
+          <div className="space-y-2">
+            <Label className="text-xs">Images</Label>
+            <div className={`relative aspect-[4/3] bg-background border rounded-lg overflow-hidden ${isUploading ? "opacity-50" : ""}`}>
+              {imageUrls.length > 0 ? (
+                <>
+                  <img
+                    src={imageUrls[currentImageIndex]}
+                    alt={localSpare.description}
+                    className="absolute inset-0 w-full h-full object-contain p-2"
+                  />
+                  {imageUrls.length > 1 && (
+                    <>
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8"
+                        onClick={prevImage}
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8"
+                        onClick={nextImage}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                        {imageUrls.map((_, idx) => (
+                          <div
+                            key={idx}
+                            className={`w-2 h-2 rounded-full ${
+                              idx === currentImageIndex ? "bg-primary" : "bg-muted"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-2 right-2 h-7 w-7"
+                    onClick={() => handleRemoveImage(imageUrls[currentImageIndex])}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                  <ImageIcon className="h-16 w-16 mb-3" />
+                  <span className="text-sm">No images uploaded</span>
+                </div>
+              )}
+            </div>
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                id="spare-detail-image-upload"
+                onChange={handleImageUpload}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={() => document.getElementById("spare-detail-image-upload")?.click()}
+                disabled={isUploading}
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                {isUploading ? "Uploading..." : "Upload Image"}
+              </Button>
+            </div>
+          </div>
+
+          {/* Details Section */}
+          <div className="space-y-3">
+            {/* Description */}
+            <div className="space-y-1">
+              <Label className="text-xs">Description</Label>
+              <Textarea
+                value={localSpare.description}
+                onChange={(e) => handleFieldChange("description", e.target.value)}
+                onBlur={() => handleFieldBlur("description")}
+                className="min-h-[60px] text-sm"
+              />
+            </div>
+
+            {/* Category & Supplier */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Category</Label>
+                <Input
+                  value={localSpare.category || ""}
+                  onChange={(e) => handleFieldChange("category", e.target.value)}
+                  onBlur={() => handleFieldBlur("category")}
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Supplier / Mfr</Label>
+                <Input
+                  value={localSpare.manufacturer || ""}
+                  onChange={(e) => handleFieldChange("manufacturer", e.target.value)}
+                  onBlur={() => handleFieldBlur("manufacturer")}
+                  className="h-8 text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Asset Tag */}
+            <div className="space-y-1">
+              <Label className="text-xs">Asset / System</Label>
+              <Input
+                value={localSpare.asset_tag || ""}
+                onChange={(e) => handleFieldChange("asset_tag", e.target.value)}
+                onBlur={() => handleFieldBlur("asset_tag")}
+                className="h-8 text-sm"
+              />
+            </div>
+
+            {/* Specifications & OEM */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Size / Specs</Label>
+                <Input
+                  value={localSpare.specifications || ""}
+                  onChange={(e) => handleFieldChange("specifications", e.target.value)}
+                  onBlur={() => handleFieldBlur("specifications")}
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">OEM Part #</Label>
+                <Input
+                  value={localSpare.oem_part_number || ""}
+                  onChange={(e) => handleFieldChange("oem_part_number", e.target.value)}
+                  onBlur={() => handleFieldBlur("oem_part_number")}
+                  className="h-8 text-sm font-mono"
+                />
+              </div>
+            </div>
+
+            {/* Location */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Warehouse Area</Label>
+                <Select
+                  value={localSpare.warehouse_area || ""}
+                  onValueChange={(val) => {
+                    handleFieldChange("warehouse_area", val);
+                    if (spare) onUpdate(spare.id, { warehouse_area: val });
+                  }}
+                >
+                  <SelectTrigger className="h-8 text-sm">
+                    <SelectValue placeholder="Select area" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {warehouseAreas.map((area) => (
+                      <SelectItem key={area} value={area}>{area}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Bin Location</Label>
+                <Input
+                  value={localSpare.bin_location || ""}
+                  onChange={(e) => handleFieldChange("bin_location", e.target.value)}
+                  onBlur={() => handleFieldBlur("bin_location")}
+                  className="h-8 text-sm font-mono"
+                />
+              </div>
+            </div>
+
+            {/* Status */}
+            <div className="space-y-1">
+              <Label className="text-xs">Status</Label>
+              <Select
+                value={localSpare.status || "Active"}
+                onValueChange={(val) => {
+                  handleFieldChange("status", val);
+                  if (spare) onUpdate(spare.id, { status: val });
+                }}
+              >
+                <SelectTrigger className="h-8 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusOptions.map((status) => (
+                    <SelectItem key={status} value={status}>{status}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Inventory Section */}
+            <div className="border-t pt-3 mt-3">
+              <h4 className="font-medium text-sm mb-2">Inventory & Pricing</h4>
+              <div className="grid grid-cols-4 gap-2">
+                <div className="space-y-0.5">
+                  <Label className="text-[10px]">Qty</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={localSpare.qty_on_hand ?? 0}
+                    onChange={(e) => handleFieldChange("qty_on_hand", parseInt(e.target.value) || 0)}
+                    onBlur={() => handleFieldBlur("qty_on_hand")}
+                    className="h-7 text-sm text-center"
+                  />
+                </div>
+                <div className="space-y-0.5">
+                  <Label className="text-[10px]">Min</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={localSpare.min_qty ?? 0}
+                    onChange={(e) => handleFieldChange("min_qty", parseInt(e.target.value) || 0)}
+                    onBlur={() => handleFieldBlur("min_qty")}
+                    className="h-7 text-sm text-center"
+                  />
+                </div>
+                <div className="space-y-0.5">
+                  <Label className="text-[10px]">Max</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={localSpare.max_qty ?? 0}
+                    onChange={(e) => handleFieldChange("max_qty", parseInt(e.target.value) || 0)}
+                    onBlur={() => handleFieldBlur("max_qty")}
+                    className="h-7 text-sm text-center"
+                  />
+                </div>
+                <div className="space-y-0.5">
+                  <Label className="text-[10px]">Lead (days)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={localSpare.lead_time_days ?? 0}
+                    onChange={(e) => handleFieldChange("lead_time_days", parseInt(e.target.value) || 0)}
+                    onBlur={() => handleFieldBlur("lead_time_days")}
+                    className="h-7 text-sm text-center"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="space-y-0.5">
+                  <Label className="text-[10px]">Unit Cost ($)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={localSpare.unit_cost ?? 0}
+                    onChange={(e) => handleFieldChange("unit_cost", parseFloat(e.target.value) || 0)}
+                    onBlur={() => handleFieldBlur("unit_cost")}
+                    className="h-7 text-sm"
+                  />
+                </div>
+                <div className="space-y-0.5">
+                  <Label className="text-[10px]">Reorder Point</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={localSpare.reorder_point ?? 0}
+                    onChange={(e) => handleFieldChange("reorder_point", parseInt(e.target.value) || 0)}
+                    onBlur={() => handleFieldBlur("reorder_point")}
+                    className="h-7 text-sm text-center"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Notes */}
+            <div className="space-y-1">
+              <Label className="text-xs">Notes</Label>
+              <Textarea
+                value={localSpare.notes || ""}
+                onChange={(e) => handleFieldChange("notes", e.target.value)}
+                onBlur={() => handleFieldBlur("notes")}
+                placeholder="Additional notes..."
+                className="min-h-[50px] text-sm"
+              />
+            </div>
+
+            {/* Delete Button */}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="ghost" size="sm" className="w-full text-destructive hover:text-destructive mt-2">
+                  <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                  Delete Item
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this item?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently remove "{localSpare.description}" from the inventory.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    onClick={handleDelete}
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
