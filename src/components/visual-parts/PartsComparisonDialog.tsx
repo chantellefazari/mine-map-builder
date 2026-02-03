@@ -8,14 +8,27 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, AlertCircle, ArrowRightLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface ComparisonResult {
   visualPart: {
     id: string;
     site_part_number: string;
     part_name: string;
+    category?: string;
+    criticality?: string;
+    supplier?: string;
+    warehouse_area?: string;
+    bin_location?: string;
+    associated_asset?: string;
+    notes?: string;
+    min_qty?: number;
+    max_qty?: number;
+    qty_in_stock?: number;
+    lead_time_days?: number | null;
+    unit_price?: number | null;
   };
   matchedSiteSpare: {
     id: string;
@@ -35,6 +48,7 @@ export const PartsComparisonDialog = ({
   onOpenChange,
 }: PartsComparisonDialogProps) => {
   const [loading, setLoading] = useState(false);
+  const [merging, setMerging] = useState(false);
   const [results, setResults] = useState<ComparisonResult[]>([]);
   const [filterType, setFilterType] = useState<"all" | "exact" | "partial" | "none">("all");
   const [stats, setStats] = useState({
@@ -55,11 +69,11 @@ export const PartsComparisonDialog = ({
     setLoading(true);
 
     try {
-      // Fetch both datasets
+      // Fetch both datasets with full visual parts data for merge
       const [visualRes, sparesRes] = await Promise.all([
         supabase
           .from("visual_parts_catalogue")
-          .select("id, site_part_number, part_name")
+          .select("*")
           .order("site_part_number"),
         supabase
           .from("site_spares")
@@ -150,6 +164,90 @@ export const PartsComparisonDialog = ({
       console.error("Comparison error:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Merge Visual Parts to Site Spares (skip partials)
+  const mergeToInventory = async () => {
+    const exactMatches = results.filter((r) => r.matchType === "exact");
+    const noMatches = results.filter((r) => r.matchType === "none");
+
+    if (exactMatches.length === 0 && noMatches.length === 0) {
+      toast.info("Nothing to merge", {
+        description: "All items are partial matches which are being skipped.",
+      });
+      return;
+    }
+
+    setMerging(true);
+    let updatedCount = 0;
+    let insertedCount = 0;
+
+    try {
+      // Update exact matches
+      for (const result of exactMatches) {
+        if (!result.matchedSiteSpare) continue;
+        
+        const vp = result.visualPart;
+        const { error } = await supabase
+          .from("site_spares")
+          .update({
+            category: vp.category || undefined,
+            preferred_supplier: vp.supplier || undefined,
+            warehouse_area: vp.warehouse_area || undefined,
+            bin_location: vp.bin_location || undefined,
+            asset_tag: vp.associated_asset || undefined,
+            notes: vp.notes || undefined,
+            min_qty: vp.min_qty ?? undefined,
+            max_qty: vp.max_qty ?? undefined,
+            qty_on_hand: vp.qty_in_stock ?? undefined,
+            lead_time_days: vp.lead_time_days ?? undefined,
+            unit_cost: vp.unit_price ?? undefined,
+          })
+          .eq("id", result.matchedSiteSpare.id);
+
+        if (!error) updatedCount++;
+      }
+
+      // Insert no-matches as new items
+      if (noMatches.length > 0) {
+        const newItems = noMatches.map((result) => {
+          const vp = result.visualPart;
+          return {
+            part_number: vp.site_part_number,
+            description: vp.part_name,
+            category: vp.category || "General",
+            preferred_supplier: vp.supplier || "",
+            warehouse_area: vp.warehouse_area || "",
+            bin_location: vp.bin_location || "",
+            asset_tag: vp.associated_asset || "",
+            notes: vp.notes || "",
+            min_qty: vp.min_qty ?? 0,
+            max_qty: vp.max_qty ?? 0,
+            qty_on_hand: vp.qty_in_stock ?? 0,
+            lead_time_days: vp.lead_time_days ?? 0,
+            unit_cost: vp.unit_price ?? 0,
+            is_critical: vp.criticality === "HIGH",
+          };
+        });
+
+        const { error } = await supabase.from("site_spares").insert(newItems);
+        if (!error) insertedCount = newItems.length;
+      }
+
+      toast.success("Merge complete", {
+        description: `${updatedCount} updated, ${insertedCount} added, ${stats.partialMatches} skipped (partial matches)`,
+      });
+
+      // Refresh comparison
+      await runComparison();
+    } catch (error) {
+      console.error("Merge error:", error);
+      toast.error("Merge failed", {
+        description: "An error occurred during the merge process.",
+      });
+    } finally {
+      setMerging(false);
     }
   };
 
@@ -326,10 +424,32 @@ export const PartsComparisonDialog = ({
               )}
             </div>
 
-            <div className="flex justify-end pt-4 border-t">
-              <Button variant="outline" onClick={() => onOpenChange(false)}>
-                Close
-              </Button>
+            <div className="flex justify-between items-center pt-4 border-t">
+              <div className="text-sm text-muted-foreground">
+                Merge will: update {stats.exactMatches} exact matches, add {stats.noMatch} new items, skip {stats.partialMatches} partial matches
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => onOpenChange(false)}>
+                  Close
+                </Button>
+                <Button 
+                  onClick={mergeToInventory} 
+                  disabled={merging || (stats.exactMatches === 0 && stats.noMatch === 0)}
+                  className="gap-2"
+                >
+                  {merging ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Merging...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowRightLeft className="h-4 w-4" />
+                      Merge to Inventory
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </>
         )}
