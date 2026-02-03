@@ -62,8 +62,15 @@ export const SiteSpareCard = ({
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Local state for text inputs to prevent re-render glitches while typing
+  const [localDescription, setLocalDescription] = useState(spare.description);
+  const [localSpecs, setLocalSpecs] = useState(spare.specifications || "");
+  const [localBin, setLocalBin] = useState(spare.bin_location || "");
+  const [localManufacturer, setLocalManufacturer] = useState(spare.manufacturer || "");
+  const [localOemPart, setLocalOemPart] = useState(spare.oem_part_number || "");
+
   const imageUrls = spare.image_urls || [];
-  const criticality = classifyCriticality(spare.description);
+  const criticality = classifyCriticality(localDescription);
 
   const handleImageUpload = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -261,16 +268,26 @@ export const SiteSpareCard = ({
 
         {/* Description */}
         <Textarea
-          value={spare.description}
-          onChange={(e) => onUpdate(spare.id, { description: e.target.value })}
+          value={localDescription}
+          onChange={(e) => setLocalDescription(e.target.value)}
+          onBlur={() => {
+            if (localDescription !== spare.description) {
+              onUpdate(spare.id, { description: localDescription });
+            }
+          }}
           className="font-medium text-xs min-h-[44px] resize-none p-1.5"
           placeholder="Description"
         />
 
         {/* Specifications */}
         <Input
-          value={spare.specifications || ""}
-          onChange={(e) => onUpdate(spare.id, { specifications: e.target.value })}
+          value={localSpecs}
+          onChange={(e) => setLocalSpecs(e.target.value)}
+          onBlur={() => {
+            if (localSpecs !== (spare.specifications || "")) {
+              onUpdate(spare.id, { specifications: localSpecs });
+            }
+          }}
           placeholder="Size / Specs"
           className="text-[11px] h-6 px-1.5"
         />
@@ -279,8 +296,13 @@ export const SiteSpareCard = ({
         <div className="grid grid-cols-2 gap-1">
           {/* Bin Location */}
           <Input
-            value={spare.bin_location || ""}
-            onChange={(e) => onUpdate(spare.id, { bin_location: e.target.value })}
+            value={localBin}
+            onChange={(e) => setLocalBin(e.target.value)}
+            onBlur={() => {
+              if (localBin !== (spare.bin_location || "")) {
+                onUpdate(spare.id, { bin_location: localBin });
+              }
+            }}
             placeholder="Bin"
             className="text-[11px] h-6 font-mono px-1.5"
           />
@@ -308,16 +330,26 @@ export const SiteSpareCard = ({
 
         {/* Manufacturer / Supplier */}
         <Input
-          value={spare.manufacturer || ""}
-          onChange={(e) => onUpdate(spare.id, { manufacturer: e.target.value })}
+          value={localManufacturer}
+          onChange={(e) => setLocalManufacturer(e.target.value)}
+          onBlur={() => {
+            if (localManufacturer !== (spare.manufacturer || "")) {
+              onUpdate(spare.id, { manufacturer: localManufacturer });
+            }
+          }}
           placeholder="Supplier / Mfr"
           className="text-[11px] h-6 px-1.5"
         />
 
         {/* OEM Part Number */}
         <Input
-          value={spare.oem_part_number || ""}
-          onChange={(e) => onUpdate(spare.id, { oem_part_number: e.target.value })}
+          value={localOemPart}
+          onChange={(e) => setLocalOemPart(e.target.value)}
+          onBlur={() => {
+            if (localOemPart !== (spare.oem_part_number || "")) {
+              onUpdate(spare.id, { oem_part_number: localOemPart });
+            }
+          }}
           placeholder="OEM Part #"
           className="text-[11px] h-6 font-mono px-1.5"
         />
