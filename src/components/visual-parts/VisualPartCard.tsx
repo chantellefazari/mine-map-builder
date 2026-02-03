@@ -150,7 +150,7 @@ export const VisualPartCard = ({
             {part.site_part_number.startsWith("TMP-") ? "000000" : part.site_part_number}
           </Badge>
           <Badge className={`text-[9px] h-4 px-1.5 ${getCriticalityColor(part.criticality)}`}>
-            {part.criticality === "Non-Critical" ? "Low" : part.criticality}
+            {part.criticality?.toUpperCase() === "NON-CRITICAL" ? "LOW" : (part.criticality?.toUpperCase() || "LOW")}
           </Badge>
         </div>
 
