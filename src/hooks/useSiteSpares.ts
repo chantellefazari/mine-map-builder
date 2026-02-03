@@ -2,6 +2,23 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+// Map legacy/variant category names to standard categories
+const LEGACY_CATEGORY_MAP: Record<string, string> = {
+  "Safety Equipment": "Consumable",
+  "Structural": "Mechanical",
+  "Gearbox Component": "Gearbox",
+  "Belt & Transmission": "Conveyor Component",
+  "Belt / Chain": "Conveyor Component",
+  "Belt and Chain": "Conveyor Component",
+  "Belt & Chain": "Conveyor Component",
+  "Conveyor": "Conveyor Component",
+};
+
+const normalizeCategory = (category: string | null): string => {
+  if (!category) return "General";
+  return LEGACY_CATEGORY_MAP[category] || category;
+};
+
 export interface SiteSpareItem {
   id: string;
   part_number: string;
@@ -68,9 +85,10 @@ export const useSiteSpares = () => {
         break;
       }
 
-      // Normalize image_urls to always be an array
+      // Normalize image_urls to always be an array and normalize legacy categories
       const batch = (data || []).map((row: any) => ({
         ...row,
+        category: normalizeCategory(row.category),
         image_urls: (row.image_urls ?? []) as string[],
       })) as SiteSpareItem[];
       all.push(...batch);
