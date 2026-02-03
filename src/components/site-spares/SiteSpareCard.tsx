@@ -189,21 +189,11 @@ export const SiteSpareCard = ({
 
         {imageUrls.length > 0 ? (
           <>
-              {/*
-                Always show the full image (no cropping) while keeping the square “filled”
-                with a subtle blurred backdrop of the same image.
-              */}
             <img
               src={imageUrls[currentImageIndex]}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-40"
+              alt={spare.description}
+              className="absolute inset-0 w-full h-full object-contain p-1"
             />
-              <img
-                src={imageUrls[currentImageIndex]}
-                alt={spare.description}
-                className="absolute inset-0 w-full h-full object-contain p-1"
-              />
             {imageUrls.length > 1 && (
               <>
                 <Button
