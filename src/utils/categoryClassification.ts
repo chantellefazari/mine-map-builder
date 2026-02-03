@@ -14,14 +14,13 @@ export type SpareCategory =
   | "Gearbox"
   | "Hose & Tubing"
   | "Mechanical"
-  | "Motor"
+  | "Motor Component"
   | "Pipe Fitting"
-  | "Pump"
+  | "Pump Component"
   | "Valve"
-  | "Conveyor"
+  | "Conveyor Component"
   | "Instrumentation"
   | "Seal"
-  | "Belt & Transmission"
   | "General";
 
 // Category keyword mappings - checked in priority order
@@ -60,11 +59,15 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "cable tie", "volt", "extension cable", "power cable", "flex cable",
   ],
   
-  // Belts & Transmission
-  "Belt & Transmission": [
+  // Conveyor Components - belts, idlers, pulleys, chains
+  "Conveyor Component": [
+    "conveyor", "idler", "roller", "return roller", "trough roller",
+    "impact roller", "guide roller", "head pulley", "tail pulley",
+    "snub pulley", "take-up", "belt scraper", "belt cleaner",
+    "skirting", "belt misalignment", "misalignment switch",
     "vee belt", "v-belt", "v belt", "transmission belt", "drive belt",
     "timing belt", "serpentine", "wedge belt", "spb", "spa", "spc",
-    "belt tensioner", "belt pulley",
+    "belt tensioner", "belt pulley", "chain", "sprocket",
   ],
   
   // Bearings
@@ -90,15 +93,15 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "needle valve", "plug valve", "isolation valve",
   ],
   
-  // Pumps & Pump Parts
-  "Pump": [
+  // Pump Components
+  "Pump Component": [
     "pump", "impeller", "volute", "wear ring", "throat bush", "pump casing",
     "slurry pump", "centrifugal pump", "submersible", "diaphragm pump",
     "aodd", "dosing pump", "transfer pump", "wet end",
   ],
   
-  // Motors
-  "Motor": [
+  // Motor Components
+  "Motor Component": [
     "motor", "drive motor", "electric motor", "motor assembly",
     "motor fan", "motor terminal", "motor bearing",
   ],
@@ -117,13 +120,6 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "filter plate", "filter cloth", "filter press",
   ],
   
-  // Conveyor Components
-  "Conveyor": [
-    "conveyor", "idler", "roller", "return roller", "trough roller",
-    "impact roller", "guide roller", "head pulley", "tail pulley",
-    "snub pulley", "take-up", "belt scraper", "belt cleaner",
-    "skirting", "belt misalignment", "misalignment switch",
-  ],
   
   // Instrumentation
   "Instrumentation": [
@@ -157,15 +153,14 @@ const CATEGORY_PRIORITY: SpareCategory[] = [
   "Fastener",
   "Pipe Fitting",
   "Hose & Tubing",
-  "Belt & Transmission",
+  "Conveyor Component",
   "Seal",
   "Bearing",
   "Filter",
   "Valve",
-  "Pump",
-  "Motor",
+  "Pump Component",
+  "Motor Component",
   "Gearbox",
-  "Conveyor",
   "Instrumentation",
   "Electrical",
   "Mechanical",
@@ -252,7 +247,7 @@ export const classifySubcategory = (category: SpareCategory, description: string
       if (normalized.includes("safety valve")) return "Safety";
       if (normalized.includes("solenoid")) return "Solenoid";
       return "";
-    case "Pump":
+    case "Pump Component":
       if (normalized.includes("slurry")) return "Slurry";
       if (normalized.includes("submersible")) return "Submersible";
       if (normalized.includes("centrifugal")) return "Centrifugal";
@@ -288,7 +283,7 @@ export const getCategoryColor = (category: SpareCategory): string => {
       return "bg-blue-100 text-blue-700 border-blue-200";
     case "Hose & Tubing":
       return "bg-cyan-100 text-cyan-700 border-cyan-200";
-    case "Belt & Transmission":
+    case "Conveyor Component":
       return "bg-amber-100 text-amber-700 border-amber-200";
     case "Bearing":
       return "bg-indigo-100 text-indigo-700 border-indigo-200";
@@ -296,16 +291,14 @@ export const getCategoryColor = (category: SpareCategory): string => {
       return "bg-purple-100 text-purple-700 border-purple-200";
     case "Valve":
       return "bg-rose-100 text-rose-700 border-rose-200";
-    case "Pump":
+    case "Pump Component":
       return "bg-emerald-100 text-emerald-700 border-emerald-200";
-    case "Motor":
+    case "Motor Component":
       return "bg-orange-100 text-orange-700 border-orange-200";
     case "Gearbox":
       return "bg-yellow-100 text-yellow-700 border-yellow-200";
     case "Filter":
       return "bg-teal-100 text-teal-700 border-teal-200";
-    case "Conveyor":
-      return "bg-lime-100 text-lime-700 border-lime-200";
     case "Instrumentation":
       return "bg-violet-100 text-violet-700 border-violet-200";
     case "Electrical":
