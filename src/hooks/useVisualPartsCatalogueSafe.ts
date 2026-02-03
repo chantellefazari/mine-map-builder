@@ -11,6 +11,8 @@ export interface VisualPart {
   criticality: string;
   notes: string;
   supplier: string;
+  warehouse_area: string;
+  bin_location: string;
   image_urls: string[];
   min_qty: number;
   max_qty: number;
@@ -32,6 +34,8 @@ function normalizePart(row: any): VisualPart {
     criticality: row.criticality ?? "Non-Critical",
     image_urls: (row.image_urls ?? []) as string[],
     supplier: (row.supplier ?? "") as string,
+    warehouse_area: (row.warehouse_area ?? "") as string,
+    bin_location: (row.bin_location ?? "") as string,
     associated_asset: (row.associated_asset ?? "") as string,
     notes: (row.notes ?? "") as string,
     min_qty: row.min_qty ?? 0,
@@ -77,6 +81,8 @@ export const useVisualPartsCatalogueSafe = () => {
       category: part.category || "General",
       criticality: part.criticality || "Non-Critical",
       supplier: part.supplier || "",
+      warehouse_area: part.warehouse_area || "",
+      bin_location: part.bin_location || "",
       associated_asset: part.associated_asset || "",
       notes: part.notes || "",
       image_urls: part.image_urls || [],
