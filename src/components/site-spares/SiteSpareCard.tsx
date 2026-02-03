@@ -65,7 +65,7 @@ export const SiteSpareCard = ({
   const imageUrls = spare.image_urls || [];
   const criticality = classifyCriticality(spare.description);
 
-  const handleImageUpload = async (file: File) => {
+  const handleImageUpload = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
@@ -94,7 +94,9 @@ export const SiteSpareCard = ({
         .from("visual-parts-images")
         .getPublicUrl(fileName);
 
-      const newUrls = [...imageUrls, urlData.publicUrl];
+      // Use current image_urls from spare prop to avoid stale closure
+      const currentUrls = spare.image_urls || [];
+      const newUrls = [...currentUrls, urlData.publicUrl];
       onUpdate(spare.id, { image_urls: newUrls });
       toast.success("Image uploaded");
     } catch (error) {
@@ -103,7 +105,7 @@ export const SiteSpareCard = ({
     } finally {
       setIsUploading(false);
     }
-  };
+  }, [spare.id, spare.image_urls, onUpdate]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -118,25 +120,28 @@ export const SiteSpareCard = ({
       const file = e.dataTransfer.files[0];
       if (file) handleImageUpload(file);
     },
-    [spare.id, imageUrls]
+    [handleImageUpload]
   );
 
-  const handleRemoveImage = async (urlToRemove: string) => {
+  const handleRemoveImage = useCallback(async (urlToRemove: string) => {
     try {
       const path = urlToRemove.split("/visual-parts-images/")[1];
       if (path) {
         await supabase.storage.from("visual-parts-images").remove([path]);
       }
-      const newUrls = imageUrls.filter((url) => url !== urlToRemove);
+      // Use current image_urls from spare prop
+      const currentUrls = spare.image_urls || [];
+      const newUrls = currentUrls.filter((url) => url !== urlToRemove);
       onUpdate(spare.id, { image_urls: newUrls });
       setCurrentImageIndex(0);
       toast.success("Image removed");
     } catch (error) {
       console.error("Remove error:", error);
-      const newUrls = imageUrls.filter((url) => url !== urlToRemove);
+      const currentUrls = spare.image_urls || [];
+      const newUrls = currentUrls.filter((url) => url !== urlToRemove);
       onUpdate(spare.id, { image_urls: newUrls });
     }
-  };
+  }, [spare.id, spare.image_urls, onUpdate]);
 
   const nextImage = () => {
     if (imageUrls.length > 1) {
