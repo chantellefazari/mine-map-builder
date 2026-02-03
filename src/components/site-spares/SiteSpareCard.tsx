@@ -207,7 +207,7 @@ export const SiteSpareCard = ({
         {/* Category, Supplier & Asset */}
         <div className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
           <span className="truncate">{spare.category || "—"}</span>
-          <span className="truncate">Supplier: {spare.manufacturer || "—"}</span>
+          <span className="truncate">Supplier: {spare.preferred_supplier || "—"}</span>
           <span className="truncate">Asset/System: {spare.asset_tag || "—"}</span>
         </div>
       </CardContent>
