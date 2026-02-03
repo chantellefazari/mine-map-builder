@@ -159,9 +159,11 @@ export const VisualPartCard = ({
           {part.part_name}
         </p>
 
-        {/* Category, Supplier & Asset */}
+        {/* Category, Warehouse, Bin, Supplier & Asset */}
         <div className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
           <span className="truncate">{part.category}</span>
+          <span className="truncate">Warehouse: {part.warehouse_area || "—"}</span>
+          <span className="truncate">Bin: {part.bin_location || "—"}</span>
           <span className="truncate">Supplier: {part.supplier || "—"}</span>
           <span className="truncate">Asset/System: {part.associated_asset || "—"}</span>
         </div>

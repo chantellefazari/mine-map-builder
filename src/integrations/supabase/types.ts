@@ -422,6 +422,7 @@ export type Database = {
       visual_parts_catalogue: {
         Row: {
           associated_asset: string | null
+          bin_location: string | null
           category: string
           created_at: string
           criticality: string
@@ -437,9 +438,11 @@ export type Database = {
           supplier: string | null
           unit_price: number | null
           updated_at: string
+          warehouse_area: string | null
         }
         Insert: {
           associated_asset?: string | null
+          bin_location?: string | null
           category?: string
           created_at?: string
           criticality?: string
@@ -455,9 +458,11 @@ export type Database = {
           supplier?: string | null
           unit_price?: number | null
           updated_at?: string
+          warehouse_area?: string | null
         }
         Update: {
           associated_asset?: string | null
+          bin_location?: string | null
           category?: string
           created_at?: string
           criticality?: string
@@ -473,6 +478,7 @@ export type Database = {
           supplier?: string | null
           unit_price?: number | null
           updated_at?: string
+          warehouse_area?: string | null
         }
         Relationships: []
       }

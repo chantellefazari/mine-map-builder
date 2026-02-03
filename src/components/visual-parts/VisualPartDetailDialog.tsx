@@ -235,6 +235,28 @@ export const VisualPartDetailDialog = ({
               </Select>
             </div>
 
+            {/* Warehouse & Bin in row */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Warehouse Area</Label>
+                <Input
+                  value={localPart.warehouse_area || ""}
+                  onChange={(e) => handleFieldChange("warehouse_area", e.target.value)}
+                  onBlur={() => handleFieldBlur("warehouse_area")}
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Bin Location</Label>
+                <Input
+                  value={localPart.bin_location || ""}
+                  onChange={(e) => handleFieldChange("bin_location", e.target.value)}
+                  onBlur={() => handleFieldBlur("bin_location")}
+                  className="h-8 text-sm"
+                />
+              </div>
+            </div>
+
             {/* Supplier & Asset in row */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
