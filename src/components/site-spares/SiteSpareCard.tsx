@@ -60,7 +60,6 @@ export const SiteSpareCard = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [imageFit, setImageFit] = useState<"cover" | "contain">("cover");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Local state for text inputs to prevent re-render glitches while typing
@@ -72,19 +71,6 @@ export const SiteSpareCard = ({
 
   const imageUrls = spare.image_urls || [];
   const criticality = classifyCriticality(localDescription);
-
-  // Auto-fit: detect aspect ratio and choose cover vs contain
-  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const img = e.currentTarget;
-    const aspectRatio = img.naturalWidth / img.naturalHeight;
-    // If image is very tall (portrait) or very wide (landscape), use contain
-    // Otherwise use cover for a clean fill
-    if (aspectRatio < 0.6 || aspectRatio > 1.7) {
-      setImageFit("contain");
-    } else {
-      setImageFit("cover");
-    }
-  };
 
   const handleImageUpload = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -203,14 +189,21 @@ export const SiteSpareCard = ({
 
         {imageUrls.length > 0 ? (
           <>
+              {/*
+                Always show the full image (no cropping) while keeping the square “filled”
+                with a subtle blurred backdrop of the same image.
+              */}
             <img
               src={imageUrls[currentImageIndex]}
-              alt={spare.description}
-              className={`absolute inset-0 w-full h-full ${
-                imageFit === "contain" ? "object-contain p-1" : "object-cover"
-              }`}
-              onLoad={handleImageLoad}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-40"
             />
+              <img
+                src={imageUrls[currentImageIndex]}
+                alt={spare.description}
+                className="absolute inset-0 w-full h-full object-contain p-1"
+              />
             {imageUrls.length > 1 && (
               <>
                 <Button
