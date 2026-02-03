@@ -206,7 +206,9 @@ export const SiteSpareCard = ({
             <img
               src={imageUrls[currentImageIndex]}
               alt={spare.description}
-              className={`absolute inset-0 w-full h-full object-${imageFit}`}
+              className={`absolute inset-0 w-full h-full ${
+                imageFit === "contain" ? "object-contain p-1" : "object-cover"
+              }`}
               onLoad={handleImageLoad}
             />
             {imageUrls.length > 1 && (
