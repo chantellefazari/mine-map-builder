@@ -3,9 +3,14 @@
  * 
  * Classifies spare parts into HIGH/MEDIUM/LOW criticality based on description keywords.
  * 
- * HIGH (Red): Production/Safety critical - immediate plant stoppage, long lead times
- * MEDIUM (Orange): Reliability/Throughput impact - degraded mode, manageable delay
- * LOW (Green): Operational/Consumable - minimal disruption, readily available
+ * 🔴 HIGH (Red): Production/Safety critical - immediate plant stoppage, long lead times
+ *    - Motors, Gearboxes, Major Pumps, PLCs, Crushers, Mill components
+ * 
+ * 🟠 MEDIUM (Orange): Reliability/Throughput impact - degraded mode, manageable delay
+ *    - Bearings, Seals, Rollers, Valves, Instrumentation, Screens, Liners
+ * 
+ * 🟢 LOW (Green): Operational/Consumable - minimal disruption, readily available
+ *    - Fasteners, Hoses, Filters, Fittings, Electrical consumables
  * 
  * PRIORITY ORDER: LOW keywords are checked FIRST to ensure fittings/consumables
  * are never falsely elevated to HIGH even if they contain equipment keywords.
@@ -13,116 +18,234 @@
 
 export type CriticalityLevel = "HIGH" | "MEDIUM" | "LOW";
 
-// LOW Criticality Keywords - Operational/Consumable
+// ============================================================================
+// 🟢 LOW Criticality Keywords - Operational / Consumable
+// ============================================================================
 // These are checked FIRST to ensure pipe fittings and consumables don't get flagged as critical
+// Rule of thumb: If it's easy to replace or source and doesn't affect production, it's LOW.
 const LOW_KEYWORDS = [
-  // Pipe fittings - these are NEVER critical (most common false positives)
-  "socket", "nipple", "elbow", "tee", "reducer", "union", "flange", "blind flange",
-  "pipe fitting", "threaded", "bsp", "npt", "coupler", "coupling fitting",
-  "compression fitting", "electrofusion", "stub flange", "poly nipple",
-  "reducing bush", "reducing nipple", "hex reducing", "pipe clamp",
-  // Fasteners
+  // ---- Fasteners (most common) ----
   "bolt", "nut", "washer", "screw", "stud", "fastener", "anchor", "rivet",
-  // Hoses and tubes - not assemblies
+  "set screw", "hex bolt", "socket head", "cap screw", "u-bolt", "j-bolt",
+  "lock nut", "nyloc", "flange nut", "wing nut", "spring washer", "flat washer",
+  
+  // ---- Pipe Fittings (NEVER critical - common false positives) ----
+  "socket", "nipple", "elbow", "tee", "reducer fitting", "union", "flange blank",
+  "blind flange", "pipe fitting", "threaded", "bsp", "npt", "coupler", 
+  "coupling fitting", "compression fitting", "electrofusion", "stub flange", 
+  "poly nipple", "reducing bush", "reducing nipple", "hex reducing", "pipe clamp",
+  "camlock", "victaulic", "grooved fitting", "barb fitting", "hose barb",
+  "quick connect", "push fit", "ferrule", "olive",
+  
+  // ---- Hoses (not assemblies) ----
   "hose", "tubing", "flexible hose", "hydraulic hose", "air hose", "nylon tubing",
-  "drag hose", "tpr hose", "pvc hose",
-  // Filters - consumable
-  "filter element", "filter cartridge", "strainer", "air filter", "oil filter", "fuel filter",
-  // Electrical consumables - tapes, ties, terminals
+  "drag hose", "tpr hose", "pvc hose", "rubber hose", "suction hose", 
+  "discharge hose", "layflat hose", "garden hose", "fuel hose", "coolant hose",
+  
+  // ---- Filters (consumable) ----
+  "filter", "filter element", "filter cartridge", "strainer element", 
+  "air filter", "oil filter", "fuel filter", "hydraulic filter", "bag filter",
+  "filter sock", "filter bag", "breather", "breather cap",
+  
+  // ---- Grease fittings / Lubrication consumables ----
+  "grease nipple", "zerk", "lubrication fitting", "grease fitting",
+  "grease cartridge", "oil bottle", "lubricant",
+  
+  // ---- Electrical Consumables ----
   "electrical tape", "insulation tape", "insulating tape", "pvc tape",
   "cable tie", "wire", "terminal", "lug", "heat shrink", "cable gland",
-  // Grease fittings
-  "grease nipple", "zerk", "lubrication fitting",
-  // Minor fittings
-  "clamp", "clip", "bracket", "shim", "spacer", "key", "keyway",
-  // Skirting and liners - consumable wear items
-  "skirting rubber",
-  // PPE-related
-  "ppe", "glove", "safety", "earmuff", "glasses", "respirator",
-  // Non-critical items
-  "indicator light", "lamp", "led", "signage",
-  // General consumables
-  "consumable", "disposable", "cleaning", "rag", "degreaser",
-  // Small parts
-  "pin", "cotter", "circlip", "snap ring", "dowel",
-  // Belts - transmission belts are consumables
-  "vee belt", "v-belt", "v belt", "transmission belt", "drive belt",
-  // Pipe materials
-  "hdpe pipe", "pvc pipe", "poly pipe",
-  // Packing
-  "gland packing", "packing ring",
-  // Shims and covers
-  "bearing cap", "shim bearing",
-  // Wedges and scrapers
-  "wedge", "scraper",
-  // Extension cables and connectors
-  "extension", "connector extension",
-  // Divider valves - small lubrication components
-  "divider valve",
+  "conduit", "raceway", "junction box", "cable tray", "grommet",
+  "indicator light", "lamp", "led", "bulb", "globe", "signage", "label",
+  
+  // ---- Minor Fittings / Hardware ----
+  "clamp", "clip", "bracket", "shim", "spacer", "key", "keyway", "keystock",
+  "pin", "cotter", "circlip", "snap ring", "dowel", "roll pin", "split pin",
+  "hinge", "latch", "hasp", "padlock",
+  
+  // ---- PPE-related ----
+  "ppe", "glove", "safety glasses", "earmuff", "ear plug", "respirator",
+  "hard hat", "helmet", "hi-vis", "boot", "coverall", "mask",
+  
+  // ---- General Consumables ----
+  "consumable", "disposable", "cleaning", "rag", "degreaser", "solvent",
+  "tape", "adhesive", "sealant", "silicone", "loctite", "threadlocker",
+  
+  // ---- Belts (transmission belts are consumables) ----
+  "vee belt", "v-belt", "v belt", "transmission belt", "drive belt", 
+  "timing belt", "ribbed belt", "multi-rib",
+  
+  // ---- Pipe Materials (not fittings) ----
+  "hdpe pipe", "pvc pipe", "poly pipe", "copper pipe", "steel pipe length",
+  
+  // ---- Packing & Gaskets (single items, not kits) ----
+  "gland packing", "packing ring", "rope packing", "single gasket",
+  "flange gasket", "sheet gasket",
+  
+  // ---- Skirting / Rubber (wear consumables) ----
+  "skirting rubber", "rubber sheet", "mud flap", "dust seal strip",
+  
+  // ---- Small Components ----
+  "wedge", "scraper blade", "wiper", "squeegee",
+  "extension cable", "extension lead", "power board",
+  "divider valve", "flow divider",
+  "bearing cap", "shim bearing", "dust cap", "end cap",
+  
+  // ---- Non-critical Sensors ----
+  "proximity switch", "limit switch", "micro switch", "reed switch",
 ];
 
-// HIGH Criticality Keywords - Production/Safety Critical
+// ============================================================================
+// 🔴 HIGH Criticality Keywords - Production / Safety Critical
+// ============================================================================
+// Rule of thumb: If this fails and you can't run, it's HIGH.
 // Only match complete equipment assemblies, not parts or fittings
 const HIGH_KEYWORDS = [
-  // Motors - specific to complete drive motors (not motor parts)
-  "drive motor", "mill motor", "conveyor motor", "electric motor", "motor assembly",
-  "main motor", "pump motor", "fan motor", "agitator motor", "feeder motor",
-  // Gearboxes - actual gearbox assemblies
-  "gearbox", "gear box", "gear reducer", "speed reducer", "drive gearbox",
-  "reducer gearbox", "helical gearbox", "planetary gearbox",
-  "sew-eurodrive", "sew eurodrive", // Major gearbox brand
-  // Major Pumps - complete pump units, not pump parts
+  // ---- Motors (primary drives) ----
+  "motor", "electric motor", "drive motor", "mill motor", "conveyor motor",
+  "motor assembly", "main motor", "pump motor", "fan motor", "agitator motor", 
+  "feeder motor", "ac motor", "dc motor", "induction motor",
+  
+  // ---- Gearboxes / Gear Reducers ----
+  "gearbox", "gear box", "gear reducer", "speed reducer", "reduction gearbox",
+  "drive gearbox", "helical gearbox", "planetary gearbox", "worm gearbox",
+  "bevel gearbox", "right angle gearbox",
+  "sew-eurodrive", "sew eurodrive", "nord", "flender", "hansen", // Major brands
+  
+  // ---- Major Pumps (CIP, tailings, process water) ----
   "slurry pump", "tailings pump", "process pump", "transfer pump", "feed pump",
   "cip pump", "thickener pump", "reagent pump", "water pump assembly",
-  // Mill components - major items
-  "pinion", "girth gear", "ball mill", "mill liner",
-  // Control systems - complete units
-  "plc", "control module", "hmi panel", "scada", "vfd", "variable frequency drive",
-  "inverter", "soft starter",
-  // Crushers & Feeders - complete units
-  "crusher", "jaw crusher", "cone crusher", "impact crusher",
+  "centrifugal pump", "positive displacement", "diaphragm pump", "peristaltic pump",
+  "submersible pump", "borehole pump", "booster pump", "main pump",
+  "warman", "metso", "weir", "krebs", // Major pump brands
+  
+  // ---- Ball Mill / Mill Components ----
+  "pinion", "girth gear", "ball mill", "mill liner set", "mill drive",
+  "trunnion", "mill bearing", "ring gear",
+  
+  // ---- PLC / Critical Control Modules ----
+  "plc", "control module", "hmi panel", "hmi screen", "scada", 
+  "vfd", "variable frequency drive", "vsd", "variable speed drive",
+  "inverter", "soft starter", "power supply module", "cpu module",
+  "io module", "comms module", "ethernet module",
+  "allen bradley", "siemens s7", "ab plc", "rockwell",
+  
+  // ---- Crushers / Feeder Drive Assemblies ----
+  "crusher", "jaw crusher", "cone crusher", "impact crusher", "gyratory",
+  "crusher bowl", "crusher mantle", "crusher concave",
   "apron feeder", "vibrating feeder", "belt feeder", "feeder drive",
-  // Major equipment - complete units
-  "agitator", "thickener", "filter press", "centrifuge", "cyclone",
-  // Electrical critical - major switchgear only
-  "transformer", "switchgear", "main breaker", "mcc panel",
+  "vibratory feeder", "reciprocating feeder",
+  
+  // ---- Major Equipment (complete units) ----
+  "agitator", "agitator gearbox", "agitator motor",
+  "thickener", "thickener drive", "thickener rake",
+  "filter press", "plate filter", 
+  "centrifuge", "decanter",
+  "cyclone", "hydrocyclone",
+  "compressor", "air compressor", "screw compressor",
+  "blower", "lobe blower", "roots blower",
+  
+  // ---- Electrical Critical (major switchgear) ----
+  "transformer", "power transformer", "distribution transformer",
+  "switchgear", "main breaker", "acb", "air circuit breaker",
+  "mcc panel", "mcc bucket", "motor control center",
+  "generator", "alternator", "genset",
+  "ups", "uninterruptible power",
 ];
 
-// MEDIUM Criticality Keywords - Reliability/Throughput Impact
+// ============================================================================
+// 🟠 MEDIUM Criticality Keywords - Reliability / Throughput Impact
+// ============================================================================
+// Rule of thumb: If failure hurts performance but doesn't stop everything immediately, it's MEDIUM.
 const MEDIUM_KEYWORDS = [
-  // Bearings - important but replaceable
-  "bearing", "pillow block", "spherical roller", "ball bearing", "tapered roller",
-  "bush", "bushing",
-  // Seals - important wear items
-  "mechanical seal", "shaft seal", "oil seal", "lip seal", "o-ring", "gasket set",
-  // Rollers - conveyor components
-  "idler", "return roller", "trough roller", "guide roller", "impact roller",
-  "head pulley", "tail pulley", "snub pulley", "take-up",
-  // Valves - process valves (distinct from fittings)
-  "knife gate", "pinch valve", "slurry valve", "butterfly valve", "ball valve assembly",
-  "check valve", "pressure relief", "control valve", "solenoid valve",
-  "safety valve",
-  // Instrumentation
-  "transmitter", "pressure gauge", "flow meter", "level sensor", "thermocouple", "rtd",
-  "ph probe", "conductivity", "turbidity",
-  // Lubrication systems
-  "lubrication pump", "oil cooler", "grease pump", "lubrication system",
-  // Conveyor components - major items
-  "conveyor belt", "splice kit", "belt scraper",
-  // Screens and liners - wear items
-  "screen panel", "wear liner", "chute liner", "impact liner",
-  // Couplings - drive couplings (not pipe couplings)
-  "flexible coupling", "fluid coupling", "gear coupling",
-  // Cylinders
-  "hydraulic cylinder", "pneumatic cylinder", "actuator",
-  // Pump parts - components that need replacement
+  // ---- Bearings ----
+  "bearing", "pillow block", "plummer block", "spherical roller", 
+  "ball bearing", "tapered roller", "needle bearing", "thrust bearing",
+  "split bearing", "self-aligning", "insert bearing", "flange bearing",
+  "bearing housing", "bearing unit",
+  "bush", "bushing", "bronze bush", "nylon bush",
+  "skf", "nsk", "fag", "timken", "ntn", // Major bearing brands
+  
+  // ---- Seals ----
+  "mechanical seal", "shaft seal", "oil seal", "lip seal", 
+  "o-ring kit", "seal kit", "gasket set", "gasket kit",
+  "face seal", "labyrinth seal", "v-ring", "rotary seal",
+  "hydraulic seal kit", "pneumatic seal kit",
+  
+  // ---- Rollers (conveyor) ----
+  "idler", "idler roller", "return roller", "trough roller", "guide roller", 
+  "impact roller", "training roller", "tracking roller",
+  "head pulley", "tail pulley", "snub pulley", "bend pulley",
+  "take-up", "take up pulley", "tension pulley",
+  "drum pulley", "drive pulley", "wing pulley",
+  
+  // ---- Valves (process, slurry, water) ----
+  "knife gate", "knife gate valve", "pinch valve", "slurry valve", 
+  "butterfly valve", "ball valve assembly", "gate valve", "globe valve",
+  "check valve", "non-return valve", "pressure relief valve", "prv",
+  "control valve", "modulating valve", "solenoid valve", "pneumatic valve",
+  "safety valve", "pressure safety", "actuated valve",
+  "diaphragm valve", "plug valve", "needle valve",
+  "clarkson", "isogate", "orbinox", // Major valve brands
+  
+  // ---- Instrumentation (pressure, flow, level) ----
+  "transmitter", "pressure transmitter", "level transmitter", "flow transmitter",
+  "pressure gauge", "flow meter", "level sensor", "level indicator",
+  "thermocouple", "rtd", "temperature sensor", "temp probe",
+  "ph probe", "ph sensor", "conductivity sensor", "turbidity sensor",
+  "density meter", "mass flow", "mag flow", "ultrasonic level",
+  "radar level", "float switch", "pressure switch",
+  "analyser", "analyzer",
+  "endress", "rosemount", "yokogawa", "krohne", // Major instrument brands
+  
+  // ---- Lubrication System Components ----
+  "lubrication pump", "lube pump", "oil pump", "grease pump assembly",
+  "oil cooler", "lube cooler", "heat exchanger",
+  "lubrication system", "auto lube", "centralised lubrication",
+  "oil reservoir", "lube reservoir", "oil tank",
+  "lincoln", "skf lincoln", "graco", // Major lube brands
+  
+  // ---- Conveyor Belts (non-primary) ----
+  "conveyor belt", "belt splice", "splice kit", "vulcanising kit",
+  "belt scraper", "belt cleaner", "belt plough",
+  "belt clamp", "belt fastener", "belt lacing",
+  
+  // ---- Screens and Liners (wear items) ----
+  "screen panel", "screen deck", "vibrating screen", "screen cloth",
+  "wear liner", "chute liner", "impact liner", "ceramic liner",
+  "wear plate", "backing liner", "rubber liner",
+  "polyurethane liner", "pu liner", "manganese liner",
+  
+  // ---- Couplings (drive couplings, not pipe) ----
+  "flexible coupling", "fluid coupling", "gear coupling", "jaw coupling",
+  "disc coupling", "grid coupling", "elastomeric coupling",
+  "coupling element", "coupling insert", "spider coupling",
+  "lovejoy", "falk", "rexnord", "dodge", // Major coupling brands
+  
+  // ---- Cylinders / Actuators ----
+  "hydraulic cylinder", "pneumatic cylinder", "actuator", 
+  "linear actuator", "rotary actuator", "cylinder kit",
+  "piston", "cylinder rod", "cylinder seal kit",
+  
+  // ---- Pump Parts (not whole pumps) ----
   "impeller", "pump casing", "volute", "wear ring", "throat bush",
-  // Motor parts (not whole motors)
-  "motor bearing", "motor fan", "motor terminal",
-  // Electrical components - contactors/relays
-  "contactor", "overload relay", "circuit breaker", "fuse",
-  // Belt alignment
-  "belt misalignment", "misalignment switch", "misalignment arm",
+  "pump shaft", "pump sleeve", "suction liner", "frame plate",
+  "stuffing box", "lantern ring",
+  
+  // ---- Electrical Components (contactors/relays) ----
+  "contactor", "motor contactor", "auxiliary contactor",
+  "overload relay", "thermal overload", "electronic overload",
+  "circuit breaker", "mccb", "mcb", "rcbo", "rcd",
+  "fuse", "hrc fuse", "fuse holder", "fuse link",
+  "relay", "timer relay", "safety relay", "control relay",
+  
+  // ---- Belt Alignment / Safety ----
+  "belt misalignment", "misalignment switch", "misalignment sensor",
+  "pull wire", "pull cord", "emergency stop", "e-stop",
+  "belt rip", "rip detector",
+  
+  // ---- Sprockets / Chain ----
+  "sprocket", "chain", "roller chain", "drive chain",
+  "chain tensioner", "chain guide",
 ];
 
 /**
@@ -210,10 +333,10 @@ export const getCriticalityColor = (level: CriticalityLevel): string => {
 export const getCriticalityLabel = (level: CriticalityLevel): string => {
   switch (level) {
     case "HIGH":
-      return "High - Production Critical";
+      return "🔴 High - Production Critical";
     case "MEDIUM":
-      return "Medium - Reliability Impact";
+      return "🟠 Medium - Reliability Impact";
     case "LOW":
-      return "Low - Consumable";
+      return "🟢 Low - Consumable";
   }
 };
