@@ -9,8 +9,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, Search, Loader2, ImageIcon, AlertTriangle, RefreshCw, GitCompare, X } from "lucide-react";
-import { useVisualPartsCatalogueSafe } from "@/hooks/useVisualPartsCatalogueSafe";
+import { useVisualPartsCatalogueSafe, type VisualPart } from "@/hooks/useVisualPartsCatalogueSafe";
 import { VisualPartCard } from "./VisualPartCard";
+import { VisualPartDetailDialog } from "./VisualPartDetailDialog";
 import { AddVisualPartDialog } from "./AddVisualPartDialog";
 import { PartsComparisonDialog } from "./PartsComparisonDialog";
 import { PART_CATEGORIES, CRITICALITY_LEVELS } from "./visualPartsConstants";
@@ -37,6 +38,8 @@ export const VisualPartsCatalogue = () => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [comparisonDialogOpen, setComparisonDialogOpen] = useState(false);
   const [isReclassifying, setIsReclassifying] = useState(false);
+  const [selectedPart, setSelectedPart] = useState<VisualPart | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
   const hasActiveFilters =
     searchQuery.trim().length > 0 ||
@@ -113,6 +116,16 @@ export const VisualPartsCatalogue = () => {
     }
   };
 
+  const handlePartClick = (part: VisualPart) => {
+    setSelectedPart(part);
+    setDetailDialogOpen(true);
+  };
+
+  // Sync selected part with parts list changes
+  const currentSelectedPart = selectedPart
+    ? parts.find((p) => p.id === selectedPart.id) || null
+    : null;
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -135,7 +148,7 @@ export const VisualPartsCatalogue = () => {
           </p>
           <p className="text-muted-foreground mt-1">
             Site-specific visual catalogue for trades, planners, and stores personnel. 
-            Photos help identify parts visually — this is not a supplier catalogue.
+            Click on any part to view and edit full details.
           </p>
         </div>
       </div>
@@ -262,6 +275,15 @@ export const VisualPartsCatalogue = () => {
         open={comparisonDialogOpen}
         onOpenChange={setComparisonDialogOpen}
       />
+      <VisualPartDetailDialog
+        part={currentSelectedPart}
+        open={detailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
+        onUpdate={updatePart}
+        onDelete={deletePart}
+        onAddImage={addImageToPart}
+        onRemoveImage={removeImageFromPart}
+      />
 
       {/* Parts Grid */}
       {filteredParts.length > 0 ? (
@@ -270,10 +292,8 @@ export const VisualPartsCatalogue = () => {
             <VisualPartCard
               key={part.id}
               part={part}
-              onUpdate={updatePart}
-              onDelete={deletePart}
+              onClick={() => handlePartClick(part)}
               onAddImage={addImageToPart}
-              onRemoveImage={removeImageFromPart}
             />
           ))}
         </div>

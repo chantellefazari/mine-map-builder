@@ -427,10 +427,15 @@ export type Database = {
           criticality: string
           id: string
           image_urls: string[] | null
+          lead_time_days: number | null
+          max_qty: number | null
+          min_qty: number | null
           notes: string | null
           part_name: string
+          qty_in_stock: number | null
           site_part_number: string
           supplier: string | null
+          unit_price: number | null
           updated_at: string
         }
         Insert: {
@@ -440,10 +445,15 @@ export type Database = {
           criticality?: string
           id?: string
           image_urls?: string[] | null
+          lead_time_days?: number | null
+          max_qty?: number | null
+          min_qty?: number | null
           notes?: string | null
           part_name: string
+          qty_in_stock?: number | null
           site_part_number: string
           supplier?: string | null
+          unit_price?: number | null
           updated_at?: string
         }
         Update: {
@@ -453,10 +463,15 @@ export type Database = {
           criticality?: string
           id?: string
           image_urls?: string[] | null
+          lead_time_days?: number | null
+          max_qty?: number | null
+          min_qty?: number | null
           notes?: string | null
           part_name?: string
+          qty_in_stock?: number | null
           site_part_number?: string
           supplier?: string | null
+          unit_price?: number | null
           updated_at?: string
         }
         Relationships: []
