@@ -60,6 +60,8 @@ export const SiteSparesCatalogue = () => {
     return classifyCriticality(spare.description);
   };
 
+  const [isReclassifyingCriticality, setIsReclassifyingCriticality] = useState(false);
+
   const handleReclassifyAll = async () => {
     const itemsToUpdate = spares.filter((spare) => {
       const correctCategory = classifyCategory(spare.description);
@@ -87,6 +89,49 @@ export const SiteSparesCatalogue = () => {
     toast.dismiss("reclassify");
     toast.success(`Reclassified ${updated} items to correct categories`);
     refetch();
+  };
+
+  const handleReclassifyCriticality = async () => {
+    setIsReclassifyingCriticality(true);
+    toast.loading(`Reclassifying criticality for ${spares.length} items...`, { id: "reclassify-crit" });
+
+    let updated = 0;
+    let highCount = 0;
+    let mediumCount = 0;
+    let lowCount = 0;
+
+    try {
+      for (const spare of spares) {
+        const criticality = classifyCriticality(spare.description);
+        const shouldBeCritical = criticality === "HIGH";
+        
+        // Track counts
+        if (criticality === "HIGH") highCount++;
+        else if (criticality === "MEDIUM") mediumCount++;
+        else lowCount++;
+
+        // Update is_critical flag if needed
+        if (spare.is_critical !== shouldBeCritical) {
+          const { error } = await supabase
+            .from("site_spares")
+            .update({ is_critical: shouldBeCritical })
+            .eq("id", spare.id);
+
+          if (!error) updated++;
+        }
+      }
+
+      toast.dismiss("reclassify-crit");
+      toast.success(`Criticality applied: ${highCount} HIGH, ${mediumCount} MEDIUM, ${lowCount} LOW`, {
+        description: `Updated ${updated} items with new is_critical flag`,
+      });
+      refetch();
+    } catch (error) {
+      toast.dismiss("reclassify-crit");
+      toast.error("Failed to reclassify criticality");
+    } finally {
+      setIsReclassifyingCriticality(false);
+    }
   };
 
   const handleAddSpare = async (newSpare: Omit<SiteSpareItem, "id">) => {
@@ -310,6 +355,16 @@ export const SiteSparesCatalogue = () => {
           <Button size="sm" variant="outline" className="gap-2" onClick={handleReclassifyAll}>
             <RefreshCw className="h-4 w-4" />
             Reclassify Categories
+          </Button>
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="gap-2" 
+            onClick={handleReclassifyCriticality}
+            disabled={isReclassifyingCriticality}
+          >
+            {isReclassifyingCriticality ? <Loader2 className="h-4 w-4 animate-spin" /> : <AlertTriangle className="h-4 w-4" />}
+            Reclassify Criticality
           </Button>
           <Button size="sm" variant="outline" className="gap-2" onClick={() => setImportDialogOpen(true)}>
             <Upload className="h-4 w-4" />
