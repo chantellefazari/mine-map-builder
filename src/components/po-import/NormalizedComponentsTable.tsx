@@ -37,6 +37,7 @@ import {
   Layers,
   Trash2,
   Upload,
+  X,
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import { NormalizedComponent, componentTypes } from "@/hooks/usePOImport";
@@ -69,6 +70,11 @@ export const NormalizedComponentsTable = ({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDeleting, setIsDeleting] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+
+  const hasActiveFilters =
+    selectedSupplier !== "all" ||
+    filterType !== "all" ||
+    searchQuery.trim().length > 0;
 
   // Get unique suppliers for the filter dropdown
   const uniqueSuppliers = [...new Set(components.map((c) => c.supplier).filter(Boolean))].sort();
@@ -533,12 +539,45 @@ export const NormalizedComponentsTable = ({
               <SelectItem value="orderedOnce">Ordered Once Only</SelectItem>
             </SelectContent>
           </Select>
+
+          {hasActiveFilters && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedSupplier("all");
+                setFilterType("all");
+              }}
+              className="gap-2"
+            >
+              <X className="h-4 w-4" />
+              Clear filters
+            </Button>
+          )}
         </div>
 
         {/* Table */}
         {filteredComponents.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            No components to display. Process PO uploads to populate this table.
+          <div className="text-center py-8 text-muted-foreground space-y-3">
+            {components.length === 0
+              ? "No components to display. Process PO uploads to populate this table."
+              : "No components match your current filters."}
+            {components.length > 0 && hasActiveFilters && (
+              <div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedSupplier("all");
+                    setFilterType("all");
+                  }}
+                >
+                  Clear filters
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
           <ScrollArea className="h-[500px] w-full">

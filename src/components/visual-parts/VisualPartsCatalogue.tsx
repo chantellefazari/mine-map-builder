@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Loader2, ImageIcon, AlertTriangle, RefreshCw, GitCompare } from "lucide-react";
+import { Plus, Search, Loader2, ImageIcon, AlertTriangle, RefreshCw, GitCompare, X } from "lucide-react";
 import { useVisualPartsCatalogueSafe } from "@/hooks/useVisualPartsCatalogueSafe";
 import { VisualPartCard } from "./VisualPartCard";
 import { AddVisualPartDialog } from "./AddVisualPartDialog";
@@ -37,6 +37,11 @@ export const VisualPartsCatalogue = () => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [comparisonDialogOpen, setComparisonDialogOpen] = useState(false);
   const [isReclassifying, setIsReclassifying] = useState(false);
+
+  const hasActiveFilters =
+    searchQuery.trim().length > 0 ||
+    filterCategory !== "all" ||
+    filterCriticality !== "all";
 
   const filteredParts = parts.filter((part) => {
     const matchesSearch =
@@ -201,6 +206,21 @@ export const VisualPartsCatalogue = () => {
               ))}
             </SelectContent>
           </Select>
+
+          {hasActiveFilters && (
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSearchQuery("");
+                setFilterCategory("all");
+                setFilterCriticality("all");
+              }}
+              className="gap-2"
+            >
+              <X className="h-4 w-4" />
+              Clear filters
+            </Button>
+          )}
           {generalCount > 0 && (
             <Button 
               variant="outline" 
