@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { VisualPart } from "@/hooks/useVisualPartsCatalogueSafe";
+import { getCriticalityColor } from "./visualPartsConstants";
 
 interface VisualPartCardProps {
   part: VisualPart;
@@ -143,10 +144,15 @@ export const VisualPartCard = ({
       </div>
 
       <CardContent className="p-2.5 space-y-1.5">
-        {/* Part Number Badge */}
-        <Badge variant="outline" className="font-mono text-[10px] h-5">
-          {part.site_part_number.startsWith("TMP-") ? "000000" : part.site_part_number}
-        </Badge>
+        {/* Part Number + Criticality Badges */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Badge variant="outline" className="font-mono text-[10px] h-5">
+            {part.site_part_number.startsWith("TMP-") ? "000000" : part.site_part_number}
+          </Badge>
+          <Badge className={`text-[9px] h-4 px-1.5 ${getCriticalityColor(part.criticality)}`}>
+            {part.criticality === "Non-Critical" ? "Low" : part.criticality}
+          </Badge>
+        </div>
 
         {/* Part Name (truncated) */}
         <p className="font-medium text-xs line-clamp-2 leading-tight min-h-[2rem]">

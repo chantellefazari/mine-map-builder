@@ -106,21 +106,21 @@ export const VisualPartDetailDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-3">
-            <Badge variant="outline" className="font-mono">
+          <DialogTitle className="flex items-center gap-2 text-base">
+            <Badge variant="outline" className="font-mono text-xs">
               {localPart.site_part_number.startsWith("TMP-") ? "000000" : localPart.site_part_number}
             </Badge>
             <span>{localPart.part_name}</span>
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Image Section */}
-          <div className="space-y-3">
-            <Label>Images</Label>
-            <div className="relative aspect-square bg-background border rounded-lg overflow-hidden">
+          <div className="space-y-2">
+            <Label className="text-xs">Images</Label>
+            <div className="relative aspect-[4/3] bg-background border rounded-lg overflow-hidden">
               {localPart.image_urls.length > 0 ? (
                 <>
                   <img
@@ -189,6 +189,7 @@ export const VisualPartDetailDialog = ({
               />
               <Button
                 variant="outline"
+                size="sm"
                 className="w-full"
                 onClick={() => document.getElementById("detail-image-upload")?.click()}
               >
@@ -199,21 +200,21 @@ export const VisualPartDetailDialog = ({
           </div>
 
           {/* Details Section */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* Part Name */}
-            <div className="space-y-1.5">
-              <Label>Part Name / Description</Label>
+            <div className="space-y-1">
+              <Label className="text-xs">Part Name / Description</Label>
               <Textarea
                 value={localPart.part_name}
                 onChange={(e) => handleFieldChange("part_name", e.target.value)}
                 onBlur={() => handleFieldBlur("part_name")}
-                className="min-h-[80px]"
+                className="min-h-[60px] text-sm"
               />
             </div>
 
             {/* Category */}
-            <div className="space-y-1.5">
-              <Label>Component Type</Label>
+            <div className="space-y-1">
+              <Label className="text-xs">Component Type</Label>
               <Select
                 value={localPart.category}
                 onValueChange={(val) => {
@@ -221,7 +222,7 @@ export const VisualPartDetailDialog = ({
                   if (part) onUpdate(part.id, { category: val });
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-8 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -234,29 +235,31 @@ export const VisualPartDetailDialog = ({
               </Select>
             </div>
 
-            {/* Supplier */}
-            <div className="space-y-1.5">
-              <Label>Supplier</Label>
-              <Input
-                value={localPart.supplier || ""}
-                onChange={(e) => handleFieldChange("supplier", e.target.value)}
-                onBlur={() => handleFieldBlur("supplier")}
-              />
-            </div>
-
-            {/* Associated Asset */}
-            <div className="space-y-1.5">
-              <Label>Asset / System</Label>
-              <Input
-                value={localPart.associated_asset || ""}
-                onChange={(e) => handleFieldChange("associated_asset", e.target.value)}
-                onBlur={() => handleFieldBlur("associated_asset")}
-              />
+            {/* Supplier & Asset in row */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Supplier</Label>
+                <Input
+                  value={localPart.supplier || ""}
+                  onChange={(e) => handleFieldChange("supplier", e.target.value)}
+                  onBlur={() => handleFieldBlur("supplier")}
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Asset / System</Label>
+                <Input
+                  value={localPart.associated_asset || ""}
+                  onChange={(e) => handleFieldChange("associated_asset", e.target.value)}
+                  onBlur={() => handleFieldBlur("associated_asset")}
+                  className="h-8 text-sm"
+                />
+              </div>
             </div>
 
             {/* Criticality */}
-            <div className="space-y-1.5">
-              <Label>Criticality</Label>
+            <div className="space-y-1">
+              <Label className="text-xs">Criticality</Label>
               <Select
                 value={localPart.criticality}
                 onValueChange={(val) => {
@@ -264,7 +267,7 @@ export const VisualPartDetailDialog = ({
                   if (part) onUpdate(part.id, { criticality: val });
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-8 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -278,58 +281,58 @@ export const VisualPartDetailDialog = ({
             </div>
 
             {/* Inventory Section */}
-            <div className="border-t pt-4 mt-4">
-              <h4 className="font-medium mb-3">Inventory & Pricing</h4>
-              <div className="grid grid-cols-3 gap-3">
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Min Qty</Label>
+            <div className="border-t pt-3 mt-3">
+              <h4 className="font-medium text-sm mb-2">Inventory & Pricing</h4>
+              <div className="grid grid-cols-3 gap-2">
+                <div className="space-y-0.5">
+                  <Label className="text-[10px]">Min Qty</Label>
                   <Input
                     type="number"
                     min="0"
                     value={localPart.min_qty ?? 0}
                     onChange={(e) => handleFieldChange("min_qty", parseInt(e.target.value) || 0)}
                     onBlur={() => handleFieldBlur("min_qty")}
-                    className="h-8"
+                    className="h-7 text-sm"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Max Qty</Label>
+                <div className="space-y-0.5">
+                  <Label className="text-[10px]">Max Qty</Label>
                   <Input
                     type="number"
                     min="0"
                     value={localPart.max_qty ?? 0}
                     onChange={(e) => handleFieldChange("max_qty", parseInt(e.target.value) || 0)}
                     onBlur={() => handleFieldBlur("max_qty")}
-                    className="h-8"
+                    className="h-7 text-sm"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Qty in Stock</Label>
+                <div className="space-y-0.5">
+                  <Label className="text-[10px]">Qty in Stock</Label>
                   <Input
                     type="number"
                     min="0"
                     value={localPart.qty_in_stock ?? 0}
                     onChange={(e) => handleFieldChange("qty_in_stock", parseInt(e.target.value) || 0)}
                     onBlur={() => handleFieldBlur("qty_in_stock")}
-                    className="h-8"
+                    className="h-7 text-sm"
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3 mt-3">
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Lead Time (days)</Label>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="space-y-0.5">
+                  <Label className="text-[10px]">Lead Time (days)</Label>
                   <Input
                     type="number"
                     min="0"
                     value={localPart.lead_time_days ?? ""}
                     onChange={(e) => handleFieldChange("lead_time_days", e.target.value ? parseInt(e.target.value) : null)}
                     onBlur={() => handleFieldBlur("lead_time_days")}
-                    className="h-8"
+                    className="h-7 text-sm"
                     placeholder="—"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Unit Price ($)</Label>
+                <div className="space-y-0.5">
+                  <Label className="text-[10px]">Unit Price ($)</Label>
                   <Input
                     type="number"
                     min="0"
@@ -337,7 +340,7 @@ export const VisualPartDetailDialog = ({
                     value={localPart.unit_price ?? ""}
                     onChange={(e) => handleFieldChange("unit_price", e.target.value ? parseFloat(e.target.value) : null)}
                     onBlur={() => handleFieldBlur("unit_price")}
-                    className="h-8"
+                    className="h-7 text-sm"
                     placeholder="—"
                   />
                 </div>
@@ -345,22 +348,22 @@ export const VisualPartDetailDialog = ({
             </div>
 
             {/* Notes */}
-            <div className="space-y-1.5">
-              <Label>Notes</Label>
+            <div className="space-y-1">
+              <Label className="text-xs">Notes</Label>
               <Textarea
                 value={localPart.notes || ""}
                 onChange={(e) => handleFieldChange("notes", e.target.value)}
                 onBlur={() => handleFieldBlur("notes")}
                 placeholder="Additional notes..."
-                className="min-h-[80px]"
+                className="min-h-[50px] text-sm"
               />
             </div>
 
             {/* Delete Button */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="ghost" className="w-full text-destructive hover:text-destructive mt-4">
-                  <Trash2 className="h-4 w-4 mr-2" />
+                <Button variant="ghost" size="sm" className="w-full text-destructive hover:text-destructive mt-2">
+                  <Trash2 className="h-3.5 w-3.5 mr-1.5" />
                   Delete Part
                 </Button>
               </AlertDialogTrigger>
