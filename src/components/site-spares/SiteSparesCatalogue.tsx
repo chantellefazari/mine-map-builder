@@ -13,6 +13,7 @@ import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { AddSpareDialog } from "./AddSpareDialog";
 import { ImportSpareDialog } from "./ImportSpareDialog";
 import { SiteSpareCard } from "./SiteSpareCard";
+import { SiteSpareDetailDialog } from "./SiteSpareDetailDialog";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
 import { classifyCategory } from "@/utils/categoryClassification";
 import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesToSiteSpares";
@@ -49,6 +50,8 @@ export const SiteSparesCatalogue = () => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [importingCritical, setImportingCritical] = useState(false);
+  const [selectedSpare, setSelectedSpare] = useState<SiteSpareItem | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
   // Derive categories dynamically from actual data
   const availableCategories = [...new Set(spares.map((s) => s.category))].filter(Boolean).sort();
@@ -154,6 +157,16 @@ export const SiteSparesCatalogue = () => {
   const lowStockCount = spares.filter((s) => s.status === "Low Stock" || s.status === "Out of Stock").length;
   const criticalCount = spares.filter((s) => getCriticality(s) === "HIGH").length;
   const withPhotosCount = spares.filter((s) => (s.image_urls || []).length > 0).length;
+
+  const handleSpareClick = (spare: SiteSpareItem) => {
+    setSelectedSpare(spare);
+    setDetailDialogOpen(true);
+  };
+
+  // Sync selected spare with spares list changes
+  const currentSelectedSpare = selectedSpare
+    ? spares.find((s) => s.id === selectedSpare.id) || null
+    : null;
 
   if (loading) {
     return (
@@ -318,16 +331,23 @@ export const SiteSparesCatalogue = () => {
         onMerge={mergeSpares}
         existingSpares={spares}
       />
+      <SiteSpareDetailDialog
+        spare={currentSelectedSpare}
+        open={detailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
+        onUpdate={updateSpare}
+        onDelete={deleteSpare}
+      />
 
       {/* Card Grid */}
       {filteredSpares.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {filteredSpares.map((spare) => (
             <SiteSpareCard
               key={spare.id}
               spare={spare}
+              onClick={() => handleSpareClick(spare)}
               onUpdate={updateSpare}
-              onDelete={deleteSpare}
             />
           ))}
         </div>
