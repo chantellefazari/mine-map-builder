@@ -160,6 +160,7 @@ export const AddSpareDialog = ({
       critical_spare_id: "",
       asset_tag: "",
       notes: formData.notes,
+      image_urls: [],
     };
 
     onAddSpare(newSpare);

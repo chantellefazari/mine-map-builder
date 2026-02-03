@@ -32,6 +32,7 @@ export interface SiteSpareItem {
   asset_tag: string;
   specifications: string;
   notes: string;
+  image_urls: string[];
 }
 
 export const useSiteSpares = () => {
@@ -67,7 +68,11 @@ export const useSiteSpares = () => {
         break;
       }
 
-      const batch = data || [];
+      // Normalize image_urls to always be an array
+      const batch = (data || []).map((row: any) => ({
+        ...row,
+        image_urls: (row.image_urls ?? []) as string[],
+      })) as SiteSpareItem[];
       all.push(...batch);
 
       if (batch.length < pageSize) break;

@@ -177,6 +177,7 @@ export const ImportSpareDialog = ({
         asset_tag: assetTag,
         specifications: `${sizeSpec}${sizeSpec && material ? " | " : ""}${material}`,
         notes: remarks,
+        image_urls: [],
       };
     });
 
