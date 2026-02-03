@@ -9,6 +9,8 @@ function normalizePart(row: any): VisualPart {
     // Backend types allow null; UI expects array/string.
     image_urls: (row?.image_urls ?? []) as string[],
     supplier: (row?.supplier ?? "") as string,
+    associated_asset: (row?.associated_asset ?? "") as string,
+    notes: (row?.notes ?? "") as string,
   };
 }
 

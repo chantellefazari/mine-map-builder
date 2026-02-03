@@ -42,7 +42,8 @@ export const VisualPartsCatalogue = () => {
     const matchesSearch =
       part.part_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       part.site_part_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      part.associated_asset.toLowerCase().includes(searchQuery.toLowerCase());
+      part.associated_asset.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (part.supplier || "").toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = filterCategory === "all" || part.category === filterCategory;
     const matchesCriticality = filterCriticality === "all" || part.criticality === filterCriticality;
     return matchesSearch && matchesCategory && matchesCriticality;
