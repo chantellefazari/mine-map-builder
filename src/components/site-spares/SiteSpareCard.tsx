@@ -168,7 +168,7 @@ export const SiteSpareCard = ({
     <Card className="overflow-hidden">
       {/* Image Section - Compact */}
       <div
-        className={`relative aspect-square bg-white cursor-pointer ${
+        className={`relative aspect-square bg-muted cursor-pointer ${
           isDragOver ? "ring-2 ring-primary ring-inset bg-primary/10" : ""
         } ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
         onDrop={handleDrop}
@@ -192,7 +192,7 @@ export const SiteSpareCard = ({
             <img
               src={imageUrls[currentImageIndex]}
               alt={spare.description}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain p-1"
             />
             {imageUrls.length > 1 && (
               <>
