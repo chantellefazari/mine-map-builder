@@ -1,16 +1,46 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import type { NewVisualPart, VisualPart } from "@/hooks/useVisualPartsCatalogue";
+
+export interface VisualPart {
+  id: string;
+  site_part_number: string;
+  part_name: string;
+  category: string;
+  associated_asset: string;
+  criticality: string;
+  notes: string;
+  supplier: string;
+  image_urls: string[];
+  min_qty: number;
+  max_qty: number;
+  qty_in_stock: number;
+  lead_time_days: number | null;
+  unit_price: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type NewVisualPart = Omit<VisualPart, "id" | "created_at" | "updated_at">;
 
 function normalizePart(row: any): VisualPart {
   return {
-    ...(row as VisualPart),
-    // Backend types allow null; UI expects array/string.
-    image_urls: (row?.image_urls ?? []) as string[],
-    supplier: (row?.supplier ?? "") as string,
-    associated_asset: (row?.associated_asset ?? "") as string,
-    notes: (row?.notes ?? "") as string,
+    id: row.id,
+    site_part_number: row.site_part_number,
+    part_name: row.part_name,
+    category: row.category ?? "General",
+    criticality: row.criticality ?? "Non-Critical",
+    image_urls: (row.image_urls ?? []) as string[],
+    supplier: (row.supplier ?? "") as string,
+    associated_asset: (row.associated_asset ?? "") as string,
+    notes: (row.notes ?? "") as string,
+    min_qty: row.min_qty ?? 0,
+    max_qty: row.max_qty ?? 0,
+    qty_in_stock: row.qty_in_stock ?? 0,
+    lead_time_days: row.lead_time_days ?? null,
+    unit_price: row.unit_price ?? null,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
   };
 }
 
@@ -40,10 +70,26 @@ export const useVisualPartsCatalogueSafe = () => {
     fetchParts();
   }, [fetchParts]);
 
-  const addPart = async (part: NewVisualPart): Promise<VisualPart | null> => {
+  const addPart = async (part: Partial<NewVisualPart>): Promise<VisualPart | null> => {
+    const insertData = {
+      site_part_number: part.site_part_number || `TMP-${Date.now()}`,
+      part_name: part.part_name || "",
+      category: part.category || "General",
+      criticality: part.criticality || "Non-Critical",
+      supplier: part.supplier || "",
+      associated_asset: part.associated_asset || "",
+      notes: part.notes || "",
+      image_urls: part.image_urls || [],
+      min_qty: part.min_qty ?? 0,
+      max_qty: part.max_qty ?? 0,
+      qty_in_stock: part.qty_in_stock ?? 0,
+      lead_time_days: part.lead_time_days ?? null,
+      unit_price: part.unit_price ?? null,
+    };
+
     const { data, error } = await supabase
       .from("visual_parts_catalogue")
-      .insert(part)
+      .insert(insertData)
       .select()
       .single();
 
@@ -79,13 +125,7 @@ export const useVisualPartsCatalogueSafe = () => {
 
     setParts((prev) =>
       prev.map((p) =>
-        p.id === id
-          ? normalizePart({
-              ...p,
-              ...updates,
-              image_urls: (updates as any).image_urls ?? p.image_urls,
-            })
-          : p
+        p.id === id ? normalizePart({ ...p, ...updates }) : p
       )
     );
   };
@@ -149,7 +189,6 @@ export const useVisualPartsCatalogueSafe = () => {
     const imageUrl = await uploadImage(partId, file);
     if (!imageUrl) return;
 
-    // Key fix: read/update by partId, not by local state (avoids race after creating a part)
     const { data: current, error: currentErr } = await supabase
       .from("visual_parts_catalogue")
       .select("image_urls")
@@ -176,7 +215,6 @@ export const useVisualPartsCatalogueSafe = () => {
       return;
     }
 
-    // Update local state if the part is already present; otherwise just refetch.
     let found = false;
     setParts((prev) =>
       prev.map((p) => {
@@ -187,7 +225,6 @@ export const useVisualPartsCatalogueSafe = () => {
     );
 
     if (!found) {
-      // Avoid a flash of loading; just refresh in the background.
       void fetchParts();
     }
 
