@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Package, ImageIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SiteSparesTable } from "@/components/site-spares/SiteSparesTable";
+import { SiteSparesCatalogue as SiteSparesGrid } from "@/components/site-spares/SiteSparesCatalogue";
 import { VisualPartsCatalogue } from "@/components/visual-parts/VisualPartsCatalogue";
 
 const SiteSparesCatalogue = () => {
@@ -28,7 +28,7 @@ const SiteSparesCatalogue = () => {
                 Site Spares Catalogue
               </h1>
               <p className="text-muted-foreground text-sm">
-                Complete inventory of all site spares – filter and flag critical items
+                Visual inventory catalogue – click cards to upload photos
               </p>
             </div>
           </div>
@@ -70,18 +70,16 @@ const SiteSparesCatalogue = () => {
               </div>
               <div className="text-sm">
                 <p className="text-foreground font-medium">
-                  Full site spares inventory for all equipment and consumables.
+                  Full site spares inventory with photo upload capability.
                 </p>
                 <p className="text-muted-foreground mt-1">
-                  Items flagged as critical will appear in the Critical Spares Catalogue. Use filters to manage and organize.
+                  Click on any card image area to upload photos. Drag and drop is also supported.
                 </p>
               </div>
             </div>
 
-            {/* Spares Table */}
-            <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-              <SiteSparesTable />
-            </div>
+            {/* Spares Catalogue Grid */}
+            <SiteSparesGrid />
           </TabsContent>
 
           <TabsContent value="visual" className="mt-0">
