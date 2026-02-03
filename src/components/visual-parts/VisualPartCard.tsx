@@ -159,15 +159,11 @@ export const VisualPartCard = ({
           {part.part_name}
         </p>
 
-        {/* Category & Supplier */}
+        {/* Category, Supplier & Asset */}
         <div className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
           <span className="truncate">{part.category}</span>
-          {part.supplier && (
-            <span className="truncate">Supplier: {part.supplier}</span>
-          )}
-          {part.associated_asset && (
-            <span className="truncate">Asset: {part.associated_asset}</span>
-          )}
+          <span className="truncate">Supplier: {part.supplier || "—"}</span>
+          <span className="truncate">Asset/System: {part.associated_asset || "—"}</span>
         </div>
       </CardContent>
     </Card>
