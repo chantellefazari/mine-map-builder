@@ -46,6 +46,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { PART_CATEGORIES } from "@/components/visual-parts/visualPartsConstants";
+import { classifyVisualPartCategory } from "@/utils/visualPartsClassification";
 
 interface NormalizedComponentsTableProps {
   components: NormalizedComponent[];
@@ -303,13 +304,6 @@ export const NormalizedComponentsTable = ({
     }
   };
 
-  // Smart category classification using supplier + description
-  const classifyCategory = (description: string, supplier?: string | null): string => {
-    // Import inline to avoid circular deps
-    const { classifyVisualPartCategory } = require("@/utils/visualPartsClassification");
-    return classifyVisualPartCategory(description, supplier);
-  };
-
   const exportToVisualParts = async () => {
     const itemsToExport = selectedIds.size > 0 
       ? filteredComponents.filter(c => selectedIds.has(c.id))
@@ -351,8 +345,8 @@ export const NormalizedComponentsTable = ({
         .map(c => ({
           site_part_number: c.partNumber || `TMP-${c.id.slice(0, 8)}`,
           part_name: c.descriptionCleaned,
-          category: classifyCategory(c.descriptionCleaned, c.supplier),
-          criticality: "Non-Critical",
+          category: classifyVisualPartCategory(c.descriptionCleaned, c.supplier),
+          criticality: "LOW",
           associated_asset: c.linkedAsset || null,
           notes: c.notes || null,
           supplier: c.supplier || "",
