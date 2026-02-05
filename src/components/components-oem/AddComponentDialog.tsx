@@ -50,6 +50,7 @@
  const areas = ["COM", "UTL", "REC", "TAIL", "SUP", "SITE"];
  
  const componentFunctions = ["Drive", "Support", "Control", "Safety", ""] as const;
+const NONE_VALUE = "__none__";
  
  const abbreviations: Record<string, string> = {
    Motor: "MTR",
@@ -264,12 +265,15 @@
              </div>
              <div className="space-y-2">
                <Label htmlFor="componentFunction">Function</Label>
-               <Select value={componentFunction} onValueChange={(v) => setComponentFunction(v as any)}>
+              <Select 
+                value={componentFunction || NONE_VALUE} 
+                onValueChange={(v) => setComponentFunction(v === NONE_VALUE ? "" : v as any)}
+              >
                  <SelectTrigger>
                    <SelectValue placeholder="Select" />
                  </SelectTrigger>
                  <SelectContent>
-                   <SelectItem value="">None</SelectItem>
+                    <SelectItem value={NONE_VALUE}>None</SelectItem>
                    <SelectItem value="Drive">Drive</SelectItem>
                    <SelectItem value="Support">Support</SelectItem>
                    <SelectItem value="Control">Control</SelectItem>
