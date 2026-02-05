@@ -34,6 +34,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { SiteSpareItem } from "@/hooks/useSiteSpares";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
+import { getEdgeFunctionErrorMessage } from "@/utils/getEdgeFunctionErrorMessage";
 
 // Criticality badge colors
 const criticalityColors: Record<CriticalityLevel, string> = {
@@ -209,13 +210,14 @@ export const SiteSpareDetailDialog = ({
     
     setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("generate-part-image", {
+      const { data, error, response } = await supabase.functions.invoke("generate-part-image", {
         body: { partName: localSpare.description, partId: spare.id },
       });
 
       if (error) {
         console.error("Generation error:", error);
-        toast.error(error.message || "Failed to generate image");
+        const msg = await getEdgeFunctionErrorMessage({ error, response: response as any });
+        toast.error(msg);
         return;
       }
 
