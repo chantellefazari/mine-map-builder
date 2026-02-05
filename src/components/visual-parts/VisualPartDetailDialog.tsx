@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+ import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -28,7 +29,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ChevronLeft, ChevronRight, Trash2, Upload, X, ImageIcon } from "lucide-react";
+ import { ChevronLeft, ChevronRight, Trash2, Upload, X, ImageIcon, Sparkles, Loader2, Check } from "lucide-react";
+ import { toast } from "sonner";
 import type { VisualPart } from "@/hooks/useVisualPartsCatalogueSafe";
 import { PART_CATEGORIES, CRITICALITY_LEVELS, getCriticalityColor } from "./visualPartsConstants";
 
@@ -40,6 +42,7 @@ interface VisualPartDetailDialogProps {
   onDelete: (id: string) => void;
   onAddImage: (partId: string, file: File) => void;
   onRemoveImage: (partId: string, imageUrl: string) => void;
+ onImageGenerated?: (partId: string, imageUrl: string) => void;
 }
 
 export const VisualPartDetailDialog = ({
@@ -50,9 +53,13 @@ export const VisualPartDetailDialog = ({
   onDelete,
   onAddImage,
   onRemoveImage,
+ onImageGenerated,
 }: VisualPartDetailDialogProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [localPart, setLocalPart] = useState<VisualPart | null>(null);
+ const [isGenerating, setIsGenerating] = useState(false);
+ const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+ const [selectedGeneratedIndex, setSelectedGeneratedIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (part) {
@@ -60,6 +67,12 @@ export const VisualPartDetailDialog = ({
       setCurrentImageIndex(0);
     }
   }, [part]);
+ 
+ // Reset generated images when part changes
+ useEffect(() => {
+   setGeneratedImages([]);
+   setSelectedGeneratedIndex(null);
+ }, [part?.id]);
 
   if (!localPart) return null;
 
@@ -104,6 +117,69 @@ export const VisualPartDetailDialog = ({
     }
   };
 
+ const handleGenerateImage = async () => {
+   if (!part) return;
+   
+   setIsGenerating(true);
+   try {
+     const { data, error } = await supabase.functions.invoke("generate-part-image", {
+       body: { partName: localPart.part_name, partId: part.id },
+     });
+ 
+     if (error) {
+       console.error("Generation error:", error);
+       toast.error(error.message || "Failed to generate image");
+       return;
+     }
+ 
+     if (data?.error) {
+       toast.error(data.error);
+       return;
+     }
+ 
+     if (data?.imageUrl) {
+       setGeneratedImages((prev) => [...prev, data.imageUrl]);
+       toast.success("Image generated! Click to select it.");
+     }
+   } catch (err) {
+     console.error("Generate image error:", err);
+     toast.error("Failed to generate image");
+   } finally {
+     setIsGenerating(false);
+   }
+ };
+ 
+ const handleSelectGeneratedImage = async (imageUrl: string, index: number) => {
+   if (!part) return;
+   
+   setSelectedGeneratedIndex(index);
+   
+   // Add to part's image_urls in database
+   const newImageUrls = [...localPart.image_urls, imageUrl];
+   
+   const { error } = await supabase
+     .from("visual_parts_catalogue")
+     .update({ image_urls: newImageUrls })
+     .eq("id", part.id);
+   
+   if (error) {
+     console.error("Error saving image:", error);
+     toast.error("Failed to save image to part");
+     setSelectedGeneratedIndex(null);
+     return;
+   }
+   
+   // Update local state
+   setLocalPart((prev) => prev ? { ...prev, image_urls: newImageUrls } : null);
+   
+   // Notify parent
+   if (onImageGenerated) {
+     onImageGenerated(part.id, imageUrl);
+   }
+   
+   toast.success("Image added to part!");
+ };
+ 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
@@ -196,7 +272,67 @@ export const VisualPartDetailDialog = ({
                 <Upload className="h-4 w-4 mr-2" />
                 Upload Image
               </Button>
+             <Button
+               variant="outline"
+               size="sm"
+               className="w-full"
+               onClick={handleGenerateImage}
+               disabled={isGenerating}
+             >
+               {isGenerating ? (
+                 <>
+                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                   Generating...
+                 </>
+               ) : (
+                 <>
+                   <Sparkles className="h-4 w-4 mr-2" />
+                   {generatedImages.length > 0 ? "Generate Another" : "Generate Image"}
+                 </>
+               )}
+             </Button>
             </div>
+ 
+           {/* Generated Images Gallery */}
+           {generatedImages.length > 0 && (
+             <div className="space-y-2">
+               <Label className="text-xs">Generated Images (click to add)</Label>
+               <div className="grid grid-cols-3 gap-2">
+                 {generatedImages.map((url, idx) => {
+                   const isSelected = selectedGeneratedIndex === idx;
+                   const isAlreadyAdded = localPart.image_urls.includes(url);
+                   return (
+                     <div
+                       key={idx}
+                       className={`relative aspect-square border rounded-lg overflow-hidden cursor-pointer transition-all ${
+                         isSelected || isAlreadyAdded
+                           ? "ring-2 ring-primary border-primary"
+                           : "hover:ring-2 hover:ring-primary/50"
+                       }`}
+                       onClick={() => !isAlreadyAdded && handleSelectGeneratedImage(url, idx)}
+                     >
+                       <img
+                         src={url}
+                         alt={`Generated ${idx + 1}`}
+                         className="w-full h-full object-contain bg-background p-1"
+                       />
+                       {isAlreadyAdded && (
+                         <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                           <Check className="h-6 w-6 text-primary" />
+                         </div>
+                       )}
+                       <span className="absolute bottom-1 left-1 text-[10px] bg-background/80 px-1 rounded">
+                         #{idx + 1}
+                       </span>
+                     </div>
+                   );
+                 })}
+               </div>
+               <p className="text-[10px] text-muted-foreground">
+                 Click an image to add it to the part. Generate more to compare options.
+               </p>
+             </div>
+           )}
           </div>
 
           {/* Details Section */}
