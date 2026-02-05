@@ -1,4 +1,4 @@
- import { useState, useEffect } from "react";
+import { useState } from "react";
  import { Button } from "@/components/ui/button";
  import { Progress } from "@/components/ui/progress";
  import {
@@ -13,7 +13,7 @@
    CollapsibleContent,
    CollapsibleTrigger,
  } from "@/components/ui/collapsible";
- import { Play, Pause, Square, Wand2, ChevronDown, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
+import { Play, Pause, Square, Wand2, ChevronDown, AlertCircle, Loader2, CheckCircle2, RefreshCw } from "lucide-react";
  import type { BatchProgress } from "@/hooks/useBatchImageGeneration";
  
  interface BatchImageGenerationPanelProps {
@@ -24,6 +24,7 @@
    onPause: () => void;
    onResume: () => void;
    onStop: () => void;
+  onRefresh?: () => void;
  }
  
  export const BatchImageGenerationPanel = ({
@@ -34,6 +35,7 @@
    onPause,
    onResume,
    onStop,
+  onRefresh,
  }: BatchImageGenerationPanelProps) => {
    const [selectedCategory, setSelectedCategory] = useState<string>("all");
    const [showFailedItems, setShowFailedItems] = useState(false);
@@ -89,12 +91,20 @@
              <Play className="h-4 w-4" />
              Start Batch Generation
            </Button>
-           {partsWithoutImages === 0 && (
-             <p className="text-sm text-muted-foreground flex items-center gap-2">
-               <CheckCircle2 className="h-4 w-4 text-green-500" />
-               All parts in this category already have images
-             </p>
-           )}
+            {partsWithoutImages === 0 && (
+              <div className="flex items-center gap-3">
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  All parts in this category already have images
+                </p>
+                {onRefresh && (
+                  <Button size="sm" variant="ghost" onClick={onRefresh} className="gap-1">
+                    <RefreshCw className="h-3 w-3" />
+                    Refresh count
+                  </Button>
+                )}
+              </div>
+            )}
          </div>
        )}
  
@@ -154,12 +164,18 @@
  
            {/* Completion Message */}
            {!progress.isRunning && progress.processed > 0 && (
-             <div className="flex items-center gap-2 text-sm text-green-600">
+              <div className="flex items-center gap-3 text-sm text-green-600">
                <CheckCircle2 className="h-4 w-4" />
                <span>
                  Batch complete! Generated {progress.generated} images.
-                 {progress.failed > 0 && ` (${progress.failed} failed)`}
+                  {progress.failed > 0 && ` (${progress.failed} failed, ${progress.skipped} skipped)`}
                </span>
+                {onRefresh && (
+                  <Button size="sm" variant="outline" onClick={onRefresh} className="gap-1 ml-2">
+                    <RefreshCw className="h-3 w-3" />
+                    Refresh to see results
+                  </Button>
+                )}
              </div>
            )}
  
