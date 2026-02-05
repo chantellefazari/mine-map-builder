@@ -58,12 +58,14 @@
  
      if (!response.ok) {
        if (response.status === 429) {
+          console.warn("AI gateway rate limited (429)");
          return new Response(
            JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
            { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
          );
        }
        if (response.status === 402) {
+          console.warn("AI gateway credits exhausted (402)");
          return new Response(
            JSON.stringify({ error: "AI credits exhausted. Please add credits to continue." }),
            { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }

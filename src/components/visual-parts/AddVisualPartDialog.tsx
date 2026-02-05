@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { getImageFileFromDataTransfer } from "@/utils/getImageFileFromDataTransfer";
+import { getEdgeFunctionErrorMessage } from "@/utils/getEdgeFunctionErrorMessage";
  import { ImageIcon, X, Sparkles, Loader2, Check } from "lucide-react";
 import type { NewVisualPart } from "@/hooks/useVisualPartsCatalogue";
 
@@ -127,15 +128,16 @@ export const AddVisualPartDialog = ({
    const tempId = `temp-${Date.now()}`;
  
    try {
-     const { data, error } = await supabase.functions.invoke("generate-part-image", {
+      const { data, error, response } = await supabase.functions.invoke("generate-part-image", {
        body: { partName: partName.trim(), partId: tempId },
      });
  
      if (error) {
        console.error("Generation error:", error);
+        const msg = await getEdgeFunctionErrorMessage({ error, response: response as any });
        toast({
          title: "Generation failed",
-         description: error.message || "Failed to generate image",
+          description: msg,
          variant: "destructive",
        });
        return;
