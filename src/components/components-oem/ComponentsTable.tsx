@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AddComponentDialog } from "./AddComponentDialog";
 import {
   Table,
   TableBody,
@@ -79,6 +80,7 @@ export const ComponentsTable = () => {
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterArea, setFilterArea] = useState<string>("all");
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const filteredComponents = useMemo(() => {
     const q = searchQuery.toLowerCase();
@@ -106,6 +108,11 @@ export const ComponentsTable = () => {
     });
     return list;
   }, [filteredComponents]);
+
+  const handleAddComponent = (newComponent: Omit<ComponentItem, "id">) => {
+    const id = `comp-${Date.now()}`;
+    setComponents((prev) => [...prev, { ...newComponent, id }]);
+  };
 
   return (
     <div className="space-y-4">
@@ -160,7 +167,7 @@ export const ComponentsTable = () => {
               <SelectItem value="Verified after P&ID Walkdown">Verified</SelectItem>
             </SelectContent>
           </Select>
-          <Button size="sm" className="gap-2">
+          <Button size="sm" className="gap-2" onClick={() => setAddDialogOpen(true)}>
             <Plus className="h-4 w-4" />
             Add Component
           </Button>
@@ -236,6 +243,12 @@ export const ComponentsTable = () => {
           No components match your search criteria.
         </div>
       )}
+
+      <AddComponentDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+        onAdd={handleAddComponent}
+      />
     </div>
   );
 };
