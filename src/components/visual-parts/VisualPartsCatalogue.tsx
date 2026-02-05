@@ -283,6 +283,7 @@ export const VisualPartsCatalogue = () => {
         onDelete={deletePart}
         onAddImage={addImageToPart}
         onRemoveImage={removeImageFromPart}
+       onImageGenerated={() => refetch()}
       />
 
       {/* Parts Grid */}

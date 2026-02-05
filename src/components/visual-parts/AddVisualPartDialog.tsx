@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+ import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { getImageFileFromDataTransfer } from "@/utils/getImageFileFromDataTransfer";
-import { ImageIcon, X } from "lucide-react";
+ import { ImageIcon, X, Sparkles, Loader2, Check } from "lucide-react";
 import type { NewVisualPart } from "@/hooks/useVisualPartsCatalogue";
 
 interface AddVisualPartDialogProps {
@@ -37,6 +38,9 @@ export const AddVisualPartDialog = ({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+ const [isGenerating, setIsGenerating] = useState(false);
+ const [generatedImages, setGeneratedImages] = useState<{ url: string; tempId: string }[]>([]);
+ const [selectedGeneratedUrl, setSelectedGeneratedUrl] = useState<string | null>(null);
 
   const resetForm = () => {
     setPartName("");
@@ -44,6 +48,9 @@ export const AddVisualPartDialog = ({
     setIsDragOver(false);
     setPreviewImage(null);
     setPreviewUrl(null);
+     setIsGenerating(false);
+     setGeneratedImages([]);
+     setSelectedGeneratedUrl(null);
   };
 
   const setPreviewFromFile = useCallback(
@@ -103,7 +110,78 @@ export const AddVisualPartDialog = ({
     setPreviewImage(null);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
+     setSelectedGeneratedUrl(null);
   };
+ 
+ const handleGenerateImage = async () => {
+   if (!partName.trim()) {
+     toast({
+       title: "Description required",
+       description: "Enter a part description before generating an image",
+       variant: "destructive",
+     });
+     return;
+   }
+ 
+   setIsGenerating(true);
+   const tempId = `temp-${Date.now()}`;
+ 
+   try {
+     const { data, error } = await supabase.functions.invoke("generate-part-image", {
+       body: { partName: partName.trim(), partId: tempId },
+     });
+ 
+     if (error) {
+       console.error("Generation error:", error);
+       toast({
+         title: "Generation failed",
+         description: error.message || "Failed to generate image",
+         variant: "destructive",
+       });
+       return;
+     }
+ 
+     if (data?.error) {
+       toast({
+         title: "Generation failed",
+         description: data.error,
+         variant: "destructive",
+       });
+       return;
+     }
+ 
+     if (data?.imageUrl) {
+       setGeneratedImages((prev) => [...prev, { url: data.imageUrl, tempId }]);
+       // Auto-select if first image
+       if (generatedImages.length === 0 && !previewUrl) {
+         setSelectedGeneratedUrl(data.imageUrl);
+       }
+       toast({
+         title: "Image generated!",
+         description: "Click on an image to select it",
+       });
+     }
+   } catch (err) {
+     console.error("Generate image error:", err);
+     toast({
+       title: "Generation failed",
+       description: "Failed to generate image",
+       variant: "destructive",
+     });
+   } finally {
+     setIsGenerating(false);
+   }
+ };
+ 
+ const handleSelectGeneratedImage = (url: string) => {
+   setSelectedGeneratedUrl(url);
+   // Clear any manually uploaded preview
+   if (previewUrl) {
+     URL.revokeObjectURL(previewUrl);
+     setPreviewUrl(null);
+     setPreviewImage(null);
+   }
+ };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,10 +200,10 @@ export const AddVisualPartDialog = ({
       criticality: "Non-Critical",
       notes: notes.trim(),
       supplier: "",
-      image_urls: [],
+       image_urls: selectedGeneratedUrl ? [selectedGeneratedUrl] : [],
     });
 
-    if (result && previewImage && onAddImage) {
+     if (result && previewImage && onAddImage && !selectedGeneratedUrl) {
       await onAddImage(result.id, previewImage);
     }
 
@@ -158,12 +236,12 @@ export const AddVisualPartDialog = ({
               onChange={handleImageSelect}
             />
             
-            {previewUrl ? (
+             {previewUrl || selectedGeneratedUrl ? (
               <div className="relative aspect-video rounded-lg overflow-hidden border border-border">
                 <img
-                  src={previewUrl}
+                   src={previewUrl || selectedGeneratedUrl || ""}
                   alt="Preview"
-                  className="w-full h-full object-cover"
+                   className="w-full h-full object-contain bg-background p-2"
                 />
                 <Button
                   type="button"
@@ -174,6 +252,11 @@ export const AddVisualPartDialog = ({
                 >
                   <X className="h-4 w-4" />
                 </Button>
+                 {selectedGeneratedUrl && (
+                   <span className="absolute bottom-2 left-2 text-xs bg-primary/80 text-primary-foreground px-2 py-0.5 rounded">
+                     AI Generated
+                   </span>
+                 )}
               </div>
             ) : (
               <div
@@ -201,6 +284,65 @@ export const AddVisualPartDialog = ({
                 </span>
               </div>
             )}
+ 
+             {/* Generate Button */}
+             <Button
+               type="button"
+               variant="outline"
+               size="sm"
+               className="w-full"
+               onClick={handleGenerateImage}
+               disabled={isGenerating || !partName.trim()}
+             >
+               {isGenerating ? (
+                 <>
+                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                   Generating...
+                 </>
+               ) : (
+                 <>
+                   <Sparkles className="h-4 w-4 mr-2" />
+                   {generatedImages.length > 0 ? "Generate Another" : "Generate with AI"}
+                 </>
+               )}
+             </Button>
+ 
+             {/* Generated Images Gallery */}
+             {generatedImages.length > 0 && (
+               <div className="space-y-2">
+                 <Label className="text-xs">Generated Images (click to select)</Label>
+                 <div className="grid grid-cols-3 gap-2">
+                   {generatedImages.map((img, idx) => {
+                     const isSelected = selectedGeneratedUrl === img.url;
+                     return (
+                       <div
+                         key={img.tempId}
+                         className={`relative aspect-square border rounded-lg overflow-hidden cursor-pointer transition-all ${
+                           isSelected
+                             ? "ring-2 ring-primary border-primary"
+                             : "hover:ring-2 hover:ring-primary/50"
+                         }`}
+                         onClick={() => handleSelectGeneratedImage(img.url)}
+                       >
+                         <img
+                           src={img.url}
+                           alt={`Generated ${idx + 1}`}
+                           className="w-full h-full object-contain bg-background p-1"
+                         />
+                         {isSelected && (
+                           <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                             <Check className="h-5 w-5 text-primary" />
+                           </div>
+                         )}
+                         <span className="absolute bottom-1 left-1 text-[10px] bg-background/80 px-1 rounded">
+                           #{idx + 1}
+                         </span>
+                       </div>
+                     );
+                   })}
+                 </div>
+               </div>
+             )}
           </div>
 
           {/* Part Description */}
