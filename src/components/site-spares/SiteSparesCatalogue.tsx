@@ -8,13 +8,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon, Wand2 } from "lucide-react";
 import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
+import { useBatchImageGeneration } from "@/hooks/useBatchImageGeneration";
 import { AddSpareDialog } from "./AddSpareDialog";
 import { ImportSpareDialog } from "./ImportSpareDialog";
 import { SiteSpareCard } from "./SiteSpareCard";
 import { SiteSpareDetailDialog } from "./SiteSpareDetailDialog";
 import { OrphanedImageRecovery } from "./OrphanedImageRecovery";
+import { BatchImageGenerationPanel } from "./BatchImageGenerationPanel";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
 import { classifyCategory } from "@/utils/categoryClassification";
 import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesToSiteSpares";
@@ -55,12 +57,30 @@ export const SiteSparesCatalogue = () => {
   const [selectedSpare, setSelectedSpare] = useState<SiteSpareItem | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [showImageRecovery, setShowImageRecovery] = useState(false);
+  const [showBatchGeneration, setShowBatchGeneration] = useState(false);
 
   // Derive categories dynamically from actual data
   const availableCategories = [...new Set(spares.map((s) => s.category))].filter(Boolean).sort();
   
   // Derive suppliers dynamically from actual data
   const availableSuppliers = [...new Set(spares.map((s) => s.preferred_supplier))].filter(Boolean).sort();
+
+  // Batch image generation handler
+  const handleBatchImageGenerated = async (id: string, imageUrl: string): Promise<boolean> => {
+    const spare = spares.find((s) => s.id === id);
+    if (!spare) return false;
+    const updatedUrls = [...(spare.image_urls || []), imageUrl];
+    return await updateSpare(id, { image_urls: updatedUrls });
+  };
+
+  const {
+    progress: batchProgress,
+    startBatch,
+    pauseBatch,
+    resumeBatch,
+    stopBatch,
+    getPartsWithoutImages,
+  } = useBatchImageGeneration(spares, handleBatchImageGenerated, refetch);
 
   const getCriticality = (spare: SiteSpareItem): CriticalityLevel => {
     return classifyCriticality(spare.description);
@@ -401,6 +421,15 @@ export const SiteSparesCatalogue = () => {
             <ImageIcon className="h-4 w-4" />
             {showImageRecovery ? "Hide Image Recovery" : "Recover Images"}
           </Button>
+          <Button 
+            size="sm" 
+            variant={showBatchGeneration ? "default" : "outline"} 
+            className="gap-2" 
+            onClick={() => setShowBatchGeneration(!showBatchGeneration)}
+          >
+            <Wand2 className="h-4 w-4" />
+            {showBatchGeneration ? "Hide AI Generation" : "Batch AI Images"}
+          </Button>
           <Button size="sm" className="gap-2" onClick={() => setAddDialogOpen(true)}>
             <Plus className="h-4 w-4" />
             Add Item
@@ -432,6 +461,20 @@ export const SiteSparesCatalogue = () => {
           onImageAssigned={refetch} 
         />
       )}
+
+      {/* Batch AI Image Generation Panel */}
+      {showBatchGeneration && (
+        <BatchImageGenerationPanel
+          progress={batchProgress}
+          availableCategories={availableCategories}
+          getPartsWithoutImages={getPartsWithoutImages}
+          onStart={startBatch}
+          onPause={pauseBatch}
+          onResume={resumeBatch}
+          onStop={stopBatch}
+        />
+      )}
+
       {/* Card Grid */}
       {filteredSpares.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
