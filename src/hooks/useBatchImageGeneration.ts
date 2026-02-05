@@ -38,12 +38,25 @@ const DELAY_BETWEEN_REQUESTS_MS = 6000;
  
    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  
+  // Check if a part already has images in the database (fresh check)
+  const checkPartHasImage = async (partId: string): Promise<boolean> => {
+    const { data, error } = await supabase
+      .from("site_spares")
+      .select("image_urls")
+      .eq("id", partId)
+      .single();
+    
+    if (error || !data) return false;
+    return data.image_urls && data.image_urls.length > 0;
+  };
+
    const generateImageForPart = async (
-     spare: SiteSpareItem
+    partId: string,
+    description: string
    ): Promise<{ success: boolean; imageUrl?: string; error?: string }> => {
      try {
        const { data, error } = await supabase.functions.invoke("generate-part-image", {
-         body: { partName: spare.description, partId: spare.id },
+        body: { partName: description, partId: partId },
        });
  
        if (error) {
@@ -116,11 +129,11 @@ const DELAY_BETWEEN_REQUESTS_MS = 6000;
  
         const queueItem = queue[i];
         
-        // Find the current spare data (may have been updated)
-        const spare = spares.find((s) => s.id === queueItem.id);
-        
-        // Skip if spare no longer exists or already has an image
-        if (!spare || (spare.image_urls && spare.image_urls.length > 0)) {
+       // Check database directly for fresh image status
+       const hasImage = await checkPartHasImage(queueItem.id);
+       
+       // Skip if part already has an image
+       if (hasImage) {
           setProgress((prev) => ({
             ...prev,
             skipped: prev.skipped + 1,
@@ -131,15 +144,15 @@ const DELAY_BETWEEN_REQUESTS_MS = 6000;
         
          setProgress((prev) => ({
            ...prev,
-           currentItem: spare.description,
+          currentItem: queueItem.description,
            processed: i,
          }));
  
-         const result = await generateImageForPart(spare);
+        const result = await generateImageForPart(queueItem.id, queueItem.description);
  
          if (result.success && result.imageUrl) {
            // Save to database
-           const saved = await onImageGenerated(spare.id, result.imageUrl);
+          const saved = await onImageGenerated(queueItem.id, result.imageUrl);
            if (saved) {
              setProgress((prev) => ({
                ...prev,
@@ -153,7 +166,7 @@ const DELAY_BETWEEN_REQUESTS_MS = 6000;
                processed: i + 1,
                failedItems: [
                  ...prev.failedItems,
-                 { id: spare.id, description: spare.description, error: "Failed to save" },
+                { id: queueItem.id, description: queueItem.description, error: "Failed to save" },
                ],
              }));
            }
@@ -164,7 +177,7 @@ const DELAY_BETWEEN_REQUESTS_MS = 6000;
              processed: i + 1,
              failedItems: [
             ...prev.failedItems,
-            { id: spare.id, description: spare.description, error: result.error || "Unknown" },
+          { id: queueItem.id, description: queueItem.description, error: result.error || "Unknown" },
              ],
            }));
          }
