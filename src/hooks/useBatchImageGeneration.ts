@@ -60,11 +60,18 @@ const DELAY_BETWEEN_REQUESTS_MS = 6000;
        });
  
        if (error) {
-         return { success: false, error: error.message };
+        // Check if it's a payment/credits error
+        if (error.message?.includes("402") || error.message?.includes("Payment")) {
+          return { success: false, error: "AI credits exhausted - add credits to continue" };
+        }
+        if (error.message?.includes("429") || error.message?.includes("Rate")) {
+          return { success: false, error: "Rate limited - try again later" };
+        }
+        return { success: false, error: error.message || "Edge function error" };
        }
  
        if (data?.error) {
-         return { success: false, error: data.error };
+        return { success: false, error: data.error };
        }
  
        if (data?.imageUrl) {
@@ -73,7 +80,11 @@ const DELAY_BETWEEN_REQUESTS_MS = 6000;
  
        return { success: false, error: "No image returned" };
      } catch (err) {
-       return { success: false, error: err instanceof Error ? err.message : "Unknown error" };
+      const errMsg = err instanceof Error ? err.message : "Unknown error";
+      if (errMsg.includes("402")) {
+        return { success: false, error: "AI credits exhausted - add credits to continue" };
+      }
+      return { success: false, error: errMsg };
      }
    };
  
