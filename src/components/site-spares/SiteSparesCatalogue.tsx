@@ -472,6 +472,7 @@ export const SiteSparesCatalogue = () => {
           onPause={pauseBatch}
           onResume={resumeBatch}
           onStop={stopBatch}
+          onRefresh={refetch}
         />
       )}
 

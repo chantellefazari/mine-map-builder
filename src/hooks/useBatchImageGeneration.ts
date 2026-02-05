@@ -14,11 +14,11 @@
    failedItems: Array<{ id: string; description: string; error: string }>;
  }
  
- const DELAY_BETWEEN_REQUESTS_MS = 5000;
+const DELAY_BETWEEN_REQUESTS_MS = 6000;
  
  export const useBatchImageGeneration = (
    spares: SiteSpareItem[],
-   onImageGenerated: (id: string, imageUrl: string) => Promise<boolean>,
+  onImageGenerated: (id: string, imageUrl: string) => Promise<boolean>,
    refetch: () => Promise<void>
  ) => {
    const [progress, setProgress] = useState<BatchProgress>({
@@ -64,13 +64,16 @@
      }
    };
  
-   const startBatch = useCallback(
-     async (categoryFilter: string | null) => {
+  const startBatch = useCallback(
+    async (categoryFilter: string | null) => {
        abortRef.current = false;
        pauseRef.current = false;
  
-       // Filter parts without images
-       let queue = spares.filter((s) => !s.image_urls || s.image_urls.length === 0);
+      // Take a snapshot of parts without images at start time
+      // We use IDs to track which parts to process so we can skip already-processed ones
+      let queue = spares
+        .filter((s) => !s.image_urls || s.image_urls.length === 0)
+        .map((s) => ({ id: s.id, description: s.description, category: s.category }));
  
        // Apply category filter if specified
        if (categoryFilter && categoryFilter !== "all") {
@@ -111,7 +114,21 @@
            break;
          }
  
-         const spare = queue[i];
+        const queueItem = queue[i];
+        
+        // Find the current spare data (may have been updated)
+        const spare = spares.find((s) => s.id === queueItem.id);
+        
+        // Skip if spare no longer exists or already has an image
+        if (!spare || (spare.image_urls && spare.image_urls.length > 0)) {
+          setProgress((prev) => ({
+            ...prev,
+            skipped: prev.skipped + 1,
+            processed: i + 1,
+          }));
+          continue;
+        }
+        
          setProgress((prev) => ({
            ...prev,
            currentItem: spare.description,
@@ -146,8 +163,8 @@
              failed: prev.failed + 1,
              processed: i + 1,
              failedItems: [
-               ...prev.failedItems,
-               { id: spare.id, description: spare.description, error: result.error || "Unknown" },
+            ...prev.failedItems,
+            { id: spare.id, description: spare.description, error: result.error || "Unknown" },
              ],
            }));
          }
