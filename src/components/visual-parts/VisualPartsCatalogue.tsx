@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,12 +8,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Loader2, ImageIcon, AlertTriangle, RefreshCw, GitCompare, X } from "lucide-react";
+import { Plus, Search, Loader2, ImageIcon, AlertTriangle, RefreshCw, GitCompare, X, Wand2 } from "lucide-react";
 import { useVisualPartsCatalogueSafe, type VisualPart } from "@/hooks/useVisualPartsCatalogueSafe";
+import { useBatchImageGeneration, type BatchQueueItem } from "@/hooks/useBatchImageGeneration";
 import { VisualPartCard } from "./VisualPartCard";
 import { VisualPartDetailDialog } from "./VisualPartDetailDialog";
 import { AddVisualPartDialog } from "./AddVisualPartDialog";
 import { PartsComparisonDialog } from "./PartsComparisonDialog";
+import { BatchImageGenerationPanel } from "@/components/site-spares/BatchImageGenerationPanel";
 import { PART_CATEGORIES, CRITICALITY_LEVELS } from "./visualPartsConstants";
 import { classifyVisualPartCategory } from "@/utils/visualPartsClassification";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,6 +42,74 @@ export const VisualPartsCatalogue = () => {
   const [isReclassifying, setIsReclassifying] = useState(false);
   const [selectedPart, setSelectedPart] = useState<VisualPart | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [showBatchPanel, setShowBatchPanel] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  // Build batch queue items
+  const batchItems: BatchQueueItem[] = useMemo(
+    () =>
+      parts.map((p) => ({
+        id: p.id,
+        description: p.part_name,
+        category: p.category,
+        criticality: (p.criticality || "LOW").toUpperCase(),
+        hasImage: p.image_urls.length > 0,
+      })),
+    [parts]
+  );
+
+  const handleBatchImageGenerated = useCallback(
+    async (id: string, imageUrl: string): Promise<boolean> => {
+      const part = parts.find((p) => p.id === id);
+      if (!part) return false;
+      const existingUrls = part.image_urls || [];
+      const { error } = await supabase
+        .from("visual_parts_catalogue")
+        .update({ image_urls: [...existingUrls, imageUrl] })
+        .eq("id", id);
+      return !error;
+    },
+    [parts]
+  );
+
+  const {
+    progress: batchProgress,
+    startBatch,
+    pauseBatch,
+    resumeBatch,
+    stopBatch,
+    resetProgress,
+    getPartsWithoutImages,
+  } = useBatchImageGeneration(batchItems, handleBatchImageGenerated, refetch, "visual_parts_catalogue");
+
+  const toggleSelection = useCallback((id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const handleSelectAllWithoutImages = useCallback(() => {
+    const ids = parts.filter((p) => p.image_urls.length === 0).map((p) => p.id);
+    setSelectedIds(new Set(ids));
+  }, [parts]);
+
+  const handleSelectHighCriticality = useCallback(() => {
+    const ids = parts
+      .filter((p) => (p.criticality || "").toUpperCase() === "HIGH" && p.image_urls.length === 0)
+      .map((p) => p.id);
+    setSelectedIds(new Set(ids));
+  }, [parts]);
+
+  const handleToggleSelectionMode = useCallback(() => {
+    setSelectionMode((prev) => {
+      if (prev) setSelectedIds(new Set());
+      return !prev;
+    });
+  }, []);
 
   const hasActiveFilters =
     searchQuery.trim().length > 0 ||
@@ -255,7 +325,15 @@ export const VisualPartsCatalogue = () => {
             className="gap-2"
           >
             <GitCompare className="h-4 w-4" />
-            Compare to Inventory
+           Compare to Inventory
+          </Button>
+          <Button
+            variant={showBatchPanel ? "default" : "outline"}
+            onClick={() => setShowBatchPanel(!showBatchPanel)}
+            className="gap-2"
+          >
+            <Wand2 className="h-4 w-4" />
+            {showBatchPanel ? "Hide Batch Gen" : "Batch Generate"}
           </Button>
           <Button onClick={() => setAddDialogOpen(true)} className="gap-2">
             <Plus className="h-4 w-4" />
@@ -286,16 +364,64 @@ export const VisualPartsCatalogue = () => {
        onImageGenerated={() => refetch()}
       />
 
+      {/* Batch Generation Panel */}
+      {showBatchPanel && (
+        <BatchImageGenerationPanel
+          progress={batchProgress}
+          availableCategories={PART_CATEGORIES as unknown as string[]}
+          getPartsWithoutImages={getPartsWithoutImages}
+          onStart={(cat, ids) => startBatch(cat, ids)}
+          onPause={pauseBatch}
+          onResume={resumeBatch}
+          onStop={stopBatch}
+          onRefresh={() => { resetProgress(); refetch(); }}
+          selectionMode={selectionMode}
+          selectedCount={selectedIds.size}
+          onToggleSelectionMode={handleToggleSelectionMode}
+          onSelectAllWithoutImages={handleSelectAllWithoutImages}
+          onSelectHighCriticality={handleSelectHighCriticality}
+          onClearSelection={() => setSelectedIds(new Set())}
+          selectedIds={Array.from(selectedIds)}
+        />
+      )}
+
       {/* Parts Grid */}
       {filteredParts.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {filteredParts.map((part) => (
-            <VisualPartCard
-              key={part.id}
-              part={part}
-              onClick={() => handlePartClick(part)}
-              onAddImage={addImageToPart}
-            />
+            <div key={part.id} className="relative">
+              <VisualPartCard
+                part={part}
+                onClick={() => selectionMode && part.image_urls.length === 0
+                  ? toggleSelection(part.id)
+                  : handlePartClick(part)
+                }
+                onAddImage={addImageToPart}
+              />
+              {/* Selection overlay */}
+              {selectionMode && part.image_urls.length === 0 && (
+                <div
+                  className={`absolute inset-0 rounded-lg border-2 cursor-pointer transition-all ${
+                    selectedIds.has(part.id)
+                      ? "border-primary bg-primary/10"
+                      : "border-transparent hover:border-primary/30"
+                  }`}
+                  onClick={(e) => { e.stopPropagation(); toggleSelection(part.id); }}
+                >
+                  <div className={`absolute top-2 right-2 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    selectedIds.has(part.id)
+                      ? "bg-primary border-primary text-primary-foreground"
+                      : "border-muted-foreground bg-background"
+                  }`}>
+                    {selectedIds.has(part.id) && (
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </div>
       ) : parts.length === 0 ? (

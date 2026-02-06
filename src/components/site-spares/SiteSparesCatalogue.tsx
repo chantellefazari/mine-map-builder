@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,13 +8,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon, Wand2 } from "lucide-react";
 import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
+import { useBatchImageGeneration, type BatchQueueItem } from "@/hooks/useBatchImageGeneration";
 import { AddSpareDialog } from "./AddSpareDialog";
 import { ImportSpareDialog } from "./ImportSpareDialog";
 import { SiteSpareCard } from "./SiteSpareCard";
 import { SiteSpareDetailDialog } from "./SiteSpareDetailDialog";
 import { OrphanedImageRecovery } from "./OrphanedImageRecovery";
+import { BatchImageGenerationPanel } from "./BatchImageGenerationPanel";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
 import { classifyCategory } from "@/utils/categoryClassification";
 import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesToSiteSpares";
@@ -55,6 +57,74 @@ export const SiteSparesCatalogue = () => {
   const [selectedSpare, setSelectedSpare] = useState<SiteSpareItem | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [showImageRecovery, setShowImageRecovery] = useState(false);
+  const [showBatchPanel, setShowBatchPanel] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  // Build batch queue items from spares
+  const batchItems: BatchQueueItem[] = useMemo(
+    () =>
+      spares.map((s) => ({
+        id: s.id,
+        description: s.description,
+        category: s.category || "",
+        criticality: classifyCriticality(s.description),
+        hasImage: (s.image_urls || []).length > 0,
+      })),
+    [spares]
+  );
+
+  const handleBatchImageGenerated = useCallback(
+    async (id: string, imageUrl: string): Promise<boolean> => {
+      const spare = spares.find((s) => s.id === id);
+      if (!spare) return false;
+      const currentUrls = spare.image_urls || [];
+      const { error } = await supabase
+        .from("site_spares")
+        .update({ image_urls: [...currentUrls, imageUrl] })
+        .eq("id", id);
+      return !error;
+    },
+    [spares]
+  );
+
+  const {
+    progress: batchProgress,
+    startBatch,
+    pauseBatch,
+    resumeBatch,
+    stopBatch,
+    resetProgress,
+    getPartsWithoutImages,
+  } = useBatchImageGeneration(batchItems, handleBatchImageGenerated, refetch, "site_spares");
+
+  const toggleSelection = useCallback((id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const handleSelectAllWithoutImages = useCallback(() => {
+    const ids = spares.filter((s) => !(s.image_urls || []).length).map((s) => s.id);
+    setSelectedIds(new Set(ids));
+  }, [spares]);
+
+  const handleSelectHighCriticality = useCallback(() => {
+    const ids = spares
+      .filter((s) => classifyCriticality(s.description) === "HIGH" && !(s.image_urls || []).length)
+      .map((s) => s.id);
+    setSelectedIds(new Set(ids));
+  }, [spares]);
+
+  const handleToggleSelectionMode = useCallback(() => {
+    setSelectionMode((prev) => {
+      if (prev) setSelectedIds(new Set());
+      return !prev;
+    });
+  }, []);
 
   // Derive categories dynamically from actual data
   const availableCategories = [...new Set(spares.map((s) => s.category))].filter(Boolean).sort();
@@ -399,7 +469,16 @@ export const SiteSparesCatalogue = () => {
             onClick={() => setShowImageRecovery(!showImageRecovery)}
           >
             <ImageIcon className="h-4 w-4" />
-            {showImageRecovery ? "Hide Image Recovery" : "Recover Images"}
+           {showImageRecovery ? "Hide Image Recovery" : "Recover Images"}
+          </Button>
+          <Button
+            size="sm"
+            variant={showBatchPanel ? "default" : "outline"}
+            className="gap-2"
+            onClick={() => setShowBatchPanel(!showBatchPanel)}
+          >
+            <Wand2 className="h-4 w-4" />
+            {showBatchPanel ? "Hide Batch Gen" : "Batch Generate"}
           </Button>
           <Button size="sm" className="gap-2" onClick={() => setAddDialogOpen(true)}>
             <Plus className="h-4 w-4" />
@@ -433,16 +512,64 @@ export const SiteSparesCatalogue = () => {
         />
       )}
 
+      {/* Batch Generation Panel */}
+      {showBatchPanel && (
+        <BatchImageGenerationPanel
+          progress={batchProgress}
+          availableCategories={availableCategories as string[]}
+          getPartsWithoutImages={getPartsWithoutImages}
+          onStart={(cat, ids) => startBatch(cat, ids)}
+          onPause={pauseBatch}
+          onResume={resumeBatch}
+          onStop={stopBatch}
+          onRefresh={() => { resetProgress(); refetch(); }}
+          selectionMode={selectionMode}
+          selectedCount={selectedIds.size}
+          onToggleSelectionMode={handleToggleSelectionMode}
+          onSelectAllWithoutImages={handleSelectAllWithoutImages}
+          onSelectHighCriticality={handleSelectHighCriticality}
+          onClearSelection={() => setSelectedIds(new Set())}
+          selectedIds={Array.from(selectedIds)}
+        />
+      )}
+
       {/* Card Grid */}
       {filteredSpares.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {filteredSpares.map((spare) => (
-            <SiteSpareCard
-              key={spare.id}
-              spare={spare}
-              onClick={() => handleSpareClick(spare)}
-              onUpdate={updateSpare}
-            />
+            <div key={spare.id} className="relative">
+              <SiteSpareCard
+                spare={spare}
+                onClick={() => selectionMode && !(spare.image_urls || []).length
+                  ? toggleSelection(spare.id)
+                  : handleSpareClick(spare)
+                }
+                onUpdate={updateSpare}
+              />
+              {/* Selection overlay */}
+              {selectionMode && !(spare.image_urls || []).length && (
+                <div
+                  className={`absolute inset-0 rounded-lg border-2 cursor-pointer transition-all ${
+                    selectedIds.has(spare.id)
+                      ? "border-primary bg-primary/10"
+                      : "border-transparent hover:border-primary/30"
+                  }`}
+                  onClick={(e) => { e.stopPropagation(); toggleSelection(spare.id); }}
+                >
+                  <div className={`absolute top-2 right-2 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    selectedIds.has(spare.id)
+                      ? "bg-primary border-primary text-primary-foreground"
+                      : "border-muted-foreground bg-background"
+                  }`}>
+                    {selectedIds.has(spare.id) && (
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </div>
       ) : spares.length === 0 ? (
