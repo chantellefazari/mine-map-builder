@@ -34,6 +34,7 @@ import {
 import type { VisualPart } from "@/hooks/useVisualPartsCatalogueSafe";
 import { PART_CATEGORIES, CRITICALITY_LEVELS, getCriticalityColor } from "./visualPartsConstants";
 import { getEdgeFunctionErrorMessage } from "@/utils/getEdgeFunctionErrorMessage";
+import { SupplierSelector } from "@/components/shared/SupplierSelector";
 
 interface VisualPartDetailDialogProps {
   part: VisualPart | null;
@@ -415,6 +416,18 @@ export const VisualPartDetailDialog = ({
                   className="h-8 text-sm"
                 />
               </div>
+            </div>
+
+            {/* Supplier Matching Section */}
+            <div className="border-t pt-3 mt-3">
+              <SupplierSelector
+                category={localPart.category}
+                currentPreferredSupplier={localPart.supplier}
+                onSelectSupplier={(name) => {
+                  handleFieldChange("supplier", name);
+                  if (part) onUpdate(part.id, { supplier: name });
+                }}
+              />
             </div>
 
             {/* Criticality */}

@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import type { SiteSpareItem } from "@/hooks/useSiteSpares";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
 import { getEdgeFunctionErrorMessage } from "@/utils/getEdgeFunctionErrorMessage";
+import { SupplierSelector } from "@/components/shared/SupplierSelector";
 
 // Criticality badge colors
 const criticalityColors: Record<CriticalityLevel, string> = {
@@ -464,6 +465,18 @@ export const SiteSpareDetailDialog = ({
                 onChange={(e) => handleFieldChange("asset_tag", e.target.value)}
                 onBlur={() => handleFieldBlur("asset_tag")}
                 className="h-8 text-sm"
+              />
+            </div>
+
+            {/* Supplier Matching Section */}
+            <div className="border-t pt-3 mt-3">
+              <SupplierSelector
+                category={localSpare.category}
+                currentPreferredSupplier={localSpare.preferred_supplier}
+                onSelectSupplier={(name) => {
+                  handleFieldChange("preferred_supplier", name);
+                  if (spare) onUpdate(spare.id, { preferred_supplier: name });
+                }}
               />
             </div>
 
