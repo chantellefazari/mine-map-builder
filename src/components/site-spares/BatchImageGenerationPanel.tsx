@@ -75,7 +75,7 @@ export const BatchImageGenerationPanel = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Wand2 className="h-5 w-5 text-primary" />
-          <h3 className="font-semibold">Batch AI Image Generation</h3>
+          <h3 className="font-semibold">Image Generation</h3>
         </div>
         {onToggleSelectionMode && !progress.isRunning && (
           <Button
