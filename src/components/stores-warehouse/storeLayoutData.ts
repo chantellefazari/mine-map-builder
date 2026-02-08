@@ -14,10 +14,40 @@ export interface StockingCategory {
   items: string[];
 }
 
+export interface PhysicalDimensions {
+  /** External length in metres */
+  externalLengthM: number;
+  /** External width in metres */
+  externalWidthM: number;
+  /** External height in metres */
+  externalHeightM: number;
+  /** Internal usable length in metres */
+  internalLengthM: number;
+  /** Internal usable width in metres */
+  internalWidthM: number;
+  /** Internal usable height in metres */
+  internalHeightM: number;
+  /** Aisle width inside container in cm */
+  aisleWidthCm: number;
+  /** Racking depth in cm */
+  rackingDepthCm: number;
+}
+
+export type EntryType = "end-single" | "end-double" | "side-door" | "cage-front" | "roll-up";
+export type EntrySide = "left" | "right" | "front" | "back";
+
+export interface EntryPoint {
+  type: EntryType;
+  side: EntrySide;
+  widthCm: number;
+  /** Describes door operation */
+  description: string;
+}
+
 export interface StoreContainer {
-  id: string; // e.g., "C01"
-  zone: string; // e.g., "STO-EL"
-  zoneCode: string; // e.g., "EL"
+  id: string;
+  zone: string;
+  zoneCode: string;
   label: string;
   shortLabel: string;
   color: string;
@@ -25,22 +55,30 @@ export interface StoreContainer {
   borderColor: string;
   environment: string;
   containerType: string;
-  shelves: string[]; // ["A", "B", "C", "D"]
+  shelves: string[];
   binsPerShelf: number;
-  // 2D layout position
+  // 2D layout position (yard)
   position: { x: number; y: number };
   width: number;
   height: number;
   // 3D position
   position3D: { x: number; y: number; z: number };
-  // Detailed design info
+  // Physical dimensions
+  physicalDimensions: PhysicalDimensions;
+  entryPoints: EntryPoint[];
+  // Design info
   accessFrequency: "Daily" | "Weekly" | "Monthly";
   growthAllowance: string;
   specialRequirements: string[];
   stockingCategories: StockingCategory[];
-  shelfHeightCm: number; // height between shelves in cm
-  binWidthCm: number; // bin width in cm
+  shelfHeightCm: number;
+  binWidthCm: number;
+  binDepthCm: number;
   maxItemWeightKg: number;
+  /** Bottom shelf height from floor in cm */
+  bottomShelfHeightCm: number;
+  /** Top shelf max height from floor in cm */
+  topShelfMaxHeightCm: number;
 }
 
 export interface LayoutZoneGroup {
@@ -51,6 +89,22 @@ export interface LayoutZoneGroup {
   bgColor: string;
   position: { x: number; y: number; width: number; height: number };
 }
+
+export interface YardDimensions {
+  totalWidthM: number;
+  totalDepthM: number;
+  accessRoadWidthM: number;
+  walkwayWidthM: number;
+  containerSpacingM: number;
+}
+
+export const YARD_DIMENSIONS: YardDimensions = {
+  totalWidthM: 25,
+  totalDepthM: 18,
+  accessRoadWidthM: 4,
+  walkwayWidthM: 1.5,
+  containerSpacingM: 2,
+};
 
 // Optimized grouped layout for mining store yard
 export const LAYOUT_ZONE_GROUPS: LayoutZoneGroup[] = [
@@ -106,6 +160,19 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     width: 240,
     height: 120,
     position3D: { x: -3, y: 0, z: -3 },
+    physicalDimensions: {
+      externalLengthM: 6.06,
+      externalWidthM: 2.44,
+      externalHeightM: 2.59,
+      internalLengthM: 5.9,
+      internalWidthM: 2.35,
+      internalHeightM: 2.39,
+      aisleWidthCm: 90,
+      rackingDepthCm: 60,
+    },
+    entryPoints: [
+      { type: "side-door", side: "right", widthCm: 90, description: "Sealed personnel door with weather strip — keeps dust out" },
+    ],
     accessFrequency: "Daily",
     growthAllowance: "20%",
     specialRequirements: ["Dust-controlled airflow", "Sealed cabinets for PLC/VSD", "Anti-static mats"],
@@ -117,9 +184,12 @@ export const STORE_CONTAINERS: StoreContainer[] = [
       { name: "Sensors", items: ["Photo sensors", "Proximity sensors", "Cable glands", "Ferrules"] },
       { name: "Cooling", items: ["Panel cooling fans", "Panel filters"] },
     ],
-    shelfHeightCm: 40,
-    binWidthCm: 30,
+    shelfHeightCm: 50,
+    binWidthCm: 40,
+    binDepthCm: 50,
     maxItemWeightKg: 15,
+    bottomShelfHeightCm: 30,
+    topShelfMaxHeightCm: 180,
   },
   {
     id: "C02",
@@ -138,6 +208,19 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     width: 240,
     height: 120,
     position3D: { x: 3, y: 0, z: -3 },
+    physicalDimensions: {
+      externalLengthM: 6.06,
+      externalWidthM: 2.44,
+      externalHeightM: 2.59,
+      internalLengthM: 5.9,
+      internalWidthM: 2.35,
+      internalHeightM: 2.39,
+      aisleWidthCm: 90,
+      rackingDepthCm: 60,
+    },
+    entryPoints: [
+      { type: "end-single", side: "front", widthCm: 90, description: "Single end door — standard personnel access" },
+    ],
     accessFrequency: "Weekly",
     growthAllowance: "10%",
     specialRequirements: ["Clean/dust-free environment", "Labelled bins", "Fragile item protection"],
@@ -148,9 +231,12 @@ export const STORE_CONTAINERS: StoreContainer[] = [
       { name: "Control", items: ["Solenoid valves", "Position switches", "Small actuators"] },
       { name: "Fittings", items: ["Instrument fittings (SS, brass)", "Tubing", "Manifolds", "Instrument filters"] },
     ],
-    shelfHeightCm: 35,
-    binWidthCm: 25,
+    shelfHeightCm: 50,
+    binWidthCm: 40,
+    binDepthCm: 50,
     maxItemWeightKg: 10,
+    bottomShelfHeightCm: 30,
+    topShelfMaxHeightCm: 180,
   },
   {
     id: "C03",
@@ -169,6 +255,19 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     width: 320,
     height: 120,
     position3D: { x: 0, y: 0, z: 0 },
+    physicalDimensions: {
+      externalLengthM: 6.06,
+      externalWidthM: 2.44,
+      externalHeightM: 2.59,
+      internalLengthM: 5.9,
+      internalWidthM: 2.35,
+      internalHeightM: 2.39,
+      aisleWidthCm: 80,
+      rackingDepthCm: 60,
+    },
+    entryPoints: [
+      { type: "end-double", side: "front", widthCm: 230, description: "Double cargo doors — full-width access for loading" },
+    ],
     accessFrequency: "Daily",
     growthAllowance: "15%",
     specialRequirements: ["Dry storage", "Organised bins", "Heavy bins at bottom shelves"],
@@ -180,9 +279,12 @@ export const STORE_CONTAINERS: StoreContainer[] = [
       { name: "Pumps", items: ["Seal kits", "Impellers (small)", "Wear rings", "Shaft sleeves", "Gland packing"] },
       { name: "Valves", items: ["Small valves", "Ball valves", "Check valves", "Valve seal kits", "Diaphragms"] },
     ],
-    shelfHeightCm: 45,
-    binWidthCm: 20,
+    shelfHeightCm: 40,
+    binWidthCm: 26,
+    binDepthCm: 50,
     maxItemWeightKg: 15,
+    bottomShelfHeightCm: 20,
+    topShelfMaxHeightCm: 180,
   },
   {
     id: "C04",
@@ -194,13 +296,26 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     bgColor: "rgba(245, 158, 11, 0.15)",
     borderColor: "#f59e0b",
     environment: "Ventilated, spill containment",
-    containerType: "10ft Container or Cage",
+    containerType: "10ft Container / Cage",
     shelves: ["A", "B", "C"],
     binsPerShelf: 4,
     position: { x: 430, y: 230 },
     width: 130,
     height: 120,
     position3D: { x: 5, y: 0, z: 0 },
+    physicalDimensions: {
+      externalLengthM: 2.99,
+      externalWidthM: 2.44,
+      externalHeightM: 2.59,
+      internalLengthM: 2.8,
+      internalWidthM: 2.35,
+      internalHeightM: 2.39,
+      aisleWidthCm: 80,
+      rackingDepthCm: 70,
+    },
+    entryPoints: [
+      { type: "cage-front", side: "front", widthCm: 240, description: "Open cage front — full ventilation, mesh sides for airflow" },
+    ],
     accessFrequency: "Daily",
     growthAllowance: "10%",
     specialRequirements: ["Ventilated area", "Spill containment tray", "Spill kit accessible", "No ignition sources"],
@@ -209,9 +324,12 @@ export const STORE_CONTAINERS: StoreContainer[] = [
       { name: "Oil", items: ["Oil sample bottles", "Oil filters", "Lube lines & fittings"] },
       { name: "Monitoring", items: ["Breathers", "Sight glasses", "Level indicators", "Desiccant breathers"] },
     ],
-    shelfHeightCm: 50,
-    binWidthCm: 35,
+    shelfHeightCm: 55,
+    binWidthCm: 70,
+    binDepthCm: 60,
     maxItemWeightKg: 15,
+    bottomShelfHeightCm: 25,
+    topShelfMaxHeightCm: 165,
   },
   {
     id: "C05",
@@ -230,6 +348,19 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     width: 320,
     height: 120,
     position3D: { x: 0, y: 0, z: 3 },
+    physicalDimensions: {
+      externalLengthM: 6.06,
+      externalWidthM: 2.44,
+      externalHeightM: 2.59,
+      internalLengthM: 5.9,
+      internalWidthM: 2.35,
+      internalHeightM: 2.39,
+      aisleWidthCm: 75,
+      rackingDepthCm: 55,
+    },
+    entryPoints: [
+      { type: "end-double", side: "front", widthCm: 230, description: "Double cargo doors — full-width for daily high-volume access" },
+    ],
     accessFrequency: "Daily",
     growthAllowance: "25%",
     specialRequirements: ["High-organisation bins (Kanban friendly)", "Clear labelling", "Small parts trays"],
@@ -241,8 +372,11 @@ export const STORE_CONTAINERS: StoreContainer[] = [
       { name: "Consumables", items: ["Rags", "Absorbents", "PPE consumables (gloves, earplugs)"] },
     ],
     shelfHeightCm: 35,
-    binWidthCm: 18,
+    binWidthCm: 26,
+    binDepthCm: 45,
     maxItemWeightKg: 15,
+    bottomShelfHeightCm: 15,
+    topShelfMaxHeightCm: 180,
   },
 ];
 
@@ -268,4 +402,17 @@ export function generateBinsForContainer(container: StoreContainer): ShelfBin[] 
     }
   }
   return bins;
+}
+
+/** Get total container internal area in m² */
+export function getContainerAreaM2(container: StoreContainer): number {
+  const d = container.physicalDimensions;
+  return Math.round(d.internalLengthM * d.internalWidthM * 100) / 100;
+}
+
+/** Get usable racking area (both sides minus aisle) in m² */
+export function getRackingAreaM2(container: StoreContainer): number {
+  const d = container.physicalDimensions;
+  const rackingWidthM = (d.internalWidthM * 100 - d.aisleWidthCm) / 100;
+  return Math.round(rackingWidthM * d.internalLengthM * 100) / 100;
 }
