@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { STORE_CONTAINERS, LAYOUT_ZONE_GROUPS, type StoreContainer } from "./storeLayoutData";
+import { STORE_CONTAINERS, LAYOUT_ZONE_GROUPS, YARD_DIMENSIONS, type StoreContainer } from "./storeLayoutData";
 import { ContainerDetail2D } from "./ContainerDetail2D";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -95,25 +95,25 @@ interface FloorPlanSVGProps {
 const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSVGProps) => {
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
-      <svg viewBox="0 0 600 590" className="w-full h-auto" style={{ maxHeight: "600px" }}>
+      <svg viewBox="0 0 620 610" className="w-full h-auto" style={{ maxHeight: "620px" }}>
         {/* Background */}
-        <rect x="0" y="0" width="600" height="590" fill="hsl(var(--card))" />
+        <rect x="0" y="0" width="620" height="610" fill="hsl(var(--card))" />
 
         {/* Access Road */}
-        <rect x="0" y="375" width="600" height="20" fill="hsl(var(--muted))" rx="2" />
+        <rect x="0" y="375" width="620" height="20" fill="hsl(var(--muted))" rx="2" />
         <text x="300" y="389" textAnchor="middle" fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
-          ACCESS ROAD / WALKWAY
+          ACCESS ROAD / WALKWAY ({YARD_DIMENSIONS.accessRoadWidthM}m wide)
         </text>
 
         {/* Walkway between clean and mechanical */}
-        <rect x="0" y="185" width="600" height="20" fill="hsl(var(--muted))" rx="2" />
+        <rect x="0" y="185" width="620" height="20" fill="hsl(var(--muted))" rx="2" />
         <text x="300" y="199" textAnchor="middle" fontSize="9" fill="hsl(var(--muted-foreground))">
-          WALKWAY
+          WALKWAY ({YARD_DIMENSIONS.walkwayWidthM}m)
         </text>
 
         {/* Entry Arrow */}
-        <polygon points="580,570 600,555 580,540" fill="hsl(var(--primary))" opacity="0.5" />
-        <text x="560" y="560" textAnchor="end" fontSize="10" fill="hsl(var(--primary))" fontWeight="600">
+        <polygon points="600,570 620,555 600,540" fill="hsl(var(--primary))" opacity="0.5" />
+        <text x="580" y="560" textAnchor="end" fontSize="10" fill="hsl(var(--primary))" fontWeight="600">
           ENTRY →
         </text>
 
@@ -121,32 +121,13 @@ const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSV
         {LAYOUT_ZONE_GROUPS.map((group) => (
           <g key={group.id}>
             <rect
-              x={group.position.x}
-              y={group.position.y}
-              width={group.position.width}
-              height={group.position.height}
-              fill={group.bgColor}
-              stroke={group.color}
-              strokeWidth="1"
-              strokeDasharray="4 2"
-              rx="6"
+              x={group.position.x} y={group.position.y} width={group.position.width} height={group.position.height}
+              fill={group.bgColor} stroke={group.color} strokeWidth="1" strokeDasharray="4 2" rx="6"
             />
-            <text
-              x={group.position.x + 8}
-              y={group.position.y + 14}
-              fontSize="9"
-              fill={group.color}
-              fontWeight="600"
-            >
+            <text x={group.position.x + 8} y={group.position.y + 14} fontSize="9" fill={group.color} fontWeight="600">
               {group.label.toUpperCase()}
             </text>
-            <text
-              x={group.position.x + 8}
-              y={group.position.y + 26}
-              fontSize="8"
-              fill={group.color}
-              opacity="0.7"
-            >
+            <text x={group.position.x + 8} y={group.position.y + 26} fontSize="8" fill={group.color} opacity="0.7">
               {group.description}
             </text>
           </g>
@@ -156,135 +137,99 @@ const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSV
         {STORE_CONTAINERS.map((container) => {
           const partsCount = getPartsCount(container);
           const totalBins = container.shelves.length * container.binsPerShelf;
+          const dim = container.physicalDimensions;
+          const entry = container.entryPoints[0];
+
           return (
-            <g
-              key={container.id}
-              className="cursor-pointer"
-              onClick={() => onContainerClick(container)}
-            >
+            <g key={container.id} className="cursor-pointer" onClick={() => onContainerClick(container)}>
               {/* Container body */}
               <rect
-                x={container.position.x}
-                y={container.position.y}
-                width={container.width}
-                height={container.height}
-                fill={container.bgColor}
-                stroke={container.borderColor}
-                strokeWidth="2"
-                rx="6"
+                x={container.position.x} y={container.position.y} width={container.width} height={container.height}
+                fill={container.bgColor} stroke={container.borderColor} strokeWidth="2" rx="6"
                 className="transition-all duration-200 hover:opacity-80"
               />
 
               {/* Container ID badge */}
-              <rect
-                x={container.position.x + 4}
-                y={container.position.y + 4}
-                width="36"
-                height="18"
-                fill={container.color}
-                rx="4"
-              />
-              <text
-                x={container.position.x + 22}
-                y={container.position.y + 16}
-                textAnchor="middle"
-                fontSize="9"
-                fill="white"
-                fontWeight="700"
-                fontFamily="monospace"
-              >
+              <rect x={container.position.x + 4} y={container.position.y + 4} width="36" height="18" fill={container.color} rx="4" />
+              <text x={container.position.x + 22} y={container.position.y + 16} textAnchor="middle" fontSize="9" fill="white" fontWeight="700" fontFamily="monospace">
                 {container.id}
               </text>
 
               {/* Container label */}
-              <text
-                x={container.position.x + container.width / 2}
-                y={container.position.y + 40}
-                textAnchor="middle"
-                fontSize="12"
-                fill="hsl(var(--foreground))"
-                fontWeight="600"
-              >
+              <text x={container.position.x + container.width / 2} y={container.position.y + 36} textAnchor="middle" fontSize="11" fill="hsl(var(--foreground))" fontWeight="600">
                 {container.shortLabel}
               </text>
 
-              {/* Zone code */}
-              <text
-                x={container.position.x + container.width / 2}
-                y={container.position.y + 55}
-                textAnchor="middle"
-                fontSize="10"
-                fill="hsl(var(--muted-foreground))"
-                fontFamily="monospace"
-              >
-                {container.zone}
+              {/* Physical dimensions */}
+              <text x={container.position.x + container.width / 2} y={container.position.y + 50} textAnchor="middle" fontSize="8" fill="hsl(var(--muted-foreground))" fontFamily="monospace">
+                {dim.externalLengthM}m × {dim.externalWidthM}m × {dim.externalHeightM}m
               </text>
 
               {/* Mini shelf preview */}
               {container.shelves.slice(0, 4).map((shelf, idx) => {
-                const y = container.position.y + 63 + idx * 6;
-                const x = container.position.x + container.width / 2 - 30;
+                const y = container.position.y + 56 + idx * 5;
+                const x = container.position.x + container.width / 2 - 25;
                 return (
                   <g key={shelf}>
-                    <rect x={x} y={y} width={60} height={4} fill={container.color} opacity={0.2} rx="1" />
-                    {/* Mini bin dividers */}
+                    <rect x={x} y={y} width={50} height={3} fill={container.color} opacity={0.2} rx="1" />
                     {Array.from({ length: Math.min(container.binsPerShelf, 6) }, (_, i) => (
-                      <rect
-                        key={i}
-                        x={x + i * (60 / Math.min(container.binsPerShelf, 6))}
-                        y={y}
-                        width={1}
-                        height={4}
-                        fill={container.color}
-                        opacity={0.3}
-                      />
+                      <rect key={i} x={x + i * (50 / Math.min(container.binsPerShelf, 6))} y={y} width={1} height={3} fill={container.color} opacity={0.3} />
                     ))}
                   </g>
                 );
               })}
 
-              {/* Capacity info */}
-              <text
-                x={container.position.x + container.width / 2}
-                y={container.position.y + 98}
-                textAnchor="middle"
-                fontSize="8"
-                fill="hsl(var(--muted-foreground))"
-              >
-                {container.shelves.length} shelves × {container.binsPerShelf} bins = {totalBins}
+              {/* Bin/shelf info */}
+              <text x={container.position.x + container.width / 2} y={container.position.y + 86} textAnchor="middle" fontSize="7" fill="hsl(var(--muted-foreground))">
+                {container.shelves.length} shelves × {container.binsPerShelf} bins = {totalBins} · {container.shelfHeightCm}cm H
               </text>
 
-              {/* Access frequency badge */}
-              <text
-                x={container.position.x + container.width / 2}
-                y={container.position.y + 110}
-                textAnchor="middle"
-                fontSize="7"
-                fill="hsl(var(--muted-foreground))"
-                opacity={0.7}
-              >
-                {container.accessFrequency} access · {container.containerType}
+              {/* Entry point indicator */}
+              {entry && (
+                <g>
+                  {entry.side === "front" && (
+                    <>
+                      <rect
+                        x={container.position.x + container.width / 2 - 18}
+                        y={container.position.y + container.height - 3}
+                        width={36} height={6}
+                        fill="hsl(var(--primary))" opacity={0.3} rx="2"
+                      />
+                      <text x={container.position.x + container.width / 2} y={container.position.y + container.height + 10} textAnchor="middle" fontSize="6" fill="hsl(var(--primary))">
+                        ▲ {entry.type.replace(/-/g, " ")} ({entry.widthCm}cm)
+                      </text>
+                    </>
+                  )}
+                  {entry.side === "right" && (
+                    <>
+                      <rect
+                        x={container.position.x + container.width - 3}
+                        y={container.position.y + container.height / 2 - 12}
+                        width={6} height={24}
+                        fill="hsl(var(--primary))" opacity={0.3} rx="2"
+                      />
+                      <text
+                        x={container.position.x + container.width + 8}
+                        y={container.position.y + container.height / 2 + 3}
+                        fontSize="6" fill="hsl(var(--primary))"
+                      >
+                        → Entry
+                      </text>
+                    </>
+                  )}
+                </g>
+              )}
+
+              {/* Access frequency */}
+              <text x={container.position.x + container.width / 2} y={container.position.y + 96} textAnchor="middle" fontSize="7" fill="hsl(var(--muted-foreground))" opacity={0.7}>
+                {container.accessFrequency} access · Aisle {dim.aisleWidthCm}cm
               </text>
 
-              {/* Parts count badge (live mode) */}
+              {/* Parts count (live mode) */}
               {liveMode && partsCount !== null && (
                 <>
-                  <rect
-                    x={container.position.x + container.width - 50}
-                    y={container.position.y + 4}
-                    width="46"
-                    height="18"
-                    fill={partsCount > 0 ? "hsl(var(--primary))" : "hsl(var(--muted))"}
-                    rx="9"
-                  />
-                  <text
-                    x={container.position.x + container.width - 27}
-                    y={container.position.y + 16}
-                    textAnchor="middle"
-                    fontSize="8"
-                    fill={partsCount > 0 ? "white" : "hsl(var(--muted-foreground))"}
-                    fontWeight="600"
-                  >
+                  <rect x={container.position.x + container.width - 50} y={container.position.y + 4} width="46" height="18" fill={partsCount > 0 ? "hsl(var(--primary))" : "hsl(var(--muted))"} rx="9" />
+                  <text x={container.position.x + container.width - 27} y={container.position.y + 16} textAnchor="middle" fontSize="8" fill={partsCount > 0 ? "white" : "hsl(var(--muted-foreground))"} fontWeight="600">
                     {partsCount} parts
                   </text>
                 </>
@@ -293,9 +238,9 @@ const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSV
           );
         })}
 
-        {/* Yard label */}
-        <text x="300" y="580" textAnchor="middle" fontSize="11" fill="hsl(var(--muted-foreground))" fontWeight="500">
-          TCMG STORES YARD — OPTIMIZED LAYOUT
+        {/* Yard dimensions */}
+        <text x="310" y="600" textAnchor="middle" fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
+          TCMG STORES YARD — {YARD_DIMENSIONS.totalWidthM}m × {YARD_DIMENSIONS.totalDepthM}m · Container spacing: {YARD_DIMENSIONS.containerSpacingM}m
         </text>
       </svg>
     </div>
