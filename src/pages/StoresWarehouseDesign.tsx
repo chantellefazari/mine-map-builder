@@ -6,6 +6,7 @@ import { StorageZonesSection } from "@/components/stores-warehouse/StorageZonesS
 import { ContainerStockingScopeSection } from "@/components/stores-warehouse/ContainerStockingScopeSection";
 import { StoreLocationCodingSection } from "@/components/stores-warehouse/StoreLocationCodingSection";
 import { DesignInputsSection } from "@/components/stores-warehouse/DesignInputsSection";
+import { StoreVisualisation } from "@/components/stores-warehouse/StoreVisualisation";
 
 const StoresWarehouseDesign = () => {
   return (
@@ -94,6 +95,10 @@ const StoresWarehouseDesign = () => {
               <span className="hidden sm:inline">Design Inputs for 3D</span>
               <span className="sm:hidden">3D Inputs</span>
             </TabsTrigger>
+            <TabsTrigger value="visualisation" className="text-xs">
+              <span className="hidden sm:inline">Store Visualisation</span>
+              <span className="sm:hidden">Visual</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="principles">
@@ -114,6 +119,10 @@ const StoresWarehouseDesign = () => {
 
           <TabsContent value="design-inputs">
             <DesignInputsSection />
+          </TabsContent>
+
+          <TabsContent value="visualisation">
+            <StoreVisualisation />
           </TabsContent>
         </Tabs>
       </main>
