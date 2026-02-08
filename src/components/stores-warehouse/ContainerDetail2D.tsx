@@ -4,6 +4,7 @@ import { type StoreContainer, getContainerAreaM2, getRackingAreaM2 } from "./sto
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { Wind, ShieldAlert, TrendingUp, Package, ChevronDown, ChevronRight, DoorOpen, Ruler, ArrowDown } from "lucide-react";
+import { BinDetailDialog } from "./BinDetailDialog";
 
 interface ContainerDetail2DProps {
   container: StoreContainer;
@@ -21,12 +22,22 @@ interface ContainerDetail2DProps {
 export const ContainerDetail2D = ({ container, parts, liveMode }: ContainerDetail2DProps) => {
   const shelves = container.shelves;
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [selectedBin, setSelectedBin] = useState<string | null>(null);
   const dim = container.physicalDimensions;
 
   const getPartAtBin = (binId: string) => {
     if (!liveMode || !parts.length) return null;
     const locationCode = `${container.id}-${container.zoneCode}-${binId}`;
     return parts.find((p) => {
+      const loc = (p.bin_location || "").toUpperCase();
+      return loc === locationCode || loc.endsWith(binId);
+    });
+  };
+
+  const getPartsAtBin = (binId: string) => {
+    if (!liveMode || !parts.length) return [];
+    const locationCode = `${container.id}-${container.zoneCode}-${binId}`;
+    return parts.filter((p) => {
       const loc = (p.bin_location || "").toUpperCase();
       return loc === locationCode || loc.endsWith(binId);
     });
@@ -171,7 +182,7 @@ export const ContainerDetail2D = ({ container, parts, liveMode }: ContainerDetai
           </p>
         </CardHeader>
         <CardContent>
-          <ContainerCrossSectionSVG container={container} getPartAtBin={getPartAtBin} liveMode={liveMode} />
+          <ContainerCrossSectionSVG container={container} getPartAtBin={getPartAtBin} liveMode={liveMode} onBinClick={setSelectedBin} />
         </CardContent>
       </Card>
 
@@ -226,9 +237,12 @@ export const ContainerDetail2D = ({ container, parts, liveMode }: ContainerDetai
                       return (
                         <Tooltip key={binId}>
                           <TooltipTrigger asChild>
-                            <div className={`flex-1 h-14 rounded border text-center flex flex-col items-center justify-center cursor-default transition-colors ${
-                              part ? "border-primary/40 bg-primary/10" : "border-border bg-muted/30 hover:bg-muted/50"
-                            }`}>
+                            <div
+                              className={`flex-1 h-14 rounded border text-center flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                                part ? "border-primary/40 bg-primary/10 hover:bg-primary/20" : "border-border bg-muted/30 hover:bg-muted/60"
+                              }`}
+                              onClick={() => setSelectedBin(binId)}
+                            >
                               <span className="text-[10px] font-mono text-muted-foreground">{binId}</span>
                               {part ? (
                                 <div className="w-2 h-2 rounded-full bg-primary mt-0.5" />
@@ -342,6 +356,17 @@ export const ContainerDetail2D = ({ container, parts, liveMode }: ContainerDetai
           </div>
         </CardContent>
       </Card>
+
+      {/* Bin Detail Dialog */}
+      {selectedBin && (
+        <BinDetailDialog
+          isOpen={!!selectedBin}
+          onClose={() => setSelectedBin(null)}
+          container={container}
+          binId={selectedBin}
+          parts={getPartsAtBin(selectedBin)}
+        />
+      )}
     </div>
   );
 };
@@ -352,9 +377,10 @@ interface CrossSectionProps {
   container: StoreContainer;
   getPartAtBin: (binId: string) => any;
   liveMode: boolean;
+  onBinClick?: (binId: string) => void;
 }
 
-const ContainerCrossSectionSVG = ({ container, getPartAtBin, liveMode }: CrossSectionProps) => {
+const ContainerCrossSectionSVG = ({ container, getPartAtBin, liveMode, onBinClick }: CrossSectionProps) => {
   const shelves = container.shelves;
   const bins = container.binsPerShelf;
   const dim = container.physicalDimensions;
@@ -472,7 +498,7 @@ const ContainerCrossSectionSVG = ({ container, getPartAtBin, liveMode }: CrossSe
                 const binH = shelfHeightPx - 8;
 
                 return (
-                  <g key={binId}>
+                  <g key={binId} style={{ cursor: "pointer" }} onClick={() => onBinClick?.(binId)}>
                     <rect
                       x={bx + 1}
                       y={y - binH - 3}
