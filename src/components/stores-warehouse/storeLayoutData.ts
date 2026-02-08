@@ -9,25 +9,38 @@ export interface ContainerZone {
   label: string;
 }
 
+export interface StockingCategory {
+  name: string;
+  items: string[];
+}
+
 export interface StoreContainer {
   id: string; // e.g., "C01"
   zone: string; // e.g., "STO-EL"
   zoneCode: string; // e.g., "EL"
   label: string;
   shortLabel: string;
-  color: string; // tailwind color class
+  color: string;
   bgColor: string;
   borderColor: string;
   environment: string;
   containerType: string;
   shelves: string[]; // ["A", "B", "C", "D"]
   binsPerShelf: number;
-  // 2D layout position (percentage-based)
+  // 2D layout position
   position: { x: number; y: number };
   width: number;
   height: number;
   // 3D position
   position3D: { x: number; y: number; z: number };
+  // Detailed design info
+  accessFrequency: "Daily" | "Weekly" | "Monthly";
+  growthAllowance: string;
+  specialRequirements: string[];
+  stockingCategories: StockingCategory[];
+  shelfHeightCm: number; // height between shelves in cm
+  binWidthCm: number; // bin width in cm
+  maxItemWeightKg: number;
 }
 
 export interface LayoutZoneGroup {
@@ -93,6 +106,20 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     width: 240,
     height: 120,
     position3D: { x: -3, y: 0, z: -3 },
+    accessFrequency: "Daily",
+    growthAllowance: "20%",
+    specialRequirements: ["Dust-controlled airflow", "Sealed cabinets for PLC/VSD", "Anti-static mats"],
+    stockingCategories: [
+      { name: "Protection", items: ["Fuses", "Circuit breakers (MCB, MCCB)", "Overload relays"] },
+      { name: "Control", items: ["Contactors", "Control relays", "Power supplies", "Terminal blocks"] },
+      { name: "Switching", items: ["Push buttons", "Selector switches", "Indicator lights", "Isolator handles"] },
+      { name: "PLC / Drives", items: ["VSD spare boards", "PLC I/O cards", "PLC CPUs"] },
+      { name: "Sensors", items: ["Photo sensors", "Proximity sensors", "Cable glands", "Ferrules"] },
+      { name: "Cooling", items: ["Panel cooling fans", "Panel filters"] },
+    ],
+    shelfHeightCm: 40,
+    binWidthCm: 30,
+    maxItemWeightKg: 15,
   },
   {
     id: "C02",
@@ -111,6 +138,19 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     width: 240,
     height: 120,
     position3D: { x: 3, y: 0, z: -3 },
+    accessFrequency: "Weekly",
+    growthAllowance: "10%",
+    specialRequirements: ["Clean/dust-free environment", "Labelled bins", "Fragile item protection"],
+    stockingCategories: [
+      { name: "Pressure", items: ["Pressure transmitters", "Pressure gauges"] },
+      { name: "Flow", items: ["Flow switches", "Flow meters (small)"] },
+      { name: "Level / Temp", items: ["Level switches", "Temperature probes (RTD/TC)"] },
+      { name: "Control", items: ["Solenoid valves", "Position switches", "Small actuators"] },
+      { name: "Fittings", items: ["Instrument fittings (SS, brass)", "Tubing", "Manifolds", "Instrument filters"] },
+    ],
+    shelfHeightCm: 35,
+    binWidthCm: 25,
+    maxItemWeightKg: 10,
   },
   {
     id: "C03",
@@ -129,6 +169,20 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     width: 320,
     height: 120,
     position3D: { x: 0, y: 0, z: 0 },
+    accessFrequency: "Daily",
+    growthAllowance: "15%",
+    specialRequirements: ["Dry storage", "Organised bins", "Heavy bins at bottom shelves"],
+    stockingCategories: [
+      { name: "Bearings", items: ["Bearings (all sizes)", "Bearing housings (small)"] },
+      { name: "Seals", items: ["Oil seals", "Lip seals", "Mechanical seals", "O-rings", "Gaskets"] },
+      { name: "Transmission", items: ["Couplings", "Coupling inserts", "Keys & key stock", "Shims"] },
+      { name: "Conveyor", items: ["Idler rollers", "Scraper blades", "Belt fasteners", "Pulley lagging"] },
+      { name: "Pumps", items: ["Seal kits", "Impellers (small)", "Wear rings", "Shaft sleeves", "Gland packing"] },
+      { name: "Valves", items: ["Small valves", "Ball valves", "Check valves", "Valve seal kits", "Diaphragms"] },
+    ],
+    shelfHeightCm: 45,
+    binWidthCm: 20,
+    maxItemWeightKg: 15,
   },
   {
     id: "C04",
@@ -147,6 +201,17 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     width: 130,
     height: 120,
     position3D: { x: 5, y: 0, z: 0 },
+    accessFrequency: "Daily",
+    growthAllowance: "10%",
+    specialRequirements: ["Ventilated area", "Spill containment tray", "Spill kit accessible", "No ignition sources"],
+    stockingCategories: [
+      { name: "Grease", items: ["Grease cartridges", "Grease nipples", "Auto-lube injectors"] },
+      { name: "Oil", items: ["Oil sample bottles", "Oil filters", "Lube lines & fittings"] },
+      { name: "Monitoring", items: ["Breathers", "Sight glasses", "Level indicators", "Desiccant breathers"] },
+    ],
+    shelfHeightCm: 50,
+    binWidthCm: 35,
+    maxItemWeightKg: 15,
   },
   {
     id: "C05",
@@ -165,6 +230,19 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     width: 320,
     height: 120,
     position3D: { x: 0, y: 0, z: 3 },
+    accessFrequency: "Daily",
+    growthAllowance: "25%",
+    specialRequirements: ["High-organisation bins (Kanban friendly)", "Clear labelling", "Small parts trays"],
+    stockingCategories: [
+      { name: "Fasteners", items: ["Bolts", "Nuts", "Washers", "Studs", "Anchors", "Threaded rod"] },
+      { name: "Clips", items: ["U-bolts", "Hose clamps", "Retaining clips", "Pins"] },
+      { name: "Hoses", items: ["Hydraulic hoses (short)", "Hose ends", "Adaptors", "Fittings"] },
+      { name: "Sealants", items: ["PTFE tape", "Thread sealant", "Adhesives"] },
+      { name: "Consumables", items: ["Rags", "Absorbents", "PPE consumables (gloves, earplugs)"] },
+    ],
+    shelfHeightCm: 35,
+    binWidthCm: 18,
+    maxItemWeightKg: 15,
   },
 ];
 
