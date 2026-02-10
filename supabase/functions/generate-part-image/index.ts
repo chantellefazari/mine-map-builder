@@ -26,69 +26,69 @@
        );
      }
  
-     // Mining-specific image generation prompt
-     const prompt = `Generate a professional product photograph of this mining/industrial part: "${partName}"
- 
- Requirements:
- - OEM catalogue style or manufacturer product photo
- - Pure white background (#FFFFFF)
- - Part centered in frame with good lighting
- - High quality, sharp focus
- - No text, labels, or watermarks
- - If generic (nut, bolt, gasket), show clean industrial version
- - Suitable for maintenance/stores visual catalogue
- - Mining industry specification where applicable
- 
- Output: Single clean product photo only.`;
- 
-     console.log(`Generating image for part: ${partName}`);
- 
-     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-       method: "POST",
-       headers: {
-         Authorization: `Bearer ${LOVABLE_API_KEY}`,
-         "Content-Type": "application/json",
-       },
-       body: JSON.stringify({
-         model: "google/gemini-2.5-flash-image",
-         messages: [{ role: "user", content: prompt }],
-         modalities: ["image", "text"],
-       }),
-     });
- 
-     if (!response.ok) {
-       if (response.status === 429) {
-          console.warn("AI gateway rate limited (429)");
-         return new Response(
-           JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
-           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-         );
-       }
-       if (response.status === 402) {
-          console.warn("AI gateway credits exhausted (402)");
-         return new Response(
-           JSON.stringify({ error: "AI credits exhausted. Please add credits to continue." }),
-           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-         );
-       }
-       const errorText = await response.text();
-       console.error("AI gateway error:", response.status, errorText);
-       return new Response(
-         JSON.stringify({ error: "Failed to generate image" }),
-         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-       );
-     }
- 
-     const data = await response.json();
-     const imageData = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
- 
-     if (!imageData) {
-       console.error("No image in response:", JSON.stringify(data).slice(0, 500));
-       return new Response(
-         JSON.stringify({ error: "No image was generated. Try again with a different description." }),
-         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-       );
-     }
+      // Mining-specific image generation prompt - kept terse to maximise image output
+      const prompt = `Product photo, white background, centered, sharp focus, no text: ${partName}. Industrial/mining part, OEM catalogue style.`;
+
+      console.log(`Generating image for part: ${partName}`);
+
+      const MAX_ATTEMPTS = 2;
+      let imageData: string | undefined;
+
+      for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+        const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash-image",
+            messages: [{ role: "user", content: prompt }],
+            modalities: ["image", "text"],
+          }),
+        });
+
+        if (!response.ok) {
+          if (response.status === 429) {
+            console.warn("AI gateway rate limited (429)");
+            return new Response(
+              JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
+              { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            );
+          }
+          if (response.status === 402) {
+            console.warn("AI gateway credits exhausted (402)");
+            return new Response(
+              JSON.stringify({ error: "AI credits exhausted. Please add credits to continue." }),
+              { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            );
+          }
+          const errorText = await response.text();
+          console.error("AI gateway error:", response.status, errorText);
+          return new Response(
+            JSON.stringify({ error: "Failed to generate image" }),
+            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+
+        const data = await response.json();
+        imageData = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+        if (imageData) break;
+
+        console.warn(`Attempt ${attempt}/${MAX_ATTEMPTS}: No image in response, ${attempt < MAX_ATTEMPTS ? "retrying..." : "giving up."}`);
+        if (attempt < MAX_ATTEMPTS) {
+          // Small delay before retry
+          await new Promise((r) => setTimeout(r, 1000));
+        }
+      }
+
+      if (!imageData) {
+        return new Response(
+          JSON.stringify({ error: "No image was generated after retries. Try a different description." }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
  
      // Extract base64 data and convert to binary
      const base64Match = imageData.match(/^data:image\/(png|jpeg|jpg|webp);base64,(.+)$/);
