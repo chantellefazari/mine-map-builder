@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { STORE_CONTAINERS, LAYOUT_ZONE_GROUPS, YARD_DIMENSIONS, type StoreContainer } from "./storeLayoutData";
 import { ContainerDetail2D } from "./ContainerDetail2D";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getCategoriesForContainer, getContainerMappingSummary } from "@/utils/categoryContainerMapping";
 
 interface StoreLayout2DProps {
   liveMode: boolean;
@@ -18,12 +19,12 @@ interface StoreLayout2DProps {
 
 export const StoreLayout2D = ({ liveMode, sparesData = [] }: StoreLayout2DProps) => {
   const [selectedContainer, setSelectedContainer] = useState<StoreContainer | null>(null);
+  const [showCategoryLegend, setShowCategoryLegend] = useState(false);
 
   const getPartsCount = (container: StoreContainer) => {
     if (!liveMode || !sparesData.length) return null;
     return sparesData.filter((s) => {
       const bin = (s.bin_location || "").toUpperCase();
-      // Match bin_location prefix to container ID (e.g., "C01-ME-A3" starts with "C01")
       return bin.startsWith(container.id);
     }).length;
   };
@@ -59,8 +60,8 @@ export const StoreLayout2D = ({ liveMode, sparesData = [] }: StoreLayout2DProps)
 
   return (
     <div className="space-y-4">
-      {/* Legend */}
-      <div className="flex flex-wrap gap-3 text-xs">
+      {/* Zone Legend + Category Toggle */}
+      <div className="flex flex-wrap items-center gap-3 text-xs">
         {LAYOUT_ZONE_GROUPS.map((group) => (
           <div key={group.id} className="flex items-center gap-1.5">
             <div
@@ -70,10 +71,70 @@ export const StoreLayout2D = ({ liveMode, sparesData = [] }: StoreLayout2DProps)
             <span className="text-muted-foreground">{group.label}</span>
           </div>
         ))}
-        <div className="flex items-center gap-1.5 ml-auto">
-          <span className="text-muted-foreground italic">Click a container to view interior detail</span>
+        <div className="flex items-center gap-2 ml-auto">
+          <Button
+            variant={showCategoryLegend ? "default" : "outline"}
+            size="sm"
+            className="h-7 px-2.5 text-xs gap-1.5"
+            onClick={() => setShowCategoryLegend(!showCategoryLegend)}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            Categories
+          </Button>
+          <span className="text-muted-foreground italic hidden sm:inline">Click a container for detail</span>
         </div>
       </div>
+
+      {/* Category Legend Panel */}
+      {showCategoryLegend && (
+        <div className="bg-card border border-border rounded-lg p-4 space-y-3">
+          <h4 className="text-sm font-semibold text-foreground uppercase tracking-wide">
+            Container → Category Mapping
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {STORE_CONTAINERS.map((container) => {
+              const categories = getCategoriesForContainer(container.id);
+              return (
+                <div
+                  key={container.id}
+                  className="flex gap-3 p-3 rounded-lg border cursor-pointer hover:bg-muted/50 transition-colors"
+                  style={{ borderColor: container.borderColor + "60" }}
+                  onClick={() => setSelectedContainer(container)}
+                >
+                  <div className="flex-shrink-0">
+                    <div
+                      className="w-10 h-10 rounded-md flex items-center justify-center text-xs font-bold text-white"
+                      style={{ backgroundColor: container.color }}
+                    >
+                      {container.id}
+                    </div>
+                    <div className="text-[10px] text-center text-muted-foreground mt-0.5">{container.zoneCode}</div>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-foreground">{container.label}</p>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {categories.length > 0 ? categories.map((cat) => (
+                        <span
+                          key={cat}
+                          className="inline-block px-1.5 py-0.5 text-[10px] rounded-sm font-medium"
+                          style={{ backgroundColor: container.bgColor, color: container.color }}
+                        >
+                          {cat}
+                        </span>
+                      )) : (
+                        <span className="text-[10px] text-muted-foreground italic">Default catch-all</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-[10px] text-muted-foreground">
+            Uncategorised / "General" items default to C03 (Mechanical). Click a container to view interior.
+          </p>
+        </div>
+      )}
 
       {/* SVG Floor Plan */}
       <FloorPlanSVG
@@ -96,9 +157,9 @@ interface FloorPlanSVGProps {
 const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSVGProps) => {
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
-      <svg viewBox="0 0 620 610" className="w-full h-auto" style={{ maxHeight: "620px" }}>
+      <svg viewBox="0 0 620 740" className="w-full h-auto" style={{ maxHeight: "750px" }}>
         {/* Background */}
-        <rect x="0" y="0" width="620" height="610" fill="hsl(var(--card))" />
+        <rect x="0" y="0" width="620" height="740" fill="hsl(var(--card))" />
 
         {/* Access Road */}
         <rect x="0" y="375" width="620" height="20" fill="hsl(var(--muted))" rx="2" />
@@ -113,8 +174,8 @@ const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSV
         </text>
 
         {/* Entry Arrow */}
-        <polygon points="600,570 620,555 600,540" fill="hsl(var(--primary))" opacity="0.5" />
-        <text x="580" y="560" textAnchor="end" fontSize="10" fill="hsl(var(--primary))" fontWeight="600">
+        <polygon points="600,690 620,675 600,660" fill="hsl(var(--primary))" opacity="0.5" />
+        <text x="580" y="680" textAnchor="end" fontSize="10" fill="hsl(var(--primary))" fontWeight="600">
           ENTRY →
         </text>
 
@@ -240,7 +301,7 @@ const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSV
         })}
 
         {/* Yard dimensions */}
-        <text x="310" y="600" textAnchor="middle" fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
+        <text x="310" y="730" textAnchor="middle" fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
           TCMG STORES YARD — {YARD_DIMENSIONS.totalWidthM}m × {YARD_DIMENSIONS.totalDepthM}m · Container spacing: {YARD_DIMENSIONS.containerSpacingM}m
         </text>
       </svg>
