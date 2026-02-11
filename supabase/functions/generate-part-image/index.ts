@@ -120,22 +120,38 @@
  
      const supabase = createClient(supabaseUrl, supabaseKey);
  
-     const fileName = `${partId}/ai-${Date.now()}.${imageType}`;
- 
-     const { error: uploadError } = await supabase.storage
-       .from("visual-parts-images")
-       .upload(fileName, bytes, {
-         contentType: `image/${imageType}`,
-         upsert: false,
-       });
- 
-     if (uploadError) {
-       console.error("Storage upload error:", uploadError);
-       return new Response(
-         JSON.stringify({ error: "Failed to save generated image" }),
-         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-       );
-     }
+      const fileName = `${partId}/ai-${Date.now()}.${imageType}`;
+
+      // Retry storage upload up to 3 times (transient 502s are common)
+      let uploadError: unknown = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        const { error } = await supabase.storage
+          .from("visual-parts-images")
+          .upload(fileName, bytes, {
+            contentType: `image/${imageType}`,
+            upsert: false,
+          });
+
+        if (!error) {
+          uploadError = null;
+          break;
+        }
+
+        uploadError = error;
+        console.warn(`Storage upload attempt ${attempt}/3 failed:`, error);
+
+        if (attempt < 3) {
+          await new Promise((r) => setTimeout(r, 1500 * attempt));
+        }
+      }
+
+      if (uploadError) {
+        console.error("Storage upload failed after retries:", uploadError);
+        return new Response(
+          JSON.stringify({ error: "Failed to save generated image (storage temporarily unavailable). Please retry." }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
  
      const { data: urlData } = supabase.storage
        .from("visual-parts-images")
