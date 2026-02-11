@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Loader2, ImageIcon, AlertTriangle, RefreshCw, GitCompare, X } from "lucide-react";
+import { Plus, Search, Loader2, ImageIcon, AlertTriangle, RefreshCw, GitCompare, X, Hash } from "lucide-react";
 import { useVisualPartsCatalogueSafe, type VisualPart } from "@/hooks/useVisualPartsCatalogueSafe";
 import { VisualPartCard } from "./VisualPartCard";
 import { VisualPartDetailDialog } from "./VisualPartDetailDialog";
@@ -16,6 +16,7 @@ import { AddVisualPartDialog } from "./AddVisualPartDialog";
 import { PartsComparisonDialog } from "./PartsComparisonDialog";
 import { PART_CATEGORIES, CRITICALITY_LEVELS } from "./visualPartsConstants";
 import { classifyVisualPartCategory } from "@/utils/visualPartsClassification";
+import { generateNextPartNumber } from "@/utils/autoPartNumbering";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -38,6 +39,7 @@ export const VisualPartsCatalogue = () => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [comparisonDialogOpen, setComparisonDialogOpen] = useState(false);
   const [isReclassifying, setIsReclassifying] = useState(false);
+  const [isReNumbering, setIsReNumbering] = useState(false);
   const [selectedPart, setSelectedPart] = useState<VisualPart | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
@@ -119,6 +121,49 @@ export const VisualPartsCatalogue = () => {
   const handlePartClick = (part: VisualPart) => {
     setSelectedPart(part);
     setDetailDialogOpen(true);
+  };
+
+  // Batch re-number parts with TMP- or missing part numbers
+  const handleBatchReNumber = async () => {
+    const unnumbered = parts.filter(
+      (p) => !p.site_part_number || p.site_part_number.startsWith("TMP-") || p.site_part_number === "000000"
+    );
+
+    if (unnumbered.length === 0) {
+      toast({ title: "No items to re-number", description: "All parts already have valid SSCCXX numbers" });
+      return;
+    }
+
+    setIsReNumbering(true);
+    let updated = 0;
+    let failed = 0;
+
+    try {
+      for (const part of unnumbered) {
+        const category = part.category || "General";
+        const newNumber = await generateNextPartNumber(category);
+        if (!newNumber) { failed++; continue; }
+
+        const { error } = await supabase
+          .from("visual_parts_catalogue")
+          .update({ site_part_number: newNumber })
+          .eq("id", part.id);
+
+        if (!error) updated++;
+        else failed++;
+      }
+
+      toast({
+        title: `Re-numbered ${updated} parts`,
+        description: failed > 0 ? `${failed} items could not be numbered` : "All parts now have valid SSCCXX numbers",
+      });
+      refetch();
+    } catch (error) {
+      console.error("Re-numbering error:", error);
+      toast({ title: "Re-numbering failed", variant: "destructive" });
+    } finally {
+      setIsReNumbering(false);
+    }
   };
 
   // Sync selected part with parts list changes
@@ -249,6 +294,15 @@ export const VisualPartsCatalogue = () => {
               Reclassify ({generalCount})
             </Button>
           )}
+          <Button
+            variant="outline"
+            onClick={handleBatchReNumber}
+            disabled={isReNumbering}
+            className="gap-2"
+          >
+            {isReNumbering ? <Loader2 className="h-4 w-4 animate-spin" /> : <Hash className="h-4 w-4" />}
+            Re-number Parts
+          </Button>
           <Button
             variant="outline"
             onClick={() => setComparisonDialogOpen(true)}

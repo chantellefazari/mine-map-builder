@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon, ChevronLeft, ChevronRight, Hash } from "lucide-react";
 import { useSiteSparesPaginated, type PaginationFilters } from "@/hooks/useSiteSparesPaginated";
 import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { AddSpareDialog } from "./AddSpareDialog";
@@ -19,6 +19,7 @@ import { OrphanedImageRecovery } from "./OrphanedImageRecovery";
 import { classifyCriticality } from "@/utils/criticalityClassification";
 import { classifyCategory } from "@/utils/categoryClassification";
 import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesToSiteSpares";
+import { generateNextSparePartNumber } from "@/utils/autoPartNumbering";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -60,6 +61,7 @@ export const SiteSparesCatalogue = () => {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [showImageRecovery, setShowImageRecovery] = useState(false);
   const [isReclassifyingCriticality, setIsReclassifyingCriticality] = useState(false);
+  const [isReNumbering, setIsReNumbering] = useState(false);
   const [searchDebounce, setSearchDebounce] = useState("");
 
   // Debounce search input (300ms)
@@ -238,6 +240,56 @@ export const SiteSparesCatalogue = () => {
     return result;
   };
 
+  const handleBatchReNumber = async () => {
+    setIsReNumbering(true);
+    await legacy.refetch();
+
+    // Find parts with empty or invalid part numbers
+    const unnumbered = legacy.spares.filter(
+      (s) => !s.part_number || s.part_number.startsWith("TMP-") || s.part_number === "000000"
+    );
+
+    if (unnumbered.length === 0) {
+      toast.info("All items already have valid part numbers");
+      setIsReNumbering(false);
+      return;
+    }
+
+    toast.loading(`Assigning part numbers to ${unnumbered.length} items...`, { id: "renumber" });
+
+    let updated = 0;
+    let failed = 0;
+
+    try {
+      for (const spare of unnumbered) {
+        const category = spare.category || "General";
+        const newNumber = await generateNextSparePartNumber(category);
+        if (!newNumber) {
+          failed++;
+          continue;
+        }
+
+        const { error } = await supabase
+          .from("site_spares")
+          .update({ part_number: newNumber })
+          .eq("id", spare.id);
+
+        if (!error) updated++;
+        else failed++;
+      }
+
+      toast.dismiss("renumber");
+      toast.success(`Assigned ${updated} part numbers${failed > 0 ? ` (${failed} failed)` : ""}`);
+      refreshAll();
+    } catch (error) {
+      toast.dismiss("renumber");
+      toast.error("Re-numbering failed");
+      console.error(error);
+    } finally {
+      setIsReNumbering(false);
+    }
+  };
+
   const handleSpareClick = (spare: SiteSpareItem) => {
     setSelectedSpare(spare);
     setDetailDialogOpen(true);
@@ -412,6 +464,16 @@ export const SiteSparesCatalogue = () => {
           >
             {isReclassifyingCriticality ? <Loader2 className="h-4 w-4 animate-spin" /> : <AlertTriangle className="h-4 w-4" />}
             Reclassify Criticality
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-2"
+            onClick={handleBatchReNumber}
+            disabled={isReNumbering}
+          >
+            {isReNumbering ? <Loader2 className="h-4 w-4 animate-spin" /> : <Hash className="h-4 w-4" />}
+            Re-number Parts
           </Button>
           <Button size="sm" variant="outline" className="gap-2" onClick={() => setImportDialogOpen(true)}>
             <Upload className="h-4 w-4" />
