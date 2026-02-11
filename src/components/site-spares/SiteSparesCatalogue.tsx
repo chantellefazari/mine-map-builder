@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,14 +8,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { useSiteSparesPaginated, type PaginationFilters } from "@/hooks/useSiteSparesPaginated";
 import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { AddSpareDialog } from "./AddSpareDialog";
 import { ImportSpareDialog } from "./ImportSpareDialog";
 import { SiteSpareCard } from "./SiteSpareCard";
 import { SiteSpareDetailDialog } from "./SiteSpareDetailDialog";
 import { OrphanedImageRecovery } from "./OrphanedImageRecovery";
-import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
+import { classifyCriticality } from "@/utils/criticalityClassification";
 import { classifyCategory } from "@/utils/categoryClassification";
 import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesToSiteSpares";
 import { toast } from "sonner";
@@ -41,7 +42,10 @@ const warehouseAreas = [
 ];
 
 export const SiteSparesCatalogue = () => {
-  const { spares, loading, addSpare, importSpares, mergeSpares, updateSpare, deleteSpare, refetch } = useSiteSpares();
+  const paginated = useSiteSparesPaginated();
+  // Keep legacy hook ONLY for import/merge/add/reclassify operations that need full dataset
+  const legacy = useSiteSpares();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterWarehouse, setFilterWarehouse] = useState<string>("all");
@@ -55,112 +59,52 @@ export const SiteSparesCatalogue = () => {
   const [selectedSpare, setSelectedSpare] = useState<SiteSpareItem | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [showImageRecovery, setShowImageRecovery] = useState(false);
-
-  // Derive categories dynamically from actual data
-  const availableCategories = [...new Set(spares.map((s) => s.category))].filter(Boolean).sort();
-
-  // Derive suppliers dynamically from actual data
-  const availableSuppliers = [...new Set(spares.map((s) => s.preferred_supplier))].filter(Boolean).sort();
-
-  const getCriticality = (spare: SiteSpareItem): CriticalityLevel => {
-    return classifyCriticality(spare.description);
-  };
-
   const [isReclassifyingCriticality, setIsReclassifyingCriticality] = useState(false);
+  const [searchDebounce, setSearchDebounce] = useState("");
 
-  const handleReclassifyAll = async () => {
-    const itemsToUpdate = spares.filter((spare) => {
-      const correctCategory = classifyCategory(spare.description);
-      return spare.category !== correctCategory && correctCategory !== "General";
-    });
+  // Debounce search input (300ms)
+  useEffect(() => {
+    const timer = setTimeout(() => setSearchDebounce(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
-    if (itemsToUpdate.length === 0) {
-      toast.info("All items are already correctly categorized");
-      return;
-    }
-
-    toast.loading(`Reclassifying ${itemsToUpdate.length} items...`, { id: "reclassify" });
-
-    let updated = 0;
-    for (const spare of itemsToUpdate) {
-      const newCategory = classifyCategory(spare.description);
-      const { error } = await supabase
-        .from("site_spares")
-        .update({ category: newCategory })
-        .eq("id", spare.id);
-
-      if (!error) updated++;
-    }
-
-    toast.dismiss("reclassify");
-    toast.success(`Reclassified ${updated} items to correct categories`);
-    refetch();
+  // Build filters object
+  const filters: PaginationFilters = {
+    searchQuery: searchDebounce,
+    category: filterCategory,
+    warehouseArea: filterWarehouse,
+    status: filterStatus,
+    supplier: filterSupplier,
+    criticality: filterCriticality,
+    quickFilter,
   };
 
-  const handleReclassifyCriticality = async () => {
-    setIsReclassifyingCriticality(true);
-    toast.loading(`Reclassifying criticality for ${spares.length} items...`, { id: "reclassify-crit" });
+  // Fetch page when filters or page change
+  useEffect(() => {
+    paginated.fetchPage(filters, paginated.page);
+  }, [
+    searchDebounce,
+    filterCategory,
+    filterWarehouse,
+    filterStatus,
+    filterSupplier,
+    filterCriticality,
+    quickFilter,
+    paginated.page,
+  ]);
 
-    let updated = 0;
-    let highCount = 0;
-    let mediumCount = 0;
-    let lowCount = 0;
-
-    try {
-      for (const spare of spares) {
-        const criticality = classifyCriticality(spare.description);
-        const shouldBeCritical = criticality === "HIGH";
-        
-        if (criticality === "HIGH") highCount++;
-        else if (criticality === "MEDIUM") mediumCount++;
-        else lowCount++;
-
-        if (spare.is_critical !== shouldBeCritical) {
-          const { error } = await supabase
-            .from("site_spares")
-            .update({ is_critical: shouldBeCritical })
-            .eq("id", spare.id);
-
-          if (!error) updated++;
-        }
-      }
-
-      toast.dismiss("reclassify-crit");
-      toast.success(`Criticality applied: ${highCount} HIGH, ${mediumCount} MEDIUM, ${lowCount} LOW`, {
-        description: `Updated ${updated} items with new is_critical flag`,
-      });
-      refetch();
-    } catch (error) {
-      toast.dismiss("reclassify-crit");
-      toast.error("Failed to reclassify criticality");
-    } finally {
-      setIsReclassifyingCriticality(false);
-    }
-  };
-
-  const handleAddSpare = async (newSpare: Omit<SiteSpareItem, "id">) => {
-    await addSpare(newSpare);
-  };
-
-  const handleImportCriticalSpares = async () => {
-    setImportingCritical(true);
-    try {
-      const result = await importCriticalSparesToSiteSpares();
-      if (result.errors.length > 0) {
-        toast.error(`Import completed with errors: ${result.errors.join(", ")}`);
-      } else if (result.inserted === 0 && result.skipped > 0) {
-        toast.info(`All ${result.skipped} Critical Spares already exist in catalogue`);
-      } else {
-        toast.success(`Imported ${result.inserted} Critical Spares (${result.skipped} already existed)`);
-      }
-      refetch();
-    } catch (error) {
-      toast.error("Failed to import Critical Spares");
-      console.error(error);
-    } finally {
-      setImportingCritical(false);
-    }
-  };
+  // Reset to page 0 when filters change
+  useEffect(() => {
+    paginated.setPage(0);
+  }, [
+    searchDebounce,
+    filterCategory,
+    filterWarehouse,
+    filterStatus,
+    filterSupplier,
+    filterCriticality,
+    quickFilter,
+  ]);
 
   const hasActiveFilters =
     searchQuery.trim().length > 0 ||
@@ -181,46 +125,134 @@ export const SiteSparesCatalogue = () => {
     setQuickFilter("all");
   };
 
-  const filteredSpares = spares.filter((spare) => {
-    const matchesSearch =
-      spare.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.part_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.oem_part_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.bin_location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.manufacturer.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = filterCategory === "all" || spare.category === filterCategory;
-    const matchesWarehouse = filterWarehouse === "all" || spare.warehouse_area === filterWarehouse;
-    const matchesStatus = filterStatus === "all" || spare.status === filterStatus;
-    const matchesSupplier = filterSupplier === "all" || spare.preferred_supplier === filterSupplier;
+  const refreshAll = () => {
+    paginated.fetchPage(filters, paginated.page);
+    paginated.fetchStats();
+    paginated.fetchFilterOptions();
+  };
 
-    const spareCriticality = getCriticality(spare);
-    const matchesCriticality = filterCriticality === "all" || spareCriticality === filterCriticality;
+  // Handlers that use legacy hook for full-dataset operations
+  const handleReclassifyAll = async () => {
+    await legacy.refetch();
+    const itemsToUpdate = legacy.spares.filter((spare) => {
+      const correctCategory = classifyCategory(spare.description);
+      return spare.category !== correctCategory && correctCategory !== "General";
+    });
 
-    const matchesQuickFilter =
-      quickFilter === "all" ||
-      (quickFilter === "lowStock" && (spare.status === "Low Stock" || spare.status === "Out of Stock")) ||
-      (quickFilter === "critical" && spareCriticality === "HIGH");
+    if (itemsToUpdate.length === 0) {
+      toast.info("All items are already correctly categorized");
+      return;
+    }
 
-    return matchesSearch && matchesCategory && matchesWarehouse && matchesStatus && matchesCriticality && matchesSupplier && matchesQuickFilter;
-  });
+    toast.loading(`Reclassifying ${itemsToUpdate.length} items...`, { id: "reclassify" });
 
-  // Summary stats
-  const totalItems = spares.length;
-  const lowStockCount = spares.filter((s) => s.status === "Low Stock" || s.status === "Out of Stock").length;
-  const criticalCount = spares.filter((s) => getCriticality(s) === "HIGH").length;
-  const withPhotosCount = spares.filter((s) => (s.image_urls || []).length > 0).length;
+    let updated = 0;
+    for (const spare of itemsToUpdate) {
+      const newCategory = classifyCategory(spare.description);
+      const { error } = await supabase
+        .from("site_spares")
+        .update({ category: newCategory })
+        .eq("id", spare.id);
+      if (!error) updated++;
+    }
+
+    toast.dismiss("reclassify");
+    toast.success(`Reclassified ${updated} items to correct categories`);
+    refreshAll();
+  };
+
+  const handleReclassifyCriticality = async () => {
+    setIsReclassifyingCriticality(true);
+    await legacy.refetch();
+    toast.loading(`Reclassifying criticality for ${legacy.spares.length} items...`, { id: "reclassify-crit" });
+
+    let updated = 0;
+    let highCount = 0;
+    let mediumCount = 0;
+    let lowCount = 0;
+
+    try {
+      for (const spare of legacy.spares) {
+        const criticality = classifyCriticality(spare.description);
+        const shouldBeCritical = criticality === "HIGH";
+        if (criticality === "HIGH") highCount++;
+        else if (criticality === "MEDIUM") mediumCount++;
+        else lowCount++;
+
+        if (spare.is_critical !== shouldBeCritical) {
+          const { error } = await supabase
+            .from("site_spares")
+            .update({ is_critical: shouldBeCritical })
+            .eq("id", spare.id);
+          if (!error) updated++;
+        }
+      }
+
+      toast.dismiss("reclassify-crit");
+      toast.success(`Criticality applied: ${highCount} HIGH, ${mediumCount} MEDIUM, ${lowCount} LOW`, {
+        description: `Updated ${updated} items with new is_critical flag`,
+      });
+      refreshAll();
+    } catch (error) {
+      toast.dismiss("reclassify-crit");
+      toast.error("Failed to reclassify criticality");
+    } finally {
+      setIsReclassifyingCriticality(false);
+    }
+  };
+
+  const handleAddSpare = async (newSpare: Omit<SiteSpareItem, "id">) => {
+    await legacy.addSpare(newSpare);
+    refreshAll();
+  };
+
+  const handleImportCriticalSpares = async () => {
+    setImportingCritical(true);
+    try {
+      const result = await importCriticalSparesToSiteSpares();
+      if (result.errors.length > 0) {
+        toast.error(`Import completed with errors: ${result.errors.join(", ")}`);
+      } else if (result.inserted === 0 && result.skipped > 0) {
+        toast.info(`All ${result.skipped} Critical Spares already exist in catalogue`);
+      } else {
+        toast.success(`Imported ${result.inserted} Critical Spares (${result.skipped} already existed)`);
+      }
+      refreshAll();
+    } catch (error) {
+      toast.error("Failed to import Critical Spares");
+      console.error(error);
+    } finally {
+      setImportingCritical(false);
+    }
+  };
+
+  const handleImport = async (newSpares: Omit<SiteSpareItem, "id">[]) => {
+    const result = await legacy.importSpares(newSpares);
+    if (result) refreshAll();
+    return result;
+  };
+
+  const handleMerge = async (newSpares: Omit<SiteSpareItem, "id">[]) => {
+    const result = await legacy.mergeSpares(newSpares);
+    if (result) refreshAll();
+    return result;
+  };
 
   const handleSpareClick = (spare: SiteSpareItem) => {
     setSelectedSpare(spare);
     setDetailDialogOpen(true);
   };
 
-  // Sync selected spare with spares list changes
+  // Sync selected spare with paginated results
   const currentSelectedSpare = selectedSpare
-    ? spares.find((s) => s.id === selectedSpare.id) || null
+    ? paginated.spares.find((s) => s.id === selectedSpare.id) || selectedSpare
     : null;
 
-  if (loading) {
+  // Pagination info
+  const totalPages = Math.ceil(paginated.totalFiltered / paginated.pageSize);
+  const currentPage = paginated.page;
+
+  if (paginated.loading && paginated.spares.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -243,8 +275,8 @@ export const SiteSparesCatalogue = () => {
             <Package className="h-5 w-5 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">Total Items</span>
           </div>
-          <p className="text-2xl font-bold mt-1">{totalItems}</p>
-          <p className="text-xs text-muted-foreground">{withPhotosCount} with photos</p>
+          <p className="text-2xl font-bold mt-1">{paginated.stats.totalItems}</p>
+          <p className="text-xs text-muted-foreground">{paginated.stats.withPhotosCount} with photos</p>
         </div>
         <div
           className={`rounded-lg p-4 cursor-pointer transition-all ${
@@ -256,7 +288,7 @@ export const SiteSparesCatalogue = () => {
             <AlertTriangle className="h-5 w-5 text-warning" />
             <span className="text-sm text-warning">Low/Out of Stock</span>
           </div>
-          <p className="text-2xl font-bold mt-1 text-warning">{lowStockCount}</p>
+          <p className="text-2xl font-bold mt-1 text-warning">{paginated.stats.lowStockCount}</p>
         </div>
         <div
           className={`rounded-lg p-4 cursor-pointer transition-all ${
@@ -268,14 +300,15 @@ export const SiteSparesCatalogue = () => {
             <Package className="h-5 w-5 text-primary" />
             <span className="text-sm text-primary">Critical Items</span>
           </div>
-          <p className="text-2xl font-bold mt-1 text-primary">{criticalCount}</p>
+          <p className="text-2xl font-bold mt-1 text-primary">—</p>
+          <p className="text-xs text-muted-foreground">Use filter to view</p>
         </div>
         <div className="rounded-lg p-4 bg-muted/50">
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Showing</span>
           </div>
-          <p className="text-2xl font-bold mt-1">{filteredSpares.length}</p>
-          <p className="text-xs text-muted-foreground">of {totalItems} items</p>
+          <p className="text-2xl font-bold mt-1">{paginated.spares.length}</p>
+          <p className="text-xs text-muted-foreground">of {paginated.totalFiltered} filtered</p>
         </div>
       </div>
 
@@ -297,10 +330,8 @@ export const SiteSparesCatalogue = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              {availableCategories.map((cat) => (
-                <SelectItem key={cat} value={cat}>
-                  {cat}
-                </SelectItem>
+              {paginated.availableCategories.map((cat) => (
+                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -311,9 +342,7 @@ export const SiteSparesCatalogue = () => {
             <SelectContent>
               <SelectItem value="all">All Areas</SelectItem>
               {warehouseAreas.map((area) => (
-                <SelectItem key={area} value={area}>
-                  {area}
-                </SelectItem>
+                <SelectItem key={area} value={area}>{area}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -347,10 +376,8 @@ export const SiteSparesCatalogue = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Suppliers</SelectItem>
-              {availableSuppliers.map((sup) => (
-                <SelectItem key={sup} value={sup}>
-                  {sup}
-                </SelectItem>
+              {paginated.availableSuppliers.map((sup) => (
+                <SelectItem key={sup} value={sup}>{sup}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -376,10 +403,10 @@ export const SiteSparesCatalogue = () => {
             <RefreshCw className="h-4 w-4" />
             Reclassify Categories
           </Button>
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="gap-2" 
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-2"
             onClick={handleReclassifyCriticality}
             disabled={isReclassifyingCriticality}
           >
@@ -390,14 +417,14 @@ export const SiteSparesCatalogue = () => {
             <Upload className="h-4 w-4" />
             Import Excel
           </Button>
-          <Button 
-            size="sm" 
-            variant={showImageRecovery ? "default" : "outline"} 
-            className="gap-2" 
+          <Button
+            size="sm"
+            variant={showImageRecovery ? "default" : "outline"}
+            className="gap-2"
             onClick={() => setShowImageRecovery(!showImageRecovery)}
           >
             <ImageIcon className="h-4 w-4" />
-           {showImageRecovery ? "Hide Image Recovery" : "Recover Images"}
+            {showImageRecovery ? "Hide Image Recovery" : "Recover Images"}
           </Button>
           <Button size="sm" className="gap-2" onClick={() => setAddDialogOpen(true)}>
             <Plus className="h-4 w-4" />
@@ -411,39 +438,80 @@ export const SiteSparesCatalogue = () => {
       <ImportSpareDialog
         open={importDialogOpen}
         onOpenChange={setImportDialogOpen}
-        onImport={importSpares}
-        onMerge={mergeSpares}
-        existingSpares={spares}
+        onImport={handleImport}
+        onMerge={handleMerge}
+        existingSpares={legacy.spares}
       />
       <SiteSpareDetailDialog
         spare={currentSelectedSpare}
         open={detailDialogOpen}
         onOpenChange={setDetailDialogOpen}
-        onUpdate={updateSpare}
-        onDelete={deleteSpare}
+        onUpdate={paginated.updateSpare}
+        onDelete={async (id) => {
+          const result = await paginated.deleteSpare(id);
+          if (result) {
+            setDetailDialogOpen(false);
+            paginated.fetchStats();
+          }
+          return result;
+        }}
       />
 
       {/* Image Recovery Tool */}
       {showImageRecovery && (
-        <OrphanedImageRecovery 
-          spares={spares} 
-          onImageAssigned={refetch} 
+        <OrphanedImageRecovery
+          spares={legacy.spares}
+          onImageAssigned={() => {
+            legacy.refetch();
+            refreshAll();
+          }}
         />
       )}
 
       {/* Card Grid */}
-      {filteredSpares.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {filteredSpares.map((spare) => (
-            <SiteSpareCard
-              key={spare.id}
-              spare={spare}
-              onClick={() => handleSpareClick(spare)}
-              onUpdate={updateSpare}
-            />
-          ))}
-        </div>
-      ) : spares.length === 0 ? (
+      {paginated.spares.length > 0 ? (
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {paginated.spares.map((spare) => (
+              <SiteSpareCard
+                key={spare.id}
+                spare={spare}
+                onClick={() => handleSpareClick(spare)}
+                onUpdate={paginated.updateSpare}
+              />
+            ))}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-4 pt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => paginated.setPage(Math.max(0, currentPage - 1))}
+                disabled={currentPage === 0}
+                className="gap-1"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Previous
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                Page {currentPage + 1} of {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => paginated.setPage(Math.min(totalPages - 1, currentPage + 1))}
+                disabled={currentPage >= totalPages - 1}
+                className="gap-1"
+              >
+                Next
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+        </>
+      ) : paginated.stats.totalItems === 0 ? (
         <div className="text-center py-12 border border-dashed border-border rounded-lg">
           <div className="text-muted-foreground space-y-2">
             <p className="font-medium">No items in inventory yet</p>
