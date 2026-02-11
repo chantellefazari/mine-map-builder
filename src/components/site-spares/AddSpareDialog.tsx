@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { generateNextSparePartNumber } from "@/utils/autoPartNumbering";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -130,9 +131,12 @@ export const AddSpareDialog = ({
     return "";
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // Auto-generate SSCCXX part number based on category
+    const autoPartNumber = await generateNextSparePartNumber(formData.category);
+    
     const newSpare: Omit<SiteSpareItem, "id"> = {
-      part_number: "",
+      part_number: autoPartNumber || "",
       description: formData.description,
       category: formData.category,
       subcategory: formData.subcategory,

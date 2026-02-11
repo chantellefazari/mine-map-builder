@@ -76,7 +76,7 @@ export const useVisualPartsCatalogueSafe = () => {
 
   const addPart = async (part: Partial<NewVisualPart>): Promise<VisualPart | null> => {
     const insertData = {
-      site_part_number: part.site_part_number || `TMP-${Date.now()}`,
+      site_part_number: part.site_part_number || "",
       part_name: part.part_name || "",
       category: part.category || "General",
       criticality: part.criticality || "LOW",

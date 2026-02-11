@@ -17,6 +17,8 @@ import { getImageFileFromDataTransfer } from "@/utils/getImageFileFromDataTransf
 import { getEdgeFunctionErrorMessage } from "@/utils/getEdgeFunctionErrorMessage";
  import { ImageIcon, X, Sparkles, Loader2, Check } from "lucide-react";
 import type { NewVisualPart } from "@/hooks/useVisualPartsCatalogue";
+import { generateNextPartNumber } from "@/utils/autoPartNumbering";
+import { classifyVisualPartCategory } from "@/utils/visualPartsClassification";
 
 interface AddVisualPartDialogProps {
   open: boolean;
@@ -191,13 +193,25 @@ export const AddVisualPartDialog = ({
 
     setSaving(true);
     
-    // Auto-generate site part number (timestamp-based for now)
-    const autoPartNumber = `TMP-${Date.now().toString(36).toUpperCase()}`;
+    // Auto-classify category from description
+    const autoCategory = classifyVisualPartCategory(partName.trim(), null);
+    
+    // Auto-generate real SSCCXX part number based on category
+    const autoPartNumber = await generateNextPartNumber(autoCategory);
+    if (!autoPartNumber) {
+      toast({
+        title: "Numbering error",
+        description: "Could not generate a part number. Category may be full.",
+        variant: "destructive",
+      });
+      setSaving(false);
+      return;
+    }
     
     const result = await onAdd({
       site_part_number: autoPartNumber,
       part_name: partName.trim(),
-      category: "General",
+      category: autoCategory,
       associated_asset: "",
       criticality: "Non-Critical",
       notes: notes.trim(),
