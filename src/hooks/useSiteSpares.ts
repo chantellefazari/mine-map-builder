@@ -57,8 +57,8 @@ export const useSiteSpares = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  // Fetch all spares from database
-  const fetchSpares = async () => {
+  // Fetch all spares from database — returns data directly for callers
+  const fetchSpares = async (): Promise<SiteSpareItem[]> => {
     setLoading(true);
     // NOTE: The backend applies a default 1000-row limit per request.
     // We page through results to ensure large catalogues (e.g. 1700+ rows)
@@ -99,6 +99,7 @@ export const useSiteSpares = () => {
 
     setSpares(all);
     setLoading(false);
+    return all;
   };
 
   // Add a single spare
