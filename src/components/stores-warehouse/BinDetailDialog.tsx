@@ -259,12 +259,13 @@ const BinInteriorSVG = ({
                 points={`${pbr.x},${pbr.y} ${ptr.x},${ptr.y} ${ptrT.x},${ptrT.y} ${pbrT.x},${pbrT.y}`}
                 fill={color} opacity={0.12} stroke={color} strokeWidth="0.5"
               />
-              {/* Label on top face */}
+              {/* Label on front face */}
               <text
-                x={(pblT.x + pbrT.x + ptrT.x + ptlT.x) / 4}
-                y={(pblT.y + pbrT.y + ptrT.y + ptlT.y) / 4 + 3}
-                textAnchor="middle" fontSize="8" fontWeight="600"
+                x={(pbl.x + pbr.x) / 2}
+                y={(pbl.y + pblT.y) / 2 + 4}
+                textAnchor="middle" fontSize="11" fontWeight="600"
                 fill="hsl(var(--foreground))"
+                style={{ paintOrder: "stroke", stroke: "hsl(var(--background))", strokeWidth: 3, strokeLinejoin: "round" }}
               >
                 {label}
               </text>
