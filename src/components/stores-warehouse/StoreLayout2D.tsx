@@ -22,16 +22,17 @@ export const StoreLayout2D = ({ liveMode, sparesData = [] }: StoreLayout2DProps)
   const getPartsCount = (container: StoreContainer) => {
     if (!liveMode || !sparesData.length) return null;
     return sparesData.filter((s) => {
-      const area = (s.warehouse_area || "").toUpperCase();
-      return area.includes(container.zoneCode) || area.includes(container.zone);
+      const bin = (s.bin_location || "").toUpperCase();
+      // Match bin_location prefix to container ID (e.g., "C01-ME-A3" starts with "C01")
+      return bin.startsWith(container.id);
     }).length;
   };
 
   const getPartsForContainer = (container: StoreContainer) => {
     if (!sparesData.length) return [];
     return sparesData.filter((s) => {
-      const area = (s.warehouse_area || "").toUpperCase();
-      return area.includes(container.zoneCode) || area.includes(container.zone);
+      const bin = (s.bin_location || "").toUpperCase();
+      return bin.startsWith(container.id);
     });
   };
 

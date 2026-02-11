@@ -135,8 +135,9 @@ export const SiteSparesCatalogue = () => {
 
   // Handlers that use legacy hook for full-dataset operations
   const handleReclassifyAll = async () => {
-    await legacy.refetch();
-    const itemsToUpdate = legacy.spares.filter((spare) => {
+    const freshSpares = await legacy.refetch();
+    const sparesToUse = freshSpares || legacy.spares;
+    const itemsToUpdate = sparesToUse.filter((spare) => {
       const correctCategory = classifyCategory(spare.description);
       return spare.category !== correctCategory && correctCategory !== "General";
     });
@@ -165,8 +166,9 @@ export const SiteSparesCatalogue = () => {
 
   const handleReclassifyCriticality = async () => {
     setIsReclassifyingCriticality(true);
-    await legacy.refetch();
-    toast.loading(`Reclassifying criticality for ${legacy.spares.length} items...`, { id: "reclassify-crit" });
+    const freshSpares = await legacy.refetch();
+    const sparesToUse = freshSpares || legacy.spares;
+    toast.loading(`Reclassifying criticality for ${sparesToUse.length} items...`, { id: "reclassify-crit" });
 
     let updated = 0;
     let highCount = 0;
@@ -174,7 +176,7 @@ export const SiteSparesCatalogue = () => {
     let lowCount = 0;
 
     try {
-      for (const spare of legacy.spares) {
+      for (const spare of sparesToUse) {
         const criticality = classifyCriticality(spare.description);
         const shouldBeCritical = criticality === "HIGH";
         if (criticality === "HIGH") highCount++;
@@ -242,10 +244,11 @@ export const SiteSparesCatalogue = () => {
 
   const handleBatchReNumber = async () => {
     setIsReNumbering(true);
-    await legacy.refetch();
+    // Use returned data directly to avoid stale React state
+    const freshSpares = await legacy.refetch();
 
     // Find parts with empty or invalid part numbers
-    const unnumbered = legacy.spares.filter(
+    const unnumbered = (freshSpares || legacy.spares).filter(
       (s) => !s.part_number || s.part_number.startsWith("TMP-") || s.part_number === "000000"
     );
 

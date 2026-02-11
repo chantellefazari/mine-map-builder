@@ -21,8 +21,7 @@ export const StoreVisualisation = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("site_spares")
-        .select("id, description, bin_location, warehouse_area, category, part_number")
-        .not("warehouse_area", "is", null);
+        .select("id, description, bin_location, warehouse_area, category, part_number");
       if (error) throw error;
       return data || [];
     },
