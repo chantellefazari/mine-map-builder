@@ -216,7 +216,7 @@ export const PartsComparisonDialog = ({
           return {
             part_number: vp.site_part_number,
             description: vp.part_name,
-            category: vp.category || "General",
+            category: vp.category || "Consumables",
             preferred_supplier: vp.supplier || "",
             warehouse_area: vp.warehouse_area || "",
             bin_location: vp.bin_location || "",

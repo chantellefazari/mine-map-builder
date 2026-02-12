@@ -67,7 +67,7 @@ const CATEGORY_CODE_MAP: Record<string, string> = {
   "OEM Assemblies / Packages": "20",
   "Fasteners": "21", "Fastener": "21",
   "Consumables": "22", "Consumable": "22",
-  "Unknown / To Be Confirmed": "23", "General": "23",
+  "Unknown / To Be Confirmed": "22", "Unknown / TBC": "22", "General": "22",
   // Additional visual-parts categories
   "Belt / Chain": "08",
   "Hydraulic": "15",

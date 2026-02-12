@@ -77,7 +77,7 @@ export const SiteSparesTable = () => {
   const handleReclassifyAll = async () => {
     const itemsToUpdate = spares.filter(spare => {
       const correctCategory = classifyCategory(spare.description);
-      return spare.category !== correctCategory && correctCategory !== "Unknown / TBC";
+      return spare.category !== correctCategory && correctCategory !== "Consumables";
     });
 
     if (itemsToUpdate.length === 0) {

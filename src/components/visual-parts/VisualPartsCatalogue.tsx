@@ -63,11 +63,11 @@ export const VisualPartsCatalogue = () => {
   const totalParts = parts.length;
   const highCriticalCount = parts.filter((p) => p.criticality === "High").length;
   const partsWithImages = parts.filter((p) => p.image_urls.length > 0).length;
-  const generalCount = parts.filter((p) => p.category === "General").length;
+  const generalCount = parts.filter((p) => p.category === "General" || p.category === "Consumables").length;
 
-  // Reclassify all "General" parts using smart classification
+  // Reclassify all uncategorized parts using smart classification
   const handleReclassifyCategories = async () => {
-    const generalParts = parts.filter((p) => p.category === "General");
+    const generalParts = parts.filter((p) => p.category === "General" || p.category === "Consumables");
     if (generalParts.length === 0) {
       toast({
         title: "No items to reclassify",
@@ -82,7 +82,7 @@ export const VisualPartsCatalogue = () => {
     try {
       for (const part of generalParts) {
         const newCategory = classifyVisualPartCategory(part.part_name, null);
-        if (newCategory !== "General") {
+        if (newCategory !== "Consumables" && newCategory !== part.category) {
           const { error } = await supabase
             .from("visual_parts_catalogue")
             .update({ category: newCategory })
@@ -140,7 +140,7 @@ export const VisualPartsCatalogue = () => {
 
     try {
       for (const part of unnumbered) {
-        const category = part.category || "General";
+        const category = part.category || "Consumables";
         const newNumber = await generateNextPartNumber(category);
         if (!newNumber) { failed++; continue; }
 
