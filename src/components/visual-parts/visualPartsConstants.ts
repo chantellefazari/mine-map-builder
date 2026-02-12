@@ -1,24 +1,31 @@
+/**
+ * Visual Parts Catalogue Constants
+ * Aligned with Site Parts Numbering Standard (TCMG) Part Category Codes CC 01–23
+ */
 export const PART_CATEGORIES = [
-  "General",
-  "Pump Component",
-  "Valve",
-  "Fastener",
-  "Liner",
-  "Electrical",
-  "Bearing",
-  "Seal / Gasket",
-  "Belt / Chain",
-  "Filter",
-  "Motor Component",
-  "Gearbox Component",
-  "Instrumentation",
-  "Hydraulic",
-  "Pneumatic",
-  "Structural",
-  "Wear Part",
-  "Safety Equipment",
-  "Tooling",
-  "Rigging",
+  "Pumps",                          // CC 01
+  "Motors",                         // CC 02
+  "Gearboxes / Reducers",          // CC 03
+  "Bearings",                       // CC 04
+  "Valves",                         // CC 05
+  "Instrumentation",                // CC 06
+  "Electrical Components",          // CC 07
+  "Conveying Components",           // CC 08
+  "Wear Parts",                     // CC 09
+  "Structural & Mechanical",        // CC 10
+  "Hoses & Pipework",              // CC 11
+  "Seals & Gaskets",               // CC 12
+  "Filters",                        // CC 13
+  "Lubrication System Components",  // CC 14
+  "Air & Pneumatic Components",     // CC 15
+  "Tanks & Vessels",                // CC 16
+  "Safety Equipment",               // CC 17
+  "Power Generation & Distribution", // CC 18
+  "Tools & Workshop Equipment",     // CC 19
+  "OEM Assemblies / Packages",      // CC 20
+  "Fasteners",                      // CC 21
+  "Consumables",                    // CC 22
+  "Unknown / TBC",                  // CC 23
 ] as const;
 
 export const CRITICALITY_LEVELS = ["HIGH", "MEDIUM", "LOW"] as const;
