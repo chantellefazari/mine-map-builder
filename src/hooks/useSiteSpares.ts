@@ -37,11 +37,13 @@ const LEGACY_CATEGORY_MAP: Record<string, string> = {
   "Safety Equipment": "Safety Equipment",
   "Tooling": "Tools & Workshop Equipment",
   "Rigging": "Tools & Workshop Equipment",
-  "General": "Unknown / TBC",
+  "General": "Consumables",
+  "Unknown / TBC": "Consumables",
+  "Unknown / To Be Confirmed": "Consumables",
 };
 
 const normalizeCategory = (category: string | null): string => {
-  if (!category) return "Unknown / TBC";
+  if (!category) return "Consumables";
   return LEGACY_CATEGORY_MAP[category] || category;
 };
 

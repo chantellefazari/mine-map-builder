@@ -4,6 +4,9 @@
  * Auto-classifies spare parts into categories based on description keywords.
  * Categories are aligned 1:1 with the Site Parts Numbering Standard (TCMG)
  * Part Category Codes (CC = 01–23).
+ *
+ * FALLBACK: Items that don't match any keyword list default to "Consumables" (CC 22).
+ * There is no "General" or "Unknown" bucket — everything gets a real category.
  */
 
 export type SpareCategory = 
@@ -28,8 +31,7 @@ export type SpareCategory =
   | "Tools & Workshop Equipment"     // CC 19
   | "OEM Assemblies / Packages"      // CC 20
   | "Fasteners"                      // CC 21
-  | "Consumables"                    // CC 22
-  | "Unknown / TBC";                 // CC 23
+  | "Consumables";                   // CC 22 (also the fallback)
 
 // Category keyword mappings - checked in priority order
 const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
@@ -40,19 +42,62 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "hex nut", "zinc plated", "gr8", "grade 8", "asme b18",
   ],
 
-  // CC 11 – Hoses & Pipework (nipples, elbows, hoses, pipes)
+  // CC 11 – Hoses & Pipework
   "Hoses & Pipework": [
     "nipple", "elbow", "tee", "reducer", "union", "flange", "blind flange",
     "pipe fitting", "threaded", "bsp", "npt", "coupler", "coupling fitting",
     "compression fitting", "electrofusion", "stub flange", "poly nipple",
     "reducing bush", "reducing nipple", "hex reducing", "pipe clamp",
     "female tee", "male tee", "socket", "street elbow", "cap fitting",
-    "pipe clamp", "hdpe pipe", "pvc pipe", "poly pipe", "pipe coupling",
+    "hdpe pipe", "pvc pipe", "poly pipe", "pipe coupling",
     "hose", "tubing", "flexible hose", "hydraulic hose", "air hose", "nylon tubing",
     "drag hose", "tpr hose", "pvc hose", "hose coupling", "claw coupling",
     "camlock", "hosetail", "hose assembly", "suction hose", "delivery hose",
+    "plasson", "saddle", "backing ring", "pe100 pipe", "pipe spool",
+    "rapid clamp", "repair clamp", "pinchweld", "poly saddle",
   ],
-  
+
+  // CC 19 – Tools & Workshop Equipment (rigging, lifting, hand/power tools)
+  "Tools & Workshop Equipment": [
+    "lifting gear", "torque wrench", "torque tool", "workshop",
+    "crane", "hoist", "sling", "shackle", "rigging",
+    "tool", "hand tool", "power tool",
+    "lever hoist", "round sling", "chain block", "come-along",
+    "wrench", "adjustable wrench", "pipe wrench", "spanner",
+    "drill bit", "drill set", "annular cutter", "holemaker",
+    "burr set", "rotary burr", "flap disc", "cutting wheel",
+    "cut off wheel", "grinding disc", "abrasive", "fibre disc",
+    "buff pad", "chuck", "drill chuck",
+    "power wrench", "power punch", "impact wrench",
+    "rope", "manila rope", "wire rope",
+    "turnbuckle", "hook and eye",
+    "site box", "storage box", "tool box",
+    "star picket", "trolley", "dispenser trolley",
+    "milwaukee", "xtorque", "makita", "dewalt", "bosch",
+    "garrick", "daytona",
+  ],
+
+  // CC 17 – Safety Equipment
+  "Safety Equipment": [
+    "safety shower", "eyewash", "emergency shower", "guarding",
+    "machine guard", "safety cage", "pull wire", "e-stop",
+    "safety interlock", "light curtain",
+    "fire extinguisher", "fire blanket", "first aid",
+    "spill kit", "bund", "safety sign",
+  ],
+
+  // CC 09 – Wear Parts (liners, screen panels, crusher parts)
+  "Wear Parts": [
+    "wear part", "wear plate", "wear ring", "wear strip", "impact plate",
+    "screen panel", "screen mesh", "crusher liner",
+    "liner", "wear liner", "chute liner", "mill liner", "rubber liner",
+    "side lining", "pu wedge", "pu side", "cleat",
+    "concave", "mantle", "cone liner", "jaw plate", "cheek plate",
+    "crushing screen", "cyclone liner", "cover liner",
+    "repair strip", "lifter", "lifter bar",
+    "crusher part",
+  ],
+
   // CC 08 – Conveying Components
   "Conveying Components": [
     "conveyor", "idler", "roller", "return roller", "trough roller",
@@ -62,65 +107,74 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "vee belt", "v-belt", "v belt", "transmission belt", "drive belt",
     "timing belt", "serpentine", "wedge belt", "spb", "spa", "spc",
     "belt tensioner", "belt pulley", "chain", "sprocket",
+    "fenner pulley",
   ],
-  
+
   // CC 12 – Seals & Gaskets
   "Seals & Gaskets": [
     "seal", "o-ring", "gasket", "packing", "gland packing", "mechanical seal",
     "shaft seal", "oil seal", "lip seal", "diaphragm seal", "gasket set",
-    "o ring", "seal kit",
+    "o ring", "seal kit", "ptfe sheet", "ptfe expanded",
+    "joint ring", "intake joint",
   ],
-  
+
   // CC 04 – Bearings
   "Bearings": [
     "bearing", "pillow block", "spherical roller", "ball bearing", "tapered roller",
     "roller bearing", "needle bearing", "thrust bearing", "bearing housing",
     "plummer block", "bearing adapter", "bearing isolator", "bearing insert",
-    "cylindrical roller", "angular contact",
+    "cylindrical roller", "angular contact", "flinger",
   ],
-  
+
   // CC 13 – Filters
   "Filters": [
     "filter", "filter element", "filter cartridge", "strainer",
     "air filter", "oil filter", "fuel filter", "hydraulic filter",
     "filter plate", "filter cloth", "filter press",
+    "element assembly", "fuel water separator", "breather",
+    "puretec", "replacement pack",
   ],
-  
+
   // CC 05 – Valves
   "Valves": [
     "valve", "knife gate", "butterfly valve", "ball valve", "check valve",
     "safety valve", "pressure relief", "control valve", "solenoid valve",
     "gate valve", "globe valve", "pinch valve", "diaphragm valve",
     "needle valve", "plug valve", "isolation valve",
+    "directional vale", "cetop",
   ],
-  
+
   // CC 01 – Pumps
   "Pumps": [
-    "pump", "impeller", "volute", "wear ring", "throat bush", "pump casing",
+    "pump", "impeller", "volute", "throat bush", "pump casing",
     "slurry pump", "centrifugal pump", "submersible", "diaphragm pump",
     "aodd", "dosing pump", "transfer pump", "wet end",
+    "grundfos", "fluid extractor",
   ],
-  
+
   // CC 02 – Motors
   "Motors": [
     "motor", "drive motor", "electric motor", "motor assembly",
     "motor fan", "motor terminal", "motor bearing",
   ],
-  
+
   // CC 03 – Gearboxes / Reducers
   "Gearboxes / Reducers": [
-    "gearbox", "gear box", "gear reducer", "speed reducer", "reducer",
+    "gearbox", "gear box", "gear reducer", "speed reducer",
     "sew-eurodrive", "sew eurodrive", "helical gearbox", "planetary gearbox",
     "worm gear", "right angle drive",
   ],
-  
+
   // CC 06 – Instrumentation
   "Instrumentation": [
     "transmitter", "sensor", "gauge", "pressure gauge", "flow meter",
     "level sensor", "thermocouple", "rtd", "ph probe", "conductivity",
     "turbidity", "indicator", "controller", "recorder",
+    "thermometer", "bimetal thermometer",
+    "encoder", "incremental encoder", "isolating amplifier",
+    "analyser", "analyzer",
   ],
-  
+
   // CC 07 – Electrical Components
   "Electrical Components": [
     "electrical", "electric", "cable", "wire", "connector", "switch",
@@ -129,86 +183,85 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "plc", "control module", "transformer", "switchgear", "mcc",
     "insulation tape", "insulating tape", "pvc tape", "electrical tape",
     "cable tie", "volt", "extension cable", "power cable", "flex cable",
+    "copper crimp", "crimp lug", "crimp link", "boot lace pin",
+    "clipsal", "plug", "power outlet", "rcbo", "rcd",
+    "soft starter", "micrologix", "guardlogix", "compactlogix",
+    "allen-bradley", "allen bradley",
+    "fuseco", "mini-kit",
+    "din socket", "cat6", "smart-ups", "ups",
+    "enclosure", "junction box", "entry box",
+    "appliance test", "test tag",
+    "cable tray", "ezystrut", "cable ladder",
+    "magnetic adaptor",
   ],
-  
-  // CC 15 – Air & Pneumatic Components
+
+  // CC 15 – Air & Pneumatic Components (includes hydraulic)
   "Air & Pneumatic Components": [
     "pneumatic", "air cylinder", "air valve", "pneumatic fitting",
     "pneumatic actuator", "air regulator", "frl", "compressor",
-    "air receiver", "hydraulic", "hydraulic valve", "hydraulic pump",
+    "air receiver", "air reciever",
+    "hydraulic", "hydraulic valve", "hydraulic pump",
     "hydraulic motor", "hydraulic cylinder", "hydraulic fitting",
+    "blower", "side channel blower",
+    "norgen", "norgren",
   ],
-  
-  // CC 09 – Wear Parts (includes liners)
-  "Wear Parts": [
-    "wear part", "wear plate", "wear ring", "wear strip", "impact plate",
-    "screen panel", "screen mesh", "crusher liner",
-    "liner", "wear liner", "chute liner", "mill liner", "rubber liner",
-  ],
-  
-  // CC 10 – Structural & Mechanical
-  "Structural & Mechanical": [
-    "coupling", "flexible coupling", "gear coupling", "chain coupling",
-    "pulley", "sheave", "keyway", "key",
-    "shaft", "spindle", "cylinder",
-    "actuator", "bracket", "clamp", "mount",
-    "frame", "guard", "support", "handrail",
-  ],
-  
-  // CC 14 – Lubrication System Components
-  "Lubrication System Components": [
-    "lube pump", "lube cooler", "lube injector", "lube manifold",
-    "grease pump", "lubrication system", "oil cooler",
-  ],
-  
+
   // CC 16 – Tanks & Vessels
   "Tanks & Vessels": [
     "tank", "vessel", "sump", "hopper", "reagent tank", "cip tank",
     "process tank", "storage tank",
+    "heat exchanger", "exchanger", "dynacool",
   ],
-  
-  // CC 17 – Safety Equipment
-  "Safety Equipment": [
-    "safety shower", "eyewash", "emergency shower", "guarding",
-    "machine guard", "safety cage", "pull wire", "e-stop",
-    "safety interlock", "light curtain",
-  ],
-  
+
   // CC 18 – Power Generation & Distribution
   "Power Generation & Distribution": [
     "generator", "alternator", "substation", "distribution board",
     "power factor", "capacitor bank", "busbar",
   ],
-  
-  // CC 19 – Tools & Workshop Equipment
-  "Tools & Workshop Equipment": [
-    "lifting gear", "torque wrench", "torque tool", "workshop",
-    "crane", "hoist", "sling", "shackle", "rigging",
-    "tool", "hand tool", "power tool",
+
+  // CC 14 – Lubrication System Components
+  "Lubrication System Components": [
+    "lube pump", "lube cooler", "lube injector", "lube manifold",
+    "grease pump", "lubrication system", "oil cooler",
+    "divider valve", "graco",
   ],
-  
+
   // CC 20 – OEM Assemblies / Packages
   "OEM Assemblies / Packages": [
     "pump skid", "lube skid", "filter press package", "oem assembly",
     "complete assembly", "skid mounted",
   ],
-  
-  // CC 22 – Consumables
+
+  // CC 10 – Structural & Mechanical
+  "Structural & Mechanical": [
+    "coupling", "flexible coupling", "gear coupling", "chain coupling",
+    "pulley", "sheave", "keyway", "key",
+    "shaft", "spindle",
+    "actuator", "bracket", "clamp", "mount",
+    "frame", "guard", "support", "handrail",
+    "equal angle", "angle iron", "channel steel", "flat bar",
+    "structural steel", "gravity table",
+  ],
+
+  // CC 22 – Consumables (also the fallback for unclassified items)
   "Consumables": [
     "glove", "ppe", "respirator", "earmuff", "glasses",
     "lubricant", "grease", "oil", "degreaser", "cleaning", "rag",
-    "tape", "adhesive", "sealant", "paint", "marker",
-    "grease nipple", "zerk", "divider valve",
+    "adhesive", "sealant", "paint", "marker",
+    "grease nipple", "zerk",
+    "battery", "batteries", "energizer",
+    "anti-corrosion", "vci",
+    "compliance certificate",
   ],
-  
-  // CC 23 – Unknown / TBC (fallback – no keywords)
-  "Unknown / TBC": [],
 };
 
 // Priority order for checking categories (more specific first)
 const CATEGORY_PRIORITY: SpareCategory[] = [
   "Fasteners",
   "Hoses & Pipework",
+  "Tools & Workshop Equipment",
+  "Safety Equipment",
+  "Wear Parts",
   "Conveying Components",
   "Seals & Gaskets",
   "Bearings",
@@ -220,16 +273,12 @@ const CATEGORY_PRIORITY: SpareCategory[] = [
   "Instrumentation",
   "Electrical Components",
   "Air & Pneumatic Components",
-  "Wear Parts",
-  "Lubrication System Components",
   "Tanks & Vessels",
-  "Safety Equipment",
   "Power Generation & Distribution",
-  "Tools & Workshop Equipment",
+  "Lubrication System Components",
   "OEM Assemblies / Packages",
   "Structural & Mechanical",
   "Consumables",
-  "Unknown / TBC",
 ];
 
 /**
@@ -253,10 +302,11 @@ const containsKeyword = (description: string, keywords: string[]): boolean => {
 };
 
 /**
- * Classify a spare part into a category based on its description
+ * Classify a spare part into a category based on its description.
+ * Falls back to "Consumables" (CC 22) — no "General" or "Unknown" bucket.
  */
 export const classifyCategory = (description: string): SpareCategory => {
-  if (!description) return "Unknown / TBC";
+  if (!description) return "Consumables";
 
   for (const category of CATEGORY_PRIORITY) {
     const keywords = CATEGORY_KEYWORDS[category];
@@ -265,7 +315,7 @@ export const classifyCategory = (description: string): SpareCategory => {
     }
   }
 
-  return "Unknown / TBC";
+  return "Consumables";
 };
 
 /**
@@ -381,9 +431,7 @@ export const getCategoryColor = (category: SpareCategory | string): string => {
     case "Fasteners":
       return "bg-slate-100 text-slate-700 border-slate-200";
     case "Consumables":
-      return "bg-green-100 text-green-700 border-green-200";
-    case "Unknown / TBC":
     default:
-      return "bg-gray-100 text-gray-700 border-gray-200";
+      return "bg-green-100 text-green-700 border-green-200";
   }
 };

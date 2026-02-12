@@ -30,7 +30,7 @@ function normalizePart(row: any): VisualPart {
     id: row.id,
     site_part_number: row.site_part_number,
     part_name: row.part_name,
-    category: row.category ?? "General",
+    category: row.category ?? "Consumables",
     criticality: row.criticality ?? "LOW",
     image_urls: (row.image_urls ?? []) as string[],
     supplier: (row.supplier ?? "") as string,
@@ -78,7 +78,7 @@ export const useVisualPartsCatalogueSafe = () => {
     const insertData = {
       site_part_number: part.site_part_number || "",
       part_name: part.part_name || "",
-      category: part.category || "General",
+      category: part.category || "Consumables",
       criticality: part.criticality || "LOW",
       supplier: part.supplier || "",
       warehouse_area: part.warehouse_area || "",

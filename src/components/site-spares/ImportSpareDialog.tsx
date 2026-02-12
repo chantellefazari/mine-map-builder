@@ -14,16 +14,28 @@ import { type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { Badge } from "@/components/ui/badge";
 import { isCriticalItem } from "@/utils/criticalityClassification";
 
-// Categories and warehouse areas for mapping
+// Approved Part Category Codes (TCMG) for import mapping
 const categories: Record<string, string[]> = {
-  "Pipe Fitting": ["Ball Valve", "Coupling", "Elbow", "Tee", "Reducer", "Nipple"],
-  "Motor": ["Electric Motor", "Hydraulic Motor", "Vibrator"],
-  "Pump": ["Submersible", "Centrifugal", "Diaphragm", "AODD"],
-  "Valve": ["Butterfly", "Knife Gate", "Ball", "Check"],
-  "Filter": ["Air Filter", "Oil Filter", "Fuel Filter"],
-  "Bearing": ["Pillow Block", "Spherical Roller", "Ball Bearing"],
-  "Electrical": ["Switch", "Cable", "Connector"],
-  "Consumable": ["Gloves", "PPE", "Tape", "Lubricant"],
+  "Pumps": ["Submersible", "Centrifugal", "Diaphragm", "AODD"],
+  "Motors": ["Electric Motor", "Hydraulic Motor", "Vibrator"],
+  "Gearboxes / Reducers": ["Helical", "Planetary", "Worm Gear"],
+  "Bearings": ["Pillow Block", "Spherical Roller", "Ball Bearing"],
+  "Valves": ["Butterfly", "Knife Gate", "Ball", "Check"],
+  "Instrumentation": ["Transmitter", "Gauge", "Sensor"],
+  "Electrical Components": ["Switch", "Cable", "Connector"],
+  "Conveying Components": ["Idler", "Roller", "Belt Scraper"],
+  "Wear Parts": ["Liner", "Screen Panel", "Crusher Liner"],
+  "Structural & Mechanical": ["Coupling", "Bracket", "Frame"],
+  "Hoses & Pipework": ["Ball Valve", "Coupling", "Elbow", "Tee", "Reducer", "Nipple", "Hose"],
+  "Seals & Gaskets": ["O-Ring", "Gasket", "Mechanical Seal"],
+  "Filters": ["Air Filter", "Oil Filter", "Fuel Filter"],
+  "Air & Pneumatic Components": ["Compressor", "Regulator"],
+  "Tanks & Vessels": ["Process Tank", "Heat Exchanger"],
+  "Safety Equipment": ["Safety Shower", "Fire Extinguisher"],
+  "Power Generation & Distribution": ["Generator", "Transformer"],
+  "Tools & Workshop Equipment": ["Sling", "Power Tool", "Wrench"],
+  "Fasteners": ["Bolt", "Nut", "Washer", "Screw"],
+  "Consumables": ["Gloves", "PPE", "Tape", "Lubricant"],
 };
 
 const warehouseAreas = [
@@ -83,7 +95,7 @@ export const ImportSpareDialog = ({
     for (const key of Object.keys(categories)) {
       if (normalized.toLowerCase().includes(key.toLowerCase())) return key;
     }
-    return "General";
+    return "Consumables";
   };
 
   const mapWarehouseArea = (location: string): string => {
@@ -132,7 +144,7 @@ export const ImportSpareDialog = ({
     const items: Omit<SiteSpareItem, "id">[] = jsonData.map((row: any) => {
       const qty = parseInt(getField(row, "QTY", "Qty on Hand", "Quantity", "qty") || "0") || 0;
       const condition = getField(row, "Condition", "condition");
-      const category = getField(row, "Category", "category") || "General";
+      const category = getField(row, "Category", "category") || "Consumables";
       const location = getField(row, "Location", "location");
       const binLoc = getField(row, "BIN Location", "Bin Location", "Bin");
       const sizeSpec = getField(row, "Size / Specification", "Size");

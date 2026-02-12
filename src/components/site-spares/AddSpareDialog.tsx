@@ -24,25 +24,30 @@ import { isCriticalItem, classifyCriticality, getCriticalityColor, type Critical
 import { classifyCategory, getAllCategories, type SpareCategory } from "@/utils/categoryClassification";
 import { Badge } from "@/components/ui/badge";
 
-// Categories from classification utility with subcategories
+// Approved Part Category Codes (TCMG) with subcategory hints
 const categorySubcategories: Record<string, string[]> = {
-  "Fastener": ["Bolt", "Nut", "Washer", "Screw", "Stud"],
-  "Pipe Fitting": ["Elbow", "Tee", "Nipple", "Bush", "Reducer", "Flange", "Union", "Coupling"],
-  "Hose & Tubing": ["Hydraulic Hose", "Air Hose", "Water Hose", "Nylon Tubing"],
-  "Belt & Transmission": ["Vee Belt", "Timing Belt", "Serpentine"],
-  "Bearing": ["Pillow Block", "Spherical Roller", "Ball Bearing", "Tapered Roller"],
-  "Seal": ["O-Ring", "Gasket", "Mechanical Seal", "Oil Seal"],
-  "Valve": ["Butterfly", "Knife Gate", "Ball", "Check", "Solenoid"],
-  "Pump": ["Slurry", "Submersible", "Centrifugal", "Diaphragm", "Impeller"],
-  "Motor": ["Electric Motor", "Hydraulic Motor", "Vibrator"],
-  "Gearbox": ["Helical", "Planetary", "Worm Gear"],
-  "Filter": ["Air Filter", "Oil Filter", "Fuel Filter", "Filter Press"],
-  "Conveyor": ["Idler", "Roller", "Belt Scraper", "Pulley"],
+  "Pumps": ["Slurry", "Submersible", "Centrifugal", "Diaphragm", "Impeller"],
+  "Motors": ["Electric Motor", "Hydraulic Motor", "Vibrator"],
+  "Gearboxes / Reducers": ["Helical", "Planetary", "Worm Gear"],
+  "Bearings": ["Pillow Block", "Spherical Roller", "Ball Bearing", "Tapered Roller"],
+  "Valves": ["Butterfly", "Knife Gate", "Ball", "Check", "Solenoid"],
   "Instrumentation": ["Transmitter", "Gauge", "Sensor", "Flow Meter"],
-  "Electrical": ["Switch", "Cable", "Connector", "Contactor"],
-  "Mechanical": ["Coupling", "Sprocket", "Chain", "Pulley"],
-  "Consumable": ["Gloves", "PPE", "Lubricant", "Tape"],
-  "General": [],
+  "Electrical Components": ["Switch", "Cable", "Connector", "Contactor"],
+  "Conveying Components": ["Idler", "Roller", "Belt Scraper", "Pulley"],
+  "Wear Parts": ["Liner", "Screen Panel", "Crusher Liner", "Wear Plate"],
+  "Structural & Mechanical": ["Coupling", "Sprocket", "Chain", "Bracket"],
+  "Hoses & Pipework": ["Elbow", "Tee", "Nipple", "Flange", "Hose"],
+  "Seals & Gaskets": ["O-Ring", "Gasket", "Mechanical Seal", "Oil Seal"],
+  "Filters": ["Air Filter", "Oil Filter", "Fuel Filter", "Filter Press"],
+  "Lubrication System Components": ["Lube Pump", "Oil Cooler", "Injector"],
+  "Air & Pneumatic Components": ["Air Cylinder", "Compressor", "Regulator"],
+  "Tanks & Vessels": ["Process Tank", "Sump", "Heat Exchanger"],
+  "Safety Equipment": ["Safety Shower", "Eyewash", "Fire Extinguisher"],
+  "Power Generation & Distribution": ["Generator", "Transformer", "Substation"],
+  "Tools & Workshop Equipment": ["Lifting Gear", "Sling", "Power Tool", "Wrench"],
+  "OEM Assemblies / Packages": ["Pump Skid", "Lube Skid"],
+  "Fasteners": ["Bolt", "Nut", "Washer", "Screw", "Stud"],
+  "Consumables": ["Gloves", "PPE", "Lubricant", "Tape", "Battery"],
 };
 
 const warehouseAreas = [

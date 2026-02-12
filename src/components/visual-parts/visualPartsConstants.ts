@@ -25,7 +25,7 @@ export const PART_CATEGORIES = [
   "OEM Assemblies / Packages",      // CC 20
   "Fasteners",                      // CC 21
   "Consumables",                    // CC 22
-  "Unknown / TBC",                  // CC 23
+  "Consumables",                    // CC 22
 ] as const;
 
 export const CRITICALITY_LEVELS = ["HIGH", "MEDIUM", "LOW"] as const;
