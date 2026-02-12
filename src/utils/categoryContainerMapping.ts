@@ -1,7 +1,8 @@
 /**
  * Category → Container Mapping
  *
- * Maps site_spares categories to their designated warehouse container.
+ * Maps site_spares categories (aligned with Part Numbering Standard CC codes)
+ * to their designated warehouse container.
  * This is the single source of truth for which container a category belongs to.
  *
  * Container layout:
@@ -20,41 +21,43 @@ export interface ContainerMapping {
 }
 
 /**
- * Primary mapping: category name → container.
+ * Primary mapping: category name (matching Part Numbering Standard) → container.
  * Categories not listed here default to C03 (Mechanical) as catch-all.
  */
 const CATEGORY_TO_CONTAINER: Record<string, ContainerMapping> = {
   // C01 – Electrical
-  "Electrical":          { containerId: "C01", zoneCode: "EL", containerLabel: "Electrical" },
+  "Electrical Components":             { containerId: "C01", zoneCode: "EL", containerLabel: "Electrical" },
+  "Power Generation & Distribution":   { containerId: "C01", zoneCode: "EL", containerLabel: "Electrical" },
 
   // C02 – Instrumentation
-  "Instrumentation":     { containerId: "C02", zoneCode: "IN", containerLabel: "Instrumentation & Control" },
+  "Instrumentation":                   { containerId: "C02", zoneCode: "IN", containerLabel: "Instrumentation & Control" },
 
   // C03 – Mechanical (explicit entries)
-  "Bearing":             { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Seal":                { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Pump Component":      { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Valve":               { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Motor Component":     { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Conveyor Component":  { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Mechanical":          { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Gearbox":             { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Hydraulic":           { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Pneumatic":           { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Wear Part":           { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Hose & Tubing":       { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Bearings":                          { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Seals & Gaskets":                   { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Pumps":                             { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Valves":                            { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Motors":                            { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Conveying Components":              { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Structural & Mechanical":           { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Gearboxes / Reducers":              { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Air & Pneumatic Components":        { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Wear Parts":                        { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "OEM Assemblies / Packages":         { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Tanks & Vessels":                   { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
 
   // C04 – Lubrication
-  "Filter":              { containerId: "C04", zoneCode: "LU", containerLabel: "Lubrication & Oils" },
+  "Filters":                           { containerId: "C04", zoneCode: "LU", containerLabel: "Lubrication & Oils" },
+  "Lubrication System Components":     { containerId: "C04", zoneCode: "LU", containerLabel: "Lubrication & Oils" },
 
   // C05 – Fasteners & Consumables
-  "Fastener":            { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
-  "Consumable":          { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
-  "Liner":               { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
-  "Safety Equipment":    { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
+  "Fasteners":                         { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
+  "Consumables":                       { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
+  "Safety Equipment":                  { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
+  "Tools & Workshop Equipment":        { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
 
   // C06 – Pipe Fittings
-  "Pipe Fitting":        { containerId: "C06", zoneCode: "FT", containerLabel: "Pipe Fittings & Plumbing" },
+  "Hoses & Pipework":                  { containerId: "C06", zoneCode: "FT", containerLabel: "Pipe Fittings & Plumbing" },
 };
 
 /** Default container for unmapped categories */
@@ -66,7 +69,6 @@ const DEFAULT_CONTAINER: ContainerMapping = {
 
 /**
  * Get the designated container for a given category.
- * Unmapped or "General" categories default to C03 (Mechanical).
  */
 export function getContainerForCategory(category: string | null | undefined): ContainerMapping {
   if (!category) return DEFAULT_CONTAINER;
@@ -84,8 +86,6 @@ export function getCategoriesForContainer(containerId: string): string[] {
 
 /**
  * Suggest a bin_location prefix for a given category.
- * Returns the container ID (e.g. "C01") which forms the first segment of
- * the Container-Zone-Position code.
  */
 export function suggestBinPrefix(category: string | null | undefined): string {
   const mapping = getContainerForCategory(category);

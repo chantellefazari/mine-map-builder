@@ -139,7 +139,7 @@ export const SiteSparesCatalogue = () => {
     const sparesToUse = freshSpares || legacy.spares;
     const itemsToUpdate = sparesToUse.filter((spare) => {
       const correctCategory = classifyCategory(spare.description);
-      return spare.category !== correctCategory && correctCategory !== "General";
+      return spare.category !== correctCategory && correctCategory !== "Unknown / TBC";
     });
 
     if (itemsToUpdate.length === 0) {

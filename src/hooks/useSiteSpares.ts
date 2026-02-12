@@ -3,19 +3,45 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 // Map legacy/variant category names to standard categories
+// Map legacy/variant category names to the approved 23 Part Category Codes (TCMG)
 const LEGACY_CATEGORY_MAP: Record<string, string> = {
-  "Safety Equipment": "Consumable",
-  "Structural": "Mechanical",
-  "Gearbox Component": "Gearbox",
-  "Belt & Transmission": "Conveyor Component",
-  "Belt / Chain": "Conveyor Component",
-  "Belt and Chain": "Conveyor Component",
-  "Belt & Chain": "Conveyor Component",
-  "Conveyor": "Conveyor Component",
+  // Old names → Approved numbering standard names
+  "Pump Component": "Pumps",
+  "Pump": "Pumps",
+  "Motor Component": "Motors",
+  "Motor": "Motors",
+  "Gearbox": "Gearboxes / Reducers",
+  "Gearbox Component": "Gearboxes / Reducers",
+  "Bearing": "Bearings",
+  "Valve": "Valves",
+  "Electrical": "Electrical Components",
+  "Conveyor Component": "Conveying Components",
+  "Conveyor": "Conveying Components",
+  "Belt & Transmission": "Conveying Components",
+  "Belt / Chain": "Conveying Components",
+  "Belt and Chain": "Conveying Components",
+  "Belt & Chain": "Conveying Components",
+  "Wear Part": "Wear Parts",
+  "Liner": "Wear Parts",
+  "Structural": "Structural & Mechanical",
+  "Mechanical": "Structural & Mechanical",
+  "Hose & Tubing": "Hoses & Pipework",
+  "Pipe Fitting": "Hoses & Pipework",
+  "Seal": "Seals & Gaskets",
+  "Seal / Gasket": "Seals & Gaskets",
+  "Filter": "Filters",
+  "Pneumatic": "Air & Pneumatic Components",
+  "Hydraulic": "Air & Pneumatic Components",
+  "Fastener": "Fasteners",
+  "Consumable": "Consumables",
+  "Safety Equipment": "Safety Equipment",
+  "Tooling": "Tools & Workshop Equipment",
+  "Rigging": "Tools & Workshop Equipment",
+  "General": "Unknown / TBC",
 };
 
 const normalizeCategory = (category: string | null): string => {
-  if (!category) return "General";
+  if (!category) return "Unknown / TBC";
   return LEGACY_CATEGORY_MAP[category] || category;
 };
 
