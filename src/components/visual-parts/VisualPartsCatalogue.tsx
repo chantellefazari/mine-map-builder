@@ -123,14 +123,10 @@ export const VisualPartsCatalogue = () => {
     setDetailDialogOpen(true);
   };
 
-  // Batch re-number parts with TMP- or missing part numbers
+  // Batch re-number ALL parts with the 7-digit SSCCNNN standard
   const handleBatchReNumber = async () => {
-    const unnumbered = parts.filter(
-      (p) => !p.site_part_number || p.site_part_number.startsWith("TMP-") || p.site_part_number === "000000" || p.site_part_number === "0000000"
-    );
-
-    if (unnumbered.length === 0) {
-      toast({ title: "No items to re-number", description: "All parts already have valid SSCCNNN numbers" });
+    if (parts.length === 0) {
+      toast({ title: "No items to re-number", description: "Catalogue is empty" });
       return;
     }
 
@@ -139,7 +135,7 @@ export const VisualPartsCatalogue = () => {
     let failed = 0;
 
     try {
-      for (const part of unnumbered) {
+      for (const part of parts) {
         const category = part.category || "Consumables";
         const newNumber = await generateNextPartNumber(category);
         if (!newNumber) { failed++; continue; }
@@ -155,7 +151,7 @@ export const VisualPartsCatalogue = () => {
 
       toast({
         title: `Re-numbered ${updated} parts`,
-        description: failed > 0 ? `${failed} items could not be numbered` : "All parts now have valid SSCCNNN numbers",
+        description: failed > 0 ? `${failed} items could not be numbered` : "All parts now have 7-digit SSCCNNN numbers",
       });
       refetch();
     } catch (error) {

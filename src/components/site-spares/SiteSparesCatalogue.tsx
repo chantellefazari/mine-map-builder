@@ -246,26 +246,22 @@ export const SiteSparesCatalogue = () => {
     setIsReNumbering(true);
     // Use returned data directly to avoid stale React state
     const freshSpares = await legacy.refetch();
+    const allSpares = freshSpares || legacy.spares;
 
-    // Find parts with empty or invalid part numbers
-    const unnumbered = (freshSpares || legacy.spares).filter(
-      (s) => !s.part_number || s.part_number.startsWith("TMP-") || s.part_number === "000000" || s.part_number === "0000000"
-    );
-
-    if (unnumbered.length === 0) {
-      toast.info("All items already have valid part numbers");
+    if (allSpares.length === 0) {
+      toast.info("No items found to re-number");
       setIsReNumbering(false);
       return;
     }
 
-    toast.loading(`Assigning part numbers to ${unnumbered.length} items...`, { id: "renumber" });
+    toast.loading(`Assigning 7-digit SSCCNNN part numbers to ${allSpares.length} items...`, { id: "renumber" });
 
     let updated = 0;
     let failed = 0;
 
     try {
-      for (const spare of unnumbered) {
-        const category = spare.category || "General";
+      for (const spare of allSpares) {
+        const category = spare.category || "Consumables";
         const newNumber = await generateNextSparePartNumber(category);
         if (!newNumber) {
           failed++;
@@ -282,7 +278,7 @@ export const SiteSparesCatalogue = () => {
       }
 
       toast.dismiss("renumber");
-      toast.success(`Assigned ${updated} part numbers${failed > 0 ? ` (${failed} failed)` : ""}`);
+      toast.success(`Assigned ${updated} SSCCNNN part numbers${failed > 0 ? ` (${failed} failed)` : ""}`);
       refreshAll();
     } catch (error) {
       toast.dismiss("renumber");
