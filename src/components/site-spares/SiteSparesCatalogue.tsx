@@ -249,7 +249,7 @@ export const SiteSparesCatalogue = () => {
 
     // Find parts with empty or invalid part numbers
     const unnumbered = (freshSpares || legacy.spares).filter(
-      (s) => !s.part_number || s.part_number.startsWith("TMP-") || s.part_number === "000000"
+      (s) => !s.part_number || s.part_number.startsWith("TMP-") || s.part_number === "000000" || s.part_number === "0000000"
     );
 
     if (unnumbered.length === 0) {

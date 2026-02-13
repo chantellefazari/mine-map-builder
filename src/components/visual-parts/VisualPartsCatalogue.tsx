@@ -126,11 +126,11 @@ export const VisualPartsCatalogue = () => {
   // Batch re-number parts with TMP- or missing part numbers
   const handleBatchReNumber = async () => {
     const unnumbered = parts.filter(
-      (p) => !p.site_part_number || p.site_part_number.startsWith("TMP-") || p.site_part_number === "000000"
+      (p) => !p.site_part_number || p.site_part_number.startsWith("TMP-") || p.site_part_number === "000000" || p.site_part_number === "0000000"
     );
 
     if (unnumbered.length === 0) {
-      toast({ title: "No items to re-number", description: "All parts already have valid SSCCXX numbers" });
+      toast({ title: "No items to re-number", description: "All parts already have valid SSCCNNN numbers" });
       return;
     }
 
@@ -155,7 +155,7 @@ export const VisualPartsCatalogue = () => {
 
       toast({
         title: `Re-numbered ${updated} parts`,
-        description: failed > 0 ? `${failed} items could not be numbered` : "All parts now have valid SSCCXX numbers",
+        description: failed > 0 ? `${failed} items could not be numbered` : "All parts now have valid SSCCNNN numbers",
       });
       refetch();
     } catch (error) {

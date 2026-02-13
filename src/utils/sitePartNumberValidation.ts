@@ -1,15 +1,12 @@
 /**
  * Site Part Number Validation & Utilities
  *
- * Format: SSCCXX
- *   SS = Site code (currently "10" for Tennant Creek)
- *   CC = Category code (01–23)
- *   XX = Sequential identifier:
- *        - Numeric: 01–99
- *        - Alpha-numeric: A0–Z9 (letters I, O, Q excluded)
+ * Format: SSCCNNN (7 digits, numeric only)
+ *   SS  = Site code (currently "10" for Tennant Creek)
+ *   CC  = Category code (01–23)
+ *   NNN = Sequential identifier (001–999)
  *
- * Total capacity: 329 slots/category (conservative, excluding I/O/Q)
- *                 359 slots/category (if all 26 letters used)
+ * Total capacity: 999 slots per category
  */
 
 /** Valid site codes */
@@ -20,11 +17,8 @@ const VALID_CATEGORY_CODES = Array.from({ length: 23 }, (_, i) =>
   String(i + 1).padStart(2, "0")
 );
 
-/** Letters excluded from alpha-numeric range to avoid misreads */
-const EXCLUDED_LETTERS = new Set(["I", "O", "Q"]);
-
-/** Full regex: 2-digit site + 2-digit category + (2-digit numeric OR uppercase-letter + digit) */
-const SSCCXX_REGEX = /^(\d{2})(\d{2})([0-9]{2}|[A-Z][0-9])$/;
+/** Full regex: 2-digit site + 2-digit category + 3-digit sequential */
+const SSCCNNN_REGEX = /^(\d{2})(\d{2})(\d{3})$/;
 
 export interface PartNumberValidation {
   valid: boolean;
@@ -36,15 +30,13 @@ export interface PartNumberValidation {
 }
 
 /**
- * Validate a site part number against the SSCCXX standard.
+ * Validate a site part number against the SSCCNNN standard.
  *
  * @param partNumber - The part number string to validate
- * @param strict - If true, rejects excluded letters (I, O, Q). Default: true
  * @returns Detailed validation result
  */
 export function validateSitePartNumber(
-  partNumber: string,
-  strict = true
+  partNumber: string
 ): PartNumberValidation {
   const result: PartNumberValidation = {
     valid: false,
@@ -60,72 +52,68 @@ export function validateSitePartNumber(
     return result;
   }
 
-  const trimmed = partNumber.trim().toUpperCase();
+  const trimmed = partNumber.trim();
 
-  if (trimmed.length !== 6) {
+  // Accept both legacy 6-char and new 7-digit formats for backwards compatibility
+  if (trimmed.length !== 7 && trimmed.length !== 6) {
     result.errors.push(
-      `Part number must be exactly 6 characters (got ${trimmed.length})`
+      `Part number must be 7 digits (got ${trimmed.length})`
     );
     return result;
   }
 
-  const match = trimmed.match(SSCCXX_REGEX);
-  if (!match) {
-    result.errors.push(
-      "Part number does not match SSCCXX format (e.g. 100301 or 1001A3)"
-    );
-    return result;
-  }
+  // Try 7-digit format first
+  const match7 = trimmed.match(SSCCNNN_REGEX);
+  if (match7) {
+    const [, site, category, sequence] = match7;
+    result.siteCode = site;
+    result.categoryCode = category;
+    result.sequenceId = sequence;
 
-  const [, site, category, sequence] = match;
-  result.siteCode = site;
-  result.categoryCode = category;
-  result.sequenceId = sequence;
-
-  // Validate site code
-  if (!(VALID_SITE_CODES as readonly string[]).includes(site)) {
-    result.errors.push(
-      `Invalid site code "${site}". Valid codes: ${VALID_SITE_CODES.join(", ")}`
-    );
-  }
-
-  // Validate category code
-  if (!VALID_CATEGORY_CODES.includes(category)) {
-    result.errors.push(
-      `Invalid category code "${category}". Valid range: 01–${VALID_CATEGORY_CODES[VALID_CATEGORY_CODES.length - 1]}`
-    );
-  }
-
-  // Validate sequence — numeric 00 is not valid
-  if (/^\d{2}$/.test(sequence) && sequence === "00") {
-    result.errors.push('Sequential number "00" is not valid. Range starts at 01');
-  }
-
-  // Check excluded letters (strict mode)
-  if (/^[A-Z]/.test(sequence)) {
-    const letter = sequence[0];
-    if (EXCLUDED_LETTERS.has(letter)) {
-      const msg = `Letter "${letter}" is excluded to avoid misreads`;
-      if (strict) {
-        result.errors.push(msg);
-      } else {
-        result.warnings.push(msg);
-      }
+    if (!(VALID_SITE_CODES as readonly string[]).includes(site)) {
+      result.errors.push(
+        `Invalid site code "${site}". Valid codes: ${VALID_SITE_CODES.join(", ")}`
+      );
     }
+
+    if (!VALID_CATEGORY_CODES.includes(category)) {
+      result.errors.push(
+        `Invalid category code "${category}". Valid range: 01–${VALID_CATEGORY_CODES[VALID_CATEGORY_CODES.length - 1]}`
+      );
+    }
+
+    if (sequence === "000") {
+      result.errors.push('Sequential number "000" is not valid. Range starts at 001');
+    }
+
+    result.valid = result.errors.length === 0;
+    return result;
   }
 
-  result.valid = result.errors.length === 0;
+  // Fallback: legacy 6-char format (SSCCXX)
+  const LEGACY_REGEX = /^(\d{2})(\d{2})([0-9]{2}|[A-Z][0-9])$/;
+  const match6 = trimmed.toUpperCase().match(LEGACY_REGEX);
+  if (match6) {
+    const [, site, category, sequence] = match6;
+    result.siteCode = site;
+    result.categoryCode = category;
+    result.sequenceId = sequence;
+    result.warnings.push("Legacy 6-character format detected. New parts should use 7-digit SSCCNNN format.");
+    result.valid = true;
+    return result;
+  }
+
+  result.errors.push(
+    "Part number does not match SSCCNNN format (e.g. 1003001)"
+  );
   return result;
 }
 
 /**
- * Quick boolean check — does this string look like a valid SSCCXX part number?
+ * Quick boolean check — does this string look like a valid part number?
  */
-export function isValidSitePartNumber(
-  partNumber: string,
-  strict = true
-): boolean {
-  return validateSitePartNumber(partNumber, strict).valid;
+export function isValidSitePartNumber(partNumber: string): boolean {
+  return validateSitePartNumber(partNumber).valid;
 }
 
 /**
@@ -167,7 +155,7 @@ export function getCategoryName(code: string): string | null {
  * @returns null if the part number is invalid
  */
 export function parseSitePartNumber(partNumber: string) {
-  const v = validateSitePartNumber(partNumber, false);
+  const v = validateSitePartNumber(partNumber);
   if (!v.siteCode || !v.categoryCode || !v.sequenceId) return null;
 
   return {
@@ -176,7 +164,6 @@ export function parseSitePartNumber(partNumber: string) {
     categoryCode: v.categoryCode,
     categoryName: getCategoryName(v.categoryCode) ?? "Unknown",
     sequenceId: v.sequenceId,
-    isAlphaNumeric: /^[A-Z]/.test(v.sequenceId),
     formatted: `${v.siteCode}${v.categoryCode}${v.sequenceId}`,
   };
 }
