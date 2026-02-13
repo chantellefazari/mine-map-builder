@@ -23,7 +23,7 @@ export interface SpareItem {
   assetManufacturer: string;
   assetModel: string;
   // Criticality
-  spareCriticality: "High" | "Medium" | "Low" | "";
+  spareCriticality: "High" | "Medium" | "";
   criticalitySource: "Confirmed" | "Assumed" | "";
   reasonCritical: string;
   // Quantities & Procurement

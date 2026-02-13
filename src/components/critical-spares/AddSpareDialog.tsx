@@ -43,7 +43,7 @@ export const AddSpareDialog = ({ onAddSpare, existingCount }: AddSpareDialogProp
     vendor: "",
     assetManufacturer: "",
     assetModel: "",
-    spareCriticality: "High" as "High" | "Medium" | "Low" | "",
+    spareCriticality: "High" as "High" | "Medium" | "",
     criticalitySource: "Assumed" as "Confirmed" | "Assumed" | "",
     reasonCritical: "",
     minQty: "TBC",
