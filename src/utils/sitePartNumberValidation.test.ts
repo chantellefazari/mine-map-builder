@@ -7,17 +7,16 @@ import {
 } from "@/utils/sitePartNumberValidation";
 
 describe("validateSitePartNumber", () => {
-  it("accepts valid numeric part numbers", () => {
-    expect(validateSitePartNumber("100301").valid).toBe(true);
-    expect(validateSitePartNumber("100199").valid).toBe(true);
-    expect(validateSitePartNumber("102301").valid).toBe(true);
+  it("accepts valid 7-digit part numbers", () => {
+    expect(validateSitePartNumber("1003001").valid).toBe(true);
+    expect(validateSitePartNumber("1001999").valid).toBe(true);
+    expect(validateSitePartNumber("1023001").valid).toBe(true);
   });
 
-  it("accepts valid alpha-numeric part numbers", () => {
-    expect(validateSitePartNumber("1001A0").valid).toBe(true);
-    expect(validateSitePartNumber("1001A9").valid).toBe(true);
-    expect(validateSitePartNumber("1005Z9").valid).toBe(true);
-    expect(validateSitePartNumber("1004B3").valid).toBe(true);
+  it("accepts legacy 6-digit part numbers with warning", () => {
+    const r = validateSitePartNumber("100301");
+    expect(r.valid).toBe(true);
+    expect(r.warnings.length).toBeGreaterThan(0);
   });
 
   it("rejects empty or non-string input", () => {
@@ -28,73 +27,51 @@ describe("validateSitePartNumber", () => {
 
   it("rejects wrong length", () => {
     expect(validateSitePartNumber("10031").valid).toBe(false);
-    expect(validateSitePartNumber("1003011").valid).toBe(false);
+    expect(validateSitePartNumber("10030111").valid).toBe(false);
   });
 
   it("rejects invalid site code", () => {
-    const r = validateSitePartNumber("200301");
+    const r = validateSitePartNumber("2003001");
     expect(r.valid).toBe(false);
     expect(r.errors[0]).toContain("site code");
   });
 
   it("rejects invalid category code", () => {
-    expect(validateSitePartNumber("109901").valid).toBe(false);
-    expect(validateSitePartNumber("100001").valid).toBe(false);
+    expect(validateSitePartNumber("1099001").valid).toBe(false);
+    expect(validateSitePartNumber("1000001").valid).toBe(false);
   });
 
-  it("rejects sequence 00", () => {
-    const r = validateSitePartNumber("100300");
+  it("rejects sequence 000", () => {
+    const r = validateSitePartNumber("1003000");
     expect(r.valid).toBe(false);
-    expect(r.errors[0]).toContain("00");
-  });
-
-  it("rejects excluded letters I, O, Q in strict mode", () => {
-    expect(validateSitePartNumber("1001I3", true).valid).toBe(false);
-    expect(validateSitePartNumber("1001O5", true).valid).toBe(false);
-    expect(validateSitePartNumber("1001Q0", true).valid).toBe(false);
-  });
-
-  it("warns but accepts excluded letters in non-strict mode", () => {
-    const r = validateSitePartNumber("1001I3", false);
-    expect(r.valid).toBe(true);
-    expect(r.warnings.length).toBe(1);
-  });
-
-  it("is case-insensitive (normalizes to uppercase)", () => {
-    expect(validateSitePartNumber("1001a3").valid).toBe(true);
-  });
-
-  it("rejects lowercase-only sequences that aren't alpha", () => {
-    expect(validateSitePartNumber("1001ab").valid).toBe(false);
+    expect(r.errors[0]).toContain("000");
   });
 });
 
 describe("isValidSitePartNumber", () => {
   it("returns boolean", () => {
-    expect(isValidSitePartNumber("100301")).toBe(true);
-    expect(isValidSitePartNumber("XXXXXX")).toBe(false);
+    expect(isValidSitePartNumber("1003001")).toBe(true);
+    expect(isValidSitePartNumber("XXXXXXX")).toBe(false);
   });
 });
 
 describe("parseSitePartNumber", () => {
-  it("parses a numeric part number", () => {
-    const p = parseSitePartNumber("100301");
+  it("parses a 7-digit part number", () => {
+    const p = parseSitePartNumber("1003001");
     expect(p).not.toBeNull();
     expect(p!.siteName).toBe("Tennant Creek");
     expect(p!.categoryName).toBe("Gearboxes / Reducers");
-    expect(p!.sequenceId).toBe("01");
-    expect(p!.isAlphaNumeric).toBe(false);
+    expect(p!.sequenceId).toBe("001");
   });
 
-  it("parses an alpha-numeric part number", () => {
-    const p = parseSitePartNumber("1001A3");
+  it("parses a legacy 6-digit part number", () => {
+    const p = parseSitePartNumber("100301");
     expect(p).not.toBeNull();
-    expect(p!.categoryName).toBe("Pumps");
-    expect(p!.isAlphaNumeric).toBe(true);
+    expect(p!.categoryName).toBe("Gearboxes / Reducers");
   });
 
   it("returns null for invalid input", () => {
-    expect(parseSitePartNumber("XXXXXX")).toBeNull();
+    expect(parseSitePartNumber("XXXXXXX")).toBeNull();
   });
 });
 

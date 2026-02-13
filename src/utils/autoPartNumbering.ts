@@ -1,43 +1,18 @@
 /**
- * Auto-numbering utility for SSCCXX site part numbers.
+ * Auto-numbering utility for SSCCNNN site part numbers (7-digit, numeric only).
  *
  * Queries the database for existing part numbers in a given category
  * and returns the next available sequential identifier.
  *
- * Sequence order: 01–99, then A0–A9, B0–B9, … Z0–Z9
- * (letters I, O, Q are skipped to avoid misreads)
+ * Format: SSCCNNN
+ *   SS  = Site code (2 digits, currently "10")
+ *   CC  = Category code (2 digits, 01–23)
+ *   NNN = Sequential identifier (3 digits, 001–999)
  */
 
 import { supabase } from "@/integrations/supabase/client";
 
 const SITE_CODE = "10";
-
-/** Letters allowed in the alpha-numeric range (I, O, Q excluded) */
-const ALLOWED_LETTERS = "ABCDEFGHJKLMNPRSTUVWXYZ".split("");
-
-/**
- * Build the full ordered sequence of identifiers for a category slot:
- *   "01", "02", … "99", "A0", "A1", … "A9", "B0", … "Z9"
- */
-function buildSequenceList(): string[] {
-  const seq: string[] = [];
-
-  // Numeric: 01–99
-  for (let i = 1; i <= 99; i++) {
-    seq.push(String(i).padStart(2, "0"));
-  }
-
-  // Alpha-numeric: [A-Z (excl I,O,Q)][0-9]
-  for (const letter of ALLOWED_LETTERS) {
-    for (let digit = 0; digit <= 9; digit++) {
-      seq.push(`${letter}${digit}`);
-    }
-  }
-
-  return seq;
-}
-
-const FULL_SEQUENCE = buildSequenceList();
 
 /**
  * Category code mapping — mirrors the CATEGORY_NAMES in sitePartNumberValidation.ts
@@ -83,14 +58,14 @@ export function resolveCategoryCode(categoryNameOrCode: string): string {
     const num = parseInt(categoryNameOrCode, 10);
     if (num >= 1 && num <= 23) return categoryNameOrCode;
   }
-  return CATEGORY_CODE_MAP[categoryNameOrCode] || "23"; // default to "Unknown"
+  return CATEGORY_CODE_MAP[categoryNameOrCode] || "22"; // default to Consumables
 }
 
 /**
- * Generate the next available SSCCXX part number for a given category.
+ * Generate the next available SSCCNNN part number for a given category.
  *
- * @param category - Category name (e.g. "Pump Component") or code (e.g. "01")
- * @returns The next available part number string, or null if the category is full
+ * @param category - Category name (e.g. "Pumps") or code (e.g. "01")
+ * @returns The next available 7-digit part number string, or null if category is full (999 slots)
  */
 export async function generateNextPartNumber(
   category: string
@@ -98,58 +73,63 @@ export async function generateNextPartNumber(
   const cc = resolveCategoryCode(category);
   const prefix = `${SITE_CODE}${cc}`;
 
-  // Fetch all existing part numbers with this prefix
-  const { data, error } = await supabase
-    .from("visual_parts_catalogue")
-    .select("site_part_number")
-    .like("site_part_number", `${prefix}%`);
+  // Fetch all existing part numbers with this prefix from both tables
+  const [visualResult, sparesResult] = await Promise.all([
+    supabase
+      .from("visual_parts_catalogue")
+      .select("site_part_number")
+      .like("site_part_number", `${prefix}%`),
+    supabase
+      .from("site_spares")
+      .select("part_number")
+      .like("part_number", `${prefix}%`),
+  ]);
 
-  // Also check site_spares table
-  const { data: sparesData } = await supabase
-    .from("site_spares")
-    .select("part_number")
-    .like("part_number", `${prefix}%`);
-
-  if (error) {
-    console.error("Error fetching existing part numbers:", error);
+  if (visualResult.error) {
+    console.error("Error fetching existing part numbers:", visualResult.error);
     return null;
   }
 
-  // Collect all used sequence identifiers
-  const usedSequences = new Set<string>();
+  // Collect all used NNN identifiers
+  const usedNumbers = new Set<number>();
 
-  for (const row of data ?? []) {
+  for (const row of visualResult.data ?? []) {
     const pn = row.site_part_number;
-    if (pn && pn.length === 6 && pn.startsWith(prefix)) {
-      usedSequences.add(pn.slice(4).toUpperCase());
+    if (pn && pn.startsWith(prefix)) {
+      const nnn = parseInt(pn.slice(4), 10);
+      if (!isNaN(nnn) && nnn >= 1 && nnn <= 999) {
+        usedNumbers.add(nnn);
+      }
     }
   }
 
-  for (const row of sparesData ?? []) {
+  for (const row of sparesResult.data ?? []) {
     const pn = row.part_number;
-    if (pn && pn.length === 6 && pn.startsWith(prefix)) {
-      usedSequences.add(pn.slice(4).toUpperCase());
+    if (pn && pn.startsWith(prefix)) {
+      const nnn = parseInt(pn.slice(4), 10);
+      if (!isNaN(nnn) && nnn >= 1 && nnn <= 999) {
+        usedNumbers.add(nnn);
+      }
     }
   }
 
-  // Find the first unused identifier
-  for (const seq of FULL_SEQUENCE) {
-    if (!usedSequences.has(seq)) {
-      return `${prefix}${seq}`;
+  // Find the first unused NNN (001–999)
+  for (let i = 1; i <= 999; i++) {
+    if (!usedNumbers.has(i)) {
+      return `${prefix}${String(i).padStart(3, "0")}`;
     }
   }
 
-  // Category is full (329 slots exhausted — extremely unlikely)
+  // Category is full (999 slots exhausted)
   return null;
 }
 
 /**
  * Generate the next available part number for a site_spares entry.
- * Same logic, just queries both tables for collision avoidance.
+ * Same logic — checks both tables for collision avoidance.
  */
 export async function generateNextSparePartNumber(
   category: string
 ): Promise<string | null> {
-  // Reuse the same function — it already checks both tables
   return generateNextPartNumber(category);
 }
