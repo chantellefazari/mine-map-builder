@@ -168,30 +168,46 @@ export const SiteSparesCatalogue = () => {
 
   const handleReclassifyCriticality = async () => {
     setIsReclassifyingCriticality(true);
-    const freshSpares = await legacy.refetch();
-    const sparesToUse = freshSpares || legacy.spares;
-    toast.loading(`Reclassifying criticality for ${sparesToUse.length} items...`, { id: "reclassify-crit" });
+    toast.loading("Fetching all items for reclassification...", { id: "reclassify-crit" });
 
     let updated = 0;
     let highCount = 0;
     let mediumCount = 0;
     let lowCount = 0;
+    let offset = 0;
+    const batchSize = 500;
 
     try {
-      for (const spare of sparesToUse) {
-        const criticality = classifyCriticality(spare.description);
-        const shouldBeCritical = criticality === "HIGH";
-        if (criticality === "HIGH") highCount++;
-        else if (criticality === "MEDIUM") mediumCount++;
-        else lowCount++;
+      // Paginate through ALL items to avoid 1000-row limit
+      while (true) {
+        const { data, error } = await supabase
+          .from("site_spares")
+          .select("id, description, is_critical")
+          .range(offset, offset + batchSize - 1);
 
-        if (spare.is_critical !== shouldBeCritical) {
-          const { error } = await supabase
-            .from("site_spares")
-            .update({ is_critical: shouldBeCritical })
-            .eq("id", spare.id);
-          if (!error) updated++;
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+
+        toast.loading(`Reclassifying criticality... (${offset + data.length} items processed)`, { id: "reclassify-crit" });
+
+        for (const spare of data) {
+          const criticality = classifyCriticality(spare.description);
+          const shouldBeCritical = criticality === "HIGH";
+          if (criticality === "HIGH") highCount++;
+          else if (criticality === "MEDIUM") mediumCount++;
+          else lowCount++;
+
+          if (spare.is_critical !== shouldBeCritical) {
+            const { error: updateError } = await supabase
+              .from("site_spares")
+              .update({ is_critical: shouldBeCritical })
+              .eq("id", spare.id);
+            if (!updateError) updated++;
+          }
         }
+
+        if (data.length < batchSize) break;
+        offset += batchSize;
       }
 
       toast.dismiss("reclassify-crit");

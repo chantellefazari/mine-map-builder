@@ -50,6 +50,10 @@ const LOW_KEYWORDS = [
   // ---- Grease fittings / Lubrication consumables ----
   "grease nipple", "zerk", "lubrication fitting", "grease fitting",
   "grease cartridge", "oil bottle", "lubricant",
+
+  // ---- Non-critical pumps (hand/manual/transfer — not production) ----
+  "hand pump", "hand operated pump", "oil transfer pump", "drum pump",
+  "grease gun", "manual pump",
   
   // ---- Electrical Consumables ----
   "electrical tape", "insulation tape", "insulating tape", "pvc tape",
@@ -92,6 +96,15 @@ const LOW_KEYWORDS = [
   
   // ---- Non-critical Sensors ----
   "proximity switch", "limit switch", "micro switch", "reed switch",
+
+  // ---- Coupling parts (not drive couplings — just adaptor/fitting) ----
+  "motor coupling", "coupling insert", "coupling element",
+
+  // ---- Liner singles (wear consumables, not crusher assemblies) ----
+  "crusher liner", "crusher wear",
+
+  // ---- Circuit breaker accessories (not main switchgear) ----
+  "motor circuit breaker", "motor protection", "motor protector",
 ];
 
 // ============================================================================
@@ -180,11 +193,12 @@ const MEDIUM_KEYWORDS = [
   
   // ---- Valves (process, slurry, water) ----
   "knife gate", "knife gate valve", "pinch valve", "slurry valve", 
-  "butterfly valve", "ball valve assembly", "gate valve", "globe valve",
+  "butterfly valve", "ball valve", "ball valve assembly", "gate valve", "globe valve",
   "check valve", "non-return valve", "pressure relief valve", "prv",
   "control valve", "modulating valve", "solenoid valve", "pneumatic valve",
   "safety valve", "pressure safety", "actuated valve",
   "diaphragm valve", "plug valve", "needle valve",
+  "poly ball valve", "hansen",
   "clarkson", "isogate", "orbinox", // Major valve brands
   
   // ---- Instrumentation (pressure, flow, level) ----
