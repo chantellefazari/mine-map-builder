@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, AlertTriangle } from "lucide-react";
+import { Search, AlertTriangle, ShieldCheck, TriangleAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   sparesData,
@@ -26,6 +26,7 @@ import {
   type SpareItem,
 } from "./sparesData";
 import { AddSpareDialog } from "./AddSpareDialog";
+import { classifyCriticality } from "@/utils/criticalityClassification";
 
 export const SparesTable = () => {
   const [spares, setSpares] = useState<SpareItem[]>(sparesData);
@@ -44,21 +45,63 @@ export const SparesTable = () => {
       .map((s) => s.subArea)
   )].sort();
 
-  const filteredSpares = spares.filter((spare) => {
-    const matchesSearch =
-      spare.componentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.parentAsset.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.oemPartNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.sparePartDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spare.system.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCriticality =
-      filterCriticality === "all" || spare.spareCriticality === filterCriticality;
-    const matchesStatus =
-      filterStatus === "all" || spare.status === filterStatus;
-    const matchesArea = filterArea === "all" || spare.area === filterArea;
-    const matchesSubArea = filterSubArea === "all" || spare.subArea === filterSubArea;
-    return matchesSearch && matchesCriticality && matchesStatus && matchesArea && matchesSubArea;
-  });
+  const [showValidation, setShowValidation] = useState(false);
+
+  const filteredSpares = useMemo(() => {
+    const filtered = spares.filter((spare) => {
+      const matchesSearch =
+        spare.componentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        spare.parentAsset.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        spare.oemPartNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        spare.sparePartDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        spare.system.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCriticality =
+        filterCriticality === "all" || spare.spareCriticality === filterCriticality;
+      const matchesStatus =
+        filterStatus === "all" || spare.status === filterStatus;
+      const matchesArea = filterArea === "all" || spare.area === filterArea;
+      const matchesSubArea = filterSubArea === "all" || spare.subArea === filterSubArea;
+      return matchesSearch && matchesCriticality && matchesStatus && matchesArea && matchesSubArea;
+    });
+    // Sort: HIGH first, then MEDIUM (per hierarchy document)
+    return filtered.sort((a, b) => {
+      const order = { High: 0, Medium: 1, "": 2 };
+      return (order[a.spareCriticality] ?? 2) - (order[b.spareCriticality] ?? 2);
+    });
+  }, [spares, searchQuery, filterCriticality, filterStatus, filterArea, filterSubArea]);
+
+  // Validation: cross-check manual criticality against algorithm
+  const validationResults = useMemo(() => {
+    if (!showValidation) return null;
+    const overEscalated: (SpareItem & { suggested: string })[] = [];
+    const underEscalated: (SpareItem & { suggested: string })[] = [];
+    const confirmed: SpareItem[] = [];
+    const minMaxWarnings: SpareItem[] = [];
+
+    spares.forEach((spare) => {
+      const algorithmResult = classifyCriticality(spare.sparePartDescription || spare.componentName);
+      const current = spare.spareCriticality?.toUpperCase() || "LOW";
+      
+      if (current === algorithmResult) {
+        confirmed.push(spare);
+      } else if (current === "HIGH" && algorithmResult !== "HIGH") {
+        overEscalated.push({ ...spare, suggested: algorithmResult });
+      } else if (current !== "HIGH" && algorithmResult === "HIGH") {
+        underEscalated.push({ ...spare, suggested: algorithmResult });
+      } else {
+        confirmed.push(spare); // Minor differences within MEDIUM/HIGH acceptable
+      }
+
+      // Min/Max warning: HIGH and MEDIUM items should have Min/Max set
+      if ((spare.spareCriticality === "High" || spare.spareCriticality === "Medium") &&
+          (spare.minQty === "TBC" || spare.minQty === "0") &&
+          (spare.maxQty === "TBC" || spare.maxQty === "0")) {
+        minMaxWarnings.push(spare);
+      }
+    });
+
+    return { overEscalated, underEscalated, confirmed, minMaxWarnings };
+  }, [showValidation, spares]);
 
   return (
     <div className="space-y-4">
@@ -138,12 +181,118 @@ export const SparesTable = () => {
               <SelectItem value="Confirmed">Confirmed</SelectItem>
             </SelectContent>
           </Select>
+          <Button
+            variant={showValidation ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowValidation(!showValidation)}
+            className="gap-2"
+          >
+            <ShieldCheck className="h-4 w-4" />
+            Validate Criticality
+          </Button>
           <AddSpareDialog 
             onAddSpare={(newSpare) => setSpares([...spares, newSpare])} 
             existingCount={spares.length} 
           />
         </div>
       </div>
+
+      {/* Validation Panel */}
+      {showValidation && validationResults && (
+        <div className="space-y-3">
+          {/* Min/Max Warnings */}
+          {validationResults.minMaxWarnings.length > 0 && (
+            <div className="bg-warning/10 border border-warning/30 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <TriangleAlert className="h-4 w-4 text-warning" />
+                <span className="font-semibold text-sm text-warning">
+                  Min/Max Not Set ({validationResults.minMaxWarnings.length} items)
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">
+                Per hierarchy rules: "Min/Max levels are applied mainly to HIGH and MEDIUM". These items need stocking levels defined.
+              </p>
+              <div className="flex flex-wrap gap-1">
+                {validationResults.minMaxWarnings.slice(0, 10).map((s) => (
+                  <Badge key={s.id} variant="outline" className="text-xs">
+                    {s.id} – {s.componentName}
+                  </Badge>
+                ))}
+                {validationResults.minMaxWarnings.length > 10 && (
+                  <Badge variant="outline" className="text-xs">+{validationResults.minMaxWarnings.length - 10} more</Badge>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Over-Escalated */}
+          {validationResults.overEscalated.length > 0 && (
+            <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <AlertTriangle className="h-4 w-4 text-destructive" />
+                <span className="font-semibold text-sm text-destructive">
+                  Potentially Over-Escalated ({validationResults.overEscalated.length} items)
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">
+                These items are marked HIGH/MEDIUM but the algorithm suggests they may be lower criticality.
+              </p>
+              <div className="space-y-1">
+                {validationResults.overEscalated.map((s) => (
+                  <div key={s.id} className="flex items-center gap-2 text-xs">
+                    <Badge variant="secondary" className={criticalityColors[s.spareCriticality || ""]}>
+                      {s.spareCriticality}
+                    </Badge>
+                    <span>→</span>
+                    <Badge variant="outline">{s.suggested}</Badge>
+                    <span className="text-muted-foreground">{s.id} – {s.sparePartDescription}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Under-Escalated */}
+          {validationResults.underEscalated.length > 0 && (
+            <div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <AlertTriangle className="h-4 w-4 text-primary" />
+                <span className="font-semibold text-sm text-primary">
+                  Potentially Under-Escalated ({validationResults.underEscalated.length} items)
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">
+                These items may need higher criticality based on the hierarchy rules.
+              </p>
+              <div className="space-y-1">
+                {validationResults.underEscalated.map((s) => (
+                  <div key={s.id} className="flex items-center gap-2 text-xs">
+                    <Badge variant="secondary" className={criticalityColors[s.spareCriticality || ""]}>
+                      {s.spareCriticality || "—"}
+                    </Badge>
+                    <span>→</span>
+                    <Badge variant="outline">{s.suggested}</Badge>
+                    <span className="text-muted-foreground">{s.id} – {s.sparePartDescription}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Confirmed */}
+          <div className="bg-success/10 border border-success/30 rounded-lg p-4">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-success" />
+              <span className="font-semibold text-sm text-success">
+                ✓ {validationResults.confirmed.length} items confirmed correct
+              </span>
+              <span className="text-xs text-muted-foreground">
+                — Criticality matches hierarchy rules
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Table */}
       <div className="overflow-x-auto border rounded-lg">
