@@ -36,6 +36,8 @@ import type { SiteSpareItem } from "@/hooks/useSiteSpares";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
 import { getEdgeFunctionErrorMessage } from "@/utils/getEdgeFunctionErrorMessage";
 import { SupplierSelector } from "@/components/shared/SupplierSelector";
+import { classifyCategory, getAllCategories, getCategoryColor, type SpareCategory } from "@/utils/categoryClassification";
+import { getContainerForCategory } from "@/utils/categoryContainerMapping";
 
 // Criticality badge colors
 const criticalityColors: Record<CriticalityLevel, string> = {
@@ -435,26 +437,82 @@ export const SiteSpareDetailDialog = ({
               />
             </div>
 
-            {/* Category & Supplier */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <Label className="text-xs">Category</Label>
-                <Input
-                  value={localSpare.category || ""}
-                  onChange={(e) => handleFieldChange("category", e.target.value)}
-                  onBlur={() => handleFieldBlur("category")}
-                  className="h-8 text-sm"
-                />
+            {/* Auto-Assigned Category Section */}
+            <div className="space-y-1.5 border border-primary/20 bg-primary/5 rounded-lg p-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-semibold">Auto-Assigned Category</Label>
+                {(() => {
+                  const suggested = classifyCategory(localSpare.description);
+                  const current = localSpare.category || "";
+                  const match = current === suggested;
+                  return (
+                    <Badge variant="outline" className={`text-[10px] ${match ? "bg-success/20 text-success border-success/30" : "bg-warning/20 text-warning border-warning/30"}`}>
+                      {match ? "✓ Confirmed" : "⚠ Review"}
+                    </Badge>
+                  );
+                })()}
               </div>
-              <div className="space-y-1">
-                <Label className="text-xs">Supplier / Mfr</Label>
-                <Input
-                  value={localSpare.manufacturer || ""}
-                  onChange={(e) => handleFieldChange("manufacturer", e.target.value)}
-                  onBlur={() => handleFieldBlur("manufacturer")}
-                  className="h-8 text-sm"
-                />
-              </div>
+              {(() => {
+                const suggested = classifyCategory(localSpare.description);
+                const current = localSpare.category || "";
+                const containerInfo = getContainerForCategory(current || suggested);
+                return (
+                  <>
+                    {current !== suggested && (
+                      <div className="flex items-center gap-2 text-[10px]">
+                        <span className="text-muted-foreground">Suggested:</span>
+                        <Badge variant="outline" className={`text-[10px] cursor-pointer hover:opacity-80 ${getCategoryColor(suggested)}`}
+                          onClick={() => {
+                            handleFieldChange("category", suggested);
+                            if (spare) onUpdate(spare.id, { category: suggested });
+                          }}
+                        >
+                          {suggested} — click to apply
+                        </Badge>
+                      </div>
+                    )}
+                    <Select
+                      value={current}
+                      onValueChange={(val) => {
+                        handleFieldChange("category", val);
+                        if (spare) onUpdate(spare.id, { category: val });
+                      }}
+                    >
+                      <SelectTrigger className="h-8 text-sm">
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[300px]">
+                        {getAllCategories().map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            <span className="flex items-center gap-2">
+                              <span className={`inline-block w-2 h-2 rounded-full ${getCategoryColor(cat).split(" ")[0]}`} />
+                              {cat}
+                              {cat === suggested && " ★"}
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {containerInfo && (
+                      <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                        <span>📦</span>
+                        <span>Container: <strong>{containerInfo.containerId}</strong> ({containerInfo.containerLabel})</span>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+
+            {/* Supplier / Mfr */}
+            <div className="space-y-1">
+              <Label className="text-xs">Supplier / Mfr</Label>
+              <Input
+                value={localSpare.manufacturer || ""}
+                onChange={(e) => handleFieldChange("manufacturer", e.target.value)}
+                onBlur={() => handleFieldBlur("manufacturer")}
+                className="h-8 text-sm"
+              />
             </div>
 
             {/* Asset Tag */}
