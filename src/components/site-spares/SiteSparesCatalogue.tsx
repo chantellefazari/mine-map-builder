@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon, ChevronLeft, ChevronRight, Hash, Copy } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon, ChevronLeft, ChevronRight, Hash, Copy, Download } from "lucide-react";
 import { useSiteSparesPaginated, type PaginationFilters } from "@/hooks/useSiteSparesPaginated";
 import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { AddSpareDialog } from "./AddSpareDialog";
@@ -23,6 +23,7 @@ import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesTo
 import { generateNextSparePartNumber } from "@/utils/autoPartNumbering";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { generateSparesPDF } from "@/utils/generateSparesPDF";
 
 // Warehouse areas list
 const warehouseAreas = [
@@ -64,6 +65,7 @@ export const SiteSparesCatalogue = () => {
   const [showDuplicateFinder, setShowDuplicateFinder] = useState(false);
   const [isReclassifyingCriticality, setIsReclassifyingCriticality] = useState(false);
   const [isReNumbering, setIsReNumbering] = useState(false);
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
   const [searchDebounce, setSearchDebounce] = useState("");
 
   // Debounce search input (300ms)
@@ -312,6 +314,24 @@ export const SiteSparesCatalogue = () => {
     setDetailDialogOpen(true);
   };
 
+  const handleDownloadPDF = async () => {
+    setIsDownloadingPDF(true);
+    toast.loading("Preparing PDF...", { id: "pdf-download" });
+    try {
+      const count = await generateSparesPDF((msg) => {
+        toast.loading(msg, { id: "pdf-download" });
+      });
+      toast.dismiss("pdf-download");
+      toast.success(`PDF downloaded with ${count} spare parts`);
+    } catch (error) {
+      toast.dismiss("pdf-download");
+      toast.error("Failed to generate PDF");
+      console.error(error);
+    } finally {
+      setIsDownloadingPDF(false);
+    }
+  };
+
   // Sync selected spare with paginated results
   const currentSelectedSpare = selectedSpare
     ? paginated.spares.find((s) => s.id === selectedSpare.id) || selectedSpare
@@ -508,6 +528,16 @@ export const SiteSparesCatalogue = () => {
           >
             <ImageIcon className="h-4 w-4" />
             {showImageRecovery ? "Hide Image Recovery" : "Recover Images"}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-2"
+            onClick={handleDownloadPDF}
+            disabled={isDownloadingPDF}
+          >
+            {isDownloadingPDF ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+            Download Parts List
           </Button>
           <Button size="sm" className="gap-2" onClick={() => setAddDialogOpen(true)}>
             <Plus className="h-4 w-4" />
