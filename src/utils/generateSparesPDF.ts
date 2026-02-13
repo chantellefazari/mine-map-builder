@@ -82,26 +82,6 @@ export async function generateSparesPDF(onProgress?: (msg: string) => void) {
     offset += batchSize;
   }
 
-  onProgress?.(`Processing ${allItems.length} items...`);
-
-  // Pre-fetch images (limit concurrency to avoid overwhelming the browser)
-  const imageCache = new Map<string, string | null>();
-  const itemsWithImages = allItems.filter((item) => item.image_urls && item.image_urls.length > 0);
-
-  // Fetch in batches of 10
-  for (let i = 0; i < itemsWithImages.length; i += 10) {
-    const batch = itemsWithImages.slice(i, i + 10);
-    onProgress?.(`Loading images... ${Math.min(i + 10, itemsWithImages.length)}/${itemsWithImages.length}`);
-    const results = await Promise.all(
-      batch.map(async (item) => {
-        const url = item.image_urls![0];
-        const base64 = await fetchImageAsBase64(url);
-        return { id: item.id, base64 };
-      })
-    );
-    results.forEach((r) => imageCache.set(r.id, r.base64));
-  }
-
   onProgress?.("Generating PDF...");
 
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
@@ -124,7 +104,7 @@ export async function generateSparesPDF(onProgress?: (msg: string) => void) {
     tableBody.push([
       index + 1,
       item.part_number || "—",
-      "", // placeholder for image (drawn in didDrawCell)
+      item.image_urls?.[0] ? "Has image" : "—",
       item.description,
       criticality,
       item.category || "—",
@@ -133,7 +113,6 @@ export async function generateSparesPDF(onProgress?: (msg: string) => void) {
   });
 
   const imgCellWidth = 18;
-  const imgCellHeight = 14;
 
   autoTable(doc, {
     startY: 25,
@@ -152,29 +131,6 @@ export async function generateSparesPDF(onProgress?: (msg: string) => void) {
     },
     rowPageBreak: "avoid",
     didDrawCell: (data: any) => {
-      // Draw image in column 2 (Picture)
-      if (data.section === "body" && data.column.index === 2) {
-        const rowIndex = data.row.index;
-        const item = allItems[rowIndex];
-        if (item) {
-          const base64 = imageCache.get(item.id);
-          if (base64) {
-            try {
-              const pad = 1;
-              doc.addImage(
-                base64,
-                "JPEG",
-                data.cell.x + pad,
-                data.cell.y + pad,
-                imgCellWidth - pad * 2,
-                imgCellHeight - pad * 2
-              );
-            } catch {
-              // Skip broken images silently
-            }
-          }
-        }
-      }
 
       // Color-code criticality column
       if (data.section === "body" && data.column.index === 4) {
@@ -211,10 +167,6 @@ export async function generateSparesPDF(onProgress?: (msg: string) => void) {
       }
     },
     didParseCell: (data: any) => {
-      // Set min row height for image rows
-      if (data.section === "body" && data.column.index === 2) {
-        data.cell.styles.minCellHeight = imgCellHeight;
-      }
       // Clear the text for criticality (we draw it manually with color)
       if (data.section === "body" && data.column.index === 4) {
         const val = data.cell.raw;
