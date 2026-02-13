@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon, ChevronLeft, ChevronRight, Hash } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, X, ImageIcon, ChevronLeft, ChevronRight, Hash, Copy } from "lucide-react";
 import { useSiteSparesPaginated, type PaginationFilters } from "@/hooks/useSiteSparesPaginated";
 import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { AddSpareDialog } from "./AddSpareDialog";
@@ -16,6 +16,7 @@ import { ImportSpareDialog } from "./ImportSpareDialog";
 import { SiteSpareCard } from "./SiteSpareCard";
 import { SiteSpareDetailDialog } from "./SiteSpareDetailDialog";
 import { OrphanedImageRecovery } from "./OrphanedImageRecovery";
+import { DuplicateFinderDialog } from "./DuplicateFinderDialog";
 import { classifyCriticality } from "@/utils/criticalityClassification";
 import { classifyCategory } from "@/utils/categoryClassification";
 import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesToSiteSpares";
@@ -60,6 +61,7 @@ export const SiteSparesCatalogue = () => {
   const [selectedSpare, setSelectedSpare] = useState<SiteSpareItem | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [showImageRecovery, setShowImageRecovery] = useState(false);
+  const [showDuplicateFinder, setShowDuplicateFinder] = useState(false);
   const [isReclassifyingCriticality, setIsReclassifyingCriticality] = useState(false);
   const [isReNumbering, setIsReNumbering] = useState(false);
   const [searchDebounce, setSearchDebounce] = useState("");
@@ -474,6 +476,10 @@ export const SiteSparesCatalogue = () => {
             {isReNumbering ? <Loader2 className="h-4 w-4 animate-spin" /> : <Hash className="h-4 w-4" />}
             Re-number Parts
           </Button>
+          <Button size="sm" variant="outline" className="gap-2" onClick={() => setShowDuplicateFinder(true)}>
+            <Copy className="h-4 w-4" />
+            Find Duplicates
+          </Button>
           <Button size="sm" variant="outline" className="gap-2" onClick={() => setImportDialogOpen(true)}>
             <Upload className="h-4 w-4" />
             Import Excel
@@ -496,6 +502,11 @@ export const SiteSparesCatalogue = () => {
 
       {/* Dialogs */}
       <AddSpareDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} onAddSpare={handleAddSpare} />
+      <DuplicateFinderDialog
+        open={showDuplicateFinder}
+        onOpenChange={setShowDuplicateFinder}
+        onResolved={refreshAll}
+      />
       <ImportSpareDialog
         open={importDialogOpen}
         onOpenChange={setImportDialogOpen}
