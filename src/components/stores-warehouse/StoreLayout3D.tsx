@@ -323,6 +323,91 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
   );
 };
 
+/* ============ Dome Roof ============ */
+
+const DomeRoof = () => {
+  const s = 0.5;
+  const domeWidthM = 12;
+  const domeDepthM = 12;
+  const domeHeightM = 5; // peak height above ground
+  const dome = dome3DPosition();
+  
+  // Centre the dome over the courtyard area, shifted to cover full 12x12
+  const centreX = dome.x;
+  const centreZ = dome.z + (domeDepthM - DOME_DIMENSIONS.depthM) * s * 0.25;
+  
+  const w = domeWidthM * s;
+  const d = domeDepthM * s;
+  const h = domeHeightM * s;
+
+  // Create dome arch segments
+  const archSegments = 24;
+  const lengthSegments = 12;
+  
+  return (
+    <group position={[centreX, 0, centreZ]}>
+      {/* Semi-cylindrical dome shell */}
+      <mesh rotation={[0, Math.PI / 2, 0]}>
+        <cylinderGeometry args={[w / 2, w / 2, d, archSegments, lengthSegments, true, 0, Math.PI]} />
+        <meshStandardMaterial 
+          color="#f0f9ff" 
+          transparent 
+          opacity={0.12} 
+          side={THREE.DoubleSide}
+          metalness={0.3}
+          roughness={0.6}
+        />
+      </mesh>
+      
+      {/* Dome wireframe for structure visibility */}
+      <lineSegments rotation={[0, Math.PI / 2, 0]}>
+        <edgesGeometry args={[new THREE.CylinderGeometry(w / 2, w / 2, d, 16, 8, true, 0, Math.PI)]} />
+        <lineBasicMaterial color="#94a3b8" opacity={0.25} transparent />
+      </lineSegments>
+
+      {/* Arch ribs - structural members */}
+      {Array.from({ length: 7 }, (_, i) => {
+        const zPos = -d / 2 + (i + 0.5) * (d / 7);
+        const points: THREE.Vector3[] = [];
+        for (let a = 0; a <= 32; a++) {
+          const angle = (a / 32) * Math.PI;
+          points.push(new THREE.Vector3(
+            Math.cos(angle) * (w / 2),
+            Math.sin(angle) * (w / 2),
+            zPos
+          ));
+        }
+        const curve = new THREE.CatmullRomCurve3(points);
+        return (
+          <mesh key={i}>
+            <tubeGeometry args={[curve, 32, 0.015, 6, false]} />
+            <meshStandardMaterial color="#64748b" opacity={0.4} transparent metalness={0.5} />
+          </mesh>
+        );
+      })}
+
+      {/* Ridge beam along the top */}
+      <mesh position={[0, w / 2, 0]}>
+        <boxGeometry args={[0.03, 0.03, d]} />
+        <meshStandardMaterial color="#64748b" opacity={0.5} transparent metalness={0.5} />
+      </mesh>
+
+      {/* Base edges */}
+      {[-1, 1].map(side => (
+        <mesh key={side} position={[side * (w / 2), 0, 0]}>
+          <boxGeometry args={[0.04, 0.04, d]} />
+          <meshStandardMaterial color="#475569" opacity={0.4} transparent />
+        </mesh>
+      ))}
+
+      {/* Label */}
+      <Text position={[0, w / 2 + 0.3, 0]} fontSize={0.18} color="#64748b" anchorX="center" fillOpacity={0.5}>
+        DOME SHELTER 12m × 12m
+      </Text>
+    </group>
+  );
+};
+
 /* ============ Ground ============ */
 
 const Ground = () => {
@@ -341,13 +426,13 @@ const Ground = () => {
         <meshStandardMaterial color="#e2e8f0" opacity={0.4} transparent />
       </mesh>
 
-      {/* Dome courtyard area */}
+      {/* Dome courtyard area (concrete pad) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[dome.x, 0.01, dome.z]}>
         <planeGeometry args={[domeW, domeD]} />
         <meshStandardMaterial color="#22c55e" opacity={0.06} transparent />
       </mesh>
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[dome.x, 0.02, dome.z]} fontSize={0.25} color="#22c55e" anchorX="center" fillOpacity={0.3}>
-        DOME AREA
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[dome.x, 0.02, dome.z]} fontSize={0.2} color="#22c55e" anchorX="center" fillOpacity={0.2}>
+        CONCRETE PAD
       </Text>
       <Text rotation={[-Math.PI / 2, 0, 0]} position={[dome.x, 0.02, dome.z + 0.5]} fontSize={0.12} color="#22c55e" anchorX="center" fillOpacity={0.25}>
         {DOME_DIMENSIONS.widthM}m × {DOME_DIMENSIONS.depthM}m
@@ -420,6 +505,7 @@ export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps)
                 <directionalLight position={[-5, 5, -5]} intensity={0.3} />
 
                 <Ground />
+                <DomeRoof />
 
                 {STORE_CONTAINERS.map((container) => (
                   <ContainerMesh
