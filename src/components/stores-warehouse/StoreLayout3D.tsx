@@ -1,7 +1,7 @@
 import { Suspense, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, RoundedBox, Html } from "@react-three/drei";
-import { STORE_CONTAINERS, YARD_DIMENSIONS, DOME_DIMENSIONS, type StoreContainer } from "./storeLayoutData";
+import { STORE_CONTAINERS, YARD_DIMENSIONS, DOME_DIMENSIONS, dome3DPosition, base3DPosition, leftLeg3DPosition, rightLeg3DPosition, type StoreContainer } from "./storeLayoutData";
 import * as THREE from "three";
 
 interface StoreLayout3DProps {
@@ -328,31 +328,35 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
 const Ground = () => {
   const domeW = DOME_DIMENSIONS.widthM * 0.5;
   const domeD = DOME_DIMENSIONS.depthM * 0.5;
+  const dome = dome3DPosition();
+  const base = base3DPosition();
+  const left = leftLeg3DPosition();
+  const right = rightLeg3DPosition();
 
   return (
     <>
       {/* Main ground plane */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 1.5]} receiveShadow>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, dome.z]} receiveShadow>
         <planeGeometry args={[22, 18]} />
         <meshStandardMaterial color="#e2e8f0" opacity={0.4} transparent />
       </mesh>
 
       {/* Dome courtyard area */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 1.5]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[dome.x, 0.01, dome.z]}>
         <planeGeometry args={[domeW, domeD]} />
         <meshStandardMaterial color="#22c55e" opacity={0.06} transparent />
       </mesh>
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 1.5]} fontSize={0.25} color="#22c55e" anchorX="center" fillOpacity={0.3}>
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[dome.x, 0.02, dome.z]} fontSize={0.25} color="#22c55e" anchorX="center" fillOpacity={0.3}>
         DOME AREA
       </Text>
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 2]} fontSize={0.12} color="#22c55e" anchorX="center" fillOpacity={0.25}>
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[dome.x, 0.02, dome.z + 0.5]} fontSize={0.12} color="#22c55e" anchorX="center" fillOpacity={0.25}>
         {DOME_DIMENSIONS.widthM}m × {DOME_DIMENSIONS.depthM}m
       </Text>
 
       {/* Zone labels on ground */}
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[-3.6, 0.02, -0.5]} fontSize={0.15} color="#6366f1" anchorX="center">LEFT LEG — CLEAN</Text>
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[3.6, 0.02, -0.5]} fontSize={0.15} color="#64748b" anchorX="center">RIGHT LEG — HIGH-ACCESS</Text>
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 5.5]} fontSize={0.15} color="#3b82f6" anchorX="center">BASE — MECHANICAL (40ft)</Text>
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[left.x, 0.02, left.z]} fontSize={0.15} color="#6366f1" anchorX="center">LEFT LEG — CLEAN</Text>
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[right.x, 0.02, right.z]} fontSize={0.15} color="#64748b" anchorX="center">RIGHT LEG — HIGH-ACCESS</Text>
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[base.x, 0.02, base.z + 1]} fontSize={0.15} color="#3b82f6" anchorX="center">BASE — MECHANICAL (40ft)</Text>
     </>
   );
 };

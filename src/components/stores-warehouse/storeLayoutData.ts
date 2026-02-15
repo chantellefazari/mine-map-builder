@@ -157,6 +157,58 @@ const BASE_Y = TOP_Y + DOME_DIMENSIONS.depthM * PX_PER_M;
 // C03 starts flush with left leg inner edge
 const C03_X = COURTYARD_START_X;
 
+// Compute 3D positions from 2D layout so they always match
+const YARD_CENTRE_X = (LEFT_X + RIGHT_X + CONTAINER_20FT_W) / 2;
+const YARD_CENTRE_Z = (TOP_Y + BASE_Y + CONTAINER_40FT_H) / 2;
+const S3D = 0.5; // 3D scale: 0.5 units per metre
+
+function pos3D(posX: number, posY: number, w: number, h: number) {
+  return {
+    x: ((posX + w / 2) - YARD_CENTRE_X) / PX_PER_M * S3D,
+    y: 0,
+    z: ((posY + h / 2) - YARD_CENTRE_Z) / PX_PER_M * S3D,
+  };
+}
+
+// Export for 3D ground/dome alignment
+export const YARD_3D_CENTRE = { x: YARD_CENTRE_X, z: YARD_CENTRE_Z };
+
+export function dome3DPosition() {
+  const cx = COURTYARD_START_X + (YARD_DIMENSIONS.courtyardWidthM * PX_PER_M) / 2;
+  const cz = TOP_Y + (DOME_DIMENSIONS.depthM * PX_PER_M) / 2;
+  return {
+    x: (cx - YARD_CENTRE_X) / PX_PER_M * S3D,
+    z: (cz - YARD_CENTRE_Z) / PX_PER_M * S3D,
+  };
+}
+
+export function base3DPosition() {
+  const cx = C03_X + CONTAINER_40FT_W / 2;
+  const cz = BASE_Y + CONTAINER_40FT_H / 2;
+  return {
+    x: (cx - YARD_CENTRE_X) / PX_PER_M * S3D,
+    z: (cz - YARD_CENTRE_Z) / PX_PER_M * S3D,
+  };
+}
+
+export function leftLeg3DPosition() {
+  const cx = LEFT_X + CONTAINER_20FT_W / 2;
+  const cz = TOP_Y + (CONTAINER_20FT_H * 2 + GAP_BETWEEN) / 2;
+  return {
+    x: (cx - YARD_CENTRE_X) / PX_PER_M * S3D,
+    z: (cz - YARD_CENTRE_Z) / PX_PER_M * S3D,
+  };
+}
+
+export function rightLeg3DPosition() {
+  const cx = RIGHT_X + CONTAINER_20FT_W / 2;
+  const cz = TOP_Y + (CONTAINER_20FT_H * 2 + GAP_BETWEEN) / 2;
+  return {
+    x: (cx - YARD_CENTRE_X) / PX_PER_M * S3D,
+    z: (cz - YARD_CENTRE_Z) / PX_PER_M * S3D,
+  };
+}
+
 // Zone groups for the U-shape layout
 export const LAYOUT_ZONE_GROUPS: LayoutZoneGroup[] = [
   {
@@ -216,7 +268,7 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     position: { x: LEFT_X, y: TOP_Y },
     width: CONTAINER_20FT_W,
     height: CONTAINER_20FT_H,
-    position3D: { x: -3.6, y: 0, z: -1.6 },
+    position3D: pos3D(LEFT_X, TOP_Y, CONTAINER_20FT_W, CONTAINER_20FT_H),
     orientation: "vertical",
     physicalDimensions: {
       externalLengthM: 6.06,
@@ -265,7 +317,7 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     position: { x: LEFT_X, y: BOTTOM_20FT_Y },
     width: CONTAINER_20FT_W,
     height: CONTAINER_20FT_H,
-    position3D: { x: -3.6, y: 0, z: 1.6 },
+    position3D: pos3D(LEFT_X, BOTTOM_20FT_Y, CONTAINER_20FT_W, CONTAINER_20FT_H),
     orientation: "vertical",
     physicalDimensions: {
       externalLengthM: 6.06,
@@ -315,7 +367,7 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     position: { x: C03_X, y: BASE_Y },
     width: CONTAINER_40FT_W,
     height: CONTAINER_40FT_H,
-    position3D: { x: -0.6, y: 0, z: 4.8 },
+    position3D: pos3D(C03_X, BASE_Y, CONTAINER_40FT_W, CONTAINER_40FT_H),
     orientation: "horizontal",
     physicalDimensions: {
       externalLengthM: 12.19,
@@ -366,7 +418,7 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     position: { x: RIGHT_X, y: TOP_Y },
     width: CONTAINER_20FT_W,
     height: CONTAINER_20FT_H,
-    position3D: { x: 3.6, y: 0, z: -1.6 },
+    position3D: pos3D(RIGHT_X, TOP_Y, CONTAINER_20FT_W, CONTAINER_20FT_H),
     orientation: "vertical",
     physicalDimensions: {
       externalLengthM: 6.06,
@@ -416,7 +468,7 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     position: { x: RIGHT_X, y: BOTTOM_20FT_Y },
     width: CONTAINER_20FT_W,
     height: CONTAINER_20FT_H,
-    position3D: { x: 3.6, y: 0, z: 1.6 },
+    position3D: pos3D(RIGHT_X, BOTTOM_20FT_Y, CONTAINER_20FT_W, CONTAINER_20FT_H),
     orientation: "vertical",
     physicalDimensions: {
       externalLengthM: 6.06,
