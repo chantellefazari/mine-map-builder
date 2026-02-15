@@ -108,12 +108,12 @@ export interface YardDimensions {
 
 // U-shape yard dimensions
 export const YARD_DIMENSIONS: YardDimensions = {
-  totalWidthM: 19.5,
+  totalWidthM: 22,
   totalDepthM: 18,
   accessRoadWidthM: 4,
   walkwayWidthM: 1.5,
   containerSpacingM: 0.4,
-  courtyardWidthM: 9.5, // internal opening between legs
+  courtyardWidthM: 12, // 12m between left and right legs
   courtyardDepthM: 12,
   forkliftGapM: 0,
   outerClearanceM: 2.5,
@@ -121,8 +121,8 @@ export const YARD_DIMENSIONS: YardDimensions = {
 
 // Dome physical footprint (sits inside courtyard)
 export const DOME_DIMENSIONS = {
-  widthM: 9.5,
-  depthM: 12,
+  widthM: 12,
+  depthM: 9.5,
 };
 
 /*
