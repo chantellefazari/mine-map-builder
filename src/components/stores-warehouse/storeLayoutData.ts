@@ -108,12 +108,12 @@ export interface YardDimensions {
 
 // U-shape yard dimensions
 export const YARD_DIMENSIONS: YardDimensions = {
-  totalWidthM: 22,
+  totalWidthM: 19.5,
   totalDepthM: 18,
   accessRoadWidthM: 4,
   walkwayWidthM: 1.5,
   containerSpacingM: 0.4,
-  courtyardWidthM: 12.19, // matches 40ft container length — C03 fits flush
+  courtyardWidthM: 9.5, // internal opening between legs
   courtyardDepthM: 12,
   forkliftGapM: 0,
   outerClearanceM: 2.5,
@@ -153,8 +153,8 @@ const TOP_Y = 30;
 const GAP_BETWEEN = YARD_DIMENSIONS.containerSpacingM * PX_PER_M;
 const BOTTOM_20FT_Y = TOP_Y + CONTAINER_20FT_H + GAP_BETWEEN;
 const BASE_Y = BOTTOM_20FT_Y + CONTAINER_20FT_H + GAP_BETWEEN;
-// C03 starts at courtyard inner edge — flush between legs
-const C03_X = COURTYARD_START_X;
+// C03 centered across courtyard — extends past both legs (12.19m > 9.5m)
+const C03_X = COURTYARD_START_X + (YARD_DIMENSIONS.courtyardWidthM * PX_PER_M) / 2 - CONTAINER_40FT_W / 2;
 
 // Zone groups for the U-shape layout
 export const LAYOUT_ZONE_GROUPS: LayoutZoneGroup[] = [
@@ -189,9 +189,9 @@ export const LAYOUT_ZONE_GROUPS: LayoutZoneGroup[] = [
     color: "#22c55e",
     bgColor: "rgba(34, 197, 94, 0.04)",
     position: {
-      x: COURTYARD_START_X + (YARD_DIMENSIONS.courtyardWidthM * PX_PER_M - DOME_DIMENSIONS.widthM * PX_PER_M) / 2,
+      x: COURTYARD_START_X,
       y: TOP_Y,
-      width: DOME_DIMENSIONS.widthM * PX_PER_M,
+      width: YARD_DIMENSIONS.courtyardWidthM * PX_PER_M,
       height: DOME_DIMENSIONS.depthM * PX_PER_M,
     },
   },
