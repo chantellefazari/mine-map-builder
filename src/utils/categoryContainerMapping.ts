@@ -59,17 +59,21 @@ const C01_KEYWORDS = [
 ];
 
 const C02_KEYWORDS = [
-  "transmitter", "gauge", "flow meter", "level switch", "pressure switch",
+  "transmitter", "gauge", "flow meter", "flowmeter", "level switch", "pressure switch",
   "rtd", "thermocouple", "temperature probe", "positioner",
   "solenoid valve", "instrument tubing", "swagelok",
   "needle valve",
   // Sensors & probes (instrumentation, not mechanical)
   "sensor", "probe", "electrode holder", "sensor electrode", "transducer", "analyser", "analyzer",
   "radar level", "thermowell", "signal converter",
+  // Instruments & measurement devices
+  "thermometer", "load cell", "level control", "process clamp",
+  "indicator electrical", "electrical indicator",
+  "modular regulator",
   // Process control valves (small, instrument-adjacent)
   "diaphragm valve", "pinch valve", "control valve",
   // Pneumatics
-  "pneumatic", "air regulator", "frl", "manifold",
+  "pneumatic", "air regulator", "filter regulator", "frl", "manifold",
   "push-in fitting", "quick connect", "air hose", "muffler",
 ];
 
