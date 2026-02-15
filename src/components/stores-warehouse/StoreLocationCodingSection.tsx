@@ -1,34 +1,54 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Hash, Info, CheckCircle, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Hash, Info, CheckCircle, ShieldAlert, MapPin } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  CONTAINER_DISCIPLINE_MAP,
+  VALID_BAYS,
+  BAY_LAYOUT,
+  EXTERNAL_PREFIXES,
+} from "@/utils/storeLocationValidation";
 
 export const StoreLocationCodingSection = () => {
-  const zoneCodes = [
-    { code: "ME", meaning: "Mechanical" },
-    { code: "EL", meaning: "Electrical" },
-    { code: "IN", meaning: "Instrumentation" },
-    { code: "HY", meaning: "Hydraulics" },
-    { code: "PN", meaning: "Pneumatics" },
-    { code: "FI", meaning: "Filters" },
-    { code: "BR", meaning: "Bearings" },
-    { code: "FT", meaning: "Fasteners" },
-    { code: "SE", meaning: "Seals" },
-    { code: "LU", meaning: "Lubrication" },
-    { code: "SA", meaning: "Safety / PPE" }
+  const containers = Object.entries(CONTAINER_DISCIPLINE_MAP).map(([id, disc]) => {
+    const labels: Record<string, string> = {
+      EL: "Electrical – Positive Airflow",
+      IN: "Instrumentation & Control",
+      ME: "Mechanical Small Parts",
+      LU: "Lubrication",
+      FA: "Fasteners & Consumables",
+    };
+    return { id, discipline: disc, label: labels[disc] || disc };
+  });
+
+  const codeStructure = [
+    { segment: "Container", format: "C0X", meaning: "Physical storage container (C01–C05)", example: "C01, C02, C03, C04, C05" },
+    { segment: "Discipline", format: "XX", meaning: "Must match container discipline", example: "EL, IN, ME, LU, FA" },
+    { segment: "Bay", format: "A–H, J–K", meaning: "Wall position (skip letter I)", example: "A, B, C, D, E, F, G, H, J, K" },
+    { segment: "Bin", format: "1–99", meaning: "Bin number within bay", example: "1, 2, 15, 42, 99" },
   ];
 
   const examples = [
-    { code: "C01-ME-A1", description: "Container 1, Mechanical zone, shelf A bin 1" },
-    { code: "C01-BR-A3", description: "Container 1, Bearings, shelf A bin 3" },
-    { code: "C02-EL-B2", description: "Container 2, Electrical zone, shelf B bin 2" },
-    { code: "C03-IN-C1", description: "Container 3, Instrumentation, shelf C bin 1" },
-    { code: "C01-FT-D4", description: "Container 1, Fasteners, shelf D bin 4" }
+    { code: "C01-EL-A3", description: "Container 1, Electrical, Left wall bay A, bin 3" },
+    { code: "C02-IN-E1", description: "Container 2, Instrumentation, Right wall bay E, bin 1" },
+    { code: "C03-ME-J2", description: "Container 3, Mechanical, Rear wall bay J, bin 2" },
+    { code: "C04-LU-B5", description: "Container 4, Lubrication, Left wall bay B, bin 5" },
+    { code: "C05-FA-H12", description: "Container 5, Fasteners, Right wall bay H, bin 12" },
   ];
 
-  const codeStructure = [
-    { segment: "Container", format: "CXX", meaning: "Physical storage container", example: "C01, C02, C03, C04..." },
-    { segment: "Zone", format: "XX", meaning: "Functional grouping of parts", example: "ME, EL, IN, BR, FT..." },
-    { segment: "Position", format: "XN", meaning: "Shelf letter + bin number", example: "A1, A2, B1, B2, C3..." }
+  const externalExamples = [
+    { code: "DM-A1", description: "Dome Storage, bay A, position 1" },
+    { code: "DM-E3", description: "Dome Storage, bay E, position 3" },
+    { code: "LD-B3", description: "Laydown Yard, bay B, position 3" },
+    { code: "LD-J1", description: "Laydown Yard, rear bay J, position 1" },
+  ];
+
+  const validationRules = [
+    "Discipline code must match its container (e.g. C01 = EL only)",
+    "No duplicate location codes allowed across the entire store",
+    "Location code must follow exact format: C0X-XX-A1",
+    "Bay letters skip I (go A–H, then J–K)",
+    "Bin numbers range from 1 to 99",
+    "External codes (DM, LD) must not be mixed with container codes",
   ];
 
   return (
@@ -37,9 +57,9 @@ export const StoreLocationCodingSection = () => {
       <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 flex items-start gap-3">
         <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
         <div>
-          <p className="font-medium text-amber-700 dark:text-amber-300">Governance & Reference Only</p>
+          <p className="font-medium text-amber-700 dark:text-amber-300">Location Structure Only</p>
           <p className="text-sm text-amber-600 dark:text-amber-400">
-            This section defines how physical spare parts are located and stored on site. It must NOT modify any existing asset tree, functional locations, or part records.
+            This section defines how physical spare parts are located and stored on site. It does not link to asset tree or P&ID data until new P&IDs are issued.
           </p>
         </div>
       </div>
@@ -52,9 +72,9 @@ export const StoreLocationCodingSection = () => {
               <Hash className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-xl">Stores Location Coding Standards (Container-Based)</CardTitle>
+              <CardTitle className="text-xl">Store Location Coding Standards</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                Physical location codes for spare parts storage
+                Physical location codes for spare parts storage — Container-based
               </p>
             </div>
           </div>
@@ -64,12 +84,13 @@ export const StoreLocationCodingSection = () => {
       {/* Location Code Structure */}
       <Card className="border-border">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg">Location Code Structure</CardTitle>
+          <CardTitle className="text-lg">Location Code Format</CardTitle>
           <p className="text-sm text-muted-foreground">
             All store locations use the following format:
           </p>
           <div className="mt-3 p-3 bg-muted/50 rounded-lg">
-            <code className="text-lg font-mono font-bold text-primary">[Container]-[Zone]-[Position]</code>
+            <code className="text-lg font-mono font-bold text-primary">[Container]-[Discipline]-[Bay][Bin]</code>
+            <p className="text-xs text-muted-foreground mt-1 font-mono">Example: C01-EL-A3</p>
           </div>
         </CardHeader>
         <CardContent>
@@ -77,9 +98,9 @@ export const StoreLocationCodingSection = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-28">Segment</TableHead>
-                <TableHead className="w-24">Format</TableHead>
+                <TableHead className="w-28">Format</TableHead>
                 <TableHead>Meaning</TableHead>
-                <TableHead>Example Values</TableHead>
+                <TableHead>Values</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -88,7 +109,7 @@ export const StoreLocationCodingSection = () => {
                   <TableCell className="font-medium">{row.segment}</TableCell>
                   <TableCell className="font-mono text-primary">{row.format}</TableCell>
                   <TableCell>{row.meaning}</TableCell>
-                  <TableCell className="font-mono text-muted-foreground">{row.example}</TableCell>
+                  <TableCell className="font-mono text-muted-foreground text-xs">{row.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -96,88 +117,84 @@ export const StoreLocationCodingSection = () => {
         </CardContent>
       </Card>
 
-      {/* Container Explanation */}
+      {/* Container → Discipline Mapping */}
       <Card className="border-border">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg">Container</CardTitle>
+          <CardTitle className="text-lg">Container Identification</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Containers represent physical storage units on site
+            Each container has a fixed discipline code — discipline must always match container
           </p>
         </CardHeader>
         <CardContent>
-          <div className="bg-muted/50 rounded-lg p-4">
-            <p className="text-sm text-muted-foreground mb-3">
-              Containers are numbered sequentially:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {["C01", "C02", "C03", "C04", "C05", "..."].map((code, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1.5 rounded-md text-sm bg-background border border-border font-mono font-medium"
-                >
-                  {code}
-                </span>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Zone Codes */}
-      <Card className="border-border">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg">Zone</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Zones define functional groupings of parts inside each container
-          </p>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm font-medium text-foreground mb-3">Approved Zone Codes:</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-            {zoneCodes.map((zone, index) => (
+          <div className="grid gap-2">
+            {containers.map((c) => (
               <div
-                key={index}
-                className="flex items-center gap-2 p-2 rounded-lg bg-muted/50 border border-border"
+                key={c.id}
+                className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-border"
               >
-                <span className="font-mono font-bold text-primary">{zone.code}</span>
-                <span className="text-sm text-muted-foreground">– {zone.meaning}</span>
+                <span className="font-mono font-bold text-primary w-10">{c.id}</span>
+                <span className="font-mono font-bold text-primary w-8">{c.discipline}</span>
+                <span className="text-sm text-muted-foreground">– {c.label}</span>
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* Position Explanation */}
+      {/* Bay Layout Logic */}
       <Card className="border-border">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg">Position</CardTitle>
+          <div className="flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-primary" />
+            <CardTitle className="text-lg">Bay Layout Logic</CardTitle>
+          </div>
           <p className="text-sm text-muted-foreground">
-            Position identifies the exact storage location within the container
+            Standardised bay allocation for all containers (letter I is skipped)
           </p>
         </CardHeader>
         <CardContent>
-          <div className="bg-muted/50 rounded-lg p-4">
-            <p className="text-sm text-muted-foreground mb-3">
-              Alphanumeric format: Shelf letter (A–Z) + bin number (1–9):
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {["A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "D1"].map((code, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1.5 rounded-md text-sm bg-background border border-border font-mono font-medium"
-                >
-                  {code}
-                </span>
-              ))}
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="bg-muted/50 rounded-lg p-4 border border-border">
+              <p className="text-sm font-medium text-foreground mb-2">Left Wall</p>
+              <div className="flex flex-wrap gap-2">
+                {BAY_LAYOUT.leftWall.map((bay) => (
+                  <span key={bay} className="px-3 py-1.5 rounded-md text-sm bg-background border border-border font-mono font-medium">
+                    {bay}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="bg-muted/50 rounded-lg p-4 border border-border">
+              <p className="text-sm font-medium text-foreground mb-2">Right Wall</p>
+              <div className="flex flex-wrap gap-2">
+                {BAY_LAYOUT.rightWall.map((bay) => (
+                  <span key={bay} className="px-3 py-1.5 rounded-md text-sm bg-background border border-border font-mono font-medium">
+                    {bay}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="bg-muted/50 rounded-lg p-4 border border-border">
+              <p className="text-sm font-medium text-foreground mb-2">Rear Wall</p>
+              <div className="flex flex-wrap gap-2">
+                {BAY_LAYOUT.rearWall.map((bay) => (
+                  <span key={bay} className="px-3 py-1.5 rounded-md text-sm bg-background border border-border font-mono font-medium">
+                    {bay}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            All valid bay letters: {VALID_BAYS.join(", ")} — Bin numbers: 1–99
+          </p>
         </CardContent>
       </Card>
 
-      {/* Examples */}
+      {/* Container Location Examples */}
       <Card className="border-border">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg">Examples</CardTitle>
+          <CardTitle className="text-lg">Container Location Examples</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -199,33 +216,59 @@ export const StoreLocationCodingSection = () => {
         </CardContent>
       </Card>
 
-      {/* Rules */}
+      {/* External Storage (Dome & Laydown Yard) */}
+      <Card className="border-border">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg">External Storage Codes</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Dome and laydown yard locations use separate prefixes — not mixed with container codes
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-2 sm:grid-cols-2">
+            {Object.entries(EXTERNAL_PREFIXES).map(([prefix, label]) => (
+              <div key={prefix} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-border">
+                <span className="font-mono font-bold text-primary w-10">{prefix}</span>
+                <span className="text-sm text-muted-foreground">– {label}</span>
+              </div>
+            ))}
+          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-36">Location Code</TableHead>
+                <TableHead>Description</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {externalExamples.map((example, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-mono font-bold text-primary">{example.code}</TableCell>
+                  <TableCell className="text-muted-foreground">{example.description}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Validation Rules */}
       <Card className="border-border">
         <CardHeader className="pb-4">
           <div className="flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-green-600" />
-            <CardTitle className="text-lg">Rules</CardTitle>
+            <CardTitle className="text-lg">Validation Rules</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
           <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
             <ul className="text-sm space-y-2 text-green-700 dark:text-green-300">
-              <li className="flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">✓</span>
-                Location codes reflect physical layout only
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">✓</span>
-                Zones are consistent across all containers
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">✓</span>
-                Location codes are immutable once assigned
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">✓</span>
-                This standard supports future barcode or QR scanning
-              </li>
+              {validationRules.map((rule, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="text-green-500 mt-0.5">✓</span>
+                  {rule}
+                </li>
+              ))}
             </ul>
           </div>
         </CardContent>
@@ -240,9 +283,12 @@ export const StoreLocationCodingSection = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="bg-background border border-border rounded-lg p-4">
+          <div className="bg-background border border-border rounded-lg p-4 space-y-2">
             <p className="text-sm text-muted-foreground italic">
               "This standard governs stores layout and inventory location only. It does not alter asset hierarchy or functional locations."
+            </p>
+            <p className="text-sm text-muted-foreground italic">
+              "Do not link components to assets until new P&IDs are issued."
             </p>
           </div>
         </CardContent>
@@ -259,18 +305,13 @@ export const StoreLocationCodingSection = () => {
         <CardContent>
           <div className="bg-muted/50 rounded-lg p-4">
             <p className="text-sm text-muted-foreground mb-3">
-              Additional zone codes can be added as the site grows:
+              Additional containers or external zones can be added as the site grows. The format supports:
             </p>
-            <div className="flex flex-wrap gap-2">
-              {["WE (Welding)", "TO (Tools)", "PP (Pipe)", "VL (Valves)", "PU (Pumps)"].map((code, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1.5 rounded-md text-sm bg-muted border border-border font-mono"
-                >
-                  {code}
-                </span>
-              ))}
-            </div>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li>• New containers beyond C05 (e.g. C06, C07)</li>
+              <li>• Additional bay letters beyond K if containers grow</li>
+              <li>• New external prefixes for satellite storage areas</li>
+            </ul>
           </div>
         </CardContent>
       </Card>

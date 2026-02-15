@@ -79,7 +79,7 @@ const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick }:
         const doorY = doorH / 2;
         // Left leg top (C01) → door on +X (right, facing courtyard)
         // Right leg top (C05) → door on -X (left, facing courtyard)
-        // Left leg bottom (C02) & Right leg bottom (C06) → door on +Z (front, facing toward C03/base)
+        // Left leg bottom (C02) & Right leg bottom (C04) → doors facing courtyard
         // C03 base → door on -Z (facing dome)
 
         if (container.id === "C01") {
@@ -104,7 +104,7 @@ const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick }:
               <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
             </mesh>
           );
-        } else if (container.id === "C06") {
+        } else if (container.id === "C04") {
           // Right leg bottom — door on -X facing courtyard
           return (
             <mesh position={[-width / 2 - 0.02, doorY, 0]}>

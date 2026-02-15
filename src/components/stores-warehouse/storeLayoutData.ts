@@ -130,7 +130,7 @@ export const DOME_DIMENSIONS = {
  *
  *  Left Leg (vertical):        Right Leg (vertical):
  *    C01 (20ft)                   C05 (20ft)
- *    C02 (20ft)                   C06 (20ft)
+ *    C02 (20ft)                   C04 (20ft)
  *
  *  Base (horizontal):
  *    C03 (40ft) — spans full base between legs
@@ -254,7 +254,7 @@ export const STORE_CONTAINERS: StoreContainer[] = [
   // ===== LEFT LEG (vertical) =====
   {
     id: "C01",
-    zone: "STO-EL",
+    zone: "EL",
     zoneCode: "EL",
     label: "Electrical Components",
     shortLabel: "Electrical",
@@ -303,7 +303,7 @@ export const STORE_CONTAINERS: StoreContainer[] = [
   },
   {
     id: "C02",
-    zone: "STO-IN",
+    zone: "IN",
     zoneCode: "IN",
     label: "Instrumentation & Control",
     shortLabel: "Instruments",
@@ -353,7 +353,7 @@ export const STORE_CONTAINERS: StoreContainer[] = [
   // ===== BASE OF U (horizontal — 40ft) =====
   {
     id: "C03",
-    zone: "STO-ME",
+    zone: "ME",
     zoneCode: "ME",
     label: "Mechanical Small Parts",
     shortLabel: "Mechanical",
@@ -404,7 +404,7 @@ export const STORE_CONTAINERS: StoreContainer[] = [
   // ===== RIGHT LEG (vertical) =====
   {
     id: "C05",
-    zone: "STO-FA",
+    zone: "FA",
     zoneCode: "FA",
     label: "Fasteners & Consumables",
     shortLabel: "Fasteners",
@@ -453,8 +453,8 @@ export const STORE_CONTAINERS: StoreContainer[] = [
 
   // ===== RIGHT LEG LOWER (vertical) =====
   {
-    id: "C06",
-    zone: "STO-LU",
+    id: "C04",
+    zone: "LU",
     zoneCode: "LU",
     label: "Lubrication & Oils",
     shortLabel: "Lubrication",
