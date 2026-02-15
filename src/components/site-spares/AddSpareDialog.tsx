@@ -50,12 +50,14 @@ const categorySubcategories: Record<string, string[]> = {
   "Consumables": ["Gloves", "PPE", "Lubricant", "Tape", "Battery"],
 };
 
-const warehouseAreas = [
-  "Storage Shelter", "Site Office Laydown Area", "Shutdown Staging Area",
-  "Workshop", "Workshop Laydown Area", "WC01", "WC02", "WC03", "WC04", "WC05",
-  "WC07 (Crushing Area)", "WC08 (Crushing Area)", "WC09 (Crushing Area)",
-  "Crushing Laydown Area", "MCC"
-];
+const WAREHOUSE_LOCATIONS = [
+  { value: "C01-EL", label: "C01-EL — Electrical" },
+  { value: "C02-IN", label: "C02-IN — Instrumentation" },
+  { value: "C03-ME", label: "C03-ME — Mechanical" },
+  { value: "C04-LU", label: "C04-LU — Lubrication" },
+  { value: "C05-FA", label: "C05-FA — Fasteners & Consumables" },
+  { value: "LD", label: "LD — Laydown Yard" },
+] as const;
 
 const unitsOfMeasure = ["EA", "BOX", "PKT", "M", "L", "KG", "SET", "PAIR", "ROLL", "PK"];
 
@@ -80,7 +82,7 @@ export const AddSpareDialog = ({
     oem_part_number: "",
     alternate_part_number: "",
     specifications: "",
-    warehouse_area: "",
+    warehouse_area: "C03-ME",
     aisle: "",
     rack: "",
     bin_location: "",
@@ -324,9 +326,9 @@ export const AddSpareDialog = ({
                   <SelectValue placeholder="Area" />
                 </SelectTrigger>
                 <SelectContent>
-                  {warehouseAreas.map((area) => (
-                    <SelectItem key={area} value={area}>
-                      {area}
+                  {WAREHOUSE_LOCATIONS.map((loc) => (
+                    <SelectItem key={loc.value} value={loc.value}>
+                      {loc.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
