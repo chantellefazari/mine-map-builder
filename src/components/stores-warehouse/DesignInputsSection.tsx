@@ -7,40 +7,40 @@ export const DesignInputsSection = () => {
     {
       zone: "C01-EL",
       type: "20ft Modified Container",
-      contents: "Electrical components, sensors, PLC spares",
-      environment: "Dust-controlled, airflow, climate-stable",
+      contents: "Electrical components, PLCs, VSDs, sensors",
+      environment: "Dust-controlled, positive airflow, climate-stable",
       accessFrequency: "Daily",
       growthAllowance: "20%"
     },
     {
-      zone: "C03-ME",
-      type: "20ft Standard Container",
-      contents: "Bearings, seals, couplings, mechanical parts",
-      environment: "Dry, standard industrial",
-      accessFrequency: "Daily",
-      growthAllowance: "15%"
-    },
-    {
       zone: "C02-IN",
       type: "20ft Modified Container",
-      contents: "Instrumentation, transmitters, gauges",
+      contents: "Instrumentation, transmitters, gauges, pneumatics",
       environment: "Clean, dust-free, climate preferred",
       accessFrequency: "Weekly",
       growthAllowance: "10%"
     },
     {
-      zone: "C04-LU",
-      type: "10ft Container or Cage",
-      contents: "Grease, oil, filters, lube accessories",
-      environment: "Ventilated, spill containment",
+      zone: "C03-MW",
+      type: "40ft Standard Container",
+      contents: "Wear parts, liners, rollers, belts, valves, pipe fittings",
+      environment: "Dry, standard industrial, high-density",
       accessFrequency: "Daily",
-      growthAllowance: "10%"
+      growthAllowance: "15%"
+    },
+    {
+      zone: "C04-ME",
+      type: "20ft Standard Container",
+      contents: "Bearings, seals, O-rings, gaskets, precision parts",
+      environment: "Dry, organised precision bins",
+      accessFrequency: "Daily",
+      growthAllowance: "15%"
     },
     {
       zone: "C05-FA",
       type: "20ft Standard Container",
-      contents: "Fasteners, consumables, small tools",
-      environment: "Standard, high-access bins",
+      contents: "Fasteners, consumables, PPE, grease, lube accessories",
+      environment: "Standard, high-access Kanban bins",
       accessFrequency: "Daily",
       growthAllowance: "25%"
     }
@@ -168,7 +168,7 @@ export const DesignInputsSection = () => {
               <h4 className="font-medium text-sm">Safety Separation</h4>
             </div>
             <ul className="text-xs text-muted-foreground space-y-1">
-              <li>• Electrical vs lubrication zones</li>
+              <li>• Electrical vs mechanical zones</li>
               <li>• Flammables isolation</li>
               <li>• Emergency egress paths</li>
             </ul>
@@ -182,7 +182,7 @@ export const DesignInputsSection = () => {
               <h4 className="font-medium text-sm">Access Frequency</h4>
             </div>
             <ul className="text-xs text-muted-foreground space-y-1">
-              <li>• Daily: Fasteners, mechanical, lube</li>
+              <li>• Daily: Fasteners, mechanical, wear</li>
               <li>• Weekly: Instrumentation</li>
               <li>• Position high-frequency at front</li>
             </ul>

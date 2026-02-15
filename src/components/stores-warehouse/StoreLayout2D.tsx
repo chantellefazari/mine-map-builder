@@ -131,7 +131,7 @@ export const StoreLayout2D = ({ liveMode, sparesData = [] }: StoreLayout2DProps)
             })}
           </div>
           <p className="text-[10px] text-muted-foreground">
-            Uncategorised items default to C03 (Mechanical). Click a container to view interior.
+            Uncategorised items default to C04 (Mechanical Precision). Click a container to view interior.
           </p>
         </div>
       )}
