@@ -96,6 +96,8 @@ export const StorageZonesSection = () => {
         "Small valves (<DN150), precision parts"
       ],
       excludes: [
+        "Sensors, gauges, flowmeters (→ C02-IN)",
+        "Pneumatic regulators, filter regulators (→ C02-IN)",
         "Wear parts, liners (→ C03-MW)",
         "Belts, rollers, idlers (→ C03-MW)",
         "Electrical components (→ C01)",
@@ -117,9 +119,11 @@ export const StorageZonesSection = () => {
         "Adhesives, sealants, Loctite, silicone",
         "PPE consumables, gloves, tape, zip ties",
         "Grease cartridges, oil filters, breathers",
-        "Sight glasses, auto-lube injectors, grease nipples"
+        "Sight glasses, auto-lube injectors, grease nipples",
+        "Vehicle/engine/cabin air filters"
       ],
       excludes: [
+        "Instrument air filters/regulators (→ C02-IN)",
         "Structural pipe fittings (→ C03-MW)",
         "Precision instruments (→ C02)",
         "Electrical components (→ C01)",
