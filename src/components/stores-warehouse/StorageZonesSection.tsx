@@ -69,13 +69,13 @@ export const StorageZonesSection = () => {
         "Vehicle/engine air filters (→ C05-FA)",
         "Electrical components (→ C01)",
         "Mechanical wear parts (→ C03)",
-        "PE/Plasson bulk fittings (→ C03-MW)"
+        "PE/Plasson bulk fittings (→ C03-ME)"
       ],
       environment: "Clean, dust-free, climate-controlled preferred",
       handling: "Manual only, fragile item care"
     },
     {
-      code: "C03-MW",
+      code: "C03-ME",
       name: "Mechanical Container (40ft)",
       icon: Wrench,
       color: "text-blue-600",
@@ -104,7 +104,7 @@ export const StorageZonesSection = () => {
         "Heavy valve assemblies DN150+ with actuators (→ LD)",
         "BSP nipples, elbows, reducers, backing rings (→ C02-IN)",
         "Strainers, filter elements (→ C02-IN)",
-        "Precision bearings/seals (→ C04-ME)",
+        "Precision bearings/seals (→ C04-MP)",
         "Electrical components (→ C01)",
         "Fasteners/consumables (→ C05)",
         "Instruments, sensors, pneumatic controls (→ C02)"
@@ -113,8 +113,8 @@ export const StorageZonesSection = () => {
       handling: "Manual only (≤15 kg items)"
     },
     {
-      code: "C04-ME",
-      name: "Mechanical Small Precision Container (20ft)",
+      code: "C04-MP",
+      name: "Mechanical Precision Container (20ft)",
       icon: Cog,
       color: "text-cyan-600",
       bgColor: "bg-cyan-500/10",
@@ -127,8 +127,8 @@ export const StorageZonesSection = () => {
         "Motor couplings, motor hubs"
       ],
       excludes: [
-        "Valves, pipe fittings, flanges (→ C03-MW)",
-        "Hoses, couplings, structural steel (→ C03-MW)",
+        "Valves, pipe fittings, flanges (→ C03-ME)",
+        "Hoses, couplings, structural steel (→ C03-ME)",
         "Lighting, battens, floodlights (→ C01-EL)",
         "Sensors, pneumatic controls (→ C02-IN)",
         "Tools, PPE, fire safety (→ C05-FA)",
@@ -161,7 +161,7 @@ export const StorageZonesSection = () => {
       ],
       excludes: [
         "Instrument air filters/regulators (→ C02-IN)",
-        "Structural pipe fittings (→ C03-MW)",
+        "Structural pipe fittings (→ C03-ME)",
         "Precision instruments (→ C02)",
         "Electrical components (→ C01)",
         "Bulk drums/oils (→ LD)"
@@ -190,7 +190,7 @@ export const StorageZonesSection = () => {
       excludes: [
         "Small electrical components (→ C01-EL)",
         "Instruments, sensors (→ C02-IN)",
-        "Bearings, seals, precision parts (→ C04-ME)",
+        "Bearings, seals, precision parts (→ C04-MP)",
         "Fasteners, consumables (→ C05-FA)"
       ],
       environment: "Outdoor / covered laydown, dome rows, yard bays",

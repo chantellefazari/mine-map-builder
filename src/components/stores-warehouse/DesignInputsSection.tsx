@@ -21,7 +21,7 @@ export const DesignInputsSection = () => {
       growthAllowance: "10%"
     },
     {
-      zone: "C03-MW",
+      zone: "C03-ME",
       type: "40ft Standard Container",
       contents: "Wear parts, liners, rollers, belts, valves, pipe fittings",
       environment: "Dry, standard industrial, high-density",
@@ -29,7 +29,7 @@ export const DesignInputsSection = () => {
       growthAllowance: "15%"
     },
     {
-      zone: "C04-ME",
+      zone: "C04-MP",
       type: "20ft Standard Container",
       contents: "Bearings, seals, O-rings, gaskets, precision parts",
       environment: "Dry, organised precision bins",

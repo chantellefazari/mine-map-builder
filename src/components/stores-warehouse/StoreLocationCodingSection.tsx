@@ -32,8 +32,8 @@ export const StoreLocationCodingSection = () => {
   const examples = [
     { code: "C01-EL-A3", description: "Container 1, Electrical, Left wall bay A, bin 3" },
     { code: "C02-IN-E1", description: "Container 2, Instrumentation, Right wall bay E, bin 1" },
-    { code: "C03-MW-J2", description: "Container 3, Mech Wear, Rear wall bay J, bin 2" },
-    { code: "C04-ME-B5", description: "Container 4, Mech Precision, Left wall bay B, bin 5" },
+    { code: "C03-ME-J2", description: "Container 3, Mechanical, Rear wall bay J, bin 2" },
+    { code: "C04-MP-B5", description: "Container 4, Mech Precision, Left wall bay B, bin 5" },
     { code: "C05-FA-H12", description: "Container 5, Fasteners/Consumables, Right wall bay H, bin 12" },
   ];
 
