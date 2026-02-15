@@ -63,13 +63,13 @@ export const StorageZonesSection = () => {
     },
     {
       code: "C03-MW",
-      name: "Mechanical Wear / Heavy Container (40ft)",
+      name: "Mechanical General Purpose Container (40ft)",
       icon: Wrench,
       color: "text-blue-600",
       bgColor: "bg-blue-500/10",
       borderColor: "border-blue-500/30",
       includes: [
-        "Wear plates, liners, ceramic/rubber liners",
+        "Small wear plates, rubber/ceramic liners (<15 kg)",
         "Rollers, idlers, pulleys, sprockets, belts",
         "Scraper blades, belt cleaners, conveyor parts",
         "Valves (ball, butterfly, knife gate, check, float, safety)",
@@ -85,8 +85,10 @@ export const StorageZonesSection = () => {
         "Blowers, heat exchangers, bollards"
       ],
       excludes: [
+        "Crusher liners, cone liners, mantles, screen panels (→ LD)",
+        "Complete motors, gearboxes, pump assemblies (→ LD)",
+        "Heavy valve assemblies DN150+ with actuators (→ LD)",
         "Precision bearings/seals (→ C04-ME)",
-        "Complete motors or gearboxes (→ LD)",
         "Electrical components (→ C01)",
         "Fasteners/consumables (→ C05)",
         "Instruments, sensors, pneumatic controls (→ C02)"
