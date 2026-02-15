@@ -61,7 +61,7 @@ const WAREHOUSE_LOCATIONS = [
   { value: "C01-EL", label: "C01-EL — Electrical" },
   { value: "C02-IN", label: "C02-IN — Instrumentation" },
   { value: "C03-ME", label: "C03-ME — Mechanical" },
-  { value: "C04-LU", label: "C04-LU — Lubrication" },
+  { value: "C04-MW", label: "C04-MW — Mechanical Wear & Belts" },
   { value: "C05-FA", label: "C05-FA — Fasteners & Consumables" },
   { value: "LD", label: "LD — Laydown Yard" },
 ] as const;

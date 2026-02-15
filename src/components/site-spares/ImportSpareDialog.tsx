@@ -38,12 +38,14 @@ const categories: Record<string, string[]> = {
   "Consumables": ["Gloves", "PPE", "Tape", "Lubricant"],
 };
 
-const warehouseAreas = [
-  "Storage Shelter", "Site Office Laydown Area", "Shutdown Staging Area",
-  "Workshop", "Workshop Laydown Area", "WC01", "WC02", "WC03", "WC04", "WC05",
-  "WC07 (Crushing Area)", "WC08 (Crushing Area)", "WC09 (Crushing Area)",
-  "Crushing Laydown Area", "MCC"
-];
+const WAREHOUSE_LOCATIONS = [
+  { value: "C01-EL", label: "C01-EL — Electrical" },
+  { value: "C02-IN", label: "C02-IN — Instrumentation" },
+  { value: "C03-ME", label: "C03-ME — Mechanical" },
+  { value: "C04-MW", label: "C04-MW — Mechanical Wear & Belts" },
+  { value: "C05-FA", label: "C05-FA — Fasteners & Consumables" },
+  { value: "LD", label: "LD — Laydown Yard" },
+] as const;
 
 interface DuplicateInfo {
   item: Omit<SiteSpareItem, "id">;
@@ -99,11 +101,13 @@ export const ImportSpareDialog = ({
   };
 
   const mapWarehouseArea = (location: string): string => {
-    const loc = (location || "");
-    for (const area of warehouseAreas) {
-      if (loc.toLowerCase().includes(area.toLowerCase())) return area;
+    const loc = (location || "").toLowerCase();
+    const validCodes = WAREHOUSE_LOCATIONS.map(l => l.value);
+    for (const code of validCodes) {
+      if (loc.includes(code.toLowerCase())) return code;
     }
-    return location || "";
+    // Use description-based allocation as fallback
+    return "C03-ME";
   };
 
   const normalizeHeader = (s: string) =>
