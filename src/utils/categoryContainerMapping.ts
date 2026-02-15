@@ -106,32 +106,59 @@ const C05_KEYWORDS = [
 // Structural/pipe keywords that override C05 classification
 const MECHANICAL_OVERRIDE_KEYWORDS = [
   "pipe", "valve", "flange", "structural", "frame", "liner",
+  "coupling", "hose", "sling", "rope", "conduit", "spool",
 ];
 
 const C03_MW_KEYWORDS = [
+  // Wear parts
   "wear plate", "liner", "chute liner", "rubber liner", "ceramic liner",
+  "wear part", "wear insert",
+  // Conveyor components
   "roller", "idler", "scraper blade", "belt cleaner", "pulley",
-  "sprocket", "chain", "large valve", "heavy pipe fitting",
-  "v belt", "belt drive", "belt fastener", "belt",
-  "scraper", "conveyor", "screen panel", "crusher liner",
-  "wear part", "coupling heavy",
-  // PE/Plasson fittings (small <150mm) go here as pipe fittings
+  "sprocket", "chain", "belt", "conveyor", "scraper", "skirting",
+  "screen panel", "crusher",
+  // Valves (general mechanical — NOT solenoid/control/diaphragm/pinch which are C02)
+  "valve", "knife gate", "butterfly", "ball valve", "check valve",
+  "non-return", "float valve", "safety valve", "gate valve",
+  // Pipe fittings & plumbing
+  "pipe", "flange", "backing ring", "coupling", "coupler",
+  "elbow", "tee", "nipple", "socket", "reducer", "reducing socket",
+  "pipe clamp", "victaulic", "camlock",
+  // PE/Plasson fittings
   "plasson", "pe100", "compression fitting", "compression elbow",
   "compression coupler", "compression tee", "electrofusion",
-  "stub flange", "spigot", "saddle", "reducing coupler",
+  "stub flange", "spigot", "saddle",
   "male adaptor", "female adaptor", "end plug",
   "reducing bush", "reducing nipple", "threaded socket",
   "hex nipple", "reducing hex",
+  // Hoses
+  "hose", "hydraulic hose",
+  // Structural steel & sections
+  "hollow section", "c-channel", "flat bar", "equal angle", "steel beam",
+  "channel beam", "steel section",
+  // Pump components (not complete assemblies which are LD)
+  "impeller", "pump sleeve", "volute", "pump casing", "pump shaft",
+  "lantern ring", "lantern restrictor",
+  "bearing kit", "pump parts",
+  // Gland packing
+  "gland packing", "packing ring",
+  // Rigging & lifting
+  "chain sling", "round sling", "wire rope", "shackle", "rope",
+  // Filter elements (mechanical, not electrical)
+  "filter element", "hydraulic filter", "strainer",
+  // Cable tray & conduit covers
+  "ezystrut", "cable tray",
+  // Misc general mechanical
+  "bollard", "blower", "heat exchanger",
+  "conduit", "pipe spool",
 ];
 
 const C04_ME_KEYWORDS = [
-  "bearing", "seal", "o-ring", "gasket", "shim", "key steel", "key",
-  "retaining ring", "circlip", "bush", "mechanical seal",
-  "small coupling", "small shaft", "small valve", "small fitting",
-  "precision", "pillow block", "spherical roller", "ball bearing",
-  "wear insert small",
+  // Precision small parts ONLY
+  "bearing", "seal", "o-ring", "gasket", "shim", "key steel",
+  "retaining ring", "circlip", "mechanical seal",
+  "pillow block", "spherical roller", "ball bearing",
   "motor coupling", "motor hub", "coupling pump",
-  // Indicator lights are electrical → handled by C01 "indicator light" keyword
 ];
 
 // ─── PE/Plasson pipe vs fitting check ────────────────────────────
