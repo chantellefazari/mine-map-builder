@@ -24,6 +24,7 @@ import { generateNextSparePartNumber } from "@/utils/autoPartNumbering";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { generateSparesPDF } from "@/utils/generateSparesPDF";
+import { allocateWarehouseArea } from "@/utils/categoryContainerMapping";
 
 // Warehouse location codes — strict list (no custom entries)
 const WAREHOUSE_LOCATIONS = [
@@ -56,6 +57,7 @@ export const SiteSparesCatalogue = () => {
   const [showDuplicateFinder, setShowDuplicateFinder] = useState(false);
   const [isReclassifyingCriticality, setIsReclassifyingCriticality] = useState(false);
   const [isReNumbering, setIsReNumbering] = useState(false);
+  const [isReclassifyingWarehouse, setIsReclassifyingWarehouse] = useState(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
   const [searchDebounce, setSearchDebounce] = useState("");
 
@@ -157,6 +159,52 @@ export const SiteSparesCatalogue = () => {
     toast.dismiss("reclassify");
     toast.success(`Reclassified ${updated} items to correct categories`);
     refreshAll();
+  };
+
+  const handleReclassifyWarehouseAreas = async () => {
+    setIsReclassifyingWarehouse(true);
+    toast.loading("Checking warehouse areas...", { id: "reclassify-wh" });
+
+    let updated = 0;
+    let offset = 0;
+    const batchSize = 500;
+
+    try {
+      while (true) {
+        const { data, error } = await supabase
+          .from("site_spares")
+          .select("id, description, warehouse_area")
+          .range(offset, offset + batchSize - 1);
+
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+
+        toast.loading(`Processing warehouse areas... (${offset + data.length} items)`, { id: "reclassify-wh" });
+
+        for (const spare of data) {
+          const correctArea = allocateWarehouseArea(spare.description);
+          if (spare.warehouse_area !== correctArea) {
+            const { error: updateError } = await supabase
+              .from("site_spares")
+              .update({ warehouse_area: correctArea })
+              .eq("id", spare.id);
+            if (!updateError) updated++;
+          }
+        }
+
+        if (data.length < batchSize) break;
+        offset += batchSize;
+      }
+
+      toast.dismiss("reclassify-wh");
+      toast.success(`Warehouse areas updated: ${updated} items corrected`);
+      refreshAll();
+    } catch (error) {
+      toast.dismiss("reclassify-wh");
+      toast.error("Failed to reclassify warehouse areas");
+    } finally {
+      setIsReclassifyingWarehouse(false);
+    }
   };
 
   const handleReclassifyCriticality = async () => {
@@ -492,6 +540,16 @@ export const SiteSparesCatalogue = () => {
           >
             {isReclassifyingCriticality ? <Loader2 className="h-4 w-4 animate-spin" /> : <AlertTriangle className="h-4 w-4" />}
             Reclassify Criticality
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-2"
+            onClick={handleReclassifyWarehouseAreas}
+            disabled={isReclassifyingWarehouse}
+          >
+            {isReclassifyingWarehouse ? <Loader2 className="h-4 w-4 animate-spin" /> : <Package className="h-4 w-4" />}
+            Reclassify Warehouse
           </Button>
           <Button
             size="sm"
