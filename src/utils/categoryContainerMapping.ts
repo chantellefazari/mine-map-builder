@@ -22,11 +22,27 @@ export interface ContainerMapping {
 
 // ─── Keyword sets per container ──────────────────────────────────
 
+// LD keywords — heavy/oversized items only
+// NOTE: "motor" is handled separately to avoid catching "motor circuit breaker" etc.
 const LD_KEYWORDS = [
-  "motor", "gearbox", "pump assembly", "large pulley", "drum",
+  "gearbox", "pump assembly", "large pulley",
   "shaft assembly", "large frame", "complete assembly", "heavy valve",
   "switchboard", "heavy actuator", "steel structure",
-  "forklift", "pallet", "pe pipe", "plasson",
+  "forklift", "palletised",
+  "hdpe pipe", // full pipe lengths are LD
+];
+
+// Motor-related terms that indicate actual heavy motors (not electrical protection)
+const LD_MOTOR_KEYWORDS = [
+  "electric motor", "spare motor", "agitator motor", "hydraulic motor",
+  "gear motor", "mixer gearbox",
+];
+
+// If "motor" appears in desc but NOT with these terms, it's still LD
+// These exclusions keep motor protection devices in C01-EL
+const MOTOR_NOT_LD_KEYWORDS = [
+  "motor circuit breaker", "motor starter", "motor protection",
+  "motor coupling", "motor hub", "motor adaptor", "motor adapter",
 ];
 
 const C01_KEYWORDS = [
@@ -35,13 +51,14 @@ const C01_KEYWORDS = [
   "selector switch", "push button", "indicator light", "panel fan",
   "filter electrical", "control module", "i/o card", "cpu",
   "cable", "connector", "switch", "transformer", "generator",
+  "motor circuit breaker", "motor starter", "motor protection",
 ];
 
 const C02_KEYWORDS = [
   "transmitter", "gauge", "flow meter", "level switch", "pressure switch",
   "rtd", "thermocouple", "temperature probe", "positioner",
-  "solenoid valve", "instrument tubing", "tube", "swagelok",
-  "needle valve", "compression fitting",
+  "solenoid valve", "instrument tubing", "swagelok",
+  "needle valve",
   // Pneumatics
   "pneumatic", "air regulator", "air filter", "frl", "manifold",
   "push-in fitting", "quick connect", "air hose", "muffler",
@@ -53,6 +70,7 @@ const C05_KEYWORDS = [
   "clamp", "hose clamp", "pin", "clip", "split pin", "cotter pin",
   "adhesive", "sealant", "loctite", "silicone", "threadlocker",
   "absorbent", "rag", "gloves", "ppe", "zip tie", "tape",
+  "shrinkage bag", "pallet bag",
   // Lubrication
   "grease", "cartridge", "lube", "lubrication", "oil filter",
   "breather", "sight glass", "injector", "auto-lube",
@@ -73,6 +91,13 @@ const C03_MW_KEYWORDS = [
   "v belt", "belt drive", "belt fastener", "belt",
   "scraper", "conveyor", "screen panel", "crusher liner",
   "wear part", "coupling heavy",
+  // PE/Plasson fittings (small <150mm) go here as pipe fittings
+  "plasson", "pe100", "compression fitting", "compression elbow",
+  "compression coupler", "compression tee", "electrofusion",
+  "stub flange", "spigot", "saddle", "reducing coupler",
+  "male adaptor", "female adaptor", "end plug",
+  "reducing bush", "reducing nipple", "threaded socket",
+  "hex nipple", "reducing hex",
 ];
 
 const C04_ME_KEYWORDS = [
@@ -81,7 +106,47 @@ const C04_ME_KEYWORDS = [
   "small coupling", "small shaft", "small valve", "small fitting",
   "precision", "pillow block", "spherical roller", "ball bearing",
   "wear insert small",
+  "motor coupling", "motor hub", "coupling pump",
 ];
+
+// ─── Size-based PE/Plasson check ─────────────────────────────────
+
+/**
+ * Check if a PE/Plasson fitting is ≥150mm (should go to LD).
+ * Parses the first MM dimension from the description.
+ */
+function isLargePEFitting(desc: string): boolean {
+  if (
+    !desc.includes("plasson") &&
+    !desc.includes("pe100") &&
+    !desc.includes("compression fitting") &&
+    !desc.includes("electrofusion") &&
+    !desc.includes("stub flange") &&
+    !desc.includes("spigot")
+  ) {
+    return false;
+  }
+
+  // Match patterns like "160MM", "180mm", "200 MM", "225MM"
+  const sizeMatch = desc.match(/(\d{2,4})\s*mm/i);
+  if (sizeMatch) {
+    const size = parseInt(sizeMatch[1], 10);
+    return size >= 150;
+  }
+  return false;
+}
+
+/**
+ * Check if "motor" appears but it's NOT a heavy motor — it's an electrical device
+ */
+function isMotorButNotHeavy(desc: string): boolean {
+  if (!desc.includes("motor")) return false;
+  // If it matches any explicit LD motor term, it IS heavy
+  if (LD_MOTOR_KEYWORDS.some((kw) => desc.includes(kw))) return false;
+  // If it matches exclusion terms, it's NOT heavy (electrical protection device or small part)
+  if (MOTOR_NOT_LD_KEYWORDS.some((kw) => desc.includes(kw))) return true;
+  return false;
+}
 
 // ─── Allocation function ─────────────────────────────────────────
 function matchesAny(desc: string, keywords: string[]): boolean {
@@ -97,7 +162,20 @@ export function allocateWarehouseArea(description: string | null | undefined): s
   const desc = description.toLowerCase();
 
   // STEP 1 — LD overrides everything
-  if (matchesAny(desc, LD_KEYWORDS)) return "LD";
+  // But NOT for motor protection devices or small motor parts
+  const hasLDKeyword = matchesAny(desc, LD_KEYWORDS);
+  const hasLDMotor = LD_MOTOR_KEYWORDS.some((kw) => desc.includes(kw));
+  const hasMotorNotHeavy = isMotorButNotHeavy(desc);
+  const isLargePE = isLargePEFitting(desc);
+
+  // Motor in desc but it's NOT heavy → skip LD, let C01 catch it
+  if (desc.includes("motor") && !hasMotorNotHeavy && !hasLDKeyword) {
+    // standalone "motor" (e.g. "Ball Mill Spare Motor") → LD
+    if (!matchesAny(desc, C01_KEYWORDS)) return "LD";
+  }
+  if (hasLDMotor) return "LD";
+  if (hasLDKeyword && !hasMotorNotHeavy) return "LD";
+  if (isLargePE) return "LD";
 
   // STEP 2 — C01 Electrical
   if (matchesAny(desc, C01_KEYWORDS)) return "C01-EL";
