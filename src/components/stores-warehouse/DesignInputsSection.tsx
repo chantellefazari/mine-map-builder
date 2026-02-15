@@ -156,7 +156,7 @@ export const DesignInputsSection = () => {
             <ul className="text-xs text-muted-foreground space-y-1">
               <li>• 10-25% spare capacity per zone</li>
               <li>• Modular expansion capability</li>
-              <li>• Scalable location coding</li>
+              <li>• LD bay structure supports growth (A–F)</li>
             </ul>
           </CardContent>
         </Card>

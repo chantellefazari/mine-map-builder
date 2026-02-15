@@ -6,6 +6,8 @@ import {
   VALID_BAYS,
   BAY_LAYOUT,
   EXTERNAL_PREFIXES,
+  EXTERNAL_BAY_LAYOUT,
+  VALID_EXTERNAL_BAYS,
 } from "@/utils/storeLocationValidation";
 
 export const StoreLocationCodingSection = () => {
@@ -36,10 +38,12 @@ export const StoreLocationCodingSection = () => {
   ];
 
   const externalExamples = [
-    { code: "DM-A1", description: "Dome Storage, bay A, position 1" },
-    { code: "DM-E3", description: "Dome Storage, bay E, position 3" },
-    { code: "LD-B3", description: "Laydown Yard, bay B, position 3" },
-    { code: "LD-J1", description: "Laydown Yard, rear bay J, position 1" },
+    { code: "LD-A1", description: "Dome row A, position 1" },
+    { code: "LD-A2", description: "Dome row A, position 2" },
+    { code: "LD-B3", description: "Dome row B, position 3" },
+    { code: "LD-C1", description: "Yard bay C, position 1" },
+    { code: "LD-D2", description: "Yard bay D, position 2" },
+    { code: "LD-F4", description: "Yard bay F, position 4" },
   ];
 
   const validationRules = [
@@ -48,7 +52,9 @@ export const StoreLocationCodingSection = () => {
     "Location code must follow exact format: C0X-XX-A1",
     "Bay letters skip I (go A–H, then J–K)",
     "Bin numbers range from 1 to 99",
-    "External codes (DM, LD) must not be mixed with container codes",
+    "All external codes must start with LD prefix",
+    "External bays limited to letters A–F only",
+    "Format must be exactly LD-[Letter][Number] (e.g. LD-A1)",
   ];
 
   return (
@@ -216,23 +222,45 @@ export const StoreLocationCodingSection = () => {
         </CardContent>
       </Card>
 
-      {/* External Storage (Dome & Laydown Yard) */}
+      {/* External Storage (LD Prefix Only) */}
       <Card className="border-border">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg">External Storage Codes</CardTitle>
+          <CardTitle className="text-lg">External Storage Codes — LD Prefix</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Dome and laydown yard locations use separate prefixes — not mixed with container codes
+            All external storage (dome rows and laydown yard) uses a single <code className="font-mono text-primary">LD</code> prefix
           </p>
+          <div className="mt-3 p-3 bg-muted/50 rounded-lg">
+            <code className="text-lg font-mono font-bold text-primary">LD-[Bay][Position]</code>
+            <p className="text-xs text-muted-foreground mt-1 font-mono">Example: LD-A1, LD-C3</p>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid gap-2 sm:grid-cols-2">
-            {Object.entries(EXTERNAL_PREFIXES).map(([prefix, label]) => (
-              <div key={prefix} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-border">
-                <span className="font-mono font-bold text-primary w-10">{prefix}</span>
-                <span className="text-sm text-muted-foreground">– {label}</span>
+          {/* Bay assignments */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="bg-muted/50 rounded-lg p-4 border border-border">
+              <p className="text-sm font-medium text-foreground mb-2">Dome Internal Rows</p>
+              <div className="flex flex-wrap gap-2">
+                {EXTERNAL_BAY_LAYOUT.domeRows.map((bay) => (
+                  <span key={bay} className="px-3 py-1.5 rounded-md text-sm bg-background border border-border font-mono font-medium">
+                    LD-{bay}
+                  </span>
+                ))}
               </div>
-            ))}
+              <p className="text-xs text-muted-foreground mt-2">5m forklift clearance between dome rows and container rows</p>
+            </div>
+            <div className="bg-muted/50 rounded-lg p-4 border border-border">
+              <p className="text-sm font-medium text-foreground mb-2">Yard Bays</p>
+              <div className="flex flex-wrap gap-2">
+                {EXTERNAL_BAY_LAYOUT.yardBays.map((bay) => (
+                  <span key={bay} className="px-3 py-1.5 rounded-md text-sm bg-background border border-border font-mono font-medium">
+                    LD-{bay}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
+
+          {/* Examples */}
           <Table>
             <TableHeader>
               <TableRow>
@@ -249,6 +277,25 @@ export const StoreLocationCodingSection = () => {
               ))}
             </TableBody>
           </Table>
+
+          {/* Sample Location Register */}
+          <div>
+            <h4 className="text-sm font-medium text-foreground mb-2">Sample Location Register</h4>
+            <div className="grid gap-1 sm:grid-cols-3 lg:grid-cols-6">
+              {VALID_EXTERNAL_BAYS.map((bay) => (
+                <div key={bay} className="bg-muted/50 rounded-lg p-2 border border-border">
+                  <p className="text-xs font-medium text-primary font-mono mb-1">LD-{bay}</p>
+                  <div className="flex flex-wrap gap-1">
+                    {Array.from({ length: 6 }, (_, i) => (
+                      <span key={i} className="text-[10px] font-mono text-muted-foreground">
+                        LD-{bay}{i + 1}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </CardContent>
       </Card>
 

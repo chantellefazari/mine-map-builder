@@ -41,11 +41,21 @@ export const BAY_LAYOUT = {
   rearWall: ["J", "K"],
 } as const;
 
-/** External storage prefixes */
+/** External storage prefix — all external locations use LD */
 export const EXTERNAL_PREFIXES = {
-  DM: "Dome Storage",
-  LD: "Laydown Yard",
+  LD: "Laydown & Dome Storage",
 } as const;
+
+/** External bay assignments */
+export const EXTERNAL_BAY_LAYOUT = {
+  domeRows: ["A", "B"] as const,
+  yardBays: ["C", "D", "E", "F"] as const,
+} as const;
+
+/** All valid external bay letters */
+export const VALID_EXTERNAL_BAYS = ["A", "B", "C", "D", "E", "F"] as const;
+
+export type ExternalBayLetter = typeof VALID_EXTERNAL_BAYS[number];
 
 export type ContainerId = typeof VALID_CONTAINERS[number];
 export type DisciplineCode = typeof VALID_DISCIPLINES[number];
@@ -59,8 +69,8 @@ export interface LocationCodeParts {
 }
 
 export interface ExternalLocationParts {
-  prefix: "DM" | "LD";
-  bay: BayLetter;
+  prefix: "LD";
+  bay: ExternalBayLetter;
   bin: number;
 }
 
@@ -75,7 +85,7 @@ export interface ValidationResult {
 const CONTAINER_REGEX = /^(C0[1-5])-([A-Z]{2})-([A-HJ-K])(\d{1,2})$/;
 
 /** Regex for external location: DM-A1 or LD-B3 */
-const EXTERNAL_REGEX = /^(DM|LD)-([A-HJ-K])(\d{1,2})$/;
+const EXTERNAL_REGEX = /^LD-([A-F])(\d{1,2})$/;
 
 /**
  * Validate a store location code against the standard.
@@ -87,20 +97,20 @@ export function validateLocationCode(code: string): ValidationResult {
 
   const trimmed = code.trim().toUpperCase();
 
-  // Check external location first
+  // Check external location first (LD-A1 through LD-F99)
   const extMatch = trimmed.match(EXTERNAL_REGEX);
   if (extMatch) {
-    const [, prefix, bay, binStr] = extMatch;
+    const [, bay, binStr] = extMatch;
     const bin = parseInt(binStr, 10);
     if (bin < 1 || bin > 99) {
-      return { valid: false, error: "Bin number must be between 1 and 99" };
+      return { valid: false, error: "Position number must be between 1 and 99" };
     }
     return {
       valid: true,
       isExternal: true,
       parsed: {
-        prefix: prefix as "DM" | "LD",
-        bay: bay as BayLetter,
+        prefix: "LD" as const,
+        bay: bay as ExternalBayLetter,
         bin,
       },
     };
@@ -111,7 +121,7 @@ export function validateLocationCode(code: string): ValidationResult {
   if (!match) {
     return {
       valid: false,
-      error: "Invalid format. Expected: C0X-XX-A1 (e.g. C01-EL-A3) or DM-A1 / LD-B3",
+      error: "Invalid format. Expected: C0X-XX-A1 (e.g. C01-EL-A3) or LD-A1 (e.g. LD-B3)",
     };
   }
 
