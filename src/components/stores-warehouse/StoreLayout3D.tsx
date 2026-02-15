@@ -72,23 +72,6 @@ const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick }:
         );
       })}
 
-      {/* Entry door indicator */}
-      {entry && (
-        <group>
-          {entry.side === "front" && (
-            <mesh position={[0, height * 0.35, depth / 2 + 0.02]}>
-              <planeGeometry args={[Math.min(width * 0.8, (entry.widthCm / 100) * s), height * 0.65]} />
-              <meshStandardMaterial color="#22c55e" opacity={0.2} transparent side={THREE.DoubleSide} />
-            </mesh>
-          )}
-          {entry.side === "right" && (
-            <mesh position={[width / 2 + 0.02, height * 0.35, 0]}>
-              <planeGeometry args={[(entry.widthCm / 100) * s, height * 0.65]} />
-              <meshStandardMaterial color="#22c55e" opacity={0.2} transparent side={THREE.DoubleSide} />
-            </mesh>
-          )}
-        </group>
-      )}
 
       {/* Shelves inside (visible through transparency) */}
       {container.shelves.map((_, idx) => {
