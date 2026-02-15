@@ -15,8 +15,8 @@ export const StorageZonesSection = () => {
         "Control relays, power supplies, PLCs",
         "VSD/VFD spare boards, I/O cards",
         "Cable glands, lugs, ferrules",
-        "Push buttons, selector switches, indicator lights",
-        "Panel fans and filters"
+        "Push buttons, selector switches, indicator/pilot lights",
+        "Soft starters, panel fans and filters"
       ],
       excludes: [
         "Motors, gearboxes (→ LD)",
@@ -54,6 +54,7 @@ export const StorageZonesSection = () => {
         "Test instruments (multimeters, clamp meters, meggers)",
         "Dosing pumps, metering pumps",
         "4-20mA signal devices",
+        "Hydraulic/pneumatic directional control valves (CETOP, DCV)",
         "Small pneumatic cylinders & actuators"
       ],
       excludes: [

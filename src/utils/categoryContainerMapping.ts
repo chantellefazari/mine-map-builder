@@ -52,10 +52,11 @@ const MOTOR_NOT_LD_KEYWORDS = [
 const C01_KEYWORDS = [
   "plc", "vsd", "vfd", "breaker", "mcb", "mccb", "rcbo", "relay", "contactor",
   "power supply", "isolator", "terminal", "cable gland", "cable lug", "ferrule",
-  "selector switch", "push button", "indicator light", "panel fan",
+  "selector switch", "push button", "indicator light", "pilot light", "panel fan",
   "filter electrical", "control module", "i/o card", "cpu",
   "cable", "connector", "switch", "transformer", "generator",
   "motor circuit breaker", "motor starter", "motor protection",
+  "soft starter",
 ];
 
 const C02_KEYWORDS = [
@@ -92,6 +93,9 @@ const C02_KEYWORDS = [
   "dosing pump", "metering pump",
   // 4-20mA signal devices
   "4-20ma",
+  // Hydraulic & pneumatic control valves
+  "directional valve", "cetop", "dcv ",
+  "hydraulic solenoid",
 ];
 
 // C05 checked BEFORE mechanical split so fasteners don't leak into C03/C04
