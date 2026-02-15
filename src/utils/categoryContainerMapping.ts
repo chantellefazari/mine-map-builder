@@ -9,9 +9,7 @@
  *   C01 (EL) – Electrical
  *   C02 (IN) – Instrumentation & Control
  *   C03 (ME) – Mechanical Small Parts (bearings, seals, pumps, valves, etc.)
- *   C04 (LU) – Lubrication & Oils
  *   C05 (FA) – Fasteners & Consumables
- *   C06 (FT) – Pipe Fittings & Plumbing
  */
 
 export interface ContainerMapping {
@@ -46,18 +44,18 @@ const CATEGORY_TO_CONTAINER: Record<string, ContainerMapping> = {
   "OEM Assemblies / Packages":         { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
   "Tanks & Vessels":                   { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
 
-  // C04 – Lubrication
-  "Filters":                           { containerId: "C04", zoneCode: "LU", containerLabel: "Lubrication & Oils" },
-  "Lubrication System Components":     { containerId: "C04", zoneCode: "LU", containerLabel: "Lubrication & Oils" },
+  // C03 – Mechanical (previously C04 Lubrication — now merged into Mechanical)
+  "Filters":                           { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+  "Lubrication System Components":     { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
+
+  // C03 – Mechanical (previously C06 Fittings — now merged into Mechanical)
+  "Hoses & Pipework":                  { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
 
   // C05 – Fasteners & Consumables
   "Fasteners":                         { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
   "Consumables":                       { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
   "Safety Equipment":                  { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
   "Tools & Workshop Equipment":        { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
-
-  // C06 – Pipe Fittings
-  "Hoses & Pipework":                  { containerId: "C06", zoneCode: "FT", containerLabel: "Pipe Fittings & Plumbing" },
 };
 
 /** Default container for unmapped categories */

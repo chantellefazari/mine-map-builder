@@ -124,12 +124,10 @@ export const YARD_DIMENSIONS: YardDimensions = {
  *
  *  Left Leg (vertical):        Right Leg (vertical):
  *    C01 (20ft)                   C05 (20ft)
- *    C02 (20ft)                   C06 (20ft)
+ *    C02 (20ft)
  *
  *  Base (horizontal):
  *    C03 (40ft) ---- [5m forklift gap] ----
- *
- *  C04 (10ft Lubrication) sits outside U near forklift access
  *
  *  Dome footprint (12m × 12m) sits inside the courtyard
  */
@@ -163,10 +161,10 @@ export const LAYOUT_ZONE_GROUPS: LayoutZoneGroup[] = [
   {
     id: "right-leg",
     label: "Right Leg — High-Access",
-    description: "Fasteners & Fittings (daily access)",
+    description: "Fasteners & Consumables (daily access)",
     color: "#64748b",
     bgColor: "rgba(100, 116, 139, 0.06)",
-    position: { x: RIGHT_X - 5, y: TOP_Y - 5, width: CONTAINER_20FT_W + 10, height: CONTAINER_20FT_H * 2 + GAP_BETWEEN + 10 },
+    position: { x: RIGHT_X - 5, y: TOP_Y - 5, width: CONTAINER_20FT_W + 10, height: CONTAINER_20FT_H + 10 },
   },
   {
     id: "base",
@@ -337,151 +335,6 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     topShelfMaxHeightCm: 180,
   },
 
-  // ===== HAZMAT / LUBRICATION (outside U) =====
-  {
-    id: "C04",
-    zone: "STO-LU",
-    zoneCode: "LU",
-    label: "Lubrication & Oils",
-    shortLabel: "Lubrication",
-    color: "#f59e0b",
-    bgColor: "rgba(245, 158, 11, 0.15)",
-    borderColor: "#f59e0b",
-    environment: "Ventilated, spill containment",
-    containerType: "10ft Container / Cage",
-    shelves: ["A", "B", "C"],
-    binsPerShelf: 4,
-    position: { x: LEFT_X + CONTAINER_40FT_W + 30, y: BASE_Y },
-    width: 2.99 * PX_PER_M,
-    height: CONTAINER_40FT_H,
-    position3D: { x: 4.5, y: 0, z: 4.8 },
-    orientation: "horizontal",
-    physicalDimensions: {
-      externalLengthM: 2.99,
-      externalWidthM: 2.44,
-      externalHeightM: 2.59,
-      internalLengthM: 2.8,
-      internalWidthM: 2.35,
-      internalHeightM: 2.39,
-      aisleWidthCm: 80,
-      rackingDepthCm: 70,
-    },
-    entryPoints: [
-      { type: "cage-front", side: "front", widthCm: 240, description: "Open cage front — full ventilation, mesh sides for airflow" },
-    ],
-    accessFrequency: "Daily",
-    growthAllowance: "10%",
-    specialRequirements: ["Ventilated area", "Spill containment tray", "Spill kit accessible", "No ignition sources"],
-    stockingCategories: [
-      { name: "Grease", items: ["Grease cartridges", "Grease nipples", "Auto-lube injectors"] },
-      { name: "Oil", items: ["Oil sample bottles", "Oil filters", "Lube lines & fittings"] },
-      { name: "Monitoring", items: ["Breathers", "Sight glasses", "Level indicators", "Desiccant breathers"] },
-    ],
-    shelfHeightCm: 55,
-    binWidthCm: 70,
-    binDepthCm: 60,
-    maxItemWeightKg: 15,
-    bottomShelfHeightCm: 25,
-    topShelfMaxHeightCm: 165,
-  },
-
-  // ===== RIGHT LEG (vertical) =====
-  {
-    id: "C05",
-    zone: "STO-FA",
-    zoneCode: "FA",
-    label: "Fasteners & Consumables",
-    shortLabel: "Fasteners",
-    color: "#64748b",
-    bgColor: "rgba(100, 116, 139, 0.15)",
-    borderColor: "#64748b",
-    environment: "Standard, high-access bins",
-    containerType: "20ft Standard Container",
-    shelves: ["A", "B", "C", "D", "E", "F"],
-    binsPerShelf: 9,
-    position: { x: RIGHT_X, y: TOP_Y },
-    width: CONTAINER_20FT_W,
-    height: CONTAINER_20FT_H,
-    position3D: { x: 3.6, y: 0, z: -1.6 },
-    orientation: "vertical",
-    physicalDimensions: {
-      externalLengthM: 6.06,
-      externalWidthM: 2.44,
-      externalHeightM: 2.59,
-      internalLengthM: 5.9,
-      internalWidthM: 2.35,
-      internalHeightM: 2.39,
-      aisleWidthCm: 75,
-      rackingDepthCm: 55,
-    },
-    entryPoints: [
-      { type: "end-double", side: "front", widthCm: 230, description: "Double cargo doors — full-width for daily high-volume access" },
-    ],
-    accessFrequency: "Daily",
-    growthAllowance: "25%",
-    specialRequirements: ["High-organisation bins (Kanban friendly)", "Clear labelling", "Small parts trays"],
-    stockingCategories: [
-      { name: "Fasteners", items: ["Bolts", "Nuts", "Washers", "Studs", "Anchors", "Threaded rod"] },
-      { name: "Clips", items: ["U-bolts", "Hose clamps", "Retaining clips", "Pins"] },
-      { name: "Hoses", items: ["Hydraulic hoses (short)", "Hose ends", "Adaptors"] },
-      { name: "Sealants", items: ["PTFE tape", "Thread sealant", "Adhesives"] },
-      { name: "Consumables", items: ["Rags", "Absorbents", "PPE consumables (gloves, earplugs)"] },
-    ],
-    shelfHeightCm: 35,
-    binWidthCm: 26,
-    binDepthCm: 45,
-    maxItemWeightKg: 15,
-    bottomShelfHeightCm: 15,
-    topShelfMaxHeightCm: 180,
-  },
-  {
-    id: "C06",
-    zone: "STO-FT",
-    zoneCode: "FT",
-    label: "Pipe Fittings & Plumbing",
-    shortLabel: "Fittings",
-    color: "#0ea5e9",
-    bgColor: "rgba(14, 165, 233, 0.15)",
-    borderColor: "#0ea5e9",
-    environment: "Standard industrial, dry storage",
-    containerType: "20ft Standard Container",
-    shelves: ["A", "B", "C", "D", "E"],
-    binsPerShelf: 9,
-    position: { x: RIGHT_X, y: BOTTOM_20FT_Y },
-    width: CONTAINER_20FT_W,
-    height: CONTAINER_20FT_H,
-    position3D: { x: 3.6, y: 0, z: 1.6 },
-    orientation: "vertical",
-    physicalDimensions: {
-      externalLengthM: 6.06,
-      externalWidthM: 2.44,
-      externalHeightM: 2.59,
-      internalLengthM: 5.9,
-      internalWidthM: 2.35,
-      internalHeightM: 2.39,
-      aisleWidthCm: 80,
-      rackingDepthCm: 60,
-    },
-    entryPoints: [
-      { type: "end-double", side: "front", widthCm: 230, description: "Double cargo doors — full-width access for loading pipe fittings" },
-    ],
-    accessFrequency: "Daily",
-    growthAllowance: "20%",
-    specialRequirements: ["Size-sorted bins", "Clearly labelled by type & size", "Heavy fittings on lower shelves"],
-    stockingCategories: [
-      { name: "Fittings", items: ["Elbows", "Tees", "Reducers", "Unions", "Couplings", "Flanges"] },
-      { name: "Nipples", items: ["Barrel nipples", "Hex nipples", "Reducing nipples", "Close nipples"] },
-      { name: "Valves (small)", items: ["Gate valves (≤50mm)", "Ball valves (≤50mm)", "Check valves (≤50mm)"] },
-      { name: "Adaptors", items: ["BSP adaptors", "NPT adaptors", "Camlock fittings", "Barb fittings"] },
-      { name: "Pipe Clamps", items: ["Pipe supports", "U-bolts (pipe)", "Saddle clamps", "Pipe hangers"] },
-    ],
-    shelfHeightCm: 40,
-    binWidthCm: 26,
-    binDepthCm: 50,
-    maxItemWeightKg: 15,
-    bottomShelfHeightCm: 20,
-    topShelfMaxHeightCm: 180,
-  },
 ];
 
 export const ZONE_CODES: ContainerZone[] = [
@@ -492,11 +345,9 @@ export const ZONE_CODES: ContainerZone[] = [
   { code: "PN", label: "Pneumatics" },
   { code: "FI", label: "Filters" },
   { code: "BR", label: "Bearings" },
-  { code: "FT", label: "Fasteners" },
+  { code: "FA", label: "Fasteners" },
   { code: "SE", label: "Seals" },
-  { code: "LU", label: "Lubrication" },
   { code: "SA", label: "Safety / PPE" },
-  { code: "FT", label: "Fittings" },
 ];
 
 export function generateBinsForContainer(container: StoreContainer): ShelfBin[] {
