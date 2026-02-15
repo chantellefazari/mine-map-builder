@@ -329,26 +329,23 @@ const DomeRoof = () => {
   const s = 0.5;
   const domeWidthM = 12;
   const domeDepthM = 12;
-  const domeHeightM = 5; // peak height above ground
+  const containerHeightM = 2.59;
+  const domeRiseM = 3; // arch rise above container tops
   const dome = dome3DPosition();
   
-  // Centre the dome over the courtyard area, shifted to cover full 12x12
   const centreX = dome.x;
   const centreZ = dome.z + (domeDepthM - DOME_DIMENSIONS.depthM) * s * 0.25;
   
   const w = domeWidthM * s;
   const d = domeDepthM * s;
-  const h = domeHeightM * s;
+  const baseY = containerHeightM * s; // spring from container top
+  const radius = w / 2;
 
-  // Create dome arch segments
-  const archSegments = 24;
-  const lengthSegments = 12;
-  
   return (
-    <group position={[centreX, 0, centreZ]}>
+    <group position={[centreX, baseY, centreZ]}>
       {/* Semi-cylindrical dome shell */}
       <mesh rotation={[0, Math.PI / 2, 0]}>
-        <cylinderGeometry args={[w / 2, w / 2, d, archSegments, lengthSegments, true, 0, Math.PI]} />
+        <cylinderGeometry args={[radius, radius, d, 24, 12, true, 0, Math.PI]} />
         <meshStandardMaterial 
           color="#f0f9ff" 
           transparent 
@@ -359,21 +356,21 @@ const DomeRoof = () => {
         />
       </mesh>
       
-      {/* Dome wireframe for structure visibility */}
+      {/* Dome wireframe */}
       <lineSegments rotation={[0, Math.PI / 2, 0]}>
-        <edgesGeometry args={[new THREE.CylinderGeometry(w / 2, w / 2, d, 16, 8, true, 0, Math.PI)]} />
+        <edgesGeometry args={[new THREE.CylinderGeometry(radius, radius, d, 16, 8, true, 0, Math.PI)]} />
         <lineBasicMaterial color="#94a3b8" opacity={0.25} transparent />
       </lineSegments>
 
-      {/* Arch ribs - structural members */}
+      {/* Arch ribs */}
       {Array.from({ length: 7 }, (_, i) => {
         const zPos = -d / 2 + (i + 0.5) * (d / 7);
         const points: THREE.Vector3[] = [];
         for (let a = 0; a <= 32; a++) {
           const angle = (a / 32) * Math.PI;
           points.push(new THREE.Vector3(
-            Math.cos(angle) * (w / 2),
-            Math.sin(angle) * (w / 2),
+            Math.cos(angle) * radius,
+            Math.sin(angle) * radius,
             zPos
           ));
         }
@@ -386,22 +383,22 @@ const DomeRoof = () => {
         );
       })}
 
-      {/* Ridge beam along the top */}
-      <mesh position={[0, w / 2, 0]}>
+      {/* Ridge beam */}
+      <mesh position={[0, radius, 0]}>
         <boxGeometry args={[0.03, 0.03, d]} />
         <meshStandardMaterial color="#64748b" opacity={0.5} transparent metalness={0.5} />
       </mesh>
 
-      {/* Base edges */}
+      {/* Base edges sitting on container tops */}
       {[-1, 1].map(side => (
-        <mesh key={side} position={[side * (w / 2), 0, 0]}>
+        <mesh key={side} position={[side * radius, 0, 0]}>
           <boxGeometry args={[0.04, 0.04, d]} />
           <meshStandardMaterial color="#475569" opacity={0.4} transparent />
         </mesh>
       ))}
 
       {/* Label */}
-      <Text position={[0, w / 2 + 0.3, 0]} fontSize={0.18} color="#64748b" anchorX="center" fillOpacity={0.5}>
+      <Text position={[0, radius + 0.3, 0]} fontSize={0.18} color="#64748b" anchorX="center" fillOpacity={0.5}>
         DOME SHELTER 12m × 12m
       </Text>
     </group>
