@@ -72,6 +72,40 @@ const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick }:
         );
       })}
 
+      {/* Entry door facing into the dome courtyard */}
+      {(() => {
+        const doorH = height * 0.7;
+        const doorW = Math.min(isVertical ? depth * 0.35 : width * 0.35, 0.55);
+        const doorY = doorH / 2;
+        // Left leg → door on +X (right), Right leg → door on -X (left), Base → door on -Z (front toward dome)
+        const isLeftLeg = container.id === "C01" || container.id === "C02";
+        const isRightLeg = container.id === "C05" || container.id === "C06";
+
+        if (isLeftLeg) {
+          return (
+            <mesh position={[width / 2 + 0.02, doorY, 0]}>
+              <planeGeometry args={[doorW, doorH]} />
+              <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
+            </mesh>
+          );
+        } else if (isRightLeg) {
+          return (
+            <mesh position={[-width / 2 - 0.02, doorY, 0]}>
+              <planeGeometry args={[doorW, doorH]} />
+              <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
+            </mesh>
+          );
+        } else {
+          // C03 base — door on -Z side (facing dome)
+          return (
+            <mesh position={[0, doorY, -depth / 2 - 0.02]}>
+              <planeGeometry args={[doorW, doorH]} />
+              <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
+            </mesh>
+          );
+        }
+      })()}
+
 
       {/* Shelves inside (visible through transparency) */}
       {container.shelves.map((_, idx) => {
