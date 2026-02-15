@@ -3,7 +3,7 @@ import { STORE_CONTAINERS, LAYOUT_ZONE_GROUPS, YARD_DIMENSIONS, type StoreContai
 import { ContainerDetail2D } from "./ContainerDetail2D";
 import { ArrowLeft, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getCategoriesForContainer, getContainerMappingSummary } from "@/utils/categoryContainerMapping";
+import { getCategoriesForContainer } from "@/utils/categoryContainerMapping";
 
 interface StoreLayout2DProps {
   liveMode: boolean;
@@ -155,31 +155,26 @@ interface FloorPlanSVGProps {
 }
 
 const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSVGProps) => {
+  // Compute SVG dimensions from data
+  const svgW = 560;
+  const svgH = 480;
+
+  // Dome area
+  const domeGroup = LAYOUT_ZONE_GROUPS.find((g) => g.id === "dome");
+
+  // Forklift gap starts after the 40ft container
+  const c03 = STORE_CONTAINERS.find((c) => c.id === "C03")!;
+  const forkliftX = c03.position.x + c03.width + 5;
+  const rightLeg = STORE_CONTAINERS.find((c) => c.id === "C05")!;
+  const forkliftW = rightLeg.position.x - forkliftX;
+
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
-      <svg viewBox="0 0 620 740" className="w-full h-auto" style={{ maxHeight: "750px" }}>
+      <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full h-auto" style={{ maxHeight: "700px" }}>
         {/* Background */}
-        <rect x="0" y="0" width="620" height="740" fill="hsl(var(--card))" />
+        <rect x="0" y="0" width={svgW} height={svgH} fill="hsl(var(--card))" />
 
-        {/* Access Road */}
-        <rect x="0" y="375" width="620" height="20" fill="hsl(var(--muted))" rx="2" />
-        <text x="300" y="389" textAnchor="middle" fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
-          ACCESS ROAD / WALKWAY ({YARD_DIMENSIONS.accessRoadWidthM}m wide)
-        </text>
-
-        {/* Walkway between clean and mechanical */}
-        <rect x="0" y="185" width="620" height="20" fill="hsl(var(--muted))" rx="2" />
-        <text x="300" y="199" textAnchor="middle" fontSize="9" fill="hsl(var(--muted-foreground))">
-          WALKWAY ({YARD_DIMENSIONS.walkwayWidthM}m)
-        </text>
-
-        {/* Entry Arrow */}
-        <polygon points="600,690 620,675 600,660" fill="hsl(var(--primary))" opacity="0.5" />
-        <text x="580" y="680" textAnchor="end" fontSize="10" fill="hsl(var(--primary))" fontWeight="600">
-          ENTRY →
-        </text>
-
-        {/* Zone Groups */}
+        {/* Zone Groups (background) */}
         {LAYOUT_ZONE_GROUPS.map((group) => (
           <g key={group.id}>
             <rect
@@ -189,109 +184,101 @@ const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSV
             <text x={group.position.x + 8} y={group.position.y + 14} fontSize="9" fill={group.color} fontWeight="600">
               {group.label.toUpperCase()}
             </text>
-            <text x={group.position.x + 8} y={group.position.y + 26} fontSize="8" fill={group.color} opacity="0.7">
-              {group.description}
-            </text>
+            {group.id !== "dome" && (
+              <text x={group.position.x + 8} y={group.position.y + 26} fontSize="8" fill={group.color} opacity="0.7">
+                {group.description}
+              </text>
+            )}
           </g>
         ))}
+
+        {/* Dome label centered */}
+        {domeGroup && (
+          <g>
+            <text
+              x={domeGroup.position.x + domeGroup.position.width / 2}
+              y={domeGroup.position.y + domeGroup.position.height / 2 - 10}
+              textAnchor="middle" fontSize="14" fill="#22c55e" fontWeight="700" opacity="0.4"
+            >
+              DOME AREA
+            </text>
+            <text
+              x={domeGroup.position.x + domeGroup.position.width / 2}
+              y={domeGroup.position.y + domeGroup.position.height / 2 + 8}
+              textAnchor="middle" fontSize="10" fill="#22c55e" opacity="0.35"
+            >
+              {YARD_DIMENSIONS.courtyardWidthM}m × {YARD_DIMENSIONS.courtyardDepthM}m clear
+            </text>
+          </g>
+        )}
+
+        {/* Forklift Access Path */}
+        <rect
+          x={forkliftX} y={c03.position.y}
+          width={forkliftW} height={c03.height}
+          fill="#22c55e" opacity="0.08" rx="4"
+        />
+        <line
+          x1={forkliftX + forkliftW / 2} y1={c03.position.y - 10}
+          x2={forkliftX + forkliftW / 2} y2={c03.position.y + c03.height + 15}
+          stroke="#22c55e" strokeWidth="1.5" strokeDasharray="6 3" opacity="0.4"
+        />
+        <text
+          x={forkliftX + forkliftW / 2} y={c03.position.y + c03.height + 25}
+          textAnchor="middle" fontSize="8" fill="#22c55e" fontWeight="600"
+        >
+          FORKLIFT ACCESS ({YARD_DIMENSIONS.forkliftGapM}m gap)
+        </text>
 
         {/* Containers */}
         {STORE_CONTAINERS.map((container) => {
           const partsCount = getPartsCount(container);
           const totalBins = container.shelves.length * container.binsPerShelf;
           const dim = container.physicalDimensions;
-          const entry = container.entryPoints[0];
+          const isVertical = container.orientation === "vertical";
+          const displayW = isVertical ? dim.externalWidthM : dim.externalLengthM;
+          const displayD = isVertical ? dim.externalLengthM : dim.externalWidthM;
 
           return (
             <g key={container.id} className="cursor-pointer" onClick={() => onContainerClick(container)}>
               {/* Container body */}
               <rect
                 x={container.position.x} y={container.position.y} width={container.width} height={container.height}
-                fill={container.bgColor} stroke={container.borderColor} strokeWidth="2" rx="6"
+                fill={container.bgColor} stroke={container.borderColor} strokeWidth="2" rx="4"
                 className="transition-all duration-200 hover:opacity-80"
               />
 
               {/* Container ID badge */}
-              <rect x={container.position.x + 4} y={container.position.y + 4} width="36" height="18" fill={container.color} rx="4" />
-              <text x={container.position.x + 22} y={container.position.y + 16} textAnchor="middle" fontSize="9" fill="white" fontWeight="700" fontFamily="monospace">
+              <rect x={container.position.x + 3} y={container.position.y + 3} width="32" height="16" fill={container.color} rx="3" />
+              <text x={container.position.x + 19} y={container.position.y + 14} textAnchor="middle" fontSize="8" fill="white" fontWeight="700" fontFamily="monospace">
                 {container.id}
               </text>
 
               {/* Container label */}
-              <text x={container.position.x + container.width / 2} y={container.position.y + 36} textAnchor="middle" fontSize="11" fill="hsl(var(--foreground))" fontWeight="600">
+              <text x={container.position.x + container.width / 2} y={container.position.y + container.height / 2 - 4} textAnchor="middle" fontSize={container.width > 100 ? "11" : "9"} fill="hsl(var(--foreground))" fontWeight="600">
                 {container.shortLabel}
               </text>
 
               {/* Physical dimensions */}
-              <text x={container.position.x + container.width / 2} y={container.position.y + 50} textAnchor="middle" fontSize="8" fill="hsl(var(--muted-foreground))" fontFamily="monospace">
-                {dim.externalLengthM}m × {dim.externalWidthM}m × {dim.externalHeightM}m
+              <text x={container.position.x + container.width / 2} y={container.position.y + container.height / 2 + 10} textAnchor="middle" fontSize="7" fill="hsl(var(--muted-foreground))" fontFamily="monospace">
+                {displayW.toFixed(1)}m × {displayD.toFixed(1)}m × {dim.externalHeightM}m
               </text>
-
-              {/* Mini shelf preview */}
-              {container.shelves.slice(0, 4).map((shelf, idx) => {
-                const y = container.position.y + 56 + idx * 5;
-                const x = container.position.x + container.width / 2 - 25;
-                return (
-                  <g key={shelf}>
-                    <rect x={x} y={y} width={50} height={3} fill={container.color} opacity={0.2} rx="1" />
-                    {Array.from({ length: Math.min(container.binsPerShelf, 6) }, (_, i) => (
-                      <rect key={i} x={x + i * (50 / Math.min(container.binsPerShelf, 6))} y={y} width={1} height={3} fill={container.color} opacity={0.3} />
-                    ))}
-                  </g>
-                );
-              })}
 
               {/* Bin/shelf info */}
-              <text x={container.position.x + container.width / 2} y={container.position.y + 86} textAnchor="middle" fontSize="7" fill="hsl(var(--muted-foreground))">
-                {container.shelves.length} shelves × {container.binsPerShelf} bins = {totalBins} · {container.shelfHeightCm}cm H
+              <text x={container.position.x + container.width / 2} y={container.position.y + container.height / 2 + 22} textAnchor="middle" fontSize="7" fill="hsl(var(--muted-foreground))">
+                {container.shelves.length}S × {container.binsPerShelf}B = {totalBins} bins
               </text>
 
-              {/* Entry point indicator */}
-              {entry && (
-                <g>
-                  {entry.side === "front" && (
-                    <>
-                      <rect
-                        x={container.position.x + container.width / 2 - 18}
-                        y={container.position.y + container.height - 3}
-                        width={36} height={6}
-                        fill="hsl(var(--primary))" opacity={0.3} rx="2"
-                      />
-                      <text x={container.position.x + container.width / 2} y={container.position.y + container.height + 10} textAnchor="middle" fontSize="6" fill="hsl(var(--primary))">
-                        ▲ {entry.type.replace(/-/g, " ")} ({entry.widthCm}cm)
-                      </text>
-                    </>
-                  )}
-                  {entry.side === "right" && (
-                    <>
-                      <rect
-                        x={container.position.x + container.width - 3}
-                        y={container.position.y + container.height / 2 - 12}
-                        width={6} height={24}
-                        fill="hsl(var(--primary))" opacity={0.3} rx="2"
-                      />
-                      <text
-                        x={container.position.x + container.width + 8}
-                        y={container.position.y + container.height / 2 + 3}
-                        fontSize="6" fill="hsl(var(--primary))"
-                      >
-                        → Entry
-                      </text>
-                    </>
-                  )}
-                </g>
-              )}
-
-              {/* Access frequency */}
-              <text x={container.position.x + container.width / 2} y={container.position.y + 96} textAnchor="middle" fontSize="7" fill="hsl(var(--muted-foreground))" opacity={0.7}>
-                {container.accessFrequency} access · Aisle {dim.aisleWidthCm}cm
+              {/* Container type */}
+              <text x={container.position.x + container.width / 2} y={container.position.y + container.height - 6} textAnchor="middle" fontSize="6" fill="hsl(var(--muted-foreground))" opacity="0.6">
+                {container.containerType}
               </text>
 
               {/* Parts count (live mode) */}
               {liveMode && partsCount !== null && (
                 <>
-                  <rect x={container.position.x + container.width - 50} y={container.position.y + 4} width="46" height="18" fill={partsCount > 0 ? "hsl(var(--primary))" : "hsl(var(--muted))"} rx="9" />
-                  <text x={container.position.x + container.width - 27} y={container.position.y + 16} textAnchor="middle" fontSize="8" fill={partsCount > 0 ? "white" : "hsl(var(--muted-foreground))"} fontWeight="600">
+                  <rect x={container.position.x + container.width - 42} y={container.position.y + 3} width="38" height="16" fill={partsCount > 0 ? "hsl(var(--primary))" : "hsl(var(--muted))"} rx="8" />
+                  <text x={container.position.x + container.width - 23} y={container.position.y + 14} textAnchor="middle" fontSize="7" fill={partsCount > 0 ? "white" : "hsl(var(--muted-foreground))"} fontWeight="600">
                     {partsCount} parts
                   </text>
                 </>
@@ -300,9 +287,17 @@ const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSV
           );
         })}
 
-        {/* Yard dimensions */}
-        <text x="310" y="730" textAnchor="middle" fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
-          TCMG STORES YARD — {YARD_DIMENSIONS.totalWidthM}m × {YARD_DIMENSIONS.totalDepthM}m · Container spacing: {YARD_DIMENSIONS.containerSpacingM}m
+        {/* Yard dimensions label */}
+        <text x={svgW / 2} y={svgH - 10} textAnchor="middle" fontSize="9" fill="hsl(var(--muted-foreground))" fontWeight="500">
+          TCMG STORES YARD — U-Shape · {YARD_DIMENSIONS.totalWidthM}m × {YARD_DIMENSIONS.totalDepthM}m · Courtyard: {YARD_DIMENSIONS.courtyardWidthM}m × {YARD_DIMENSIONS.courtyardDepthM}m
+        </text>
+
+        {/* Clearance indicators */}
+        <text x={20} y={svgH / 2} textAnchor="middle" fontSize="7" fill="hsl(var(--muted-foreground))" opacity="0.5" transform={`rotate(-90, 20, ${svgH / 2})`}>
+          {YARD_DIMENSIONS.outerClearanceM}m clearance
+        </text>
+        <text x={svgW - 15} y={svgH / 2} textAnchor="middle" fontSize="7" fill="hsl(var(--muted-foreground))" opacity="0.5" transform={`rotate(90, ${svgW - 15}, ${svgH / 2})`}>
+          {YARD_DIMENSIONS.outerClearanceM}m clearance
         </text>
       </svg>
     </div>

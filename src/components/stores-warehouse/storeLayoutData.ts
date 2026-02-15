@@ -44,6 +44,8 @@ export interface EntryPoint {
   description: string;
 }
 
+export type ContainerOrientation = "horizontal" | "vertical";
+
 export interface StoreContainer {
   id: string;
   zone: string;
@@ -63,6 +65,8 @@ export interface StoreContainer {
   height: number;
   // 3D position
   position3D: { x: number; y: number; z: number };
+  /** Orientation in yard layout: "vertical" = length along depth, "horizontal" = length along width */
+  orientation: ContainerOrientation;
   // Physical dimensions
   physicalDimensions: PhysicalDimensions;
   entryPoints: EntryPoint[];
@@ -96,61 +100,94 @@ export interface YardDimensions {
   accessRoadWidthM: number;
   walkwayWidthM: number;
   containerSpacingM: number;
+  courtyardWidthM: number;
+  courtyardDepthM: number;
+  forkliftGapM: number;
+  outerClearanceM: number;
 }
 
+// U-shape yard dimensions
 export const YARD_DIMENSIONS: YardDimensions = {
-  totalWidthM: 25,
+  totalWidthM: 22,
   totalDepthM: 18,
   accessRoadWidthM: 4,
   walkwayWidthM: 1.5,
-  containerSpacingM: 2,
+  containerSpacingM: 0.4,
+  courtyardWidthM: 12,
+  courtyardDepthM: 12,
+  forkliftGapM: 5,
+  outerClearanceM: 2.5,
 };
 
-// Optimized grouped layout for mining store yard
+/*
+ * U-SHAPE LAYOUT (scale: 25px per metre)
+ *
+ *  Left Leg (vertical):        Right Leg (vertical):
+ *    C01 (20ft)                   C05 (20ft)
+ *    C02 (20ft)                   C06 (20ft)
+ *
+ *  Base (horizontal):
+ *    C03 (40ft) ---- [5m forklift gap] ----
+ *
+ *  C04 (10ft Lubrication) sits outside U near forklift access
+ *
+ *  Dome footprint (12m × 12m) sits inside the courtyard
+ */
+
+// Scale: 25px per metre
+const PX_PER_M = 25;
+
+// Derived positions
+const LEFT_X = YARD_DIMENSIONS.outerClearanceM * PX_PER_M; // 62.5 → 63
+const CONTAINER_20FT_W = 2.44 * PX_PER_M; // 61
+const CONTAINER_20FT_H = 6.06 * PX_PER_M; // 151.5
+const CONTAINER_40FT_W = 12.19 * PX_PER_M; // 305
+const CONTAINER_40FT_H = 2.44 * PX_PER_M; // 61
+const COURTYARD_START_X = LEFT_X + CONTAINER_20FT_W; // 124
+const RIGHT_X = COURTYARD_START_X + YARD_DIMENSIONS.courtyardWidthM * PX_PER_M; // 424
+const TOP_Y = 30;
+const GAP_BETWEEN = YARD_DIMENSIONS.containerSpacingM * PX_PER_M; // 10
+const BOTTOM_20FT_Y = TOP_Y + CONTAINER_20FT_H + GAP_BETWEEN; // 192
+const BASE_Y = BOTTOM_20FT_Y + CONTAINER_20FT_H + GAP_BETWEEN; // 353
+
+// Zone groups for the U-shape layout
 export const LAYOUT_ZONE_GROUPS: LayoutZoneGroup[] = [
   {
-    id: "clean",
-    label: "Clean Zone",
-    description: "Dust-controlled, climate-stable",
+    id: "left-leg",
+    label: "Left Leg — Clean Zone",
+    description: "Electrical & Instrumentation (dust-controlled)",
     color: "#6366f1",
-    bgColor: "rgba(99, 102, 241, 0.08)",
-    position: { x: 30, y: 20, width: 540, height: 160 },
+    bgColor: "rgba(99, 102, 241, 0.06)",
+    position: { x: LEFT_X - 5, y: TOP_Y - 5, width: CONTAINER_20FT_W + 10, height: CONTAINER_20FT_H * 2 + GAP_BETWEEN + 10 },
   },
   {
-    id: "mechanical",
-    label: "Mechanical Zone",
-    description: "Standard industrial, dry storage",
-    color: "#3b82f6",
-    bgColor: "rgba(59, 130, 246, 0.08)",
-    position: { x: 30, y: 210, width: 360, height: 160 },
-  },
-  {
-    id: "highaccess",
-    label: "High-Access Zone",
-    description: "Near entry, daily access",
+    id: "right-leg",
+    label: "Right Leg — High-Access",
+    description: "Fasteners & Fittings (daily access)",
     color: "#64748b",
-    bgColor: "rgba(100, 116, 139, 0.08)",
-    position: { x: 30, y: 400, width: 360, height: 160 },
+    bgColor: "rgba(100, 116, 139, 0.06)",
+    position: { x: RIGHT_X - 5, y: TOP_Y - 5, width: CONTAINER_20FT_W + 10, height: CONTAINER_20FT_H * 2 + GAP_BETWEEN + 10 },
   },
   {
-    id: "fittings",
-    label: "Fittings Zone",
-    description: "Pipe fittings & plumbing, size-sorted",
-    color: "#0ea5e9",
-    bgColor: "rgba(14, 165, 233, 0.08)",
-    position: { x: 30, y: 560, width: 360, height: 160 },
+    id: "base",
+    label: "Base — Mechanical",
+    description: "40ft container, main mechanical stores",
+    color: "#3b82f6",
+    bgColor: "rgba(59, 130, 246, 0.06)",
+    position: { x: LEFT_X - 5, y: BASE_Y - 5, width: CONTAINER_40FT_W + 10, height: CONTAINER_40FT_H + 10 },
   },
   {
-    id: "hazmat",
-    label: "Hazmat Zone",
-    description: "Ventilated, spill containment",
-    color: "#f59e0b",
-    bgColor: "rgba(245, 158, 11, 0.08)",
-    position: { x: 420, y: 210, width: 150, height: 160 },
+    id: "dome",
+    label: "Dome Area",
+    description: "12m × 12m covered courtyard",
+    color: "#22c55e",
+    bgColor: "rgba(34, 197, 94, 0.04)",
+    position: { x: COURTYARD_START_X, y: TOP_Y, width: YARD_DIMENSIONS.courtyardWidthM * PX_PER_M, height: YARD_DIMENSIONS.courtyardDepthM * PX_PER_M },
   },
 ];
 
 export const STORE_CONTAINERS: StoreContainer[] = [
+  // ===== LEFT LEG (vertical) =====
   {
     id: "C01",
     zone: "STO-EL",
@@ -164,10 +201,11 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     containerType: "20ft Modified Container",
     shelves: ["A", "B", "C", "D"],
     binsPerShelf: 6,
-    position: { x: 50, y: 40 },
-    width: 240,
-    height: 120,
-    position3D: { x: -3, y: 0, z: -3 },
+    position: { x: LEFT_X, y: TOP_Y },
+    width: CONTAINER_20FT_W,
+    height: CONTAINER_20FT_H,
+    position3D: { x: -3.6, y: 0, z: -1.6 },
+    orientation: "vertical",
     physicalDimensions: {
       externalLengthM: 6.06,
       externalWidthM: 2.44,
@@ -212,10 +250,11 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     containerType: "20ft Modified Container",
     shelves: ["A", "B", "C", "D"],
     binsPerShelf: 6,
-    position: { x: 310, y: 40 },
-    width: 240,
-    height: 120,
-    position3D: { x: 3, y: 0, z: -3 },
+    position: { x: LEFT_X, y: BOTTOM_20FT_Y },
+    width: CONTAINER_20FT_W,
+    height: CONTAINER_20FT_H,
+    position3D: { x: -3.6, y: 0, z: 1.6 },
+    orientation: "vertical",
     physicalDimensions: {
       externalLengthM: 6.06,
       externalWidthM: 2.44,
@@ -246,6 +285,8 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     bottomShelfHeightCm: 30,
     topShelfMaxHeightCm: 180,
   },
+
+  // ===== BASE OF U (horizontal — 40ft) =====
   {
     id: "C03",
     zone: "STO-ME",
@@ -256,18 +297,19 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     bgColor: "rgba(59, 130, 246, 0.15)",
     borderColor: "#3b82f6",
     environment: "Standard industrial, dry storage",
-    containerType: "20ft Standard Container",
-    shelves: ["A", "B", "C", "D", "E"],
-    binsPerShelf: 9,
-    position: { x: 50, y: 230 },
-    width: 320,
-    height: 120,
-    position3D: { x: 0, y: 0, z: 0 },
+    containerType: "40ft Standard Container",
+    shelves: ["A", "B", "C", "D", "E", "F", "G", "H"],
+    binsPerShelf: 12,
+    position: { x: LEFT_X, y: BASE_Y },
+    width: CONTAINER_40FT_W,
+    height: CONTAINER_40FT_H,
+    position3D: { x: -0.6, y: 0, z: 4.8 },
+    orientation: "horizontal",
     physicalDimensions: {
-      externalLengthM: 6.06,
+      externalLengthM: 12.19,
       externalWidthM: 2.44,
       externalHeightM: 2.59,
-      internalLengthM: 5.9,
+      internalLengthM: 12.03,
       internalWidthM: 2.35,
       internalHeightM: 2.39,
       aisleWidthCm: 80,
@@ -294,6 +336,8 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     bottomShelfHeightCm: 20,
     topShelfMaxHeightCm: 180,
   },
+
+  // ===== HAZMAT / LUBRICATION (outside U) =====
   {
     id: "C04",
     zone: "STO-LU",
@@ -307,10 +351,11 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     containerType: "10ft Container / Cage",
     shelves: ["A", "B", "C"],
     binsPerShelf: 4,
-    position: { x: 430, y: 230 },
-    width: 130,
-    height: 120,
-    position3D: { x: 5, y: 0, z: 0 },
+    position: { x: LEFT_X + CONTAINER_40FT_W + 30, y: BASE_Y },
+    width: 2.99 * PX_PER_M,
+    height: CONTAINER_40FT_H,
+    position3D: { x: 4.5, y: 0, z: 4.8 },
+    orientation: "horizontal",
     physicalDimensions: {
       externalLengthM: 2.99,
       externalWidthM: 2.44,
@@ -339,6 +384,8 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     bottomShelfHeightCm: 25,
     topShelfMaxHeightCm: 165,
   },
+
+  // ===== RIGHT LEG (vertical) =====
   {
     id: "C05",
     zone: "STO-FA",
@@ -352,10 +399,11 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     containerType: "20ft Standard Container",
     shelves: ["A", "B", "C", "D", "E", "F"],
     binsPerShelf: 9,
-    position: { x: 50, y: 420 },
-    width: 320,
-    height: 120,
-    position3D: { x: 0, y: 0, z: 3 },
+    position: { x: RIGHT_X, y: TOP_Y },
+    width: CONTAINER_20FT_W,
+    height: CONTAINER_20FT_H,
+    position3D: { x: 3.6, y: 0, z: -1.6 },
+    orientation: "vertical",
     physicalDimensions: {
       externalLengthM: 6.06,
       externalWidthM: 2.44,
@@ -399,10 +447,11 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     containerType: "20ft Standard Container",
     shelves: ["A", "B", "C", "D", "E"],
     binsPerShelf: 9,
-    position: { x: 50, y: 580 },
-    width: 320,
-    height: 120,
-    position3D: { x: 0, y: 0, z: 6 },
+    position: { x: RIGHT_X, y: BOTTOM_20FT_Y },
+    width: CONTAINER_20FT_W,
+    height: CONTAINER_20FT_H,
+    position3D: { x: 3.6, y: 0, z: 1.6 },
+    orientation: "vertical",
     physicalDimensions: {
       externalLengthM: 6.06,
       externalWidthM: 2.44,
