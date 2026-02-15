@@ -30,6 +30,10 @@ const LD_KEYWORDS = [
   "switchboard", "heavy actuator", "steel structure",
   "forklift", "palletised",
   "hdpe pipe", // full pipe lengths are LD
+  // Heavy liners & crusher wear parts (>15kg, need forklift)
+  "crusher liner", "cone liner", "mantle", "concave",
+  "frame plate liner", "screen panel",
+  "chute liner",
 ];
 
 // Motor-related terms that indicate actual heavy motors (not electrical protection)
