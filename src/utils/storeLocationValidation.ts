@@ -11,9 +11,10 @@
  * - Bin: 1–99
  * - No duplicate location codes allowed
  *
- * External storage prefixes:
- * - DM = Dome Storage (e.g. DM-A1)
- * - LD = Laydown Yard (e.g. LD-B3)
+ * External storage (all use LD prefix):
+ * - LD-A, LD-B = Dome internal rows
+ * - LD-C through LD-F = Laydown yard bays
+ * - Example: LD-A1, LD-C3
  */
 
 /** Container → Discipline mapping (single source of truth) */
