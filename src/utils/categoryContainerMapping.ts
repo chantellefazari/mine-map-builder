@@ -57,6 +57,13 @@ const C01_KEYWORDS = [
   "cable", "connector", "switch", "transformer", "generator",
   "motor circuit breaker", "motor starter", "motor protection",
   "soft starter",
+  // Lighting & emergency lighting
+  "led batten", "floodlight", "exit light", "emergency batten",
+  "led flood", "light fitting", "batten",
+  // Electrical enclosures & accessories
+  "pole filler", "din socket", "enclosure",
+  // Panel wire
+  "panel wire", "flexible panel wire",
 ];
 
 const C02_KEYWORDS = [
@@ -77,7 +84,7 @@ const C02_KEYWORDS = [
   "pneumatic", "air regulator", "filter regulator", "frl", "manifold",
   "push-in fitting", "quick connect", "air hose", "muffler",
   // SMC / pneumatic fittings, tubing & accessories
-  "nylon tubing", "one touch", "one-touch", "kq2", "positioner",
+  "nylon tubing", "nylon tube", "one touch", "one-touch", "kq2", "positioner",
   "modular lubricator", "hand valve",
   "pneumatic cylinder", "pneumatic check valve",
   "silencer", "bulkhead union",
@@ -91,6 +98,10 @@ const C02_KEYWORDS = [
   "multimeter", "clamp meter", "insulation tester", "megger",
   // Process dosing/metering (instrument-adjacent)
   "dosing pump", "metering pump",
+  // Process tubing
+  "pump tubing",
+  // Sensor connectors
+  "m12x1",
   // 4-20mA signal devices
   "4-20ma",
   // Hydraulic & pneumatic control valves
@@ -113,6 +124,17 @@ const C05_KEYWORDS = [
   "screw", "fastener",
   // Vehicle/engine air filters are consumables, not instrumentation
   "air filter",
+  // Fire safety
+  "fire extinguisher", "fire blanket", "first aid",
+  // Tools & hand tools
+  "wrench", "spanner", "pliers", "screwdriver", "drill bit",
+  "socket set", "tool kit", "power wrench", "power punch",
+  "hex key", "allen key", "chuck", "annular cutter", "burr set",
+  "buff pad", "abrasive", "cutting disc", "grinding disc",
+  // Safety equipment
+  "safety glasses", "ear plug", "ear muff",
+  // Fuel filters (vehicle consumable)
+  "fuel water separator", "fuel filter", "coolant filter",
 ];
 
 // Structural/pipe keywords that override C05 classification
@@ -129,6 +151,10 @@ const C03_MW_KEYWORDS = [
   "roller", "idler", "scraper blade", "belt cleaner", "pulley",
   "sprocket", "chain", "belt", "conveyor", "scraper", "skirting",
   "screen panel", "crusher",
+  // Conveyor frames, brackets & accessories
+  "k-fra", "k-bra", "k-pul", "k-rol", "k-nife",
+  "trough frame", "return frame", "tracking frame",
+  "suspension arm", "cushion", "p-tip",
   // Valves (general mechanical — NOT solenoid/control/diaphragm/pinch which are C02)
   "valve", "knife gate", "butterfly", "ball valve", "check valve",
   "non-return", "float valve", "safety valve", "gate valve",
@@ -147,7 +173,7 @@ const C03_MW_KEYWORDS = [
   "hose", "hydraulic hose",
   // Structural steel & sections
   "hollow section", "c-channel", "flat bar", "equal angle", "steel beam",
-  "channel beam", "steel section",
+  "channel beam", "steel section", "star picket",
   // Pump components (not complete assemblies which are LD)
   "impeller", "pump sleeve", "volute", "pump casing", "pump shaft",
   "lantern ring", "lantern restrictor",
@@ -156,13 +182,16 @@ const C03_MW_KEYWORDS = [
   "gland packing", "packing ring",
   // Rigging & lifting
   "chain sling", "round sling", "wire rope", "shackle", "rope",
+  "lever hoist", "turnbuckle",
   // Filter elements (mechanical, not electrical)
   "filter element", "hydraulic filter", "strainer",
   // Cable tray & conduit covers
   "ezystrut", "cable tray",
+  // Rubber & PTFE sheet
+  "rubber cord", "ptfe sheet", "rubber sheet", "repair strip",
   // Misc general mechanical
   "bollard", "blower", "heat exchanger",
-  "conduit", "pipe spool",
+  "conduit", "pipe spool", "air receiver",
 ];
 
 const C04_ME_KEYWORDS = [

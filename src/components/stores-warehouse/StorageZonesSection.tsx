@@ -16,7 +16,10 @@ export const StorageZonesSection = () => {
         "VSD/VFD spare boards, I/O cards",
         "Cable glands, lugs, ferrules",
         "Push buttons, selector switches, indicator/pilot lights",
-        "Soft starters, panel fans and filters"
+        "Soft starters, panel fans and filters",
+        "LED battens, floodlights, emergency/exit lighting",
+        "Electrical enclosures, pole fillers, DIN sockets",
+        "Panel wire, flexible panel wire"
       ],
       excludes: [
         "Motors, gearboxes (→ LD)",
@@ -53,8 +56,9 @@ export const StorageZonesSection = () => {
         "Norgren/Norgen pneumatic fittings & connectors",
         "Test instruments (multimeters, clamp meters, meggers)",
         "Dosing pumps, metering pumps",
-        "4-20mA signal devices",
+        "4-20mA signal devices, process pump tubing",
         "Hydraulic/pneumatic directional control valves (CETOP, DCV)",
+        "M12 sensor connectors",
         "Small pneumatic cylinders & actuators"
       ],
       excludes: [
@@ -76,18 +80,19 @@ export const StorageZonesSection = () => {
       includes: [
         "Small wear plates, rubber/ceramic liners (<15 kg)",
         "Rollers, idlers, pulleys, sprockets, belts",
-        "Scraper blades, belt cleaners, conveyor parts",
+        "Scraper blades, belt cleaners, conveyor frames & brackets",
         "Valves (ball, butterfly, knife gate, check, float, safety)",
         "Pipe fittings (couplings, elbows, tees, nipples, flanges)",
         "Victaulic couplings, camlock fittings, backing rings",
         "PE/Plasson fittings, compression fittings",
         "Hoses (hydraulic, PVC, general)",
-        "Structural steel (hollow sections, C-channel, flat bar)",
+        "Structural steel (hollow sections, C-channel, flat bar, star pickets)",
         "Pump components (impellers, sleeves, lantern rings)",
         "Gland packing, filter elements, strainers",
-        "Rigging (chain slings, round slings, wire rope, shackles)",
+        "Rigging (chain slings, round slings, wire rope, lever hoists)",
         "Cable tray covers (EzyStrut), conduit, pipe spools",
-        "Blowers, heat exchangers, bollards"
+        "Rubber cord, PTFE sheet, repair strips",
+        "Blowers, heat exchangers, air receivers, bollards"
       ],
       excludes: [
         "Crusher liners, cone liners, mantles, screen panels (→ LD)",
@@ -118,8 +123,9 @@ export const StorageZonesSection = () => {
       excludes: [
         "Valves, pipe fittings, flanges (→ C03-MW)",
         "Hoses, couplings, structural steel (→ C03-MW)",
+        "Lighting, battens, floodlights (→ C01-EL)",
         "Sensors, pneumatic controls (→ C02-IN)",
-        "Electrical components (→ C01)",
+        "Tools, PPE, fire safety (→ C05-FA)",
         "Fasteners (→ C05)"
       ],
       environment: "Dry storage, organised precision bins",
@@ -136,10 +142,13 @@ export const StorageZonesSection = () => {
         "Bolts, nuts, washers, studs, anchors",
         "Threaded rod, U-bolts, hose clamps, pins",
         "Adhesives, sealants, Loctite, silicone",
-        "PPE consumables, gloves, tape, zip ties",
+        "PPE consumables, gloves, safety glasses, tape, zip ties",
         "Grease cartridges, oil filters, breathers",
         "Sight glasses, auto-lube injectors, grease nipples",
-        "Vehicle/engine/cabin air filters"
+        "Vehicle/engine/cabin air filters, fuel filters",
+        "Fire extinguishers, fire blankets, first aid",
+        "Hand tools (wrenches, spanners, drill bits, chucks)",
+        "Abrasives, cutting discs, grinding discs, buff pads"
       ],
       excludes: [
         "Instrument air filters/regulators (→ C02-IN)",
