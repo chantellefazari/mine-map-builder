@@ -84,6 +84,14 @@ const C02_KEYWORDS = [
   "encoder", "tachometer", "weight processor",
   // Flow restriction devices (process instrumentation)
   "restrictor",
+  // Pneumatic brands (all products are instrumentation/pneumatic)
+  "norgren", "norgen",
+  // Test & measurement instruments
+  "multimeter", "clamp meter", "insulation tester", "megger",
+  // Process dosing/metering (instrument-adjacent)
+  "dosing pump", "metering pump",
+  // 4-20mA signal devices
+  "4-20ma",
 ];
 
 // C05 checked BEFORE mechanical split so fasteners don't leak into C03/C04

@@ -50,6 +50,10 @@ export const StorageZonesSection = () => {
         "Silencers, bulkhead unions, exhaust accessories",
         "Encoders, tachometers, weight processors",
         "Flow restrictors, positioners",
+        "Norgren/Norgen pneumatic fittings & connectors",
+        "Test instruments (multimeters, clamp meters, meggers)",
+        "Dosing pumps, metering pumps",
+        "4-20mA signal devices",
         "Small pneumatic cylinders & actuators"
       ],
       excludes: [
