@@ -32,8 +32,11 @@ const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick }:
 
   // Scale to 3D world: 1m = 0.5 units for comfortable viewing
   const s = 0.5;
-  const width = dim.externalLengthM * s;
-  const depth = dim.externalWidthM * s;
+  const isVertical = container.orientation === "vertical";
+
+  // For vertical containers, length runs along Z; for horizontal, along X
+  const width = isVertical ? dim.externalWidthM * s : dim.externalLengthM * s;
+  const depth = isVertical ? dim.externalLengthM * s : dim.externalWidthM * s;
   const height = dim.externalHeightM * s;
   const pos = container.position3D;
 
@@ -151,10 +154,8 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
   const [hoveredBin, setHoveredBin] = useState<string | null>(null);
   const dim = container.physicalDimensions;
 
-  const shelfCount = container.shelves.length;
   const binCount = container.binsPerShelf;
 
-  // Scale interior: use physical dimensions, 1m = 1 unit
   const intWidth = dim.internalLengthM;
   const intHeight = dim.internalHeightM;
   const intDepth = dim.internalWidthM;
@@ -208,22 +209,18 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
         <meshStandardMaterial color="#94a3b8" opacity={0.15} transparent />
       </mesh>
 
-      {/* Aisle marking on floor */}
+      {/* Aisle marking */}
       <mesh position={[0, -intHeight / 2 + 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[intWidth - 0.1, aisleWidthM]} />
         <meshStandardMaterial color="#22c55e" opacity={0.08} transparent />
       </mesh>
 
       {/* Entry door indicator */}
-      {container.entryPoints[0] && (
-        <group>
-          {container.entryPoints[0].side === "front" && (
-            <mesh position={[0, -intHeight / 4, intDepth / 2 + 0.02]}>
-              <planeGeometry args={[(container.entryPoints[0].widthCm / 100), intHeight * 0.7]} />
-              <meshStandardMaterial color="#22c55e" opacity={0.12} transparent side={THREE.DoubleSide} />
-            </mesh>
-          )}
-        </group>
+      {container.entryPoints[0] && container.entryPoints[0].side === "front" && (
+        <mesh position={[0, -intHeight / 4, intDepth / 2 + 0.02]}>
+          <planeGeometry args={[(container.entryPoints[0].widthCm / 100), intHeight * 0.7]} />
+          <meshStandardMaterial color="#22c55e" opacity={0.12} transparent side={THREE.DoubleSide} />
+        </mesh>
       )}
 
       {/* Shelves and bins */}
@@ -232,13 +229,12 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
 
         return (
           <group key={shelf} position={[0, shelfY, rackingZ]}>
-            {/* Shelf plank */}
-            <mesh position={[0, 0, 0]}>
+            <mesh>
               <boxGeometry args={[intWidth - 0.1, 0.02, binDepthM + 0.05]} />
               <meshStandardMaterial color="#8B7355" opacity={0.55} transparent />
             </mesh>
 
-            {/* Upright supports */}
+            {/* Uprights */}
             <mesh position={[-intWidth / 2 + 0.03, shelfHeightM / 2, 0]}>
               <boxGeometry args={[0.04, shelfHeightM, 0.04]} />
               <meshStandardMaterial color="#666" opacity={0.4} transparent />
@@ -248,17 +244,13 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
               <meshStandardMaterial color="#666" opacity={0.4} transparent />
             </mesh>
 
-            {/* Shelf label */}
             <Text position={[-intWidth / 2 - 0.15, shelfHeightM / 2, 0]} fontSize={0.1} color={container.color} fontWeight="bold" anchorX="center">
               {shelf}
             </Text>
-
-            {/* Height from floor label */}
             <Text position={[intWidth / 2 + 0.15, 0.02, 0]} fontSize={0.06} color="#888" anchorX="center">
               {container.bottomShelfHeightCm + shelfIdx * container.shelfHeightCm}cm
             </Text>
 
-            {/* Bins */}
             {Array.from({ length: binCount }, (_, binIdx) => {
               const binId = `${shelf}${binIdx + 1}`;
               const x = (binIdx - binCount / 2 + 0.5) * binWidthM;
@@ -267,7 +259,6 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
 
               return (
                 <group key={binId} position={[x, shelfHeightM / 2, 0]}>
-                  {/* Bin box */}
                   <RoundedBox
                     args={[binWidthM - 0.01, shelfHeightM - 0.04, binDepthM - 0.02]}
                     radius={0.005}
@@ -283,7 +274,6 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
                     />
                   </RoundedBox>
 
-                  {/* Part object inside */}
                   {part && (
                     <mesh>
                       <boxGeometry args={[binWidthM * 0.6, shelfHeightM * 0.4, binDepthM * 0.5]} />
@@ -291,12 +281,10 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
                     </mesh>
                   )}
 
-                  {/* Bin label */}
                   <Text position={[0, -shelfHeightM / 2 + 0.03, binDepthM / 2 + 0.01]} fontSize={0.04} color="#666" anchorX="center">
                     {binId}
                   </Text>
 
-                  {/* Tooltip */}
                   {isHovered && (
                     <Html position={[0, shelfHeightM / 2 + 0.08, binDepthM / 2]} center>
                       <div className="bg-popover border border-border rounded-lg p-2 shadow-lg text-xs whitespace-nowrap pointer-events-none">
@@ -320,73 +308,63 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
         );
       })}
 
-      {/* Container title */}
       <Text position={[0, intHeight / 2 + 0.15, 0]} fontSize={0.14} color={container.color} fontWeight="bold" anchorX="center">
         {container.id} — {container.label}
       </Text>
       <Text position={[0, intHeight / 2 + 0.02, 0]} fontSize={0.07} color="#888" anchorX="center">
         {dim.internalLengthM}m × {dim.internalWidthM}m × {dim.internalHeightM}m · {container.shelves.length} shelves × {container.binsPerShelf} bins
       </Text>
-
-      {/* Dimension labels in 3D space */}
       <Text position={[0, -intHeight / 2 - 0.1, intDepth / 2 + 0.15]} fontSize={0.06} color="#22c55e" anchorX="center">
         Aisle: {dim.aisleWidthCm}cm
       </Text>
 
-      <OrbitControls
-        enablePan
-        enableZoom
-        enableRotate
-        maxPolarAngle={Math.PI / 1.8}
-        minDistance={1}
-        maxDistance={6}
-        target={[0, 0, 0]}
-      />
+      <OrbitControls enablePan enableZoom enableRotate maxPolarAngle={Math.PI / 1.8} minDistance={1} maxDistance={8} target={[0, 0, 0]} />
     </>
   );
 };
 
 /* ============ Ground ============ */
 
-const Ground = () => (
-  <>
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
-      <planeGeometry args={[20, 15]} />
-      <meshStandardMaterial color="#e2e8f0" opacity={0.5} transparent />
-    </mesh>
-    {/* Access road */}
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 1.5]}>
-      <planeGeometry args={[16, YARD_DIMENSIONS.accessRoadWidthM * 0.5]} />
-      <meshStandardMaterial color="#94a3b8" opacity={0.3} transparent />
-    </mesh>
-    <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 1.5]} fontSize={0.15} color="#64748b" anchorX="center">
-      ACCESS ROAD ({YARD_DIMENSIONS.accessRoadWidthM}m wide)
-    </Text>
-    {/* Walkway */}
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -1.2]}>
-      <planeGeometry args={[14, YARD_DIMENSIONS.walkwayWidthM * 0.5]} />
-      <meshStandardMaterial color="#94a3b8" opacity={0.15} transparent />
-    </mesh>
-    <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, -1.2]} fontSize={0.1} color="#94a3b8" anchorX="center">
-      WALKWAY ({YARD_DIMENSIONS.walkwayWidthM}m)
-    </Text>
+const Ground = () => {
+  const courtyardW = YARD_DIMENSIONS.courtyardWidthM * 0.5;
+  const courtyardD = YARD_DIMENSIONS.courtyardDepthM * 0.5;
 
-    {/* Zone labels */}
-    <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, -3.5]} fontSize={0.18} color="#6366f1" anchorX="center">CLEAN ZONE</Text>
-    <Text rotation={[-Math.PI / 2, 0, 0]} position={[-1, 0.01, -0.5]} fontSize={0.18} color="#3b82f6" anchorX="center">MECHANICAL ZONE</Text>
-    <Text rotation={[-Math.PI / 2, 0, 0]} position={[5, 0.01, -0.5]} fontSize={0.15} color="#f59e0b" anchorX="center">HAZMAT</Text>
-    <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 4]} fontSize={0.18} color="#64748b" anchorX="center">HIGH-ACCESS ZONE</Text>
+  return (
+    <>
+      {/* Main ground plane */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 1.5]} receiveShadow>
+        <planeGeometry args={[22, 18]} />
+        <meshStandardMaterial color="#e2e8f0" opacity={0.4} transparent />
+      </mesh>
 
-    {/* Entry arrow on ground */}
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[7, 0.02, 5]}>
-      <planeGeometry args={[1.5, 0.3]} />
-      <meshStandardMaterial color="#22c55e" opacity={0.3} transparent />
-    </mesh>
-    <Text rotation={[-Math.PI / 2, 0, 0]} position={[7, 0.03, 5]} fontSize={0.12} color="#22c55e" anchorX="center" fontWeight="bold">
-      ENTRY →
-    </Text>
-  </>
-);
+      {/* Dome courtyard area */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 1.5]}>
+        <planeGeometry args={[courtyardW, courtyardD]} />
+        <meshStandardMaterial color="#22c55e" opacity={0.06} transparent />
+      </mesh>
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 1.5]} fontSize={0.25} color="#22c55e" anchorX="center" fillOpacity={0.3}>
+        DOME AREA
+      </Text>
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 2]} fontSize={0.12} color="#22c55e" anchorX="center" fillOpacity={0.25}>
+        {YARD_DIMENSIONS.courtyardWidthM}m × {YARD_DIMENSIONS.courtyardDepthM}m
+      </Text>
+
+      {/* Forklift access path */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[4, 0.02, 4.8]}>
+        <planeGeometry args={[YARD_DIMENSIONS.forkliftGapM * 0.5 * 0.6, 1.5]} />
+        <meshStandardMaterial color="#22c55e" opacity={0.1} transparent />
+      </mesh>
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[4, 0.03, 5.8]} fontSize={0.1} color="#22c55e" anchorX="center" fontWeight="bold">
+        FORKLIFT ACCESS
+      </Text>
+
+      {/* Zone labels on ground */}
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[-3.6, 0.02, -0.5]} fontSize={0.15} color="#6366f1" anchorX="center">LEFT LEG — CLEAN</Text>
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[3.6, 0.02, -0.5]} fontSize={0.15} color="#64748b" anchorX="center">RIGHT LEG — HIGH-ACCESS</Text>
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[-0.6, 0.02, 5.5]} fontSize={0.15} color="#3b82f6" anchorX="center">BASE — MECHANICAL (40ft)</Text>
+    </>
+  );
+};
 
 /* ============ Main Component ============ */
 
@@ -396,15 +374,15 @@ export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps)
   const getPartsCount = (container: StoreContainer) => {
     if (!liveMode) return 0;
     return sparesData.filter((s) => {
-      const area = (s.warehouse_area || "").toUpperCase();
-      return area.includes(container.zoneCode) || area.includes(container.zone);
+      const bin = (s.bin_location || "").toUpperCase();
+      return bin.startsWith(container.id);
     }).length;
   };
 
   const getPartsForContainer = (container: StoreContainer) => {
     return sparesData.filter((s) => {
-      const area = (s.warehouse_area || "").toUpperCase();
-      return area.includes(container.zoneCode) || area.includes(container.zone);
+      const bin = (s.bin_location || "").toUpperCase();
+      return bin.startsWith(container.id);
     });
   };
 
@@ -427,7 +405,7 @@ export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps)
       <div className="border border-border rounded-lg bg-card overflow-hidden" style={{ height: "550px" }}>
         <Canvas
           camera={{
-            position: selectedContainer ? [2.5, 1.5, 3] : [8, 6, 8],
+            position: selectedContainer ? [2.5, 1.5, 3] : [10, 7, 10],
             fov: 50,
           }}
           shadows
@@ -459,7 +437,7 @@ export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps)
                   />
                 ))}
 
-                <OrbitControls enablePan enableZoom enableRotate maxPolarAngle={Math.PI / 2.2} minDistance={4} maxDistance={18} target={[0, 0.5, 0]} />
+                <OrbitControls enablePan enableZoom enableRotate maxPolarAngle={Math.PI / 2.2} minDistance={4} maxDistance={22} target={[0, 0.5, 1.5]} />
               </>
             )}
           </Suspense>
