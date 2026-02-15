@@ -25,24 +25,15 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { generateSparesPDF } from "@/utils/generateSparesPDF";
 
-// Warehouse areas list
-const warehouseAreas = [
-  "Storage Shelter",
-  "Site Office Laydown Area",
-  "Shutdown Staging Area",
-  "Workshop",
-  "Workshop Laydown Area",
-  "WC01",
-  "WC02",
-  "WC03",
-  "WC04",
-  "WC05",
-  "WC07 (Crushing Area)",
-  "WC08 (Crushing Area)",
-  "WC09 (Crushing Area)",
-  "Crushing Laydown Area",
-  "MCC",
-];
+// Warehouse location codes — strict list (no custom entries)
+const WAREHOUSE_LOCATIONS = [
+  { value: "C01-EL", label: "C01-EL — Electrical" },
+  { value: "C02-IN", label: "C02-IN — Instrumentation" },
+  { value: "C03-ME", label: "C03-ME — Mechanical" },
+  { value: "C04-LU", label: "C04-LU — Lubrication" },
+  { value: "C05-FA", label: "C05-FA — Fasteners & Consumables" },
+  { value: "LD", label: "LD — Laydown Yard" },
+] as const;
 
 export const SiteSparesCatalogue = () => {
   const paginated = useSiteSparesPaginated();
@@ -430,8 +421,8 @@ export const SiteSparesCatalogue = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Areas</SelectItem>
-              {warehouseAreas.map((area) => (
-                <SelectItem key={area} value={area}>{area}</SelectItem>
+              {WAREHOUSE_LOCATIONS.map((loc) => (
+                <SelectItem key={loc.value} value={loc.value}>{loc.label}</SelectItem>
               ))}
             </SelectContent>
           </Select>
