@@ -64,7 +64,7 @@ const C02_KEYWORDS = [
   "solenoid valve", "instrument tubing", "swagelok",
   "needle valve",
   // Sensors & probes (instrumentation, not mechanical)
-  "sensor", "probe", "electrode", "transducer", "analyser", "analyzer",
+  "sensor", "probe", "electrode holder", "sensor electrode", "transducer", "analyser", "analyzer",
   "radar level", "thermowell", "signal converter",
   // Process control valves (small, instrument-adjacent)
   "diaphragm valve", "pinch valve", "control valve",
