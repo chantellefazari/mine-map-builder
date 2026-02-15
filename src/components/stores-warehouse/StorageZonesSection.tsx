@@ -148,7 +148,10 @@ export const StorageZonesSection = () => {
         "Vehicle/engine/cabin air filters, fuel filters",
         "Fire extinguishers, fire blankets, first aid",
         "Hand tools (wrenches, spanners, drill bits, chucks)",
-        "Abrasives, cutting discs, grinding discs, buff pads"
+        "Power tools (Milwaukee, Makita, DeWalt drills, drivers)",
+        "Hammers, chisels, demolition tools",
+        "Abrasives, cutting discs, grinding discs, buff pads",
+        "Batteries (Energizer, Duracell, 12V industrial)"
       ],
       excludes: [
         "Instrument air filters/regulators (→ C02-IN)",
@@ -169,10 +172,12 @@ export const StorageZonesSection = () => {
       borderColor: "border-orange-500/30",
       includes: [
         "Complete motors, gearboxes, pump assemblies",
+        "Submersible pumps, sump pumps, pumpsets, multistage pumps",
         "Large pulleys, drums, shaft assemblies",
         "Heavy pneumatic valve assemblies DN150+",
         "Crusher liners, cone liners, mantles, screen panels",
         "Switchboards, large frames, complete assemblies",
+        "Air receivers, large pressure vessels",
         "Bulk drums, oils, palletised items",
         "Any item >15 kg or requiring forklift handling"
       ],
