@@ -156,7 +156,7 @@ interface FloorPlanSVGProps {
 
 const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSVGProps) => {
   // Compute SVG dimensions from data
-  const svgW = 520;
+  const svgW = 580;
   const svgH = 480;
 
    // Dome area
