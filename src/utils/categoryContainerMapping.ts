@@ -34,6 +34,13 @@ const LD_KEYWORDS = [
   "crusher liner", "cone liner", "mantle", "concave",
   "frame plate liner", "screen panel",
   "chute liner",
+  // Complete pump assemblies (heavy, need forklift)
+  "submersible pump", "sump pump", "pumpset", "pump set",
+  "triple pump", "process water pump", "kiln discharge pump",
+  "kiln carbon feed pump", "diesel pump",
+  "vertical multistage", "lowara pump",
+  // Air receivers (large pressure vessels)
+  "air receiver",
 ];
 
 // Motor-related terms that indicate actual heavy motors (not electrical protection)
@@ -100,8 +107,8 @@ const C02_KEYWORDS = [
   "dosing pump", "metering pump",
   // Process tubing
   "pump tubing",
-  // Sensor connectors
-  "m12x1",
+  // Sensor connectors (M12x1 thread pitch for sensors, not M12 bolts)
+  "m12x1 ", "m12x1.", "m12 5 pole", "m12 4 pole", "m12 connector",
   // 4-20mA signal devices
   "4-20ma",
   // Hydraulic & pneumatic control valves
@@ -126,21 +133,44 @@ const C05_KEYWORDS = [
   "air filter",
   // Fire safety
   "fire extinguisher", "fire blanket", "first aid",
-  // Tools & hand tools
+  // Tools & hand tools (including power tools)
   "wrench", "spanner", "pliers", "screwdriver", "drill bit",
   "socket set", "tool kit", "power wrench", "power punch",
   "hex key", "allen key", "chuck", "annular cutter", "burr set",
   "buff pad", "abrasive", "cutting disc", "grinding disc",
+  "hammer", "chisel", "magnetic drill", "drill/driver", "impact driver",
+  "demolition", "makita", "milwaukee", "dewalt",
   // Safety equipment
   "safety glasses", "ear plug", "ear muff",
+  // Batteries (consumables)
+  "battery", "batteries", "energizer", "duracell",
   // Fuel filters (vehicle consumable)
   "fuel water separator", "fuel filter", "coolant filter",
 ];
 
 // Structural/pipe keywords that override C05 classification
+// Removed "frame", "sling", "rope" — too generic, blocks PPE/tools/rigging
 const MECHANICAL_OVERRIDE_KEYWORDS = [
-  "pipe", "valve", "flange", "structural", "frame", "liner",
-  "coupling", "hose", "sling", "rope", "conduit", "spool",
+  "pipe", "valve", "flange", "structural", "liner",
+  "coupling", "hose", "conduit", "spool",
+];
+
+// C05 keywords that should NEVER be overridden by mechanical keywords
+// (e.g. "safety glasses" with "frame" in description should stay C05)
+const C05_PRIORITY_KEYWORDS = [
+  "safety glasses", "ear plug", "ear muff", "ppe", "hard hat",
+  "fire extinguisher", "fire blanket", "first aid",
+  "wrench", "spanner", "pliers", "screwdriver", "drill bit",
+  "socket set", "tool kit", "power wrench", "power punch",
+  "hex key", "allen key", "chuck", "annular cutter", "burr set",
+  "buff pad", "abrasive", "cutting disc", "grinding disc",
+  "hammer", "chisel", "magnetic drill", "drill/driver", "impact driver",
+  "demolition", "makita", "milwaukee", "dewalt",
+  "grease cartridge", "grease nipple", "oil filter",
+  "zip tie", "gloves", "adhesive", "sealant",
+  "battery", "batteries", "energizer", "respirator",
+  "fuel water separator", "fuel filter", "coolant filter",
+  "air filter",
 ];
 
 const C03_MW_KEYWORDS = [
@@ -181,7 +211,7 @@ const C03_MW_KEYWORDS = [
   // Gland packing
   "gland packing", "packing ring",
   // Rigging & lifting
-  "chain sling", "round sling", "wire rope", "shackle", "rope",
+  "sling", "chain sling", "round sling", "wire rope", "shackle", "rope",
   "lever hoist", "turnbuckle",
   // Filter elements (mechanical, not electrical)
   "filter element", "hydraulic filter", "strainer",
@@ -305,7 +335,11 @@ export function allocateWarehouseArea(description: string | null | undefined): s
   }
 
   // STEP 4 — C05 Fasteners/Consumables/Lube
-  // BUT if description also contains structural/pipe keywords → skip to mechanical
+  // Priority C05 items ALWAYS go to C05 regardless of other keywords
+  if (matchesAny(desc, C05_PRIORITY_KEYWORDS)) {
+    return "C05-FA";
+  }
+  // Other C05 items only if no structural/pipe keywords present
   if (matchesAny(desc, C05_KEYWORDS) && !matchesAny(desc, MECHANICAL_OVERRIDE_KEYWORDS)) {
     return "C05-FA";
   }
