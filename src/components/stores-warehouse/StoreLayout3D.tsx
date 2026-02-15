@@ -77,20 +77,29 @@ const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick }:
         const doorH = height * 0.7;
         const doorW = Math.min(isVertical ? depth * 0.35 : width * 0.35, 0.55);
         const doorY = doorH / 2;
-        // Left leg → door on +X (right), Right leg → door on -X (left), Base → door on -Z (front toward dome)
-        const isLeftLeg = container.id === "C01" || container.id === "C02";
-        const isRightLeg = container.id === "C05" || container.id === "C06";
+        // Left leg top (C01) → door on +X (right, facing courtyard)
+        // Right leg top (C05) → door on -X (left, facing courtyard)
+        // Left leg bottom (C02) & Right leg bottom (C06) → door on +Z (front, facing toward C03/base)
+        // C03 base → door on -Z (facing dome)
 
-        if (isLeftLeg) {
+        if (container.id === "C01") {
           return (
             <mesh position={[width / 2 + 0.02, doorY, 0]}>
               <planeGeometry args={[doorW, doorH]} />
               <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
             </mesh>
           );
-        } else if (isRightLeg) {
+        } else if (container.id === "C05") {
           return (
             <mesh position={[-width / 2 - 0.02, doorY, 0]}>
+              <planeGeometry args={[doorW, doorH]} />
+              <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
+            </mesh>
+          );
+        } else if (container.id === "C02" || container.id === "C06") {
+          // Door on the end facing C03 (toward +Z)
+          return (
+            <mesh position={[0, doorY, depth / 2 + 0.02]}>
               <planeGeometry args={[doorW, doorH]} />
               <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
             </mesh>
