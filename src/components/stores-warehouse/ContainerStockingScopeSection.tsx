@@ -112,8 +112,8 @@ export const ContainerStockingScopeSection = () => {
     },
     {
       number: 5,
-      code: "C05-FA",
-      title: "Fasteners, Consumables & Lubrication (20ft)",
+      code: "C05-CS",
+      title: "Consumables & Supplies (20ft)",
       icon: Hammer,
       color: "text-slate-600",
       bgColor: "bg-slate-500/10",

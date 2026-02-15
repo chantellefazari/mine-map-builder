@@ -403,10 +403,10 @@ export const STORE_CONTAINERS: StoreContainer[] = [
   // ===== RIGHT LEG (vertical) =====
   {
     id: "C05",
-    zone: "FA",
-    zoneCode: "FA",
-    label: "Fasteners & Consumables",
-    shortLabel: "Fasteners",
+    zone: "CS",
+    zoneCode: "CS",
+    label: "Consumables & Supplies",
+    shortLabel: "Consumables",
     color: "#64748b",
     bgColor: "rgba(100, 116, 139, 0.15)",
     borderColor: "#64748b",
@@ -505,7 +505,7 @@ export const ZONE_CODES: ContainerZone[] = [
   { code: "IN", label: "Instrumentation & Pneumatics" },
   { code: "ME", label: "Mechanical" },
   { code: "MP", label: "Mechanical Precision" },
-  { code: "FA", label: "Fasteners, Consumables & Lube" },
+  { code: "CS", label: "Consumables & Supplies" },
 ];
 
 export function generateBinsForContainer(container: StoreContainer): ShelfBin[] {

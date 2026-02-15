@@ -23,14 +23,14 @@ export const CONTAINER_DISCIPLINE_MAP: Record<string, string> = {
   C02: "IN",
   C03: "ME",
   C04: "MP",
-  C05: "FA",
+  C05: "CS",
 };
 
 /** All valid container IDs */
 export const VALID_CONTAINERS = ["C01", "C02", "C03", "C04", "C05"] as const;
 
 /** All valid discipline codes */
-export const VALID_DISCIPLINES = ["EL", "IN", "ME", "MP", "FA"] as const;
+export const VALID_DISCIPLINES = ["EL", "IN", "ME", "MP", "CS"] as const;
 
 /** Valid bay letters: A–H (skip I), J–K for rear */
 export const VALID_BAYS = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K"] as const;
