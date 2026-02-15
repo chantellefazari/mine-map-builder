@@ -63,7 +63,7 @@ export const StorageZonesSection = () => {
     },
     {
       code: "C03-MW",
-      name: "Mechanical General Purpose Container (40ft)",
+      name: "Mechanical Container (40ft)",
       icon: Wrench,
       color: "text-blue-600",
       bgColor: "bg-blue-500/10",
