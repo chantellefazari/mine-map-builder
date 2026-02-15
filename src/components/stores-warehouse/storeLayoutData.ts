@@ -353,10 +353,10 @@ export const STORE_CONTAINERS: StoreContainer[] = [
   // ===== BASE OF U (horizontal — 40ft) =====
   {
     id: "C03",
-    zone: "MW",
-    zoneCode: "MW",
-    label: "Mechanical Wear / Heavy",
-    shortLabel: "Mech Wear",
+    zone: "ME",
+    zoneCode: "ME",
+    label: "Mechanical",
+    shortLabel: "Mechanical",
     color: "#3b82f6",
     bgColor: "rgba(59, 130, 246, 0.15)",
     borderColor: "#3b82f6",
@@ -453,9 +453,9 @@ export const STORE_CONTAINERS: StoreContainer[] = [
   // ===== RIGHT LEG LOWER (vertical) =====
   {
     id: "C04",
-    zone: "ME",
-    zoneCode: "ME",
-    label: "Mechanical Small Precision",
+    zone: "MP",
+    zoneCode: "MP",
+    label: "Mechanical Precision",
     shortLabel: "Precision",
     color: "#06b6d4",
     bgColor: "rgba(6, 182, 212, 0.15)",
@@ -503,8 +503,8 @@ export const STORE_CONTAINERS: StoreContainer[] = [
 export const ZONE_CODES: ContainerZone[] = [
   { code: "EL", label: "Electrical" },
   { code: "IN", label: "Instrumentation & Pneumatics" },
-  { code: "MW", label: "Mechanical Wear / Heavy" },
-  { code: "ME", label: "Mechanical Precision" },
+  { code: "ME", label: "Mechanical" },
+  { code: "MP", label: "Mechanical Precision" },
   { code: "FA", label: "Fasteners, Consumables & Lube" },
 ];
 

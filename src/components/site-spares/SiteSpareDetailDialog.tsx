@@ -59,9 +59,9 @@ const statusOptions = [
 // Warehouse location codes — strict list
 const WAREHOUSE_LOCATIONS = [
   { value: "C01-EL", label: "C01-EL — Electrical" },
-  { value: "C02-IN", label: "C02-IN — Instrumentation & Pneumatics" },
-  { value: "C03-MW", label: "C03-MW — Mechanical Wear / Heavy" },
-  { value: "C04-ME", label: "C04-ME — Mechanical Small Precision" },
+  { value: "C02-IN", label: "C02-IN — Instrumentation, Pneumatics & Process Fittings" },
+  { value: "C03-ME", label: "C03-ME — Mechanical" },
+  { value: "C04-MP", label: "C04-MP — Mechanical Precision" },
   { value: "C05-FA", label: "C05-FA — Fasteners, Consumables & Lube" },
   { value: "LD", label: "LD — Laydown Yard" },
 ] as const;

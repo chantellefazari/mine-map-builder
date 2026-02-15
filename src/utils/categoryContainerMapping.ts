@@ -2,14 +2,14 @@
  * Description-based Warehouse Allocation
  *
  * Allocates site_spares items to containers based on keywords in the description.
- * Priority order: LD (heavy) → C01 (EL) → C02 (IN) → C05 (FA) → C03 (MW) → C04 (ME)
- * Fallback: C04-ME
+ * Priority order: LD (heavy) → C01 (EL) → C02 (IN) → C05 (FA) → C03 (ME) → C04 (MP)
+ * Fallback: C04-MP
  *
  * Container layout:
  *   C01-EL – Electrical (20ft, clean, positive airflow)
- *   C02-IN – Instrumentation & Pneumatics (20ft, clean/fragile)
- *   C03-MW – Mechanical Wear / Heavy Mechanical (40ft, high volume)
- *   C04-ME – Mechanical Small Precision (20ft)
+ *   C02-IN – Instrumentation, Pneumatics & Process Fittings (20ft, clean/fragile)
+ *   C03-ME – Mechanical (40ft, high volume)
+ *   C04-MP – Mechanical Precision (20ft)
  *   C05-FA – Fasteners + Consumables + Lubrication (20ft)
  *   LD     – Laydown Yard (forklift / oversized / >15kg)
  */
@@ -242,7 +242,7 @@ const C04_ME_KEYWORDS = [
 
 /**
  * PE/Plasson fittings (couplings, elbows, tees, reducers, stub flanges, etc.)
- * are compact items that belong in C03-MW regardless of diameter.
+ * are compact items that belong in C03-ME regardless of diameter.
  * Only full pipe lengths (e.g. "DN 90x6M HDPE Pipe") go to LD.
  *
  * This function returns true ONLY for actual pipe lengths, not fittings.
@@ -257,7 +257,7 @@ function isLargePEPipe(desc: string): boolean {
     return false;
   }
 
-  // If it's a fitting keyword → NOT a pipe → stays in C03-MW
+  // If it's a fitting keyword → NOT a pipe → stays in C03-ME
   const FITTING_KEYWORDS = [
     "coupling", "coupler", "elbow", "tee", "reducer", "reducing",
     "stub flange", "spigot", "saddle", "end plug", "adaptor", "adapter",
@@ -308,10 +308,10 @@ function matchesAny(desc: string, keywords: string[]): boolean {
 
 /**
  * Allocate a warehouse area code based on the item description.
- * Priority: LD → C01 → C02 → C05 (with mech override) → C03 → C04 → default C04-ME
+ * Priority: LD → C01 → C02 → C05 (with mech override) → C03 → C04 → default C04-MP
  */
 export function allocateWarehouseArea(description: string | null | undefined): string {
-  if (!description) return "C04-ME";
+  if (!description) return "C04-MP";
   const desc = description.toLowerCase();
 
   // STEP 1 — LD overrides everything
@@ -333,7 +333,7 @@ export function allocateWarehouseArea(description: string | null | undefined): s
   // STEP 2 — C01 Electrical
   if (matchesAny(desc, C01_KEYWORDS)) return "C01-EL";
 
-  // STEP 3 — C02 Instrumentation & Pneumatics
+  // STEP 3 — C02 Instrumentation, Pneumatics & Process Fittings
   // But large pneumatic valve assemblies (DN150+) are too heavy → LD
   if (matchesAny(desc, C02_KEYWORDS)) {
     if (isLargePneumaticValve(desc)) return "LD";
@@ -351,14 +351,14 @@ export function allocateWarehouseArea(description: string | null | undefined): s
   }
 
   // STEP 5 — Mechanical split
-  // C03-MW: Wear / bulky / high-volume mechanical
-  if (matchesAny(desc, C03_MW_KEYWORDS)) return "C03-MW";
+  // C03-ME: Mechanical (40ft, high volume)
+  if (matchesAny(desc, C03_MW_KEYWORDS)) return "C03-ME";
 
-  // C04-ME: Precision / small mechanical
-  if (matchesAny(desc, C04_ME_KEYWORDS)) return "C04-ME";
+  // C04-MP: Mechanical Precision (20ft)
+  if (matchesAny(desc, C04_ME_KEYWORDS)) return "C04-MP";
 
   // Default fallback
-  return "C04-ME";
+  return "C04-MP";
 }
 
 // ─── Legacy exports for compatibility ────────────────────────────
@@ -366,13 +366,13 @@ export function allocateWarehouseArea(description: string | null | undefined): s
 const CONTAINER_INFO: Record<string, ContainerMapping> = {
   "C01-EL": { containerId: "C01", zoneCode: "EL", containerLabel: "Electrical" },
   "C02-IN": { containerId: "C02", zoneCode: "IN", containerLabel: "Instrumentation, Pneumatics & Process Fittings" },
-  "C03-MW": { containerId: "C03", zoneCode: "MW", containerLabel: "Mechanical Wear / Heavy" },
-  "C04-ME": { containerId: "C04", zoneCode: "ME", containerLabel: "Mechanical Small Precision" },
+  "C03-ME": { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical" },
+  "C04-MP": { containerId: "C04", zoneCode: "MP", containerLabel: "Mechanical Precision" },
   "C05-FA": { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners, Consumables & Lubrication" },
   "LD":     { containerId: "LD", zoneCode: "LD", containerLabel: "Laydown Yard" },
 };
 
-const DEFAULT_CONTAINER: ContainerMapping = CONTAINER_INFO["C04-ME"];
+const DEFAULT_CONTAINER: ContainerMapping = CONTAINER_INFO["C04-MP"];
 
 export function getContainerForCategory(category: string | null | undefined): ContainerMapping {
   if (!category) return DEFAULT_CONTAINER;

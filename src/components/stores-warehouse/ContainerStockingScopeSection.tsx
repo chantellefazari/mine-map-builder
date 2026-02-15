@@ -48,8 +48,8 @@ export const ContainerStockingScopeSection = () => {
     },
     {
       number: 3,
-      code: "C03-MW",
-      title: "Mechanical Wear / Heavy (40ft – High Volume)",
+      code: "C03-ME",
+      title: "Mechanical (40ft – High Volume)",
       icon: Wrench,
       color: "text-blue-600",
       bgColor: "bg-blue-500/10",
@@ -92,8 +92,8 @@ export const ContainerStockingScopeSection = () => {
     },
     {
       number: 4,
-      code: "C04-ME",
-      title: "Mechanical Small Precision (20ft)",
+      code: "C04-MP",
+      title: "Mechanical Precision (20ft)",
       icon: Cog,
       color: "text-cyan-600",
       bgColor: "bg-cyan-500/10",
