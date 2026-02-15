@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, MapPin, Zap, Wrench, Gauge, Hammer, XCircle, CheckCircle, Cog } from "lucide-react";
+import { AlertTriangle, MapPin, Zap, Wrench, Gauge, Hammer, XCircle, CheckCircle, Cog, Truck } from "lucide-react";
 
 export const StorageZonesSection = () => {
   const zones = [
@@ -123,6 +123,30 @@ export const StorageZonesSection = () => {
       ],
       environment: "Standard industrial, high-organisation bins (Kanban)",
       handling: "Manual only, high-frequency access"
+    },
+    {
+      code: "LD",
+      name: "Laydown Yard (External Storage)",
+      icon: Truck,
+      color: "text-orange-600",
+      bgColor: "bg-orange-500/10",
+      borderColor: "border-orange-500/30",
+      includes: [
+        "Complete motors, gearboxes, pump assemblies",
+        "Large pulleys, drums, shaft assemblies",
+        "Heavy valves DN150+, large PE/Plasson fittings ≥150mm",
+        "Switchboards, large frames, complete assemblies",
+        "Bulk drums, oils, palletised items",
+        "Any item >15 kg or requiring forklift handling"
+      ],
+      excludes: [
+        "Small electrical components (→ C01-EL)",
+        "Instruments, sensors (→ C02-IN)",
+        "Bearings, seals, precision parts (→ C04-ME)",
+        "Fasteners, consumables (→ C05-FA)"
+      ],
+      environment: "Outdoor / covered laydown, dome rows, yard bays",
+      handling: "Forklift / crane, heavy lifting equipment required"
     }
   ];
 
