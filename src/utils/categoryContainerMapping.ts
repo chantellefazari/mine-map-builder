@@ -75,6 +75,10 @@ const C02_KEYWORDS = [
   // Pneumatics
   "pneumatic", "air regulator", "filter regulator", "frl", "manifold",
   "push-in fitting", "quick connect", "air hose", "muffler",
+  // SMC / pneumatic fittings, tubing & accessories
+  "nylon tubing", "one touch", "kq2", "positioner",
+  "modular lubricator", "hand valve",
+  "pneumatic cylinder", "pneumatic check valve",
 ];
 
 // C05 checked BEFORE mechanical split so fasteners don't leak into C03/C04

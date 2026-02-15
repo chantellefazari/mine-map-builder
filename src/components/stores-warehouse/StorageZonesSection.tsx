@@ -45,7 +45,9 @@ export const StorageZonesSection = () => {
         "Instrument fittings, Swagelok, tubing",
         "Pneumatic regulators, FRLs",
         "Push-in fittings, quick connects, manifolds",
-        "Small pneumatic cylinders & actuators"
+        "SMC KQ2 fittings, nylon tubing, one-touch connectors",
+        "Pneumatic check valves, hand valves, lubricators",
+        "Positioners, small pneumatic cylinders & actuators"
       ],
       excludes: [
         "Heavy pneumatic valve assemblies DN150+ (→ LD)",
@@ -98,6 +100,7 @@ export const StorageZonesSection = () => {
       excludes: [
         "Sensors, gauges, flowmeters (→ C02-IN)",
         "Pneumatic regulators, filter regulators (→ C02-IN)",
+        "SMC fittings, nylon tubing, positioners (→ C02-IN)",
         "Wear parts, liners (→ C03-MW)",
         "Belts, rollers, idlers (→ C03-MW)",
         "Electrical components (→ C01)",
