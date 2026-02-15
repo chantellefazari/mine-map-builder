@@ -14,17 +14,17 @@ export const StoreLocationCodingSection = () => {
   const containers = Object.entries(CONTAINER_DISCIPLINE_MAP).map(([id, disc]) => {
     const labels: Record<string, string> = {
       EL: "Electrical – Positive Airflow",
-      IN: "Instrumentation & Control",
-      ME: "Mechanical Small Parts",
-      LU: "Lubrication",
-      FA: "Fasteners & Consumables",
+      IN: "Instrumentation & Pneumatics",
+      MW: "Mechanical Wear / Heavy (40ft)",
+      ME: "Mechanical Small Precision",
+      FA: "Fasteners, Consumables & Lube",
     };
     return { id, discipline: disc, label: labels[disc] || disc };
   });
 
   const codeStructure = [
     { segment: "Container", format: "C0X", meaning: "Physical storage container (C01–C05)", example: "C01, C02, C03, C04, C05" },
-    { segment: "Discipline", format: "XX", meaning: "Must match container discipline", example: "EL, IN, ME, LU, FA" },
+    { segment: "Discipline", format: "XX", meaning: "Must match container discipline", example: "EL, IN, MW, ME, FA" },
     { segment: "Bay", format: "A–H, J–K", meaning: "Wall position (skip letter I)", example: "A, B, C, D, E, F, G, H, J, K" },
     { segment: "Bin", format: "1–99", meaning: "Bin number within bay", example: "1, 2, 15, 42, 99" },
   ];
@@ -32,9 +32,9 @@ export const StoreLocationCodingSection = () => {
   const examples = [
     { code: "C01-EL-A3", description: "Container 1, Electrical, Left wall bay A, bin 3" },
     { code: "C02-IN-E1", description: "Container 2, Instrumentation, Right wall bay E, bin 1" },
-    { code: "C03-ME-J2", description: "Container 3, Mechanical, Rear wall bay J, bin 2" },
-    { code: "C04-LU-B5", description: "Container 4, Lubrication, Left wall bay B, bin 5" },
-    { code: "C05-FA-H12", description: "Container 5, Fasteners, Right wall bay H, bin 12" },
+    { code: "C03-MW-J2", description: "Container 3, Mech Wear, Rear wall bay J, bin 2" },
+    { code: "C04-ME-B5", description: "Container 4, Mech Precision, Left wall bay B, bin 5" },
+    { code: "C05-FA-H12", description: "Container 5, Fasteners/Consumables, Right wall bay H, bin 12" },
   ];
 
   const externalExamples = [

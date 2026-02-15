@@ -1,54 +1,35 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, MapPin, Zap, Wrench, Gauge, Droplets, Hammer, XCircle, CheckCircle } from "lucide-react";
+import { AlertTriangle, MapPin, Zap, Wrench, Gauge, Hammer, XCircle, CheckCircle, Cog } from "lucide-react";
 
 export const StorageZonesSection = () => {
   const zones = [
     {
       code: "C01-EL",
-      name: "Electrical Components Container",
+      name: "Electrical Container (20ft)",
       icon: Zap,
       color: "text-yellow-600",
       bgColor: "bg-yellow-500/10",
       borderColor: "border-yellow-500/30",
       includes: [
         "Fuses, circuit breakers, contactors",
-        "Control relays, power supplies",
-        "PLC cards, sensors, switches",
+        "Control relays, power supplies, PLCs",
+        "VSD/VFD spare boards, I/O cards",
         "Cable glands, lugs, ferrules",
+        "Push buttons, selector switches, indicator lights",
         "Panel fans and filters"
       ],
       excludes: [
+        "Motors, gearboxes (→ LD)",
+        "Switchboards (→ LD)",
         "Oils, greases, lubricants",
-        "Dusty mechanical parts",
-        "Chemicals or solvents"
+        "Dusty mechanical parts"
       ],
-      environment: "Dust-controlled, climate-stable, adequate airflow",
-      handling: "Manual only (≤15 kg items)"
-    },
-    {
-      code: "C03-ME",
-      name: "Mechanical Small Parts Container",
-      icon: Wrench,
-      color: "text-blue-600",
-      bgColor: "bg-blue-500/10",
-      borderColor: "border-blue-500/30",
-      includes: [
-        "Bearings, seals, O-rings",
-        "Couplings, keys, shims",
-        "Small rollers, scraper blades",
-        "Belt fasteners, pulleys"
-      ],
-      excludes: [
-        "Complete motors or gearboxes",
-        "Electrical components",
-        "Liquids or chemicals"
-      ],
-      environment: "Standard industrial, dry storage",
+      environment: "Dust-controlled, positive airflow, sealed cabinets",
       handling: "Manual only (≤15 kg items)"
     },
     {
       code: "C02-IN",
-      name: "Instrumentation & Control Container",
+      name: "Instrumentation & Pneumatics Container (20ft)",
       icon: Gauge,
       color: "text-purple-600",
       bgColor: "bg-purple-500/10",
@@ -57,59 +38,90 @@ export const StorageZonesSection = () => {
         "Pressure transmitters, gauges",
         "Flow meters, level switches",
         "Temperature probes (RTD/TC)",
-        "Solenoid valves, actuators",
-        "Instrument fittings, tubing"
+        "Solenoid valves, positioners",
+        "Instrument fittings, Swagelok, tubing",
+        "Pneumatic regulators, FRLs, air filters",
+        "Push-in fittings, quick connects, manifolds"
       ],
       excludes: [
         "Heavy process equipment",
         "Bulk chemicals",
-        "Mechanical wear parts"
+        "Mechanical wear parts",
+        "Electrical components (→ C01)"
       ],
       environment: "Clean, dust-free, climate-controlled preferred",
       handling: "Manual only, fragile item care"
     },
     {
-      code: "C04-LU",
-      name: "Lubrication & Oils Container",
-      icon: Droplets,
-      color: "text-amber-600",
-      bgColor: "bg-amber-500/10",
-      borderColor: "border-amber-500/30",
+      code: "C03-MW",
+      name: "Mechanical Wear / Heavy Container (40ft)",
+      icon: Wrench,
+      color: "text-blue-600",
+      bgColor: "bg-blue-500/10",
+      borderColor: "border-blue-500/30",
       includes: [
-        "Grease cartridges",
-        "Oil sample bottles",
-        "Breathers, sight glasses",
-        "Oil filters, lube fittings",
-        "Auto-lube injectors"
+        "Wear plates, liners, ceramic/rubber liners",
+        "Rollers, idlers, pulleys, sprockets",
+        "Scraper blades, belt cleaners, belts",
+        "Valves (small–medium), pipe fittings",
+        "Couplings, chains, hoses",
+        "PE/Plasson fittings (small), flanges, elbows"
       ],
       excludes: [
-        "Bulk drums (stored in yard)",
-        "Electrical components",
-        "Food or potable items"
+        "Precision bearings/seals (→ C04-ME)",
+        "Complete motors or gearboxes (→ LD)",
+        "Electrical components (→ C01)",
+        "Fasteners/consumables (→ C05)"
       ],
-      environment: "Ventilated, spill containment provisions",
-      handling: "Manual only, spill kit accessible"
+      environment: "Standard industrial, dry storage, high-density bins",
+      handling: "Manual only (≤15 kg items)"
+    },
+    {
+      code: "C04-ME",
+      name: "Mechanical Small Precision Container (20ft)",
+      icon: Cog,
+      color: "text-cyan-600",
+      bgColor: "bg-cyan-500/10",
+      borderColor: "border-cyan-500/30",
+      includes: [
+        "Bearings (all types), pillow blocks",
+        "Seals, O-rings, gaskets",
+        "Shims, keys, retaining rings, circlips",
+        "Small couplings, small shafts",
+        "Mechanical seals, bushes",
+        "Small valves (<DN150), precision parts"
+      ],
+      excludes: [
+        "Wear parts, liners (→ C03-MW)",
+        "Belts, rollers, idlers (→ C03-MW)",
+        "Electrical components (→ C01)",
+        "Fasteners (→ C05)"
+      ],
+      environment: "Dry storage, organised precision bins",
+      handling: "Manual only (≤15 kg items)"
     },
     {
       code: "C05-FA",
-      name: "Fasteners & Consumables Container",
+      name: "Fasteners, Consumables & Lubrication Container (20ft)",
       icon: Hammer,
       color: "text-slate-600",
       bgColor: "bg-slate-500/10",
       borderColor: "border-slate-500/30",
       includes: [
-        "Bolts, nuts, washers, studs",
-        "Anchors, threaded rod, U-bolts",
-        "Hose clamps, pins, clips",
-        "Adhesives, sealants, absorbents",
-        "PPE consumables, small tools"
+        "Bolts, nuts, washers, studs, anchors",
+        "Threaded rod, U-bolts, hose clamps, pins",
+        "Adhesives, sealants, Loctite, silicone",
+        "PPE consumables, gloves, tape, zip ties",
+        "Grease cartridges, oil filters, breathers",
+        "Sight glasses, auto-lube injectors, grease nipples"
       ],
       excludes: [
-        "Precision instruments",
-        "Electrical components",
-        "Bulk items requiring forklift"
+        "Structural pipe fittings (→ C03-MW)",
+        "Precision instruments (→ C02)",
+        "Electrical components (→ C01)",
+        "Bulk drums/oils (→ LD)"
       ],
-      environment: "Standard industrial, organised bins",
+      environment: "Standard industrial, high-organisation bins (Kanban)",
       handling: "Manual only, high-frequency access"
     }
   ];

@@ -1,230 +1,157 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Package, CheckCircle, XCircle, Zap, Gauge, Wrench, Settings, Droplets, Hammer, Cable, Cog, Info } from "lucide-react";
+import { AlertTriangle, Package, CheckCircle, XCircle, Zap, Gauge, Wrench, Cog, Hammer, Info } from "lucide-react";
 
 export const ContainerStockingScopeSection = () => {
   const stockingCategories = [
     {
       number: 1,
-      title: "Electrical",
+      code: "C01-EL",
+      title: "Electrical (20ft – Positive Airflow)",
       icon: Zap,
       color: "text-yellow-600",
       bgColor: "bg-yellow-500/10",
-      containerType: "Electrical container",
-      specialRequirement: "Airflow, dust control, sealed cabinets",
+      containerType: "20ft Modified Container",
+      specialRequirement: "Dust-controlled airflow, sealed cabinets",
       items: [
-        "Fuses (all types)",
-        "Circuit breakers (MCB, MCCB)",
-        "Contactors",
-        "Overload relays",
-        "Control relays",
-        "Power supplies",
-        "Terminal blocks",
-        "Isolator handles & internals",
-        "Push buttons",
-        "Selector switches",
-        "Indicator lights",
-        "VSD spare boards (small)",
-        "PLC I/O cards",
-        "PLC CPUs (spares)",
-        "Sensors (photo, proximity)",
-        "Cable glands",
-        "Cable lugs",
-        "Ferrules",
-        "Control cables (cut lengths)",
-        "Panel cooling fans",
-        "Panel filters"
+        "Fuses (all types)", "Circuit breakers (MCB, MCCB)", "RCBOs",
+        "Contactors", "Overload relays", "Control relays",
+        "Power supplies", "Terminal blocks",
+        "Isolator handles & internals", "Push buttons",
+        "Selector switches", "Indicator lights",
+        "VSD/VFD spare boards", "PLC I/O cards", "PLC CPUs",
+        "Sensors (photo, proximity)", "Cable glands", "Cable lugs",
+        "Ferrules", "Control cables (cut lengths)",
+        "Panel cooling fans", "Panel filters"
       ]
     },
     {
       number: 2,
-      title: "Instrumentation & Process Control",
+      code: "C02-IN",
+      title: "Instrumentation & Pneumatics (20ft – Clean/Fragile)",
       icon: Gauge,
       color: "text-purple-600",
       bgColor: "bg-purple-500/10",
-      containerType: "Often paired with electrical container",
-      specialRequirement: "Labelled bins + clean storage",
+      containerType: "20ft Modified Container",
+      specialRequirement: "Labelled bins, clean storage, fragile care",
       items: [
-        "Pressure transmitters",
-        "Pressure gauges",
-        "Flow switches",
-        "Flow meters (small)",
-        "Level switches",
-        "Temperature probes (RTD / thermocouple)",
-        "Solenoid valves",
-        "Position switches",
-        "Instrument air regulators",
-        "Small actuators",
-        "Instrument fittings (SS, brass)",
-        "Tubing (coiled lengths)",
-        "Manifolds",
-        "Instrument filters"
+        "Pressure transmitters", "Pressure gauges",
+        "Flow switches", "Flow meters (small)",
+        "Level switches", "Temperature probes (RTD / thermocouple)",
+        "Solenoid valves (small)", "Positioners",
+        "Instrument air regulators / FRLs",
+        "Small actuators", "Instrument fittings (SS, brass)",
+        "Swagelok fittings", "Tubing (coiled lengths)",
+        "Manifolds (small)", "Instrument filters",
+        "Pneumatic push-in fittings", "Quick connects",
+        "Air hoses (small)", "Mufflers", "Needle valves (small)"
       ]
     },
     {
       number: 3,
-      title: "Mechanical Wear & Service Parts (Small)",
+      code: "C03-MW",
+      title: "Mechanical Wear / Heavy (40ft – High Volume)",
       icon: Wrench,
       color: "text-blue-600",
       bgColor: "bg-blue-500/10",
-      containerType: "Mechanical container",
-      specialRequirement: "Dry storage, organised bins",
+      containerType: "40ft Standard Container",
+      specialRequirement: "Dry storage, high-density bins, heavy items at bottom",
       subCategories: [
         {
-          name: "Bearings & Power Transmission",
+          name: "Wear Parts & Liners",
           items: [
-            "Bearings (all sizes)",
-            "Bearing housings (small)",
-            "Seals (oil, lip, mechanical)",
-            "O-rings",
-            "Gaskets",
-            "Couplings (jaw, grid, flexible)",
-            "Coupling inserts / spiders",
-            "Keys & key stock",
-            "Shims",
-            "Locknuts",
-            "Retaining rings (circlips)"
+            "Wear plates", "Chute liners (rubber, ceramic)",
+            "Screen panels", "Crusher liners"
           ]
         },
         {
-          name: "Conveyor Components (Small)",
+          name: "Conveyor & Drive",
           items: [
-            "Idler rollers (return / trough – individual)",
-            "Guide rollers",
-            "Skirt rubber (cut lengths)",
-            "Impact bars (short)",
-            "Scraper blades",
-            "Belt fasteners",
-            "Pulley lagging strips",
-            "Belt tracking components",
-            "Pull cord switches",
-            "Belt alignment switches"
+            "Rollers", "Idlers", "Pulleys",
+            "Scraper blades", "Belt cleaners",
+            "Belts (V-belt, drive belt)", "Belt fasteners",
+            "Sprockets", "Chains"
+          ]
+        },
+        {
+          name: "Valves, Pipe & Fittings",
+          items: [
+            "Valves (small–medium, <DN150)",
+            "Pipe fittings", "Flanges", "Elbows", "Tees",
+            "Reducers", "Nipples", "Hoses",
+            "Couplings (heavy)"
+          ]
+        },
+        {
+          name: "Pump Spares",
+          items: [
+            "Seal kits", "Impellers (small)",
+            "Wear rings", "Shaft sleeves", "Gland packing"
           ]
         }
       ]
     },
     {
       number: 4,
-      title: "Pumps & Process Equipment – Small Spares",
+      code: "C04-ME",
+      title: "Mechanical Small Precision (20ft)",
       icon: Cog,
       color: "text-cyan-600",
       bgColor: "bg-cyan-500/10",
-      containerType: "Mechanical container",
-      specialRequirement: "NOT full pumps — parts only",
+      containerType: "20ft Standard Container",
+      specialRequirement: "Dry, precision bins, anti-contamination",
       items: [
-        "Mechanical seals",
-        "Seal kits",
-        "Impellers (small)",
-        "Wear rings",
-        "Shaft sleeves",
-        "O-rings",
-        "Gland packing",
-        "Pump bearings",
-        "Flush kits",
-        "Check valve internals"
+        "Bearings (all types)", "Pillow blocks",
+        "Spherical roller bearings", "Ball bearings",
+        "Seals (oil, lip, mechanical)", "O-rings", "Gaskets",
+        "Shims", "Keys & key stock",
+        "Retaining rings (circlips)", "Bushes",
+        "Small couplings", "Small shafts",
+        "Small valves (<DN150)", "Precision parts",
+        "Locknuts"
       ]
     },
     {
       number: 5,
-      title: "Valves & Valve Internals",
-      icon: Settings,
-      color: "text-green-600",
-      bgColor: "bg-green-500/10",
-      containerType: "Mechanical or dedicated valve container",
-      specialRequirement: null,
-      items: [
-        "Small manual valves",
-        "Ball valves",
-        "Needle valves",
-        "Check valves",
-        "Valve seal kits",
-        "Seats",
-        "Stems",
-        "Actuator repair kits",
-        "Solenoid coils",
-        "Diaphragms"
-      ]
-    },
-    {
-      number: 6,
-      title: "Lubrication & Condition Monitoring",
-      icon: Droplets,
-      color: "text-amber-600",
-      bgColor: "bg-amber-500/10",
-      containerType: "Lubrication container",
-      specialRequirement: "Ventilated, spill containment",
-      items: [
-        "Grease cartridges",
-        "Oil sample bottles",
-        "Breathers",
-        "Sight glasses",
-        "Level indicators",
-        "Desiccant breathers",
-        "Oil filters",
-        "Lube lines & fittings",
-        "Auto-lube injectors",
-        "Grease nipples"
-      ]
-    },
-    {
-      number: 7,
-      title: "Fasteners & General Hardware",
+      code: "C05-FA",
+      title: "Fasteners, Consumables & Lubrication (20ft)",
       icon: Hammer,
       color: "text-slate-600",
       bgColor: "bg-slate-500/10",
-      containerType: "Fasteners container",
-      specialRequirement: "High-organisation bins (Kanban friendly)",
-      items: [
-        "Bolts",
-        "Nuts",
-        "Washers",
-        "Studs",
-        "Anchors",
-        "Threaded rod",
-        "U-bolts",
-        "Hose clamps",
-        "Retaining clips",
-        "Pins"
-      ]
-    },
-    {
-      number: 8,
-      title: "Hoses, Fittings & Consumables",
-      icon: Cable,
-      color: "text-indigo-600",
-      bgColor: "bg-indigo-500/10",
-      containerType: "Consumables container",
-      specialRequirement: null,
-      items: [
-        "Hydraulic hoses (short)",
-        "Hose ends",
-        "Adaptors",
-        "Fittings (BSP, NPT, metric)",
-        "PTFE tape",
-        "Thread sealant",
-        "Sealants",
-        "Adhesives",
-        "Rags",
-        "Absorbents",
-        "PPE consumables (gloves, earplugs)"
-      ]
-    },
-    {
-      number: 9,
-      title: "Tools & Test Equipment (Optional Container)",
-      icon: Wrench,
-      color: "text-rose-600",
-      bgColor: "bg-rose-500/10",
-      containerType: "Controlled tools container (optional)",
-      specialRequirement: "If choosing to store controlled tools separately",
-      items: [
-        "Multimeters",
-        "Insulation testers",
-        "Torque wrenches",
-        "Laser alignment tools",
-        "Dial indicators",
-        "Bearing heaters (small)",
-        "Pullers",
-        "Calibration tools"
+      containerType: "20ft Standard Container",
+      specialRequirement: "High-organisation Kanban bins, spill kit accessible",
+      subCategories: [
+        {
+          name: "Fasteners & Hardware",
+          items: [
+            "Bolts", "Nuts", "Washers", "Studs",
+            "Anchors", "Threaded rod", "U-bolts",
+            "Hose clamps", "Retaining clips", "Pins",
+            "Screws"
+          ]
+        },
+        {
+          name: "Sealants & Adhesives",
+          items: [
+            "Loctite", "Silicone", "Threadlocker",
+            "PTFE tape", "Thread sealant", "Adhesives"
+          ]
+        },
+        {
+          name: "Consumables & PPE",
+          items: [
+            "Gloves", "Respirators", "Hard hats",
+            "Rags", "Absorbents", "Zip ties", "Tape", "Batteries"
+          ]
+        },
+        {
+          name: "Lubrication",
+          items: [
+            "Grease cartridges", "Grease nipples", "Grease fittings",
+            "Oil filters (small)", "Breathers", "Sight glasses",
+            "Auto-lube injectors", "Oil sample bottles",
+            "Desiccant breathers"
+          ]
+        }
       ]
     }
   ];
@@ -232,12 +159,15 @@ export const ContainerStockingScopeSection = () => {
   const exclusions = [
     "Complete motors (>15 kg)",
     "Gearboxes",
-    "Complete pumps",
-    "Large valves",
+    "Complete pumps / pump assemblies",
+    "Large valves (DN150+)",
+    "Large PE/Plasson fittings",
     "Drums and bulk chemicals",
     "Palletised items",
     "Structural steel",
-    "Heavy equipment assemblies"
+    "Heavy equipment assemblies",
+    "Switchboards",
+    "Anything requiring forklift"
   ];
 
   return (
@@ -287,7 +217,10 @@ export const ContainerStockingScopeSection = () => {
                   <span className={`font-bold text-sm ${category.color}`}>{category.number}</span>
                 </div>
                 <category.icon className={`w-5 h-5 ${category.color}`} />
-                <CardTitle className="text-lg">{category.title}</CardTitle>
+                <div>
+                  <CardTitle className="text-lg">{category.title}</CardTitle>
+                  <p className="text-xs text-muted-foreground font-mono mt-0.5">{category.code}</p>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -310,7 +243,7 @@ export const ContainerStockingScopeSection = () => {
                 </div>
               ) : (
                 <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
-                  {category.items?.map((item, i) => (
+                  {'items' in category && category.items?.map((item, i) => (
                     <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <span className="text-muted-foreground/60 mt-0.5">•</span>
                       <span>{item}</span>
@@ -342,10 +275,10 @@ export const ContainerStockingScopeSection = () => {
         <CardHeader className="pb-4">
           <div className="flex items-center gap-2">
             <XCircle className="w-5 h-5 text-destructive" />
-            <CardTitle className="text-lg">Excluded from Container Storage</CardTitle>
+            <CardTitle className="text-lg">Excluded from Container Storage → Laydown Yard (LD)</CardTitle>
           </div>
           <p className="text-sm text-muted-foreground">
-            These items are stored in laydown yards, racking, or heavy spares areas
+            These items are stored in laydown yards, dome rows, or heavy spares areas
           </p>
         </CardHeader>
         <CardContent>
