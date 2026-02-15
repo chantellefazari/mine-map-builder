@@ -152,8 +152,9 @@ const RIGHT_X = COURTYARD_START_X + YARD_DIMENSIONS.courtyardWidthM * PX_PER_M;
 const TOP_Y = 30;
 const GAP_BETWEEN = YARD_DIMENSIONS.containerSpacingM * PX_PER_M;
 const BOTTOM_20FT_Y = TOP_Y + CONTAINER_20FT_H + GAP_BETWEEN;
-const BASE_Y = BOTTOM_20FT_Y + CONTAINER_20FT_H + GAP_BETWEEN;
-// C03 centered across courtyard — extends past both legs (12.19m > 9.5m)
+// C03 sits behind the dome concrete (9.5m deep), between the legs
+const BASE_Y = TOP_Y + DOME_DIMENSIONS.depthM * PX_PER_M; // right after dome concrete ends
+// C03 centered in the 12m courtyard opening
 const C03_X = COURTYARD_START_X + (YARD_DIMENSIONS.courtyardWidthM * PX_PER_M) / 2 - CONTAINER_40FT_W / 2;
 
 // Zone groups for the U-shape layout
