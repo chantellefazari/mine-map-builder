@@ -10,6 +10,7 @@
  *   C02 (IN) – Instrumentation & Control
  *   C03 (ME) – Mechanical Small Parts (bearings, seals, pumps, valves, etc.)
  *   C05 (FA) – Fasteners & Consumables
+ *   C06 (LU) – Lubrication & Oils
  */
 
 export interface ContainerMapping {
@@ -44,11 +45,7 @@ const CATEGORY_TO_CONTAINER: Record<string, ContainerMapping> = {
   "OEM Assemblies / Packages":         { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
   "Tanks & Vessels":                   { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
 
-  // C03 – Mechanical (previously C04 Lubrication — now merged into Mechanical)
-  "Filters":                           { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-  "Lubrication System Components":     { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
-
-  // C03 – Mechanical (previously C06 Fittings — now merged into Mechanical)
+  // C03 – Mechanical (Hoses & Pipework merged into Mechanical)
   "Hoses & Pipework":                  { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical Small Parts" },
 
   // C05 – Fasteners & Consumables
@@ -56,6 +53,10 @@ const CATEGORY_TO_CONTAINER: Record<string, ContainerMapping> = {
   "Consumables":                       { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
   "Safety Equipment":                  { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
   "Tools & Workshop Equipment":        { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners & Consumables" },
+
+  // C06 – Lubrication & Oils
+  "Filters":                           { containerId: "C06", zoneCode: "LU", containerLabel: "Lubrication & Oils" },
+  "Lubrication System Components":     { containerId: "C06", zoneCode: "LU", containerLabel: "Lubrication & Oils" },
 };
 
 /** Default container for unmapped categories */
