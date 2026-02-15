@@ -145,6 +145,8 @@ function isMotorButNotHeavy(desc: string): boolean {
   if (LD_MOTOR_KEYWORDS.some((kw) => desc.includes(kw))) return false;
   // If it matches exclusion terms, it's NOT heavy (electrical protection device or small part)
   if (MOTOR_NOT_LD_KEYWORDS.some((kw) => desc.includes(kw))) return true;
+  // If it matches any C01 keyword (breaker, starter, switch, etc.), it's electrical
+  if (matchesAny(desc, C01_KEYWORDS)) return true;
   return false;
 }
 
