@@ -37,17 +37,21 @@ export const StorageZonesSection = () => {
       includes: [
         "Pressure transmitters, gauges",
         "Flow meters, level switches",
-        "Temperature probes (RTD/TC)",
+        "Temperature probes (RTD/TC), thermowells",
+        "Sensors (pressure, proximity, radar level)",
+        "Electrode holders, analysers, signal converters",
         "Solenoid valves, positioners",
+        "Process control valves (diaphragm, pinch)",
         "Instrument fittings, Swagelok, tubing",
-        "Pneumatic regulators, FRLs, air filters",
-        "Push-in fittings, quick connects, manifolds"
+        "Pneumatic regulators, FRLs",
+        "Push-in fittings, quick connects, manifolds",
+        "Small pneumatic cylinders & actuators"
       ],
       excludes: [
-        "Heavy process equipment",
-        "Bulk chemicals",
-        "Mechanical wear parts",
-        "Electrical components (→ C01)"
+        "Heavy pneumatic valve assemblies DN150+ (→ LD)",
+        "Vehicle/engine air filters (→ C05-FA)",
+        "Electrical components (→ C01)",
+        "Mechanical wear parts (→ C03)"
       ],
       environment: "Clean, dust-free, climate-controlled preferred",
       handling: "Manual only, fragile item care"
@@ -134,7 +138,8 @@ export const StorageZonesSection = () => {
       includes: [
         "Complete motors, gearboxes, pump assemblies",
         "Large pulleys, drums, shaft assemblies",
-        "Heavy valves DN150+, large PE/Plasson fittings ≥150mm",
+        "Heavy pneumatic valve assemblies DN150+",
+        "Crusher liners, cone liners, mantles, screen panels",
         "Switchboards, large frames, complete assemblies",
         "Bulk drums, oils, palletised items",
         "Any item >15 kg or requiring forklift handling"

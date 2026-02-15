@@ -63,8 +63,13 @@ const C02_KEYWORDS = [
   "rtd", "thermocouple", "temperature probe", "positioner",
   "solenoid valve", "instrument tubing", "swagelok",
   "needle valve",
+  // Sensors & probes (instrumentation, not mechanical)
+  "sensor", "probe", "electrode", "transducer", "analyser", "analyzer",
+  "radar level", "thermowell", "signal converter",
+  // Process control valves (small, instrument-adjacent)
+  "diaphragm valve", "pinch valve", "control valve",
   // Pneumatics
-  "pneumatic", "air regulator", "air filter", "frl", "manifold",
+  "pneumatic", "air regulator", "frl", "manifold",
   "push-in fitting", "quick connect", "air hose", "muffler",
 ];
 
@@ -81,6 +86,8 @@ const C05_KEYWORDS = [
   "grease nipple", "grease fitting", "sample bottle",
   "respirator", "hard hat", "battery", "consumable",
   "screw", "fastener",
+  // Vehicle/engine air filters are consumables, not instrumentation
+  "air filter",
 ];
 
 // Structural/pipe keywords that override C05 classification
@@ -111,6 +118,7 @@ const C04_ME_KEYWORDS = [
   "precision", "pillow block", "spherical roller", "ball bearing",
   "wear insert small",
   "motor coupling", "motor hub", "coupling pump",
+  // Indicator lights are electrical → handled by C01 "indicator light" keyword
 ];
 
 // ─── PE/Plasson pipe vs fitting check ────────────────────────────
@@ -165,6 +173,17 @@ function isMotorButNotHeavy(desc: string): boolean {
   return false;
 }
 
+/**
+ * Check if a pneumatic valve assembly is large (DN150+) and too heavy for containers
+ */
+function isLargePneumaticValve(desc: string): boolean {
+  const hasValve = desc.includes("valve") || desc.includes("actuator");
+  if (!hasValve) return false;
+  // DN150+ or DN200+ are heavy assemblies
+  const largeDN = /dn\s*(?:1[5-9]\d|[2-9]\d{2}|\d{4,})/.test(desc);
+  return largeDN;
+}
+
 // ─── Allocation function ─────────────────────────────────────────
 function matchesAny(desc: string, keywords: string[]): boolean {
   return keywords.some((kw) => desc.includes(kw));
@@ -198,7 +217,11 @@ export function allocateWarehouseArea(description: string | null | undefined): s
   if (matchesAny(desc, C01_KEYWORDS)) return "C01-EL";
 
   // STEP 3 — C02 Instrumentation & Pneumatics
-  if (matchesAny(desc, C02_KEYWORDS)) return "C02-IN";
+  // But large pneumatic valve assemblies (DN150+) are too heavy → LD
+  if (matchesAny(desc, C02_KEYWORDS)) {
+    if (isLargePneumaticValve(desc)) return "LD";
+    return "C02-IN";
+  }
 
   // STEP 4 — C05 Fasteners/Consumables/Lube
   // BUT if description also contains structural/pipe keywords → skip to mechanical
