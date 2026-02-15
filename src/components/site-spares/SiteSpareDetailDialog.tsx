@@ -37,7 +37,7 @@ import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityC
 import { getEdgeFunctionErrorMessage } from "@/utils/getEdgeFunctionErrorMessage";
 import { SupplierSelector } from "@/components/shared/SupplierSelector";
 import { classifyCategory, getAllCategories, getCategoryColor, type SpareCategory } from "@/utils/categoryClassification";
-import { getContainerForCategory } from "@/utils/categoryContainerMapping";
+
 
 // Criticality badge colors
 const criticalityColors: Record<CriticalityLevel, string> = {
@@ -446,7 +446,6 @@ export const SiteSpareDetailDialog = ({
               {(() => {
                 const suggested = classifyCategory(localSpare.description);
                 const current = localSpare.category || "";
-                const containerInfo = getContainerForCategory(current || suggested);
                 return (
                   <>
                     {current !== suggested && (
@@ -484,10 +483,10 @@ export const SiteSpareDetailDialog = ({
                         ))}
                       </SelectContent>
                     </Select>
-                    {containerInfo && (
+                    {localSpare.warehouse_area && (
                       <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
                         <span>📦</span>
-                        <span>Container: <strong>{containerInfo.containerId}</strong> ({containerInfo.containerLabel})</span>
+                        <span>Warehouse Area: <strong>{localSpare.warehouse_area}</strong></span>
                       </div>
                     )}
                   </>
