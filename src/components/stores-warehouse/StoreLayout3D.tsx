@@ -1,7 +1,7 @@
 import { Suspense, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, RoundedBox, Html } from "@react-three/drei";
-import { STORE_CONTAINERS, YARD_DIMENSIONS, type StoreContainer } from "./storeLayoutData";
+import { STORE_CONTAINERS, YARD_DIMENSIONS, DOME_DIMENSIONS, type StoreContainer } from "./storeLayoutData";
 import * as THREE from "three";
 
 interface StoreLayout3DProps {
@@ -326,8 +326,8 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
 /* ============ Ground ============ */
 
 const Ground = () => {
-  const courtyardW = YARD_DIMENSIONS.courtyardWidthM * 0.5;
-  const courtyardD = YARD_DIMENSIONS.courtyardDepthM * 0.5;
+  const domeW = DOME_DIMENSIONS.widthM * 0.5;
+  const domeD = DOME_DIMENSIONS.depthM * 0.5;
 
   return (
     <>
@@ -339,29 +339,20 @@ const Ground = () => {
 
       {/* Dome courtyard area */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 1.5]}>
-        <planeGeometry args={[courtyardW, courtyardD]} />
+        <planeGeometry args={[domeW, domeD]} />
         <meshStandardMaterial color="#22c55e" opacity={0.06} transparent />
       </mesh>
       <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 1.5]} fontSize={0.25} color="#22c55e" anchorX="center" fillOpacity={0.3}>
         DOME AREA
       </Text>
       <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 2]} fontSize={0.12} color="#22c55e" anchorX="center" fillOpacity={0.25}>
-        {YARD_DIMENSIONS.courtyardWidthM}m × {YARD_DIMENSIONS.courtyardDepthM}m
-      </Text>
-
-      {/* Forklift access path */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[4, 0.02, 4.8]}>
-        <planeGeometry args={[YARD_DIMENSIONS.forkliftGapM * 0.5 * 0.6, 1.5]} />
-        <meshStandardMaterial color="#22c55e" opacity={0.1} transparent />
-      </mesh>
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[4, 0.03, 5.8]} fontSize={0.1} color="#22c55e" anchorX="center" fontWeight="bold">
-        FORKLIFT ACCESS
+        {DOME_DIMENSIONS.widthM}m × {DOME_DIMENSIONS.depthM}m
       </Text>
 
       {/* Zone labels on ground */}
       <Text rotation={[-Math.PI / 2, 0, 0]} position={[-3.6, 0.02, -0.5]} fontSize={0.15} color="#6366f1" anchorX="center">LEFT LEG — CLEAN</Text>
       <Text rotation={[-Math.PI / 2, 0, 0]} position={[3.6, 0.02, -0.5]} fontSize={0.15} color="#64748b" anchorX="center">RIGHT LEG — HIGH-ACCESS</Text>
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[-0.6, 0.02, 5.5]} fontSize={0.15} color="#3b82f6" anchorX="center">BASE — MECHANICAL (40ft)</Text>
+      <Text rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 5.5]} fontSize={0.15} color="#3b82f6" anchorX="center">BASE — MECHANICAL (40ft)</Text>
     </>
   );
 };

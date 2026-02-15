@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { STORE_CONTAINERS, LAYOUT_ZONE_GROUPS, YARD_DIMENSIONS, type StoreContainer } from "./storeLayoutData";
+import { STORE_CONTAINERS, LAYOUT_ZONE_GROUPS, YARD_DIMENSIONS, DOME_DIMENSIONS, type StoreContainer } from "./storeLayoutData";
 import { ContainerDetail2D } from "./ContainerDetail2D";
 import { ArrowLeft, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -156,17 +156,11 @@ interface FloorPlanSVGProps {
 
 const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSVGProps) => {
   // Compute SVG dimensions from data
-  const svgW = 560;
+  const svgW = 600;
   const svgH = 480;
 
-  // Dome area
+   // Dome area
   const domeGroup = LAYOUT_ZONE_GROUPS.find((g) => g.id === "dome");
-
-  // Forklift gap starts after the 40ft container
-  const c03 = STORE_CONTAINERS.find((c) => c.id === "C03")!;
-  const forkliftX = c03.position.x + c03.width + 5;
-  const rightLeg = STORE_CONTAINERS.find((c) => c.id === "C05")!;
-  const forkliftW = rightLeg.position.x - forkliftX;
 
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
@@ -207,28 +201,10 @@ const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSV
               y={domeGroup.position.y + domeGroup.position.height / 2 + 8}
               textAnchor="middle" fontSize="10" fill="#22c55e" opacity="0.35"
             >
-              {YARD_DIMENSIONS.courtyardWidthM}m × {YARD_DIMENSIONS.courtyardDepthM}m clear
+              {DOME_DIMENSIONS.widthM}m × {DOME_DIMENSIONS.depthM}m clear
             </text>
           </g>
         )}
-
-        {/* Forklift Access Path */}
-        <rect
-          x={forkliftX} y={c03.position.y}
-          width={forkliftW} height={c03.height}
-          fill="#22c55e" opacity="0.08" rx="4"
-        />
-        <line
-          x1={forkliftX + forkliftW / 2} y1={c03.position.y - 10}
-          x2={forkliftX + forkliftW / 2} y2={c03.position.y + c03.height + 15}
-          stroke="#22c55e" strokeWidth="1.5" strokeDasharray="6 3" opacity="0.4"
-        />
-        <text
-          x={forkliftX + forkliftW / 2} y={c03.position.y + c03.height + 25}
-          textAnchor="middle" fontSize="8" fill="#22c55e" fontWeight="600"
-        >
-          FORKLIFT ACCESS ({YARD_DIMENSIONS.forkliftGapM}m gap)
-        </text>
 
         {/* Containers */}
         {STORE_CONTAINERS.map((container) => {
@@ -289,7 +265,7 @@ const FloorPlanSVG = ({ liveMode, getPartsCount, onContainerClick }: FloorPlanSV
 
         {/* Yard dimensions label */}
         <text x={svgW / 2} y={svgH - 10} textAnchor="middle" fontSize="9" fill="hsl(var(--muted-foreground))" fontWeight="500">
-          TCMG STORES YARD — U-Shape · {YARD_DIMENSIONS.totalWidthM}m × {YARD_DIMENSIONS.totalDepthM}m · Courtyard: {YARD_DIMENSIONS.courtyardWidthM}m × {YARD_DIMENSIONS.courtyardDepthM}m
+          TCMG STORES YARD — U-Shape · {YARD_DIMENSIONS.totalWidthM}m × {YARD_DIMENSIONS.totalDepthM}m · Dome: {DOME_DIMENSIONS.widthM}m × {DOME_DIMENSIONS.depthM}m
         </text>
 
         {/* Clearance indicators */}
