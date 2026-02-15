@@ -70,17 +70,26 @@ export const StorageZonesSection = () => {
       borderColor: "border-blue-500/30",
       includes: [
         "Wear plates, liners, ceramic/rubber liners",
-        "Rollers, idlers, pulleys, sprockets",
-        "Scraper blades, belt cleaners, belts",
-        "Valves (small–medium), pipe fittings",
-        "Couplings, chains, hoses",
-        "PE/Plasson fittings (small), flanges, elbows"
+        "Rollers, idlers, pulleys, sprockets, belts",
+        "Scraper blades, belt cleaners, conveyor parts",
+        "Valves (ball, butterfly, knife gate, check, float, safety)",
+        "Pipe fittings (couplings, elbows, tees, nipples, flanges)",
+        "Victaulic couplings, camlock fittings, backing rings",
+        "PE/Plasson fittings, compression fittings",
+        "Hoses (hydraulic, PVC, general)",
+        "Structural steel (hollow sections, C-channel, flat bar)",
+        "Pump components (impellers, sleeves, lantern rings)",
+        "Gland packing, filter elements, strainers",
+        "Rigging (chain slings, round slings, wire rope, shackles)",
+        "Cable tray covers (EzyStrut), conduit, pipe spools",
+        "Blowers, heat exchangers, bollards"
       ],
       excludes: [
         "Precision bearings/seals (→ C04-ME)",
         "Complete motors or gearboxes (→ LD)",
         "Electrical components (→ C01)",
-        "Fasteners/consumables (→ C05)"
+        "Fasteners/consumables (→ C05)",
+        "Instruments, sensors, pneumatic controls (→ C02)"
       ],
       environment: "Standard industrial, dry storage, high-density bins",
       handling: "Manual only (≤15 kg items)"
@@ -95,17 +104,14 @@ export const StorageZonesSection = () => {
       includes: [
         "Bearings (all types), pillow blocks",
         "Seals, O-rings, gaskets",
-        "Shims, keys, retaining rings, circlips",
-        "Small couplings, small shafts",
-        "Mechanical seals, bushes",
-        "Small valves (<DN150), precision parts"
+        "Shims, key steel, retaining rings, circlips",
+        "Mechanical seals",
+        "Motor couplings, motor hubs"
       ],
       excludes: [
-        "Sensors, gauges, flowmeters (→ C02-IN)",
-        "Pneumatic regulators, filter regulators (→ C02-IN)",
-        "SMC fittings, nylon tubing, positioners (→ C02-IN)",
-        "Wear parts, liners (→ C03-MW)",
-        "Belts, rollers, idlers (→ C03-MW)",
+        "Valves, pipe fittings, flanges (→ C03-MW)",
+        "Hoses, couplings, structural steel (→ C03-MW)",
+        "Sensors, pneumatic controls (→ C02-IN)",
         "Electrical components (→ C01)",
         "Fasteners (→ C05)"
       ],
