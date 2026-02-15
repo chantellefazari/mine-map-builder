@@ -47,7 +47,10 @@ export const StorageZonesSection = () => {
         "Push-in fittings, quick connects, manifolds",
         "SMC KQ2 fittings, nylon tubing, one-touch connectors",
         "Pneumatic check valves, hand valves, lubricators",
-        "Positioners, small pneumatic cylinders & actuators"
+        "Silencers, bulkhead unions, exhaust accessories",
+        "Encoders, tachometers, weight processors",
+        "Flow restrictors, positioners",
+        "Small pneumatic cylinders & actuators"
       ],
       excludes: [
         "Heavy pneumatic valve assemblies DN150+ (→ LD)",
