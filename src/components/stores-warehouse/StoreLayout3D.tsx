@@ -96,10 +96,18 @@ const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick }:
               <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
             </mesh>
           );
-        } else if (container.id === "C02" || container.id === "C06") {
-          // Door on the end facing C03 (toward +Z)
+        } else if (container.id === "C02") {
+          // Left leg bottom — door on +X facing courtyard
           return (
-            <mesh position={[0, doorY, depth / 2 + 0.02]}>
+            <mesh position={[width / 2 + 0.02, doorY, 0]}>
+              <planeGeometry args={[doorW, doorH]} />
+              <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
+            </mesh>
+          );
+        } else if (container.id === "C06") {
+          // Right leg bottom — door on -X facing courtyard
+          return (
+            <mesh position={[-width / 2 - 0.02, doorY, 0]}>
               <planeGeometry args={[doorW, doorH]} />
               <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
             </mesh>
