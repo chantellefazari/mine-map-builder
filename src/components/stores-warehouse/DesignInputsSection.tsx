@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 export const DesignInputsSection = () => {
   const containerRequirements = [
     {
-      zone: "STO-EL",
+      zone: "C01-EL",
       type: "20ft Modified Container",
       contents: "Electrical components, sensors, PLC spares",
       environment: "Dust-controlled, airflow, climate-stable",
@@ -13,7 +13,7 @@ export const DesignInputsSection = () => {
       growthAllowance: "20%"
     },
     {
-      zone: "STO-ME",
+      zone: "C03-ME",
       type: "20ft Standard Container",
       contents: "Bearings, seals, couplings, mechanical parts",
       environment: "Dry, standard industrial",
@@ -21,7 +21,7 @@ export const DesignInputsSection = () => {
       growthAllowance: "15%"
     },
     {
-      zone: "STO-IN",
+      zone: "C02-IN",
       type: "20ft Modified Container",
       contents: "Instrumentation, transmitters, gauges",
       environment: "Clean, dust-free, climate preferred",
@@ -29,7 +29,7 @@ export const DesignInputsSection = () => {
       growthAllowance: "10%"
     },
     {
-      zone: "STO-LU",
+      zone: "C04-LU",
       type: "10ft Container or Cage",
       contents: "Grease, oil, filters, lube accessories",
       environment: "Ventilated, spill containment",
@@ -37,7 +37,7 @@ export const DesignInputsSection = () => {
       growthAllowance: "10%"
     },
     {
-      zone: "STO-FA",
+      zone: "C05-FA",
       type: "20ft Standard Container",
       contents: "Fasteners, consumables, small tools",
       environment: "Standard, high-access bins",

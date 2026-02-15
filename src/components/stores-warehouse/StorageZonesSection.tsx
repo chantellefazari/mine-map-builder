@@ -4,7 +4,7 @@ import { AlertTriangle, MapPin, Zap, Wrench, Gauge, Droplets, Hammer, XCircle, C
 export const StorageZonesSection = () => {
   const zones = [
     {
-      code: "STO-EL",
+      code: "C01-EL",
       name: "Electrical Components Container",
       icon: Zap,
       color: "text-yellow-600",
@@ -26,7 +26,7 @@ export const StorageZonesSection = () => {
       handling: "Manual only (≤15 kg items)"
     },
     {
-      code: "STO-ME",
+      code: "C03-ME",
       name: "Mechanical Small Parts Container",
       icon: Wrench,
       color: "text-blue-600",
@@ -47,7 +47,7 @@ export const StorageZonesSection = () => {
       handling: "Manual only (≤15 kg items)"
     },
     {
-      code: "STO-IN",
+      code: "C02-IN",
       name: "Instrumentation & Control Container",
       icon: Gauge,
       color: "text-purple-600",
@@ -69,7 +69,7 @@ export const StorageZonesSection = () => {
       handling: "Manual only, fragile item care"
     },
     {
-      code: "STO-LU",
+      code: "C04-LU",
       name: "Lubrication & Oils Container",
       icon: Droplets,
       color: "text-amber-600",
@@ -91,7 +91,7 @@ export const StorageZonesSection = () => {
       handling: "Manual only, spill kit accessible"
     },
     {
-      code: "STO-FA",
+      code: "C05-FA",
       name: "Fasteners & Consumables Container",
       icon: Hammer,
       color: "text-slate-600",
