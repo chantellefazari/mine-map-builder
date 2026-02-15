@@ -483,12 +483,6 @@ export const SiteSpareDetailDialog = ({
                         ))}
                       </SelectContent>
                     </Select>
-                    {localSpare.warehouse_area && (
-                      <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                        <span>📦</span>
-                        <span>Warehouse Area: <strong>{localSpare.warehouse_area}</strong></span>
-                      </div>
-                    )}
                   </>
                 );
               })()}
