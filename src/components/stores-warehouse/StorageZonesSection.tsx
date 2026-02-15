@@ -32,7 +32,7 @@ export const StorageZonesSection = () => {
     },
     {
       code: "C02-IN",
-      name: "Instrumentation & Pneumatics Container (20ft)",
+      name: "Instrumentation, Pneumatics & Process Fittings Container (20ft)",
       icon: Gauge,
       color: "text-purple-600",
       bgColor: "bg-purple-500/10",
@@ -59,13 +59,17 @@ export const StorageZonesSection = () => {
         "4-20mA signal devices, process pump tubing",
         "Hydraulic/pneumatic directional control valves (CETOP, DCV)",
         "M12 sensor connectors",
-        "Small pneumatic cylinders & actuators"
+        "Small pneumatic cylinders & actuators",
+        "BSP nipples, elbows, reducers (Class 150, stainless/steel)",
+        "Backing rings",
+        "Strainers, filter elements"
       ],
       excludes: [
         "Heavy pneumatic valve assemblies DN150+ (→ LD)",
         "Vehicle/engine air filters (→ C05-FA)",
         "Electrical components (→ C01)",
-        "Mechanical wear parts (→ C03)"
+        "Mechanical wear parts (→ C03)",
+        "PE/Plasson bulk fittings (→ C03-MW)"
       ],
       environment: "Clean, dust-free, climate-controlled preferred",
       handling: "Manual only, fragile item care"
@@ -82,22 +86,24 @@ export const StorageZonesSection = () => {
         "Rollers, idlers, pulleys, sprockets, belts",
         "Scraper blades, belt cleaners, conveyor frames & brackets",
         "Valves (ball, butterfly, knife gate, check, float, safety)",
-        "Pipe fittings (couplings, elbows, tees, nipples, flanges)",
-        "Victaulic couplings, camlock fittings, backing rings",
+        "Pipe fittings (couplings, tees, flanges, pipe clamps)",
+        "Victaulic couplings, camlock fittings",
         "PE/Plasson fittings, compression fittings",
         "Hoses (hydraulic, PVC, general)",
         "Structural steel (hollow sections, C-channel, flat bar, star pickets)",
         "Pump components (impellers, sleeves, lantern rings)",
-        "Gland packing, filter elements, strainers",
+        "Gland packing, hydraulic filters",
         "Rigging (chain slings, round slings, wire rope, lever hoists)",
         "Cable tray covers (EzyStrut), conduit, pipe spools",
         "Rubber cord, PTFE sheet, repair strips",
-        "Blowers, heat exchangers, air receivers, bollards"
+        "Blowers, heat exchangers, bollards"
       ],
       excludes: [
         "Crusher liners, cone liners, mantles, screen panels (→ LD)",
         "Complete motors, gearboxes, pump assemblies (→ LD)",
         "Heavy valve assemblies DN150+ with actuators (→ LD)",
+        "BSP nipples, elbows, reducers, backing rings (→ C02-IN)",
+        "Strainers, filter elements (→ C02-IN)",
         "Precision bearings/seals (→ C04-ME)",
         "Electrical components (→ C01)",
         "Fasteners/consumables (→ C05)",

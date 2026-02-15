@@ -114,6 +114,13 @@ const C02_KEYWORDS = [
   // Hydraulic & pneumatic control valves
   "directional valve", "cetop", "dcv ",
   "hydraulic solenoid",
+  // Process fittings (BSP, small pipe fittings — moved from C03)
+  "nipple", "hex nipple", "reducing nipple", "reducing hex",
+  "elbow", "reducer", "reducing bush", "reducing socket",
+  "class 150", "bsp",
+  "backing ring",
+  // Strainers & filter elements (process-adjacent)
+  "strainer", "filter element",
 ];
 
 // C05 checked BEFORE mechanical split so fasteners don't leak into C03/C04
@@ -188,17 +195,16 @@ const C03_MW_KEYWORDS = [
   // Valves (general mechanical — NOT solenoid/control/diaphragm/pinch which are C02)
   "valve", "knife gate", "butterfly", "ball valve", "check valve",
   "non-return", "float valve", "safety valve", "gate valve",
-  // Pipe fittings & plumbing
-  "pipe", "flange", "backing ring", "coupling", "coupler",
-  "elbow", "tee", "nipple", "socket", "reducer", "reducing socket",
+  // Pipe fittings & plumbing (BSP nipples/elbows/reducers/backing rings now in C02)
+  "pipe", "flange", "coupling", "coupler",
+  "tee", "socket",
   "pipe clamp", "victaulic", "camlock",
-  // PE/Plasson fittings
+  // PE/Plasson fittings (remain in C03 — bulk plastic fittings)
   "plasson", "pe100", "compression fitting", "compression elbow",
   "compression coupler", "compression tee", "electrofusion",
   "stub flange", "spigot", "saddle",
   "male adaptor", "female adaptor", "end plug",
-  "reducing bush", "reducing nipple", "threaded socket",
-  "hex nipple", "reducing hex",
+  "threaded socket",
   // Hoses
   "hose", "hydraulic hose",
   // Structural steel & sections
@@ -213,8 +219,8 @@ const C03_MW_KEYWORDS = [
   // Rigging & lifting
   "sling", "chain sling", "round sling", "wire rope", "shackle", "rope",
   "lever hoist", "turnbuckle",
-  // Filter elements (mechanical, not electrical)
-  "filter element", "hydraulic filter", "strainer",
+  // Hydraulic filters (strainers & filter elements now in C02)
+  "hydraulic filter",
   // Cable tray & conduit covers
   "ezystrut", "cable tray",
   // Rubber & PTFE sheet
@@ -359,7 +365,7 @@ export function allocateWarehouseArea(description: string | null | undefined): s
 
 const CONTAINER_INFO: Record<string, ContainerMapping> = {
   "C01-EL": { containerId: "C01", zoneCode: "EL", containerLabel: "Electrical" },
-  "C02-IN": { containerId: "C02", zoneCode: "IN", containerLabel: "Instrumentation & Pneumatics" },
+  "C02-IN": { containerId: "C02", zoneCode: "IN", containerLabel: "Instrumentation, Pneumatics & Process Fittings" },
   "C03-MW": { containerId: "C03", zoneCode: "MW", containerLabel: "Mechanical Wear / Heavy" },
   "C04-ME": { containerId: "C04", zoneCode: "ME", containerLabel: "Mechanical Small Precision" },
   "C05-FA": { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners, Consumables & Lubrication" },
