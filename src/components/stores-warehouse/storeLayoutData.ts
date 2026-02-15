@@ -113,10 +113,16 @@ export const YARD_DIMENSIONS: YardDimensions = {
   accessRoadWidthM: 4,
   walkwayWidthM: 1.5,
   containerSpacingM: 0.4,
-  courtyardWidthM: 12,
+  courtyardWidthM: 12.19, // matches 40ft container length so C03 spans full base
   courtyardDepthM: 12,
-  forkliftGapM: 5,
+  forkliftGapM: 0, // no gap — C03 spans full base
   outerClearanceM: 2.5,
+};
+
+// Dome physical footprint (sits inside courtyard)
+export const DOME_DIMENSIONS = {
+  widthM: 9.5,
+  depthM: 12,
 };
 
 /*
@@ -124,12 +130,12 @@ export const YARD_DIMENSIONS: YardDimensions = {
  *
  *  Left Leg (vertical):        Right Leg (vertical):
  *    C01 (20ft)                   C05 (20ft)
- *    C02 (20ft)
+ *    C02 (20ft)                   C06 (20ft)
  *
  *  Base (horizontal):
- *    C03 (40ft) ---- [5m forklift gap] ----
+ *    C03 (40ft) — spans full base between legs
  *
- *  Dome footprint (12m × 12m) sits inside the courtyard
+ *  Dome footprint (9.5m × 12m) sits inside the courtyard
  */
 
 // Scale: 25px per metre
@@ -172,15 +178,20 @@ export const LAYOUT_ZONE_GROUPS: LayoutZoneGroup[] = [
     description: "40ft container, main mechanical stores",
     color: "#3b82f6",
     bgColor: "rgba(59, 130, 246, 0.06)",
-    position: { x: LEFT_X - 5, y: BASE_Y - 5, width: CONTAINER_40FT_W + 10, height: CONTAINER_40FT_H + 10 },
+    position: { x: COURTYARD_START_X - 5, y: BASE_Y - 5, width: CONTAINER_40FT_W + 10, height: CONTAINER_40FT_H + 10 },
   },
   {
     id: "dome",
     label: "Dome Area",
-    description: "12m × 12m covered courtyard",
+    description: `${DOME_DIMENSIONS.widthM}m × ${DOME_DIMENSIONS.depthM}m covered courtyard`,
     color: "#22c55e",
     bgColor: "rgba(34, 197, 94, 0.04)",
-    position: { x: COURTYARD_START_X, y: TOP_Y, width: YARD_DIMENSIONS.courtyardWidthM * PX_PER_M, height: YARD_DIMENSIONS.courtyardDepthM * PX_PER_M },
+    position: {
+      x: COURTYARD_START_X + (YARD_DIMENSIONS.courtyardWidthM - DOME_DIMENSIONS.widthM) / 2 * PX_PER_M,
+      y: TOP_Y,
+      width: DOME_DIMENSIONS.widthM * PX_PER_M,
+      height: DOME_DIMENSIONS.depthM * PX_PER_M,
+    },
   },
 ];
 
@@ -298,7 +309,7 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     containerType: "40ft Standard Container",
     shelves: ["A", "B", "C", "D", "E", "F", "G", "H"],
     binsPerShelf: 12,
-    position: { x: LEFT_X, y: BASE_Y },
+    position: { x: COURTYARD_START_X, y: BASE_Y },
     width: CONTAINER_40FT_W,
     height: CONTAINER_40FT_H,
     position3D: { x: -0.6, y: 0, z: 4.8 },
