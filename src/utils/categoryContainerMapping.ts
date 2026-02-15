@@ -109,30 +109,41 @@ const C04_ME_KEYWORDS = [
   "motor coupling", "motor hub", "coupling pump",
 ];
 
-// ─── Size-based PE/Plasson check ─────────────────────────────────
+// ─── PE/Plasson pipe vs fitting check ────────────────────────────
 
 /**
- * Check if a PE/Plasson fitting is ≥150mm (should go to LD).
- * Parses the first MM dimension from the description.
+ * PE/Plasson fittings (couplings, elbows, tees, reducers, stub flanges, etc.)
+ * are compact items that belong in C03-MW regardless of diameter.
+ * Only full pipe lengths (e.g. "DN 90x6M HDPE Pipe") go to LD.
+ *
+ * This function returns true ONLY for actual pipe lengths, not fittings.
  */
-function isLargePEFitting(desc: string): boolean {
+function isLargePEPipe(desc: string): boolean {
+  // Must be PE-related
   if (
-    !desc.includes("plasson") &&
     !desc.includes("pe100") &&
-    !desc.includes("compression fitting") &&
-    !desc.includes("electrofusion") &&
-    !desc.includes("stub flange") &&
-    !desc.includes("spigot")
+    !desc.includes("hdpe") &&
+    !desc.includes("plasson")
   ) {
     return false;
   }
 
-  // Match patterns like "160MM", "180mm", "200 MM", "225MM"
-  const sizeMatch = desc.match(/(\d{2,4})\s*mm/i);
-  if (sizeMatch) {
-    const size = parseInt(sizeMatch[1], 10);
-    return size >= 150;
+  // If it's a fitting keyword → NOT a pipe → stays in C03-MW
+  const FITTING_KEYWORDS = [
+    "coupling", "coupler", "elbow", "tee", "reducer", "reducing",
+    "stub flange", "spigot", "saddle", "end plug", "adaptor", "adapter",
+    "nipple", "socket", "bush", "bow", "bend", "electrofusion",
+    "compression", "stub end",
+  ];
+  if (FITTING_KEYWORDS.some((kw) => desc.includes(kw))) {
+    return false;
   }
+
+  // Only actual pipe lengths go to LD (e.g. "DN 90x6M", "x 420MM ... Pipe")
+  if (desc.includes("pipe")) {
+    return true;
+  }
+
   return false;
 }
 
@@ -168,7 +179,7 @@ export function allocateWarehouseArea(description: string | null | undefined): s
   const hasLDKeyword = matchesAny(desc, LD_KEYWORDS);
   const hasLDMotor = LD_MOTOR_KEYWORDS.some((kw) => desc.includes(kw));
   const hasMotorNotHeavy = isMotorButNotHeavy(desc);
-  const isLargePE = isLargePEFitting(desc);
+  const isLargePE = isLargePEPipe(desc);
 
   // Motor in desc but it's NOT heavy → skip LD, let C01 catch it
   if (desc.includes("motor") && !hasMotorNotHeavy && !hasLDKeyword) {
