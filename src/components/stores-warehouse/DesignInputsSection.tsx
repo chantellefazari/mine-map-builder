@@ -37,9 +37,9 @@ export const DesignInputsSection = () => {
       growthAllowance: "15%"
     },
     {
-      zone: "C05-FA",
+      zone: "C05-CS",
       type: "20ft Standard Container",
-      contents: "Fasteners, consumables, PPE, grease, lube accessories",
+      contents: "Consumables, fasteners, PPE, grease, lube, tools, safety",
       environment: "Standard, high-access Kanban bins",
       accessFrequency: "Daily",
       growthAllowance: "25%"

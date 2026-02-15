@@ -10,7 +10,7 @@
  *   C02-IN – Instrumentation, Pneumatics & Process Fittings (20ft, clean/fragile)
  *   C03-ME – Mechanical (40ft, high volume)
  *   C04-MP – Mechanical Precision (20ft)
- *   C05-FA – Fasteners + Consumables + Lubrication (20ft)
+ *   C05-CS – Consumables & Supplies (20ft)
  *   LD     – Laydown Yard (forklift / oversized / >15kg)
  */
 
@@ -343,11 +343,11 @@ export function allocateWarehouseArea(description: string | null | undefined): s
   // STEP 4 — C05 Fasteners/Consumables/Lube
   // Priority C05 items ALWAYS go to C05 regardless of other keywords
   if (matchesAny(desc, C05_PRIORITY_KEYWORDS)) {
-    return "C05-FA";
+    return "C05-CS";
   }
   // Other C05 items only if no structural/pipe keywords present
   if (matchesAny(desc, C05_KEYWORDS) && !matchesAny(desc, MECHANICAL_OVERRIDE_KEYWORDS)) {
-    return "C05-FA";
+    return "C05-CS";
   }
 
   // STEP 5 — Mechanical split
@@ -368,7 +368,7 @@ const CONTAINER_INFO: Record<string, ContainerMapping> = {
   "C02-IN": { containerId: "C02", zoneCode: "IN", containerLabel: "Instrumentation, Pneumatics & Process Fittings" },
   "C03-ME": { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical" },
   "C04-MP": { containerId: "C04", zoneCode: "MP", containerLabel: "Mechanical Precision" },
-  "C05-FA": { containerId: "C05", zoneCode: "FA", containerLabel: "Fasteners, Consumables & Lubrication" },
+  "C05-CS": { containerId: "C05", zoneCode: "CS", containerLabel: "Consumables & Supplies" },
   "LD":     { containerId: "LD", zoneCode: "LD", containerLabel: "Laydown Yard" },
 };
 

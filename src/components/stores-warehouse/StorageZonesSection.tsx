@@ -66,7 +66,7 @@ export const StorageZonesSection = () => {
       ],
       excludes: [
         "Heavy pneumatic valve assemblies DN150+ (→ LD)",
-        "Vehicle/engine air filters (→ C05-FA)",
+        "Vehicle/engine air filters (→ C05-CS)",
         "Electrical components (→ C01)",
         "Mechanical wear parts (→ C03)",
         "PE/Plasson bulk fittings (→ C03-ME)"
@@ -131,15 +131,15 @@ export const StorageZonesSection = () => {
         "Hoses, couplings, structural steel (→ C03-ME)",
         "Lighting, battens, floodlights (→ C01-EL)",
         "Sensors, pneumatic controls (→ C02-IN)",
-        "Tools, PPE, fire safety (→ C05-FA)",
+        "Tools, PPE, fire safety (→ C05-CS)",
         "Fasteners (→ C05)"
       ],
       environment: "Dry storage, organised precision bins",
       handling: "Manual only (≤15 kg items)"
     },
     {
-      code: "C05-FA",
-      name: "Fasteners, Consumables & Lubrication Container (20ft)",
+      code: "C05-CS",
+      name: "Consumables & Supplies Container (20ft)",
       icon: Hammer,
       color: "text-slate-600",
       bgColor: "bg-slate-500/10",
@@ -191,7 +191,7 @@ export const StorageZonesSection = () => {
         "Small electrical components (→ C01-EL)",
         "Instruments, sensors (→ C02-IN)",
         "Bearings, seals, precision parts (→ C04-MP)",
-        "Fasteners, consumables (→ C05-FA)"
+        "Fasteners, consumables (→ C05-CS)"
       ],
       environment: "Outdoor / covered laydown, dome rows, yard bays",
       handling: "Forklift / crane, heavy lifting equipment required"
