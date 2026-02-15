@@ -108,14 +108,14 @@ export interface YardDimensions {
 
 // U-shape yard dimensions
 export const YARD_DIMENSIONS: YardDimensions = {
-  totalWidthM: 22,
+  totalWidthM: 19,
   totalDepthM: 18,
   accessRoadWidthM: 4,
   walkwayWidthM: 1.5,
   containerSpacingM: 0.4,
-  courtyardWidthM: 12.19, // matches 40ft container length so C03 spans full base
+  courtyardWidthM: 9.5,
   courtyardDepthM: 12,
-  forkliftGapM: 0, // no gap — C03 spans full base
+  forkliftGapM: 0,
   outerClearanceM: 2.5,
 };
 
@@ -142,17 +142,20 @@ export const DOME_DIMENSIONS = {
 const PX_PER_M = 25;
 
 // Derived positions
-const LEFT_X = YARD_DIMENSIONS.outerClearanceM * PX_PER_M; // 62.5 → 63
+const LEFT_X = YARD_DIMENSIONS.outerClearanceM * PX_PER_M;
 const CONTAINER_20FT_W = 2.44 * PX_PER_M; // 61
 const CONTAINER_20FT_H = 6.06 * PX_PER_M; // 151.5
 const CONTAINER_40FT_W = 12.19 * PX_PER_M; // 305
 const CONTAINER_40FT_H = 2.44 * PX_PER_M; // 61
-const COURTYARD_START_X = LEFT_X + CONTAINER_20FT_W; // 124
-const RIGHT_X = COURTYARD_START_X + YARD_DIMENSIONS.courtyardWidthM * PX_PER_M; // 424
+const COURTYARD_START_X = LEFT_X + CONTAINER_20FT_W;
+const RIGHT_X = COURTYARD_START_X + YARD_DIMENSIONS.courtyardWidthM * PX_PER_M;
 const TOP_Y = 30;
-const GAP_BETWEEN = YARD_DIMENSIONS.containerSpacingM * PX_PER_M; // 10
-const BOTTOM_20FT_Y = TOP_Y + CONTAINER_20FT_H + GAP_BETWEEN; // 192
-const BASE_Y = BOTTOM_20FT_Y + CONTAINER_20FT_H + GAP_BETWEEN; // 353
+const GAP_BETWEEN = YARD_DIMENSIONS.containerSpacingM * PX_PER_M;
+const BOTTOM_20FT_Y = TOP_Y + CONTAINER_20FT_H + GAP_BETWEEN;
+const BASE_Y = BOTTOM_20FT_Y + CONTAINER_20FT_H + GAP_BETWEEN;
+// C03 centered across the U-shape base
+const C03_CENTER_X = COURTYARD_START_X + (YARD_DIMENSIONS.courtyardWidthM * PX_PER_M) / 2;
+const C03_X = C03_CENTER_X - CONTAINER_40FT_W / 2;
 
 // Zone groups for the U-shape layout
 export const LAYOUT_ZONE_GROUPS: LayoutZoneGroup[] = [
@@ -178,7 +181,7 @@ export const LAYOUT_ZONE_GROUPS: LayoutZoneGroup[] = [
     description: "40ft container, main mechanical stores",
     color: "#3b82f6",
     bgColor: "rgba(59, 130, 246, 0.06)",
-    position: { x: COURTYARD_START_X - 5, y: BASE_Y - 5, width: CONTAINER_40FT_W + 10, height: CONTAINER_40FT_H + 10 },
+    position: { x: C03_X - 5, y: BASE_Y - 5, width: CONTAINER_40FT_W + 10, height: CONTAINER_40FT_H + 10 },
   },
   {
     id: "dome",
@@ -187,9 +190,9 @@ export const LAYOUT_ZONE_GROUPS: LayoutZoneGroup[] = [
     color: "#22c55e",
     bgColor: "rgba(34, 197, 94, 0.04)",
     position: {
-      x: COURTYARD_START_X + (YARD_DIMENSIONS.courtyardWidthM - DOME_DIMENSIONS.widthM) / 2 * PX_PER_M,
+      x: COURTYARD_START_X,
       y: TOP_Y,
-      width: DOME_DIMENSIONS.widthM * PX_PER_M,
+      width: YARD_DIMENSIONS.courtyardWidthM * PX_PER_M,
       height: DOME_DIMENSIONS.depthM * PX_PER_M,
     },
   },
@@ -309,7 +312,7 @@ export const STORE_CONTAINERS: StoreContainer[] = [
     containerType: "40ft Standard Container",
     shelves: ["A", "B", "C", "D", "E", "F", "G", "H"],
     binsPerShelf: 12,
-    position: { x: COURTYARD_START_X, y: BASE_Y },
+    position: { x: C03_X, y: BASE_Y },
     width: CONTAINER_40FT_W,
     height: CONTAINER_40FT_H,
     position3D: { x: -0.6, y: 0, z: 4.8 },
