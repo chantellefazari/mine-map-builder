@@ -209,35 +209,33 @@ const FURNITURE_3D_HEIGHT: Record<FurnitureType, number> = {
   "reinforced-shelf": 1.2,
 };
 
-const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fitout: ContainerFitout; containerColor: string }) => {
+const FitoutItemMesh = ({ item, fitout, containerColor, onItemClick }: { item: FitoutItem; fitout: ContainerFitout; containerColor: string; onItemClick?: (item: FitoutItem) => void }) => {
   const [hovered, setHovered] = useState(false);
-  const intL = fitout.internalLengthMm / 1000; // X axis in 3D
-  const intW = fitout.internalWidthMm / 1000; // Z axis in 3D
-  const intH = 2.39; // internal height m
+  const intL = fitout.internalLengthMm / 1000;
+  const intW = fitout.internalWidthMm / 1000;
+  const intH = 2.39;
 
-  // Convert mm positions to meters, center origin
   const itemXm = item.x / 1000;
   const itemYm = item.y / 1000;
   const itemWm = item.width / 1000;
-  const itemDm = item.height / 1000; // "height" in plan = depth (Z) in 3D
+  const itemDm = item.height / 1000;
   const itemHm = FURNITURE_3D_HEIGHT[item.type];
 
-  // 3D position: center of item, sitting on floor
   const x3d = -intL / 2 + itemXm + itemWm / 2;
   const z3d = -intW / 2 + itemYm + itemDm / 2;
   const y3d = -intH / 2 + itemHm / 2;
 
   const colors = FURNITURE_COLORS[item.type];
-  const fillColor = colors.stroke; // use the solid stroke color for 3D
+  const fillColor = colors.stroke;
 
   return (
     <group position={[x3d, y3d, z3d]}>
-      {/* Main body */}
       <RoundedBox
         args={[itemWm, itemHm, itemDm]}
         radius={0.01}
-        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
-        onPointerOut={() => setHovered(false)}
+        onClick={(e) => { e.stopPropagation(); onItemClick?.(item); }}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = "pointer"; }}
+        onPointerOut={() => { setHovered(false); document.body.style.cursor = "auto"; }}
       >
         <meshStandardMaterial
           color={fillColor}
@@ -248,13 +246,11 @@ const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fi
         />
       </RoundedBox>
 
-      {/* Wireframe edges */}
       <lineSegments>
         <edgesGeometry args={[new THREE.BoxGeometry(itemWm, itemHm, itemDm)]} />
         <lineBasicMaterial color={fillColor} opacity={0.6} transparent />
       </lineSegments>
 
-      {/* Shelf detail lines for shelving types */}
       {(item.type === "shelving-bay" || item.type === "reinforced-shelf") && (
         <>
           {[0.2, 0.4, 0.6, 0.8].map((frac) => (
@@ -263,7 +259,6 @@ const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fi
               <meshStandardMaterial color={fillColor} opacity={0.3} transparent />
             </mesh>
           ))}
-          {/* Uprights */}
           {[-1, 1].map((side) => (
             <mesh key={side} position={[side * (itemWm / 2 - 0.015), 0, 0]}>
               <boxGeometry args={[0.03, itemHm, 0.03]} />
@@ -273,7 +268,6 @@ const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fi
         </>
       )}
 
-      {/* Drawer lines for drawer units */}
       {item.type === "drawer-unit" && (
         <>
           {[0.15, 0.35, 0.55, 0.75, 0.95].map((frac) => (
@@ -282,7 +276,6 @@ const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fi
               <meshStandardMaterial color="#444" opacity={0.6} transparent />
             </mesh>
           ))}
-          {/* Drawer handles */}
           {[0.25, 0.45, 0.65, 0.85].map((frac) => (
             <mesh key={`h${frac}`} position={[0, -itemHm / 2 + frac * itemHm, itemDm / 2 + 0.01]}>
               <boxGeometry args={[0.06, 0.008, 0.015]} />
@@ -292,7 +285,6 @@ const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fi
         </>
       )}
 
-      {/* Cabinet door line */}
       {item.type === "cabinet" && (
         <mesh position={[0, 0, itemDm / 2 + 0.005]}>
           <planeGeometry args={[itemWm * 0.9, itemHm * 0.9]} />
@@ -300,17 +292,14 @@ const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fi
         </mesh>
       )}
 
-      {/* Bin wall grid for bin walls & ESD panels */}
       {(item.type === "bin-wall" || item.type === "esd-panel") && (
         <>
-          {/* Horizontal dividers */}
           {[0.25, 0.5, 0.75].map((frac) => (
             <mesh key={`h${frac}`} position={[0, -itemHm / 2 + frac * itemHm, itemDm / 2 - 0.005]}>
               <boxGeometry args={[itemWm - 0.02, 0.005, 0.01]} />
               <meshStandardMaterial color={fillColor} opacity={0.4} transparent />
             </mesh>
           ))}
-          {/* Vertical dividers */}
           {[0.2, 0.4, 0.6, 0.8].map((frac) => (
             <mesh key={`v${frac}`} position={[-itemWm / 2 + frac * itemWm, 0, itemDm / 2 - 0.005]}>
               <boxGeometry args={[0.005, itemHm - 0.02, 0.01]} />
@@ -320,7 +309,6 @@ const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fi
         </>
       )}
 
-      {/* Short label on front face */}
       <Text
         position={[0, 0, itemDm / 2 + 0.02]}
         fontSize={Math.min(0.08, itemWm * 0.12)}
@@ -333,7 +321,6 @@ const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fi
         {item.shortLabel}
       </Text>
 
-      {/* Hover tooltip */}
       {hovered && (
         <Html position={[0, itemHm / 2 + 0.15, 0]} center>
           <div className="bg-popover border border-border rounded-lg p-2.5 shadow-lg text-xs whitespace-nowrap pointer-events-none min-w-[180px]">
@@ -342,6 +329,7 @@ const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fi
             <p className="text-muted-foreground font-mono text-[10px]">
               {item.width}mm × {item.height}mm × {(FURNITURE_3D_HEIGHT[item.type] * 1000).toFixed(0)}mm (W×D×H)
             </p>
+            <p className="text-primary/70 text-[10px] mt-1">Click to inspect →</p>
           </div>
         </Html>
       )}
@@ -349,13 +337,218 @@ const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fi
   );
 };
 
-const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3DProps) => {
+/* ============ Item Detail 3D View ============ */
+
+interface ItemDetail3DProps {
+  item: FitoutItem;
+  containerColor: string;
+}
+
+const DimensionLine = ({ start, end, label, color = "#94a3b8" }: { start: [number, number, number]; end: [number, number, number]; label: string; color?: string }) => {
+  const midX = (start[0] + end[0]) / 2;
+  const midY = (start[1] + end[1]) / 2;
+  const midZ = (start[2] + end[2]) / 2;
+
+  const points = [new THREE.Vector3(...start), new THREE.Vector3(...end)];
+  const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+
+  return (
+    <group>
+      <line>
+        <primitive object={lineGeo} attach="geometry" />
+        <lineBasicMaterial color={color} opacity={0.7} transparent />
+      </line>
+      {/* End ticks */}
+      {[start, end].map((p, i) => (
+        <mesh key={i} position={p as [number, number, number]}>
+          <sphereGeometry args={[0.008, 8, 8]} />
+          <meshBasicMaterial color={color} />
+        </mesh>
+      ))}
+      <Billboard position={[midX, midY, midZ]}>
+        <Text fontSize={0.06} color={color} anchorX="center" anchorY="middle" fontWeight="bold">
+          {label}
+        </Text>
+      </Billboard>
+    </group>
+  );
+};
+
+const ItemDetail3D = ({ item, containerColor }: ItemDetail3DProps) => {
+  const itemW = item.width / 1000;
+  const itemD = item.height / 1000;
+  const itemH = FURNITURE_3D_HEIGHT[item.type];
+  const colors = FURNITURE_COLORS[item.type];
+  const fillColor = colors.stroke;
+
+  // Shelf count & spacing for shelving types
+  const shelfFracs = (item.type === "shelving-bay" || item.type === "reinforced-shelf")
+    ? [0.2, 0.4, 0.6, 0.8] : [];
+  const drawerFracs = item.type === "drawer-unit" ? [0.15, 0.35, 0.55, 0.75, 0.95] : [];
+
+  const margin = 0.25; // space for dimension lines
+
+  return (
+    <>
+      <ambientLight intensity={0.7} />
+      <directionalLight position={[3, 5, 4]} intensity={0.7} />
+      <pointLight position={[-2, 3, -2]} intensity={0.3} />
+
+      <group position={[0, 0, 0]}>
+        {/* Main body */}
+        <RoundedBox args={[itemW, itemH, itemD]} radius={0.01} position={[0, itemH / 2, 0]}>
+          <meshStandardMaterial color={fillColor} transparent opacity={0.35} metalness={0.15} roughness={0.7} />
+        </RoundedBox>
+
+        {/* Wireframe */}
+        <lineSegments position={[0, itemH / 2, 0]}>
+          <edgesGeometry args={[new THREE.BoxGeometry(itemW, itemH, itemD)]} />
+          <lineBasicMaterial color={fillColor} opacity={0.8} transparent />
+        </lineSegments>
+
+        {/* Shelving detail */}
+        {shelfFracs.map((frac) => {
+          const shelfY = frac * itemH;
+          const shelfHmm = (frac * itemH * 1000).toFixed(0);
+          return (
+            <group key={frac}>
+              <mesh position={[0, shelfY, 0]}>
+                <boxGeometry args={[itemW - 0.01, 0.012, itemD - 0.01]} />
+                <meshStandardMaterial color={fillColor} opacity={0.5} transparent />
+              </mesh>
+              {/* Shelf height annotation */}
+              <Billboard position={[itemW / 2 + margin * 0.5, shelfY, 0]}>
+                <Text fontSize={0.04} color="#64748b" anchorX="left">
+                  Shelf @ {shelfHmm}mm
+                </Text>
+              </Billboard>
+            </group>
+          );
+        })}
+
+        {/* Uprights for shelving */}
+        {(item.type === "shelving-bay" || item.type === "reinforced-shelf") && [-1, 1].map((side) => (
+          <mesh key={side} position={[side * (itemW / 2 - 0.02), itemH / 2, 0]}>
+            <boxGeometry args={[0.04, itemH, 0.04]} />
+            <meshStandardMaterial color="#555" opacity={0.6} transparent />
+          </mesh>
+        ))}
+        {(item.type === "shelving-bay" || item.type === "reinforced-shelf") && [-1, 1].map((side) => (
+          <mesh key={`b${side}`} position={[side * (itemW / 2 - 0.02), itemH / 2, (itemD / 2 - 0.02) * (side > 0 ? -1 : 1)]}>
+            <boxGeometry args={[0.04, itemH, 0.04]} />
+            <meshStandardMaterial color="#555" opacity={0.45} transparent />
+          </mesh>
+        ))}
+
+        {/* Drawer details */}
+        {drawerFracs.map((frac, i) => (
+          <group key={frac}>
+            <mesh position={[0, frac * itemH, itemD / 2 - 0.005]}>
+              <boxGeometry args={[itemW - 0.02, 0.008, 0.01]} />
+              <meshStandardMaterial color="#444" opacity={0.7} transparent />
+            </mesh>
+            {i < drawerFracs.length - 1 && (
+              <mesh position={[0, (frac + (drawerFracs[i + 1] - frac) / 2) * itemH, itemD / 2 + 0.015]}>
+                <boxGeometry args={[0.08, 0.01, 0.02]} />
+                <meshStandardMaterial color="#999" metalness={0.5} roughness={0.3} />
+              </mesh>
+            )}
+          </group>
+        ))}
+
+        {/* Cabinet door */}
+        {item.type === "cabinet" && (
+          <>
+            <mesh position={[0, itemH / 2, itemD / 2 + 0.008]}>
+              <planeGeometry args={[itemW * 0.92, itemH * 0.92]} />
+              <meshStandardMaterial color={fillColor} opacity={0.12} transparent side={THREE.DoubleSide} />
+            </mesh>
+            <lineSegments position={[0, itemH / 2, itemD / 2 + 0.009]}>
+              <edgesGeometry args={[new THREE.PlaneGeometry(itemW * 0.92, itemH * 0.92)]} />
+              <lineBasicMaterial color={fillColor} opacity={0.4} transparent />
+            </lineSegments>
+            {/* Handle */}
+            <mesh position={[itemW * 0.35, itemH / 2, itemD / 2 + 0.02]}>
+              <boxGeometry args={[0.015, 0.1, 0.025]} />
+              <meshStandardMaterial color="#888" metalness={0.5} roughness={0.3} />
+            </mesh>
+          </>
+        )}
+
+        {/* Bin wall / ESD grid */}
+        {(item.type === "bin-wall" || item.type === "esd-panel") && (
+          <>
+            {[0.25, 0.5, 0.75].map((frac) => (
+              <mesh key={`h${frac}`} position={[0, frac * itemH, itemD / 2 - 0.005]}>
+                <boxGeometry args={[itemW - 0.02, 0.008, 0.012]} />
+                <meshStandardMaterial color={fillColor} opacity={0.5} transparent />
+              </mesh>
+            ))}
+            {[0.2, 0.4, 0.6, 0.8].map((frac) => (
+              <mesh key={`v${frac}`} position={[-itemW / 2 + frac * itemW, itemH / 2, itemD / 2 - 0.005]}>
+                <boxGeometry args={[0.008, itemH - 0.02, 0.012]} />
+                <meshStandardMaterial color={fillColor} opacity={0.5} transparent />
+              </mesh>
+            ))}
+          </>
+        )}
+
+        {/* Floor shadow */}
+        <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[itemW + 0.2, itemD + 0.2]} />
+          <meshStandardMaterial color="#94a3b8" opacity={0.08} transparent />
+        </mesh>
+
+        {/* ===== DIMENSION LINES ===== */}
+        {/* Width (X) — along front, below */}
+        <DimensionLine
+          start={[-itemW / 2, -0.08, itemD / 2 + margin * 0.6]}
+          end={[itemW / 2, -0.08, itemD / 2 + margin * 0.6]}
+          label={`${item.width}mm`}
+          color="#3b82f6"
+        />
+        {/* Depth (Z) — along side */}
+        <DimensionLine
+          start={[-itemW / 2 - margin * 0.6, -0.08, -itemD / 2]}
+          end={[-itemW / 2 - margin * 0.6, -0.08, itemD / 2]}
+          label={`${item.height}mm`}
+          color="#22c55e"
+        />
+        {/* Height (Y) — vertical on side */}
+        <DimensionLine
+          start={[-itemW / 2 - margin * 0.6, 0, -itemD / 2 - margin * 0.4]}
+          end={[-itemW / 2 - margin * 0.6, itemH, -itemD / 2 - margin * 0.4]}
+          label={`${(itemH * 1000).toFixed(0)}mm`}
+          color="#f59e0b"
+        />
+
+        {/* Title */}
+        <Billboard position={[0, itemH + 0.25, 0]}>
+          <Text fontSize={0.1} color={fillColor} fontWeight="bold" anchorX="center">
+            {item.label}
+          </Text>
+        </Billboard>
+        <Billboard position={[0, itemH + 0.12, 0]}>
+          <Text fontSize={0.06} color="#888" anchorX="center">
+            {item.type.replace(/-/g, " ").toUpperCase()} — {item.width}mm × {item.height}mm × {(itemH * 1000).toFixed(0)}mm (W×D×H)
+          </Text>
+        </Billboard>
+      </group>
+
+      <OrbitControls enablePan enableZoom enableRotate maxPolarAngle={Math.PI / 1.6} minDistance={0.3} maxDistance={4} target={[0, itemH / 2, 0]} />
+    </>
+  );
+};
+
+/* ============ Container Interior ============ */
+
+const ContainerInterior3D = ({ container, parts, liveMode, onItemClick }: ContainerInterior3DProps & { onItemClick?: (item: FitoutItem) => void }) => {
   const dim = container.physicalDimensions;
   const fitout = CONTAINER_FITOUTS[container.id];
 
-  const intWidth = dim.internalLengthM; // X
-  const intHeight = dim.internalHeightM; // Y
-  const intDepth = dim.internalWidthM; // Z
+  const intWidth = dim.internalLengthM;
+  const intHeight = dim.internalHeightM;
+  const intDepth = dim.internalWidthM;
 
   return (
     <>
@@ -363,25 +556,19 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
       <directionalLight position={[5, 8, 5]} intensity={0.6} />
       <pointLight position={[0, intHeight, 2]} intensity={0.4} color="#fff" />
 
-      {/* Container wireframe */}
       <lineSegments>
         <edgesGeometry args={[new THREE.BoxGeometry(intWidth + 0.1, intHeight, intDepth + 0.1)]} />
         <lineBasicMaterial color={container.color} opacity={0.3} transparent />
       </lineSegments>
 
-      {/* Back wall (top wall in plan — y=0) */}
       <mesh position={[0, 0, -intDepth / 2]}>
         <planeGeometry args={[intWidth + 0.1, intHeight]} />
         <meshStandardMaterial color={container.color} opacity={0.06} transparent side={THREE.DoubleSide} />
       </mesh>
-
-      {/* Front wall (bottom wall in plan — y=max, door side) */}
       <mesh position={[0, 0, intDepth / 2]}>
         <planeGeometry args={[intWidth + 0.1, intHeight]} />
         <meshStandardMaterial color={container.color} opacity={0.04} transparent side={THREE.DoubleSide} />
       </mesh>
-
-      {/* Side walls */}
       {[-1, 1].map((side) => (
         <mesh key={side} position={[side * (intWidth / 2 + 0.05), 0, 0]} rotation={[0, Math.PI / 2, 0]}>
           <planeGeometry args={[intDepth + 0.1, intHeight]} />
@@ -389,27 +576,21 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
         </mesh>
       ))}
 
-      {/* Floor */}
       <mesh position={[0, -intHeight / 2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[intWidth, intDepth]} />
         <meshStandardMaterial color="#94a3b8" opacity={0.15} transparent />
       </mesh>
-
-      {/* Aisle marking */}
       <mesh position={[0, -intHeight / 2 + 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[intWidth - 0.1, dim.aisleWidthCm / 100]} />
         <meshStandardMaterial color="#22c55e" opacity={0.08} transparent />
       </mesh>
 
-      {/* Door indicator */}
       {fitout && (() => {
         const door = fitout.door;
         const doorWm = door.widthMm / 1000;
         const doorOffsetM = door.offsetMm / 1000;
         const doorH = intHeight * 0.8;
-
         if (door.wall === "bottom") {
-          // Door on front wall (Z = +intDepth/2), positioned along X
           const doorCenterX = -intWidth / 2 + doorOffsetM + doorWm / 2;
           return (
             <group>
@@ -430,7 +611,6 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
         return null;
       })()}
 
-      {/* Wall labels */}
       <Billboard position={[0, intHeight / 2 - 0.1, -intDepth / 2 - 0.08]}>
         <Text fontSize={0.06} color="#888" anchorX="center">REAR WALL (Top in Plan)</Text>
       </Billboard>
@@ -444,17 +624,16 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
         <Text fontSize={0.06} color="#888" anchorX="center">END WALL 2</Text>
       </Billboard>
 
-      {/* Render all fitout items */}
-      {fitout && fitout.items.map((item) => (
+      {fitout && fitout.items.map((fItem) => (
         <FitoutItemMesh
-          key={item.id}
-          item={item}
+          key={fItem.id}
+          item={fItem}
           fitout={fitout}
           containerColor={container.color}
+          onItemClick={onItemClick}
         />
       ))}
 
-      {/* Title */}
       <Text position={[0, intHeight / 2 + 0.15, 0]} fontSize={0.14} color={container.color} fontWeight="bold" anchorX="center">
         {container.id} — {container.label}
       </Text>
@@ -877,6 +1056,7 @@ const SecurityFence = () => {
 
 export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps) => {
   const [selectedContainer, setSelectedContainer] = useState<StoreContainer | null>(null);
+  const [selectedItem, setSelectedItem] = useState<FitoutItem | null>(null);
 
   const getPartsCount = (container: StoreContainer) => {
     if (!liveMode) return 0;
@@ -893,18 +1073,48 @@ export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps)
     });
   };
 
+  const cameraPosition: [number, number, number] = selectedItem
+    ? [1.2, 0.8, 1.5]
+    : selectedContainer
+      ? [2.5, 1.5, 3]
+      : [10, 7, 10];
+
   return (
     <div className="space-y-2">
-      {selectedContainer && (
-        <div className="flex items-center gap-3 px-2">
-          <button onClick={() => setSelectedContainer(null)} className="text-xs text-primary hover:underline flex items-center gap-1">
-            ← Back to Yard View
+      {/* Breadcrumb Navigation */}
+      {(selectedContainer || selectedItem) && (
+        <div className="flex items-center gap-2 px-2 flex-wrap">
+          <button
+            onClick={() => { setSelectedContainer(null); setSelectedItem(null); }}
+            className="text-xs text-primary hover:underline flex items-center gap-1"
+          >
+            ← Yard View
           </button>
-          <span className="text-xs text-muted-foreground">
-            Viewing interior of <strong>{selectedContainer.id} — {selectedContainer.label}</strong>
-            <span className="ml-2 text-[10px]">
-              ({selectedContainer.physicalDimensions.internalLengthM}m × {selectedContainer.physicalDimensions.internalWidthM}m × {selectedContainer.physicalDimensions.internalHeightM}m)
-            </span>
+          {selectedContainer && (
+            <>
+              <span className="text-xs text-muted-foreground">›</span>
+              <button
+                onClick={() => setSelectedItem(null)}
+                className={`text-xs flex items-center gap-1 ${selectedItem ? "text-primary hover:underline" : "text-foreground font-medium"}`}
+              >
+                {selectedContainer.id} — {selectedContainer.shortLabel}
+              </button>
+            </>
+          )}
+          {selectedItem && (
+            <>
+              <span className="text-xs text-muted-foreground">›</span>
+              <span className="text-xs text-foreground font-medium">
+                {selectedItem.label}
+              </span>
+            </>
+          )}
+          <span className="text-[10px] text-muted-foreground ml-2">
+            {selectedItem
+              ? `${selectedItem.width}mm × ${selectedItem.height}mm × ${(FURNITURE_3D_HEIGHT[selectedItem.type] * 1000).toFixed(0)}mm`
+              : selectedContainer
+                ? `${selectedContainer.physicalDimensions.internalLengthM}m × ${selectedContainer.physicalDimensions.internalWidthM}m × ${selectedContainer.physicalDimensions.internalHeightM}m`
+                : ""}
           </span>
         </div>
       )}
@@ -912,18 +1122,24 @@ export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps)
       <div className="border border-border rounded-lg bg-card overflow-hidden" style={{ height: "550px" }}>
         <Canvas
           camera={{
-            position: selectedContainer ? [2.5, 1.5, 3] : [10, 7, 10],
+            position: cameraPosition,
             fov: 50,
           }}
           shadows
           gl={{ antialias: true }}
         >
           <Suspense fallback={null}>
-            {selectedContainer ? (
+            {selectedItem && selectedContainer ? (
+              <ItemDetail3D
+                item={selectedItem}
+                containerColor={selectedContainer.color}
+              />
+            ) : selectedContainer ? (
               <ContainerInterior3D
                 container={selectedContainer}
                 parts={liveMode ? getPartsForContainer(selectedContainer) : []}
                 liveMode={liveMode}
+                onItemClick={(item) => setSelectedItem(item)}
               />
             ) : (
               <>
@@ -953,9 +1169,11 @@ export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps)
         </Canvas>
 
         <div className="absolute bottom-2 left-2 text-[10px] text-muted-foreground bg-card/80 backdrop-blur-sm px-2 py-1 rounded">
-          {selectedContainer
-            ? "🖱 Drag to rotate • Scroll to zoom • Hover bins for dimensions"
-            : "🖱 Drag to rotate • Scroll to zoom • Click container to view interior"}
+          {selectedItem
+            ? "🖱 Drag to rotate • Scroll to zoom • Inspect dimensions"
+            : selectedContainer
+              ? "🖱 Drag to rotate • Scroll to zoom • Click item to inspect"
+              : "🖱 Drag to rotate • Scroll to zoom • Click container to view interior"}
         </div>
       </div>
     </div>
