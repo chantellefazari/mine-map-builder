@@ -788,9 +788,10 @@ const ContainerInterior3D = ({ container, parts, liveMode, onItemClick }: Contai
         <meshStandardMaterial color="#22c55e" opacity={0.08} transparent />
       </mesh>
 
-      {/* Full-width roller door on the door-side wall */}
+      {/* Roller door on the door-side wall — sized to actual entry point width */}
       {fitout && (() => {
-        const doorWm = intWidth * 0.95; // nearly full width
+        const entryWidthCm = container.entryPoints[0]?.widthCm || 230;
+        const doorWm = Math.min(entryWidthCm / 100, intWidth * 0.95); // use real entry width, capped to internal
         const doorH = intHeight * 0.92; // floor to near-roof
         return (
           <group position={[0, -intHeight / 2, intDepth / 2 + 0.02]}>
@@ -1082,7 +1083,7 @@ const Ground = () => {
   );
 };
 
-/* ============ Security Fence & Sliding Gate ============ */
+/* ============ Security Fence & Roller Gate ============ */
 
 const SecurityFence = () => {
   const s = 0.5;
@@ -1090,36 +1091,35 @@ const SecurityFence = () => {
   const domeD = DOME_DIMENSIONS.depthM * s;
   const fenceSpanM = DOME_DIMENSIONS.widthM; // 12m opening
   const fenceSpan = fenceSpanM * s; // 3D units
-  const fenceHeightM = 2.4; // matches container height
+  const fenceHeightM = 2.4;
   const fenceHeight = fenceHeightM * s;
-  const gateWidthM = 4; // 4m sliding gate opening
+  const gateWidthM = 4; // 4m roller gate opening
   const gateWidth = gateWidthM * s;
 
   // Front of courtyard (min Z of dome)
   const frontZ = dome.z - domeD / 2;
   const centreX = dome.x;
 
-  const barSpacingM = 0.2; // 200mm between bars
+  const barSpacingM = 0.2;
   const barSpacing = barSpacingM * s;
-  const barThickness = 0.025; // visual thickness in 3D units
+  const barThickness = 0.025;
 
-  // Number of bars across each fence panel (left and right of gate)
   const panelWidth = (fenceSpan - gateWidth) / 2;
   const barsPerPanel = Math.floor(panelWidth / barSpacing);
 
-  // Horizontal rail positions (fraction of height)
   const railHeights = [0.05, 0.5, 0.95];
+
+  const [gateOpen, setGateOpen] = useState(false);
 
   return (
     <group position={[centreX, 0, frontZ]}>
-      {/* === LEFT PANEL (from -fenceSpan/2 to -gateWidth/2) === */}
+      {/* === LEFT PANEL === */}
       {(() => {
         const panelLeft = -fenceSpan / 2;
         const panelRight = -gateWidth / 2;
         const pw = panelRight - panelLeft;
         return (
           <group>
-            {/* Vertical bars */}
             {Array.from({ length: barsPerPanel + 1 }, (_, i) => {
               const x = panelLeft + i * barSpacing;
               if (x > panelRight + 0.01) return null;
@@ -1130,7 +1130,6 @@ const SecurityFence = () => {
                 </mesh>
               );
             })}
-            {/* Horizontal rails */}
             {railHeights.map((frac) => (
               <mesh key={`lh${frac}`} position={[(panelLeft + panelRight) / 2, frac * fenceHeight, 0]}>
                 <boxGeometry args={[pw, barThickness * 1.2, barThickness * 1.5]} />
@@ -1141,14 +1140,13 @@ const SecurityFence = () => {
         );
       })()}
 
-      {/* === RIGHT PANEL (from +gateWidth/2 to +fenceSpan/2) === */}
+      {/* === RIGHT PANEL === */}
       {(() => {
         const panelLeft = gateWidth / 2;
         const panelRight = fenceSpan / 2;
         const pw = panelRight - panelLeft;
         return (
           <group>
-            {/* Vertical bars */}
             {Array.from({ length: barsPerPanel + 1 }, (_, i) => {
               const x = panelLeft + i * barSpacing;
               if (x > panelRight + 0.01) return null;
@@ -1159,7 +1157,6 @@ const SecurityFence = () => {
                 </mesh>
               );
             })}
-            {/* Horizontal rails */}
             {railHeights.map((frac) => (
               <mesh key={`rh${frac}`} position={[(panelLeft + panelRight) / 2, frac * fenceHeight, 0]}>
                 <boxGeometry args={[pw, barThickness * 1.2, barThickness * 1.5]} />
@@ -1170,52 +1167,17 @@ const SecurityFence = () => {
         );
       })()}
 
-      {/* === SLIDING GATE (center, slightly offset to show slide action) === */}
-      {(() => {
-        const gateOffsetX = 0.15; // slightly open offset to show sliding capability
-        const gateBarCount = Math.floor(gateWidth / barSpacing);
-        return (
-          <group position={[gateOffsetX, 0, 0]}>
-            {/* Gate vertical bars */}
-            {Array.from({ length: gateBarCount + 1 }, (_, i) => {
-              const x = -gateWidth / 2 + i * barSpacing;
-              return (
-                <mesh key={`gv${i}`} position={[x, fenceHeight / 2, 0]}>
-                  <boxGeometry args={[barThickness * 0.8, fenceHeight - 0.04, barThickness * 0.8]} />
-                  <meshStandardMaterial color="#a1a1aa" metalness={0.7} roughness={0.25} />
-                </mesh>
-              );
-            })}
-            {/* Gate horizontal rails */}
-            {railHeights.map((frac) => (
-              <mesh key={`gh${frac}`} position={[0, frac * fenceHeight, 0]}>
-                <boxGeometry args={[gateWidth, barThickness * 1.5, barThickness * 1.8]} />
-                <meshStandardMaterial color="#78716c" metalness={0.7} roughness={0.25} />
-              </mesh>
-            ))}
-            {/* Gate handle */}
-            <mesh position={[gateWidth / 2 - 0.08, fenceHeight * 0.5, barThickness]}>
-              <boxGeometry args={[0.02, 0.12, 0.04]} />
-              <meshStandardMaterial color="#fbbf24" metalness={0.4} roughness={0.4} />
-            </mesh>
-          </group>
-        );
-      })()}
+      {/* === ROLLER GATE (replaces sliding gate) === */}
+      <RollerDoor
+        position={[0, 0, 0]}
+        doorWidth={gateWidth}
+        doorHeight={fenceHeight}
+        isOpen={gateOpen}
+        onToggle={(e) => { e.stopPropagation(); setGateOpen(prev => !prev); }}
+        containerColor="#71717a"
+      />
 
-      {/* === GATE TRACK (ground rail) === */}
-      <mesh position={[0, 0.008, 0]}>
-        <boxGeometry args={[gateWidth + 1.0, 0.015, 0.06]} />
-        <meshStandardMaterial color="#a8a29e" metalness={0.5} roughness={0.4} />
-      </mesh>
-      {/* Track end stops */}
-      {[-1, 1].map((side) => (
-        <mesh key={`stop${side}`} position={[side * (gateWidth / 2 + 0.48), 0.04, 0]}>
-          <boxGeometry args={[0.04, 0.08, 0.06]} />
-          <meshStandardMaterial color="#dc2626" metalness={0.3} roughness={0.5} />
-        </mesh>
-      ))}
-
-      {/* === FENCE POSTS (thicker uprights at panel edges) === */}
+      {/* === FENCE POSTS === */}
       {[-fenceSpan / 2, -gateWidth / 2, gateWidth / 2, fenceSpan / 2].map((x, i) => (
         <mesh key={`post${i}`} position={[x, fenceHeight / 2, 0]}>
           <boxGeometry args={[0.05, fenceHeight + 0.06, 0.05]} />
@@ -1227,11 +1189,6 @@ const SecurityFence = () => {
       <Billboard position={[0, fenceHeight + 0.25, 0]}>
         <Text fontSize={0.14} color="#71717a" anchorX="center" fontWeight="bold">
           SECURITY FENCE — STEEL GRID {fenceSpanM}m
-        </Text>
-      </Billboard>
-      <Billboard position={[0, fenceHeight + 0.1, 0]}>
-        <Text fontSize={0.1} color="#fbbf24" anchorX="center">
-          ◀ SLIDING GATE ({gateWidthM}m) ▶
         </Text>
       </Billboard>
 
