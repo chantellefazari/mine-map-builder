@@ -6,7 +6,7 @@
  *
  * Rules:
  * - Container: C01–C05
- * - Discipline must match container: C01=EL, C02=IN, C03=ME, C04=LU, C05=FA
+ * - Discipline must match container: C01=EL, C02=IN, C03=ME, C04=MP, C05=CS
  * - Bay: A–H (skip I), J–K for rear wall
  * - Bin: 1–99
  * - No duplicate location codes allowed
