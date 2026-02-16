@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -371,16 +371,25 @@ export const SiteSparesCatalogue = () => {
     }
   };
 
+  // Client-side criticality filter (derived from description, not a DB column)
+  const displaySpares = useMemo(() => {
+    if (filterCriticality === "all") return paginated.spares;
+    return paginated.spares.filter((spare) => {
+      const level = classifyCriticality(spare.description);
+      return level === filterCriticality;
+    });
+  }, [paginated.spares, filterCriticality]);
+
   // Sync selected spare with paginated results
   const currentSelectedSpare = selectedSpare
-    ? paginated.spares.find((s) => s.id === selectedSpare.id) || selectedSpare
+    ? displaySpares.find((s) => s.id === selectedSpare.id) || selectedSpare
     : null;
 
   // Pagination info
   const totalPages = Math.ceil(paginated.totalFiltered / paginated.pageSize);
   const currentPage = paginated.page;
 
-  if (paginated.loading && paginated.spares.length === 0) {
+  if (paginated.loading && displaySpares.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -435,7 +444,7 @@ export const SiteSparesCatalogue = () => {
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Showing</span>
           </div>
-          <p className="text-2xl font-bold mt-1">{paginated.spares.length}</p>
+          <p className="text-2xl font-bold mt-1">{displaySpares.length}</p>
           <p className="text-xs text-muted-foreground">of {paginated.totalFiltered} filtered</p>
         </div>
       </div>
@@ -636,10 +645,10 @@ export const SiteSparesCatalogue = () => {
       )}
 
       {/* Card Grid */}
-      {paginated.spares.length > 0 ? (
+      {displaySpares.length > 0 ? (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {paginated.spares.map((spare) => (
+            {displaySpares.map((spare) => (
               <SiteSpareCard
                 key={spare.id}
                 spare={spare}
