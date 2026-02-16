@@ -1,6 +1,6 @@
 import { Suspense, useState, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Text, RoundedBox, Html } from "@react-three/drei";
+import { OrbitControls, Text, RoundedBox, Html, Billboard } from "@react-three/drei";
 import { STORE_CONTAINERS, YARD_DIMENSIONS, DOME_DIMENSIONS, LAYDOWN_ZONES, FORKLIFT_LANE, DELIVERY_ZONE, dome3DPosition, base3DPosition, leftLeg3DPosition, rightLeg3DPosition, ldZone3DPosition, forkliftLane3DPosition, deliveryZone3DPosition, type StoreContainer } from "./storeLayoutData";
 import * as THREE from "three";
 
@@ -135,21 +135,29 @@ const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick }:
         );
       })}
 
-      {/* Labels */}
-      <Text position={[0, height + 0.3, 0]} fontSize={0.22} color={container.color} fontWeight="bold" anchorX="center" anchorY="middle">
-        {container.id}
-      </Text>
-      <Text position={[0, height + 0.08, 0]} fontSize={0.12} color="#888" anchorX="center" anchorY="middle">
-        {container.shortLabel}
-      </Text>
-      <Text position={[0, height + 0.5, 0]} fontSize={0.08} color="#666" anchorX="center" anchorY="middle">
-        {dim.externalLengthM}m × {dim.externalWidthM}m × {dim.externalHeightM}m
-      </Text>
+      {/* Labels — always face camera */}
+      <Billboard position={[0, height + 0.3, 0]}>
+        <Text fontSize={0.22} color={container.color} fontWeight="bold" anchorX="center" anchorY="middle">
+          {container.id}
+        </Text>
+      </Billboard>
+      <Billboard position={[0, height + 0.08, 0]}>
+        <Text fontSize={0.12} color="#888" anchorX="center" anchorY="middle">
+          {container.shortLabel}
+        </Text>
+      </Billboard>
+      <Billboard position={[0, height + 0.5, 0]}>
+        <Text fontSize={0.08} color="#666" anchorX="center" anchorY="middle">
+          {dim.externalLengthM}m × {dim.externalWidthM}m × {dim.externalHeightM}m
+        </Text>
+      </Billboard>
 
       {liveMode && (
-        <Text position={[0, height + 0.65, 0]} fontSize={0.1} color={partsCount > 0 ? "#22c55e" : "#94a3b8"} anchorX="center" anchorY="middle">
-          {partsCount} parts
-        </Text>
+        <Billboard position={[0, height + 0.65, 0]}>
+          <Text fontSize={0.1} color={partsCount > 0 ? "#22c55e" : "#94a3b8"} anchorX="center" anchorY="middle">
+            {partsCount} parts
+          </Text>
+        </Billboard>
       )}
 
       {(hovered || isSelected) && (
@@ -470,9 +478,11 @@ const DomeRoof = () => {
       })}
 
       {/* Label */}
-      <Text position={[0, rise + 0.3, 0]} fontSize={0.18} color="#64748b" anchorX="center" fillOpacity={0.5}>
-        DOME SHELTER {domeWidthM}m × {domeDepthM}m
-      </Text>
+      <Billboard position={[0, rise + 0.3, 0]}>
+        <Text fontSize={0.18} color="#64748b" anchorX="center" fillOpacity={0.5}>
+          DOME SHELTER {domeWidthM}m × {domeDepthM}m
+        </Text>
+      </Billboard>
     </group>
   );
 };
@@ -501,17 +511,23 @@ const Ground = () => {
         <planeGeometry args={[domeW, domeD]} />
         <meshStandardMaterial color="#22c55e" opacity={0.06} transparent />
       </mesh>
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[dome.x, 0.02, dome.z]} fontSize={0.2} color="#22c55e" anchorX="center" fillOpacity={0.2}>
-        CONCRETE PAD
-      </Text>
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[dome.x, 0.02, dome.z + 0.5]} fontSize={0.12} color="#22c55e" anchorX="center" fillOpacity={0.25}>
-        {DOME_DIMENSIONS.widthM}m × {DOME_DIMENSIONS.depthM}m
-      </Text>
+      <Billboard position={[dome.x, 0.15, dome.z]}>
+        <Text fontSize={0.2} color="#22c55e" anchorX="center" fillOpacity={0.2}>CONCRETE PAD</Text>
+      </Billboard>
+      <Billboard position={[dome.x, 0.15, dome.z + 0.5]}>
+        <Text fontSize={0.12} color="#22c55e" anchorX="center" fillOpacity={0.25}>{DOME_DIMENSIONS.widthM}m × {DOME_DIMENSIONS.depthM}m</Text>
+      </Billboard>
 
       {/* Zone labels on ground */}
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[left.x, 0.02, left.z]} fontSize={0.15} color="#6366f1" anchorX="center">LEFT LEG — CLEAN</Text>
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[right.x, 0.02, right.z]} fontSize={0.15} color="#64748b" anchorX="center">RIGHT LEG — HIGH-ACCESS</Text>
-      <Text rotation={[-Math.PI / 2, 0, 0]} position={[base.x, 0.02, base.z + 1]} fontSize={0.15} color="#3b82f6" anchorX="center">BASE — MECHANICAL (40ft)</Text>
+      <Billboard position={[left.x, 0.15, left.z]}>
+        <Text fontSize={0.15} color="#6366f1" anchorX="center">LEFT LEG — CLEAN</Text>
+      </Billboard>
+      <Billboard position={[right.x, 0.15, right.z]}>
+        <Text fontSize={0.15} color="#64748b" anchorX="center">RIGHT LEG — HIGH-ACCESS</Text>
+      </Billboard>
+      <Billboard position={[base.x, 0.15, base.z + 1]}>
+        <Text fontSize={0.15} color="#3b82f6" anchorX="center">BASE — MECHANICAL (40ft)</Text>
+      </Billboard>
 
       {/* ===== LAYDOWN ZONES ===== */}
       {LAYDOWN_ZONES.map((zone) => {
@@ -532,9 +548,9 @@ const Ground = () => {
               <lineBasicMaterial color={zone.color} opacity={0.4} transparent />
             </lineSegments>
             {/* Label */}
-            <Text rotation={[-Math.PI / 2, 0, 0]} position={[pos.x, 0.04, pos.z]} fontSize={0.12} color={zone.color} anchorX="center" fontWeight="bold">
-              {zone.id}
-            </Text>
+            <Billboard position={[pos.x, 0.15, pos.z]}>
+              <Text fontSize={0.12} color={zone.color} anchorX="center" fontWeight="bold">{zone.id}</Text>
+            </Billboard>
             {/* Pallet markers for dome rows */}
             {isDome && Array.from({ length: 3 }, (_, i) => (
               <mesh key={i} position={[pos.x + (i - 1) * (w / 3), 0.06, pos.z]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -557,9 +573,9 @@ const Ground = () => {
               <planeGeometry args={[fW, fH]} />
               <meshStandardMaterial color="#ca8a04" opacity={0.1} transparent />
             </mesh>
-            <Text rotation={[-Math.PI / 2, 0, 0]} position={[fPos.x, 0.04, fPos.z]} fontSize={0.1} color="#ca8a04" anchorX="center" fontWeight="bold">
-              FORKLIFT
-            </Text>
+            <Billboard position={[fPos.x, 0.15, fPos.z]}>
+              <Text fontSize={0.1} color="#ca8a04" anchorX="center" fontWeight="bold">FORKLIFT</Text>
+            </Billboard>
           </group>
         );
       })()}
@@ -579,9 +595,9 @@ const Ground = () => {
               <edgesGeometry args={[new THREE.PlaneGeometry(dW, dH)]} />
               <lineBasicMaterial color="#dc2626" opacity={0.5} transparent />
             </lineSegments>
-            <Text rotation={[-Math.PI / 2, 0, 0]} position={[dPos.x, 0.04, dPos.z]} fontSize={0.15} color="#dc2626" anchorX="center" fontWeight="bold">
-              DELIVERY
-            </Text>
+            <Billboard position={[dPos.x, 0.15, dPos.z]}>
+              <Text fontSize={0.15} color="#dc2626" anchorX="center" fontWeight="bold">DELIVERY</Text>
+            </Billboard>
           </group>
         );
       })()}
