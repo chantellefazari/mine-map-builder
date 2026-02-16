@@ -1,5 +1,5 @@
-import { Suspense, useState, useMemo } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Suspense, useState, useMemo, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, RoundedBox, Html, Billboard } from "@react-three/drei";
 import { STORE_CONTAINERS, YARD_DIMENSIONS, DOME_DIMENSIONS, LAYDOWN_ZONES, FORKLIFT_LANE, DELIVERY_ZONE, dome3DPosition, base3DPosition, leftLeg3DPosition, rightLeg3DPosition, ldZone3DPosition, forkliftLane3DPosition, deliveryZone3DPosition, type StoreContainer } from "./storeLayoutData";
 import { CONTAINER_FITOUTS, FURNITURE_COLORS, type FurnitureType, type FitoutItem, type ContainerFitout, getLocationPrefix, getBinCode } from "./containerFitoutData";
@@ -19,15 +19,115 @@ interface StoreLayout3DProps {
 
 /* ============ Yard View ============ */
 
+/* ============ Roller Door ============ */
+
+interface RollerDoorProps {
+  position: [number, number, number];
+  rotation?: [number, number, number];
+  doorWidth: number;
+  doorHeight: number;
+  isOpen: boolean;
+  onToggle: (e: any) => void;
+  containerColor: string;
+}
+
+const SLAT_COUNT = 14;
+
+const RollerDoor = ({ position, rotation = [0, 0, 0], doorWidth, doorHeight, isOpen, onToggle, containerColor }: RollerDoorProps) => {
+  const groupRef = useRef<THREE.Group>(null);
+  const openProgress = useRef(0);
+  const [hovered, setHovered] = useState(false);
+
+  useFrame((_, delta) => {
+    const target = isOpen ? 1 : 0;
+    openProgress.current += (target - openProgress.current) * Math.min(delta * 3.5, 1);
+    if (groupRef.current) {
+      // Door rolls up: translate Y upward by doorHeight * progress
+      groupRef.current.position.y = openProgress.current * doorHeight * 0.85;
+    }
+  });
+
+  const slatHeight = doorHeight / SLAT_COUNT;
+
+  return (
+    <group position={position} rotation={rotation}>
+      {/* Door frame */}
+      {[-1, 1].map((side) => (
+        <mesh key={`frame${side}`} position={[side * (doorWidth / 2 + 0.015), doorHeight / 2, 0]}>
+          <boxGeometry args={[0.03, doorHeight + 0.04, 0.04]} />
+          <meshStandardMaterial color="#52525b" metalness={0.6} roughness={0.3} />
+        </mesh>
+      ))}
+      {/* Top rail / roller housing */}
+      <mesh position={[0, doorHeight + 0.03, 0]}>
+        <boxGeometry args={[doorWidth + 0.08, 0.06, 0.08]} />
+        <meshStandardMaterial color="#3f3f46" metalness={0.5} roughness={0.4} />
+      </mesh>
+      {/* Roller cylinder at top */}
+      <mesh position={[0, doorHeight + 0.07, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.025, 0.025, doorWidth + 0.04, 12]} />
+        <meshStandardMaterial color="#71717a" metalness={0.7} roughness={0.2} />
+      </mesh>
+
+      {/* Animated slats group */}
+      <group ref={groupRef}>
+        {Array.from({ length: SLAT_COUNT }, (_, i) => {
+          const slatY = i * slatHeight + slatHeight / 2;
+          return (
+            <mesh
+              key={i}
+              position={[0, slatY, 0]}
+              onClick={onToggle}
+              onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = "pointer"; }}
+              onPointerOut={() => { setHovered(false); document.body.style.cursor = "auto"; }}
+            >
+              <boxGeometry args={[doorWidth, slatHeight * 0.88, 0.015]} />
+              <meshStandardMaterial
+                color={hovered ? "#a1a1aa" : "#8a8a8a"}
+                metalness={0.55}
+                roughness={0.35}
+              />
+            </mesh>
+          );
+        })}
+        {/* Slat divider lines */}
+        {Array.from({ length: SLAT_COUNT - 1 }, (_, i) => {
+          const lineY = (i + 1) * slatHeight;
+          return (
+            <mesh key={`line${i}`} position={[0, lineY, 0.008]}>
+              <boxGeometry args={[doorWidth, 0.004, 0.002]} />
+              <meshStandardMaterial color="#555" />
+            </mesh>
+          );
+        })}
+        {/* Bottom handle bar */}
+        <mesh position={[0, slatHeight * 0.3, 0.015]}>
+          <boxGeometry args={[doorWidth * 0.3, 0.02, 0.025]} />
+          <meshStandardMaterial color="#fbbf24" metalness={0.5} roughness={0.3} />
+        </mesh>
+      </group>
+
+      {/* Label */}
+      <Billboard position={[0, doorHeight + 0.18, 0]}>
+        <Text fontSize={0.06} color={hovered ? "#fbbf24" : "#a1a1aa"} anchorX="center">
+          {isOpen ? "▼ CLOSE" : "▲ OPEN"} ROLLER DOOR
+        </Text>
+      </Billboard>
+    </group>
+  );
+};
+
 interface ContainerMeshProps {
   container: StoreContainer;
   partsCount: number;
   liveMode: boolean;
   isSelected: boolean;
   onClick: () => void;
+  doorOpen: boolean;
+  onDoorToggle: () => void;
 }
 
-const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick }: ContainerMeshProps) => {
+const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick, doorOpen, onDoorToggle }: ContainerMeshProps) => {
   const [hovered, setHovered] = useState(false);
   const dim = container.physicalDimensions;
 
@@ -73,54 +173,23 @@ const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick }:
         );
       })}
 
-      {/* Entry door facing into the dome courtyard */}
+      {/* Roller Door facing into the dome courtyard */}
       {(() => {
         const doorH = height * 0.7;
         const doorW = Math.min(isVertical ? depth * 0.35 : width * 0.35, 0.55);
-        const doorY = doorH / 2;
-        // Left leg top (C01) → door on +X (right, facing courtyard)
-        // Right leg top (C05) → door on -X (left, facing courtyard)
-        // Left leg bottom (C02) & Right leg bottom (C04) → doors facing courtyard
-        // C03 base → door on -Z (facing dome)
+
+        const handleToggle = (e: any) => { e.stopPropagation(); onDoorToggle(); };
 
         if (container.id === "C01") {
-          return (
-            <mesh position={[width / 2 + 0.02, doorY, 0]}>
-              <planeGeometry args={[doorW, doorH]} />
-              <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
-            </mesh>
-          );
+          return <RollerDoor position={[width / 2 + 0.02, 0, 0]} rotation={[0, -Math.PI / 2, 0]} doorWidth={doorW} doorHeight={doorH} isOpen={doorOpen} onToggle={handleToggle} containerColor={container.color} />;
         } else if (container.id === "C05") {
-          return (
-            <mesh position={[-width / 2 - 0.02, doorY, 0]}>
-              <planeGeometry args={[doorW, doorH]} />
-              <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
-            </mesh>
-          );
+          return <RollerDoor position={[-width / 2 - 0.02, 0, 0]} rotation={[0, Math.PI / 2, 0]} doorWidth={doorW} doorHeight={doorH} isOpen={doorOpen} onToggle={handleToggle} containerColor={container.color} />;
         } else if (container.id === "C02") {
-          // Left leg bottom — door on +X facing courtyard
-          return (
-            <mesh position={[width / 2 + 0.02, doorY, 0]}>
-              <planeGeometry args={[doorW, doorH]} />
-              <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
-            </mesh>
-          );
+          return <RollerDoor position={[width / 2 + 0.02, 0, 0]} rotation={[0, -Math.PI / 2, 0]} doorWidth={doorW} doorHeight={doorH} isOpen={doorOpen} onToggle={handleToggle} containerColor={container.color} />;
         } else if (container.id === "C04") {
-          // Right leg bottom — door on -X facing courtyard
-          return (
-            <mesh position={[-width / 2 - 0.02, doorY, 0]}>
-              <planeGeometry args={[doorW, doorH]} />
-              <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
-            </mesh>
-          );
+          return <RollerDoor position={[-width / 2 - 0.02, 0, 0]} rotation={[0, Math.PI / 2, 0]} doorWidth={doorW} doorHeight={doorH} isOpen={doorOpen} onToggle={handleToggle} containerColor={container.color} />;
         } else {
-          // C03 base — door on -Z side (facing dome)
-          return (
-            <mesh position={[0, doorY, -depth / 2 - 0.02]}>
-              <planeGeometry args={[doorW, doorH]} />
-              <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
-            </mesh>
-          );
+          return <RollerDoor position={[0, 0, -depth / 2 - 0.02]} rotation={[0, 0, 0]} doorWidth={doorW} doorHeight={doorH} isOpen={doorOpen} onToggle={handleToggle} containerColor={container.color} />;
         }
       })()}
 
@@ -170,7 +239,7 @@ const ContainerMesh = ({ container, partsCount, liveMode, isSelected, onClick }:
             <p className="text-muted-foreground">{container.shelves.length} shelves × {container.binsPerShelf} bins</p>
             <p className="text-muted-foreground">Entry: {container.entryPoints[0]?.type.replace(/-/g, " ")} ({container.entryPoints[0]?.widthCm}cm)</p>
             {liveMode && <p className="text-primary font-medium mt-1">{partsCount} parts stored</p>}
-            <p className="text-primary/70 text-[10px] mt-1">Click to view interior →</p>
+            <p className="text-primary/70 text-[10px] mt-1">Click door to open/close • Click container to enter →</p>
           </div>
         </Html>
       )}
@@ -1103,6 +1172,11 @@ const SecurityFence = () => {
 export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps) => {
   const [selectedContainer, setSelectedContainer] = useState<StoreContainer | null>(null);
   const [selectedItem, setSelectedItem] = useState<FitoutItem | null>(null);
+  const [doorStates, setDoorStates] = useState<Record<string, boolean>>({});
+
+  const toggleDoor = (containerId: string) => {
+    setDoorStates(prev => ({ ...prev, [containerId]: !prev[containerId] }));
+  };
 
   const getPartsCount = (container: StoreContainer) => {
     if (!liveMode) return 0;
@@ -1206,6 +1280,8 @@ export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps)
                     liveMode={liveMode}
                     isSelected={false}
                     onClick={() => setSelectedContainer(container)}
+                    doorOpen={!!doorStates[container.id]}
+                    onDoorToggle={() => toggleDoor(container.id)}
                   />
                 ))}
 
@@ -1220,7 +1296,7 @@ export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps)
             ? "🖱 Drag to rotate • Scroll to zoom • Inspect dimensions"
             : selectedContainer
               ? "🖱 Drag to rotate • Scroll to zoom • Click item to inspect"
-              : "🖱 Drag to rotate • Scroll to zoom • Click container to view interior"}
+              : "🖱 Drag to rotate • Scroll to zoom • Click roller door to open/close • Click container to enter"}
         </div>
       </div>
     </div>
