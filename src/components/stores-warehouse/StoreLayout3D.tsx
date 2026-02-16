@@ -2,7 +2,7 @@ import { Suspense, useState, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, RoundedBox, Html, Billboard } from "@react-three/drei";
 import { STORE_CONTAINERS, YARD_DIMENSIONS, DOME_DIMENSIONS, LAYDOWN_ZONES, FORKLIFT_LANE, DELIVERY_ZONE, dome3DPosition, base3DPosition, leftLeg3DPosition, rightLeg3DPosition, ldZone3DPosition, forkliftLane3DPosition, deliveryZone3DPosition, type StoreContainer } from "./storeLayoutData";
-import { CONTAINER_FITOUTS, FURNITURE_COLORS, type FurnitureType, type FitoutItem, type ContainerFitout } from "./containerFitoutData";
+import { CONTAINER_FITOUTS, FURNITURE_COLORS, type FurnitureType, type FitoutItem, type ContainerFitout, getLocationPrefix, getBinCode } from "./containerFitoutData";
 import * as THREE from "three";
 
 interface StoreLayout3DProps {
@@ -309,11 +309,22 @@ const FitoutItemMesh = ({ item, fitout, containerColor, onItemClick }: { item: F
         </>
       )}
 
+      {/* Location code label on front face */}
       <Text
-        position={[0, 0, itemDm / 2 + 0.02]}
-        fontSize={Math.min(0.08, itemWm * 0.12)}
-        color={fillColor}
+        position={[0, 0.06, itemDm / 2 + 0.02]}
+        fontSize={Math.min(0.06, itemWm * 0.09)}
+        color="#f59e0b"
         fontWeight="bold"
+        anchorX="center"
+        anchorY="middle"
+        maxWidth={itemWm * 0.9}
+      >
+        {getLocationPrefix(fitout.containerId, item.bayLetter)}
+      </Text>
+      <Text
+        position={[0, -0.06, itemDm / 2 + 0.02]}
+        fontSize={Math.min(0.05, itemWm * 0.07)}
+        color={fillColor}
         anchorX="center"
         anchorY="middle"
         maxWidth={itemWm * 0.9}
@@ -323,8 +334,11 @@ const FitoutItemMesh = ({ item, fitout, containerColor, onItemClick }: { item: F
 
       {hovered && (
         <Html position={[0, itemHm / 2 + 0.15, 0]} center>
-          <div className="bg-popover border border-border rounded-lg p-2.5 shadow-lg text-xs whitespace-nowrap pointer-events-none min-w-[180px]">
+          <div className="bg-popover border border-border rounded-lg p-2.5 shadow-lg text-xs whitespace-nowrap pointer-events-none min-w-[200px]">
             <p className="font-bold text-sm">{item.label}</p>
+            <p className="text-primary font-mono font-bold text-xs">
+              {getLocationPrefix(fitout.containerId, item.bayLetter)}
+            </p>
             <p className="text-muted-foreground capitalize">{item.type.replace(/-/g, " ")}</p>
             <p className="text-muted-foreground font-mono text-[10px]">
               {item.width}mm × {item.height}mm × {(FURNITURE_3D_HEIGHT[item.type] * 1000).toFixed(0)}mm (W×D×H)
@@ -342,6 +356,7 @@ const FitoutItemMesh = ({ item, fitout, containerColor, onItemClick }: { item: F
 interface ItemDetail3DProps {
   item: FitoutItem;
   containerColor: string;
+  containerId: string;
 }
 
 const DimensionLine = ({ start, end, label, color = "#94a3b8" }: { start: [number, number, number]; end: [number, number, number]; label: string; color?: string }) => {
@@ -374,7 +389,8 @@ const DimensionLine = ({ start, end, label, color = "#94a3b8" }: { start: [numbe
   );
 };
 
-const ItemDetail3D = ({ item, containerColor }: ItemDetail3DProps) => {
+const ItemDetail3D = ({ item, containerColor, containerId }: ItemDetail3DProps) => {
+  const locPrefix = getLocationPrefix(containerId, item.bayLetter);
   const itemW = item.width / 1000;
   const itemD = item.height / 1000;
   const itemH = FURNITURE_3D_HEIGHT[item.type];
@@ -417,7 +433,7 @@ const ItemDetail3D = ({ item, containerColor }: ItemDetail3DProps) => {
           <lineBasicMaterial color={fillColor} opacity={0.6} transparent />
         </lineSegments>
 
-        {/* Bottom shelf (base plate) */}
+        {/* Bottom shelf (base plate) — Bin 1 */}
         {(item.type === "shelving-bay" || item.type === "reinforced-shelf") && (
           <group>
             <mesh position={[0, 0.006, 0]}>
@@ -426,25 +442,25 @@ const ItemDetail3D = ({ item, containerColor }: ItemDetail3DProps) => {
             </mesh>
             <Billboard position={[itemW / 2 + margin * 0.55, 0.006, 0]}>
               <Text fontSize={0.045} color="#f59e0b" anchorX="left" fontWeight="bold">
-                Base @ 0mm
+                {getBinCode(containerId, item.bayLetter, 1)} — Base @ 0mm
               </Text>
             </Billboard>
           </group>
         )}
 
-        {/* Shelves at real positions */}
+        {/* Shelves at real positions — Bins 2, 3, 4... */}
         {shelfPositionsMm.map((hmm, idx) => {
           const shelfY = hmm / 1000;
+          const binNum = idx + 2; // bin 1 is base
           return (
             <group key={hmm}>
               <mesh position={[0, shelfY, 0]}>
                 <boxGeometry args={[itemW - 0.01, 0.012, itemD - 0.01]} />
                 <meshStandardMaterial color={fillColor} opacity={0.85} />
               </mesh>
-              {/* Clear label with high contrast */}
               <Billboard position={[itemW / 2 + margin * 0.55, shelfY, 0]}>
                 <Text fontSize={0.045} color="#f59e0b" anchorX="left" fontWeight="bold">
-                  Shelf {idx + 1} @ {hmm}mm
+                  {getBinCode(containerId, item.bayLetter, binNum)} — Shelf @ {hmm}mm
                 </Text>
               </Billboard>
             </group>
@@ -548,13 +564,18 @@ const ItemDetail3D = ({ item, containerColor }: ItemDetail3DProps) => {
         />
 
         {/* Title */}
-        <Billboard position={[0, itemH + 0.25, 0]}>
+        <Billboard position={[0, itemH + 0.35, 0]}>
           <Text fontSize={0.1} color={fillColor} fontWeight="bold" anchorX="center">
             {item.label}
           </Text>
         </Billboard>
-        <Billboard position={[0, itemH + 0.12, 0]}>
-          <Text fontSize={0.06} color="#888" anchorX="center">
+        <Billboard position={[0, itemH + 0.22, 0]}>
+          <Text fontSize={0.09} color="#f59e0b" fontWeight="bold" anchorX="center">
+            {locPrefix}
+          </Text>
+        </Billboard>
+        <Billboard position={[0, itemH + 0.1, 0]}>
+          <Text fontSize={0.055} color="#888" anchorX="center">
             {item.type.replace(/-/g, " ").toUpperCase()} — {item.width}mm × {item.height}mm × {(itemH * 1000).toFixed(0)}mm (W×D×H)
           </Text>
         </Billboard>
@@ -1158,6 +1179,7 @@ export const StoreLayout3D = ({ liveMode, sparesData = [] }: StoreLayout3DProps)
               <ItemDetail3D
                 item={selectedItem}
                 containerColor={selectedContainer.color}
+                containerId={selectedContainer.id}
               />
             ) : selectedContainer ? (
               <ContainerInterior3D
