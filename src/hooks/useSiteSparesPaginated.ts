@@ -46,6 +46,17 @@ const normalizeCategory = (category: string | null): string => {
   return LEGACY_CATEGORY_MAP[category] || category;
 };
 
+// Reverse lookup: given a normalized category, return all raw DB values that map to it
+const getRawCategoriesFor = (normalized: string): string[] => {
+  const raw: string[] = [normalized]; // the normalized name itself may exist in DB
+  for (const [legacy, mapped] of Object.entries(LEGACY_CATEGORY_MAP)) {
+    if (mapped === normalized && !raw.includes(legacy)) {
+      raw.push(legacy);
+    }
+  }
+  return raw;
+};
+
 export interface PaginationFilters {
   searchQuery: string;
   category: string;
@@ -126,7 +137,8 @@ export const useSiteSparesPaginated = () => {
       }
 
       if (filters.category !== "all") {
-        query = query.eq("category", filters.category);
+        const rawCats = getRawCategoriesFor(filters.category);
+        query = query.in("category", rawCats);
       }
 
       if (filters.warehouseArea !== "all") {
