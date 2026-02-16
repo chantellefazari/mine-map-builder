@@ -146,7 +146,11 @@ export const useSiteSparesPaginated = () => {
       }
 
       if (filters.status !== "all") {
-        query = query.eq("status", filters.status);
+        if (filters.status === "Low Stock") {
+          query = query.in("status", ["Low Stock", "Out of Stock"]);
+        } else {
+          query = query.eq("status", filters.status);
+        }
       }
 
       if (filters.supplier !== "all") {
