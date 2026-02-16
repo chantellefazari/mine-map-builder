@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { Suspense, useState, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, RoundedBox, Html } from "@react-three/drei";
 import { STORE_CONTAINERS, YARD_DIMENSIONS, DOME_DIMENSIONS, LAYDOWN_ZONES, FORKLIFT_LANE, DELIVERY_ZONE, dome3DPosition, base3DPosition, leftLeg3DPosition, rightLeg3DPosition, ldZone3DPosition, forkliftLane3DPosition, deliveryZone3DPosition, type StoreContainer } from "./storeLayoutData";
@@ -357,83 +357,121 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
   );
 };
 
+/* ============ Dome Roof Skin ============ */
+
+const DomeRoofSkin = ({ halfSpan, d, rise, archSegments }: { halfSpan: number; d: number; rise: number; archSegments: number }) => {
+  const geometry = useMemo(() => {
+    const depthSegs = 8;
+    const verts: number[] = [];
+    const indices: number[] = [];
+    for (let j = 0; j <= depthSegs; j++) {
+      const z = -d / 2 + (j / depthSegs) * d;
+      for (let i = 0; i <= archSegments; i++) {
+        const t = i / archSegments;
+        const angle = t * Math.PI;
+        const x = -halfSpan + t * (2 * halfSpan);
+        const y = Math.sin(angle) * rise;
+        verts.push(x, y, z);
+      }
+    }
+    for (let j = 0; j < depthSegs; j++) {
+      for (let i = 0; i < archSegments; i++) {
+        const a = j * (archSegments + 1) + i;
+        const b = a + 1;
+        const c = a + (archSegments + 1);
+        const dd = c + 1;
+        indices.push(a, b, c, b, dd, c);
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+    geo.setIndex(indices);
+    geo.computeVertexNormals();
+    return geo;
+  }, [halfSpan, d, rise, archSegments]);
+
+  return (
+    <mesh geometry={geometry}>
+      <meshStandardMaterial color="#e0f2fe" transparent opacity={0.1} side={THREE.DoubleSide} metalness={0.2} roughness={0.7} />
+    </mesh>
+  );
+};
+
 /* ============ Dome Roof ============ */
 
 const DomeRoof = () => {
   const s = 0.5;
-  const domeWidthM = 12;
-  const domeDepthM = 12;
+  const domeWidthM = DOME_DIMENSIONS.widthM; // 12m span between legs
+  const domeDepthM = DOME_DIMENSIONS.depthM; // 9.5m courtyard depth
   const containerHeightM = 2.59;
-  const domeRiseM = 3; // arch rise above container tops
+  const domeRiseM = 2.5; // modest arch rise above container tops
   const dome = dome3DPosition();
-  
+
   const centreX = dome.x;
-  const centreZ = dome.z + (domeDepthM - DOME_DIMENSIONS.depthM) * s * 0.25;
-  
-  const w = domeWidthM * s;
+  const centreZ = dome.z;
+
+  const halfSpan = (domeWidthM * s) / 2;
   const d = domeDepthM * s;
-  const baseY = containerHeightM * s; // spring from container top
-  const radius = w / 2;
+  const baseY = containerHeightM * s;
+  const rise = domeRiseM * s;
+
+  // Build a barrel-vault shape using a custom extruded arch
+  const archSegments = 32;
 
   return (
     <group position={[centreX, baseY, centreZ]}>
-      {/* Semi-cylindrical dome shell */}
-      <mesh rotation={[0, Math.PI / 2, 0]}>
-        <cylinderGeometry args={[radius, radius, d, 24, 12, true, 0, Math.PI]} />
-        <meshStandardMaterial 
-          color="#f0f9ff" 
-          transparent 
-          opacity={0.12} 
-          side={THREE.DoubleSide}
-          metalness={0.3}
-          roughness={0.6}
-        />
-      </mesh>
-      
-      {/* Dome wireframe */}
-      <lineSegments rotation={[0, Math.PI / 2, 0]}>
-        <edgesGeometry args={[new THREE.CylinderGeometry(radius, radius, d, 16, 8, true, 0, Math.PI)]} />
-        <lineBasicMaterial color="#94a3b8" opacity={0.25} transparent />
-      </lineSegments>
-
-      {/* Arch ribs */}
+      {/* Arch ribs along the depth */}
       {Array.from({ length: 7 }, (_, i) => {
         const zPos = -d / 2 + (i + 0.5) * (d / 7);
         const points: THREE.Vector3[] = [];
-        for (let a = 0; a <= 32; a++) {
-          const angle = (a / 32) * Math.PI;
-          points.push(new THREE.Vector3(
-            Math.cos(angle) * radius,
-            Math.sin(angle) * radius,
-            zPos
-          ));
+        for (let a = 0; a <= archSegments; a++) {
+          const t = a / archSegments; // 0..1
+          const angle = t * Math.PI; // 0..PI
+          const x = -halfSpan + t * (2 * halfSpan);
+          const y = Math.sin(angle) * rise;
+          points.push(new THREE.Vector3(x, y, zPos));
         }
         const curve = new THREE.CatmullRomCurve3(points);
         return (
           <mesh key={i}>
-            <tubeGeometry args={[curve, 32, 0.015, 6, false]} />
-            <meshStandardMaterial color="#64748b" opacity={0.4} transparent metalness={0.5} />
+            <tubeGeometry args={[curve, archSegments, 0.018, 6, false]} />
+            <meshStandardMaterial color="#64748b" opacity={0.45} transparent metalness={0.5} />
           </mesh>
         );
       })}
 
-      {/* Ridge beam */}
-      <mesh position={[0, radius, 0]}>
+      {/* Translucent roof skin (custom barrel-vault geometry) */}
+      <DomeRoofSkin halfSpan={halfSpan} d={d} rise={rise} archSegments={archSegments} />
+
+      {/* Ridge beam along the top */}
+      <mesh position={[0, rise, 0]}>
         <boxGeometry args={[0.03, 0.03, d]} />
         <meshStandardMaterial color="#64748b" opacity={0.5} transparent metalness={0.5} />
       </mesh>
 
-      {/* Base edges sitting on container tops */}
+      {/* Base edge beams on container tops */}
       {[-1, 1].map(side => (
-        <mesh key={side} position={[side * radius, 0, 0]}>
+        <mesh key={side} position={[side * halfSpan, 0, 0]}>
           <boxGeometry args={[0.04, 0.04, d]} />
           <meshStandardMaterial color="#475569" opacity={0.4} transparent />
         </mesh>
       ))}
 
+      {/* Longitudinal stringers */}
+      {[-0.5, 0.5].map(frac => {
+        const x = frac * 2 * halfSpan;
+        const y = Math.sin((frac + 0.5) * Math.PI) * rise;
+        return (
+          <mesh key={frac} position={[x, y, 0]}>
+            <boxGeometry args={[0.02, 0.02, d]} />
+            <meshStandardMaterial color="#64748b" opacity={0.3} transparent />
+          </mesh>
+        );
+      })}
+
       {/* Label */}
-      <Text position={[0, radius + 0.3, 0]} fontSize={0.18} color="#64748b" anchorX="center" fillOpacity={0.5}>
-        DOME SHELTER 12m × 12m
+      <Text position={[0, rise + 0.3, 0]} fontSize={0.18} color="#64748b" anchorX="center" fillOpacity={0.5}>
+        DOME SHELTER {domeWidthM}m × {domeDepthM}m
       </Text>
     </group>
   );
