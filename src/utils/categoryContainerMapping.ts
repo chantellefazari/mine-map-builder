@@ -34,6 +34,9 @@ const LD_KEYWORDS = [
   "crusher liner", "cone liner", "mantle", "concave",
   "frame plate liner", "screen panel",
   "chute liner",
+  // Structural steel (long/heavy — always LD)
+  "hollow section", "c-channel", "flat bar", "equal angle", "steel beam",
+  "channel beam", "steel section", "star picket",
   // Complete pump assemblies (heavy, need forklift)
   "submersible pump", "sump pump", "pumpset", "pump set",
   "triple pump", "process water pump", "kiln discharge pump",
@@ -182,12 +185,12 @@ const C05_PRIORITY_KEYWORDS = [
 
 const C03_MW_KEYWORDS = [
   // Wear parts
-  "wear plate", "liner", "chute liner", "rubber liner", "ceramic liner",
+  "wear plate", "liner", "rubber liner", "ceramic liner",
   "wear part", "wear insert",
-  // Conveyor components
+  // Conveyor components (chute liner & screen panel removed — handled by LD)
   "roller", "idler", "scraper blade", "belt cleaner", "pulley",
   "sprocket", "chain", "belt", "conveyor", "scraper", "skirting",
-  "screen panel", "crusher",
+  "crusher",
   // Conveyor frames, brackets & accessories
   "k-fra", "k-bra", "k-pul", "k-rol", "k-nife",
   "trough frame", "return frame", "tracking frame",
@@ -207,9 +210,7 @@ const C03_MW_KEYWORDS = [
   "threaded socket",
   // Hoses
   "hose", "hydraulic hose",
-  // Structural steel & sections
-  "hollow section", "c-channel", "flat bar", "equal angle", "steel beam",
-  "channel beam", "steel section", "star picket",
+   // Structural steel — moved to LD (heavy/long items)
   // Pump components (not complete assemblies which are LD)
   "impeller", "pump sleeve", "volute", "pump casing", "pump shaft",
   "lantern ring", "lantern restrictor",
