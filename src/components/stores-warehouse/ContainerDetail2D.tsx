@@ -5,6 +5,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Badge } from "@/components/ui/badge";
 import { Wind, ShieldAlert, TrendingUp, Package, ChevronDown, ChevronRight, DoorOpen, Ruler, ArrowDown } from "lucide-react";
 import { BinDetailDialog } from "./BinDetailDialog";
+import { ContainerFitoutPlan } from "./ContainerFitoutPlan";
 
 interface ContainerDetail2DProps {
   container: StoreContainer;
@@ -186,12 +187,15 @@ export const ContainerDetail2D = ({ container, parts, liveMode }: ContainerDetai
         </CardContent>
       </Card>
 
-      {/* Top-Down Plan View */}
+      {/* Interior Fitout Plan (To Scale) */}
+      <ContainerFitoutPlan containerId={container.id} />
+
+      {/* Generic Top-Down Plan View (retained for reference) */}
       <Card className="border-border">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Container Plan View — {container.id} (Top Down)</CardTitle>
+          <CardTitle className="text-sm">Racking Envelope — {container.id} (Top Down)</CardTitle>
           <p className="text-xs text-muted-foreground">
-            Showing racking on both sides, aisle, and entry point
+            Showing racking depth on both sides, aisle width, and entry point
           </p>
         </CardHeader>
         <CardContent>
