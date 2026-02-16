@@ -192,27 +192,98 @@ const FloorPlanSVG = ({ liveMode, getPartsCount, getLDPartsCount, getTotalLDCoun
    // Dome area
   const domeGroup = LAYOUT_ZONE_GROUPS.find((g) => g.id === "dome");
 
+  const LABEL_MARGIN = 55; // extra space above for callout labels
+
+  // Callout label definitions: position labels outside zones with leader lines
+  const zoneCallouts = LAYOUT_ZONE_GROUPS.filter(g => g.id !== "dome").map((group) => {
+    const zoneCenter = {
+      x: group.position.x + group.position.width / 2,
+      y: group.position.y,
+    };
+
+    // Position labels above the layout in the margin area
+    let labelX: number;
+    let labelAnchor: "start" | "middle" | "end" = "middle";
+
+    if (group.id === "left-leg") {
+      labelX = group.position.x - 10;
+      labelAnchor = "start";
+    } else if (group.id === "right-leg") {
+      labelX = group.position.x + group.position.width + 10;
+      labelAnchor = "end";
+    } else {
+      // base
+      labelX = zoneCenter.x;
+      labelAnchor = "middle";
+    }
+
+    const labelY = group.id === "base"
+      ? group.position.y + group.position.height + 20
+      : -LABEL_MARGIN + 16;
+
+    // Leader line endpoint: top-center of zone for top labels, bottom-center for base
+    const lineEnd = group.id === "base"
+      ? { x: zoneCenter.x, y: group.position.y + group.position.height + 2 }
+      : { x: zoneCenter.x, y: group.position.y - 2 };
+
+    return { group, labelX, labelY, labelAnchor, lineEnd };
+  });
+
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
-      <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full h-auto" style={{ maxHeight: "700px" }}>
+      <svg viewBox={`0 ${-LABEL_MARGIN} ${svgW} ${svgH + LABEL_MARGIN}`} className="w-full h-auto" style={{ maxHeight: "750px" }}>
         {/* Background */}
-        <rect x="0" y="0" width={svgW} height={svgH} fill="hsl(var(--card))" />
+        <rect x="0" y={-LABEL_MARGIN} width={svgW} height={svgH + LABEL_MARGIN} fill="hsl(var(--card))" />
 
-        {/* Zone Groups (background) */}
+        {/* Zone Groups (background only — no inline text) */}
         {LAYOUT_ZONE_GROUPS.map((group) => (
           <g key={group.id}>
             <rect
               x={group.position.x} y={group.position.y} width={group.position.width} height={group.position.height}
               fill={group.bgColor} stroke={group.color} strokeWidth="1" strokeDasharray="4 2" rx="6"
             />
-            <text x={group.position.x + 8} y={group.position.y + 14} fontSize="9" fill={group.color} fontWeight="600">
+          </g>
+        ))}
+
+        {/* External callout labels with leader lines */}
+        {zoneCallouts.map(({ group, labelX, labelY, labelAnchor, lineEnd }) => (
+          <g key={`callout-${group.id}`}>
+            {/* Leader line */}
+            <line
+              x1={labelX} y1={labelY + 6}
+              x2={lineEnd.x} y2={lineEnd.y}
+              stroke={group.color} strokeWidth="0.8" strokeDasharray="3 2" opacity="0.6"
+              markerEnd={`url(#arrow-${group.id})`}
+            />
+            {/* Arrowhead marker */}
+            <defs>
+              <marker id={`arrow-${group.id}`} markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill={group.color} opacity="0.6" />
+              </marker>
+            </defs>
+            {/* Label background */}
+            <rect
+              x={labelAnchor === "end" ? labelX - 160 : labelAnchor === "start" ? labelX - 4 : labelX - 80}
+              y={labelY - 12}
+              width="164" height="28" rx="4"
+              fill="hsl(var(--card))" stroke={group.color} strokeWidth="0.8" opacity="0.95"
+            />
+            {/* Label title */}
+            <text
+              x={labelAnchor === "end" ? labelX - 78 : labelAnchor === "start" ? labelX + 78 : labelX}
+              y={labelY}
+              textAnchor="middle" fontSize="8" fill={group.color} fontWeight="700"
+            >
               {group.label.toUpperCase()}
             </text>
-            {group.id !== "dome" && (
-              <text x={group.position.x + 8} y={group.position.y + 26} fontSize="8" fill={group.color} opacity="0.7">
-                {group.description}
-              </text>
-            )}
+            {/* Label description */}
+            <text
+              x={labelAnchor === "end" ? labelX - 78 : labelAnchor === "start" ? labelX + 78 : labelX}
+              y={labelY + 11}
+              textAnchor="middle" fontSize="6.5" fill={group.color} opacity="0.7"
+            >
+              {group.description}
+            </text>
           </g>
         ))}
 
