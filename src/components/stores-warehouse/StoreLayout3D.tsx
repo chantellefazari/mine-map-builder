@@ -381,12 +381,23 @@ const ItemDetail3D = ({ item, containerColor }: ItemDetail3DProps) => {
   const colors = FURNITURE_COLORS[item.type];
   const fillColor = colors.stroke;
 
-  // Shelf count & spacing for shelving types
-  const shelfFracs = (item.type === "shelving-bay" || item.type === "reinforced-shelf")
-    ? [0.2, 0.4, 0.6, 0.8] : [];
   const drawerFracs = item.type === "drawer-unit" ? [0.15, 0.35, 0.55, 0.75, 0.95] : [];
 
-  const margin = 0.25; // space for dimension lines
+  // Real shelf positions: 5 shelves for 1800mm bay (bottom + 4 upper at 360mm spacing)
+  // For other heights, distribute evenly at ~360mm intervals
+  const shelfPositionsMm: number[] = useMemo(() => {
+    if (item.type !== "shelving-bay" && item.type !== "reinforced-shelf") return [];
+    const heightMm = itemH * 1000;
+    const shelfSpacingMm = 360; // standard 360mm shelf spacing
+    const positions: number[] = [];
+    // Bottom shelf at ~floor level (included as base)
+    for (let h = shelfSpacingMm; h < heightMm - 50; h += shelfSpacingMm) {
+      positions.push(h);
+    }
+    return positions;
+  }, [item.type, itemH]);
+
+  const margin = 0.25;
 
   return (
     <>
@@ -395,50 +406,64 @@ const ItemDetail3D = ({ item, containerColor }: ItemDetail3DProps) => {
       <pointLight position={[-2, 3, -2]} intensity={0.3} />
 
       <group position={[0, 0, 0]}>
-        {/* Main body */}
+        {/* Main body — very transparent so shelves are always visible */}
         <RoundedBox args={[itemW, itemH, itemD]} radius={0.01} position={[0, itemH / 2, 0]}>
-          <meshStandardMaterial color={fillColor} transparent opacity={0.35} metalness={0.15} roughness={0.7} />
+          <meshStandardMaterial color={fillColor} transparent opacity={0.12} metalness={0.15} roughness={0.7} depthWrite={false} />
         </RoundedBox>
 
         {/* Wireframe */}
         <lineSegments position={[0, itemH / 2, 0]}>
           <edgesGeometry args={[new THREE.BoxGeometry(itemW, itemH, itemD)]} />
-          <lineBasicMaterial color={fillColor} opacity={0.8} transparent />
+          <lineBasicMaterial color={fillColor} opacity={0.6} transparent />
         </lineSegments>
 
-        {/* Shelving detail */}
-        {shelfFracs.map((frac) => {
-          const shelfY = frac * itemH;
-          const shelfHmm = (frac * itemH * 1000).toFixed(0);
+        {/* Bottom shelf (base plate) */}
+        {(item.type === "shelving-bay" || item.type === "reinforced-shelf") && (
+          <group>
+            <mesh position={[0, 0.006, 0]}>
+              <boxGeometry args={[itemW - 0.01, 0.012, itemD - 0.01]} />
+              <meshStandardMaterial color={fillColor} opacity={0.85} />
+            </mesh>
+            <Billboard position={[itemW / 2 + margin * 0.55, 0.006, 0]}>
+              <Text fontSize={0.045} color="#f59e0b" anchorX="left" fontWeight="bold">
+                Base @ 0mm
+              </Text>
+            </Billboard>
+          </group>
+        )}
+
+        {/* Shelves at real positions */}
+        {shelfPositionsMm.map((hmm, idx) => {
+          const shelfY = hmm / 1000;
           return (
-            <group key={frac}>
+            <group key={hmm}>
               <mesh position={[0, shelfY, 0]}>
                 <boxGeometry args={[itemW - 0.01, 0.012, itemD - 0.01]} />
-                <meshStandardMaterial color={fillColor} opacity={0.5} transparent />
+                <meshStandardMaterial color={fillColor} opacity={0.85} />
               </mesh>
-              {/* Shelf height annotation */}
-              <Billboard position={[itemW / 2 + margin * 0.5, shelfY, 0]}>
-                <Text fontSize={0.04} color="#64748b" anchorX="left">
-                  Shelf @ {shelfHmm}mm
+              {/* Clear label with high contrast */}
+              <Billboard position={[itemW / 2 + margin * 0.55, shelfY, 0]}>
+                <Text fontSize={0.045} color="#f59e0b" anchorX="left" fontWeight="bold">
+                  Shelf {idx + 1} @ {hmm}mm
                 </Text>
               </Billboard>
             </group>
           );
         })}
 
-        {/* Uprights for shelving */}
-        {(item.type === "shelving-bay" || item.type === "reinforced-shelf") && [-1, 1].map((side) => (
-          <mesh key={side} position={[side * (itemW / 2 - 0.02), itemH / 2, 0]}>
-            <boxGeometry args={[0.04, itemH, 0.04]} />
-            <meshStandardMaterial color="#555" opacity={0.6} transparent />
-          </mesh>
-        ))}
-        {(item.type === "shelving-bay" || item.type === "reinforced-shelf") && [-1, 1].map((side) => (
-          <mesh key={`b${side}`} position={[side * (itemW / 2 - 0.02), itemH / 2, (itemD / 2 - 0.02) * (side > 0 ? -1 : 1)]}>
-            <boxGeometry args={[0.04, itemH, 0.04]} />
-            <meshStandardMaterial color="#555" opacity={0.45} transparent />
-          </mesh>
-        ))}
+        {/* Uprights — 4 corner posts */}
+        {(item.type === "shelving-bay" || item.type === "reinforced-shelf") && (
+          <>
+            {[-1, 1].map((sideX) =>
+              [-1, 1].map((sideZ) => (
+                <mesh key={`${sideX}${sideZ}`} position={[sideX * (itemW / 2 - 0.02), itemH / 2, sideZ * (itemD / 2 - 0.02)]}>
+                  <boxGeometry args={[0.04, itemH, 0.04]} />
+                  <meshStandardMaterial color="#555" opacity={0.7} transparent />
+                </mesh>
+              ))
+            )}
+          </>
+        )}
 
         {/* Drawer details */}
         {drawerFracs.map((frac, i) => (
