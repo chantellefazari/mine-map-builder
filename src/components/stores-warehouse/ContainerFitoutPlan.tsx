@@ -9,6 +9,7 @@ import {
   FURNITURE_COLORS,
   CONTAINER_FITOUTS,
   getUniqueFurnitureTypes,
+  getLocationPrefix,
 } from "./containerFitoutData";
 
 interface ContainerFitoutPlanProps {
@@ -265,6 +266,9 @@ const FitoutSVG = ({ fitout }: { fitout: ContainerFitout }) => {
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-xs">
                     <p className="font-semibold text-xs">{item.label}</p>
+                    <p className="text-[10px] text-primary font-mono font-bold">
+                      {getLocationPrefix(fitout.containerId, item.bayLetter)}
+                    </p>
                     <p className="text-[10px] text-muted-foreground">
                       {item.width}mm × {item.height}mm · Type: {TYPE_LABELS[item.type]}
                     </p>
@@ -273,18 +277,33 @@ const FitoutSVG = ({ fitout }: { fitout: ContainerFitout }) => {
 
                 {/* Label */}
                 {labelFits ? (
-                  <text
-                    x={ix + iw / 2}
-                    y={iy + ih / 2 + fontSize / 3}
-                    textAnchor="middle"
-                    fontSize={fontSize}
-                    fill={colors.stroke}
-                    fontWeight="600"
-                    pointerEvents="none"
-                    className="select-none"
-                  >
-                    {item.shortLabel}
-                  </text>
+                  <>
+                    <text
+                      x={ix + iw / 2}
+                      y={iy + ih / 2 - 2}
+                      textAnchor="middle"
+                      fontSize={fontSize}
+                      fill={colors.stroke}
+                      fontWeight="600"
+                      pointerEvents="none"
+                      className="select-none"
+                    >
+                      {item.shortLabel}
+                    </text>
+                    <text
+                      x={ix + iw / 2}
+                      y={iy + ih / 2 + fontSize + 1}
+                      textAnchor="middle"
+                      fontSize={Math.max(5, fontSize - 1.5)}
+                      fill="hsl(var(--primary))"
+                      fontWeight="700"
+                      fontFamily="monospace"
+                      pointerEvents="none"
+                      className="select-none"
+                    >
+                      {getLocationPrefix(fitout.containerId, item.bayLetter)}
+                    </text>
+                  </>
                 ) : (
                   /* Small items: external label with leader line */
                   <>
@@ -301,8 +320,19 @@ const FitoutSVG = ({ fitout }: { fitout: ContainerFitout }) => {
                     />
                     <text
                       x={ix + iw + 14}
-                      y={iy - 1}
-                      fontSize="6"
+                      y={iy - 5}
+                      fontSize="5.5"
+                      fill="hsl(var(--primary))"
+                      fontWeight="700"
+                      fontFamily="monospace"
+                      pointerEvents="none"
+                    >
+                      {getLocationPrefix(fitout.containerId, item.bayLetter)}
+                    </text>
+                    <text
+                      x={ix + iw + 14}
+                      y={iy + 3}
+                      fontSize="5"
                       fill={colors.stroke}
                       fontWeight="500"
                       pointerEvents="none"
