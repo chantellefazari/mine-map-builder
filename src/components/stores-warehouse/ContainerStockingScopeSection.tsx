@@ -59,8 +59,7 @@ export const ContainerStockingScopeSection = () => {
         {
           name: "Wear Parts & Liners",
           items: [
-            "Wear plates", "Chute liners (rubber, ceramic)",
-            "Screen panels", "Crusher liners"
+            "Small wear plates (<15 kg)", "Chute liners (rubber, ceramic, <15 kg)",
           ]
         },
         {
@@ -75,7 +74,7 @@ export const ContainerStockingScopeSection = () => {
         {
           name: "Valves, Pipe & Fittings",
           items: [
-            "Valves (small–medium, <DN150)",
+            "Valves (ball, butterfly, knife gate, check — <DN150)",
             "Pipe fittings", "Flanges", "Elbows", "Tees",
             "Reducers", "Nipples", "Hoses",
             "Couplings (heavy)"
@@ -84,7 +83,7 @@ export const ContainerStockingScopeSection = () => {
         {
           name: "Pump Spares",
           items: [
-            "Seal kits", "Impellers (small)",
+            "Pump seal kits (application-specific)", "Impellers (small)",
             "Wear rings", "Shaft sleeves", "Gland packing"
           ]
         }
@@ -106,7 +105,7 @@ export const ContainerStockingScopeSection = () => {
         "Shims", "Keys & key stock",
         "Retaining rings (circlips)", "Bushes",
         "Small couplings", "Small shafts",
-        "Small valves (<DN150)", "Precision parts",
+        "Precision parts",
         "Locknuts"
       ]
     },
@@ -167,6 +166,8 @@ export const ContainerStockingScopeSection = () => {
     "Structural steel",
     "Heavy equipment assemblies",
     "Switchboards",
+    "Crusher liners, cone liners, mantles",
+    "Screen panels (heavy)",
     "Anything requiring forklift"
   ];
 

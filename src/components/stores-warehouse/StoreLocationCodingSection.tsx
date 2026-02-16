@@ -14,17 +14,17 @@ export const StoreLocationCodingSection = () => {
   const containers = Object.entries(CONTAINER_DISCIPLINE_MAP).map(([id, disc]) => {
     const labels: Record<string, string> = {
       EL: "Electrical – Positive Airflow",
-      IN: "Instrumentation & Pneumatics",
-      MW: "Mechanical Wear / Heavy (40ft)",
-      ME: "Mechanical Small Precision",
-      FA: "Fasteners, Consumables & Lube",
+      IN: "Instrumentation, Pneumatics & Process Fittings",
+      ME: "Mechanical (40ft)",
+      MP: "Mechanical Precision",
+      CS: "Consumables & Supplies",
     };
     return { id, discipline: disc, label: labels[disc] || disc };
   });
 
   const codeStructure = [
     { segment: "Container", format: "C0X", meaning: "Physical storage container (C01–C05)", example: "C01, C02, C03, C04, C05" },
-    { segment: "Discipline", format: "XX", meaning: "Must match container discipline", example: "EL, IN, MW, ME, FA" },
+    { segment: "Discipline", format: "XX", meaning: "Must match container discipline", example: "EL, IN, ME, MP, CS" },
     { segment: "Bay", format: "A–H, J–K", meaning: "Wall position (skip letter I)", example: "A, B, C, D, E, F, G, H, J, K" },
     { segment: "Bin", format: "1–99", meaning: "Bin number within bay", example: "1, 2, 15, 42, 99" },
   ];
