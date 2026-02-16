@@ -655,11 +655,99 @@ const ItemDetail3D = ({ item, containerColor, containerId }: ItemDetail3DProps) 
   );
 };
 
+/* ============ Interior Roller Door ============ */
+
+const INTERIOR_SLAT_COUNT = 18;
+
+const InteriorRollerDoor = ({ doorWidth, doorHeight, isOpen, onToggle }: { doorWidth: number; doorHeight: number; isOpen: boolean; onToggle: (e: any) => void }) => {
+  const groupRef = useRef<THREE.Group>(null);
+  const openProgress = useRef(0);
+  const [hovered, setHovered] = useState(false);
+
+  useFrame((_, delta) => {
+    const target = isOpen ? 1 : 0;
+    openProgress.current += (target - openProgress.current) * Math.min(delta * 3, 1);
+    if (groupRef.current) {
+      groupRef.current.position.y = openProgress.current * doorHeight * 0.92;
+    }
+  });
+
+  const slatHeight = doorHeight / INTERIOR_SLAT_COUNT;
+
+  return (
+    <group>
+      {/* Door frame — left and right uprights */}
+      {[-1, 1].map((side) => (
+        <mesh key={`frame${side}`} position={[side * (doorWidth / 2 + 0.015), doorHeight / 2, 0]}>
+          <boxGeometry args={[0.025, doorHeight + 0.03, 0.035]} />
+          <meshStandardMaterial color="#52525b" metalness={0.6} roughness={0.3} />
+        </mesh>
+      ))}
+      {/* Top roller housing */}
+      <mesh position={[0, doorHeight + 0.02, 0]}>
+        <boxGeometry args={[doorWidth + 0.06, 0.05, 0.07]} />
+        <meshStandardMaterial color="#3f3f46" metalness={0.5} roughness={0.4} />
+      </mesh>
+      {/* Roller cylinder */}
+      <mesh position={[0, doorHeight + 0.06, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.02, 0.02, doorWidth + 0.03, 12]} />
+        <meshStandardMaterial color="#71717a" metalness={0.7} roughness={0.2} />
+      </mesh>
+
+      {/* Animated slats */}
+      <group ref={groupRef}>
+        {Array.from({ length: INTERIOR_SLAT_COUNT }, (_, i) => {
+          const slatY = i * slatHeight + slatHeight / 2;
+          return (
+            <mesh
+              key={i}
+              position={[0, slatY, 0]}
+              onClick={onToggle}
+              onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = "pointer"; }}
+              onPointerOut={() => { setHovered(false); document.body.style.cursor = "auto"; }}
+            >
+              <boxGeometry args={[doorWidth, slatHeight * 0.9, 0.012]} />
+              <meshStandardMaterial
+                color={hovered ? "#a1a1aa" : "#7a7a7a"}
+                metalness={0.5}
+                roughness={0.35}
+              />
+            </mesh>
+          );
+        })}
+        {/* Slat dividers */}
+        {Array.from({ length: INTERIOR_SLAT_COUNT - 1 }, (_, i) => {
+          const lineY = (i + 1) * slatHeight;
+          return (
+            <mesh key={`line${i}`} position={[0, lineY, 0.007]}>
+              <boxGeometry args={[doorWidth, 0.003, 0.002]} />
+              <meshStandardMaterial color="#444" />
+            </mesh>
+          );
+        })}
+        {/* Bottom handle */}
+        <mesh position={[0, slatHeight * 0.3, 0.012]}>
+          <boxGeometry args={[doorWidth * 0.25, 0.018, 0.022]} />
+          <meshStandardMaterial color="#fbbf24" metalness={0.5} roughness={0.3} />
+        </mesh>
+      </group>
+
+      {/* Label */}
+      <Billboard position={[0, doorHeight + 0.14, 0]}>
+        <Text fontSize={0.055} color={hovered ? "#fbbf24" : "#a1a1aa"} anchorX="center">
+          {isOpen ? "▼ CLOSE" : "▲ OPEN"} ROLLER DOOR
+        </Text>
+      </Billboard>
+    </group>
+  );
+};
+
 /* ============ Container Interior ============ */
 
 const ContainerInterior3D = ({ container, parts, liveMode, onItemClick }: ContainerInterior3DProps & { onItemClick?: (item: FitoutItem) => void }) => {
   const dim = container.physicalDimensions;
   const fitout = CONTAINER_FITOUTS[container.id];
+  const [interiorDoorOpen, setInteriorDoorOpen] = useState(false);
 
   const intWidth = dim.internalLengthM;
   const intHeight = dim.internalHeightM;
@@ -700,30 +788,20 @@ const ContainerInterior3D = ({ container, parts, liveMode, onItemClick }: Contai
         <meshStandardMaterial color="#22c55e" opacity={0.08} transparent />
       </mesh>
 
+      {/* Full-width roller door on the door-side wall */}
       {fitout && (() => {
-        const door = fitout.door;
-        const doorWm = door.widthMm / 1000;
-        const doorOffsetM = door.offsetMm / 1000;
-        const doorH = intHeight * 0.8;
-        if (door.wall === "bottom") {
-          const doorCenterX = -intWidth / 2 + doorOffsetM + doorWm / 2;
-          return (
-            <group>
-              <mesh position={[doorCenterX, -intHeight / 2 + doorH / 2, intDepth / 2 + 0.02]}>
-                <planeGeometry args={[doorWm, doorH]} />
-                <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
-              </mesh>
-              <lineSegments position={[doorCenterX, -intHeight / 2 + doorH / 2, intDepth / 2 + 0.02]}>
-                <edgesGeometry args={[new THREE.PlaneGeometry(doorWm, doorH)]} />
-                <lineBasicMaterial color="#22c55e" opacity={0.5} transparent />
-              </lineSegments>
-              <Text position={[doorCenterX, -intHeight / 2 + doorH + 0.06, intDepth / 2 + 0.03]} fontSize={0.05} color="#22c55e" anchorX="center">
-                {door.label}
-              </Text>
-            </group>
-          );
-        }
-        return null;
+        const doorWm = intWidth * 0.95; // nearly full width
+        const doorH = intHeight * 0.92; // floor to near-roof
+        return (
+          <group position={[0, -intHeight / 2, intDepth / 2 + 0.02]}>
+            <InteriorRollerDoor
+              doorWidth={doorWm}
+              doorHeight={doorH}
+              isOpen={interiorDoorOpen}
+              onToggle={(e) => { e.stopPropagation(); setInteriorDoorOpen(prev => !prev); }}
+            />
+          </group>
+        );
       })()}
 
       <Billboard position={[0, intHeight / 2 - 0.1, -intDepth / 2 - 0.08]}>
