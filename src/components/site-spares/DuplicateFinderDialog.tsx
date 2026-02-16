@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
+// ScrollArea removed — using native overflow-y-auto for reliable scrolling
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Trash2, Shield, Copy, Search as SearchIcon, ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -79,7 +79,14 @@ export const DuplicateFinderDialog = ({ open, onOpenChange, onResolved }: Props)
       if ((data || []).length < pageSize) break;
       from += pageSize;
     }
-    setAllSpares(all);
+    // Deduplicate by ID to prevent phantom duplicates from React StrictMode double-effects
+    const seen = new Set<string>();
+    const deduped = all.filter((item) => {
+      if (seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    });
+    setAllSpares(deduped);
     setLoading(false);
   };
 
@@ -373,7 +380,7 @@ export const DuplicateFinderDialog = ({ open, onOpenChange, onResolved }: Props)
             </TabsTrigger>
           </TabsList>
 
-          <ScrollArea className="flex-1 mt-3 pr-4" style={{ maxHeight: "calc(85vh - 220px)" }}>
+          <div className="flex-1 mt-3 pr-1 overflow-y-auto" style={{ maxHeight: "calc(85vh - 240px)" }}>
             <TabsContent value="exact" className="mt-0">
               {renderTabContent(exactGroups, "exact")}
             </TabsContent>
@@ -383,7 +390,7 @@ export const DuplicateFinderDialog = ({ open, onOpenChange, onResolved }: Props)
             <TabsContent value="similar" className="mt-0">
               {renderTabContent(similarGroups, "similar")}
             </TabsContent>
-          </ScrollArea>
+          </div>
         </Tabs>
       </DialogContent>
     </Dialog>
