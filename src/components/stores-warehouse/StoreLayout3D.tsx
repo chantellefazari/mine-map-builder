@@ -2,6 +2,7 @@ import { Suspense, useState, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, RoundedBox, Html, Billboard } from "@react-three/drei";
 import { STORE_CONTAINERS, YARD_DIMENSIONS, DOME_DIMENSIONS, LAYDOWN_ZONES, FORKLIFT_LANE, DELIVERY_ZONE, dome3DPosition, base3DPosition, leftLeg3DPosition, rightLeg3DPosition, ldZone3DPosition, forkliftLane3DPosition, deliveryZone3DPosition, type StoreContainer } from "./storeLayoutData";
+import { CONTAINER_FITOUTS, FURNITURE_COLORS, type FurnitureType, type FitoutItem, type ContainerFitout } from "./containerFitoutData";
 import * as THREE from "three";
 
 interface StoreLayout3DProps {
@@ -192,32 +193,169 @@ interface ContainerInterior3DProps {
   liveMode: boolean;
 }
 
+/** 3D height (m) for each furniture type */
+const FURNITURE_3D_HEIGHT: Record<FurnitureType, number> = {
+  "shelving-bay": 1.8,
+  "bin-wall": 1.5,
+  "cabinet": 1.8,
+  "drawer-unit": 0.9,
+  "rack": 1.8,
+  "conduit-bracket": 0.3,
+  "foam-totes": 1.2,
+  "ppe-rack": 1.5,
+  "bunded-shelf": 0.9,
+  "flat-shelf": 1.2,
+  "esd-panel": 1.5,
+  "reinforced-shelf": 1.2,
+};
+
+const FitoutItemMesh = ({ item, fitout, containerColor }: { item: FitoutItem; fitout: ContainerFitout; containerColor: string }) => {
+  const [hovered, setHovered] = useState(false);
+  const intL = fitout.internalLengthMm / 1000; // X axis in 3D
+  const intW = fitout.internalWidthMm / 1000; // Z axis in 3D
+  const intH = 2.39; // internal height m
+
+  // Convert mm positions to meters, center origin
+  const itemXm = item.x / 1000;
+  const itemYm = item.y / 1000;
+  const itemWm = item.width / 1000;
+  const itemDm = item.height / 1000; // "height" in plan = depth (Z) in 3D
+  const itemHm = FURNITURE_3D_HEIGHT[item.type];
+
+  // 3D position: center of item, sitting on floor
+  const x3d = -intL / 2 + itemXm + itemWm / 2;
+  const z3d = -intW / 2 + itemYm + itemDm / 2;
+  const y3d = -intH / 2 + itemHm / 2;
+
+  const colors = FURNITURE_COLORS[item.type];
+  const fillColor = colors.stroke; // use the solid stroke color for 3D
+
+  return (
+    <group position={[x3d, y3d, z3d]}>
+      {/* Main body */}
+      <RoundedBox
+        args={[itemWm, itemHm, itemDm]}
+        radius={0.01}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
+        onPointerOut={() => setHovered(false)}
+      >
+        <meshStandardMaterial
+          color={fillColor}
+          transparent
+          opacity={hovered ? 0.7 : 0.45}
+          metalness={0.1}
+          roughness={0.8}
+        />
+      </RoundedBox>
+
+      {/* Wireframe edges */}
+      <lineSegments>
+        <edgesGeometry args={[new THREE.BoxGeometry(itemWm, itemHm, itemDm)]} />
+        <lineBasicMaterial color={fillColor} opacity={0.6} transparent />
+      </lineSegments>
+
+      {/* Shelf detail lines for shelving types */}
+      {(item.type === "shelving-bay" || item.type === "reinforced-shelf") && (
+        <>
+          {[0.2, 0.4, 0.6, 0.8].map((frac) => (
+            <mesh key={frac} position={[0, -itemHm / 2 + frac * itemHm, 0]}>
+              <boxGeometry args={[itemWm - 0.01, 0.008, itemDm - 0.01]} />
+              <meshStandardMaterial color={fillColor} opacity={0.3} transparent />
+            </mesh>
+          ))}
+          {/* Uprights */}
+          {[-1, 1].map((side) => (
+            <mesh key={side} position={[side * (itemWm / 2 - 0.015), 0, 0]}>
+              <boxGeometry args={[0.03, itemHm, 0.03]} />
+              <meshStandardMaterial color="#666" opacity={0.5} transparent />
+            </mesh>
+          ))}
+        </>
+      )}
+
+      {/* Drawer lines for drawer units */}
+      {item.type === "drawer-unit" && (
+        <>
+          {[0.15, 0.35, 0.55, 0.75, 0.95].map((frac) => (
+            <mesh key={frac} position={[0, -itemHm / 2 + frac * itemHm, itemDm / 2 - 0.005]}>
+              <boxGeometry args={[itemWm - 0.02, 0.005, 0.01]} />
+              <meshStandardMaterial color="#444" opacity={0.6} transparent />
+            </mesh>
+          ))}
+          {/* Drawer handles */}
+          {[0.25, 0.45, 0.65, 0.85].map((frac) => (
+            <mesh key={`h${frac}`} position={[0, -itemHm / 2 + frac * itemHm, itemDm / 2 + 0.01]}>
+              <boxGeometry args={[0.06, 0.008, 0.015]} />
+              <meshStandardMaterial color="#888" opacity={0.7} transparent />
+            </mesh>
+          ))}
+        </>
+      )}
+
+      {/* Cabinet door line */}
+      {item.type === "cabinet" && (
+        <mesh position={[0, 0, itemDm / 2 + 0.005]}>
+          <planeGeometry args={[itemWm * 0.9, itemHm * 0.9]} />
+          <meshStandardMaterial color={fillColor} opacity={0.15} transparent side={THREE.DoubleSide} />
+        </mesh>
+      )}
+
+      {/* Bin wall grid for bin walls & ESD panels */}
+      {(item.type === "bin-wall" || item.type === "esd-panel") && (
+        <>
+          {/* Horizontal dividers */}
+          {[0.25, 0.5, 0.75].map((frac) => (
+            <mesh key={`h${frac}`} position={[0, -itemHm / 2 + frac * itemHm, itemDm / 2 - 0.005]}>
+              <boxGeometry args={[itemWm - 0.02, 0.005, 0.01]} />
+              <meshStandardMaterial color={fillColor} opacity={0.4} transparent />
+            </mesh>
+          ))}
+          {/* Vertical dividers */}
+          {[0.2, 0.4, 0.6, 0.8].map((frac) => (
+            <mesh key={`v${frac}`} position={[-itemWm / 2 + frac * itemWm, 0, itemDm / 2 - 0.005]}>
+              <boxGeometry args={[0.005, itemHm - 0.02, 0.01]} />
+              <meshStandardMaterial color={fillColor} opacity={0.4} transparent />
+            </mesh>
+          ))}
+        </>
+      )}
+
+      {/* Short label on front face */}
+      <Text
+        position={[0, 0, itemDm / 2 + 0.02]}
+        fontSize={Math.min(0.08, itemWm * 0.12)}
+        color={fillColor}
+        fontWeight="bold"
+        anchorX="center"
+        anchorY="middle"
+        maxWidth={itemWm * 0.9}
+      >
+        {item.shortLabel}
+      </Text>
+
+      {/* Hover tooltip */}
+      {hovered && (
+        <Html position={[0, itemHm / 2 + 0.15, 0]} center>
+          <div className="bg-popover border border-border rounded-lg p-2.5 shadow-lg text-xs whitespace-nowrap pointer-events-none min-w-[180px]">
+            <p className="font-bold text-sm">{item.label}</p>
+            <p className="text-muted-foreground capitalize">{item.type.replace(/-/g, " ")}</p>
+            <p className="text-muted-foreground font-mono text-[10px]">
+              {item.width}mm × {item.height}mm × {(FURNITURE_3D_HEIGHT[item.type] * 1000).toFixed(0)}mm (W×D×H)
+            </p>
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+};
+
 const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3DProps) => {
-  const [hoveredBin, setHoveredBin] = useState<string | null>(null);
   const dim = container.physicalDimensions;
+  const fitout = CONTAINER_FITOUTS[container.id];
 
-  const binCount = container.binsPerShelf;
-
-  const intWidth = dim.internalLengthM;
-  const intHeight = dim.internalHeightM;
-  const intDepth = dim.internalWidthM;
-
-  const binWidthM = container.binWidthCm / 100;
-  const binDepthM = container.binDepthCm / 100;
-  const shelfHeightM = container.shelfHeightCm / 100;
-  const bottomShelfM = container.bottomShelfHeightCm / 100;
-  const aisleWidthM = dim.aisleWidthCm / 100;
-
-  const getPartAtBin = (binId: string) => {
-    if (!liveMode || !parts.length) return null;
-    const locationCode = `${container.id}-${container.zoneCode}-${binId}`;
-    return parts.find((p) => {
-      const loc = (p.bin_location || "").toUpperCase();
-      return loc === locationCode || loc.endsWith(binId);
-    });
-  };
-
-  const rackingZ = -intDepth / 2 + binDepthM / 2 + 0.05;
+  const intWidth = dim.internalLengthM; // X
+  const intHeight = dim.internalHeightM; // Y
+  const intDepth = dim.internalWidthM; // Z
 
   return (
     <>
@@ -231,10 +369,16 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
         <lineBasicMaterial color={container.color} opacity={0.3} transparent />
       </lineSegments>
 
-      {/* Back wall */}
+      {/* Back wall (top wall in plan — y=0) */}
       <mesh position={[0, 0, -intDepth / 2]}>
         <planeGeometry args={[intWidth + 0.1, intHeight]} />
         <meshStandardMaterial color={container.color} opacity={0.06} transparent side={THREE.DoubleSide} />
+      </mesh>
+
+      {/* Front wall (bottom wall in plan — y=max, door side) */}
+      <mesh position={[0, 0, intDepth / 2]}>
+        <planeGeometry args={[intWidth + 0.1, intHeight]} />
+        <meshStandardMaterial color={container.color} opacity={0.04} transparent side={THREE.DoubleSide} />
       </mesh>
 
       {/* Side walls */}
@@ -252,109 +396,70 @@ const ContainerInterior3D = ({ container, parts, liveMode }: ContainerInterior3D
       </mesh>
 
       {/* Aisle marking */}
-      <mesh position={[0, -intHeight / 2 + 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[intWidth - 0.1, aisleWidthM]} />
+      <mesh position={[0, -intHeight / 2 + 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[intWidth - 0.1, dim.aisleWidthCm / 100]} />
         <meshStandardMaterial color="#22c55e" opacity={0.08} transparent />
       </mesh>
 
-      {/* Entry door indicator */}
-      {container.entryPoints[0] && container.entryPoints[0].side === "front" && (
-        <mesh position={[0, -intHeight / 4, intDepth / 2 + 0.02]}>
-          <planeGeometry args={[(container.entryPoints[0].widthCm / 100), intHeight * 0.7]} />
-          <meshStandardMaterial color="#22c55e" opacity={0.12} transparent side={THREE.DoubleSide} />
-        </mesh>
-      )}
+      {/* Door indicator */}
+      {fitout && (() => {
+        const door = fitout.door;
+        const doorWm = door.widthMm / 1000;
+        const doorOffsetM = door.offsetMm / 1000;
+        const doorH = intHeight * 0.8;
 
-      {/* Shelves and bins */}
-      {container.shelves.map((shelf, shelfIdx) => {
-        const shelfY = -intHeight / 2 + bottomShelfM + shelfIdx * shelfHeightM;
+        if (door.wall === "bottom") {
+          // Door on front wall (Z = +intDepth/2), positioned along X
+          const doorCenterX = -intWidth / 2 + doorOffsetM + doorWm / 2;
+          return (
+            <group>
+              <mesh position={[doorCenterX, -intHeight / 2 + doorH / 2, intDepth / 2 + 0.02]}>
+                <planeGeometry args={[doorWm, doorH]} />
+                <meshStandardMaterial color="#22c55e" opacity={0.15} transparent side={THREE.DoubleSide} />
+              </mesh>
+              <lineSegments position={[doorCenterX, -intHeight / 2 + doorH / 2, intDepth / 2 + 0.02]}>
+                <edgesGeometry args={[new THREE.PlaneGeometry(doorWm, doorH)]} />
+                <lineBasicMaterial color="#22c55e" opacity={0.5} transparent />
+              </lineSegments>
+              <Text position={[doorCenterX, -intHeight / 2 + doorH + 0.06, intDepth / 2 + 0.03]} fontSize={0.05} color="#22c55e" anchorX="center">
+                {door.label}
+              </Text>
+            </group>
+          );
+        }
+        return null;
+      })()}
 
-        return (
-          <group key={shelf} position={[0, shelfY, rackingZ]}>
-            <mesh>
-              <boxGeometry args={[intWidth - 0.1, 0.02, binDepthM + 0.05]} />
-              <meshStandardMaterial color="#8B7355" opacity={0.55} transparent />
-            </mesh>
+      {/* Wall labels */}
+      <Billboard position={[0, intHeight / 2 - 0.1, -intDepth / 2 - 0.08]}>
+        <Text fontSize={0.06} color="#888" anchorX="center">REAR WALL (Top in Plan)</Text>
+      </Billboard>
+      <Billboard position={[0, intHeight / 2 - 0.1, intDepth / 2 + 0.08]}>
+        <Text fontSize={0.06} color="#22c55e" anchorX="center">DOOR SIDE (Bottom in Plan)</Text>
+      </Billboard>
+      <Billboard position={[-intWidth / 2 - 0.08, intHeight / 2 - 0.1, 0]}>
+        <Text fontSize={0.06} color="#888" anchorX="center">END WALL 1</Text>
+      </Billboard>
+      <Billboard position={[intWidth / 2 + 0.08, intHeight / 2 - 0.1, 0]}>
+        <Text fontSize={0.06} color="#888" anchorX="center">END WALL 2</Text>
+      </Billboard>
 
-            {/* Uprights */}
-            <mesh position={[-intWidth / 2 + 0.03, shelfHeightM / 2, 0]}>
-              <boxGeometry args={[0.04, shelfHeightM, 0.04]} />
-              <meshStandardMaterial color="#666" opacity={0.4} transparent />
-            </mesh>
-            <mesh position={[intWidth / 2 - 0.03, shelfHeightM / 2, 0]}>
-              <boxGeometry args={[0.04, shelfHeightM, 0.04]} />
-              <meshStandardMaterial color="#666" opacity={0.4} transparent />
-            </mesh>
+      {/* Render all fitout items */}
+      {fitout && fitout.items.map((item) => (
+        <FitoutItemMesh
+          key={item.id}
+          item={item}
+          fitout={fitout}
+          containerColor={container.color}
+        />
+      ))}
 
-            <Text position={[-intWidth / 2 - 0.15, shelfHeightM / 2, 0]} fontSize={0.1} color={container.color} fontWeight="bold" anchorX="center">
-              {shelf}
-            </Text>
-            <Text position={[intWidth / 2 + 0.15, 0.02, 0]} fontSize={0.06} color="#888" anchorX="center">
-              {container.bottomShelfHeightCm + shelfIdx * container.shelfHeightCm}cm
-            </Text>
-
-            {Array.from({ length: binCount }, (_, binIdx) => {
-              const binId = `${shelf}${binIdx + 1}`;
-              const x = (binIdx - binCount / 2 + 0.5) * binWidthM;
-              const part = getPartAtBin(binId);
-              const isHovered = hoveredBin === binId;
-
-              return (
-                <group key={binId} position={[x, shelfHeightM / 2, 0]}>
-                  <RoundedBox
-                    args={[binWidthM - 0.01, shelfHeightM - 0.04, binDepthM - 0.02]}
-                    radius={0.005}
-                    onPointerOver={(e) => { e.stopPropagation(); setHoveredBin(binId); }}
-                    onPointerOut={() => setHoveredBin(null)}
-                  >
-                    <meshStandardMaterial
-                      color={part ? container.color : "#94a3b8"}
-                      transparent
-                      opacity={isHovered ? 0.55 : part ? 0.3 : 0.08}
-                      metalness={0.05}
-                      roughness={0.9}
-                    />
-                  </RoundedBox>
-
-                  {part && (
-                    <mesh>
-                      <boxGeometry args={[binWidthM * 0.6, shelfHeightM * 0.4, binDepthM * 0.5]} />
-                      <meshStandardMaterial color={container.color} opacity={0.7} transparent />
-                    </mesh>
-                  )}
-
-                  <Text position={[0, -shelfHeightM / 2 + 0.03, binDepthM / 2 + 0.01]} fontSize={0.04} color="#666" anchorX="center">
-                    {binId}
-                  </Text>
-
-                  {isHovered && (
-                    <Html position={[0, shelfHeightM / 2 + 0.08, binDepthM / 2]} center>
-                      <div className="bg-popover border border-border rounded-lg p-2 shadow-lg text-xs whitespace-nowrap pointer-events-none">
-                        <p className="font-mono font-bold">{container.id}-{container.zoneCode}-{binId}</p>
-                        <p className="text-[10px] text-muted-foreground">{container.binWidthCm}×{container.binDepthCm}×{container.shelfHeightCm}cm</p>
-                        {part ? (
-                          <>
-                            <p className="text-foreground">{part.description?.slice(0, 40)}</p>
-                            {part.part_number && <p className="text-muted-foreground">PN: {part.part_number}</p>}
-                          </>
-                        ) : (
-                          <p className="text-muted-foreground italic">Empty bin</p>
-                        )}
-                      </div>
-                    </Html>
-                  )}
-                </group>
-              );
-            })}
-          </group>
-        );
-      })}
-
+      {/* Title */}
       <Text position={[0, intHeight / 2 + 0.15, 0]} fontSize={0.14} color={container.color} fontWeight="bold" anchorX="center">
         {container.id} — {container.label}
       </Text>
       <Text position={[0, intHeight / 2 + 0.02, 0]} fontSize={0.07} color="#888" anchorX="center">
-        {dim.internalLengthM}m × {dim.internalWidthM}m × {dim.internalHeightM}m · {container.shelves.length} shelves × {container.binsPerShelf} bins
+        {dim.internalLengthM}m × {dim.internalWidthM}m × {dim.internalHeightM}m · {fitout ? fitout.items.length : 0} fitout items
       </Text>
       <Text position={[0, -intHeight / 2 - 0.1, intDepth / 2 + 0.15]} fontSize={0.06} color="#22c55e" anchorX="center">
         Aisle: {dim.aisleWidthCm}cm
