@@ -94,6 +94,33 @@ export interface LayoutZoneGroup {
   position: { x: number; y: number; width: number; height: number };
 }
 
+export interface LaydownZone {
+  id: string;
+  label: string;
+  shortLabel: string;
+  type: "dome-row" | "yard-bay";
+  color: string;
+  bgColor: string;
+  borderColor: string;
+  position: { x: number; y: number };
+  width: number;
+  height: number;
+  physicalWidthM: number;
+  physicalDepthM: number;
+  description: string;
+}
+
+export interface SiteFeature {
+  id: string;
+  label: string;
+  color: string;
+  bgColor: string;
+  borderColor: string;
+  position: { x: number; y: number };
+  width: number;
+  height: number;
+}
+
 export interface YardDimensions {
   totalWidthM: number;
   totalDepthM: number;
@@ -104,12 +131,13 @@ export interface YardDimensions {
   courtyardDepthM: number;
   forkliftGapM: number;
   outerClearanceM: number;
+  ldGapM: number;
 }
 
 // U-shape yard dimensions
 export const YARD_DIMENSIONS: YardDimensions = {
-  totalWidthM: 22,
-  totalDepthM: 18,
+  totalWidthM: 24,
+  totalDepthM: 30,
   accessRoadWidthM: 4,
   walkwayWidthM: 1.5,
   containerSpacingM: 0.4,
@@ -117,6 +145,7 @@ export const YARD_DIMENSIONS: YardDimensions = {
   courtyardDepthM: 12,
   forkliftGapM: 0,
   outerClearanceM: 2.5,
+  ldGapM: 5, // 5m gap between compound and laydown
 };
 
 // Dome physical footprint (sits inside courtyard)
@@ -529,4 +558,187 @@ export function getRackingAreaM2(container: StoreContainer): number {
   const d = container.physicalDimensions;
   const rackingWidthM = (d.internalWidthM * 100 - d.aisleWidthCm) / 100;
   return Math.round(rackingWidthM * d.internalLengthM * 100) / 100;
+}
+
+/* ============ LAYDOWN ZONES ============ */
+
+// Laydown area starts 5m below the compound base
+const LD_START_Y = BASE_Y + CONTAINER_40FT_H + YARD_DIMENSIONS.ldGapM * PX_PER_M;
+const LD_ROW_W = 7 * PX_PER_M; // 7m wide pallet rows
+const LD_ROW_H = 2.5 * PX_PER_M; // 2.5m deep
+const LD_ROW_GAP = 0.5 * PX_PER_M;
+const FORKLIFT_X = LEFT_X + LD_ROW_W + 1 * PX_PER_M;
+const FORKLIFT_W = 3 * PX_PER_M;
+const LD_BAY_W = 2 * PX_PER_M; // 2m wide vertical bays
+const LD_BAY_H = 5 * PX_PER_M; // 5m deep
+const LD_BAY_GAP = 0.5 * PX_PER_M;
+const LD_BAY_START_X = FORKLIFT_X + FORKLIFT_W + 1 * PX_PER_M;
+
+export const LAYDOWN_ZONES: LaydownZone[] = [
+  {
+    id: "LD-B",
+    label: "Dome Internal Row B",
+    shortLabel: "LD-B",
+    type: "dome-row",
+    color: "#16a34a",
+    bgColor: "rgba(22, 163, 74, 0.12)",
+    borderColor: "#16a34a",
+    position: { x: LEFT_X, y: LD_START_Y },
+    width: LD_ROW_W,
+    height: LD_ROW_H,
+    physicalWidthM: 7,
+    physicalDepthM: 2.5,
+    description: "Dome-sheltered pallet row — heavy liners, large pump assemblies",
+  },
+  {
+    id: "LD-A",
+    label: "Dome Internal Row A",
+    shortLabel: "LD-A",
+    type: "dome-row",
+    color: "#16a34a",
+    bgColor: "rgba(22, 163, 74, 0.15)",
+    borderColor: "#16a34a",
+    position: { x: LEFT_X, y: LD_START_Y + LD_ROW_H + LD_ROW_GAP },
+    width: LD_ROW_W,
+    height: LD_ROW_H,
+    physicalWidthM: 7,
+    physicalDepthM: 2.5,
+    description: "Dome-sheltered pallet row — structural steel, pipe lengths",
+  },
+  {
+    id: "LD-C",
+    label: "Laydown Bay C",
+    shortLabel: "LD-C",
+    type: "yard-bay",
+    color: "#64748b",
+    bgColor: "rgba(100, 116, 139, 0.12)",
+    borderColor: "#78716c",
+    position: { x: LD_BAY_START_X, y: LD_START_Y },
+    width: LD_BAY_W,
+    height: LD_BAY_H,
+    physicalWidthM: 2,
+    physicalDepthM: 5,
+    description: "Open yard bay — heavy equipment, palletised spares",
+  },
+  {
+    id: "LD-D",
+    label: "Laydown Bay D",
+    shortLabel: "LD-D",
+    type: "yard-bay",
+    color: "#64748b",
+    bgColor: "rgba(100, 116, 139, 0.15)",
+    borderColor: "#78716c",
+    position: { x: LD_BAY_START_X + LD_BAY_W + LD_BAY_GAP, y: LD_START_Y },
+    width: LD_BAY_W,
+    height: LD_BAY_H,
+    physicalWidthM: 2,
+    physicalDepthM: 5,
+    description: "Open yard bay — crusher liners, screen panels",
+  },
+  {
+    id: "LD-E",
+    label: "Laydown Bay E",
+    shortLabel: "LD-E",
+    type: "yard-bay",
+    color: "#64748b",
+    bgColor: "rgba(100, 116, 139, 0.12)",
+    borderColor: "#78716c",
+    position: { x: LD_BAY_START_X + 2 * (LD_BAY_W + LD_BAY_GAP), y: LD_START_Y },
+    width: LD_BAY_W,
+    height: LD_BAY_H,
+    physicalWidthM: 2,
+    physicalDepthM: 5,
+    description: "Open yard bay — air receivers, large motors",
+  },
+  {
+    id: "LD-F",
+    label: "Laydown Bay F",
+    shortLabel: "LD-F",
+    type: "yard-bay",
+    color: "#64748b",
+    bgColor: "rgba(100, 116, 139, 0.15)",
+    borderColor: "#78716c",
+    position: { x: LD_BAY_START_X + 3 * (LD_BAY_W + LD_BAY_GAP), y: LD_START_Y },
+    width: LD_BAY_W,
+    height: LD_BAY_H,
+    physicalWidthM: 2,
+    physicalDepthM: 5,
+    description: "Open yard bay — overflow / project staging",
+  },
+];
+
+/** Forklift access lane geometry */
+export const FORKLIFT_LANE: SiteFeature = {
+  id: "forklift-access",
+  label: "Forklift Access",
+  color: "#ca8a04",
+  bgColor: "rgba(202, 138, 4, 0.15)",
+  borderColor: "#ca8a04",
+  position: { x: FORKLIFT_X, y: LD_START_Y },
+  width: FORKLIFT_W,
+  height: LD_ROW_H * 2 + LD_ROW_GAP,
+};
+
+/** Delivery / receival zone */
+export const DELIVERY_ZONE: SiteFeature = {
+  id: "delivery",
+  label: "Delivery",
+  color: "#dc2626",
+  bgColor: "rgba(220, 38, 38, 0.15)",
+  borderColor: "#dc2626",
+  position: {
+    x: LD_BAY_START_X + 2 * (LD_BAY_W + LD_BAY_GAP),
+    y: LD_START_Y + LD_BAY_H + 3 * PX_PER_M,
+  },
+  width: 5 * PX_PER_M,
+  height: 3 * PX_PER_M,
+};
+
+/** Laydown zone group for the legend */
+export const LAYDOWN_ZONE_GROUP: LayoutZoneGroup = {
+  id: "laydown",
+  label: "Laydown & External Storage",
+  description: "LD-A/B dome rows, LD-C→F open yard bays",
+  color: "#16a34a",
+  bgColor: "rgba(22, 163, 74, 0.04)",
+  position: {
+    x: LEFT_X - 5,
+    y: LD_START_Y - 20,
+    width: LD_BAY_START_X + 4 * (LD_BAY_W + LD_BAY_GAP) - LEFT_X + 15,
+    height: LD_BAY_H + 30,
+  },
+};
+
+/** SVG dimensions for the full site */
+export const SVG_DIMENSIONS = {
+  width: Math.max(620, LD_BAY_START_X + 4 * (LD_BAY_W + LD_BAY_GAP) + 30),
+  height: LD_START_Y + LD_BAY_H + 3 * PX_PER_M + 3 * PX_PER_M + 40,
+};
+
+/** 3D helpers for laydown zones */
+export function ldZone3DPosition(zone: LaydownZone) {
+  const cx = zone.position.x + zone.width / 2;
+  const cz = zone.position.y + zone.height / 2;
+  return {
+    x: (cx - YARD_CENTRE_X) / PX_PER_M * S3D,
+    z: (cz - YARD_CENTRE_Z) / PX_PER_M * S3D,
+  };
+}
+
+export function forkliftLane3DPosition() {
+  const cx = FORKLIFT_LANE.position.x + FORKLIFT_LANE.width / 2;
+  const cz = FORKLIFT_LANE.position.y + FORKLIFT_LANE.height / 2;
+  return {
+    x: (cx - YARD_CENTRE_X) / PX_PER_M * S3D,
+    z: (cz - YARD_CENTRE_Z) / PX_PER_M * S3D,
+  };
+}
+
+export function deliveryZone3DPosition() {
+  const cx = DELIVERY_ZONE.position.x + DELIVERY_ZONE.width / 2;
+  const cz = DELIVERY_ZONE.position.y + DELIVERY_ZONE.height / 2;
+  return {
+    x: (cx - YARD_CENTRE_X) / PX_PER_M * S3D,
+    z: (cz - YARD_CENTRE_Z) / PX_PER_M * S3D,
+  };
 }

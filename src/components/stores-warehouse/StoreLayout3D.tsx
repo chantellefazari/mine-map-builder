@@ -1,7 +1,7 @@
 import { Suspense, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, RoundedBox, Html } from "@react-three/drei";
-import { STORE_CONTAINERS, YARD_DIMENSIONS, DOME_DIMENSIONS, dome3DPosition, base3DPosition, leftLeg3DPosition, rightLeg3DPosition, type StoreContainer } from "./storeLayoutData";
+import { STORE_CONTAINERS, YARD_DIMENSIONS, DOME_DIMENSIONS, LAYDOWN_ZONES, FORKLIFT_LANE, DELIVERY_ZONE, dome3DPosition, base3DPosition, leftLeg3DPosition, rightLeg3DPosition, ldZone3DPosition, forkliftLane3DPosition, deliveryZone3DPosition, type StoreContainer } from "./storeLayoutData";
 import * as THREE from "three";
 
 interface StoreLayout3DProps {
@@ -448,12 +448,13 @@ const Ground = () => {
   const base = base3DPosition();
   const left = leftLeg3DPosition();
   const right = rightLeg3DPosition();
+  const s = 0.5;
 
   return (
     <>
       {/* Main ground plane */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, dome.z]} receiveShadow>
-        <planeGeometry args={[22, 18]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, dome.z + 2]} receiveShadow>
+        <planeGeometry args={[26, 30]} />
         <meshStandardMaterial color="#e2e8f0" opacity={0.4} transparent />
       </mesh>
 
@@ -473,6 +474,79 @@ const Ground = () => {
       <Text rotation={[-Math.PI / 2, 0, 0]} position={[left.x, 0.02, left.z]} fontSize={0.15} color="#6366f1" anchorX="center">LEFT LEG — CLEAN</Text>
       <Text rotation={[-Math.PI / 2, 0, 0]} position={[right.x, 0.02, right.z]} fontSize={0.15} color="#64748b" anchorX="center">RIGHT LEG — HIGH-ACCESS</Text>
       <Text rotation={[-Math.PI / 2, 0, 0]} position={[base.x, 0.02, base.z + 1]} fontSize={0.15} color="#3b82f6" anchorX="center">BASE — MECHANICAL (40ft)</Text>
+
+      {/* ===== LAYDOWN ZONES ===== */}
+      {LAYDOWN_ZONES.map((zone) => {
+        const pos = ldZone3DPosition(zone);
+        const w = zone.physicalWidthM * s;
+        const d = zone.physicalDepthM * s;
+        const isDome = zone.type === "dome-row";
+        return (
+          <group key={zone.id}>
+            {/* Ground pad */}
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[pos.x, 0.02, pos.z]}>
+              <planeGeometry args={[w, d]} />
+              <meshStandardMaterial color={zone.color} opacity={isDome ? 0.1 : 0.06} transparent />
+            </mesh>
+            {/* Border outline */}
+            <lineSegments position={[pos.x, 0.03, pos.z]} rotation={[-Math.PI / 2, 0, 0]}>
+              <edgesGeometry args={[new THREE.PlaneGeometry(w, d)]} />
+              <lineBasicMaterial color={zone.color} opacity={0.4} transparent />
+            </lineSegments>
+            {/* Label */}
+            <Text rotation={[-Math.PI / 2, 0, 0]} position={[pos.x, 0.04, pos.z]} fontSize={0.12} color={zone.color} anchorX="center" fontWeight="bold">
+              {zone.id}
+            </Text>
+            {/* Pallet markers for dome rows */}
+            {isDome && Array.from({ length: 3 }, (_, i) => (
+              <mesh key={i} position={[pos.x + (i - 1) * (w / 3), 0.06, pos.z]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[w / 3.5, d * 0.7]} />
+                <meshStandardMaterial color={zone.color} opacity={0.08} transparent />
+              </mesh>
+            ))}
+          </group>
+        );
+      })}
+
+      {/* Forklift access lane */}
+      {(() => {
+        const fPos = forkliftLane3DPosition();
+        const fW = 3 * s;
+        const fH = (FORKLIFT_LANE.height / 25) * s;
+        return (
+          <group>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[fPos.x, 0.02, fPos.z]}>
+              <planeGeometry args={[fW, fH]} />
+              <meshStandardMaterial color="#ca8a04" opacity={0.1} transparent />
+            </mesh>
+            <Text rotation={[-Math.PI / 2, 0, 0]} position={[fPos.x, 0.04, fPos.z]} fontSize={0.1} color="#ca8a04" anchorX="center" fontWeight="bold">
+              FORKLIFT
+            </Text>
+          </group>
+        );
+      })()}
+
+      {/* Delivery zone */}
+      {(() => {
+        const dPos = deliveryZone3DPosition();
+        const dW = 5 * s;
+        const dH = 3 * s;
+        return (
+          <group>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[dPos.x, 0.02, dPos.z]}>
+              <planeGeometry args={[dW, dH]} />
+              <meshStandardMaterial color="#dc2626" opacity={0.12} transparent />
+            </mesh>
+            <lineSegments position={[dPos.x, 0.03, dPos.z]} rotation={[-Math.PI / 2, 0, 0]}>
+              <edgesGeometry args={[new THREE.PlaneGeometry(dW, dH)]} />
+              <lineBasicMaterial color="#dc2626" opacity={0.5} transparent />
+            </lineSegments>
+            <Text rotation={[-Math.PI / 2, 0, 0]} position={[dPos.x, 0.04, dPos.z]} fontSize={0.15} color="#dc2626" anchorX="center" fontWeight="bold">
+              DELIVERY
+            </Text>
+          </group>
+        );
+      })()}
     </>
   );
 };
