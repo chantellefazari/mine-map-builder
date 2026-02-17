@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen, ShoppingCart, FileInput, Building2 } from "lucide-react";
+import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen, ShoppingCart, FileInput, Building2, CalendarClock } from "lucide-react";
 
 const sections = [
   {
@@ -72,8 +72,14 @@ const sections = [
     icon: Warehouse,
     href: "/site-spares",
   },
+  {
+    title: "Planning & Revision Control",
+    subtitle: "Scheduling Governance",
+    description: "Work centres, classifications, weekly revision calendar, shutdown revisions, and capacity loading logic.",
+    icon: CalendarClock,
+    href: "/planning-revision",
+  },
 ];
-
 const Home = () => {
   return (
     <div className="min-h-screen bg-background">
