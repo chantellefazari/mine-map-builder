@@ -28,12 +28,13 @@ const workClassifications = [
 
 // ── Revision Generation ──
 function generateWeeklyRevisions(year: number) {
-  // Y26-W01 starts on Wed 7 Jan 2026, each week Wed→Tue
-  const firstWed = new Date(year, 0, 1);
-  // Find first Wednesday on or after Jan 1
-  while (firstWed.getDay() !== 3) firstWed.setDate(firstWed.getDate() + 1);
-  // But per spec, W01 = 07 Jan 2026 which is a Wednesday
-  // So start from that first Wednesday
+  // W01 starts on the last Wednesday on or before Jan 1
+  const jan1 = new Date(year, 0, 1);
+  const dayOfWeek = jan1.getDay(); // 0=Sun..6=Sat, Wed=3
+  const offset = (dayOfWeek >= 3) ? (dayOfWeek - 3) : (dayOfWeek + 4);
+  const firstWed = new Date(jan1);
+  firstWed.setDate(jan1.getDate() - offset);
+
   const revisions = [];
   for (let w = 0; w < 52; w++) {
     const start = new Date(firstWed);
