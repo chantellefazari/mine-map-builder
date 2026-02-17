@@ -40,7 +40,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
           </div>
           <div className="text-right">
             <h2 className="text-lg font-bold text-[#D4AF37]">WORK ORDER</h2>
-            <p className="text-xs text-gray-300 mt-1">Revision: ........................</p>
           </div>
         </div>
 
@@ -58,9 +57,15 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   <span className="font-medium">____/____/________</span>
                 </div>
               </div>
-              <div className="border border-gray-300 p-2">
-                <span className="text-xs text-gray-500 block">Asset Number</span>
-                <span className="font-mono font-medium"></span>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="border border-gray-300 p-2">
+                  <span className="text-xs text-gray-500 block">Asset Number</span>
+                  <span className="font-mono font-medium"></span>
+                </div>
+                <div className="border border-gray-300 p-2">
+                  <span className="text-xs text-gray-500 block">Revision</span>
+                  <span className="font-mono font-medium"></span>
+                </div>
               </div>
               <div className="border border-gray-300 p-2">
                 <span className="text-xs text-gray-500 block">Equipment Description</span>
