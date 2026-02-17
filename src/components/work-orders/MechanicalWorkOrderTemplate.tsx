@@ -44,6 +44,14 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
         </div>
 
         <div className="p-6 space-y-6 text-sm">
+          {/* Revision */}
+          <div className="flex justify-end">
+            <div className="border border-gray-300 p-2 w-48">
+              <span className="text-xs text-gray-500 block">Weekly Revision</span>
+              <span className="font-mono font-medium">Y__-W__</span>
+            </div>
+          </div>
+
           {/* Work Order Details Section */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-3">
@@ -263,6 +271,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
               <thead>
                 <tr className="border-b border-gray-300 bg-gray-50">
                   <th className="text-left p-2 border-r border-gray-300">Technician Name</th>
+                  <th className="text-center p-2 border-r border-gray-300 w-24">Work Centre</th>
                   <th className="text-center p-2 border-r border-gray-300 w-24">Date</th>
                   <th className="text-center p-2 border-r border-gray-300 w-20">Start Time</th>
                   <th className="text-center p-2 border-r border-gray-300 w-20">End Time</th>
@@ -273,6 +282,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 {[1, 2, 3].map((row) => (
                   <tr key={row} className="border-b border-gray-300">
                     <td className="p-2 border-r border-gray-300 h-8"></td>
+                    <td className="p-2 border-r border-gray-300 text-center"></td>
                     <td className="p-2 border-r border-gray-300 text-center"></td>
                     <td className="p-2 border-r border-gray-300 text-center"></td>
                     <td className="p-2 border-r border-gray-300 text-center"></td>
