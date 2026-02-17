@@ -7,7 +7,8 @@ import {
   Shield,
   FileText,
   ListOrdered,
-  Container
+  Container,
+  CalendarClock
 } from "lucide-react";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
@@ -17,6 +18,7 @@ import { SparesStrategySection } from "./SparesStrategySection";
 import { DataGovernanceSection } from "./DataGovernanceSection";
 import { SitePartNumberingSection } from "./SitePartNumberingSection";
 import { ContainerStockingSection } from "./ContainerStockingSection";
+import { PlanningRevisionControlSection } from "./PlanningRevisionControlSection";
 
 export const FoundationsContent = () => {
   return (
@@ -62,6 +64,11 @@ export const FoundationsContent = () => {
           <span className="hidden sm:inline">Data Governance & Change Control</span>
           <span className="sm:hidden">Governance</span>
         </TabsTrigger>
+        <TabsTrigger value="planning-revision" className="flex items-center gap-2 text-xs">
+          <CalendarClock className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Planning & Revision Control</span>
+          <span className="sm:hidden">Planning</span>
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="hierarchy">
@@ -94,6 +101,10 @@ export const FoundationsContent = () => {
 
       <TabsContent value="governance">
         <DataGovernanceSection />
+      </TabsContent>
+
+      <TabsContent value="planning-revision">
+        <PlanningRevisionControlSection />
       </TabsContent>
     </Tabs>
   );
