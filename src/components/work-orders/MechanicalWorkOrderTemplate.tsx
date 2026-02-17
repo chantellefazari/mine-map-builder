@@ -40,18 +40,11 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
           </div>
           <div className="text-right">
             <h2 className="text-lg font-bold text-[#D4AF37]">WORK ORDER</h2>
+            <p className="text-xs text-gray-300 mt-1">Revision: ........................</p>
           </div>
         </div>
 
         <div className="p-6 space-y-6 text-sm">
-          {/* Revision */}
-          <div className="flex justify-end">
-            <div className="border border-gray-300 p-2 w-48">
-              <span className="text-xs text-gray-500 block">Weekly Revision</span>
-              <span className="font-mono font-medium">Y__-W__</span>
-            </div>
-          </div>
-
           {/* Work Order Details Section */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-3">
