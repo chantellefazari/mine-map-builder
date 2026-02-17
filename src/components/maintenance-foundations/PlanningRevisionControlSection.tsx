@@ -263,11 +263,11 @@ export const PlanningRevisionControlSection = () => {
                 {filteredRevisions.map(r => {
                   const locked = lockedRevisions.has(r.code);
                   return (
-                    <TableRow key={r.code} className={locked ? "bg-muted/30" : ""}>
+                    <TableRow key={r.code} className={`${locked ? "bg-muted/30" : ""} whitespace-nowrap`}>
                       <TableCell><Badge variant="outline" className="font-mono text-xs">{r.code}</Badge></TableCell>
-                      <TableCell className="text-sm">{fmt(r.start)}</TableCell>
-                      <TableCell className="text-sm">{fmt(r.end)}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{MONTHS[r.month]}</TableCell>
+                      <TableCell className="text-sm whitespace-nowrap">{fmt(r.start)}</TableCell>
+                      <TableCell className="text-sm whitespace-nowrap">{fmt(r.end)}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground whitespace-nowrap">{MONTHS[r.month]}</TableCell>
                       <TableCell className="text-center">
                         <Badge variant={locked ? "default" : "secondary"} className="text-xs">
                           {locked ? "Locked" : "Open"}
