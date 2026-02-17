@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
@@ -103,7 +104,41 @@ export const PlanningRevisionControlSection = () => {
   }, [shutdownRevisions, shutdownFilter]);
 
   return (
-    <div className="space-y-8">
+    <Tabs defaultValue="work-centres" className="space-y-6">
+      <TabsList className="flex flex-wrap h-auto gap-1 bg-muted/50 p-2 rounded-lg">
+        <TabsTrigger value="work-centres" className="flex items-center gap-2 text-xs">
+          <Wrench className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Work Centres</span>
+          <span className="sm:hidden">Centres</span>
+        </TabsTrigger>
+        <TabsTrigger value="classification" className="flex items-center gap-2 text-xs">
+          <Zap className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Work Classification</span>
+          <span className="sm:hidden">Classification</span>
+        </TabsTrigger>
+        <TabsTrigger value="weekly-revisions" className="flex items-center gap-2 text-xs">
+          <Calendar className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Weekly Revisions</span>
+          <span className="sm:hidden">Weekly</span>
+        </TabsTrigger>
+        <TabsTrigger value="shutdown-revisions" className="flex items-center gap-2 text-xs">
+          <Construction className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Shutdown Revisions</span>
+          <span className="sm:hidden">Shutdowns</span>
+        </TabsTrigger>
+        <TabsTrigger value="capacity" className="flex items-center gap-2 text-xs">
+          <Hammer className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Capacity Loading</span>
+          <span className="sm:hidden">Capacity</span>
+        </TabsTrigger>
+        <TabsTrigger value="system-rules" className="flex items-center gap-2 text-xs">
+          <Briefcase className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">System Rules</span>
+          <span className="sm:hidden">Rules</span>
+        </TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="work-centres">
       {/* SECTION 1 */}
       <Card>
         <CardHeader>
@@ -141,7 +176,9 @@ export const PlanningRevisionControlSection = () => {
           </Table>
         </CardContent>
       </Card>
+      </TabsContent>
 
+      <TabsContent value="classification">
       {/* SECTION 2 */}
       <Card>
         <CardHeader>
@@ -184,7 +221,9 @@ export const PlanningRevisionControlSection = () => {
           </Table>
         </CardContent>
       </Card>
+      </TabsContent>
 
+      <TabsContent value="weekly-revisions">
       {/* SECTION 3 */}
       <Card>
         <CardHeader>
@@ -247,7 +286,9 @@ export const PlanningRevisionControlSection = () => {
           </div>
         </CardContent>
       </Card>
+      </TabsContent>
 
+      <TabsContent value="shutdown-revisions">
       {/* SECTION 4 */}
       <Card>
         <CardHeader>
@@ -298,7 +339,9 @@ export const PlanningRevisionControlSection = () => {
           </Table>
         </CardContent>
       </Card>
+      </TabsContent>
 
+      <TabsContent value="capacity">
       {/* SECTION 5 */}
       <Card>
         <CardHeader>
@@ -361,7 +404,9 @@ export const PlanningRevisionControlSection = () => {
           </div>
         </CardContent>
       </Card>
+      </TabsContent>
 
+      <TabsContent value="system-rules">
       {/* SYSTEM RULES */}
       <Card>
         <CardHeader>
@@ -379,6 +424,7 @@ export const PlanningRevisionControlSection = () => {
           </ul>
         </CardContent>
       </Card>
-    </div>
+      </TabsContent>
+    </Tabs>
   );
 };
