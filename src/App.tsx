@@ -15,6 +15,7 @@ import MaintenanceFoundations from "./pages/MaintenanceFoundations";
 import SupplierRegister from "./pages/SupplierRegister";
 import SuppliersProcurement from "./pages/SuppliersProcurement";
 import POImport from "./pages/POImport";
+import PlanningRevisionControl from "./pages/PlanningRevisionControl";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/suppliers-procurement" element={<SuppliersProcurement />} />
           <Route path="/po-import" element={<POImport />} />
           <Route path="/stores-warehouse-design" element={<StoresWarehouseDesign />} />
+          <Route path="/planning-revision" element={<PlanningRevisionControl />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
