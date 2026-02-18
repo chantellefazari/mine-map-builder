@@ -54,11 +54,15 @@ export interface ContainerMapping {
 // LD keywords — heavy/oversized items only
 // NOTE: "motor" is handled separately to avoid catching "motor circuit breaker" etc.
 const LD_KEYWORDS = [
-  "gearbox", "pump assembly", "large pulley",
+  // Gearbox assemblies — always LD (full units are heavy)
+  "gearbox", "sew-eurodrive", "sew eurodrive",
+  "pump assembly", "large pulley",
   "shaft assembly", "large frame", "complete assembly", "heavy valve",
   "switchboard", "heavy actuator", "steel structure",
   "forklift", "palletised",
-  "hdpe pipe", // full pipe lengths are LD
+  // Full HDPE/PE pipe lengths (not fittings) — 6m lengths can't be shelved
+  "hdpe pipe", "vinidex hdpe", "vinidex pipe",
+  "x6m", "x 6m",  // length suffix present → it's a pipe length, not a fitting
   // Heavy liners & crusher wear parts (>15kg, need forklift)
   "crusher liner", "cone liner", "mantle", "concave",
   "frame plate liner", "screen panel",
