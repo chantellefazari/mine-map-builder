@@ -80,7 +80,16 @@ export const SiteSparesCatalogue = () => {
 
   // Fetch page when filters or page change
   useEffect(() => {
-    paginated.fetchPage(filters, paginated.page);
+    const currentFilters: PaginationFilters = {
+      searchQuery: searchDebounce,
+      category: filterCategory,
+      warehouseArea: filterWarehouse,
+      status: filterStatus,
+      supplier: filterSupplier,
+      criticality: filterCriticality,
+      quickFilter,
+    };
+    paginated.fetchPage(currentFilters, paginated.page);
   }, [
     searchDebounce,
     filterCategory,
