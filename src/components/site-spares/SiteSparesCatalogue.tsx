@@ -89,7 +89,9 @@ export const SiteSparesCatalogue = () => {
       criticality: filterCriticality,
       quickFilter,
     };
-    paginated.fetchPage(currentFilters, paginated.page);
+    // Always reset to page 0 when filters change, then fetch
+    paginated.setPage(0);
+    paginated.fetchPage(currentFilters, 0);
   }, [
     searchDebounce,
     filterCategory,
@@ -98,21 +100,22 @@ export const SiteSparesCatalogue = () => {
     filterSupplier,
     filterCriticality,
     quickFilter,
-    paginated.page,
   ]);
 
-  // Reset to page 0 when filters change
+  // Fetch when page changes (pagination controls)
   useEffect(() => {
-    paginated.setPage(0);
-  }, [
-    searchDebounce,
-    filterCategory,
-    filterWarehouse,
-    filterStatus,
-    filterSupplier,
-    filterCriticality,
-    quickFilter,
-  ]);
+    if (paginated.page === 0) return; // already handled above
+    const currentFilters: PaginationFilters = {
+      searchQuery: searchDebounce,
+      category: filterCategory,
+      warehouseArea: filterWarehouse,
+      status: filterStatus,
+      supplier: filterSupplier,
+      criticality: filterCriticality,
+      quickFilter,
+    };
+    paginated.fetchPage(currentFilters, paginated.page);
+  }, [paginated.page]);
 
   const hasActiveFilters =
     searchQuery.trim().length > 0 ||
