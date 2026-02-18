@@ -1,4 +1,13 @@
 project_id = "szbnqeydhhlpyevqkydr"
- 
- [functions.generate-part-image]
- verify_jwt = false
+
+[functions.generate-part-image]
+verify_jwt = false
+
+[functions.admin-create-user]
+verify_jwt = false
+
+[functions.admin-update-user-permissions]
+verify_jwt = false
+
+[functions.admin-list-users]
+verify_jwt = false
