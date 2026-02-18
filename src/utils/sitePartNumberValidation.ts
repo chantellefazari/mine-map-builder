@@ -138,7 +138,7 @@ const CATEGORY_NAMES: Record<string, string> = {
   "16": "Tanks & Vessels",
   "17": "Safety Equipment",
   "18": "Power Generation & Distribution",
-  "19": "Tools & Workshop Equipment",
+  "19": "Tooling",
   "20": "OEM Assemblies / Packages",
   "21": "Fasteners",
   "22": "Consumables",

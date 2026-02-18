@@ -33,7 +33,7 @@ const categories: Record<string, string[]> = {
   "Tanks & Vessels": ["Process Tank", "Heat Exchanger"],
   "Safety Equipment": ["Safety Shower", "Fire Extinguisher"],
   "Power Generation & Distribution": ["Generator", "Transformer"],
-  "Tools & Workshop Equipment": ["Sling", "Power Tool", "Wrench"],
+  "Tooling": ["Sling", "Power Tool", "Wrench"],
   "Fasteners": ["Bolt", "Nut", "Washer", "Screw"],
   "Consumables": ["Gloves", "PPE", "Tape", "Lubricant"],
 };

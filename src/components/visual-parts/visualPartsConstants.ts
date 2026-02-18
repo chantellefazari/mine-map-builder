@@ -21,7 +21,7 @@ export const PART_CATEGORIES = [
   "Tanks & Vessels",                // CC 16
   "Safety Equipment",               // CC 17
   "Power Generation & Distribution", // CC 18
-  "Tools & Workshop Equipment",     // CC 19
+  "Tooling",                        // CC 19
   "OEM Assemblies / Packages",      // CC 20
   "Fasteners",                      // CC 21
   "Consumables",                    // CC 22

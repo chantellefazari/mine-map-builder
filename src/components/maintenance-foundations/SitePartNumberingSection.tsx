@@ -22,7 +22,7 @@ export const SitePartNumberingSection = () => {
     { code: "16", name: "Tanks & Vessels", examples: "Process tanks, CIP tanks, reagent tanks, sumps" },
     { code: "17", name: "Safety Equipment", examples: "Safety showers, eyewash, pressure relief, guarding" },
     { code: "18", name: "Power Generation & Distribution", examples: "Generators, transformers, substations, distribution boards" },
-    { code: "19", name: "Tools & Workshop Equipment", examples: "Lifting gear, torque tools, workshop equipment" },
+    { code: "19", name: "Tooling", examples: "Lifting gear, torque tools, workshop equipment, Sydney Tools items" },
     { code: "20", name: "OEM Assemblies / Packages", examples: "Pump skids, lube skids, filter press packages" },
     { code: "21", name: "Fasteners", examples: "Bolts, nuts, studs, washers" },
     { code: "22", name: "Consumables", examples: "Oils, grease, chemicals, belts, rags" },

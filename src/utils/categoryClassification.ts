@@ -28,7 +28,7 @@ export type SpareCategory =
   | "Tanks & Vessels"                // CC 16
   | "Safety Equipment"               // CC 17
   | "Power Generation & Distribution" // CC 18
-  | "Tools & Workshop Equipment"     // CC 19
+  | "Tooling"                         // CC 19
   | "OEM Assemblies / Packages"      // CC 20
   | "Fasteners"                      // CC 21
   | "Consumables";                   // CC 22 (also the fallback)
@@ -57,8 +57,8 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "rapid clamp", "repair clamp", "pinchweld", "poly saddle",
   ],
 
-  // CC 19 – Tools & Workshop Equipment (rigging, lifting, hand/power tools)
-  "Tools & Workshop Equipment": [
+  // CC 19 – Tooling (rigging, lifting, hand/power tools, Sydney Tools)
+  "Tooling": [
     "lifting gear", "torque wrench", "torque tool", "workshop",
     "crane", "hoist", "sling", "shackle", "rigging",
     "tool", "hand tool", "power tool",
@@ -75,6 +75,7 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "star picket", "trolley", "dispenser trolley",
     "milwaukee", "xtorque", "makita", "dewalt", "bosch",
     "garrick", "daytona",
+    "sydney tools", "sydneytools",
   ],
 
   // CC 17 – Safety Equipment
@@ -259,7 +260,7 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
 const CATEGORY_PRIORITY: SpareCategory[] = [
   "Fasteners",
   "Hoses & Pipework",
-  "Tools & Workshop Equipment",
+  "Tooling",
   "Safety Equipment",
   "Wear Parts",
   "Conveying Components",
@@ -424,7 +425,7 @@ export const getCategoryColor = (category: SpareCategory | string): string => {
       return "bg-red-100 text-red-700 border-red-200";
     case "Power Generation & Distribution":
       return "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200";
-    case "Tools & Workshop Equipment":
+    case "Tooling":
       return "bg-slate-100 text-slate-700 border-slate-200";
     case "OEM Assemblies / Packages":
       return "bg-pink-100 text-pink-700 border-pink-200";

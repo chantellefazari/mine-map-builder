@@ -31,10 +31,10 @@ const SUPPLIER_CATEGORY_MAP: Record<string, SpareCategory> = {
   "motion australia": "Bearings",
   "mme": "Wear Parts",
   "matec": "Filters",
-  "sydney tools": "Tools & Workshop Equipment",
-  "sydneytools": "Tools & Workshop Equipment",
-  "all rig": "Tools & Workshop Equipment",
-  "allrig": "Tools & Workshop Equipment",
+  "sydney tools": "Tooling",
+  "sydneytools": "Tooling",
+  "all rig": "Tooling",
+  "allrig": "Tooling",
   "mixtec": "Gearboxes / Reducers",
 };
 
