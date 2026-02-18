@@ -2,17 +2,46 @@
  * Description-based Warehouse Allocation
  *
  * Allocates site_spares items to containers based on keywords in the description.
- * Priority order: LD (heavy) → C01 (EL) → C02 (IN) → C05 (FA) → C03 (ME) → C04 (MP)
- * Fallback: C04-MP
+ * Priority order: LD → C01 → C02 → C05 → C04 → C03 → default C04-MP
  *
- * Container layout:
- *   C01-EL – Electrical (20ft, clean, positive airflow)
- *   C02-IN – Instrumentation, Pneumatics & Process Fittings (20ft, clean/fragile)
- *   C03-ME – Mechanical (40ft, high volume)
- *   C04-MP – Mechanical Precision (20ft)
- *   C05-CS – Consumables & Supplies (20ft)
- *   LD     – Laydown Yard (forklift / oversized / >15kg)
+ * ── CONFIRMED CONTAINER RULES (audited & locked in) ──────────────────────────
+ *
+ *  LD  – Laydown Yard (forklift / >15kg)
+ *        Complete pump assemblies (submersible, multistage, pumpsets), electric
+ *        motors, gearbox assemblies, structural steel, full HDPE pipe lengths,
+ *        crusher/cone liners, screen panels, large valves (DN150+), air receivers.
+ *
+ *  C01-EL – Electrical (20ft, positive airflow)
+ *        PLC, VSD, breakers, contactors, relays, cables, conduit fittings &
+ *        saddles, lighting, soft starters, motor protection devices, enclosures.
+ *
+ *  C02-IN – Instrumentation, Pneumatics & Process Fittings (20ft, clean/fragile)
+ *        Sensors, transmitters, 4-20mA devices, test instruments, pneumatic
+ *        regulators/cylinders, dosing & metering pumps, hydraulic filter elements,
+ *        strainers, BSP nipples/elbows/reducers/backing rings, solenoid valves,
+ *        control valves, diaphragm valves, pinch valves.
+ *
+ *  C05-CS – Consumables & Supplies (20ft)
+ *        Fasteners (bolts, nuts, washers, studs — including M12 frame plate
+ *        hardware), lubrication, PPE, hand & power tools, safety equipment,
+ *        batteries, vehicle/engine air & fuel filters, adhesives, sealants.
+ *
+ *  C04-MP – Mechanical Precision (20ft)  ← checked BEFORE C03
+ *        Bearings, seals, o-rings, gaskets, shims, circlips, retaining rings,
+ *        mechanical seals, lantern rings & restrictors, throat bushes, slingers,
+ *        piston rings, labyrinth components, pump parts kits, wear kits/inserts,
+ *        rubber spider elements, coupling hubs & elements, motor hubs (small).
+ *
+ *  C03-ME – Mechanical (40ft, high volume)
+ *        General mechanical <15kg: PE/Plasson fittings (all sizes), flanges,
+ *        hoses, flexibore, conveyor components (rollers, idlers, belts, scrapers),
+ *        general valves <DN150, rigging & lifting (slings, shackles), wear plates,
+ *        heavy liners, ezystrut, cable tray, rubber & PTFE sheet, pump casings,
+ *        gland packing.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
  */
+
 
 export interface ContainerMapping {
   containerId: string;
@@ -184,9 +213,8 @@ const C05_PRIORITY_KEYWORDS = [
 ];
 
 const C03_MW_KEYWORDS = [
-  // Wear parts
+  // Wear parts — heavy plates & liners only (wear kits/inserts/parts now → C04-MP)
   "wear plate", "liner", "rubber liner", "ceramic liner",
-  "wear part", "wear insert",
   // Conveyor components (chute liner & screen panel removed — handled by LD)
   "roller", "idler", "scraper blade", "belt cleaner", "pulley",
   "sprocket", "chain", "belt", "conveyor", "scraper", "skirting",
@@ -211,10 +239,9 @@ const C03_MW_KEYWORDS = [
   // Hoses
   "hose", "hydraulic hose",
    // Structural steel — moved to LD (heavy/long items)
-  // Pump components (not complete assemblies which are LD)
+  // Pump components — large/structural only (precision pump parts → C04-MP)
   "impeller", "pump sleeve", "volute", "pump casing", "pump shaft",
-  "lantern ring", "lantern restrictor",
-  "bearing kit", "pump parts",
+  "bearing kit",
   // Gland packing
   "gland packing", "packing ring",
   // Rigging & lifting
@@ -237,6 +264,18 @@ const C04_ME_KEYWORDS = [
   "retaining ring", "circlip", "mechanical seal",
   "pillow block", "spherical roller", "ball bearing",
   "motor coupling", "motor hub", "coupling pump",
+  // Pump internals & precision wear parts (small, hand-carry)
+  "lantern ring", "lantern restrictor",
+  "throat bush",
+  "slinger",
+  "piston ring",
+  "labyrinth pump", "labyrinth component",
+  "pump wear", "pump parts",
+  "wear kit", "wear insert",
+  // Small coupling elements
+  "rubber spider", "coupling element",
+  // Precision spigots & asymmetrical fittings (pump internals)
+  "asymmetrical spigot",
 ];
 
 // ─── PE/Plasson pipe vs fitting check ────────────────────────────
@@ -309,7 +348,7 @@ function matchesAny(desc: string, keywords: string[]): boolean {
 
 /**
  * Allocate a warehouse area code based on the item description.
- * Priority: LD → C01 → C02 → C05 (with mech override) → C03 → C04 → default C04-MP
+ * Priority: LD → C01 → C02 → C05 (with mech override) → C04 → C03 → default C04-MP
  */
 export function allocateWarehouseArea(description: string | null | undefined): string {
   if (!description) return "C04-MP";
@@ -351,12 +390,13 @@ export function allocateWarehouseArea(description: string | null | undefined): s
     return "C05-CS";
   }
 
-  // STEP 5 — Mechanical split
-  // C03-ME: Mechanical (40ft, high volume)
-  if (matchesAny(desc, C03_MW_KEYWORDS)) return "C03-ME";
-
-  // C04-MP: Mechanical Precision (20ft)
+  // STEP 5 — Precision first, then general mechanical
+  // C04-MP checked BEFORE C03-ME so precision parts (gaskets, pump kits, coupling
+  // elements, lantern rings, etc.) are not absorbed into the larger container.
   if (matchesAny(desc, C04_ME_KEYWORDS)) return "C04-MP";
+
+  // C03-ME: General Mechanical (40ft, high volume)
+  if (matchesAny(desc, C03_MW_KEYWORDS)) return "C03-ME";
 
   // Default fallback
   return "C04-MP";
