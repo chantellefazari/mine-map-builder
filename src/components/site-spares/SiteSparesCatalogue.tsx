@@ -38,6 +38,7 @@ const WAREHOUSE_LOCATIONS = [
 
 export const SiteSparesCatalogue = () => {
   const paginated = useSiteSparesPaginated();
+  const { fetchPage, fetchStats, fetchFilterOptions, setPage, page: paginatedPage } = paginated;
   // Keep legacy hook ONLY for import/merge/add/reclassify operations that need full dataset
   const legacy = useSiteSpares();
 
@@ -78,44 +79,38 @@ export const SiteSparesCatalogue = () => {
     quickFilter,
   };
 
-  // Fetch page when filters or page change
-  useEffect(() => {
-    const currentFilters: PaginationFilters = {
-      searchQuery: searchDebounce,
-      category: filterCategory,
-      warehouseArea: filterWarehouse,
-      status: filterStatus,
-      supplier: filterSupplier,
-      criticality: filterCriticality,
-      quickFilter,
-    };
-    // Always reset to page 0 when filters change, then fetch
-    paginated.setPage(0);
-    paginated.fetchPage(currentFilters, 0);
-  }, [
-    searchDebounce,
-    filterCategory,
-    filterWarehouse,
-    filterStatus,
-    filterSupplier,
-    filterCriticality,
-    quickFilter,
-  ]);
+  // Stable fetch helper — always reads latest filter state
+  const doFetch = useCallback(
+    (pageNum: number) => {
+      fetchPage(
+        {
+          searchQuery: searchDebounce,
+          category: filterCategory,
+          warehouseArea: filterWarehouse,
+          status: filterStatus,
+          supplier: filterSupplier,
+          criticality: filterCriticality,
+          quickFilter,
+        },
+        pageNum
+      );
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchDebounce, filterCategory, filterWarehouse, filterStatus, filterSupplier, filterCriticality, quickFilter, fetchPage]
+  );
 
-  // Fetch when page changes (pagination controls)
+  // Re-fetch whenever filters change (reset to page 0)
   useEffect(() => {
-    if (paginated.page === 0) return; // already handled above
-    const currentFilters: PaginationFilters = {
-      searchQuery: searchDebounce,
-      category: filterCategory,
-      warehouseArea: filterWarehouse,
-      status: filterStatus,
-      supplier: filterSupplier,
-      criticality: filterCriticality,
-      quickFilter,
-    };
-    paginated.fetchPage(currentFilters, paginated.page);
-  }, [paginated.page]);
+    setPage(0);
+    doFetch(0);
+  }, [doFetch]);
+
+  // Re-fetch when user navigates pages (page > 0)
+  useEffect(() => {
+    if (paginatedPage === 0) return;
+    doFetch(paginatedPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paginatedPage]);
 
   const hasActiveFilters =
     searchQuery.trim().length > 0 ||
@@ -137,9 +132,9 @@ export const SiteSparesCatalogue = () => {
   };
 
   const refreshAll = () => {
-    paginated.fetchPage(filters, paginated.page);
-    paginated.fetchStats();
-    paginated.fetchFilterOptions();
+    doFetch(paginatedPage);
+    fetchStats();
+    fetchFilterOptions();
   };
 
   // Handlers that use legacy hook for full-dataset operations
