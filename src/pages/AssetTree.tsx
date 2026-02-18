@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TreePine, TableProperties, ArrowLeft, BookText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportAssetTreeCSV } from "@/utils/exportAssetTreeCSV";
+import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
 
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -114,6 +115,12 @@ const AssetTree = () => {
           </TabsContent>
 
           <TabsContent value="naming-convention" className="mt-6">
+            <div className="flex justify-end mb-4">
+              <Button variant="outline" size="sm" onClick={exportNamingConventionCSV} className="gap-2">
+                <Download className="h-4 w-4" />
+                Export CSV
+              </Button>
+            </div>
             <NamingConvention />
           </TabsContent>
         </Tabs>
