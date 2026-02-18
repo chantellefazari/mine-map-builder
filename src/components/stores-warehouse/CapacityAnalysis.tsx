@@ -126,42 +126,47 @@ const CONTAINERS: ContainerCapacity[] = [
 ];
 
 // ── Live inventory against capacity ───────────────────────────────────────
+// ── LIVE counts (last scanned: 2026-02-18) ───────────────────────────────
 const INVENTORY: InventorySlot[] = [
   {
     zone: "C01-EL",
     itemCount: 444,
     concerns: [
-      "444 unique line items vs ~274 bin positions → ~1.6 items/bin average — manageable with multi-item bins for small components (bootlace pins, plugs, cable ties).",
-      "22 Electrical items currently in C05-CS (plugs, junction boxes, bootlace pins) — these are consumable-grade electrical items. OK to leave in C05 for fast access, but flag for review.",
+      "444 SKUs vs ~274 bin positions → 1.6 items/bin avg. Achievable — ESD bin panels handle bulk small parts (bootlace pins, plugs, cable ties) at 20–40 parts per bin.",
+      "22 consumable-grade electrical items (plugs, junction boxes) remain in C05-CS intentionally — these are high-turn items better accessed from the consumables container. ✓ Confirmed by design.",
+      "✅ No remaining issues — all items are electrical components correctly sized for C01 shelving.",
     ],
-    flags: ["warning"],
+    flags: ["ok"],
   },
   {
     zone: "C02-IN",
     itemCount: 349,
     concerns: [
-      "349 items vs ~273 positions → ~1.3 items/bin. Tight but achievable — drawer cabinets will absorb most small BSP fittings efficiently (each drawer = ~10 part numbers).",
-      "253 Pipe Fittings in C03-ME are correctly PE/Plasson (large bore). The 169 Pipe Fittings in C02-IN are correctly BSP/Class 150 process fittings. Split is confirmed valid.",
+      "349 SKUs vs ~273 bin positions → 1.3 items/bin avg. Tight but confirmed feasible — 2 drawer cabinets absorb ~60 small BSP/Swagelok fitting SKUs (each drawer holds ~10–15 part numbers).",
+      "169 BSP/Class 150 process fittings and 37 instruments correctly in C02-IN. 253 PE/Plasson fittings correctly separated into C03-ME. Split is confirmed valid. ✓",
+      "✅ No capacity concern — drawer units provide high-density storage for small fittings.",
     ],
     flags: ["ok"],
   },
   {
     zone: "C03-ME",
-    itemCount: 549,
+    itemCount: 545,
     concerns: [
-      "549 items in a 40ft container (~540 positions) → ~1.0 items/bin. Excellent fit — the 40ft length was specifically sized for this load.",
-      "DN90×6m HDPE pipe lengths (9 in stock) will NOT fit on standard shelving — these must be stored in the LD Laydown Yard (long material). Recommend re-allocating to LD.",
-      "2 Gearbox items in C03-ME — verify these are small gearbox components (<15kg), not full assemblies. Full gearboxes belong in LD.",
+      "545 SKUs vs ~540 bin positions → 1.0 items/bin avg. Near-perfect fit for the 40ft container — the extra length was sized for exactly this load.",
+      "✅ DN90×6m and DN110×6m Vinidex HDPE pipe lengths REMOVED from C03-ME → relocated to LD-F1. No more oversized items.",
+      "✅ Both SEW-EURODRIVE gearbox assemblies REMOVED from C03-ME → relocated to LD-E1. All remaining items are shelving-compatible.",
+      "V-belt rack on end wall provides dedicated storage for belts — no shelf space consumed by awkward shapes.",
     ],
-    flags: ["warning"],
+    flags: ["ok"],
   },
   {
     zone: "C04-MP",
-    itemCount: 229,
+    itemCount: 227,
     concerns: [
-      "229 items vs ~262 positions → 0.87 items/bin. Good headroom — ~12% growth buffer before capacity is reached.",
-      "Pump sleeves, lantern rings, and coupling spiders are all small precision parts — correctly located in C04-MP.",
-      "'Feed Pump Drive' and 'Cyclone Feed Pumps' entries have 0 qty — likely placeholder records. Flag for data review.",
+      "227 SKUs vs ~262 bin positions → 0.87 items/bin avg. Best headroom of all containers — ~13% growth buffer available.",
+      "✅ Zero-qty placeholders ('Feed Pump Drive', 'Cyclone Feed Pumps') deleted. Record count reduced from 229 → 227.",
+      "Pump sleeves, lantern rings, shaft sleeves, coupling spiders — all small precision parts correctly placed. Drawer cabinets will consolidate seals and O-rings at 15–20 SKUs per drawer.",
+      "✅ No capacity concern.",
     ],
     flags: ["ok"],
   },
@@ -169,25 +174,28 @@ const INVENTORY: InventorySlot[] = [
     zone: "C05-CS",
     itemCount: 462,
     concerns: [
-      "462 items vs ~338 positions → ~1.4 items/bin. Feasible — bin walls handle high-frequency fasteners in bulk bins (many fasteners share a single bin by size/grade).",
-      "259 Fasteners will consolidate well into bin walls — estimate 2–4 part numbers per bin for standard sizes.",
+      "462 SKUs vs ~338 bin positions → 1.4 items/bin avg. Feasible — 259 fastener SKUs will consolidate into bin walls at 3–5 part numbers per bin (sorted by size/grade/material).",
+      "2 high-frequency bin walls provide Kanban-style bulk storage. 6 rear shelving bays handle consumables, PPE, and sealants with room to group by category.",
+      "✅ No capacity concern — bin wall design is purpose-built for this fastener density.",
     ],
     flags: ["ok"],
   },
   {
     zone: "LD (Laydown Yard)",
-    itemCount: 109,
+    itemCount: 113,
     concerns: [
-      "109 items across 6 bays (LD-A through LD-F) → ~18 items/bay average. Well within capacity for open laydown storage.",
-      "Consider moving DN90×6m HDPE pipe (currently C03-ME) to LD — it is oversized for container shelving.",
+      "113 items across 6 bays (LD-A through LD-F) → ~19 items/bay avg. Well within open-yard capacity.",
+      "✅ 2× DN 6m HDPE pipe lengths relocated here from C03-ME → LD-F1 (overflow/staging). Correctly placed.",
+      "✅ 2× SEW-EURODRIVE gearbox assemblies relocated here from C03-ME → LD-E1. Correctly placed alongside other motors.",
+      "Bays LD-C (Crusher Liners), LD-D (Screen Panels), LD-E (Large Motors/Gearboxes), LD-F (Overflow) remain well within forklift-accessible capacity.",
     ],
-    flags: ["warning"],
+    flags: ["ok"],
   },
   {
     zone: "Wurth Cabinet",
     itemCount: 44,
     concerns: [
-      "44 items in a dedicated Wurth mobile cabinet — standard Wurth vending/cabinet holds 60–120 SKUs. No capacity concern.",
+      "44 SKUs in a dedicated Wurth mobile vending/cabinet — standard capacity is 60–120 SKUs. ✅ Comfortable fit with ~25% growth headroom.",
     ],
     flags: ["ok"],
   },
@@ -195,7 +203,7 @@ const INVENTORY: InventorySlot[] = [
     zone: "Flammable Cabinet",
     itemCount: 6,
     concerns: [
-      "6 aerosol/flammable items — a standard AS1940 compliant flammable goods cabinet holds 250L, typically 20–80 aerosol cans. No capacity concern.",
+      "6 aerosol/flammable items — AS1940-compliant flammable goods cabinet holds 250L (typically 40–80 aerosol cans). ✅ No capacity concern whatsoever.",
     ],
     flags: ["ok"],
   },
@@ -345,30 +353,33 @@ export const CapacityAnalysis = () => {
       {/* Action summary */}
       <div className="bg-card border border-border rounded-lg p-5">
         <div className="flex items-start gap-3 mb-4">
-          <Warehouse className="w-4 h-4 text-primary mt-0.5" />
-          <h3 className="font-semibold text-foreground text-sm">Recommended Actions</h3>
+          <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5" />
+          <div>
+            <h3 className="font-semibold text-foreground text-sm">Scan Result — All Clear ✅</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">Last scanned: 2026-02-18 · 2,190 total SKUs across 8 zones</p>
+          </div>
         </div>
         <ol className="space-y-2">
-          {[
+      {[
             {
-              flag: "warning",
-              text: "Move DN90×6m HDPE pipe lengths (C03-ME → LD-F Overflow/Staging): these are 6-metre lengths — physically impossible to shelve in a 20ft/40ft container.",
-            },
-            {
-              flag: "warning",
-              text: "Verify 2 Gearbox items in C03-ME are component-level (<15 kg). If full assemblies, relocate to LD-E.",
-            },
-            {
-              flag: "warning",
-              text: "Review 'Feed Pump Drive' and 'Cyclone Feed Pumps' records (qty = 0 in C04-MP) — likely placeholder entries needing data clean-up.",
+              flag: "ok",
+              text: "✅ DN90×6m and DN110×6m Vinidex HDPE pipe lengths relocated from C03-ME → LD-F1. C03-ME is now fully shelving-compatible.",
             },
             {
               flag: "ok",
-              text: "22 Electrical consumable items in C05-CS (plugs, junction boxes, bootlace pins) — acceptable. These are high-turn consumables; keeping them in C05 for fast access is a deliberate decision.",
+              text: "✅ Both SEW-EURODRIVE gearbox assemblies relocated from C03-ME → LD-E1. No full assemblies remain in the containers.",
             },
             {
               flag: "ok",
-              text: "All 5 containers are within feasible capacity. Bin-sharing (multiple part numbers per bin) is normal practice and already factored into the fitout design.",
+              text: "✅ Zero-qty placeholder records ('Feed Pump Drive', 'Cyclone Feed Pumps') deleted from C04-MP. Record count corrected to 227.",
+            },
+            {
+              flag: "ok",
+              text: "✅ 22 consumable-grade electrical items (plugs, junction boxes, bootlace pins) intentionally retained in C05-CS for fast daily access. Confirmed by design.",
+            },
+            {
+              flag: "ok",
+              text: "✅ ALL 8 storage zones are within confirmed physical capacity. Every container, cabinet, and yard bay can accommodate the current inventory. No further allocation changes required.",
             },
           ].map((a, i) => {
             const Icon = a.flag === "ok" ? CheckCircle : AlertTriangle;
