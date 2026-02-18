@@ -526,16 +526,6 @@ export const SiteSparesCatalogue = () => {
           )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            className="gap-2"
-            onClick={handleImportCriticalSpares}
-            disabled={importingCritical}
-          >
-            {importingCritical ? <Loader2 className="h-4 w-4 animate-spin" /> : <Database className="h-4 w-4" />}
-            Import Critical Spares
-          </Button>
           <Button size="sm" variant="outline" className="gap-2" onClick={handleReclassifyAll}>
             <RefreshCw className="h-4 w-4" />
             Reclassify Categories
