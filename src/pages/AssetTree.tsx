@@ -6,7 +6,9 @@ import { AssetSearch } from "@/components/hierarchy/AssetSearch";
 import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocationTable";
 import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties, ArrowLeft, BookText } from "lucide-react";
+import { TreePine, TableProperties, ArrowLeft, BookText, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { exportAssetTreeCSV } from "@/utils/exportAssetTreeCSV";
 
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -92,7 +94,13 @@ const AssetTree = () => {
                     Levels 1–7 • Click nodes to expand
                   </span>
                 </div>
-                <AssetSearch value={searchQuery} onChange={setSearchQuery} />
+                <div className="flex items-center gap-2">
+                  <AssetSearch value={searchQuery} onChange={setSearchQuery} />
+                  <Button variant="outline" size="sm" onClick={exportAssetTreeCSV} className="gap-2">
+                    <Download className="h-4 w-4" />
+                    Export CSV
+                  </Button>
+                </div>
               </div>
               
               <AssetTreeComponent searchQuery={searchQuery} />
