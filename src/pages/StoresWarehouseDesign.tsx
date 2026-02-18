@@ -7,6 +7,7 @@ import { ContainerStockingScopeSection } from "@/components/stores-warehouse/Con
 import { StoreLocationCodingSection } from "@/components/stores-warehouse/StoreLocationCodingSection";
 import { DesignInputsSection } from "@/components/stores-warehouse/DesignInputsSection";
 import { StoreVisualisation } from "@/components/stores-warehouse/StoreVisualisation";
+import { CapacityAnalysis } from "@/components/stores-warehouse/CapacityAnalysis";
 
 const StoresWarehouseDesign = () => {
   return (
@@ -99,6 +100,10 @@ const StoresWarehouseDesign = () => {
               <span className="hidden sm:inline">Store Visualisation</span>
               <span className="sm:hidden">Visual</span>
             </TabsTrigger>
+            <TabsTrigger value="capacity" className="text-xs">
+              <span className="hidden sm:inline">Capacity Scan</span>
+              <span className="sm:hidden">Capacity</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="principles">
@@ -123,6 +128,10 @@ const StoresWarehouseDesign = () => {
 
           <TabsContent value="visualisation">
             <StoreVisualisation />
+          </TabsContent>
+
+          <TabsContent value="capacity">
+            <CapacityAnalysis />
           </TabsContent>
         </Tabs>
       </main>
