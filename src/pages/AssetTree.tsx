@@ -6,10 +6,11 @@ import { AssetSearch } from "@/components/hierarchy/AssetSearch";
 import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocationTable";
 import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties, ArrowLeft, BookText, Download } from "lucide-react";
+import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportAssetTreeCSV } from "@/utils/exportAssetTreeCSV";
 import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
+import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
 
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,6 +43,10 @@ const AssetTree = () => {
                 TCMG Processing Plant Structure — Single Source of Truth
               </p>
             </div>
+            <Button onClick={exportAssetTreeWorkbook} className="gap-2">
+              <FileSpreadsheet className="h-4 w-4" />
+              Download Workbook
+            </Button>
           </div>
         </div>
       </header>
