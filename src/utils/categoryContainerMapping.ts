@@ -350,9 +350,36 @@ function matchesAny(desc: string, keywords: string[]): boolean {
  * Allocate a warehouse area code based on the item description.
  * Priority: LD → C01 → C02 → C05 (with mech override) → C04 → C03 → default C04-MP
  */
-export function allocateWarehouseArea(description: string | null | undefined): string {
+export function allocateWarehouseArea(
+  description: string | null | undefined,
+  preferredSupplier?: string | null
+): string {
   if (!description) return "C04-MP";
   const desc = description.toLowerCase();
+  const supplier = (preferredSupplier ?? "").toLowerCase();
+
+  // STEP 0a — Wurth Cabinet: all Wurth-supplied items live in the Wurth cabinet, not containers
+  if (supplier.includes("wurth") || supplier.includes("würth")) return "Wurth Cabinet";
+
+  // STEP 0b — Flammable Cabinet: aerosols and flammable sprays regardless of supplier
+  const isFlammable =
+    desc.includes("aerosol") ||
+    desc.includes("brake cleaner") ||
+    desc.includes("gear wheel spray") ||
+    desc.includes("wire cable spray") ||
+    desc.includes("chain lube spray") ||
+    desc.includes("contact cleaner") ||
+    desc.includes("spray paint") ||
+    desc.includes("paint spray") ||
+    desc.includes("wd-40") ||
+    desc.includes("wd40") ||
+    desc.includes("inox") ||
+    desc.includes("lanox") ||
+    desc.includes("dy-mark") ||
+    desc.includes("dymark") ||
+    desc.includes("butane gas") ||
+    desc.includes("degreaser spray");
+  if (isFlammable) return "Flammable Cabinet";
 
   // STEP 1 — LD overrides everything
   // But NOT for motor protection devices or small motor parts
@@ -408,9 +435,11 @@ const CONTAINER_INFO: Record<string, ContainerMapping> = {
   "C01-EL": { containerId: "C01", zoneCode: "EL", containerLabel: "Electrical" },
   "C02-IN": { containerId: "C02", zoneCode: "IN", containerLabel: "Instrumentation, Pneumatics & Process Fittings" },
   "C03-ME": { containerId: "C03", zoneCode: "ME", containerLabel: "Mechanical" },
-  "C04-MP": { containerId: "C04", zoneCode: "MP", containerLabel: "Mechanical Precision" },
-  "C05-CS": { containerId: "C05", zoneCode: "CS", containerLabel: "Consumables & Supplies" },
-  "LD":     { containerId: "LD", zoneCode: "LD", containerLabel: "Laydown Yard" },
+  "C04-MP":           { containerId: "C04",              zoneCode: "MP",       containerLabel: "Mechanical Precision" },
+  "C05-CS":           { containerId: "C05",              zoneCode: "CS",       containerLabel: "Consumables & Supplies" },
+  "LD":               { containerId: "LD",               zoneCode: "LD",       containerLabel: "Laydown Yard" },
+  "Wurth Cabinet":    { containerId: "Wurth Cabinet",    zoneCode: "WURTH",    containerLabel: "Wurth Cabinet" },
+  "Flammable Cabinet":{ containerId: "Flammable Cabinet",zoneCode: "FLAMM",    containerLabel: "Flammable Cabinet" },
 };
 
 const DEFAULT_CONTAINER: ContainerMapping = CONTAINER_INFO["C04-MP"];
