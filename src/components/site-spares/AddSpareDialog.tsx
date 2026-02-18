@@ -44,7 +44,7 @@ const categorySubcategories: Record<string, string[]> = {
   "Tanks & Vessels": ["Process Tank", "Sump", "Heat Exchanger"],
   "Safety Equipment": ["Safety Shower", "Eyewash", "Fire Extinguisher"],
   "Power Generation & Distribution": ["Generator", "Transformer", "Substation"],
-  "Tools & Workshop Equipment": ["Lifting Gear", "Sling", "Power Tool", "Wrench"],
+  "Tooling": ["Lifting Gear", "Sling", "Power Tool", "Wrench"],
   "OEM Assemblies / Packages": ["Pump Skid", "Lube Skid"],
   "Fasteners": ["Bolt", "Nut", "Washer", "Screw", "Stud"],
   "Consumables": ["Gloves", "PPE", "Lubricant", "Tape", "Battery"],

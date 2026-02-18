@@ -49,7 +49,7 @@ function getContainerStatus(category: string | null): { label: string; status: "
     "Conveying Components", "Structural & Mechanical", "Gearboxes / Reducers",
     "Air & Pneumatic Components", "Wear Parts", "OEM Assemblies / Packages", "Tanks & Vessels",
     "Filters", "Lubrication System Components",
-    "Fasteners", "Consumables", "Safety Equipment", "Tools & Workshop Equipment",
+    "Fasteners", "Consumables", "Safety Equipment", "Tooling",
     "Hoses & Pipework",
   ];
   const isConfirmed = category ? MAPPED_CATEGORIES.includes(category) : false;
