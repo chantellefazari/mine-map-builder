@@ -36,7 +36,7 @@ const LEGACY_CATEGORY_MAP: Record<string, string> = {
   "Safety Equipment": "Safety Equipment",
   "Tooling": "Tooling",
   "Tools & Workshop Equipment": "Tooling",
-  "Rigging": "Tooling",
+  "Rigging": "Rigging",
   "Tools": "Tooling",
   "General": "Consumables",
   "Unknown / TBC": "Consumables",

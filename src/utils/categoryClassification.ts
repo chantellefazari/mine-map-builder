@@ -29,6 +29,7 @@ export type SpareCategory =
   | "Safety Equipment"               // CC 17
   | "Power Generation & Distribution" // CC 18
   | "Tooling"                         // CC 19
+  | "Rigging"                        // CC 19b – lifting & rigging gear
   | "OEM Assemblies / Packages"      // CC 20
   | "Fasteners"                      // CC 21
   | "Consumables";                   // CC 22 (also the fallback)
@@ -57,24 +58,32 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "rapid clamp", "repair clamp", "pinchweld", "poly saddle",
   ],
 
-  // CC 19 – Tooling (rigging, lifting, hand/power tools, Sydney Tools)
+  // CC 19b – Rigging (lifting & rigging equipment — All Rig, slings, hoists, chains)
+  "Rigging": [
+    "sling", "round sling", "flat sling", "web sling",
+    "chain block", "lever hoist", "come-along", "come along",
+    "shackle", "dee shackle", "bow shackle", "screw pin shackle",
+    "wire rope", "wire sling", "wire rope clip",
+    "turnbuckle", "hook and eye", "eye bolt", "swivel hook",
+    "rigging", "lifting gear", "lifting sling",
+    "crane hook", "master link", "hoist ring",
+    "garrick",
+  ],
+
+  // CC 19 – Tooling (hand/power tools, workshop equipment)
   "Tooling": [
-    "lifting gear", "torque wrench", "torque tool", "workshop",
-    "crane", "hoist", "sling", "shackle", "rigging",
+    "torque wrench", "torque tool", "workshop",
     "tool", "hand tool", "power tool",
-    "lever hoist", "round sling", "chain block", "come-along",
     "wrench", "adjustable wrench", "pipe wrench", "spanner",
     "drill bit", "drill set", "annular cutter", "holemaker",
     "burr set", "rotary burr", "flap disc", "cutting wheel",
     "cut off wheel", "grinding disc", "abrasive", "fibre disc",
     "buff pad", "chuck", "drill chuck",
     "power wrench", "power punch", "impact wrench",
-    "rope", "manila rope", "wire rope",
-    "turnbuckle", "hook and eye",
     "site box", "storage box", "tool box",
     "star picket", "trolley", "dispenser trolley",
     "milwaukee", "xtorque", "makita", "dewalt", "bosch",
-    "garrick", "daytona",
+    "daytona",
     "sydney tools", "sydneytools",
   ],
 
@@ -260,6 +269,7 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
 const CATEGORY_PRIORITY: SpareCategory[] = [
   "Fasteners",
   "Hoses & Pipework",
+  "Rigging",
   "Tooling",
   "Safety Equipment",
   "Wear Parts",
@@ -427,6 +437,8 @@ export const getCategoryColor = (category: SpareCategory | string): string => {
       return "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200";
     case "Tooling":
       return "bg-slate-100 text-slate-700 border-slate-200";
+    case "Rigging":
+      return "bg-orange-100 text-orange-700 border-orange-200";
     case "OEM Assemblies / Packages":
       return "bg-pink-100 text-pink-700 border-pink-200";
     case "Fasteners":

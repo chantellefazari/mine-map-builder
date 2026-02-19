@@ -33,8 +33,8 @@ const SUPPLIER_CATEGORY_MAP: Record<string, SpareCategory> = {
   "matec": "Filters",
   "sydney tools": "Tooling",
   "sydneytools": "Tooling",
-  "all rig": "Tooling",
-  "allrig": "Tooling",
+  "all rig": "Rigging",
+  "allrig": "Rigging",
   "mixtec": "Gearboxes / Reducers",
 };
 
