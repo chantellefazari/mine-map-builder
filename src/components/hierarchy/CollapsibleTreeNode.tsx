@@ -66,7 +66,18 @@ const areaColors: Record<AreaType, string> = {
   REC: "bg-level-area-rec",
   TAIL: "bg-level-area-tail",
   SUP: "bg-level-area-sup",
-  CRU: "bg-amber-600",
+  CRU: "bg-amber-500",
+};
+
+// Per sub-area colours for CRU nodes (keyed on the full areaCode prop passed in)
+export const cruSubAreaColors: Record<string, string> = {
+  "CRU-ROM": "bg-orange-400",
+  "CRU-PRI": "bg-red-400",
+  "CRU-SCR": "bg-yellow-400 text-yellow-900",
+  "CRU-SEC": "bg-rose-400",
+  "CRU-STK": "bg-lime-500",
+  "CRU-CTL": "bg-sky-400",
+  "CRU-DUS": "bg-teal-400",
 };
 
 export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
@@ -108,7 +119,9 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   }, [isHighlighted]);
   
   const baseStyle = levelStyles[level];
-  const areaColor = level === "area" && areaType ? areaColors[areaType] : "";
+  const areaColor = level === "area" && areaType
+    ? (areaType === "CRU" && code ? (cruSubAreaColors[code] ?? areaColors["CRU"]) : areaColors[areaType])
+    : "";
   const canExpand = hasChildren && children;
 
   const handleToggle = () => {
