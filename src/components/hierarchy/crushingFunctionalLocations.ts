@@ -22,10 +22,10 @@ export const cruFunctionalLocations: CRUFunctionalLocation[] = [
   { code: "TCMG-CRU-PRI-CR01",   areaCode: "PRI", area: "Primary Crushing", subArea: "Primary Crushing", systemName: "CR01 – Jaw Crusher JM120" },
   { code: "TCMG-CRU-PRI-CV01",   areaCode: "PRI", area: "Primary Crushing", subArea: "Primary Crushing", systemName: "CV01 – Forward Conveyor" },
 
-  // ── CRU-SCR – Screening Section ─────────────────────────────
-  { code: "TCMG-CRU-SCR-FDB01",  areaCode: "SCR", area: "Screening Section", subArea: "Screening Section", systemName: "Screen Feed Bin 15m³ (FDB01)" },
-  { code: "TCMG-CRU-SCR-SC01",   areaCode: "SCR", area: "Screening Section", subArea: "Screening Section", systemName: "SC01 – Vibrating Screen BWC208 20x8" },
-  { code: "TCMG-CRU-SCR-CV04",   areaCode: "SCR", area: "Screening Section", subArea: "Screening Section", systemName: "CV04 – Screen Feed Conveyor 1000mm x 24m" },
+  // ── CRU-SCN – Screening Section ─────────────────────────────
+  { code: "TCMG-CRU-SCN-FDB01",  areaCode: "SCN", area: "Screening Section", subArea: "Screening Section", systemName: "Screen Feed Bin 15m³ (FDB01)" },
+  { code: "TCMG-CRU-SCN-SC01",   areaCode: "SCN", area: "Screening Section", subArea: "Screening Section", systemName: "SC01 – Vibrating Screen BWC208 20x8" },
+  { code: "TCMG-CRU-SCN-CV04",   areaCode: "SCN", area: "Screening Section", subArea: "Screening Section", systemName: "CV04 – Screen Feed Conveyor 1000mm x 24m" },
 
   // ── CRU-SEC – Secondary Crushing ────────────────────────────
   { code: "TCMG-CRU-SEC-CFB01",  areaCode: "SEC", area: "Secondary Crushing", subArea: "Secondary Crushing", systemName: "Cone Feed Bin 30m³ (CFB01)" },
@@ -65,7 +65,7 @@ export const cruFunctionalLocations: CRUFunctionalLocation[] = [
 export const cruAreaColors: Record<string, string> = {
   ROM: "bg-amber-600",
   PRI: "bg-orange-600",
-  SCR: "bg-yellow-600",
+  SCN: "bg-yellow-600",
   SEC: "bg-red-600",
   STK: "bg-stone-600",
   CTL: "bg-blue-700",
@@ -75,7 +75,7 @@ export const cruAreaColors: Record<string, string> = {
 export const cruAreaLabels: Record<string, string> = {
   ROM: "ROM & Primary Feed",
   PRI: "Primary Crushing",
-  SCR: "Screening Section",
+  SCN: "Screening Section",
   SEC: "Secondary Crushing",
   STK: "Conveying & Stockpile",
   CTL: "Controls & MCC",
@@ -87,7 +87,7 @@ export const cruFlSummary = {
   byArea: {
     ROM: cruFunctionalLocations.filter(fl => fl.areaCode === "ROM").length,
     PRI: cruFunctionalLocations.filter(fl => fl.areaCode === "PRI").length,
-    SCR: cruFunctionalLocations.filter(fl => fl.areaCode === "SCR").length,
+    SCN: cruFunctionalLocations.filter(fl => fl.areaCode === "SCN").length,
     SEC: cruFunctionalLocations.filter(fl => fl.areaCode === "SEC").length,
     STK: cruFunctionalLocations.filter(fl => fl.areaCode === "STK").length,
     CTL: cruFunctionalLocations.filter(fl => fl.areaCode === "CTL").length,
