@@ -71,13 +71,13 @@ const areaColors: Record<AreaType, string> = {
 
 // Per sub-area colours for CRU nodes (keyed on short code: ROM, PRI, SCN, etc.)
 export const cruSubAreaColors: Record<string, string> = {
-  "ROM": "bg-amber-500",
-  "PRI": "bg-orange-500",
-  "SCN": "bg-yellow-500",
-  "SEC": "bg-amber-600",
-  "STK": "bg-orange-400",
-  "CTL": "bg-amber-700",
-  "DUS": "bg-yellow-600",
+  "ROM": "bg-[hsl(var(--level-area-cru-rom))]",
+  "PRI": "bg-[hsl(var(--level-area-cru-pri))]",
+  "SCN": "bg-[hsl(var(--level-area-cru-scn))]",
+  "SEC": "bg-[hsl(var(--level-area-cru-sec))]",
+  "STK": "bg-[hsl(var(--level-area-cru-stk))]",
+  "CTL": "bg-[hsl(var(--level-area-cru-ctl))]",
+  "DUS": "bg-[hsl(var(--level-area-cru-dus))]",
 };
 
 export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({

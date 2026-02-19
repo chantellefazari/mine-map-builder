@@ -54,6 +54,15 @@
     --level-area-tail: 350 65% 55%;
     --level-area-sup: 270 50% 55%;
     
+    /* CRU Crushing Plant area colours */
+    --level-area-cru-rom: 28 85% 52%;
+    --level-area-cru-pri: 12 75% 50%;
+    --level-area-cru-scn: 48 88% 48%;
+    --level-area-cru-sec: 0 68% 52%;
+    --level-area-cru-stk: 85 55% 42%;
+    --level-area-cru-ctl: 210 65% 50%;
+    --level-area-cru-dus: 175 55% 40%;
+    
     /* Sub-levels */
     --level-subarea: 45 30% 90%;
     --level-subarea-foreground: 0 0% 15%;
