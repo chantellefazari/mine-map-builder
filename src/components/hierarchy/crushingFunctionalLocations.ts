@@ -27,10 +27,10 @@ export const cruFunctionalLocations: CRUFunctionalLocation[] = [
   { code: "TCMG-CRU-SCR-SC01",   areaCode: "SCR", area: "Screening Section", subArea: "Screening Section", systemName: "SC01 – Vibrating Screen BWC208 20x8" },
   { code: "TCMG-CRU-SCR-CV04",   areaCode: "SCR", area: "Screening Section", subArea: "Screening Section", systemName: "CV04 – Screen Feed Conveyor 1000mm x 24m" },
 
-  // ── CRU-SEC – Secondary / Tertiary Crushing ─────────────────
-  { code: "TCMG-CRU-SEC-CFB01",  areaCode: "SEC", area: "Secondary / Tertiary Crushing", subArea: "Secondary / Tertiary Crushing", systemName: "Cone Feed Bin 30m³ (CFB01)" },
-  { code: "TCMG-CRU-SEC-CR02",   areaCode: "SEC", area: "Secondary / Tertiary Crushing", subArea: "Secondary / Tertiary Crushing", systemName: "CR02 – Cone Crusher CS400" },
-  { code: "TCMG-CRU-SEC-CR03",   areaCode: "SEC", area: "Secondary / Tertiary Crushing", subArea: "Secondary / Tertiary Crushing", systemName: "CR03 – Cone Crusher CS3" },
+  // ── CRU-SEC – Secondary Crushing ────────────────────────────
+  { code: "TCMG-CRU-SEC-CFB01",  areaCode: "SEC", area: "Secondary Crushing", subArea: "Secondary Crushing", systemName: "Cone Feed Bin 30m³ (CFB01)" },
+  { code: "TCMG-CRU-SEC-CR02",   areaCode: "SEC", area: "Secondary Crushing", subArea: "Secondary Crushing", systemName: "CR02 – Cone Crusher CS400" },
+  { code: "TCMG-CRU-SEC-CR03",   areaCode: "SEC", area: "Secondary Crushing", subArea: "Secondary Crushing", systemName: "CR03 – Cone Crusher CS3" },
 
   // ── CRU-STK – Conveying & Stockpiling ───────────────────────
   { code: "TCMG-CRU-STK-CV02",   areaCode: "STK", area: "Conveying & Stockpiling", subArea: "Conveying & Stockpiling", systemName: "CV02 – Jaw & Cone Discharge Conveyor 1200mm x 30m" },
@@ -76,7 +76,7 @@ export const cruAreaLabels: Record<string, string> = {
   ROM: "ROM & Primary Feed",
   PRI: "Primary Crushing",
   SCR: "Screening Section",
-  SEC: "Secondary / Tertiary",
+  SEC: "Secondary Crushing",
   STK: "Conveying & Stockpile",
   CTL: "Controls & MCC",
   DUS: "Dust Suppression",

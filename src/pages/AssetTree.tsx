@@ -174,7 +174,7 @@ const AssetTree = () => {
                         { code: "CRU-ROM", name: "ROM & Primary Feed", desc: "Run of Mine wall, primary feeder, feed chutes" },
                         { code: "CRU-PRI", name: "Primary Crushing", desc: "Jaw crusher CR01, forward conveyor CV01" },
                         { code: "CRU-SCR", name: "Screening Section", desc: "Screen feed bin, SC01 vibrating screen, CV04" },
-                        { code: "CRU-SEC", name: "Secondary / Tertiary Crushing", desc: "Cone feed bin, CR02 & CR03 cone crushers" },
+                        { code: "CRU-SEC", name: "Secondary Crushing", desc: "Cone feed bin, CR02 & CR03 cone crushers" },
                         { code: "CRU-STK", name: "Conveying & Stockpiling", desc: "All product conveyors CV02–CV15, radial stackers" },
                         { code: "CRU-CTL", name: "Controls & MCC", desc: "MCC, PLC, HMI, SCADA, operators cabin, earth grid" },
                         { code: "CRU-DUS", name: "Dust Suppression", desc: "Dust pump, spray system, poly pipe, nozzles" },

@@ -191,10 +191,10 @@ export const crushingPlantAreas: CRUSubArea[] = [
   },
 
   // ─────────────────────────────────────────────────────────────
-  // CRU-SEC – Secondary / Tertiary Crushing
+  // CRU-SEC – Secondary Crushing
   // ─────────────────────────────────────────────────────────────
   {
-    label: "Secondary / Tertiary Crushing",
+    label: "Secondary Crushing",
     areaCode: "CRU-SEC",
     parentAssets: [
       {
