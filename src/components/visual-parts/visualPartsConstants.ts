@@ -1,32 +1,34 @@
 /**
  * Visual Parts Catalogue Constants
- * Aligned with Site Parts Numbering Standard (TCMG) Part Category Codes CC 01–23
+ * Aligned with Site Parts Numbering Standard (TCMG) Part Category Codes CC 01–22
+ * and live site_spares database category values.
  */
 export const PART_CATEGORIES = [
-  "Pumps",                          // CC 01
-  "Motors",                         // CC 02
-  "Gearboxes / Reducers",          // CC 03
-  "Bearings",                       // CC 04
-  "Valves",                         // CC 05
-  "Instrumentation",                // CC 06
-  "Electrical Components",          // CC 07
-  "Conveying Components",           // CC 08
-  "Wear Parts",                     // CC 09
-  "Mechanical",                     // CC 10
-  "Hoses & Pipework",              // CC 11
-  "Seals & Gaskets",               // CC 12
-  "Filters",                        // CC 13
-  "Lubrication System Components",  // CC 14
-  "Air & Pneumatic Components",     // CC 15
-  "Tanks & Vessels",                // CC 16
-  "Safety Equipment",               // CC 17
-  "Power Generation & Distribution", // CC 18
-  "Tooling",                        // CC 19
-  "Rigging",                        // CC 19b
-  "PPE",                            // CC 19c
-  "OEM Assemblies / Packages",      // CC 20
-  "Fasteners",                      // CC 21
-  "Consumables",                    // CC 22
+  "Pump Component",             // CC 01
+  "Motor Component",            // CC 02
+  "Gearbox",                    // CC 03
+  "Bearing",                    // CC 04
+  "Valve",                      // CC 05
+  "Instrumentation",            // CC 06
+  "Electrical",                 // CC 07
+  "Conveyor Component",         // CC 08
+  "Wear Parts",                 // CC 09
+  "Mechanical",                 // CC 10
+  "Structural Steel",           // CC 10b
+  "Pipe Fitting",               // CC 11
+  "Seal",                       // CC 12
+  "Filter",                     // CC 13
+  "Lubrication System",         // CC 14
+  "Air & Pneumatic",            // CC 15
+  "Tanks & Vessels",            // CC 16
+  "Safety Equipment",           // CC 17
+  "Power Generation",           // CC 18
+  "Tooling",                    // CC 19
+  "Rigging",                    // CC 19b
+  "PPE",                        // CC 19c
+  "OEM Assembly",               // CC 20
+  "Fastener",                   // CC 21
+  "Consumables",                // CC 22
 ] as const;
 
 export const CRITICALITY_LEVELS = ["HIGH", "MEDIUM", "LOW"] as const;
