@@ -30,6 +30,7 @@ export type SpareCategory =
   | "Power Generation & Distribution" // CC 18
   | "Tooling"                         // CC 19
   | "Rigging"                        // CC 19b – lifting & rigging gear
+  | "PPE"                            // CC 19c – personal protective equipment
   | "OEM Assemblies / Packages"      // CC 20
   | "Fasteners"                      // CC 21
   | "Consumables";                   // CC 22 (also the fallback)
@@ -68,6 +69,19 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "rigging", "lifting gear", "lifting sling",
     "crane hook", "master link", "hoist ring",
     "garrick",
+  ],
+
+  // CC 19c – PPE (personal protective equipment)
+  "PPE": [
+    "hard hat", "safety helmet", "bump cap",
+    "safety glasses", "safety glass", "safety spectacles", "safety goggles",
+    "face shield", "faceshield", "browguard", "visor",
+    "respirator", "half face", "full face respirator", "respirator filter",
+    "earmuff", "ear muff", "ear plug", "earplug", "hearing protection",
+    "glove", "nitrile glove", "riggers glove", "welding glove",
+    "hi-vis", "hi vis", "high vis", "high visibility", "safety vest",
+    "safety harness", "fall arrest", "lanyard",
+    "pro choice",
   ],
 
   // CC 19 – Tooling (hand/power tools, workshop equipment)
@@ -270,6 +284,7 @@ const CATEGORY_PRIORITY: SpareCategory[] = [
   "Fasteners",
   "Hoses & Pipework",
   "Rigging",
+  "PPE",
   "Tooling",
   "Safety Equipment",
   "Wear Parts",
@@ -439,6 +454,8 @@ export const getCategoryColor = (category: SpareCategory | string): string => {
       return "bg-slate-100 text-slate-700 border-slate-200";
     case "Rigging":
       return "bg-orange-100 text-orange-700 border-orange-200";
+    case "PPE":
+      return "bg-yellow-100 text-yellow-700 border-yellow-200";
     case "OEM Assemblies / Packages":
       return "bg-pink-100 text-pink-700 border-pink-200";
     case "Fasteners":
