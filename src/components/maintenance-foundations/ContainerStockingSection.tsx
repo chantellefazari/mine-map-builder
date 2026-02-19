@@ -48,7 +48,7 @@ const zones = [
     icon: Wrench,
     colorKey: "C03-ME" as const,
     categories: [
-      { cc: "10", name: "Mechanical", items: ["Flexible couplings & coupling inserts", "Shaft couplings, Flexseal couplings", "Brackets, clamps, mounts, guards", "Frames & supports", "Durasleeve carriers, flexibore couplings"] },
+      { cc: "10", name: "Mechanical", items: ["Flexible couplings & coupling inserts", "Shaft couplings & shaft collars", "Flexseal couplings, Durasleeve carriers", "Brackets, clamps, mounts", "Frames, guards, supports, handrails", "Machine guards & safety guards", "Structural mounts, anti-vibration mounts"] },
       { cc: "08", name: "Conveyor Component", items: ["Idler rollers, return rollers, trough rollers", "Belt scrapers & belt cleaners", "Skirting rubber", "V-belts, timing belts, wedge belts", "Sprockets, chains", "Fenner pulleys, belt tensioners", "Belt misalignment & pull-cord switches"] },
       { cc: "11", name: "Pipe Fitting (PE/Plasson & hoses)", items: ["PE100 / Plasson compression fittings (couplings, elbows, tees)", "Electrofusion fittings", "Rubber hoses (air, water, drag)", "Hydraulic hoses", "Claw couplings, camlocks, hosetails", "Pipe spools (short), repair clamps", "Saddle clamps, Saddle fittings"] },
       { cc: "05", name: "Valve (general mechanical)", items: ["Ball valves, knife gate valves", "Butterfly valves, check valves", "Gate valves, float valves, safety valves", "General process valves DN<150"] },
