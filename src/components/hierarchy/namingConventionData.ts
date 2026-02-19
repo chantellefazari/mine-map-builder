@@ -26,7 +26,7 @@ export const equipmentPrefixes = [
   { prefix: "SCN", meaning: "Screen", example: "SCN001-SCN004", category: "Screening" },
   { prefix: "SHK", meaning: "Shaking Table", example: "SHK001", category: "Gravity" },
   { prefix: "THK", meaning: "Thickener", example: "THK001", category: "Tailings" },
-  { prefix: "TRSCR", meaning: "Trash Screen", example: "TRSCR001", category: "Screening" },
+  { prefix: "TRSCN", meaning: "Trash Screen", example: "TRSCN001", category: "Screening" },
   { prefix: "PMP", meaning: "Pump (Generic)", example: "PMP001-PMP016", category: "Pumps" },
   { prefix: "CYFPA/CYFPB", meaning: "Cyclone Feed Pump A/B", example: "CYFPA001", category: "Pumps" },
   { prefix: "THKUFP", meaning: "Thickener Underflow Pump", example: "THKUFP-A", category: "Pumps" },
