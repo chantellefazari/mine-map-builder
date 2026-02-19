@@ -4,6 +4,7 @@ import { TreeBranch } from "./TreeBranch";
 import { useAssetSearch } from "@/hooks/useAssetSearch";
 import { areasData, AreaType, Component } from "./assetData";
 import { pidTagMappings } from "./pidTagMappings";
+import { crushingPlantAreas } from "./crushingPlantData";
 
 interface AssetTreeProps {
   searchQuery?: string;
@@ -54,6 +55,12 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
     return allTags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
   };
 
+  // CRU search helper
+  const cruMatchesSearch = (text: string) => {
+    if (!hasSearch) return false;
+    return text.toLowerCase().includes(searchQuery.toLowerCase());
+  };
+
   return (
     <div className="w-full overflow-x-auto py-6">
       <div className="min-w-max flex justify-center">
@@ -66,18 +73,80 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
             <CollapsibleTreeNode label="Mining" level="plant" hasChildren={false} />
           </TreeBranch>
           
-          {/* Crushing Plant */}
+          {/* Crushing Plant – CRU hierarchy */}
           <TreeBranch horizontal>
-            <CollapsibleTreeNode label="Crushing Plant" level="plant" hasChildren defaultExpanded>
-              <TreeBranch isLast={false}>
-                <CollapsibleTreeNode label="ROM" level="subarea" hasChildren={false} />
-              </TreeBranch>
-              <TreeBranch isLast={false}>
-                <CollapsibleTreeNode label="Crushing" level="subarea" hasChildren={false} />
-              </TreeBranch>
-              <TreeBranch isLast={true}>
-                <CollapsibleTreeNode label="Screening" level="subarea" hasChildren={false} />
-              </TreeBranch>
+            <CollapsibleTreeNode label="Crushing Plant" level="plant" hasChildren defaultExpanded areaType="CRU">
+              {/* CRU Sub-Areas: ROM, PRI, SCR, SEC, STK, CTL, DUS */}
+              {crushingPlantAreas.map((cruArea, cruAreaIndex) => (
+                <TreeBranch key={cruArea.areaCode} isLast={cruAreaIndex === crushingPlantAreas.length - 1}>
+                  <CollapsibleTreeNode
+                    id={`cru-area-${cruArea.areaCode}`}
+                    label={`${cruArea.areaCode} – ${cruArea.label}`}
+                    level="area"
+                    areaType="CRU"
+                    hasChildren={cruArea.parentAssets.length > 0}
+                    isHighlighted={cruMatchesSearch(cruArea.label) || cruMatchesSearch(cruArea.areaCode)}
+                  >
+                    {/* Parent Assets */}
+                    {cruArea.parentAssets.map((parent, paIndex) => (
+                      <TreeBranch key={paIndex} isLast={paIndex === cruArea.parentAssets.length - 1}>
+                        <CollapsibleTreeNode
+                          id={`cru-pa-${cruArea.areaCode}-${paIndex}`}
+                          label={parent.label}
+                          level="parentAsset"
+                          hasChildren={parent.equipment.length > 0}
+                          isHighlighted={cruMatchesSearch(parent.label)}
+                        >
+                          {/* Equipment */}
+                          {parent.equipment.map((equip, equipIndex) => {
+                            const hasComponents = equip.components && equip.components.length > 0;
+                            return (
+                              <TreeBranch key={equipIndex} isLast={equipIndex === parent.equipment.length - 1}>
+                                <CollapsibleTreeNode
+                                  id={`cru-eq-${cruArea.areaCode}-${paIndex}-${equipIndex}`}
+                                  label={`${equip.assetNumber} — ${equip.name}`}
+                                  level="equipment"
+                                  hasChildren={hasComponents}
+                                  isHighlighted={cruMatchesSearch(equip.assetNumber) || cruMatchesSearch(equip.name)}
+                                >
+                                  {/* Components */}
+                                  {hasComponents && equip.components!.map((comp, compIndex) => (
+                                    <TreeBranch key={compIndex} isLast={compIndex === equip.components!.length - 1}>
+                                      <CollapsibleTreeNode
+                                        id={`cru-comp-${cruArea.areaCode}-${paIndex}-${equipIndex}-${compIndex}`}
+                                        code={comp.componentType}
+                                        label={`${comp.componentCode} — ${comp.componentName}`}
+                                        level="component"
+                                        hasChildren={false}
+                                        isHighlighted={cruMatchesSearch(comp.componentCode) || cruMatchesSearch(comp.componentName) || cruMatchesSearch(comp.manufacturer)}
+                                        componentSpecs={{
+                                          model: comp.model || comp.manufacturer,
+                                          serialNumber: comp.serialNumber,
+                                          motorSpeed: comp.motorSpeed,
+                                          protection: comp.protection,
+                                          voltage: comp.voltage,
+                                          pumpFlow: comp.pumpFlow,
+                                          operatingPressure: comp.operatingPressure,
+                                          displacement: comp.displacement,
+                                          oilType: comp.oilType,
+                                          oilVolume: comp.oilVolume,
+                                          inputSpeed: comp.inputSpeed,
+                                          outputSpeed: comp.outputSpeed,
+                                          weight: comp.weight,
+                                        }}
+                                      />
+                                    </TreeBranch>
+                                  ))}
+                                </CollapsibleTreeNode>
+                              </TreeBranch>
+                            );
+                          })}
+                        </CollapsibleTreeNode>
+                      </TreeBranch>
+                    ))}
+                  </CollapsibleTreeNode>
+                </TreeBranch>
+              ))}
             </CollapsibleTreeNode>
           </TreeBranch>
           

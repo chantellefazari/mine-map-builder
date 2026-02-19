@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 
 export type NodeLevel = "site" | "plant" | "area" | "subarea" | "parentAsset" | "equipment" | "component";
-export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP";
+export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP" | "CRU";
 
 interface ComponentSpecs {
   model?: string;
@@ -66,6 +66,7 @@ const areaColors: Record<AreaType, string> = {
   REC: "bg-level-area-rec",
   TAIL: "bg-level-area-tail",
   SUP: "bg-level-area-sup",
+  CRU: "bg-amber-600",
 };
 
 export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({

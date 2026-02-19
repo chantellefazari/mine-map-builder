@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import { areasData } from "@/components/hierarchy/assetData";
+import { crushingPlantAreas } from "@/components/hierarchy/crushingPlantData";
 import { pidTagMappings } from "@/components/hierarchy/pidTagMappings";
 import { functionalLocations } from "@/components/hierarchy/functionalLocations";
 import {
@@ -32,6 +33,8 @@ export function exportAssetTreeWorkbook() {
   const treeRows: string[][] = [
     ["Site", "Facility", "Area Code", "Area", "Sub-Area", "Parent Asset", "Asset Number", "Equipment Name", "Component Code", "Component Type", "Component Name", "Manufacturer", "P&ID Tags"],
   ];
+
+  // Processing Plant rows
   areasData.forEach((area) => {
     area.subAreas.forEach((sub) => {
       sub.parentAssets.forEach((parent) => {
@@ -45,8 +48,22 @@ export function exportAssetTreeWorkbook() {
       });
     });
   });
+
+  // Crushing Plant rows
+  crushingPlantAreas.forEach((cruArea) => {
+    cruArea.parentAssets.forEach((parent) => {
+      parent.equipment.forEach((equip) => {
+        treeRows.push(["TCMG", "Crushing Plant", cruArea.areaCode, cruArea.label, cruArea.label, parent.label, equip.assetNumber, equip.name, "", "", "", "", ""]);
+        equip.components?.forEach((comp) => {
+          treeRows.push(["TCMG", "Crushing Plant", cruArea.areaCode, cruArea.label, cruArea.label, parent.label, equip.assetNumber, equip.name, comp.componentCode, comp.componentType, comp.componentName, comp.manufacturer, ""]);
+        });
+      });
+    });
+  });
+
   const ws1 = XLSX.utils.aoa_to_sheet(treeRows);
   XLSX.utils.book_append_sheet(wb, ws1, "Asset Tree Register");
+
 
   // Sheet 2: Functional Locations
   const flRows: string[][] = [
