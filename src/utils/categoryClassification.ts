@@ -90,8 +90,7 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "tool", "hand tool", "power tool",
     "wrench", "adjustable wrench", "pipe wrench", "spanner",
     "drill bit", "drill set", "annular cutter", "holemaker",
-    "burr set", "rotary burr", "flap disc", "cutting wheel",
-    "cut off wheel", "grinding disc", "abrasive", "fibre disc",
+    "burr set", "rotary burr",
     "buff pad", "chuck", "drill chuck",
     "power wrench", "power punch", "impact wrench",
     "site box", "storage box", "tool box",
@@ -269,6 +268,8 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
 
   // CC 22 – Consumables (also the fallback for unclassified items)
   "Consumables": [
+    "flap disc", "cutting wheel", "cut off wheel", "grinding disc",
+    "abrasive", "fibre disc", "slotted fibre disc", "cubitron",
     "glove", "ppe", "respirator", "earmuff", "glasses",
     "lubricant", "grease", "oil", "degreaser", "cleaning", "rag",
     "adhesive", "sealant", "paint", "marker",
