@@ -73,7 +73,7 @@ const areaColors: Record<AreaType, string> = {
 export const cruSubAreaColors: Record<string, string> = {
   "CRU-ROM": "bg-orange-400",
   "CRU-PRI": "bg-red-400",
-  "CRU-SCR": "bg-yellow-400 text-yellow-900",
+  "CRU-SCN": "bg-yellow-400 text-yellow-900",
   "CRU-SEC": "bg-rose-400",
   "CRU-STK": "bg-lime-500",
   "CRU-CTL": "bg-sky-400",

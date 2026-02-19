@@ -111,11 +111,11 @@ export const crushingPlantAreas: CRUSubArea[] = [
   },
 
   // ─────────────────────────────────────────────────────────────
-  // CRU-SCR – Screening Section
+  // CRU-SCN – Screening Section
   // ─────────────────────────────────────────────────────────────
   {
     label: "Screening Section",
-    areaCode: "CRU-SCR",
+    areaCode: "CRU-SCN",
     parentAssets: [
       {
         label: "Screen Feed Bin (15m³)",
