@@ -212,11 +212,11 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "05-AG-003MC", assetNumber: "CIP-TK03-AGT01-MCC01", description: "CIP Tank 3 Agitator MCC Cell", status: "mapped" },
   { pidTag: "05-AG-003GB", assetNumber: "CIP-TK03-AGT01-GBX01", description: "CIP Tank 3 Agitator Gear Box", status: "mapped" },
   { pidTag: "05-AG-003LCS", assetNumber: "CIP-TK03-AGT01-LCS01", description: "CIP Tank 3 Agitator LCS", status: "mapped" },
-  { pidTag: "05-SC-002", assetNumber: "CIP-SCR01", description: "CIP Inter Tank Screen 1", status: "mapped" },
-  { pidTag: "05-SC-002M", assetNumber: "CIP-SCR01-MTR01", description: "CIP Inter Tank Screen 1 Motor", status: "mapped" },
-  { pidTag: "05-SC-002MC", assetNumber: "CIP-SCR01-MCC01", description: "CIP Inter Tank Screen 1 MCC Cell", status: "mapped" },
-  { pidTag: "05-SC-00GB", assetNumber: "CIP-SCR01-GBX01", description: "CIP Inter Tank Screen 1 Gearbox", status: "mapped" },
-  { pidTag: "05-SC-002LCS", assetNumber: "CIP-SCR01-LCS01", description: "CIP Inter Tank Screen 1 LCS", status: "mapped" },
+  { pidTag: "05-SC-002", assetNumber: "CIP-SCN01", description: "CIP Inter Tank Screen 1", status: "mapped" },
+  { pidTag: "05-SC-002M", assetNumber: "CIP-SCN01-MTR01", description: "CIP Inter Tank Screen 1 Motor", status: "mapped" },
+  { pidTag: "05-SC-002MC", assetNumber: "CIP-SCN01-MCC01", description: "CIP Inter Tank Screen 1 MCC Cell", status: "mapped" },
+  { pidTag: "05-SC-00GB", assetNumber: "CIP-SCN01-GBX01", description: "CIP Inter Tank Screen 1 Gearbox", status: "mapped" },
+  { pidTag: "05-SC-002LCS", assetNumber: "CIP-SCN01-LCS01", description: "CIP Inter Tank Screen 1 LCS", status: "mapped" },
   { pidTag: "05-AL-002", assetNumber: "CIP-AL02", description: "Carbon Transfer Air Lift 2", status: "mapped" },
   
   // CIP Tank 4
@@ -227,7 +227,7 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "05-AG-004GB", assetNumber: "CIP-TK04-AGT01-GBX01", description: "CIP Tank 4 Agitator Gear Box", status: "mapped" },
   { pidTag: "05-AG-004LCS", assetNumber: "CIP-TK04-AGT01-LCS01", description: "CIP Tank 4 Agitator LCS", status: "mapped" },
   { pidTag: "05-AL-003", assetNumber: "CIP-AL03", description: "Carbon Transfer Air Lift 3", status: "mapped" },
-  { pidTag: "05-SC-003", assetNumber: "CIP-SCR02", description: "CIP Inter Tank Screen 2", status: "mapped" },
+  { pidTag: "05-SC-003", assetNumber: "CIP-SCN02", description: "CIP Inter Tank Screen 2", status: "mapped" },
   
   // CIP Tank 5
   { pidTag: "05-TK-005", assetNumber: "CIP-TK05", description: "CIP Tank 5", status: "mapped" },
@@ -255,7 +255,7 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "05-AG-007GB", assetNumber: "CIP-TK07-AGT01-GBX01", description: "CIP Tank 7 Agitator Gear Box", status: "mapped" },
   { pidTag: "05-AG-007LCS", assetNumber: "CIP-TK07-AGT01-LCS01", description: "CIP Tank 7 Agitator LCS", status: "mapped" },
   { pidTag: "05-AL-006", assetNumber: "CIP-AL06", description: "Carbon Transfer Air Lift 6", status: "mapped" },
-  { pidTag: "05-SC-004", assetNumber: "CIP-SCR05", description: "CIP Inter Tank Screen 5", status: "mapped" },
+  { pidTag: "05-SC-004", assetNumber: "CIP-SCN05", description: "CIP Inter Tank Screen 5", status: "mapped" },
   
   // CIP Tank 8
   { pidTag: "05-TK-008", assetNumber: "CIP-TK08", description: "CIP Tank 8", status: "mapped" },
@@ -264,7 +264,7 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "05-AG-008MC", assetNumber: "CIP-TK08-AGT01-MCC01", description: "CIP Tank 8 Agitator MCC Cell", status: "mapped" },
   { pidTag: "05-AG-008GB", assetNumber: "CIP-TK08-AGT01-GBX01", description: "CIP Tank 8 Agitator Gear Box", status: "mapped" },
   { pidTag: "05-AG-008LCS", assetNumber: "CIP-TK08-AGT01-LCS01", description: "CIP Tank 8 Agitator LCS", status: "mapped" },
-  { pidTag: "05-SC-007", assetNumber: "CIP-SCR06", description: "CIP Inter Tank Screen 6", status: "mapped" },
+  { pidTag: "05-SC-007", assetNumber: "CIP-SCN06", description: "CIP Inter Tank Screen 6", status: "mapped" },
   
   // CIP Tails
   { pidTag: "05-PU-004", assetNumber: "CIP-SPMP01", description: "CIP Tails Area Sump Pump", status: "mapped" },
@@ -392,10 +392,10 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "08-PU-001M", assetNumber: "ELU-PMP04-MTR01", description: "Eluate Pump Motor", status: "mapped" },
   { pidTag: "08-PU-001MC", assetNumber: "ELU-PMP04-MCC01", description: "Eluate Pump MCC Cell", status: "mapped" },
   { pidTag: "08-PU-001LCS", assetNumber: "ELU-PMP04-LCS01", description: "Eluate Pump LCS", status: "mapped" },
-  { pidTag: "08-SC-001", assetNumber: "ELU-SCR01", description: "Barron Carbon Dewatering Screen", status: "mapped" },
-  { pidTag: "08-SC-001EX", assetNumber: "ELU-SCR01-EXC01", description: "Barron Carbon Dewatering Screen Excitor", status: "mapped" },
-  { pidTag: "08-SC-001MC", assetNumber: "ELU-SCR01-MCC01", description: "Barron Carbon Dewatering Screen MCC Cell", status: "mapped" },
-  { pidTag: "08-SC-001LCS", assetNumber: "ELU-SCR01-LCS01", description: "Barron Carbon Dewatering Screen LCS", status: "mapped" },
+  { pidTag: "08-SC-001", assetNumber: "CDSCN01", description: "Barren Carbon Dewatering Screen", status: "mapped" },
+  { pidTag: "08-SC-001EX", assetNumber: "CDSCN01-EXC01", description: "Barren Carbon Dewatering Screen Exciter", status: "mapped" },
+  { pidTag: "08-SC-001MC", assetNumber: "CDSCN01-MCC01", description: "Barren Carbon Dewatering Screen MCC Cell", status: "mapped" },
+  { pidTag: "08-SC-001LCS", assetNumber: "CDSCN01-LCS01", description: "Barren Carbon Dewatering Screen LCS", status: "mapped" },
   { pidTag: "08-HP-001", assetNumber: "ELU-HOP01", description: "Regen Kiln Feed Hopper", status: "mapped" },
   { pidTag: "08-KN-001", assetNumber: "ELU-KLN01", description: "Carbon Regen Kiln", status: "mapped" },
   { pidTag: "08-FE-001", assetNumber: "ELU-KLN01-FDR01", description: "Regen Kiln Screw Feeder", status: "mapped" },
@@ -441,10 +441,10 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "08-XM-005", assetNumber: "ELU-SAF01", description: "Gold Room Bullion Safe", status: "mapped" },
   
   // ============ GRAVITY ============
-  { pidTag: "04-SC-100", assetNumber: "GRV-SCR01", description: "Gravity Screen", status: "mapped" },
-  { pidTag: "04-CH-103", assetNumber: "GRV-SCR01-CHU01", description: "Gravity Screen Feed Chute", status: "mapped" },
-  { pidTag: "04-CH-104", assetNumber: "GRV-SCR01-UPN01", description: "Gravity Screen Under Pan", status: "mapped" },
-  { pidTag: "04-CH-105", assetNumber: "GRV-SCR01-CHU02", description: "Gravity Screen Discharge Chute", status: "mapped" },
+  { pidTag: "04-SC-100", assetNumber: "SCN01", description: "Gravity Screen", status: "mapped" },
+  { pidTag: "04-CH-103", assetNumber: "SCN01-CHU01", description: "Gravity Screen Feed Chute", status: "mapped" },
+  { pidTag: "04-CH-104", assetNumber: "SCN01-UPN01", description: "Gravity Screen Under Pan", status: "mapped" },
+  { pidTag: "04-CH-105", assetNumber: "SCN01-CHU02", description: "Gravity Screen Discharge Chute", status: "mapped" },
   { pidTag: "04-GC-100", assetNumber: "GRV-KNC01", description: "Knelson Concentrator", status: "mapped" },
   { pidTag: "04-GC-100CP", assetNumber: "GRV-KNC01-PNL01", description: "Knelson Concentrator Control Panel", status: "mapped" },
   { pidTag: "04-PB-112", assetNumber: "GRV-CON01", description: "Concentrate Collection Cone", status: "mapped" },
