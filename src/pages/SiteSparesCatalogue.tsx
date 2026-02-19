@@ -1,13 +1,8 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Package, ImageIcon } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowLeft, Package } from "lucide-react";
 import { SiteSparesCatalogue as SiteSparesGrid } from "@/components/site-spares/SiteSparesCatalogue";
-import { VisualPartsCatalogue } from "@/components/visual-parts/VisualPartsCatalogue";
 
 const SiteSparesCatalogue = () => {
-  const [activeTab, setActiveTab] = useState("inventory");
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -35,60 +30,28 @@ const SiteSparesCatalogue = () => {
         </div>
       </header>
 
-      {/* Tab Navigation */}
-      <div className="sticky top-0 z-10 bg-background border-b border-border">
-        <div className="container">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="h-12 bg-transparent border-b-0 p-0 gap-4">
-              <TabsTrigger
-                value="inventory"
-                className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-1 pb-3 pt-3"
-              >
-                <Package className="h-4 w-4 mr-2" />
-                Site Spares Inventory
-              </TabsTrigger>
-              <TabsTrigger
-                value="visual"
-                className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-1 pb-3 pt-3"
-              >
-                <ImageIcon className="h-4 w-4 mr-2" />
-                Visual Parts Catalogue
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
-      </div>
-
       {/* Main Content */}
       <main className="container py-8 space-y-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsContent value="inventory" className="mt-0">
-            {/* Info Banner */}
-            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 flex items-start gap-3 mb-6">
-              <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-primary text-sm">i</span>
-              </div>
-              <div className="text-sm">
-                <p className="text-foreground font-medium">
-                  Full site spares inventory with photo upload capability.
-                </p>
-                <p className="text-muted-foreground mt-1">
-                  Click on any card image area to upload photos. Drag and drop is also supported.
-                </p>
-              </div>
-            </div>
+        {/* Info Banner */}
+        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 flex items-start gap-3">
+          <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <Package className="w-3.5 h-3.5 text-primary" />
+          </div>
+          <div className="text-sm">
+            <p className="text-foreground font-medium">
+              Full site spares inventory with photo upload capability.
+            </p>
+            <p className="text-muted-foreground mt-1">
+              Click on any card image area to upload photos. Drag and drop is also supported.
+            </p>
+          </div>
+        </div>
 
-            {/* Spares Catalogue Grid */}
-            <SiteSparesGrid />
-          </TabsContent>
-
-          <TabsContent value="visual" className="mt-0">
-            <VisualPartsCatalogue />
-          </TabsContent>
-        </Tabs>
+        <SiteSparesGrid />
       </main>
     </div>
   );
 };
 
 export default SiteSparesCatalogue;
+
