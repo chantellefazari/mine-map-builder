@@ -130,14 +130,14 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "04-PB-100", assetNumber: "BM01-HOP01", description: "Primary Mill Discharge Hopper", status: "mapped" },
   
   // Primary Cyclone Feed Pumps
-  { pidTag: "04-PU-102A", assetNumber: "PCFPA01", description: "Primary Cyclone Feed Pump A", status: "mapped" },
-  { pidTag: "04-PU-102AM", assetNumber: "PCFPA01-MTR01", description: "Primary Cyclone Feed Pump A Motor", status: "mapped" },
-  { pidTag: "04-PU-102AMC", assetNumber: "PCFPA01-MCC01", description: "Primary Cyclone Feed Pump A MCC Cell", status: "mapped" },
-  { pidTag: "04-PU-102ALCS", assetNumber: "PCFPA01-LCS01", description: "Primary Cyclone Feed Pump A LCS", status: "mapped" },
-  { pidTag: "04-PU-102B", assetNumber: "PCFPB01", description: "Primary Cyclone Feed Pump B", status: "mapped" },
-  { pidTag: "04-PU-102BM", assetNumber: "PCFPB01-MTR01", description: "Primary Cyclone Feed Pump B Motor", status: "mapped" },
-  { pidTag: "04-PU-102BMC", assetNumber: "PCFPB01-MCC01", description: "Primary Cyclone Feed Pump B MCC Cell", status: "mapped" },
-  { pidTag: "04-PU-102BLCS", assetNumber: "PCFPB01-LCS01", description: "Primary Cyclone Feed Pump B LCS", status: "mapped" },
+  { pidTag: "04-PU-102A", assetNumber: "CYFPA01", description: "Primary Cyclone Feed Pump A", status: "mapped" },
+  { pidTag: "04-PU-102AM", assetNumber: "CYFPA01-MTR01", description: "Primary Cyclone Feed Pump A Motor", status: "mapped" },
+  { pidTag: "04-PU-102AMC", assetNumber: "CYFPA01-MCC01", description: "Primary Cyclone Feed Pump A MCC Cell", status: "mapped" },
+  { pidTag: "04-PU-102ALCS", assetNumber: "CYFPA01-LCS01", description: "Primary Cyclone Feed Pump A LCS", status: "mapped" },
+  { pidTag: "04-PU-102B", assetNumber: "CYFPB01", description: "Primary Cyclone Feed Pump B", status: "mapped" },
+  { pidTag: "04-PU-102BM", assetNumber: "CYFPB01-MTR01", description: "Primary Cyclone Feed Pump B Motor", status: "mapped" },
+  { pidTag: "04-PU-102BMC", assetNumber: "CYFPB01-MCC01", description: "Primary Cyclone Feed Pump B MCC Cell", status: "mapped" },
+  { pidTag: "04-PU-102BLCS", assetNumber: "CYFPB01-LCS01", description: "Primary Cyclone Feed Pump B LCS", status: "mapped" },
   { pidTag: "04-XV-", assetNumber: "PCFI01-VLV01", description: "Primary Cyclone Feed TechTaylor Valve", status: "mapped" },
   
   // Primary Cyclone Cluster

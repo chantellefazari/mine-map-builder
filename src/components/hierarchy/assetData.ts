@@ -148,18 +148,18 @@ export const areasData: Area[] = [
             ]
           },
           { 
-            label: "HPCP01 HP Air Compressor", 
+            label: "HCMP01 HP Air Compressor", 
             equipment: [
-              { assetNumber: "HPCP01", name: "HP Air Compressor 1", pidTags: ["C-201", "CMP-201A"] },
-              { assetNumber: "HPCP01-PIPE01", name: "HP Air Compressor 1 – Piping" },
-              { assetNumber: "HPCP01-MCC01", name: "HP Air Compressor 1 – MCC Cell" },
-              { assetNumber: "HPCP01-RCVR01", name: "HP Air Compressor 1 – Receiver", pidTags: ["V-201"] },
-              { assetNumber: "HPCP02", name: "HP Air Compressor 2", pidTags: ["C-202", "CMP-201B"] },
-              { assetNumber: "HPCP02-PIPE01", name: "HP Air Compressor 2 – Piping" },
-              { assetNumber: "HPCP02-MCC01", name: "HP Air Compressor 2 – MCC Cell" },
-              { assetNumber: "HPCP02-RCVR01", name: "HP Air Compressor 2 – Receiver" },
+              { assetNumber: "HCMP01", name: "HP Air Compressor 1", pidTags: ["C-201", "CMP-201A"] },
+              { assetNumber: "HCMP01-PIPE01", name: "HP Air Compressor 1 – Piping" },
+              { assetNumber: "HCMP01-MCC01", name: "HP Air Compressor 1 – MCC Cell" },
+              { assetNumber: "HCMP01-RCVR01", name: "HP Air Compressor 1 – Receiver", pidTags: ["V-201"] },
+              { assetNumber: "HCMP02", name: "HP Air Compressor 2", pidTags: ["C-202", "CMP-201B"] },
+              { assetNumber: "HCMP02-PIPE01", name: "HP Air Compressor 2 – Piping" },
+              { assetNumber: "HCMP02-MCC01", name: "HP Air Compressor 2 – MCC Cell" },
+              { assetNumber: "HCMP02-RCVR01", name: "HP Air Compressor 2 – Receiver" },
               { 
-                assetNumber: "HPCP03", 
+                assetNumber: "HCMP03", 
                 name: "HP Air Compressor 3 (Filter Area)",
                 components: [
                   {
@@ -171,12 +171,12 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "HPCP03-PIPE01", name: "HP Air Compressor 3 – Piping" },
-              { assetNumber: "HPCP03-MCC01", name: "HP Air Compressor 3 – MCC Cell" },
-              { assetNumber: "HPCP03-RCVR01", name: "HP Air Compressor 3 – Receiver" },
-              { assetNumber: "HPCP04", name: "HP Air Compressor 4" },
-              { assetNumber: "HPCP04-MCC01", name: "HP Air Compressor 4 – MCC Cell" },
-              { assetNumber: "HPCP04-RCVR01", name: "HP Air Compressor 4 – Receiver" },
+              { assetNumber: "HCMP03-PIPE01", name: "HP Air Compressor 3 – Piping" },
+              { assetNumber: "HCMP03-MCC01", name: "HP Air Compressor 3 – MCC Cell" },
+              { assetNumber: "HCMP03-RCVR01", name: "HP Air Compressor 3 – Receiver" },
+              { assetNumber: "HCMP04", name: "HP Air Compressor 4" },
+              { assetNumber: "HCMP04-MCC01", name: "HP Air Compressor 4 – MCC Cell" },
+              { assetNumber: "HCMP04-RCVR01", name: "HP Air Compressor 4 – Receiver" },
             ]
           },
         ],
@@ -785,10 +785,10 @@ export const areasData: Area[] = [
             ]
           },
           { 
-            label: "PCFPA01 Primary Cyclone Feed Pump A", 
+            label: "CYFPA01 Primary Cyclone Feed Pump A", 
             equipment: [
               { 
-                assetNumber: "PCFPA01", 
+                assetNumber: "CYFPA01", 
                 name: "Primary Cyclone Feed Pump A",
                 components: [
                   {
@@ -822,16 +822,16 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "PCFPA01-MTR01", name: "Primary Cyclone Feed Pump A – Motor" },
-              { assetNumber: "PCFPA01-MCC01", name: "Primary Cyclone Feed Pump A – MCC Cell" },
-              { assetNumber: "PCFPA01-LCS01", name: "Primary Cyclone Feed Pump A – LCS" },
+              { assetNumber: "CYFPA01-MTR01", name: "Primary Cyclone Feed Pump A – Motor" },
+              { assetNumber: "CYFPA01-MCC01", name: "Primary Cyclone Feed Pump A – MCC Cell" },
+              { assetNumber: "CYFPA01-LCS01", name: "Primary Cyclone Feed Pump A – LCS" },
             ]
           },
           { 
-            label: "PCFPB01 Primary Cyclone Feed Pump B", 
+            label: "CYFPB01 Primary Cyclone Feed Pump B", 
             equipment: [
               { 
-                assetNumber: "PCFPB01", 
+                assetNumber: "CYFPB01", 
                 name: "Primary Cyclone Feed Pump B",
                 components: [
                   {
@@ -872,9 +872,9 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "PCFPB01-MTR01", name: "Primary Cyclone Feed Pump B – Motor" },
-              { assetNumber: "PCFPB01-MCC01", name: "Primary Cyclone Feed Pump B – MCC Cell" },
-              { assetNumber: "PCFPB01-LCS01", name: "Primary Cyclone Feed Pump B – LCS" },
+              { assetNumber: "CYFPB01-MTR01", name: "Primary Cyclone Feed Pump B – Motor" },
+              { assetNumber: "CYFPB01-MCC01", name: "Primary Cyclone Feed Pump B – MCC Cell" },
+              { assetNumber: "CYFPB01-LCS01", name: "Primary Cyclone Feed Pump B – LCS" },
             ]
           },
           { 
@@ -1369,10 +1369,10 @@ export const areasData: Area[] = [
             ] 
           },
           { 
-            label: "TRSCR01 Trash Screen", 
+            label: "TRSCN01 Trash Screen", 
             equipment: [
               { 
-                assetNumber: "TRSCR01", 
+                assetNumber: "TRSCN01", 
                 name: "Trash Screen",
                 components: [
                   {
@@ -1391,8 +1391,8 @@ export const areasData: Area[] = [
                   }
                 ]
               },
-              { assetNumber: "TRSCR01-EXC01", name: "Trash Screen – Exciter" },
-              { assetNumber: "TRSCR01-MCC01", name: "Trash Screen – MCC Cell" },
+              { assetNumber: "TRSCN01-EXC01", name: "Trash Screen – Exciter" },
+              { assetNumber: "TRSCN01-MCC01", name: "Trash Screen – MCC Cell" },
             ] 
           },
         ],
@@ -1836,21 +1836,21 @@ export const areasData: Area[] = [
         label: "Carbon Regeneration",
         parentAssets: [
           { 
-            label: "BCDS01 Barren Carbon Dewatering Screen", 
+            label: "CDSCR01 Barren Carbon Dewatering Screen", 
             equipment: [
-              { assetNumber: "BCDS01", name: "Barren Carbon Dewatering Screen" },
-              { assetNumber: "BCDS01-EXC01", name: "Barren Carbon Dewatering Screen Exciter" },
-              { assetNumber: "BCDS01-MCC01", name: "Barren Carbon Dewatering Screen – MCC Cell" },
-              { assetNumber: "BCDS01-LCS01", name: "Barren Carbon Dewatering Screen – LCS" },
+              { assetNumber: "CDSCR01", name: "Barren Carbon Dewatering Screen" },
+              { assetNumber: "CDSCR01-EXC01", name: "Barren Carbon Dewatering Screen Exciter" },
+              { assetNumber: "CDSCR01-MCC01", name: "Barren Carbon Dewatering Screen – MCC Cell" },
+              { assetNumber: "CDSCR01-LCS01", name: "Barren Carbon Dewatering Screen – LCS" },
             ] 
           },
           { 
-            label: "RKHP01 Regen Kiln Feed Hopper", 
+            label: "KLNHP01 Regen Kiln Feed Hopper", 
             equipment: [
-              { assetNumber: "RKHP01", name: "Regen Kiln Feed Hopper" },
-              { assetNumber: "RKHP01-FDR01", name: "Regen Kiln Feed Hopper – Feeder" },
-              { assetNumber: "RKHP01-MTR01", name: "Regen Kiln Feed Hopper – Motor" },
-              { assetNumber: "RKHP01-SEN01", name: "Regen Kiln Feed Screw Inlet Level Sensor" },
+              { assetNumber: "KLNHP01", name: "Regen Kiln Feed Hopper" },
+              { assetNumber: "KLNHP01-FDR01", name: "Regen Kiln Feed Hopper – Feeder" },
+              { assetNumber: "KLNHP01-MTR01", name: "Regen Kiln Feed Hopper – Motor" },
+              { assetNumber: "KLNHP01-SEN01", name: "Regen Kiln Feed Screw Inlet Level Sensor" },
             ]
           },
           { 
@@ -2325,17 +2325,17 @@ export const areasData: Area[] = [
         label: "Workshop Infrastructure",
         parentAssets: [
           { 
-            label: "WKSHP01 Workshop", 
+            label: "WSHP01 Workshop", 
             equipment: [
-              { assetNumber: "WKSHP01", name: "Workshop" },
-              { assetNumber: "WKSHP01-DB01", name: "Workshop L&P DB" },
-              { assetNumber: "WKSHP01-CMP01", name: "Workshop Air Compressor" },
-              { assetNumber: "WKSHP01-WLD01", name: "Workshop Welding Machine 1" },
-              { assetNumber: "WKSHP01-WLD02", name: "Workshop Welding Machine 2" },
-              { assetNumber: "WKSHP01-LAT01", name: "Workshop Lathe" },
-              { assetNumber: "WKSHP01-GRN01", name: "Workshop Grinder" },
-              { assetNumber: "WKSHP01-DRL01", name: "Workshop Drill Press" },
-              { assetNumber: "WKSHP01-HYD01", name: "Workshop Hydraulic Press" },
+              { assetNumber: "WSHP01", name: "Workshop" },
+              { assetNumber: "WSHP01-DB01", name: "Workshop L&P DB" },
+              { assetNumber: "WSHP01-CMP01", name: "Workshop Air Compressor" },
+              { assetNumber: "WSHP01-WLD01", name: "Workshop Welding Machine 1" },
+              { assetNumber: "WSHP01-WLD02", name: "Workshop Welding Machine 2" },
+              { assetNumber: "WSHP01-LAT01", name: "Workshop Lathe" },
+              { assetNumber: "WSHP01-GRN01", name: "Workshop Grinder" },
+              { assetNumber: "WSHP01-DRL01", name: "Workshop Drill Press" },
+              { assetNumber: "WSHP01-HYD01", name: "Workshop Hydraulic Press" },
             ] 
           },
         ],
