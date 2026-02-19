@@ -2,52 +2,141 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-// Map legacy/variant category names to standard categories
-// Map legacy/variant category names to the approved 23 Part Category Codes (TCMG)
+/**
+ * Legacy → TCMG Category Normalization Map
+ *
+ * Maps all historical / variant category names in the database to the
+ * canonical 25-category TCMG taxonomy (CC 01–22 + sub-codes 10b, 19b, 19c).
+ *
+ * Canonical names (right-hand side) must match SpareCategory in
+ * src/utils/categoryClassification.ts exactly.
+ *
+ * CC 01  Pump Component
+ * CC 02  Motor Component
+ * CC 03  Gearbox
+ * CC 04  Bearing
+ * CC 05  Valve
+ * CC 06  Instrumentation
+ * CC 07  Electrical
+ * CC 08  Conveyor Component
+ * CC 09  Wear Parts
+ * CC 10  Mechanical
+ * CC 10b Structural Steel
+ * CC 11  Pipe Fitting
+ * CC 12  Seal
+ * CC 13  Filter
+ * CC 14  Lubrication System
+ * CC 15  Air & Pneumatic
+ * CC 16  Tanks & Vessels
+ * CC 17  Safety Equipment
+ * CC 18  Power Generation
+ * CC 19  Tooling
+ * CC 19b Rigging
+ * CC 19c PPE
+ * CC 20  OEM Assembly
+ * CC 21  Fastener
+ * CC 22  Consumables
+ */
 const LEGACY_CATEGORY_MAP: Record<string, string> = {
-  // Old names → Approved numbering standard names
-  "Pump Component": "Pumps",
-  "Pump": "Pumps",
-  "Motor Component": "Motors",
-  "Motor": "Motors",
-  "Gearbox": "Gearboxes / Reducers",
-  "Gearbox Component": "Gearboxes / Reducers",
-  "Bearing": "Bearings",
-  "Valve": "Valves",
-  "Electrical": "Electrical Components",
-  "Conveyor Component": "Conveying Components",
-  "Conveyor": "Conveying Components",
-  "Belt & Transmission": "Conveying Components",
-  "Belt / Chain": "Conveying Components",
-  "Belt and Chain": "Conveying Components",
-  "Belt & Chain": "Conveying Components",
+  // ── CC 01 Pump Component ──────────────────────────────────────────────────
+  "Pump": "Pump Component",
+  "Pump Component": "Pump Component",
+
+  // ── CC 02 Motor Component ─────────────────────────────────────────────────
+  "Motor": "Motor Component",
+  "Motor Component": "Motor Component",
+
+  // ── CC 03 Gearbox ─────────────────────────────────────────────────────────
+  "Gearbox": "Gearbox",
+  "Gearbox Component": "Gearbox",
+
+  // ── CC 04 Bearing ─────────────────────────────────────────────────────────
+  "Bearing": "Bearing",
+  "Bearings": "Bearing",
+
+  // ── CC 05 Valve ───────────────────────────────────────────────────────────
+  "Valve": "Valve",
+  "Valves": "Valve",
+
+  // ── CC 07 Electrical ──────────────────────────────────────────────────────
+  "Electrical": "Electrical",
+  "Electrical Components": "Electrical",
+
+  // ── CC 08 Conveyor Component ──────────────────────────────────────────────
+  "Conveyor": "Conveyor Component",
+  "Conveyor Component": "Conveyor Component",
+  "Conveying Components": "Conveyor Component",
+  "Belt & Transmission": "Conveyor Component",
+  "Belt / Chain": "Conveyor Component",
+  "Belt and Chain": "Conveyor Component",
+  "Belt & Chain": "Conveyor Component",
+
+  // ── CC 09 Wear Parts ──────────────────────────────────────────────────────
   "Wear Part": "Wear Parts",
+  "Wear Parts": "Wear Parts",
   "Liner": "Wear Parts",
+
+  // ── CC 10 Mechanical ──────────────────────────────────────────────────────
+  "Mechanical": "Mechanical",
+
+  // ── CC 10b Structural Steel ───────────────────────────────────────────────
   "Structural": "Structural Steel",
-  "Hose & Tubing": "Hoses & Pipework",
-  "Pipe Fitting": "Hoses & Pipework",
-  "Seal": "Seals & Gaskets",
-  "Seal / Gasket": "Seals & Gaskets",
+  "Structural Steel": "Structural Steel",
+
+  // ── CC 11 Pipe Fitting ────────────────────────────────────────────────────
+  "Pipe Fitting": "Pipe Fitting",
+  "Hose & Tubing": "Pipe Fitting",
+  "Hoses & Pipework": "Pipe Fitting",
+
+  // ── CC 12 Seal ────────────────────────────────────────────────────────────
+  "Seal": "Seal",
+  "Seal / Gasket": "Seal",
+  "Seals & Gaskets": "Seal",
+
+  // ── CC 13 Filter ──────────────────────────────────────────────────────────
   "Filter": "Filter",
   "Filters": "Filter",
+
+  // ── CC 14 Lubrication System ──────────────────────────────────────────────
+  "Lubrication": "Lubrication System",
+  "Lubrication System": "Lubrication System",
+
+  // ── CC 15 Air & Pneumatic ─────────────────────────────────────────────────
   "Pneumatic": "Air & Pneumatic",
   "Hydraulic": "Air & Pneumatic",
+  "Air & Pneumatic": "Air & Pneumatic",
   "Air & Pneumatic Components": "Air & Pneumatic",
+
+  // ── CC 16 Tanks & Vessels ─────────────────────────────────────────────────
+  "Tanks & Vessels": "Tanks & Vessels",
+
+  // ── CC 17 Safety Equipment ────────────────────────────────────────────────
+  "Safety Equipment": "Safety Equipment",
+
+  // ── CC 18 Power Generation ────────────────────────────────────────────────
+  "Power Generation": "Power Generation",
+
+  // ── CC 19 Tooling ─────────────────────────────────────────────────────────
+  "Tooling": "Tooling",
+  "Tools": "Tooling",
+  "Tools & Workshop Equipment": "Tooling",
+
+  // ── CC 19b Rigging ────────────────────────────────────────────────────────
+  "Rigging": "Rigging",
+
+  // ── CC 19c PPE ────────────────────────────────────────────────────────────
+  "PPE": "PPE",
+
+  // ── CC 20 OEM Assembly ────────────────────────────────────────────────────
+  "OEM Assembly": "OEM Assembly",
+
+  // ── CC 21 Fastener ────────────────────────────────────────────────────────
   "Fastener": "Fastener",
   "Fasteners": "Fastener",
+
+  // ── CC 22 Consumables (catch-all) ─────────────────────────────────────────
   "Consumable": "Consumables",
-  "Safety Equipment": "Safety Equipment",
-  "Tooling": "Tooling",
-  "Tools & Workshop Equipment": "Tooling",
-  "Rigging": "Rigging",
-  "PPE": "PPE",
-  "Lubrication System": "Lubrication System",
-  "Lubrication": "Lubrication System",
-  "Power Generation": "Power Generation",
-  "OEM Assembly": "OEM Assembly",
-  "Tanks & Vessels": "Tanks & Vessels",
-  "Structural Steel": "Structural Steel",
-  "Mechanical": "Mechanical",
+  "Consumables": "Consumables",
   "General": "Consumables",
   "Unknown / TBC": "Consumables",
   "Unknown / To Be Confirmed": "Consumables",
