@@ -56,34 +56,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    let isMounted = true;
+
+    // Initial load — fetch session and permissions BEFORE setting loading=false
+    const initializeAuth = async () => {
+      try {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        if (!isMounted) return;
+
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+
+        if (currentSession?.user) {
+          await fetchPermissions(currentSession.user.id);
+        }
+      } catch (error) {
+        console.error("Auth init error:", error);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    // Ongoing auth changes — do NOT await inside callback to avoid deadlock
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, newSession) => {
+      (event, newSession) => {
+        if (!isMounted) return;
         setSession(newSession);
         setUser(newSession?.user ?? null);
 
         if (newSession?.user) {
-          await fetchPermissions(newSession.user.id);
+          setTimeout(() => {
+            if (isMounted) fetchPermissions(newSession.user.id);
+          }, 0);
         } else {
           setIsAdmin(false);
           setAllowedTabs([]);
         }
-        setLoading(false);
       }
     );
 
-    // Then get current session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-      if (currentSession?.user) {
-        fetchPermissions(currentSession.user.id).finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
