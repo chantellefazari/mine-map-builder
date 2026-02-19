@@ -1267,10 +1267,10 @@ export const areasData: Area[] = [
         label: "Gravity Circuit",
         parentAssets: [
           { 
-            label: "SCR01 Gravity Concentrator", 
+            label: "SCN01 Gravity Concentrator", 
             equipment: [
               { 
-                assetNumber: "SCR01", 
+                assetNumber: "SCN01", 
                 name: "Gravity Screen",
                 components: [
                   {
@@ -1529,7 +1529,7 @@ export const areasData: Area[] = [
                 ]
               },
               { 
-                assetNumber: "CIP-SCR-INT", 
+                assetNumber: "CIP-SCN-INT", 
                 name: "Intertank Screen",
                 components: [
                   {
@@ -1547,7 +1547,7 @@ export const areasData: Area[] = [
                 ]
               },
               { 
-                assetNumber: "SCR03", 
+                assetNumber: "SCN03", 
                 name: "Carbon Safety Screen",
                 components: [
                   {
@@ -1567,7 +1567,7 @@ export const areasData: Area[] = [
                 ]
               },
               { 
-                assetNumber: "SCR04", 
+                assetNumber: "SCN04", 
                 name: "Loaded Carbon Screen",
                 components: [
                   {
@@ -1836,12 +1836,12 @@ export const areasData: Area[] = [
         label: "Carbon Regeneration",
         parentAssets: [
           { 
-            label: "CDSCR01 Barren Carbon Dewatering Screen", 
+            label: "CDSCN01 Barren Carbon Dewatering Screen", 
             equipment: [
-              { assetNumber: "CDSCR01", name: "Barren Carbon Dewatering Screen" },
-              { assetNumber: "CDSCR01-EXC01", name: "Barren Carbon Dewatering Screen Exciter" },
-              { assetNumber: "CDSCR01-MCC01", name: "Barren Carbon Dewatering Screen – MCC Cell" },
-              { assetNumber: "CDSCR01-LCS01", name: "Barren Carbon Dewatering Screen – LCS" },
+              { assetNumber: "CDSCN01", name: "Barren Carbon Dewatering Screen" },
+              { assetNumber: "CDSCN01-EXC01", name: "Barren Carbon Dewatering Screen Exciter" },
+              { assetNumber: "CDSCN01-MCC01", name: "Barren Carbon Dewatering Screen – MCC Cell" },
+              { assetNumber: "CDSCN01-LCS01", name: "Barren Carbon Dewatering Screen – LCS" },
             ] 
           },
           { 
