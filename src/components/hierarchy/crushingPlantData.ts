@@ -61,7 +61,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
     areaCode: "CRU-PRI",
     parentAssets: [
       {
-        label: "CR01 – Jaw Crusher – JM120",
+        label: "CR01 – Jaw Crusher",
         equipment: [
           {
             assetNumber: "CR01",
@@ -118,7 +118,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
     areaCode: "CRU-SCN",
     parentAssets: [
       {
-        label: "Screen Feed Bin (15m³)",
+        label: "Screen Feed Bin",
         equipment: [
           {
             assetNumber: "SCR-FDB01",
@@ -144,7 +144,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
         ],
       },
       {
-        label: "SC01 – Screen – BWC208 20x8",
+        label: "SC01 – Vibrating Screen",
         equipment: [
           {
             assetNumber: "SC01",
@@ -198,7 +198,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
     areaCode: "CRU-SEC",
     parentAssets: [
       {
-        label: "Cone Feed Bin (30m³)",
+        label: "Cone Feed Bin",
         equipment: [
           {
             assetNumber: "SEC-CFB01",
@@ -234,7 +234,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
         ],
       },
       {
-        label: "CR02 – Cone Crusher – CS400",
+        label: "CR02 – Cone Crusher",
         equipment: [
           {
             assetNumber: "CR02",
@@ -264,7 +264,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
         ],
       },
       {
-        label: "CR03 – Cone Crusher – CS3",
+        label: "CR03 – Cone Crusher",
         equipment: [
           {
             assetNumber: "CR03",
@@ -408,7 +408,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
       },
       // CV07 – Oversize Transfer Conveyor (1000mm x 24m → CR02)
       {
-        label: "CV07 – Oversize Transfer Conveyor (→ CR02)",
+        label: "CV07 – Oversize Transfer Conveyor",
         equipment: [
           {
             assetNumber: "CV07",
@@ -455,7 +455,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
       },
       // CV09 – Oversize Transfer Conveyor (1000mm 18m→21m extended)
       {
-        label: "CV09 – Oversize Transfer Conveyor (extended)",
+        label: "CV09 – Oversize Transfer Conveyor",
         equipment: [
           {
             assetNumber: "CV09",
@@ -478,7 +478,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
       },
       // CV10 – Lump Oversize Transfer Conveyor (1000mm x 24m → CR03)
       {
-        label: "CV10 – Lump Oversize Transfer Conveyor (→ CR03)",
+        label: "CV10 – Lump Oversize Transfer Conveyor",
         equipment: [
           {
             assetNumber: "CV10",
