@@ -19,7 +19,7 @@ export type SpareCategory =
   | "Electrical Components"          // CC 07
   | "Conveying Components"           // CC 08
   | "Wear Parts"                     // CC 09
-  | "Structural & Mechanical"        // CC 10
+  | "Mechanical"                     // CC 10
   | "Hoses & Pipework"              // CC 11
   | "Seals & Gaskets"               // CC 12
   | "Filters"                        // CC 13
@@ -255,8 +255,8 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "complete assembly", "skid mounted",
   ],
 
-  // CC 10 – Structural & Mechanical
-  "Structural & Mechanical": [
+  // CC 10 – Mechanical
+  "Mechanical": [
     "coupling", "flexible coupling", "gear coupling", "chain coupling",
     "pulley", "sheave", "keyway", "key",
     "shaft", "spindle",
@@ -304,7 +304,7 @@ const CATEGORY_PRIORITY: SpareCategory[] = [
   "Power Generation & Distribution",
   "Lubrication System Components",
   "OEM Assemblies / Packages",
-  "Structural & Mechanical",
+  "Mechanical",
   "Consumables",
 ];
 
@@ -433,7 +433,7 @@ export const getCategoryColor = (category: SpareCategory | string): string => {
       return "bg-amber-100 text-amber-700 border-amber-200";
     case "Wear Parts":
       return "bg-amber-100 text-amber-700 border-amber-200";
-    case "Structural & Mechanical":
+    case "Mechanical":
       return "bg-zinc-100 text-zinc-700 border-zinc-200";
     case "Hoses & Pipework":
       return "bg-cyan-100 text-cyan-700 border-cyan-200";

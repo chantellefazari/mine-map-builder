@@ -12,7 +12,7 @@ export const PART_CATEGORIES = [
   "Electrical Components",          // CC 07
   "Conveying Components",           // CC 08
   "Wear Parts",                     // CC 09
-  "Structural & Mechanical",        // CC 10
+  "Mechanical",                     // CC 10
   "Hoses & Pipework",              // CC 11
   "Seals & Gaskets",               // CC 12
   "Filters",                        // CC 13
