@@ -472,9 +472,12 @@ export const SiteSparesCatalogue = () => {
             <SelectTrigger className="w-36">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-popover z-50">
               <SelectItem value="all">All Categories</SelectItem>
-              {paginated.availableCategories.map((cat) => (
+              {[
+                ...paginated.availableCategories,
+                ...(filterCategory !== "all" && !paginated.availableCategories.includes(filterCategory) ? [filterCategory] : []),
+              ].map((cat) => (
                 <SelectItem key={cat} value={cat}>{cat}</SelectItem>
               ))}
             </SelectContent>
