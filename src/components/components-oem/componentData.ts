@@ -63,7 +63,7 @@ const inferMetadataFromPidTag = (
       } else if (descLower.includes("gravity") || descLower.includes("knelson") || descLower.includes("shaking table") || descLower.includes("concentrate")) {
         subArea = "Gravity Circuit";
         system = "Gravity Circuit";
-        parentAsset = "GRV-SCR01 Gravity Circuit";
+        parentAsset = "GRV-SCN01 Gravity Circuit";
       } else if (descLower.includes("lime")) {
         subArea = "Reagents";
         system = "Reagents";
@@ -86,9 +86,9 @@ const inferMetadataFromPidTag = (
         else if (descLower.includes("tank 7") || descLower.includes("tk-007")) parentAsset = "CIP-TK07 CIP Tank 7";
         else if (descLower.includes("tank 8") || descLower.includes("tk-008")) parentAsset = "CIP-TK08 CIP Tank 8";
         else if (descLower.includes("trash screen")) parentAsset = "CPTS01 CIP Feed Trash Screen";
-        else if (descLower.includes("loaded carbon")) parentAsset = "SCR04 Loaded Carbon Screen";
-        else if (descLower.includes("safety screen")) parentAsset = "SCR03 Carbon Safety Screen";
-        else if (descLower.includes("intertank") || descLower.includes("inter tank")) parentAsset = "CIP-SCR-INT Intertank Screen";
+        else if (descLower.includes("loaded carbon")) parentAsset = "SCN04 Loaded Carbon Screen";
+        else if (descLower.includes("safety screen")) parentAsset = "SCN03 Carbon Safety Screen";
+        else if (descLower.includes("intertank") || descLower.includes("inter tank")) parentAsset = "CIP-SCN-INT Intertank Screen";
         else if (descLower.includes("tailings") || descLower.includes("tails")) parentAsset = "CIP-TAIL CIP Tailings";
         else parentAsset = "CIP-TK01 CIP Tanks";
       } else if (descLower.includes("compressor") || descLower.includes("air")) {
@@ -611,8 +611,8 @@ const baseComponentData: ComponentItem[] = [
 
   // === GOLD RECOVERY ===
   // Gravity Circuit
-  ...screenComponents("Gravity Screen", "SCR01", "SCR01 Gravity Concentrator", "REC", "Gravity Circuit", "Gravity Circuit"),
-  ...knelsonComponents("Knelson Concentrator", "KNC01", "SCR01 Gravity Concentrator", "REC", "Gravity Circuit"),
+  ...screenComponents("Gravity Screen", "SCN01", "SCN01 Gravity Concentrator", "REC", "Gravity Circuit", "Gravity Circuit"),
+  ...knelsonComponents("Knelson Concentrator", "KNC01", "SCN01 Gravity Concentrator", "REC", "Gravity Circuit"),
   ...pumpComponents("Gravity Concentrate Pump", "GCP01", "GCP01 Gravity Concentrate Pump", "REC", "Gravity Circuit", "Gravity Circuit"),
 
   // CIP
@@ -626,9 +626,9 @@ const baseComponentData: ComponentItem[] = [
   ...agitatorComponents("CIP Tank 8 Agitator", "CIP-TK08-AGT01", "CIP-TK01 CIP Tanks", "REC", "CIP", "CIP"),
   ...slurryPumpComponents("CIP Area Sump Pump Duty", "CIP-SUMP-PMP-D", "CIP-TK01 CIP Tanks", "REC", "CIP", "CIP"),
   ...slurryPumpComponents("CIP Area Sump Pump Standby", "CIP-SUMP-PMP-S", "CIP-TK01 CIP Tanks", "REC", "CIP", "CIP"),
-  ...screenComponents("Intertank Screen", "CIP-SCR-INT", "CIP-TK01 CIP Tanks", "REC", "CIP", "CIP"),
-  ...screenComponents("Carbon Safety Screen", "SCR03", "CIP-TK01 CIP Tanks", "REC", "CIP", "CIP"),
-  ...screenComponents("Loaded Carbon Screen", "SCR04", "CIP-TK01 CIP Tanks", "REC", "CIP", "CIP"),
+  ...screenComponents("Intertank Screen", "CIP-SCN-INT", "CIP-TK01 CIP Tanks", "REC", "CIP", "CIP"),
+  ...screenComponents("Carbon Safety Screen", "SCN03", "CIP-TK01 CIP Tanks", "REC", "CIP", "CIP"),
+  ...screenComponents("Loaded Carbon Screen", "SCN04", "CIP-TK01 CIP Tanks", "REC", "CIP", "CIP"),
   ...screenComponents("CIP Feed Trash Screen", "CPTS01", "CPTS01 CIP Feed Trash Screen", "REC", "CIP", "CIP"),
 
   // Elution
@@ -709,7 +709,7 @@ const inferMetadataFromDescription = (
   }
   // Gravity
   if (descLower.includes("gravity") || descLower.includes("knelson") || descLower.includes("shaking table") || descLower.includes("concentrate")) {
-    return { area: "REC", subArea: "Gravity Circuit", system: "Gravity Circuit", parentAsset: "GRV-SCR01 Gravity Circuit" };
+    return { area: "REC", subArea: "Gravity Circuit", system: "Gravity Circuit", parentAsset: "GRV-SCN01 Gravity Circuit" };
   }
   // Regeneration / Kiln
   if (descLower.includes("regen") || descLower.includes("kiln") || descLower.includes("quench")) {
@@ -769,7 +769,7 @@ const inferMetadataFromDescription = (
   }
   // Screen (generic fallback)
   if (descLower.includes("screen")) {
-    return { area: "COM", subArea: "Process", system: "Process", parentAsset: "SCR01 Screens" };
+    return { area: "COM", subArea: "Process", system: "Process", parentAsset: "SCN01 Screens" };
   }
   // Valve (generic fallback)
   if (descLower.includes("valve") || descLower.includes("actuator")) {
