@@ -81,8 +81,8 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                 <TreeBranch key={cruArea.areaCode} isLast={cruAreaIndex === crushingPlantAreas.length - 1}>
                   <CollapsibleTreeNode
                     id={`cru-area-${cruArea.areaCode}`}
-                    code={cruArea.areaCode}
-                    label={`${cruArea.areaCode.replace("CRU-", "")} – ${cruArea.label}`}
+                    code={cruArea.areaCode.replace("CRU-", "")}
+                    label={cruArea.label}
                     level="area"
                     areaType="CRU"
                     hasChildren={cruArea.parentAssets.length > 0}

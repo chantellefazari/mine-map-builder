@@ -69,15 +69,15 @@ const areaColors: Record<AreaType, string> = {
   CRU: "bg-amber-500",
 };
 
-// Per sub-area colours for CRU nodes (keyed on the full areaCode prop passed in)
+// Per sub-area colours for CRU nodes (keyed on short code: ROM, PRI, SCN, etc.)
 export const cruSubAreaColors: Record<string, string> = {
-  "CRU-ROM": "bg-orange-400",
-  "CRU-PRI": "bg-red-400",
-  "CRU-SCN": "bg-yellow-400 text-yellow-900",
-  "CRU-SEC": "bg-rose-400",
-  "CRU-STK": "bg-lime-500",
-  "CRU-CTL": "bg-sky-400",
-  "CRU-DUS": "bg-teal-400",
+  "ROM": "bg-amber-500",
+  "PRI": "bg-orange-500",
+  "SCN": "bg-yellow-500",
+  "SEC": "bg-amber-600",
+  "STK": "bg-orange-400",
+  "CTL": "bg-amber-700",
+  "DUS": "bg-yellow-600",
 };
 
 export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
