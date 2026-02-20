@@ -204,12 +204,12 @@ export const ProcessingPlantAssetTaggingSection = () => {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Format Examples</p>
             <div className="grid sm:grid-cols-2 gap-2">
               {[
-                { id: "PP01",  desc: "Process Water Pump" },
-                { id: "PP02",  desc: "Tailings Pump" },
-                { id: "TK01",  desc: "Reagent Tank" },
-                { id: "BM01",  desc: "Ball Mill" },
-                { id: "ARN01", desc: "Acid Wash Reagent Pump" },
-                { id: "ARN02", desc: "Eluate Pump" },
+                { id: "BM01",    desc: "Primary Ball Mill" },
+                { id: "MFC01",   desc: "Mill Feed Conveyor" },
+                { id: "CYFPA01", desc: "Cyclone Feed Pump A" },
+                { id: "CV01",    desc: "Transfer Conveyor" },
+                { id: "CMIX01",  desc: "Cyanide Mixing Tank" },
+                { id: "LDOS01",  desc: "Lime Dosing System" },
               ].map(({ id, desc }) => (
                 <div key={id} className="flex items-center gap-3 bg-muted/50 rounded-md px-3 py-2">
                   <code className="text-primary font-mono text-base font-black tracking-widest min-w-[56px]">{id}</code>
@@ -294,35 +294,35 @@ export const ProcessingPlantAssetTaggingSection = () => {
             Description below in smaller text. Nothing else on the tag.
           </p>
 
-          {/* Standard size examples */}
+          {/* Standard size examples — flat surface large equipment */}
           <div className="space-y-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Flat Surface — 100mm × 50mm Plate (Standard)</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
-              <SimplifiedTagMockup assetId="BM01" description="Ball Mill" size="standard" holePosition="none" />
-              <SimplifiedTagMockup assetId="TK01" description="Reagent Tank" size="standard" holePosition="none" />
-              <SimplifiedTagMockup assetId="TH01" description="Thickener" size="standard" holePosition="none" />
+              <SimplifiedTagMockup assetId="BM01" description="Primary Ball Mill" size="standard" holePosition="none" />
+              <SimplifiedTagMockup assetId="MFC01" description="Mill Feed Conveyor" size="standard" holePosition="none" />
+              <SimplifiedTagMockup assetId="CMIX01" description="Cyanide Mixing Tank" size="standard" holePosition="none" />
             </div>
           </div>
 
           <Separator />
 
-          {/* Small label examples */}
+          {/* Small label examples — instruments, valves, sensors */}
           <div className="space-y-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Small Assets — 75mm × 30mm Label</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
-              <SimplifiedTagMockup assetId="ARN01" description="Reagent Pump A" size="small" holePosition="none" />
-              <SimplifiedTagMockup assetId="ARN02" description="Eluate Pump" size="small" holePosition="none" />
+              <SimplifiedTagMockup assetId="LDOS01" description="Lime Dosing System" size="small" holePosition="none" />
+              <SimplifiedTagMockup assetId="FLOC01" description="Floc System" size="small" holePosition="none" />
             </div>
           </div>
 
           <Separator />
 
-          {/* Hanging tags — pumps / motors */}
+          {/* Hanging tags — pumps / motors with hole punch */}
           <div className="space-y-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Hanging Assets (Pumps / Motors) — 100mm × 50mm with Single Hole Punch</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
-              <SimplifiedTagMockup assetId="PP01" description="Process Water Pump" size="large" holePosition="right" />
-              <SimplifiedTagMockup assetId="PP02" description="Tailings Pump" size="large" holePosition="left" />
+              <SimplifiedTagMockup assetId="CYFPA01" description="Cyclone Feed Pump A" size="large" holePosition="right" />
+              <SimplifiedTagMockup assetId="RWT01" description="Raw Water Tank Pump" size="large" holePosition="left" />
             </div>
           </div>
 
