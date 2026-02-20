@@ -83,25 +83,6 @@ export const crushingPlantAreas: CRUSubArea[] = [
           { assetNumber: "ROM-FDR01-MCC01", name: "ROM-FDR01 – MCC Cell / Starter" },
         ],
       },
-      {
-        label: "Overband Magnet",
-        equipment: [
-          {
-            assetNumber: "ROM-MAG01",
-            name: "ROM-MAG01 – Overband Magnet (Metal Removal – after feeder discharge, before CR01)",
-            components: [
-              { componentCode: "ROM-MAG01-MTR01", componentType: "MTR", componentName: "Magnet Drive Motor", manufacturer: "TBC", voltage: "415V" },
-              { componentCode: "ROM-MAG01-BLT01", componentType: "BLT", componentName: "Magnet Belt (self-cleaning)", manufacturer: "TBC" },
-              { componentCode: "ROM-MAG01-FRM01", componentType: "FRM", componentName: "Magnet Frame & Suspension Structure", manufacturer: "TBC" },
-              { componentCode: "ROM-MAG01-COI01", componentType: "COI", componentName: "Electromagnetic Coil Assembly", manufacturer: "TBC" },
-              { componentCode: "ROM-MAG01-GRD01", componentType: "GRD", componentName: "Drive & Coil Guard", manufacturer: "TBC" },
-              { componentCode: "ROM-MAG01-PLT01", componentType: "PLT", componentName: "Access Platform & Walkway", manufacturer: "TBC" },
-              { componentCode: "ROM-MAG01-SNS01", componentType: "SNS", componentName: "Metal Detection Sensor", manufacturer: "TBC" },
-            ],
-          },
-          { assetNumber: "ROM-MAG01-MCC01", name: "ROM-MAG01 – MCC Cell / Starter" },
-        ],
-      },
     ],
   },
 
@@ -137,6 +118,25 @@ export const crushingPlantAreas: CRUSubArea[] = [
             ],
           },
           { assetNumber: "CR01-MCC01", name: "CR01 – MCC Cell / Starter" },
+        ],
+      },
+      {
+        label: "Overband Magnet",
+        equipment: [
+          {
+            assetNumber: "PRI-MAG01",
+            name: "PRI-MAG01 – Overband Magnet (CR01 discharge → before CV01 Forward Conveyor)",
+            components: [
+              { componentCode: "PRI-MAG01-MTR01", componentType: "MTR", componentName: "Magnet Drive Motor", manufacturer: "TBC", voltage: "415V" },
+              { componentCode: "PRI-MAG01-BLT01", componentType: "BLT", componentName: "Magnet Belt (self-cleaning)", manufacturer: "TBC" },
+              { componentCode: "PRI-MAG01-FRM01", componentType: "FRM", componentName: "Magnet Frame & Suspension Structure", manufacturer: "TBC" },
+              { componentCode: "PRI-MAG01-COI01", componentType: "COI", componentName: "Electromagnetic Coil Assembly", manufacturer: "TBC" },
+              { componentCode: "PRI-MAG01-GRD01", componentType: "GRD", componentName: "Drive & Coil Guard", manufacturer: "TBC" },
+              { componentCode: "PRI-MAG01-PLT01", componentType: "PLT", componentName: "Access Platform & Walkway", manufacturer: "TBC" },
+              { componentCode: "PRI-MAG01-SNS01", componentType: "SNS", componentName: "Metal Detection Sensor", manufacturer: "TBC" },
+            ],
+          },
+          { assetNumber: "PRI-MAG01-MCC01", name: "PRI-MAG01 – MCC Cell / Starter" },
         ],
       },
       {
