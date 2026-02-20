@@ -3,9 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Eye, Box, Database, Layout, AlertTriangle } from "lucide-react";
+import { Eye, Box, Database, Layout, AlertTriangle, TreePine } from "lucide-react";
 import { StoreLayout2D } from "./StoreLayout2D";
 import { StoreLayout3D } from "./StoreLayout3D";
+import { StoresAssetTree } from "./StoresAssetTree";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -113,6 +114,15 @@ export const StoreVisualisation = () => {
         ) : (
           <StoreLayout3D liveMode={liveMode} sparesData={sparesData} />
         )}
+      </div>
+
+      {/* Stores Tree Navigator */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 pt-2">
+          <TreePine className="w-4 h-4 text-primary" />
+          <h3 className="text-sm font-semibold text-foreground">Container Navigator</h3>
+        </div>
+        <StoresAssetTree />
       </div>
     </div>
   );
