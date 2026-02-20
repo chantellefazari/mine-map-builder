@@ -376,7 +376,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Sub-Asset (Motor) — Standard 80mm × 30mm</p>
               <StainlessTagMockup
                 assetNumber="TCMG-REC-CV-203-MTR-01"
-                description="Drive Motor"
+                description="Drive Motor  MTR-01"
                 plant="Processing Plant"
               />
             </div>
@@ -463,9 +463,9 @@ export const ProcessingPlantAssetTaggingSection = () => {
                 </div>
                 <div className="ml-6 space-y-1.5 border-l-2 border-primary/20 pl-4">
                   {[
-                    { tag: "TCMG-COM-CV-02-MTR-01", desc: "Drive Motor" },
-                    { tag: "TCMG-COM-CV-02-GBX-01", desc: "Gearbox" },
-                    { tag: "TCMG-COM-CV-02-PNL-01", desc: "Control Panel" },
+                    { tag: "TCMG-COM-CV-02-MTR-01", desc: "Drive Motor  MTR-01" },
+                    { tag: "TCMG-COM-CV-02-GBX-01", desc: "Gearbox  GBX-01" },
+                    { tag: "TCMG-COM-CV-02-PNL-01", desc: "Control Panel  PNL-01" },
                   ].map(({ tag, desc }) => (
                     <div key={tag} className="flex items-center gap-3">
                       <Badge variant="secondary" className="text-xs flex-shrink-0">Sub</Badge>
@@ -484,7 +484,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
                 </div>
                 <div className="ml-6 space-y-1.5 border-l-2 border-primary/20 pl-4">
                   {[
-                    { tag: "TCMG-UTL-PU-101-MTR-01", desc: "Drive Motor" },
+                    { tag: "TCMG-UTL-PU-101-MTR-01", desc: "Drive Motor  MTR-01" },
                   ].map(({ tag, desc }) => (
                     <div key={tag} className="flex items-center gap-3">
                       <Badge variant="secondary" className="text-xs flex-shrink-0">Sub</Badge>
