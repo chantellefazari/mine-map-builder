@@ -176,19 +176,55 @@ export const ProcessingPlantAssetTaggingSection = () => {
             The tag number must mirror the asset record already configured in Minesite AI. No separate numbering scheme is introduced.
           </p>
 
-          {/* Layout spec */}
-          <div className="bg-muted rounded-lg p-4 font-mono text-sm space-y-3">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest">Tag Line Layout</p>
-            <div className="space-y-1">
-              <p className="font-extrabold text-foreground text-base tracking-wider">LINE 1 — ASSET NUMBER</p>
+          {/* Layout spec — Parent asset */}
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Parent Asset Tag Format</p>
+            <div className="bg-muted rounded-lg p-4 font-mono text-sm space-y-1">
+              <p className="font-extrabold text-foreground text-base tracking-wider">LINE 1 — FUNCTIONAL LOCATION</p>
               <p className="font-semibold text-foreground/80 text-sm">Line 2 — Equipment Description</p>
               <p className="text-muted-foreground text-xs">Line 3 (optional) — Processing Plant</p>
             </div>
+            <div className="bg-muted/40 rounded-lg px-4 py-3 font-mono text-sm space-y-0.5">
+              <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Example</p>
+              <p className="font-black text-foreground tracking-widest text-base">TCMG-COM-CV-02</p>
+              <p className="font-semibold text-foreground/80">Gold Recovery Conveyor</p>
+              <p className="text-muted-foreground text-xs">Processing Plant</p>
+            </div>
           </div>
 
-          {/* Examples */}
+          <Separator />
+
+          {/* Layout spec — Sub-asset */}
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Sub-Asset Tag Format</p>
+            <p className="text-sm text-muted-foreground">
+              Sub-assets append their component type suffix directly to the parent's functional location. The tag carries the full path so the relationship is self-evident from the tag alone.
+            </p>
+            <div className="bg-muted rounded-lg p-4 font-mono text-sm space-y-1">
+              <p className="font-extrabold text-foreground text-base tracking-wider">LINE 1 — PARENT FL + COMPONENT SUFFIX</p>
+              <p className="font-semibold text-foreground/80 text-sm">Line 2 — Component Description</p>
+              <p className="text-muted-foreground text-xs">Line 3 (optional) — Processing Plant</p>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-2">
+              {[
+                { tag: "TCMG-COM-CV-02-MTR-01", desc: "Drive Motor" },
+                { tag: "TCMG-COM-CV-02-GBX-01", desc: "Gearbox" },
+                { tag: "TCMG-REC-TK-01-PNL-01", desc: "Control Panel" },
+                { tag: "TCMG-UTL-PU-101-MTR-01", desc: "Pump Motor" },
+              ].map((ex) => (
+                <div key={ex.tag} className="flex flex-col gap-0.5 bg-muted/50 rounded-md px-3 py-2">
+                  <code className="text-primary font-mono text-xs font-bold">{ex.tag}</code>
+                  <span className="text-xs text-muted-foreground">{ex.desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Parent asset examples */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Examples — Processing Plant</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Parent Asset Examples — Processing Plant</p>
             <div className="grid sm:grid-cols-2 gap-2">
               {[
                 { tag: "TCMG-COM-PU-101", desc: "Process Water Pump" },
@@ -209,8 +245,8 @@ export const ProcessingPlantAssetTaggingSection = () => {
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Format Rules</p>
             <RuleRow label="Exact match">Asset number on tag must match the Minesite AI system record exactly — no abbreviations</RuleRow>
+            <RuleRow label="Sub-asset suffix">Sub-asset tags extend the parent FL — e.g. parent <code className="font-mono text-xs bg-muted px-1 rounded">TCMG-COM-CV-02</code> → motor <code className="font-mono text-xs bg-muted px-1 rounded">TCMG-COM-CV-02-MTR-01</code></RuleRow>
             <RuleRow label="No manual numbering">All asset numbers are system-generated — never assigned manually outside the system</RuleRow>
-            <RuleRow label="Sub-assets">Motors, gearboxes, and panels must carry their own tag if registered in the hierarchy</RuleRow>
             <RuleRow label="No duplicates">System enforces uniqueness — no two tags may carry the same number</RuleRow>
           </div>
 
@@ -231,6 +267,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
                   ["Area Code", "COM / REC / TAIL / UTL", "Area from configured hierarchy (Level 3)"],
                   ["Equipment Prefix", "PU / CV / TK / BM / GEN…", "Equipment type — must match hierarchy record"],
                   ["Sequential No.", "01 / 101 / 203…", "Assigned by system — not manually assigned"],
+                  ["Component Suffix", "MTR-01 / GBX-01 / PNL-01…", "Sub-assets only — appended after parent FL with hyphen"],
                 ].map(([seg, val, desc]) => (
                   <tr key={seg} className="hover:bg-muted/30">
                     <td className="px-3 py-2 font-mono text-xs font-bold text-primary">{seg}</td>
@@ -325,12 +362,21 @@ export const ProcessingPlantAssetTaggingSection = () => {
           </p>
 
           <div className="flex flex-wrap gap-6 items-end py-2">
-            {/* Standard size */}
+            {/* Parent asset */}
             <div className="space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Standard — 80mm × 30mm</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Parent Asset — Standard 80mm × 30mm</p>
               <StainlessTagMockup
                 assetNumber="TCMG-REC-CV-203"
                 description="Gold Recovery Conveyor"
+                plant="Processing Plant"
+              />
+            </div>
+            {/* Sub-asset motor */}
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Sub-Asset (Motor) — Standard 80mm × 30mm</p>
+              <StainlessTagMockup
+                assetNumber="TCMG-REC-CV-203-MTR-01"
+                description="Drive Motor"
                 plant="Processing Plant"
               />
             </div>
@@ -403,25 +449,79 @@ export const ProcessingPlantAssetTaggingSection = () => {
           <Separator />
 
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Parent–Child Tag Example</p>
-            <div className="space-y-1 font-mono text-sm bg-muted/40 rounded-lg p-4">
-              <div className="flex items-center gap-3">
-                <Badge variant="outline" className="text-xs border-primary/30 text-primary">Parent</Badge>
-                <code className="text-foreground font-bold">TCMG-COM-CV-02</code>
-                <span className="text-xs text-muted-foreground">Conveyor 02</span>
-              </div>
-              <div className="ml-6 space-y-1 border-l-2 border-primary/20 pl-4 mt-2">
-                <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="text-xs">Sub-Asset</Badge>
-                  <code className="text-foreground">TCMG-COM-CV-02-MTR-01</code>
-                  <span className="text-xs text-muted-foreground">Drive Motor</span>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Parent–Child Tag Structure</p>
+            <p className="text-sm text-muted-foreground mb-3">
+              The sub-asset tag is formed by appending the component type suffix to the parent's functional location. This makes the relationship self-evident from the tag itself.
+            </p>
+            <div className="space-y-3 font-mono text-sm bg-muted/40 rounded-lg p-4">
+              {/* Conveyor example */}
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Badge variant="outline" className="text-xs border-primary/30 text-primary flex-shrink-0">Parent</Badge>
+                  <code className="text-foreground font-bold">TCMG-COM-CV-02</code>
+                  <span className="text-xs text-muted-foreground">Gold Recovery Conveyor</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="text-xs">Sub-Asset</Badge>
-                  <code className="text-foreground">TCMG-COM-CV-02-GBX-01</code>
-                  <span className="text-xs text-muted-foreground">Gearbox</span>
+                <div className="ml-6 space-y-1.5 border-l-2 border-primary/20 pl-4">
+                  {[
+                    { tag: "TCMG-COM-CV-02-MTR-01", desc: "Drive Motor" },
+                    { tag: "TCMG-COM-CV-02-GBX-01", desc: "Gearbox" },
+                    { tag: "TCMG-COM-CV-02-PNL-01", desc: "Control Panel" },
+                  ].map(({ tag, desc }) => (
+                    <div key={tag} className="flex items-center gap-3">
+                      <Badge variant="secondary" className="text-xs flex-shrink-0">Sub</Badge>
+                      <code className="text-foreground text-xs">{tag}</code>
+                      <span className="text-xs text-muted-foreground">{desc}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
+              {/* Pump example */}
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Badge variant="outline" className="text-xs border-primary/30 text-primary flex-shrink-0">Parent</Badge>
+                  <code className="text-foreground font-bold">TCMG-UTL-PU-101</code>
+                  <span className="text-xs text-muted-foreground">Process Water Pump</span>
+                </div>
+                <div className="ml-6 space-y-1.5 border-l-2 border-primary/20 pl-4">
+                  {[
+                    { tag: "TCMG-UTL-PU-101-MTR-01", desc: "Drive Motor" },
+                  ].map(({ tag, desc }) => (
+                    <div key={tag} className="flex items-center gap-3">
+                      <Badge variant="secondary" className="text-xs flex-shrink-0">Sub</Badge>
+                      <code className="text-foreground text-xs">{tag}</code>
+                      <span className="text-xs text-muted-foreground">{desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            {/* Suffix reference table */}
+            <div className="mt-4 overflow-x-auto">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Approved Component Suffix Codes</p>
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="bg-muted/60">
+                    <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">Suffix</th>
+                    <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">Component Type</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {[
+                    ["MTR-01", "Electric motor"],
+                    ["GBX-01", "Gearbox / gearmotor"],
+                    ["PNL-01", "Electrical panel / MCC section"],
+                    ["PLC-01", "PLC / control cabinet"],
+                    ["LUB-01", "Lube unit"],
+                    ["HYD-01", "Hydraulic unit"],
+                    ["INS-01", "Critical standalone instrument"],
+                  ].map(([suffix, type]) => (
+                    <tr key={suffix} className="hover:bg-muted/30">
+                      <td className="px-3 py-2 font-mono text-xs font-bold text-primary">{suffix}</td>
+                      <td className="px-3 py-2 text-xs text-muted-foreground">{type}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </CardContent>
