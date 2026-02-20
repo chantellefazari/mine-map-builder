@@ -1,9 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   Tag,
-  QrCode,
   Shield,
   MapPin,
   Layers,
@@ -12,6 +11,9 @@ import {
   CheckCircle2,
   FileText,
   Download,
+  Factory,
+  Type,
+  Wrench,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -44,6 +46,66 @@ const WarningRow = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
+/** Rendered stainless steel tag mockup — no QR */
+const StainlessTagMockup = ({
+  assetNumber,
+  description,
+  plant = "Processing Plant",
+}: {
+  assetNumber: string;
+  description: string;
+  plant?: string;
+}) => (
+  <div
+    className="relative inline-flex flex-col justify-center px-6 py-4 rounded-lg select-none"
+    style={{
+      minWidth: 280,
+      minHeight: 90,
+      background: "linear-gradient(135deg, #c8cfd6 0%, #e8edf2 40%, #d0d8df 70%, #bec8d0 100%)",
+      boxShadow:
+        "0 2px 8px 0 rgba(0,0,0,0.22), inset 0 1px 2px rgba(255,255,255,0.55), inset 0 -1px 2px rgba(0,0,0,0.1)",
+      border: "1.5px solid #a8b4be",
+    }}
+  >
+    {/* Brushed texture overlay */}
+    <div
+      className="absolute inset-0 rounded-lg pointer-events-none"
+      style={{
+        background:
+          "repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.07) 2px, rgba(255,255,255,0.07) 4px)",
+        opacity: 0.6,
+      }}
+    />
+    {/* Mounting hole indicator */}
+    <div
+      className="absolute top-2 right-2 w-3 h-3 rounded-full border border-[#8a9aa6]"
+      style={{ background: "radial-gradient(circle, #6b7f8a 30%, #a0b0ba 100%)" }}
+      title="Mounting hole"
+    />
+    {/* Tag content */}
+    <div className="relative z-10 flex flex-col gap-0.5">
+      <span
+        className="font-mono font-black tracking-widest leading-tight"
+        style={{ fontSize: 18, color: "#1a2228", letterSpacing: "0.12em" }}
+      >
+        {assetNumber}
+      </span>
+      <span
+        className="font-mono font-semibold tracking-wide"
+        style={{ fontSize: 12, color: "#2c3a42" }}
+      >
+        {description}
+      </span>
+      <span
+        className="font-mono uppercase tracking-widest"
+        style={{ fontSize: 9, color: "#4a5e68", marginTop: 2 }}
+      >
+        {plant}
+      </span>
+    </div>
+  </div>
+);
+
 export const ProcessingPlantAssetTaggingSection = () => {
   const handleExportPDF = () => {
     window.print();
@@ -65,10 +127,10 @@ export const ProcessingPlantAssetTaggingSection = () => {
                 Processing Plant — Asset Tagging Standard
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                Format + Physical Design Specification
+                Format + Physical Design Specification · No QR Technology
               </p>
               <p className="text-xs text-muted-foreground/70 mt-3 italic border-l-2 border-primary/30 pl-3">
-                Crushing Plant is excluded from this standard. This document applies to the Processing Plant facility only.
+                Crushing Plant is excluded from this standard. Processing Plant only.
               </p>
             </div>
             <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={handleExportPDF}>
@@ -86,16 +148,17 @@ export const ProcessingPlantAssetTaggingSection = () => {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
-            This standard ensures physical asset identification aligns precisely with the digital asset tree
-            configured in the Minesite AI system. It is designed to:
+            This standard defines a simple, durable, and cost-effective physical tagging system for the Processing Plant.
+            It is designed to be fabricable internally if required and robust for active mining conditions — with no reliance on QR technology.
           </p>
           <div className="grid sm:grid-cols-2 gap-2">
             {[
-              "Physical asset matches digital asset tree at all levels",
-              "One-to-one traceability between tag and system record",
-              "Clean integration with Minesite AI for PM, work orders, and parts",
-              "Elimination of informal or handwritten tagging practices",
-              "Professional mining-specification physical identification",
+              "Physical asset identity aligned to existing Processing asset tree",
+              "Asset number matches Minesite AI system record exactly",
+              "Simple enough to fabricate internally on demand",
+              "Robust performance in dusty, wet, and corrosive conditions",
+              "Eliminates informal handwritten or adhesive label practices",
+              "Professional mining-specification identification standard",
             ].map((item, i) => (
               <RuleRow key={i}>{item}</RuleRow>
             ))}
@@ -103,34 +166,35 @@ export const ProcessingPlantAssetTaggingSection = () => {
         </CardContent>
       </Card>
 
-      {/* 2. Asset Tag Format */}
+      {/* 2. Tag Format */}
       <Card>
         <CardHeader className="pb-2">
           <SectionHeading icon={Tag} number="2" title="Asset Tag Format — Processing Plant" />
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            The asset tag format reflects the existing Processing Plant hierarchy already configured in the system.
-            No separate numbering scheme is introduced — the tag must mirror the system record exactly.
+            The tag number must mirror the asset record already configured in Minesite AI. No separate numbering scheme is introduced.
           </p>
 
-          {/* Format display */}
-          <div className="bg-muted rounded-lg p-4 font-mono text-sm space-y-2">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Standard Format</p>
-            <p className="text-foreground font-bold text-base tracking-wider">
-              [Site Code] – [Area Code] – [Equip. Prefix] – [Sequential No.]
-            </p>
+          {/* Layout spec */}
+          <div className="bg-muted rounded-lg p-4 font-mono text-sm space-y-3">
+            <p className="text-xs text-muted-foreground uppercase tracking-widest">Tag Line Layout</p>
+            <div className="space-y-1">
+              <p className="font-extrabold text-foreground text-base tracking-wider">LINE 1 — ASSET NUMBER</p>
+              <p className="font-semibold text-foreground/80 text-sm">Line 2 — Equipment Description</p>
+              <p className="text-muted-foreground text-xs">Line 3 (optional) — Processing Plant</p>
+            </div>
           </div>
 
           {/* Examples */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Examples — Processing Plant Only</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Examples — Processing Plant</p>
             <div className="grid sm:grid-cols-2 gap-2">
               {[
-                { tag: "TCMG-COM-PU-101", desc: "Comminution — Pump 101" },
-                { tag: "TCMG-REC-CV-203", desc: "Gold Recovery — Conveyor 203" },
-                { tag: "TCMG-TAIL-PU-305", desc: "Tailings — Pump 305" },
-                { tag: "TCMG-UTL-TK-01", desc: "Utilities — Tank 01" },
+                { tag: "TCMG-COM-PU-101", desc: "Process Water Pump" },
+                { tag: "TCMG-REC-CV-203", desc: "Gold Recovery Conveyor" },
+                { tag: "TCMG-TAIL-PU-305", desc: "Tailings Pump 305" },
+                { tag: "TCMG-UTL-TK-01", desc: "Utilities Tank 01" },
               ].map((ex) => (
                 <div key={ex.tag} className="flex items-center gap-3 bg-muted/50 rounded-md px-3 py-2">
                   <code className="text-primary font-mono text-sm font-bold">{ex.tag}</code>
@@ -142,32 +206,31 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           <Separator />
 
-          {/* Format rules */}
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Format Rules</p>
-            <RuleRow label="Prefix">Must match the existing equipment type prefix configured in the hierarchy</RuleRow>
-            <RuleRow label="Numbering">No manual numbering outside the system — system record is the source of truth</RuleRow>
-            <RuleRow label="Exact match">Asset number on tag must match the system record exactly — no abbreviations</RuleRow>
-            <RuleRow label="Sub-assets">Motors, gearboxes, and panels must carry their own tag if configured in the hierarchy</RuleRow>
+            <RuleRow label="Exact match">Asset number on tag must match the Minesite AI system record exactly — no abbreviations</RuleRow>
+            <RuleRow label="No manual numbering">All asset numbers are system-generated — never assigned manually outside the system</RuleRow>
+            <RuleRow label="Sub-assets">Motors, gearboxes, and panels must carry their own tag if registered in the hierarchy</RuleRow>
+            <RuleRow label="No duplicates">System enforces uniqueness — no two tags may carry the same number</RuleRow>
           </div>
 
-          {/* Segment definitions */}
+          {/* Segment table */}
           <div className="overflow-x-auto">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Segment Definitions</p>
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-muted/60">
                   <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">Segment</th>
-                  <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">Value</th>
+                  <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">Example Value</th>
                   <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">Description</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
                 {[
                   ["Site Code", "TCMG", "Tennant Creek Mining Gold — fixed for all tags"],
-                  ["Area Code", "COM / REC / TAIL / UTL / SITE / SUP", "Area code from configured hierarchy (Level 3)"],
-                  ["Equipment Prefix", "PU / CV / TK / BM / GEN…", "Equipment type prefix — must match hierarchy record"],
-                  ["Sequential No.", "01 / 101 / 203…", "Sequential identifier — assigned by system, not manually"],
+                  ["Area Code", "COM / REC / TAIL / UTL", "Area from configured hierarchy (Level 3)"],
+                  ["Equipment Prefix", "PU / CV / TK / BM / GEN…", "Equipment type — must match hierarchy record"],
+                  ["Sequential No.", "01 / 101 / 203…", "Assigned by system — not manually assigned"],
                 ].map(([seg, val, desc]) => (
                   <tr key={seg} className="hover:bg-muted/30">
                     <td className="px-3 py-2 font-mono text-xs font-bold text-primary">{seg}</td>
@@ -192,97 +255,135 @@ export const ProcessingPlantAssetTaggingSection = () => {
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Material</p>
             <div className="grid sm:grid-cols-2 gap-2">
-              <RuleRow label="Material">316 Stainless Steel</RuleRow>
-              <RuleRow label="Finish">Brushed finish</RuleRow>
-              <RuleRow label="Marking">Laser engraved — not printed or adhesive</RuleRow>
-              <RuleRow label="Durability">Permanent marking, rated for industrial outdoor environments</RuleRow>
+              <RuleRow label="Material">316 Stainless Steel — corrosion and chemical resistant</RuleRow>
+              <RuleRow label="Finish">Brushed finish — reduces glare and shows engraving clearly</RuleRow>
+              <RuleRow label="Marking">Laser engraved — not printed, painted, or adhesive labelled</RuleRow>
+              <RuleRow label="Grade">Industrial grade — rated for outdoor mining environments</RuleRow>
             </div>
           </div>
 
           <Separator />
 
-          {/* Size */}
+          {/* Dimensions */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Minimum Tag Dimensions</p>
-            <div className="grid sm:grid-cols-2 gap-2">
-              <RuleRow label="Width">80 mm minimum</RuleRow>
-              <RuleRow label="Height">30 mm minimum</RuleRow>
-              <RuleRow label="Corners">Rounded — no sharp edges</RuleRow>
-              <RuleRow label="Fixing">Riveted, bolted, or cable-tied — adhesive not permitted for primary fixing</RuleRow>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Layout */}
-          <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Engraving Layout — Standard</p>
-            <p className="text-sm text-muted-foreground mb-3">
-              The tag is divided into two zones: QR code on the left, text fields on the right.
-            </p>
-
-            {/* Visual layout mockup */}
-            <div className="border-2 border-border rounded-lg p-4 bg-muted/30 font-mono text-sm max-w-xl">
-              <div className="flex items-stretch gap-4">
-                {/* QR mock */}
-                <div className="flex-shrink-0 w-20 h-20 border-2 border-foreground/40 rounded flex items-center justify-center bg-background">
-                  <div className="text-center">
-                    <QrCode className="w-10 h-10 text-foreground/60 mx-auto" />
-                    <p className="text-[9px] text-muted-foreground mt-1">QR CODE</p>
-                    <p className="text-[8px] text-muted-foreground">LASER ENGRAVED</p>
-                  </div>
-                </div>
-                {/* Text side */}
-                <div className="flex flex-col justify-center gap-1">
-                  <p className="text-base font-extrabold text-foreground tracking-widest">TCMG-COM-PU-101</p>
-                  <p className="text-sm text-foreground/80">Process Water Pump</p>
-                  <p className="text-xs text-muted-foreground">Processing Plant — COM Area</p>
-                </div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Dimensions</p>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="bg-muted/40 rounded-lg p-3 space-y-2">
+                <p className="text-xs font-bold text-foreground uppercase tracking-wide">Standard Size</p>
+                <RuleRow label="Width">80 mm minimum</RuleRow>
+                <RuleRow label="Height">30 mm minimum</RuleRow>
+                <RuleRow label="Corners">Rounded — no sharp edges</RuleRow>
+              </div>
+              <div className="bg-muted/40 rounded-lg p-3 space-y-2">
+                <p className="text-xs font-bold text-foreground uppercase tracking-wide">Heavy Equipment Option</p>
+                <RuleRow label="Width">100 mm</RuleRow>
+                <RuleRow label="Height">40 mm</RuleRow>
+                <RuleRow label="Use">Large rotating equipment, tanks, structural frames</RuleRow>
               </div>
             </div>
-
-            <div className="mt-4 space-y-1">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Field Definitions</p>
-              <RuleRow label="Left zone">QR code — laser engraved, minimum 18 × 18 mm readable size</RuleRow>
-              <RuleRow label="Top line (bold)">Asset number — large font, all caps, matches system record</RuleRow>
-              <RuleRow label="Second line">Equipment name — as registered in hierarchy</RuleRow>
-              <RuleRow label="Third line (optional)">Area / Plant — Processing Plant + Area code</RuleRow>
-            </div>
           </div>
 
           <Separator />
 
-          {/* QR linking */}
+          {/* Mounting options */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">QR Code Integration</p>
-            <p className="text-sm text-muted-foreground mb-3">
-              Each QR code must resolve directly to the asset record within Minesite AI, providing access to:
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Mounting Options</p>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="border border-border rounded-lg p-3 space-y-2">
+                <p className="text-xs font-bold text-foreground uppercase tracking-wide flex items-center gap-1">
+                  <Badge variant="outline" className="text-xs">Option A</Badge> Adhesive Backed
+                </p>
+                <RuleRow>Industrial VHB adhesive backing</RuleRow>
+                <RuleRow>Used on flat surfaces — panels, tanks, frames</RuleRow>
+                <RuleRow>Suitable where drilling is not practical</RuleRow>
+              </div>
+              <div className="border border-border rounded-lg p-3 space-y-2">
+                <p className="text-xs font-bold text-foreground uppercase tracking-wide flex items-center gap-1">
+                  <Badge variant="outline" className="text-xs">Option B</Badge> Hole Punch
+                </p>
+                <RuleRow>5mm hole punched in one corner</RuleRow>
+                <RuleRow>Cable tie or stainless ring mounting</RuleRow>
+                <RuleRow>Used on pumps, motors, and moving equipment</RuleRow>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground mt-3 italic pl-1">
+              Mounting type is determined during installation — not pre-specified on order.
             </p>
-            <div className="grid sm:grid-cols-2 gap-2">
-              <RuleRow>Asset number and full description</RuleRow>
-              <RuleRow>Physical location and area</RuleRow>
-              <RuleRow>Active PM schedule</RuleRow>
-              <RuleRow>Work order history</RuleRow>
-              <RuleRow>Parts BOM (Bill of Materials)</RuleRow>
-              <RuleRow>Attached documentation and drawings</RuleRow>
-            </div>
-            <div className="mt-3">
-              <WarningRow>QR code must not expose backend URLs, database identifiers, or internal system paths publicly.</WarningRow>
-              <WarningRow>QR destination must be editable via the system if the asset record URL changes — no hardcoded links.</WarningRow>
-            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* 4. Sub-Asset Tagging */}
+      {/* 4. Visual Example */}
       <Card>
         <CardHeader className="pb-2">
-          <SectionHeading icon={Layers} number="4" title="Sub-Asset Tagging Rules — Processing Plant" />
+          <SectionHeading icon={Tag} number="4" title="Visual Tag Example — Rendered Mockup" />
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            A separate physical tag is required for any sub-asset that is individually registered in the hierarchy.
-            The parent–child relationship must remain linked within the system.
+            The following renders represent the approved tag appearance. Brushed 316 stainless, laser-engraved black lettering, no QR code.
+            Asset number is visually dominant — larger and bolder than the description line.
+          </p>
+
+          <div className="flex flex-wrap gap-6 items-end py-2">
+            {/* Standard size */}
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Standard — 80mm × 30mm</p>
+              <StainlessTagMockup
+                assetNumber="TCMG-REC-CV-203"
+                description="Gold Recovery Conveyor"
+                plant="Processing Plant"
+              />
+            </div>
+            {/* Heavy equipment size */}
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Heavy Equipment — 100mm × 40mm</p>
+              <div style={{ transform: "scale(1.18)", transformOrigin: "left bottom" }}>
+                <StainlessTagMockup
+                  assetNumber="TCMG-COM-PU-101"
+                  description="Process Water Pump"
+                  plant="Processing Plant"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-muted/40 rounded-lg p-4 text-xs text-muted-foreground space-y-1 mt-2">
+            <p className="font-semibold text-foreground text-xs uppercase tracking-widest mb-2">Mockup Notes</p>
+            <p>• Brushed stainless gradient simulates actual brushed 316 SS surface texture</p>
+            <p>• Mounting hole shown top-right corner (Option B configuration)</p>
+            <p>• Asset number rendered bold and larger — approximately 20–30% bigger than description</p>
+            <p>• No QR code — text-only format as per this standard</p>
+            <p>• Actual engraved tags will have black-filled laser engraving on metal substrate</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 5. Font & Engraving Standard */}
+      <Card>
+        <CardHeader className="pb-2">
+          <SectionHeading icon={Type} number="5" title="Font & Engraving Standard" />
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid sm:grid-cols-2 gap-2">
+            <RuleRow label="Font style">Sans-serif industrial font (e.g. Arial, DIN, or equivalent)</RuleRow>
+            <RuleRow label="Asset number size">20–30% larger than description line — visually dominant</RuleRow>
+            <RuleRow label="Minimum text height">3mm minimum for readability in dusty conditions</RuleRow>
+            <RuleRow label="Engraving depth">Suitable for dusty environments — deep fill preferred for longevity</RuleRow>
+            <RuleRow label="Case">Asset number: ALL CAPS · Description: Title Case</RuleRow>
+            <RuleRow label="Spacing">Line spacing minimum 2mm between text lines</RuleRow>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 6. Sub-Asset Tagging */}
+      <Card>
+        <CardHeader className="pb-2">
+          <SectionHeading icon={Layers} number="6" title="Sub-Asset Tagging Rules — Processing Plant" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            A separate physical tag is required for any sub-asset individually registered in the Minesite AI hierarchy.
+            Both the parent asset and sub-asset must be physically tagged if configured in the system.
           </p>
 
           <div>
@@ -291,18 +392,16 @@ export const ProcessingPlantAssetTaggingSection = () => {
               {[
                 "Electric motors rated > 5 kW",
                 "Gearboxes and gearmotors",
-                "Lube systems and hydraulic units",
-                "Electrical panels and MCC cells",
-                "PLC / control cabinets",
-                "Belt weighers and weightometers",
-                "Critical instruments (if in hierarchy) — level, pressure, flow",
+                "Lube units and hydraulic units",
+                "Electrical panels and MCC sections",
+                "PLC and control cabinets",
+                "Critical standalone instrumentation (if in asset tree)",
               ].map((item, i) => <RuleRow key={i}>{item}</RuleRow>)}
             </div>
           </div>
 
           <Separator />
 
-          {/* Parent-child example */}
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Parent–Child Tag Example</p>
             <div className="space-y-1 font-mono text-sm bg-muted/40 rounded-lg p-4">
@@ -328,10 +427,10 @@ export const ProcessingPlantAssetTaggingSection = () => {
         </CardContent>
       </Card>
 
-      {/* 5. Tag Placement */}
+      {/* 7. Placement Rules */}
       <Card>
         <CardHeader className="pb-2">
-          <SectionHeading icon={MapPin} number="5" title="Tag Placement Standard — Processing Plant" />
+          <SectionHeading icon={MapPin} number="7" title="Tag Placement Standard — Processing Plant" />
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="overflow-x-auto">
@@ -348,9 +447,9 @@ export const ProcessingPlantAssetTaggingSection = () => {
                   ["Conveyors", "Drive side frame — 1.0 to 1.5 m above ground — not on belt guards"],
                   ["Tanks", "Near manway or ladder access point — eye-level where possible"],
                   ["Screens", "Structural frame near drive side"],
-                  ["Electrical panels", "Front exterior door (primary) — secondary internal sticker on interior door"],
+                  ["Electrical panels", "Front exterior door — secondary internal sticker on interior panel"],
                   ["Motors", "Non-drive end frame — avoid cooling fin obstruction"],
-                  ["Gearboxes", "Oil filler / inspection side — avoid hot surfaces"],
+                  ["Gearboxes", "Oil filler or inspection side — avoid hot surfaces"],
                 ].map(([type, placement]) => (
                   <tr key={type} className="hover:bg-muted/30">
                     <td className="px-3 py-2 text-sm font-semibold text-foreground">{type}</td>
@@ -366,53 +465,78 @@ export const ProcessingPlantAssetTaggingSection = () => {
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Placement Rules — All Equipment</p>
             <RuleRow>Tag must be visible during normal operation without removing guards or opening panels</RuleRow>
-            <RuleRow>Tag must not obstruct maintenance access or create a pinch/crush hazard</RuleRow>
+            <RuleRow>Tag must not obstruct maintenance access or create a pinch or crush hazard</RuleRow>
             <div className="mt-1">
               <WarningRow>Must not be mounted on removable guards or covers — tag remains with the asset permanently</WarningRow>
-              <WarningRow>Must not be positioned where abrasion, heat, or chemical spray will degrade the engraving</WarningRow>
+              <WarningRow>Must not be positioned where abrasion, heat, or chemical spray will degrade the engraving over time</WarningRow>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* 6. QR Structure */}
+      {/* 8. Manufacturing Options */}
       <Card>
         <CardHeader className="pb-2">
-          <SectionHeading icon={QrCode} number="6" title="QR Code Structure" />
+          <SectionHeading icon={Factory} number="8" title="Manufacturing Options" />
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Each QR code must resolve to the asset page within Minesite AI. The page must display the following fields:
+            Two feasible manufacturing approaches are outlined below. No recommendation is made at this stage — options are presented for decision by site management.
           </p>
-          <div className="grid sm:grid-cols-2 gap-2">
-            <RuleRow label="Asset Number">Exact tag number as registered in system</RuleRow>
-            <RuleRow label="Asset Description">Equipment name and type</RuleRow>
-            <RuleRow label="Physical Location">Area, sub-area, and facility</RuleRow>
-            <RuleRow label="PM Schedule">Active planned maintenance tasks and frequencies</RuleRow>
-            <RuleRow label="Work Order History">Completed and open work orders</RuleRow>
-            <RuleRow label="Parts BOM">Linked critical and non-critical spare parts list</RuleRow>
-            <RuleRow label="Attachments">OEM manuals, drawings, inspection records</RuleRow>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            {/* Option 1 */}
+            <div className="border border-border rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs font-mono">Option 1</Badge>
+                <p className="text-sm font-bold text-foreground">Outsource</p>
+              </div>
+              <p className="text-xs text-muted-foreground">Pre-engraved stainless tags ordered in batches from a specialist tag supplier.</p>
+              <Separator />
+              <div className="space-y-1">
+                <RuleRow>No capital equipment purchase required</RuleRow>
+                <RuleRow>Professional finish guaranteed</RuleRow>
+                <RuleRow>Higher per-unit cost at low volumes</RuleRow>
+                <RuleRow>Lead time delays for new or urgent tags</RuleRow>
+              </div>
+            </div>
+
+            {/* Option 2 */}
+            <div className="border border-border rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs font-mono">Option 2</Badge>
+                <p className="text-sm font-bold text-foreground">In-House Engraving</p>
+              </div>
+              <p className="text-xs text-muted-foreground">Purchase a portable laser engraver or metal tag machine for on-demand production.</p>
+              <Separator />
+              <div className="space-y-1">
+                <RuleRow>Lower long-term cost per tag</RuleRow>
+                <RuleRow>On-demand tag creation — no lead time</RuleRow>
+                <RuleRow>Faster asset commissioning process</RuleRow>
+                <RuleRow>Capital purchase and operator training required</RuleRow>
+              </div>
+            </div>
           </div>
-          <div className="mt-2">
-            <WarningRow>QR destination URL must be managed through the system — not hardcoded on the tag or in a static document.</WarningRow>
-            <WarningRow>QR must be re-encodeable if the asset record URL structure changes, without requiring physical re-tagging.</WarningRow>
-          </div>
+
+          <p className="text-xs text-muted-foreground italic border-l-2 border-primary/30 pl-3">
+            A recommendation will be made following review of tag volume requirements and budget approval. This section is for awareness only.
+          </p>
         </CardContent>
       </Card>
 
-      {/* 7. Governance Controls */}
+      {/* 9. Governance */}
       <Card className="border-destructive/20">
         <CardHeader className="pb-2">
-          <SectionHeading icon={Shield} number="7" title="Governance Controls" />
+          <SectionHeading icon={Shield} number="9" title="Governance Controls" />
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            The following governance rules are mandatory for all Processing Plant assets. No exceptions without formal change control.
+            The following governance controls are mandatory for all Processing Plant assets. No exceptions without formal change control.
           </p>
           <div className="grid sm:grid-cols-2 gap-2">
-            <RuleRow>No asset commissioned or handed over without a system registration record</RuleRow>
-            <RuleRow>No physical tag installed without a confirmed asset record in the system</RuleRow>
-            <RuleRow>No duplicate asset numbers permitted — system enforces uniqueness</RuleRow>
+            <RuleRow>No asset installed or commissioned without a physical tag</RuleRow>
+            <RuleRow>No physical tag created without an existing asset record in the system</RuleRow>
+            <RuleRow>No duplicate asset numbers permitted — enforced by system</RuleRow>
             <RuleRow>Damaged or missing tags must be replaced immediately upon identification</RuleRow>
             <RuleRow>Tag replacement must be recorded in the asset's work order history</RuleRow>
             <RuleRow>Any change to asset number requires formal change control and hierarchy update</RuleRow>
@@ -421,15 +545,15 @@ export const ProcessingPlantAssetTaggingSection = () => {
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Prohibited Practices</p>
             <WarningRow>Temporary handwritten tags are not permitted beyond the commissioning period (max 48 hours)</WarningRow>
-            <WarningRow>Adhesive-only tags are not acceptable as a permanent solution — stainless plate required</WarningRow>
-            <WarningRow>Tags must not be created outside the system — all tags originate from a system record</WarningRow>
+            <WarningRow>Adhesive paper or plastic labels are not acceptable as a permanent tagging solution</WarningRow>
+            <WarningRow>Tags must not be created outside the system — all tags originate from a validated system record</WarningRow>
           </div>
         </CardContent>
       </Card>
 
       {/* Footer */}
       <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4">
-        <span>TCMG-STD-TAG-001 · Processing Plant Asset Tagging Standard · Rev 1.0</span>
+        <span>TCMG-STD-TAG-001 · Processing Plant Asset Tagging Standard · Rev 2.0 — No QR</span>
         <span>Crushing Plant excluded · Internal use only</span>
       </div>
     </div>
