@@ -60,7 +60,7 @@ const SimplifiedTagMockup = ({
 }) => {
   const dims = {
     standard: { w: 300, h: 90, idSize: 28, descSize: 13 },
-    small:    { w: 220, h: 66, idSize: 22, descSize: 11 },
+    small:    { w: 240, h: 72, idSize: 22, descSize: 11 },
     large:    { w: 340, h: 110, idSize: 34, descSize: 14 },
   }[size];
 
@@ -311,7 +311,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           {/* Small label examples — instruments, valves, sensors */}
           <div className="space-y-2">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Small Assets — 75mm × 30mm Label</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Small Assets — 80mm × 30mm Label</p>
             <p className="text-xs text-muted-foreground">e.g. Dosing systems, ancillary equipment, instruments</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
               <SimplifiedTagMockup assetId="LDOS01" description="Lime Dosing System" size="small" holePosition="none" />
@@ -366,7 +366,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
                 <Badge variant="outline" className="text-xs font-mono">Size B</Badge>
                 <p className="text-sm font-bold text-foreground">Small Assets</p>
               </div>
-              <p className="text-xs text-muted-foreground font-mono font-bold">75mm × 30mm Label</p>
+              <p className="text-xs text-muted-foreground font-mono font-bold">80mm × 30mm Label</p>
               <Separator />
               <RuleRow>Small instruments, valves, sensors</RuleRow>
               <RuleRow>Adhesive backed</RuleRow>
