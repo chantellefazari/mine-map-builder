@@ -192,23 +192,25 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           {/* Format template */}
           <div className="bg-muted rounded-lg p-5 font-mono space-y-1 text-center">
-            <p className="text-2xl font-black text-foreground tracking-widest">PP01</p>
-            <p className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Process Water Pump</p>
+            <p className="text-2xl font-black text-foreground tracking-widest">BM01</p>
+            <p className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Primary Ball Mill</p>
             <p className="text-xs text-muted-foreground mt-3">← That is the entire tag. Nothing else.</p>
           </div>
 
           <Separator />
 
-          {/* Example asset IDs */}
+          {/* Example asset IDs — all sourced directly from Processing Plant asset tree */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Format Examples</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Format Examples — Processing Plant Asset Tree</p>
             <div className="grid sm:grid-cols-2 gap-2">
               {[
                 { id: "BM01",    desc: "Primary Ball Mill" },
                 { id: "MFC01",   desc: "Mill Feed Conveyor" },
-                { id: "CYFPA01", desc: "Cyclone Feed Pump A" },
+                { id: "CYFPA01", desc: "Primary Cyclone Feed Pump A" },
                 { id: "CV01",    desc: "Transfer Conveyor" },
                 { id: "CMIX01",  desc: "Cyanide Mixing Tank" },
+                { id: "EWCL01",  desc: "Electrowinning Cell" },
+                { id: "FLOC01",  desc: "Floc System" },
                 { id: "LDOS01",  desc: "Lime Dosing System" },
               ].map(({ id, desc }) => (
                 <div key={id} className="flex items-center gap-3 bg-muted/50 rounded-md px-3 py-2">
@@ -297,10 +299,11 @@ export const ProcessingPlantAssetTaggingSection = () => {
           {/* Standard size examples — flat surface large equipment */}
           <div className="space-y-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Flat Surface — 100mm × 50mm Plate (Standard)</p>
+            <p className="text-xs text-muted-foreground">e.g. Ball Mill, Cyanide Tank, Electrowinning Cell</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
               <SimplifiedTagMockup assetId="BM01" description="Primary Ball Mill" size="standard" holePosition="none" />
-              <SimplifiedTagMockup assetId="MFC01" description="Mill Feed Conveyor" size="standard" holePosition="none" />
               <SimplifiedTagMockup assetId="CMIX01" description="Cyanide Mixing Tank" size="standard" holePosition="none" />
+              <SimplifiedTagMockup assetId="EWCL01" description="Electrowinning Cell" size="standard" holePosition="none" />
             </div>
           </div>
 
@@ -309,6 +312,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
           {/* Small label examples — instruments, valves, sensors */}
           <div className="space-y-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Small Assets — 75mm × 30mm Label</p>
+            <p className="text-xs text-muted-foreground">e.g. Dosing systems, ancillary equipment, instruments</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
               <SimplifiedTagMockup assetId="LDOS01" description="Lime Dosing System" size="small" holePosition="none" />
               <SimplifiedTagMockup assetId="FLOC01" description="Floc System" size="small" holePosition="none" />
@@ -320,9 +324,11 @@ export const ProcessingPlantAssetTaggingSection = () => {
           {/* Hanging tags — pumps / motors with hole punch */}
           <div className="space-y-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Hanging Assets (Pumps / Motors) — 100mm × 50mm with Single Hole Punch</p>
+            <p className="text-xs text-muted-foreground">e.g. Cyclone feed pumps, conveyors, raw water pumps</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
-              <SimplifiedTagMockup assetId="CYFPA01" description="Cyclone Feed Pump A" size="large" holePosition="right" />
-              <SimplifiedTagMockup assetId="RWT01" description="Raw Water Tank Pump" size="large" holePosition="left" />
+              <SimplifiedTagMockup assetId="CYFPA01" description="Primary Cyclone Feed Pump A" size="large" holePosition="right" />
+              <SimplifiedTagMockup assetId="MFC01" description="Mill Feed Conveyor" size="large" holePosition="none" />
+              <SimplifiedTagMockup assetId="RWT01" description="Raw Water Tank" size="large" holePosition="left" />
             </div>
           </div>
 
