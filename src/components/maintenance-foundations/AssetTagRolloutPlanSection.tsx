@@ -365,23 +365,24 @@ export const AssetTagRolloutPlanSection = () => {
         <CardContent className="pt-5">
           <SectionHeading icon={Calendar} number="09" title="Estimated Rollout Timeline" />
           <p className="text-sm text-muted-foreground mb-4">
-            Indicative schedule. Adjust based on plant shutdown windows and crew availability.
+            Indicative schedule — tag production and verification run in parallel. Total campaign: <strong>~2 weeks</strong>.
           </p>
           <div className="space-y-2">
             {[
-              { week: "Week 1", label: "Final Verification & Gate 1 Sign-off", colour: "bg-primary/10 border-primary/30 text-primary" },
-              { week: "Week 2", label: "Tag Production & Procurement", colour: "bg-muted border-border text-muted-foreground" },
-              { week: "Week 3–4", label: "Phase 1 Tagging — Critical Equipment", colour: "bg-red-50 border-red-200 text-red-700" },
-              { week: "Week 5–6", label: "Phase 2 Tagging — Secondary Equipment", colour: "bg-amber-50 border-amber-200 text-amber-700" },
-              { week: "Week 7", label: "Phase 3 Tagging — Minor Assets", colour: "bg-green-50 border-green-200 text-green-700" },
-              { week: "Week 8", label: "Final Data Validation, QC Audit & Close-out", colour: "bg-muted border-border text-muted-foreground" },
+              { week: "Day 1–2",   label: "Gate 1 Sign-off — asset tree locked, tag design approved, supplier confirmed", colour: "bg-primary/10 border-primary/30 text-primary" },
+              { week: "Day 2–5",   label: "Tag Production & Procurement (runs parallel with field prep)", colour: "bg-muted border-border text-muted-foreground" },
+              { week: "Day 3–6",   label: "Phase 1 — Critical Equipment (Ball Mill, Cyclone Feed Pumps, EW Cell, MCC)", colour: "bg-red-50 border-red-200 text-red-700" },
+              { week: "Day 7–9",   label: "Phase 2 — Secondary Equipment (Conveyors, Pumps, Motors, Gearboxes)", colour: "bg-amber-50 border-amber-200 text-amber-700" },
+              { week: "Day 10–11", label: "Phase 3 — Minor Assets (Valves, Instruments, Sensors, Small Assemblies)", colour: "bg-green-50 border-green-200 text-green-700" },
+              { week: "Day 12–14", label: "QC Audit, Data Validation, Photo Review & Close-out Sign-off", colour: "bg-muted border-border text-muted-foreground" },
             ].map(({ week, label, colour }) => (
               <div key={week} className={`flex items-center gap-3 rounded-md border px-4 py-2.5 ${colour}`}>
-                <span className="text-xs font-bold font-mono min-w-[60px]">{week}</span>
+                <span className="text-xs font-bold font-mono min-w-[80px] flex-shrink-0">{week}</span>
                 <span className="text-sm font-medium">{label}</span>
               </div>
             ))}
           </div>
+          <p className="text-xs text-muted-foreground mt-3">Adjust based on crew size and plant access windows. Shutdown or weekend access can compress this further.</p>
         </CardContent>
       </Card>
 
