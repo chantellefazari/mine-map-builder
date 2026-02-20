@@ -83,7 +83,7 @@ const StainlessTagMockup = ({
       title="Mounting hole"
     />
     {/* Tag content */}
-    <div className="relative z-10 flex flex-col gap-0.5">
+    <div className="relative z-10 flex flex-col items-center gap-0.5 text-center w-full">
       <span
         className="font-mono font-black tracking-widest leading-tight"
         style={{ fontSize: 18, color: "#1a2228", letterSpacing: "0.12em" }}
