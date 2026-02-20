@@ -192,8 +192,8 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           {/* Format template */}
           <div className="bg-muted rounded-lg p-5 font-mono space-y-1 text-center">
-            <p className="text-2xl font-black text-foreground tracking-widest">CR01</p>
-            <p className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Primary Jaw Crusher</p>
+            <p className="text-2xl font-black text-foreground tracking-widest">PP01</p>
+            <p className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Process Water Pump</p>
             <p className="text-xs text-muted-foreground mt-3">← That is the entire tag. Nothing else.</p>
           </div>
 
@@ -204,10 +204,10 @@ export const ProcessingPlantAssetTaggingSection = () => {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Format Examples</p>
             <div className="grid sm:grid-cols-2 gap-2">
               {[
-                { id: "CR01",  desc: "Primary Jaw Crusher" },
-                { id: "CV01",  desc: "Forward Conveyor" },
-                { id: "SC01",  desc: "Vibrating Screen" },
-                { id: "PP01",  desc: "Process Pump" },
+                { id: "PP01",  desc: "Process Water Pump" },
+                { id: "PP02",  desc: "Tailings Pump" },
+                { id: "TK01",  desc: "Reagent Tank" },
+                { id: "BM01",  desc: "Ball Mill" },
                 { id: "ARN01", desc: "Acid Wash Reagent Pump" },
                 { id: "ARN02", desc: "Eluate Pump" },
               ].map(({ id, desc }) => (
@@ -298,9 +298,9 @@ export const ProcessingPlantAssetTaggingSection = () => {
           <div className="space-y-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Flat Surface — 100mm × 50mm Plate (Standard)</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
-              <SimplifiedTagMockup assetId="CR01" description="Primary Jaw Crusher" size="standard" holePosition="none" />
-              <SimplifiedTagMockup assetId="CV01" description="Forward Conveyor" size="standard" holePosition="none" />
-              <SimplifiedTagMockup assetId="SC01" description="Vibrating Screen" size="standard" holePosition="none" />
+              <SimplifiedTagMockup assetId="BM01" description="Ball Mill" size="standard" holePosition="none" />
+              <SimplifiedTagMockup assetId="TK01" description="Reagent Tank" size="standard" holePosition="none" />
+              <SimplifiedTagMockup assetId="TH01" description="Thickener" size="standard" holePosition="none" />
             </div>
           </div>
 
@@ -310,8 +310,8 @@ export const ProcessingPlantAssetTaggingSection = () => {
           <div className="space-y-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Small Assets — 75mm × 30mm Label</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
-              <SimplifiedTagMockup assetId="PP01" description="Process Pump" size="small" holePosition="none" />
               <SimplifiedTagMockup assetId="ARN01" description="Reagent Pump A" size="small" holePosition="none" />
+              <SimplifiedTagMockup assetId="ARN02" description="Eluate Pump" size="small" holePosition="none" />
             </div>
           </div>
 
@@ -321,8 +321,8 @@ export const ProcessingPlantAssetTaggingSection = () => {
           <div className="space-y-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Hanging Assets (Pumps / Motors) — 100mm × 50mm with Single Hole Punch</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
-              <SimplifiedTagMockup assetId="CR02" description="Secondary Cone Crusher" size="large" holePosition="right" />
-              <SimplifiedTagMockup assetId="CV05" description="Discharge Conveyor" size="large" holePosition="left" />
+              <SimplifiedTagMockup assetId="PP01" description="Process Water Pump" size="large" holePosition="right" />
+              <SimplifiedTagMockup assetId="PP02" description="Tailings Pump" size="large" holePosition="left" />
             </div>
           </div>
 
