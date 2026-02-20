@@ -1,28 +1,28 @@
 
-# Stores & Warehouse Design -- Excel Workbook Export
+# Move Stores Tree Into Store Visualisation Tab
 
-## What You Get
-A "Download Workbook" button added to the Stores & Warehouse Design page header. Clicking it generates a multi-sheet Excel file (`TCMG_Stores_Warehouse_Design.xlsx`) that captures all the logic, rules, and data from 6 of the 7 tabs (excluding Store Visualisation as requested). You can email this directly to your GM.
+## What Changes
 
-## Workbook Structure (6 Sheets)
+The separate "Stores Tree" tab will be removed from the tab bar. Instead, the Stores Tree (interactive container navigator with search, tree, and detail panel) will be embedded directly below the visualisation area inside the "Store Visualisation" tab. This means when you're looking at either the 2D plan or 3D view, you'll see the full Stores Tree navigator underneath it -- giving you both the visual layout and the detailed tree drill-down in one view.
 
-| Sheet | Source Tab | Content |
-|-------|-----------|---------|
-| 1. Design Principles | Stores Design Principles | All 6 governing rules with title + description |
-| 2. Container Stocking Scope | Container Stocking Scope | C01-C05 categories, eligible items per container, exclusions list for LD |
-| 3. Location Coding | Store Location Coding | Code format, container-discipline map, bay layout, container examples, external (LD) examples, validation rules |
-| 4. Design Inputs | Design Inputs for 3D | Container requirements table (zone, type, contents, environment, access, growth), safety constraints |
-| 5. Capacity Analysis | Capacity Scan | Per-zone SKU counts, bin positions, items/bin ratio, status, furniture breakdown, concerns |
-| 6. Stock Control Procedure | Stock Control Procedure | All 9 sections: purpose, receiving steps, stock-out fields, LD rules, min/max, weekly/monthly controls, accountability rules, integration links |
+The default tab will change to "visualisation" (since "tree" no longer exists as a tab).
 
-## Technical Approach
+## Layout (Visualisation Tab)
 
-1. **New utility file**: `src/utils/exportStoresWorkbook.ts`
-   - Uses the existing `xlsx` library (already installed) following the same pattern as `exportAssetTreeWorkbook.ts`
-   - Pulls all data directly from the component data sources (the same arrays/objects rendered in the UI)
-   - Each sheet gets formatted column headers and structured rows
-   - Column widths auto-sized for readability
+1. Warning banner
+2. Header with 2D/3D toggle + Live Inventory switch
+3. 2D or 3D visualisation
+4. **Stores Tree section** (search bar, collapsible tree + detail panel) -- sits directly below the visualisation
 
-2. **Button placement**: Added to the `StoresWarehouseDesign.tsx` page header (next to the title), styled as an outline button with a Download icon -- consistent with other export buttons in the project
+## Technical Details
 
-3. **No new dependencies required** -- `xlsx` is already installed
+### Modified Files
+
+**1. `src/components/stores-warehouse/StoreVisualisation.tsx`**
+- Import and render `StoresAssetTree` component below the visualisation area
+- Add a visual separator/heading between the map and the tree
+
+**2. `src/pages/StoresWarehouseDesign.tsx`**
+- Remove the "Stores Tree" `TabsTrigger` and its `TabsContent`
+- Change `defaultValue` from `"tree"` to `"visualisation"`
+- Remove the `StoresAssetTree` import (no longer needed at page level)
