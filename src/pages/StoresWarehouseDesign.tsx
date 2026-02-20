@@ -8,6 +8,7 @@ import { StoreLocationCodingSection } from "@/components/stores-warehouse/StoreL
 import { DesignInputsSection } from "@/components/stores-warehouse/DesignInputsSection";
 import { StoreVisualisation } from "@/components/stores-warehouse/StoreVisualisation";
 import { CapacityAnalysis } from "@/components/stores-warehouse/CapacityAnalysis";
+import { StockControlProcedure } from "@/components/stores-warehouse/StockControlProcedure";
 
 const StoresWarehouseDesign = () => {
   return (
@@ -104,6 +105,10 @@ const StoresWarehouseDesign = () => {
               <span className="hidden sm:inline">Capacity Scan</span>
               <span className="sm:hidden">Capacity</span>
             </TabsTrigger>
+            <TabsTrigger value="stock-control" className="text-xs">
+              <span className="hidden sm:inline">Stock Control Procedure</span>
+              <span className="sm:hidden">Stock Control</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="principles">
@@ -132,6 +137,10 @@ const StoresWarehouseDesign = () => {
 
           <TabsContent value="capacity">
             <CapacityAnalysis />
+          </TabsContent>
+
+          <TabsContent value="stock-control">
+            <StockControlProcedure />
           </TabsContent>
         </Tabs>
       </main>
