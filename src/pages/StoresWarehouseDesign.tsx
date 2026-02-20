@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Warehouse, AlertTriangle, Download } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { StoresAssetTree } from "@/components/stores-warehouse/StoresAssetTree";
 import { StoresDesignPrinciples } from "@/components/stores-warehouse/StoresDesignPrinciples";
 import { ContainerStockingScopeSection } from "@/components/stores-warehouse/ContainerStockingScopeSection";
 import { StoreLocationCodingSection } from "@/components/stores-warehouse/StoreLocationCodingSection";
@@ -82,8 +83,12 @@ const StoresWarehouseDesign = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="principles" className="space-y-6">
+        <Tabs defaultValue="tree" className="space-y-6">
           <TabsList className="flex flex-wrap h-auto gap-1 bg-muted/50 p-2 rounded-lg">
+            <TabsTrigger value="tree" className="text-xs">
+              <span className="hidden sm:inline">Stores Tree</span>
+              <span className="sm:hidden">Tree</span>
+            </TabsTrigger>
             <TabsTrigger value="principles" className="text-xs">
               <span className="hidden sm:inline">Stores Design Principles</span>
               <span className="sm:hidden">Principles</span>
@@ -113,6 +118,10 @@ const StoresWarehouseDesign = () => {
               <span className="sm:hidden">Stock Control</span>
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="tree">
+            <StoresAssetTree />
+          </TabsContent>
 
           <TabsContent value="principles">
             <StoresDesignPrinciples />
