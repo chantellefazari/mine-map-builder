@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Warehouse, AlertTriangle } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StoresDesignPrinciples } from "@/components/stores-warehouse/StoresDesignPrinciples";
-import { StorageZonesSection } from "@/components/stores-warehouse/StorageZonesSection";
 import { ContainerStockingScopeSection } from "@/components/stores-warehouse/ContainerStockingScopeSection";
 import { StoreLocationCodingSection } from "@/components/stores-warehouse/StoreLocationCodingSection";
 import { DesignInputsSection } from "@/components/stores-warehouse/DesignInputsSection";
@@ -81,10 +80,6 @@ const StoresWarehouseDesign = () => {
               <span className="hidden sm:inline">Stores Design Principles</span>
               <span className="sm:hidden">Principles</span>
             </TabsTrigger>
-            <TabsTrigger value="zones" className="text-xs">
-              <span className="hidden sm:inline">Storage Zones & Logical Areas</span>
-              <span className="sm:hidden">Zones</span>
-            </TabsTrigger>
             <TabsTrigger value="stocking" className="text-xs">
               <span className="hidden sm:inline">Container Stocking Scope</span>
               <span className="sm:hidden">Stocking</span>
@@ -113,10 +108,6 @@ const StoresWarehouseDesign = () => {
 
           <TabsContent value="principles">
             <StoresDesignPrinciples />
-          </TabsContent>
-
-          <TabsContent value="zones">
-            <StorageZonesSection />
           </TabsContent>
 
           <TabsContent value="stocking">
