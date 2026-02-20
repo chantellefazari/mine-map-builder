@@ -96,12 +96,6 @@ const StainlessTagMockup = ({
       >
         {description}
       </span>
-      <span
-        className="font-mono uppercase tracking-widest"
-        style={{ fontSize: 9, color: "#4a5e68", marginTop: 2 }}
-      >
-        {plant}
-      </span>
     </div>
   </div>
 );
