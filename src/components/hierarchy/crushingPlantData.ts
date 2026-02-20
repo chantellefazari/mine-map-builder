@@ -10,7 +10,7 @@
 //     → Overband Magnet (metal removal)
 //     → CR01 Jaw Crusher (Primary)
 //     → CV01 Forward Conveyor
-//     → Ground Feed Bin
+//     → Ground Feed Bins
 //     → CV04 Screen Feed Conveyor
 //     → SC01 Vibrating Screen
 //         ├─ CV05 Top Deck → CV06 Oversize Transfer → Cone Feed Bin
@@ -88,7 +88,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
 
   // ─────────────────────────────────────────────────────────────
   // CRU-PRI – Primary Crushing
-  // FLOW STEP 2: ROM Bin → Feeder → Magnet → CR01 Jaw → CV01 → Ground Feed Bin
+  // FLOW STEP 2: ROM Bin → Feeder → Magnet → CR01 Jaw → CV01 → Ground Feed Bins
   // ─────────────────────────────────────────────────────────────
   {
     label: "Primary Crushing",
@@ -144,7 +144,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
         equipment: [
           {
             assetNumber: "CV01",
-            name: "CV01 – Forward Conveyor (CR01 discharge → Ground Feed Bin)",
+            name: "CV01 – Forward Conveyor (CR01 discharge → Ground Feed Bins)",
             components: [
               { componentCode: "CV01-MTR01", componentType: "MTR", componentName: "Head Drive Motor A – 11kW Electric", manufacturer: "TBC", voltage: "415V" },
               { componentCode: "CV01-MTR02", componentType: "MTR", componentName: "Head Drive Motor B – 11kW Electric", manufacturer: "TBC", voltage: "415V" },
@@ -170,11 +170,11 @@ export const crushingPlantAreas: CRUSubArea[] = [
         ],
       },
       {
-        label: "Ground Feed Bin",
+        label: "Ground Feed Bins",
         equipment: [
           {
             assetNumber: "PRI-GFB01",
-            name: "PRI-GFB01 – Ground Feed Bin (CV01 discharge → Screen Feed System)",
+            name: "PRI-GFB01 – Ground Feed Bins (CV01 discharge → Screen Feed System)",
             components: [
               { componentCode: "PRI-GFB01-PNL01", componentType: "PNL", componentName: "Side Plates – 6mm Steel with 10mm Hardox 400 Liners", manufacturer: "TBC" },
               { componentCode: "PRI-GFB01-LVL01", componentType: "LVL", componentName: "Vega Level Sensor (interlocked to plant)", manufacturer: "Vega" },
@@ -189,7 +189,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
 
   // ─────────────────────────────────────────────────────────────
   // CRU-SCN – Screening Section
-  // FLOW STEP 3: Ground Feed Bin → Screen Feed Conveyor → SC01 → discharge conveyors
+  // FLOW STEP 3: Ground Feed Bins → Screen Feed Conveyor → SC01 → discharge conveyors
   // ─────────────────────────────────────────────────────────────
   {
     label: "Screening Section",
@@ -200,7 +200,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
         equipment: [
           {
             assetNumber: "CV04",
-            name: "CV04 – Screen Feed Conveyor – 1000mm x 24m (Ground Feed Bin → SC01)",
+            name: "CV04 – Screen Feed Conveyor – 1000mm x 24m (Ground Feed Bins → SC01)",
             components: [
               { componentCode: "CV04-MTR01", componentType: "MTR", componentName: "Drive Motor A – 18.5kW Gear Motor", manufacturer: "TBC", voltage: "415V" },
               { componentCode: "CV04-MTR02", componentType: "MTR", componentName: "Drive Motor B – 18.5kW Gear Motor", manufacturer: "TBC", voltage: "415V" },
@@ -588,7 +588,7 @@ export const crushingPlantAreas: CRUSubArea[] = [
         equipment: [
           {
             assetNumber: "CV03",
-            name: "CV03 – Feed Bin Conveyor – 1200mm x 24m (supplementary – ground feed bin to screen feed)",
+            name: "CV03 – Feed Bin Conveyor – 1200mm x 24m (supplementary – ground feed bins to screen feed)",
             components: [
               { componentCode: "CV03-MTR01", componentType: "MTR", componentName: "Drive Motor – Gear Motor", manufacturer: "TBC", voltage: "415V" },
               { componentCode: "CV03-GBX01", componentType: "GBX", componentName: "Gear Motor / Gearbox", manufacturer: "TBC" },
