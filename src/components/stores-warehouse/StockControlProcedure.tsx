@@ -408,11 +408,12 @@ export const StockControlProcedure = () => {
             <SubHeader title="LD Zone Codes" />
             <div className="space-y-2">
               {[
-                { code: "LD-C", label: "Crusher Liners" },
-                { code: "LD-D", label: "Screen Panels" },
-                { code: "LD-E", label: "Large Motors" },
-                { code: "LD-F", label: "Overflow / Staging" },
-                { code: "LD-A/B", label: "General Heavy (Forklift Access)" },
+                { code: "LD-A", label: "Critical Parts Overflow — Under Dome (Row A)" },
+                { code: "LD-B", label: "Critical Parts Overflow — Under Dome (Row B)" },
+                { code: "LD-C", label: "Pumps" },
+                { code: "LD-D", label: "Matec" },
+                { code: "LD-E", label: "Electrical" },
+                { code: "LD-F", label: "Mechanical" },
               ].map((z) => (
                 <div key={z.code} className="flex items-center gap-3 p-2.5 bg-muted/40 rounded-lg border border-border">
                   <span className="text-xs font-bold font-mono text-primary bg-primary/10 px-2 py-0.5 rounded">

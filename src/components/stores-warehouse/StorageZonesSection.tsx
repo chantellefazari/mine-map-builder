@@ -177,15 +177,15 @@ export const StorageZonesSection = () => {
       bgColor: "bg-orange-500/10",
       borderColor: "border-orange-500/30",
       includes: [
-        "Complete motors, gearboxes, pump assemblies",
-        "Submersible pumps, sump pumps, pumpsets, multistage pumps",
-        "Large pulleys, drums, shaft assemblies",
-        "Heavy pneumatic valve assemblies DN150+",
-        "Crusher liners, cone liners, mantles, screen panels",
-        "Switchboards, large frames, complete assemblies",
-        "Air receivers, large pressure vessels",
+        "LD-A: Critical parts overflow — dome-sheltered, environmental protection required (Row A)",
+        "LD-B: Critical parts overflow — dome-sheltered, environmental protection required (Row B)",
+        "LD-C: Pumps — submersible pumps, sump pumps, pumpsets, multistage pumps",
+        "LD-D: Matec — crusher liners, cone liners, mantles, screen panels",
+        "LD-E: Electrical — large electrical assemblies, switchboards, MCC frames, large motors",
+        "LD-F: Mechanical — gearboxes, heavy mechanical assemblies, structural steel, pipe lengths",
+        "Any item >15 kg or requiring forklift handling",
         "Bulk drums, oils, palletised items",
-        "Any item >15 kg or requiring forklift handling"
+        "Air receivers, large pressure vessels"
       ],
       excludes: [
         "Small electrical components (→ C01-EL)",
@@ -193,7 +193,7 @@ export const StorageZonesSection = () => {
         "Bearings, seals, precision parts (→ C04-MP)",
         "Fasteners, consumables (→ C05-CS)"
       ],
-      environment: "Outdoor / covered laydown, dome rows, yard bays",
+      environment: "LD-A/B: Dome-sheltered (critical overflow). LD-C to F: Open / covered yard bays",
       handling: "Forklift / crane, heavy lifting equipment required"
     }
   ];
