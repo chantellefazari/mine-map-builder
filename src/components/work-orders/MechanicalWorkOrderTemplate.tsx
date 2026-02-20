@@ -124,24 +124,13 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             </div>
           </div>
 
-          {/* Problem Description */}
+          {/* Work Order Description */}
           <div className="border border-gray-300">
             <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
-              <span className="font-semibold text-gray-700">PROBLEM DESCRIPTION</span>
-            </div>
-            <div className="p-3 min-h-[80px]">
-              <p className="text-gray-400 text-xs italic">Describe the fault, symptoms, and when it was first noticed...</p>
-            </div>
-          </div>
-
-
-          {/* Work Performed */}
-          <div className="border border-gray-300">
-            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
-              <span className="font-semibold text-gray-700">WORK PERFORMED</span>
+              <span className="font-semibold text-gray-700">WORK ORDER DESCRIPTION</span>
             </div>
             <div className="p-3 min-h-[120px]">
-              <p className="text-gray-400 text-xs italic">Detail the work completed, parts replaced, adjustments made...</p>
+              <p className="text-gray-400 text-xs italic">Describe the work required, fault details, and actions taken...</p>
             </div>
           </div>
 
