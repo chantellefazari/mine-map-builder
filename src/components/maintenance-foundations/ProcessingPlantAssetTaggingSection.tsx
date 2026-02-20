@@ -92,7 +92,7 @@ const StainlessTagMockup = ({
       </span>
       <span
         className="font-mono font-semibold tracking-wide"
-        style={{ fontSize: 12, color: "#2c3a42" }}
+        style={{ fontSize: 14, color: "#2c3a42" }}
       >
         {description}
       </span>
