@@ -7,6 +7,7 @@ import {
   Shield,
   FileText,
   ListOrdered,
+  Tag,
 } from "lucide-react";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
@@ -15,6 +16,7 @@ import { PMStandardsSection } from "./PMStandardsSection";
 import { SparesStrategySection } from "./SparesStrategySection";
 import { DataGovernanceSection } from "./DataGovernanceSection";
 import { SitePartNumberingSection } from "./SitePartNumberingSection";
+import { ProcessingPlantAssetTaggingSection } from "./ProcessingPlantAssetTaggingSection";
 
 export const FoundationsContent = () => {
   return (
@@ -55,6 +57,11 @@ export const FoundationsContent = () => {
           <span className="hidden sm:inline">Data Governance & Change Control</span>
           <span className="sm:hidden">Governance</span>
         </TabsTrigger>
+        <TabsTrigger value="asset-tagging" className="flex items-center gap-2 text-xs">
+          <Tag className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Processing Plant Asset Tagging</span>
+          <span className="sm:hidden">Tagging</span>
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="hierarchy">
@@ -83,6 +90,10 @@ export const FoundationsContent = () => {
 
       <TabsContent value="governance">
         <DataGovernanceSection />
+      </TabsContent>
+
+      <TabsContent value="asset-tagging">
+        <ProcessingPlantAssetTaggingSection />
       </TabsContent>
     </Tabs>
   );
