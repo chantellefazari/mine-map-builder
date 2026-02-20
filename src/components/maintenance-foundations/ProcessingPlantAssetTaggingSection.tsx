@@ -375,8 +375,8 @@ export const ProcessingPlantAssetTaggingSection = () => {
             <div className="space-y-2">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Sub-Asset (Motor) — Standard 80mm × 30mm</p>
               <StainlessTagMockup
-                assetNumber="TCMG-REC-CV-203-MTR-01"
-                description="Drive Motor  MTR-01"
+                assetNumber="TCMG-REC-CV-203"
+                description="MTR-01  Drive Motor"
                 plant="Processing Plant"
               />
             </div>
@@ -463,11 +463,11 @@ export const ProcessingPlantAssetTaggingSection = () => {
                 </div>
                 <div className="ml-6 space-y-1.5 border-l-2 border-primary/20 pl-4">
                   {[
-                    { tag: "TCMG-COM-CV-02-MTR-01", desc: "Drive Motor  MTR-01" },
-                    { tag: "TCMG-COM-CV-02-GBX-01", desc: "Gearbox  GBX-01" },
-                    { tag: "TCMG-COM-CV-02-PNL-01", desc: "Control Panel  PNL-01" },
+                    { tag: "TCMG-COM-CV-02", desc: "MTR-01  Drive Motor" },
+                    { tag: "TCMG-COM-CV-02", desc: "GBX-01  Gearbox" },
+                    { tag: "TCMG-COM-CV-02", desc: "PNL-01  Control Panel" },
                   ].map(({ tag, desc }) => (
-                    <div key={tag} className="flex items-center gap-3">
+                    <div key={desc} className="flex items-center gap-3">
                       <Badge variant="secondary" className="text-xs flex-shrink-0">Sub</Badge>
                       <code className="text-foreground text-xs">{tag}</code>
                       <span className="text-xs text-muted-foreground">{desc}</span>
@@ -484,9 +484,9 @@ export const ProcessingPlantAssetTaggingSection = () => {
                 </div>
                 <div className="ml-6 space-y-1.5 border-l-2 border-primary/20 pl-4">
                   {[
-                    { tag: "TCMG-UTL-PU-101-MTR-01", desc: "Drive Motor  MTR-01" },
+                    { tag: "TCMG-UTL-PU-101", desc: "MTR-01  Drive Motor" },
                   ].map(({ tag, desc }) => (
-                    <div key={tag} className="flex items-center gap-3">
+                    <div key={desc} className="flex items-center gap-3">
                       <Badge variant="secondary" className="text-xs flex-shrink-0">Sub</Badge>
                       <code className="text-foreground text-xs">{tag}</code>
                       <span className="text-xs text-muted-foreground">{desc}</span>
