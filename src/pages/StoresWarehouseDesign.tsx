@@ -89,6 +89,10 @@ const StoresWarehouseDesign = () => {
               <span className="hidden sm:inline">Stores Tree</span>
               <span className="sm:hidden">Tree</span>
             </TabsTrigger>
+            <TabsTrigger value="visualisation" className="text-xs">
+              <span className="hidden sm:inline">Store Visualisation</span>
+              <span className="sm:hidden">Visual</span>
+            </TabsTrigger>
             <TabsTrigger value="principles" className="text-xs">
               <span className="hidden sm:inline">Stores Design Principles</span>
               <span className="sm:hidden">Principles</span>
@@ -105,10 +109,6 @@ const StoresWarehouseDesign = () => {
               <span className="hidden sm:inline">Design Inputs for 3D</span>
               <span className="sm:hidden">3D Inputs</span>
             </TabsTrigger>
-            <TabsTrigger value="visualisation" className="text-xs">
-              <span className="hidden sm:inline">Store Visualisation</span>
-              <span className="sm:hidden">Visual</span>
-            </TabsTrigger>
             <TabsTrigger value="capacity" className="text-xs">
               <span className="hidden sm:inline">Capacity Scan</span>
               <span className="sm:hidden">Capacity</span>
@@ -121,6 +121,10 @@ const StoresWarehouseDesign = () => {
 
           <TabsContent value="tree">
             <StoresAssetTree />
+          </TabsContent>
+
+          <TabsContent value="visualisation">
+            <StoreVisualisation />
           </TabsContent>
 
           <TabsContent value="principles">
@@ -137,10 +141,6 @@ const StoresWarehouseDesign = () => {
 
           <TabsContent value="design-inputs">
             <DesignInputsSection />
-          </TabsContent>
-
-          <TabsContent value="visualisation">
-            <StoreVisualisation />
           </TabsContent>
 
           <TabsContent value="capacity">
