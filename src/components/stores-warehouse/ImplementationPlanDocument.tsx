@@ -259,16 +259,7 @@ export const ImplementationPlanDocument = () => {
           </Prose>
         </SubSection>
 
-        <SubSection id="3.5" title="Tank & Obstruction Relocation">
-          <Prose>To clear the proposed compound footprint and improve pedestrian safety:</Prose>
-          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>Existing tanks to be relocated toward crib room side</li>
-            <li>Skip bins and waste containers relocated to designated waste zone outside stores perimeter</li>
-          </ul>
-          <Prose>This ensures a clean warehouse boundary, reduced cross-traffic, and clear separation between storage and waste handling.</Prose>
-        </SubSection>
-
-        <SubSection id="3.6" title="Laydown Yard Preparation">
+        <SubSection id="3.5" title="Laydown Yard Preparation">
           <Prose>Laydown yard area to be levelled and compacted, using engineered fill where required, and capable of supporting motors, gearboxes, and heavy assemblies.</Prose>
           <Prose>Hardstand design to allow:</Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
