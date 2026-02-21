@@ -188,32 +188,63 @@ export const ImplementationPlanDocument = () => {
       {/* ============================================================ */}
       <Section number="3" title="Civil &amp; Earthworks Scope" icon={Shovel}>
         <Prose>
-          All civil works are aligned to the latest topographic survey and existing infrastructure constraints. This scope establishes a stable, drained, and future-ready foundation for the Central Stores compound and Laydown Yard.
+          All civil works are aligned to the latest topographic survey and existing infrastructure constraints. This scope establishes a stable, drained, and operationally efficient foundation for the Central Stores compound and Laydown Yard.
+        </Prose>
+        <Prose>
+          The selected footprint (refer attached aerial images and survey RL overlays) has been assessed for level control, drainage correction, access efficiency, and long-term expansion capability.
         </Prose>
 
-        <SubSection id="3.1" title="Survey & Level Control">
+        <SubSection id="3.1" title="Location Selection Rationale">
           <Prose>
-            Works are referenced to the latest site survey (RL markers shown on attached aerial).
+            The proposed Central Stores compound footprint has been selected based on operational efficiency, access control, and long-term site functionality. This location was chosen because:
+          </Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>It consolidates all warehouse containers and laydown areas into one controlled zone</li>
+            <li>It keeps parts storage adjacent to the workshop and maintenance areas</li>
+            <li>It reduces travel time and double handling of parts</li>
+            <li>It improves forklift and vehicle access flow</li>
+            <li>It allows clean separation between storage, waste handling, and pedestrian movement</li>
+            <li>It supports integration with dust suppression infrastructure</li>
+            <li>It enables drainage correction in an area currently experiencing surface erosion</li>
+          </ul>
+          <Prose>
+            The intent is to move from dispersed, unstructured storage to a single defined warehouse compound with controlled access and structured zoning.
+          </Prose>
+          <Prose><span className="font-medium text-foreground">Operational Logic</span></Prose>
+          <Prose>Positioning the stores compound in this footprint:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Centralises stock control into one controlled entry point</li>
+            <li>Supports container zoning structure (C01–C05 + LD)</li>
+            <li>Improves response time for breakdown and maintenance activities</li>
+            <li>Reduces lost time searching for parts</li>
+            <li>Creates clear traffic flow around the workshop</li>
+          </ul>
+          <Prose>This location supports long-term warehouse discipline and future scalability.</Prose>
+        </SubSection>
+
+        <SubSection id="3.2" title="Survey & Level Control">
+          <Prose>
+            All works are referenced to the latest site survey (RL markers shown on attached aerial).
           </Prose>
           <Prose>Key reference levels:</Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
             <li><span className="font-medium text-foreground">Existing Boily Slab (TOC):</span> 355.99 RL</li>
-            <li><span className="font-medium text-foreground">Proposed New Stores Slab (TOC):</span> 355.99 RL (to maintain level alignment)</li>
+            <li><span className="font-medium text-foreground">Proposed New Stores Slab (TOC):</span> 355.99 RL (maintains alignment with existing infrastructure)</li>
             <li><span className="font-medium text-foreground">Slab underside:</span> 355.865 RL (125mm slab thickness)</li>
           </ul>
           <Prose>
-            The compound footprint (outlined in green on attached image) has been assessed against natural surface (NS) levels.
+            The compound footprint (outlined on attached image) has been assessed against natural surface (NS) levels to determine cut and fill requirements.
           </Prose>
         </SubSection>
 
-        <SubSection id="3.2" title="Cut & Fill Requirements">
+        <SubSection id="3.3" title="Cut & Fill Requirements">
           <Prose>Based on preliminary calculations:</Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
             <li><span className="font-medium text-foreground">Estimated bulk earthworks volume:</span> ~899.51 m³</li>
             <li><span className="font-medium text-foreground">Fill required from NS to underside of slab:</span> ~65.1 m³</li>
             <li><span className="font-medium text-foreground">New slab concrete volume:</span> 14.3 m³</li>
           </ul>
-          <Prose>Corner fill depth (approximate):</Prose>
+          <Prose>Approximate corner fill depths:</Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
             <li><span className="font-medium text-foreground">North corner:</span> ~470mm</li>
             <li><span className="font-medium text-foreground">East corner:</span> ~900mm</li>
@@ -221,41 +252,57 @@ export const ImplementationPlanDocument = () => {
             <li><span className="font-medium text-foreground">West corner:</span> ~220mm</li>
           </ul>
           <Prose>
-            These figures are preliminary and subject to confirmation prior to construction. Excess material will be reused where possible for laydown yard base preparation.
+            These figures are preliminary and subject to final confirmation prior to construction. Excess material will be reused where practical for laydown yard preparation to reduce imported material costs.
           </Prose>
         </SubSection>
 
-        <SubSection id="3.3" title="Drainage Strategy">
+        <SubSection id="3.4" title="Drainage Strategy">
           <Prose>
-            The selected area currently experiences surface water movement during wet season events. Civil design includes:
+            The selected area currently shows uncontrolled surface water movement and erosion toward the dam during wet season events. Civil works will include:
           </Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
             <li>Regrading to establish consistent fall away from container pads</li>
             <li>Perimeter swale to intercept runoff</li>
-            <li>Drainage redirection toward existing stormwater flow paths</li>
-            <li>Elimination of ponding against container bases</li>
+            <li>Controlled redirection of stormwater toward existing flow paths</li>
+            <li>Elimination of ponding around container positions</li>
           </ul>
           <Prose>
-            <span className="font-medium text-foreground">Objective:</span> No standing water within the compound footprint.
+            <span className="font-medium text-foreground">Objective:</span> No standing water within the compound footprint and stabilisation of the adjacent roadway.
+          </Prose>
+          <Prose>
+            This approach addresses both warehouse construction and an existing drainage risk within a single coordinated scope.
           </Prose>
         </SubSection>
 
-        <SubSection id="3.4" title="Tank & Obstruction Relocation">
-          <Prose>To clear the proposed compound footprint and improve pedestrian safety:</Prose>
+        <SubSection id="3.5" title="Tank & Obstruction Relocation">
+          <Prose>To clear the compound footprint and improve layout efficiency:</Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>Existing tanks to be relocated toward crib room side</li>
-            <li>Skip bins and waste containers relocated to designated waste zone outside stores perimeter</li>
+            <li>Existing tanks to be relocated toward the crib room side</li>
+            <li>Skip bins and waste containers relocated to a designated waste management zone outside the warehouse perimeter</li>
           </ul>
-          <Prose>This ensures a clean warehouse boundary, reduced cross-traffic, and clear separation between storage and waste handling.</Prose>
+          <Prose>This ensures:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>A defined warehouse boundary</li>
+            <li>Reduced cross-traffic</li>
+            <li>Clear separation between storage and waste handling</li>
+            <li>Improved pedestrian safety</li>
+          </ul>
         </SubSection>
 
-        <SubSection id="3.5" title="Laydown Yard Preparation">
-          <Prose>Laydown yard area to be levelled and compacted, using engineered fill where required, and capable of supporting motors, gearboxes, and heavy assemblies.</Prose>
-          <Prose>Hardstand design to allow:</Prose>
+        <SubSection id="3.6" title="Laydown Yard Preparation">
+          <Prose>The Laydown Yard area will be levelled and compacted using engineered fill where required.</Prose>
+          <Prose>The hardstand will be designed to support:</Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>Forklift access</li>
+            <li>Motors</li>
+            <li>Gearboxes</li>
+            <li>Pumps</li>
+            <li>Heavy assemblies</li>
+          </ul>
+          <Prose>Design considerations include:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Forklift accessibility</li>
             <li>Defined LD-A / LD-B location coding</li>
-            <li>Future expansion</li>
+            <li>Future expansion capability</li>
           </ul>
         </SubSection>
 
@@ -264,16 +311,20 @@ export const ImplementationPlanDocument = () => {
           <h3 className="text-base font-semibold text-foreground">Attachments for This Section</h3>
           <div className="space-y-3">
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">Aerial image with RL markers</p>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Aerial compound footprint image</p>
+              <img src="/images/compound-footprint-overlay.png" alt="Aerial compound footprint with overlay" className="rounded-lg border border-border w-full max-w-2xl" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">RL survey overlay image</p>
               <img src="/images/site-survey-rl-markers.jpeg" alt="Site aerial with RL survey markers" className="rounded-lg border border-border w-full max-w-2xl" />
             </div>
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">Footprint outline (green boundary) — Earthworks calc summary from Dan</p>
-              <img src="/images/earthworks-footprint-boundary.png" alt="Compound footprint outlined in green with earthworks volume calculation" className="rounded-lg border border-border w-full max-w-2xl" />
+              <p className="text-xs font-medium text-muted-foreground mb-1">Earthworks calculation summary</p>
+              <img src="/images/earthworks-calc-summary.png" alt="Earthworks calculation assumptions and corner fill depths" className="rounded-lg border border-border w-full max-w-2xl" />
             </div>
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">Earthworks calculation summary from Dan</p>
-              <img src="/images/earthworks-calc-summary.png" alt="Earthworks calculation assumptions and corner fill depths" className="rounded-lg border border-border w-full max-w-2xl" />
+              <p className="text-xs font-medium text-muted-foreground mb-1">Preliminary fill depth breakdown</p>
+              <img src="/images/earthworks-footprint-boundary.png" alt="Compound footprint outlined with earthworks volume calculation" className="rounded-lg border border-border w-full max-w-2xl" />
             </div>
           </div>
         </div>
