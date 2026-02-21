@@ -146,7 +146,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Stores & Warehouse Implementation Plan — TCMG</title>
+          <title>Stores & Warehouse Implementation Plan, TCMG</title>
           <style>
             @page {
               size: A4 portrait;
@@ -267,7 +267,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
         <body>
           <div class="doc-cover">
             <h1>Stores & Warehouse Implementation Plan</h1>
-            <p>Tennant Creek Mines Gold — TCMG-PLAN-STORES-001 | 21st February 2026</p>
+            <p>Tennant Creek Mines Gold | TCMG-PLAN-STORES-001 | 21st February 2026</p>
           </div>
           ${pagesHtml}
         </body>
@@ -333,7 +333,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
           <div className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-primary" />
             <DialogTitle className="text-lg font-semibold">
-              Print Preview — Stores & Warehouse Implementation Plan
+              Print Preview: Stores & Warehouse Implementation Plan
             </DialogTitle>
           </div>
           <div className="flex items-center gap-2">
