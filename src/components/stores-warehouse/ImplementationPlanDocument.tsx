@@ -1,4 +1,6 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 
 import {
   FileText,
@@ -20,6 +22,7 @@ import {
   Hammer,
   Info,
   XCircle,
+  ShoppingCart,
 } from "lucide-react";
 import {
   Table,
@@ -90,6 +93,48 @@ const ImagePlaceholder = ({ label }: { label: string }) => (
 /*  Main component                                                    */
 /* ------------------------------------------------------------------ */
 export const ImplementationPlanDocument = () => {
+  const [containerSummary, setContainerSummary] = useState<Record<string, { category: string; count: number }[]>>({});
+  const [loadingSummary, setLoadingSummary] = useState(true);
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      const { data } = await supabase
+        .from("site_spares")
+        .select("warehouse_area, category");
+      
+      if (data) {
+        const grouped: Record<string, Record<string, number>> = {};
+        data.forEach((row) => {
+          const area = row.warehouse_area || "Unallocated";
+          if (!grouped[area]) grouped[area] = {};
+          const cat = row.category || "Uncategorised";
+          grouped[area][cat] = (grouped[area][cat] || 0) + 1;
+        });
+
+        const result: Record<string, { category: string; count: number }[]> = {};
+        Object.entries(grouped).forEach(([area, cats]) => {
+          result[area] = Object.entries(cats)
+            .map(([category, count]) => ({ category, count }))
+            .sort((a, b) => b.count - a.count);
+        });
+        setContainerSummary(result);
+      }
+      setLoadingSummary(false);
+    };
+    fetchSummary();
+  }, []);
+
+  const containerZones = [
+    { code: "C01-EL", label: "Electrical", icon: Zap, color: "text-yellow-600", bg: "bg-yellow-500/10" },
+    { code: "C02-IN", label: "Instrumentation & Pneumatics", icon: Gauge, color: "text-purple-600", bg: "bg-purple-500/10" },
+    { code: "C03-ME", label: "Mechanical", icon: Wrench, color: "text-blue-600", bg: "bg-blue-500/10" },
+    { code: "C04-MP", label: "Mechanical Precision", icon: Cog, color: "text-cyan-600", bg: "bg-cyan-500/10" },
+    { code: "C05-CS", label: "Consumables & Supplies", icon: Hammer, color: "text-slate-600", bg: "bg-slate-500/10" },
+    { code: "LD", label: "Laydown Yard", icon: Container, color: "text-emerald-600", bg: "bg-emerald-500/10" },
+    { code: "Wurth Cabinet", label: "Wurth Cabinet", icon: Wrench, color: "text-orange-600", bg: "bg-orange-500/10" },
+    { code: "Flammable Cabinet", label: "Flammable Cabinet", icon: AlertTriangle, color: "text-red-600", bg: "bg-red-500/10" },
+  ];
+
   return (
     <div className="space-y-8">
       {/* Document Header */}
@@ -511,6 +556,12 @@ export const ImplementationPlanDocument = () => {
             </div>
           </div>
 
+          {/* Compound Layout Diagram */}
+          <div className="mt-4">
+            <p className="text-xs font-medium text-muted-foreground mb-1">Warehouse compound layout — container positions, dome area & laydown yard</p>
+            <img src="/images/warehouse-compound-layout.png" alt="Warehouse compound layout showing U-shaped container configuration C01-C05, dome area, and laydown yard LD-A through LD-F" className="rounded-lg border border-border w-full" />
+          </div>
+
 
           {/* 3D Render */}
           <div className="mt-4">
@@ -743,6 +794,56 @@ export const ImplementationPlanDocument = () => {
               A ratio above <span className="font-medium text-foreground">3.0</span> would indicate genuine overcrowding requiring review. No zones currently exceed this threshold.
             </p>
           </div>
+        </SubSection>
+
+        {/* Container Shopping List — Live Inventory */}
+        <SubSection id="5.9" title="Container Inventory Summary (Live Data)">
+          <Prose>
+            The table below is populated directly from the site spares database, showing the actual number of items currently allocated to each storage zone by category. This serves as the "shopping list" — what is physically going into each container.
+          </Prose>
+
+          {loadingSummary ? (
+            <div className="text-sm text-muted-foreground italic py-4 text-center">Loading inventory data...</div>
+          ) : (
+            <div className="space-y-3">
+              {containerZones.map((zone) => {
+                const items = containerSummary[zone.code];
+                if (!items || items.length === 0) return null;
+                const total = items.reduce((s, i) => s + i.count, 0);
+                const ZoneIcon = zone.icon;
+                return (
+                  <Card key={zone.code} className={`border-border ${zone.bg}`}>
+                    <CardContent className="py-3 px-4 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <ZoneIcon className={`w-4 h-4 ${zone.color}`} />
+                        <span className="font-semibold text-sm text-foreground">{zone.code} — {zone.label}</span>
+                        <span className="ml-auto text-xs font-mono text-muted-foreground">{total} SKUs</span>
+                      </div>
+                      <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3 text-xs text-muted-foreground">
+                        {items.map((item) => (
+                          <div key={item.category} className="flex items-center justify-between gap-2 px-2 py-1 bg-background/50 rounded border border-border/50">
+                            <span>{item.category}</span>
+                            <span className="font-mono font-medium text-foreground">{item.count}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+
+              {/* Total */}
+              <div className="flex items-center justify-between px-4 py-2 bg-muted/50 rounded-lg border border-border text-sm font-medium">
+                <div className="flex items-center gap-2">
+                  <ShoppingCart className="w-4 h-4 text-primary" />
+                  <span>Total Allocated Inventory</span>
+                </div>
+                <span className="font-mono">
+                  {Object.values(containerSummary).reduce((total, cats) => total + cats.reduce((s, c) => s + c.count, 0), 0)} SKUs
+                </span>
+              </div>
+            </div>
+          )}
         </SubSection>
       </Section>
 
