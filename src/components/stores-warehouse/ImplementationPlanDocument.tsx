@@ -113,11 +113,11 @@ export const ImplementationPlanDocument = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
             <div>
               <span className="text-muted-foreground">Prepared By</span>
-              <p className="font-medium text-foreground">Maintenance &amp; Projects</p>
+              <p className="font-medium text-foreground">Minesite.ai Project Manager</p>
             </div>
             <div>
               <span className="text-muted-foreground">Date</span>
-              <p className="font-medium text-foreground">February 2026</p>
+              <p className="font-medium text-foreground">21st Feb 2026</p>
             </div>
             <div>
               <span className="text-muted-foreground">Status</span>

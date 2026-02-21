@@ -194,7 +194,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
         <body>
           <div class="doc-cover">
             <h1>Stores & Warehouse Implementation Plan</h1>
-            <p>Tennant Creek Mines Gold — TCMG-PLAN-STORES-001 | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
+            <p>Tennant Creek Mines Gold — TCMG-PLAN-STORES-001 | 21st February 2026</p>
           </div>
           ${printContent.innerHTML}
         </body>
