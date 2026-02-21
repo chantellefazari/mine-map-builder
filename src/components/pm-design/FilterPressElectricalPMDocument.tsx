@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Toggle } from "@/components/ui/toggle";
 import {
   AlertTriangle,
   Shield,
@@ -19,7 +18,6 @@ import {
   Info,
   Cog,
   Lock,
-  Wind,
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
@@ -33,20 +31,6 @@ interface EquipmentSection {
   equipmentName: string;
   tasks: InspectionTask[];
 }
-
-interface Hazard {
-  id: string;
-  icon: React.ReactNode;
-  label: string;
-}
-
-const hazardsList: Hazard[] = [
-  { id: "electrical", icon: <Zap className="w-4 h-4" />, label: "Electrical" },
-  { id: "arc-flash", icon: <Zap className="w-4 h-4" />, label: "Arc Flash" },
-  { id: "mechanical", icon: <Cog className="w-4 h-4" />, label: "Mechanical" },
-  { id: "pneumatic", icon: <Wind className="w-4 h-4" />, label: "Pneumatic" },
-  { id: "lockout", icon: <Lock className="w-4 h-4" />, label: "LOTO" },
-];
 
 // --- INSPECTION DATA FROM DOCUMENT ---
 
@@ -303,16 +287,6 @@ const inspectionData: EquipmentSection[] = [
 
 
 export const FilterPressElectricalPMDocument = () => {
-  const [selectedHazards, setSelectedHazards] = useState<string[]>(["electrical", "arc-flash", "pneumatic"]);
-
-  const toggleHazard = (hazardId: string) => {
-    setSelectedHazards((prev) =>
-      prev.includes(hazardId)
-        ? prev.filter((id) => id !== hazardId)
-        : [...prev, hazardId]
-    );
-  };
-
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
@@ -421,83 +395,11 @@ export const FilterPressElectricalPMDocument = () => {
             </div>
           </div>
 
-          {/* Hazard Identification */}
-          <div className="border-b border-border">
-            <div className="bg-amber-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-amber-600" />
-              <span className="text-amber-700 font-bold">HAZARD IDENTIFICATION</span>
-              <span className="text-xs text-muted-foreground ml-2">(Select all that apply)</span>
-            </div>
-            <div className="p-4">
-              <div className="flex flex-wrap gap-2">
-                {hazardsList.map((hazard) => (
-                  <Toggle
-                    key={hazard.id}
-                    pressed={selectedHazards.includes(hazard.id)}
-                    onPressedChange={() => toggleHazard(hazard.id)}
-                    className="data-[state=on]:bg-amber-500 data-[state=on]:text-white border border-border px-3 py-2 gap-2"
-                    aria-label={`Toggle ${hazard.label} hazard`}
-                  >
-                    {hazard.icon}
-                    <span className="text-sm font-medium">{hazard.label}</span>
-                  </Toggle>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tools and PPE */}
-        <div className="border-b border-border grid md:grid-cols-2">
-          <div className="border-r border-border">
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-primary" />
-              SPECIAL TOOLING REQUIRED
-            </div>
-            <div className="p-4">
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Standard Electrical Tool Kit</span></li>
-                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Torch / Flashlight</span></li>
-                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Cabinet keys</span></li>
-                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Temperature gun</span></li>
-              </ul>
-            </div>
-          </div>
-          <div>
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <HardHat className="w-4 h-4 text-primary" />
-              REQUIRED PPE
-            </div>
-            <div className="p-4">
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Steel Cap Boots</span></li>
-                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Hard Hat</span></li>
-                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Safety Glasses</span></li>
-                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Gloves</span></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Risk Assessment */}
-        <div className="border-b border-border">
-          <div className="bg-green-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-green-600" />
-            <span className="text-green-700">RISK ASSESSMENT</span>
-          </div>
-          <div className="p-4">
-            <p className="text-sm text-muted-foreground mb-3">Complete one of the following before starting work:</p>
-            <div className="flex flex-wrap gap-2">
-              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" /><span>Take 5</span>
-              </label>
-              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" /><span>JHA / JSEA</span>
-              </label>
-              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" /><span>SWMS</span>
-              </label>
-            </div>
+          <div className="mt-4 flex items-start gap-3 px-4 pb-4">
+            <HardHat className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+            <p className="text-sm">
+              <span className="font-semibold">Minimum PPE:</span> Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.
+            </p>
           </div>
         </div>
 
