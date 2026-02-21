@@ -682,7 +682,7 @@ export const ImplementationPlanDocument = () => {
         {/* Capacity Validation */}
         <SubSection id="5.8" title="Capacity Validation Summary">
           <Prose>
-            A capacity scan has been performed against the physical fitout of each container to confirm that current SKU counts fit within available bin positions. All zones are confirmed clear.
+            A capacity scan has been performed against the physical fitout of each container. The table below compares live SKU counts against the number of physical bin positions (shelves, drawers, panel slots) installed in each container.
           </Prose>
 
           <Table>
@@ -693,23 +693,21 @@ export const ImplementationPlanDocument = () => {
                 <TableHead className="text-xs text-right">SKUs</TableHead>
                 <TableHead className="text-xs text-right">Bin Positions</TableHead>
                 <TableHead className="text-xs text-right">Items/Bin</TableHead>
-                <TableHead className="text-xs text-right">Usage</TableHead>
-                <TableHead className="text-xs">Status</TableHead>
+                <TableHead className="text-xs">Note</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {[
-                { zone: "C01-EL", type: "20ft", skus: 444, bins: 274, note: "ESD panels absorb bulk small parts" },
-                { zone: "C02-IN", type: "20ft", skus: 349, bins: 273, note: "Drawer cabinets absorb fittings" },
-                { zone: "C03-ME", type: "40ft", skus: 545, bins: 540, note: "Near-perfect fit at double length" },
-                { zone: "C04-MP", type: "20ft", skus: 227, bins: 302, note: "25% growth buffer available" },
-                { zone: "C05-CS", type: "20ft", skus: 462, bins: 338, note: "Bin walls consolidate fasteners" },
-                { zone: "LD", type: "Yard", skus: 113, bins: null, note: "6 bays, forklift-accessible" },
-                { zone: "Wurth", type: "Cabinet", skus: 44, bins: null, note: "Dedicated mobile cabinet" },
-                { zone: "Flammable", type: "Cabinet", skus: 6, bins: null, note: "AS1940-compliant" },
+                { zone: "C01-EL", type: "20ft", skus: 441, bins: 274, note: "ESD panels hold 20–40 small SKUs per slot (fuses, lugs, ferrules)" },
+                { zone: "C02-IN", type: "20ft", skus: 345, bins: 273, note: "Drawer cabinets hold ~15 fitting types per drawer" },
+                { zone: "C03-ME", type: "40ft", skus: 533, bins: 540, note: "Near 1:1 — largest container at 12m length" },
+                { zone: "C04-MP", type: "20ft", skus: 226, bins: 302, note: "Best headroom — 25% growth buffer" },
+                { zone: "C05-CS", type: "20ft", skus: 431, bins: 338, note: "Bin walls consolidate 3–5 fastener sizes per slot" },
+                { zone: "LD", type: "Yard", skus: 112, bins: null, note: "6 open bays — forklift-accessible, no bin limit" },
+                { zone: "Wurth", type: "Cabinet", skus: 20, bins: null, note: "Dedicated Wurth mobile cabinet" },
+                { zone: "Flammable", type: "Cabinet", skus: 1, bins: null, note: "AS1940-compliant cabinet" },
               ].map((row) => {
                 const ratio = row.bins ? (row.skus / row.bins).toFixed(2) : "—";
-                const usage = row.bins ? `${Math.min(100, Math.round((row.skus / row.bins) * 100))}%` : "—";
                 return (
                   <TableRow key={row.zone}>
                     <TableCell className="text-xs font-medium">{row.zone}</TableCell>
@@ -717,25 +715,33 @@ export const ImplementationPlanDocument = () => {
                     <TableCell className="text-xs text-right">{row.skus}</TableCell>
                     <TableCell className="text-xs text-right">{row.bins ?? "—"}</TableCell>
                     <TableCell className="text-xs text-right">{ratio}</TableCell>
-                    <TableCell className="text-xs text-right">{usage}</TableCell>
-                    <TableCell className="text-xs text-green-600 dark:text-green-400">✅ Fits</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{row.note}</TableCell>
                   </TableRow>
                 );
               })}
               <TableRow className="font-medium">
                 <TableCell className="text-xs">Total</TableCell>
                 <TableCell className="text-xs">—</TableCell>
-                <TableCell className="text-xs text-right">2,190</TableCell>
+                <TableCell className="text-xs text-right">2,109</TableCell>
                 <TableCell className="text-xs text-right">1,727</TableCell>
-                <TableCell className="text-xs text-right" colSpan={2}>—</TableCell>
-                <TableCell className="text-xs text-green-600 dark:text-green-400">✅ All Clear</TableCell>
+                <TableCell className="text-xs text-right">—</TableCell>
+                <TableCell className="text-xs">—</TableCell>
               </TableRow>
             </TableBody>
           </Table>
 
-          <Prose>
-            Density thresholds: items/bin &gt; 2.0 = crowded; &gt; 3.0 = critical. No zones currently exceed these thresholds. The full interactive capacity scan with furniture breakdowns and progress bars is available in the Capacity Scan tab.
-          </Prose>
+          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 text-sm space-y-1.5">
+            <p className="font-medium text-foreground">How to read this table</p>
+            <p className="text-muted-foreground text-xs">
+              <span className="font-medium text-foreground">Bin Positions</span> = the total number of physical compartments (shelf bins, drawer slots, panel slots) installed inside each container based on the furniture fitout.
+            </p>
+            <p className="text-muted-foreground text-xs">
+              <span className="font-medium text-foreground">Items/Bin</span> = SKU count ÷ bin positions. A ratio above 1.0 does not mean overcrowded — many storage types are specifically designed to hold multiple SKUs per slot. For example, ESD panels hold 20–40 small electrical SKUs per slot, drawer cabinets hold ~15 fitting types per drawer, and Kanban bin walls consolidate 3–5 fastener sizes per slot.
+            </p>
+            <p className="text-muted-foreground text-xs">
+              A ratio above <span className="font-medium text-foreground">3.0</span> would indicate genuine overcrowding requiring review. No zones currently exceed this threshold.
+            </p>
+          </div>
         </SubSection>
       </Section>
 
