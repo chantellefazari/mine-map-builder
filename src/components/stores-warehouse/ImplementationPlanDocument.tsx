@@ -1263,8 +1263,6 @@ export const ImplementationPlanDocument = () => {
                 ["Internal Fitout (all containers)", "—", "Shelving, racks, bin panels, labels"],
                 ["Laydown Yard Preparation", "—", "Gravel, bollards, signage, sheltering"],
                 ["Inventory Initial Load", "—", "Labour, stock transfer, system setup"],
-                ["Asset Tagging (Processing Plant)", "—", "316SS tags, engraving, installation"],
-                ["Contingency (10%)", "—", "Unforeseen scope or pricing variation"],
               ].map(([item, cost, notes], i) => (
                 <TableRow key={i}>
                   <TableCell className="text-xs font-medium">{item}</TableCell>
