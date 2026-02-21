@@ -500,6 +500,21 @@ export const ImplementationPlanDocument = () => {
               <img src="/images/dome-partial-endwalls.png" alt="Dome structure showing partial end wall configuration" className="rounded-lg border border-border w-full" />
             </div>
           </div>
+
+          {/* 3D Render */}
+          <div className="mt-4">
+            <p className="text-xs font-medium text-muted-foreground mb-1">3D warehouse compound model</p>
+            <img src="/images/warehouse-3d-render.png" alt="3D rendered model of warehouse compound showing containers, dome, laydown yard and delivery zone" className="rounded-lg border border-border w-full" />
+          </div>
+
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 mt-3">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">Interactive 3D Model Available — </span>
+              A fully interactive 3D version of this warehouse design is available within the application. 
+              Contact the project team to request access to the live 3D visualisation, which includes container interiors, 
+              roller door operation, and laydown yard navigation.
+            </p>
+          </div>
         </div>
       </Section>
 
