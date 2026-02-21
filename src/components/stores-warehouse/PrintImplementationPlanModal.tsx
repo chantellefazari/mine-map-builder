@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { X, Printer, FileText } from "lucide-react";
+import { X, Printer, FileText, Download } from "lucide-react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -280,6 +282,39 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
     }, 600);
   };
 
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    const pageEls = document.querySelectorAll("[data-pdf-page]");
+    if (pageEls.length === 0) return;
+
+    setDownloading(true);
+    try {
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const A4_W = 210;
+      const A4_H = 297;
+
+      for (let i = 0; i < pageEls.length; i++) {
+        const el = pageEls[i] as HTMLElement;
+        const canvas = await html2canvas(el, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          width: el.offsetWidth,
+          height: el.offsetHeight,
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, 0, A4_W, A4_H);
+      }
+
+      pdf.save("TCMG-Stores-Implementation-Plan.pdf");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[95vw] w-full max-h-[95vh] h-full p-0 gap-0">
@@ -291,9 +326,13 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
             </DialogTitle>
           </div>
           <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={handleDownloadPDF} className="gap-2" disabled={pages.length === 0 || downloading}>
+              <Download className="w-4 h-4" />
+              {downloading ? "Downloading…" : "Download PDF"}
+            </Button>
             <Button onClick={handlePrint} className="gap-2" disabled={pages.length === 0}>
               <Printer className="w-4 h-4" />
-              Print / Save PDF
+              Print
             </Button>
             <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="w-4 h-4" />
@@ -353,6 +392,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
             {pages.map((html, i) => (
               <div
                 key={i}
+                data-pdf-page
                 className="relative flex-shrink-0 bg-white dark:bg-card rounded shadow-lg print-compact-text"
                 style={{
                   width: `${A4_WIDTH_PX}px`,
