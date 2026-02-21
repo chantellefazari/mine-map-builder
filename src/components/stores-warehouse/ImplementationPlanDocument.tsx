@@ -354,7 +354,7 @@ export const ImplementationPlanDocument = () => {
             This structure creates a fully enclosed central working bay while keeping containers as the primary storage zones.
           </Prose>
           <Prose>
-            The containers remain structurally independent and are positioned on engineered concrete plinth blocks (refer Civil Section).
+            The containers remain structurally independent and are positioned on engineered concrete blocks (refer Civil Section).
           </Prose>
         </SubSection>
 
@@ -430,10 +430,10 @@ export const ImplementationPlanDocument = () => {
 
           <div className="space-y-3">
             <div>
-              <p className="text-sm font-medium text-foreground mb-1">Container Seating on Plinth Blocks</p>
+              <p className="text-sm font-medium text-foreground mb-1">Container Seating on Concrete Blocks</p>
               <ul className="text-sm text-muted-foreground space-y-1.5 list-disc pl-5">
-                <li>Containers will be positioned on engineered concrete plinth blocks cast within the slab footprint</li>
-                <li>Plinth height will match finished slab level to provide stable, even load distribution</li>
+                <li>Containers will be positioned on engineered concrete blocks cast within the slab footprint</li>
+                <li>Block height will match finished slab level to provide stable, even load distribution</li>
                 <li>No direct soil contact will occur</li>
                 <li>Blocks will be spaced to suit container corner castings and structural load points</li>
               </ul>
