@@ -1481,7 +1481,7 @@ export const ImplementationPlanDocument = () => {
           <Prose>This plan is implementation-ready pending approval of the following:</Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
             <li>Civil &amp; earthworks scope</li>
-            <li>Concrete slab and plinth installation</li>
+            <li>Concrete slab and concrete blocks installation</li>
             <li>Dome enclosure and structural fit-out</li>
             <li>Container placement and modification</li>
             <li>Shelving and internal fit-out procurement</li>
@@ -1493,7 +1493,7 @@ export const ImplementationPlanDocument = () => {
           <ol className="text-sm text-muted-foreground space-y-2 list-decimal pl-5">
             <li>Site preparation &amp; relocations</li>
             <li>Earthworks &amp; compaction</li>
-            <li>Slab and plinth installation</li>
+            <li>Slab and concrete blocks installation</li>
             <li>Container positioning</li>
             <li>Dome installation &amp; weather sealing</li>
             <li>Internal fit-out &amp; zone allocation</li>
