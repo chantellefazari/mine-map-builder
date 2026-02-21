@@ -301,17 +301,6 @@ const inspectionData: EquipmentSection[] = [
   filter2HydraulicMotors,
 ];
 
-const generalAreaChecks = [
-  "Conveyors",
-  "Filter Feed Pumps",
-  "Agitators",
-  "Sump Pump",
-  "Conveyor DB",
-  "Filter Press DB 1 & 2",
-  "E-Stop Lanyards and Switches",
-  "General Condition of Area",
-  "Air compressor / Airlines",
-];
 
 export const FilterPressElectricalPMDocument = () => {
   const [selectedHazards, setSelectedHazards] = useState<string[]>(["electrical", "arc-flash", "pneumatic"]);
@@ -512,33 +501,6 @@ export const FilterPressElectricalPMDocument = () => {
           </div>
         </div>
 
-        {/* GENERAL AREA INSPECTIONS */}
-        <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-            <Eye className="w-5 h-5 text-primary" />
-            GENERAL AREA INSPECTIONS
-          </div>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/50">
-                <th className="text-center px-3 py-2 font-medium w-12">#</th>
-                <th className="text-left px-4 py-2 font-medium">Area Checks</th>
-                <th className="text-center px-2 py-2 font-medium w-16">OK</th>
-                <th className="text-left px-4 py-2 font-medium">Comments</th>
-              </tr>
-            </thead>
-            <tbody>
-              {generalAreaChecks.map((check, i) => (
-                <tr key={i} className="border-b border-border hover:bg-muted/30">
-                  <td className="text-center px-3 py-2.5 font-medium">{i + 1}</td>
-                  <td className="px-4 py-2.5">{check}</td>
-                  <td className="text-center px-2 py-2.5"><Checkbox className="h-4 w-4" /></td>
-                  <td className="px-4 py-2.5"><span className="text-muted-foreground">—</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
 
         {/* DETAILED EQUIPMENT INSPECTIONS */}
         <div className="border-b border-border">
