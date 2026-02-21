@@ -773,6 +773,7 @@ export const ImplementationPlanDocument = () => {
                  <p><span className="font-medium text-foreground">Opposite Long Wall, Right of door:</span> Reinforced VSD shelving</p>
                 <p><span className="font-medium text-foreground">End Wall 1:</span> Sealed cabinet for PLCs, anti-static mats inside</p>
                 <p><span className="font-medium text-foreground">End Wall 2 (airflow end):</span> Conduit brackets near ceiling, panel fan/filter vertical rack</p>
+                <p className="mt-1"><span className="font-medium text-foreground">Positive Airflow:</span> One extraction fan mounted at the airflow end wall. Additional ventilation achieved by opening the container roller door as required. This maintains positive air pressure to reduce dust ingress and protect sensitive electrical components.</p>
               </div>
               <div className="border-t border-border/50 pt-2 mt-1">
                 <p className="text-[10px] font-medium text-foreground uppercase tracking-wide mb-1">Required</p>
