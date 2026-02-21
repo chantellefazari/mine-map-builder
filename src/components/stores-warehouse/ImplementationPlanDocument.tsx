@@ -1286,27 +1286,61 @@ export const ImplementationPlanDocument = () => {
       <Separator />
 
       {/* ============================================================ */}
-      {/*  10. Critical Path & Operational Risk Statement              */}
+      {/*  10. Implementation Pathway & Approval Requirements          */}
       {/* ============================================================ */}
-      <Section number="10" title="Critical Path &amp; Operational Risk Statement" icon={ShieldAlert}>
+      <Section number="10" title="Implementation Pathway &amp; Approval Requirements" icon={ShieldAlert}>
         <Prose>
-          The following items represent critical-path dependencies and operational risks that must be actively managed throughout the implementation sequence. Failure to address these items will directly impact project timeline, budget, and operational readiness.
+          The Central Stores Warehouse plan is now fully defined from a design, operational, and financial perspective.
         </Prose>
-        <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-          <li><span className="font-medium text-foreground">Wet Season Window:</span> Civil and earthworks must be completed before the onset of the wet season to avoid delays and subgrade instability. Concrete pours require minimum 7-day cure before container placement.</li>
-          <li><span className="font-medium text-foreground">Container Lead Time:</span> Procurement of modified containers (particularly the 40ft C03-ME) may carry 6–10 week lead times depending on supplier availability and modification scope.</li>
-          <li><span className="font-medium text-foreground">Dome Roof Certification:</span> Structural certification must be completed by a qualified engineer before any internal fitout or stock loading commences under the dome.</li>
-          <li><span className="font-medium text-foreground">Staff Training:</span> Operational go-live is contingent on all maintenance and stores personnel completing the stock control procedure induction. No unsupervised access until training is verified.</li>
-          <li><span className="font-medium text-foreground">System Readiness:</span> Inventory management system (Minesite AI) must be fully configured with location codes, part numbers, and min/max levels before physical stock transfer begins.</li>
-          <li><span className="font-medium text-foreground">Concurrent Operations Risk:</span> Warehouse construction activities must be managed to avoid disruption to ongoing plant operations. A construction management plan with exclusion zones and communication protocols is required.</li>
-        </ul>
-        <ImagePlaceholder label="Critical path schedule or risk matrix" />
+        <Prose>
+          All structural layout, stock control logic, asset numbering integration, and civil requirements have been documented and costed to the extent practical prior to construction.
+        </Prose>
+
+        <SubSection id="10-pending" title="Pending Approvals">
+          <Prose>This plan is implementation-ready pending approval of the following:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Civil &amp; earthworks scope</li>
+            <li>Concrete slab and plinth installation</li>
+            <li>Dome enclosure and structural fit-out</li>
+            <li>Container placement and modification</li>
+            <li>Shelving and internal fit-out procurement</li>
+          </ul>
+        </SubSection>
+
+        <SubSection id="10-sequence" title="Execution Sequence">
+          <Prose>Once approved, execution will proceed in the following controlled sequence:</Prose>
+          <ol className="text-sm text-muted-foreground space-y-2 list-decimal pl-5">
+            <li>Site preparation &amp; relocations</li>
+            <li>Earthworks &amp; compaction</li>
+            <li>Slab and plinth installation</li>
+            <li>Container positioning</li>
+            <li>Dome installation &amp; weather sealing</li>
+            <li>Internal fit-out &amp; zone allocation</li>
+            <li>System go-live (stock control enforcement)</li>
+          </ol>
+        </SubSection>
+
+        <SubSection id="10-why" title="Why This Cannot Wait">
+          <Prose>
+            No stock system can be fully implemented without the physical warehouse infrastructure in place. The warehouse is the enabling foundation that supports:
+          </Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Accurate inventory control</li>
+            <li>Critical spare governance</li>
+            <li>Reduced emergency freight exposure</li>
+            <li>Improved wrench time</li>
+            <li>Long-term asset reliability</li>
+          </ul>
+          <Prose>
+            Delaying physical infrastructure will directly delay system stabilisation and cost control improvements.
+          </Prose>
+        </SubSection>
 
         {/* Closing statement */}
         <Card className="border-primary/30 bg-primary/5 mt-6">
           <CardContent className="p-4">
             <p className="text-sm text-foreground font-medium">
-              This document constitutes the authorised implementation plan for the TCMG Stores &amp; Warehouse project. All parties are expected to execute in accordance with the stages, standards, and governance defined herein.
+              This document represents the full operational blueprint for Central Stores implementation.
             </p>
           </CardContent>
         </Card>
