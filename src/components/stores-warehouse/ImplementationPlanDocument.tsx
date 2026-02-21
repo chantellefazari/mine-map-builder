@@ -263,21 +263,18 @@ export const ImplementationPlanDocument = () => {
           </Prose>
         </SubSection>
 
-        <SubSection id="3.4" title="Drainage Strategy">
+        <SubSection id="3.4" title="Water Management">
           <Prose>
-            The selected area currently shows uncontrolled surface water movement and erosion toward the dam during wet season events. Civil works will include:
+            The selected area currently shows uncontrolled surface water movement and erosion toward the dam during wet season events. There is no dedicated drainage design — instead, the earthworks scope includes regrading the area so that surface water naturally sheds to the right of the compound and flows into the existing dam. This gives the water somewhere to go without requiring additional drainage infrastructure.
           </Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>Regrading to establish consistent fall away from container pads</li>
-            <li>Perimeter swale to intercept runoff</li>
-            <li>Controlled redirection of stormwater toward existing flow paths</li>
+            <li>Earthworks regraded to establish consistent fall away from container pads toward the dam</li>
+            <li>Surface water directed right of the compound into the existing dam</li>
             <li>Elimination of ponding around container positions</li>
+            <li>Slab graded to fall away from container openings (refer Section 4.5)</li>
           </ul>
           <Prose>
-            <span className="font-medium text-foreground">Objective:</span> No standing water within the compound footprint and stabilisation of the adjacent roadway.
-          </Prose>
-          <Prose>
-            This approach addresses both warehouse construction and an existing drainage risk within a single coordinated scope.
+            <span className="font-medium text-foreground">Objective:</span> No standing water within the compound footprint — water sheds naturally into the dam via regraded earthworks.
           </Prose>
         </SubSection>
 
@@ -445,7 +442,7 @@ export const ImplementationPlanDocument = () => {
               <ul className="text-sm text-muted-foreground space-y-1.5 list-disc pl-5">
                 <li>Finished slab will be graded to fall away from container openings</li>
                 <li>Internal shims will be installed as required to ensure water cannot track back into container doorways</li>
-                <li>Surface runoff will be directed away from the warehouse footprint toward established drainage paths</li>
+                <li>Surface runoff will be directed away from the warehouse footprint toward the dam</li>
               </ul>
               <div className="mt-1.5 bg-blue-500/10 border border-blue-500/30 rounded-lg p-2.5 text-sm text-blue-700 dark:text-blue-300">
                 <span className="font-medium">Objective:</span> No ponding at container doors and no internal water migration during wet season events.
@@ -1127,7 +1124,7 @@ export const ImplementationPlanDocument = () => {
               title: "Survey & Civil Design",
               deliverables: [
                 "Topographic site survey completed (RL markers confirmed)",
-                "Drainage design finalised",
+                "Slab specification and concrete block placement plan confirmed",
                 "Slab specification and concrete block placement plan confirmed",
                 "Compound footprint pegged and approved",
               ],
@@ -1147,7 +1144,7 @@ export const ImplementationPlanDocument = () => {
               deliverables: [
                 "Earthworks contractor mobilised",
                 "Cut and fill to achieve RL 355.99 formation level",
-                "Drainage corrections installed (perimeter swale, regrading)",
+                "Regrading to direct surface water right of compound into existing dam",
                 "Compaction testing completed and certified",
               ],
             },
@@ -1255,7 +1252,7 @@ export const ImplementationPlanDocument = () => {
             </TableHeader>
             <TableBody>
               {[
-                ["Civil & Earthworks", "—", "Cut, fill, drainage, slabs"],
+                ["Civil & Earthworks", "—", "Cut, fill, regrading, slabs"],
                 ["Dome Roof Structure", "—", "Supply, install, certification"],
                 ["Containers (×5)", "—", "Purchase or lease, delivery, crane"],
                 ["Internal Fitout (all containers)", "—", "Shelving, racks, bin panels, labels"],
