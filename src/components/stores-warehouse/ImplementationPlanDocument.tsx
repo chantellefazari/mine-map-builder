@@ -496,97 +496,50 @@ export const ImplementationPlanDocument = () => {
           <span className="font-medium">Eligibility Rule:</span> Only carryable items (≤15 kg) that can be safely handled by one person and stored on shelves or in bins.
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-2">
           {/* C01-EL */}
           <Card className="border-border bg-yellow-500/10">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center border border-yellow-600/20">
-                  <span className="font-bold text-sm text-yellow-600">1</span>
-                </div>
-                <Zap className="w-5 h-5 text-yellow-600" />
-                <div>
-                  <CardTitle className="text-lg">C01-EL — Electrical (20ft – Positive Airflow)</CardTitle>
-                  <p className="text-xs text-muted-foreground font-mono mt-0.5">C01-EL</p>
-                </div>
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-yellow-500/20 flex items-center justify-center"><span className="font-bold text-xs text-yellow-600">1</span></div>
+                <Zap className="w-4 h-4 text-yellow-600" />
+                <span className="font-semibold text-sm text-foreground">C01-EL — Electrical</span>
+                <span className="text-[10px] text-muted-foreground ml-auto">20ft Modified · Dust-controlled airflow</span>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Dedicated to electrical and power generation components. Positive airflow environment with dust-controlled entry. Contains 5 shelving bays, ESD bin panels, a lockable PLC cabinet, and ceiling-mounted conduit brackets.
-              </p>
-              <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-0.5 sm:grid-cols-2 lg:grid-cols-3 text-xs text-muted-foreground">
                 {["Fuses (all types)", "Circuit breakers (MCB, MCCB)", "RCBOs", "Contactors", "Overload relays", "Control relays", "Power supplies", "Terminal blocks", "Isolator handles & internals", "Push buttons", "Selector switches", "Indicator lights", "VSD/VFD spare boards", "PLC I/O cards", "PLC CPUs", "Sensors (photo, proximity)", "Cable glands", "Cable lugs", "Ferrules", "Control cables (cut lengths)", "Panel cooling fans", "Panel filters"].map((item, i) => (
-                  <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground"><span className="text-muted-foreground/60 mt-0.5">•</span><span>{item}</span></div>
+                  <div key={i} className="flex items-start gap-1.5"><span className="text-muted-foreground/50 mt-0.5">•</span><span>{item}</span></div>
                 ))}
-              </div>
-              <div className="flex flex-wrap gap-3 pt-3 border-t border-border/50">
-                <div className="flex items-center gap-2 text-xs bg-background/50 px-3 py-1.5 rounded-md border border-border/50">
-                  <span className="font-medium text-foreground">📍 Container:</span>
-                  <span className="text-muted-foreground">20ft Modified Container</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs bg-background/50 px-3 py-1.5 rounded-md border border-border/50">
-                  <Info className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-muted-foreground">Dust-controlled airflow, sealed cabinets</span>
-                </div>
               </div>
             </CardContent>
           </Card>
 
           {/* C02-IN */}
           <Card className="border-border bg-purple-500/10">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center border border-purple-600/20">
-                  <span className="font-bold text-sm text-purple-600">2</span>
-                </div>
-                <Gauge className="w-5 h-5 text-purple-600" />
-                <div>
-                  <CardTitle className="text-lg">C02-IN — Instrumentation &amp; Pneumatics (20ft – Clean/Fragile)</CardTitle>
-                  <p className="text-xs text-muted-foreground font-mono mt-0.5">C02-IN</p>
-                </div>
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-purple-500/20 flex items-center justify-center"><span className="font-bold text-xs text-purple-600">2</span></div>
+                <Gauge className="w-4 h-4 text-purple-600" />
+                <span className="font-semibold text-sm text-foreground">C02-IN — Instrumentation &amp; Pneumatics</span>
+                <span className="text-[10px] text-muted-foreground ml-auto">20ft Modified · Clean/fragile storage</span>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Houses instrumentation, pneumatic, and process fitting components. Contains 6 shelving bays, drawer units for small fittings, 40 foam-lined storage totes, and a vertical tubing rail.
-              </p>
-              <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-0.5 sm:grid-cols-2 lg:grid-cols-3 text-xs text-muted-foreground">
                 {["Pressure transmitters", "Pressure gauges", "Flow switches", "Flow meters (small)", "Level switches", "Temperature probes (RTD / thermocouple)", "Solenoid valves (small)", "Positioners", "Instrument air regulators / FRLs", "Small actuators", "Instrument fittings (SS, brass)", "Swagelok fittings", "Tubing (coiled lengths)", "Manifolds (small)", "Instrument filters", "Pneumatic push-in fittings", "Quick connects", "Air hoses (small)", "Mufflers", "Needle valves (small)"].map((item, i) => (
-                  <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground"><span className="text-muted-foreground/60 mt-0.5">•</span><span>{item}</span></div>
+                  <div key={i} className="flex items-start gap-1.5"><span className="text-muted-foreground/50 mt-0.5">•</span><span>{item}</span></div>
                 ))}
-              </div>
-              <div className="flex flex-wrap gap-3 pt-3 border-t border-border/50">
-                <div className="flex items-center gap-2 text-xs bg-background/50 px-3 py-1.5 rounded-md border border-border/50">
-                  <span className="font-medium text-foreground">📍 Container:</span>
-                  <span className="text-muted-foreground">20ft Modified Container</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs bg-background/50 px-3 py-1.5 rounded-md border border-border/50">
-                  <Info className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-muted-foreground">Labelled bins, clean storage, fragile care</span>
-                </div>
               </div>
             </CardContent>
           </Card>
 
           {/* C03-ME */}
           <Card className="border-border bg-blue-500/10">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-600/20">
-                  <span className="font-bold text-sm text-blue-600">3</span>
-                </div>
-                <Wrench className="w-5 h-5 text-blue-600" />
-                <div>
-                  <CardTitle className="text-lg">C03-ME — Mechanical (40ft – High Volume)</CardTitle>
-                  <p className="text-xs text-muted-foreground font-mono mt-0.5">C03-ME</p>
-                </div>
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-blue-500/20 flex items-center justify-center"><span className="font-bold text-xs text-blue-600">3</span></div>
+                <Wrench className="w-4 h-4 text-blue-600" />
+                <span className="font-semibold text-sm text-foreground">C03-ME — Mechanical</span>
+                <span className="text-[10px] text-muted-foreground ml-auto">40ft Standard · High-density bins</span>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                The largest container, handling general mechanical components, hoses, pipework, and light wear parts. Contains 14–18 heavy-duty bays, a fabricated V-belt rack, and a long material rack. All items must meet the ≤15 kg limit.
-              </p>
               {[
                 { name: "Wear Parts & Liners", items: ["Small wear plates (<15 kg)", "Chute liners (rubber, ceramic, <15 kg)"] },
                 { name: "Conveyor & Drive", items: ["Rollers", "Idlers", "Pulleys", "Scraper blades", "Belt cleaners", "Belts (V-belt, drive belt)", "Belt fasteners", "Sprockets", "Chains"] },
@@ -594,81 +547,43 @@ export const ImplementationPlanDocument = () => {
                 { name: "Pump Spares", items: ["Pump seal kits (application-specific)", "Impellers (small)", "Wear rings", "Shaft sleeves", "Gland packing"] }
               ].map((subCat, si) => (
                 <div key={si}>
-                  <h4 className="font-medium text-sm text-foreground mb-2">{subCat.name}</h4>
-                  <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+                  <h4 className="font-medium text-xs text-foreground mb-1">{subCat.name}</h4>
+                  <div className="grid gap-0.5 sm:grid-cols-2 lg:grid-cols-3 text-xs text-muted-foreground">
                     {subCat.items.map((item, i) => (
-                      <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground"><span className="text-muted-foreground/60 mt-0.5">•</span><span>{item}</span></div>
+                      <div key={i} className="flex items-start gap-1.5"><span className="text-muted-foreground/50 mt-0.5">•</span><span>{item}</span></div>
                     ))}
                   </div>
                 </div>
               ))}
-              <div className="flex flex-wrap gap-3 pt-3 border-t border-border/50">
-                <div className="flex items-center gap-2 text-xs bg-background/50 px-3 py-1.5 rounded-md border border-border/50">
-                  <span className="font-medium text-foreground">📍 Container:</span>
-                  <span className="text-muted-foreground">40ft Standard Container</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs bg-background/50 px-3 py-1.5 rounded-md border border-border/50">
-                  <Info className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-muted-foreground">Dry storage, high-density bins, heavy items at bottom</span>
-                </div>
-              </div>
             </CardContent>
           </Card>
 
           {/* C04-MP */}
           <Card className="border-border bg-cyan-500/10">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center border border-cyan-600/20">
-                  <span className="font-bold text-sm text-cyan-600">4</span>
-                </div>
-                <Cog className="w-5 h-5 text-cyan-600" />
-                <div>
-                  <CardTitle className="text-lg">C04-MP — Mechanical Precision (20ft)</CardTitle>
-                  <p className="text-xs text-muted-foreground font-mono mt-0.5">C04-MP</p>
-                </div>
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-cyan-500/20 flex items-center justify-center"><span className="font-bold text-xs text-cyan-600">4</span></div>
+                <Cog className="w-4 h-4 text-cyan-600" />
+                <span className="font-semibold text-sm text-foreground">C04-MP — Mechanical Precision</span>
+                <span className="text-[10px] text-muted-foreground ml-auto">20ft Standard · Anti-contamination</span>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Precision mechanical storage for bearings, seals, and gaskets. Contains 6 shelving bays, seal drawer cabinets, and flat-file style shelves. Clean environment with controlled access.
-              </p>
-              <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-0.5 sm:grid-cols-2 lg:grid-cols-3 text-xs text-muted-foreground">
                 {["Bearings (all types)", "Pillow blocks", "Spherical roller bearings", "Ball bearings", "Seals (oil, lip, mechanical)", "O-rings", "Gaskets", "Shims", "Keys & key stock", "Retaining rings (circlips)", "Bushes", "Small couplings", "Small shafts", "Precision parts", "Locknuts"].map((item, i) => (
-                  <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground"><span className="text-muted-foreground/60 mt-0.5">•</span><span>{item}</span></div>
+                  <div key={i} className="flex items-start gap-1.5"><span className="text-muted-foreground/50 mt-0.5">•</span><span>{item}</span></div>
                 ))}
-              </div>
-              <div className="flex flex-wrap gap-3 pt-3 border-t border-border/50">
-                <div className="flex items-center gap-2 text-xs bg-background/50 px-3 py-1.5 rounded-md border border-border/50">
-                  <span className="font-medium text-foreground">📍 Container:</span>
-                  <span className="text-muted-foreground">20ft Standard Container</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs bg-background/50 px-3 py-1.5 rounded-md border border-border/50">
-                  <Info className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-muted-foreground">Dry, precision bins, anti-contamination</span>
-                </div>
               </div>
             </CardContent>
           </Card>
 
           {/* C05-CS */}
           <Card className="border-border bg-slate-500/10">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-slate-500/10 flex items-center justify-center border border-slate-600/20">
-                  <span className="font-bold text-sm text-slate-600">5</span>
-                </div>
-                <Hammer className="w-5 h-5 text-slate-600" />
-                <div>
-                  <CardTitle className="text-lg">C05-CS — Consumables &amp; Supplies (20ft)</CardTitle>
-                  <p className="text-xs text-muted-foreground font-mono mt-0.5">C05-CS</p>
-                </div>
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-slate-500/20 flex items-center justify-center"><span className="font-bold text-xs text-slate-600">5</span></div>
+                <Hammer className="w-4 h-4 text-slate-600" />
+                <span className="font-semibold text-sm text-foreground">C05-CS — Consumables &amp; Supplies</span>
+                <span className="text-[10px] text-muted-foreground ml-auto">20ft Standard · Kanban bins</span>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                General consumables, fasteners, PPE, rigging, and tooling. Contains 6 shelving bays, 2 bin wall runs for high-frequency items, a PPE rack, and a bunded grease shelf. Highest access frequency — positioned nearest the compound entrance.
-              </p>
               {[
                 { name: "Fasteners & Hardware", items: ["Bolts", "Nuts", "Washers", "Studs", "Anchors", "Threaded rod", "U-bolts", "Hose clamps", "Retaining clips", "Pins", "Screws"] },
                 { name: "Sealants & Adhesives", items: ["Loctite", "Silicone", "Threadlocker", "PTFE tape", "Thread sealant", "Adhesives"] },
@@ -676,24 +591,14 @@ export const ImplementationPlanDocument = () => {
                 { name: "Lubrication", items: ["Grease cartridges", "Grease nipples", "Grease fittings", "Oil filters (small)", "Breathers", "Sight glasses", "Auto-lube injectors", "Oil sample bottles", "Desiccant breathers"] }
               ].map((subCat, si) => (
                 <div key={si}>
-                  <h4 className="font-medium text-sm text-foreground mb-2">{subCat.name}</h4>
-                  <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+                  <h4 className="font-medium text-xs text-foreground mb-1">{subCat.name}</h4>
+                  <div className="grid gap-0.5 sm:grid-cols-2 lg:grid-cols-3 text-xs text-muted-foreground">
                     {subCat.items.map((item, i) => (
-                      <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground"><span className="text-muted-foreground/60 mt-0.5">•</span><span>{item}</span></div>
+                      <div key={i} className="flex items-start gap-1.5"><span className="text-muted-foreground/50 mt-0.5">•</span><span>{item}</span></div>
                     ))}
                   </div>
                 </div>
               ))}
-              <div className="flex flex-wrap gap-3 pt-3 border-t border-border/50">
-                <div className="flex items-center gap-2 text-xs bg-background/50 px-3 py-1.5 rounded-md border border-border/50">
-                  <span className="font-medium text-foreground">📍 Container:</span>
-                  <span className="text-muted-foreground">20ft Standard Container</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs bg-background/50 px-3 py-1.5 rounded-md border border-border/50">
-                  <Info className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-muted-foreground">High-organisation Kanban bins, spill kit accessible</span>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>
