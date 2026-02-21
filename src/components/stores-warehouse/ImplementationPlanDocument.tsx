@@ -416,33 +416,7 @@ export const ImplementationPlanDocument = () => {
           <Prose>No long-term storage permitted in the central bay.</Prose>
         </SubSection>
 
-        <SubSection id="4.5" title="Laydown Yard Interface">
-          <Prose>Large items (motors, pumps, gearboxes, assemblies):</Prose>
-          <ol className="text-sm text-muted-foreground space-y-2 list-decimal pl-5">
-            <li>Delivered to front of warehouse</li>
-            <li>Logged in system</li>
-            <li>Shrink wrapped</li>
-            <li>Labelled</li>
-            <li>Allocated to LD-coded bay (LD-A, LD-B etc.)</li>
-            <li>Moved via forklift to designated laydown area</li>
-          </ol>
-          <Prose>Heavy assemblies do not enter warehouse.</Prose>
-        </SubSection>
-
-        <SubSection id="4.6" title="Operational Controls">
-          <Prose>This warehouse structure enforces:</Prose>
-          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>Controlled access through single entry point</li>
-            <li>Clean separation between receiving and storage</li>
-            <li>No uncontrolled forklift movement</li>
-            <li>No direct dumping of parts into containers</li>
-            <li>No loose floor storage</li>
-          </ul>
-          <Prose><span className="font-medium text-foreground">All material movement flows:</span></Prose>
-          <Prose>Delivery → Goods In Zone → Sorting → Container / Laydown → Controlled Issue</Prose>
-        </SubSection>
-
-        <SubSection id="4.7" title="Design Intent">
+        <SubSection id="4.5" title="Design Intent">
           <Prose>
             This is not simply a container arrangement. It is a controlled logistics compound designed to:
           </Prose>
