@@ -156,7 +156,6 @@ export const ImplementationPlanDocument = () => {
         <Prose>
           Design visuals, survey inputs, and supporting evidence are included in the relevant sections of this document.
         </Prose>
-        <ImagePlaceholder label="Site overview or compound render" />
       </Section>
 
       <Separator />
