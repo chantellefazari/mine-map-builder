@@ -640,17 +640,143 @@ export const ImplementationPlanDocument = () => {
       {/* ============================================================ */}
       <Section number="6" title="Stores Operational Flow" icon={ArrowRightLeft}>
         <Prose>
-          Operational procedures govern all stock movements to ensure 100% traceability across C01–C05 and LD areas. The objective is to eliminate the "just grab it" culture and establish a disciplined stores process.
+          Operational procedures govern all stock movements to ensure 100% traceability across C01–C05 and LD areas. The objective is to eliminate the "just grab it" culture and establish a disciplined stores process. All stock movements must be recorded in the system before, during, or immediately after the physical movement.
         </Prose>
-        <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-          <li><span className="font-medium text-foreground">Stock In Process:</span> All deliveries received at the roller door check-in zone. Items are inspected, system-recorded (PO reference, qty, condition), and allocated to their designated container/bay/bin before being physically placed.</li>
-          <li><span className="font-medium text-foreground">Stock Out Process:</span> All withdrawals require a Work Order number and Reason field. Items are scanned or manually recorded at the point of issue. No container entry without system recording.</li>
-          <li><span className="font-medium text-foreground">Emergency Withdrawal:</span> Nightshift and emergency withdrawals are permitted but must be logged in the system before 10:00 AM the following day. A dedicated emergency log sheet is maintained at the check-in zone.</li>
-          <li><span className="font-medium text-foreground">Min/Max Review:</span> Reorder points and min/max quantities are reviewed monthly against consumption data. Adjustments are documented with justification.</li>
-          <li><span className="font-medium text-foreground">Weekly Revision Control:</span> Wednesday Revision Day (Y26-WXX format) — spot checks on 10% of high-value items, reorder reviews, and housekeeping inspection.</li>
-          <li><span className="font-medium text-foreground">Monthly Audit:</span> Full physical count of one container per month on rotation. Discrepancies investigated and root-cause documented within 48 hours.</li>
-        </ul>
-        <ImagePlaceholder label="Operational flow diagram — Stock In / Stock Out" />
+
+        <SubSection id="6.1" title="Stock In — Receiving">
+          <Prose>All inbound stock must pass through the roller door check-in zone on the concrete slab. No part is permitted to enter containers without system entry.</Prose>
+          <div className="space-y-1.5">
+            {["Verify PO against delivery docket", "Inspect for damage", "Confirm quantity and correct part number", "Photograph part (if new to catalogue)", "Apply internal part label (if required)", "Enter into system — date, PO number, supplier, received-by (all mandatory)", "Assign bin location (C01–C05 or LD allocation)", "Physically place in allocated location"].map((step, i) => (
+              <div key={i} className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">{i + 1}</span>
+                <span>{step}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 bg-destructive/10 border border-destructive/20 rounded-lg p-2.5 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-destructive flex-shrink-0" />
+            <span className="text-xs font-medium text-destructive">If not system-recorded → cannot be stored. No exceptions.</span>
+          </div>
+        </SubSection>
+
+        <SubSection id="6.2" title="Stock Out — Issue">
+          <Prose>Every withdrawal from stores must be recorded before the part leaves the shelf.</Prose>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-foreground uppercase tracking-wide mb-1">Steps</p>
+              {["Locate part in system", 'Select "Stock Out"', "Enter quantity being withdrawn", "Record all mandatory fields"].map((s, i) => (
+                <div key={i} className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">{i + 1}</span>
+                  <span>{s}</span>
+                </div>
+              ))}
+            </div>
+            <div className="bg-muted/50 border border-border rounded-lg p-3 space-y-1 text-sm">
+              <p className="text-xs font-medium text-foreground uppercase tracking-wide mb-1">Required Fields</p>
+              {[
+                { label: "Work Order Number", value: "Mandatory" },
+                { label: "Area / Asset", value: "If available" },
+                { label: "Issued To", value: "Mandatory — named person" },
+                { label: "Reason", value: "Breakdown / PM / Planned / Shutdown" },
+              ].map((f) => (
+                <div key={f.label} className="flex items-center justify-between py-1 border-b border-border last:border-0">
+                  <span className="text-muted-foreground">{f.label}</span>
+                  <span className="font-medium text-foreground">{f.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </SubSection>
+
+        <SubSection id="6.3" title="Emergency Withdrawal (Nightshift Rule)">
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3 space-y-2">
+            <p className="text-sm text-amber-700 dark:text-amber-300">
+              <span className="font-medium">Applies only when system is unavailable</span> (e.g. network outage, nightshift breakdown).
+            </p>
+            <div className="space-y-1.5 text-sm text-muted-foreground">
+              {["Remove part from location", "Complete manual withdrawal sheet immediately", "Enter into system next day before 10:00 AM"].map((s, i) => (
+                <div key={i} className="flex items-center gap-2.5">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-600 text-white text-[10px] font-bold flex items-center justify-center">{i + 1}</span>
+                  <span>{s}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs font-medium text-amber-700 dark:text-amber-400 border-t border-amber-500/20 pt-2">
+              Unrecorded movement is not permitted under any circumstance.
+            </p>
+          </div>
+        </SubSection>
+
+        <SubSection id="6.4" title="Laydown Yard Rules">
+          <Prose>Heavy assemblies (&gt;15 kg), large motors, pumps, gearboxes — forklift access required.</Prose>
+          <div className="grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+            {[
+              "Must be assigned LD location code (LD-A1, LD-B2, etc.)",
+              "Must be physically tagged with part number, description, and date received",
+              "Must be shrink-wrapped if exposed to weather",
+              "All forklift movements must be logged in system",
+            ].map((r, i) => (
+              <div key={i} className="flex items-start gap-2 p-2 bg-muted/40 rounded border border-border">
+                <span className="text-emerald-500 mt-0.5">✓</span>
+                <span>{r}</span>
+              </div>
+            ))}
+          </div>
+        </SubSection>
+
+        <SubSection id="6.5" title="Accountability & Controls">
+          <div className="grid sm:grid-cols-2 gap-2">
+            {[
+              "No part moves without system entry",
+              "No container access without recording issue",
+              "No bulk withdrawals without WO reference",
+              'No "just grab it" culture permitted',
+            ].map((rule, i) => (
+              <div key={i} className="flex items-start gap-2 p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg text-sm text-foreground">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
+                <span>{rule}</span>
+              </div>
+            ))}
+          </div>
+        </SubSection>
+
+        <SubSection id="6.6" title="Review Cycles">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="bg-muted/50 border border-border rounded-lg p-3">
+              <p className="text-xs font-medium text-foreground uppercase tracking-wide mb-2">Weekly — Wednesday Revision Day (Y26-WXX)</p>
+              <div className="space-y-1 text-sm text-muted-foreground">
+                {["Spot check high-critical spares", "Review below-minimum items", "Reconcile discrepancies", "Review emergency freight occurrences"].map((c, i) => (
+                  <div key={i} className="flex items-start gap-2"><span className="text-muted-foreground/50">•</span><span>{c}</span></div>
+                ))}
+              </div>
+            </div>
+            <div className="bg-muted/50 border border-border rounded-lg p-3">
+              <p className="text-xs font-medium text-foreground uppercase tracking-wide mb-2">Monthly — Rotating Container Audit</p>
+              <div className="space-y-1 text-sm text-muted-foreground">
+                {["Cycle count rotating container sections", "Reconcile discrepancies", "Review duplicates", "Adjust Min/Max where required"].map((c, i) => (
+                  <div key={i} className="flex items-start gap-2"><span className="text-muted-foreground/50">•</span><span>{c}</span></div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <Prose>Discrepancies investigated and root-cause documented within 48 hours.</Prose>
+        </SubSection>
+
+        <SubSection id="6.7" title="Min/Max & Reorder Logic">
+          <div className="grid sm:grid-cols-2 gap-2 text-sm">
+            {[
+              { label: "Min Qty", desc: "Triggers reorder alert when stock falls to this level" },
+              { label: "Max Qty", desc: "Upper limit — prevents overstocking in limited container space" },
+              { label: "Reorder Point", desc: "Lead-time-adjusted trigger for procurement action" },
+              { label: "Review Cycle", desc: "Monthly against consumption data — adjustments documented with justification" },
+            ].map((item, i) => (
+              <div key={i} className="p-2.5 bg-muted/40 rounded border border-border">
+                <span className="font-medium text-foreground">{item.label}: </span>
+                <span className="text-muted-foreground">{item.desc}</span>
+              </div>
+            ))}
+          </div>
+        </SubSection>
       </Section>
 
       <Separator />
