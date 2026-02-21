@@ -35,9 +35,8 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
     const container = hiddenRef.current;
     if (!container) return;
 
-    // Get all top-level children (sections + separators + header card)
-    const children = Array.from(container.children[0]?.children ?? []) as HTMLElement[];
-    if (children.length === 0) return;
+    const topChildren = Array.from(container.children[0]?.children ?? []) as HTMLElement[];
+    if (topChildren.length === 0) return;
 
     const builtPages: string[] = [];
     let currentPageElements: HTMLElement[] = [];
@@ -46,38 +45,78 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
     const flushPage = () => {
       if (currentPageElements.length === 0) return;
       const wrapper = document.createElement("div");
+      wrapper.setAttribute("style", "display:flex;flex-direction:column;gap:16px;");
       currentPageElements.forEach((el) => wrapper.appendChild(el.cloneNode(true)));
       builtPages.push(wrapper.innerHTML);
       currentPageElements = [];
       currentHeight = 0;
     };
 
-    children.forEach((child) => {
-      const childHeight = child.getBoundingClientRect().height;
+    const addElement = (el: HTMLElement) => {
+      const h = el.getBoundingClientRect().height;
+      if (currentHeight + h > CONTENT_HEIGHT_PX && currentPageElements.length > 0) {
+        flushPage();
+      }
+      currentPageElements.push(el);
+      currentHeight += h + 16; // 16px gap between items
+    };
 
-      // Skip separators in the paged view
-      if (child.getAttribute("data-slot") === "separator" || child.getAttribute("role") === "separator") {
+    /**
+     * For elements that exceed an A4 page, drill into their children
+     * and distribute them across pages individually.
+     */
+    const distributeElement = (el: HTMLElement) => {
+      const h = el.getBoundingClientRect().height;
+
+      // Skip separators
+      if (el.getAttribute("data-slot") === "separator" || el.getAttribute("role") === "separator") {
         return;
       }
 
-      // If this element alone exceeds a page, give it its own page
-      if (childHeight > CONTENT_HEIGHT_PX) {
-        flushPage();
-        const wrapper = document.createElement("div");
-        wrapper.appendChild(child.cloneNode(true));
-        builtPages.push(wrapper.innerHTML);
+      // Fits on current page — just add it
+      if (h <= CONTENT_HEIGHT_PX && currentHeight + h <= CONTENT_HEIGHT_PX) {
+        addElement(el);
         return;
       }
 
-      // If adding this element would overflow, start a new page
-      if (currentHeight + childHeight > CONTENT_HEIGHT_PX) {
+      // Fits on a fresh page — flush and add
+      if (h <= CONTENT_HEIGHT_PX) {
         flushPage();
+        addElement(el);
+        return;
       }
 
-      currentPageElements.push(child);
-      currentHeight += childHeight;
-    });
+      // Too tall for one page — break into inner children
+      const innerChildren = Array.from(el.children) as HTMLElement[];
+      if (innerChildren.length <= 1) {
+        // Can't break further — force onto its own page
+        flushPage();
+        addElement(el);
+        return;
+      }
 
+      // For section wrappers, add the section header first, then distribute inner content
+      innerChildren.forEach((inner) => {
+        const innerH = inner.getBoundingClientRect().height;
+        if (innerH > CONTENT_HEIGHT_PX) {
+          // Recursively break down deeply nested large elements
+          const deepChildren = Array.from(inner.children) as HTMLElement[];
+          if (deepChildren.length > 1) {
+            deepChildren.forEach((deep) => distributeElement(deep));
+          } else {
+            flushPage();
+            addElement(inner);
+          }
+        } else {
+          if (currentHeight + innerH > CONTENT_HEIGHT_PX && currentPageElements.length > 0) {
+            flushPage();
+          }
+          addElement(inner);
+        }
+      });
+    };
+
+    topChildren.forEach((child) => distributeElement(child));
     flushPage();
     setPages(builtPages);
   }, []);
