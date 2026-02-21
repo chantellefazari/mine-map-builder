@@ -171,12 +171,12 @@ export const FoundationsContent = () => {
             <span className="sm:hidden">Rollout</span>
           </TabsTrigger>
         </TabsList>
-        <div className="flex gap-2 shrink-0 mt-1">
+        <div className="flex flex-col gap-1.5 shrink-0 mt-1">
           <Button
             variant="outline"
             size="sm"
             onClick={handlePrintTab}
-            className="gap-2"
+            className="gap-2 w-full justify-start"
           >
             <Printer className="w-3.5 h-3.5" />
             Print Tab
@@ -185,7 +185,7 @@ export const FoundationsContent = () => {
             variant="outline"
             size="sm"
             onClick={handleExportPDF}
-            className="gap-2"
+            className="gap-2 w-full justify-start"
             disabled={downloading}
           >
             <Download className="w-3.5 h-3.5" />
