@@ -3,10 +3,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
-import { Separator } from "@/components/ui/separator";
-import { 
-  AlertTriangle, 
-  Shield, 
+import {
+  AlertTriangle,
+  Shield,
   HardHat,
   FileText,
   ClipboardCheck,
@@ -20,10 +19,20 @@ import {
   Info,
   Cog,
   Lock,
-  Wind
+  Wind,
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+
+interface InspectionTask {
+  task: string;
+}
+
+interface EquipmentSection {
+  equipmentId: string;
+  equipmentName: string;
+  tasks: InspectionTask[];
+}
 
 interface Hazard {
   id: string;
@@ -39,59 +48,312 @@ const hazardsList: Hazard[] = [
   { id: "lockout", icon: <Lock className="w-4 h-4" />, label: "LOTO" },
 ];
 
-const areaChecks = [
-  { id: 1, item: "Conveyors" },
-  { id: 2, item: "Filter Feed Pumps" },
-  { id: 3, item: "Agitators" },
-  { id: 4, item: "Sump Pump" },
-  { id: 5, item: "Conveyor DB" },
-  { id: 6, item: "Filter Press DB 1&2" },
-  { id: 7, item: "E-Stop Lanyards and Switches" },
-  { id: 8, item: "General Condition of Area" },
-  { id: 9, item: "Air compressor/Airlines" },
+// --- INSPECTION DATA FROM DOCUMENT ---
+
+const filter1PLCCabinet: EquipmentSection = {
+  equipmentId: "FP1-PLC",
+  equipmentName: "Filter 1 PLC Cabinet",
+  tasks: [
+    { task: "Inspect HMI screen for alarms or error messages" },
+    { task: "Confirm no abnormal flashing, errors, or communication failures" },
+    { task: "Clean inside of Cabinet and check sealing" },
+    { task: "Clean Cabinet Filters" },
+    { task: "Ensure no open holes in Gland Plate" },
+    { task: "Check Drawings are present and Readable" },
+    { task: "Check Cabinet A/C is operating Correctly and is clean" },
+    { task: "Ensure all cable entries are secure and are wrapped in Denso Tape" },
+    { task: "Clean Outside of Cabinet including the Top" },
+    { task: "Check for any heat damage on cables inside of cabinet" },
+  ],
+};
+
+const filter2PLCCabinet: EquipmentSection = {
+  equipmentId: "FP2-PLC",
+  equipmentName: "Filter 2 PLC Cabinet",
+  tasks: [
+    { task: "Inspect HMI screen for alarms or error messages" },
+    { task: "Confirm no abnormal flashing, errors, or communication failures" },
+    { task: "Clean inside of Cabinet and check sealing" },
+    { task: "Clean Cabinet Filters" },
+    { task: "Ensure no open holes in Gland Plate" },
+    { task: "Check Drawings are present and Readable" },
+    { task: "Check Cabinet A/C is operating Correctly and is clean" },
+    { task: "Ensure all cable entries are secure and are wrapped in Denso Tape" },
+    { task: "Clean Outside of Cabinet including the Top" },
+    { task: "Check for any heat damage on cables inside of cabinet" },
+  ],
+};
+
+const conveyorPLCCabinet: EquipmentSection = {
+  equipmentId: "CV-PLC",
+  equipmentName: "Conveyor PLC Cabinet",
+  tasks: [
+    { task: "Inspect HMI screen for alarms or error messages" },
+    { task: "Confirm no abnormal flashing, errors, or communication failures" },
+    { task: "Clean inside of Cabinet and check sealing" },
+    { task: "Clean Cabinet Filters" },
+    { task: "Ensure no open holes in Gland Plate" },
+    { task: "Check Drawings are present and Readable" },
+    { task: "Check Cabinet A/C is operating Correctly and is clean" },
+    { task: "Ensure all cable entries are secure and are wrapped in Denso Tape" },
+    { task: "Clean Outside of Cabinet including the Top" },
+    { task: "Clean VFDs" },
+    { task: "Check for any heat damage on cables inside of cabinet" },
+  ],
+};
+
+const mcc125: EquipmentSection = {
+  equipmentId: "MCC-125",
+  equipmentName: "MCC 125",
+  tasks: [
+    { task: "Clean Inside of Cabinet and check sealing" },
+    { task: "Clean Cabinet Filters" },
+    { task: "Ensure no open holes in Gland Plate" },
+    { task: "Check Drawings are present and Readable" },
+    { task: "Ensure all cable entries are secure and are wrapped in Denso Tape" },
+    { task: "Clean Outside of Cabinet including the Top" },
+    { task: "Lubricate all push buttons" },
+    { task: "Check Labelling is correct" },
+    { task: "Check for any heat damage on cables inside of cabinet" },
+  ],
+};
+
+const db103: EquipmentSection = {
+  equipmentId: "DB-103",
+  equipmentName: "DB-103",
+  tasks: [
+    { task: "Clean Inside of Cabinet and check sealing" },
+    { task: "Clean Cabinet Filters" },
+    { task: "Ensure no open holes in Gland Plate" },
+    { task: "Check Drawings are present and Readable" },
+    { task: "Ensure all cable entries are secure and are wrapped in Denso Tape" },
+  ],
+};
+
+const db106: EquipmentSection = {
+  equipmentId: "DB-106",
+  equipmentName: "DB-106",
+  tasks: [
+    { task: "Clean Inside of Cabinet and check sealing" },
+    { task: "Clean Cabinet Filters" },
+    { task: "Ensure no open holes in Gland Plate" },
+    { task: "Check Drawings are present and Readable" },
+    { task: "Ensure all cable entries are secure and are wrapped in Denso Tape" },
+    { task: "Clean Outside of Cabinet including the Top" },
+    { task: "Lubricate all push buttons" },
+    { task: "Check Labelling is correct" },
+    { task: "Check for any heat damage on cables inside of cabinet" },
+  ],
+};
+
+const sumpPump: EquipmentSection = {
+  equipmentId: "FP-SP",
+  equipmentName: "Sump Pump",
+  tasks: [
+    { task: "Check Motor is secured" },
+    { task: "Check Motor Temperatures (DE & NDE)" },
+    { task: "Check no unusual noise coming from motor concentrating on Bearing Locations" },
+    { task: "Ensure Terminal Box is wrapped in Denso Tape" },
+  ],
+};
+
+const filter1ExtractionConveyor: EquipmentSection = {
+  equipmentId: "FP1-EXT",
+  equipmentName: "Filter 1 Extraction Conveyor",
+  tasks: [
+    { task: "Check Motor is secured" },
+    { task: "Check Motor Temperatures (DE & NDE)" },
+    { task: "Check no unusual noise coming from motor concentrating on Bearing Locations" },
+    { task: "Ensure Terminal Box is wrapped in Denso Tape" },
+    { task: "Check Under speed sensor is secured and operational. Denso plug" },
+    { task: "Check, clean and lubricate Pull wire Switches" },
+    { task: "Check connection points and tension of Pull wires" },
+  ],
+};
+
+const filter2ExtractionConveyor: EquipmentSection = {
+  equipmentId: "FP2-EXT",
+  equipmentName: "Filter 2 Extraction Conveyor",
+  tasks: [
+    { task: "Check Motor is secured" },
+    { task: "Check Motor Temperatures (DE & NDE)" },
+    { task: "Check no unusual noise coming from motor concentrating on Bearing Locations" },
+    { task: "Ensure Terminal Box is wrapped in Denso Tape" },
+    { task: "Check Under speed sensor is secured and operational. Denso plug" },
+    { task: "Check, clean and lubricate Pull wire Switches" },
+    { task: "Check connection points and tension of Pull wires" },
+  ],
+};
+
+const collectionConveyor: EquipmentSection = {
+  equipmentId: "FP-CC",
+  equipmentName: "Collection Conveyor",
+  tasks: [
+    { task: "Check Motor is secured" },
+    { task: "Check Motor Temperatures (DE & NDE)" },
+    { task: "Check no unusual noise coming from motor concentrating on Bearing Locations" },
+    { task: "Ensure Terminal Box is wrapped in Denso Tape" },
+    { task: "Check Under speed sensor is secured and operational. Denso plug" },
+    { task: "Check, clean and lubricate Pull wire Switches" },
+    { task: "Check connection points and tension of Pull wires" },
+  ],
+};
+
+const radialStacker: EquipmentSection = {
+  equipmentId: "FP-RS",
+  equipmentName: "Radial Stacker",
+  tasks: [
+    { task: "Check Drive Motors are secured" },
+    { task: "Check Motor 1 Temperatures (DE & NDE)" },
+    { task: "Check Motor 2 Temperatures (DE & NDE)" },
+    { task: "Check no unusual noise coming from motor concentrating on Bearing Locations" },
+    { task: "Ensure Terminal Box is wrapped in Denso Tape" },
+    { task: "Check Under speed sensor is secured and operational. Denso plug" },
+    { task: "Check, clean and lubricate Pull wire Switches" },
+    { task: "Check connection points and tension of Pull wires" },
+    { task: "Check Turn table limit switches" },
+  ],
+};
+
+const filter1Operational: EquipmentSection = {
+  equipmentId: "FP1-OPS",
+  equipmentName: "Filter 1 – Operational Checks",
+  tasks: [
+    { task: "Clean and lubricate all limit switches for plate position" },
+    { task: "Clean Water conductivity probe" },
+    { task: "Check and clean Hydraulic Pressure transmitters" },
+    { task: "Check and Clean Feed Pressure Transmitter" },
+    { task: "Check operation of all actuated valves" },
+  ],
+};
+
+const filter1FeedPump: EquipmentSection = {
+  equipmentId: "FP1-FP",
+  equipmentName: "Filter 1 Feed Pump",
+  tasks: [
+    { task: "Check Motor is secured" },
+    { task: "Check Motor Temperatures (DE & NDE)" },
+    { task: "Check no unusual noise coming from motor concentrating on Bearing Locations" },
+  ],
+};
+
+const filter2Operational: EquipmentSection = {
+  equipmentId: "FP2-OPS",
+  equipmentName: "Filter 2 – Operational Checks",
+  tasks: [
+    { task: "Clean and lubricate all limit switches for plate position" },
+    { task: "Clean Water conductivity probe" },
+    { task: "Check and clean Hydraulic Pressure transmitters" },
+    { task: "Check and Clean Feed Pressure Transmitter" },
+    { task: "Check operation of all actuated valves" },
+  ],
+};
+
+const filter2FeedPump: EquipmentSection = {
+  equipmentId: "FP2-FP",
+  equipmentName: "Filter 2 Feed Pump",
+  tasks: [
+    { task: "Check Motor is secured" },
+    { task: "Check Motor Temperatures (DE & NDE)" },
+    { task: "Check no unusual noise coming from motor concentrating on Bearing Locations" },
+  ],
+};
+
+const filter1HydraulicMotors: EquipmentSection = {
+  equipmentId: "FP1-HYD",
+  equipmentName: "Filter 1 Hydraulic Motors",
+  tasks: [
+    { task: "Check Motors are secured" },
+    { task: "Check Motor 1 Temperatures (DE & NDE)" },
+    { task: "Check Motor 2 Temperatures (DE & NDE)" },
+    { task: "Check no unusual noise coming from motor concentrating on Bearing Locations" },
+  ],
+};
+
+const filter2HydraulicMotors: EquipmentSection = {
+  equipmentId: "FP2-HYD",
+  equipmentName: "Filter 2 Hydraulic Motors",
+  tasks: [
+    { task: "Check Motors are secured" },
+    { task: "Check Motor 1 Temperatures (DE & NDE)" },
+    { task: "Check Motor 2 Temperatures (DE & NDE)" },
+    { task: "Check no unusual noise coming from motor concentrating on Bearing Locations" },
+  ],
+};
+
+const inspectionData: EquipmentSection[] = [
+  filter1PLCCabinet,
+  filter2PLCCabinet,
+  conveyorPLCCabinet,
+  mcc125,
+  db103,
+  db106,
+  sumpPump,
+  filter1ExtractionConveyor,
+  filter2ExtractionConveyor,
+  collectionConveyor,
+  radialStacker,
+  filter1Operational,
+  filter1FeedPump,
+  filter2Operational,
+  filter2FeedPump,
+  filter1HydraulicMotors,
+  filter2HydraulicMotors,
+];
+
+const generalAreaChecks = [
+  "Conveyors",
+  "Filter Feed Pumps",
+  "Agitators",
+  "Sump Pump",
+  "Conveyor DB",
+  "Filter Press DB 1 & 2",
+  "E-Stop Lanyards and Switches",
+  "General Condition of Area",
+  "Air compressor / Airlines",
 ];
 
 export const FilterPressElectricalPMDocument = () => {
   const [selectedHazards, setSelectedHazards] = useState<string[]>(["electrical", "arc-flash", "pneumatic"]);
 
   const toggleHazard = (hazardId: string) => {
-    setSelectedHazards(prev => 
-      prev.includes(hazardId) 
-        ? prev.filter(id => id !== hazardId)
+    setSelectedHazards((prev) =>
+      prev.includes(hazardId)
+        ? prev.filter((id) => id !== hazardId)
         : [...prev, hazardId]
     );
   };
 
   return (
     <div className="bg-background min-h-full">
-      {/* Document Header */}
       <div className="border-2 border-border">
         {/* Banner with Title Overlay */}
         <div className="relative">
           <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-          {/* Logo on left side of black section */}
           <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
             <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
           </div>
-          {/* Title on the black section - centered */}
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
             <div className="text-center">
-              <h1 className="text-2xl font-bold tracking-wide text-primary">Filter Press Electrical</h1>
-              <p className="text-base mt-1 text-primary/80">Weekly Visual Site Inspection</p>
+              <h1 className="text-2xl font-bold tracking-wide text-primary">
+                Tennant Creek Filtration Area – Filter Press
+              </h1>
+              <p className="text-base mt-1 text-primary/80">
+                Weekly Electrical Online Inspection (Electrician)
+              </p>
             </div>
           </div>
         </div>
 
         {/* Header Information Grid */}
         <div className="grid grid-cols-2 border-b border-border text-xs">
-          {/* Left Column */}
           <div className="border-r border-border">
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
                 <FileText className="w-3 h-3 text-primary" />
                 Project / Site:
               </div>
-              <div className="px-2 py-1.5">Tenant Creek</div>
+              <div className="px-2 py-1.5">Tennant Creek</div>
             </div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
@@ -109,8 +371,6 @@ export const FilterPressElectricalPMDocument = () => {
               <div className="px-2 py-1.5">1x Electrician (1.5 hrs)</div>
             </div>
           </div>
-
-          {/* Right Column */}
           <div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
@@ -118,7 +378,7 @@ export const FilterPressElectricalPMDocument = () => {
             </div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div>
-              <div className="px-2 py-1.5">Visual Inspection</div>
+              <div className="px-2 py-1.5">Online Visual Inspection</div>
             </div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
@@ -141,14 +401,14 @@ export const FilterPressElectricalPMDocument = () => {
           </p>
         </div>
 
-        {/* PREPARATION AND INFORMATION Section */}
+        {/* PREPARATION AND INFORMATION */}
         <div className="border-b border-border">
           <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
             <Info className="w-5 h-5 text-primary" />
             PREPARATION AND INFORMATION
           </div>
-          
-          {/* Safety Section */}
+
+          {/* Safety */}
           <div className="border-b border-border">
             <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
               <Shield className="w-5 h-5 text-destructive" />
@@ -198,9 +458,8 @@ export const FilterPressElectricalPMDocument = () => {
           </div>
         </div>
 
-        {/* Tools and PPE Section - Side by Side */}
+        {/* Tools and PPE */}
         <div className="border-b border-border grid md:grid-cols-2">
-          {/* Required Tools */}
           <div className="border-r border-border">
             <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
               <Wrench className="w-4 h-4 text-primary" />
@@ -208,23 +467,13 @@ export const FilterPressElectricalPMDocument = () => {
             </div>
             <div className="p-4">
               <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Standard Electrical Tool Kit</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Torch / Flashlight</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Cabinet keys</span>
-                </li>
+                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Standard Electrical Tool Kit</span></li>
+                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Torch / Flashlight</span></li>
+                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Cabinet keys</span></li>
+                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Temperature gun</span></li>
               </ul>
             </div>
           </div>
-
-          {/* Required PPE */}
           <div>
             <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
               <HardHat className="w-4 h-4 text-primary" />
@@ -232,22 +481,10 @@ export const FilterPressElectricalPMDocument = () => {
             </div>
             <div className="p-4">
               <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Steel Cap Boots</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Hard Hat</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Safety Glasses</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Gloves</span>
-                </li>
+                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Steel Cap Boots</span></li>
+                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Hard Hat</span></li>
+                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Safety Glasses</span></li>
+                <li className="flex items-center gap-3"><Checkbox className="h-4 w-4" defaultChecked /><span>Gloves</span></li>
               </ul>
             </div>
           </div>
@@ -263,121 +500,198 @@ export const FilterPressElectricalPMDocument = () => {
             <p className="text-sm text-muted-foreground mb-3">Complete one of the following before starting work:</p>
             <div className="flex flex-wrap gap-2">
               <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" />
-                <span>Take 5</span>
+                <Checkbox className="h-4 w-4" /><span>Take 5</span>
               </label>
               <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" />
-                <span>JHA / JSEA</span>
+                <Checkbox className="h-4 w-4" /><span>JHA / JSEA</span>
               </label>
               <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" />
-                <span>SWMS</span>
+                <Checkbox className="h-4 w-4" /><span>SWMS</span>
               </label>
             </div>
           </div>
         </div>
 
-        {/* Inspections Header */}
-        <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-          <ClipboardCheck className="w-5 h-5 text-primary" />
-          GENERAL AREA INSPECTIONS
-        </div>
-
-        {/* Inspection Table */}
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="bg-muted">
-              <th className="border border-border px-3 py-2 text-center font-semibold w-[8%]">#</th>
-              <th className="border border-border px-3 py-2 text-left font-semibold w-[42%]">Area Checks</th>
-              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Action</th>
-              <th className="border border-border px-3 py-2 text-left font-semibold w-[30%]">Comments</th>
-              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Initial</th>
-            </tr>
-          </thead>
-          <tbody>
-            {areaChecks.map((check) => (
-              <tr key={check.id} className="hover:bg-muted/30">
-                <td className="border border-border px-3 py-2 text-center font-medium">{check.id}</td>
-                <td className="border border-border px-3 py-2">{check.item}</td>
-                <td className="border border-border px-2 py-2 text-center">
-                  <div className="flex justify-center">
-                    <Checkbox className="h-5 w-5" />
-                  </div>
-                </td>
-                <td className="border border-border px-2 py-2">
-                  <Input className="h-7 text-xs border-0 bg-transparent" placeholder="" />
-                </td>
-                <td className="border border-border px-2 py-2 text-center">
-                  <Input className="h-7 w-12 text-xs mx-auto" placeholder="" />
-                </td>
+        {/* GENERAL AREA INSPECTIONS */}
+        <div className="border-b border-border">
+          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+            <Eye className="w-5 h-5 text-primary" />
+            GENERAL AREA INSPECTIONS
+          </div>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="text-center px-3 py-2 font-medium w-12">#</th>
+                <th className="text-left px-4 py-2 font-medium">Area Checks</th>
+                <th className="text-center px-2 py-2 font-medium w-16">OK</th>
+                <th className="text-left px-4 py-2 font-medium">Comments</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {generalAreaChecks.map((check, i) => (
+                <tr key={i} className="border-b border-border hover:bg-muted/30">
+                  <td className="text-center px-3 py-2.5 font-medium">{i + 1}</td>
+                  <td className="px-4 py-2.5">{check}</td>
+                  <td className="text-center px-2 py-2.5"><Checkbox className="h-4 w-4" /></td>
+                  <td className="px-4 py-2.5"><span className="text-muted-foreground">—</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-        {/* Comments Section */}
-        <div className="border-t border-border">
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">COMMENTS:</div>
-          <div className="p-3">
-            <Textarea className="min-h-[80px] resize-none" placeholder="Enter comments here..." />
+        {/* DETAILED EQUIPMENT INSPECTIONS */}
+        <div className="border-b border-border">
+          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
+            <ClipboardCheck className="w-5 h-5 text-primary" />
+            DETAILED EQUIPMENT INSPECTIONS
+          </div>
+
+          {inspectionData.map((section, sectionIndex) => (
+            <div
+              key={section.equipmentId}
+              className={sectionIndex < inspectionData.length - 1 ? "border-b border-border" : ""}
+            >
+              <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-primary" />
+                  <span className="text-primary font-bold">{section.equipmentId}</span>
+                  <span className="text-muted-foreground">|</span>
+                  <span>{section.equipmentName}</span>
+                </div>
+              </div>
+
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="text-left px-4 py-2 font-medium w-1/2">Task</th>
+                    <th className="text-center px-2 py-2 font-medium w-20">OK</th>
+                    <th className="text-center px-2 py-2 font-medium w-20">Defective</th>
+                    <th className="text-center px-2 py-2 font-medium w-20">Urgent</th>
+                    <th className="text-left px-4 py-2 font-medium">Comments</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {section.tasks.map((task, taskIndex) => (
+                    <tr key={taskIndex} className="border-b border-border hover:bg-muted/30">
+                      <td className="px-4 py-2.5 text-foreground">{task.task}</td>
+                      <td className="text-center px-2 py-2.5"><Checkbox className="h-4 w-4" /></td>
+                      <td className="text-center px-2 py-2.5"><Checkbox className="h-4 w-4" /></td>
+                      <td className="text-center px-2 py-2.5"><Checkbox className="h-4 w-4" /></td>
+                      <td className="px-4 py-2.5"><span className="text-muted-foreground">—</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </div>
+
+        {/* Comments */}
+        <div className="border-b border-border">
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">COMMENTS</div>
+          <div className="p-4">
+            <Textarea placeholder="Enter any additional comments, defects noted, or repairs made..." className="min-h-[100px]" />
           </div>
         </div>
 
-        <Separator />
-
-        {/* Sign Off Section */}
-        <div className="border-t border-border">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Inspected By:</div>
-          <div className="grid grid-cols-2 gap-0">
-            <div className="grid grid-cols-[80px_1fr] border-r border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Name:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
+        {/* Sign Off */}
+        <div className="border-b border-border">
+          <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border">SIGN OFF</div>
+          <div className="p-4">
+            <div className="grid md:grid-cols-2 gap-6 text-sm">
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="font-medium w-40">Follow up work required:</span>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2"><Checkbox className="h-4 w-4" /><span>Yes</span></label>
+                    <label className="flex items-center gap-2"><Checkbox className="h-4 w-4" /><span>No</span></label>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="font-medium w-40">Document update required:</span>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2"><Checkbox className="h-4 w-4" /><span>Yes</span></label>
+                    <label className="flex items-center gap-2"><Checkbox className="h-4 w-4" /><span>No</span></label>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="font-medium w-24">Name:</span>
+                  <Input className="flex-1" />
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="font-medium w-24">Signature:</span>
+                  <div className="flex-1 h-10 border border-border rounded-md bg-muted/30"></div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="font-medium w-24">Date:</span>
+                  <Input className="flex-1" type="date" />
+                </div>
+              </div>
             </div>
-            <div className="grid grid-cols-[80px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Signature:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-0">
-            <div className="grid grid-cols-[80px_1fr] border-r border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Date:</div>
-              <div className="px-3 py-2"><Input className="h-7" type="date" /></div>
-            </div>
-            <div></div>
           </div>
         </div>
 
-        {/* Certification Statement */}
-        <div className="border-t border-border">
-          <div className="p-4 text-sm text-muted-foreground italic bg-muted/30">
-            This certifies that the electrical equipment / installation as identified in this report, to the extent it is affected by the electrical work, has been tested to ensure it is electrically safe and is in accordance with the requirements of the wiring rules and other applicable standards.
+        {/* Certification */}
+        <div className="border-b border-border p-4 text-sm text-muted-foreground italic bg-muted/30">
+          This certifies that the electrical equipment / installation as identified in this report, to the extent it is affected by the electrical work, has been tested to ensure it is electrically safe and is in accordance with the requirements of the wiring rules and other applicable standards.
+        </div>
+
+        {/* Approval */}
+        <div className="border-b border-border">
+          <div className="bg-green-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-green-600" />
+            <span className="text-green-700">APPROVAL</span>
+          </div>
+          <div className="p-4">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-2 font-medium w-1/4">Role</th>
+                  <th className="text-left px-4 py-2 font-medium w-1/4">Name</th>
+                  <th className="text-left px-4 py-2 font-medium w-1/4">Sign</th>
+                  <th className="text-left px-4 py-2 font-medium w-1/4">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-border">
+                  <td className="px-4 py-3 font-medium">Supervisor</td>
+                  <td className="px-4 py-3"><Input className="h-8" /></td>
+                  <td className="px-4 py-3"><div className="h-8 border border-border rounded bg-muted/30"></div></td>
+                  <td className="px-4 py-3"><Input className="h-8" type="date" /></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
         {/* Revision History */}
-        <div className="border-t border-border">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Revision History:</div>
-          <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className="bg-muted/50">
-                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Revision No.</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[35%]">Description</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Created</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Reviewed</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[20%]">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="border border-border px-3 py-2">0</td>
-                <td className="border border-border px-3 py-2">Initial Release</td>
-                <td className="border border-border px-3 py-2"></td>
-                <td className="border border-border px-3 py-2"></td>
-                <td className="border border-border px-3 py-2"></td>
-              </tr>
-            </tbody>
-          </table>
+        <div>
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">REVISION HISTORY</div>
+          <div className="p-4">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-2 font-medium w-20">Rev No.</th>
+                  <th className="text-left px-4 py-2 font-medium">Description</th>
+                  <th className="text-left px-4 py-2 font-medium w-32">Created</th>
+                  <th className="text-left px-4 py-2 font-medium w-32">Reviewed</th>
+                  <th className="text-left px-4 py-2 font-medium w-28">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-border">
+                  <td className="px-4 py-2">0</td>
+                  <td className="px-4 py-2">Initial Release</td>
+                  <td className="px-4 py-2">—</td>
+                  <td className="px-4 py-2">—</td>
+                  <td className="px-4 py-2">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
