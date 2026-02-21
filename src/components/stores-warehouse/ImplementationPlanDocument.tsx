@@ -754,6 +754,169 @@ export const ImplementationPlanDocument = () => {
           </div>
         </SubSection>
 
+        {/* Container Fitout & Shopping List */}
+        <SubSection id="5.9" title="Container Fitout Layout & Shopping List">
+          <Prose>
+            Each container has a long-side door modification with internal layout designed around the door position. All shelving and heavy racks are floor-mounted (not wall-hung) to maintain structural integrity after door cut.
+          </Prose>
+
+          {/* C01-EL */}
+          <Card className="border-border bg-yellow-500/10">
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-yellow-600" />
+                <span className="font-semibold text-sm text-foreground">C01-EL — Electrical (20ft)</span>
+              </div>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p><span className="font-medium text-foreground">Rear Long Wall (5.9m):</span> 4–5 steel shelving bays (900mm) — mid-size electrical items</p>
+                <p><span className="font-medium text-foreground">Opposite Long Wall — Left of door:</span> ESD bin wall</p>
+                <p><span className="font-medium text-foreground">Opposite Long Wall — Right of door:</span> Reinforced VSD shelving</p>
+                <p><span className="font-medium text-foreground">End Wall 1:</span> Sealed cabinet for PLCs, anti-static mats inside</p>
+                <p><span className="font-medium text-foreground">End Wall 2 (airflow end):</span> Conduit brackets near ceiling, panel fan/filter vertical rack</p>
+              </div>
+              <div className="border-t border-border/50 pt-2 mt-1">
+                <p className="text-[10px] font-medium text-foreground uppercase tracking-wide mb-1">Required</p>
+                <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
+                  {["5–6 steel bays", "2 ESD bin panels", "1 sealed cabinet", "1 reinforced shelf section", "6 conduit brackets"].map((item, i) => (
+                    <span key={i} className="px-2 py-0.5 rounded bg-yellow-500/10 border border-yellow-500/20">{item}</span>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* C02-IN */}
+          <Card className="border-border bg-purple-500/10">
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Gauge className="w-4 h-4 text-purple-600" />
+                <span className="font-semibold text-sm text-foreground">C02-IN — Instrumentation (20ft)</span>
+              </div>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p><span className="font-medium text-foreground">Rear Long Wall:</span> 4 shelving bays foam-lined</p>
+                <p><span className="font-medium text-foreground">Opposite Long Wall — Left of door:</span> Drawer cabinets (fittings, Swagelok)</p>
+                <p><span className="font-medium text-foreground">Opposite Long Wall — Right of door:</span> Shelving for boxed instruments</p>
+                <p><span className="font-medium text-foreground">End Wall:</span> Tubing reel rack vertical, fragile zone signage</p>
+              </div>
+              <div className="border-t border-border/50 pt-2 mt-1">
+                <p className="text-[10px] font-medium text-foreground uppercase tracking-wide mb-1">Required</p>
+                <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
+                  {["6 steel bays", "2 drawer cabinets", "40 foam totes", "1 tubing rack"].map((item, i) => (
+                    <span key={i} className="px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">{item}</span>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* C03-ME */}
+          <Card className="border-border bg-blue-500/10">
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Wrench className="w-4 h-4 text-blue-600" />
+                <span className="font-semibold text-sm text-foreground">C03-ME — 40ft Mechanical (Door on long side)</span>
+              </div>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p><span className="font-medium text-foreground">Rear Long Wall:</span> 8–10 heavy-duty bays</p>
+                <p><span className="font-medium text-foreground">Opposite Long Wall — Left of door:</span> 4 heavy-duty bays</p>
+                <p><span className="font-medium text-foreground">Opposite Long Wall — Right of door:</span> 4 heavy-duty bays</p>
+                <p><span className="font-medium text-foreground">End Wall 1:</span> V-belt rack (fabricated)</p>
+                <p><span className="font-medium text-foreground">End Wall 2:</span> Long material rack (conduit, flat bar)</p>
+                <p className="mt-1"><span className="font-medium text-foreground">Total heavy-duty bays:</span> 14–18 depending on spacing. No pallet racks. No forklifts. All manual ≤15 kg.</p>
+              </div>
+              <div className="border-t border-border/50 pt-2 mt-1">
+                <p className="text-[10px] font-medium text-foreground uppercase tracking-wide mb-1">Required</p>
+                <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
+                  {["16 heavy-duty bays", "80 heavy totes", "Custom V-belt rack", "Long material rack"].map((item, i) => (
+                    <span key={i} className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20">{item}</span>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* C04-MP */}
+          <Card className="border-border bg-cyan-500/10">
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Cog className="w-4 h-4 text-cyan-600" />
+                <span className="font-semibold text-sm text-foreground">C04-MP — Mechanical Precision (20ft)</span>
+              </div>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p><span className="font-medium text-foreground">Rear Long Wall:</span> 4 shelving bays</p>
+                <p><span className="font-medium text-foreground">Opposite Long Wall — Left of door:</span> Seal drawer cabinets</p>
+                <p><span className="font-medium text-foreground">Opposite Long Wall — Right of door:</span> Flat gasket shelves</p>
+                <p><span className="font-medium text-foreground">End Wall:</span> Small bin trays for circlips &amp; shims</p>
+              </div>
+              <div className="border-t border-border/50 pt-2 mt-1">
+                <p className="text-[10px] font-medium text-foreground uppercase tracking-wide mb-1">Required</p>
+                <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
+                  {["6 steel bays", "2 drawer units", "Flat file shelf section", "30 small trays"].map((item, i) => (
+                    <span key={i} className="px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20">{item}</span>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* C05-CS */}
+          <Card className="border-border bg-slate-500/10">
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Hammer className="w-4 h-4 text-slate-600" />
+                <span className="font-semibold text-sm text-foreground">C05-CS — Consumables (20ft)</span>
+                <span className="text-[10px] text-muted-foreground ml-auto">High-turn near door</span>
+              </div>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p><span className="font-medium text-foreground">Rear Long Wall:</span> 4 shelving bays (boxed bolts etc.)</p>
+                <p><span className="font-medium text-foreground">Opposite Long Wall — Left of door:</span> Full bin wall (high frequency)</p>
+                <p><span className="font-medium text-foreground">Opposite Long Wall — Right of door:</span> PPE rack + bunded grease shelf</p>
+                <p><span className="font-medium text-foreground">End Wall:</span> Lockable tool cabinet</p>
+              </div>
+              <div className="border-t border-border/50 pt-2 mt-1">
+                <p className="text-[10px] font-medium text-foreground uppercase tracking-wide mb-1">Required</p>
+                <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
+                  {["6 steel bays", "2 bin walls", "1 bunded shelf", "1 tool cabinet", "1 PPE rack"].map((item, i) => (
+                    <span key={i} className="px-2 py-0.5 rounded bg-slate-500/10 border border-slate-500/20">{item}</span>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Laydown */}
+          <Card className="border-border bg-emerald-500/10">
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Container className="w-4 h-4 text-emerald-600" />
+                <span className="font-semibold text-sm text-foreground">LD — Laydown Yard</span>
+              </div>
+              <div className="border-t border-border/50 pt-2 mt-1">
+                <p className="text-[10px] font-medium text-foreground uppercase tracking-wide mb-1">Required</p>
+                <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
+                  {["Ground markings", "Shrink wrap", "Dunnage", "Bay signage"].map((item, i) => (
+                    <span key={i} className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">{item}</span>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Structural Note */}
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3 text-sm space-y-1.5">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600" />
+              <p className="font-medium text-amber-700 dark:text-amber-300">Structural Note — Long-Side Door Modifications</p>
+            </div>
+            <ul className="text-xs text-amber-600 dark:text-amber-400 list-disc pl-5 space-y-0.5">
+              <li>Reinforce top beam</li>
+              <li>Reinforce vertical posts</li>
+              <li>Do NOT mount shelving directly to cut frame</li>
+              <li>Keep heavy racks on floor, not wall hung</li>
+            </ul>
+          </div>
+        </SubSection>
+
       </Section>
 
 
