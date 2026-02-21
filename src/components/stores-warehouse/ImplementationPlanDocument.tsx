@@ -129,13 +129,32 @@ export const ImplementationPlanDocument = () => {
       {/* ============================================================ */}
       <Section number="1" title="Executive Overview" icon={Eye}>
         <Prose>
-          This document constitutes the complete implementation plan for the Tennant Creek Mine Group (TCMG) stores and warehouse infrastructure. It replaces ad-hoc storage arrangements with a purpose-built, governed warehouse compound designed to eliminate emergency freight exposure, reduce labour waste, prevent component contamination, and establish full inventory traceability from receipt to issue.
+          This document outlines the end-to-end implementation plan for the Tennant Creek Central Stores Warehouse, including physical layout, storage zoning, location coding, stock control rules, and enabling civil works.
         </Prose>
         <Prose>
-          The plan covers civil preparation, structural design, container allocation, operational procedures, inventory numbering, asset tagging, and staged delivery. It is structured to read as an execution-ready document — not a proposal — and forms the single source of truth for all warehouse-related decision-making at TCMG.
+          The objective is to establish a controlled stores function that enables:
+        </Prose>
+        <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+          <li>Accurate stock visibility and traceability</li>
+          <li>Faster breakdown response and reduced downtime</li>
+          <li>Reduced emergency freight reliance</li>
+          <li>Controlled stock in / stock out discipline</li>
+          <li>A stable foundation for Minesite AI integration (work orders + scheduling now, inventory governance aligned for rollout)</li>
+        </ul>
+        <Prose>
+          Current state: the site operates without a structured, enclosed, governed stores environment, resulting in avoidable time loss, duplicate purchases, contamination risk, and reactive parts response.
         </Prose>
         <Prose>
-          Infrastructure investment is justified by measurable reductions in: emergency freight costs, technician search time, component re-ordering due to damage or loss, and administrative overhead from uncontrolled stock movements.
+          This plan defines:
+        </Prose>
+        <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+          <li>The agreed storage model (containers C01–C05 + LD laydown)</li>
+          <li>The location coding structure (container / bay / bin logic)</li>
+          <li>Stock control procedure (receiving, issuing, audits)</li>
+          <li>The implementation sequence and dependencies (relocations → earthworks → slab → placement → fit-out → controls)</li>
+        </ul>
+        <Prose>
+          Design visuals, survey inputs, and supporting evidence are included in the relevant sections of this document.
         </Prose>
         <ImagePlaceholder label="Site overview or compound render" />
       </Section>
