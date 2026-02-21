@@ -292,22 +292,22 @@ export const ImplementationPlanDocument = () => {
         {/* Attachments */}
         <div className="space-y-4 mt-4">
           <h3 className="text-base font-semibold text-foreground">Attachments for This Section</h3>
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
             <div>
               <p className="text-xs font-medium text-muted-foreground mb-1">Aerial compound footprint image</p>
-              <img src="/images/compound-footprint-overlay.png" alt="Aerial compound footprint with overlay" className="rounded-lg border border-border w-full max-w-2xl" />
+              <img src="/images/compound-footprint-overlay.png" alt="Aerial compound footprint with overlay" className="rounded-lg border border-border w-full" />
             </div>
             <div>
               <p className="text-xs font-medium text-muted-foreground mb-1">RL survey overlay image</p>
-              <img src="/images/site-survey-rl-markers.jpeg" alt="Site aerial with RL survey markers" className="rounded-lg border border-border w-full max-w-2xl" />
+              <img src="/images/site-survey-rl-markers.jpeg" alt="Site aerial with RL survey markers" className="rounded-lg border border-border w-full" />
             </div>
             <div>
               <p className="text-xs font-medium text-muted-foreground mb-1">Earthworks calculation summary</p>
-              <img src="/images/earthworks-calc-summary.png" alt="Earthworks calculation assumptions and corner fill depths" className="rounded-lg border border-border w-full max-w-2xl" />
+              <img src="/images/earthworks-calc-summary.png" alt="Earthworks calculation assumptions and corner fill depths" className="rounded-lg border border-border w-full" />
             </div>
             <div>
               <p className="text-xs font-medium text-muted-foreground mb-1">Preliminary fill depth breakdown</p>
-              <img src="/images/earthworks-footprint-boundary.png" alt="Compound footprint outlined with earthworks volume calculation" className="rounded-lg border border-border w-full max-w-2xl" />
+              <img src="/images/earthworks-footprint-boundary.png" alt="Compound footprint outlined with earthworks volume calculation" className="rounded-lg border border-border w-full" />
             </div>
           </div>
         </div>
