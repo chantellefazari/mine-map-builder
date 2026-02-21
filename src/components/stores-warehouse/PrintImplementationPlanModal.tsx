@@ -159,8 +159,8 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
 
             body {
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-              font-size: 10px;
-              line-height: 1.5;
+              font-size: 9px;
+              line-height: 1.4;
               color: #111;
               background: white;
               -webkit-print-color-adjust: exact;
@@ -229,14 +229,14 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
 
             svg { display: inline-block; width: 16px; height: 16px; }
 
-            h2, h3, h4 { margin-bottom: 4px; font-weight: 600; }
-            h2 { font-size: 14px; }
-            h3 { font-size: 12px; }
-            h4 { font-size: 11px; }
+            h2, h3, h4 { margin-bottom: 3px; font-weight: 600; }
+            h2 { font-size: 13px; }
+            h3 { font-size: 11px; }
+            h4 { font-size: 10px; }
 
-            ul, ol { padding-left: 16px; margin-bottom: 6px; }
-            li { margin-bottom: 2px; font-size: 10px; }
-            p { margin-bottom: 4px; font-size: 10px; }
+            ul, ol { padding-left: 14px; margin-bottom: 4px; }
+            li { margin-bottom: 1px; font-size: 9px; }
+            p { margin-bottom: 3px; font-size: 9px; }
 
             .separator, hr {
               border: none;
@@ -301,10 +301,11 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
           </div>
         </DialogHeader>
 
-        {/* Hidden measurer */}
+        {/* Hidden measurer — uses compact print sizing */}
         <div
           ref={hiddenRef}
           aria-hidden
+          className="print-compact-text"
           style={{
             position: "absolute",
             left: "-9999px",
@@ -316,6 +317,33 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
           <ImplementationPlanDocument />
         </div>
 
+        {/* Compact text styles for preview and measurer */}
+        <style>{`
+          .print-compact-text { font-size: 11px; line-height: 1.45; }
+          .print-compact-text p,
+          .print-compact-text li,
+          .print-compact-text span { font-size: 11px !important; line-height: 1.45 !important; }
+          .print-compact-text h2 { font-size: 15px !important; }
+          .print-compact-text h3 { font-size: 13px !important; }
+          .print-compact-text h4 { font-size: 12px !important; }
+          .print-compact-text th,
+          .print-compact-text td { font-size: 10px !important; padding: 3px 5px !important; }
+          .print-compact-text .text-sm { font-size: 11px !important; }
+          .print-compact-text .text-xs { font-size: 10px !important; }
+          .print-compact-text .text-2xl { font-size: 18px !important; }
+          .print-compact-text .text-xl { font-size: 16px !important; }
+          .print-compact-text .text-base { font-size: 12px !important; }
+          .print-compact-text .space-y-4 > * + * { margin-top: 10px !important; }
+          .print-compact-text .space-y-2 > * + * { margin-top: 6px !important; }
+          .print-compact-text .space-y-8 > * + * { margin-top: 16px !important; }
+          .print-compact-text .gap-4 { gap: 10px !important; }
+          .print-compact-text .p-4 { padding: 10px !important; }
+          .print-compact-text .p-6 { padding: 12px !important; }
+          .print-compact-text .mb-6 { margin-bottom: 12px !important; }
+          .print-compact-text .mb-3 { margin-bottom: 8px !important; }
+          .print-compact-text .pl-12 { padding-left: 28px !important; }
+        `}</style>
+
         {/* Scrollable A4 page preview */}
         <div className="flex-1 overflow-auto bg-muted/40 py-8 px-4">
           <div className="flex flex-col items-center gap-8">
@@ -325,7 +353,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
             {pages.map((html, i) => (
               <div
                 key={i}
-                className="relative flex-shrink-0 bg-white dark:bg-card rounded shadow-lg"
+                className="relative flex-shrink-0 bg-white dark:bg-card rounded shadow-lg print-compact-text"
                 style={{
                   width: `${A4_WIDTH_PX}px`,
                   minHeight: `${A4_HEIGHT_PX}px`,
