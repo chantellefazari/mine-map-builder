@@ -8,7 +8,7 @@ import {
   Container,
   ArrowRightLeft,
   Hash,
-  Tag,
+  
   ListOrdered,
   DollarSign,
   ShieldAlert,
@@ -1002,29 +1002,9 @@ export const ImplementationPlanDocument = () => {
       <Separator />
 
       {/* ============================================================ */}
-      {/*  8. Asset Tagging Standard — Processing Plant                */}
+      {/*  8. Implementation Sequence                                  */}
       {/* ============================================================ */}
-      <Section number="8" title="Asset Tagging Standard — Processing Plant" icon={Tag}>
-        <Prose>
-          Physical asset tags are designed for rapid visual identification in the field. All complex hierarchy, system structure, and digital references remain in Minesite AI — not on the physical tag.
-        </Prose>
-        <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-          <li><span className="font-medium text-foreground">ARN Format:</span> Tags display the Asset ID (Line 1, large bold) and Description (Line 2, 14px equivalent). Two-line, horizontally centred layout only.</li>
-          <li><span className="font-medium text-foreground">Material:</span> 316 stainless steel, laser-engraved for durability in harsh mining environments.</li>
-          <li><span className="font-medium text-foreground">Standard Sizes:</span> 100 × 50 mm for plates and hanging tags; 80 × 30 mm for adhesive labels on sub-components.</li>
-          <li><span className="font-medium text-foreground">Placement Standards:</span> Tags mounted on the non-drive end of rotating equipment, above eye level where possible, and clear of maintenance access points.</li>
-          <li><span className="font-medium text-foreground">Hole Punch Option:</span> Single 4mm hole punch for cable-tie or wire mounting on equipment without flat mounting surfaces.</li>
-          <li><span className="font-medium text-foreground">No QR Code Standard:</span> QR codes are excluded from the physical tag standard. All digital lookup is performed through Minesite AI search functionality.</li>
-        </ul>
-        <ImagePlaceholder label="Asset tag example — photo or render" />
-      </Section>
-
-      <Separator />
-
-      {/* ============================================================ */}
-      {/*  9. Implementation Sequence                                  */}
-      {/* ============================================================ */}
-      <Section number="9" title="Implementation Sequence" icon={ListOrdered}>
+      <Section number="8" title="Implementation Sequence" icon={ListOrdered}>
         <Prose>
           Delivery is structured across seven stages to manage risk, resource loading, and operational continuity. Each stage has defined gate criteria before proceeding to the next.
         </Prose>
@@ -1062,9 +1042,9 @@ export const ImplementationPlanDocument = () => {
       <Separator />
 
       {/* ============================================================ */}
-      {/*  10. Budget Snapshot                                         */}
+      {/*  9. Budget Snapshot                                         */}
       {/* ============================================================ */}
-      <Section number="10" title="Budget Snapshot" icon={DollarSign}>
+      <Section number="9" title="Budget Snapshot" icon={DollarSign}>
         <Prose>
           The following table provides a structured cost summary for the warehouse implementation. All figures are indicative and subject to final procurement and contractor quotations.
         </Prose>
@@ -1108,9 +1088,9 @@ export const ImplementationPlanDocument = () => {
       <Separator />
 
       {/* ============================================================ */}
-      {/*  11. Critical Path & Operational Risk Statement              */}
+      {/*  10. Critical Path & Operational Risk Statement              */}
       {/* ============================================================ */}
-      <Section number="11" title="Critical Path &amp; Operational Risk Statement" icon={ShieldAlert}>
+      <Section number="10" title="Critical Path &amp; Operational Risk Statement" icon={ShieldAlert}>
         <Prose>
           The following items represent critical-path dependencies and operational risks that must be actively managed throughout the implementation sequence. Failure to address these items will directly impact project timeline, budget, and operational readiness.
         </Prose>
