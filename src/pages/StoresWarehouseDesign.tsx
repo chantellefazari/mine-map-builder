@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Warehouse, AlertTriangle, Download } from "lucide-react";
+import { ArrowLeft, Warehouse, AlertTriangle, Download, Printer } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { StoresDesignPrinciples } from "@/components/stores-warehouse/StoresDesignPrinciples";
@@ -10,9 +11,11 @@ import { DesignInputsSection } from "@/components/stores-warehouse/DesignInputsS
 import { StoreVisualisation } from "@/components/stores-warehouse/StoreVisualisation";
 import { CapacityAnalysis } from "@/components/stores-warehouse/CapacityAnalysis";
 import { StockControlProcedure } from "@/components/stores-warehouse/StockControlProcedure";
+import { PrintImplementationPlanModal } from "@/components/stores-warehouse/PrintImplementationPlanModal";
 import { exportStoresWorkbook } from "@/utils/exportStoresWorkbook";
 
 const StoresWarehouseDesign = () => {
+  const [showPrintModal, setShowPrintModal] = useState(false);
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -41,10 +44,16 @@ const StoresWarehouseDesign = () => {
                 </p>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={exportStoresWorkbook} className="gap-2">
-              <Download className="w-4 h-4" />
-              <span className="hidden sm:inline">Download Workbook</span>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => setShowPrintModal(true)} className="gap-2">
+                <Printer className="w-4 h-4" />
+                <span className="hidden sm:inline">Print Plan</span>
+              </Button>
+              <Button variant="outline" size="sm" onClick={exportStoresWorkbook} className="gap-2">
+                <Download className="w-4 h-4" />
+                <span className="hidden sm:inline">Download Workbook</span>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -152,6 +161,7 @@ const StoresWarehouseDesign = () => {
           </TabsContent>
         </Tabs>
       </main>
+      <PrintImplementationPlanModal isOpen={showPrintModal} onClose={() => setShowPrintModal(false)} />
     </div>
   );
 };

@@ -44,7 +44,7 @@ const Section = ({
   icon: React.ElementType;
   children: React.ReactNode;
 }) => (
-  <div className="space-y-4">
+  <div className="space-y-4 print-page-break">
     <div className="flex items-center gap-3">
       <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
         <Icon className="w-5 h-5 text-primary" />
