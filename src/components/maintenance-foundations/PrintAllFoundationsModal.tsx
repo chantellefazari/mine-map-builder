@@ -1,5 +1,7 @@
-import React, { useRef } from "react";
-import { X, Printer, FileText } from "lucide-react";
+import React, { useRef, useState } from "react";
+import { X, Printer, FileText, Download } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -39,7 +41,46 @@ export const PrintAllFoundationsModal: React.FC<PrintAllFoundationsModalProps> =
   onClose,
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
 
+  const handleDownloadPDF = async () => {
+    const el = printRef.current;
+    if (!el) return;
+    setDownloading(true);
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const A4_W = 210;
+      const A4_H = 297;
+      const imgData = canvas.toDataURL("image/jpeg", 0.9);
+      const imgRatio = canvas.height / canvas.width;
+      const totalImgH = A4_W * imgRatio;
+      let heightLeft = totalImgH;
+      let position = 0;
+
+      pdf.addImage(imgData, "JPEG", 0, position, A4_W, totalImgH);
+      heightLeft -= A4_H;
+
+      while (heightLeft > 0) {
+        position -= A4_H;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, A4_W, totalImgH);
+        heightLeft -= A4_H;
+      }
+
+      pdf.save("TCMG-Maintenance-Foundations.pdf");
+    } catch (err) {
+      console.error("PDF download error:", err);
+    } finally {
+      setDownloading(false);
+    }
+  };
   const handlePrint = () => {
     const printContent = printRef.current;
     if (!printContent) return;
@@ -245,9 +286,13 @@ export const PrintAllFoundationsModal: React.FC<PrintAllFoundationsModalProps> =
             </DialogTitle>
           </div>
           <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={handleDownloadPDF} className="gap-2" disabled={downloading}>
+              <Download className="w-4 h-4" />
+              {downloading ? "Downloading…" : "Download PDF"}
+            </Button>
             <Button onClick={handlePrint} className="gap-2">
               <Printer className="w-4 h-4" />
-              Print / Save PDF
+              Print
             </Button>
             <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="w-4 h-4" />
