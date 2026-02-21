@@ -233,32 +233,42 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
         {/* Scrollable A4 preview */}
         <div className="flex-1 overflow-auto bg-muted/40 p-6">
           <style>{`
-            .a4-print-preview .print-page-break:not(:first-child) {
-              border-top: 2px dashed hsl(var(--destructive));
-              margin-top: 2rem;
-              padding-top: 2rem;
-              position: relative;
-            }
-            .a4-print-preview .print-page-break:not(:first-child)::before {
-              content: '— PAGE BREAK —';
-              position: absolute;
-              top: -0.75rem;
-              left: 50%;
-              transform: translateX(-50%);
-              background: hsl(var(--destructive));
-              color: white;
-              font-size: 9px;
-              font-weight: 700;
-              letter-spacing: 1px;
-              padding: 2px 12px;
+            .a4-paged-preview .print-page-break {
+              background: white;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 0 1px rgba(0,0,0,0.1);
               border-radius: 4px;
+              padding: 15mm;
+              margin-bottom: 24px;
+              max-width: 210mm;
+              min-height: 297mm;
+              margin-left: auto;
+              margin-right: auto;
+              position: relative;
+              overflow: hidden;
+            }
+            .a4-paged-preview .print-page-break::after {
+              content: '';
+              position: absolute;
+              bottom: 0;
+              left: 15mm;
+              right: 15mm;
+              border-bottom: 1px solid #e5e5e5;
+            }
+            /* Hide separators between sections since pages are now visually split */
+            .a4-paged-preview > [data-slot="separator"],
+            .a4-paged-preview > [role="separator"] {
+              display: none;
+            }
+            .dark .a4-paged-preview .print-page-break {
+              background: hsl(var(--card));
             }
           `}</style>
-          <div
-            ref={printRef}
-            className="mx-auto bg-white dark:bg-card shadow-xl rounded-lg a4-print-preview"
-            style={{ maxWidth: "210mm", padding: "15mm" }}
-          >
+          {/* Hidden ref for print content */}
+          <div ref={printRef} style={{ display: "none" }}>
+            <ImplementationPlanDocument />
+          </div>
+          {/* Visible paged preview */}
+          <div className="a4-paged-preview">
             <ImplementationPlanDocument />
           </div>
         </div>
