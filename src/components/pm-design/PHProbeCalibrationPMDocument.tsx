@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Toggle } from "@/components/ui/toggle";
-import { Separator } from "@/components/ui/separator";
 import { 
   AlertTriangle, 
   Shield, 
@@ -12,31 +10,14 @@ import {
   ClipboardCheck,
   User,
   Calendar,
-  Wrench,
   Eye,
   Zap,
-  AlertCircle,
   CheckCircle2,
   Info,
-  Lock,
-  Droplets,
-  FlaskConical
+  Lock
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
-
-interface Hazard {
-  id: string;
-  icon: React.ReactNode;
-  label: string;
-}
-
-const hazardsList: Hazard[] = [
-  { id: "chemical", icon: <FlaskConical className="w-4 h-4" />, label: "Chemical (HCl)" },
-  { id: "electrical", icon: <Zap className="w-4 h-4" />, label: "Electrical" },
-  { id: "cyanide", icon: <AlertTriangle className="w-4 h-4" />, label: "Cyanide" },
-  { id: "lockout", icon: <Lock className="w-4 h-4" />, label: "LOTO" },
-];
 
 const calibrationReadings = [
   { id: "reading-before-clean", label: "pH Reading before clean" },
@@ -76,28 +57,15 @@ const calibrationProcedure = [
 ];
 
 export const PHProbeCalibrationPMDocument = () => {
-  const [selectedHazards, setSelectedHazards] = useState<string[]>(["chemical", "cyanide"]);
-
-  const toggleHazard = (hazardId: string) => {
-    setSelectedHazards(prev => 
-      prev.includes(hazardId) 
-        ? prev.filter(id => id !== hazardId)
-        : [...prev, hazardId]
-    );
-  };
-
   return (
     <div className="bg-background min-h-full">
-      {/* Document Header */}
       <div className="border-2 border-border">
         {/* Banner with Title Overlay */}
         <div className="relative">
           <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-          {/* Logo on left side of black section */}
           <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
             <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
           </div>
-          {/* Title on the black section - centered */}
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
             <div className="text-center">
               <h1 className="text-2xl font-bold tracking-wide text-primary">pH Probe Cleaning & Calibration</h1>
@@ -108,7 +76,6 @@ export const PHProbeCalibrationPMDocument = () => {
 
         {/* Header Information Grid */}
         <div className="grid grid-cols-2 border-b border-border text-xs">
-          {/* Left Column */}
           <div className="border-r border-border">
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
@@ -133,8 +100,6 @@ export const PHProbeCalibrationPMDocument = () => {
               <div className="px-2 py-1.5">1x Electrician (1 hr)</div>
             </div>
           </div>
-
-          {/* Right Column */}
           <div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
@@ -165,7 +130,6 @@ export const PHProbeCalibrationPMDocument = () => {
             PREPARATION
           </div>
           
-          {/* Preparation Info */}
           <div className="border-b border-border">
             <div className="px-4 py-3 text-sm leading-relaxed space-y-2">
               <div className="flex items-start gap-3">
@@ -179,7 +143,6 @@ export const PHProbeCalibrationPMDocument = () => {
             </div>
           </div>
 
-          {/* Safety Section */}
           <div className="border-b border-border">
             <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
               <Shield className="w-5 h-5 text-destructive" />
@@ -199,102 +162,9 @@ export const PHProbeCalibrationPMDocument = () => {
                   <FileText className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
                   <span>Follow OEM instructions and site procedures as required.</span>
                 </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Hazard Identification */}
-          <div className="border-b border-border">
-            <div className="bg-amber-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-amber-600" />
-              <span className="text-amber-700 font-bold">HAZARD IDENTIFICATION</span>
-              <span className="text-xs text-muted-foreground ml-2">(Select all that apply)</span>
-            </div>
-            <div className="p-4">
-              <div className="flex flex-wrap gap-2">
-                {hazardsList.map((hazard) => (
-                  <Toggle
-                    key={hazard.id}
-                    pressed={selectedHazards.includes(hazard.id)}
-                    onPressedChange={() => toggleHazard(hazard.id)}
-                    className="data-[state=on]:bg-amber-500 data-[state=on]:text-white border border-border px-3 py-2 gap-2"
-                    aria-label={`Toggle ${hazard.label} hazard`}
-                  >
-                    {hazard.icon}
-                    <span className="text-sm font-medium">{hazard.label}</span>
-                  </Toggle>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tools and PPE Section - Side by Side */}
-        <div className="border-b border-border grid md:grid-cols-2">
-          {/* Required Tools */}
-          <div className="border-r border-border">
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-primary" />
-              TOOLS REQUIRED
-            </div>
-            <div className="p-4">
-              <p className="text-xs text-muted-foreground mb-3">All tools can be found in the cabinet in the shift electrician's office.</p>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Shifter</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Scraping knife</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Paintbrush</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Rags</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Beaker of potable water</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Beaker of 10% Hydrochloric Acid</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Required PPE */}
-          <div>
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <HardHat className="w-4 h-4 text-primary" />
-              REQUIRED PPE
-            </div>
-            <div className="p-4">
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Steel Cap Boots</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Hard Hat</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Safety Glasses</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Acid-resistant gloves</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Cyanide monitor</span>
+                <li className="flex items-start gap-3">
+                  <HardHat className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <span>Minimum PPE: Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.</span>
                 </li>
               </ul>
             </div>
@@ -368,7 +238,7 @@ export const PHProbeCalibrationPMDocument = () => {
           </div>
         </div>
 
-        {/* Comments Section */}
+        {/* Comments */}
         <div className="border-t border-border">
           <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">COMMENTS:</div>
           <div className="p-3">
@@ -376,53 +246,34 @@ export const PHProbeCalibrationPMDocument = () => {
           </div>
         </div>
 
-        <Separator />
-
-        {/* Sign Off Section */}
+        {/* Sign Off */}
         <div className="border-t border-border">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Tested By:</div>
-          <div className="grid grid-cols-2 gap-0">
-            <div className="grid grid-cols-[80px_1fr] border-r border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Name:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
-            </div>
-            <div className="grid grid-cols-[80px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Signature:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
-            </div>
+          <div className="bg-green-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-green-600" />
+            <span className="text-green-700">Sign-Off</span>
           </div>
-          <div className="grid grid-cols-2 gap-0">
-            <div className="grid grid-cols-[80px_1fr] border-r border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Date:</div>
-              <div className="px-3 py-2"><Input className="h-7" type="date" /></div>
-            </div>
-            <div></div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="bg-muted border-b border-border">
+                  <th className="px-4 py-2 text-left font-semibold">Tested By</th>
+                  <th className="px-4 py-2 text-left font-semibold">Signature</th>
+                  <th className="px-4 py-2 text-left font-semibold w-32">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-border">
+                  <td className="px-4 py-2"><Input className="h-7 text-xs" /></td>
+                  <td className="px-4 py-2"><div className="h-8 border border-border rounded bg-muted/30"></div></td>
+                  <td className="px-4 py-2"><Input className="h-7 text-xs" type="date" /></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        {/* Revision History */}
-        <div className="border-t border-border">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Revision History:</div>
-          <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className="bg-muted/50">
-                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Revision No.</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[35%]">Description</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Created</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Reviewed</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[20%]">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="border border-border px-3 py-2">0</td>
-                <td className="border border-border px-3 py-2">Initial Release</td>
-                <td className="border border-border px-3 py-2"></td>
-                <td className="border border-border px-3 py-2"></td>
-                <td className="border border-border px-3 py-2"></td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="bg-muted/30 px-4 py-2 text-xs text-muted-foreground text-center">
+          Tennant Creek Mining Operations – Electrical Calibration Form
         </div>
       </div>
     </div>
