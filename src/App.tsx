@@ -16,12 +16,12 @@ const PMDesign = lazy(() => import("./pages/PMDesign"));
 const StoresWarehouseDesign = lazy(() => import("./pages/StoresWarehouseDesign"));
 const CriticalSpares = lazy(() => import("./pages/CriticalSpares"));
 const SiteSparesCatalogue = lazy(() => import("./pages/SiteSparesCatalogue"));
-const ComponentsOEM = lazy(() => import("./pages/ComponentsOEM"));
+
 const WorkOrderTemplates = lazy(() => import("./pages/WorkOrderTemplates"));
 const MaintenanceFoundations = lazy(() => import("./pages/MaintenanceFoundations"));
 const SupplierRegister = lazy(() => import("./pages/SupplierRegister"));
 const SuppliersProcurement = lazy(() => import("./pages/SuppliersProcurement"));
-const POImport = lazy(() => import("./pages/POImport"));
+
 const PlanningRevisionControl = lazy(() => import("./pages/PlanningRevisionControl"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -61,12 +61,12 @@ const App = () => (
               <Route path="/pm-design" element={<ProtectedRoute tabKey="pm-design"><PMDesign /></ProtectedRoute>} />
               <Route path="/critical-spares" element={<ProtectedRoute tabKey="critical-spares"><CriticalSpares /></ProtectedRoute>} />
               <Route path="/site-spares" element={<ProtectedRoute tabKey="site-spares"><SiteSparesCatalogue /></ProtectedRoute>} />
-              <Route path="/components-oem" element={<ProtectedRoute tabKey="components-oem"><ComponentsOEM /></ProtectedRoute>} />
+              
               <Route path="/work-order-templates" element={<ProtectedRoute tabKey="work-order-templates"><WorkOrderTemplates /></ProtectedRoute>} />
               <Route path="/maintenance-foundations" element={<ProtectedRoute tabKey="maintenance-foundations"><MaintenanceFoundations /></ProtectedRoute>} />
               <Route path="/supplier-register" element={<ProtectedRoute tabKey="suppliers-procurement"><SupplierRegister /></ProtectedRoute>} />
               <Route path="/suppliers-procurement" element={<ProtectedRoute tabKey="suppliers-procurement"><SuppliersProcurement /></ProtectedRoute>} />
-              <Route path="/po-import" element={<ProtectedRoute tabKey="po-import"><POImport /></ProtectedRoute>} />
+              
               <Route path="/stores-warehouse-design" element={<ProtectedRoute tabKey="stores-warehouse-design"><StoresWarehouseDesign /></ProtectedRoute>} />
               <Route path="/planning-revision" element={<ProtectedRoute tabKey="planning-revision"><PlanningRevisionControl /></ProtectedRoute>} />
 
