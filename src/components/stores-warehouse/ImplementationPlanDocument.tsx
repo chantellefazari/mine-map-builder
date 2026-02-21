@@ -1511,6 +1511,7 @@ export const ImplementationPlanDocument = () => {
             <li>Reduced emergency freight exposure</li>
             <li>Improved wrench time</li>
             <li>Long-term asset reliability</li>
+            <li>A stable foundation for Minesite AI integration or any system</li>
           </ul>
           <Prose>
             Delaying physical infrastructure will directly delay system stabilisation and cost control improvements.
