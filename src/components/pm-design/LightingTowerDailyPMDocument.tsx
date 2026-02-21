@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ClipboardCheck, CheckCircle2 } from "lucide-react";
+import { ClipboardCheck, CheckCircle2, HardHat, Shield, AlertTriangle, Zap } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
 
@@ -116,6 +116,28 @@ export const LightingTowerDailyPMDocument = () => {
           <div>
             <div className="bg-muted px-2 py-1.5 font-semibold border-b border-border text-center">Hours</div>
             <div className="px-2 py-2 min-h-[32px]"></div>
+          </div>
+        </div>
+
+        {/* Safety Note */}
+        <div className="border-b border-border">
+          <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+            <Shield className="w-5 h-5 text-destructive" />
+            <span className="text-destructive font-bold">SAFETY</span>
+          </div>
+          <div className="px-4 py-3 bg-destructive/5">
+            <div className="flex items-start gap-3 mb-3">
+              <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+              <p className="text-sm font-medium">
+                Before commencing this work complete a <span className="font-bold text-destructive">TAKE 5</span> every time.
+              </p>
+            </div>
+            <div className="flex items-start gap-3">
+              <HardHat className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm">
+                Minimum PPE: Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.
+              </p>
+            </div>
           </div>
         </div>
 
