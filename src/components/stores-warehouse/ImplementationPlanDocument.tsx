@@ -1255,7 +1255,7 @@ export const ImplementationPlanDocument = () => {
                 ["Civil & Earthworks (MMS day rate)", "~$12,416", "MMS plant & operators — 15hr avg across 900m³ haulage. Supplying our own dirt"],
                 ["Roller Hire (Barber Hire)", "$450 / day", "Compaction roller — 2 days estimate"],
                 ["Blue Rock (Barber Hire)", "TBC", "Compaction material — quote pending"],
-                ["Concrete Blocks ×14 (DPP)", "$2,575", "1000×1000×100mm, 240kg each, $183.92 inc GST per block. 2 weeks lead + 5 days to complete"],
+                ["Concrete Blocks ×14 (DPP)", "$2,575", "1000×1000×100mm, 240kg each, $183.92 inc GST per block. 2 weeks lead + 5 days to complete — excl. delivery"],
                 ["Concrete Slab Pour", "$25,069", "125mm slab"],
                 ["Dome Roof Structure", "Purchased", "Dome already ordered"],
                 ["Full Endwall with Doorway (CASA1200AIMFD)", "$13,570", "Allshelter 12m, container inside mounted, Wind Region A — excl. shipping"],
@@ -1275,7 +1275,7 @@ export const ImplementationPlanDocument = () => {
               <TableRow className="bg-muted/50 font-semibold">
                 <TableCell className="text-xs font-bold">Quoted / Estimated to Date</TableCell>
                 <TableCell className="text-xs text-right font-mono font-bold">~$85,390</TableCell>
-                <TableCell className="text-xs text-muted-foreground">Not final — excludes blue rock, shipping, internal fitout, laydown yard & other pending quotes</TableCell>
+                <TableCell className="text-xs text-muted-foreground">Not final — excludes blue rock, delivery, shipping, internal fitout, laydown yard & other pending quotes</TableCell>
               </TableRow>
             </TableBody>
           </Table>
