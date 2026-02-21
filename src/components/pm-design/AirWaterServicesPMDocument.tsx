@@ -1,26 +1,15 @@
-import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Toggle } from "@/components/ui/toggle";
 import { 
   AlertTriangle, 
   HardHat,
   FileText,
   User,
   Calendar,
-  Wrench,
   Eye,
-  Zap,
-  Wind,
   Lock,
-  AlertCircle,
-  Info,
-  Cog,
-  Volume2,
-  CircleDot,
-  MoveHorizontal,
-  Droplets
+  Info
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
@@ -36,21 +25,6 @@ interface EquipmentSection {
   tasks: InspectionTask[];
 }
 
-interface Hazard {
-  id: string;
-  icon: React.ReactNode;
-  label: string;
-}
-
-const hazardsList: Hazard[] = [
-  { id: "mechanical", icon: <Cog className="w-4 h-4" />, label: "Mechanical" },
-  { id: "noise", icon: <Volume2 className="w-4 h-4" />, label: "Noise" },
-  { id: "pressure", icon: <CircleDot className="w-4 h-4" />, label: "Pressure" },
-  { id: "pinch-points", icon: <MoveHorizontal className="w-4 h-4" />, label: "Pinch Points" },
-  { id: "pneumatic", icon: <Wind className="w-4 h-4" />, label: "Pneumatic" },
-  { id: "water", icon: <Droplets className="w-4 h-4" />, label: "Water/Slippery" },
-];
-
 const inspectionData: EquipmentSection[] = [
   {
     equipmentId: "05-CP-132, 05-AR-132",
@@ -61,6 +35,72 @@ const inspectionData: EquipmentSection[] = [
       { task: "Check oil level on Air compressor A & B (05-CP-132)" },
       { task: "Check Auto Drains are operational on both Air receiver's (05-AR-132)" },
       { task: "Check Receiver's for Leaks or Damage (05-AR-132)" },
+      { task: "Check all Pipework and Valves for leaks or damage" },
+    ]
+  },
+  {
+    equipmentId: "05-TK-001",
+    equipmentName: "Dust Suppression Tank",
+    tasks: [
+      { task: "Check Tank Level" },
+      { task: "Check all Pipework and Valves for leaks or damage" },
+    ]
+  },
+  {
+    equipmentId: "05-PU-001A",
+    equipmentName: "Dust Suppression Pump (Duty)",
+    tasks: [
+      { task: "Check pump condition (skip below checks if pump on standby)" },
+      { task: "Check pump for heat, noise and vibration" },
+      { task: "Check inlet and outlet connection, look for leaks" },
+    ]
+  },
+  {
+    equipmentId: "05-PU-001B",
+    equipmentName: "Dust Suppression Pump (Standby)",
+    tasks: [
+      { task: "Check pump condition (skip below checks if pump on duty)" },
+      { task: "Check pump for heat, noise and vibration" },
+      { task: "Check inlet and outlet connection, look for leaks" },
+    ]
+  },
+  {
+    equipmentId: "11-TK-001",
+    equipmentName: "Process Water Tank",
+    tasks: [
+      { task: "Check Tank Level" },
+      { task: "Check all Pipework and Valves for leaks or damage" },
+    ]
+  },
+  {
+    equipmentId: "11-TK-002",
+    equipmentName: "Raw Water Tank",
+    tasks: [
+      { task: "Check Tank Level" },
+      { task: "Check all Pipework and Valves for leaks or damage" },
+    ]
+  },
+  {
+    equipmentId: "11-TK-003",
+    equipmentName: "Potable Water Tank",
+    tasks: [
+      { task: "Check Tank Level" },
+      { task: "Check all Pipework and Valves for leaks or damage" },
+    ]
+  },
+  {
+    equipmentId: "11-TK-004",
+    equipmentName: "Gland Water Tank",
+    tasks: [
+      { task: "Check Tank Level" },
+      { task: "Check all Pipework and Valves for leaks or damage" },
+    ]
+  },
+  {
+    equipmentId: "11-TK-201",
+    equipmentName: "Safety Shower Water Tank",
+    tasks: [
+      { task: "Check Tank Level" },
       { task: "Check all Pipework and Valves for leaks or damage" },
     ]
   },
@@ -161,28 +201,15 @@ const inspectionData: EquipmentSection[] = [
 ];
 
 export const AirWaterServicesPMDocument = () => {
-  const [selectedHazards, setSelectedHazards] = useState<string[]>([]);
-
-  const toggleHazard = (hazardId: string) => {
-    setSelectedHazards(prev => 
-      prev.includes(hazardId) 
-        ? prev.filter(id => id !== hazardId)
-        : [...prev, hazardId]
-    );
-  };
-
   return (
     <div className="bg-background min-h-full">
-      {/* Document Header */}
       <div className="border-2 border-border">
         {/* Banner with Title Overlay */}
         <div className="relative">
           <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-          {/* Logo on left side of black section */}
           <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
             <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
           </div>
-          {/* Title on the black section - centered */}
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
             <div className="text-center">
               <h1 className="text-2xl font-bold tracking-wide text-primary">Tenant Creek Air & Water Services Area</h1>
@@ -193,7 +220,6 @@ export const AirWaterServicesPMDocument = () => {
 
         {/* Header Information Grid */}
         <div className="grid grid-cols-2 border-b border-border text-xs">
-          {/* Left Column */}
           <div className="border-r border-border">
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
@@ -219,7 +245,6 @@ export const AirWaterServicesPMDocument = () => {
             </div>
           </div>
 
-          {/* Right Column */}
           <div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
@@ -280,7 +305,7 @@ export const AirWaterServicesPMDocument = () => {
               <div className="flex items-start gap-3 mb-4">
                 <HardHat className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                 <p className="text-sm">
-                  Always wear the correct PPE. Cyanide monitor to be carried in plant areas where signed.
+                  Minimum PPE: Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.
                 </p>
               </div>
               <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3">
@@ -291,96 +316,12 @@ export const AirWaterServicesPMDocument = () => {
               </div>
             </div>
           </div>
-
-          {/* Hazard Identification */}
-          <div className="border-b border-border">
-            <div className="bg-amber-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-amber-600" />
-              <span className="text-amber-700 font-bold">HAZARD IDENTIFICATION</span>
-              <span className="text-xs text-muted-foreground ml-2">(Select all that apply)</span>
-            </div>
-            <div className="p-4">
-              <div className="flex flex-wrap gap-2">
-                {hazardsList.map((hazard) => (
-                  <Toggle
-                    key={hazard.id}
-                    pressed={selectedHazards.includes(hazard.id)}
-                    onPressedChange={() => toggleHazard(hazard.id)}
-                    className="data-[state=on]:bg-amber-500 data-[state=on]:text-white border border-border px-3 py-2 gap-2"
-                    aria-label={`Toggle ${hazard.label} hazard`}
-                  >
-                    {hazard.icon}
-                    <span className="text-sm font-medium">{hazard.label}</span>
-                  </Toggle>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tools and PPE Section */}
-        <div className="border-b border-border grid md:grid-cols-2">
-          {/* Required Tools */}
-          <div className="border-r border-border">
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-primary" />
-              SPECIAL TOOLING REQUIRED
-            </div>
-            <div className="p-4">
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Temperature gun</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Grease gun (XTB2)</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Cleaning materials</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Required PPE */}
-          <div>
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <HardHat className="w-4 h-4 text-primary" />
-              REQUIRED PPE
-            </div>
-            <div className="p-4">
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Steel Cap Boots</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Hard Hat</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Safety Glasses</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Hearing Protection</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Gloves (when required)</span>
-                </li>
-              </ul>
-            </div>
-          </div>
         </div>
 
         {/* Procedure Section */}
         <div className="border-b border-border">
           <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <Wrench className="w-4 h-4 text-primary" />
+            <Eye className="w-4 h-4 text-primary" />
             PROCEDURE
           </div>
           <div className="px-4 py-3 text-sm leading-relaxed space-y-2">
@@ -410,16 +351,11 @@ export const AirWaterServicesPMDocument = () => {
               <tbody>
                 {inspectionData.map((section, sectionIdx) => (
                   <>
-                    {/* Equipment Header */}
                     <tr key={`section-${sectionIdx}`} className="bg-primary/10">
-                      <td 
-                        colSpan={4} 
-                        className="border border-border px-2 py-2 font-semibold text-primary"
-                      >
+                      <td colSpan={4} className="border border-border px-2 py-2 font-semibold text-primary">
                         {section.equipmentId} - {section.equipmentName}
                       </td>
                     </tr>
-                    {/* Tasks */}
                     {section.tasks.map((task, taskIdx) => (
                       <tr key={`task-${sectionIdx}-${taskIdx}`} className="hover:bg-muted/50">
                         <td className="border border-border px-2 py-2">{task.task}</td>
@@ -450,22 +386,15 @@ export const AirWaterServicesPMDocument = () => {
 
         {/* Comments Section */}
         <div className="border-b border-border">
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">
-            Comment:
-          </div>
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Comment:</div>
           <div className="p-4">
-            <Textarea 
-              placeholder="Enter comments here..."
-              className="min-h-[80px] text-sm"
-            />
+            <Textarea placeholder="Enter comments here..." className="min-h-[80px] text-sm" />
           </div>
         </div>
 
         {/* Sign Off Section */}
         <div className="border-b border-border">
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">
-            Sign Off:
-          </div>
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Sign Off:</div>
           <div className="p-4 grid grid-cols-2 gap-4 text-sm">
             <div className="space-y-3">
               <div className="flex items-center gap-4">
@@ -510,9 +439,7 @@ export const AirWaterServicesPMDocument = () => {
 
         {/* Supervisor Approval */}
         <div className="border-b border-border">
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">
-            Supervisor Approval:
-          </div>
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Supervisor Approval:</div>
           <div className="p-4">
             <table className="w-full text-sm">
               <tbody>
@@ -531,9 +458,7 @@ export const AirWaterServicesPMDocument = () => {
 
         {/* Revision History */}
         <div>
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">
-            Revision History:
-          </div>
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Revision History:</div>
           <table className="w-full text-xs">
             <thead>
               <tr className="bg-muted/50">
