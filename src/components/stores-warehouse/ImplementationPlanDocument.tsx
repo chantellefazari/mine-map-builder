@@ -1254,7 +1254,7 @@ export const ImplementationPlanDocument = () => {
               {[
                 ["Civil & Earthworks", "—", "Cut, fill, regrading, slabs"],
                 ["Dome Roof Structure", "—", "Supply, install, certification"],
-                ["Containers (×5)", "—", "Purchase or lease, delivery, crane"],
+                ["Containers (×5)", "Purchased", "On their way — already procured prior to this plan"],
                 ["Internal Fitout (all containers)", "—", "Shelving, racks, bin panels, labels"],
                 ["Laydown Yard Preparation", "—", "Gravel, bollards, signage, sheltering"],
                 ["Inventory Initial Load", "—", "Labour, stock transfer, system setup"],
