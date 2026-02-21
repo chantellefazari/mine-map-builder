@@ -188,18 +188,114 @@ export const ImplementationPlanDocument = () => {
       {/* ============================================================ */}
       <Section number="3" title="Civil &amp; Earthworks Scope" icon={Shovel}>
         <Prose>
-          All civil works are referenced against the site survey and existing infrastructure constraints. The scope establishes the foundation for the warehouse compound and laydown yard.
+          All civil works are aligned to the latest topographic survey and existing infrastructure constraints. This scope establishes a stable, drained, and future-ready foundation for the Central Stores compound and Laydown Yard.
         </Prose>
-        <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-          <li><span className="font-medium text-foreground">Survey Reference:</span> Works are aligned to the latest topographic survey with established benchmarks for level control.</li>
-          <li><span className="font-medium text-foreground">Cut &amp; Fill:</span> Site requires levelling to achieve consistent falls for drainage. Excess material to be used for laydown yard base preparation.</li>
-          <li><span className="font-medium text-foreground">Drainage Redirection:</span> Surface water to be redirected away from the container compound via graded swales and a perimeter drain connected to the existing stormwater network.</li>
-          <li><span className="font-medium text-foreground">Tank Relocation:</span> Existing water/fuel tanks to be relocated to the crib room side of the compound to clear the footprint and improve pedestrian separation.</li>
-          <li><span className="font-medium text-foreground">Slab Logic:</span> Reinforced concrete slabs under each container position (minimum 100mm thick, SL82 mesh) with provision for future extension. Expansion joints at container boundaries.</li>
-          <li><span className="font-medium text-foreground">Container Block Strategy:</span> Containers positioned on concrete plinths with 50mm clearance for airflow and moisture prevention. Block layout follows the U-shape compound design.</li>
-          <li><span className="font-medium text-foreground">Bin Relocations:</span> Existing skip bins and waste containers relocated to a designated waste management zone outside the warehouse perimeter.</li>
-        </ul>
-        <ImagePlaceholder label="Civil works plan / site survey overlay" />
+
+        <SubSection id="3.1" title="Survey & Level Control">
+          <Prose>
+            Works are referenced to the latest site survey (RL markers shown on attached aerial).
+          </Prose>
+          <Prose>Key reference levels:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li><span className="font-medium text-foreground">Existing Boily Slab (TOC):</span> 355.99 RL</li>
+            <li><span className="font-medium text-foreground">Proposed New Stores Slab (TOC):</span> 355.99 RL (to maintain level alignment)</li>
+            <li><span className="font-medium text-foreground">Slab underside:</span> 355.865 RL (125mm slab thickness)</li>
+          </ul>
+          <Prose>
+            The compound footprint (outlined in green on attached image) has been assessed against natural surface (NS) levels.
+          </Prose>
+        </SubSection>
+
+        <SubSection id="3.2" title="Cut & Fill Requirements">
+          <Prose>Based on preliminary calculations:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li><span className="font-medium text-foreground">Estimated bulk earthworks volume:</span> ~899.51 m³</li>
+            <li><span className="font-medium text-foreground">Fill required from NS to underside of slab:</span> ~65.1 m³</li>
+            <li><span className="font-medium text-foreground">New slab concrete volume:</span> 14.3 m³</li>
+          </ul>
+          <Prose>Corner fill depth (approximate):</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li><span className="font-medium text-foreground">North corner:</span> ~470mm</li>
+            <li><span className="font-medium text-foreground">East corner:</span> ~900mm</li>
+            <li><span className="font-medium text-foreground">South corner:</span> ~450mm</li>
+            <li><span className="font-medium text-foreground">West corner:</span> ~220mm</li>
+          </ul>
+          <Prose>
+            These figures are preliminary and subject to confirmation prior to construction. Excess material will be reused where possible for laydown yard base preparation.
+          </Prose>
+        </SubSection>
+
+        <SubSection id="3.3" title="Drainage Strategy">
+          <Prose>
+            The selected area currently experiences surface water movement during wet season events. Civil design includes:
+          </Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Regrading to establish consistent fall away from container pads</li>
+            <li>Perimeter swale to intercept runoff</li>
+            <li>Drainage redirection toward existing stormwater flow paths</li>
+            <li>Elimination of ponding against container bases</li>
+          </ul>
+          <Prose>
+            <span className="font-medium text-foreground">Objective:</span> No standing water within the compound footprint.
+          </Prose>
+        </SubSection>
+
+        <SubSection id="3.4" title="Slab & Container Foundation Logic">
+          <Prose>Each container will sit on reinforced concrete slabs designed to:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Minimum 100–125mm thickness</li>
+            <li>SL82 mesh reinforcement</li>
+            <li>Expansion joints at container boundaries</li>
+            <li>Future slab extension provision</li>
+          </ul>
+          <Prose>Containers positioned on concrete plinths with approx. 50mm clearance to:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Prevent moisture contact</li>
+            <li>Allow airflow</li>
+            <li>Reduce corrosion risk</li>
+          </ul>
+          <Prose>
+            The compound follows a U-shape layout for controlled access, clear forklift movement, and a centralised issue counter.
+          </Prose>
+        </SubSection>
+
+        <SubSection id="3.5" title="Tank & Obstruction Relocation">
+          <Prose>To clear the proposed compound footprint and improve pedestrian safety:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Existing tanks to be relocated toward crib room side</li>
+            <li>Skip bins and waste containers relocated to designated waste zone outside stores perimeter</li>
+          </ul>
+          <Prose>This ensures a clean warehouse boundary, reduced cross-traffic, and clear separation between storage and waste handling.</Prose>
+        </SubSection>
+
+        <SubSection id="3.6" title="Laydown Yard Preparation">
+          <Prose>Laydown yard area to be levelled and compacted, using engineered fill where required, and capable of supporting motors, gearboxes, and heavy assemblies.</Prose>
+          <Prose>Hardstand design to allow:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Forklift access</li>
+            <li>Defined LD-A / LD-B location coding</li>
+            <li>Future expansion</li>
+          </ul>
+        </SubSection>
+
+        {/* Attachments */}
+        <div className="space-y-4 mt-4">
+          <h3 className="text-base font-semibold text-foreground">Attachments for This Section</h3>
+          <div className="space-y-3">
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Aerial image with RL markers</p>
+              <img src="/images/site-survey-rl-markers.jpeg" alt="Site aerial with RL survey markers" className="rounded-lg border border-border w-full max-w-2xl" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Footprint outline (green boundary) — Earthworks calc summary from Dan</p>
+              <img src="/images/earthworks-footprint-boundary.png" alt="Compound footprint outlined in green with earthworks volume calculation" className="rounded-lg border border-border w-full max-w-2xl" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Earthworks calculation summary from Dan</p>
+              <img src="/images/earthworks-calc-summary.png" alt="Earthworks calculation assumptions and corner fill depths" className="rounded-lg border border-border w-full max-w-2xl" />
+            </div>
+          </div>
+        </div>
       </Section>
 
       <Separator />
