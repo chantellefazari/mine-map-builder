@@ -302,12 +302,12 @@ export const ImplementationPlanDocument = () => {
               <img src="/images/site-survey-rl-markers.jpeg" alt="Site aerial with RL survey markers" className="rounded-lg border border-border w-full" />
             </div>
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">Earthworks calculation summary</p>
-              <img src="/images/earthworks-calc-summary.png" alt="Earthworks calculation assumptions and corner fill depths" className="rounded-lg border border-border w-full" />
-            </div>
-            <div>
               <p className="text-xs font-medium text-muted-foreground mb-1">Preliminary fill depth breakdown</p>
               <img src="/images/earthworks-footprint-boundary.png" alt="Compound footprint outlined with earthworks volume calculation" className="rounded-lg border border-border w-full" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Earthworks calculation summary</p>
+              <img src="/images/earthworks-calc-summary.png" alt="Earthworks calculation assumptions and corner fill depths" className="rounded-lg border border-border w-full" />
             </div>
           </div>
         </div>
