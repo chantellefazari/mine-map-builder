@@ -25,6 +25,8 @@ const A4_WIDTH_PX = 794;
 const A4_HEIGHT_PX = 1123;
 const MARGIN_PX = 57; // ~15mm at 96dpi
 const CONTENT_HEIGHT_PX = A4_HEIGHT_PX - MARGIN_PX * 2; // ~1009px
+const GAP = 10; // gap between items on a page
+const ORPHAN_THRESHOLD = 120; // keep at least this much content with a header
 
 export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModalProps> = ({
   isOpen,
@@ -47,7 +49,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
     const flushPage = () => {
       if (currentPageElements.length === 0) return;
       const wrapper = document.createElement("div");
-      wrapper.setAttribute("style", "display:flex;flex-direction:column;gap:16px;");
+      wrapper.setAttribute("style", `display:flex;flex-direction:column;gap:${GAP}px;`);
       currentPageElements.forEach((el) => wrapper.appendChild(el.cloneNode(true)));
       builtPages.push(wrapper.innerHTML);
       currentPageElements = [];
@@ -60,12 +62,43 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
         flushPage();
       }
       currentPageElements.push(el);
-      currentHeight += h + 16; // 16px gap between items
+      currentHeight += h + GAP;
     };
 
     /**
-     * For elements that exceed an A4 page, drill into their children
-     * and distribute them across pages individually.
+     * Check if an element is a section/subsection header (contains h2/h3/h4)
+     */
+    const isHeader = (el: HTMLElement): boolean => {
+      const tag = el.tagName?.toLowerCase();
+      if (tag === "h2" || tag === "h3" || tag === "h4") return true;
+      // Check if it's a flex wrapper containing an h2/h3 (section header pattern)
+      if (el.querySelector("h2, h3")) {
+        const h = el.getBoundingClientRect().height;
+        if (h < 60) return true; // Short element with heading = header row
+      }
+      return false;
+    };
+
+    /**
+     * Add a header element together with the next sibling content
+     * to prevent orphaned headers at page bottom
+     */
+    const addHeaderWithContent = (header: HTMLElement, nextContent: HTMLElement | null) => {
+      const headerH = header.getBoundingClientRect().height;
+      const contentH = nextContent ? Math.min(nextContent.getBoundingClientRect().height, ORPHAN_THRESHOLD) : 0;
+      const combinedH = headerH + GAP + contentH;
+
+      // If the header + minimum content won't fit, start a new page
+      if (currentHeight + combinedH > CONTENT_HEIGHT_PX && currentPageElements.length > 0) {
+        flushPage();
+      }
+      currentPageElements.push(header);
+      currentHeight += headerH + GAP;
+    };
+
+    /**
+     * Distribute an element across pages, recursively breaking
+     * oversized elements into their children.
      */
     const distributeElement = (el: HTMLElement) => {
       const h = el.getBoundingClientRect().height;
@@ -75,47 +108,73 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
         return;
       }
 
-      // Fits on current page — just add it
+      // Fits on current page
       if (h <= CONTENT_HEIGHT_PX && currentHeight + h <= CONTENT_HEIGHT_PX) {
         addElement(el);
         return;
       }
 
-      // Fits on a fresh page — flush and add
+      // Fits on a fresh page
       if (h <= CONTENT_HEIGHT_PX) {
         flushPage();
         addElement(el);
         return;
       }
 
-      // Too tall for one page — break into inner children
+      // Too tall for one page, break into children
       const innerChildren = Array.from(el.children) as HTMLElement[];
       if (innerChildren.length <= 1) {
-        // Can't break further — force onto its own page
+        // Can't break further, force onto its own page
         flushPage();
         addElement(el);
         return;
       }
 
-      // For section wrappers, add the section header first, then distribute inner content
-      innerChildren.forEach((inner) => {
-        const innerH = inner.getBoundingClientRect().height;
-        if (innerH > CONTENT_HEIGHT_PX) {
+      // Process children, keeping headers with their following content
+      for (let i = 0; i < innerChildren.length; i++) {
+        const child = innerChildren[i];
+        const childH = child.getBoundingClientRect().height;
+
+        if (isHeader(child)) {
+          const nextSibling = i + 1 < innerChildren.length ? innerChildren[i + 1] : null;
+          addHeaderWithContent(child, nextSibling);
+          continue;
+        }
+
+        if (childH > CONTENT_HEIGHT_PX) {
           // Recursively break down deeply nested large elements
-          const deepChildren = Array.from(inner.children) as HTMLElement[];
+          const deepChildren = Array.from(child.children) as HTMLElement[];
           if (deepChildren.length > 1) {
-            deepChildren.forEach((deep) => distributeElement(deep));
+            for (let j = 0; j < deepChildren.length; j++) {
+              const deep = deepChildren[j];
+              const deepH = deep.getBoundingClientRect().height;
+
+              if (isHeader(deep)) {
+                const nextDeep = j + 1 < deepChildren.length ? deepChildren[j + 1] : null;
+                addHeaderWithContent(deep, nextDeep);
+                continue;
+              }
+
+              if (deepH > CONTENT_HEIGHT_PX) {
+                distributeElement(deep);
+              } else {
+                if (currentHeight + deepH > CONTENT_HEIGHT_PX && currentPageElements.length > 0) {
+                  flushPage();
+                }
+                addElement(deep);
+              }
+            }
           } else {
             flushPage();
-            addElement(inner);
+            addElement(child);
           }
         } else {
-          if (currentHeight + innerH > CONTENT_HEIGHT_PX && currentPageElements.length > 0) {
+          if (currentHeight + childH > CONTENT_HEIGHT_PX && currentPageElements.length > 0) {
             flushPage();
           }
-          addElement(inner);
+          addElement(child);
         }
-      });
+      }
     };
 
     topChildren.forEach((child) => distributeElement(child));
@@ -125,8 +184,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
 
   useEffect(() => {
     if (isOpen) {
-      // Wait for the hidden content to render
-      const timer = setTimeout(buildPages, 200);
+      const timer = setTimeout(buildPages, 300);
       return () => clearTimeout(timer);
     }
   }, [isOpen, buildPages]);
@@ -236,9 +294,12 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
             h3 { font-size: 9.5px; }
             h4 { font-size: 9px; }
 
-            ul, ol { padding-left: 12px; margin-bottom: 2px; }
-            li { margin-bottom: 0; font-size: 8px; }
+            ul, ol { padding-left: 14px; margin-bottom: 2px; }
+            li { margin-bottom: 1px; font-size: 8px; }
             p { margin-bottom: 2px; font-size: 8px; }
+
+            ol { list-style-type: decimal; }
+            ol li { padding-left: 2px; }
 
             .separator, hr {
               border: none;
@@ -256,6 +317,10 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
 
             table, [class*="rounded-lg"] {
               page-break-inside: avoid;
+            }
+
+            h2, h3, h4 {
+              page-break-after: avoid;
             }
 
             img {
@@ -351,7 +416,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
           </div>
         </DialogHeader>
 
-        {/* Hidden measurer — uses compact print sizing */}
+        {/* Hidden measurer */}
         <div
           ref={hiddenRef}
           aria-hidden
@@ -380,35 +445,62 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
           .print-compact-text td { font-size: 8px !important; padding: 2px 4px !important; line-height: 1.25 !important; }
           .print-compact-text .text-sm { font-size: 9px !important; }
           .print-compact-text .text-xs { font-size: 8px !important; }
+          .print-compact-text .text-\\[10px\\] { font-size: 7px !important; }
           .print-compact-text .text-2xl { font-size: 14px !important; }
           .print-compact-text .text-xl { font-size: 12px !important; }
           .print-compact-text .text-base { font-size: 10px !important; }
+          .print-compact-text .text-lg { font-size: 11px !important; }
           .print-compact-text .space-y-4 > * + * { margin-top: 6px !important; }
+          .print-compact-text .space-y-3 > * + * { margin-top: 4px !important; }
           .print-compact-text .space-y-2 > * + * { margin-top: 3px !important; }
+          .print-compact-text .space-y-1\\.5 > * + * { margin-top: 2px !important; }
+          .print-compact-text .space-y-1 > * + * { margin-top: 1px !important; }
           .print-compact-text .space-y-8 > * + * { margin-top: 10px !important; }
           .print-compact-text .gap-4 { gap: 6px !important; }
           .print-compact-text .gap-3 { gap: 4px !important; }
+          .print-compact-text .gap-2 { gap: 3px !important; }
+          .print-compact-text .gap-1\\.5 { gap: 2px !important; }
           .print-compact-text .gap-1 { gap: 2px !important; }
+          .print-compact-text .gap-0\\.5 { gap: 1px !important; }
           .print-compact-text .p-4 { padding: 6px !important; }
           .print-compact-text .p-6 { padding: 8px !important; }
+          .print-compact-text .p-3 { padding: 5px !important; }
+          .print-compact-text .p-2\\.5 { padding: 4px !important; }
+          .print-compact-text .p-2 { padding: 3px !important; }
+          .print-compact-text .px-4 { padding-left: 6px !important; padding-right: 6px !important; }
+          .print-compact-text .py-3 { padding-top: 4px !important; padding-bottom: 4px !important; }
+          .print-compact-text .py-2\\.5 { padding-top: 3px !important; padding-bottom: 3px !important; }
           .print-compact-text .mb-6 { margin-bottom: 6px !important; }
           .print-compact-text .mb-3 { margin-bottom: 4px !important; }
           .print-compact-text .mb-2 { margin-bottom: 3px !important; }
           .print-compact-text .mt-4 { margin-top: 6px !important; }
           .print-compact-text .mt-6 { margin-top: 8px !important; }
+          .print-compact-text .mt-3 { margin-top: 4px !important; }
+          .print-compact-text .mt-2 { margin-top: 3px !important; }
+          .print-compact-text .mt-1 { margin-top: 2px !important; }
           .print-compact-text .pl-12 { padding-left: 20px !important; }
           .print-compact-text .pl-5 { padding-left: 14px !important; }
           .print-compact-text .pt-3 { padding-top: 4px !important; }
+          .print-compact-text .pt-2 { padding-top: 3px !important; }
           .print-compact-text .py-4 { padding-top: 4px !important; padding-bottom: 4px !important; }
           .print-compact-text .w-9 { width: 24px !important; }
           .print-compact-text .h-9 { height: 24px !important; }
           .print-compact-text .w-10 { width: 28px !important; }
           .print-compact-text .h-10 { height: 28px !important; }
+          .print-compact-text .w-7 { width: 20px !important; }
+          .print-compact-text .h-7 { height: 20px !important; }
+          .print-compact-text .w-6 { width: 18px !important; }
+          .print-compact-text .h-6 { height: 18px !important; }
           .print-compact-text .w-5 { width: 14px !important; }
           .print-compact-text .h-5 { height: 14px !important; }
-          .print-compact-text img { max-height: 200px !important; object-fit: contain !important; }
+          .print-compact-text .w-4 { width: 12px !important; }
+          .print-compact-text .h-4 { height: 12px !important; }
+          .print-compact-text .w-3\\.5 { width: 10px !important; }
+          .print-compact-text .h-3\\.5 { height: 10px !important; }
+          .print-compact-text img { max-height: 180px !important; object-fit: contain !important; }
           .print-compact-text ul, .print-compact-text ol { margin-bottom: 3px !important; }
           .print-compact-text li { margin-bottom: 0px !important; }
+          .print-compact-text .grid { gap: 4px !important; }
         `}</style>
 
         {/* Scrollable A4 page preview */}
