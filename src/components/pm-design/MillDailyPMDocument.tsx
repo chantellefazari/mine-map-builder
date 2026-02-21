@@ -455,11 +455,10 @@ export const MillDailyPMDocument = () => {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
-                    <th className="text-left px-4 py-2 font-medium w-1/2">Task</th>
-                    <th className="text-center px-2 py-2 font-medium w-20">OK</th>
-                    <th className="text-center px-2 py-2 font-medium w-20">Defective</th>
-                    <th className="text-center px-2 py-2 font-medium w-20">Urgent</th>
-                    <th className="text-left px-4 py-2 font-medium">Comments / Temp</th>
+                    <th className="text-left px-4 py-2 font-medium w-[50%]">Task</th>
+                    <th className="text-center px-2 py-2 font-medium w-[8%]">✓</th>
+                    <th className="text-center px-2 py-2 font-medium w-[8%]">✗</th>
+                    <th className="text-left px-4 py-2 font-medium w-[34%]">Comments / Temp</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -467,19 +466,16 @@ export const MillDailyPMDocument = () => {
                     <tr key={taskIndex} className="border-b border-border hover:bg-muted/30">
                       <td className="px-4 py-2.5 text-foreground">{task.task}</td>
                       <td className="text-center px-2 py-2.5">
-                        <Checkbox className="h-4 w-4" />
+                        <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
                       </td>
                       <td className="text-center px-2 py-2.5">
-                        <Checkbox className="h-4 w-4" />
-                      </td>
-                      <td className="text-center px-2 py-2.5">
-                        <Checkbox className="h-4 w-4" />
+                        <Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" />
                       </td>
                       <td className="px-4 py-2.5">
                         {task.hasTemp ? (
                           <span className="text-xs text-muted-foreground">{task.tempLabel}</span>
                         ) : (
-                          <span className="text-muted-foreground">—</span>
+                          <Input className="h-7 text-xs border-0 bg-transparent" placeholder="" />
                         )}
                       </td>
                     </tr>
