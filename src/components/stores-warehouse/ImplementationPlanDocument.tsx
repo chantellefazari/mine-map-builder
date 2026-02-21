@@ -1253,7 +1253,7 @@ export const ImplementationPlanDocument = () => {
             <TableBody>
               {[
                 ["Civil & Earthworks (MMS day rate)", "~$13,316", "MMS plant & ops ~$12,416 (15hr avg) + roller hire ~$900 (2 days @ $450). Excl. blue rock, spotters, survey"],
-                ["Dome Roof Structure", "—", "Supply, install, certification"],
+                ["Dome Roof Structure", "Purchased", "Dome already ordered. Add-ons: full endwall $13,570 + partial endwall $8,730 + electric roller shutter $22,130 = $44,430 (Allshelter)"],
                 ["Containers (×5)", "Purchased", "On their way — already procured prior to this plan"],
                 ["Internal Fitout (all containers)", "—", "Shelving, racks, bin panels, labels"],
                 ["Laydown Yard Preparation", "—", "Gravel, bollards, signage, sheltering"],
