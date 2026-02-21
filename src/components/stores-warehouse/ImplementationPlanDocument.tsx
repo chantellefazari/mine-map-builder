@@ -1280,7 +1280,7 @@ export const ImplementationPlanDocument = () => {
             </TableBody>
           </Table>
         </div>
-        <ImagePlaceholder label="Budget breakdown chart or supporting quotes" />
+        <Prose>Note: Supporting quotes and supplier correspondence can be provided on request.</Prose>
       </Section>
 
       <Separator />
