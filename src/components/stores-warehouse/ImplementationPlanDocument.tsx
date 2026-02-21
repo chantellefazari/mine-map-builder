@@ -1273,9 +1273,9 @@ export const ImplementationPlanDocument = () => {
                 </TableRow>
               ))}
               <TableRow className="bg-muted/50 font-semibold">
-                <TableCell className="text-xs font-bold">Total Estimated</TableCell>
-                <TableCell className="text-xs text-right font-mono font-bold">TBC</TableCell>
-                <TableCell className="text-xs text-muted-foreground">Subject to final quotations</TableCell>
+                <TableCell className="text-xs font-bold">Quoted / Estimated to Date</TableCell>
+                <TableCell className="text-xs text-right font-mono font-bold">~$85,390</TableCell>
+                <TableCell className="text-xs text-muted-foreground">Not final — excludes blue rock, shipping, internal fitout, laydown yard & other pending quotes</TableCell>
               </TableRow>
             </TableBody>
           </Table>
