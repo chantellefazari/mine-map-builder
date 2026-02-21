@@ -1256,7 +1256,7 @@ export const ImplementationPlanDocument = () => {
                 ["Roller Hire (Barber Hire)", "$450 / day", "Compaction roller — 2 days estimate"],
                 ["Blue Rock (Barber Hire)", "TBC", "Compaction material — quote pending"],
                 ["Concrete Blocks ×14 (DPP)", "$2,575", "1000×1000×100mm, 240kg each, $183.92 inc GST per block. 2 weeks lead + 5 days to complete"],
-                ["Dome Roof Structure", "Purchased", "Dome already ordered — Allshelter"],
+                ["Dome Roof Structure", "Purchased", "Dome already ordered"],
                 ["Full Endwall with Doorway (CASA1200AIMFD)", "$13,570", "Allshelter 12m, container inside mounted, Wind Region A"],
                 ["Partial Endwall (CASA1200AIMPE)", "$8,730", "Allshelter 12m, container inside mounted, Wind Region A"],
                 ["Electric Roller Shutter (RS6060A)", "$22,130", "Allshelter electric roller shutter"],
