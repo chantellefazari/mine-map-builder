@@ -491,6 +491,9 @@ export const ImplementationPlanDocument = () => {
               <p className="text-xs font-medium text-muted-foreground mb-1">Site layout with container and laydown positions</p>
               <img src="/images/warehouse-site-layout.png" alt="Aerial site layout showing warehouse compound and laydown yard" className="rounded-lg border border-border w-full" />
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 max-w-2xl">
             <div>
               <p className="text-xs font-medium text-muted-foreground mb-1">Dome with roller doors</p>
               <img src="/images/dome-roller-doors.png" alt="Dome structure with roller door access" className="rounded-lg border border-border w-full" />
@@ -500,6 +503,7 @@ export const ImplementationPlanDocument = () => {
               <img src="/images/dome-partial-endwalls.png" alt="Dome structure showing partial end wall configuration" className="rounded-lg border border-border w-full" />
             </div>
           </div>
+
 
           {/* 3D Render */}
           <div className="mt-4">
