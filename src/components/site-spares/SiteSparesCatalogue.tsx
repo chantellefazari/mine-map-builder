@@ -19,7 +19,7 @@ import { OrphanedImageRecovery } from "./OrphanedImageRecovery";
 import { DuplicateFinderDialog } from "./DuplicateFinderDialog";
 import { classifyCriticality } from "@/utils/criticalityClassification";
 import { classifyCategory } from "@/utils/categoryClassification";
-import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesToSiteSpares";
+
 import { generateNextSparePartNumber } from "@/utils/autoPartNumbering";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -51,7 +51,7 @@ export const SiteSparesCatalogue = () => {
   const [quickFilter, setQuickFilter] = useState<"all" | "lowStock" | "critical">("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
-  const [importingCritical, setImportingCritical] = useState(false);
+  
   const [selectedSpare, setSelectedSpare] = useState<SiteSpareItem | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [showImageRecovery, setShowImageRecovery] = useState(false);
@@ -276,25 +276,6 @@ export const SiteSparesCatalogue = () => {
     refreshAll();
   };
 
-  const handleImportCriticalSpares = async () => {
-    setImportingCritical(true);
-    try {
-      const result = await importCriticalSparesToSiteSpares();
-      if (result.errors.length > 0) {
-        toast.error(`Import completed with errors: ${result.errors.join(", ")}`);
-      } else if (result.inserted === 0 && result.skipped > 0) {
-        toast.info(`All ${result.skipped} Critical Spares already exist in catalogue`);
-      } else {
-        toast.success(`Imported ${result.inserted} Critical Spares (${result.skipped} already existed)`);
-      }
-      refreshAll();
-    } catch (error) {
-      toast.error("Failed to import Critical Spares");
-      console.error(error);
-    } finally {
-      setImportingCritical(false);
-    }
-  };
 
   const handleImport = async (newSpares: Omit<SiteSpareItem, "id">[]) => {
     const result = await legacy.importSpares(newSpares);

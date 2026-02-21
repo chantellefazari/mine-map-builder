@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Package, AlertTriangle, Upload, Loader2, Database, RefreshCw, ImageIcon } from "lucide-react";
+import { Plus, Search, Package, AlertTriangle, Upload, Loader2, RefreshCw, ImageIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useSiteSpares, type SiteSpareItem } from "@/hooks/useSiteSpares";
 import { AddSpareDialog } from "./AddSpareDialog";
@@ -24,7 +24,7 @@ import { ImportSpareDialog } from "./ImportSpareDialog";
 import { SpareImageCell } from "./SpareImageCell";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
 import { classifyCategory, getCategoryColor, getAllCategories, type SpareCategory } from "@/utils/categoryClassification";
-import { importCriticalSparesToSiteSpares } from "@/utils/importCriticalSparesToSiteSpares";
+
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -63,7 +63,7 @@ export const SiteSparesTable = () => {
   const [filterCriticality, setFilterCriticality] = useState<string>("all");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
-  const [importingCritical, setImportingCritical] = useState(false);
+  
 
   // Derive categories dynamically from actual data (only show categories that have items)
   const availableCategories = [...new Set(spares.map(s => s.category))].filter(Boolean).sort();
@@ -107,26 +107,6 @@ export const SiteSparesTable = () => {
     await addSpare(newSpare);
   };
 
-  const handleImportCriticalSpares = async () => {
-    setImportingCritical(true);
-    try {
-      const result = await importCriticalSparesToSiteSpares();
-      if (result.errors.length > 0) {
-        toast.error(`Import completed with errors: ${result.errors.join(", ")}`);
-      } else if (result.inserted === 0 && result.skipped > 0) {
-        toast.info(`All ${result.skipped} Critical Spares already exist in catalogue`);
-      } else {
-        toast.success(`Imported ${result.inserted} Critical Spares (${result.skipped} already existed)`);
-      }
-      // Refresh the page to show new items
-      window.location.reload();
-    } catch (error) {
-      toast.error("Failed to import Critical Spares");
-      console.error(error);
-    } finally {
-      setImportingCritical(false);
-    }
-  };
 
   const filteredSpares = spares.filter((spare) => {
     const matchesSearch =
@@ -279,16 +259,6 @@ export const SiteSparesTable = () => {
               <SelectItem value="LOW">🟢 LOW</SelectItem>
             </SelectContent>
           </Select>
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="gap-2" 
-            onClick={handleImportCriticalSpares}
-            disabled={importingCritical}
-          >
-            {importingCritical ? <Loader2 className="h-4 w-4 animate-spin" /> : <Database className="h-4 w-4" />}
-            Import Critical Spares
-          </Button>
           <Button 
             size="sm" 
             variant="outline" 

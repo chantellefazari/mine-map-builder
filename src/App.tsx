@@ -14,7 +14,7 @@ const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 const AssetTree = lazy(() => import("./pages/AssetTree"));
 const PMDesign = lazy(() => import("./pages/PMDesign"));
 const StoresWarehouseDesign = lazy(() => import("./pages/StoresWarehouseDesign"));
-const CriticalSpares = lazy(() => import("./pages/CriticalSpares"));
+
 const SiteSparesCatalogue = lazy(() => import("./pages/SiteSparesCatalogue"));
 
 const WorkOrderTemplates = lazy(() => import("./pages/WorkOrderTemplates"));
@@ -59,7 +59,7 @@ const App = () => (
               {/* Tab-protected routes */}
               <Route path="/asset-tree" element={<ProtectedRoute tabKey="asset-tree"><AssetTree /></ProtectedRoute>} />
               <Route path="/pm-design" element={<ProtectedRoute tabKey="pm-design"><PMDesign /></ProtectedRoute>} />
-              <Route path="/critical-spares" element={<ProtectedRoute tabKey="critical-spares"><CriticalSpares /></ProtectedRoute>} />
+              
               <Route path="/site-spares" element={<ProtectedRoute tabKey="site-spares"><SiteSparesCatalogue /></ProtectedRoute>} />
               
               <Route path="/work-order-templates" element={<ProtectedRoute tabKey="work-order-templates"><WorkOrderTemplates /></ProtectedRoute>} />

@@ -53,14 +53,6 @@ const ALL_SECTIONS = [
     tabKey: "stores-warehouse-design",
   },
   {
-    title: "Critical Spares Catalogue",
-    subtitle: "Inventory Strategy",
-    description: "Critical spares with OEM data, lead times, and stock strategies. Items flagged from Site Catalogue.",
-    icon: Package,
-    href: "/critical-spares",
-    tabKey: "critical-spares",
-  },
-  {
     title: "Site Spares Catalogue",
     subtitle: "Full Inventory",
     description: "Complete site spares inventory. Flag items as critical to populate the Critical Spares Catalogue.",
