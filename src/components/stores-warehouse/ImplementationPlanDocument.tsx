@@ -416,28 +416,7 @@ export const ImplementationPlanDocument = () => {
           <Prose>No long-term storage permitted in the central bay.</Prose>
         </SubSection>
 
-        <SubSection id="4.5" title="Container Storage Logic">
-          <Prose>Containers are category-specific:</Prose>
-          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li><span className="font-medium text-foreground">C01-EL</span> — Electrical</li>
-            <li><span className="font-medium text-foreground">C02-IN</span> — Instrumentation &amp; Pneumatics</li>
-            <li><span className="font-medium text-foreground">C03-ME</span> — Mechanical Bulk</li>
-            <li><span className="font-medium text-foreground">C04-MP</span> — Mechanical Precision</li>
-            <li><span className="font-medium text-foreground">C05-CS</span> — Consumables &amp; Fasteners</li>
-          </ul>
-          <Prose><span className="font-medium text-foreground">Access Rules:</span></Prose>
-          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>Entry only via internal slab</li>
-            <li>No external rear access</li>
-            <li>No forklift entry</li>
-            <li>No bulk dumping</li>
-          </ul>
-          <Prose>
-            Each container will be fitted out according to approved stocking plan (refer Container Stocking Scope).
-          </Prose>
-        </SubSection>
-
-        <SubSection id="4.6" title="Laydown Yard Interface">
+        <SubSection id="4.5" title="Laydown Yard Interface">
           <Prose>Large items (motors, pumps, gearboxes, assemblies):</Prose>
           <ol className="text-sm text-muted-foreground space-y-2 list-decimal pl-5">
             <li>Delivered to front of warehouse</li>
@@ -450,7 +429,7 @@ export const ImplementationPlanDocument = () => {
           <Prose>Heavy assemblies do not enter warehouse.</Prose>
         </SubSection>
 
-        <SubSection id="4.7" title="Operational Controls">
+        <SubSection id="4.6" title="Operational Controls">
           <Prose>This warehouse structure enforces:</Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
             <li>Controlled access through single entry point</li>
@@ -463,7 +442,7 @@ export const ImplementationPlanDocument = () => {
           <Prose>Delivery → Goods In Zone → Sorting → Container / Laydown → Controlled Issue</Prose>
         </SubSection>
 
-        <SubSection id="4.8" title="Design Intent">
+        <SubSection id="4.7" title="Design Intent">
           <Prose>
             This is not simply a container arrangement. It is a controlled logistics compound designed to:
           </Prose>
