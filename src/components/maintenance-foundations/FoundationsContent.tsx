@@ -87,29 +87,46 @@ export const FoundationsContent = () => {
     if (!el) return;
     setDownloading(true);
     try {
-      const canvas = await html2canvas(el, {
+      // A4 at 96dpi = 794 x 1123px; 15mm margins each side = ~57px
+      const A4_PX_W = 794;
+      const MARGIN_PX = 57;
+      const CONTENT_W = A4_PX_W - MARGIN_PX * 2; // ~680px
+
+      // Clone content into a fixed-width offscreen container for accurate A4 rendering
+      const wrapper = document.createElement("div");
+      wrapper.style.cssText = `position:absolute;left:-9999px;top:0;width:${CONTENT_W}px;background:#fff;padding:0;`;
+      wrapper.innerHTML = el.innerHTML;
+      document.body.appendChild(wrapper);
+
+      const canvas = await html2canvas(wrapper, {
         scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff",
         logging: false,
+        width: CONTENT_W,
       });
+
+      document.body.removeChild(wrapper);
+
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const A4_W = 210;
       const A4_H = 297;
-      const imgData = canvas.toDataURL("image/jpeg", 0.9);
-      const imgRatio = canvas.height / canvas.width;
-      const totalImgH = A4_W * imgRatio;
-      let heightLeft = totalImgH;
-      let position = 0;
+      const MARGIN_MM = 15;
+      const printW = A4_W - MARGIN_MM * 2; // 180mm
+      const printH = (canvas.height / canvas.width) * printW;
 
-      pdf.addImage(imgData, "JPEG", 0, position, A4_W, totalImgH);
-      heightLeft -= A4_H;
+      let heightLeft = printH;
+      let position = MARGIN_MM;
+      const pageContentH = A4_H - MARGIN_MM * 2; // 267mm
+
+      pdf.addImage(canvas.toDataURL("image/jpeg", 0.9), "JPEG", MARGIN_MM, position, printW, printH);
+      heightLeft -= pageContentH;
 
       while (heightLeft > 0) {
-        position -= A4_H;
         pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, position, A4_W, totalImgH);
-        heightLeft -= A4_H;
+        position -= pageContentH;
+        pdf.addImage(canvas.toDataURL("image/jpeg", 0.9), "JPEG", MARGIN_MM, position, printW, printH);
+        heightLeft -= pageContentH;
       }
 
       const safeName = (TAB_LABELS[activeTab] || "Section").replace(/[^a-zA-Z0-9]/g, "-");
