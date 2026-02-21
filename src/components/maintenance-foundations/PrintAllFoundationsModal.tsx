@@ -165,6 +165,21 @@ export const PrintAllFoundationsModal: React.FC<PrintAllFoundationsModalProps> =
               display: block;
             }
 
+            /* Preserve inline backgrounds & gradients on tag mockups */
+            [style*="background"] {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              color-adjust: exact !important;
+            }
+
+            /* Force tag mockup gradient backgrounds to render */
+            [style*="linear-gradient"] {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              color-adjust: exact !important;
+              background: inherit !important;
+            }
+
             h2, h3, h4 {
               margin-bottom: 4px;
               font-weight: 600;
