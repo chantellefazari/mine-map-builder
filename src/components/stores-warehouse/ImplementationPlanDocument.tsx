@@ -320,18 +320,187 @@ export const ImplementationPlanDocument = () => {
       {/* ============================================================ */}
       <Section number="4" title="Warehouse Structural Design" icon={Building2}>
         <Prose>
-          The warehouse compound is designed as a U-shape configuration covered by a barrel-vault dome roof, providing weather protection for the internal courtyard while maintaining natural ventilation.
+          The Central Stores Warehouse has been designed as a controlled, enclosed compound to support disciplined stock control, efficient material flow, and long-term operational durability.
         </Prose>
+        <Prose>
+          The layout follows a U-shaped container configuration enclosed by a dome structure with partial end walls and a front roller door access.
+        </Prose>
+        <Prose>The design prioritises:</Prose>
         <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-          <li><span className="font-medium text-foreground">Dome Specification:</span> 12m × 9.5m barrel-vault dome roof (DomeShelter or equivalent), galvanised steel frame, UV-stabilised PVC fabric, rated for Region B wind loading.</li>
-          <li><span className="font-medium text-foreground">Roller Door Check-In Zone:</span> Primary receiving point at the compound entrance with a roller door for controlled access. All deliveries processed at this point before entering storage zones.</li>
-          <li><span className="font-medium text-foreground">Container Layout:</span> Five containers arranged in a U-shape — C01-EL, C02-IN, C04-MP, and C05-CS (all 20ft) flanking the 40ft C03-ME base container. The 40ft container is flush-aligned with the side containers.</li>
-          <li><span className="font-medium text-foreground">Slab Layout:</span> Individual slabs per container with a central courtyard slab (broom-finished concrete) for the receiving and staging area.</li>
-          <li><span className="font-medium text-foreground">Pedestrian Flow:</span> Marked pedestrian walkway from the compound entrance through the courtyard. No forklift access within the dome — all container items are ≤15 kg manual handling.</li>
-          <li><span className="font-medium text-foreground">Laydown Yard:</span> Adjacent to the dome compound, extending ~35m total depth. Includes forklift access lane, delivery zone, and structured bays LD-A through LD-F with designated category allocations.</li>
+          <li>Controlled goods-in / goods-out movement</li>
+          <li>No forklift traffic inside containers</li>
+          <li>Clear separation between delivery zone, sorting, and storage</li>
+          <li>Clean pedestrian workflow</li>
+          <li>Long-term dust and moisture protection</li>
         </ul>
-        <ImagePlaceholder label="Compound layout drawing / 3D render" />
-        <ImagePlaceholder label="Dome roof specification sheet" />
+
+        <SubSection id="4.1" title="Structural Configuration">
+          <Prose>The warehouse consists of:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>1 × 40ft container (rear wall — Mechanical bulk storage)</li>
+            <li>4 × 20ft containers (side walls — Electrical, Instrumentation, Mechanical Precision, Consumables)</li>
+            <li>Dome roof structure spanning the U-shaped configuration</li>
+            <li>Partial end walls to reduce dust and weather exposure</li>
+            <li>Front roller door for controlled access</li>
+          </ul>
+          <Prose>
+            This structure creates a fully enclosed central working bay while keeping containers as the primary storage zones.
+          </Prose>
+          <Prose>
+            The containers remain structurally independent and are positioned on engineered concrete plinth blocks (refer Civil Section).
+          </Prose>
+        </SubSection>
+
+        <SubSection id="4.2" title="Access & Material Flow Logic">
+          <Prose><span className="font-medium text-foreground">Roller Door Operation</span></Prose>
+          <Prose>
+            The front roller door will typically operate at half-height during standard receiving operations.
+          </Prose>
+          <Prose>Immediately inside the roller door:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>A mobile bench on wheels will function as the front desk booking station.</li>
+            <li>This bench can be rolled aside when pallet deliveries are received.</li>
+          </ul>
+          <Prose>This creates flexibility between:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Administrative control mode</li>
+            <li>Bulk receiving mode</li>
+          </ul>
+        </SubSection>
+
+        <SubSection id="4.3" title="Goods In Workflow">
+          <Prose>
+            All deliveries arrive at the designated receiving zone (red-marked area on attached layout).
+          </Prose>
+          <Prose><span className="font-medium text-foreground">Rules:</span></Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>No stock is to remain in the receiving zone.</li>
+            <li>All parts must move immediately through processing.</li>
+          </ul>
+          <Prose><span className="font-medium text-foreground">Process flow:</span></Prose>
+          <ol className="text-sm text-muted-foreground space-y-2 list-decimal pl-5">
+            <li>Pallet delivered to receiving zone</li>
+            <li>Pallet jack used to move pallet inside central bay</li>
+            <li>Items placed at:
+              <ul className="list-disc pl-5 mt-1 space-y-1">
+                <li>Sorting Parts Bench (for small parts), or</li>
+                <li>Directed to Laydown Yard (for large items)</li>
+              </ul>
+            </li>
+          </ol>
+          <Prose>
+            No forklifts enter the warehouse structure. Forklifts remain external and deliver to the front of the roller door only.
+          </Prose>
+        </SubSection>
+
+        <SubSection id="4.4" title="Internal Workflow Design">
+          <Prose>Inside the central working bay:</Prose>
+          <Prose><span className="font-medium text-foreground">Sorting Parts Bench</span></Prose>
+          <Prose>Used for:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Scanning stock in</li>
+            <li>Labelling</li>
+            <li>Quality checks</li>
+            <li>Allocating bin locations</li>
+          </ul>
+          <Prose>Once processed:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Small parts move directly into designated containers (C01–C05)</li>
+            <li>No staging inside the main floor area</li>
+          </ul>
+          <Prose>The central floor remains clear for:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Pallet jack movement</li>
+            <li>Temporary handling only</li>
+          </ul>
+          <Prose>No long-term storage permitted in the central bay.</Prose>
+        </SubSection>
+
+        <SubSection id="4.5" title="Container Storage Logic">
+          <Prose>Containers are category-specific:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li><span className="font-medium text-foreground">C01-EL</span> — Electrical</li>
+            <li><span className="font-medium text-foreground">C02-IN</span> — Instrumentation &amp; Pneumatics</li>
+            <li><span className="font-medium text-foreground">C03-ME</span> — Mechanical Bulk</li>
+            <li><span className="font-medium text-foreground">C04-MP</span> — Mechanical Precision</li>
+            <li><span className="font-medium text-foreground">C05-CS</span> — Consumables &amp; Fasteners</li>
+          </ul>
+          <Prose><span className="font-medium text-foreground">Access Rules:</span></Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Entry only via internal slab</li>
+            <li>No external rear access</li>
+            <li>No forklift entry</li>
+            <li>No bulk dumping</li>
+          </ul>
+          <Prose>
+            Each container will be fitted out according to approved stocking plan (refer Container Stocking Scope).
+          </Prose>
+        </SubSection>
+
+        <SubSection id="4.6" title="Laydown Yard Interface">
+          <Prose>Large items (motors, pumps, gearboxes, assemblies):</Prose>
+          <ol className="text-sm text-muted-foreground space-y-2 list-decimal pl-5">
+            <li>Delivered to front of warehouse</li>
+            <li>Logged in system</li>
+            <li>Shrink wrapped</li>
+            <li>Labelled</li>
+            <li>Allocated to LD-coded bay (LD-A, LD-B etc.)</li>
+            <li>Moved via forklift to designated laydown area</li>
+          </ol>
+          <Prose>Heavy assemblies do not enter warehouse.</Prose>
+        </SubSection>
+
+        <SubSection id="4.7" title="Operational Controls">
+          <Prose>This warehouse structure enforces:</Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Controlled access through single entry point</li>
+            <li>Clean separation between receiving and storage</li>
+            <li>No uncontrolled forklift movement</li>
+            <li>No direct dumping of parts into containers</li>
+            <li>No loose floor storage</li>
+          </ul>
+          <Prose><span className="font-medium text-foreground">All material movement flows:</span></Prose>
+          <Prose>Delivery → Goods In Zone → Sorting → Container / Laydown → Controlled Issue</Prose>
+        </SubSection>
+
+        <SubSection id="4.8" title="Design Intent">
+          <Prose>
+            This is not simply a container arrangement. It is a controlled logistics compound designed to:
+          </Prose>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+            <li>Reduce part loss</li>
+            <li>Eliminate search time</li>
+            <li>Improve stock accuracy</li>
+            <li>Protect sensitive components</li>
+            <li>Prevent contamination</li>
+            <li>Improve safety</li>
+            <li>Enable full system integration with Minesite AI</li>
+          </ul>
+          <Prose>The warehouse enforces discipline through layout — not policy alone.</Prose>
+        </SubSection>
+
+        {/* Attachments */}
+        <div className="space-y-4 mt-4">
+          <h3 className="text-base font-semibold text-foreground">Attachments for This Section</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Internal warehouse layout</p>
+              <img src="/images/warehouse-internal-layout.png" alt="Warehouse internal layout showing goods in zone, sorting bench, and container positions" className="rounded-lg border border-border w-full" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Site layout with container and laydown positions</p>
+              <img src="/images/warehouse-site-layout.png" alt="Aerial site layout showing warehouse compound and laydown yard" className="rounded-lg border border-border w-full" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Dome with roller doors</p>
+              <img src="/images/dome-roller-doors.png" alt="Dome structure with roller door access" className="rounded-lg border border-border w-full" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Dome with partial end walls</p>
+              <img src="/images/dome-partial-endwalls.png" alt="Dome structure showing partial end wall configuration" className="rounded-lg border border-border w-full" />
+            </div>
+          </div>
+        </div>
       </Section>
 
       <Separator />
