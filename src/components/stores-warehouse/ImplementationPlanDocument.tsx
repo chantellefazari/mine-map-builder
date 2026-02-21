@@ -607,7 +607,7 @@ export const ImplementationPlanDocument = () => {
           <Prose>
             Reserved for heavy assemblies (&gt;15 kg), oversized items, and critical overflow. LD-A and LD-B are dome-sheltered for critical overflow (green coding). Remaining zones are category-specific: LD-C (Pumps), LD-D (Matec), LD-E (Electrical), and LD-F (Mechanical). All laydown items require weatherproofing (shrink-wrap or tarpaulin) and visible tagging.
           </Prose>
-          <ImagePlaceholder label="Laydown yard zone map" />
+          
         </SubSection>
 
         {/* Exclusions */}
