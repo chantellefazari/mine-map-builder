@@ -1149,11 +1149,12 @@ export const ImplementationPlanDocument = () => {
             },
             {
               stage: "4",
-              title: "Concrete Slab & Block Pours",
+              title: "Concrete Slab & Block Placement",
               deliverables: [
                 "Slab formwork and reinforcement placed",
-                "Concrete blocks cast at container corner casting positions",
                 "Main slab poured (125mm thickness, graded to fall away from container openings)",
+                "Concrete blocks purchased and delivered to site",
+                "Blocks positioned at container corner casting and structural load points",
                 "Curing period completed — slab ready for loading",
               ],
             },
