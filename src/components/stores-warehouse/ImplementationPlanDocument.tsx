@@ -1173,7 +1173,7 @@ export const ImplementationPlanDocument = () => {
               stage: "6",
               title: "Dome Installation & Enclosure",
               deliverables: [
-                "Dome frame erected spanning U-shaped container layout",
+                "12m × 9.5m dome roof structure installed over the container compound",
                 "Fabric/sheeting installed over dome frame",
                 "Partial end walls installed (rear and sides)",
                 "Full front end wall constructed with electric roller door",
