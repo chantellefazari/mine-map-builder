@@ -1253,8 +1253,8 @@ export const ImplementationPlanDocument = () => {
             <TableBody>
               {[
                 ["Civil & Earthworks (MMS day rate)", "~$12,416", "MMS plant & operators — 15hr avg across 900m³ haulage"],
-                ["Roller Hire (Barer Hire)", "~$900", "Compaction roller — 2 days @ $450/day"],
-                ["Blue Rock (Barer Hire)", "TBC", "Compaction material — quote pending"],
+                ["Roller Hire (Barber Hire)", "$450 / day", "Compaction roller — 2 days estimate"],
+                ["Blue Rock (Barber Hire)", "TBC", "Compaction material — quote pending"],
                 ["Dome Roof Structure", "Purchased", "Dome already ordered — Allshelter"],
                 ["Full Endwall with Doorway (CASA1200AIMFD)", "$13,570", "Allshelter 12m, container inside mounted, Wind Region A"],
                 ["Partial Endwall (CASA1200AIMPE)", "$8,730", "Allshelter 12m, container inside mounted, Wind Region A"],
