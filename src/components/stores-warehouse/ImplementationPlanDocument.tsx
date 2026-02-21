@@ -53,7 +53,7 @@ const Section = ({
         {number}. {title}
       </h2>
     </div>
-    <div className="pl-12 space-y-4">{children}</div>
+    <div className="space-y-4">{children}</div>
   </div>
 );
 
