@@ -123,11 +123,11 @@ export const ImplementationPlanDocument = () => {
             </div>
             <div>
               <span className="text-muted-foreground">Status</span>
-              <p className="font-medium text-foreground">Draft — For Review</p>
+              <p className="font-medium text-foreground">Draft, For Review</p>
             </div>
             <div>
               <span className="text-muted-foreground">Classification</span>
-              <p className="font-medium text-foreground">Internal — Operational</p>
+              <p className="font-medium text-foreground">Internal, Operational</p>
             </div>
           </div>
         </CardContent>
@@ -157,7 +157,7 @@ export const ImplementationPlanDocument = () => {
           This plan defines:
         </Prose>
         <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-          <li>The agreed storage model (containers C01–C05 + LD laydown)</li>
+          <li>The agreed storage model (containers C01 to C05 + LD laydown)</li>
           <li>The location coding structure (container / bay / bin logic)</li>
           <li>Stock control procedure (receiving, issuing, audits)</li>
           <li>The implementation sequence and dependencies (relocations → earthworks → slab → placement → fit-out → controls)</li>
@@ -225,7 +225,7 @@ export const ImplementationPlanDocument = () => {
           <Prose>Positioning the stores compound in this footprint:</Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
             <li>Centralises stock control into one controlled entry point</li>
-            <li>Supports container zoning structure (C01–C05 + LD)</li>
+            <li>Supports container zoning structure (C01 to C05 + LD)</li>
             <li>Improves response time for breakdown and maintenance activities</li>
             <li>Reduces lost time searching for parts</li>
             <li>Creates clear traffic flow around the workshop</li>
@@ -269,7 +269,7 @@ export const ImplementationPlanDocument = () => {
 
         <SubSection id="3.4" title="Water Management">
           <Prose>
-            The selected area currently shows uncontrolled surface water movement and erosion toward the dam during wet season events. There is no dedicated drainage design — instead, the earthworks scope includes regrading the area so that surface water naturally sheds to the right of the compound and flows into the existing dam. This gives the water somewhere to go without requiring additional drainage infrastructure.
+            The selected area currently shows uncontrolled surface water movement and erosion toward the dam during wet season events. There is no dedicated drainage design. Instead, the earthworks scope includes regrading the area so that surface water naturally sheds to the right of the compound and flows into the existing dam. This gives the water somewhere to go without requiring additional drainage infrastructure.
           </Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
             <li>Earthworks regraded to establish consistent fall away from container pads toward the dam</li>
@@ -278,7 +278,7 @@ export const ImplementationPlanDocument = () => {
             <li>Slab graded to fall away from container openings (refer Section 4.5)</li>
           </ul>
           <Prose>
-            <span className="font-medium text-foreground">Objective:</span> No standing water within the compound footprint — water sheds naturally into the dam via regraded earthworks.
+            <span className="font-medium text-foreground">Objective:</span> No standing water within the compound footprint. Water sheds naturally into the dam via regraded earthworks.
           </Prose>
         </SubSection>
 
@@ -346,8 +346,8 @@ export const ImplementationPlanDocument = () => {
         <SubSection id="4.1" title="Structural Configuration">
           <Prose>The warehouse consists of:</Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>1 × 40ft container (rear wall — Mechanical bulk storage)</li>
-            <li>4 × 20ft containers (side walls — Electrical, Instrumentation, Mechanical Precision, Consumables)</li>
+             <li>1 × 40ft container (rear wall, Mechanical bulk storage)</li>
+             <li>4 × 20ft containers (side walls: Electrical, Instrumentation, Mechanical Precision, Consumables)</li>
             <li>Dome roof structure spanning the U-shaped configuration</li>
             <li>Partial end walls to reduce dust and weather exposure</li>
             <li>Front roller door for controlled access</li>
@@ -485,7 +485,7 @@ export const ImplementationPlanDocument = () => {
             <li>Improve safety</li>
             <li>Enable full system integration with Minesite AI</li>
           </ul>
-          <Prose>The warehouse enforces discipline through layout — not policy alone.</Prose>
+          <Prose>The warehouse enforces discipline through layout, not policy alone.</Prose>
         </SubSection>
 
         {/* Attachments */}
@@ -515,7 +515,7 @@ export const ImplementationPlanDocument = () => {
 
           {/* Compound Layout Diagram */}
           <div className="mt-4">
-            <p className="text-xs font-medium text-muted-foreground mb-1">Warehouse compound layout — container positions, dome area & laydown yard</p>
+            <p className="text-xs font-medium text-muted-foreground mb-1">Warehouse compound layout: container positions, dome area &amp; laydown yard</p>
             <img src="/images/warehouse-compound-layout.png" alt="Warehouse compound layout showing U-shaped container configuration C01-C05, dome area, and laydown yard LD-A through LD-F" className="rounded-lg border border-border w-full" />
           </div>
 
@@ -528,7 +528,7 @@ export const ImplementationPlanDocument = () => {
 
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 mt-3">
             <p className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">Interactive 3D Model Available — </span>
+              <span className="font-medium text-foreground">Interactive 3D Model Available: </span>
               A fully interactive 3D version of this warehouse design is available within the application. 
               Contact the project team to request access to the live 3D visualisation, which includes container interiors, 
               roller door operation, and laydown yard navigation.
@@ -560,7 +560,7 @@ export const ImplementationPlanDocument = () => {
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded bg-yellow-500/20 flex items-center justify-center"><span className="font-bold text-xs text-yellow-600">1</span></div>
                 <Zap className="w-4 h-4 text-yellow-600" />
-                <span className="font-semibold text-sm text-foreground">C01-EL — Electrical</span>
+                <span className="font-semibold text-sm text-foreground">C01-EL: Electrical</span>
                 <span className="text-[10px] text-muted-foreground ml-auto">20ft Modified · Dust-controlled airflow</span>
               </div>
               <div className="grid gap-0.5 sm:grid-cols-2 lg:grid-cols-3 text-xs text-muted-foreground">
@@ -577,7 +577,7 @@ export const ImplementationPlanDocument = () => {
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded bg-purple-500/20 flex items-center justify-center"><span className="font-bold text-xs text-purple-600">2</span></div>
                 <Gauge className="w-4 h-4 text-purple-600" />
-                <span className="font-semibold text-sm text-foreground">C02-IN — Instrumentation &amp; Pneumatics</span>
+                <span className="font-semibold text-sm text-foreground">C02-IN: Instrumentation &amp; Pneumatics</span>
                 <span className="text-[10px] text-muted-foreground ml-auto">20ft Modified · Clean/fragile storage</span>
               </div>
               <div className="grid gap-0.5 sm:grid-cols-2 lg:grid-cols-3 text-xs text-muted-foreground">
@@ -594,13 +594,13 @@ export const ImplementationPlanDocument = () => {
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded bg-blue-500/20 flex items-center justify-center"><span className="font-bold text-xs text-blue-600">3</span></div>
                 <Wrench className="w-4 h-4 text-blue-600" />
-                <span className="font-semibold text-sm text-foreground">C03-ME — Mechanical</span>
+                <span className="font-semibold text-sm text-foreground">C03-ME: Mechanical</span>
                 <span className="text-[10px] text-muted-foreground ml-auto">40ft Standard · High-density bins</span>
               </div>
               {[
                 { name: "Wear Parts & Liners", items: ["Small wear plates (<15 kg)", "Chute liners (rubber, ceramic, <15 kg)"] },
                 { name: "Conveyor & Drive", items: ["Rollers", "Idlers", "Pulleys", "Scraper blades", "Belt cleaners", "Belts (V-belt, drive belt)", "Belt fasteners", "Sprockets", "Chains"] },
-                { name: "Valves, Pipe & Fittings", items: ["Valves (ball, butterfly, knife gate, check — <DN150)", "Pipe fittings", "Flanges", "Elbows", "Tees", "Reducers", "Nipples", "Hoses", "Couplings (heavy)"] },
+                { name: "Valves, Pipe & Fittings", items: ["Valves (ball, butterfly, knife gate, check, under DN150)", "Pipe fittings", "Flanges", "Elbows", "Tees", "Reducers", "Nipples", "Hoses", "Couplings (heavy)"] },
                 { name: "Pump Spares", items: ["Pump seal kits (application-specific)", "Impellers (small)", "Wear rings", "Shaft sleeves", "Gland packing"] }
               ].map((subCat, si) => (
                 <div key={si}>
@@ -621,7 +621,7 @@ export const ImplementationPlanDocument = () => {
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded bg-cyan-500/20 flex items-center justify-center"><span className="font-bold text-xs text-cyan-600">4</span></div>
                 <Cog className="w-4 h-4 text-cyan-600" />
-                <span className="font-semibold text-sm text-foreground">C04-MP — Mechanical Precision</span>
+                <span className="font-semibold text-sm text-foreground">C04-MP: Mechanical Precision</span>
                 <span className="text-[10px] text-muted-foreground ml-auto">20ft Standard · Anti-contamination</span>
               </div>
               <div className="grid gap-0.5 sm:grid-cols-2 lg:grid-cols-3 text-xs text-muted-foreground">
@@ -638,7 +638,7 @@ export const ImplementationPlanDocument = () => {
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded bg-slate-500/20 flex items-center justify-center"><span className="font-bold text-xs text-slate-600">5</span></div>
                 <Hammer className="w-4 h-4 text-slate-600" />
-                <span className="font-semibold text-sm text-foreground">C05-CS — Consumables &amp; Supplies</span>
+                <span className="font-semibold text-sm text-foreground">C05-CS: Consumables &amp; Supplies</span>
                 <span className="text-[10px] text-muted-foreground ml-auto">20ft Standard · Kanban bins</span>
               </div>
               {[
@@ -660,7 +660,7 @@ export const ImplementationPlanDocument = () => {
           </Card>
         </div>
 
-        <SubSection id="5.6" title="LD — Laydown Yard">
+        <SubSection id="5.6" title="LD: Laydown Yard">
           <Prose>
             Reserved for heavy assemblies (&gt;15 kg), oversized items, and critical overflow. LD-A and LD-B are dome-sheltered for critical overflow (green coding). Remaining zones are category-specific: LD-C (Pumps), LD-D (Matec), LD-E (Electrical), and LD-F (Mechanical). All laydown items require weatherproofing (shrink-wrap or tarpaulin) and visible tagging.
           </Prose>
@@ -708,14 +708,14 @@ export const ImplementationPlanDocument = () => {
             </TableHeader>
             <TableBody>
               {[
-                { zone: "C01-EL", type: "20ft", skus: 441, bins: 274, note: "ESD panels hold 20–40 small SKUs per slot (fuses, lugs, ferrules)" },
-                { zone: "C02-IN", type: "20ft", skus: 345, bins: 273, note: "Drawer cabinets hold ~15 fitting types per drawer" },
-                { zone: "C03-ME", type: "40ft", skus: 533, bins: 540, note: "Near 1:1 — largest container at 12m length" },
-                { zone: "C04-MP", type: "20ft", skus: 226, bins: 302, note: "Best headroom — 25% growth buffer" },
-                { zone: "C05-CS", type: "20ft", skus: 431, bins: 338, note: "Bin walls consolidate 3–5 fastener sizes per slot" },
-                { zone: "LD", type: "Yard", skus: 112, bins: null, note: "6 open bays — forklift-accessible, no bin limit" },
-                { zone: "Wurth", type: "Cabinet", skus: 20, bins: null, note: "Dedicated Wurth mobile cabinet" },
-                { zone: "Flammable", type: "Cabinet", skus: 1, bins: null, note: "AS1940-compliant cabinet" },
+                 { zone: "C01-EL", type: "20ft", skus: 441, bins: 274, note: "ESD panels hold 20 to 40 small SKUs per slot (fuses, lugs, ferrules)" },
+                 { zone: "C02-IN", type: "20ft", skus: 345, bins: 273, note: "Drawer cabinets hold approx. 15 fitting types per drawer" },
+                 { zone: "C03-ME", type: "40ft", skus: 533, bins: 540, note: "Near 1:1, largest container at 12m length" },
+                 { zone: "C04-MP", type: "20ft", skus: 226, bins: 302, note: "Best headroom, 25% growth buffer" },
+                 { zone: "C05-CS", type: "20ft", skus: 431, bins: 338, note: "Bin walls consolidate 3 to 5 fastener sizes per slot" },
+                 { zone: "LD", type: "Yard", skus: 112, bins: null, note: "6 open bays, forklift-accessible, no bin limit" },
+                 { zone: "Wurth", type: "Cabinet", skus: 20, bins: null, note: "Dedicated Wurth mobile cabinet" },
+                 { zone: "Flammable", type: "Cabinet", skus: 1, bins: null, note: "AS1940-compliant cabinet" },
               ].map((row) => {
                 const ratio = row.bins ? (row.skus / row.bins).toFixed(2) : "—";
                 return (
@@ -746,7 +746,7 @@ export const ImplementationPlanDocument = () => {
               <span className="font-medium text-foreground">Bin Positions</span> = the total number of physical compartments (shelf bins, drawer slots, panel slots) installed inside each container based on the furniture fitout.
             </p>
             <p className="text-muted-foreground text-xs">
-              <span className="font-medium text-foreground">Items/Bin</span> = SKU count ÷ bin positions. A ratio above 1.0 does not mean overcrowded — many storage types are specifically designed to hold multiple SKUs per slot. For example, ESD panels hold 20–40 small electrical SKUs per slot, drawer cabinets hold ~15 fitting types per drawer, and Kanban bin walls consolidate 3–5 fastener sizes per slot.
+              <span className="font-medium text-foreground">Items/Bin</span> = SKU count ÷ bin positions. A ratio above 1.0 does not mean overcrowded. Many storage types are specifically designed to hold multiple SKUs per slot. For example, ESD panels hold 20 to 40 small electrical SKUs per slot, drawer cabinets hold approx. 15 fitting types per drawer, and Kanban bin walls consolidate 3 to 5 fastener sizes per slot.
             </p>
             <p className="text-muted-foreground text-xs">
               A ratio above <span className="font-medium text-foreground">3.0</span> would indicate genuine overcrowding requiring review. No zones currently exceed this threshold.
@@ -765,12 +765,12 @@ export const ImplementationPlanDocument = () => {
             <CardContent className="py-3 px-4 space-y-2">
               <div className="flex items-center gap-2">
                 <Zap className="w-4 h-4 text-yellow-600" />
-                <span className="font-semibold text-sm text-foreground">C01-EL — Electrical (20ft)</span>
-              </div>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <p><span className="font-medium text-foreground">Rear Long Wall (5.9m):</span> 4–5 steel shelving bays (900mm) — mid-size electrical items</p>
-                <p><span className="font-medium text-foreground">Opposite Long Wall — Left of door:</span> ESD bin wall</p>
-                <p><span className="font-medium text-foreground">Opposite Long Wall — Right of door:</span> Reinforced VSD shelving</p>
+                 <span className="font-semibold text-sm text-foreground">C01-EL: Electrical (20ft)</span>
+               </div>
+               <div className="text-xs text-muted-foreground space-y-1">
+                 <p><span className="font-medium text-foreground">Rear Long Wall (5.9m):</span> 4 to 5 steel shelving bays (900mm), mid-size electrical items</p>
+                 <p><span className="font-medium text-foreground">Opposite Long Wall, Left of door:</span> ESD bin wall</p>
+                 <p><span className="font-medium text-foreground">Opposite Long Wall, Right of door:</span> Reinforced VSD shelving</p>
                 <p><span className="font-medium text-foreground">End Wall 1:</span> Sealed cabinet for PLCs, anti-static mats inside</p>
                 <p><span className="font-medium text-foreground">End Wall 2 (airflow end):</span> Conduit brackets near ceiling, panel fan/filter vertical rack</p>
               </div>
@@ -790,12 +790,12 @@ export const ImplementationPlanDocument = () => {
             <CardContent className="py-3 px-4 space-y-2">
               <div className="flex items-center gap-2">
                 <Gauge className="w-4 h-4 text-purple-600" />
-                <span className="font-semibold text-sm text-foreground">C02-IN — Instrumentation (20ft)</span>
-              </div>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <p><span className="font-medium text-foreground">Rear Long Wall:</span> 4 shelving bays foam-lined</p>
-                <p><span className="font-medium text-foreground">Opposite Long Wall — Left of door:</span> Drawer cabinets (fittings, Swagelok)</p>
-                <p><span className="font-medium text-foreground">Opposite Long Wall — Right of door:</span> Shelving for boxed instruments</p>
+                 <span className="font-semibold text-sm text-foreground">C02-IN: Instrumentation (20ft)</span>
+               </div>
+               <div className="text-xs text-muted-foreground space-y-1">
+                 <p><span className="font-medium text-foreground">Rear Long Wall:</span> 4 shelving bays foam-lined</p>
+                 <p><span className="font-medium text-foreground">Opposite Long Wall, Left of door:</span> Drawer cabinets (fittings, Swagelok)</p>
+                 <p><span className="font-medium text-foreground">Opposite Long Wall, Right of door:</span> Shelving for boxed instruments</p>
                 <p><span className="font-medium text-foreground">End Wall:</span> Tubing reel rack vertical, fragile zone signage</p>
               </div>
               <div className="border-t border-border/50 pt-2 mt-1">
@@ -814,15 +814,15 @@ export const ImplementationPlanDocument = () => {
             <CardContent className="py-3 px-4 space-y-2">
               <div className="flex items-center gap-2">
                 <Wrench className="w-4 h-4 text-blue-600" />
-                <span className="font-semibold text-sm text-foreground">C03-ME — 40ft Mechanical (Door on long side)</span>
-              </div>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <p><span className="font-medium text-foreground">Rear Long Wall:</span> 8–10 heavy-duty bays</p>
-                <p><span className="font-medium text-foreground">Opposite Long Wall — Left of door:</span> 4 heavy-duty bays</p>
-                <p><span className="font-medium text-foreground">Opposite Long Wall — Right of door:</span> 4 heavy-duty bays</p>
-                <p><span className="font-medium text-foreground">End Wall 1:</span> V-belt rack (fabricated)</p>
-                <p><span className="font-medium text-foreground">End Wall 2:</span> Long material rack (conduit, flat bar)</p>
-                <p className="mt-1"><span className="font-medium text-foreground">Total heavy-duty bays:</span> 14–18 depending on spacing. No pallet racks. No forklifts. All manual ≤15 kg.</p>
+                 <span className="font-semibold text-sm text-foreground">C03-ME: 40ft Mechanical (Door on long side)</span>
+               </div>
+               <div className="text-xs text-muted-foreground space-y-1">
+                 <p><span className="font-medium text-foreground">Rear Long Wall:</span> 8 to 10 heavy-duty bays</p>
+                 <p><span className="font-medium text-foreground">Opposite Long Wall, Left of door:</span> 4 heavy-duty bays</p>
+                 <p><span className="font-medium text-foreground">Opposite Long Wall, Right of door:</span> 4 heavy-duty bays</p>
+                 <p><span className="font-medium text-foreground">End Wall 1:</span> V-belt rack (fabricated)</p>
+                 <p><span className="font-medium text-foreground">End Wall 2:</span> Long material rack (conduit, flat bar)</p>
+                 <p className="mt-1"><span className="font-medium text-foreground">Total heavy-duty bays:</span> 14 to 18 depending on spacing. No pallet racks. No forklifts. All manual ≤15 kg.</p>
               </div>
               <div className="border-t border-border/50 pt-2 mt-1">
                 <p className="text-[10px] font-medium text-foreground uppercase tracking-wide mb-1">Required</p>
@@ -840,13 +840,13 @@ export const ImplementationPlanDocument = () => {
             <CardContent className="py-3 px-4 space-y-2">
               <div className="flex items-center gap-2">
                 <Cog className="w-4 h-4 text-cyan-600" />
-                <span className="font-semibold text-sm text-foreground">C04-MP — Mechanical Precision (20ft)</span>
-              </div>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <p><span className="font-medium text-foreground">Rear Long Wall:</span> 4 shelving bays</p>
-                <p><span className="font-medium text-foreground">Opposite Long Wall — Left of door:</span> Seal drawer cabinets</p>
-                <p><span className="font-medium text-foreground">Opposite Long Wall — Right of door:</span> Flat gasket shelves</p>
-                <p><span className="font-medium text-foreground">End Wall:</span> Small bin trays for circlips &amp; shims</p>
+                 <span className="font-semibold text-sm text-foreground">C04-MP: Mechanical Precision (20ft)</span>
+               </div>
+               <div className="text-xs text-muted-foreground space-y-1">
+                 <p><span className="font-medium text-foreground">Rear Long Wall:</span> 4 shelving bays</p>
+                 <p><span className="font-medium text-foreground">Opposite Long Wall, Left of door:</span> Seal drawer cabinets</p>
+                 <p><span className="font-medium text-foreground">Opposite Long Wall, Right of door:</span> Flat gasket shelves</p>
+                 <p><span className="font-medium text-foreground">End Wall:</span> Small bin trays for circlips &amp; shims</p>
               </div>
               <div className="border-t border-border/50 pt-2 mt-1">
                 <p className="text-[10px] font-medium text-foreground uppercase tracking-wide mb-1">Required</p>
@@ -864,13 +864,13 @@ export const ImplementationPlanDocument = () => {
             <CardContent className="py-3 px-4 space-y-2">
               <div className="flex items-center gap-2">
                 <Hammer className="w-4 h-4 text-slate-600" />
-                <span className="font-semibold text-sm text-foreground">C05-CS — Consumables (20ft)</span>
-                <span className="text-[10px] text-muted-foreground ml-auto">High-turn near door</span>
-              </div>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <p><span className="font-medium text-foreground">Rear Long Wall:</span> 4 shelving bays (boxed bolts etc.)</p>
-                <p><span className="font-medium text-foreground">Opposite Long Wall — Left of door:</span> Full bin wall (high frequency)</p>
-                <p><span className="font-medium text-foreground">Opposite Long Wall — Right of door:</span> PPE rack + bunded grease shelf</p>
+                 <span className="font-semibold text-sm text-foreground">C05-CS: Consumables (20ft)</span>
+                 <span className="text-[10px] text-muted-foreground ml-auto">High-turn near door</span>
+               </div>
+               <div className="text-xs text-muted-foreground space-y-1">
+                 <p><span className="font-medium text-foreground">Rear Long Wall:</span> 4 shelving bays (boxed bolts etc.)</p>
+                 <p><span className="font-medium text-foreground">Opposite Long Wall, Left of door:</span> Full bin wall (high frequency)</p>
+                 <p><span className="font-medium text-foreground">Opposite Long Wall, Right of door:</span> PPE rack + bunded grease shelf</p>
                 <p><span className="font-medium text-foreground">End Wall:</span> Lockable tool cabinet</p>
               </div>
               <div className="border-t border-border/50 pt-2 mt-1">
@@ -889,7 +889,7 @@ export const ImplementationPlanDocument = () => {
             <CardContent className="py-3 px-4 space-y-2">
               <div className="flex items-center gap-2">
                 <Container className="w-4 h-4 text-emerald-600" />
-                <span className="font-semibold text-sm text-foreground">LD — Laydown Yard</span>
+                <span className="font-semibold text-sm text-foreground">LD: Laydown Yard</span>
               </div>
               <div className="border-t border-border/50 pt-2 mt-1">
                 <p className="text-[10px] font-medium text-foreground uppercase tracking-wide mb-1">Required</p>
@@ -906,7 +906,7 @@ export const ImplementationPlanDocument = () => {
           <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3 text-sm space-y-1.5">
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-600" />
-              <p className="font-medium text-amber-700 dark:text-amber-300">Structural Note — Long-Side Door Modifications</p>
+              <p className="font-medium text-amber-700 dark:text-amber-300">Structural Note: Long-Side Door Modifications</p>
             </div>
             <ul className="text-xs text-amber-600 dark:text-amber-400 list-disc pl-5 space-y-0.5">
               <li>Reinforce top beam</li>
@@ -930,10 +930,10 @@ export const ImplementationPlanDocument = () => {
           Operational procedures govern all stock movements to ensure 100% traceability across C01–C05 and LD areas. The objective is to eliminate the "just grab it" culture and establish a disciplined stores process. All stock movements must be recorded in the system before, during, or immediately after the physical movement.
         </Prose>
 
-        <SubSection id="6.1" title="Stock In — Receiving">
+        <SubSection id="6.1" title="Stock In: Receiving">
           <Prose>All inbound stock must pass through the roller door check-in zone on the concrete slab. No part is permitted to enter containers without system entry.</Prose>
           <div className="space-y-1.5">
-            {["Verify PO against delivery docket", "Inspect for damage", "Confirm quantity and correct part number", "Photograph part (if new to catalogue)", "Apply internal part label (if required)", "Enter into system — date, PO number, supplier, received-by (all mandatory)", "Assign bin location (C01–C05 or LD allocation)", "Physically place in allocated location"].map((step, i) => (
+            {["Verify PO against delivery docket", "Inspect for damage", "Confirm quantity and correct part number", "Photograph part (if new to catalogue)", "Apply internal part label (if required)", "Enter into system: date, PO number, supplier, received-by (all mandatory)", "Assign bin location (C01 to C05 or LD allocation)", "Physically place in allocated location"].map((step, i) => (
               <div key={i} className="flex items-center gap-2.5 text-sm text-muted-foreground">
                 <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">{i + 1}</span>
                 <span>{step}</span>
@@ -946,7 +946,7 @@ export const ImplementationPlanDocument = () => {
           </div>
         </SubSection>
 
-        <SubSection id="6.2" title="Stock Out — Issue">
+        <SubSection id="6.2" title="Stock Out: Issue">
           <Prose>Every withdrawal from stores must be recorded before the part leaves the shelf.</Prose>
           <div className="grid sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
@@ -963,7 +963,7 @@ export const ImplementationPlanDocument = () => {
               {[
                 { label: "Work Order Number", value: "Mandatory" },
                 { label: "Area / Asset", value: "If available" },
-                { label: "Issued To", value: "Mandatory — named person" },
+                { label: "Issued To", value: "Mandatory, named person" },
                 { label: "Reason", value: "Breakdown / PM / Planned / Shutdown" },
               ].map((f) => (
                 <div key={f.label} className="flex items-center justify-between py-1 border-b border-border last:border-0">
@@ -995,7 +995,7 @@ export const ImplementationPlanDocument = () => {
         </SubSection>
 
         <SubSection id="6.4" title="Laydown Yard Rules">
-          <Prose>Heavy assemblies (&gt;15 kg), large motors, pumps, gearboxes — forklift access required.</Prose>
+          <Prose>Heavy assemblies (&gt;15 kg), large motors, pumps, gearboxes. Forklift access required.</Prose>
           <div className="grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
             {[
               "Must be assigned LD location code (LD-A1, LD-B2, etc.)",
@@ -1030,7 +1030,7 @@ export const ImplementationPlanDocument = () => {
         <SubSection id="6.6" title="Review Cycles">
           <div className="grid sm:grid-cols-2 gap-3">
             <div className="bg-muted/50 border border-border rounded-lg p-3">
-              <p className="text-xs font-medium text-foreground uppercase tracking-wide mb-2">Weekly — Wednesday Revision Day (Y26-WXX)</p>
+              <p className="text-xs font-medium text-foreground uppercase tracking-wide mb-2">Weekly: Wednesday Revision Day (Y26-WXX)</p>
               <div className="space-y-1 text-sm text-muted-foreground">
                 {["Spot check high-critical spares", "Review below-minimum items", "Reconcile discrepancies", "Review emergency freight occurrences"].map((c, i) => (
                   <div key={i} className="flex items-start gap-2"><span className="text-muted-foreground/50">•</span><span>{c}</span></div>
@@ -1038,7 +1038,7 @@ export const ImplementationPlanDocument = () => {
               </div>
             </div>
             <div className="bg-muted/50 border border-border rounded-lg p-3">
-              <p className="text-xs font-medium text-foreground uppercase tracking-wide mb-2">Monthly — Rotating Container Audit</p>
+              <p className="text-xs font-medium text-foreground uppercase tracking-wide mb-2">Monthly: Rotating Container Audit</p>
               <div className="space-y-1 text-sm text-muted-foreground">
                 {["Cycle count rotating container sections", "Reconcile discrepancies", "Review duplicates", "Adjust Min/Max where required"].map((c, i) => (
                   <div key={i} className="flex items-start gap-2"><span className="text-muted-foreground/50">•</span><span>{c}</span></div>
@@ -1053,9 +1053,9 @@ export const ImplementationPlanDocument = () => {
           <div className="grid sm:grid-cols-2 gap-2 text-sm">
             {[
               { label: "Min Qty", desc: "Triggers reorder alert when stock falls to this level" },
-              { label: "Max Qty", desc: "Upper limit — prevents overstocking in limited container space" },
-              { label: "Reorder Point", desc: "Lead-time-adjusted trigger for procurement action" },
-              { label: "Review Cycle", desc: "Monthly against consumption data — adjustments documented with justification" },
+               { label: "Max Qty", desc: "Upper limit, prevents overstocking in limited container space" },
+               { label: "Reorder Point", desc: "Lead-time-adjusted trigger for procurement action" },
+               { label: "Review Cycle", desc: "Monthly against consumption data, adjustments documented with justification" },
             ].map((item, i) => (
               <div key={i} className="p-2.5 bg-muted/40 rounded border border-border">
                 <span className="font-medium text-foreground">{item.label}: </span>
@@ -1087,16 +1087,16 @@ export const ImplementationPlanDocument = () => {
             </div>
             <div className="grid grid-cols-3 gap-2 text-sm">
               <div className="text-center p-2 bg-primary/5 rounded border border-primary/20">
-                <p className="font-bold text-primary text-xs uppercase">SS — Site Code</p>
-                <p className="text-muted-foreground mt-1">Always <span className="font-mono font-bold">10</span> (TCMG)</p>
-              </div>
-              <div className="text-center p-2 bg-blue-500/5 rounded border border-blue-500/20">
-                <p className="font-bold text-blue-600 text-xs uppercase">CC — Category</p>
-                <p className="text-muted-foreground mt-1">01–22 (see taxonomy)</p>
-              </div>
-              <div className="text-center p-2 bg-emerald-500/5 rounded border border-emerald-500/20">
-                <p className="font-bold text-emerald-600 text-xs uppercase">NNN — Sequence</p>
-                <p className="text-muted-foreground mt-1">001–999 per category</p>
+                 <p className="font-bold text-primary text-xs uppercase">SS: Site Code</p>
+                 <p className="text-muted-foreground mt-1">Always <span className="font-mono font-bold">10</span> (TCMG)</p>
+               </div>
+               <div className="text-center p-2 bg-blue-500/5 rounded border border-blue-500/20">
+                 <p className="font-bold text-blue-600 text-xs uppercase">CC: Category</p>
+                 <p className="text-muted-foreground mt-1">01 to 22 (see taxonomy)</p>
+               </div>
+               <div className="text-center p-2 bg-emerald-500/5 rounded border border-emerald-500/20">
+                 <p className="font-bold text-emerald-600 text-xs uppercase">NNN: Sequence</p>
+                 <p className="text-muted-foreground mt-1">001 to 999 per category</p>
               </div>
             </div>
             <p className="text-xs text-muted-foreground text-center">Example: <span className="font-mono font-medium text-foreground">1004012</span> = Site 10, Bearing (CC 04), Item 012</p>
@@ -1130,7 +1130,7 @@ export const ImplementationPlanDocument = () => {
         </SubSection>
 
         <SubSection id="7.3" title="Location Coding Standard">
-          <Prose>All store locations use the format below. Codes are validated programmatically — discipline must match container.</Prose>
+          <Prose>All store locations use the format below. Codes are validated programmatically. Discipline must match container.</Prose>
           <div className="bg-muted/50 border border-border rounded-lg p-3 space-y-2">
             <p className="text-sm font-mono text-center text-foreground font-medium tracking-wide">
               [Container]-[Discipline]-[Bay][Bin]
@@ -1202,7 +1202,7 @@ export const ImplementationPlanDocument = () => {
 
           {/* External LD codes */}
           <div className="mt-3">
-            <h4 className="text-xs font-medium text-foreground mb-1.5">External Storage — LD Prefix</h4>
+            <h4 className="text-xs font-medium text-foreground mb-1.5">External Storage: LD Prefix</h4>
             <div className="bg-muted/50 border border-border rounded-lg p-2.5 mb-2">
               <p className="text-sm font-mono text-center text-foreground font-medium">LD-[Bay][Position]</p>
               <p className="text-xs text-muted-foreground text-center">Example: LD-A1, LD-C3</p>
@@ -1335,14 +1335,14 @@ export const ImplementationPlanDocument = () => {
                 "Main slab poured (125mm thickness, graded to fall away from container openings)",
                 "Concrete blocks purchased and delivered to site",
                 "Blocks positioned at container corner casting and structural load points",
-                "Curing period completed — slab ready for loading",
+                "Curing period completed, slab ready for loading",
               ],
             },
             {
               stage: "5",
               title: "Container Placement",
               deliverables: [
-                "Containers delivered to site (purchased — 4× 20ft, 1× 40ft)",
+                "Containers delivered to site (purchased, 4× 20ft, 1× 40ft)",
                 "Concrete blocks verified for level and alignment",
                 "Containers craned onto blocks in U-shaped configuration",
                 "Internal shims installed to ensure water cannot track into doorways",
@@ -1359,16 +1359,16 @@ export const ImplementationPlanDocument = () => {
                 "Full front end wall constructed with electric roller door",
                 "Angle bar / flashing installed at dome-to-container roof junctions",
                 "Weather-rated sealant applied at all contact points",
-                "Structure certified and sealed — inspected prior to handover",
+                "Structure certified and sealed, inspected prior to handover",
               ],
             },
             {
               stage: "7",
               title: "Internal Fitout",
               deliverables: [
-                "Shelving, bin panels, drawer units installed per container spec (C01–C05)",
-                "Bin walls, PPE racks, bunded shelves, and special cabinets fitted",
-                "Labelling applied — bay codes, bin numbers, discipline markings",
+                 "Shelving, bin panels, drawer units installed per container spec (C01 to C05)",
+                 "Bin walls, PPE racks, bunded shelves, and special cabinets fitted",
+                 "Labelling applied: bay codes, bin numbers, discipline markings",
                 "Electrical fit-out (lighting, power, dust-controlled airflow for C01-EL)",
                 "Wurth cabinet and flammable cabinet positioned",
               ],
@@ -1378,7 +1378,7 @@ export const ImplementationPlanDocument = () => {
               title: "Inventory Load & System Setup",
               deliverables: [
                 "Stock transferred from existing locations into allocated containers",
-                "System data entry — part numbers, bin locations, quantities",
+                "System data entry: part numbers, bin locations, quantities",
                 "Location coding verified against physical placement",
                 "Min/Max and reorder points configured",
               ],
@@ -1388,7 +1388,7 @@ export const ImplementationPlanDocument = () => {
               title: "Operational Go-Live",
               deliverables: [
                 "Staff training on stock-in / stock-out procedures",
-                "Procedure activation — receiving, issuing, returns",
+                "Procedure activation: receiving, issuing, returns",
                 "First Wednesday revision cycle commenced",
                 "Handover to operational team",
               ],
@@ -1433,16 +1433,16 @@ export const ImplementationPlanDocument = () => {
             </TableHeader>
             <TableBody>
               {[
-                ["Civil & Earthworks (MMS day rate)", "~$12,416", "MMS plant & operators — 15hr avg across 900m³ haulage. Supplying our own dirt"],
-                ["Roller Hire (Barber Hire)", "$450 / day", "Compaction roller — 2 days estimate"],
-                ["Blue Rock (Barber Hire)", "TBC", "Compaction material — quote pending"],
-                ["Concrete Blocks ×14 (DPP)", "$2,575", "1000×1000×100mm, 240kg each, $183.92 inc GST per block. 2 weeks lead + 5 days to complete — excl. delivery"],
-                ["Concrete Slab Pour", "$25,069", "125mm slab"],
-                ["Dome Roof Structure", "Purchased", "Dome already ordered"],
-                ["Full Endwall with Doorway (CASA1200AIMFD)", "$13,570", "Allshelter 12m, container inside mounted, Wind Region A — excl. shipping"],
-                ["Partial Endwall (CASA1200AIMPE)", "$8,730", "Allshelter 12m, container inside mounted, Wind Region A — excl. shipping"],
-                ["Electric Roller Shutter (RS6060A)", "$22,130", "Allshelter electric roller shutter — excl. shipping"],
-                ["Containers (×5)", "Purchased", "On their way — already procured prior to this plan"],
+                 ["Civil & Earthworks (MMS day rate)", "~$12,416", "MMS plant & operators, 15hr avg across 900m³ haulage. Supplying our own dirt"],
+                 ["Roller Hire (Barber Hire)", "$450 / day", "Compaction roller, 2 days estimate"],
+                 ["Blue Rock (Barber Hire)", "TBC", "Compaction material, quote pending"],
+                 ["Concrete Blocks ×14 (DPP)", "$2,575", "1000×1000×100mm, 240kg each, $183.92 inc GST per block. 2 weeks lead + 5 days to complete, excl. delivery"],
+                 ["Concrete Slab Pour", "$25,069", "125mm slab"],
+                 ["Dome Roof Structure", "Purchased", "Dome already ordered"],
+                 ["Full Endwall with Doorway (CASA1200AIMFD)", "$13,570", "Allshelter 12m, container inside mounted, Wind Region A, excl. shipping"],
+                 ["Partial Endwall (CASA1200AIMPE)", "$8,730", "Allshelter 12m, container inside mounted, Wind Region A, excl. shipping"],
+                 ["Electric Roller Shutter (RS6060A)", "$22,130", "Allshelter electric roller shutter, excl. shipping"],
+                 ["Containers (×5)", "Purchased", "On their way, already procured prior to this plan"],
                 ["Internal Fitout (all containers)", "—", "Shelving, racks, bin panels, labels"],
                 ["Laydown Yard Preparation", "—", "Gravel, bollards, signage, sheltering"],
                 
@@ -1456,7 +1456,7 @@ export const ImplementationPlanDocument = () => {
               <TableRow className="bg-muted/50 font-semibold">
                 <TableCell className="text-xs font-bold">Quoted / Estimated to Date</TableCell>
                 <TableCell className="text-xs text-right font-mono font-bold">~$85,390</TableCell>
-                <TableCell className="text-xs text-muted-foreground">Not final — excludes blue rock, delivery, shipping, internal fitout, laydown yard & other pending quotes</TableCell>
+                <TableCell className="text-xs text-muted-foreground">Not final. Excludes blue rock, delivery, shipping, internal fitout, laydown yard &amp; other pending quotes</TableCell>
               </TableRow>
             </TableBody>
           </Table>
