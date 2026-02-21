@@ -583,6 +583,9 @@ export const ImplementationPlanDocument = () => {
 
 
 
+      {/* Force page break before Section 5 */}
+      <div style={{ pageBreakBefore: "always", breakBefore: "page" }} data-pdf-page-break />
+
       {/* ============================================================ */}
       {/*  5. Container Allocation Logic                               */}
       {/* ============================================================ */}
