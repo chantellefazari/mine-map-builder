@@ -3,6 +3,7 @@ import { ArrowLeft, Warehouse, AlertTriangle, Download } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { StoresDesignPrinciples } from "@/components/stores-warehouse/StoresDesignPrinciples";
+import { ImplementationPlanDocument } from "@/components/stores-warehouse/ImplementationPlanDocument";
 import { ContainerStockingScopeSection } from "@/components/stores-warehouse/ContainerStockingScopeSection";
 import { StoreLocationCodingSection } from "@/components/stores-warehouse/StoreLocationCodingSection";
 import { DesignInputsSection } from "@/components/stores-warehouse/DesignInputsSection";
@@ -82,8 +83,12 @@ const StoresWarehouseDesign = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="visualisation" className="space-y-6">
+        <Tabs defaultValue="implementation-plan" className="space-y-6">
           <TabsList className="flex flex-wrap h-auto gap-1 bg-muted/50 p-2 rounded-lg">
+            <TabsTrigger value="implementation-plan" className="text-xs">
+              <span className="hidden sm:inline">Implementation Plan</span>
+              <span className="sm:hidden">Plan</span>
+            </TabsTrigger>
             <TabsTrigger value="visualisation" className="text-xs">
               <span className="hidden sm:inline">Store Visualisation</span>
               <span className="sm:hidden">Visual</span>
@@ -113,6 +118,10 @@ const StoresWarehouseDesign = () => {
               <span className="sm:hidden">Stock Control</span>
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="implementation-plan">
+            <ImplementationPlanDocument />
+          </TabsContent>
 
           <TabsContent value="visualisation">
             <StoreVisualisation />
