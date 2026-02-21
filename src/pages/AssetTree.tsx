@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { exportAssetTreeCSV } from "@/utils/exportAssetTreeCSV";
 import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
 import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
+import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
 
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,10 +45,16 @@ const AssetTree = () => {
                 TCMG Processing Plant Structure — Single Source of Truth
               </p>
             </div>
-            <Button onClick={exportAssetTreeWorkbook} className="gap-2">
-              <FileSpreadsheet className="h-4 w-4" />
-              Download Workbook
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={exportHierarchyWorkbook} className="gap-2">
+                <Download className="h-4 w-4" />
+                Hierarchy Workbook
+              </Button>
+              <Button onClick={exportAssetTreeWorkbook} className="gap-2">
+                <FileSpreadsheet className="h-4 w-4" />
+                Download Workbook
+              </Button>
+            </div>
           </div>
         </div>
       </header>
