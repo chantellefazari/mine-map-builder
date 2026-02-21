@@ -423,6 +423,19 @@ export const ImplementationPlanDocument = () => {
             <li>Temporary handling only</li>
           </ul>
           <Prose>No long-term storage permitted in the central bay.</Prose>
+
+          <div className="mt-2">
+            <p className="text-sm font-medium text-foreground mb-1">Central Bay Ventilation</p>
+            <Prose>
+              The dome-enclosed central working bay requires airflow for personnel comfort and dust management during receiving, sorting, and stock handling operations.
+            </Prose>
+            <ul className="text-sm text-muted-foreground space-y-1.5 list-disc pl-5 mt-1.5">
+              <li>Fans will be installed within the central slab area to maintain air circulation while personnel are working</li>
+              <li>The front roller door can be opened (fully or half-height) to allow natural cross-ventilation when required</li>
+              <li>C01-EL (Electrical) has its own dedicated positive airflow system independent of the central bay ventilation</li>
+            </ul>
+            <Prose>This ensures a comfortable and safe working environment inside the dome during all receiving and stock handling activities.</Prose>
+          </div>
         </SubSection>
 
         <SubSection id="4.5" title="Container Installation & Weatherproofing Detail">
@@ -773,7 +786,6 @@ export const ImplementationPlanDocument = () => {
                  <p><span className="font-medium text-foreground">Opposite Long Wall, Right of door:</span> Reinforced VSD shelving</p>
                 <p><span className="font-medium text-foreground">End Wall 1:</span> Sealed cabinet for PLCs, anti-static mats inside</p>
                 <p><span className="font-medium text-foreground">End Wall 2 (airflow end):</span> Conduit brackets near ceiling, panel fan/filter vertical rack</p>
-                <p className="mt-1"><span className="font-medium text-foreground">Positive Airflow:</span> One extraction fan mounted at the airflow end wall. Additional ventilation achieved by opening the container roller door as required. This maintains positive air pressure to reduce dust ingress and protect sensitive electrical components.</p>
               </div>
               <div className="border-t border-border/50 pt-2 mt-1">
                 <p className="text-[10px] font-medium text-foreground uppercase tracking-wide mb-1">Required</p>
