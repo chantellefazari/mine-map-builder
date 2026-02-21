@@ -1,17 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { TreePine, Wrench, Package, Cpu, ClipboardList, Warehouse, BookOpen, ShoppingCart, FileInput, Building2, CalendarClock, LogOut, Shield } from "lucide-react";
+import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 
 const ALL_SECTIONS = [
-  {
-    title: "PO Import + Component Cleaner",
-    subtitle: "Extract & Normalise",
-    description: "Upload PO exports to extract, normalise, and deduplicate components for catalogue population.",
-    icon: FileInput,
-    href: "/po-import",
-    tabKey: "po-import",
-  },
   {
     title: "Maintenance Process Foundations",
     subtitle: "Definitions & Standards",
@@ -43,14 +35,6 @@ const ALL_SECTIONS = [
     icon: ClipboardList,
     href: "/work-order-templates",
     tabKey: "work-order-templates",
-  },
-  {
-    title: "Components & OEM Data",
-    subtitle: "Reusable Specifications",
-    description: "Store motor, gearbox, pump, and reducer specifications for reuse across assets.",
-    icon: Cpu,
-    href: "/components-oem",
-    tabKey: "components-oem",
   },
   {
     title: "Suppliers & Procurement",
