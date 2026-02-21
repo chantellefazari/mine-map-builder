@@ -423,7 +423,54 @@ export const ImplementationPlanDocument = () => {
           <Prose>No long-term storage permitted in the central bay.</Prose>
         </SubSection>
 
-        <SubSection id="4.5" title="Design Intent">
+        <SubSection id="4.5" title="Container Installation & Weatherproofing Detail">
+          <Prose>
+            To ensure durability and water management, containers will be installed using the following controlled method.
+          </Prose>
+
+          <div className="space-y-3">
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Container Seating on Plinth Blocks</p>
+              <ul className="text-sm text-muted-foreground space-y-1.5 list-disc pl-5">
+                <li>Containers will be positioned on engineered concrete plinth blocks cast within the slab footprint</li>
+                <li>Plinth height will match finished slab level to provide stable, even load distribution</li>
+                <li>No direct soil contact will occur</li>
+                <li>Blocks will be spaced to suit container corner castings and structural load points</li>
+              </ul>
+              <Prose>This method reduces slab volume while maintaining structural stability.</Prose>
+            </div>
+
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Fall &amp; Water Management</p>
+              <ul className="text-sm text-muted-foreground space-y-1.5 list-disc pl-5">
+                <li>Finished slab will be graded to fall away from container openings</li>
+                <li>Internal shims will be installed as required to ensure water cannot track back into container doorways</li>
+                <li>Surface runoff will be directed away from the warehouse footprint toward established drainage paths</li>
+              </ul>
+              <div className="mt-1.5 bg-blue-500/10 border border-blue-500/30 rounded-lg p-2.5 text-sm text-blue-700 dark:text-blue-300">
+                <span className="font-medium">Objective:</span> No ponding at container doors and no internal water migration during wet season events.
+              </div>
+            </div>
+
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Dome-to-Container Sealing</p>
+              <Prose>Where the dome structure interfaces with container roof lines:</Prose>
+              <ul className="text-sm text-muted-foreground space-y-1.5 list-disc pl-5">
+                <li>Angle bar or flashing will be installed across junctions</li>
+                <li>Weather-rated sealant will be applied along all contact points</li>
+                <li>Seals to be inspected prior to handover</li>
+              </ul>
+              <Prose>This prevents:</Prose>
+              <ul className="text-sm text-muted-foreground space-y-1.5 list-disc pl-5">
+                <li>Wind-driven rain entry</li>
+                <li>Dust ingress</li>
+                <li>Corrosion at roof junctions</li>
+              </ul>
+            </div>
+          </div>
+        </SubSection>
+
+        <SubSection id="4.6" title="Design Intent">
           <Prose>
             This is not simply a container arrangement. It is a controlled logistics compound designed to:
           </Prose>
