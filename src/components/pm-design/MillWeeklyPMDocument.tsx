@@ -412,12 +412,10 @@ export const MillWeeklyPMDocument = () => {
             <table className="w-full text-xs">
               <thead>
                 <tr className="bg-muted">
-                  <th className="border border-border px-2 py-2 text-left font-semibold w-[40%]">Task</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Urgent Attention</th>
-                  <th className="border border-border px-2 py-2 text-left font-semibold w-[20%]">Comments</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Corrective W/O</th>
+                  <th className="border border-border px-2 py-2 text-left font-semibold w-[50%]">Task</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✓</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✗</th>
+                  <th className="border border-border px-2 py-2 text-left font-semibold w-[34%]">Comments</th>
                 </tr>
               </thead>
               <tbody>
@@ -425,7 +423,7 @@ export const MillWeeklyPMDocument = () => {
                   <>
                     <tr key={`section-${sectionIdx}`} className="bg-primary/10">
                       <td 
-                        colSpan={6} 
+                        colSpan={4} 
                         className="border border-border px-2 py-2 font-semibold text-primary"
                       >
                         {section.equipmentId} - {section.equipmentName}
@@ -435,13 +433,10 @@ export const MillWeeklyPMDocument = () => {
                       <tr key={`task-${sectionIdx}-${taskIdx}`} className="hover:bg-muted/50">
                         <td className="border border-border px-2 py-2">{task.task}</td>
                         <td className="border border-border px-2 py-2 text-center">
-                          <Checkbox className="mx-auto" />
+                          <Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
                         </td>
                         <td className="border border-border px-2 py-2 text-center">
-                          <Checkbox className="mx-auto" />
-                        </td>
-                        <td className="border border-border px-2 py-2 text-center">
-                          <Checkbox className="mx-auto" />
+                          <Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" />
                         </td>
                         <td className="border border-border px-2 py-2">
                           {task.hasTemp && (
@@ -451,7 +446,6 @@ export const MillWeeklyPMDocument = () => {
                             <span className="text-muted-foreground">{task.pressureLabel}</span>
                           )}
                         </td>
-                        <td className="border border-border px-2 py-2"></td>
                       </tr>
                     ))}
                   </>

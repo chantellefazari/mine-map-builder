@@ -264,10 +264,9 @@ export const GreaseOilsPMDocument = () => {
                 <tr className="bg-muted">
                   <th className="border border-border px-2 py-2 text-left font-semibold w-[35%]">Item</th>
                   <th className="border border-border px-2 py-2 text-center font-semibold w-[15%]">Recommended</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Urgent Attention</th>
-                  <th className="border border-border px-2 py-2 text-left font-semibold w-[20%]">Qty Left</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✓</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✗</th>
+                  <th className="border border-border px-2 py-2 text-left font-semibold w-[34%]">Qty Left</th>
                 </tr>
               </thead>
               <tbody>
@@ -276,13 +275,10 @@ export const GreaseOilsPMDocument = () => {
                     <td className="border border-border px-2 py-2">{item.task}</td>
                     <td className="border border-border px-2 py-2 text-center font-medium">{item.recommendedAmount}</td>
                     <td className="border border-border px-2 py-2 text-center">
-                      <Checkbox className="mx-auto" />
+                      <Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
                     </td>
                     <td className="border border-border px-2 py-2 text-center">
-                      <Checkbox className="mx-auto" />
-                    </td>
-                    <td className="border border-border px-2 py-2 text-center">
-                      <Checkbox className="mx-auto" />
+                      <Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" />
                     </td>
                     <td className="border border-border px-2 py-2 text-muted-foreground">_______</td>
                   </tr>

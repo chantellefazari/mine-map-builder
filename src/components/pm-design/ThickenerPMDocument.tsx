@@ -438,12 +438,10 @@ export const ThickenerPMDocument = () => {
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-muted">
-              <th className="border border-border px-3 py-2 text-left font-semibold w-[45%]">Task</th>
-              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th>
-              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th>
-              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Urgent Attention</th>
-              <th className="border border-border px-3 py-2 text-left font-semibold w-[20%]">Comments</th>
-              <th className="border border-border px-2 py-2 text-center font-semibold w-[5%]">Corrective W/O</th>
+              <th className="border border-border px-3 py-2 text-left font-semibold w-[50%]">Task</th>
+              <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✓</th>
+              <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✗</th>
+              <th className="border border-border px-3 py-2 text-left font-semibold w-[34%]">Comments</th>
             </tr>
           </thead>
           <tbody>
@@ -451,7 +449,7 @@ export const ThickenerPMDocument = () => {
               <>
                 {/* Equipment Header Row */}
                 <tr key={`section-${sectionIndex}`} className="bg-muted/50">
-                  <td colSpan={6} className="border border-border px-3 py-2 font-bold text-primary">
+                  <td colSpan={4} className="border border-border px-3 py-2 font-bold text-primary">
                     {section.equipmentId} - {section.equipmentName}
                   </td>
                 </tr>
@@ -461,17 +459,12 @@ export const ThickenerPMDocument = () => {
                     <td className="border border-border px-3 py-2">{task.task}</td>
                     <td className="border border-border px-2 py-2 text-center">
                       <div className="flex justify-center">
-                        <Checkbox className="h-5 w-5" />
+                        <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
                       </div>
                     </td>
                     <td className="border border-border px-2 py-2 text-center">
                       <div className="flex justify-center">
-                        <Checkbox className="h-5 w-5" />
-                      </div>
-                    </td>
-                    <td className="border border-border px-2 py-2 text-center">
-                      <div className="flex justify-center">
-                        <Checkbox className="h-5 w-5" />
+                        <Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" />
                       </div>
                     </td>
                     <td className="border border-border px-2 py-2">
@@ -482,9 +475,6 @@ export const ThickenerPMDocument = () => {
                       ) : (
                         <Input className="h-7 text-xs border-0 bg-transparent" placeholder="" />
                       )}
-                    </td>
-                    <td className="border border-border px-2 py-2 text-center">
-                      <Input className="h-7 w-16 text-xs mx-auto" placeholder="" />
                     </td>
                   </tr>
                 ))}
