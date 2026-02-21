@@ -485,38 +485,87 @@ export const ImplementationPlanDocument = () => {
           Each container is assigned a discipline code and stocked according to category code (CC) rules. All items within containers must meet the ≤15 kg manual handling limit. Heavy or oversized items are allocated to the Laydown Yard.
         </Prose>
 
-        <SubSection id="5.1" title="C01-EL — Electrical">
+        <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 text-sm text-green-700 dark:text-green-300">
+          <span className="font-medium">Eligibility Rule:</span> Only carryable items (≤15 kg) that can be safely handled by one person and stored on shelves or in bins.
+        </div>
+
+        <SubSection id="5.1" title="C01-EL — Electrical (20ft – Positive Airflow)">
           <Prose>
-            Dedicated to electrical and power generation components (CC 07, CC 18). Positive airflow environment with dust-controlled entry. Contains 5 shelving bays, ESD bin panels, a lockable PLC cabinet, and ceiling-mounted conduit brackets. Climate-sensitive items stored in sealed anti-static bags.
+            Dedicated to electrical and power generation components. Positive airflow environment with dust-controlled entry. Contains 5 shelving bays, ESD bin panels, a lockable PLC cabinet, and ceiling-mounted conduit brackets. Climate-sensitive items stored in sealed anti-static bags.
           </Prose>
+          <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3 text-sm text-muted-foreground">
+            {["Fuses (all types)", "Circuit breakers (MCB, MCCB)", "RCBOs", "Contactors", "Overload relays", "Control relays", "Power supplies", "Terminal blocks", "Isolator handles & internals", "Push buttons", "Selector switches", "Indicator lights", "VSD/VFD spare boards", "PLC I/O cards", "PLC CPUs", "Sensors (photo, proximity)", "Cable glands", "Cable lugs", "Ferrules", "Control cables (cut lengths)", "Panel cooling fans", "Panel filters"].map((item, i) => (
+              <div key={i} className="flex items-start gap-2"><span className="text-muted-foreground/60 mt-0.5">•</span><span>{item}</span></div>
+            ))}
+          </div>
           <ImagePlaceholder label="C01-EL internal layout / fitout photo" />
         </SubSection>
 
-        <SubSection id="5.2" title="C02-IN — Instrumentation &amp; Pneumatics">
+        <SubSection id="5.2" title="C02-IN — Instrumentation &amp; Pneumatics (20ft – Clean/Fragile)">
           <Prose>
-            Houses instrumentation, pneumatic, and process fitting components (CC 06, CC 15). Contains 6 shelving bays, drawer units for small fittings, 40 foam-lined storage totes, and a vertical tubing rail. Calibration-sensitive items stored in padded compartments.
+            Houses instrumentation, pneumatic, and process fitting components. Contains 6 shelving bays, drawer units for small fittings, 40 foam-lined storage totes, and a vertical tubing rail. Calibration-sensitive items stored in padded compartments.
           </Prose>
+          <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3 text-sm text-muted-foreground">
+            {["Pressure transmitters", "Pressure gauges", "Flow switches", "Flow meters (small)", "Level switches", "Temperature probes (RTD / thermocouple)", "Solenoid valves (small)", "Positioners", "Instrument air regulators / FRLs", "Small actuators", "Instrument fittings (SS, brass)", "Swagelok fittings", "Tubing (coiled lengths)", "Manifolds (small)", "Instrument filters", "Pneumatic push-in fittings", "Quick connects", "Air hoses (small)", "Mufflers", "Needle valves (small)"].map((item, i) => (
+              <div key={i} className="flex items-start gap-2"><span className="text-muted-foreground/60 mt-0.5">•</span><span>{item}</span></div>
+            ))}
+          </div>
           <ImagePlaceholder label="C02-IN internal layout / fitout photo" />
         </SubSection>
 
-        <SubSection id="5.3" title="C03-ME — Mechanical (40ft)">
+        <SubSection id="5.3" title="C03-ME — Mechanical (40ft – High Volume)">
           <Prose>
-            The largest container, handling general mechanical components (CC 10), hoses and pipework (CC 11), and light wear parts (CC 09). Contains 14–18 heavy-duty bays, a fabricated V-belt rack, and a long material rack for conduit and light bar stock. All items must still meet the ≤15 kg limit — bulk steel and heavy assemblies go to Laydown.
+            The largest container, handling general mechanical components, hoses, pipework, and light wear parts. Contains 14–18 heavy-duty bays, a fabricated V-belt rack, and a long material rack for conduit and light bar stock. All items must still meet the ≤15 kg limit — bulk steel and heavy assemblies go to Laydown.
           </Prose>
+          {[
+            { name: "Wear Parts & Liners", items: ["Small wear plates (<15 kg)", "Chute liners (rubber, ceramic, <15 kg)"] },
+            { name: "Conveyor & Drive", items: ["Rollers", "Idlers", "Pulleys", "Scraper blades", "Belt cleaners", "Belts (V-belt, drive belt)", "Belt fasteners", "Sprockets", "Chains"] },
+            { name: "Valves, Pipe & Fittings", items: ["Valves (ball, butterfly, knife gate, check — <DN150)", "Pipe fittings", "Flanges", "Elbows", "Tees", "Reducers", "Nipples", "Hoses", "Couplings (heavy)"] },
+            { name: "Pump Spares", items: ["Pump seal kits (application-specific)", "Impellers (small)", "Wear rings", "Shaft sleeves", "Gland packing"] }
+          ].map((subCat, si) => (
+            <div key={si}>
+              <h4 className="font-medium text-sm text-foreground mb-2">{subCat.name}</h4>
+              <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3 text-sm text-muted-foreground">
+                {subCat.items.map((item, i) => (
+                  <div key={i} className="flex items-start gap-2"><span className="text-muted-foreground/60 mt-0.5">•</span><span>{item}</span></div>
+                ))}
+              </div>
+            </div>
+          ))}
           <ImagePlaceholder label="C03-ME internal layout / fitout photo" />
         </SubSection>
 
-        <SubSection id="5.4" title="C04-MP — Mechanical Precision">
+        <SubSection id="5.4" title="C04-MP — Mechanical Precision (20ft)">
           <Prose>
-            Precision mechanical storage for pumps (CC 01), bearings (CC 04), seals and gaskets (CC 12). Contains 6 shelving bays, seal drawer cabinets, and flat-file style shelves for gaskets. Clean environment with controlled access to prevent contamination of precision components.
+            Precision mechanical storage for bearings, seals, and gaskets. Contains 6 shelving bays, seal drawer cabinets, and flat-file style shelves for gaskets. Clean environment with controlled access to prevent contamination of precision components.
           </Prose>
+          <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3 text-sm text-muted-foreground">
+            {["Bearings (all types)", "Pillow blocks", "Spherical roller bearings", "Ball bearings", "Seals (oil, lip, mechanical)", "O-rings", "Gaskets", "Shims", "Keys & key stock", "Retaining rings (circlips)", "Bushes", "Small couplings", "Small shafts", "Precision parts", "Locknuts"].map((item, i) => (
+              <div key={i} className="flex items-start gap-2"><span className="text-muted-foreground/60 mt-0.5">•</span><span>{item}</span></div>
+            ))}
+          </div>
           <ImagePlaceholder label="C04-MP internal layout / fitout photo" />
         </SubSection>
 
-        <SubSection id="5.5" title="C05-CS — Consumables &amp; Supplies">
+        <SubSection id="5.5" title="C05-CS — Consumables &amp; Supplies (20ft)">
           <Prose>
-            General consumables (CC 22), fasteners (CC 21), PPE (CC 19c), rigging (CC 19b), and tooling (CC 19). Contains 6 shelving bays, 2 bin wall runs for high-frequency items, a PPE rack, and a bunded grease shelf. Highest access frequency — positioned nearest the compound entrance.
+            General consumables, fasteners, PPE, rigging, and tooling. Contains 6 shelving bays, 2 bin wall runs for high-frequency items, a PPE rack, and a bunded grease shelf. Highest access frequency — positioned nearest the compound entrance.
           </Prose>
+          {[
+            { name: "Fasteners & Hardware", items: ["Bolts", "Nuts", "Washers", "Studs", "Anchors", "Threaded rod", "U-bolts", "Hose clamps", "Retaining clips", "Pins", "Screws"] },
+            { name: "Sealants & Adhesives", items: ["Loctite", "Silicone", "Threadlocker", "PTFE tape", "Thread sealant", "Adhesives"] },
+            { name: "Consumables & PPE", items: ["Gloves", "Respirators", "Hard hats", "Rags", "Absorbents", "Zip ties", "Tape", "Batteries"] },
+            { name: "Lubrication", items: ["Grease cartridges", "Grease nipples", "Grease fittings", "Oil filters (small)", "Breathers", "Sight glasses", "Auto-lube injectors", "Oil sample bottles", "Desiccant breathers"] }
+          ].map((subCat, si) => (
+            <div key={si}>
+              <h4 className="font-medium text-sm text-foreground mb-2">{subCat.name}</h4>
+              <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3 text-sm text-muted-foreground">
+                {subCat.items.map((item, i) => (
+                  <div key={i} className="flex items-start gap-2"><span className="text-muted-foreground/60 mt-0.5">•</span><span>{item}</span></div>
+                ))}
+              </div>
+            </div>
+          ))}
           <ImagePlaceholder label="C05-CS internal layout / fitout photo" />
         </SubSection>
 
@@ -525,6 +574,17 @@ export const ImplementationPlanDocument = () => {
             Reserved for heavy assemblies (&gt;15 kg), oversized items, and critical overflow. LD-A and LD-B are dome-sheltered for critical overflow (green coding). Remaining zones are category-specific: LD-C (Pumps), LD-D (Matec), LD-E (Electrical), and LD-F (Mechanical). All laydown items require weatherproofing (shrink-wrap or tarpaulin) and visible tagging.
           </Prose>
           <ImagePlaceholder label="Laydown yard zone map" />
+        </SubSection>
+
+        <SubSection id="5.7" title="Excluded from Container Storage">
+          <Prose>
+            The following items are stored in laydown yards, dome rows, or heavy spares areas — not in containers:
+          </Prose>
+          <div className="flex flex-wrap gap-2">
+            {["Complete motors (>15 kg)", "Gearboxes", "Complete pumps / pump assemblies", "Large valves (DN150+)", "Large PE/Plasson fittings", "Drums and bulk chemicals", "Palletised items", "Structural steel", "Heavy equipment assemblies", "Switchboards", "Crusher liners, cone liners, mantles", "Screen panels (heavy)", "Anything requiring forklift"].map((item, i) => (
+              <span key={i} className="px-3 py-1.5 rounded-md text-sm bg-destructive/10 text-destructive border border-destructive/20">{item}</span>
+            ))}
+          </div>
         </SubSection>
       </Section>
 
