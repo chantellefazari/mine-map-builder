@@ -297,26 +297,17 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
       for (let i = 0; i < pageEls.length; i++) {
         const el = pageEls[i] as HTMLElement;
 
-        // Scroll element into view so html2canvas can capture it
-        el.scrollIntoView({ block: "start" });
-        // Small delay to let rendering settle
-        await new Promise((r) => setTimeout(r, 100));
-
         const canvas = await html2canvas(el, {
-          scale: 2,
+          scale: 1.5,
           useCORS: true,
           backgroundColor: "#ffffff",
           logging: false,
-          windowWidth: el.scrollWidth,
-          windowHeight: el.scrollHeight,
         });
 
-        const imgData = canvas.toDataURL("image/png");
+        const imgData = canvas.toDataURL("image/jpeg", 0.85);
         if (i > 0) pdf.addPage();
 
-        // Scale to fit A4 proportionally
         const canvasRatio = canvas.height / canvas.width;
-        const pageRatio = A4_H / A4_W;
         let imgW = A4_W;
         let imgH = A4_W * canvasRatio;
         if (imgH > A4_H) {
@@ -324,7 +315,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
           imgW = A4_H / canvasRatio;
         }
 
-        pdf.addImage(imgData, "PNG", 0, 0, imgW, imgH);
+        pdf.addImage(imgData, "JPEG", 0, 0, imgW, imgH);
       }
 
       pdf.save("TCMG-Stores-Implementation-Plan.pdf");
