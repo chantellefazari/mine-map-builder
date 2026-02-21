@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { X, Printer, FileText, Download } from "lucide-react";
 import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -296,20 +296,40 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
 
       for (let i = 0; i < pageEls.length; i++) {
         const el = pageEls[i] as HTMLElement;
+
+        // Scroll element into view so html2canvas can capture it
+        el.scrollIntoView({ block: "start" });
+        // Small delay to let rendering settle
+        await new Promise((r) => setTimeout(r, 100));
+
         const canvas = await html2canvas(el, {
           scale: 2,
           useCORS: true,
           backgroundColor: "#ffffff",
-          width: el.offsetWidth,
-          height: el.offsetHeight,
+          logging: false,
+          windowWidth: el.scrollWidth,
+          windowHeight: el.scrollHeight,
         });
 
         const imgData = canvas.toDataURL("image/png");
         if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, 0, A4_W, A4_H);
+
+        // Scale to fit A4 proportionally
+        const canvasRatio = canvas.height / canvas.width;
+        const pageRatio = A4_H / A4_W;
+        let imgW = A4_W;
+        let imgH = A4_W * canvasRatio;
+        if (imgH > A4_H) {
+          imgH = A4_H;
+          imgW = A4_H / canvasRatio;
+        }
+
+        pdf.addImage(imgData, "PNG", 0, 0, imgW, imgH);
       }
 
       pdf.save("TCMG-Stores-Implementation-Plan.pdf");
+    } catch (err) {
+      console.error("PDF download error:", err);
     } finally {
       setDownloading(false);
     }
