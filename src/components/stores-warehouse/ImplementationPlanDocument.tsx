@@ -1125,7 +1125,6 @@ export const ImplementationPlanDocument = () => {
               deliverables: [
                 "Topographic site survey completed (RL markers confirmed)",
                 "Slab specification and concrete block placement plan confirmed",
-                "Slab specification and concrete block placement plan confirmed",
                 "Compound footprint pegged and approved",
               ],
             },
