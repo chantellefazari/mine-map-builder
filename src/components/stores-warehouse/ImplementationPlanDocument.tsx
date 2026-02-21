@@ -240,23 +240,13 @@ export const ImplementationPlanDocument = () => {
           </Prose>
         </SubSection>
 
-        <SubSection id="3.4" title="Slab & Container Foundation Logic">
-          <Prose>Each container will sit on reinforced concrete slabs designed to:</Prose>
+        <SubSection id="3.4" title="Tank & Obstruction Relocation">
+          <Prose>To clear the proposed compound footprint and improve pedestrian safety:</Prose>
           <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>Minimum 100–125mm thickness</li>
-            <li>SL82 mesh reinforcement</li>
-            <li>Expansion joints at container boundaries</li>
-            <li>Future slab extension provision</li>
+            <li>Existing tanks to be relocated toward crib room side</li>
+            <li>Skip bins and waste containers relocated to designated waste zone outside stores perimeter</li>
           </ul>
-          <Prose>Containers positioned on concrete plinths with approx. 50mm clearance to:</Prose>
-          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>Prevent moisture contact</li>
-            <li>Allow airflow</li>
-            <li>Reduce corrosion risk</li>
-          </ul>
-          <Prose>
-            The compound follows a U-shape layout for controlled access, clear forklift movement, and a centralised issue counter.
-          </Prose>
+          <Prose>This ensures a clean warehouse boundary, reduced cross-traffic, and clear separation between storage and waste handling.</Prose>
         </SubSection>
 
         <SubSection id="3.5" title="Laydown Yard Preparation">
