@@ -1118,37 +1118,121 @@ export const ImplementationPlanDocument = () => {
       {/* ============================================================ */}
       <Section number="8" title="Implementation Sequence" icon={ListOrdered}>
         <Prose>
-          Delivery is structured across seven stages to manage risk, resource loading, and operational continuity. Each stage has defined gate criteria before proceeding to the next.
+          Delivery is structured across defined stages to manage risk, resource loading, and operational continuity. Each stage has defined gate criteria before proceeding to the next. The sequence reflects the actual construction and commissioning order.
         </Prose>
-        <div className="overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-xs font-semibold">Stage</TableHead>
-                <TableHead className="text-xs font-semibold">Description</TableHead>
-                <TableHead className="text-xs font-semibold">Key Deliverables</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[
-                ["1", "Survey & Civil Design", "Site survey, drainage design, slab specification"],
-                ["2", "Earthworks & Slab Construction", "Cut & fill, drainage install, concrete pours"],
-                ["3", "Container Procurement & Positioning", "Container purchase/lease, crane placement on slabs"],
-                ["4", "Dome Roof Installation", "Dome frame erection, fabric installation, certification"],
-                ["5", "Internal Fitout", "Shelving, bin panels, drawer units, labelling per container spec"],
-                ["6", "Inventory Load & System Setup", "Stock transfer, system data entry, location coding verification"],
-                ["7", "Operational Go-Live", "Staff training, procedure activation, first Wednesday revision"],
-              ].map(([stage, desc, deliverables]) => (
-                <TableRow key={stage}>
-                  <TableCell className="text-xs font-medium whitespace-nowrap">Stage {stage}</TableCell>
-                  <TableCell className="text-xs">{desc}</TableCell>
-                  <TableCell className="text-xs text-muted-foreground">{deliverables}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <div className="space-y-3">
+          {[
+            {
+              stage: "1",
+              title: "Survey & Civil Design",
+              deliverables: [
+                "Topographic site survey completed (RL markers confirmed)",
+                "Drainage design finalised",
+                "Slab specification and concrete block placement plan confirmed",
+                "Compound footprint pegged and approved",
+              ],
+            },
+            {
+              stage: "2",
+              title: "Relocation of Obstructions",
+              deliverables: [
+                "Water tank relocated toward crib room side",
+                "Skip bins and waste containers moved to designated waste management zone",
+                "Compound footprint cleared and verified for earthworks access",
+              ],
+            },
+            {
+              stage: "3",
+              title: "Earthworks",
+              deliverables: [
+                "Earthworks contractor mobilised",
+                "Cut and fill to achieve RL 355.99 formation level",
+                "Drainage corrections installed (perimeter swale, regrading)",
+                "Compaction testing completed and certified",
+              ],
+            },
+            {
+              stage: "4",
+              title: "Concrete Slab & Block Pours",
+              deliverables: [
+                "Slab formwork and reinforcement placed",
+                "Concrete blocks cast at container corner casting positions",
+                "Main slab poured (125mm thickness, graded to fall away from container openings)",
+                "Curing period completed — slab ready for loading",
+              ],
+            },
+            {
+              stage: "5",
+              title: "Container Placement",
+              deliverables: [
+                "Containers delivered to site (purchased — 4× 20ft, 1× 40ft)",
+                "Concrete blocks verified for level and alignment",
+                "Containers craned onto blocks in U-shaped configuration",
+                "Internal shims installed to ensure water cannot track into doorways",
+                "Containers levelled and secured",
+              ],
+            },
+            {
+              stage: "6",
+              title: "Dome Installation & Enclosure",
+              deliverables: [
+                "Dome frame erected spanning U-shaped container layout",
+                "Fabric/sheeting installed over dome frame",
+                "Partial end walls installed (rear and sides)",
+                "Full front end wall constructed with electric roller door",
+                "Angle bar / flashing installed at dome-to-container roof junctions",
+                "Weather-rated sealant applied at all contact points",
+                "Structure certified and sealed — inspected prior to handover",
+              ],
+            },
+            {
+              stage: "7",
+              title: "Internal Fitout",
+              deliverables: [
+                "Shelving, bin panels, drawer units installed per container spec (C01–C05)",
+                "Bin walls, PPE racks, bunded shelves, and special cabinets fitted",
+                "Labelling applied — bay codes, bin numbers, discipline markings",
+                "Electrical fit-out (lighting, power, dust-controlled airflow for C01-EL)",
+                "Wurth cabinet and flammable cabinet positioned",
+              ],
+            },
+            {
+              stage: "8",
+              title: "Inventory Load & System Setup",
+              deliverables: [
+                "Stock transferred from existing locations into allocated containers",
+                "System data entry — part numbers, bin locations, quantities",
+                "Location coding verified against physical placement",
+                "Min/Max and reorder points configured",
+              ],
+            },
+            {
+              stage: "9",
+              title: "Operational Go-Live",
+              deliverables: [
+                "Staff training on stock-in / stock-out procedures",
+                "Procedure activation — receiving, issuing, returns",
+                "First Wednesday revision cycle commenced",
+                "Handover to operational team",
+              ],
+            },
+          ].map((s) => (
+            <div key={s.stage} className="border border-border rounded-lg overflow-hidden">
+              <div className="flex items-center gap-3 px-4 py-2.5 bg-muted/50">
+                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">{s.stage}</span>
+                <span className="font-semibold text-sm text-foreground">{s.title}</span>
+              </div>
+              <div className="px-4 py-3 space-y-1.5">
+                {s.deliverables.map((d, i) => (
+                  <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <span className="text-muted-foreground/50 mt-0.5">•</span>
+                    <span>{d}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-        <ImagePlaceholder label="Gantt chart or timeline graphic" />
       </Section>
 
       <Separator />
