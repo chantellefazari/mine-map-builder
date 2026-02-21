@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+
 import {
   FileText,
   AlertTriangle,
@@ -165,7 +165,8 @@ export const ImplementationPlanDocument = () => {
         </Prose>
       </Section>
 
-      <Separator />
+
+
 
       {/* ============================================================ */}
       {/*  2. Current State Assessment                                 */}
@@ -188,7 +189,8 @@ export const ImplementationPlanDocument = () => {
         </Prose>
       </Section>
 
-      <Separator />
+
+
 
       {/* ============================================================ */}
       {/*  3. Civil & Earthworks Scope                                 */}
@@ -317,7 +319,8 @@ export const ImplementationPlanDocument = () => {
         </div>
       </Section>
 
-      <Separator />
+
+
 
       {/* ============================================================ */}
       {/*  4. Warehouse Structural Design                              */}
@@ -526,7 +529,8 @@ export const ImplementationPlanDocument = () => {
         </div>
       </Section>
 
-      <Separator />
+
+
 
       {/* ============================================================ */}
       {/*  5. Container Allocation Logic                               */}
@@ -742,7 +746,8 @@ export const ImplementationPlanDocument = () => {
         </SubSection>
       </Section>
 
-      <Separator />
+
+
 
       {/* ============================================================ */}
       {/*  6. Stores Operational Flow                                  */}
@@ -888,7 +893,8 @@ export const ImplementationPlanDocument = () => {
         </SubSection>
       </Section>
 
-      <Separator />
+
+
 
       {/* ============================================================ */}
       {/*  7. Inventory Logic & Numbering Framework                    */}
@@ -1108,7 +1114,8 @@ export const ImplementationPlanDocument = () => {
         </SubSection>
       </Section>
 
-      <Separator />
+
+
 
       {/* ============================================================ */}
       {/*  8. Implementation Sequence                                  */}
@@ -1232,7 +1239,8 @@ export const ImplementationPlanDocument = () => {
         </div>
       </Section>
 
-      <Separator />
+
+
 
       {/* ============================================================ */}
       {/*  9. Budget Snapshot                                         */}
@@ -1283,7 +1291,7 @@ export const ImplementationPlanDocument = () => {
         <Prose>Note: Supporting quotes and supplier correspondence can be provided on request.</Prose>
       </Section>
 
-      <Separator />
+      
 
       {/* ============================================================ */}
       {/*  10. Implementation Pathway & Approval Requirements          */}
