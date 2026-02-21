@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { X, Printer, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,18 +14,92 @@ interface PrintImplementationPlanModalProps {
   onClose: () => void;
 }
 
+/**
+ * A4 dimensions at 96 DPI:
+ *   210mm = 793.7px, 297mm = 1122.5px
+ *   With 15mm margins: content = 180mm × 267mm = 680.3px × 1009.1px
+ */
+const A4_WIDTH_PX = 794;
+const A4_HEIGHT_PX = 1123;
+const MARGIN_PX = 57; // ~15mm at 96dpi
+const CONTENT_HEIGHT_PX = A4_HEIGHT_PX - MARGIN_PX * 2; // ~1009px
+
 export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const printRef = useRef<HTMLDivElement>(null);
+  const hiddenRef = useRef<HTMLDivElement>(null);
+  const [pages, setPages] = useState<string[]>([]);
+
+  const buildPages = useCallback(() => {
+    const container = hiddenRef.current;
+    if (!container) return;
+
+    // Get all top-level children (sections + separators + header card)
+    const children = Array.from(container.children[0]?.children ?? []) as HTMLElement[];
+    if (children.length === 0) return;
+
+    const builtPages: string[] = [];
+    let currentPageElements: HTMLElement[] = [];
+    let currentHeight = 0;
+
+    const flushPage = () => {
+      if (currentPageElements.length === 0) return;
+      const wrapper = document.createElement("div");
+      currentPageElements.forEach((el) => wrapper.appendChild(el.cloneNode(true)));
+      builtPages.push(wrapper.innerHTML);
+      currentPageElements = [];
+      currentHeight = 0;
+    };
+
+    children.forEach((child) => {
+      const childHeight = child.getBoundingClientRect().height;
+
+      // Skip separators in the paged view
+      if (child.getAttribute("data-slot") === "separator" || child.getAttribute("role") === "separator") {
+        return;
+      }
+
+      // If this element alone exceeds a page, give it its own page
+      if (childHeight > CONTENT_HEIGHT_PX) {
+        flushPage();
+        const wrapper = document.createElement("div");
+        wrapper.appendChild(child.cloneNode(true));
+        builtPages.push(wrapper.innerHTML);
+        return;
+      }
+
+      // If adding this element would overflow, start a new page
+      if (currentHeight + childHeight > CONTENT_HEIGHT_PX) {
+        flushPage();
+      }
+
+      currentPageElements.push(child);
+      currentHeight += childHeight;
+    });
+
+    flushPage();
+    setPages(builtPages);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      // Wait for the hidden content to render
+      const timer = setTimeout(buildPages, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, buildPages]);
 
   const handlePrint = () => {
-    const printContent = printRef.current;
-    if (!printContent) return;
-
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
+
+    const pagesHtml = pages
+      .map(
+        (html, i) =>
+          `<div class="print-page" ${i > 0 ? 'style="page-break-before: always;"' : ""}>${html}</div>`
+      )
+      .join("\n");
 
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -54,66 +128,55 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
               print-color-adjust: exact;
             }
 
-            /* Cover header */
             .doc-cover {
               text-align: center;
               padding: 20mm 0 10mm;
               border-bottom: 3px solid #d4a017;
               margin-bottom: 10mm;
+              page-break-after: always;
             }
-
             .doc-cover h1 {
               font-size: 22px;
               font-weight: 700;
               letter-spacing: -0.5px;
               color: #111;
             }
-
             .doc-cover p {
               font-size: 12px;
               color: #555;
               margin-top: 4px;
             }
 
-            /* Page break markers */
-            .print-page-break {
-              page-break-before: always;
-            }
+            .print-page { }
 
-            /* Cards */
-            .card, [class*="rounded-lg"] {
+            [class*="rounded-lg"] {
               border: 1px solid #ddd;
               border-radius: 6px;
               padding: 10px 12px;
               margin-bottom: 8px;
             }
 
-            /* Tables */
             table {
               width: 100%;
               border-collapse: collapse;
               margin-bottom: 8px;
               font-size: 9px;
             }
-
             th, td {
               border: 1px solid #ccc;
               padding: 4px 6px;
               text-align: left;
               font-size: 9px;
             }
-
             th {
               background-color: #f5f0e0;
               font-weight: 600;
             }
-
             tr:nth-child(even) td {
               background-color: #fafafa;
             }
 
-            /* Badges */
-            .badge, [class*="badge"] {
+            [class*="badge"] {
               border: 1px solid #ccc;
               border-radius: 4px;
               padding: 1px 6px;
@@ -121,45 +184,20 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
               display: inline-block;
             }
 
-            /* Muted text */
-            .text-muted, [class*="muted"] {
-              color: #666;
-            }
+            [class*="muted"] { color: #666; }
 
-            /* Hide interactive controls */
-            button, input, select {
-              display: none !important;
-            }
+            button, input, select { display: none !important; }
 
-            svg {
-              display: inline-block;
-              width: 16px;
-              height: 16px;
-            }
+            svg { display: inline-block; width: 16px; height: 16px; }
 
-            h2, h3, h4 {
-              margin-bottom: 4px;
-              font-weight: 600;
-            }
-
+            h2, h3, h4 { margin-bottom: 4px; font-weight: 600; }
             h2 { font-size: 14px; }
             h3 { font-size: 12px; }
             h4 { font-size: 11px; }
 
-            ul, ol {
-              padding-left: 16px;
-              margin-bottom: 6px;
-            }
-
-            li {
-              margin-bottom: 2px;
-              font-size: 10px;
-            }
-
-            p {
-              margin-bottom: 4px;
-              font-size: 10px;
-            }
+            ul, ol { padding-left: 16px; margin-bottom: 6px; }
+            li { margin-bottom: 2px; font-size: 10px; }
+            p { margin-bottom: 4px; font-size: 10px; }
 
             .separator, hr {
               border: none;
@@ -167,7 +205,6 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
               margin: 6px 0;
             }
 
-            /* Dashed placeholder boxes */
             [class*="border-dashed"] {
               border: 2px dashed #ccc;
               padding: 12px;
@@ -176,18 +213,13 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
               border-radius: 6px;
             }
 
-            /* Avoid breaking inside elements */
-            table, .card, [class*="rounded-lg"] {
+            table, [class*="rounded-lg"] {
               page-break-inside: avoid;
             }
 
-            /* Footer */
-            @page {
-              @bottom-right {
-                content: "TCMG Stores Implementation Plan | " counter(page) " of " counter(pages);
-                font-size: 8px;
-                color: #999;
-              }
+            img {
+              max-width: 100%;
+              height: auto;
             }
           </style>
         </head>
@@ -196,7 +228,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
             <h1>Stores & Warehouse Implementation Plan</h1>
             <p>Tennant Creek Mines Gold — TCMG-PLAN-STORES-001 | 21st February 2026</p>
           </div>
-          ${printContent.innerHTML}
+          ${pagesHtml}
         </body>
       </html>
     `);
@@ -220,7 +252,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
             </DialogTitle>
           </div>
           <div className="flex items-center gap-2">
-            <Button onClick={handlePrint} className="gap-2">
+            <Button onClick={handlePrint} className="gap-2" disabled={pages.length === 0}>
               <Printer className="w-4 h-4" />
               Print / Save PDF
             </Button>
@@ -230,46 +262,46 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
           </div>
         </DialogHeader>
 
-        {/* Scrollable A4 preview */}
-        <div className="flex-1 overflow-auto bg-muted/40 p-6">
-          <style>{`
-            .a4-paged-preview .print-page-break {
-              background: white;
-              box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 0 1px rgba(0,0,0,0.1);
-              border-radius: 4px;
-              padding: 15mm;
-              margin-bottom: 24px;
-              max-width: 210mm;
-              min-height: 297mm;
-              margin-left: auto;
-              margin-right: auto;
-              position: relative;
-              overflow: hidden;
-            }
-            .a4-paged-preview .print-page-break::after {
-              content: '';
-              position: absolute;
-              bottom: 0;
-              left: 15mm;
-              right: 15mm;
-              border-bottom: 1px solid #e5e5e5;
-            }
-            /* Hide separators between sections since pages are now visually split */
-            .a4-paged-preview > [data-slot="separator"],
-            .a4-paged-preview > [role="separator"] {
-              display: none;
-            }
-            .dark .a4-paged-preview .print-page-break {
-              background: hsl(var(--card));
-            }
-          `}</style>
-          {/* Hidden ref for print content */}
-          <div ref={printRef} style={{ display: "none" }}>
-            <ImplementationPlanDocument />
-          </div>
-          {/* Visible paged preview */}
-          <div className="a4-paged-preview">
-            <ImplementationPlanDocument />
+        {/* Hidden measurer */}
+        <div
+          ref={hiddenRef}
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: "-9999px",
+            top: 0,
+            width: `${A4_WIDTH_PX - MARGIN_PX * 2}px`,
+            visibility: "hidden",
+          }}
+        >
+          <ImplementationPlanDocument />
+        </div>
+
+        {/* Scrollable A4 page preview */}
+        <div className="flex-1 overflow-auto bg-muted/40 py-8 px-4">
+          <div className="flex flex-col items-center gap-8">
+            {pages.length === 0 && (
+              <div className="text-sm text-muted-foreground py-20">Building page preview…</div>
+            )}
+            {pages.map((html, i) => (
+              <div
+                key={i}
+                className="relative flex-shrink-0 bg-white dark:bg-card rounded shadow-lg"
+                style={{
+                  width: `${A4_WIDTH_PX}px`,
+                  minHeight: `${A4_HEIGHT_PX}px`,
+                  padding: `${MARGIN_PX}px`,
+                }}
+              >
+                <div dangerouslySetInnerHTML={{ __html: html }} />
+                <div
+                  className="absolute bottom-3 right-4 text-[9px] text-muted-foreground"
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                >
+                  Page {i + 1} of {pages.length}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </DialogContent>
