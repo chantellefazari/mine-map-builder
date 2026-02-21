@@ -842,31 +842,118 @@ export const ImplementationPlanDocument = () => {
         </SubSection>
 
         <SubSection id="7.3" title="Location Coding Standard">
-          <Prose>Warehouse location codes follow a strict format for traceable bin-level storage.</Prose>
+          <Prose>All store locations use the format below. Codes are validated programmatically — discipline must match container.</Prose>
           <div className="bg-muted/50 border border-border rounded-lg p-3 space-y-2">
             <p className="text-sm font-mono text-center text-foreground font-medium tracking-wide">
-              [Container]-[Discipline]-[Bay][Shelf]
+              [Container]-[Discipline]-[Bay][Bin]
             </p>
             <p className="text-xs text-muted-foreground text-center">
-              Example: <span className="font-mono font-medium text-foreground">C01-EL-A3</span> = Container 01, Electrical, Bay A, Shelf 3
+              Example: <span className="font-mono font-medium text-foreground">C01-EL-A3</span> = Container 01, Electrical, Bay A, Bin 3
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-2 mt-2 text-xs">
-            <div className="p-2 bg-muted/40 rounded border border-border">
-              <span className="font-medium text-foreground">Bays:</span>
-              <span className="text-muted-foreground"> A–Z (left to right from entry)</span>
+
+          {/* Code structure breakdown */}
+          <div className="grid sm:grid-cols-4 gap-1.5 text-xs mt-2">
+            {[
+              { segment: "Container", format: "C0X", meaning: "C01–C05" },
+              { segment: "Discipline", format: "XX", meaning: "EL, IN, ME, MP, CS" },
+              { segment: "Bay", format: "A–H, J–K", meaning: "Wall position (skip I)" },
+              { segment: "Bin", format: "1–99", meaning: "Bin number within bay" },
+            ].map((s) => (
+              <div key={s.segment} className="p-2 bg-muted/40 rounded border border-border text-center">
+                <p className="font-medium text-foreground">{s.segment}</p>
+                <p className="font-mono text-primary">{s.format}</p>
+                <p className="text-muted-foreground">{s.meaning}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Bay layout */}
+          <div className="grid sm:grid-cols-3 gap-2 mt-2">
+            <div className="bg-muted/50 rounded p-2.5 border border-border">
+              <p className="text-xs font-medium text-foreground mb-1">Left Wall</p>
+              <div className="flex flex-wrap gap-1">
+                {["A", "B", "C", "D"].map((b) => (
+                  <span key={b} className="px-2 py-0.5 rounded text-xs bg-background border border-border font-mono">{b}</span>
+                ))}
+              </div>
             </div>
-            <div className="p-2 bg-muted/40 rounded border border-border">
-              <span className="font-medium text-foreground">Shelves:</span>
-              <span className="text-muted-foreground"> 1–6 (bottom to top). Ergonomic zone: 2–4</span>
+            <div className="bg-muted/50 rounded p-2.5 border border-border">
+              <p className="text-xs font-medium text-foreground mb-1">Right Wall</p>
+              <div className="flex flex-wrap gap-1">
+                {["E", "F", "G", "H"].map((b) => (
+                  <span key={b} className="px-2 py-0.5 rounded text-xs bg-background border border-border font-mono">{b}</span>
+                ))}
+              </div>
             </div>
-            <div className="p-2 bg-muted/40 rounded border border-border">
-              <span className="font-medium text-foreground">Laydown:</span>
-              <span className="text-muted-foreground"> LD-[Bay][Position] (e.g., LD-A1)</span>
+            <div className="bg-muted/50 rounded p-2.5 border border-border">
+              <p className="text-xs font-medium text-foreground mb-1">Rear / Doors</p>
+              <div className="flex flex-wrap gap-1">
+                {["J", "K"].map((b) => (
+                  <span key={b} className="px-2 py-0.5 rounded text-xs bg-background border border-border font-mono">{b}</span>
+                ))}
+              </div>
             </div>
-            <div className="p-2 bg-muted/40 rounded border border-border">
-              <span className="font-medium text-foreground">Validation:</span>
-              <span className="text-muted-foreground"> Discipline must match container ID</span>
+          </div>
+
+          {/* Container examples */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-1.5 mt-2 text-xs">
+            {[
+              { code: "C01-EL-A3", desc: "Electrical, Left wall bay A, bin 3" },
+              { code: "C02-IN-E1", desc: "Instrumentation, Right wall bay E, bin 1" },
+              { code: "C03-ME-J2", desc: "Mechanical, Rear wall bay J, bin 2" },
+              { code: "C04-MP-B5", desc: "Mech Precision, Left wall bay B, bin 5" },
+              { code: "C05-CS-H12", desc: "Consumables, Right wall bay H, bin 12" },
+            ].map((e) => (
+              <div key={e.code} className="flex items-center gap-2 p-1.5 bg-muted/40 rounded border border-border">
+                <span className="font-mono font-bold text-primary">{e.code}</span>
+                <span className="text-muted-foreground">{e.desc}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* External LD codes */}
+          <div className="mt-3">
+            <h4 className="text-xs font-medium text-foreground mb-1.5">External Storage — LD Prefix</h4>
+            <div className="bg-muted/50 border border-border rounded-lg p-2.5 mb-2">
+              <p className="text-sm font-mono text-center text-foreground font-medium">LD-[Bay][Position]</p>
+              <p className="text-xs text-muted-foreground text-center">Example: LD-A1, LD-C3</p>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <div className="bg-muted/50 rounded p-2.5 border border-border">
+                <p className="text-xs font-medium text-foreground mb-1">Dome Internal Rows</p>
+                <div className="flex gap-1">
+                  {["A", "B"].map((b) => (
+                    <span key={b} className="px-2 py-0.5 rounded text-xs bg-background border border-border font-mono">LD-{b}</span>
+                  ))}
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">5m forklift clearance between dome and container rows</p>
+              </div>
+              <div className="bg-muted/50 rounded p-2.5 border border-border">
+                <p className="text-xs font-medium text-foreground mb-1">Yard Bays</p>
+                <div className="flex gap-1">
+                  {["C", "D", "E", "F"].map((b) => (
+                    <span key={b} className="px-2 py-0.5 rounded text-xs bg-background border border-border font-mono">LD-{b}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Validation rules */}
+          <div className="mt-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3">
+            <p className="text-xs font-medium text-emerald-700 dark:text-emerald-300 mb-1.5">Validation Rules</p>
+            <div className="grid sm:grid-cols-2 gap-1 text-xs text-emerald-700 dark:text-emerald-300">
+              {[
+                "Discipline must match container (C01 = EL only)",
+                "No duplicate location codes across entire store",
+                "Bay letters skip I (A–H, then J–K)",
+                "Bin numbers range 1–99",
+                "All external codes must start with LD prefix",
+                "External bays limited to A–F only",
+              ].map((r, i) => (
+                <div key={i} className="flex items-start gap-1.5"><span className="mt-0.5">✓</span><span>{r}</span></div>
+              ))}
             </div>
           </div>
         </SubSection>
