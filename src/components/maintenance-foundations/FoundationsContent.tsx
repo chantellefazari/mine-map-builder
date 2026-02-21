@@ -12,7 +12,10 @@ import {
   Tag,
   MapPin,
   Printer,
+  Download,
 } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
 import { JobNumberingSection } from "./JobNumberingSection";
@@ -37,6 +40,7 @@ const TAB_LABELS: Record<string, string> = {
 
 export const FoundationsContent = () => {
   const [activeTab, setActiveTab] = useState("hierarchy");
+  const [downloading, setDownloading] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handlePrintTab = () => {
@@ -76,6 +80,45 @@ export const FoundationsContent = () => {
     printWindow.document.close();
     printWindow.focus();
     setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
+  };
+
+  const handleExportPDF = async () => {
+    const el = contentRef.current;
+    if (!el) return;
+    setDownloading(true);
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const A4_W = 210;
+      const A4_H = 297;
+      const imgData = canvas.toDataURL("image/jpeg", 0.9);
+      const imgRatio = canvas.height / canvas.width;
+      const totalImgH = A4_W * imgRatio;
+      let heightLeft = totalImgH;
+      let position = 0;
+
+      pdf.addImage(imgData, "JPEG", 0, position, A4_W, totalImgH);
+      heightLeft -= A4_H;
+
+      while (heightLeft > 0) {
+        position -= A4_H;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, A4_W, totalImgH);
+        heightLeft -= A4_H;
+      }
+
+      const safeName = (TAB_LABELS[activeTab] || "Section").replace(/[^a-zA-Z0-9]/g, "-");
+      pdf.save(`TCMG-${safeName}.pdf`);
+    } catch (err) {
+      console.error("PDF export error:", err);
+    } finally {
+      setDownloading(false);
+    }
   };
 
   return (
@@ -128,15 +171,27 @@ export const FoundationsContent = () => {
             <span className="sm:hidden">Rollout</span>
           </TabsTrigger>
         </TabsList>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handlePrintTab}
-          className="gap-2 shrink-0 mt-1"
-        >
-          <Printer className="w-3.5 h-3.5" />
-          Print Tab
-        </Button>
+        <div className="flex gap-2 shrink-0 mt-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrintTab}
+            className="gap-2"
+          >
+            <Printer className="w-3.5 h-3.5" />
+            Print Tab
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportPDF}
+            className="gap-2"
+            disabled={downloading}
+          >
+            <Download className="w-3.5 h-3.5" />
+            {downloading ? "Exporting…" : "Export PDF"}
+          </Button>
+        </div>
       </div>
 
       <div ref={contentRef}>
