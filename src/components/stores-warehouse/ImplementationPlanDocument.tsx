@@ -66,9 +66,9 @@ const SubSection = ({
   title: string;
   children: React.ReactNode;
 }) => (
-  <div className="space-y-2">
+  <div id={id} className="space-y-2">
     <h3 className="text-base font-semibold text-foreground">
-      {id} {title}
+      {title}
     </h3>
     <div className="space-y-2">{children}</div>
   </div>
