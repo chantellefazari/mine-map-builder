@@ -1252,7 +1252,7 @@ export const ImplementationPlanDocument = () => {
             </TableHeader>
             <TableBody>
               {[
-                ["Civil & Earthworks (MMS day rate)", "~$12,416", "MMS plant & operators — 15hr avg across 900m³ haulage"],
+                ["Civil & Earthworks (MMS day rate)", "~$12,416", "MMS plant & operators — 15hr avg across 900m³ haulage. Supplying our own dirt"],
                 ["Roller Hire (Barber Hire)", "$450 / day", "Compaction roller — 2 days estimate"],
                 ["Blue Rock (Barber Hire)", "TBC", "Compaction material — quote pending"],
                 ["Concrete Blocks ×14 (DPP)", "$2,575", "1000×1000×100mm, 240kg each, $183.92 inc GST per block. 2 weeks lead + 5 days to complete"],
