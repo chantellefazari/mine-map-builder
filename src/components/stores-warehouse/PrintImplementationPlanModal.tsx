@@ -161,8 +161,8 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
 
             body {
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-              font-size: 9px;
-              line-height: 1.4;
+              font-size: 8px;
+              line-height: 1.3;
               color: #111;
               background: white;
               -webkit-print-color-adjust: exact;
@@ -231,14 +231,14 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
 
             svg { display: inline-block; width: 16px; height: 16px; }
 
-            h2, h3, h4 { margin-bottom: 3px; font-weight: 600; }
-            h2 { font-size: 13px; }
-            h3 { font-size: 11px; }
-            h4 { font-size: 10px; }
+            h2, h3, h4 { margin-bottom: 2px; font-weight: 600; }
+            h2 { font-size: 11px; }
+            h3 { font-size: 9.5px; }
+            h4 { font-size: 9px; }
 
-            ul, ol { padding-left: 14px; margin-bottom: 4px; }
-            li { margin-bottom: 1px; font-size: 9px; }
-            p { margin-bottom: 3px; font-size: 9px; }
+            ul, ol { padding-left: 12px; margin-bottom: 2px; }
+            li { margin-bottom: 0; font-size: 8px; }
+            p { margin-bottom: 2px; font-size: 8px; }
 
             .separator, hr {
               border: none;
@@ -378,29 +378,46 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
 
         {/* Compact text styles for preview and measurer */}
         <style>{`
-          .print-compact-text { font-size: 11px; line-height: 1.45; }
+          .print-compact-text { font-size: 9px; line-height: 1.3; }
           .print-compact-text p,
           .print-compact-text li,
-          .print-compact-text span { font-size: 11px !important; line-height: 1.45 !important; }
-          .print-compact-text h2 { font-size: 15px !important; }
-          .print-compact-text h3 { font-size: 13px !important; }
-          .print-compact-text h4 { font-size: 12px !important; }
+          .print-compact-text span { font-size: 9px !important; line-height: 1.3 !important; }
+          .print-compact-text h2 { font-size: 12px !important; margin-bottom: 2px !important; }
+          .print-compact-text h3 { font-size: 10.5px !important; margin-bottom: 1px !important; }
+          .print-compact-text h4 { font-size: 10px !important; margin-bottom: 1px !important; }
           .print-compact-text th,
-          .print-compact-text td { font-size: 10px !important; padding: 3px 5px !important; }
-          .print-compact-text .text-sm { font-size: 11px !important; }
-          .print-compact-text .text-xs { font-size: 10px !important; }
-          .print-compact-text .text-2xl { font-size: 18px !important; }
-          .print-compact-text .text-xl { font-size: 16px !important; }
-          .print-compact-text .text-base { font-size: 12px !important; }
-          .print-compact-text .space-y-4 > * + * { margin-top: 10px !important; }
-          .print-compact-text .space-y-2 > * + * { margin-top: 6px !important; }
-          .print-compact-text .space-y-8 > * + * { margin-top: 16px !important; }
-          .print-compact-text .gap-4 { gap: 10px !important; }
-          .print-compact-text .p-4 { padding: 10px !important; }
-          .print-compact-text .p-6 { padding: 12px !important; }
-          .print-compact-text .mb-6 { margin-bottom: 12px !important; }
-          .print-compact-text .mb-3 { margin-bottom: 8px !important; }
-          .print-compact-text .pl-12 { padding-left: 28px !important; }
+          .print-compact-text td { font-size: 8px !important; padding: 2px 4px !important; line-height: 1.25 !important; }
+          .print-compact-text .text-sm { font-size: 9px !important; }
+          .print-compact-text .text-xs { font-size: 8px !important; }
+          .print-compact-text .text-2xl { font-size: 14px !important; }
+          .print-compact-text .text-xl { font-size: 12px !important; }
+          .print-compact-text .text-base { font-size: 10px !important; }
+          .print-compact-text .space-y-4 > * + * { margin-top: 6px !important; }
+          .print-compact-text .space-y-2 > * + * { margin-top: 3px !important; }
+          .print-compact-text .space-y-8 > * + * { margin-top: 10px !important; }
+          .print-compact-text .gap-4 { gap: 6px !important; }
+          .print-compact-text .gap-3 { gap: 4px !important; }
+          .print-compact-text .gap-1 { gap: 2px !important; }
+          .print-compact-text .p-4 { padding: 6px !important; }
+          .print-compact-text .p-6 { padding: 8px !important; }
+          .print-compact-text .mb-6 { margin-bottom: 6px !important; }
+          .print-compact-text .mb-3 { margin-bottom: 4px !important; }
+          .print-compact-text .mb-2 { margin-bottom: 3px !important; }
+          .print-compact-text .mt-4 { margin-top: 6px !important; }
+          .print-compact-text .mt-6 { margin-top: 8px !important; }
+          .print-compact-text .pl-12 { padding-left: 20px !important; }
+          .print-compact-text .pl-5 { padding-left: 14px !important; }
+          .print-compact-text .pt-3 { padding-top: 4px !important; }
+          .print-compact-text .py-4 { padding-top: 4px !important; padding-bottom: 4px !important; }
+          .print-compact-text .w-9 { width: 24px !important; }
+          .print-compact-text .h-9 { height: 24px !important; }
+          .print-compact-text .w-10 { width: 28px !important; }
+          .print-compact-text .h-10 { height: 28px !important; }
+          .print-compact-text .w-5 { width: 14px !important; }
+          .print-compact-text .h-5 { height: 14px !important; }
+          .print-compact-text img { max-height: 200px !important; object-fit: contain !important; }
+          .print-compact-text ul, .print-compact-text ol { margin-bottom: 3px !important; }
+          .print-compact-text li { margin-bottom: 0px !important; }
         `}</style>
 
         {/* Scrollable A4 page preview */}
