@@ -3,6 +3,106 @@ import { PMData } from "./PMFrequencySection";
 // Sample PM based on the Ball Mill Area Inspection example
 export const samplePMs: PMData[] = [
   {
+    id: "pm-fp-daily-offline",
+    pmName: "Filter Press Daily Offline Inspection",
+    equipmentType: "Filter Press",
+    frequency: "Daily",
+    purpose:
+      "To safely carry out mechanical inspection of filter press equipment for signs of damage or potential failures that may require maintenance attention. Equipment must be isolated and locked out before commencing offline inspection tasks.",
+    discipline: "Mechanical",
+    dutyType: "Both",
+    estimatedDuration: "1 hr",
+    skillLevel: "Fitter",
+    requiredTools: [
+      "Standard hand tools",
+      "Temperature gun",
+      "Torch",
+      "Marker tags",
+    ],
+    requiredPPE: [
+      "Steel cap boots",
+      "Hard hat",
+      "Safety glasses",
+      "Hearing protection",
+      "Gloves (when required)",
+    ],
+    isolationRequirements:
+      "Equipment must be isolated, locked out and tagged before commencing offline inspection. Full mechanical isolation required.",
+    safetyNotes: [
+      "Complete a TAKE 5 every time to check that no abnormal conditions exist",
+      "Follow safety procedures at all times",
+      "Isolate equipment where required & ensure use of correct PPE",
+      "Under no circumstances will personnel place themselves in an unsafe position while carrying out these inspection tasks",
+    ],
+    tasks: [
+      { id: "fp-t1", step: 1, description: "Ensure equipment is isolated, locked out and tagged before commencing offline inspection" },
+      { id: "fp-t2", step: 2, description: "Conduct area inspection as per tables below. Record each check with a tick in the appropriate box" },
+      { id: "fp-t3", step: 3, description: "When a defect is identified and it is safe and practical to repair, do so and note in the comments section" },
+      { id: "fp-t4", step: 4, description: "If not practical to repair, report the defect including materials required, trade discipline & estimated repair time for the supervisor to raise a work request" },
+    ],
+    inspectionPoints: [
+      {
+        item: "Filter 1 – Plates and Structural",
+        checkPoints: ["Plates for cracks/warping/chips", "Plate sealing edges", "Handles and lugs", "Tie bars straightness/corrosion", "Main beam and frame", "Pneumatic plate shakers"],
+      },
+      {
+        item: "Filter 1 – Hydraulic",
+        checkPoints: ["Cylinder rods for scoring/damage", "Rod wipers and seals", "Hose clamps and supports"],
+      },
+      {
+        item: "Filter 1 – Plate Shifter",
+        checkPoints: ["Carriage wheels wear/binding", "Shifter rails corrosion/misalignment", "Chain tension", "Shifter smooth operation"],
+      },
+      {
+        item: "Filter 1 Extraction Conveyor",
+        checkPoints: ["Skirts adjustment", "Roller condition", "Roller frames"],
+      },
+      {
+        item: "Filter 2 – Plates and Structural",
+        checkPoints: ["Plates for cracks/warping/chips", "Plate sealing edges", "Handles and lugs", "Tie bars straightness/corrosion", "Main beam and frame", "Pneumatic plate shakers"],
+      },
+      {
+        item: "Filter 2 – Hydraulic",
+        checkPoints: ["Cylinder rods for scoring/damage", "Rod wipers and seals", "Hose clamps and supports"],
+      },
+      {
+        item: "Filter 2 – Plate Shifter",
+        checkPoints: ["Carriage wheels wear/binding", "Shifter rails corrosion/misalignment", "Chain tension and sprockets", "Shifter smooth operation"],
+      },
+      {
+        item: "Filter 2 Extraction Conveyor",
+        checkPoints: ["Skirts adjustment", "Roller condition", "Roller frames"],
+      },
+      {
+        item: "Collector Conveyor (If Available)",
+        checkPoints: ["Skirts adjustment", "Roller condition", "Roller frames"],
+      },
+      {
+        item: "Radial Stacker Conveyor (If Available)",
+        checkPoints: ["Skirts adjustment", "Roller condition", "Roller frames"],
+      },
+    ],
+    acceptableCriteria: [
+      "No plate cracks or damaged sealing edges",
+      "No cylinder rod scoring or seal failure",
+      "Chain elongation <3%",
+      "No seized or hot bearings",
+      "Frame and tie bars aligned",
+      "No visible hydraulic leaks",
+    ],
+    signsOfFailure: [
+      "Plate cracks or damaged sealing edges",
+      "Cylinder rod scoring or seal failure",
+      "Chain elongation >3%",
+      "Seized or hot bearings",
+      "Misaligned frame or tie bars",
+      "Visible hydraulic leaks",
+    ],
+    lubricationNotes: "N/A - This is an offline visual/mechanical inspection.",
+    oemReferences: "Refer to filter press OEM documentation for component specifications.",
+    status: "Draft",
+  },
+  {
     id: "pm-001",
     pmName: "Weekly Ball Mill Area Inspection",
     equipmentType: "Ball Mill",
