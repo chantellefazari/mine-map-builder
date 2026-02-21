@@ -1252,7 +1252,7 @@ export const ImplementationPlanDocument = () => {
             </TableHeader>
             <TableBody>
               {[
-                ["Civil & Earthworks", "—", "Cut, fill, regrading, slabs"],
+                ["Civil & Earthworks (MMS day rate)", "~$13,316", "MMS plant & ops ~$12,416 (15hr avg) + roller hire ~$900 (2 days @ $450). Excl. blue rock, spotters, survey"],
                 ["Dome Roof Structure", "—", "Supply, install, certification"],
                 ["Containers (×5)", "Purchased", "On their way — already procured prior to this plan"],
                 ["Internal Fitout (all containers)", "—", "Shelving, racks, bin panels, labels"],
