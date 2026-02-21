@@ -165,16 +165,20 @@ export const ImplementationPlanDocument = () => {
       {/* ============================================================ */}
       <Section number="2" title="Current State Assessment" icon={AlertTriangle}>
         <Prose>
-          The current storage arrangement at TCMG presents multiple operational, safety, and financial risks that this plan directly addresses:
+          The proposed warehouse footprint is located within a low-lying section of the yard that currently experiences seasonal water pooling and unstable ground conditions. Without civil correction, this area cannot support a controlled warehouse environment.
         </Prose>
-        <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-          <li><span className="font-medium text-foreground">Drainage Issues:</span> Existing pad areas lack adequate drainage, resulting in water pooling around containers during wet season events. This accelerates corrosion of stored components and creates slip hazards.</li>
-          <li><span className="font-medium text-foreground">Uncontrolled Storage:</span> Components are stored across multiple ad-hoc locations with no formal zone allocation, bin coding, or access control. Items are frequently lost, duplicated, or damaged.</li>
-          <li><span className="font-medium text-foreground">Emergency Freight Exposure:</span> Inability to locate on-hand stock regularly triggers emergency freight orders, with associated premium costs and production delays.</li>
-          <li><span className="font-medium text-foreground">Labour Inefficiency:</span> Technicians routinely spend 30–60 minutes searching for parts across unstructured storage areas, directly reducing wrench time.</li>
-          <li><span className="font-medium text-foreground">Contamination Risk:</span> Electrical and instrumentation components stored alongside mechanical parts are exposed to dust, moisture, and metallic contaminants, reducing service life and reliability.</li>
-        </ul>
-        <ImagePlaceholder label="Current state photos — drainage, ad-hoc storage areas" />
+        <Prose>
+          Spare parts are presently distributed across informal locations including yard containers and the MCC, with no structured zoning, bin allocation, or controlled issue process. Inventory visibility relies on personnel knowledge rather than defined system logic.
+        </Prose>
+        <Prose>
+          There is no defined separation between electrical, instrumentation, mechanical and consumable stock. Sensitive components are stored in non-controlled environments, increasing contamination and reliability risk.
+        </Prose>
+        <Prose>
+          Breakdown response is largely reactive due to limited confidence in on-hand stock accuracy. This contributes to emergency freight exposure and avoidable downtime.
+        </Prose>
+        <Prose>
+          The absence of physical infrastructure currently prevents structured system implementation.
+        </Prose>
       </Section>
 
       <Separator />
