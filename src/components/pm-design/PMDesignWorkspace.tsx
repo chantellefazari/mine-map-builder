@@ -54,6 +54,12 @@ export const PMDesignWorkspace = () => {
         {/* By Frequency View */}
         <TabsContent value="by-frequency" className="mt-6 space-y-6">
           <PMFrequencySection
+            frequency="Daily"
+            frequencyLabel="📅 Daily PMs"
+            pms={getpmsByFrequency("Daily")}
+            onAddPM={() => handleAddPM("Daily")}
+          />
+          <PMFrequencySection
             frequency="1 Week"
             frequencyLabel="1️⃣ Weekly PMs (1 Week)"
             pms={getpmsByFrequency("1 Week")}
@@ -157,6 +163,7 @@ const PMMasterListView = ({ pms }: { pms: PMData[] }) => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Frequencies</SelectItem>
+              <SelectItem value="Daily">Daily</SelectItem>
               <SelectItem value="1 Week">1 Week</SelectItem>
               <SelectItem value="2 Week">2 Week</SelectItem>
               <SelectItem value="6 Week">6 Week</SelectItem>

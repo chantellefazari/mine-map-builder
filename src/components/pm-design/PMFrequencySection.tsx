@@ -20,7 +20,7 @@ export interface PMData {
   id: string;
   pmName: string;
   equipmentType: string;
-  frequency: "1 Week" | "2 Week" | "6 Week" | "12 Week";
+  frequency: "Daily" | "1 Week" | "2 Week" | "6 Week" | "12 Week";
   purpose: string;
   discipline: "Mechanical" | "Electrical" | "Ops";
   dutyType: "Duty" | "Standby" | "Both";
@@ -40,7 +40,7 @@ export interface PMData {
 }
 
 interface PMFrequencySectionProps {
-  frequency: "1 Week" | "2 Week" | "6 Week" | "12 Week";
+  frequency: "Daily" | "1 Week" | "2 Week" | "6 Week" | "12 Week";
   frequencyLabel: string;
   pms: PMData[];
   onAddPM: () => void;
