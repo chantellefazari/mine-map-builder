@@ -786,17 +786,130 @@ export const ImplementationPlanDocument = () => {
       {/* ============================================================ */}
       <Section number="7" title="Inventory Logic &amp; Numbering Framework" icon={Hash}>
         <Prose>
-          A unified numbering and coding framework ensures every item in the warehouse is uniquely identified, traceable, and logically allocated.
+          A unified numbering and coding framework ensures every item in the warehouse is uniquely identified, traceable, and logically allocated. This framework synchronises part identification, location coding, and category taxonomy across all modules.
         </Prose>
-        <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-          <li><span className="font-medium text-foreground">Container Coding Logic:</span> Each container carries a unique identifier (C01–C05, LD) with a discipline suffix (EL, IN, ME, MP, CS). This code is the first element in all location references.</li>
-          <li><span className="font-medium text-foreground">Shelf Logic:</span> Bays are labelled A–Z (left to right from entry). Shelves are numbered 1–6 (bottom to top). High-frequency items at levels 2–4 (ergonomic zone).</li>
-          <li><span className="font-medium text-foreground">Bin Numbering Logic:</span> Full location code format: [Container]-[Discipline]-[Bay][Shelf] (e.g., C01-EL-A3). Bin panels use the same format with an additional bin position suffix where applicable.</li>
-          <li><span className="font-medium text-foreground">Supplier Category Alignment:</span> Supplier catalogue entries are mapped to the 25-category TCMG taxonomy, ensuring supplier part references align with site category codes.</li>
-          <li><span className="font-medium text-foreground">Part Numbering Logic:</span> Site part numbers follow the SSCCNNN format (7-digit numeric). SS = Site code (10), CC = Category code (01–23), NNN = Sequential identifier (001–999). Auto-numbering utility ensures collision-free generation across both visual parts and site spares catalogues.</li>
-          <li><span className="font-medium text-foreground">Asset Linkage Placeholder:</span> Each inventory item includes a field for associated asset tag, enabling future integration with the CMMS asset register for direct equipment-to-spare traceability.</li>
-        </ul>
-        <ImagePlaceholder label="Numbering framework diagram / example labels" />
+
+        <SubSection id="7.1" title="Site Part Numbering Standard (SSCCNNN)">
+          <Prose>All site parts follow a 7-digit numeric format to ensure CMMS compatibility and collision-free identification.</Prose>
+          <div className="bg-muted/50 border border-border rounded-lg p-4 space-y-3">
+            <div className="flex items-center gap-3 font-mono text-lg text-foreground font-bold tracking-widest justify-center">
+              <span className="px-2 py-1 bg-primary/10 border border-primary/30 rounded">SS</span>
+              <span className="px-2 py-1 bg-blue-500/10 border border-blue-500/30 rounded">CC</span>
+              <span className="px-2 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded">NNN</span>
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-sm">
+              <div className="text-center p-2 bg-primary/5 rounded border border-primary/20">
+                <p className="font-bold text-primary text-xs uppercase">SS — Site Code</p>
+                <p className="text-muted-foreground mt-1">Always <span className="font-mono font-bold">10</span> (TCMG)</p>
+              </div>
+              <div className="text-center p-2 bg-blue-500/5 rounded border border-blue-500/20">
+                <p className="font-bold text-blue-600 text-xs uppercase">CC — Category</p>
+                <p className="text-muted-foreground mt-1">01–22 (see taxonomy)</p>
+              </div>
+              <div className="text-center p-2 bg-emerald-500/5 rounded border border-emerald-500/20">
+                <p className="font-bold text-emerald-600 text-xs uppercase">NNN — Sequence</p>
+                <p className="text-muted-foreground mt-1">001–999 per category</p>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground text-center">Example: <span className="font-mono font-medium text-foreground">1004012</span> = Site 10, Bearing (CC 04), Item 012</p>
+          </div>
+          <div className="mt-2 bg-amber-500/10 border border-amber-500/30 rounded-lg p-2.5 flex items-center gap-2">
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+            <span className="text-xs text-amber-700 dark:text-amber-300">Legacy alphanumeric codes are flagged with warnings during validation. All new parts must use 7-digit numeric format only.</span>
+          </div>
+        </SubSection>
+
+        <SubSection id="7.2" title="Category Codes (CC 01–22)">
+          <Prose>The TCMG taxonomy defines 22 numeric category codes. Sub-categories share their parent CC code for numbering sequences.</Prose>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-1.5 text-xs">
+            {[
+              { cc: "01", name: "Pump Component" }, { cc: "02", name: "Motor Component" }, { cc: "03", name: "Gearbox" },
+              { cc: "04", name: "Bearing" }, { cc: "05", name: "Valve" }, { cc: "06", name: "Instrumentation" },
+              { cc: "07", name: "Electrical" }, { cc: "08", name: "Conveyor Component" }, { cc: "09", name: "Wear Parts" },
+              { cc: "10", name: "Mechanical" }, { cc: "11", name: "Pipe Fitting" }, { cc: "12", name: "Seal" },
+              { cc: "13", name: "Filter" }, { cc: "14", name: "Lubrication System" }, { cc: "15", name: "Air & Pneumatic" },
+              { cc: "16", name: "Tanks & Vessels" }, { cc: "17", name: "Safety Equipment" }, { cc: "18", name: "Power Generation" },
+              { cc: "19", name: "Tooling" }, { cc: "20", name: "OEM Assembly" }, { cc: "21", name: "Fastener" },
+              { cc: "22", name: "Consumables" },
+            ].map((c) => (
+              <div key={c.cc} className="flex items-center gap-2 p-1.5 bg-muted/40 rounded border border-border">
+                <span className="font-mono font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded text-[10px]">{c.cc}</span>
+                <span className="text-muted-foreground">{c.name}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">Sub-categories: Structural Steel → CC 10, Rigging → CC 19, PPE → CC 19</p>
+        </SubSection>
+
+        <SubSection id="7.3" title="Location Coding Standard">
+          <Prose>Warehouse location codes follow a strict format for traceable bin-level storage.</Prose>
+          <div className="bg-muted/50 border border-border rounded-lg p-3 space-y-2">
+            <p className="text-sm font-mono text-center text-foreground font-medium tracking-wide">
+              [Container]-[Discipline]-[Bay][Shelf]
+            </p>
+            <p className="text-xs text-muted-foreground text-center">
+              Example: <span className="font-mono font-medium text-foreground">C01-EL-A3</span> = Container 01, Electrical, Bay A, Shelf 3
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-2 mt-2 text-xs">
+            <div className="p-2 bg-muted/40 rounded border border-border">
+              <span className="font-medium text-foreground">Bays:</span>
+              <span className="text-muted-foreground"> A–Z (left to right from entry)</span>
+            </div>
+            <div className="p-2 bg-muted/40 rounded border border-border">
+              <span className="font-medium text-foreground">Shelves:</span>
+              <span className="text-muted-foreground"> 1–6 (bottom to top). Ergonomic zone: 2–4</span>
+            </div>
+            <div className="p-2 bg-muted/40 rounded border border-border">
+              <span className="font-medium text-foreground">Laydown:</span>
+              <span className="text-muted-foreground"> LD-[Bay][Position] (e.g., LD-A1)</span>
+            </div>
+            <div className="p-2 bg-muted/40 rounded border border-border">
+              <span className="font-medium text-foreground">Validation:</span>
+              <span className="text-muted-foreground"> Discipline must match container ID</span>
+            </div>
+          </div>
+        </SubSection>
+
+        <SubSection id="7.4" title="Discipline Code Map">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-1.5 text-xs">
+            {[
+              { code: "C01-EL", label: "Electrical – Positive Airflow", color: "bg-yellow-500/10 border-yellow-500/30" },
+              { code: "C02-IN", label: "Instrumentation, Pneumatics & Fittings", color: "bg-purple-500/10 border-purple-500/30" },
+              { code: "C03-ME", label: "Mechanical (40ft)", color: "bg-blue-500/10 border-blue-500/30" },
+              { code: "C04-MP", label: "Mechanical Precision", color: "bg-cyan-500/10 border-cyan-500/30" },
+              { code: "C05-CS", label: "Consumables & Supplies", color: "bg-slate-500/10 border-slate-500/30" },
+              { code: "LD", label: "Laydown Yard (External)", color: "bg-muted/50 border-border" },
+            ].map((d) => (
+              <div key={d.code} className={`flex items-center gap-2 p-2 rounded border ${d.color}`}>
+                <span className="font-mono font-bold text-foreground">{d.code}</span>
+                <span className="text-muted-foreground">{d.label}</span>
+              </div>
+            ))}
+          </div>
+        </SubSection>
+
+        <SubSection id="7.5" title="Category-to-Container Mapping">
+          <Prose>Supplier catalogue entries are mapped to the 25-category TCMG taxonomy, ensuring supplier part references align with site category codes and container allocation.</Prose>
+          <div className="grid sm:grid-cols-2 gap-2 text-xs">
+            {[
+              { container: "C01-EL", categories: "CC 07 (Electrical), CC 18 (Power Gen)" },
+              { container: "C02-IN", categories: "CC 06 (Instrumentation), CC 15 (Air & Pneumatic)" },
+              { container: "C03-ME", categories: "CC 08 (Conveyor), CC 09 (Wear), CC 10 (Mechanical), CC 11 (Pipe Fitting)" },
+              { container: "C04-MP", categories: "CC 01 (Pump), CC 04 (Bearing), CC 12 (Seal)" },
+              { container: "C05-CS", categories: "CC 19 (Tooling/PPE), CC 21 (Fastener), CC 22 (Consumables)" },
+            ].map((m) => (
+              <div key={m.container} className="p-2 bg-muted/40 rounded border border-border">
+                <span className="font-mono font-bold text-foreground">{m.container}: </span>
+                <span className="text-muted-foreground">{m.categories}</span>
+              </div>
+            ))}
+          </div>
+        </SubSection>
+
+        <SubSection id="7.6" title="Asset Linkage">
+          <Prose>Each inventory item includes a field for associated asset tag, enabling future integration with the CMMS asset register for direct equipment-to-spare traceability. Auto-numbering utility ensures collision-free generation across both visual parts and site spares catalogues.</Prose>
+        </SubSection>
       </Section>
 
       <Separator />
