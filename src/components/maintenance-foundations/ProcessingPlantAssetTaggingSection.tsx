@@ -9,12 +9,12 @@ import {
   AlertTriangle,
   CheckCircle2,
   FileText,
-  Download,
+  
   Factory,
   Database,
   Ruler,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 
 const SectionHeading = ({ icon: Icon, number, title }: { icon: React.ElementType; number: string; title: string }) => (
   <div className="flex items-center gap-3 mb-4">
@@ -120,7 +120,7 @@ const SimplifiedTagMockup = ({
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export const ProcessingPlantAssetTaggingSection = () => {
-  const handleExportPDF = () => window.print();
+  
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -145,10 +145,6 @@ export const ProcessingPlantAssetTaggingSection = () => {
                 Crushing Plant is excluded from this standard. Processing Plant assets only.
               </p>
             </div>
-            <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={handleExportPDF}>
-              <Download className="w-4 h-4" />
-              Export PDF
-            </Button>
           </div>
         </CardContent>
       </Card>
