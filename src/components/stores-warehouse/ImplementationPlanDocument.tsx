@@ -289,23 +289,6 @@ export const ImplementationPlanDocument = () => {
           </ul>
         </SubSection>
 
-        <SubSection id="3.6" title="Laydown Yard Preparation">
-          <Prose>The Laydown Yard area will be levelled and compacted using engineered fill where required.</Prose>
-          <Prose>The hardstand will be designed to support:</Prose>
-          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>Motors</li>
-            <li>Gearboxes</li>
-            <li>Pumps</li>
-            <li>Heavy assemblies</li>
-          </ul>
-          <Prose>Design considerations include:</Prose>
-          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>Forklift accessibility</li>
-            <li>Defined LD-A / LD-B location coding</li>
-            <li>Future expansion capability</li>
-          </ul>
-        </SubSection>
-
         {/* Attachments */}
         <div className="space-y-4 mt-4">
           <h3 className="text-base font-semibold text-foreground">Attachments for This Section</h3>
