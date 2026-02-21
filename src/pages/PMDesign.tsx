@@ -16,7 +16,7 @@ import {
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { PMBaseMasterTemplate } from "@/components/pm-design/PMBaseMasterTemplate";
-
+import { FilterPressDailyOfflinePMDocument } from "@/components/pm-design/FilterPressDailyOfflinePMDocument";
 import { MillDailyPMDocument } from "@/components/pm-design/MillDailyPMDocument";
 import { ROPlantPMDocument } from "@/components/pm-design/ROPlantPMDocument";
 import { AcidElutionPMDocument } from "@/components/pm-design/AcidElutionPMDocument";
@@ -78,7 +78,7 @@ import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical" | "mobile-equipment";
 type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week" | "24-week" | "52-week";
-type ViewType = "master" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | "crusher-fuel-farm-generator-electrical-weekly" | "substation-2-weekly" | "ac-inspection-12-weekly" | "generator-yearly-test" | "pull-wire-checks-12-weekly" | "rcd-pushbutton-12-weekly" | "rcd-injection-24-weekly" | "rcd-testing-admin" | "rcd-testing-juno-bore" | "rcd-testing-andys-dam" | "rcd-testing-lab" | "rcd-testing-crusher-fuel-farm" | "rcd-testing-crusher-workshop" | "rcd-3m-testing-admin" | "rcd-3m-testing-juno-bore" | "rcd-3m-testing-andys-dam" | "rcd-3m-testing-lab" | "rcd-3m-testing-crusher-workshop" | "rcd-3m-testing-crusher-fuel-farm" | "switchboard-52-weekly" | "cable-test-sheet" | "emergency-light-12-weekly" | "filter-press-motor-inspection" | "full-test-sheet" | "motor-inspections-filter-press" | "motor-inspections-gold-room" | "motor-inspections-kiln-area" | "motor-inspections-elution" | "motor-inspections-milling-area" | "motor-inspections-pwp" | "motor-inspections-services" | "motor-inspections-tanks" | "motor-inspections-thickener" | `${Discipline}-${FrequencyGroup}`;
+type ViewType = "master" | "filter-press-daily-offline" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | "crusher-fuel-farm-generator-electrical-weekly" | "substation-2-weekly" | "ac-inspection-12-weekly" | "generator-yearly-test" | "pull-wire-checks-12-weekly" | "rcd-pushbutton-12-weekly" | "rcd-injection-24-weekly" | "rcd-testing-admin" | "rcd-testing-juno-bore" | "rcd-testing-andys-dam" | "rcd-testing-lab" | "rcd-testing-crusher-fuel-farm" | "rcd-testing-crusher-workshop" | "rcd-3m-testing-admin" | "rcd-3m-testing-juno-bore" | "rcd-3m-testing-andys-dam" | "rcd-3m-testing-lab" | "rcd-3m-testing-crusher-workshop" | "rcd-3m-testing-crusher-fuel-farm" | "switchboard-52-weekly" | "cable-test-sheet" | "emergency-light-12-weekly" | "filter-press-motor-inspection" | "full-test-sheet" | "motor-inspections-filter-press" | "motor-inspections-gold-room" | "motor-inspections-kiln-area" | "motor-inspections-elution" | "motor-inspections-milling-area" | "motor-inspections-pwp" | "motor-inspections-services" | "motor-inspections-tanks" | "motor-inspections-thickener" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
@@ -145,6 +145,7 @@ const disciplines = [
     icon: Wrench,
     frequencies: {
       daily: { pms: [
+        { id: "filter-press-daily-offline", name: "Filter Press Daily Offline Inspection" },
         { id: "mill-daily", name: "Mill Daily Inspection" },
         { id: "ro-plant-daily", name: "RO Plant Daily Inspection" }
       ], subgroups: [] },
@@ -273,7 +274,7 @@ const getFrequencyCount = (freqData: { pms: any[]; subgroups: { pms: any[] }[] }
 };
 
 const PMDesign = () => {
-  const [activeView, setActiveView] = useState<ViewType>("mill-daily");
+  const [activeView, setActiveView] = useState<ViewType>("filter-press-daily-offline");
   const [expandedDisciplines, setExpandedDisciplines] = useState<Discipline[]>(["mechanical"]);
   const [expandedFrequencies, setExpandedFrequencies] = useState<string[]>(["mechanical-daily", "mechanical-1-week"]);
   const [showPrintPreview, setShowPrintPreview] = useState(false);
@@ -311,7 +312,7 @@ const PMDesign = () => {
   const getDocumentTitle = () => {
     switch (activeView) {
       case "master": return "Base PM Template";
-      
+      case "filter-press-daily-offline": return "Filter Press Daily Offline Inspection";
       case "mill-daily": return "Mill Daily Inspection";
       case "ro-plant-daily": return "RO Plant Daily Inspection";
       case "acid-elution-weekly": return "Acid Wash & Elution Weekly Inspection";
@@ -393,8 +394,8 @@ const PMDesign = () => {
     switch (activeView) {
       case "master":
         return <PMBaseMasterTemplate />;
-
-
+      case "filter-press-daily-offline":
+        return <FilterPressDailyOfflinePMDocument />;
       case "mill-daily":
         return <MillDailyPMDocument />;
       case "ro-plant-daily":
