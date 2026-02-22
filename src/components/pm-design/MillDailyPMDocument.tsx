@@ -112,6 +112,18 @@ export const MillDailyPMDocument = () => {
                   <span className="text-muted-foreground">|</span>
                   <span>{section.equipmentName}</span>
                 </div>
+                {section.equipmentId === "PU102A/B" && (
+                  <div className="flex flex-col gap-0.5 text-xs">
+                    <div className="flex items-center gap-1">
+                      <span className="font-medium">Total Hours PU102A:</span>
+                      <Input className="h-5 w-20 text-xs border-none shadow-none focus-visible:ring-0 bg-background/80" />
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="font-medium">Total Hours PU102B:</span>
+                      <Input className="h-5 w-20 text-xs border-none shadow-none focus-visible:ring-0 bg-background/80" />
+                    </div>
+                  </div>
+                )}
               </div>
               <table className="w-full text-sm">
                 <thead>
