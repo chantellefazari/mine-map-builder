@@ -31,7 +31,7 @@ export const PMBaseMasterTemplate = () => {
 
         {/* Document Container */}
         <div className="border-2 border-border bg-card">
-          {/* Banner with Title Overlay */}
+          {/* Banner with Title Overlay and Work Order */}
           <div className="relative">
             <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
             <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
@@ -43,12 +43,12 @@ export const PMBaseMasterTemplate = () => {
                 <p className="text-base mt-1 text-primary/80">[Discipline] [PM Mode] PMs - [Frequency] [PM Type]</p>
               </div>
             </div>
-          </div>
-
-          {/* Work Order Number */}
-          <div className="grid grid-cols-[120px_1fr] border-b border-border text-xs">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Work Order #:</div>
-            <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
+            <div className="absolute bottom-0 right-2 h-[60%] flex items-center">
+              <div className="flex items-center gap-1 text-xs">
+                <span className="font-semibold text-primary/90">WO#:</span>
+                <Input className="h-6 w-24 text-xs bg-background/80 border-primary/30" />
+              </div>
+            </div>
           </div>
 
           {/* Header Information Grid */}
