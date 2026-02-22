@@ -1,9 +1,8 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { ClipboardCheck, Zap } from "lucide-react";
-import tennantBanner from "@/assets/tennant-banner-new.png";
-import tennantIcon from "@/assets/tennant-icon.png";
+import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
+import { PMSignOffBlock } from "./PMSignOffBlock";
 
 const checklistItems = [
   { id: "earth-lock-ring", label: "Earth Lock Ring" },
@@ -21,181 +20,129 @@ export const CableTestSheetPMDocument = () => {
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
-        {/* Banner with Title Overlay */}
-        <div className="relative">
-          <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-          <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
-            <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold tracking-wide text-primary">Cable Test Sheet</h1>
-              <p className="text-base mt-1 text-primary/80">As Required</p>
-            </div>
-          </div>
-        </div>
+        <PMBannerHeader title="Cable Test Sheet" subtitle="Electrical As Required" />
 
-        {/* Cable Information Header */}
         <div className="grid grid-cols-2 border-b border-border text-xs">
           <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Cable No:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">From:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">To:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div><div className="px-2 py-1.5">Tennant Creek</div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Cable No:</div><div className="px-2 py-1.5"></div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">From:</div><div className="px-2 py-1.5"></div></div>
+            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">To:</div><div className="px-2 py-1.5"></div></div>
           </div>
           <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Cable Size/Type:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Length:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" type="date" /></div>
-            </div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Cable Size/Type:</div><div className="px-2 py-1.5"></div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Length:</div><div className="px-2 py-1.5"></div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div><div className="px-2 py-1.5"></div></div>
+            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div><div className="px-2 py-1.5"></div></div>
           </div>
         </div>
 
         {/* Meter Information */}
         <div className="border-b border-border">
           <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Meter Information</div>
-          <div className="grid grid-cols-3 text-xs">
-            <div className="grid grid-cols-[100px_1fr] border-r border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Make/Model:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr] border-r border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Serial No:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Certified Date:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" type="date" /></div>
-            </div>
-          </div>
-        </div>
-
-        {/* Safety Precautions */}
-        <SafetyPrecautionsSection />
-
-        {/* Insulation Resistance Test */}
-        <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-          <Zap className="w-5 h-5 text-primary" />
-          INSULATION RESISTANCE (MEGA OHMS)
-        </div>
-
-        <div className="overflow-x-auto">
           <table className="w-full text-xs border-collapse">
             <thead>
-              <tr className="bg-muted">
-                <th className="border border-border px-2 py-2 text-center font-semibold">R-W</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold">R-B</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold">W-B</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold">R-E</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold">W-E</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold">B-E</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold">R-N</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold">W-N</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold">B-N</th>
+              <tr className="bg-muted/50">
+                <th className="border border-border px-3 py-2 text-left font-medium">Make/Model</th>
+                <th className="border border-border px-3 py-2 text-left font-medium">Serial No</th>
+                <th className="border border-border px-3 py-2 text-left font-medium">Certified Date</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                {Array.from({ length: 9 }).map((_, i) => (
-                  <td key={i} className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
-                ))}
+                <td className="border border-border px-3 py-4"></td>
+                <td className="border border-border px-3 py-4"></td>
+                <td className="border border-border px-3 py-4"></td>
               </tr>
             </tbody>
           </table>
         </div>
 
+        <SafetyPrecautionsSection />
+
+        {/* Insulation Resistance Test */}
+        <div className="border-b border-border">
+          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+            <Zap className="w-5 h-5 text-primary" />
+            INSULATION RESISTANCE (MEGA OHMS)
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr className="bg-muted">
+                  <th className="border border-border px-2 py-2 text-center font-semibold">R-W</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold">R-B</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold">W-B</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold">R-E</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold">W-E</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold">B-E</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold">R-N</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold">W-N</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold">B-N</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {Array.from({ length: 9 }).map((_, i) => (
+                    <td key={i} className="border border-border px-2 py-4"></td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         {/* Additional Test Results */}
-        <div className="grid grid-cols-2 border-b border-border text-xs">
-          <div className="border-r border-border p-3">
-            <div className="font-semibold mb-2">N-E Fault Loop Impedance (OHMS)</div>
-            <Input className="h-7 text-xs" />
-          </div>
-          <div className="p-3">
-            <div className="font-semibold mb-2">Continuity (OHMS)</div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <span className="text-xs text-muted-foreground">Earth:</span>
-                <Input className="h-7 text-xs" />
-              </div>
-              <div>
-                <span className="text-xs text-muted-foreground">SWA:</span>
-                <Input className="h-7 text-xs" />
-              </div>
-            </div>
-          </div>
+        <div className="border-b border-border">
+          <table className="w-full text-xs border-collapse">
+            <tbody>
+              <tr>
+                <td className="border border-border px-3 py-2 font-semibold w-[30%]">N-E Fault Loop Impedance (OHMS)</td>
+                <td className="border border-border px-3 py-4 w-[20%]"></td>
+                <td className="border border-border px-3 py-2 font-semibold w-[15%]">Continuity Earth (Ω)</td>
+                <td className="border border-border px-3 py-4 w-[15%]"></td>
+                <td className="border border-border px-3 py-2 font-semibold w-[10%]">SWA (Ω)</td>
+                <td className="border border-border px-3 py-4 w-[10%]"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         {/* Checklist */}
-        <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-          <ClipboardCheck className="w-5 h-5 text-primary" />
-          CHECK LIST
-        </div>
-
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="bg-muted">
-              <th className="border border-border px-3 py-2 text-left font-semibold w-[50%]">Item</th>
-              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">YES</th>
-              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">NO</th>
-              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">N/A</th>
-              <th className="border border-border px-3 py-2 text-left font-semibold w-[20%]">Comments</th>
-            </tr>
-          </thead>
-          <tbody>
-            {checklistItems.map((item) => (
-              <tr key={item.id} className="hover:bg-muted/30">
-                <td className="border border-border px-3 py-2">{item.label}</td>
-                <td className="border border-border px-2 py-2 text-center"><Checkbox className="h-4 w-4" /></td>
-                <td className="border border-border px-2 py-2 text-center"><Checkbox className="h-4 w-4" /></td>
-                <td className="border border-border px-2 py-2 text-center"><Checkbox className="h-4 w-4" /></td>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs border-0 bg-transparent" /></td>
+        <div className="border-b border-border">
+          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+            <ClipboardCheck className="w-5 h-5 text-primary" />
+            CHECK LIST
+          </div>
+          <table className="w-full text-xs border-collapse">
+            <thead>
+              <tr className="bg-muted">
+                <th className="border border-border px-3 py-2 text-left font-semibold w-[46%]">Item</th>
+                <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th>
+                <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th>
+                <th className="border border-border px-3 py-2 text-left font-semibold w-[34%]">Comments</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {checklistItems.map((item) => (
+                <tr key={item.id} className="hover:bg-muted/30">
+                  <td className="border border-border px-3 py-2">{item.label}</td>
+                  <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" /></div></td>
+                  <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" /></div></td>
+                  <td className="border border-border px-2 py-4"></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {/* Additional Checks */}
-        <div className="border-t border-border">
+        <div className="border-b border-border">
           <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Additional Checks Carried Out</div>
-          <div className="p-3">
-            <Input className="w-full h-16 text-xs" placeholder="Enter any additional checks performed..." />
-          </div>
+          <div className="px-3 py-6"></div>
         </div>
 
-        {/* Sign Off Section */}
-        <div className="border-t border-border">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Tested By:</div>
-          <div className="grid grid-cols-3 gap-0">
-            <div className="grid grid-cols-[80px_1fr] border-r border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Name:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
-            </div>
-            <div className="grid grid-cols-[80px_1fr] border-r border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Licence No:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
-            </div>
-            <div className="grid grid-cols-[80px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Date:</div>
-              <div className="px-3 py-2"><Input className="h-7" type="date" /></div>
-            </div>
-          </div>
-        </div>
+        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Cable Test Sheet Form" />
       </div>
     </div>
   );
