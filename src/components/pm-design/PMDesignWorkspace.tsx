@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, FileText, BookOpen, List } from "lucide-react";
+import { Clock, FileText, BookOpen, List, Loader2 } from "lucide-react";
 import { PMFrequencySection, PMData } from "./PMFrequencySection";
 import { PMPrinciples } from "./PMPrinciples";
-import { samplePMs } from "./pmSampleData";
+import { usePMasterList } from "@/hooks/usePMData";
 
 export const PMDesignWorkspace = () => {
-  const [pms, setPms] = useState<PMData[]>(samplePMs);
+  const { pms, isLoading } = usePMasterList();
 
   const getpmsByFrequency = (frequency: PMData["frequency"]) => {
     return pms.filter((pm) => pm.frequency === frequency);
@@ -16,6 +16,15 @@ export const PMDesignWorkspace = () => {
     // Placeholder for add PM functionality
     console.log("Add PM for frequency:", frequency);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-3 text-muted-foreground">Loading PM data...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
