@@ -220,12 +220,7 @@ export const PMBaseMasterTemplate = () => {
                 </div>
               </div>
 
-              {/* Remove tag banner */}
-              <div className="bg-primary/10 border border-primary/20 rounded p-3">
-                <p className="text-sm font-bold text-primary">
-                  REMOVE TAG AND RETURN TO OPERATION IF NO FAULT FOUND
-                </p>
-              </div>
+
             </div>
           </div>
 
