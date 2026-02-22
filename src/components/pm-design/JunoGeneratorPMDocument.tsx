@@ -127,7 +127,7 @@ export const JunoGeneratorPMDocument = () => {
               <div className="px-2 py-1.5"></div>
             </div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area Desc.:</div>
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div>
               <div className="px-2 py-1.5">Juno Generator</div>
             </div>
             <div className="grid grid-cols-[120px_1fr]">
