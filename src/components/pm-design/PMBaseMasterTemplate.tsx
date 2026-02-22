@@ -168,60 +168,57 @@ export const PMBaseMasterTemplate = () => {
           {/* Sign Off */}
           <div className="border-t border-border">
             <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">SIGN OFF</div>
-            <div className="px-4 py-3">
+            <div className="px-4 py-3 space-y-3">
+              {/* Checkbox rows side by side */}
               <div className="grid grid-cols-2 gap-x-8">
-                {/* Left column - both checkbox rows stacked */}
-                <div className="space-y-2 py-1">
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium w-52">Follow up work required:</span>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1.5">
-                        <Checkbox className="h-4 w-4" />
-                        <span className="text-sm">Yes</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Checkbox className="h-4 w-4" />
-                        <span className="text-sm">No</span>
-                      </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium w-52">Follow up work required:</span>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1.5">
+                      <Checkbox className="h-4 w-4" />
+                      <span className="text-sm">Yes</span>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium w-52">Document update required:</span>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1.5">
-                        <Checkbox className="h-4 w-4" />
-                        <span className="text-sm">Yes</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Checkbox className="h-4 w-4" />
-                        <span className="text-sm">No</span>
-                      </div>
+                    <div className="flex items-center gap-1.5">
+                      <Checkbox className="h-4 w-4" />
+                      <span className="text-sm">No</span>
                     </div>
                   </div>
                 </div>
-                {/* Right column - name/signature/date/duration */}
-                <div className="space-y-2 py-1">
-                  <div className="grid grid-cols-[100px_1fr] items-center">
-                    <span className="text-sm font-medium">Name:</span>
-                    <Input className="h-7" />
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium w-52">Document update required:</span>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1.5">
+                      <Checkbox className="h-4 w-4" />
+                      <span className="text-sm">Yes</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Checkbox className="h-4 w-4" />
+                      <span className="text-sm">No</span>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-[100px_1fr] items-center">
-                    <span className="text-sm font-medium">Signature:</span>
-                    <div className="h-7 border border-border rounded bg-muted/30"></div>
-                  </div>
-                  <div className="grid grid-cols-[100px_1fr] items-center">
-                    <span className="text-sm font-medium">Date:</span>
-                    <Input className="h-7" type="date" />
-                  </div>
-                  <div className="grid grid-cols-[100px_1fr] items-center">
-                    <span className="text-sm font-medium">PM Duration:</span>
-                    <Input className="h-7" />
-                  </div>
+                </div>
+              </div>
+              {/* Input fields underneath */}
+              <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+                <div className="grid grid-cols-[100px_1fr] items-center">
+                  <span className="text-sm font-medium">Name:</span>
+                  <Input className="h-7" />
+                </div>
+                <div className="grid grid-cols-[100px_1fr] items-center">
+                  <span className="text-sm font-medium">Signature:</span>
+                  <div className="h-7 border border-border rounded bg-muted/30"></div>
+                </div>
+                <div className="grid grid-cols-[100px_1fr] items-center">
+                  <span className="text-sm font-medium">Date:</span>
+                  <Input className="h-7" type="date" />
+                </div>
+                <div className="grid grid-cols-[100px_1fr] items-center">
+                  <span className="text-sm font-medium">PM Duration:</span>
+                  <Input className="h-7" />
                 </div>
               </div>
             </div>
           </div>
-
           {/* Approval */}
           <div className="border-t border-border">
             <div className="bg-green-500/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
