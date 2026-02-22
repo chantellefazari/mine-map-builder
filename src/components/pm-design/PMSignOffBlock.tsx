@@ -5,9 +5,10 @@ import { CheckCircle2 } from "lucide-react";
 
 interface PMSignOffBlockProps {
   footerText?: string;
+  showElecCertNo?: boolean;
 }
 
-export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations – Inspection Form" }: PMSignOffBlockProps) => {
+export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations – Inspection Form", showElecCertNo = false }: PMSignOffBlockProps) => {
   return (
     <>
       {/* Comments */}
@@ -41,6 +42,9 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations �
             <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Signature:</span><div className="h-7 border border-border rounded bg-muted/30"></div></div>
             <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Date:</span><Input className="h-7" type="date" /></div>
             <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">PM Duration:</span><Input className="h-7" /></div>
+            {showElecCertNo && (
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Elec. Cert No:</span><Input className="h-7" /></div>
+            )}
           </div>
         </div>
       </div>
