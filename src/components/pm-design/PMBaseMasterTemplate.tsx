@@ -149,8 +149,7 @@ export const PMBaseMasterTemplate = () => {
                     <Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" />
                   </div>
                 </td>
-                <td className="border border-border px-2 py-2">
-                  <span className="text-xs text-muted-foreground italic">[Value: _______]</span>
+                <td className="border border-border px-2 py-4">
                 </td>
               </tr>
             </tbody>
