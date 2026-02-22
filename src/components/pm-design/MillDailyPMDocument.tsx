@@ -117,9 +117,9 @@ export const MillDailyPMDocument = () => {
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
                     <th className="text-left px-4 py-2 font-medium w-[50%]">Task</th>
-                    <th className="text-center px-2 py-2 font-medium w-[8%]">✓</th>
-                    <th className="text-center px-2 py-2 font-medium w-[8%]">✗</th>
-                    <th className="text-left px-4 py-2 font-medium w-[34%]">Comments / Temp</th>
+                    <th className="text-center px-2 py-2 font-medium w-[10%]">Serviceable</th>
+                    <th className="text-center px-2 py-2 font-medium w-[10%]">Defective</th>
+                    <th className="text-left px-4 py-2 font-medium w-[30%]">Comments / Temp</th>
                   </tr>
                 </thead>
                 <tbody>
