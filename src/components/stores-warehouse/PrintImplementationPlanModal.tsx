@@ -25,8 +25,8 @@ const A4_WIDTH_PX = 794;
 const A4_HEIGHT_PX = 1123;
 const MARGIN_PX = 57; // ~15mm at 96dpi
 const CONTENT_HEIGHT_PX = A4_HEIGHT_PX - MARGIN_PX * 2; // ~1009px
-const GAP = 10; // gap between items on a page
-const ORPHAN_THRESHOLD = 120; // keep at least this much content with a header
+const GAP = 6; // gap between items on a page
+const ORPHAN_THRESHOLD = 80; // keep at least this much content with a header
 
 export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModalProps> = ({
   isOpen,
@@ -324,16 +324,18 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
             }
 
             img {
-              max-width: 65%;
+              max-width: 55%;
+              max-height: 160px;
               height: auto;
               display: block;
+              object-fit: contain;
             }
           </style>
         </head>
         <body>
           <div class="doc-cover">
             <h1>Stores & Warehouse Implementation Plan</h1>
-            <p>Tennant Creek Mines Gold | TCMG-PLAN-STORES-001 | 21st February 2026</p>
+            <p>Tennant Creek Mines Gold | TCMG-PLAN-STORES-001 | 23rd February 2026</p>
           </div>
           ${pagesHtml}
         </body>
@@ -498,7 +500,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
           .print-compact-text .h-4 { height: 12px !important; }
           .print-compact-text .w-3\\.5 { width: 10px !important; }
           .print-compact-text .h-3\\.5 { height: 10px !important; }
-          .print-compact-text img { max-height: 180px !important; object-fit: contain !important; }
+          .print-compact-text img { max-height: 140px !important; object-fit: contain !important; }
           .print-compact-text ul, .print-compact-text ol { margin-bottom: 3px !important; }
           .print-compact-text li { margin-bottom: 0px !important; }
           .print-compact-text .grid { gap: 4px !important; }
@@ -518,6 +520,8 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
                 style={{
                   width: `${A4_WIDTH_PX}px`,
                   minHeight: `${A4_HEIGHT_PX}px`,
+                  maxHeight: `${A4_HEIGHT_PX}px`,
+                  overflow: "hidden",
                   padding: `${MARGIN_PX}px`,
                 }}
               >
