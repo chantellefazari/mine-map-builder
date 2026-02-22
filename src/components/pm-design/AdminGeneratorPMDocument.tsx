@@ -143,14 +143,12 @@ export const AdminGeneratorPMDocument = () => {
                 <span className="font-semibold text-sm">{section.equipmentName}</span>
               </div>
               <table className="w-full text-xs">
-                <thead>
+                 <thead>
                   <tr className="bg-muted/30">
-                    <th className="text-left px-3 py-2 font-semibold border-r border-border w-[50%]">Task</th>
-                    <th className="px-2 py-2 font-semibold border-r border-border w-[8%] text-center">Serviceable</th>
-                    <th className="px-2 py-2 font-semibold border-r border-border w-[8%] text-center">Defective</th>
-                    <th className="px-2 py-2 font-semibold border-r border-border w-[8%] text-center">Urgent</th>
-                    <th className="text-left px-3 py-2 font-semibold border-r border-border w-[18%]">Comments</th>
-                    <th className="text-left px-3 py-2 font-semibold w-[8%]">W/O</th>
+                    <th className="text-left px-3 py-2 font-semibold border-r border-border w-[46%]">Task</th>
+                    <th className="px-2 py-2 font-semibold border-r border-border w-[10%] text-center">Serviceable</th>
+                    <th className="px-2 py-2 font-semibold border-r border-border w-[10%] text-center">Defective</th>
+                    <th className="text-left px-3 py-2 font-semibold w-[34%]">Comments</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -166,8 +164,6 @@ export const AdminGeneratorPMDocument = () => {
                       </td>
                       <td className="px-2 py-2 border-r border-border text-center"><Checkbox className="h-4 w-4" /></td>
                       <td className="px-2 py-2 border-r border-border text-center"><Checkbox className="h-4 w-4" /></td>
-                      <td className="px-2 py-2 border-r border-border text-center"><Checkbox className="h-4 w-4" /></td>
-                      <td className="px-3 py-2 border-r border-border"><Input className="h-6 text-xs" /></td>
                       <td className="px-3 py-2"><Input className="h-6 text-xs" /></td>
                     </tr>
                   ))}
