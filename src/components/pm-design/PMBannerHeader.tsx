@@ -23,7 +23,7 @@ export const PMBannerHeader = ({ title, subtitle }: PMBannerHeaderProps) => {
       <div className="absolute bottom-1 right-2 h-[40%] flex items-center">
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] font-bold text-primary tracking-tight">WO#:</span>
-          <Input className="h-6 w-24 text-xs bg-background/90 border-primary/40 focus-visible:ring-primary shadow-sm" placeholder="______" maxLength={6} />
+          <Input className="h-6 w-24 text-xs bg-background/90 border-none focus-visible:ring-primary shadow-sm" placeholder="______" maxLength={6} />
         </div>
       </div>
     </div>
