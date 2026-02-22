@@ -46,9 +46,9 @@ export const PMBaseMasterTemplate = () => {
           </div>
 
           {/* Work Order Number */}
-          <div className="grid grid-cols-[160px_1fr] border-b border-border text-sm">
-            <div className="bg-muted px-4 py-2 font-bold border-r border-border">Work Order #:</div>
-            <div className="px-4 py-2"><Input className="h-7 text-sm" /></div>
+          <div className="grid grid-cols-[120px_1fr] border-b border-border text-xs">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Work Order #:</div>
+            <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
           </div>
 
           {/* Header Information Grid */}
