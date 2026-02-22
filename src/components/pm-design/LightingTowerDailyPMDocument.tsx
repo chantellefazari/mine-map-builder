@@ -98,7 +98,13 @@ export const LightingTowerDailyPMDocument = () => {
               <h1 className="text-2xl font-bold tracking-wide text-primary">Diesel Lighting Tower Daily Mechanical Inspection</h1>
             </div>
           </div>
+          <div className="absolute bottom-1 right-2 h-[40%] flex items-center">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-bold text-primary tracking-tight">WO#:</span>
+              <Input className="h-6 w-24 text-xs bg-background/90 border-primary/40 focus-visible:ring-primary shadow-sm" placeholder="______" maxLength={6} />
+          </div>
         </div>
+          </div>
 
         {/* Header Information Grid */}
         <div className="grid grid-cols-4 border-t border-b border-border text-xs">
@@ -179,35 +185,59 @@ export const LightingTowerDailyPMDocument = () => {
           </div>
         </div>
 
-        {/* Sign-off Section */}
-        <div className="border-b border-border">
-          <div className="bg-green-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-green-600" />
-            <span className="text-green-700">Sign-Off</span>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="bg-muted border-b border-border">
-                  <th className="px-4 py-2 text-left font-semibold">Checked By</th>
-                  <th className="px-4 py-2 text-left font-semibold">Signature</th>
-                  <th className="px-4 py-2 text-left font-semibold w-32">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-border">
-                  <td className="px-4 py-2"><Input className="h-7 text-xs" /></td>
-                  <td className="px-4 py-2"><div className="h-8 border border-border rounded bg-muted/30"></div></td>
-                  <td className="px-4 py-2"><Input className="h-7 text-xs" type="date" /></td>
-                </tr>
-              </tbody>
-            </table>
+        {/* Sign Off */}
+        <div className="border-t border-border">
+          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">SIGN OFF</div>
+          <div className="px-4 py-3 space-y-3">
+            <div className="grid grid-cols-2 gap-x-8">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium w-52">Follow up work required:</span>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">Yes</span></div>
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">No</span></div>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium w-52">Document update required:</span>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">Yes</span></div>
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">No</span></div>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Name:</span><Input className="h-7" /></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Signature:</span><div className="h-7 border border-border rounded bg-muted/30"></div></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Date:</span><Input className="h-7" type="date" /></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">PM Duration:</span><Input className="h-7" /></div>
+            </div>
           </div>
         </div>
 
-        {/* Footer */}
+        {/* Approval */}
+        <div className="border-t border-border">
+          <div className="bg-green-500/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-green-600" />
+            <span className="text-green-700">APPROVAL</span>
+          </div>
+          <table className="w-full text-sm border-collapse">
+            <thead><tr className="bg-muted border-b border-border">
+              <th className="px-4 py-2 text-left font-semibold w-[20%]">Role</th>
+              <th className="px-4 py-2 text-left font-semibold w-[25%]">Name</th>
+              <th className="px-4 py-2 text-left font-semibold w-[25%]">Sign</th>
+              <th className="px-4 py-2 text-left font-semibold w-[30%]">Date</th>
+            </tr></thead>
+            <tbody><tr className="border-b border-border">
+              <td className="px-4 py-2 font-medium">Supervisor</td>
+              <td className="px-4 py-2"><Input className="h-7 text-xs" /></td>
+              <td className="px-4 py-2"><div className="h-7 border border-border rounded bg-muted/30"></div></td>
+              <td className="px-4 py-2"><Input className="h-7 text-xs" type="date" /></td>
+            </tr></tbody>
+          </table>
+        </div>
+
         <div className="bg-muted/30 px-4 py-2 text-xs text-muted-foreground text-center">
-          Tennant Creek Mining Operations - Mobile Equipment Daily Inspection Form
+          Tennant Creek Mining Operations – Inspection Form
         </div>
       </div>
     </div>
