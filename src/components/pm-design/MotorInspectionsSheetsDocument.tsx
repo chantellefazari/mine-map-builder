@@ -1,19 +1,8 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { 
-  Zap,
-  Lock,
-  Cog,
-} from "lucide-react";
-import tennantBanner from "@/assets/tennant-banner-new.png";
-import tennantIcon from "@/assets/tennant-icon.png";
+import { Cog } from "lucide-react";
+import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
-
-interface Hazard {
-  id: string;
-  icon: React.ReactNode;
-  label: string;
-}
+import { PMSignOffBlock } from "./PMSignOffBlock";
 
 interface MotorData {
   description: string;
@@ -36,12 +25,6 @@ interface AreaData {
   subtitle?: string;
   motors: MotorData[];
 }
-
-const hazardsList: Hazard[] = [
-  { id: "electrical", icon: <Zap className="w-4 h-4" />, label: "Electrical" },
-  { id: "mechanical", icon: <Cog className="w-4 h-4" />, label: "Mechanical" },
-  { id: "lockout", icon: <Lock className="w-4 h-4" />, label: "LOTO" },
-];
 
 const stationaryChecks = [
   { item: "Motor", action: "Check name plate is present and matches recorded data. If no data is recorded fill in motor details" },
@@ -292,40 +275,44 @@ interface AreaInspectionSheetProps {
 const AreaInspectionSheet = ({ area }: AreaInspectionSheetProps) => (
   <div className="bg-background min-h-full">
     <div className="border-2 border-border">
-      {/* Banner with Title Overlay */}
-      <div className="relative">
-        <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-        <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
-          <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold tracking-wide text-primary">{area.title}</h1>
-            {area.subtitle && <p className="text-base mt-1 text-primary/80">{area.subtitle}</p>}
-          </div>
-        </div>
-      </div>
+      <PMBannerHeader title={area.title} subtitle={area.subtitle} />
 
       {/* Header Information Grid */}
       <div className="grid grid-cols-2 border-b border-border text-xs">
         <div className="border-r border-border">
           <div className="grid grid-cols-[120px_1fr] border-b border-border">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Start Date:</div>
-            <div className="px-2 py-1.5"><Input className="h-6 text-xs" type="date" /></div>
+            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div>
+            <div className="px-2 py-1.5">Tennant Creek</div>
+          </div>
+          <div className="grid grid-cols-[120px_1fr] border-b border-border">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
+            <div className="px-2 py-1.5"></div>
+          </div>
+          <div className="grid grid-cols-[120px_1fr] border-b border-border">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div>
+            <div className="px-2 py-1.5">{area.name}</div>
           </div>
           <div className="grid grid-cols-[120px_1fr]">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Finish Date:</div>
-            <div className="px-2 py-1.5"><Input className="h-6 text-xs" type="date" /></div>
+            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div>
+            <div className="px-2 py-1.5"></div>
           </div>
         </div>
         <div>
           <div className="grid grid-cols-[120px_1fr] border-b border-border">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Personnel:</div>
-            <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-          </div>
-          <div className="grid grid-cols-[120px_1fr]">
             <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
             <div className="px-2 py-1.5">Electrical</div>
+          </div>
+          <div className="grid grid-cols-[120px_1fr] border-b border-border">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div>
+            <div className="px-2 py-1.5">Statutory Inspection</div>
+          </div>
+          <div className="grid grid-cols-[120px_1fr] border-b border-border">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div>
+            <div className="px-2 py-1.5 font-medium">6 Weekly</div>
+          </div>
+          <div className="grid grid-cols-[120px_1fr]">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
+            <div className="px-2 py-1.5"></div>
           </div>
         </div>
       </div>
@@ -338,23 +325,7 @@ const AreaInspectionSheet = ({ area }: AreaInspectionSheetProps) => (
         <MotorSection key={index} motor={motor} motorNumber={index + 1} />
       ))}
 
-      {/* Sign Off Section */}
-      <div className="border-t border-border">
-        <div className="grid grid-cols-3 text-xs">
-          <div className="grid grid-cols-[100px_1fr] border-r border-border">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Inspected By:</div>
-            <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-          </div>
-          <div className="grid grid-cols-[100px_1fr] border-r border-border">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Elect. Cert No:</div>
-            <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-          </div>
-          <div className="grid grid-cols-[60px_1fr]">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
-            <div className="px-2 py-1.5"><Input className="h-6 text-xs" type="date" /></div>
-          </div>
-        </div>
-      </div>
+      <PMSignOffBlock footerText={`Tennant Creek Mining Operations – ${area.name} Statutory Motor Inspection Form`} />
     </div>
   </div>
 );

@@ -244,7 +244,7 @@ const disciplines = [
     standaloneGroups: [
       { 
         id: "motor-inspections", 
-        label: "Motor Inspections", 
+        label: "Statutory Motor Inspections", 
         pms: [
           { id: "motor-inspections-filter-press", name: "Filter Press" },
           { id: "motor-inspections-gold-room", name: "Gold Room" },
