@@ -77,9 +77,9 @@ export const FilterPressCompressorPMDocument = () => {
               <table className="w-full text-xs border-collapse">
                 <thead>
                   <tr className="bg-muted">
-                    <th className="border border-border text-left px-2 py-2 font-semibold w-[50%]">Task</th>
-                    <th className="border border-border text-center px-2 py-2 font-semibold w-[8%]">✓</th>
-                    <th className="border border-border text-center px-2 py-2 font-semibold w-[8%]">✗</th>
+                    <th className="border border-border text-left px-2 py-2 font-semibold w-[46%]">Task</th>
+                    <th className="border border-border text-center px-2 py-2 font-semibold w-[10%]">Serviceable</th>
+                    <th className="border border-border text-center px-2 py-2 font-semibold w-[10%]">Defective</th>
                     <th className="border border-border text-left px-2 py-2 font-semibold w-[34%]">Comments</th>
                   </tr>
                 </thead>

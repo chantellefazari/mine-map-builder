@@ -44,7 +44,7 @@ export const GreaseOilsPMDocument = () => {
             STOCK LEVEL CHECKS
           </div>
           <table className="w-full text-xs border-collapse">
-            <thead><tr className="bg-muted"><th className="border border-border px-2 py-2 text-left font-semibold w-[35%]">Item</th><th className="border border-border px-2 py-2 text-center font-semibold w-[15%]">Recommended</th><th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✓</th><th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✗</th><th className="border border-border px-2 py-2 text-left font-semibold w-[34%]">Qty Left</th></tr></thead>
+            <thead><tr className="bg-muted"><th className="border border-border px-2 py-2 text-left font-semibold w-[31%]">Item</th><th className="border border-border px-2 py-2 text-center font-semibold w-[15%]">Recommended</th><th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th><th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th><th className="border border-border px-2 py-2 text-left font-semibold w-[34%]">Qty Left</th></tr></thead>
             <tbody>
               {inspectionData.map((item, idx) => (
                 <tr key={`item-${idx}`} className="hover:bg-muted/50">

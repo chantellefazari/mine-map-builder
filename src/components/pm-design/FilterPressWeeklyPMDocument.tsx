@@ -104,7 +104,7 @@ export const FilterPressWeeklyPMDocument = () => {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs border-collapse">
-              <thead><tr className="bg-muted"><th className="border border-border px-3 py-2 text-left font-semibold w-[50%]">Task</th><th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✓</th><th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✗</th><th className="border border-border px-3 py-2 text-left font-semibold w-[34%]">Comments</th></tr></thead>
+              <thead><tr className="bg-muted"><th className="border border-border px-3 py-2 text-left font-semibold w-[46%]">Task</th><th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th><th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th><th className="border border-border px-3 py-2 text-left font-semibold w-[34%]">Comments</th></tr></thead>
               <tbody>
                 {inspectionData.map((section, sectionIdx) => (
                   <>

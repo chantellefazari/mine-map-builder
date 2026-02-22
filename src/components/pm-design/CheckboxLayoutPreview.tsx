@@ -50,8 +50,8 @@ export const CheckboxLayoutPreview = () => {
               <tr className="bg-muted border-b border-border">
                 <th className="px-3 py-1.5 text-left font-semibold w-12">#</th>
                 <th className="px-3 py-1.5 text-left font-semibold">Inspection Item</th>
-                <th className="px-3 py-1.5 text-center font-semibold w-12">✓</th>
-                <th className="px-3 py-1.5 text-center font-semibold w-12">✗</th>
+                <th className="px-3 py-1.5 text-center font-semibold w-20">Serviceable</th>
+                <th className="px-3 py-1.5 text-center font-semibold w-20">Defective</th>
                 <th className="px-3 py-1.5 text-left font-semibold w-56">Comments</th>
               </tr>
             </thead>

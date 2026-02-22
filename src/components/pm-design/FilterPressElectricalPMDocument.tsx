@@ -219,10 +219,10 @@ export const FilterPressElectricalPMDocument = () => {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
-                    <th className="text-left px-4 py-2 font-medium w-[50%]">Task</th>
-                    <th className="text-center px-2 py-2 font-medium w-[8%]">✓</th>
-                    <th className="text-center px-2 py-2 font-medium w-[8%]">✗</th>
-                    <th className="text-left px-4 py-2 font-medium w-[34%]">Comments</th>
+                    <th className="border border-border text-left px-2 py-2 font-semibold w-[46%]">Task</th>
+                    <th className="border border-border text-center px-2 py-2 font-semibold w-[10%]">Serviceable</th>
+                    <th className="border border-border text-center px-2 py-2 font-semibold w-[10%]">Defective</th>
+                    <th className="border border-border text-left px-2 py-2 font-semibold w-[34%]">Comments</th>
                   </tr>
                 </thead>
                 <tbody>
