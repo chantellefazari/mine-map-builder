@@ -18,7 +18,7 @@ interface PrintPreviewModalProps {
 // A4 at 96dpi
 const A4_WIDTH = 794;
 const A4_HEIGHT = 1123;
-const MARGIN = 30; // ~8mm
+const MARGIN = 30;
 const CONTENT_WIDTH = A4_WIDTH - MARGIN * 2;
 const CONTENT_HEIGHT = A4_HEIGHT - MARGIN * 2;
 
@@ -43,8 +43,6 @@ const printStyles = `
   .text-primary { color: #d4a017 !important; }
   .border-border { border-color: #1a1a1a !important; }
   img { max-width: 100%; height: auto; }
-  .font-mono { font-family: 'JetBrains Mono', monospace; }
-  h1, h2, h3, h4 { margin-bottom: 0.3em; }
   input[type="checkbox"], button[role="checkbox"] {
     width: 10px; height: 10px; border: 1px solid #1a1a1a;
     appearance: none; -webkit-appearance: none; background: white;
@@ -73,10 +71,6 @@ const printStyles = `
   .space-y-2 > * + * { margin-top: 3px; }
 `;
 
-interface PageContent {
-  elements: { html: string; height: number }[];
-}
-
 export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
   isOpen,
   onClose,
@@ -84,65 +78,36 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
   title = "Print Preview",
 }) => {
   const measureRef = useRef<HTMLDivElement>(null);
-  const [pages, setPages] = useState<PageContent[]>([]);
+  const [pageCount, setPageCount] = useState(1);
+  const [ready, setReady] = useState(false);
 
-  const paginateContent = useCallback(() => {
-    const container = measureRef.current;
-    if (!container) return;
-
-    // Get all direct top-level breakable elements
-    const breakableElements = getBreakableElements(container);
-    
-    const newPages: PageContent[] = [];
-    let currentPage: PageContent = { elements: [] };
-    let currentHeight = 0;
-
-    for (const el of breakableElements) {
-      const elHeight = el.offsetHeight;
-      
-      // If adding this element would exceed page height
-      if (currentHeight + elHeight > CONTENT_HEIGHT && currentPage.elements.length > 0) {
-        // Push current page and start new one
-        newPages.push(currentPage);
-        currentPage = { elements: [] };
-        currentHeight = 0;
-      }
-
-      // If single element is taller than a page, we still add it (it'll overflow but won't be lost)
-      currentPage.elements.push({
-        html: el.outerHTML,
-        height: elHeight,
-      });
-      currentHeight += elHeight;
-    }
-
-    // Push last page
-    if (currentPage.elements.length > 0) {
-      newPages.push(currentPage);
-    }
-
-    setPages(newPages.length > 0 ? newPages : [{ elements: [{ html: container.innerHTML, height: CONTENT_HEIGHT }] }]);
+  const calculatePages = useCallback(() => {
+    if (!measureRef.current) return;
+    const totalHeight = measureRef.current.scrollHeight;
+    const pages = Math.max(1, Math.ceil(totalHeight / CONTENT_HEIGHT));
+    setPageCount(pages);
+    setReady(true);
   }, []);
 
   useEffect(() => {
-    if (!isOpen) return;
-    // Wait for content to render and measure
-    const timer = setTimeout(paginateContent, 300);
-    return () => clearTimeout(timer);
-  }, [isOpen, children, paginateContent]);
+    if (!isOpen) {
+      setReady(false);
+      setPageCount(1);
+      return;
+    }
+    // Multiple attempts to ensure content is fully rendered
+    const t1 = setTimeout(calculatePages, 100);
+    const t2 = setTimeout(calculatePages, 400);
+    const t3 = setTimeout(calculatePages, 800);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, [isOpen, children, calculatePages]);
 
   const handlePrint = () => {
-    if (pages.length === 0) return;
+    const printContent = measureRef.current;
+    if (!printContent) return;
 
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
-
-    // Build paginated HTML with explicit page breaks
-    const pagesHtml = pages.map((page, idx) => {
-      const pageBreak = idx < pages.length - 1 ? 'page-break-after: always;' : '';
-      const elementsHtml = page.elements.map(e => e.html).join('');
-      return `<div style="${pageBreak}">${elementsHtml}</div>`;
-    }).join('');
 
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -151,7 +116,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
           <title>${title}</title>
           <style>${printStyles}</style>
         </head>
-        <body>${pagesHtml}</body>
+        <body>${printContent.innerHTML}</body>
       </html>
     `);
 
@@ -170,7 +135,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
           <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground">
-              {pages.length} {pages.length === 1 ? 'page' : 'pages'}
+              {pageCount} {pageCount === 1 ? 'page' : 'pages'}
             </span>
             <Button onClick={handlePrint} className="gap-2">
               <Printer className="w-4 h-4" />
@@ -182,41 +147,57 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
           </div>
         </DialogHeader>
 
-        {/* A4 Preview - paginated */}
+        {/* A4 Preview - shows pages with content clipped per page */}
         <div className="flex-1 overflow-auto bg-muted/50 p-8">
           <div className="mx-auto flex flex-col items-center gap-8">
-            {pages.map((page, pageIdx) => (
+            {Array.from({ length: pageCount }).map((_, pageIdx) => (
               <div key={pageIdx} className="relative">
                 <div className="absolute -top-6 left-0 text-xs text-muted-foreground font-medium">
-                  Page {pageIdx + 1} of {pages.length}
+                  Page {pageIdx + 1} of {pageCount}
                 </div>
+                {/* A4 page with clipped view */}
                 <div
-                  className="bg-white shadow-xl border border-border/30"
+                  className="bg-white shadow-xl border border-border/30 relative"
                   style={{
                     width: `${A4_WIDTH}px`,
-                    minHeight: `${A4_HEIGHT}px`,
-                    padding: `${MARGIN}px`,
-                    boxSizing: "border-box",
-                    fontSize: "9px",
+                    height: `${A4_HEIGHT}px`,
+                    overflow: "hidden",
                   }}
                 >
-                  {page.elements.map((el, elIdx) => (
-                    <div key={elIdx} dangerouslySetInnerHTML={{ __html: el.html }} />
-                  ))}
+                  {/* Content shifted up per page */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: `${MARGIN - pageIdx * CONTENT_HEIGHT}px`,
+                      left: `${MARGIN}px`,
+                      width: `${CONTENT_WIDTH}px`,
+                      fontSize: "9px",
+                    }}
+                  >
+                    {children}
+                  </div>
+                  {/* Page break dashed line indicator at bottom */}
+                  {pageIdx < pageCount - 1 && (
+                    <div 
+                      className="absolute bottom-0 left-0 right-0 border-t-2 border-dashed border-destructive/30"
+                      style={{ pointerEvents: "none" }}
+                    />
+                  )}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Hidden measurement container - renders at print scale to measure heights */}
+          {/* Hidden measurement container */}
           <div
             style={{
-              position: "absolute",
+              position: "fixed",
               left: "-9999px",
               top: 0,
               width: `${CONTENT_WIDTH}px`,
               fontSize: "9px",
-              visibility: "hidden",
+              opacity: 0,
+              pointerEvents: "none",
             }}
           >
             <div ref={measureRef}>
@@ -228,56 +209,3 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
     </Dialog>
   );
 };
-
-/**
- * Recursively collects breakable elements from the container.
- * Tries to break at table rows (tr), div sections, or top-level children.
- */
-function getBreakableElements(container: HTMLElement): HTMLElement[] {
-  const results: HTMLElement[] = [];
-  
-  // Walk through container's direct children
-  const walker = (parent: HTMLElement) => {
-    const children = Array.from(parent.children) as HTMLElement[];
-    
-    for (const child of children) {
-      const tag = child.tagName.toLowerCase();
-      const height = child.offsetHeight;
-      
-      // If it's small enough, take it as-is
-      if (height <= CONTENT_HEIGHT) {
-        results.push(child);
-        continue;
-      }
-      
-      // If it's a table, break by rows
-      if (tag === 'table') {
-        const thead = child.querySelector('thead');
-        const rows = Array.from(child.querySelectorAll('tbody > tr')) as HTMLElement[];
-        
-        if (thead) results.push(thead as HTMLElement);
-        for (const row of rows) {
-          results.push(row as HTMLElement);
-        }
-        continue;
-      }
-      
-      // If it's a large div, try to break its children
-      if (child.children.length > 1) {
-        walker(child);
-      } else {
-        // Can't break further, just add it
-        results.push(child);
-      }
-    }
-  };
-
-  walker(container);
-  
-  // If no breakable elements found, return the container itself
-  if (results.length === 0) {
-    results.push(container);
-  }
-  
-  return results;
-}
