@@ -2,15 +2,10 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-  FileText,
-  User,
-  Calendar,
-  ClipboardCheck,
-  CheckCircle2,
-} from "lucide-react";
+import { ClipboardCheck, CheckCircle2 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
 interface InspectionItem {
   id: string;
@@ -162,9 +157,11 @@ export const ForkliftWeeklyPMDocument = () => {
           </div>
         </div>
 
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
+
         {/* Inspection Checklist */}
         <div className="border-b border-border">
-          {/* Inspection Tables by Section */}
           {inspectionData.map((section) => (
             <div key={section.sectionName}>
               {/* Section Header */}

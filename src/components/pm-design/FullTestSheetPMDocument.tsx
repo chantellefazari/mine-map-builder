@@ -1,38 +1,10 @@
-import { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Toggle } from "@/components/ui/toggle";
-import { 
-  AlertCircle,
-  Zap,
-  Lock,
-  ClipboardCheck
-} from "lucide-react";
+import { ClipboardCheck } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
-
-interface Hazard {
-  id: string;
-  icon: React.ReactNode;
-  label: string;
-}
-
-const hazardsList: Hazard[] = [
-  { id: "electrical", icon: <Zap className="w-4 h-4" />, label: "Electrical" },
-  { id: "lockout", icon: <Lock className="w-4 h-4" />, label: "LOTO" },
-];
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
 export const FullTestSheetPMDocument = () => {
-  const [selectedHazards, setSelectedHazards] = useState<string[]>(["electrical"]);
-
-  const toggleHazard = (hazardId: string) => {
-    setSelectedHazards(prev => 
-      prev.includes(hazardId) 
-        ? prev.filter(id => id !== hazardId)
-        : [...prev, hazardId]
-    );
-  };
-
   const testRows = Array.from({ length: 20 }, (_, i) => i + 1);
 
   return (
@@ -90,30 +62,8 @@ export const FullTestSheetPMDocument = () => {
           <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
         </div>
 
-        {/* Hazard Identification */}
-        <div className="border-b border-border">
-          <div className="bg-amber-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-amber-600" />
-            <span className="text-amber-700 font-bold">HAZARD IDENTIFICATION</span>
-            <span className="text-xs text-muted-foreground ml-2">(Select all that apply)</span>
-          </div>
-          <div className="p-4">
-            <div className="flex flex-wrap gap-2">
-              {hazardsList.map((hazard) => (
-                <Toggle
-                  key={hazard.id}
-                  pressed={selectedHazards.includes(hazard.id)}
-                  onPressedChange={() => toggleHazard(hazard.id)}
-                  className="data-[state=on]:bg-amber-500 data-[state=on]:text-white border border-border px-3 py-2 gap-2"
-                  aria-label={`Toggle ${hazard.label} hazard`}
-                >
-                  {hazard.icon}
-                  <span className="text-sm font-medium">{hazard.label}</span>
-                </Toggle>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* Test Table */}
         <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
@@ -143,20 +93,22 @@ export const FullTestSheetPMDocument = () => {
               </tr>
             </thead>
             <tbody>
-              {/* Main row */}
               <tr className="hover:bg-muted/30">
                 <td className="border border-border px-1 py-1 text-center font-medium">Main</td>
-                <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
+                ))}
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
+                ))}
                 <td className="border border-border px-1 py-1 text-center">P / F</td>
                 <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
                 <td className="border border-border px-1 py-1 text-center">P / F</td>
                 <td className="border border-border px-1 py-1 text-center">P / F</td>
                 <td className="border border-border px-1 py-1 text-center">P / F</td>
-                <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
+                ))}
                 <td className="border border-border px-1 py-1 text-center">P / F</td>
                 <td className="border border-border px-1 py-1 text-center">P / F</td>
                 <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
@@ -164,17 +116,20 @@ export const FullTestSheetPMDocument = () => {
               {testRows.map((num) => (
                 <tr key={num} className="hover:bg-muted/30">
                   <td className="border border-border px-1 py-1 text-center font-medium">{num}</td>
-                  <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                  <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                  <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                  <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
+                  {Array.from({ length: 2 }).map((_, i) => (
+                    <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
+                  ))}
+                  {Array.from({ length: 2 }).map((_, i) => (
+                    <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
+                  ))}
                   <td className="border border-border px-1 py-1 text-center">P / F</td>
                   <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
                   <td className="border border-border px-1 py-1 text-center">P / F</td>
                   <td className="border border-border px-1 py-1 text-center">P / F</td>
                   <td className="border border-border px-1 py-1 text-center">P / F</td>
-                  <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                  <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
+                  {Array.from({ length: 2 }).map((_, i) => (
+                    <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
+                  ))}
                   <td className="border border-border px-1 py-1 text-center">P / F</td>
                   <td className="border border-border px-1 py-1 text-center">P / F</td>
                   <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
