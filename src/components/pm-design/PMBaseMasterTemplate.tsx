@@ -43,10 +43,10 @@ export const PMBaseMasterTemplate = () => {
                 <p className="text-base mt-1 text-primary/80">[Discipline] [PM Mode] PMs - [Frequency] [PM Type]</p>
               </div>
             </div>
-            <div className="absolute bottom-0 right-2 h-[60%] flex items-center">
-              <div className="flex items-center gap-1 text-xs">
-                <span className="font-semibold text-primary/90">WO#:</span>
-                <Input className="h-6 w-24 text-xs bg-background/80 border-primary/30" />
+            <div className="absolute bottom-1 right-2 h-[40%] flex items-center">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-primary tracking-tight">WO#:</span>
+                <Input className="h-6 w-24 text-xs bg-background/90 border-primary/40 focus-visible:ring-primary shadow-sm" placeholder="______" maxLength={6} />
               </div>
             </div>
           </div>
