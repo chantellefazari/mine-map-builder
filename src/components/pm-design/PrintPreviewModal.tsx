@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 
@@ -114,8 +113,8 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] w-full max-h-[95vh] h-full p-0 gap-0">
-        <DialogHeader className="p-4 border-b border-border flex-row items-center justify-between space-y-0">
+      <DialogContent className="max-w-[95vw] w-full max-h-[95vh] h-full p-0 gap-0" aria-describedby={undefined}>
+        <div className="p-4 border-b border-border flex items-center justify-between">
           <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
           <div className="flex items-center gap-3">
             <Button onClick={handlePrint} className="gap-2">
@@ -126,7 +125,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
               <X className="w-4 h-4" />
             </Button>
           </div>
-        </DialogHeader>
+        </div>
 
         {/* Preview - shows content at A4 width, browser print handles page breaks */}
         <div className="flex-1 overflow-auto bg-muted/50 p-8">
