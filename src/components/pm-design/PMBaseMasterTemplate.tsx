@@ -103,27 +103,8 @@ export const PMBaseMasterTemplate = () => {
           {/* Safety Precautions */}
           <SafetyPrecautionsSection />
 
-          {/* Procedure Section */}
-          <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <ClipboardCheck className="w-4 h-4 text-primary" />
-              PROCEDURE
-            </div>
-            <div className="px-4 py-3 text-sm leading-relaxed space-y-3">
-              <div className="flex gap-3">
-                <span className="font-bold text-primary">1.</span>
-                <p>Conduct area inspection as per tables below. Record each check with a tick in the appropriate box.</p>
-              </div>
-              <div className="flex gap-3">
-                <span className="font-bold text-primary">2.</span>
-                <p>When a defect is identified and it is safe and practical to repair the defect, please do so and make a note of it in the comments section.</p>
-              </div>
-              <div className="flex gap-3">
-                <span className="font-bold text-primary">3.</span>
-                <p>If not, report the defect including materials required, trade discipline & estimated repair time for the supervisor to raise a work request.</p>
-              </div>
-            </div>
-          </div>
+
+
 
           {/* Inspections Header */}
           <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
