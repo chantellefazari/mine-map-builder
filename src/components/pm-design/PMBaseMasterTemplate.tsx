@@ -168,12 +168,12 @@ export const PMBaseMasterTemplate = () => {
           {/* Sign Off */}
           <div className="border-t border-border">
             <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">SIGN OFF</div>
-            <div className="px-4 py-4 space-y-4">
-              <div className="grid grid-cols-2 gap-x-8 gap-y-3">
-                {/* Left column - checkboxes */}
-                <div className="space-y-3">
+            <div className="px-4 py-3">
+              <div className="grid grid-cols-2 gap-x-8">
+                {/* Left column - both checkbox rows stacked */}
+                <div className="space-y-2 py-1">
                   <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium w-48">Follow up work required:</span>
+                    <span className="text-sm font-medium w-52">Follow up work required:</span>
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-1.5">
                         <Checkbox className="h-4 w-4" />
@@ -186,7 +186,7 @@ export const PMBaseMasterTemplate = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium w-48">Document update required:</span>
+                    <span className="text-sm font-medium w-52">Document update required:</span>
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-1.5">
                         <Checkbox className="h-4 w-4" />
@@ -200,27 +200,25 @@ export const PMBaseMasterTemplate = () => {
                   </div>
                 </div>
                 {/* Right column - name/signature/date/duration */}
-                <div className="space-y-3">
+                <div className="space-y-2 py-1">
                   <div className="grid grid-cols-[100px_1fr] items-center">
                     <span className="text-sm font-medium">Name:</span>
-                    <Input className="h-8" />
+                    <Input className="h-7" />
                   </div>
                   <div className="grid grid-cols-[100px_1fr] items-center">
                     <span className="text-sm font-medium">Signature:</span>
-                    <div className="h-8 border border-border rounded bg-muted/30"></div>
+                    <div className="h-7 border border-border rounded bg-muted/30"></div>
                   </div>
                   <div className="grid grid-cols-[100px_1fr] items-center">
                     <span className="text-sm font-medium">Date:</span>
-                    <Input className="h-8" type="date" />
+                    <Input className="h-7" type="date" />
                   </div>
                   <div className="grid grid-cols-[100px_1fr] items-center">
                     <span className="text-sm font-medium">PM Duration:</span>
-                    <Input className="h-8" />
+                    <Input className="h-7" />
                   </div>
                 </div>
               </div>
-
-
             </div>
           </div>
 
