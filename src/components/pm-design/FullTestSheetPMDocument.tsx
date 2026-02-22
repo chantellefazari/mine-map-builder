@@ -1,8 +1,7 @@
-import { Input } from "@/components/ui/input";
 import { ClipboardCheck } from "lucide-react";
-import tennantBanner from "@/assets/tennant-banner-new.png";
-import tennantIcon from "@/assets/tennant-icon.png";
+import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
+import { PMSignOffBlock } from "./PMSignOffBlock";
 
 export const FullTestSheetPMDocument = () => {
   const testRows = Array.from({ length: 20 }, (_, i) => i + 1);
@@ -10,139 +9,96 @@ export const FullTestSheetPMDocument = () => {
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
-        {/* Banner with Title Overlay */}
-        <div className="relative">
-          <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-          <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
-            <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold tracking-wide text-primary">Electrical Installation Testing</h1>
-              <p className="text-base mt-1 text-primary/80">Record Sheet</p>
-            </div>
-          </div>
-        </div>
+        <PMBannerHeader title="Electrical Installation Testing" subtitle="Record Sheet" />
 
-        {/* Header Information Grid */}
         <div className="grid grid-cols-2 border-b border-border text-xs">
           <div className="border-r border-border">
-            <div className="grid grid-cols-[100px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" placeholder="Tennant Creek" /></div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Address:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Area:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div><div className="px-2 py-1.5">Tennant Creek</div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5"></div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div><div className="px-2 py-1.5"></div></div>
+            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div><div className="px-2 py-1.5"></div></div>
           </div>
           <div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date of Test:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" type="date" /></div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Tester:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">License No:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div><div className="px-2 py-1.5">Electrical</div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div><div className="px-2 py-1.5">Test</div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div><div className="px-2 py-1.5 font-medium">52 Week</div></div>
+            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div><div className="px-2 py-1.5"></div></div>
           </div>
         </div>
 
-        {/* Supervisor */}
-        <div className="grid grid-cols-[100px_1fr] border-b border-border text-xs">
-          <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Supervisor:</div>
-          <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-        </div>
-
-        {/* Safety Precautions */}
         <SafetyPrecautionsSection />
 
         {/* Test Table */}
-        <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-          <ClipboardCheck className="w-5 h-5 text-primary" />
-          ELECTRICAL INSTALLATION TESTING RECORD
-        </div>
+        <div className="border-b border-border">
+          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+            <ClipboardCheck className="w-5 h-5 text-primary" />
+            ELECTRICAL INSTALLATION TESTING RECORD
+          </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-[9px] border-collapse min-w-[1200px]">
-            <thead>
-              <tr className="bg-muted">
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[8%]">Test Point/<br/>Circuit No.</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[6%]">Conductor<br/>Sizes (mm²)</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[6%]">MCB<br/>(Rating & Type)</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">Active Ω<br/>(Rph)</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">Earth or<br/>Ω (Re)</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[6%]">Continuity<br/>Pass/Fail</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[7%]">Insulation<br/>Resistance (MΩ)</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">Pass/<br/>Fail</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[7%]">Correct Circuit<br/>Connections</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">Polarity<br/>Pass/Fail</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[7%]">Fault Loop<br/>Impedance R (Ω)</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[7%]">Max Permitted<br/>Loop Value R (Ω)</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">Pass/<br/>Fail</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">RCD<br/>Pass/Fail</th>
-                <th className="border border-border px-1 py-2 text-center font-semibold w-[6%]">RCD Trip<br/>Time (mSec)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="hover:bg-muted/30">
-                <td className="border border-border px-1 py-1 text-center font-medium">Main</td>
-                {Array.from({ length: 2 }).map((_, i) => (
-                  <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                ))}
-                {Array.from({ length: 2 }).map((_, i) => (
-                  <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                ))}
-                <td className="border border-border px-1 py-1 text-center">P / F</td>
-                <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                <td className="border border-border px-1 py-1 text-center">P / F</td>
-                <td className="border border-border px-1 py-1 text-center">P / F</td>
-                <td className="border border-border px-1 py-1 text-center">P / F</td>
-                {Array.from({ length: 2 }).map((_, i) => (
-                  <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                ))}
-                <td className="border border-border px-1 py-1 text-center">P / F</td>
-                <td className="border border-border px-1 py-1 text-center">P / F</td>
-                <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-              </tr>
-              {testRows.map((num) => (
-                <tr key={num} className="hover:bg-muted/30">
-                  <td className="border border-border px-1 py-1 text-center font-medium">{num}</td>
-                  {Array.from({ length: 2 }).map((_, i) => (
-                    <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                  ))}
-                  {Array.from({ length: 2 }).map((_, i) => (
-                    <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                  ))}
-                  <td className="border border-border px-1 py-1 text-center">P / F</td>
-                  <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                  <td className="border border-border px-1 py-1 text-center">P / F</td>
-                  <td className="border border-border px-1 py-1 text-center">P / F</td>
-                  <td className="border border-border px-1 py-1 text-center">P / F</td>
-                  {Array.from({ length: 2 }).map((_, i) => (
-                    <td key={i} className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
-                  ))}
-                  <td className="border border-border px-1 py-1 text-center">P / F</td>
-                  <td className="border border-border px-1 py-1 text-center">P / F</td>
-                  <td className="border border-border px-1 py-1"><Input className="h-5 text-[9px] border-0 bg-transparent" /></td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-[9px] border-collapse min-w-[1200px]">
+              <thead>
+                <tr className="bg-muted">
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[8%]">Test Point/<br/>Circuit No.</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[6%]">Conductor<br/>Sizes (mm²)</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[6%]">MCB<br/>(Rating & Type)</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">Active Ω<br/>(Rph)</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">Earth or<br/>Ω (Re)</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[6%]">Continuity<br/>Pass/Fail</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[7%]">Insulation<br/>Resistance (MΩ)</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">Pass/<br/>Fail</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[7%]">Correct Circuit<br/>Connections</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">Polarity<br/>Pass/Fail</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[7%]">Fault Loop<br/>Impedance R (Ω)</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[7%]">Max Permitted<br/>Loop Value R (Ω)</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">Pass/<br/>Fail</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[5%]">RCD<br/>Pass/Fail</th>
+                  <th className="border border-border px-1 py-2 text-center font-semibold w-[6%]">RCD Trip<br/>Time (mSec)</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <tr className="hover:bg-muted/30">
+                  <td className="border border-border px-1 py-1 text-center font-medium">Main</td>
+                  <td className="border border-border px-1 py-4"></td>
+                  <td className="border border-border px-1 py-4"></td>
+                  <td className="border border-border px-1 py-4"></td>
+                  <td className="border border-border px-1 py-4"></td>
+                  <td className="border border-border px-1 py-1 text-center">P / F</td>
+                  <td className="border border-border px-1 py-4"></td>
+                  <td className="border border-border px-1 py-1 text-center">P / F</td>
+                  <td className="border border-border px-1 py-1 text-center">P / F</td>
+                  <td className="border border-border px-1 py-1 text-center">P / F</td>
+                  <td className="border border-border px-1 py-4"></td>
+                  <td className="border border-border px-1 py-4"></td>
+                  <td className="border border-border px-1 py-1 text-center">P / F</td>
+                  <td className="border border-border px-1 py-1 text-center">P / F</td>
+                  <td className="border border-border px-1 py-4"></td>
+                </tr>
+                {testRows.map((num) => (
+                  <tr key={num} className="hover:bg-muted/30">
+                    <td className="border border-border px-1 py-1 text-center font-medium">{num}</td>
+                    <td className="border border-border px-1 py-4"></td>
+                    <td className="border border-border px-1 py-4"></td>
+                    <td className="border border-border px-1 py-4"></td>
+                    <td className="border border-border px-1 py-4"></td>
+                    <td className="border border-border px-1 py-1 text-center">P / F</td>
+                    <td className="border border-border px-1 py-4"></td>
+                    <td className="border border-border px-1 py-1 text-center">P / F</td>
+                    <td className="border border-border px-1 py-1 text-center">P / F</td>
+                    <td className="border border-border px-1 py-1 text-center">P / F</td>
+                    <td className="border border-border px-1 py-4"></td>
+                    <td className="border border-border px-1 py-4"></td>
+                    <td className="border border-border px-1 py-1 text-center">P / F</td>
+                    <td className="border border-border px-1 py-1 text-center">P / F</td>
+                    <td className="border border-border px-1 py-4"></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        {/* Certification */}
-        <div className="p-4 text-sm text-muted-foreground italic bg-muted/30 border-t border-border">
-          This certifies that the electrical equipment / installation as identified in this report, to the extent it is affected by the electrical work, has been tested to ensure it is electrically safe and is in accordance with the requirements of the wiring rules and other applicable standards.
-        </div>
+        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Electrical Installation Testing Record" />
       </div>
     </div>
   );
