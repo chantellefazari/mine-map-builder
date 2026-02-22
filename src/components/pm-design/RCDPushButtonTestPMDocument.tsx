@@ -1,5 +1,4 @@
-import { Input } from "@/components/ui/input";
-import { ClipboardCheck, FileText, CheckCircle2 } from "lucide-react";
+import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMSignOffBlock } from "./PMSignOffBlock";
@@ -24,33 +23,6 @@ export const RCDPushButtonTestPMDocument = () => {
             <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div><div className="px-2 py-1.5">Test</div></div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div><div className="px-2 py-1.5 font-medium">12 Weekly</div></div>
             <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div><div className="px-2 py-1.5"></div></div>
-          </div>
-        </div>
-
-        {/* Preparation */}
-        <div className="border-b border-border">
-          <div className="px-4 py-3 bg-muted/30">
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                <span>Ensure all meters are within calibrated dates.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                <span>Ensure all parts, materials and tooling are available and prepared prior to requesting machine for service.</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Procedure */}
-        <div className="border-b border-border">
-          <div className="bg-blue-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <FileText className="w-4 h-4 text-blue-600" />
-            <span className="text-blue-700 font-bold">PROCEDURE</span>
-          </div>
-          <div className="px-4 py-3 bg-blue-500/5 text-sm">
-            <p>Any equipment failing its test or inspection shall be rectified at the time of test or inspection. If rectification cannot be achieved, the unserviceable circuit shall be <span className="font-bold text-destructive">tagged out of service</span> and the <span className="font-bold">Electrical Supervisor</span> and/or <span className="font-bold">PTCEW</span> notified immediately upon identification.</p>
           </div>
         </div>
 
