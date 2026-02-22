@@ -116,11 +116,11 @@ export const MillDailyPMDocument = () => {
                   <div className="flex flex-col gap-0.5 text-xs">
                     <div className="flex items-center gap-1">
                       <span className="font-medium">Total Hours PU102A:</span>
-                      <Input className="h-5 w-20 text-xs border-none shadow-none focus-visible:ring-0 bg-background/80" />
+                      <Input className="h-5 w-20 text-xs border border-border shadow-none focus-visible:ring-0 bg-background rounded" />
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="font-medium">Total Hours PU102B:</span>
-                      <Input className="h-5 w-20 text-xs border-none shadow-none focus-visible:ring-0 bg-background/80" />
+                      <Input className="h-5 w-20 text-xs border border-border shadow-none focus-visible:ring-0 bg-background rounded" />
                     </div>
                   </div>
                 )}
