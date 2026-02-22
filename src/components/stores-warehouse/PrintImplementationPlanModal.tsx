@@ -25,8 +25,8 @@ const A4_WIDTH_PX = 794;
 const A4_HEIGHT_PX = 1123;
 const MARGIN_PX = 57; // ~15mm at 96dpi
 const CONTENT_HEIGHT_PX = A4_HEIGHT_PX - MARGIN_PX * 2; // ~1009px
-const GAP = 6; // gap between items on a page
-const ORPHAN_THRESHOLD = 80; // keep at least this much content with a header
+const GAP = 10; // gap between items on a page
+const ORPHAN_THRESHOLD = 120; // keep at least this much content with a header
 
 export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModalProps> = ({
   isOpen,
@@ -520,8 +520,6 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
                 style={{
                   width: `${A4_WIDTH_PX}px`,
                   minHeight: `${A4_HEIGHT_PX}px`,
-                  maxHeight: `${A4_HEIGHT_PX}px`,
-                  overflow: "hidden",
                   padding: `${MARGIN_PX}px`,
                 }}
               >
