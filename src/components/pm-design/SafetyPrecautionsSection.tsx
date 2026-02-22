@@ -15,7 +15,7 @@ export const SafetyPrecautionsSection = () => {
           </li>
           <li className="flex items-start gap-3">
             <Lock className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-            <span>Ensure isolations and/or 'live testing' safeguards are in place before commencing.</span>
+            <span>Ensure isolations and/or safeguards are in place where required before commencing.</span>
           </li>
           <li className="flex items-start gap-3">
             <FileText className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
@@ -27,7 +27,7 @@ export const SafetyPrecautionsSection = () => {
         <div className="flex items-start gap-3 mb-3">
           <HardHat className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <p className="text-sm">
-            <span className="font-semibold">Minimum PPE:</span> Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.
+            <span className="font-semibold">Minimum PPE:</span> Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as required.
           </p>
         </div>
         <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3">
