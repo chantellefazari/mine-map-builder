@@ -325,7 +325,7 @@ const AreaInspectionSheet = ({ area }: AreaInspectionSheetProps) => (
         <MotorSection key={index} motor={motor} motorNumber={index + 1} />
       ))}
 
-      <PMSignOffBlock footerText={`Tennant Creek Mining Operations – ${area.name} Statutory Motor Inspection Form`} />
+      <PMSignOffBlock showElecCertNo footerText={`Tennant Creek Mining Operations – ${area.name} Statutory Motor Inspection Form`} />
     </div>
   </div>
 );
