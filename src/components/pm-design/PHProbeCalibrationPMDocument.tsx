@@ -47,20 +47,34 @@ export const PHProbeCalibrationPMDocument = () => {
       <div className="border-2 border-border">
         <PMBannerHeader title="pH Probe Cleaning & Calibration" subtitle="Electrical Weekly Procedure" />
 
-        <div className="grid grid-cols-2 border-b border-border text-xs">
-          <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div><div className="px-2 py-1.5">Tennant Creek</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">pH Probe Location:</div><div className="px-2 py-1.5">CIP Tank 1</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5"></div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div><div className="px-2 py-1.5"></div></div>
-          </div>
-          <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div><div className="px-2 py-1.5">Electrical</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div><div className="px-2 py-1.5">Calibration</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div><div className="px-2 py-1.5 font-medium">Weekly</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div><div className="px-2 py-1.5"></div></div>
-          </div>
-        </div>
+        <table className="w-full border-b border-border text-xs border-collapse">
+          <tbody>
+            <tr>
+              <td className="bg-muted px-2 py-1.5 font-semibold border border-border w-[120px]">Project / Site:</td>
+              <td className="px-2 py-1.5 border border-border">Tennant Creek</td>
+              <td className="bg-muted px-2 py-1.5 font-semibold border border-border w-[120px]">PM Group:</td>
+              <td className="px-2 py-1.5 border border-border">Electrical</td>
+            </tr>
+            <tr>
+              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">pH Probe Location:</td>
+              <td className="px-2 py-1.5 border border-border">CIP Tank 1</td>
+              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">PM Type:</td>
+              <td className="px-2 py-1.5 border border-border">Calibration</td>
+            </tr>
+            <tr>
+              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">Asset Number:</td>
+              <td className="px-2 py-1.5 border border-border"></td>
+              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">Frequency:</td>
+              <td className="px-2 py-1.5 border border-border font-medium">Weekly</td>
+            </tr>
+            <tr>
+              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">Resource/s:</td>
+              <td className="px-2 py-1.5 border border-border"></td>
+              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">Date:</td>
+              <td className="px-2 py-1.5 border border-border"></td>
+            </tr>
+          </tbody>
+        </table>
 
         <SafetyPrecautionsSection />
 
