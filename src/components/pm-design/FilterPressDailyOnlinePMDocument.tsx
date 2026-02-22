@@ -314,23 +314,23 @@ export const FilterPressDailyOnlinePMDocument = () => {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
-                    <th className="text-left px-4 py-2 font-medium w-[50%]">Task</th>
-                    <th className="text-center px-2 py-2 font-medium w-[10%]">Serviceable</th>
-                    <th className="text-center px-2 py-2 font-medium w-[10%]">Defective</th>
-                    <th className="text-left px-4 py-2 font-medium w-[30%]">Comments</th>
+                    <th className="border border-border text-left px-4 py-2 font-medium w-[46%]">Task</th>
+                    <th className="border border-border text-center px-2 py-2 font-medium w-[10%]">Serviceable</th>
+                    <th className="border border-border text-center px-2 py-2 font-medium w-[10%]">Defective</th>
+                    <th className="border border-border text-left px-4 py-2 font-medium w-[34%]">Comments</th>
                   </tr>
                 </thead>
                 <tbody>
                   {section.tasks.map((task, taskIndex) => (
                     <tr key={taskIndex} className="border-b border-border hover:bg-muted/30">
-                      <td className="px-4 py-2.5 text-foreground">{task.task}</td>
-                      <td className="text-center px-2 py-2.5">
+                      <td className="border border-border px-4 py-2.5 text-foreground">{task.task}</td>
+                      <td className="border border-border text-center px-2 py-2.5">
                         <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
                       </td>
-                      <td className="text-center px-2 py-2.5">
+                      <td className="border border-border text-center px-2 py-2.5">
                         <Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" />
                       </td>
-                      <td className="px-4 py-2.5"><Input className="h-7 text-xs border-0 bg-transparent" placeholder="" /></td>
+                      <td className="border border-border px-4 py-4"></td>
                     </tr>
                   ))}
                 </tbody>
