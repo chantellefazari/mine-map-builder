@@ -1,8 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { ClipboardCheck } from "lucide-react";
-import tennantBanner from "@/assets/tennant-banner-new.png";
-import tennantIcon from "@/assets/tennant-icon.png";
+import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
+import { PMSignOffBlock } from "./PMSignOffBlock";
 
 const inspectionTasks = [
   { id: 1, task: "Visual Inspection: Check for any faults, warning lights or abnormal indicators" },
@@ -18,19 +18,7 @@ export const CrusherFuelFarmGeneratorElectricalPMDocument = () => {
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
-        {/* Banner with Title Overlay */}
-        <div className="relative">
-          <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-          <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
-            <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold tracking-wide text-primary">Weekly Generator Electrical Inspection</h1>
-              <p className="text-base mt-1 text-primary/80">Crusher Fuel Farm Generator</p>
-            </div>
-          </div>
-        </div>
+        <PMBannerHeader title="Weekly Generator Electrical Inspection" subtitle="Crusher Fuel Farm Generator" />
 
         {/* Header Information Grid */}
         <div className="grid grid-cols-2 border-b border-border text-xs">
@@ -48,7 +36,6 @@ export const CrusherFuelFarmGeneratorElectricalPMDocument = () => {
               <div className="px-2 py-1.5"><Input className="h-6 text-xs" placeholder="GEN-014" /></div>
             </div>
           </div>
-
           <div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Work Order #:</div>
@@ -65,7 +52,6 @@ export const CrusherFuelFarmGeneratorElectricalPMDocument = () => {
           </div>
         </div>
 
-        {/* Safety Precautions */}
         <SafetyPrecautionsSection />
 
         {/* Inspection Table */}
@@ -99,24 +85,7 @@ export const CrusherFuelFarmGeneratorElectricalPMDocument = () => {
           </table>
         </div>
 
-        {/* Sign Off Section */}
-        <div className="border-t border-border">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">TESTED BY</div>
-          <div className="grid grid-cols-3 gap-0">
-            <div className="grid grid-cols-[100px_1fr] border-r border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Name:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr] border-r border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Signature:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
-            </div>
-            <div className="grid grid-cols-[80px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Date:</div>
-              <div className="px-3 py-2"><Input className="h-7" type="date" /></div>
-            </div>
-          </div>
-        </div>
+        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Crusher Fuel Farm Generator Electrical Inspection Form" />
       </div>
     </div>
   );
