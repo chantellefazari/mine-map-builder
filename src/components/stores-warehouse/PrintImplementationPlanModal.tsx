@@ -324,8 +324,9 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
             }
 
             img {
-              max-width: 100%;
+              max-width: 65%;
               height: auto;
+              display: block;
             }
           </style>
         </head>
