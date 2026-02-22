@@ -1,47 +1,14 @@
-import { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Toggle } from "@/components/ui/toggle";
 import { 
-  AlertTriangle, 
-  Shield, 
-  HardHat,
   FileText,
   ClipboardCheck,
-  Calendar,
-  Wrench,
-  Zap,
-  AlertCircle,
   CheckCircle2,
-  Info,
-  Lock
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
-
-interface Hazard {
-  id: string;
-  icon: React.ReactNode;
-  label: string;
-}
-
-const hazardsList: Hazard[] = [
-  { id: "electrical", icon: <Zap className="w-4 h-4" />, label: "Electrical" },
-  { id: "arc-flash", icon: <Zap className="w-4 h-4" />, label: "Arc Flash" },
-  { id: "lockout", icon: <Lock className="w-4 h-4" />, label: "LOTO" },
-];
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
 export const RCDPushButtonTestPMDocument = () => {
-  const [selectedHazards, setSelectedHazards] = useState<string[]>(["electrical", "arc-flash"]);
-
-  const toggleHazard = (hazardId: string) => {
-    setSelectedHazards(prev => 
-      prev.includes(hazardId) 
-        ? prev.filter(id => id !== hazardId)
-        : [...prev, hazardId]
-    );
-  };
-
   const circuitRows = Array.from({ length: 21 }, (_, i) => i + 1);
 
   return (
@@ -77,7 +44,6 @@ export const RCDPushButtonTestPMDocument = () => {
               <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
             </div>
           </div>
-
           <div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Personnel:</div>
@@ -94,12 +60,8 @@ export const RCDPushButtonTestPMDocument = () => {
           </div>
         </div>
 
-        {/* PREPARATION Section */}
+        {/* Preparation */}
         <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
-            <Info className="w-5 h-5 text-primary" />
-            PREPARATION
-          </div>
           <div className="px-4 py-3 bg-muted/30">
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-3">
@@ -114,7 +76,7 @@ export const RCDPushButtonTestPMDocument = () => {
           </div>
         </div>
 
-        {/* PROCEDURE Section */}
+        {/* PROCEDURE */}
         <div className="border-b border-border">
           <div className="bg-blue-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
             <FileText className="w-4 h-4 text-blue-600" />
@@ -125,120 +87,8 @@ export const RCDPushButtonTestPMDocument = () => {
           </div>
         </div>
 
-        {/* Safety Section */}
-        <div className="border-b border-border">
-          <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <Shield className="w-5 h-5 text-destructive" />
-            <span className="text-destructive font-bold">SAFETY PRECAUTIONS</span>
-          </div>
-          <div className="px-4 py-4 bg-destructive/5">
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-3">
-                <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                <span>Conduct <span className="font-bold text-destructive">Take 5</span> and/or <span className="font-bold text-destructive">JSEA</span> as required.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Lock className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                <span>Ensure isolations and/or 'live testing' safeguards are in place before commencing.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <FileText className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                <span>Follow OEM instructions and site procedures as required.</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Hazard Identification */}
-        <div className="border-b border-border">
-          <div className="bg-amber-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-amber-600" />
-            <span className="text-amber-700 font-bold">HAZARD IDENTIFICATION</span>
-            <span className="text-xs text-muted-foreground ml-2">(Select all that apply)</span>
-          </div>
-          <div className="p-4">
-            <div className="flex flex-wrap gap-2">
-              {hazardsList.map((hazard) => (
-                <Toggle
-                  key={hazard.id}
-                  pressed={selectedHazards.includes(hazard.id)}
-                  onPressedChange={() => toggleHazard(hazard.id)}
-                  className="data-[state=on]:bg-amber-500 data-[state=on]:text-white border border-border px-3 py-2 gap-2"
-                  aria-label={`Toggle ${hazard.label} hazard`}
-                >
-                  {hazard.icon}
-                  <span className="text-sm font-medium">{hazard.label}</span>
-                </Toggle>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Tools and PPE Section */}
-        <div className="border-b border-border grid md:grid-cols-2">
-          <div className="border-r border-border">
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-primary" />
-              SPECIAL TOOLING REQUIRED
-            </div>
-            <div className="p-4">
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>RCD Meter</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Multimeter</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div>
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <HardHat className="w-4 h-4 text-primary" />
-              REQUIRED PPE
-            </div>
-            <div className="p-4">
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Steel Cap Boots</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Safety Glasses</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Gloves</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Risk Assessment */}
-        <div className="border-b border-border">
-          <div className="bg-green-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-green-600" />
-            <span className="text-green-700">RISK ASSESSMENT</span>
-          </div>
-          <div className="p-4">
-            <p className="text-sm text-muted-foreground mb-3">Complete one of the following before starting work:</p>
-            <div className="flex flex-wrap gap-2">
-              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" />
-                <span>Take 5</span>
-              </label>
-              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" />
-                <span>JHA / JSEA</span>
-              </label>
-            </div>
-          </div>
-        </div>
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* Test Table */}
         <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
@@ -262,21 +112,11 @@ export const RCDPushButtonTestPMDocument = () => {
               {circuitRows.map((num) => (
                 <tr key={num} className="hover:bg-muted/30">
                   <td className="border border-border px-2 py-1 text-center font-medium">{num}</td>
-                  <td className="border border-border px-1 py-1">
-                    <Input className="h-6 text-xs border-0 bg-transparent" />
-                  </td>
-                  <td className="border border-border px-1 py-1">
-                    <Input className="h-6 text-xs border-0 bg-transparent" />
-                  </td>
-                  <td className="border border-border px-1 py-1 text-center text-xs">
-                    Type I / Type II
-                  </td>
-                  <td className="border border-border px-1 py-1 text-center text-xs">
-                    Pass / Fail
-                  </td>
-                  <td className="border border-border px-1 py-1">
-                    <Input className="h-6 text-xs border-0 bg-transparent" />
-                  </td>
+                  <td className="border border-border px-1 py-1"><Input className="h-6 text-xs border-0 bg-transparent" /></td>
+                  <td className="border border-border px-1 py-1"><Input className="h-6 text-xs border-0 bg-transparent" /></td>
+                  <td className="border border-border px-1 py-1 text-center text-xs">Type I / Type II</td>
+                  <td className="border border-border px-1 py-1 text-center text-xs">Pass / Fail</td>
+                  <td className="border border-border px-1 py-1"><Input className="h-6 text-xs border-0 bg-transparent" /></td>
                 </tr>
               ))}
             </tbody>
@@ -304,7 +144,7 @@ export const RCDPushButtonTestPMDocument = () => {
           </table>
         </div>
 
-        {/* Sign Off Section */}
+        {/* Sign Off */}
         <div className="border-t border-border">
           <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">INSPECTED BY</div>
           <div className="grid grid-cols-3 gap-0">

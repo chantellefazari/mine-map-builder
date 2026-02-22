@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ClipboardCheck, CheckCircle2 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
 interface InspectionItem {
   id: string;
@@ -162,9 +163,11 @@ export const EWPWeeklyPMDocument = () => {
           </div>
         </div>
 
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
+
         {/* Inspection Checklist */}
         <div className="border-b border-border">
-          {/* Inspection Tables by Section */}
           {inspectionData.map((section) => (
             <div key={section.sectionName}>
               {/* Section Header */}

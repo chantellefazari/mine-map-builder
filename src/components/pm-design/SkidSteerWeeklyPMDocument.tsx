@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ClipboardCheck, CheckCircle2 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
 interface InspectionItem {
   id: string;
@@ -133,6 +134,9 @@ export const SkidSteerWeeklyPMDocument = () => {
             <div className="px-2 py-2 min-h-[32px]"></div>
           </div>
         </div>
+
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* Inspection Checklist */}
         <div className="border-b border-border">

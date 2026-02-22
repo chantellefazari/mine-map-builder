@@ -1,36 +1,8 @@
-import { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Toggle } from "@/components/ui/toggle";
-import { 
-  AlertTriangle, 
-  Shield, 
-  HardHat,
-  FileText,
-  ClipboardCheck,
-  Calendar,
-  Wrench,
-  Zap,
-  AlertCircle,
-  CheckCircle2,
-  Info,
-  Lock,
-  Cog
-} from "lucide-react";
+import { Cog } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
-
-interface Hazard {
-  id: string;
-  icon: React.ReactNode;
-  label: string;
-}
-
-const hazardsList: Hazard[] = [
-  { id: "electrical", icon: <Zap className="w-4 h-4" />, label: "Electrical" },
-  { id: "mechanical", icon: <Cog className="w-4 h-4" />, label: "Mechanical" },
-  { id: "lockout", icon: <Lock className="w-4 h-4" />, label: "LOTO" },
-];
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
 const stationaryChecks = [
   { id: 1, item: "Check name plate is present and matches recorded data. If no data is recorded fill in motor details" },
@@ -106,13 +78,11 @@ const MotorSection = ({ title, motorNumber }: MotorSectionProps) => (
       </div>
     </div>
 
-    {/* Serial Number */}
     <div className="grid grid-cols-[140px_1fr] text-xs border-b border-border">
       <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Serial No:</div>
       <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
     </div>
 
-    {/* Stationary Checks Table */}
     <div className="bg-muted px-3 py-1.5 font-semibold text-xs border-b border-border">STATIONARY CHECKS – PM INSPECTION</div>
     <table className="w-full text-xs border-collapse">
       <thead>
@@ -127,15 +97,12 @@ const MotorSection = ({ title, motorNumber }: MotorSectionProps) => (
           <tr key={check.id} className="hover:bg-muted/30">
             <td className="border border-border px-2 py-1.5">{index < 5 ? "Motor" : index < 7 ? "Isolator" : index < 10 ? "Motor" : "S/Room"}</td>
             <td className="border border-border px-2 py-1.5 text-xs">{check.item}</td>
-            <td className="border border-border px-1 py-1">
-              <Input className="h-6 text-xs border-0 bg-transparent" />
-            </td>
+            <td className="border border-border px-1 py-1"><Input className="h-6 text-xs border-0 bg-transparent" /></td>
           </tr>
         ))}
       </tbody>
     </table>
 
-    {/* Motor Sign Off */}
     <div className="grid grid-cols-3 text-xs">
       <div className="grid grid-cols-[100px_1fr] border-r border-border">
         <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Inspected By:</div>
@@ -154,16 +121,6 @@ const MotorSection = ({ title, motorNumber }: MotorSectionProps) => (
 );
 
 export const FilterPressMotorInspectionPMDocument = () => {
-  const [selectedHazards, setSelectedHazards] = useState<string[]>(["electrical", "mechanical"]);
-
-  const toggleHazard = (hazardId: string) => {
-    setSelectedHazards(prev => 
-      prev.includes(hazardId) 
-        ? prev.filter(id => id !== hazardId)
-        : [...prev, hazardId]
-    );
-  };
-
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
@@ -205,75 +162,8 @@ export const FilterPressMotorInspectionPMDocument = () => {
           </div>
         </div>
 
-        {/* Hazard Identification */}
-        <div className="border-b border-border">
-          <div className="bg-amber-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-amber-600" />
-            <span className="text-amber-700 font-bold">HAZARD IDENTIFICATION</span>
-            <span className="text-xs text-muted-foreground ml-2">(Select all that apply)</span>
-          </div>
-          <div className="p-4">
-            <div className="flex flex-wrap gap-2">
-              {hazardsList.map((hazard) => (
-                <Toggle
-                  key={hazard.id}
-                  pressed={selectedHazards.includes(hazard.id)}
-                  onPressedChange={() => toggleHazard(hazard.id)}
-                  className="data-[state=on]:bg-amber-500 data-[state=on]:text-white border border-border px-3 py-2 gap-2"
-                  aria-label={`Toggle ${hazard.label} hazard`}
-                >
-                  {hazard.icon}
-                  <span className="text-sm font-medium">{hazard.label}</span>
-                </Toggle>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Tools and PPE Section */}
-        <div className="border-b border-border grid md:grid-cols-2">
-          <div className="border-r border-border">
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-primary" />
-              SPECIAL TOOLING REQUIRED
-            </div>
-            <div className="p-4">
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Standard Electrical Tool Kit</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Grease Gun</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div>
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <HardHat className="w-4 h-4 text-primary" />
-              REQUIRED PPE
-            </div>
-            <div className="p-4">
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Steel Cap Boots</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Safety Glasses</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Gloves</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* Motor Sections */}
         <MotorSection title="Stacker Drive Motor - North" motorNumber={1} />

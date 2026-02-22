@@ -1,26 +1,9 @@
-import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Toggle } from "@/components/ui/toggle";
-import { 
-  ClipboardCheck,
-  Zap,
-  AlertCircle,
-  Lock
-} from "lucide-react";
+import { ClipboardCheck, Zap } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
-
-interface Hazard {
-  id: string;
-  icon: React.ReactNode;
-  label: string;
-}
-
-const hazardsList: Hazard[] = [
-  { id: "electrical", icon: <Zap className="w-4 h-4" />, label: "Electrical" },
-  { id: "lockout", icon: <Lock className="w-4 h-4" />, label: "LOTO" },
-];
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
 const checklistItems = [
   { id: "earth-lock-ring", label: "Earth Lock Ring" },
@@ -35,16 +18,6 @@ const checklistItems = [
 ];
 
 export const CableTestSheetPMDocument = () => {
-  const [selectedHazards, setSelectedHazards] = useState<string[]>(["electrical"]);
-
-  const toggleHazard = (hazardId: string) => {
-    setSelectedHazards(prev => 
-      prev.includes(hazardId) 
-        ? prev.filter(id => id !== hazardId)
-        : [...prev, hazardId]
-    );
-  };
-
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
@@ -78,7 +51,6 @@ export const CableTestSheetPMDocument = () => {
               <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
             </div>
           </div>
-
           <div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Cable Size/Type:</div>
@@ -114,30 +86,8 @@ export const CableTestSheetPMDocument = () => {
           </div>
         </div>
 
-        {/* Hazard Identification */}
-        <div className="border-b border-border">
-          <div className="bg-amber-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-amber-600" />
-            <span className="text-amber-700 font-bold">HAZARD IDENTIFICATION</span>
-            <span className="text-xs text-muted-foreground ml-2">(Select all that apply)</span>
-          </div>
-          <div className="p-4">
-            <div className="flex flex-wrap gap-2">
-              {hazardsList.map((hazard) => (
-                <Toggle
-                  key={hazard.id}
-                  pressed={selectedHazards.includes(hazard.id)}
-                  onPressedChange={() => toggleHazard(hazard.id)}
-                  className="data-[state=on]:bg-amber-500 data-[state=on]:text-white border border-border px-3 py-2 gap-2"
-                  aria-label={`Toggle ${hazard.label} hazard`}
-                >
-                  {hazard.icon}
-                  <span className="text-sm font-medium">{hazard.label}</span>
-                </Toggle>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* Insulation Resistance Test */}
         <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
@@ -162,15 +112,9 @@ export const CableTestSheetPMDocument = () => {
             </thead>
             <tbody>
               <tr>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <td key={i} className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
+                ))}
               </tr>
             </tbody>
           </table>
@@ -217,18 +161,10 @@ export const CableTestSheetPMDocument = () => {
             {checklistItems.map((item) => (
               <tr key={item.id} className="hover:bg-muted/30">
                 <td className="border border-border px-3 py-2">{item.label}</td>
-                <td className="border border-border px-2 py-2 text-center">
-                  <Checkbox className="h-4 w-4" />
-                </td>
-                <td className="border border-border px-2 py-2 text-center">
-                  <Checkbox className="h-4 w-4" />
-                </td>
-                <td className="border border-border px-2 py-2 text-center">
-                  <Checkbox className="h-4 w-4" />
-                </td>
-                <td className="border border-border px-2 py-2">
-                  <Input className="h-7 text-xs border-0 bg-transparent" />
-                </td>
+                <td className="border border-border px-2 py-2 text-center"><Checkbox className="h-4 w-4" /></td>
+                <td className="border border-border px-2 py-2 text-center"><Checkbox className="h-4 w-4" /></td>
+                <td className="border border-border px-2 py-2 text-center"><Checkbox className="h-4 w-4" /></td>
+                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs border-0 bg-transparent" /></td>
               </tr>
             ))}
           </tbody>
