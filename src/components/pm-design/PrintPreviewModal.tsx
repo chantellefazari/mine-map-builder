@@ -38,7 +38,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
           <style>
             @page {
               size: A4 portrait;
-              margin: 10mm;
+              margin: 8mm;
             }
             
             * {
@@ -49,18 +49,20 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
             
             body {
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-              font-size: 10px;
-              line-height: 1.4;
+              font-size: 8px;
+              line-height: 1.3;
               color: #1a1a1a;
               background: white;
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
+              width: 100%;
             }
             
             table {
               width: 100%;
               border-collapse: collapse;
               page-break-inside: auto;
+              table-layout: fixed;
             }
             
             tr {
@@ -69,14 +71,20 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
             
             th, td {
               border: 1px solid #1a1a1a;
-              padding: 4px 6px;
+              padding: 2px 4px;
               text-align: left;
-              font-size: 9px;
+              font-size: 7.5px;
+              word-wrap: break-word;
+              overflow-wrap: break-word;
             }
             
             th {
               background-color: #f5f5f5;
               font-weight: 600;
+            }
+            
+            .bg-primary\\/10 {
+              background-color: rgba(212, 160, 23, 0.1) !important;
             }
             
             .bg-primary {
@@ -85,6 +93,10 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
             
             .bg-muted {
               background-color: #f5f5f5 !important;
+            }
+            
+            .bg-muted\\/50 {
+              background-color: rgba(245, 245, 245, 0.5) !important;
             }
             
             .text-primary {
@@ -105,18 +117,65 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
             }
             
             h1, h2, h3, h4 {
-              margin-bottom: 0.5em;
+              margin-bottom: 0.3em;
             }
             
             /* Checkbox styling for print */
-            input[type="checkbox"] {
-              width: 12px;
-              height: 12px;
+            input[type="checkbox"],
+            button[role="checkbox"] {
+              width: 10px;
+              height: 10px;
               border: 1px solid #1a1a1a;
               appearance: none;
               -webkit-appearance: none;
               background: white;
+              display: inline-block;
+              vertical-align: middle;
             }
+            
+            /* Input fields for print */
+            input[type="text"],
+            input {
+              border: 1px solid #ccc;
+              padding: 1px 3px;
+              font-size: 7.5px;
+              background: white;
+              height: auto;
+              min-height: 14px;
+            }
+
+            /* Scale down all content containers */
+            .border-2 {
+              border-width: 1px !important;
+            }
+
+            /* Reduce padding throughout */
+            .px-4 { padding-left: 6px; padding-right: 6px; }
+            .py-2 { padding-top: 3px; padding-bottom: 3px; }
+            .px-2 { padding-left: 4px; padding-right: 4px; }
+            .py-1\\.5 { padding-top: 2px; padding-bottom: 2px; }
+            .px-3 { padding-left: 5px; padding-right: 5px; }
+            .p-4 { padding: 6px; }
+            .gap-2 { gap: 4px; }
+            
+            /* Font size overrides */
+            .text-sm { font-size: 8px; }
+            .text-xs { font-size: 7px; }
+            .text-lg { font-size: 10px; }
+            .text-base { font-size: 8.5px; }
+            
+            /* Grid layouts - compact */
+            .grid { display: grid; }
+
+            /* Ensure content doesn't overflow */
+            div, td, th {
+              max-width: 100%;
+            }
+
+            /* Sign off section compact */
+            .space-y-4 > * + * { margin-top: 6px; }
+            .space-y-3 > * + * { margin-top: 4px; }
+            .space-y-2 > * + * { margin-top: 3px; }
           </style>
         </head>
         <body>
@@ -159,14 +218,15 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
               ref={printRef}
               className="bg-white shadow-xl mx-auto"
               style={{
-                width: "210mm",
-                minHeight: "297mm",
-                padding: "10mm",
+                width: "794px",
+                minHeight: "1123px",
+                padding: "8mm",
                 boxSizing: "border-box",
+                overflow: "hidden",
               }}
             >
-              {/* Scale down the content to fit A4 */}
-              <div className="origin-top-left" style={{ fontSize: "10px" }}>
+              {/* Scale content to fit A4 width */}
+              <div className="origin-top-left" style={{ fontSize: "9px", width: "100%" }}>
                 {children}
               </div>
             </div>
