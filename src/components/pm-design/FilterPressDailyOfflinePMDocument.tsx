@@ -4,152 +4,88 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   AlertTriangle,
-  Shield,
-  HardHat,
   FileText,
   ClipboardCheck,
   User,
   Calendar,
-  Wrench,
   Eye,
-  Zap,
   AlertCircle,
   CheckCircle2,
-  Info,
   Cog,
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
-interface InspectionTask {
+interface TaskItem {
   task: string;
 }
 
 interface EquipmentSection {
   equipmentId: string;
   equipmentName: string;
-  tasks: InspectionTask[];
+  tasks: TaskItem[];
 }
 
-const filter1PlatesStructural: EquipmentSection = {
-  equipmentId: "FP-1",
-  equipmentName: "Filter 1 – Plates and Structural",
-  tasks: [
-    { task: "Check plates for cracks, warping, or chips" },
-    { task: "Inspect plate sealing edges" },
-    { task: "Check handles and lugs for damage" },
-    { task: "Inspect tie bars for straightness and corrosion" },
-    { task: "Examine main beam and frame for deflection or cracks" },
-    { task: "Replace faulty pneumatic plate shakers" },
-  ],
-};
-
-const filter1Hydraulic: EquipmentSection = {
-  equipmentId: "FP-1-HYD",
-  equipmentName: "Filter 1 – Hydraulic",
-  tasks: [
-    { task: "Inspect cylinder rods for scoring or damage" },
-    { task: "Check rod wipers and seals" },
-    { task: "Confirm hose clamps and supports are secure" },
-  ],
-};
-
-const filter1PlateShifter: EquipmentSection = {
-  equipmentId: "FP-1-PS",
-  equipmentName: "Filter 1 – Plate Shifter",
-  tasks: [
-    { task: "Inspect carriage wheels for wear or binding" },
-    { task: "Check shifter rails for corrosion or misalignment" },
-    { task: "Inspect chain tension" },
-    { task: "Verify shifter operates smoothly when manually moved" },
-  ],
-};
-
-const filter1Extraction: EquipmentSection = {
-  equipmentId: "FP-1-EXT",
-  equipmentName: "Filter 1 Extraction Conveyor",
-  tasks: [
-    { task: "Inspect and adjust skirts" },
-    { task: "Replace damaged rollers" },
-    { task: "Replace damaged roller frames" },
-  ],
-};
-
-const filter2PlatesStructural: EquipmentSection = {
-  equipmentId: "FP-2",
-  equipmentName: "Filter 2 – Plates and Structural",
-  tasks: [
-    { task: "Check plates for cracks, warping, or chips" },
-    { task: "Inspect plate sealing edges" },
-    { task: "Check handles and lugs for damage" },
-    { task: "Inspect tie bars for straightness and corrosion" },
-    { task: "Examine main beam and frame for deflection or cracks" },
-    { task: "Replace faulty pneumatic plate shakers" },
-  ],
-};
-
-const filter2Hydraulic: EquipmentSection = {
-  equipmentId: "FP-2-HYD",
-  equipmentName: "Filter 2 – Hydraulic",
-  tasks: [
-    { task: "Inspect cylinder rods for scoring or damage" },
-    { task: "Check rod wipers and seals" },
-    { task: "Confirm hose clamps and supports are secure" },
-  ],
-};
-
-const filter2PlateShifter: EquipmentSection = {
-  equipmentId: "FP-2-PS",
-  equipmentName: "Filter 2 – Plate Shifter",
-  tasks: [
-    { task: "Inspect carriage wheels for wear or binding" },
-    { task: "Check shifter rails for corrosion or misalignment" },
-    { task: "Inspect chain tension and sprockets" },
-    { task: "Verify shifter operates smoothly when manually moved" },
-  ],
-};
-
-const filter2Extraction: EquipmentSection = {
-  equipmentId: "FP-2-EXT",
-  equipmentName: "Filter 2 Extraction Conveyor",
-  tasks: [
-    { task: "Inspect and adjust skirts" },
-    { task: "Replace damaged rollers" },
-    { task: "Replace damaged roller frames" },
-  ],
-};
-
-const collectorConveyor: EquipmentSection = {
-  equipmentId: "FP-CC",
-  equipmentName: "Collector Conveyor (If Available)",
-  tasks: [
-    { task: "Inspect and adjust skirts" },
-    { task: "Replace damaged rollers" },
-    { task: "Replace damaged roller frames" },
-  ],
-};
-
-const radialStackerConveyor: EquipmentSection = {
-  equipmentId: "FP-RSC",
-  equipmentName: "Radial Stacker Conveyor (If Available)",
-  tasks: [
-    { task: "Inspect and adjust skirts" },
-    { task: "Replace damaged rollers" },
-    { task: "Replace damaged roller frames" },
-  ],
-};
-
 const inspectionData: EquipmentSection[] = [
-  filter1PlatesStructural,
-  filter1Hydraulic,
-  filter1PlateShifter,
-  filter1Extraction,
-  filter2PlatesStructural,
-  filter2Hydraulic,
-  filter2PlateShifter,
-  filter2Extraction,
-  collectorConveyor,
-  radialStackerConveyor,
+  {
+    equipmentId: "FP-01",
+    equipmentName: "Filter Press",
+    tasks: [
+      { task: "Check general condition of the filter press structure" },
+      { task: "Inspect filter cloths for wear, damage, or blinding" },
+      { task: "Check plate alignment and condition" },
+      { task: "Inspect plate shifting mechanism for proper operation" },
+      { task: "Check hydraulic cylinder and hoses for leaks or damage" },
+      { task: "Inspect safety interlocks and emergency stop functions" },
+      { task: "Check drip trays and containment areas for leaks or spills" },
+      { task: "Inspect filtrate discharge points for blockages or leaks" },
+      { task: "Check air blow system for proper operation (if equipped)" },
+      { task: "Inspect cake discharge system for proper operation" },
+    ],
+  },
+  {
+    equipmentId: "FP-02",
+    equipmentName: "Hydraulic Unit",
+    tasks: [
+      { task: "Check hydraulic oil level" },
+      { task: "Inspect hydraulic pump for leaks or unusual noise" },
+      { task: "Check hydraulic pressure gauges for correct readings" },
+      { task: "Inspect hydraulic hoses and fittings for leaks or damage" },
+      { task: "Check hydraulic oil cooler for proper operation" },
+      { task: "Inspect hydraulic filters and replace if necessary" },
+      { task: "Check hydraulic relief valve setting" },
+      { task: "Inspect hydraulic accumulator for proper charge (if equipped)" },
+    ],
+  },
+  {
+    equipmentId: "FP-03",
+    equipmentName: "Feed System",
+    tasks: [
+      { task: "Check feed pump for leaks or unusual noise" },
+      { task: "Inspect feed pump suction and discharge lines for leaks" },
+      { task: "Check feed pump motor for proper operation" },
+      { task: "Inspect feed tank level and condition" },
+      { task: "Check feed tank agitator for proper operation (if equipped)" },
+      { task: "Inspect feed line pressure gauges for correct readings" },
+      { task: "Check feed line flow meters for accuracy" },
+      { task: "Inspect feed line valves for proper operation" },
+    ],
+  },
+  {
+    equipmentId: "FP-04",
+    equipmentName: "Ancillary Equipment",
+    tasks: [
+      { task: "Check air compressor for proper operation (if equipped)" },
+      { task: "Inspect air lines and fittings for leaks (if equipped)" },
+      { task: "Check polymer make-up system for proper operation (if equipped)" },
+      { task: "Inspect polymer dosing pumps for leaks or damage (if equipped)" },
+      { task: "Check cake conveyor system for proper operation (if equipped)" },
+      { task: "Inspect conveyor belt for wear or damage (if equipped)" },
+      { task: "Check conveyor belt alignment (if equipped)" },
+      { task: "Inspect conveyor belt scrapers for proper operation (if equipped)" },
+    ],
+  },
 ];
 
 const immediateAttentionTriggers = [
@@ -210,7 +146,6 @@ export const FilterPressDailyOfflinePMDocument = () => {
               <div className="px-2 py-1.5">1x Fitter</div>
             </div>
           </div>
-
           <div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
@@ -234,69 +169,26 @@ export const FilterPressDailyOfflinePMDocument = () => {
           </div>
         </div>
 
-        {/* PREPARATION AND INFORMATION */}
+        {/* Scope */}
         <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
-            <Info className="w-5 h-5 text-primary" />
-            PREPARATION AND INFORMATION
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+            <Eye className="w-4 h-4 text-primary" />
+            SCOPE
           </div>
-
-          {/* Scope */}
-          <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Eye className="w-4 h-4 text-primary" />
-              SCOPE
-            </div>
-            <div className="px-4 py-3 text-sm leading-relaxed">
-              <p className="font-medium mb-2">Daily Offline Inspection – Filter Press Area</p>
-              <p className="text-muted-foreground">
-                To safely carry out mechanical inspection of filter press equipment for signs of damage or potential
-                failures that may require maintenance attention. Equipment must be isolated and locked out before
-                commencing offline inspection tasks. When a defect is identified and it is safe and practical to repair,
-                do so and note in the comments section. Otherwise, report the defect including materials required, trade
-                discipline &amp; estimated repair time for the supervisor to raise a work request.
-              </p>
-            </div>
-          </div>
-
-          {/* Safety */}
-          <div className="border-b border-border">
-            <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Shield className="w-5 h-5 text-destructive" />
-              <span className="text-destructive font-bold">SAFETY</span>
-            </div>
-            <div className="px-4 py-4 bg-destructive/5">
-              <div className="flex items-start gap-3 mb-4">
-                <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-medium">
-                  Before commencing this work complete a{" "}
-                  <span className="font-bold text-destructive">TAKE 5</span> every time to check that no abnormal
-                  conditions exist.
-                </p>
-              </div>
-              <div className="flex items-start gap-3 mb-4">
-                <HardHat className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm">
-                  Follow safety procedures at all times. Isolate equipment where required &amp; ensure use of correct
-                  PPE.
-                </p>
-              </div>
-              <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3">
-                <Zap className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-bold text-destructive">
-                  Under no circumstances will personnel place themselves in an unsafe position while carrying out these
-                  inspection tasks.
-                </p>
-              </div>
-              <div className="mt-4 flex items-start gap-3">
-                <HardHat className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <p className="text-sm">
-                  <span className="font-semibold">Minimum PPE:</span> Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.
-                </p>
-              </div>
-            </div>
+          <div className="px-4 py-3 text-sm leading-relaxed">
+            <p className="font-medium mb-2">Daily Offline Inspection – Filter Press Area</p>
+            <p className="text-muted-foreground">
+              To safely carry out mechanical inspection of filter press equipment for signs of damage or potential
+              failures that may require maintenance attention. Equipment must be isolated and locked out before
+              commencing offline inspection tasks. When a defect is identified and it is safe and practical to repair,
+              do so and note in the comments section. Otherwise, report the defect including materials required, trade
+              discipline &amp; estimated repair time for the supervisor to raise a work request.
+            </p>
           </div>
         </div>
+
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* Procedure */}
         <div className="border-b border-border">
@@ -307,29 +199,19 @@ export const FilterPressDailyOfflinePMDocument = () => {
           <div className="px-4 py-3 text-sm leading-relaxed space-y-3">
             <div className="flex gap-3">
               <span className="font-bold text-primary">1.</span>
-              <p>
-                Ensure equipment is isolated, locked out and tagged before commencing offline inspection.
-              </p>
+              <p>Ensure equipment is isolated, locked out and tagged before commencing offline inspection.</p>
             </div>
             <div className="flex gap-3">
               <span className="font-bold text-primary">2.</span>
-              <p>
-                Conduct area inspection as per tables below. Record each check with a tick in the appropriate box.
-              </p>
+              <p>Conduct area inspection as per tables below. Record each check with a tick in the appropriate box.</p>
             </div>
             <div className="flex gap-3">
               <span className="font-bold text-primary">3.</span>
-              <p>
-                When a defect is identified and it is safe and practical to repair the defect, please do so and make a
-                note of it in the comments section.
-              </p>
+              <p>When a defect is identified and it is safe and practical to repair the defect, please do so and make a note of it in the comments section.</p>
             </div>
             <div className="flex gap-3">
               <span className="font-bold text-primary">4.</span>
-              <p>
-                If not practical to repair, report the defect including materials required, trade discipline &amp;
-                estimated repair time for the supervisor to raise a work request.
-              </p>
+              <p>If not practical to repair, report the defect including materials required, trade discipline &amp; estimated repair time for the supervisor to raise a work request.</p>
             </div>
           </div>
         </div>
@@ -407,10 +289,7 @@ export const FilterPressDailyOfflinePMDocument = () => {
         <div className="border-b border-border">
           <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">COMMENTS</div>
           <div className="p-4">
-            <Textarea
-              placeholder="Enter any additional comments, defects noted, or repairs made..."
-              className="min-h-[100px]"
-            />
+            <Textarea placeholder="Enter any additional comments, defects noted, or repairs made..." className="min-h-[100px]" />
           </div>
         </div>
 
@@ -422,109 +301,64 @@ export const FilterPressDailyOfflinePMDocument = () => {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <span className="font-medium w-40">Follow up work required:</span>
-                  <div className="flex gap-4">
-                    <label className="flex items-center gap-2">
-                      <Checkbox className="h-4 w-4" />
-                      <span>Yes</span>
-                    </label>
-                    <label className="flex items-center gap-2">
-                      <Checkbox className="h-4 w-4" />
-                      <span>No</span>
-                    </label>
+                  <div className="flex gap-3">
+                    <label className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span>Yes</span></label>
+                    <label className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span>No</span></label>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-medium w-40">Document update required:</span>
-                  <div className="flex gap-4">
-                    <label className="flex items-center gap-2">
-                      <Checkbox className="h-4 w-4" />
-                      <span>Yes</span>
-                    </label>
-                    <label className="flex items-center gap-2">
-                      <Checkbox className="h-4 w-4" />
-                      <span>No</span>
-                    </label>
-                  </div>
+                <div className="grid grid-cols-[80px_1fr] gap-2 items-center">
+                  <span className="font-medium">Name:</span>
+                  <Input className="h-7 text-xs" />
+                </div>
+                <div className="grid grid-cols-[80px_1fr] gap-2 items-center">
+                  <span className="font-medium">Date:</span>
+                  <Input className="h-7 text-xs" type="date" />
                 </div>
               </div>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <span className="font-medium w-24">Name:</span>
-                  <Input className="flex-1" placeholder="" />
+                  <span className="font-medium w-40">Document update required:</span>
+                  <div className="flex gap-3">
+                    <label className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span>Yes</span></label>
+                    <label className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span>No</span></label>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-medium w-24">Signature:</span>
-                  <div className="flex-1 h-10 border border-border rounded-md bg-muted/30"></div>
+                <div className="grid grid-cols-[80px_1fr] gap-2 items-center">
+                  <span className="font-medium">Signature:</span>
+                  <div className="h-8 border border-border rounded bg-muted/30"></div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-medium w-24">Date:</span>
-                  <Input className="flex-1" placeholder="" type="date" />
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-medium w-24">PM Duration:</span>
-                  <Input className="flex-1" placeholder="" />
+                <div className="grid grid-cols-[80px_1fr] gap-2 items-center">
+                  <span className="font-medium">PM Duration:</span>
+                  <Input className="h-7 text-xs" placeholder="" />
                 </div>
               </div>
             </div>
-            <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-md text-sm text-amber-700">
-              REMOVE TAG AND RETURN TO OPERATION IF NO FAULT FOUND
-            </div>
-          </div>
-        </div>
-
-        {/* Approval */}
-        <div className="border-b border-border">
-          <div className="bg-green-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-green-600" />
-            <span className="text-green-700">APPROVAL</span>
-          </div>
-          <div className="p-4">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left px-4 py-2 font-medium w-1/4">Role</th>
-                  <th className="text-left px-4 py-2 font-medium w-1/4">Name</th>
-                  <th className="text-left px-4 py-2 font-medium w-1/4">Sign</th>
-                  <th className="text-left px-4 py-2 font-medium w-1/4">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-border">
-                  <td className="px-4 py-3 font-medium">Supervisor</td>
-                  <td className="px-4 py-3"><Input className="h-8" /></td>
-                  <td className="px-4 py-3"><div className="h-8 border border-border rounded bg-muted/30"></div></td>
-                  <td className="px-4 py-3"><Input className="h-8" type="date" /></td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
 
         {/* Revision History */}
-        <div>
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">REVISION HISTORY</div>
-          <div className="p-4">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left px-4 py-2 font-medium w-20">Rev No.</th>
-                  <th className="text-left px-4 py-2 font-medium">Description</th>
-                  <th className="text-left px-4 py-2 font-medium w-32">Created</th>
-                  <th className="text-left px-4 py-2 font-medium w-32">Reviewed</th>
-                  <th className="text-left px-4 py-2 font-medium w-28">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-border">
-                  <td className="px-4 py-2">0</td>
-                  <td className="px-4 py-2">Initial Release</td>
-                  <td className="px-4 py-2">—</td>
-                  <td className="px-4 py-2">—</td>
-                  <td className="px-4 py-2">—</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div className="border-t border-border">
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Revision History:</div>
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-muted/50">
+                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Revision No.</th>
+                <th className="border border-border px-3 py-2 text-left font-medium w-[35%]">Description</th>
+                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Created</th>
+                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Reviewed</th>
+                <th className="border border-border px-3 py-2 text-left font-medium w-[20%]">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-border px-3 py-2">0</td>
+                <td className="border border-border px-3 py-2">Initial Release</td>
+                <td className="border border-border px-3 py-2"></td>
+                <td className="border border-border px-3 py-2"></td>
+                <td className="border border-border px-3 py-2"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

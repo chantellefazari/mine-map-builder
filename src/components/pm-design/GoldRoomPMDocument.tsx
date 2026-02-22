@@ -1,27 +1,48 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertTriangle, HardHat, FileText, User, Calendar, Eye, Lock, Info } from "lucide-react";
+import { FileText, User, Calendar, Eye } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
-interface InspectionTask { task: string; }
-interface EquipmentSection { equipmentId: string; equipmentName: string; tasks: InspectionTask[]; }
+interface Task {
+  task: string;
+}
 
-const inspectionData: EquipmentSection[] = [
-  { equipmentId: "08-PU-009", equipmentName: "Cathode Wash Sludge Pump", tasks: [
-    { task: "Check valves and pipework for air leaks" }, { task: "Check operation of pump" },
-  ]},
-  { equipmentId: "08-PU-010", equipmentName: "Electrowinning Cell Sludge Pump", tasks: [
-    { task: "Check valves and pipework for air leaks" }, { task: "Check operation of pump" },
-  ]},
-  { equipmentId: "08-EW-010", equipmentName: "Electrowinning Cell", tasks: [
-    { task: "Check valves and pipework for leaks" }, { task: "Check for rust build up or penetration" },
-    { task: "Check overall tank condition. Look for any damage or rust" },
-  ]},
-  { equipmentId: "08-BU-002", equipmentName: "Barring Furnace Burner", tasks: [
-    { task: "Check overall burner external condition and clean any build up material or dust with a rag" },
-  ]},
+interface InspectionSection {
+  equipmentName: string;
+  tasks: Task[];
+}
+
+const inspectionData: InspectionSection[] = [
+  {
+    equipmentName: "Electrowinning Cells",
+    tasks: [
+      { task: "Visual inspection of cells for leaks or damage" },
+      { task: "Check electrical connections for corrosion or loose connections" },
+      { task: "Inspect anodes and cathodes for wear or buildup" },
+      { task: "Verify proper electrolyte levels" },
+    ],
+  },
+  {
+    equipmentName: "Sludge Pumps",
+    tasks: [
+      { task: "Inspect pump housing and connections for leaks" },
+      { task: "Check motor and electrical connections" },
+      { task: "Listen for unusual noises or vibrations during operation" },
+      { task: "Verify proper flow rates" },
+    ],
+  },
+  {
+    equipmentName: "Furnace Equipment",
+    tasks: [
+      { task: "Inspect furnace shell for cracks or hot spots" },
+      { task: "Check burner operation and flame stability" },
+      { task: "Verify proper temperature control settings" },
+      { task: "Inspect exhaust system for leaks or blockages" },
+    ],
+  },
 ];
 
 export const GoldRoomPMDocument = () => {
@@ -33,18 +54,17 @@ export const GoldRoomPMDocument = () => {
           <div className="absolute bottom-0 left-4 h-[60%] flex items-center"><img src={tennantIcon} alt="Tennant Mines" className="h-14" /></div>
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
             <div className="text-center">
-              <h1 className="text-2xl font-bold tracking-wide text-primary">Tenant Creek Gold Room Area</h1>
-              <p className="text-base mt-1 text-primary/80">Operational Running PMs - Weekly Inspection (Fitter)</p>
+              <h1 className="text-2xl font-bold tracking-wide text-primary">Tennant Creek - Gold Room Area</h1>
+              <p className="text-base mt-1 text-primary/80">Mechanical Running PMs - Weekly Inspection (Fitter)</p>
             </div>
           </div>
         </div>
-
         <div className="grid grid-cols-2 border-b border-border text-xs">
           <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5"><FileText className="w-3 h-3 text-primary" />Project / Site:</div><div className="px-2 py-1.5">Tenant Creek</div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5"><FileText className="w-3 h-3 text-primary" />Project / Site:</div><div className="px-2 py-1.5">Tennant Creek</div></div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5"></div></div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area Desc.:</div><div className="px-2 py-1.5">Gold Room</div></div>
-            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5"><User className="w-3 h-3 text-primary" />Resource/s:</div><div className="px-2 py-1.5">1x Fitter (2 hrs)</div></div>
+            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5"><User className="w-3 h-3 text-primary" />Resource/s:</div><div className="px-2 py-1.5">1x Fitter (1 hr)</div></div>
           </div>
           <div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div><div className="px-2 py-1.5">Operations</div></div>
@@ -54,24 +74,17 @@ export const GoldRoomPMDocument = () => {
           </div>
         </div>
 
+        {/* Scope */}
         <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2"><Info className="w-5 h-5 text-primary" />PREPARATION AND INFORMATION</div>
-          <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2"><Eye className="w-4 h-4 text-primary" />SCOPE</div>
-            <div className="px-4 py-3 text-sm leading-relaxed">
-              <p className="font-medium mb-2">Weekly Running Inspection – Gold Room Area</p>
-              <p className="text-muted-foreground">To safely carry out operational inspection of electrowinning cells, sludge pumps, and furnace equipment for signs of damage or potential failures that may require maintenance attention.</p>
-            </div>
-          </div>
-          <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-amber-500" />SAFETY</div>
-            <div className="px-4 py-3">
-              <div className="flex items-start gap-3 mb-4"><AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" /><p className="text-sm">Before commencing this work complete a <strong>TAKE 5</strong> every time to check that no abnormal conditions exist.</p></div>
-              <div className="flex items-start gap-3 mb-4"><HardHat className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" /><p className="text-sm">Minimum PPE: Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.</p></div>
-              <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3"><Lock className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" /><p className="text-sm font-bold text-destructive">Under no circumstances will personnel place themselves in an unsafe position while carrying out these inspection tasks.</p></div>
-            </div>
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2"><Eye className="w-4 h-4 text-primary" />SCOPE</div>
+          <div className="px-4 py-3 text-sm leading-relaxed">
+            <p className="font-medium mb-2">Weekly Running Inspection – Gold Room Area</p>
+            <p className="text-muted-foreground">To safely carry out operational inspection of electrowinning cells, sludge pumps, and furnace equipment for signs of damage or potential failures that may require maintenance attention.</p>
           </div>
         </div>
+
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         <div className="border-b border-border">
           <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2"><Eye className="w-4 h-4 text-primary" />PROCEDURE</div>
@@ -90,7 +103,7 @@ export const GoldRoomPMDocument = () => {
               <tbody>
                 {inspectionData.map((section, sectionIdx) => (
                   <>
-                    <tr key={`section-${sectionIdx}`} className="bg-primary/10"><td colSpan={4} className="border border-border px-2 py-2 font-semibold text-primary">{section.equipmentId} - {section.equipmentName}</td></tr>
+                    <tr key={`section-${sectionIdx}`} className="bg-primary/10"><td colSpan={4} className="border border-border px-2 py-2 font-semibold text-primary">{section.equipmentName}</td></tr>
                     {section.tasks.map((task, taskIdx) => (
                       <tr key={`task-${sectionIdx}-${taskIdx}`} className="hover:bg-muted/50">
                         <td className="border border-border px-2 py-2">{task.task}</td>
@@ -106,18 +119,18 @@ export const GoldRoomPMDocument = () => {
           </div>
         </div>
 
-        <div className="border-b border-border"><div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Comments:</div><div className="p-4"><Textarea placeholder="Enter comments here..." className="min-h-[80px] text-sm" /></div></div>
+        <div className="border-b border-border"><div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Comment:</div><div className="p-4"><Textarea placeholder="Enter comments here..." className="min-h-[80px] text-sm" /></div></div>
 
         <div className="border-b border-border">
           <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Sign Off:</div>
           <div className="p-4 grid grid-cols-2 gap-4 text-sm">
             <div className="space-y-3">
-              <div className="flex items-center gap-4"><span className="text-muted-foreground">Follow up work required:</span><div className="flex gap-2"><Checkbox id="followup-yes-gr" /><label htmlFor="followup-yes-gr">Yes</label><Checkbox id="followup-no-gr" /><label htmlFor="followup-no-gr">No</label></div></div>
+              <div className="flex items-center gap-4"><span className="text-muted-foreground">Follow up work required:</span><div className="flex gap-2"><Checkbox id="followup-yes-gold" /><label htmlFor="followup-yes-gold">Yes</label><Checkbox id="followup-no-gold" /><label htmlFor="followup-no-gold">No</label></div></div>
               <div className="grid grid-cols-[60px_1fr] gap-2 items-center"><span className="text-muted-foreground">Name:</span><div className="border-b border-border h-6"></div></div>
               <div className="grid grid-cols-[60px_1fr] gap-2 items-center"><span className="text-muted-foreground">Date:</span><div className="border-b border-border h-6"></div></div>
             </div>
             <div className="space-y-3">
-              <div className="flex items-center gap-4"><span className="text-muted-foreground">Document update required:</span><div className="flex gap-2"><Checkbox id="update-yes-gr" /><label htmlFor="update-yes-gr">Yes</label><Checkbox id="update-no-gr" /><label htmlFor="update-no-gr">No</label></div></div>
+              <div className="flex items-center gap-4"><span className="text-muted-foreground">Document update required:</span><div className="flex gap-2"><Checkbox id="update-yes-gold" /><label htmlFor="update-yes-gold">Yes</label><Checkbox id="update-no-gold" /><label htmlFor="update-no-gold">No</label></div></div>
               <div className="grid grid-cols-[80px_1fr] gap-2 items-center"><span className="text-muted-foreground">Signature:</span><div className="border-b border-border h-6"></div></div>
               <div className="grid grid-cols-[80px_1fr] gap-2 items-center"><span className="text-muted-foreground">PM Duration:</span><div className="border-b border-border h-6"></div></div>
             </div>

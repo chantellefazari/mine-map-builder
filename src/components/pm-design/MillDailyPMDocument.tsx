@@ -3,24 +3,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { 
-  AlertTriangle, 
-  Shield, 
-  HardHat,
   FileText,
   ClipboardCheck,
   User,
   Calendar,
-  Wrench,
   Eye,
-  Zap,
   CheckCircle2,
-  Info,
   Cog,
   Thermometer,
   Gauge
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
 interface InspectionTask {
   task: string;
@@ -142,11 +137,9 @@ export const MillDailyPMDocument = () => {
         {/* Banner with Title Overlay */}
         <div className="relative">
           <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-          {/* Logo on left side of black section */}
           <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
             <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
           </div>
-          {/* Title on the black section - centered */}
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
             <div className="text-center">
               <h1 className="text-2xl font-bold tracking-wide text-primary">Tenant Creek - Daily Mill Inspection</h1>
@@ -157,7 +150,6 @@ export const MillDailyPMDocument = () => {
 
         {/* Header Information Grid */}
         <div className="grid grid-cols-2 border-b border-border text-xs">
-          {/* Left Column */}
           <div className="border-r border-border">
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
@@ -182,8 +174,6 @@ export const MillDailyPMDocument = () => {
               <div className="px-2 py-1.5">1x Fitter (1 hr)</div>
             </div>
           </div>
-
-          {/* Right Column */}
           <div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
@@ -207,64 +197,24 @@ export const MillDailyPMDocument = () => {
           </div>
         </div>
 
-        {/* PREPARATION AND INFORMATION Section */}
+        {/* Scope */}
         <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
-            <Info className="w-5 h-5 text-primary" />
-            PREPARATION AND INFORMATION
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+            <Eye className="w-4 h-4 text-primary" />
+            SCOPE
           </div>
-          
-          {/* Scope */}
-          <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Eye className="w-4 h-4 text-primary" />
-              SCOPE
-            </div>
-            <div className="px-4 py-3 text-sm leading-relaxed">
-              <p className="font-medium mb-2">Daily Running Inspection – Mill Area</p>
-              <p className="text-muted-foreground">
-                To safely carry out mechanical inspection for signs of damage or potential failures that may require maintenance attention. 
-                When a defect is identified and it is safe and practical to repair the defect, please do so and make a note of it in the comments section. 
-                If not, report the defect including materials required, trade discipline & estimated repair time for the supervisor to raise a work request.
-              </p>
-            </div>
+          <div className="px-4 py-3 text-sm leading-relaxed">
+            <p className="font-medium mb-2">Daily Running Inspection – Mill Area</p>
+            <p className="text-muted-foreground">
+              To safely carry out mechanical inspection for signs of damage or potential failures that may require maintenance attention. 
+              When a defect is identified and it is safe and practical to repair the defect, please do so and make a note of it in the comments section. 
+              If not, report the defect including materials required, trade discipline & estimated repair time for the supervisor to raise a work request.
+            </p>
           </div>
-
-          {/* Safety Section */}
-          <div className="border-b border-border">
-            <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Shield className="w-5 h-5 text-destructive" />
-              <span className="text-destructive font-bold">SAFETY</span>
-            </div>
-            <div className="px-4 py-4 bg-destructive/5">
-              <div className="flex items-start gap-3 mb-4">
-                <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-medium">
-                  Before commencing this work complete a <span className="font-bold text-destructive">TAKE 5</span> every time to check that no abnormal conditions exist.
-                </p>
-              </div>
-              <div className="flex items-start gap-3 mb-4">
-                <HardHat className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm">
-                  Follow safety procedures at all times. Isolate equipment where required & ensure use of correct PPE.
-                </p>
-              </div>
-              <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3">
-                <Zap className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-bold text-destructive">
-                  Under no circumstances will personnel place themselves in an unsafe position while carrying out these inspection tasks.
-                </p>
-              </div>
-              <div className="mt-4 flex items-start gap-3">
-                <HardHat className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <p className="text-sm">
-                  <span className="font-semibold">Minimum PPE:</span> Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.
-                </p>
-              </div>
-            </div>
-          </div>
-
         </div>
+
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* Procedure Section */}
         <div className="border-b border-border">
@@ -295,10 +245,8 @@ export const MillDailyPMDocument = () => {
             INSPECTIONS
           </div>
 
-          {/* Equipment Sections */}
           {inspectionData.map((section, sectionIndex) => (
             <div key={section.equipmentId} className={sectionIndex < inspectionData.length - 1 ? "border-b border-border" : ""}>
-              {/* Section Header */}
               <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Cog className="w-4 h-4 text-primary" />
@@ -308,7 +256,6 @@ export const MillDailyPMDocument = () => {
                 </div>
               </div>
 
-              {/* Inspection Table */}
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/50">

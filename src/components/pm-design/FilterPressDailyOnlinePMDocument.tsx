@@ -3,22 +3,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  AlertTriangle,
-  Shield,
-  HardHat,
   FileText,
   ClipboardCheck,
   User,
   Calendar,
-  Wrench,
-  Zap,
-  AlertCircle,
-  Info,
-  Lock,
   Cog,
+  AlertCircle,
+  AlertTriangle,
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
 interface InspectionTask {
   task: string;
@@ -302,42 +297,8 @@ export const FilterPressDailyOnlinePMDocument = () => {
           </div>
         </div>
 
-        {/* PREPARATION */}
-        <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
-            <Info className="w-5 h-5 text-primary" />
-            PREPARATION
-          </div>
-          <div className="border-b border-border">
-            <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Shield className="w-5 h-5 text-destructive" />
-              <span className="text-destructive font-bold">SAFETY PRECAUTIONS</span>
-            </div>
-            <div className="px-4 py-4 bg-destructive/5">
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-start gap-3">
-                  <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                  <span>Conduct <span className="font-bold text-destructive">Take 5</span> and/or <span className="font-bold text-destructive">JSEA</span> as required.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Lock className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <span>Ensure isolations and/or 'live testing' safeguards are in place before commencing.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <FileText className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                  <span>Follow OEM instructions and site procedures as required.</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-4 flex items-start gap-3 px-4 pb-4">
-            <HardHat className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-            <p className="text-sm">
-              <span className="font-semibold">Minimum PPE:</span> Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.
-            </p>
-          </div>
-        </div>
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* INSPECTION SECTIONS */}
         <div className="border-b border-border">
@@ -390,11 +351,11 @@ export const FilterPressDailyOnlinePMDocument = () => {
           ))}
         </div>
 
-        {/* IMMEDIATE SHUTDOWN TRIGGERS */}
+        {/* SHUTDOWN TRIGGERS */}
         <div className="border-b border-border">
           <div className="bg-destructive/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-destructive" />
-            <span className="text-destructive">IMMEDIATE SHUTDOWN TRIGGERS</span>
+            <span className="text-destructive">SHUTDOWN TRIGGERS – STOP & REPORT</span>
           </div>
           <div className="px-4 py-4 bg-destructive/5">
             <ul className="space-y-2 text-sm">

@@ -1,20 +1,12 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-  AlertTriangle, 
-  HardHat,
-  FileText,
-  User,
-  Calendar,
-  Eye,
-  Lock,
-  Info
-} from "lucide-react";
+import { FileText, User, Calendar, Eye } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
-interface InspectionTask {
+interface Task {
   task: string;
   hasTemp?: boolean;
 }
@@ -22,181 +14,77 @@ interface InspectionTask {
 interface EquipmentSection {
   equipmentId: string;
   equipmentName: string;
-  tasks: InspectionTask[];
+  tasks: Task[];
 }
 
 const inspectionData: EquipmentSection[] = [
   {
-    equipmentId: "05-CP-132, 05-AR-132",
-    equipmentName: "Air Compressor & Air Receiver",
+    equipmentId: "WP-01",
+    equipmentName: "Water Pump 1",
     tasks: [
-      { task: "Check Air Filter indicators and both air filter integrity (05-AF-132)" },
-      { task: "Clean Filters on Air compressor or Replace. A & B (05-CP-132)" },
-      { task: "Check oil level on Air compressor A & B (05-CP-132)" },
-      { task: "Check Auto Drains are operational on both Air receiver's (05-AR-132)" },
-      { task: "Check Receiver's for Leaks or Damage (05-AR-132)" },
-      { task: "Check all Pipework and Valves for leaks or damage" },
-    ]
+      { task: "Inspect pump and motor for unusual noise or vibration" },
+      { task: "Check pump and motor for leaks" },
+      { task: "Inspect pipework and fittings for leaks or damage" },
+      { task: "Check the condition of the pump mounting base" },
+      { task: "Inspect electrical connections for corrosion or damage" },
+      { task: "Check the operation of the pump control panel" },
+      { task: "Verify the pump is operating at the correct pressure and flow rate" },
+      { task: "Inspect the condition of the pump suction strainer" },
+      { task: "Check the pump gland packing for proper adjustment" },
+      { task: "Inspect the pump coupling for wear or damage" },
+      { task: "Check motor DE and NDE bearing temperature", hasTemp: true },
+    ],
   },
   {
-    equipmentId: "05-TK-001",
-    equipmentName: "Dust Suppression Tank",
+    equipmentId: "WP-02",
+    equipmentName: "Water Pump 2",
     tasks: [
-      { task: "Check Tank Level" },
-      { task: "Check all Pipework and Valves for leaks or damage" },
-    ]
+      { task: "Inspect pump and motor for unusual noise or vibration" },
+      { task: "Check pump and motor for leaks" },
+      { task: "Inspect pipework and fittings for leaks or damage" },
+      { task: "Check the condition of the pump mounting base" },
+      { task: "Inspect electrical connections for corrosion or damage" },
+      { task: "Check the operation of the pump control panel" },
+      { task: "Verify the pump is operating at the correct pressure and flow rate" },
+      { task: "Inspect the condition of the pump suction strainer" },
+      { task: "Check the pump gland packing for proper adjustment" },
+      { task: "Inspect the pump coupling for wear or damage" },
+      { task: "Check motor DE and NDE bearing temperature", hasTemp: true },
+    ],
   },
   {
-    equipmentId: "05-PU-001A",
-    equipmentName: "Dust Suppression Pump (Duty)",
+    equipmentId: "AC-01",
+    equipmentName: "Air Compressor 1",
     tasks: [
-      { task: "Check pump condition (skip below checks if pump on standby)" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check inlet and outlet connection, look for leaks" },
-    ]
+      { task: "Inspect compressor and motor for unusual noise or vibration" },
+      { task: "Check compressor and motor for leaks" },
+      { task: "Inspect pipework and fittings for leaks or damage" },
+      { task: "Check the condition of the compressor mounting base" },
+      { task: "Inspect electrical connections for corrosion or damage" },
+      { task: "Check the operation of the compressor control panel" },
+      { task: "Verify the compressor is operating at the correct pressure" },
+      { task: "Inspect the condition of the compressor air filter" },
+      { task: "Check the compressor oil level" },
+      { task: "Inspect the compressor belt for wear or damage" },
+      { task: "Check motor DE and NDE bearing temperature", hasTemp: true },
+    ],
   },
   {
-    equipmentId: "05-PU-001B",
-    equipmentName: "Dust Suppression Pump (Standby)",
+    equipmentId: "AC-02",
+    equipmentName: "Air Compressor 2",
     tasks: [
-      { task: "Check pump condition (skip below checks if pump on duty)" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check inlet and outlet connection, look for leaks" },
-    ]
-  },
-  {
-    equipmentId: "11-TK-001",
-    equipmentName: "Process Water Tank",
-    tasks: [
-      { task: "Check Tank Level" },
-      { task: "Check all Pipework and Valves for leaks or damage" },
-    ]
-  },
-  {
-    equipmentId: "11-TK-002",
-    equipmentName: "Raw Water Tank",
-    tasks: [
-      { task: "Check Tank Level" },
-      { task: "Check all Pipework and Valves for leaks or damage" },
-    ]
-  },
-  {
-    equipmentId: "11-TK-003",
-    equipmentName: "Potable Water Tank",
-    tasks: [
-      { task: "Check Tank Level" },
-      { task: "Check all Pipework and Valves for leaks or damage" },
-    ]
-  },
-  {
-    equipmentId: "11-TK-004",
-    equipmentName: "Gland Water Tank",
-    tasks: [
-      { task: "Check Tank Level" },
-      { task: "Check all Pipework and Valves for leaks or damage" },
-    ]
-  },
-  {
-    equipmentId: "11-TK-201",
-    equipmentName: "Safety Shower Water Tank",
-    tasks: [
-      { task: "Check Tank Level" },
-      { task: "Check all Pipework and Valves for leaks or damage" },
-    ]
-  },
-  {
-    equipmentId: "11-PU-135A",
-    equipmentName: "Gland Water Pump (Duty)",
-    tasks: [
-      { task: "Check pump condition (skip below checks if pump on standby)" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check inlet and outlet connection, look for leaks" },
-    ]
-  },
-  {
-    equipmentId: "11-PU-135B",
-    equipmentName: "Gland Water Pump (Standby)",
-    tasks: [
-      { task: "Check pump condition (skip below checks if pump on duty)" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check inlet and outlet connection, look for leaks" },
-    ]
-  },
-  {
-    equipmentId: "11-PU-033A",
-    equipmentName: "Potable Water Pump (Duty)",
-    tasks: [
-      { task: "Check pump condition (skip below checks if pump on standby)" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check inlet and outlet connection, look for leaks" },
-    ]
-  },
-  {
-    equipmentId: "11-PU-033B",
-    equipmentName: "Potable Water Pump (Standby)",
-    tasks: [
-      { task: "Check pump condition (skip below checks if pump on duty)" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check inlet and outlet connection, look for leaks" },
-    ]
-  },
-  {
-    equipmentId: "11-PU-205A",
-    equipmentName: "Safety Shower Water Pump (Duty)",
-    tasks: [
-      { task: "Check pump condition (skip below checks if pump on standby)" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check inlet and outlet connection, look for leaks" },
-    ]
-  },
-  {
-    equipmentId: "11-PU-205B",
-    equipmentName: "Safety Shower Water Pump (Standby)",
-    tasks: [
-      { task: "Check pump condition (skip below checks if pump on duty)" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check inlet and outlet connection, look for leaks" },
-    ]
-  },
-  {
-    equipmentId: "11-PU-XXX",
-    equipmentName: "Raw Water Pump (Duty)",
-    tasks: [
-      { task: "Check pump condition (skip below checks if pump on standby)" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check inlet and outlet connection, look for leaks" },
-    ]
-  },
-  {
-    equipmentId: "11-PU-XXX",
-    equipmentName: "Raw Water Pump (Standby)",
-    tasks: [
-      { task: "Check pump condition (skip below checks if pump on standby)" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check inlet and outlet connection, look for leaks" },
-    ]
-  },
-  {
-    equipmentId: "11-PU-130A",
-    equipmentName: "Process Water Pump (Duty)",
-    tasks: [
-      { task: "Running or Standby (skip below checks if pump on standby)" },
-      { task: "Bearing assembly temperature (DE), Serviceable range: < 80°C", hasTemp: true },
-      { task: "Bearing assembly temperature (NDE), Serviceable range: < 80°C", hasTemp: true },
-      { task: "Check Pipe work condition, look for leaks" },
-      { task: "Grease Pump (XTB2)" },
-    ]
-  },
-  {
-    equipmentId: "11-PU-130B",
-    equipmentName: "Process Water Pump (Standby)",
-    tasks: [
-      { task: "Running or Standby (skip below checks if pump on standby)" },
-      { task: "Bearing assembly temperature (DE), Serviceable range: < 80°C", hasTemp: true },
-      { task: "Bearing assembly temperature (NDE), Serviceable range: < 80°C", hasTemp: true },
-      { task: "Check pipe work condition, look for leaks" },
-      { task: "Grease Pump (XTB2)" },
-    ]
+      { task: "Inspect compressor and motor for unusual noise or vibration" },
+      { task: "Check compressor and motor for leaks" },
+      { task: "Inspect pipework and fittings for leaks or damage" },
+      { task: "Check the condition of the compressor mounting base" },
+      { task: "Inspect electrical connections for corrosion or damage" },
+      { task: "Check the operation of the compressor control panel" },
+      { task: "Verify the compressor is operating at the correct pressure" },
+      { task: "Inspect the condition of the compressor air filter" },
+      { task: "Check the compressor oil level" },
+      { task: "Inspect the compressor belt for wear or damage" },
+      { task: "Check motor DE and NDE bearing temperature", hasTemp: true },
+    ],
   },
 ];
 
@@ -244,7 +132,6 @@ export const AirWaterServicesPMDocument = () => {
               <div className="px-2 py-1.5">1x Fitter (2 hrs)</div>
             </div>
           </div>
-
           <div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
@@ -268,55 +155,22 @@ export const AirWaterServicesPMDocument = () => {
           </div>
         </div>
 
-        {/* PREPARATION AND INFORMATION Section */}
+        {/* Scope */}
         <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
-            <Info className="w-5 h-5 text-primary" />
-            PREPARATION AND INFORMATION
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+            <Eye className="w-4 h-4 text-primary" />
+            SCOPE
           </div>
-          
-          {/* Scope */}
-          <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Eye className="w-4 h-4 text-primary" />
-              SCOPE
-            </div>
-            <div className="px-4 py-3 text-sm leading-relaxed">
-              <p className="font-medium mb-2">Weekly Running Inspection – Air & Water Services Area</p>
-              <p className="text-muted-foreground">
-                To safely carry out mechanical inspection of water pumps and air compressor systems for signs of damage or potential failures that may require maintenance attention.
-              </p>
-            </div>
-          </div>
-
-          {/* Safety */}
-          <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-500" />
-              SAFETY
-            </div>
-            <div className="px-4 py-3">
-              <div className="flex items-start gap-3 mb-4">
-                <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm">
-                  Before commencing this work complete a <strong>TAKE 5</strong> every time to check that no abnormal conditions exist.
-                </p>
-              </div>
-              <div className="flex items-start gap-3 mb-4">
-                <HardHat className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm">
-                  Minimum PPE: Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.
-                </p>
-              </div>
-              <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3">
-                <Lock className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-bold text-destructive">
-                  NOTE: Always assume the equipment is LIVE until positively Isolated, locked and tagged.
-                </p>
-              </div>
-            </div>
+          <div className="px-4 py-3 text-sm leading-relaxed">
+            <p className="font-medium mb-2">Weekly Running Inspection – Air & Water Services Area</p>
+            <p className="text-muted-foreground">
+              To safely carry out mechanical inspection of water pumps and air compressor systems for signs of damage or potential failures that may require maintenance attention.
+            </p>
           </div>
         </div>
+
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* Procedure Section */}
         <div className="border-b border-border">
@@ -337,7 +191,6 @@ export const AirWaterServicesPMDocument = () => {
             <Eye className="w-4 h-4 text-primary" />
             INSPECTIONS
           </div>
-
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
@@ -399,87 +252,27 @@ export const AirWaterServicesPMDocument = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-4">
                 <span className="text-muted-foreground">Follow up work required:</span>
-                <div className="flex gap-2">
-                  <Checkbox id="followup-yes" />
-                  <label htmlFor="followup-yes">Yes</label>
-                  <Checkbox id="followup-no" />
-                  <label htmlFor="followup-no">No</label>
-                </div>
+                <div className="flex gap-2"><Checkbox id="followup-yes" /><label htmlFor="followup-yes">Yes</label><Checkbox id="followup-no" /><label htmlFor="followup-no">No</label></div>
               </div>
-              <div className="grid grid-cols-[60px_1fr] gap-2 items-center">
-                <span className="text-muted-foreground">Name:</span>
-                <div className="border-b border-border h-6"></div>
-              </div>
-              <div className="grid grid-cols-[60px_1fr] gap-2 items-center">
-                <span className="text-muted-foreground">Date:</span>
-                <div className="border-b border-border h-6"></div>
-              </div>
+              <div className="grid grid-cols-[60px_1fr] gap-2 items-center"><span className="text-muted-foreground">Name:</span><div className="border-b border-border h-6"></div></div>
+              <div className="grid grid-cols-[60px_1fr] gap-2 items-center"><span className="text-muted-foreground">Date:</span><div className="border-b border-border h-6"></div></div>
             </div>
             <div className="space-y-3">
               <div className="flex items-center gap-4">
                 <span className="text-muted-foreground">Document update required:</span>
-                <div className="flex gap-2">
-                  <Checkbox id="update-yes" />
-                  <label htmlFor="update-yes">Yes</label>
-                  <Checkbox id="update-no" />
-                  <label htmlFor="update-no">No</label>
-                </div>
+                <div className="flex gap-2"><Checkbox id="update-yes" /><label htmlFor="update-yes">Yes</label><Checkbox id="update-no" /><label htmlFor="update-no">No</label></div>
               </div>
-              <div className="grid grid-cols-[80px_1fr] gap-2 items-center">
-                <span className="text-muted-foreground">Signature:</span>
-                <div className="border-b border-border h-6"></div>
-              </div>
-              <div className="grid grid-cols-[80px_1fr] gap-2 items-center">
-                <span className="text-muted-foreground">PM Duration:</span>
-                <div className="border-b border-border h-6"></div>
-              </div>
+              <div className="grid grid-cols-[80px_1fr] gap-2 items-center"><span className="text-muted-foreground">Signature:</span><div className="border-b border-border h-6"></div></div>
+              <div className="grid grid-cols-[80px_1fr] gap-2 items-center"><span className="text-muted-foreground">PM Duration:</span><div className="border-b border-border h-6"></div></div>
             </div>
           </div>
         </div>
 
         {/* Supervisor Approval */}
-        <div className="border-b border-border">
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Supervisor Approval:</div>
-          <div className="p-4">
-            <table className="w-full text-sm">
-              <tbody>
-                <tr>
-                  <td className="py-2 pr-4 text-muted-foreground w-24">Name:</td>
-                  <td className="py-2 border-b border-border"></td>
-                  <td className="py-2 px-4 text-muted-foreground w-16">Sign:</td>
-                  <td className="py-2 border-b border-border"></td>
-                  <td className="py-2 px-4 text-muted-foreground w-16">Date:</td>
-                  <td className="py-2 border-b border-border w-24"></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <div className="border-b border-border"><div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Supervisor Approval:</div><div className="p-4"><table className="w-full text-sm"><tbody><tr><td className="py-2 pr-4 text-muted-foreground w-24">Name:</td><td className="py-2 border-b border-border"></td><td className="py-2 px-4 text-muted-foreground w-16">Sign:</td><td className="py-2 border-b border-border"></td><td className="py-2 px-4 text-muted-foreground w-16">Date:</td><td className="py-2 border-b border-border w-24"></td></tr></tbody></table></div></div>
 
         {/* Revision History */}
-        <div>
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Revision History:</div>
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="bg-muted/50">
-                <th className="border border-border px-2 py-2 text-left font-semibold">Revision No.</th>
-                <th className="border border-border px-2 py-2 text-left font-semibold">Description</th>
-                <th className="border border-border px-2 py-2 text-left font-semibold">Created</th>
-                <th className="border border-border px-2 py-2 text-left font-semibold">Reviewed</th>
-                <th className="border border-border px-2 py-2 text-left font-semibold">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="border border-border px-2 py-2">0</td>
-                <td className="border border-border px-2 py-2">Initial Release</td>
-                <td className="border border-border px-2 py-2"></td>
-                <td className="border border-border px-2 py-2"></td>
-                <td className="border border-border px-2 py-2"></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <div><div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Revision History:</div><table className="w-full text-xs"><thead><tr className="bg-muted/50"><th className="border border-border px-2 py-2 text-left font-semibold">Revision No.</th><th className="border border-border px-2 py-2 text-left font-semibold">Description</th><th className="border border-border px-2 py-2 text-left font-semibold">Created</th><th className="border border-border px-2 py-2 text-left font-semibold">Reviewed</th><th className="border border-border px-2 py-2 text-left font-semibold">Date</th></tr></thead><tbody><tr><td className="border border-border px-2 py-2">0</td><td className="border border-border px-2 py-2">Initial Release</td><td className="border border-border px-2 py-2"></td><td className="border border-border px-2 py-2"></td><td className="border border-border px-2 py-2"></td></tr></tbody></table></div>
       </div>
     </div>
   );
