@@ -3,144 +3,98 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { 
   AlertTriangle, 
-  Shield, 
-  HardHat,
   FileText,
   ClipboardCheck,
   User,
   Calendar,
   Eye,
-  Zap,
   CheckCircle2,
-  Info
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
-interface InspectionTask {
+interface Task {
   task: string;
   hasInput?: boolean;
   inputLabel?: string;
 }
 
-interface EquipmentSection {
+interface InspectionSection {
   equipmentId: string;
   equipmentName: string;
-  tasks: InspectionTask[];
+  tasks: Task[];
 }
 
-const inspectionData: EquipmentSection[] = [
+const inspectionData: InspectionSection[] = [
   {
-    equipmentId: "08-CM-001",
-    equipmentName: "Acid Wash Column",
+    equipmentId: "ELU-TK-001",
+    equipmentName: "Elution Tank",
     tasks: [
-      { task: "Check Column for any damage" },
-      { task: "Check walkway, stairs, handrails for rust or damage" },
-      { task: "Visual inspection of Pressure Safety valve (V147 - orange valve). If column under pressure, confirm valve is not leaking" },
-    ]
+      { task: "Check for leaks (seals, flanges, body)" },
+      { task: "Inspect tank supports and structure" },
+      { task: "Check level indicators for functionality" },
+    ],
   },
   {
-    equipmentId: "08-PU-004",
-    equipmentName: "HCL Acid Sump Pump",
+    equipmentId: "ELU-PMP-001",
+    equipmentName: "Elution Pump",
     tasks: [
-      { task: "Check valves and pipework for air leaks" },
-      { task: "Check operation of pump" },
-      { task: "Check condition of bund and operation of sump pump" },
-    ]
+      { task: "Inspect pump for leaks (seals, flanges, body)" },
+      { task: "Check pump mounting and base" },
+      { task: "Inspect coupling and guard" },
+      { task: "Check motor fan and cowling" },
+      { task: "Check motor terminal box for integrity" },
+      { task: "Check pressure gauge", hasInput: true, inputLabel: "Pressure (kPa):" },
+    ],
   },
   {
-    equipmentId: "08-PU-003",
-    equipmentName: "HCL Acid Dosing Pump",
+    equipmentId: "ACID-TK-001",
+    equipmentName: "Acid Tank",
     tasks: [
-      { task: "Check valves and pipework for air leaks" },
-      { task: "Check operation of pump" },
-    ]
+      { task: "Check for leaks (seals, flanges, body)" },
+      { task: "Inspect tank supports and structure" },
+      { task: "Check level indicators for functionality" },
+    ],
   },
   {
-    equipmentId: "08-CM-002",
-    equipmentName: "Elution Column",
+    equipmentId: "ACID-PMP-001",
+    equipmentName: "Acid Pump",
     tasks: [
-      { task: "Check Column for any damage" },
-      { task: "Check walkway, stairs, handrails for rust or damage" },
-      { task: "Visual inspection of Pressure Safety valve (V116 - stainless steel valve). If column under pressure, confirm valve is not leaking" },
-      { task: "Check condition of bund sump" },
-    ]
+      { task: "Inspect pump for leaks (seals, flanges, body)" },
+      { task: "Check pump mounting and base" },
+      { task: "Inspect coupling and guard" },
+      { task: "Check motor fan and cowling" },
+      { task: "Check motor terminal box for integrity" },
+      { task: "Check pressure gauge", hasInput: true, inputLabel: "Pressure (kPa):" },
+    ],
   },
   {
-    equipmentId: "08-PU-005",
-    equipmentName: "Elution Column Sump Pump",
+    equipmentId: "ELU-VLV-001",
+    equipmentName: "Elution Valves",
     tasks: [
-      { task: "Check operation of sump pump" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check condition of bund sump" },
-    ]
+      { task: "Inspect valve body for leaks" },
+      { task: "Check valve actuator and linkages" },
+      { task: "Inspect position indicators" },
+    ],
   },
   {
-    equipmentId: "08-BU-001",
-    equipmentName: "Elution Burner",
+    equipmentId: "ELU-PIPE-001",
+    equipmentName: "Elution Piping",
     tasks: [
-      { task: "Check overall burner external condition and clean any build up material or dust with a rag" },
-    ]
+      { task: "Inspect pipe supports and hangers" },
+      { task: "Check pipe for corrosion or damage" },
+      { task: "Inspect flanges and fittings for leaks" },
+    ],
   },
   {
-    equipmentId: "08-HE-001",
-    equipmentName: "Elution Heater",
+    equipmentId: "ELU-INSTR-001",
+    equipmentName: "Elution Instruments",
     tasks: [
-      { task: "Check pipework condition and look for leaks" },
-      { task: "Visual inspection of Pressure Safety Valve (V177 - stainless steel valve) on inlet. Look for any rust penetrations, leaks on junctions or damages" },
-      { task: "Visual inspection of Pressure Safety valve (V176 - stainless steel valve) on outlet. Look for any rust penetrations, leaks on junctions or damages" },
-    ]
-  },
-  {
-    equipmentId: "08-HX-001",
-    equipmentName: "Elution Recovery Heat Exchanger",
-    tasks: [
-      { task: "Check inlet and outlet connection, look for leaks" },
-      { task: "Look for any leaks on plate assembly" },
-    ]
-  },
-  {
-    equipmentId: "08-PU-001",
-    equipmentName: "Eluate Pump",
-    tasks: [
-      { task: "Check pump condition" },
-      { task: "Check pump for heat, noise and vibration" },
-      { task: "Check inlet and outlet connection, look for leaks" },
-    ]
-  },
-  {
-    equipmentId: "08-TK-001",
-    equipmentName: "Eluate Tank",
-    tasks: [
-      { task: "Check Tank for any damage or rust" },
-      { task: "Check that the level gauge is indicating the fluid level in the tank" },
-    ]
-  },
-  {
-    equipmentId: "08-TK-002",
-    equipmentName: "Diesel Day Tank",
-    tasks: [
-      { task: "Check overall tank condition. Look for any damage or rust" },
-      { task: "Check Diesel Level", hasInput: true, inputLabel: "Diesel Level: _____%" },
-      { task: "Check filter condition" },
-    ]
-  },
-  {
-    equipmentId: "08-PU-006",
-    equipmentName: "Diesel Pump",
-    tasks: [
-      { task: "Check valves and pipework for air leaks" },
-      { task: "Check operation of pump" },
-    ]
-  },
-  {
-    equipmentId: "08",
-    equipmentName: "Pipework",
-    tasks: [
-      { task: "Check overall condition of pipe work, connections. Look for leaks" },
-      { task: "Check overall condition of pressure and temperature gauges" },
-      { task: "Check the condition of diesel lines. Look for leaks near the burner and at every pipe junction or valves" },
-    ]
+      { task: "Check instrument mounting and protection" },
+      { task: "Inspect wiring and connections" },
+      { task: "Verify instrument readings", hasInput: true, inputLabel: "Reading:" },
+    ],
   },
 ];
 
@@ -189,7 +143,6 @@ export const AcidElutionPMDocument = () => {
               <div className="px-2 py-1.5">1x Fitter (2 hrs)</div>
             </div>
           </div>
-
           <div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
@@ -213,56 +166,22 @@ export const AcidElutionPMDocument = () => {
           </div>
         </div>
 
-        {/* PREPARATION AND INFORMATION Section */}
+        {/* Scope */}
         <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
-            <Info className="w-5 h-5 text-primary" />
-            PREPARATION AND INFORMATION
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+            <Eye className="w-4 h-4 text-primary" />
+            SCOPE
           </div>
-          
-          {/* Scope */}
-          <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Eye className="w-4 h-4 text-primary" />
-              SCOPE
-            </div>
-            <div className="px-4 py-3 text-sm leading-relaxed">
-              <p className="font-medium mb-2">Weekly Running Area Inspection – Acid Wash & Elution Area</p>
-              <p className="text-muted-foreground">
-                To safely carry out mechanical inspection for signs of damage or potential failures that may require maintenance attention.
-              </p>
-            </div>
+          <div className="px-4 py-3 text-sm leading-relaxed">
+            <p className="font-medium mb-2">Weekly Running Area Inspection – Acid Wash & Elution Area</p>
+            <p className="text-muted-foreground">
+              To safely carry out mechanical inspection for signs of damage or potential failures that may require maintenance attention.
+            </p>
           </div>
-
-          {/* Safety Section */}
-          <div className="border-b border-border">
-            <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Shield className="w-5 h-5 text-destructive" />
-              <span className="text-destructive font-bold">SAFETY</span>
-            </div>
-            <div className="px-4 py-4 bg-destructive/5">
-              <div className="flex items-start gap-3 mb-4">
-                <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-medium">
-                  Before commencing this work complete a <span className="font-bold text-destructive">TAKE 5</span> every time to check that no abnormal conditions exist.
-                </p>
-              </div>
-              <div className="flex items-start gap-3 mb-4">
-                <HardHat className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm">
-                  Minimum PPE: Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.
-                </p>
-              </div>
-              <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3">
-                <Zap className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-bold text-destructive">
-                  NOTE: Always assume the equipment is LIVE until positively isolated, locked and tagged.
-                </p>
-              </div>
-            </div>
-          </div>
-
         </div>
+
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* Procedure Section */}
         <div className="border-b border-border">
@@ -383,9 +302,7 @@ export const AcidElutionPMDocument = () => {
 
         {/* Sign Off Section */}
         <div className="border-t border-border">
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">
-            Sign Off:
-          </div>
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Sign Off:</div>
           <div className="p-4 grid grid-cols-2 gap-4 text-sm">
             <div className="space-y-3">
               <div className="flex items-center gap-4">
@@ -430,9 +347,7 @@ export const AcidElutionPMDocument = () => {
 
         {/* Supervisor Approval */}
         <div className="border-t border-border">
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">
-            Supervisor Approval:
-          </div>
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Supervisor Approval:</div>
           <div className="p-4">
             <table className="w-full text-sm">
               <tbody>
@@ -450,10 +365,8 @@ export const AcidElutionPMDocument = () => {
         </div>
 
         {/* Revision History */}
-        <div>
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">
-            Revision History:
-          </div>
+        <div className="border-t border-border">
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Revision History:</div>
           <table className="w-full text-xs">
             <thead>
               <tr className="bg-muted/50">
