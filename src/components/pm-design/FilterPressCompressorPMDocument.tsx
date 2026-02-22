@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+
 import { AlertTriangle, ClipboardCheck, AlertCircle, Cog } from "lucide-react";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMBannerHeader } from "./PMBannerHeader";
@@ -74,22 +74,22 @@ export const FilterPressCompressorPMDocument = () => {
                 <Cog className="w-4 h-4 text-primary" />
                 <span>{section.equipmentName}</span>
               </div>
-              <table className="w-full text-sm">
+              <table className="w-full text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-border bg-muted/50">
-                    <th className="text-left px-4 py-2 font-medium w-[50%]">Task</th>
-                    <th className="text-center px-2 py-2 font-medium w-[8%]">✓</th>
-                    <th className="text-center px-2 py-2 font-medium w-[8%]">✗</th>
-                    <th className="text-left px-4 py-2 font-medium w-[34%]">Comments</th>
+                  <tr className="bg-muted">
+                    <th className="border border-border text-left px-2 py-2 font-semibold w-[50%]">Task</th>
+                    <th className="border border-border text-center px-2 py-2 font-semibold w-[8%]">✓</th>
+                    <th className="border border-border text-center px-2 py-2 font-semibold w-[8%]">✗</th>
+                    <th className="border border-border text-left px-2 py-2 font-semibold w-[34%]">Comments</th>
                   </tr>
                 </thead>
                 <tbody>
                   {section.tasks.map((task, taskIndex) => (
-                    <tr key={taskIndex} className="border-b border-border hover:bg-muted/30">
-                      <td className="px-4 py-2.5 text-foreground">{task.task}</td>
-                      <td className="text-center px-2 py-2.5"><Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" /></td>
-                      <td className="text-center px-2 py-2.5"><Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" /></td>
-                      <td className="px-4 py-2.5"><Input className="h-7 text-xs border-0 bg-transparent" placeholder="" /></td>
+                    <tr key={taskIndex} className="hover:bg-muted/30">
+                      <td className="border border-border px-2 py-2">{task.task}</td>
+                      <td className="border border-border text-center px-2 py-2"><Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" /></td>
+                      <td className="border border-border text-center px-2 py-2"><Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" /></td>
+                      <td className="border border-border px-2 py-2"></td>
                     </tr>
                   ))}
                 </tbody>

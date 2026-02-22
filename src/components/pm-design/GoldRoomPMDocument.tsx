@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+
 import { ClipboardCheck } from "lucide-react";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMBannerHeader } from "./PMBannerHeader";
@@ -67,7 +67,7 @@ export const GoldRoomPMDocument = () => {
                       <td className="border border-border px-2 py-2">{task.task}</td>
                       <td className="border border-border px-2 py-2 text-center"><Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" /></td>
                       <td className="border border-border px-2 py-2 text-center"><Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" /></td>
-                      <td className="border border-border px-2 py-2"><Input className="h-7 text-xs border-0 bg-transparent" placeholder="" /></td>
+                      <td className="border border-border px-2 py-2"></td>
                     </tr>
                   ))}
                 </>
