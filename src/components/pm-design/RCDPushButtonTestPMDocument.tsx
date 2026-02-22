@@ -1,12 +1,8 @@
 import { Input } from "@/components/ui/input";
-import { 
-  FileText,
-  ClipboardCheck,
-  CheckCircle2,
-} from "lucide-react";
-import tennantBanner from "@/assets/tennant-banner-new.png";
-import tennantIcon from "@/assets/tennant-icon.png";
+import { ClipboardCheck, FileText, CheckCircle2 } from "lucide-react";
+import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
+import { PMSignOffBlock } from "./PMSignOffBlock";
 
 export const RCDPushButtonTestPMDocument = () => {
   const circuitRows = Array.from({ length: 21 }, (_, i) => i + 1);
@@ -14,49 +10,20 @@ export const RCDPushButtonTestPMDocument = () => {
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
-        {/* Banner with Title Overlay */}
-        <div className="relative">
-          <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-          <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
-            <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold tracking-wide text-primary">RCD Push-button Test</h1>
-              <p className="text-base mt-1 text-primary/80">3 Monthly Test</p>
-            </div>
-          </div>
-        </div>
+        <PMBannerHeader title="RCD Push-button Test" subtitle="Electrical 12 Weekly Test" />
 
-        {/* Header Information Grid */}
         <div className="grid grid-cols-2 border-b border-border text-xs">
           <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Start Date:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" type="date" /></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Finish Date:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" type="date" /></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div><div className="px-2 py-1.5">Tennant Creek</div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5"></div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div><div className="px-2 py-1.5"></div></div>
+            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div><div className="px-2 py-1.5"></div></div>
           </div>
           <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Personnel:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Area:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Description:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div><div className="px-2 py-1.5">Electrical</div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div><div className="px-2 py-1.5">Test</div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div><div className="px-2 py-1.5 font-medium">12 Weekly</div></div>
+            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div><div className="px-2 py-1.5"></div></div>
           </div>
         </div>
 
@@ -76,7 +43,7 @@ export const RCDPushButtonTestPMDocument = () => {
           </div>
         </div>
 
-        {/* PROCEDURE */}
+        {/* Procedure */}
         <div className="border-b border-border">
           <div className="bg-blue-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
             <FileText className="w-4 h-4 text-blue-600" />
@@ -87,44 +54,45 @@ export const RCDPushButtonTestPMDocument = () => {
           </div>
         </div>
 
-        {/* Safety Precautions */}
         <SafetyPrecautionsSection />
 
         {/* Test Table */}
-        <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-          <ClipboardCheck className="w-5 h-5 text-primary" />
-          RCD PUSH-BUTTON TEST
-        </div>
+        <div className="border-b border-border">
+          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+            <ClipboardCheck className="w-5 h-5 text-primary" />
+            RCD PUSH-BUTTON TEST
+          </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs border-collapse min-w-[700px]">
-            <thead>
-              <tr className="bg-muted">
-                <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">Circuit #</th>
-                <th className="border border-border px-2 py-2 text-left font-semibold w-[22%]">Circuit Description</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold w-[12%]">C/B Current Rating</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold w-[15%]">RCD Type<br/><span className="text-[10px] font-normal">(I: ≤10mA / II: &gt;10mA ≤30mA)</span></th>
-                <th className="border border-border px-2 py-2 text-center font-semibold w-[15%]">Push Button Test Result</th>
-                <th className="border border-border px-2 py-2 text-left font-semibold w-[28%]">Comments</th>
-              </tr>
-            </thead>
-            <tbody>
-              {circuitRows.map((num) => (
-                <tr key={num} className="hover:bg-muted/30">
-                  <td className="border border-border px-2 py-1 text-center font-medium">{num}</td>
-                  <td className="border border-border px-1 py-1"><Input className="h-6 text-xs border-0 bg-transparent" /></td>
-                  <td className="border border-border px-1 py-1"><Input className="h-6 text-xs border-0 bg-transparent" /></td>
-                  <td className="border border-border px-1 py-1 text-center text-xs">Type I / Type II</td>
-                  <td className="border border-border px-1 py-1 text-center text-xs">Pass / Fail</td>
-                  <td className="border border-border px-1 py-1"><Input className="h-6 text-xs border-0 bg-transparent" /></td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs border-collapse min-w-[700px]">
+              <thead>
+                <tr className="bg-muted">
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">Circuit #</th>
+                  <th className="border border-border px-2 py-2 text-left font-semibold w-[22%]">Circuit Description</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[12%]">C/B Current Rating</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[15%]">RCD Type<br/><span className="text-[10px] font-normal">(I: ≤10mA / II: &gt;10mA ≤30mA)</span></th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[15%]">Push Button Test Result</th>
+                  <th className="border border-border px-2 py-2 text-left font-semibold w-[28%]">Comments</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {circuitRows.map((num) => (
+                  <tr key={num} className="hover:bg-muted/30">
+                    <td className="border border-border px-2 py-1 text-center font-medium">{num}</td>
+                    <td className="border border-border px-2 py-4"></td>
+                    <td className="border border-border px-2 py-4"></td>
+                    <td className="border border-border px-1 py-1 text-center text-xs">Type I / Type II</td>
+                    <td className="border border-border px-1 py-1 text-center text-xs">Pass / Fail</td>
+                    <td className="border border-border px-2 py-4"></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Test Instruments */}
-        <div className="border-t border-border">
+        <div className="border-b border-border">
           <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">Test Instruments (record serial numbers)</div>
           <table className="w-full text-sm border-collapse">
             <thead>
@@ -137,31 +105,14 @@ export const RCDPushButtonTestPMDocument = () => {
             <tbody>
               <tr>
                 <td className="border border-border px-3 py-2">RCD Meter</td>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs" /></td>
-                <td className="border border-border px-2 py-2"><Input className="h-7 text-xs" type="date" /></td>
+                <td className="border border-border px-2 py-4"></td>
+                <td className="border border-border px-2 py-4"></td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        {/* Sign Off */}
-        <div className="border-t border-border">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">INSPECTED BY</div>
-          <div className="grid grid-cols-3 gap-0">
-            <div className="grid grid-cols-[100px_1fr] border-r border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Name:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr] border-r border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Elect. Cert. No:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
-            </div>
-            <div className="grid grid-cols-[80px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Date:</div>
-              <div className="px-3 py-2"><Input className="h-7" type="date" /></div>
-            </div>
-          </div>
-        </div>
+        <PMSignOffBlock footerText="Tennant Creek Mining Operations – RCD Push-button Test Form" />
       </div>
     </div>
   );
