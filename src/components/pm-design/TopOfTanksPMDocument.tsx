@@ -1,22 +1,18 @@
-import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { 
-  AlertTriangle, 
-  Shield, 
-  HardHat,
   FileText,
   ClipboardCheck,
   User,
   Calendar,
   Eye,
-  Zap,
+  AlertTriangle,
   CheckCircle2,
-  Info
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
 interface InspectionTask {
   task: string;
@@ -219,53 +215,8 @@ export const TopOfTanksPMDocument = () => {
           </div>
         </div>
 
-        {/* PREPARATION AND INFORMATION Section */}
-        <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
-            <Info className="w-5 h-5 text-primary" />
-            PREPARATION AND INFORMATION
-          </div>
-          
-          <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Eye className="w-4 h-4 text-primary" />
-              SCOPE
-            </div>
-            <div className="px-4 py-3 text-sm leading-relaxed">
-              <p className="font-medium mb-2">Weekly Running Area Inspection – Top of Tanks (CIL Circuit / Tailings)</p>
-              <p className="text-muted-foreground">
-                To safely carry out mechanical inspection for signs of damage or potential failures that may require maintenance attention.
-              </p>
-            </div>
-          </div>
-
-          <div className="border-b border-border">
-            <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Shield className="w-5 h-5 text-destructive" />
-              <span className="text-destructive font-bold">SAFETY</span>
-            </div>
-            <div className="px-4 py-4 bg-destructive/5">
-              <div className="flex items-start gap-3 mb-4">
-                <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-medium">
-                  Before commencing this work complete a <span className="font-bold text-destructive">TAKE 5</span> every time to check that no abnormal conditions exist.
-                </p>
-              </div>
-              <div className="flex items-start gap-3 mb-4">
-                <HardHat className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm">
-                  Minimum PPE: Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as per task or as required.
-                </p>
-              </div>
-              <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3">
-                <Zap className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-bold text-destructive">
-                  NOTE: Under no circumstances will personnel place themselves in an unsafe position while carrying out these inspection tasks.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* Procedure Section */}
         <div className="border-b border-border">

@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { ClipboardCheck } from "lucide-react";
+import { ClipboardCheck, Calendar } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";

@@ -1,57 +1,20 @@
-import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Toggle } from "@/components/ui/toggle";
 import { 
-  AlertTriangle, 
-  Shield, 
-  HardHat,
   FileText,
   ClipboardCheck,
   User,
   Calendar,
-  Wrench,
   Eye,
-  Zap,
-  AlertCircle,
   CheckCircle2,
-  Info,
-  Cog,
-  CircleDot,
-  Thermometer,
-  Flame,
-  Battery
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 
-interface InspectionTask {
-  task: string;
-  hasInput?: boolean;
-  inputLabel?: string;
-}
-
-interface EquipmentSection {
-  equipmentId: string;
-  equipmentName: string;
-  tasks: InspectionTask[];
-}
-
-interface Hazard {
-  id: string;
-  icon: React.ReactNode;
-  label: string;
-}
-
-const hazardsList: Hazard[] = [
-  { id: "mechanical", icon: <Cog className="w-4 h-4" />, label: "Mechanical" },
-  { id: "thermal", icon: <Thermometer className="w-4 h-4" />, label: "Thermal" },
-  { id: "fuel", icon: <Flame className="w-4 h-4" />, label: "Fire / Fuel" },
-  { id: "electrical", icon: <Zap className="w-4 h-4" />, label: "Electrical" },
-  { id: "pressure", icon: <CircleDot className="w-4 h-4" />, label: "Pressure" },
-  { id: "battery", icon: <Battery className="w-4 h-4" />, label: "Battery Acid" },
-];
+interface InspectionTask { task: string; hasInput?: boolean; inputLabel?: string; }
+interface EquipmentSection { equipmentId: string; equipmentName: string; tasks: InspectionTask[]; }
 
 const inspectionData: EquipmentSection[] = [
   {
@@ -128,16 +91,6 @@ const inspectionData: EquipmentSection[] = [
 ];
 
 export const AndyDamGeneratorPMDocument = () => {
-  const [selectedHazards, setSelectedHazards] = useState<string[]>([]);
-
-  const toggleHazard = (hazardId: string) => {
-    setSelectedHazards(prev => 
-      prev.includes(hazardId) 
-        ? prev.filter(id => id !== hazardId)
-        : [...prev, hazardId]
-    );
-  };
-
   return (
     <div className="bg-background min-h-full">
       {/* Document Header */}
@@ -210,165 +163,8 @@ export const AndyDamGeneratorPMDocument = () => {
           </div>
         </div>
 
-        {/* PREPARATION AND INFORMATION Section */}
-        <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
-            <Info className="w-5 h-5 text-primary" />
-            PREPARATION AND INFORMATION
-          </div>
-          
-          {/* Scope */}
-          <div className="border-b border-border">
-            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Eye className="w-4 h-4 text-primary" />
-              SCOPE
-            </div>
-            <div className="px-4 py-3 text-sm leading-relaxed">
-              <p className="font-medium mb-2">Weekly Running Inspection – Andy Dam Generator</p>
-              <p className="text-muted-foreground">
-                To safely carry out mechanical inspection for signs of damage or potential failures that may require maintenance attention.
-              </p>
-            </div>
-          </div>
-
-          {/* Safety Section */}
-          <div className="border-b border-border">
-            <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Shield className="w-5 h-5 text-destructive" />
-              <span className="text-destructive font-bold">SAFETY</span>
-            </div>
-            <div className="px-4 py-4 bg-destructive/5">
-              <div className="flex items-start gap-3 mb-4">
-                <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-medium">
-                  Before commencing this work complete a <span className="font-bold text-destructive">TAKE 5</span> every time to check that no abnormal conditions exist.
-                </p>
-              </div>
-              <div className="flex items-start gap-3 mb-4">
-                <HardHat className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm">
-                  Always wear the correct PPE. Isolate equipment where required.
-                </p>
-              </div>
-              <div className="bg-destructive/20 border border-destructive/30 rounded-lg p-3 flex items-start gap-3">
-                <Zap className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-sm font-bold text-destructive">
-                  NOTE: Under no circumstances will personnel place themselves in an unsafe position while carrying out these inspection tasks.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Hazard Identification */}
-          <div className="border-b border-border">
-            <div className="bg-amber-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-amber-600" />
-              <span className="text-amber-700 font-bold">HAZARD IDENTIFICATION</span>
-              <span className="text-xs text-muted-foreground ml-2">(Select all that apply)</span>
-            </div>
-            <div className="p-4">
-              <div className="flex flex-wrap gap-2">
-                {hazardsList.map((hazard) => (
-                  <Toggle
-                    key={hazard.id}
-                    pressed={selectedHazards.includes(hazard.id)}
-                    onPressedChange={() => toggleHazard(hazard.id)}
-                    className="data-[state=on]:bg-amber-500 data-[state=on]:text-white border border-border px-3 py-2 gap-2"
-                    aria-label={`Toggle ${hazard.label} hazard`}
-                  >
-                    {hazard.icon}
-                    <span className="text-sm font-medium">{hazard.label}</span>
-                  </Toggle>
-                ))}
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Tools and PPE Section - Side by Side */}
-        <div className="border-b border-border grid md:grid-cols-2">
-          {/* Required Tools */}
-          <div className="border-r border-border">
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-primary" />
-              SPECIAL TOOLING REQUIRED
-            </div>
-            <div className="p-4">
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Standard Tool Kit</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Cleaning rag</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Torch / Flashlight</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Required PPE */}
-          <div>
-            <div className="bg-primary/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-              <HardHat className="w-4 h-4 text-primary" />
-              REQUIRED PPE
-            </div>
-            <div className="p-4">
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Steel Cap Boots</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Hard Hat</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Safety Glasses</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Checkbox className="h-4 w-4" defaultChecked />
-                  <span>Hearing Protection</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Pre-Start Checks */}
-        <div className="border-b border-border">
-          <div className="bg-green-500/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-green-600" />
-            <span className="text-green-700">RISK ASSESSMENT</span>
-          </div>
-          <div className="p-4">
-            <p className="text-sm text-muted-foreground mb-3">Complete one of the following before starting work:</p>
-            <div className="flex flex-wrap gap-2">
-              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" />
-                <span>Take 5</span>
-              </label>
-              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" />
-                <span>JHA</span>
-              </label>
-              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" />
-                <span>SWMS</span>
-              </label>
-              <label className="flex items-center gap-3 text-sm p-2 rounded hover:bg-muted/50 cursor-pointer border border-border">
-                <Checkbox className="h-4 w-4" />
-                <span>Other</span>
-              </label>
-            </div>
-          </div>
-        </div>
+        {/* Safety Precautions */}
+        <SafetyPrecautionsSection />
 
         {/* Procedure Section */}
         <div className="border-b border-border">
