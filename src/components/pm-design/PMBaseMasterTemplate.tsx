@@ -111,8 +111,8 @@ export const PMBaseMasterTemplate = () => {
             <thead>
               <tr className="bg-muted">
                 <th className="border border-border px-3 py-2 text-left font-semibold w-[50%]">Task</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✓</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">✗</th>
+                <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">S</th>
+                <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">D</th>
                 <th className="border border-border px-3 py-2 text-left font-semibold w-[34%]">Comments</th>
               </tr>
             </thead>
