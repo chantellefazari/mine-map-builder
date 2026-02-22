@@ -99,7 +99,12 @@ export const ThickenerPMDocument = () => {
             <tbody>
               {inspectionData.map((section, sectionIdx) => (
                 <>
-                  <tr key={`section-${sectionIdx}`} className="bg-primary/10"><td colSpan={4} className="border border-border px-2 py-2 font-semibold text-primary">{section.equipmentName}</td></tr>
+                  <tr key={`section-${sectionIdx}`} className="bg-primary/10">
+                    <td colSpan={section.equipmentName.startsWith("Underflow Pump") ? 3 : 4} className="border border-border px-2 py-2 font-semibold text-primary">{section.equipmentName}</td>
+                    {section.equipmentName.startsWith("Underflow Pump") && (
+                      <td className="border border-border px-2 py-2 text-xs font-medium">Total Hours: _______</td>
+                    )}
+                  </tr>
                   {section.tasks.map((task, taskIdx) => (
                     <tr key={`task-${sectionIdx}-${taskIdx}`} className="hover:bg-muted/30">
                       <td className="border border-border px-2 py-2">{task.task}</td>
