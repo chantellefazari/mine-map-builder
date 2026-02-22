@@ -160,7 +160,7 @@ export const LabGeneratorPMDocument = () => {
                       </td>
                       <td className="px-2 py-2 border-r border-border text-center"><Checkbox className="h-4 w-4" /></td>
                       <td className="px-2 py-2 border-r border-border text-center"><Checkbox className="h-4 w-4" /></td>
-                      <td className="px-3 py-2"><Input className="h-6 text-xs" /></td>
+                      <td className="px-3 py-4 border-r-0"></td>
                     </tr>
                   ))}
                 </tbody>
