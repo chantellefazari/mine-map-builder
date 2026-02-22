@@ -1,4 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 
 import { ClipboardCheck } from "lucide-react";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
@@ -100,9 +101,14 @@ export const ThickenerPMDocument = () => {
               {inspectionData.map((section, sectionIdx) => (
                 <>
                   <tr key={`section-${sectionIdx}`} className="bg-primary/10">
-                    <td colSpan={section.equipmentName.startsWith("Underflow Pump") ? 3 : 4} className="border border-border px-2 py-2 font-semibold text-primary">{section.equipmentName}</td>
+                    <td colSpan={section.equipmentName.startsWith("Underflow Pump") ? 3 : 4} className="border border-border px-2 py-3 font-semibold text-primary">{section.equipmentName}</td>
                     {section.equipmentName.startsWith("Underflow Pump") && (
-                      <td className="border border-border px-2 py-2 text-xs font-medium">Total Hours: _______</td>
+                      <td className="border border-border px-2 py-3 text-xs font-medium">
+                        <div className="flex items-center gap-1">
+                          <span>Total Hours:</span>
+                          <Input className="h-6 w-20 text-xs border border-border shadow-none focus-visible:ring-0 bg-background rounded" />
+                        </div>
+                      </td>
                     )}
                   </tr>
                   {section.tasks.map((task, taskIdx) => (
