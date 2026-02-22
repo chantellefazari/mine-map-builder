@@ -50,13 +50,13 @@ const inspectionData: EquipmentSection[] = [
     { task: "Inspect Dispersion Spigot and Nozzles for any gel build-up" },
   ]},
   { equipmentName: "Underflow Pump A", tasks: [
-    { task: "Running or Standby (skip if pump on standby)", hasInput: true, inputLabel: "Running □ Standby □" },
+    { task: "Running or Standby (skip if pump on standby)", hasInput: true, inputLabel: "Running □ Standby □   Total Hours: _______" },
     { task: "Bearing assembly temperature (Serviceable range: < 80°C)", hasInput: true, inputLabel: "Temp: _______ °C" },
     { task: "Gland water pressure (Serviceable range: ~400 kPa)", hasInput: true, inputLabel: "Pressure: _______ kPa" },
     { task: "Check gland leakage and adjust if required" },
   ]},
   { equipmentName: "Underflow Pump B", tasks: [
-    { task: "Running or Standby (skip if pump on standby)", hasInput: true, inputLabel: "Running □ Standby □" },
+    { task: "Running or Standby (skip if pump on standby)", hasInput: true, inputLabel: "Running □ Standby □   Total Hours: _______" },
     { task: "Bearing assembly temperature (Serviceable range: < 80°C)", hasInput: true, inputLabel: "Temp: _______ °C" },
     { task: "Gland water pressure (Serviceable range: ~400 kPa)", hasInput: true, inputLabel: "Pressure: _______ kPa" },
     { task: "Check gland leakage and adjust if required" },
