@@ -143,8 +143,8 @@ export const LightingTowerDailyPMDocument = () => {
                     <th className="px-3 py-1.5 text-left font-semibold w-12">#</th>
                     <th className="px-3 py-1.5 text-left font-semibold">Inspection Item</th>
                     <th className="px-3 py-1.5 text-left font-semibold w-48">Comments</th>
-                    <th className="px-3 py-1.5 text-center font-semibold w-12">✓</th>
-                    <th className="px-3 py-1.5 text-center font-semibold w-12">✗</th>
+                    <th className="px-3 py-1.5 text-center font-semibold w-20">Serviceable</th>
+                    <th className="px-3 py-1.5 text-center font-semibold w-20">Defective</th>
                   </tr>
                 </thead>
                 <tbody>
