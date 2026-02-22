@@ -119,15 +119,15 @@ export const ImplementationPlanDocument = () => {
             </div>
             <div>
               <span className="text-muted-foreground">Date</span>
-              <p className="font-medium text-foreground">21st Feb 2026</p>
+              <p className="font-medium text-foreground">23rd Feb 2026</p>
             </div>
             <div>
               <span className="text-muted-foreground">Status</span>
-              <p className="font-medium text-foreground">Draft, For Review</p>
+              <p className="font-medium text-foreground">For Review &amp; Approval</p>
             </div>
             <div>
               <span className="text-muted-foreground">Classification</span>
-              <p className="font-medium text-foreground">Internal, Operational</p>
+              <p className="font-medium text-foreground">Internal, Confidential</p>
             </div>
           </div>
         </CardContent>
