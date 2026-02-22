@@ -1,15 +1,12 @@
-import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  FileText,
   ClipboardCheck,
-  User,
-  Calendar,
   Cog,
   AlertCircle,
   AlertTriangle,
+  CheckCircle2,
 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
@@ -230,7 +227,7 @@ export const FilterPressDailyOnlinePMDocument = () => {
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
-        {/* Banner */}
+        {/* Banner with Title Overlay and Work Order */}
         <div className="relative">
           <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
           <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
@@ -246,16 +243,19 @@ export const FilterPressDailyOnlinePMDocument = () => {
               </p>
             </div>
           </div>
+          <div className="absolute bottom-1 right-2 h-[40%] flex items-center">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-bold text-primary tracking-tight">WO#:</span>
+              <Input className="h-6 w-24 text-xs bg-background/90 border-primary/40 focus-visible:ring-primary shadow-sm" placeholder="______" maxLength={6} />
+            </div>
+          </div>
         </div>
 
-        {/* Header Grid */}
+        {/* Header Information Grid */}
         <div className="grid grid-cols-2 border-b border-border text-xs">
           <div className="border-r border-border">
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
-                <FileText className="w-3 h-3 text-primary" />
-                Project / Site:
-              </div>
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div>
               <div className="px-2 py-1.5">Tennant Creek</div>
             </div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
@@ -267,11 +267,8 @@ export const FilterPressDailyOnlinePMDocument = () => {
               <div className="px-2 py-1.5">Filter Press</div>
             </div>
             <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
-                <User className="w-3 h-3 text-primary" />
-                Work Order #:
-              </div>
-              <div className="px-2 py-1.5"></div>
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div>
+              <div className="px-2 py-1.5">1x Fitter</div>
             </div>
           </div>
           <div>
@@ -284,10 +281,7 @@ export const FilterPressDailyOnlinePMDocument = () => {
               <div className="px-2 py-1.5">Online Inspection</div>
             </div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
-                <Calendar className="w-3 h-3 text-primary" />
-                Frequency:
-              </div>
+              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div>
               <div className="px-2 py-1.5 font-medium">Daily</div>
             </div>
             <div className="grid grid-cols-[120px_1fr]">
@@ -302,9 +296,9 @@ export const FilterPressDailyOnlinePMDocument = () => {
 
         {/* INSPECTION SECTIONS */}
         <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
+          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
             <ClipboardCheck className="w-5 h-5 text-primary" />
-            INSPECTION CHECKLIST
+            INSPECTIONS
           </div>
 
           {inspectionSections.map((section, sectionIndex) => (
@@ -370,58 +364,82 @@ export const FilterPressDailyOnlinePMDocument = () => {
         </div>
 
         {/* Comments */}
-        <div className="border-b border-border">
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">COMMENTS</div>
+        <div className="border-t border-border">
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">COMMENTS:</div>
           <div className="p-3">
             <Textarea className="min-h-[80px] resize-none" placeholder="Enter comments here..." />
           </div>
         </div>
 
         {/* Sign Off */}
-        <div className="border-b border-border">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Inspected By:</div>
-          <div className="grid grid-cols-2 gap-0">
-            <div className="grid grid-cols-[80px_1fr] border-r border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Name:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
+        <div className="border-t border-border">
+          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">SIGN OFF</div>
+          <div className="px-4 py-3 space-y-3">
+            <div className="grid grid-cols-2 gap-x-8">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium w-52">Follow up work required:</span>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">Yes</span></div>
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">No</span></div>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium w-52">Document update required:</span>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">Yes</span></div>
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">No</span></div>
+                </div>
+              </div>
             </div>
-            <div className="grid grid-cols-[80px_1fr] border-b border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Signature:</div>
-              <div className="px-3 py-2"><Input className="h-7" /></div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+              <div className="grid grid-cols-[100px_1fr] items-center">
+                <span className="text-sm font-medium">Name:</span>
+                <Input className="h-7" />
+              </div>
+              <div className="grid grid-cols-[100px_1fr] items-center">
+                <span className="text-sm font-medium">Signature:</span>
+                <div className="h-7 border border-border rounded bg-muted/30"></div>
+              </div>
+              <div className="grid grid-cols-[100px_1fr] items-center">
+                <span className="text-sm font-medium">Date:</span>
+                <Input className="h-7" type="date" />
+              </div>
+              <div className="grid grid-cols-[100px_1fr] items-center">
+                <span className="text-sm font-medium">PM Duration:</span>
+                <Input className="h-7" />
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-0">
-            <div className="grid grid-cols-[80px_1fr] border-r border-border">
-              <div className="bg-muted px-3 py-2 text-sm font-medium border-r border-border">Date:</div>
-              <div className="px-3 py-2"><Input className="h-7" type="date" /></div>
-            </div>
-            <div></div>
           </div>
         </div>
 
-        {/* Revision History */}
+        {/* Approval */}
         <div className="border-t border-border">
-          <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">Revision History:</div>
+          <div className="bg-green-500/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-green-600" />
+            <span className="text-green-700">APPROVAL</span>
+          </div>
           <table className="w-full text-sm border-collapse">
             <thead>
-              <tr className="bg-muted/50">
-                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Revision No.</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[35%]">Description</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Created</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[15%]">Reviewed</th>
-                <th className="border border-border px-3 py-2 text-left font-medium w-[20%]">Date</th>
+              <tr className="bg-muted border-b border-border">
+                <th className="px-4 py-2 text-left font-semibold w-[20%]">Role</th>
+                <th className="px-4 py-2 text-left font-semibold w-[25%]">Name</th>
+                <th className="px-4 py-2 text-left font-semibold w-[25%]">Sign</th>
+                <th className="px-4 py-2 text-left font-semibold w-[30%]">Date</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="border border-border px-3 py-2">0</td>
-                <td className="border border-border px-3 py-2">Initial Release</td>
-                <td className="border border-border px-3 py-2"></td>
-                <td className="border border-border px-3 py-2"></td>
-                <td className="border border-border px-3 py-2"></td>
+              <tr className="border-b border-border">
+                <td className="px-4 py-2 font-medium">Supervisor</td>
+                <td className="px-4 py-2"><Input className="h-7 text-xs" /></td>
+                <td className="px-4 py-2"><div className="h-7 border border-border rounded bg-muted/30"></div></td>
+                <td className="px-4 py-2"><Input className="h-7 text-xs" type="date" /></td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div className="bg-muted/30 px-4 py-2 text-xs text-muted-foreground text-center">
+          Tennant Creek Mining Operations – Inspection Form
         </div>
       </div>
     </div>
