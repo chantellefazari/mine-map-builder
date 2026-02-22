@@ -8,8 +8,6 @@ import {
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
-import tennantBanner from "@/assets/tennant-banner-new.png";
-import tennantIcon from "@/assets/tennant-icon.png";
 
 interface Hazard {
   id: string;
