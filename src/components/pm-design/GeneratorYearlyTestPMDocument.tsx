@@ -95,7 +95,6 @@ export const GeneratorYearlyTestPMDocument = () => {
               <div className="px-2 py-1.5"></div>
             </div>
             <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border flex items-center gap-1.5">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">
                 Personal:
               </div>
