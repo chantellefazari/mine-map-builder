@@ -527,16 +527,15 @@ export const ImplementationPlanDocument = () => {
           </div>
 
           {/* Compound Layout Diagram */}
-          <div className="mt-4 max-w-lg">
-            <p className="text-xs font-medium text-muted-foreground mb-1">Warehouse compound layout: container positions, dome area &amp; laydown yard</p>
-            <img src="/images/warehouse-compound-layout.png" alt="Warehouse compound layout showing U-shaped container configuration C01-C05, dome area, and laydown yard LD-A through LD-F" className="rounded-lg border border-border w-full" />
-          </div>
-
-
-          {/* 3D Render */}
-          <div className="mt-4 max-w-lg">
-            <p className="text-xs font-medium text-muted-foreground mb-1">3D warehouse compound model</p>
-            <img src="/images/warehouse-3d-render.png" alt="3D rendered model of warehouse compound showing containers, dome, laydown yard and delivery zone" className="rounded-lg border border-border w-full" />
+          <div className="grid grid-cols-2 gap-3 mt-4">
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Warehouse compound layout: container positions, dome area &amp; laydown yard</p>
+              <img src="/images/warehouse-compound-layout.png" alt="Warehouse compound layout showing U-shaped container configuration C01-C05, dome area, and laydown yard LD-A through LD-F" className="rounded-lg border border-border w-full" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">3D warehouse compound model</p>
+              <img src="/images/warehouse-3d-render.png" alt="3D rendered model of warehouse compound showing containers, dome, laydown yard and delivery zone" className="rounded-lg border border-border w-full" />
+            </div>
           </div>
 
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 mt-3">
