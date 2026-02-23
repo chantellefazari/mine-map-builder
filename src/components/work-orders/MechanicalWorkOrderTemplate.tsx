@@ -161,8 +161,15 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   </div>
                 </div>
                 <div className="border border-gray-300 p-2">
-                  <span className="text-xs text-gray-500 block">Revision</span>
-                  <span className="font-mono font-medium">A</span>
+                  <span className="text-xs text-gray-500 block mb-1">Revision</span>
+                  <select
+                    className="w-full h-7 text-xs font-mono font-medium bg-white border border-dashed border-gray-300 rounded px-1 print:border-none print:appearance-none print:p-0 print:h-auto cursor-pointer"
+                    value={form.status === "Complete" ? "B" : "A"}
+                  >
+                    {["A", "B", "C", "D", "E"].map((r) => (
+                      <option key={r} value={r}>{r}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="border border-gray-300 p-2">
