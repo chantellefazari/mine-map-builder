@@ -2,6 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
+import { MobileEquipmentHeader } from "./MobileEquipmentHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMSignOffBlock } from "./PMSignOffBlock";
 import { PMMetadataGrid } from "./PMMetadataGrid";
@@ -103,6 +104,7 @@ export const AndyDamGeneratorPMDocument = () => {
           assetNumber={pm?.assetNumber}
           resources={pm?.resources}
         />
+        <MobileEquipmentHeader />
 
         <SafetyPrecautionsSection />
 
