@@ -76,7 +76,7 @@ export const LightingTowerDailyPMDocument = () => {
           assetNumber={pm?.assetNumber}
           resources={pm?.resources}
         />
-        <MobileEquipmentHeader columns={["Make/Model", "Serial No", "Hours"]} />
+        <MobileEquipmentHeader />
         <SafetyPrecautionsSection />
 
         <div className="border-b border-border">
