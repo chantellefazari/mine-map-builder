@@ -18,6 +18,7 @@ export interface POTrackerItem {
   po_number: string;
   work_order_id: string | null;
   supplier: string;
+  freight_company: string;
   order_date: string | null;
   eta: string | null;
   status: string;
@@ -61,6 +62,7 @@ export function usePOTracker(workOrderId?: string) {
     mutationFn: async (payload: {
       work_order_id?: string | null;
       supplier: string;
+      freight_company: string;
       order_date?: string | null;
       eta?: string | null;
       status: string;
@@ -105,6 +107,7 @@ export function usePOTracker(workOrderId?: string) {
       id: string;
       work_order_id?: string | null;
       supplier: string;
+      freight_company: string;
       order_date?: string | null;
       eta?: string | null;
       status: string;

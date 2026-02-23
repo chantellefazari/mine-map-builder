@@ -35,6 +35,7 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
   const [form, setForm] = useState({
     work_order_id: defaultWorkOrderId ?? "",
     supplier: "",
+    freight_company: "",
     order_date: "",
     eta: "",
     status: "Ordered",
@@ -50,6 +51,7 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
       setForm({
         work_order_id: editItem.work_order_id ?? "",
         supplier: editItem.supplier,
+        freight_company: editItem.freight_company ?? "",
         order_date: editItem.order_date ?? "",
         eta: editItem.eta ?? "",
         status: editItem.status,
@@ -62,6 +64,7 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
       setForm({
         work_order_id: defaultWorkOrderId ?? "",
         supplier: "",
+        freight_company: "",
         order_date: "",
         eta: "",
         status: "Ordered",
@@ -84,6 +87,7 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
         ...(editItem ? { id: editItem.id } : {}),
         work_order_id: form.work_order_id || null,
         supplier: form.supplier,
+        freight_company: form.freight_company,
         order_date: form.order_date || null,
         eta: form.eta || null,
         status: form.status,
@@ -119,6 +123,10 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
           <div className="space-y-2">
             <Label>Supplier</Label>
             <Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} />
+          </div>
+          <div className="space-y-2">
+            <Label>Freight Company</Label>
+            <Input value={form.freight_company} onChange={(e) => setForm({ ...form, freight_company: e.target.value })} placeholder="e.g. TNT, Toll, StarTrack" />
           </div>
           <div className="space-y-2">
             <Label>Status</Label>

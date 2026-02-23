@@ -1,0 +1,1 @@
+ALTER TABLE public.po_tracker ADD COLUMN freight_company text NOT NULL DEFAULT '';

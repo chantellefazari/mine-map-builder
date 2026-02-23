@@ -454,6 +454,7 @@ export type Database = {
           created_at: string
           date_received: string | null
           eta: string | null
+          freight_company: string
           id: string
           order_date: string | null
           po_number: string
@@ -468,6 +469,7 @@ export type Database = {
           created_at?: string
           date_received?: string | null
           eta?: string | null
+          freight_company?: string
           id?: string
           order_date?: string | null
           po_number: string
@@ -482,6 +484,7 @@ export type Database = {
           created_at?: string
           date_received?: string | null
           eta?: string | null
+          freight_company?: string
           id?: string
           order_date?: string | null
           po_number?: string
