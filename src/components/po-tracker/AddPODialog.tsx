@@ -125,7 +125,7 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
             <Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} />
           </div>
           <div className="space-y-2">
-            <Label>Freight Company</Label>
+            <Label>Freight / Transport Company</Label>
             <Input value={form.freight_company} onChange={(e) => setForm({ ...form, freight_company: e.target.value })} placeholder="e.g. TNT, Toll, StarTrack" />
           </div>
           <div className="space-y-2">
