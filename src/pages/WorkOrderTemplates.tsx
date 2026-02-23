@@ -84,7 +84,7 @@ const WorkOrderTemplates = () => {
         <div className="p-3 border-b border-border">
           <Button onClick={handleAllocateWO} disabled={allocate.isPending} className="w-full gap-2" size="sm">
             {allocate.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
-            Allocate New WO
+            Create New WO
           </Button>
         </div>
 

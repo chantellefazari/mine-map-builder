@@ -111,7 +111,7 @@ export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
               ) : (
                 <Check className="h-4 w-4" />
               )}
-              Allocate Next WO & Open Template
+              Create New WO & Open Template
             </Button>
 
             <div className="flex gap-4 text-sm">
