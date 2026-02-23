@@ -23,6 +23,7 @@ const SupplierRegister = lazy(() => import("./pages/SupplierRegister"));
 const SuppliersProcurement = lazy(() => import("./pages/SuppliersProcurement"));
 
 const PlanningRevisionControl = lazy(() => import("./pages/PlanningRevisionControl"));
+const POTracker = lazy(() => import("./pages/POTracker"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -69,6 +70,7 @@ const App = () => (
               
               <Route path="/stores-warehouse-design" element={<ProtectedRoute tabKey="stores-warehouse-design"><StoresWarehouseDesign /></ProtectedRoute>} />
               <Route path="/planning-revision" element={<ProtectedRoute tabKey="planning-revision"><PlanningRevisionControl /></ProtectedRoute>} />
+              <Route path="/po-tracker" element={<ProtectedRoute tabKey="po-tracker"><POTracker /></ProtectedRoute>} />
 
               {/* Catch-all */}
               <Route path="*" element={<NotFound />} />
