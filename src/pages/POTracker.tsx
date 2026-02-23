@@ -87,7 +87,7 @@ const POTracker = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground">PO Tracker</h1>
-                <p className="text-sm text-muted-foreground">Purchase order register • Auto-numbered PO-XXXXXX</p>
+                <p className="text-sm text-muted-foreground">Purchase order register • Auto-numbered PO-8XXXX</p>
               </div>
             </div>
             <Button onClick={handleAdd} className="gap-2">
