@@ -36,10 +36,18 @@ export function flattenAssetTree(): FlatAsset[] {
     parentAsset: "",
   });
 
-  // Processing plant areas
+  // Processing plant areas – parent assets + equipment
   for (const area of areasData) {
     for (const subArea of area.subAreas) {
       for (const parent of subArea.parentAssets) {
+        // Add the parent asset (system) as a searchable entry
+        assets.push({
+          assetId: parent.label.split(" ")[0] || parent.label,
+          assetName: parent.label,
+          area: area.label,
+          subArea: subArea.label,
+          parentAsset: "",
+        });
         for (const eq of parent.equipment) {
           assets.push({
             assetId: eq.assetNumber,
