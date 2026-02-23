@@ -52,6 +52,21 @@ export const PMAssetLinkingSection = () => {
     return matchesSearch && matchesConf && matchesStat;
   });
 
+  const handleConfirmAllExact = async () => {
+    const exactPending = staging.filter(
+      (r) => r.match_confidence === "Exact" && r.validation_status !== "Confirmed" && !r.committed
+    );
+    if (exactPending.length === 0) return;
+    try {
+      for (const row of exactPending) {
+        await updateStatus({ id: row.id, validation_status: "Confirmed" });
+      }
+      toast({ title: "Exact Matches Confirmed", description: `${exactPending.length} exact match(es) confirmed.` });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
+  };
+
   const handlePopulate = async () => {
     try {
       const count = await populate();
@@ -108,6 +123,17 @@ export const PMAssetLinkingSection = () => {
           {isPopulating ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
           {staging.length === 0 ? "Pull Data & Run Matching" : "Re-run Matching"}
         </Button>
+
+        {summary.exact > 0 && summary.exact > summary.confirmed && (
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={handleConfirmAllExact}
+          >
+            <CheckCircle2 className="h-4 w-4" />
+            Confirm All Exact Matches ({summary.exact - staging.filter(r => r.match_confidence === "Exact" && r.validation_status === "Confirmed").length})
+          </Button>
+        )}
 
         <AlertDialog>
           <AlertDialogTrigger asChild>
