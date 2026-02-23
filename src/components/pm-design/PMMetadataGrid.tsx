@@ -115,7 +115,7 @@ export const PMMetadataGrid = ({
         </div>
         <div className="grid grid-cols-[120px_1fr] border-b border-border">
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
-          <div className="px-1 py-0.5">
+          <div className="px-2 py-1.5 flex items-center">
             <PMAssetSearchCombobox
               value={assetNumber}
               onChange={(id, _name, area) => {

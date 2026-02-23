@@ -83,8 +83,8 @@ export const PMAssetSearchCombobox = ({
               onFocus={() => setOpen(true)}
               placeholder="Search asset tree..."
               className={cn(
-                "pl-7 pr-2",
-                compact ? "h-7 text-xs" : "h-8 text-sm"
+                "pl-7 pr-2 border-none shadow-none focus-visible:ring-0 bg-transparent",
+                compact ? "h-auto text-xs py-0" : "h-8 text-sm"
               )}
             />
           </div>
