@@ -21,7 +21,7 @@ export function flattenAssetTree(): FlatAsset[] {
     assets.push({
       assetId: area.code,
       assetName: area.label,
-      area: `${area.code} — ${area.label}`,
+      area: area.label,
       subArea: "",
       parentAsset: "",
     });
@@ -31,7 +31,7 @@ export function flattenAssetTree(): FlatAsset[] {
   assets.push({
     assetId: "CRU",
     assetName: "Crushing Plant",
-    area: "CRU — Crushing Plant",
+    area: "Crushing Plant",
     subArea: "",
     parentAsset: "",
   });
@@ -44,7 +44,7 @@ export function flattenAssetTree(): FlatAsset[] {
           assets.push({
             assetId: eq.assetNumber,
             assetName: eq.name,
-            area: `${area.code} — ${area.label}`,
+            area: area.label,
             subArea: subArea.label,
             parentAsset: parent.label,
           });
@@ -60,7 +60,7 @@ export function flattenAssetTree(): FlatAsset[] {
         assets.push({
           assetId: eq.assetNumber,
           assetName: eq.name,
-          area: `CRU — Crushing Plant`,
+          area: `Crushing Plant`,
           subArea: cruArea.label,
           parentAsset: parent.label,
         });
