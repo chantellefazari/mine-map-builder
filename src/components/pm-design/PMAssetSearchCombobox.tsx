@@ -102,7 +102,7 @@ export const PMAssetSearchCombobox = ({
               <div className="py-1">
                 {filtered.map((asset) => (
                   <button
-                    key={asset.assetId}
+                    key={`${asset.assetId}-${asset.area}-${asset.subArea}`}
                     className="w-full text-left px-3 py-2 hover:bg-muted/60 flex flex-col gap-0.5 transition-colors"
                     onClick={() => {
                       onChange(asset.assetId, asset.assetName, asset.area);
