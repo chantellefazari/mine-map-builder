@@ -149,23 +149,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     }
   };
 
-  // Generate Y26-WXX revision weeks (Wed–Tue cycle, W01 starts last Wed on or before 1 Jan)
-  const revisionWeeks = (() => {
-    const weeks: string[] = [];
-    const w01Start = new Date(2025, 11, 31); // Wed 31 Dec 2025
-    for (let i = 0; i < 52; i++) {
-      weeks.push(`Y26-W${String(i + 1).padStart(2, "0")}`);
-    }
-    return weeks;
-  })();
-
-  const currentRevisionWeek = (() => {
-    const raised = wo?.date_raised ? new Date(wo.date_raised) : new Date();
-    const w01Start = new Date(2025, 11, 31); // Wed 31 Dec 2025
-    const diffMs = raised.getTime() - w01Start.getTime();
-    const weekNum = Math.max(1, Math.min(52, Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000)) + 1));
-    return `Y26-W${String(weekNum).padStart(2, "0")}`;
-  })();
 
   const priorityOptions = ["Critical", "High", "Normal", "Low"];
   const workTypeOptions = ["Reactive", "Planned", "Shutdown"];
@@ -230,17 +213,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                       <Search className="h-3 w-3" />
                     </Button>
                   </div>
-                </div>
-                <div className="border border-gray-300 p-2">
-                  <span className="text-xs text-gray-500 block mb-1">Revision Week</span>
-                  <select
-                    className="w-full h-7 text-xs font-mono font-medium bg-white border border-dashed border-gray-300 rounded px-1 print:border-none print:appearance-none print:p-0 print:h-auto cursor-pointer"
-                    value={currentRevisionWeek}
-                  >
-                    {revisionWeeks.map((w) => (
-                      <option key={w} value={w}>{w}</option>
-                    ))}
-                  </select>
                 </div>
               </div>
               <div className="border border-gray-300 p-2">
