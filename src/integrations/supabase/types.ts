@@ -977,6 +977,66 @@ export type Database = {
         }
         Relationships: []
       }
+      work_orders: {
+        Row: {
+          asset_id: string | null
+          assigned_to: string | null
+          created_at: string
+          date_completed: string | null
+          date_raised: string | null
+          functional_location: string | null
+          id: string
+          parts_used: string | null
+          priority: string
+          problem_description: string | null
+          requested_by: string | null
+          status: string
+          trade: string | null
+          updated_at: string
+          wo_number: string
+          work_performed: string | null
+          work_type: string
+        }
+        Insert: {
+          asset_id?: string | null
+          assigned_to?: string | null
+          created_at?: string
+          date_completed?: string | null
+          date_raised?: string | null
+          functional_location?: string | null
+          id?: string
+          parts_used?: string | null
+          priority?: string
+          problem_description?: string | null
+          requested_by?: string | null
+          status?: string
+          trade?: string | null
+          updated_at?: string
+          wo_number: string
+          work_performed?: string | null
+          work_type?: string
+        }
+        Update: {
+          asset_id?: string | null
+          assigned_to?: string | null
+          created_at?: string
+          date_completed?: string | null
+          date_raised?: string | null
+          functional_location?: string | null
+          id?: string
+          parts_used?: string | null
+          priority?: string
+          problem_description?: string | null
+          requested_by?: string | null
+          status?: string
+          trade?: string | null
+          updated_at?: string
+          wo_number?: string
+          work_performed?: string | null
+          work_type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -989,6 +1049,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      next_wo_number: { Args: never; Returns: string }
     }
     Enums: {
       app_role: "admin" | "user"
