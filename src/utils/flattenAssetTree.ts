@@ -40,16 +40,6 @@ export function flattenAssetTree(): FlatAsset[] {
   for (const area of areasData) {
     for (const subArea of area.subAreas) {
       for (const parent of subArea.parentAssets) {
-        // Add the parent asset (system) as a searchable entry
-        const parentCode = parent.equipment.length > 0 ? parent.equipment[0].assetNumber.split("-")[0] : parent.label;
-        const parentKey = `SYS-${parentCode}`;
-        assets.push({
-          assetId: parentKey,
-          assetName: parent.label,
-          area: area.label,
-          subArea: subArea.label,
-          parentAsset: "",
-        });
         for (const eq of parent.equipment) {
           assets.push({
             assetId: eq.assetNumber,
