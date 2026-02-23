@@ -26,6 +26,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
   const [assetLookupOpen, setAssetLookupOpen] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [isGeneratingParts, setIsGeneratingParts] = useState(false);
+  const [returnedToService, setReturnedToService] = useState("");
 
   // Local form state seeded from DB
   const [form, setForm] = useState({
@@ -494,35 +495,41 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 <div>
                   <p className="text-xs font-medium text-gray-600 mb-2">Equipment Returned to Service:</p>
                   <div className="flex gap-4">
-                    <label className="flex items-center gap-1">
-                      <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">Yes</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <div className="w-4 h-4 border border-gray-400"></div>
-                      <span className="text-xs">No</span>
-                    </label>
+                    {["Yes", "No"].map((opt) => (
+                      <label key={opt} className="flex items-center gap-1 cursor-pointer" onClick={() => setReturnedToService(opt)}>
+                        <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${returnedToService === opt ? "bg-primary text-primary-foreground" : ""}`}>
+                          {returnedToService === opt && "✓"}
+                        </div>
+                        <span className="text-xs">{opt}</span>
+                      </label>
+                    ))}
                   </div>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-4 pt-3 border-t border-gray-200">
                 <div className="border border-gray-300 p-2">
-                  <span className="text-xs text-gray-500 block mb-4">Technician Signature</span>
-                  <div className="border-t border-gray-300 pt-1 mt-4">
-                    <span className="text-xs text-gray-500">Date: ____/____/________</span>
-                  </div>
+                  <span className="text-xs text-gray-500 block mb-1">Technician Name</span>
+                  <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto mb-2" placeholder="Enter name" />
+                  <span className="text-xs text-gray-500 block mb-1">Signature</span>
+                  <div className="h-8 border border-dashed border-gray-300 rounded mb-2"></div>
+                  <span className="text-xs text-gray-500 block mb-1">Date</span>
+                  <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
                 </div>
                 <div className="border border-gray-300 p-2">
-                  <span className="text-xs text-gray-500 block mb-4">Supervisor Signature</span>
-                  <div className="border-t border-gray-300 pt-1 mt-4">
-                    <span className="text-xs text-gray-500">Date: ____/____/________</span>
-                  </div>
+                  <span className="text-xs text-gray-500 block mb-1">Supervisor Name</span>
+                  <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto mb-2" placeholder="Enter name" />
+                  <span className="text-xs text-gray-500 block mb-1">Signature</span>
+                  <div className="h-8 border border-dashed border-gray-300 rounded mb-2"></div>
+                  <span className="text-xs text-gray-500 block mb-1">Date</span>
+                  <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
                 </div>
                 <div className="border border-gray-300 p-2">
-                  <span className="text-xs text-gray-500 block mb-4">Operations Handover</span>
-                  <div className="border-t border-gray-300 pt-1 mt-4">
-                    <span className="text-xs text-gray-500">Date: ____/____/________</span>
-                  </div>
+                  <span className="text-xs text-gray-500 block mb-1">Operations Handover To</span>
+                  <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto mb-2" placeholder="Enter name" />
+                  <span className="text-xs text-gray-500 block mb-1">Signature</span>
+                  <div className="h-8 border border-dashed border-gray-300 rounded mb-2"></div>
+                  <span className="text-xs text-gray-500 block mb-1">Date</span>
+                  <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
                 </div>
               </div>
             </div>
