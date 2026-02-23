@@ -4,7 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 serve(async (req) => {
@@ -17,7 +17,6 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    // Fetch site spares catalogue for matching
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const sb = createClient(supabaseUrl, supabaseKey);
@@ -28,38 +27,42 @@ serve(async (req) => {
       .limit(2000);
 
     const sparesContext = (spares || [])
-      .map((s: any) => `${s.part_number || "—"} | ${s.description} | Bin: ${s.bin_location || "—"} | Cat: ${s.category || "—"}`)
+      .map((s: any) => `${s.part_number || "—"} | ${s.description} | Bin: ${s.bin_location || "—"}`)
       .join("\n");
 
+    const componentsContext = asset_components && asset_components.length > 0
+      ? asset_components.map((c: any) => `- ${c.componentCode}: ${c.componentName} (${c.componentType}, Mfr: ${c.manufacturer})`).join("\n")
+      : "No components loaded for this asset";
+
     const systemPrompt = `You are a maintenance parts advisor for Tennant Creek Gold Mine.
-Given a work order description, asset info, and the FULL site spares catalogue, suggest parts needed.
 
-CRITICAL RULES:
-1. You MUST match parts from the site spares catalogue below. Use the EXACT part_number and description from the catalogue.
-2. If a catalogue part matches what's needed, use its real part_number (e.g. "1001001", "1009003").
-3. Only use "TBA" for part_number if absolutely nothing in the catalogue matches.
-4. Include the bin_location from the catalogue when available.
+PROCESS (follow strictly):
+1. Look at the work order description and the ASSET TREE COMPONENTS to identify which components are involved in the work.
+2. For each component involved, determine what spare parts/materials are needed.
+3. Cross-reference each needed part against the SITE SPARES CATALOGUE below.
+4. Use the EXACT part_number from the catalogue. Never invent part numbers.
+5. If a catalogue match exists, use its exact part_number, description, and bin_location.
+6. Only use "TBA" for part_number if absolutely nothing in the catalogue matches.
 
-SITE SPARES CATALOGUE:
+ASSET TREE COMPONENTS (these are the physical components on the asset):
+${componentsContext}
+
+SITE SPARES CATALOGUE (use part_numbers from here):
 ${sparesContext}
 
 Return a JSON array. Each object must have:
-- part_number: string (EXACT part number from catalogue, or "TBA")
-- description: string (EXACT description from catalogue, or a clear description)
+- part_number: string (EXACT from catalogue, or "TBA")
+- description: string (EXACT from catalogue if matched, otherwise clear description)
 - quantity: number
-- bin_location: string (from catalogue, or "")
-- reasoning: string (one sentence)
+- bin_location: string (from catalogue if matched, or "")
+- reasoning: string (which asset component this relates to and why)
 
-Return ONLY the JSON array.`;
+Return ONLY the JSON array, no other text.`;
 
     const userPrompt = `Work Order Description: ${description || "Not provided"}
 Asset Number: ${asset_number || "Not provided"}
-Known Components on this asset:
-${asset_components && asset_components.length > 0
-  ? asset_components.map((c: any) => `- ${c.componentCode}: ${c.componentName} (${c.componentType}, Mfr: ${c.manufacturer})`).join("\n")
-  : "No components loaded for this asset"}
 
-Suggest parts from the site spares catalogue needed for this work.`;
+Based on the work described and the components on this asset, suggest the parts needed from the site spares catalogue.`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
