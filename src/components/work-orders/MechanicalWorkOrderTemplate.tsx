@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Printer, Save, Search, Trash2, Sparkles, Loader2, Wand2 } from "lucide-react";
+import { Printer, Save, Search, Trash2, Sparkles, Loader2, Wand2, SendHorizontal } from "lucide-react";
 import { areasData } from "@/components/hierarchy/assetData";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { WOSubTabs } from "./WOSubTabs";
@@ -160,10 +160,27 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
         <h2 className="text-xl font-semibold text-foreground">
           Work Order {woNumber && <span className="text-primary font-mono">({woNumber})</span>}
         </h2>
-        <Button onClick={handlePrint} className="gap-2">
-          <Printer className="h-4 w-4" />
-          Print
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={() => {
+              if (wo) {
+                saveField("status", "Pending Approval");
+                setForm((prev) => ({ ...prev, status: "Pending Approval" }));
+                toast.success(`${woNumber} sent for approval`);
+              }
+            }}
+            disabled={!wo || form.status === "Pending Approval"}
+          >
+            <SendHorizontal className="h-4 w-4" />
+            {form.status === "Pending Approval" ? "Sent for Approval" : "Send for Approval"}
+          </Button>
+          <Button onClick={handlePrint} className="gap-2">
+            <Printer className="h-4 w-4" />
+            Print
+          </Button>
+        </div>
       </div>
 
       {/* Work Order Document - A4 optimized */}
