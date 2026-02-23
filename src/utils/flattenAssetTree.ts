@@ -16,6 +16,26 @@ export interface FlatAsset {
 export function flattenAssetTree(): FlatAsset[] {
   const assets: FlatAsset[] = [];
 
+  // Add major areas as selectable items
+  for (const area of areasData) {
+    assets.push({
+      assetId: area.code,
+      assetName: area.label,
+      area: `${area.code} — ${area.label}`,
+      subArea: "",
+      parentAsset: "",
+    });
+  }
+
+  // Add CRU as a major area
+  assets.push({
+    assetId: "CRU",
+    assetName: "Crushing Plant",
+    area: "CRU — Crushing Plant",
+    subArea: "",
+    parentAsset: "",
+  });
+
   // Processing plant areas
   for (const area of areasData) {
     for (const subArea of area.subAreas) {
