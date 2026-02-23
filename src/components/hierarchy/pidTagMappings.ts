@@ -744,31 +744,6 @@ export const pidTagMappings: PidTagMapping[] = [
   { pidTag: "14-BUS-04", assetNumber: "BUS-04", description: "LDV Discovery 9", status: "mapped" },
   { pidTag: "14-LV-013", assetNumber: "LV-013", description: "Fuso TF Canter Flat Top Truck", status: "mapped" },
   
-  // ============ MOBILE EQUIPMENT & LIGHTING TOWERS ============
-  { pidTag: "15-PR-002", assetNumber: "CRN01", description: "25t Franner crane", status: "mapped" },
-  { pidTag: "15-PR-003", assetNumber: "FLT01", description: "Forklift", status: "mapped" },
-  { pidTag: "15-PR-004", assetNumber: "TLH01", description: "Telehandler", status: "mapped" },
-  { pidTag: "15-PR-001", assetNumber: "BCT01", description: "Bob Cat", status: "mapped" },
-  { pidTag: "15-WC-001", assetNumber: "WTK01", description: "Water Truck", status: "mapped" },
-  { pidTag: "15-ST-001", assetNumber: "STK01", description: "Service Truck", status: "mapped" },
-  { pidTag: "15-PR-005", assetNumber: "EWP01", description: "Sino EWP", status: "mapped" },
-  { pidTag: "15-PR-006", assetNumber: "EWP02", description: "Hire EWP", status: "mapped" },
-  { pidTag: "15-PR-007", assetNumber: "SL01", description: "Sino Scissor Lift 1", status: "mapped" },
-  { pidTag: "15-PR-008", assetNumber: "SL02", description: "Sino Scissor Lift 2", status: "mapped" },
-  { pidTag: "15-WL-001", assetNumber: "LDR01", description: "Cat 980 Loader 1", status: "mapped" },
-  { pidTag: "15-WL-002", assetNumber: "LDR02", description: "Cat 980 Loader 2", status: "mapped" },
-  { pidTag: "15-WL-003", assetNumber: "LDR03", description: "Cat 980 Loader 3", status: "mapped" },
-  { pidTag: "15-WL-004", assetNumber: "LDR04", description: "Cat 980 Loader 4", status: "mapped" },
-  { pidTag: "15-EX-001", assetNumber: "EXC01", description: "Cat 30t Excavator", status: "mapped" },
-  { pidTag: "15-EX-002", assetNumber: "EXC02", description: "Case Excavator", status: "mapped" },
-  { pidTag: "15-DT-001", assetNumber: "MXY01", description: "Cat Moxy 1", status: "mapped" },
-  { pidTag: "15-DT-002", assetNumber: "MXY02", description: "Cat Moxy 2", status: "mapped" },
-  { pidTag: "15-DT-003", assetNumber: "MXY03", description: "Cat Moxy 3", status: "mapped" },
-  { pidTag: "15-LT-001", assetNumber: "LTW01", description: "Lighting Tower 1", status: "mapped" },
-  { pidTag: "15-LT-002", assetNumber: "LTW02", description: "Lighting Tower 2", status: "mapped" },
-  { pidTag: "15-LT-003", assetNumber: "LTW03", description: "Lighting Tower 3", status: "mapped" },
-  { pidTag: "15-LT-004", assetNumber: "LTW04", description: "Lighting Tower 4", status: "mapped" },
-  { pidTag: "15-LT-005", assetNumber: "LTW05", description: "Lighting Tower 5", status: "mapped" },
 ];
 
 // Helper function to get P&ID tag by asset number
