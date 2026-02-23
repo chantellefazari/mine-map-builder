@@ -40,6 +40,14 @@ export function flattenAssetTree(): FlatAsset[] {
   for (const area of areasData) {
     for (const subArea of area.subAreas) {
       for (const parent of subArea.parentAssets) {
+        // Add the parent asset (system header) as a searchable entry
+        assets.push({
+          assetId: parent.label,
+          assetName: parent.label,
+          area: area.label,
+          subArea: subArea.label,
+          parentAsset: "",
+        });
         for (const eq of parent.equipment) {
           assets.push({
             assetId: eq.assetNumber,
