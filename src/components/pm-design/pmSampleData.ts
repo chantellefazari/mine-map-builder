@@ -101,6 +101,8 @@ export const samplePMs: PMData[] = [
     lubricationNotes: "N/A - This is an offline visual/mechanical inspection.",
     oemReferences: "Refer to filter press OEM documentation for component specifications.",
     status: "Draft",
+    assetNumber: "",
+    resources: "",
   },
   {
     id: "pm-001",
@@ -225,6 +227,8 @@ export const samplePMs: PMData[] = [
     lubricationNotes: "N/A - This is a visual inspection only. No lubrication required.",
     oemReferences: "Doc: SM-XXX--PR-XXXX | Issue Date: 30/06/2020 | Version: A",
     status: "Approved",
+    assetNumber: "",
+    resources: "",
   },
   {
     id: "pm-002",
@@ -308,6 +312,8 @@ export const samplePMs: PMData[] = [
     lubricationNotes: "Check grease level if fitted with sight glass. Grease as per OEM schedule.",
     oemReferences: "Refer to pump datasheet for acceptable operating parameters.",
     status: "Reviewed",
+    assetNumber: "",
+    resources: "",
   },
   {
     id: "pm-003",
@@ -396,5 +402,7 @@ export const samplePMs: PMData[] = [
     lubricationNotes: "Lubricate take-up bearings if applicable. Check idler bearing grease condition.",
     oemReferences: "Refer to conveyor GA drawing for component locations.",
     status: "Draft",
+    assetNumber: "",
+    resources: "",
   },
 ];

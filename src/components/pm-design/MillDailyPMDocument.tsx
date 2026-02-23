@@ -3,7 +3,8 @@ import { Input } from "@/components/ui/input";
 import { ClipboardCheck, Cog, Thermometer } from "lucide-react";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMBannerHeader } from "./PMBannerHeader";
-import { useCommittedAssetLinks } from "@/hooks/useCommittedAssetLinks";
+import { PMMetadataGrid } from "./PMMetadataGrid";
+import { usePMasterList } from "@/hooks/usePMData";
 import { PMSignOffBlock } from "./PMSignOffBlock";
 
 interface InspectionTask { task: string; hasTemp?: boolean; tempLabel?: string; }
@@ -77,27 +78,40 @@ const inspectionData: EquipmentSection[] = [
 ];
 
 export const MillDailyPMDocument = () => {
-  const { getAssetNumber } = useCommittedAssetLinks();
-  const assetNumber = getAssetNumber("Ball Mill");
+  const { pms } = usePMasterList();
+  const pm = pms.find((p) => p.pmName === "Mill Daily Inspection");
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
         <PMBannerHeader title="Tenant Creek - Daily Mill Inspection" subtitle="Mechanical Running PMs - Daily Inspection (Fitter)" />
 
-        <div className="grid grid-cols-2 border-b border-border text-xs">
-          <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div><div className="px-2 py-1.5">Tenant Creek</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5 font-mono font-semibold">{assetNumber}</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div><div className="px-2 py-1.5">Grinding</div></div>
-            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div><div className="px-2 py-1.5"></div></div>
+        {pm ? (
+          <PMMetadataGrid
+            pmId={pm.id}
+            projectSite="Tenant Creek"
+            plantArea="Grinding"
+            pmGroup="Mechanical"
+            pmType="Inspection (Fitter)"
+            frequency="Daily"
+            assetNumber={pm.assetNumber}
+            resources={pm.resources}
+          />
+        ) : (
+          <div className="grid grid-cols-2 border-b border-border text-xs">
+            <div className="border-r border-border">
+              <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div><div className="px-2 py-1.5">Tenant Creek</div></div>
+              <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5"></div></div>
+              <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div><div className="px-2 py-1.5">Grinding</div></div>
+              <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div><div className="px-2 py-1.5"></div></div>
+            </div>
+            <div>
+              <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div><div className="px-2 py-1.5">Mechanical</div></div>
+              <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div><div className="px-2 py-1.5">Inspection (Fitter)</div></div>
+              <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div><div className="px-2 py-1.5 font-medium">Daily</div></div>
+              <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div><div className="px-2 py-1.5"></div></div>
+            </div>
           </div>
-          <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div><div className="px-2 py-1.5">Mechanical</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div><div className="px-2 py-1.5">Inspection (Fitter)</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div><div className="px-2 py-1.5 font-medium">Daily</div></div>
-            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div><div className="px-2 py-1.5"></div></div>
-          </div>
-        </div>
+        )}
 
         <SafetyPrecautionsSection />
 

@@ -28,6 +28,8 @@ function rowToPMData(row: any): PMData {
     lubricationNotes: row.lubrication_notes ?? "",
     oemReferences: row.oem_references ?? "",
     status: row.status as PMData["status"],
+    assetNumber: row.asset_number ?? "",
+    resources: row.resources ?? "",
   };
 }
 
@@ -52,6 +54,8 @@ function pmDataToRow(pm: Partial<PMData>) {
   if (pm.lubricationNotes !== undefined) row.lubrication_notes = pm.lubricationNotes;
   if (pm.oemReferences !== undefined) row.oem_references = pm.oemReferences;
   if (pm.status !== undefined) row.status = pm.status;
+  if ((pm as any).assetNumber !== undefined) row.asset_number = (pm as any).assetNumber;
+  if ((pm as any).resources !== undefined) row.resources = (pm as any).resources;
   return row;
 }
 

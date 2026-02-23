@@ -127,6 +127,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
+import { PMAssetSearchCombobox } from "./PMAssetSearchCombobox";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const statusColors = {
   Draft: "bg-muted text-muted-foreground",
@@ -138,6 +142,23 @@ const PMMasterListView = ({ pms }: { pms: PMData[] }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterFrequency, setFilterFrequency] = useState<string>("all");
   const [filterDiscipline, setFilterDiscipline] = useState<string>("all");
+  const queryClient = useQueryClient();
+
+  // Local editable state for resources (keyed by pm id)
+  const [resourceEdits, setResourceEdits] = useState<Record<string, string>>({});
+
+  const saveField = async (pmId: string, field: string, value: string) => {
+    const { error } = await supabase
+      .from("pm_master_list")
+      .update({ [field]: value } as any)
+      .eq("id", pmId);
+    if (error) {
+      toast.error("Save failed: " + error.message);
+    } else {
+      queryClient.invalidateQueries({ queryKey: ["pm-master-list"] });
+      toast.success("Saved");
+    }
+  };
 
   const filteredPMs = pms.filter((pm) => {
     const matchesSearch =
@@ -196,22 +217,45 @@ const PMMasterListView = ({ pms }: { pms: PMData[] }) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>PM Name</TableHead>
-            <TableHead>Equipment Type</TableHead>
-            <TableHead>Frequency</TableHead>
-            <TableHead>Discipline</TableHead>
-            <TableHead>Duration</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead className="w-[22%]">PM Name</TableHead>
+            <TableHead className="w-[14%]">Equipment Type</TableHead>
+            <TableHead className="w-[8%]">Freq</TableHead>
+            <TableHead className="w-[8%]">Discipline</TableHead>
+            <TableHead className="w-[18%]">Asset Number</TableHead>
+            <TableHead className="w-[22%]">Resources</TableHead>
+            <TableHead className="w-[8%]">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredPMs.map((pm) => (
-            <TableRow key={pm.id} className="cursor-pointer hover:bg-muted/50">
-              <TableCell className="font-medium">{pm.pmName}</TableCell>
-              <TableCell>{pm.equipmentType}</TableCell>
-              <TableCell>{pm.frequency}</TableCell>
-              <TableCell>{pm.discipline}</TableCell>
-              <TableCell>{pm.estimatedDuration}</TableCell>
+            <TableRow key={pm.id}>
+              <TableCell className="font-medium text-xs">{pm.pmName}</TableCell>
+              <TableCell className="text-xs">{pm.equipmentType}</TableCell>
+              <TableCell className="text-xs">{pm.frequency}</TableCell>
+              <TableCell className="text-xs">{pm.discipline}</TableCell>
+              <TableCell>
+                <PMAssetSearchCombobox
+                  value={pm.assetNumber}
+                  onChange={(id) => saveField(pm.id, "asset_number", id)}
+                  compact
+                />
+              </TableCell>
+              <TableCell>
+                <Input
+                  value={resourceEdits[pm.id] ?? pm.resources}
+                  onChange={(e) =>
+                    setResourceEdits((prev) => ({ ...prev, [pm.id]: e.target.value }))
+                  }
+                  onBlur={() => {
+                    const val = resourceEdits[pm.id];
+                    if (val !== undefined && val !== pm.resources) {
+                      saveField(pm.id, "resources", val);
+                    }
+                  }}
+                  placeholder="e.g. 1x Fitter (2 hrs)"
+                  className="h-7 text-xs"
+                />
+              </TableCell>
               <TableCell>
                 <Badge variant="secondary" className={statusColors[pm.status]}>
                   {pm.status}

@@ -215,6 +215,7 @@ export type Database = {
           purpose: string
           required_ppe: string[]
           required_tools: string[]
+          resources: string
           safety_notes: string[]
           signs_of_failure: string[]
           skill_level: string
@@ -240,6 +241,7 @@ export type Database = {
           purpose?: string
           required_ppe?: string[]
           required_tools?: string[]
+          resources?: string
           safety_notes?: string[]
           signs_of_failure?: string[]
           skill_level?: string
@@ -265,6 +267,7 @@ export type Database = {
           purpose?: string
           required_ppe?: string[]
           required_tools?: string[]
+          resources?: string
           safety_notes?: string[]
           signs_of_failure?: string[]
           skill_level?: string
