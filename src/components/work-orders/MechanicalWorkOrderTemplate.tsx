@@ -184,96 +184,89 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
 
         <div className="p-6 space-y-6 text-sm">
           {/* Work Order Details Section */}
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="border border-gray-300 p-2">
-                    <span className="text-xs text-gray-500 block">Work Order No.</span>
-                    <span className="font-mono font-medium">{woNumber || "WO-______"}</span>
-                  </div>
-                  <div className="border border-gray-300 p-2">
-                    <span className="text-xs text-gray-500 block">Date Raised</span>
-                    <span className="font-medium print:block">
-                      {wo?.date_raised ? format(new Date(wo.date_raised), "dd/MM/yyyy") : "____/____/________"}
-                    </span>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="border border-gray-300 p-2">
-                    <span className="text-xs text-gray-500 block mb-1">Asset Number</span>
-                    <div className="flex gap-1">
-                      <Input
-                        className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto flex-1"
-                        value={form.asset_id}
-                        onChange={(e) => setForm({ ...form, asset_id: e.target.value })}
-                        onBlur={(e) => handleFieldBlur("asset_id", e.target.value)}
-                        placeholder="Enter or search"
-                      />
-                      <Button size="icon" variant="outline" className="h-7 w-7 shrink-0 print:hidden" onClick={() => setAssetLookupOpen(true)} title="Search Asset Hierarchy">
-                        <Search className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="border border-gray-300 p-2">
-                    <span className="text-xs text-gray-500 block mb-1">Requested By</span>
-                    <Input
-                      className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                      value={form.requested_by}
-                      onChange={(e) => setForm({ ...form, requested_by: e.target.value })}
-                      onBlur={(e) => handleFieldBlur("requested_by", e.target.value)}
-                      placeholder="Enter name"
-                    />
-                  </div>
+          <div className="space-y-2">
+            {/* Row 1: WO No, Date Raised, Priority, Work Type */}
+            <div className="grid grid-cols-4 gap-2">
+              <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block">Work Order No.</span>
+                <span className="font-mono font-medium">{woNumber || "WO-______"}</span>
+              </div>
+              <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block">Date Raised</span>
+                <span className="font-medium print:block">
+                  {wo?.date_raised ? format(new Date(wo.date_raised), "dd/MM/yyyy") : "____/____/________"}
+                </span>
+              </div>
+              <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block mb-1">Priority</span>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                  {priorityOptions.map((p) => (
+                    <label key={p} className="flex items-center gap-1 cursor-pointer" onClick={() => {
+                      setForm({ ...form, priority: p });
+                      if (wo) saveField("priority", p);
+                    }}>
+                      <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${form.priority === p ? "bg-primary text-primary-foreground" : ""}`}>
+                        {form.priority === p && "✓"}
+                      </div>
+                      <span className="text-xs">{p}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
-              <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-2">
-                <div className="border border-gray-300 p-2">
-                  <span className="text-xs text-gray-500 block mb-1">Priority</span>
-                  {/* Interactive radio buttons - clickable on screen, visual checkboxes on print */}
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                    {priorityOptions.map((p) => (
-                      <label key={p} className="flex items-center gap-1 cursor-pointer" onClick={() => {
-                        setForm({ ...form, priority: p });
-                        if (wo) saveField("priority", p);
-                      }}>
-                        <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${form.priority === p ? "bg-primary text-primary-foreground" : ""}`}>
-                          {form.priority === p && "✓"}
-                        </div>
-                        <span className="text-xs">{p}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                <div className="border border-gray-300 p-2">
-                  <span className="text-xs text-gray-500 block mb-1">Work Type</span>
-                  <div className="flex flex-col gap-1">
-                    {workTypeOptions.map((t) => (
-                      <label key={t} className="flex items-center gap-1 cursor-pointer" onClick={() => {
-                        setForm({ ...form, work_type: t });
-                        if (wo) saveField("work_type", t);
-                      }}>
-                        <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${form.work_type === t ? "bg-primary text-primary-foreground" : ""}`}>
-                          {form.work_type === t && "✓"}
-                        </div>
-                        <span className="text-xs">{t}</span>
-                      </label>
-                    ))}
-                  </div>
+              <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block mb-1">Work Type</span>
+                <div className="flex flex-col gap-1">
+                  {workTypeOptions.map((t) => (
+                    <label key={t} className="flex items-center gap-1 cursor-pointer" onClick={() => {
+                      setForm({ ...form, work_type: t });
+                      if (wo) saveField("work_type", t);
+                    }}>
+                      <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${form.work_type === t ? "bg-primary text-primary-foreground" : ""}`}>
+                        {form.work_type === t && "✓"}
+                      </div>
+                      <span className="text-xs">{t}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
             </div>
-            </div>
-            <div className="border border-gray-300 p-2">
-              <span className="text-xs text-gray-500 block mb-1">Equipment Description / Functional Location</span>
-              <Input
-                className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                value={form.functional_location}
-                onChange={(e) => setForm({ ...form, functional_location: e.target.value })}
-                onBlur={(e) => handleFieldBlur("functional_location", e.target.value)}
-                placeholder="Enter location"
-              />
+            {/* Row 2: Asset Number, Requested By, Equipment Description */}
+            <div className="grid grid-cols-4 gap-2">
+              <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block mb-1">Asset Number</span>
+                <div className="flex gap-1">
+                  <Input
+                    className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto flex-1"
+                    value={form.asset_id}
+                    onChange={(e) => setForm({ ...form, asset_id: e.target.value })}
+                    onBlur={(e) => handleFieldBlur("asset_id", e.target.value)}
+                    placeholder="Enter or search"
+                  />
+                  <Button size="icon" variant="outline" className="h-7 w-7 shrink-0 print:hidden" onClick={() => setAssetLookupOpen(true)} title="Search Asset Hierarchy">
+                    <Search className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+              <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block mb-1">Requested By</span>
+                <Input
+                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                  value={form.requested_by}
+                  onChange={(e) => setForm({ ...form, requested_by: e.target.value })}
+                  onBlur={(e) => handleFieldBlur("requested_by", e.target.value)}
+                  placeholder="Enter name"
+                />
+              </div>
+              <div className="border border-gray-300 p-2 col-span-2">
+                <span className="text-xs text-gray-500 block mb-1">Equipment Description / Functional Location</span>
+                <Input
+                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                  value={form.functional_location}
+                  onChange={(e) => setForm({ ...form, functional_location: e.target.value })}
+                  onBlur={(e) => handleFieldBlur("functional_location", e.target.value)}
+                  placeholder="Enter location"
+                />
+              </div>
             </div>
           </div>
 
