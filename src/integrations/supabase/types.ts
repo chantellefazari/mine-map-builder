@@ -133,6 +133,69 @@ export type Database = {
           },
         ]
       }
+      pm_asset_link_staging: {
+        Row: {
+          asset_match_key: string | null
+          committed: boolean
+          committed_at: string | null
+          committed_by: string | null
+          created_at: string
+          current_linked_asset: string | null
+          id: string
+          match_confidence: string
+          matched_asset_area: string | null
+          matched_asset_id: string | null
+          matched_asset_name: string | null
+          matched_asset_parent: string | null
+          pm_equipment_ref: string
+          pm_frequency: string
+          pm_template_id: string
+          pm_template_name: string
+          updated_at: string
+          validation_status: string
+        }
+        Insert: {
+          asset_match_key?: string | null
+          committed?: boolean
+          committed_at?: string | null
+          committed_by?: string | null
+          created_at?: string
+          current_linked_asset?: string | null
+          id?: string
+          match_confidence?: string
+          matched_asset_area?: string | null
+          matched_asset_id?: string | null
+          matched_asset_name?: string | null
+          matched_asset_parent?: string | null
+          pm_equipment_ref?: string
+          pm_frequency?: string
+          pm_template_id: string
+          pm_template_name: string
+          updated_at?: string
+          validation_status?: string
+        }
+        Update: {
+          asset_match_key?: string | null
+          committed?: boolean
+          committed_at?: string | null
+          committed_by?: string | null
+          created_at?: string
+          current_linked_asset?: string | null
+          id?: string
+          match_confidence?: string
+          matched_asset_area?: string | null
+          matched_asset_id?: string | null
+          matched_asset_name?: string | null
+          matched_asset_parent?: string | null
+          pm_equipment_ref?: string
+          pm_frequency?: string
+          pm_template_id?: string
+          pm_template_name?: string
+          updated_at?: string
+          validation_status?: string
+        }
+        Relationships: []
+      }
       pm_master_list: {
         Row: {
           acceptable_criteria: string[]
