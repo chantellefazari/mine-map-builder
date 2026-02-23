@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { PMAssetSearchCombobox } from "./PMAssetSearchCombobox";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,6 +29,7 @@ export const PMMetadataGrid = ({
   const queryClient = useQueryClient();
   const [resources, setResources] = useState(initialResources);
   const [assetNumber, setAssetNumber] = useState(initialAssetNumber);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setResources(initialResources);
@@ -38,8 +39,8 @@ export const PMMetadataGrid = ({
     setAssetNumber(initialAssetNumber);
   }, [initialAssetNumber]);
 
-  const saveField = async (field: string, value: string) => {
-    if (!pmId) return; // No DB record, local-only
+  const saveField = useCallback(async (field: string, value: string) => {
+    if (!pmId) return;
     const { error } = await supabase
       .from("pm_master_list")
       .update({ [field]: value } as any)
@@ -49,7 +50,19 @@ export const PMMetadataGrid = ({
     } else {
       queryClient.invalidateQueries({ queryKey: ["pm-master-list"] });
     }
-  };
+  }, [pmId, queryClient]);
+
+  // Auto-save resources with debounce
+  useEffect(() => {
+    if (resources === initialResources) return;
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      saveField("resources", resources);
+    }, 800);
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, [resources, initialResources, saveField]);
 
   return (
     <div className="grid grid-cols-2 border-b border-border text-xs">
@@ -81,7 +94,6 @@ export const PMMetadataGrid = ({
             <Input
               value={resources}
               onChange={(e) => setResources(e.target.value)}
-              onBlur={() => saveField("resources", resources)}
               placeholder="e.g. 1x Fitter (2 hrs)"
               className="h-7 text-xs border-none shadow-none focus-visible:ring-0 bg-transparent"
             />
