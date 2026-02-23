@@ -141,16 +141,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   placeholder="Enter location"
                 />
               </div>
-              <div className="border border-gray-300 p-2">
-                <span className="text-xs text-gray-500 block mb-1">Trade</span>
-                <Input
-                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                  value={form.trade}
-                  onChange={(e) => setForm({ ...form, trade: e.target.value })}
-                  onBlur={(e) => handleFieldBlur("trade", e.target.value)}
-                  placeholder="e.g. MECH, ELEC"
-                />
-              </div>
             </div>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-2">
@@ -195,16 +185,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   value={form.requested_by}
                   onChange={(e) => setForm({ ...form, requested_by: e.target.value })}
                   onBlur={(e) => handleFieldBlur("requested_by", e.target.value)}
-                  placeholder="Enter name"
-                />
-              </div>
-              <div className="border border-gray-300 p-2">
-                <span className="text-xs text-gray-500 block mb-1">Assigned To</span>
-                <Input
-                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                  value={form.assigned_to}
-                  onChange={(e) => setForm({ ...form, assigned_to: e.target.value })}
-                  onBlur={(e) => handleFieldBlur("assigned_to", e.target.value)}
                   placeholder="Enter name"
                 />
               </div>
