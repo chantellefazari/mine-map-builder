@@ -2333,7 +2333,7 @@ export const areasData: Area[] = [
               { assetNumber: "FPAC01-MCC01", name: "Filter Press Air Compressor – MCC Cell" },
               { assetNumber: "FPAC01-LCS01", name: "Filter Press Air Compressor – LCS" },
               { assetNumber: "FPAC01-RCV01", name: "Filter Press Air Compressor – Receiver Tank" },
-              { assetNumber: "FPAC01-DRY01", name: "Filter Press Air Compressor – Air Dryer" },
+              { assetNumber: "FPAC01-PIP01", name: "Filter Press Air Compressor – Piping" },
               { assetNumber: "FPAC01-FLT01", name: "Filter Press Air Compressor – Inline Filter" },
             ]
           },
