@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,17 +17,40 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const systemPrompt = `You are a maintenance parts advisor for a gold mine (Tennant Creek Gold Mine).
-Given a work order description, asset number, and the asset's known components, suggest the most likely parts/materials needed to complete the work.
+    // Fetch site spares catalogue for matching
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const sb = createClient(supabaseUrl, supabaseKey);
 
-Return a JSON array of suggested parts. Each part object must have:
-- part_number: string (component code if known, or "TBA")
-- description: string (clear part description)
-- quantity: number (estimated qty needed)
-- reasoning: string (one sentence why this part is needed)
+    const { data: spares } = await sb
+      .from("site_spares")
+      .select("part_number, description, bin_location, category")
+      .limit(2000);
 
-Only suggest parts that are directly relevant to the described work. Be specific to mining/processing equipment.
-Return ONLY the JSON array, no other text.`;
+    const sparesContext = (spares || [])
+      .map((s: any) => `${s.part_number || "—"} | ${s.description} | Bin: ${s.bin_location || "—"} | Cat: ${s.category || "—"}`)
+      .join("\n");
+
+    const systemPrompt = `You are a maintenance parts advisor for Tennant Creek Gold Mine.
+Given a work order description, asset info, and the FULL site spares catalogue, suggest parts needed.
+
+CRITICAL RULES:
+1. You MUST match parts from the site spares catalogue below. Use the EXACT part_number and description from the catalogue.
+2. If a catalogue part matches what's needed, use its real part_number (e.g. "1001001", "1009003").
+3. Only use "TBA" for part_number if absolutely nothing in the catalogue matches.
+4. Include the bin_location from the catalogue when available.
+
+SITE SPARES CATALOGUE:
+${sparesContext}
+
+Return a JSON array. Each object must have:
+- part_number: string (EXACT part number from catalogue, or "TBA")
+- description: string (EXACT description from catalogue, or a clear description)
+- quantity: number
+- bin_location: string (from catalogue, or "")
+- reasoning: string (one sentence)
+
+Return ONLY the JSON array.`;
 
     const userPrompt = `Work Order Description: ${description || "Not provided"}
 Asset Number: ${asset_number || "Not provided"}
@@ -35,7 +59,7 @@ ${asset_components && asset_components.length > 0
   ? asset_components.map((c: any) => `- ${c.componentCode}: ${c.componentName} (${c.componentType}, Mfr: ${c.manufacturer})`).join("\n")
   : "No components loaded for this asset"}
 
-Suggest the parts/materials needed for this work order.`;
+Suggest parts from the site spares catalogue needed for this work.`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
@@ -74,7 +98,6 @@ Suggest the parts/materials needed for this work order.`;
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || "[]";
 
-    // Extract JSON array from response
     let parts;
     try {
       const jsonMatch = content.match(/\[[\s\S]*\]/);

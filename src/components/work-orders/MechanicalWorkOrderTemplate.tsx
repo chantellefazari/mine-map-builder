@@ -136,7 +136,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
           part_description: part.description || "",
           quantity_required: part.quantity || 1,
           status: "Not Ordered",
-          location: "",
+          location: part.bin_location || "",
           comment: part.reasoning || "AI suggested",
           last_updated_by: "AI",
         });
