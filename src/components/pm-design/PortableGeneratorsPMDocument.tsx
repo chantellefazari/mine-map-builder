@@ -2,8 +2,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
+import { PMMetadataGrid } from "./PMMetadataGrid";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMSignOffBlock } from "./PMSignOffBlock";
+import { usePMasterList } from "@/hooks/usePMData";
 
 interface InspectionTask { task: string; hasInput?: boolean; inputLabel?: string; }
 interface EquipmentSection { equipmentId: string; equipmentName: string; tasks: InspectionTask[]; }
