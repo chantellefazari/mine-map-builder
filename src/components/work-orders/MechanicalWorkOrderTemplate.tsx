@@ -214,16 +214,16 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                     </Button>
                   </div>
                 </div>
-              </div>
-              <div className="border border-gray-300 p-2">
-                <span className="text-xs text-gray-500 block mb-1">Equipment Description / Functional Location</span>
-                <Input
-                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                  value={form.functional_location}
-                  onChange={(e) => setForm({ ...form, functional_location: e.target.value })}
-                  onBlur={(e) => handleFieldBlur("functional_location", e.target.value)}
-                  placeholder="Enter location"
-                />
+                <div className="border border-gray-300 p-2">
+                  <span className="text-xs text-gray-500 block mb-1">Equipment Description / Functional Location</span>
+                  <Input
+                    className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                    value={form.functional_location}
+                    onChange={(e) => setForm({ ...form, functional_location: e.target.value })}
+                    onBlur={(e) => handleFieldBlur("functional_location", e.target.value)}
+                    placeholder="Enter location"
+                  />
+                </div>
               </div>
             </div>
             <div className="space-y-3">
