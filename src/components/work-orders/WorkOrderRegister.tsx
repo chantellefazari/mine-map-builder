@@ -1,41 +1,24 @@
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Info, Hash, FileText, Check } from "lucide-react";
+import { Info, Hash, FileText, Check, Loader2 } from "lucide-react";
+import { useWorkOrders } from "@/hooks/useWorkOrders";
 
 interface WorkOrderRegisterProps {
   onAllocateWO?: (woNumber: string) => void;
 }
 
-// Generate first 150 work order numbers
-const generateWorkOrderNumbers = (count: number): string[] => {
-  return Array.from({ length: count }, (_, i) => 
-    `WO-${String(i + 1).padStart(6, "0")}`
-  );
-};
-
 export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
-  const workOrderNumbers = generateWorkOrderNumbers(150);
-  const [selectedWO, setSelectedWO] = useState<string>("");
-  const [allocatedNumbers, setAllocatedNumbers] = useState<Set<string>>(new Set());
+  const { workOrders, isLoading, allocate } = useWorkOrders();
 
-  const handleAllocate = () => {
-    if (selectedWO && !allocatedNumbers.has(selectedWO)) {
-      setAllocatedNumbers(prev => new Set([...prev, selectedWO]));
-      onAllocateWO?.(selectedWO);
-    }
+  const handleAllocate = async () => {
+    const result = await allocate.mutateAsync();
+    onAllocateWO?.(result.wo_number);
   };
 
-  const availableNumbers = workOrderNumbers.filter(wo => !allocatedNumbers.has(wo));
-  const nextAvailable = availableNumbers[0] || "All allocated";
+  const nextNumber = workOrders.length > 0
+    ? `WO-${String(parseInt(workOrders[workOrders.length - 1].wo_number.slice(3), 10) + 1).padStart(6, "0")}`
+    : "WO-000001";
 
   return (
     <div className="space-y-6 p-6">
@@ -98,13 +81,13 @@ export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
               <span className="text-sm font-medium">Next Available Number:</span>
             </div>
             <Badge variant="outline" className="font-mono text-primary border-primary">
-              {nextAvailable}
+              {nextNumber}
             </Badge>
           </div>
         </CardContent>
       </Card>
 
-      {/* Work Order Allocation */}
+      {/* Allocate Button */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
@@ -115,54 +98,25 @@ export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
         <CardContent>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Select a work order number to allocate it to a new work order. Once allocated, the number will be reserved and the work order template will open.
+              Click below to generate and allocate the next sequential work order number. The number is persisted in the database and will open the template.
             </p>
-            
-            <div className="flex items-center gap-4">
-              <Select value={selectedWO} onValueChange={setSelectedWO}>
-                <SelectTrigger className="w-64 font-mono">
-                  <SelectValue placeholder="Select WO Number..." />
-                </SelectTrigger>
-                <SelectContent className="bg-background border shadow-lg z-50 max-h-64">
-                  {workOrderNumbers.map((woNum) => {
-                    const isAllocated = allocatedNumbers.has(woNum);
-                    return (
-                      <SelectItem 
-                        key={woNum} 
-                        value={woNum} 
-                        className="font-mono"
-                        disabled={isAllocated}
-                      >
-                        <span className="flex items-center gap-2">
-                          {woNum}
-                          {isAllocated && (
-                            <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">
-                              Allocated
-                            </Badge>
-                          )}
-                        </span>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
 
-              <Button 
-                onClick={handleAllocate}
-                disabled={!selectedWO || allocatedNumbers.has(selectedWO)}
-                className="gap-2"
-              >
+            <Button
+              onClick={handleAllocate}
+              disabled={allocate.isPending}
+              className="gap-2"
+            >
+              {allocate.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
                 <Check className="h-4 w-4" />
-                Allocate & Open Template
-              </Button>
-            </div>
+              )}
+              Allocate Next WO & Open Template
+            </Button>
 
             <div className="flex gap-4 text-sm">
               <span className="text-muted-foreground">
-                Available: <span className="font-medium text-foreground">{availableNumbers.length}</span>
-              </span>
-              <span className="text-muted-foreground">
-                Allocated: <span className="font-medium text-green-600">{allocatedNumbers.size}</span>
+                Total Allocated: <span className="font-medium text-foreground">{workOrders.length}</span>
               </span>
             </div>
           </div>
@@ -170,21 +124,24 @@ export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
       </Card>
 
       {/* Allocated Work Orders List */}
-      {allocatedNumbers.size > 0 && (
+      {workOrders.length > 0 && (
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Allocated Work Orders</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {Array.from(allocatedNumbers).sort().map((woNum) => (
-                <Badge 
-                  key={woNum} 
-                  variant="outline" 
+              {workOrders.map((wo) => (
+                <Badge
+                  key={wo.id}
+                  variant="outline"
                   className="font-mono cursor-pointer hover:bg-primary/10"
-                  onClick={() => onAllocateWO?.(woNum)}
+                  onClick={() => onAllocateWO?.(wo.wo_number)}
                 >
-                  {woNum}
+                  {wo.wo_number}
+                  <span className={`ml-1 text-[10px] ${wo.status === "Open" ? "text-green-600" : "text-muted-foreground"}`}>
+                    ({wo.status})
+                  </span>
                 </Badge>
               ))}
             </div>
