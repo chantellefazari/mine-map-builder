@@ -6,29 +6,35 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Plus, Trash2 } from "lucide-react";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
-import type { POTrackerItem } from "@/hooks/usePOTracker";
+import type { POTrackerItem, POLineItem } from "@/hooks/usePOTracker";
 
 interface AddPODialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (item: Partial<POTrackerItem> & { po_number: string }) => void;
+  onSave: (header: any, lines: POLineItem[]) => void;
   editItem?: POTrackerItem | null;
   defaultWorkOrderId?: string;
 }
 
 const PO_STATUSES = ["Ordered", "In Transit", "On Site", "Partially Received", "Cancelled"];
 
+const emptyLine = (): POLineItem => ({
+  part_description: "",
+  part_number: "",
+  quantity_ordered: 0,
+  unit_price: 0,
+  received_qty: 0,
+  notes: "",
+});
+
 export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkOrderId }: AddPODialogProps) => {
   const { workOrders } = useWorkOrders();
 
   const [form, setForm] = useState({
-    po_number: "",
     work_order_id: defaultWorkOrderId ?? "",
     supplier: "",
-    part_description: "",
-    part_number: "",
-    quantity_ordered: 0,
     order_date: "",
     eta: "",
     status: "Ordered",
@@ -37,15 +43,13 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
     comments: "",
   });
 
+  const [lines, setLines] = useState<POLineItem[]>([emptyLine()]);
+
   useEffect(() => {
     if (editItem) {
       setForm({
-        po_number: editItem.po_number,
         work_order_id: editItem.work_order_id ?? "",
         supplier: editItem.supplier,
-        part_description: editItem.part_description,
-        part_number: editItem.part_number,
-        quantity_ordered: editItem.quantity_ordered,
         order_date: editItem.order_date ?? "",
         eta: editItem.eta ?? "",
         status: editItem.status,
@@ -53,14 +57,11 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
         date_received: editItem.date_received ?? "",
         comments: editItem.comments,
       });
+      setLines(editItem.lines && editItem.lines.length > 0 ? editItem.lines : [emptyLine()]);
     } else {
       setForm({
-        po_number: "",
         work_order_id: defaultWorkOrderId ?? "",
         supplier: "",
-        part_description: "",
-        part_number: "",
-        quantity_ordered: 0,
         order_date: "",
         eta: "",
         status: "Ordered",
@@ -68,40 +69,42 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
         date_received: "",
         comments: "",
       });
+      setLines([emptyLine()]);
     }
   }, [editItem, open, defaultWorkOrderId]);
 
+  const updateLine = (idx: number, field: keyof POLineItem, value: any) => {
+    setLines((prev) => prev.map((l, i) => (i === idx ? { ...l, [field]: value } : l)));
+  };
+
   const handleSubmit = () => {
-    if (!form.po_number.trim()) return;
-    onSave({
-      ...(editItem ? { id: editItem.id } : {}),
-      po_number: form.po_number,
-      work_order_id: form.work_order_id || null,
-      supplier: form.supplier,
-      part_description: form.part_description,
-      part_number: form.part_number,
-      quantity_ordered: form.quantity_ordered,
-      order_date: form.order_date || null,
-      eta: form.eta || null,
-      status: form.status,
-      confirmed_on_site: form.confirmed_on_site,
-      date_received: form.date_received || null,
-      comments: form.comments,
-    } as any);
+    const validLines = lines.filter((l) => l.part_description.trim() || l.part_number.trim());
+    onSave(
+      {
+        ...(editItem ? { id: editItem.id } : {}),
+        work_order_id: form.work_order_id || null,
+        supplier: form.supplier,
+        order_date: form.order_date || null,
+        eta: form.eta || null,
+        status: form.status,
+        confirmed_on_site: form.confirmed_on_site,
+        date_received: form.date_received || null,
+        comments: form.comments,
+      },
+      validLines
+    );
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{editItem ? "Edit PO" : "Add Purchase Order"}</DialogTitle>
+          <DialogTitle>{editItem ? `Edit ${editItem.po_number}` : "Create Purchase Order"}</DialogTitle>
         </DialogHeader>
+
+        {/* Header fields */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label>PO Number *</Label>
-            <Input value={form.po_number} onChange={(e) => setForm({ ...form, po_number: e.target.value })} placeholder="PO-001" />
-          </div>
           <div className="space-y-2">
             <Label>Linked Work Order</Label>
             <Select value={form.work_order_id} onValueChange={(v) => setForm({ ...form, work_order_id: v })}>
@@ -116,18 +119,6 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
           <div className="space-y-2">
             <Label>Supplier</Label>
             <Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} />
-          </div>
-          <div className="space-y-2">
-            <Label>Part Number</Label>
-            <Input value={form.part_number} onChange={(e) => setForm({ ...form, part_number: e.target.value })} />
-          </div>
-          <div className="col-span-2 space-y-2">
-            <Label>Part Description</Label>
-            <Input value={form.part_description} onChange={(e) => setForm({ ...form, part_description: e.target.value })} />
-          </div>
-          <div className="space-y-2">
-            <Label>Quantity Ordered</Label>
-            <Input type="number" value={form.quantity_ordered} onChange={(e) => setForm({ ...form, quantity_ordered: Number(e.target.value) })} />
           </div>
           <div className="space-y-2">
             <Label>Status</Label>
@@ -154,14 +145,59 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
             <Switch checked={form.confirmed_on_site} onCheckedChange={(v) => setForm({ ...form, confirmed_on_site: v })} />
             <Label>Confirmed On Site</Label>
           </div>
-          <div className="col-span-2 space-y-2">
-            <Label>Comments</Label>
-            <Textarea value={form.comments} onChange={(e) => setForm({ ...form, comments: e.target.value })} rows={3} />
+        </div>
+
+        {/* Line Items */}
+        <div className="mt-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <Label className="text-base font-semibold">Line Items</Label>
+            <Button type="button" size="sm" variant="outline" className="gap-1" onClick={() => setLines([...lines, emptyLine()])}>
+              <Plus className="h-3 w-3" /> Add Line
+            </Button>
+          </div>
+          <div className="border rounded-lg overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-muted/50 text-left">
+                  <th className="p-2 font-medium">Part #</th>
+                  <th className="p-2 font-medium">Description</th>
+                  <th className="p-2 font-medium w-20">Qty</th>
+                  <th className="p-2 font-medium w-24">Unit Price</th>
+                  <th className="p-2 w-10"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {lines.map((line, idx) => (
+                  <tr key={idx} className="border-t">
+                    <td className="p-1"><Input className="h-8 text-xs" value={line.part_number} onChange={(e) => updateLine(idx, "part_number", e.target.value)} /></td>
+                    <td className="p-1"><Input className="h-8 text-xs" value={line.part_description} onChange={(e) => updateLine(idx, "part_description", e.target.value)} /></td>
+                    <td className="p-1"><Input className="h-8 text-xs" type="number" value={line.quantity_ordered} onChange={(e) => updateLine(idx, "quantity_ordered", Number(e.target.value))} /></td>
+                    <td className="p-1"><Input className="h-8 text-xs" type="number" value={line.unit_price} onChange={(e) => updateLine(idx, "unit_price", Number(e.target.value))} /></td>
+                    <td className="p-1">
+                      {lines.length > 1 && (
+                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setLines(lines.filter((_, i) => i !== idx))}>
+                          <Trash2 className="h-3 w-3 text-destructive" />
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
+
+        {/* Comments */}
+        <div className="space-y-2 mt-2">
+          <Label>Comments</Label>
+          <Textarea value={form.comments} onChange={(e) => setForm({ ...form, comments: e.target.value })} rows={2} />
+        </div>
+
         <div className="flex justify-end gap-2 pt-4">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={handleSubmit} disabled={!form.po_number.trim()}>Save</Button>
+          <Button onClick={handleSubmit}>
+            {editItem ? "Update PO" : "Create PO"}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
