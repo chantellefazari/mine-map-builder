@@ -13,6 +13,7 @@ import {
   MapPin,
   Printer,
   Download,
+  Link2,
 } from "lucide-react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
@@ -25,6 +26,7 @@ import { DataGovernanceSection } from "./DataGovernanceSection";
 import { SitePartNumberingSection } from "./SitePartNumberingSection";
 import { ProcessingPlantAssetTaggingSection } from "./ProcessingPlantAssetTaggingSection";
 import { AssetTagRolloutPlanSection } from "./AssetTagRolloutPlanSection";
+import { PMAssetLinkingSection } from "./PMAssetLinkingSection";
 
 const TAB_LABELS: Record<string, string> = {
   "hierarchy": "Asset Hierarchy & Parent-Child Rules",
@@ -36,6 +38,7 @@ const TAB_LABELS: Record<string, string> = {
   "governance": "Data Governance & Change Control",
   "asset-tagging": "Processing Plant Asset Tagging",
   "tag-rollout": "Asset Tag Rollout Plan",
+  "pm-asset-linking": "PM-to-Asset Linking",
 };
 
 export const FoundationsContent = () => {
@@ -187,6 +190,11 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">Asset Tag Rollout Plan</span>
             <span className="sm:hidden">Rollout</span>
           </TabsTrigger>
+          <TabsTrigger value="pm-asset-linking" className="flex items-center gap-2 text-xs">
+            <Link2 className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">PM-to-Asset Linking</span>
+            <span className="sm:hidden">PM Link</span>
+          </TabsTrigger>
         </TabsList>
         <div className="flex flex-col gap-1.5 shrink-0 mt-1">
           <Button
@@ -246,6 +254,10 @@ export const FoundationsContent = () => {
 
         <TabsContent value="tag-rollout">
           <AssetTagRolloutPlanSection />
+        </TabsContent>
+
+        <TabsContent value="pm-asset-linking">
+          <PMAssetLinkingSection />
         </TabsContent>
       </div>
     </Tabs>
