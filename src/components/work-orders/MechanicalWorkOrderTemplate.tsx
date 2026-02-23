@@ -401,12 +401,12 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
               const updatedForm = {
                 ...form,
                 asset_id: asset.assetNumber,
-                functional_location: `${asset.parentAsset} > ${asset.name}`,
+                functional_location: asset.name,
               };
               setForm(updatedForm);
               if (wo) {
                 saveField("asset_id", asset.assetNumber);
-                saveField("functional_location", `${asset.parentAsset} > ${asset.name}`);
+                saveField("functional_location", asset.name);
               }
             }}
           />
