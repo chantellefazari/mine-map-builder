@@ -75,6 +75,7 @@ const printStyles = `
   
   /* Keep sign-off block together */
   .space-y-4 { page-break-inside: avoid; break-inside: avoid; }
+  .print-hide { display: none !important; }
 `;
 
 export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({

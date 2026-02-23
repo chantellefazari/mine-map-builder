@@ -66,7 +66,7 @@ export const PMAssetSearchCombobox = ({
                 onChange("", "");
                 setSearch("");
               }}
-              className="ml-1 p-0.5 hover:bg-muted rounded flex-shrink-0"
+              className="ml-1 p-0.5 hover:bg-muted rounded flex-shrink-0 print-hide"
             >
               <X className="h-3 w-3 text-muted-foreground" />
             </button>
