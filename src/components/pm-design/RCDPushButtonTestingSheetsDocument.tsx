@@ -1,7 +1,9 @@
 import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
+import { PMMetadataGrid } from "./PMMetadataGrid";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMSignOffBlock } from "./PMSignOffBlock";
+import { usePMasterList } from "@/hooks/usePMData";
 
 interface GeneratorLocation {
   id: string;
