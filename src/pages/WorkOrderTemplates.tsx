@@ -1,39 +1,49 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ClipboardList, ListOrdered } from "lucide-react";
+import { ArrowLeft, ClipboardList, Plus, Trash2, Loader2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { MechanicalWorkOrderTemplate } from "@/components/work-orders/MechanicalWorkOrderTemplate";
 import { WorkOrderRegister } from "@/components/work-orders/WorkOrderRegister";
-
-type TemplateType = "mechanical" | null;
-
-const templateCategories = [
-  {
-    id: "mechanical" as TemplateType,
-    name: "Work Orders",
-    icon: ClipboardList,
-    description: "Standard work order template for all maintenance tasks",
-  },
-];
+import { useWorkOrders } from "@/hooks/useWorkOrders";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const WorkOrderTemplates = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>(null);
-  const [activeTab, setActiveTab] = useState("register");
-  const [allocatedWO, setAllocatedWO] = useState<string | null>(null);
+  const { workOrders, isLoading, allocate, remove } = useWorkOrders();
+  const [selectedWO, setSelectedWO] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; wo_number: string } | null>(null);
 
-  const handleAllocateWO = (woNumber: string) => {
-    setAllocatedWO(woNumber);
-    setActiveTab("templates");
-    setSelectedTemplate("mechanical");
+  const handleAllocateWO = async () => {
+    const result = await allocate.mutateAsync();
+    setSelectedWO(result.wo_number);
   };
 
-  const renderTemplate = () => {
-    switch (selectedTemplate) {
-      case "mechanical":
-        return <MechanicalWorkOrderTemplate woNumber={allocatedWO || undefined} />;
-      default:
-        return null;
+  const handleDelete = () => {
+    if (!deleteTarget) return;
+    remove.mutate(deleteTarget.id, {
+      onSuccess: () => {
+        if (selectedWO === deleteTarget.wo_number) setSelectedWO(null);
+        setDeleteTarget(null);
+      },
+    });
+  };
+
+  const statusColor = (status: string) => {
+    switch (status) {
+      case "Open": return "text-green-600";
+      case "Complete": return "text-blue-600";
+      case "Cancelled": return "text-destructive";
+      default: return "text-amber-600";
     }
   };
 
@@ -52,89 +62,91 @@ const WorkOrderTemplates = () => {
             </div>
             <div>
               <h1 className="text-lg font-semibold text-foreground">Work Orders</h1>
-              <p className="text-xs text-muted-foreground">Register & Templates</p>
+              <p className="text-xs text-muted-foreground">{workOrders.length} allocated</p>
             </div>
           </div>
         </div>
 
-        {/* Tabs for switching between Register and Templates */}
-        <div className="p-4 border-b border-border">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="w-full grid grid-cols-2">
-              <TabsTrigger value="register" className="text-xs">
-                <ListOrdered className="h-3 w-3 mr-1" />
-                Register
-              </TabsTrigger>
-              <TabsTrigger value="templates" className="text-xs">
-                <ClipboardList className="h-3 w-3 mr-1" />
-                Templates
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+        {/* Allocate button */}
+        <div className="p-3 border-b border-border">
+          <Button onClick={handleAllocateWO} disabled={allocate.isPending} className="w-full gap-2" size="sm">
+            {allocate.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
+            Allocate New WO
+          </Button>
         </div>
 
-        {activeTab === "templates" && (
-          <ScrollArea className="flex-1 p-4">
-            <div className="space-y-2">
-              {templateCategories.map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedTemplate(category.id)}
-                  className={`w-full text-left p-3 rounded-lg border transition-all ${
-                    selectedTemplate === category.id
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50 hover:bg-muted/50"
+        {/* Work Order List */}
+        <ScrollArea className="flex-1">
+          <div className="p-2 space-y-1">
+            {isLoading ? (
+              <p className="text-xs text-muted-foreground p-3 text-center">Loading…</p>
+            ) : workOrders.length === 0 ? (
+              <p className="text-xs text-muted-foreground p-3 text-center">No work orders yet</p>
+            ) : (
+              workOrders.map((wo) => (
+                <div
+                  key={wo.id}
+                  className={`group flex items-center justify-between rounded-lg px-3 py-2.5 cursor-pointer transition-all ${
+                    selectedWO === wo.wo_number
+                      ? "bg-primary/10 border border-primary/30"
+                      : "hover:bg-muted/50 border border-transparent"
                   }`}
+                  onClick={() => setSelectedWO(wo.wo_number)}
                 >
-                  <div className="flex items-center gap-3">
-                    <category.icon className={`h-5 w-5 ${selectedTemplate === category.id ? "text-primary" : "text-muted-foreground"}`} />
-                    <div>
-                      <p className={`text-sm font-medium ${selectedTemplate === category.id ? "text-primary" : "text-foreground"}`}>
-                        {category.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{category.description}</p>
-                    </div>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className={`font-mono text-sm font-medium ${selectedWO === wo.wo_number ? "text-primary" : "text-foreground"}`}>
+                      {wo.wo_number}
+                    </span>
+                    <Badge variant="outline" className={`text-[10px] px-1.5 py-0 ${statusColor(wo.status)}`}>
+                      {wo.status}
+                    </Badge>
                   </div>
-                </button>
-              ))}
-            </div>
-
-            {allocatedWO && (
-              <div className="mt-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
-                <p className="text-xs text-muted-foreground">Current WO:</p>
-                <p className="font-mono font-medium text-primary">{allocatedWO}</p>
-              </div>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteTarget({ id: wo.id, wo_number: wo.wo_number });
+                    }}
+                  >
+                    <Trash2 className="h-3 w-3 text-destructive" />
+                  </Button>
+                </div>
+              ))
             )}
-          </ScrollArea>
-        )}
-
-        {activeTab === "register" && (
-          <div className="flex-1 p-4">
-            <p className="text-sm text-muted-foreground">
-              Select a work order number to allocate it and open the template.
-            </p>
           </div>
-        )}
+        </ScrollArea>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
-        {activeTab === "register" ? (
-          <WorkOrderRegister onAllocateWO={handleAllocateWO} />
-        ) : selectedTemplate ? (
+        {selectedWO ? (
           <div className="p-6">
-            {renderTemplate()}
+            <MechanicalWorkOrderTemplate woNumber={selectedWO} />
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center p-8">
-            <ClipboardList className="h-16 w-16 text-muted-foreground/50 mb-4" />
-            <h2 className="text-xl font-semibold text-foreground mb-2">Select a Template</h2>
-            <p className="text-muted-foreground max-w-md">
-              Choose a work order template from the sidebar to view and use standardized maintenance templates.
-            </p>
-          </div>
+          <WorkOrderRegister onAllocateWO={(woNum) => setSelectedWO(woNum)} />
         )}
       </main>
+
+      {/* Delete Confirmation */}
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {deleteTarget?.wo_number}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this work order and all associated parts and PO links. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
