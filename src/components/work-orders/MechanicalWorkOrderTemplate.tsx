@@ -34,7 +34,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     problem_description: "",
     work_performed: "",
     priority: "Normal",
-    work_type: "Reactive",
+    work_type: "Breakdown",
     requested_by: "",
     assigned_to: "",
     trade: "",
@@ -50,7 +50,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
         problem_description: wo.problem_description || "",
         work_performed: wo.work_performed || "",
         priority: wo.priority || "Normal",
-        work_type: wo.work_type || "Reactive",
+        work_type: wo.work_type || "Breakdown",
         requested_by: wo.requested_by || "",
         assigned_to: wo.assigned_to || "",
         trade: wo.trade || "",
@@ -151,7 +151,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
 
 
   const priorityOptions = ["Critical", "High", "Normal", "Low"];
-  const workTypeOptions = ["Reactive", "Planned", "Shutdown"];
+  const workTypeOptions = ["Breakdown", "Planned", "Shutdown"];
 
   return (
     <div className="space-y-4">
