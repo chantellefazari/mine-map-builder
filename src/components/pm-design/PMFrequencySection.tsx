@@ -37,6 +37,8 @@ export interface PMData {
   lubricationNotes: string;
   oemReferences: string;
   status: "Draft" | "Reviewed" | "Approved";
+  assetNumber: string;
+  resources: string;
 }
 
 interface PMFrequencySectionProps {
