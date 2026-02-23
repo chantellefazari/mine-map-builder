@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePMAssetLinking, StagingRow } from "@/hooks/usePMAssetLinking";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +38,7 @@ export const PMAssetLinkingSection = () => {
     staging, summary, isLoading, populate, isPopulating,
     updateStatus, commitLinks, isCommitting, assets,
   } = usePMAssetLinking();
+  const queryClient = useQueryClient();
 
   const [search, setSearch] = useState("");
   const [filterConfidence, setFilterConfidence] = useState("all");
@@ -58,10 +61,14 @@ export const PMAssetLinkingSection = () => {
     );
     if (exactPending.length === 0) return;
     try {
-      for (const row of exactPending) {
-        await updateStatus({ id: row.id, validation_status: "Confirmed" });
-      }
-      toast({ title: "Exact Matches Confirmed", description: `${exactPending.length} exact match(es) confirmed.` });
+      const ids = exactPending.map((r) => r.id);
+      const { error } = await supabase
+        .from("pm_asset_link_staging")
+        .update({ validation_status: "Confirmed" })
+        .in("id", ids);
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["pm-asset-link-staging"] });
+      toast({ title: "Exact Matches Confirmed", description: `${ids.length} exact match(es) confirmed.` });
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
     }
