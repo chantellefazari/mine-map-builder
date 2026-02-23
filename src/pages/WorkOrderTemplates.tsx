@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ClipboardList, Plus, Trash2, Loader2 } from "lucide-react";
+import { ArrowLeft, ClipboardList, Plus, Trash2, Loader2, Search } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { MechanicalWorkOrderTemplate } from "@/components/work-orders/MechanicalWorkOrderTemplate";
 import { WorkOrderRegister } from "@/components/work-orders/WorkOrderRegister";
@@ -22,6 +23,18 @@ const WorkOrderTemplates = () => {
   const { workOrders, isLoading, allocate, remove } = useWorkOrders();
   const [selectedWO, setSelectedWO] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; wo_number: string } | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredWOs = useMemo(() => {
+    if (!searchQuery.trim()) return workOrders;
+    const q = searchQuery.toLowerCase();
+    return workOrders.filter((wo) =>
+      wo.wo_number.toLowerCase().includes(q) ||
+      wo.status.toLowerCase().includes(q) ||
+      (wo.asset_id && wo.asset_id.toLowerCase().includes(q)) ||
+      (wo.problem_description && wo.problem_description.toLowerCase().includes(q))
+    );
+  }, [workOrders, searchQuery]);
 
   const handleAllocateWO = async () => {
     const result = await allocate.mutateAsync();
@@ -75,15 +88,30 @@ const WorkOrderTemplates = () => {
           </Button>
         </div>
 
+        {/* Search */}
+        <div className="px-3 pb-3">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <Input
+              className="h-8 text-xs pl-8"
+              placeholder="Search WO number, asset, description…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+
         {/* Work Order List */}
         <ScrollArea className="flex-1">
           <div className="p-2 space-y-1">
             {isLoading ? (
               <p className="text-xs text-muted-foreground p-3 text-center">Loading…</p>
-            ) : workOrders.length === 0 ? (
-              <p className="text-xs text-muted-foreground p-3 text-center">No work orders yet</p>
+            ) : filteredWOs.length === 0 ? (
+              <p className="text-xs text-muted-foreground p-3 text-center">
+                {searchQuery ? "No matching work orders" : "No work orders yet"}
+              </p>
             ) : (
-              workOrders.map((wo) => (
+              filteredWOs.map((wo) => (
                 <div
                   key={wo.id}
                   className={`group flex items-center justify-between rounded-lg px-3 py-2.5 cursor-pointer transition-all ${
