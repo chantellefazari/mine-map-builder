@@ -53,7 +53,7 @@ export const PMAssetSearchCombobox = ({
       <div className="flex items-center gap-1">
         {value ? (
           <div className="flex items-center gap-1 flex-1 min-w-0">
-            <span className={cn("font-mono font-semibold truncate", compact ? "text-xs" : "text-sm")}>
+            <span className={cn("truncate", compact ? "text-xs" : "text-sm")}>
               {value}
             </span>
             {selectedAsset && !compact && (
