@@ -8,6 +8,7 @@ import { WOSubTabs } from "./WOSubTabs";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { useWorkOrderParts } from "@/hooks/useWorkOrderParts";
 import { SparePartLookupDialog } from "@/components/po-tracker/SparePartLookupDialog";
+import { AssetLookupDialog } from "./AssetLookupDialog";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,6 +22,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
   const wo = workOrders.find((w) => w.wo_number === woNumber);
   const { parts, addPart, deletePart } = useWorkOrderParts(wo?.id);
   const [spareLookupOpen, setSpareLookupOpen] = useState(false);
+  const [assetLookupOpen, setAssetLookupOpen] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
 
   // Local form state seeded from DB
@@ -145,13 +147,18 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
               <div className="grid grid-cols-2 gap-2">
                 <div className="border border-gray-300 p-2">
                   <span className="text-xs text-gray-500 block mb-1">Asset Number</span>
-                  <Input
-                    className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                    value={form.asset_id}
-                    onChange={(e) => setForm({ ...form, asset_id: e.target.value })}
-                    onBlur={(e) => handleFieldBlur("asset_id", e.target.value)}
-                    placeholder="Enter asset number"
-                  />
+                  <div className="flex gap-1">
+                    <Input
+                      className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto flex-1"
+                      value={form.asset_id}
+                      onChange={(e) => setForm({ ...form, asset_id: e.target.value })}
+                      onBlur={(e) => handleFieldBlur("asset_id", e.target.value)}
+                      placeholder="Enter or search"
+                    />
+                    <Button size="icon" variant="outline" className="h-7 w-7 shrink-0 print:hidden" onClick={() => setAssetLookupOpen(true)} title="Search Asset Hierarchy">
+                      <Search className="h-3 w-3" />
+                    </Button>
+                  </div>
                 </div>
                 <div className="border border-gray-300 p-2">
                   <span className="text-xs text-gray-500 block">Revision</span>
@@ -329,7 +336,24 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             }}
           />
 
-          {/* Labour Hours */}
+          {/* Asset Lookup Dialog */}
+          <AssetLookupDialog
+            open={assetLookupOpen}
+            onOpenChange={setAssetLookupOpen}
+            onSelect={(asset) => {
+              const updatedForm = {
+                ...form,
+                asset_id: asset.assetNumber,
+                functional_location: `${asset.parentAsset} > ${asset.name}`,
+              };
+              setForm(updatedForm);
+              if (wo) {
+                saveField("asset_id", asset.assetNumber);
+                saveField("functional_location", `${asset.parentAsset} > ${asset.name}`);
+              }
+            }}
+          />
+
           <div className="border border-gray-300">
             <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
               <span className="font-semibold text-gray-700">LABOUR HOURS</span>
