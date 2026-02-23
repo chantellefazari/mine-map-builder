@@ -75,5 +75,22 @@ export function useWorkOrders() {
     },
   });
 
-  return { workOrders: query.data ?? [], isLoading: query.isLoading, allocate: allocateMutation, update: updateMutation };
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await (supabase as any)
+        .from("work_orders")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["work_orders"] });
+      toast.success("Work order deleted");
+    },
+    onError: (err: any) => {
+      toast.error(`Failed to delete WO: ${err.message}`);
+    },
+  });
+
+  return { workOrders: query.data ?? [], isLoading: query.isLoading, allocate: allocateMutation, update: updateMutation, remove: deleteMutation };
 }
