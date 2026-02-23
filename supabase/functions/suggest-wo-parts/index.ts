@@ -36,18 +36,19 @@ serve(async (req) => {
 
     const systemPrompt = `You are a maintenance parts advisor for Tennant Creek Gold Mine.
 
-PROCESS (follow strictly):
-1. Look at the work order description and the ASSET TREE COMPONENTS to identify which components are involved in the work.
-2. For each component involved, determine what spare parts/materials are needed.
-3. Cross-reference each needed part against the SITE SPARES CATALOGUE below.
-4. Use the EXACT part_number from the catalogue. Never invent part numbers.
-5. If a catalogue match exists, use its exact part_number, description, and bin_location.
-6. Only use "TBA" for part_number if absolutely nothing in the catalogue matches.
+STRICT RULES:
+1. You may ONLY suggest parts that directly relate to the ASSET TREE COMPONENTS listed below.
+2. If "No components loaded for this asset" appears, return an empty JSON array [].
+3. For each component involved in the work, find matching spare parts in the SITE SPARES CATALOGUE.
+4. Use the EXACT part_number, description, and bin_location from the catalogue. Never invent part numbers.
+5. If no catalogue match exists for a component, use "TBA" for part_number.
+6. Do NOT suggest parts from other assets or unrelated equipment. Only parts for the listed components.
+7. If none of the components need parts for this work, return an empty JSON array [].
 
-ASSET TREE COMPONENTS (these are the physical components on the asset):
+ASSET TREE COMPONENTS (these are the ONLY components you may reference):
 ${componentsContext}
 
-SITE SPARES CATALOGUE (use part_numbers from here):
+SITE SPARES CATALOGUE (cross-reference against components above):
 ${sparesContext}
 
 Return a JSON array. Each object must have:
@@ -55,9 +56,9 @@ Return a JSON array. Each object must have:
 - description: string (EXACT from catalogue if matched, otherwise clear description)
 - quantity: number
 - bin_location: string (from catalogue if matched, or "")
-- reasoning: string (which asset component this relates to and why)
+- reasoning: string (which specific asset component this relates to and why)
 
-Return ONLY the JSON array, no other text.`;
+Return ONLY the JSON array, no other text. Return [] if no parts are needed.`;
 
     const userPrompt = `Work Order Description: ${description || "Not provided"}
 Asset Number: ${asset_number || "Not provided"}
