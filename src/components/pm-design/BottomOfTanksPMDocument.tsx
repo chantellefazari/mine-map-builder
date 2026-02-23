@@ -4,59 +4,90 @@ import { Input } from "@/components/ui/input";
 import { ClipboardCheck } from "lucide-react";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMBannerHeader } from "./PMBannerHeader";
+import { PMMetadataGrid } from "./PMMetadataGrid";
+import { usePMasterList } from "@/hooks/usePMData";
 import { PMSignOffBlock } from "./PMSignOffBlock";
 
-interface InspectionTask { task: string; }
-interface EquipmentSection { equipmentName: string; tasks: InspectionTask[]; }
+interface Task {
+  task: string;
+}
 
-const inspectionData: EquipmentSection[] = [
-  { equipmentName: "Tails Screen", tasks: [
-    { task: "Check Screen operation" }, { task: "Inspect Screen Springs" }, { task: "Check Screen Discharge is not Blocked" },
-    { task: "Check all pipework and valves for leaks" }, { task: "Check Screen overflow is not blocked" },
-    { task: "Check condition of sprays & piping" }, { task: "Check Screens are not Pegged" },
-  ]},
-  { equipmentName: "Tails Pump A", tasks: [
-    { task: "Check pump for heat, noise and vibration" }, { task: "Check Gland. Adjust if required" },
-    { task: "Check Drive belts" }, { task: "Grease pump XTB 2" }, { task: "Check pipework" }, { task: "Check guarding / Mounts" },
-  ]},
-  { equipmentName: "Tails Pump B", tasks: [
-    { task: "Check pump for heat, noise and vibration" }, { task: "Check Gland. Adjust if required" },
-    { task: "Check Drive belts" }, { task: "Grease pump XTB 2" }, { task: "Check pipework" }, { task: "Check guarding / Mounts" },
-  ]},
-  { equipmentName: "CIP Sump Pump", tasks: [
-    { task: "Check pump for heat, noise and vibration" }, { task: "Check Drive belts" },
-    { task: "Grease pump XTB 2" }, { task: "Check pipework" }, { task: "Check guarding / Mounts" },
-  ]},
-  { equipmentName: "CIL Sump Pump", tasks: [
-    { task: "Check pump for heat, noise and vibration" }, { task: "Check Drive belts" },
-    { task: "Grease pump XTB 2" }, { task: "Check pipework" }, { task: "Check guarding / Mounts" },
-  ]},
-  { equipmentName: "General", tasks: [
-    { task: "Check all Hatches on Tanks for Leaks" }, { task: "Check all Pipework and Valves for Leaks" },
-    { task: "Look for hazards in the area" },
-  ]},
+interface Section {
+  equipmentName: string;
+  tasks: Task[];
+}
+
+const inspectionData: Section[] = [
+  {
+    equipmentName: "Tank 1",
+    tasks: [
+      { task: "Check bund for leaks or spills" },
+      { task: "Check tank for corrosion" },
+      { task: "Inspect level indicators for proper function" },
+    ],
+  },
+  {
+    equipmentName: "Tank 2",
+    tasks: [
+      { task: "Check bund for leaks or spills" },
+      { task: "Check tank for corrosion" },
+    ],
+  },
+  {
+    equipmentName: "Tank 3",
+    tasks: [
+      { task: "Check bund for leaks or spills" },
+      { task: "Check tank for corrosion" },
+    ],
+  },
+  {
+    equipmentName: "Tank 4",
+    tasks: [
+      { task: "Check bund for leaks or spills" },
+      { task: "Check tank for corrosion" },
+    ],
+  },
+  {
+    equipmentName: "Tank 5",
+    tasks: [
+      { task: "Check bund for leaks or spills" },
+      { task: "Check tank for corrosion" },
+    ],
+  },
+  {
+    equipmentName: "Tank 6",
+    tasks: [
+      { task: "Check bund for leaks or spills" },
+      { task: "Check tank for corrosion" },
+    ],
+  },
+  {
+    equipmentName: "Tank 7",
+    tasks: [
+      { task: "Check bund for leaks or spills" },
+      { task: "Check tank for corrosion" },
+    ],
+  },
 ];
 
 export const BottomOfTanksPMDocument = () => {
+  const { pms } = usePMasterList();
+  const pm = pms.find((p) => p.pmName === "Bottom of Tanks Weekly Inspection");
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
         <PMBannerHeader title="Tenant Creek CIL Tanks - Bottom of Tanks" subtitle="Mechanical Running PMs - Weekly Inspection (Fitter)" />
 
-        <div className="grid grid-cols-2 border-b border-border text-xs">
-          <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div><div className="px-2 py-1.5">Tenant Creek</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5"></div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div><div className="px-2 py-1.5">Bottom of Tanks</div></div>
-            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div><div className="px-2 py-1.5"></div></div>
-          </div>
-          <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div><div className="px-2 py-1.5">Mechanical</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div><div className="px-2 py-1.5">Inspection (Fitter)</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div><div className="px-2 py-1.5 font-medium">Weekly</div></div>
-            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div><div className="px-2 py-1.5"></div></div>
-          </div>
-        </div>
+        <PMMetadataGrid
+          pmId={pm?.id}
+          projectSite="Tenant Creek"
+          plantArea="Bottom of Tanks"
+          pmGroup="Mechanical"
+          pmType="Inspection (Fitter)"
+          frequency="Weekly"
+          assetNumber={pm?.assetNumber}
+          resources={pm?.resources}
+        />
 
         <SafetyPrecautionsSection />
 
@@ -66,27 +97,17 @@ export const BottomOfTanksPMDocument = () => {
             INSPECTIONS
           </div>
           <table className="w-full text-xs border-collapse">
-            <thead><tr className="bg-muted"><th className="border border-border px-2 py-2 text-left font-semibold w-[46%]">Task</th><th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th><th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th><th className="border border-border px-2 py-2 text-left font-semibold w-[34%]">Comments</th></tr></thead>
+            <thead><tr className="bg-muted"><th className="border border-border px-3 py-2 text-left font-semibold w-[46%]">Task</th><th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th><th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th><th className="border border-border px-3 py-2 text-left font-semibold w-[34%]">Comments</th></tr></thead>
             <tbody>
-              {inspectionData.map((section, sectionIdx) => (
+              {inspectionData.map((section, sIdx) => (
                 <>
-                  <tr key={`section-${sectionIdx}`} className="bg-primary/10">
-                    <td colSpan={section.equipmentName.startsWith("Tails Pump") ? 3 : 4} className={`border border-border px-2 font-semibold text-primary ${section.equipmentName.startsWith("Tails Pump") ? "py-3" : "py-2"}`}>{section.equipmentName}</td>
-                    {section.equipmentName.startsWith("Tails Pump") && (
-                      <td className="border border-border px-2 py-3 text-xs font-medium">
-                        <div className="flex items-center gap-1">
-                          <span>Total Hours:</span>
-                          <Input className="h-6 w-20 text-xs border border-border shadow-none focus-visible:ring-0 bg-background rounded" />
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                  {section.tasks.map((task, taskIdx) => (
-                    <tr key={`task-${sectionIdx}-${taskIdx}`} className="hover:bg-muted/50">
-                      <td className="border border-border px-2 py-2">{task.task}</td>
-                      <td className="border border-border px-2 py-2 text-center"><Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" /></td>
-                      <td className="border border-border px-2 py-2 text-center"><Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" /></td>
-                      <td className="border border-border px-2 py-2"></td>
+                  <tr key={`section-${sIdx}`} className="bg-muted/50"><td colSpan={4} className="border border-border px-3 py-2 font-bold text-primary">{section.equipmentName}</td></tr>
+                  {section.tasks.map((task, tIdx) => (
+                    <tr key={`task-${sIdx}-${tIdx}`} className="hover:bg-muted/30">
+                      <td className="border border-border px-3 py-2">{task.task}</td>
+                      <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" /></div></td>
+                      <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" /></div></td>
+                      <td className="border border-border px-2 py-4"></td>
                     </tr>
                   ))}
                 </>
