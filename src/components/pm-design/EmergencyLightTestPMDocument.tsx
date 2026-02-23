@@ -2,6 +2,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ClipboardCheck, Lightbulb } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
+import { PMMetadataGrid } from "./PMMetadataGrid";
+import { usePMasterList } from "@/hooks/usePMData";
 import { PMSignOffBlock } from "./PMSignOffBlock";
 
 const inspectionSteps = [
@@ -15,6 +17,8 @@ const inspectionSteps = [
 ];
 
 export const EmergencyLightTestPMDocument = () => {
+  const { pms } = usePMasterList();
+  const pm = pms.find((p) => p.pmName === "Emergency Light Test Quarterly");
   const testRows = Array.from({ length: 15 }, (_, i) => i + 1);
 
   return (
@@ -22,20 +26,16 @@ export const EmergencyLightTestPMDocument = () => {
       <div className="border-2 border-border">
         <PMBannerHeader title="Emergency Light Test" subtitle="Electrical 12 Weekly Test" />
 
-        <div className="grid grid-cols-2 border-b border-border text-xs">
-          <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div><div className="px-2 py-1.5">Tennant Creek</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5"></div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div><div className="px-2 py-1.5"></div></div>
-            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div><div className="px-2 py-1.5"></div></div>
-          </div>
-          <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div><div className="px-2 py-1.5">Electrical</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div><div className="px-2 py-1.5">Test</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div><div className="px-2 py-1.5 font-medium">12 Weekly</div></div>
-            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div><div className="px-2 py-1.5"></div></div>
-          </div>
-        </div>
+        <PMMetadataGrid
+          pmId={pm?.id}
+          projectSite="Tennant Creek"
+          plantArea=""
+          pmGroup="Electrical"
+          pmType="Test"
+          frequency="12 Weekly"
+          assetNumber={pm?.assetNumber}
+          resources={pm?.resources}
+        />
 
         <SafetyPrecautionsSection />
 
