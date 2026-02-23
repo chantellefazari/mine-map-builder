@@ -199,6 +199,7 @@ export type Database = {
       pm_master_list: {
         Row: {
           acceptable_criteria: string[]
+          asset_number: string
           created_at: string
           discipline: string
           duty_type: string
@@ -223,6 +224,7 @@ export type Database = {
         }
         Insert: {
           acceptable_criteria?: string[]
+          asset_number?: string
           created_at?: string
           discipline: string
           duty_type?: string
@@ -247,6 +249,7 @@ export type Database = {
         }
         Update: {
           acceptable_criteria?: string[]
+          asset_number?: string
           created_at?: string
           discipline?: string
           duty_type?: string
@@ -275,6 +278,7 @@ export type Database = {
         Row: {
           acceptable_criteria: string[]
           approved_by: string
+          asset_number: string
           confined_space_risk: boolean
           created_at: string
           discipline: string
@@ -310,6 +314,7 @@ export type Database = {
         Insert: {
           acceptable_criteria?: string[]
           approved_by?: string
+          asset_number?: string
           confined_space_risk?: boolean
           created_at?: string
           discipline: string
@@ -345,6 +350,7 @@ export type Database = {
         Update: {
           acceptable_criteria?: string[]
           approved_by?: string
+          asset_number?: string
           confined_space_risk?: boolean
           created_at?: string
           discipline?: string
