@@ -7,15 +7,41 @@ import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocati
 import { CRUFunctionalLocationTable } from "@/components/hierarchy/CRUFunctionalLocationTable";
 import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet, HardHat } from "lucide-react";
+import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet, HardHat, Database, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportAssetTreeCSV } from "@/utils/exportAssetTreeCSV";
 import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
 import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
 import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
+import { seedProcessingPlantData } from "@/utils/seedProcessingPlantData";
+import { toast } from "@/hooks/use-toast";
 
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSeeding, setIsSeeding] = useState(false);
+
+  const handleSeedDatabase = async () => {
+    setIsSeeding(true);
+    try {
+      const result = await seedProcessingPlantData();
+      if (result.errors.length > 0) {
+        toast({
+          title: "Seed completed with errors",
+          description: `Assets: ${result.assets}, P&IDs: ${result.pidTags}, Naming: ${result.namingConventions}, FLs: ${result.functionalLocations}. Errors: ${result.errors.length}`,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Processing Plant Data Locked In ✅",
+          description: `${result.assets} assets, ${result.pidTags} P&ID tags, ${result.namingConventions} naming conventions, ${result.functionalLocations} functional locations saved to database.`,
+        });
+      }
+    } catch (e: any) {
+      toast({ title: "Seed Failed", description: e.message, variant: "destructive" });
+    } finally {
+      setIsSeeding(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -46,6 +72,15 @@ const AssetTree = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={handleSeedDatabase}
+                disabled={isSeeding}
+                className="gap-2"
+              >
+                {isSeeding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Database className="h-4 w-4" />}
+                {isSeeding ? "Saving..." : "Lock In to Database"}
+              </Button>
               <Button variant="outline" onClick={exportHierarchyWorkbook} className="gap-2">
                 <Download className="h-4 w-4" />
                 Hierarchy Workbook

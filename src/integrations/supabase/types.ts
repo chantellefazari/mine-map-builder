@@ -492,6 +492,147 @@ export type Database = {
         }
         Relationships: []
       }
+      processing_functional_locations: {
+        Row: {
+          area: string
+          area_code: string
+          created_at: string
+          fl_code: string
+          id: string
+          sub_area: string
+          sub_area_code: string
+          system_name: string
+        }
+        Insert: {
+          area: string
+          area_code: string
+          created_at?: string
+          fl_code: string
+          id?: string
+          sub_area: string
+          sub_area_code: string
+          system_name: string
+        }
+        Update: {
+          area?: string
+          area_code?: string
+          created_at?: string
+          fl_code?: string
+          id?: string
+          sub_area?: string
+          sub_area_code?: string
+          system_name?: string
+        }
+        Relationships: []
+      }
+      processing_naming_conventions: {
+        Row: {
+          category: string | null
+          code: string
+          convention_type: string
+          created_at: string
+          description: string | null
+          example: string | null
+          id: string
+          meaning: string
+        }
+        Insert: {
+          category?: string | null
+          code: string
+          convention_type: string
+          created_at?: string
+          description?: string | null
+          example?: string | null
+          id?: string
+          meaning: string
+        }
+        Update: {
+          category?: string | null
+          code?: string
+          convention_type?: string
+          created_at?: string
+          description?: string | null
+          example?: string | null
+          id?: string
+          meaning?: string
+        }
+        Relationships: []
+      }
+      processing_pid_tags: {
+        Row: {
+          asset_number: string
+          created_at: string
+          description: string
+          id: string
+          pid_tag: string
+          status: string
+        }
+        Insert: {
+          asset_number: string
+          created_at?: string
+          description: string
+          id?: string
+          pid_tag: string
+          status?: string
+        }
+        Update: {
+          asset_number?: string
+          created_at?: string
+          description?: string
+          id?: string
+          pid_tag?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      processing_plant_assets: {
+        Row: {
+          area_code: string
+          area_label: string
+          asset_name: string
+          asset_number: string
+          components: Json | null
+          created_at: string
+          facility: string
+          functional_location: string | null
+          id: string
+          parent_asset_label: string
+          pid_tags: string[] | null
+          sub_area: string
+          updated_at: string
+        }
+        Insert: {
+          area_code: string
+          area_label: string
+          asset_name: string
+          asset_number: string
+          components?: Json | null
+          created_at?: string
+          facility?: string
+          functional_location?: string | null
+          id?: string
+          parent_asset_label: string
+          pid_tags?: string[] | null
+          sub_area: string
+          updated_at?: string
+        }
+        Update: {
+          area_code?: string
+          area_label?: string
+          asset_name?: string
+          asset_number?: string
+          components?: Json | null
+          created_at?: string
+          facility?: string
+          functional_location?: string | null
+          id?: string
+          parent_asset_label?: string
+          pid_tags?: string[] | null
+          sub_area?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
