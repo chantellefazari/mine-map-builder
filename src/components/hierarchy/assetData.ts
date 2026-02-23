@@ -636,15 +636,15 @@ export const areasData: Area[] = [
             ]
           },
           { 
-            label: "ROPLNT01 RO Plant", 
+            label: "ROP01 RO Plant", 
             equipment: [
-              { assetNumber: "ROPLNT01", name: "RO Plant" },
-              { assetNumber: "ROPLNT01-PMP01", name: "RO Feed Pump" },
-              { assetNumber: "ROPLNT01-FLT01", name: "RO Pre-Filter" },
-              { assetNumber: "ROPLNT01-MEM01", name: "RO Membrane Module" },
-              { assetNumber: "ROPLNT01-DOS01", name: "RO Chemical Dosing" },
-              { assetNumber: "ROPLNT01-TK01", name: "RO Product Tank" },
-              { assetNumber: "ROPLNT01-DB01", name: "RO Plant DB" },
+              { assetNumber: "ROP01", name: "RO Plant" },
+              { assetNumber: "ROP01-PMP01", name: "RO Feed Pump" },
+              { assetNumber: "ROP01-FLT01", name: "RO Pre-Filter" },
+              { assetNumber: "ROP01-MEM01", name: "RO Membrane Module" },
+              { assetNumber: "ROP01-DOS01", name: "RO Chemical Dosing" },
+              { assetNumber: "ROP01-TK01", name: "RO Product Tank" },
+              { assetNumber: "ROP01-DB01", name: "RO Plant DB" },
             ]
           },
         ],
