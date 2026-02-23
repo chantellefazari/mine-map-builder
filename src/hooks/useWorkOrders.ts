@@ -18,6 +18,13 @@ export interface WorkOrder {
   assigned_to: string;
   date_raised: string;
   date_completed: string | null;
+  returned_to_service: string;
+  technician_name: string;
+  technician_sign_date: string;
+  supervisor_name: string;
+  supervisor_sign_date: string;
+  operations_handover_name: string;
+  operations_handover_date: string;
   created_at: string;
   updated_at: string;
 }

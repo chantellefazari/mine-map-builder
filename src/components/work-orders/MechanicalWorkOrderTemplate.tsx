@@ -26,8 +26,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
   const [assetLookupOpen, setAssetLookupOpen] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [isGeneratingParts, setIsGeneratingParts] = useState(false);
-  const [returnedToService, setReturnedToService] = useState("");
-
   // Local form state seeded from DB
   const [form, setForm] = useState({
     asset_id: "",
@@ -40,6 +38,13 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     assigned_to: "",
     trade: "",
     status: "Open",
+    returned_to_service: "",
+    technician_name: "",
+    technician_sign_date: "",
+    supervisor_name: "",
+    supervisor_sign_date: "",
+    operations_handover_name: "",
+    operations_handover_date: "",
   });
 
   // Sync form when WO data loads
@@ -56,6 +61,13 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
         assigned_to: wo.assigned_to || "",
         trade: wo.trade || "",
         status: wo.status || "Open",
+        returned_to_service: wo.returned_to_service || "",
+        technician_name: wo.technician_name || "",
+        technician_sign_date: wo.technician_sign_date || "",
+        supervisor_name: wo.supervisor_name || "",
+        supervisor_sign_date: wo.supervisor_sign_date || "",
+        operations_handover_name: wo.operations_handover_name || "",
+        operations_handover_date: wo.operations_handover_date || "",
       });
     }
   }, [wo?.id]);
@@ -496,9 +508,12 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   <p className="text-xs font-medium text-gray-600 mb-2">Equipment Returned to Service:</p>
                   <div className="flex gap-4">
                     {["Yes", "No"].map((opt) => (
-                      <label key={opt} className="flex items-center gap-1 cursor-pointer" onClick={() => setReturnedToService(opt)}>
-                        <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${returnedToService === opt ? "bg-primary text-primary-foreground" : ""}`}>
-                          {returnedToService === opt && "✓"}
+                      <label key={opt} className="flex items-center gap-1 cursor-pointer" onClick={() => {
+                        setForm((prev) => ({ ...prev, returned_to_service: opt }));
+                        if (wo) saveField("returned_to_service", opt);
+                      }}>
+                        <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${form.returned_to_service === opt ? "bg-primary text-primary-foreground" : ""}`}>
+                          {form.returned_to_service === opt && "✓"}
                         </div>
                         <span className="text-xs">{opt}</span>
                       </label>
@@ -509,27 +524,51 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
               <div className="grid grid-cols-3 gap-4 pt-3 border-t border-gray-200">
                 <div className="border border-gray-300 p-2">
                   <span className="text-xs text-gray-500 block mb-1">Technician Name</span>
-                  <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto mb-2" placeholder="Enter name" />
+                  <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto mb-2" placeholder="Enter name"
+                    value={form.technician_name}
+                    onChange={(e) => setForm({ ...form, technician_name: e.target.value })}
+                    onBlur={(e) => handleFieldBlur("technician_name", e.target.value)}
+                  />
                   <span className="text-xs text-gray-500 block mb-1">Signature</span>
                   <div className="h-8 border border-dashed border-gray-300 rounded mb-2"></div>
                   <span className="text-xs text-gray-500 block mb-1">Date</span>
-                  <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
+                  <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                    value={form.technician_sign_date}
+                    onChange={(e) => setForm({ ...form, technician_sign_date: e.target.value })}
+                    onBlur={(e) => handleFieldBlur("technician_sign_date", e.target.value)}
+                  />
                 </div>
                 <div className="border border-gray-300 p-2">
                   <span className="text-xs text-gray-500 block mb-1">Supervisor Name</span>
-                  <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto mb-2" placeholder="Enter name" />
+                  <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto mb-2" placeholder="Enter name"
+                    value={form.supervisor_name}
+                    onChange={(e) => setForm({ ...form, supervisor_name: e.target.value })}
+                    onBlur={(e) => handleFieldBlur("supervisor_name", e.target.value)}
+                  />
                   <span className="text-xs text-gray-500 block mb-1">Signature</span>
                   <div className="h-8 border border-dashed border-gray-300 rounded mb-2"></div>
                   <span className="text-xs text-gray-500 block mb-1">Date</span>
-                  <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
+                  <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                    value={form.supervisor_sign_date}
+                    onChange={(e) => setForm({ ...form, supervisor_sign_date: e.target.value })}
+                    onBlur={(e) => handleFieldBlur("supervisor_sign_date", e.target.value)}
+                  />
                 </div>
                 <div className="border border-gray-300 p-2">
                   <span className="text-xs text-gray-500 block mb-1">Operations Handover To</span>
-                  <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto mb-2" placeholder="Enter name" />
+                  <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto mb-2" placeholder="Enter name"
+                    value={form.operations_handover_name}
+                    onChange={(e) => setForm({ ...form, operations_handover_name: e.target.value })}
+                    onBlur={(e) => handleFieldBlur("operations_handover_name", e.target.value)}
+                  />
                   <span className="text-xs text-gray-500 block mb-1">Signature</span>
                   <div className="h-8 border border-dashed border-gray-300 rounded mb-2"></div>
                   <span className="text-xs text-gray-500 block mb-1">Date</span>
-                  <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
+                  <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                    value={form.operations_handover_date}
+                    onChange={(e) => setForm({ ...form, operations_handover_date: e.target.value })}
+                    onBlur={(e) => handleFieldBlur("operations_handover_date", e.target.value)}
+                  />
                 </div>
               </div>
             </div>

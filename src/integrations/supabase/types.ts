@@ -1190,11 +1190,18 @@ export type Database = {
           date_raised: string | null
           functional_location: string | null
           id: string
+          operations_handover_date: string
+          operations_handover_name: string
           parts_used: string | null
           priority: string
           problem_description: string | null
           requested_by: string | null
+          returned_to_service: string
           status: string
+          supervisor_name: string
+          supervisor_sign_date: string
+          technician_name: string
+          technician_sign_date: string
           trade: string | null
           updated_at: string
           wo_number: string
@@ -1209,11 +1216,18 @@ export type Database = {
           date_raised?: string | null
           functional_location?: string | null
           id?: string
+          operations_handover_date?: string
+          operations_handover_name?: string
           parts_used?: string | null
           priority?: string
           problem_description?: string | null
           requested_by?: string | null
+          returned_to_service?: string
           status?: string
+          supervisor_name?: string
+          supervisor_sign_date?: string
+          technician_name?: string
+          technician_sign_date?: string
           trade?: string | null
           updated_at?: string
           wo_number: string
@@ -1228,11 +1242,18 @@ export type Database = {
           date_raised?: string | null
           functional_location?: string | null
           id?: string
+          operations_handover_date?: string
+          operations_handover_name?: string
           parts_used?: string | null
           priority?: string
           problem_description?: string | null
           requested_by?: string | null
+          returned_to_service?: string
           status?: string
+          supervisor_name?: string
+          supervisor_sign_date?: string
+          technician_name?: string
+          technician_sign_date?: string
           trade?: string | null
           updated_at?: string
           wo_number?: string
