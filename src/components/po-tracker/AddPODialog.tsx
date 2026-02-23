@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Search } from "lucide-react";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
+import { SparePartLookupDialog } from "./SparePartLookupDialog";
 import type { POTrackerItem, POLineItem } from "@/hooks/usePOTracker";
 
 interface AddPODialogProps {
@@ -31,6 +32,7 @@ const emptyLine = (): POLineItem => ({
 
 export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkOrderId }: AddPODialogProps) => {
   const { workOrders } = useWorkOrders();
+  const [lookupLineIdx, setLookupLineIdx] = useState<number | null>(null);
 
   const [form, setForm] = useState({
     work_order_id: defaultWorkOrderId ?? "",
@@ -101,6 +103,7 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -177,7 +180,14 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
               <tbody>
                 {lines.map((line, idx) => (
                   <tr key={idx} className="border-t">
-                    <td className="p-1"><Input className="h-8 text-xs" value={line.part_number} onChange={(e) => updateLine(idx, "part_number", e.target.value)} /></td>
+                    <td className="p-1">
+                      <div className="flex gap-1">
+                        <Input className="h-8 text-xs flex-1" value={line.part_number} onChange={(e) => updateLine(idx, "part_number", e.target.value)} placeholder="Type or search" />
+                        <Button type="button" size="icon" variant="outline" className="h-8 w-8 shrink-0" onClick={() => setLookupLineIdx(idx)} title="Search Site Spares">
+                          <Search className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </td>
                     <td className="p-1"><Input className="h-8 text-xs" value={line.part_description} onChange={(e) => updateLine(idx, "part_description", e.target.value)} /></td>
                     <td className="p-1"><Input className="h-8 text-xs" type="number" value={line.quantity_ordered} onChange={(e) => updateLine(idx, "quantity_ordered", Number(e.target.value))} /></td>
                     <td className="p-1"><Input className="h-8 text-xs" type="number" value={line.unit_price} onChange={(e) => updateLine(idx, "unit_price", Number(e.target.value))} /></td>
@@ -209,5 +219,27 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
         </div>
       </DialogContent>
     </Dialog>
+
+    <SparePartLookupDialog
+      open={lookupLineIdx !== null}
+      onOpenChange={(open) => { if (!open) setLookupLineIdx(null); }}
+      onSelect={(spare) => {
+        if (lookupLineIdx !== null) {
+          setLines((prev) =>
+            prev.map((l, i) =>
+              i === lookupLineIdx
+                ? {
+                    ...l,
+                    part_number: spare.part_number || "",
+                    part_description: spare.description || "",
+                    unit_price: spare.unit_cost ?? 0,
+                  }
+                : l
+            )
+          );
+        }
+      }}
+    />
+    </>
   );
 };
