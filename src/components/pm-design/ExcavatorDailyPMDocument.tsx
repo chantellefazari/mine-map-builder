@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
+import { PMMetadataGrid } from "./PMMetadataGrid";
+import { usePMasterList } from "@/hooks/usePMData";
 import { MobileEquipmentHeader } from "./MobileEquipmentHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMSignOffBlock } from "./PMSignOffBlock";
@@ -41,6 +43,8 @@ const inspectionData: InspectionSection[] = [
 
 export const ExcavatorDailyPMDocument = () => {
   const [itemStatus, setItemStatus] = useState<Record<string, "pass" | "fail" | null>>({});
+  const { pms } = usePMasterList();
+  const pm = pms.find((p) => p.pmName === "Excavator Daily Mechanical Inspection");
   const setStatus = (id: string, status: "pass" | "fail") => {
     setItemStatus(prev => ({ ...prev, [id]: prev[id] === status ? null : status }));
   };
@@ -49,6 +53,16 @@ export const ExcavatorDailyPMDocument = () => {
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
         <PMBannerHeader title="Excavator Daily Mechanical Inspection" />
+        <PMMetadataGrid
+          pmId={pm?.id}
+          projectSite="Tennant Creek"
+          plantArea="Mobile Equipment"
+          pmGroup="Mechanical"
+          pmType="Inspection"
+          frequency="Daily"
+          assetNumber={pm?.assetNumber}
+          resources={pm?.resources}
+        />
         <MobileEquipmentHeader />
         <SafetyPrecautionsSection />
 
