@@ -447,6 +447,68 @@ export type Database = {
           },
         ]
       }
+      po_tracker: {
+        Row: {
+          comments: string
+          confirmed_on_site: boolean
+          created_at: string
+          date_received: string | null
+          eta: string | null
+          id: string
+          order_date: string | null
+          part_description: string
+          part_number: string
+          po_number: string
+          quantity_ordered: number
+          status: string
+          supplier: string
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          comments?: string
+          confirmed_on_site?: boolean
+          created_at?: string
+          date_received?: string | null
+          eta?: string | null
+          id?: string
+          order_date?: string | null
+          part_description?: string
+          part_number?: string
+          po_number: string
+          quantity_ordered?: number
+          status?: string
+          supplier?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          comments?: string
+          confirmed_on_site?: boolean
+          created_at?: string
+          date_received?: string | null
+          eta?: string | null
+          id?: string
+          order_date?: string | null
+          part_description?: string
+          part_number?: string
+          po_number?: string
+          quantity_ordered?: number
+          status?: string
+          supplier?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "po_tracker_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       po_uploads: {
         Row: {
           category: string

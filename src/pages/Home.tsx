@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield } from "lucide-react";
+import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield, PackageSearch } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 
@@ -67,6 +67,14 @@ const ALL_SECTIONS = [
     icon: CalendarClock,
     href: "/planning-revision",
     tabKey: "planning-revision",
+  },
+  {
+    title: "PO Tracker",
+    subtitle: "Purchase Order Tracking",
+    description: "Track purchase orders linked to work orders. Monitor delivery status and confirm parts on site.",
+    icon: PackageSearch,
+    href: "/po-tracker",
+    tabKey: "po-tracker",
   },
 ];
 
