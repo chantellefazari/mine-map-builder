@@ -87,7 +87,7 @@ const inspectionData: EquipmentSection[] = [
 
 export const PortableGeneratorsPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Portable Generators");
+  const pm = pms.find((p) => p.pmName === "Portable Generators Weekly Inspection");
 
   return (
     <div className="bg-background min-h-full">

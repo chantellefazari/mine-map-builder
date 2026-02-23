@@ -13,7 +13,7 @@ const inspectionTasks = [
 
 export const SpareMillMotorInspectionPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Spare Mill Motor Inspection");
+  const pm = pms.find((p) => p.pmName === "Spare Mill Motor Inspection Weekly");
 
   return (
     <div className="bg-background min-h-full">

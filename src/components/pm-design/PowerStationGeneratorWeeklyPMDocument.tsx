@@ -75,7 +75,7 @@ const inspectionData: InspectionSection[] = [
 export const PowerStationGeneratorWeeklyPMDocument = () => {
   const [itemStatus, setItemStatus] = useState<Record<string, "pass" | "fail" | null>>({});
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Weekly Power Station Generator Inspection");
+  const pm = pms.find((p) => p.pmName === "Power Station Generator Weekly Inspection");
 
   const setStatus = (id: string, status: "pass" | "fail") => {
     setItemStatus(prev => ({ ...prev, [id]: prev[id] === status ? null : status }));

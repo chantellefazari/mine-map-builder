@@ -52,7 +52,7 @@ const inspectionData: InspectionSection[] = [
 
 export const FilterPressElectricalPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Tennant Creek Filtration Area – Filter Press Weekly Electrical Online Inspection (Electrician)");
+  const pm = pms.find((p) => p.pmName === "Filter Press Electrical Weekly Inspection");
 
   return (
     <div className="bg-background min-h-full">

@@ -87,7 +87,7 @@ const inspectionData: EquipmentSection[] = [
 
 export const AdminGeneratorPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Admin Generator");
+  const pm = pms.find((p) => p.pmName === "Admin Generator Weekly Inspection");
 
   return (
     <div className="bg-background min-h-full">

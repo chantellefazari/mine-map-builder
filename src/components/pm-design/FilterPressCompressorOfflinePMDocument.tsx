@@ -75,7 +75,7 @@ const mechanicalFindings = [
 
 export const FilterPressCompressorOfflinePMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Weekly Mechanical Filter Press Air Compressor Offline Inspection");
+  const pm = pms.find((p) => p.pmName === "Filter Press Compressor (Offline) Weekly Inspection");
 
   return (
     <div className="bg-background min-h-full">

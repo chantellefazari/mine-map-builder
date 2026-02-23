@@ -16,7 +16,7 @@ const inspectionTasks = [
 
 export const IceMachineInspectionPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Weekly Ice Machine Inspections");
+  const pm = pms.find((p) => p.pmName === "Ice Machine Weekly Inspection");
 
   return (
     <div className="bg-background min-h-full">

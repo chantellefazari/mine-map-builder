@@ -18,7 +18,7 @@ const inspectionTasks = [
 
 export const CrusherFuelFarmGeneratorElectricalPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Crusher Fuel Farm Generator Electrical Inspection");
+  const pm = pms.find((p) => p.pmName === "Crusher Fuel Farm Generator Weekly Electrical Inspection");
 
   return (
     <div className="bg-background min-h-full">

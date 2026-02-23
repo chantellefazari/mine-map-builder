@@ -100,7 +100,7 @@ const generatorLocations: GeneratorLocation[] = [
 
 const RCDPushButtonTestSheet = ({ location }: { location: GeneratorLocation }) => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "3 Monthly RCD Push-button Test");
+  const pm = pms.find((p) => p.pmName === "RCD Push-button Test Quarterly");
 
   return (
     <div className="bg-background min-h-full">

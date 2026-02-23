@@ -76,7 +76,7 @@ const inspectionData: EquipmentSection[] = [
 
 export const FilterPressWeeklyPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Tenant Creek Filtration Area - Filter Press");
+  const pm = pms.find((p) => p.pmName === "Filter Press Weekly Inspection");
 
   return (
     <div className="bg-background min-h-full">

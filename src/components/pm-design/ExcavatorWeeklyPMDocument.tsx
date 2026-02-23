@@ -68,7 +68,7 @@ const inspectionData: InspectionSection[] = [
 export const ExcavatorWeeklyPMDocument = () => {
   const [itemStatus, setItemStatus] = useState<Record<string, "pass" | "fail" | null>>({});
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Excavator Weekly Mechanical Inspection");
+  const pm = pms.find((p) => p.pmName === "Excavator Weekly Inspection");
 
   const setStatus = (id: string, status: "pass" | "fail") => {
     setItemStatus(prev => ({ ...prev, [id]: prev[id] === status ? null : status }));

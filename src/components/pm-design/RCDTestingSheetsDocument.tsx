@@ -107,7 +107,7 @@ const generatorLocations: GeneratorLocation[] = [
 
 const RCDTestSheet = ({ location }: { location: GeneratorLocation }) => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "6 Monthly RCD Push-button & Injection Test");
+  const pm = pms.find((p) => p.pmName === "RCD Injection Test 6-Monthly");
 
   return (
     <div className="bg-background min-h-full">
