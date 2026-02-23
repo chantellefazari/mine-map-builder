@@ -121,18 +121,28 @@ export function usePMAssetLinking() {
 
       if (confirmed.length === 0) throw new Error("No confirmed rows to commit.");
 
-      // Mark as committed (does NOT write to PM templates — read only)
       const now = new Date().toISOString();
+
+      // Write asset numbers to pm_master_list
       for (const row of confirmed) {
-        await supabase
-          .from("pm_asset_link_staging" as any)
-          .update({
-            committed: true,
-            committed_at: now,
-            committed_by: "system",
-          } as any)
-          .eq("id", row.id);
+        if (row.matched_asset_id) {
+          await supabase
+            .from("pm_master_list")
+            .update({ asset_number: row.matched_asset_id } as any)
+            .eq("id", row.pm_template_id);
+        }
       }
+
+      // Mark as committed in staging
+      const ids = confirmed.map((r) => r.id);
+      await supabase
+        .from("pm_asset_link_staging" as any)
+        .update({
+          committed: true,
+          committed_at: now,
+          committed_by: "system",
+        } as any)
+        .in("id", ids);
 
       return confirmed.length;
     },
