@@ -26,6 +26,9 @@ const inspectionTasks = [
 ];
 
 export const ROPlantPMDocument = () => {
+  const { pms } = usePMasterList();
+  const pm = pms.find((p) => p.pmName === "RO Plant Daily Inspection");
+
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
@@ -51,14 +54,14 @@ export const ROPlantPMDocument = () => {
 
         {/* Header Information Grid */}
         <PMMetadataGrid
-          pmId={undefined} // Not linked to a specific PM ID in the component currently, could be added later
+          pmId={pm?.id}
           projectSite="Tenant Creek"
           plantArea="RO Plant"
           pmGroup="Mechanical"
           pmType="Inspection (Fitter)"
           frequency="Daily"
-          assetNumber=""
-          resources="1x Fitter (2 hrs)"
+          assetNumber={pm?.assetNumber || ""}
+          resources={pm?.resources || ""}
         />
 
         {/* Safety Precautions */}
