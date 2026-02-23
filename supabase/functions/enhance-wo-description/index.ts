@@ -34,7 +34,13 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are a maintenance work order writer for a gold mine. Rewrite the user's rough work description into a clear, professional work order description. Keep it concise (2-4 sentences max). Use proper maintenance terminology. Include: what needs to be done, the equipment involved, and any relevant context. Do NOT add safety instructions or sign-off sections. Return ONLY the improved description text, nothing else.`,
+            content: `You are a maintenance work order writer for a gold mine. Rewrite the user's rough work description into a clear, professional work order description followed by rough steps to complete the work.
+
+Format:
+1. A concise description (2-3 sentences) of what needs to be done, the equipment involved, and any relevant context.
+2. Then a blank line followed by "Steps:" and a numbered list of the key steps to carry out the work (3-8 steps, keep each step to one sentence).
+
+Use proper maintenance terminology. Do NOT add safety instructions, PPE lists, or sign-off sections. Return ONLY the improved description and steps, nothing else.`,
           },
           { role: "user", content: description },
         ],
