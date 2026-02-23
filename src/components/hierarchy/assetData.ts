@@ -635,6 +635,18 @@ export const areasData: Area[] = [
               { assetNumber: "GWTR01-LCS02", name: "Gland Water Pump Standby – LCS" },
             ]
           },
+          { 
+            label: "ROPLNT01 RO Plant", 
+            equipment: [
+              { assetNumber: "ROPLNT01", name: "RO Plant" },
+              { assetNumber: "ROPLNT01-PMP01", name: "RO Feed Pump" },
+              { assetNumber: "ROPLNT01-FLT01", name: "RO Pre-Filter" },
+              { assetNumber: "ROPLNT01-MEM01", name: "RO Membrane Module" },
+              { assetNumber: "ROPLNT01-DOS01", name: "RO Chemical Dosing" },
+              { assetNumber: "ROPLNT01-TK01", name: "RO Product Tank" },
+              { assetNumber: "ROPLNT01-DB01", name: "RO Plant DB" },
+            ]
+          },
         ],
       },
       {
