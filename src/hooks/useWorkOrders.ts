@@ -39,12 +39,9 @@ export function useWorkOrders() {
 
   const allocateMutation = useMutation({
     mutationFn: async () => {
-      // Get next number
       const { data: nextData, error: nextError } = await (supabase as any).rpc("next_wo_number");
       if (nextError) throw nextError;
-
       const woNumber = nextData as string;
-
       const { data, error } = await (supabase as any)
         .from("work_orders")
         .insert({ wo_number: woNumber })
@@ -62,5 +59,21 @@ export function useWorkOrders() {
     },
   });
 
-  return { workOrders: query.data ?? [], isLoading: query.isLoading, allocate: allocateMutation };
+  const updateMutation = useMutation({
+    mutationFn: async (payload: { id: string; updates: Partial<WorkOrder> }) => {
+      const { error } = await (supabase as any)
+        .from("work_orders")
+        .update(payload.updates)
+        .eq("id", payload.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["work_orders"] });
+    },
+    onError: (err: any) => {
+      toast.error(`Failed to update WO: ${err.message}`);
+    },
+  });
+
+  return { workOrders: query.data ?? [], isLoading: query.isLoading, allocate: allocateMutation, update: updateMutation };
 }
