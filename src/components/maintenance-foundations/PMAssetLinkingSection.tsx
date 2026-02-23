@@ -204,7 +204,7 @@ export const PMAssetLinkingSection = () => {
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Confidence" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-50 bg-popover">
                 <SelectItem value="all">All Confidence</SelectItem>
                 <SelectItem value="Exact">Exact</SelectItem>
                 <SelectItem value="Keyword">Keyword</SelectItem>
@@ -216,7 +216,7 @@ export const PMAssetLinkingSection = () => {
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-50 bg-popover">
                 <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="Pending">Pending</SelectItem>
                 <SelectItem value="Confirmed">Confirmed</SelectItem>
