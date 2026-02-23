@@ -107,7 +107,7 @@ export const MoxyWeeklyPMDocument = () => {
           assetNumber={pm?.assetNumber}
           resources={pm?.resources}
         />
-        <MobileEquipmentHeader columns={["Asset Number", "Make/Model", "Serial No", "Hours"]} />
+        <MobileEquipmentHeader columns={["Make/Model", "Serial No", "Hours"]} />
         <SafetyPrecautionsSection />
 
         <div className="border-b border-border">
