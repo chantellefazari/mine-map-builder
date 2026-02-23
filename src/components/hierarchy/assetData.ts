@@ -1413,7 +1413,7 @@ export const areasData: Area[] = [
         label: "CIP",
         parentAssets: [
           { 
-            label: "CIP-TK01 CIP Tanks", 
+            label: "CIP Tanks", 
             equipment: [
               { assetNumber: "CIP-TK01", name: "CIP Leach Tank 1" },
               { assetNumber: "CIP-SHW01", name: "CIP Tails Area Safety Shower" },
