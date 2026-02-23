@@ -2,6 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
+import { MobileEquipmentHeader } from "./MobileEquipmentHeader";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMSignOffBlock } from "./PMSignOffBlock";
@@ -103,6 +104,7 @@ export const PortableGeneratorsPMDocument = () => {
           assetNumber={pm?.assetNumber}
           resources={pm?.resources}
         />
+        <MobileEquipmentHeader />
 
         <SafetyPrecautionsSection />
 
