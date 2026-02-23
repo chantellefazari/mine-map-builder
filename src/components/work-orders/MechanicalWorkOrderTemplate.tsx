@@ -2,11 +2,12 @@ import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Printer, Save } from "lucide-react";
+import { Printer, Save, Search, Trash2 } from "lucide-react";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { WOSubTabs } from "./WOSubTabs";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { useWorkOrderParts } from "@/hooks/useWorkOrderParts";
+import { SparePartLookupDialog } from "@/components/po-tracker/SparePartLookupDialog";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
@@ -17,7 +18,8 @@ interface MechanicalWorkOrderTemplateProps {
 export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTemplateProps) => {
   const { workOrders, update } = useWorkOrders();
   const wo = workOrders.find((w) => w.wo_number === woNumber);
-  const { parts } = useWorkOrderParts(wo?.id);
+  const { parts, addPart, deletePart } = useWorkOrderParts(wo?.id);
+  const [spareLookupOpen, setSpareLookupOpen] = useState(false);
 
   // Local form state seeded from DB
   const [form, setForm] = useState({
@@ -207,10 +209,19 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             </div>
           </div>
 
-          {/* Parts Used - auto-populated from Parts & Availability tab */}
+          {/* Parts Used - linked to work_order_parts */}
           <div className="border border-gray-300">
-            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
+            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
               <span className="font-semibold text-gray-700">PARTS / MATERIALS USED</span>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5 text-xs h-7 print:hidden"
+                onClick={() => setSpareLookupOpen(true)}
+                disabled={!wo}
+              >
+                <Search className="h-3 w-3" /> Search & Add Part
+              </Button>
             </div>
             <table className="w-full text-xs">
               <thead>
@@ -218,7 +229,8 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   <th className="text-left p-2 border-r border-gray-300">Part Number</th>
                   <th className="text-left p-2 border-r border-gray-300">Description</th>
                   <th className="text-center p-2 border-r border-gray-300 w-16">Qty</th>
-                  <th className="text-left p-2 w-24">Store Location</th>
+                  <th className="text-left p-2 border-r border-gray-300 w-24">Store Location</th>
+                  <th className="text-center p-2 w-10 print:hidden"></th>
                 </tr>
               </thead>
               <tbody>
@@ -229,7 +241,12 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                         <td className="p-2 border-r border-gray-300 h-8 font-mono">{part.part_number || ""}</td>
                         <td className="p-2 border-r border-gray-300">{part.part_description || ""}</td>
                         <td className="p-2 border-r border-gray-300 text-center">{part.quantity_required || ""}</td>
-                        <td className="p-2">{part.location || ""}</td>
+                        <td className="p-2 border-r border-gray-300">{part.location || ""}</td>
+                        <td className="p-1 text-center print:hidden">
+                          <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => deletePart.mutate(part.id)}>
+                            <Trash2 className="h-3 w-3 text-destructive" />
+                          </Button>
+                        </td>
                       </tr>
                     ))}
                     {Array.from({ length: Math.max(0, 4 - parts.length) }).map((_, i) => (
@@ -237,7 +254,8 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                         <td className="p-2 border-r border-gray-300 h-8"></td>
                         <td className="p-2 border-r border-gray-300"></td>
                         <td className="p-2 border-r border-gray-300 text-center"></td>
-                        <td className="p-2"></td>
+                        <td className="p-2 border-r border-gray-300"></td>
+                        <td className="p-1 print:hidden"></td>
                       </tr>
                     ))}
                   </>
@@ -247,13 +265,34 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                       <td className="p-2 border-r border-gray-300 h-8"></td>
                       <td className="p-2 border-r border-gray-300"></td>
                       <td className="p-2 border-r border-gray-300 text-center"></td>
-                      <td className="p-2"></td>
+                      <td className="p-2 border-r border-gray-300"></td>
+                      <td className="p-1 print:hidden"></td>
                     </tr>
                   ))
                 )}
               </tbody>
             </table>
           </div>
+
+          {/* Spare Part Lookup Dialog */}
+          <SparePartLookupDialog
+            open={spareLookupOpen}
+            onOpenChange={setSpareLookupOpen}
+            onSelect={(spare) => {
+              if (wo) {
+                addPart.mutate({
+                  work_order_id: wo.id,
+                  part_number: spare.part_number || "",
+                  part_description: spare.description || "",
+                  quantity_required: 1,
+                  status: "Not Ordered",
+                  location: spare.bin_location || "",
+                  comment: "",
+                  last_updated_by: "System",
+                });
+              }
+            }}
+          />
 
           {/* Labour Hours */}
           <div className="border border-gray-300">
