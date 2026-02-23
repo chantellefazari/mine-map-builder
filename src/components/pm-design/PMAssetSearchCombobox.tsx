@@ -52,13 +52,13 @@ export const PMAssetSearchCombobox = ({
     <div ref={containerRef} className={cn("relative", className)}>
       <div className="flex items-center gap-1">
         {value ? (
-          <div className="flex items-center gap-1 flex-1 min-w-0">
-            <span className={cn("truncate", compact ? "text-xs" : "text-sm")}>
+          <div className="flex items-center gap-1 flex-1 min-w-0 flex-wrap">
+            <span className={cn("font-mono font-semibold flex-shrink-0", compact ? "text-xs" : "text-sm")}>
               {value}
             </span>
-            {selectedAsset && !compact && (
-              <span className="text-muted-foreground text-xs truncate">
-                ({selectedAsset.assetName})
+            {selectedAsset && (
+              <span className="text-muted-foreground text-xs">
+                — {selectedAsset.assetName}
               </span>
             )}
             <button
@@ -92,7 +92,7 @@ export const PMAssetSearchCombobox = ({
       </div>
 
       {open && !value && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-popover border border-border rounded-md shadow-lg">
+        <div className="absolute z-50 top-full left-0 mt-1 bg-popover border border-border rounded-md shadow-lg min-w-[400px]">
           <ScrollArea className="max-h-64">
             {filtered.length === 0 ? (
               <div className="p-3 text-xs text-muted-foreground text-center">
@@ -114,7 +114,7 @@ export const PMAssetSearchCombobox = ({
                       <span className="font-mono font-semibold text-xs text-primary">
                         {asset.assetId}
                       </span>
-                      <span className="text-xs text-foreground truncate">
+                      <span className="text-xs text-foreground">
                         {asset.assetName}
                       </span>
                     </div>
