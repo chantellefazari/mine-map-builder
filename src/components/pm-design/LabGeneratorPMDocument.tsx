@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
+import { useCommittedAssetLinks } from "@/hooks/useCommittedAssetLinks";
 import { PMSignOffBlock } from "./PMSignOffBlock";
 
 interface InspectionTask { task: string; hasInput?: boolean; inputLabel?: string; }
@@ -83,6 +84,8 @@ const inspectionData: EquipmentSection[] = [
 ];
 
 export const LabGeneratorPMDocument = () => {
+  const { getAssetNumber } = useCommittedAssetLinks();
+  const assetNumber = getAssetNumber("Lab Generator");
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
@@ -96,7 +99,7 @@ export const LabGeneratorPMDocument = () => {
             </div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
-              <div className="px-2 py-1.5"></div>
+              <div className="px-2 py-1.5 font-mono font-semibold">{assetNumber}</div>
             </div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div>
