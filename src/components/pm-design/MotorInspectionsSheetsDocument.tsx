@@ -1,6 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { Cog } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
+import { PMMetadataGrid } from "./PMMetadataGrid";
+import { usePMasterList } from "@/hooks/usePMData";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMSignOffBlock } from "./PMSignOffBlock";
 
@@ -272,50 +274,38 @@ interface AreaInspectionSheetProps {
   area: AreaData;
 }
 
-const AreaInspectionSheet = ({ area }: AreaInspectionSheetProps) => (
-  <div className="bg-background min-h-full">
-    <div className="border-2 border-border">
-      <PMBannerHeader title={area.title} subtitle={area.subtitle} />
+const areaPmNameMap: Record<string, string> = {
+  "filter-press": "Filter Press - Statutory Motor Inspection",
+  "gold-room": "Gold Room - Statutory Motor Inspection",
+  "kiln-area": "Kiln Area - Statutory Motor Inspection",
+  "elution": "Elution - Statutory Motor Inspection",
+  "milling-area": "Milling Area - Statutory Motor Inspection",
+  "pwp": "Process Water Pond - Statutory Motor Inspection",
+  "services": "Services - Statutory Motor Inspection",
+  "tanks": "Tanks - Statutory Motor Inspection",
+  "thickener": "Thickener - Statutory Motor Inspection",
+};
 
-      {/* Header Information Grid */}
-      <div className="grid grid-cols-2 border-b border-border text-xs">
-        <div className="border-r border-border">
-          <div className="grid grid-cols-[120px_1fr] border-b border-border">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div>
-            <div className="px-2 py-1.5">Tennant Creek</div>
-          </div>
-          <div className="grid grid-cols-[120px_1fr] border-b border-border">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
-            <div className="px-2 py-1.5"></div>
-          </div>
-          <div className="grid grid-cols-[120px_1fr] border-b border-border">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div>
-            <div className="px-2 py-1.5">{area.name}</div>
-          </div>
-          <div className="grid grid-cols-[120px_1fr]">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div>
-            <div className="px-2 py-1.5"></div>
-          </div>
-        </div>
-        <div>
-          <div className="grid grid-cols-[120px_1fr] border-b border-border">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
-            <div className="px-2 py-1.5">Electrical</div>
-          </div>
-          <div className="grid grid-cols-[120px_1fr] border-b border-border">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div>
-            <div className="px-2 py-1.5">Statutory Inspection</div>
-          </div>
-          <div className="grid grid-cols-[120px_1fr] border-b border-border">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div>
-            <div className="px-2 py-1.5 font-medium">6 Weekly</div>
-          </div>
-          <div className="grid grid-cols-[120px_1fr]">
-            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
-            <div className="px-2 py-1.5"></div>
-          </div>
-        </div>
-      </div>
+const AreaInspectionSheet = ({ area }: AreaInspectionSheetProps) => {
+  const { pms } = usePMasterList();
+  const pmName = areaPmNameMap[area.id] || `${area.name} - Statutory Motor Inspection`;
+  const pm = pms.find((p) => p.pmName === pmName);
+
+  return (
+    <div className="bg-background min-h-full">
+      <div className="border-2 border-border">
+        <PMBannerHeader title={area.title} subtitle={area.subtitle} />
+
+        <PMMetadataGrid
+          pmId={pm?.id}
+          projectSite="Tennant Creek"
+          plantArea={area.name}
+          pmGroup="Electrical"
+          pmType="Statutory Inspection"
+          frequency="6 Weekly"
+          assetNumber={pm?.assetNumber}
+          resources={pm?.resources}
+        />
 
       {/* Safety Precautions */}
       <SafetyPrecautionsSection />
@@ -328,7 +318,8 @@ const AreaInspectionSheet = ({ area }: AreaInspectionSheetProps) => (
       <PMSignOffBlock showElecCertNo footerText={`Tennant Creek Mining Operations – ${area.name} Statutory Motor Inspection Form`} />
     </div>
   </div>
-);
+  );
+};
 
 interface MotorInspectionsSheetsDocumentProps {
   areaId?: string;
