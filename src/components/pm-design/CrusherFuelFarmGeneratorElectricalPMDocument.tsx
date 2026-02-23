@@ -1,6 +1,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
+import { MobileEquipmentHeader } from "./MobileEquipmentHeader";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMSignOffBlock } from "./PMSignOffBlock";
@@ -34,6 +35,7 @@ export const CrusherFuelFarmGeneratorElectricalPMDocument = () => {
           assetNumber={pm?.assetNumber}
           resources={pm?.resources}
         />
+        <MobileEquipmentHeader />
 
         <SafetyPrecautionsSection />
 
