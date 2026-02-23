@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface PMAssetSearchComboboxProps {
   value: string;
-  onChange: (assetId: string, assetName: string) => void;
+  onChange: (assetId: string, assetName: string, area?: string) => void;
   className?: string;
   compact?: boolean;
 }
@@ -105,7 +105,7 @@ export const PMAssetSearchCombobox = ({
                     key={asset.assetId}
                     className="w-full text-left px-3 py-2 hover:bg-muted/60 flex flex-col gap-0.5 transition-colors"
                     onClick={() => {
-                      onChange(asset.assetId, asset.assetName);
+                      onChange(asset.assetId, asset.assetName, asset.area);
                       setSearch("");
                       setOpen(false);
                     }}

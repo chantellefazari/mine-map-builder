@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { PMAssetSearchCombobox } from "./PMAssetSearchCombobox";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { flattenAssetTree } from "@/utils/flattenAssetTree";
 
 interface PMMetadataGridProps {
   pmId?: string;
@@ -29,6 +30,7 @@ export const PMMetadataGrid = ({
   const queryClient = useQueryClient();
   const [resources, setResources] = useState(initialResources);
   const [assetNumber, setAssetNumber] = useState(initialAssetNumber);
+  const [derivedPlantArea, setDerivedPlantArea] = useState("");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestResourcesRef = useRef(initialResources);
   const latestInitialResourcesRef = useRef(initialResources);
@@ -41,6 +43,16 @@ export const PMMetadataGrid = ({
 
   useEffect(() => {
     setAssetNumber(initialAssetNumber);
+    // Derive plant area from initial asset number
+    if (initialAssetNumber) {
+      const assets = flattenAssetTree();
+      const match = assets.find((a) => a.assetId === initialAssetNumber);
+      if (match) {
+        setDerivedPlantArea(match.area);
+      }
+    } else {
+      setDerivedPlantArea("");
+    }
   }, [initialAssetNumber]);
 
   useEffect(() => {
@@ -106,8 +118,9 @@ export const PMMetadataGrid = ({
           <div className="px-1 py-0.5">
             <PMAssetSearchCombobox
               value={assetNumber}
-              onChange={(id) => {
+              onChange={(id, _name, area) => {
                 setAssetNumber(id);
+                setDerivedPlantArea(area || "");
                 saveField("asset_number", id);
               }}
               compact
@@ -116,7 +129,7 @@ export const PMMetadataGrid = ({
         </div>
         <div className="grid grid-cols-[120px_1fr] border-b border-border">
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div>
-          <div className="px-2 py-1.5">{plantArea}</div>
+          <div className="px-2 py-1.5">{derivedPlantArea || plantArea}</div>
         </div>
         <div className="grid grid-cols-[120px_1fr]">
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div>
