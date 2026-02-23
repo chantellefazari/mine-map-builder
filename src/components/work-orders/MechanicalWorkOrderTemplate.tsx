@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { WOSubTabs } from "./WOSubTabs";
+import { useWorkOrders } from "@/hooks/useWorkOrders";
+import { useWorkOrderParts } from "@/hooks/useWorkOrderParts";
 
 interface MechanicalWorkOrderTemplateProps {
   woNumber?: string;
@@ -10,6 +12,9 @@ interface MechanicalWorkOrderTemplateProps {
 
 export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTemplateProps) => {
   const [isPrintMode, setIsPrintMode] = useState(false);
+  const { workOrders } = useWorkOrders();
+  const wo = workOrders.find((w) => w.wo_number === woNumber);
+  const { parts } = useWorkOrderParts(wo?.id);
 
   const handlePrint = () => {
     window.print();
@@ -150,14 +155,36 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 </tr>
               </thead>
               <tbody>
-                {[1, 2, 3, 4].map((row) => (
-                  <tr key={row} className="border-b border-gray-300">
-                    <td className="p-2 border-r border-gray-300 h-8"></td>
-                    <td className="p-2 border-r border-gray-300"></td>
-                    <td className="p-2 border-r border-gray-300 text-center"></td>
-                    <td className="p-2"></td>
-                  </tr>
-                ))}
+                {parts.length > 0 ? (
+                  <>
+                    {parts.map((part) => (
+                      <tr key={part.id} className="border-b border-gray-300">
+                        <td className="p-2 border-r border-gray-300 h-8 font-mono">{part.part_number || ""}</td>
+                        <td className="p-2 border-r border-gray-300">{part.part_description || ""}</td>
+                        <td className="p-2 border-r border-gray-300 text-center">{part.quantity_required || ""}</td>
+                        <td className="p-2">{part.location || ""}</td>
+                      </tr>
+                    ))}
+                    {/* Pad with empty rows to minimum 4 */}
+                    {Array.from({ length: Math.max(0, 4 - parts.length) }).map((_, i) => (
+                      <tr key={`empty-${i}`} className="border-b border-gray-300">
+                        <td className="p-2 border-r border-gray-300 h-8"></td>
+                        <td className="p-2 border-r border-gray-300"></td>
+                        <td className="p-2 border-r border-gray-300 text-center"></td>
+                        <td className="p-2"></td>
+                      </tr>
+                    ))}
+                  </>
+                ) : (
+                  [1, 2, 3, 4].map((row) => (
+                    <tr key={row} className="border-b border-gray-300">
+                      <td className="p-2 border-r border-gray-300 h-8"></td>
+                      <td className="p-2 border-r border-gray-300"></td>
+                      <td className="p-2 border-r border-gray-300 text-center"></td>
+                      <td className="p-2"></td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
