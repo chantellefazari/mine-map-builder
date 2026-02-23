@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Printer, Save, Search, Trash2 } from "lucide-react";
+import { Printer, Save, Search, Trash2, Sparkles, Loader2 } from "lucide-react";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { WOSubTabs } from "./WOSubTabs";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
@@ -10,6 +10,7 @@ import { useWorkOrderParts } from "@/hooks/useWorkOrderParts";
 import { SparePartLookupDialog } from "@/components/po-tracker/SparePartLookupDialog";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MechanicalWorkOrderTemplateProps {
   woNumber?: string;
@@ -20,6 +21,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
   const wo = workOrders.find((w) => w.wo_number === woNumber);
   const { parts, addPart, deletePart } = useWorkOrderParts(wo?.id);
   const [spareLookupOpen, setSpareLookupOpen] = useState(false);
+  const [isEnhancing, setIsEnhancing] = useState(false);
 
   // Local form state seeded from DB
   const [form, setForm] = useState({
@@ -68,6 +70,29 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
   };
 
   const handlePrint = () => window.print();
+
+  const handleEnhanceDescription = async () => {
+    if (!form.problem_description.trim()) {
+      toast.error("Write a rough description first");
+      return;
+    }
+    setIsEnhancing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("enhance-wo-description", {
+        body: { description: form.problem_description },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      const enhanced = data.enhanced;
+      setForm((prev) => ({ ...prev, problem_description: enhanced }));
+      if (wo) saveField("problem_description", enhanced);
+      toast.success("Description enhanced");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to enhance description");
+    } finally {
+      setIsEnhancing(false);
+    }
+  };
 
   const priorityOptions = ["Critical", "High", "Normal", "Low"];
   const workTypeOptions = ["Reactive", "Planned", "Shutdown"];
@@ -195,8 +220,18 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
 
           {/* Work Order Description */}
           <div className="border border-gray-300">
-            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
+            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
               <span className="font-semibold text-gray-700">WORK ORDER DESCRIPTION</span>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5 text-xs h-7 print:hidden"
+                onClick={handleEnhanceDescription}
+                disabled={isEnhancing || !form.problem_description.trim()}
+              >
+                {isEnhancing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                {isEnhancing ? "Enhancing…" : "Enhance Description"}
+              </Button>
             </div>
             <div className="p-3">
               <Textarea
