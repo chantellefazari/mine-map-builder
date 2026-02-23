@@ -275,7 +275,15 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 {[1, 2, 3].map((row) => (
                   <tr key={row} className="border-b border-gray-300">
                     <td className="p-2 border-r border-gray-300 h-8"></td>
-                    <td className="p-2 border-r border-gray-300 text-center"></td>
+                    <td className="p-1 border-r border-gray-300 text-center">
+                      <select className="w-full h-7 text-xs bg-transparent border border-dashed border-gray-300 rounded px-1 print:border-none print:appearance-none cursor-pointer">
+                        <option value="">—</option>
+                        <option value="MECH">MECH</option>
+                        <option value="ELEC">ELEC</option>
+                        <option value="SHUT">SHUT</option>
+                        <option value="PROJ">PROJ</option>
+                      </select>
+                    </td>
                     <td className="p-2 border-r border-gray-300 text-center"></td>
                     <td className="p-2 border-r border-gray-300 text-center"></td>
                     <td className="p-2 border-r border-gray-300 text-center"></td>
