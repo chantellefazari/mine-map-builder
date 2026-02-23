@@ -2,7 +2,8 @@ import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Printer, Save, Search, Trash2, Sparkles, Loader2 } from "lucide-react";
+import { Printer, Save, Search, Trash2, Sparkles, Loader2, Wand2 } from "lucide-react";
+import { areasData } from "@/components/hierarchy/assetData";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { WOSubTabs } from "./WOSubTabs";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
@@ -24,6 +25,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
   const [spareLookupOpen, setSpareLookupOpen] = useState(false);
   const [assetLookupOpen, setAssetLookupOpen] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
+  const [isGeneratingParts, setIsGeneratingParts] = useState(false);
 
   // Local form state seeded from DB
   const [form, setForm] = useState({
@@ -93,6 +95,57 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
       toast.error(err.message || "Failed to enhance description");
     } finally {
       setIsEnhancing(false);
+    }
+  };
+
+  const handleGenerateParts = async () => {
+    if (!wo || !form.problem_description.trim()) {
+      toast.error("Enter a work description and asset number first");
+      return;
+    }
+    setIsGeneratingParts(true);
+    try {
+      let assetComponents: any[] = [];
+      if (form.asset_id) {
+        for (const area of areasData) {
+          for (const sub of area.subAreas) {
+            for (const parent of sub.parentAssets) {
+              for (const equip of parent.equipment) {
+                if (equip.assetNumber === form.asset_id && equip.components) {
+                  assetComponents = equip.components;
+                }
+              }
+            }
+          }
+        }
+      }
+      const { data, error } = await supabase.functions.invoke("suggest-wo-parts", {
+        body: { description: form.problem_description, asset_number: form.asset_id, asset_components: assetComponents },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      const suggested = data.parts || [];
+      if (suggested.length === 0) {
+        toast.info("No parts suggested — try adding more detail to the description");
+        return;
+      }
+      for (const part of suggested) {
+        await addPart.mutateAsync({
+          work_order_id: wo.id,
+          part_number: part.part_number || "TBA",
+          part_description: part.description || "",
+          quantity_required: part.quantity || 1,
+          status: "Not Ordered",
+          location: "",
+          comment: part.reasoning || "AI suggested",
+          last_updated_by: "AI",
+        });
+      }
+      toast.success(`${suggested.length} parts suggested and added`);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to generate parts");
+    } finally {
+      setIsGeneratingParts(false);
     }
   };
 
@@ -280,15 +333,27 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
           <div className="border border-gray-300">
             <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
               <span className="font-semibold text-gray-700">PARTS / MATERIALS USED</span>
-              <Button
-                size="sm"
-                variant="outline"
-                className="gap-1.5 text-xs h-7 print:hidden"
-                onClick={() => setSpareLookupOpen(true)}
-                disabled={!wo}
-              >
-                <Search className="h-3 w-3" /> Search & Add Part
-              </Button>
+              <div className="flex gap-2 print:hidden">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5 text-xs h-7"
+                  onClick={handleGenerateParts}
+                  disabled={!wo || isGeneratingParts || !form.problem_description.trim()}
+                >
+                  {isGeneratingParts ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
+                  {isGeneratingParts ? "Generating…" : "Generate with AI"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5 text-xs h-7"
+                  onClick={() => setSpareLookupOpen(true)}
+                  disabled={!wo}
+                >
+                  <Search className="h-3 w-3" /> Search & Add Part
+                </Button>
+              </div>
             </div>
             <table className="w-full text-xs">
               <thead>
