@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
 import tennantIcon from "@/assets/tennant-icon.png";
-import { PartsAndPOStatus } from "./PartsAndPOStatus";
+import { WOSubTabs } from "./WOSubTabs";
 
 interface MechanicalWorkOrderTemplateProps {
   woNumber?: string;
@@ -254,8 +254,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             </div>
           </div>
 
-          {/* Parts & PO Status */}
-          <PartsAndPOStatus woNumber={woNumber} />
+          {/* Parts & PO Status - moved to sub-tabs below */}
 
           {/* Follow-up Actions */}
           <div className="border border-gray-300">
@@ -273,6 +272,9 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
           </div>
         </div>
       </div>
+
+      {/* Sub-tabs for parts management - hidden on print */}
+      <WOSubTabs woNumber={woNumber} />
     </div>
   );
 };

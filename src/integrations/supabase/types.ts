@@ -1080,6 +1080,107 @@ export type Database = {
         }
         Relationships: []
       }
+      work_order_parts: {
+        Row: {
+          comment: string
+          created_at: string
+          id: string
+          last_updated_by: string
+          last_updated_date: string
+          location: string
+          part_description: string
+          part_number: string
+          quantity_required: number
+          status: string
+          updated_at: string
+          work_order_id: string
+        }
+        Insert: {
+          comment?: string
+          created_at?: string
+          id?: string
+          last_updated_by?: string
+          last_updated_date?: string
+          location?: string
+          part_description?: string
+          part_number?: string
+          quantity_required?: number
+          status?: string
+          updated_at?: string
+          work_order_id: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          id?: string
+          last_updated_by?: string
+          last_updated_date?: string
+          location?: string
+          part_description?: string
+          part_number?: string
+          quantity_required?: number
+          status?: string
+          updated_at?: string
+          work_order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_order_parts_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      work_order_parts_audit: {
+        Row: {
+          changed_at: string
+          changed_by: string
+          field_changed: string
+          id: string
+          new_value: string | null
+          old_value: string | null
+          work_order_id: string
+          work_order_part_id: string
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string
+          field_changed: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          work_order_id: string
+          work_order_part_id: string
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string
+          field_changed?: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          work_order_id?: string
+          work_order_part_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_order_parts_audit_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_order_parts_audit_work_order_part_id_fkey"
+            columns: ["work_order_part_id"]
+            isOneToOne: false
+            referencedRelation: "work_order_parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       work_orders: {
         Row: {
           asset_id: string | null
