@@ -2380,6 +2380,79 @@ export const areasData: Area[] = [
           },
         ],
       },
+      {
+        label: "Mobile Equipment",
+        parentAssets: [
+          {
+            label: "Excavators",
+            equipment: [
+              { assetNumber: "EXC01", name: "Excavator 1" },
+              { assetNumber: "EXC02", name: "Excavator 2" },
+            ],
+          },
+          {
+            label: "Dozers",
+            equipment: [
+              { assetNumber: "DZR01", name: "CAT D8 Dozer 1" },
+            ],
+          },
+          {
+            label: "Loaders",
+            equipment: [
+              { assetNumber: "LDR01", name: "Loader 1" },
+            ],
+          },
+          {
+            label: "Moxy Trucks",
+            equipment: [
+              { assetNumber: "MXY01", name: "Moxy 1" },
+              { assetNumber: "MXY02", name: "Moxy 2" },
+            ],
+          },
+          {
+            label: "Service Trucks",
+            equipment: [
+              { assetNumber: "SVT01", name: "Service Truck 1" },
+            ],
+          },
+          {
+            label: "Water Trucks",
+            equipment: [
+              { assetNumber: "WTR01", name: "Water Truck 1" },
+            ],
+          },
+          {
+            label: "Forklifts",
+            equipment: [
+              { assetNumber: "FLT01", name: "Forklift 1" },
+            ],
+          },
+          {
+            label: "Telehandlers",
+            equipment: [
+              { assetNumber: "TLH01", name: "Telehandler 1" },
+            ],
+          },
+          {
+            label: "Skid Steers",
+            equipment: [
+              { assetNumber: "SKD01", name: "Skid Steer 1" },
+            ],
+          },
+          {
+            label: "Cranes",
+            equipment: [
+              { assetNumber: "CRN01", name: "Crane 1" },
+            ],
+          },
+          {
+            label: "EWPs",
+            equipment: [
+              { assetNumber: "EWP01", name: "EWP 1" },
+            ],
+          },
+        ],
+      },
     ],
   },
 ];
