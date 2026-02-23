@@ -62,7 +62,7 @@ const renderTable = (tasks: { id: number; task: string }[], sectionTitle: string
 
 export const ACInspectionPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Air Conditioner Service");
+  const pm = pms.find((p) => p.pmName === "Air Conditioner Service Quarterly");
 
   return (
     <div className="bg-background min-h-full">

@@ -275,15 +275,15 @@ interface AreaInspectionSheetProps {
 }
 
 const areaPmNameMap: Record<string, string> = {
-  "filter-press": "Filter Press - Statutory Motor Inspection",
-  "gold-room": "Gold Room - Statutory Motor Inspection",
-  "kiln-area": "Kiln Area - Statutory Motor Inspection",
-  "elution": "Elution - Statutory Motor Inspection",
-  "milling-area": "Milling Area - Statutory Motor Inspection",
-  "pwp": "Process Water Pond - Statutory Motor Inspection",
-  "services": "Services - Statutory Motor Inspection",
-  "tanks": "Tanks - Statutory Motor Inspection",
-  "thickener": "Thickener - Statutory Motor Inspection",
+  "filter-press": "Statutory Motor Inspection - Filter Press",
+  "gold-room": "Statutory Motor Inspection - Gold Room",
+  "kiln-area": "Statutory Motor Inspection - Kiln Area",
+  "elution": "Statutory Motor Inspection - Elution",
+  "milling-area": "Statutory Motor Inspection - Milling Area",
+  "pwp": "Statutory Motor Inspection - Process Water Pond",
+  "services": "Statutory Motor Inspection - Services",
+  "tanks": "Statutory Motor Inspection - Tanks",
+  "thickener": "Statutory Motor Inspection - Thickener",
 };
 
 const AreaInspectionSheet = ({ area }: AreaInspectionSheetProps) => {

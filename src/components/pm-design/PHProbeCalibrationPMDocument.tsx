@@ -45,7 +45,7 @@ const calibrationProcedure = [
 
 export const PHProbeCalibrationPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "pH Probe Cleaning & Calibration");
+  const pm = pms.find((p) => p.pmName === "pH Probe Calibration Weekly");
 
   return (
     <div className="bg-background min-h-full">

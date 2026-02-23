@@ -23,7 +23,7 @@ const locations = [
 
 export const SafetyShowerInspectionPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Weekly Safety Shower Inspection");
+  const pm = pms.find((p) => p.pmName === "Safety Shower Inspection Weekly");
 
   return (
     <div className="bg-background min-h-full">

@@ -124,7 +124,7 @@ const MotorSection = ({ title, motorNumber }: MotorSectionProps) => (
 
 export const FilterPressMotorInspectionPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Filter Press - Statutory Motor Inspection");
+  const pm = pms.find((p) => p.pmName === "Statutory Motor Inspection - Filter Press");
 
   return (
     <div className="bg-background min-h-full">

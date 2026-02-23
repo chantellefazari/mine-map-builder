@@ -42,7 +42,7 @@ const cleansTasks = [
 
 export const VisualZoneChecksPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Electrical Weekly Visual Site Inspection");
+  const pm = pms.find((p) => p.pmName === "Visual Zone Checks Weekly");
 
   return (
     <div className="bg-background min-h-full">

@@ -24,7 +24,7 @@ const inspectionData: EquipmentSection[] = [
 
 export const PotableWaterPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Tenant Creek - Admin Potable Water");
+  const pm = pms.find((p) => p.pmName === "Potable Water Weekly Inspection");
 
   return (
     <div className="bg-background min-h-full">

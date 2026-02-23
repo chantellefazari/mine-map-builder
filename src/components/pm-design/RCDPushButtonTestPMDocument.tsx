@@ -8,7 +8,7 @@ import { usePMasterList } from "@/hooks/usePMData";
 export const RCDPushButtonTestPMDocument = () => {
   const circuitRows = Array.from({ length: 21 }, (_, i) => i + 1);
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "RCD Push-button Test");
+  const pm = pms.find((p) => p.pmName === "RCD Push-button Test Quarterly");
 
   return (
     <div className="bg-background min-h-full">

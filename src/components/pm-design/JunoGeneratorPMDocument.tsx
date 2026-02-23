@@ -87,7 +87,7 @@ const inspectionData: EquipmentSection[] = [
 
 export const JunoGeneratorPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Juno Generator");
+  const pm = pms.find((p) => p.pmName === "Juno Generator Weekly Inspection");
 
   return (
     <div className="bg-background min-h-full">

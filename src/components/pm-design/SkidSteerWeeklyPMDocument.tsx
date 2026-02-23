@@ -61,7 +61,7 @@ const inspectionData: InspectionSection[] = [
 export const SkidSteerWeeklyPMDocument = () => {
   const [itemStatus, setItemStatus] = useState<Record<string, "pass" | "fail" | null>>({});
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Skid Steer Weekly Mechanical Inspection");
+  const pm = pms.find((p) => p.pmName === "Skid Steer Weekly Inspection");
 
   const setStatus = (id: string, status: "pass" | "fail") => {
     setItemStatus(prev => ({ ...prev, [id]: prev[id] === status ? null : status }));
