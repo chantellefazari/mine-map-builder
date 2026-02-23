@@ -2,7 +2,7 @@ interface MobileEquipmentHeaderProps {
   columns?: string[];
 }
 
-const defaultColumns = ["Asset Number", "Make/Model", "Serial No", "Hours", "Next Service Due"];
+const defaultColumns = ["Make/Model", "Serial No", "Hours", "Next Service Due"];
 
 export const MobileEquipmentHeader = ({ columns = defaultColumns }: MobileEquipmentHeaderProps) => {
   return (
