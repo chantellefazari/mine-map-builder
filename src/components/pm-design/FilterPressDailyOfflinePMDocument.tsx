@@ -96,7 +96,7 @@ const immediateAttentionTriggers = [
 
 export const FilterPressDailyOfflinePMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Filter Press Daily Mechanical Offline Inspection (Fitter)");
+  const pm = pms.find((p) => p.pmName === "Filter Press Daily Offline Inspection");
 
   return (
     <div className="bg-background min-h-full">

@@ -30,14 +30,22 @@ export const PMMetadataGrid = ({
   const [resources, setResources] = useState(initialResources);
   const [assetNumber, setAssetNumber] = useState(initialAssetNumber);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestResourcesRef = useRef(initialResources);
+  const latestInitialResourcesRef = useRef(initialResources);
 
   useEffect(() => {
     setResources(initialResources);
+    latestResourcesRef.current = initialResources;
+    latestInitialResourcesRef.current = initialResources;
   }, [initialResources]);
 
   useEffect(() => {
     setAssetNumber(initialAssetNumber);
   }, [initialAssetNumber]);
+
+  useEffect(() => {
+    latestResourcesRef.current = resources;
+  }, [resources]);
 
   const saveField = useCallback(async (field: string, value: string) => {
     if (!pmId) return;
@@ -52,17 +60,39 @@ export const PMMetadataGrid = ({
     }
   }, [pmId, queryClient]);
 
+  const flushResourceSave = useCallback(() => {
+    if (saveTimerRef.current) {
+      clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = null;
+    }
+
+    if (latestResourcesRef.current !== latestInitialResourcesRef.current) {
+      void saveField("resources", latestResourcesRef.current);
+    }
+  }, [saveField]);
+
   // Auto-save resources with debounce
   useEffect(() => {
     if (resources === initialResources) return;
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+
     saveTimerRef.current = setTimeout(() => {
-      saveField("resources", resources);
+      void saveField("resources", resources);
     }, 800);
+
     return () => {
-      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = null;
+      }
     };
   }, [resources, initialResources, saveField]);
+
+  useEffect(() => {
+    return () => {
+      flushResourceSave();
+    };
+  }, [flushResourceSave]);
 
   return (
     <div className="grid grid-cols-2 border-b border-border text-xs">
@@ -94,6 +124,7 @@ export const PMMetadataGrid = ({
             <Input
               value={resources}
               onChange={(e) => setResources(e.target.value)}
+              onBlur={flushResourceSave}
               placeholder="e.g. 1x Fitter (2 hrs)"
               className="h-7 text-xs border-none shadow-none focus-visible:ring-0 bg-transparent"
             />

@@ -227,7 +227,7 @@ const shutdownTriggers = [
 
 export const FilterPressDailyOnlinePMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Filter Press Daily Mechanical Online Inspection (Fitter)");
+  const pm = pms.find((p) => p.pmName === "Filter Press Daily Online Inspection");
 
   return (
     <div className="bg-background min-h-full">
