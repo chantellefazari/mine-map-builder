@@ -34,8 +34,11 @@ export const PMMetadataGrid = ({
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestResourcesRef = useRef(initialResources);
   const latestInitialResourcesRef = useRef(initialResources);
+  const isFocusedRef = useRef(false);
 
   useEffect(() => {
+    // Don't overwrite local state while the user is actively typing
+    if (isFocusedRef.current) return;
     setResources(initialResources);
     latestResourcesRef.current = initialResources;
     latestInitialResourcesRef.current = initialResources;
@@ -137,7 +140,8 @@ export const PMMetadataGrid = ({
             <Input
               value={resources}
               onChange={(e) => setResources(e.target.value)}
-              onBlur={flushResourceSave}
+              onFocus={() => { isFocusedRef.current = true; }}
+              onBlur={() => { isFocusedRef.current = false; flushResourceSave(); }}
               placeholder="e.g. 1x Fitter (2 hrs)"
               className="h-auto p-0 text-xs border-none shadow-none focus-visible:ring-0 bg-transparent"
             />
