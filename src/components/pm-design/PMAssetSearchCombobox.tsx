@@ -35,7 +35,7 @@ export const PMAssetSearchCombobox = ({
   }, []);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return assets.slice(0, 50);
+    if (!search.trim()) return assets.slice(0, 200);
     const q = search.toLowerCase();
     return assets.filter(
       (a) =>
@@ -43,7 +43,7 @@ export const PMAssetSearchCombobox = ({
         a.assetName.toLowerCase().includes(q) ||
         a.area.toLowerCase().includes(q) ||
         a.parentAsset.toLowerCase().includes(q)
-    ).slice(0, 50);
+    );
   }, [search, assets]);
 
   const selectedAsset = assets.find((a) => a.assetId === value);
@@ -93,7 +93,7 @@ export const PMAssetSearchCombobox = ({
 
       {open && !value && (
         <div className="absolute z-50 top-full left-0 mt-1 bg-popover border border-border rounded-md shadow-lg min-w-[400px]">
-          <ScrollArea className="max-h-64">
+          <ScrollArea className="max-h-80">
             {filtered.length === 0 ? (
               <div className="p-3 text-xs text-muted-foreground text-center">
                 No assets found
