@@ -282,14 +282,16 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 disabled={isEnhancing || !form.problem_description.trim()}
               >
                 {isEnhancing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                {isEnhancing ? "Enhancing…" : "Enhance Description"}
+                {isEnhancing ? "Enhancing…" : "Generate Description & Steps"}
               </Button>
             </div>
             <div className="p-3">
               <Textarea
-                className="min-h-[100px] text-xs border-dashed print:border-none print:p-0 print:min-h-0 resize-none"
+                className="min-h-[100px] text-xs border-dashed print:border-none print:p-0 print:min-h-0 resize-none overflow-hidden"
+                style={{ height: 'auto' }}
+                ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
                 value={form.problem_description}
-                onChange={(e) => setForm({ ...form, problem_description: e.target.value })}
+                onChange={(e) => { setForm({ ...form, problem_description: e.target.value }); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
                 onBlur={(e) => handleFieldBlur("problem_description", e.target.value)}
                 placeholder="Describe the work required, fault details, and actions taken..."
               />
