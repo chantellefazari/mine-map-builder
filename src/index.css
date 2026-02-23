@@ -203,12 +203,25 @@
     print-color-adjust: exact;
   }
 
+  /* A4 page setup */
+  @page {
+    margin: 8mm;
+    size: A4 portrait;
+  }
+
   /* Ensure the document takes full width */
+  html, body {
+    width: 210mm !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+
   main {
     width: 100% !important;
     max-width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
+    overflow: visible !important;
   }
 
   /* Hide sidebar */
@@ -221,25 +234,46 @@
     display: none !important;
   }
 
+  /* Prevent content from being cut off */
+  * {
+    overflow: visible !important;
+  }
+
   /* Ensure tables don't break across pages */
   table {
     page-break-inside: auto;
   }
   
   tr {
+    break-inside: avoid;
     page-break-inside: avoid;
-    page-break-after: auto;
   }
 
-  /* Page margins */
-  @page {
-    margin: 10mm;
-    size: A4 portrait;
+  thead {
+    display: table-header-group;
+  }
+
+  /* Prevent sections from breaking mid-content */
+  .border.border-gray-300 {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure sign-off section stays together */
+  .bg-green-100 {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Keep section headers with their content */
+  .bg-gray-100 {
+    break-after: avoid;
+    page-break-after: avoid;
   }
 
   /* Ensure proper text sizing for A4 */
   .text-xs {
-    font-size: 10px !important;
+    font-size: 9px !important;
     line-height: 1.4 !important;
   }
 
@@ -255,5 +289,19 @@
   .border-gray-300,
   .border-border {
     border-color: #ccc !important;
+  }
+
+  /* Ensure textarea content is fully visible */
+  textarea {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+  }
+
+  /* Remove scroll areas in print */
+  [data-radix-scroll-area-viewport] {
+    overflow: visible !important;
+    height: auto !important;
   }
 }
