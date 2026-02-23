@@ -3,6 +3,8 @@ import { Cog } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
+import { PMMetadataGrid } from "./PMMetadataGrid";
+import { usePMasterList } from "@/hooks/usePMData";
 
 const stationaryChecks = [
   { id: 1, item: "Check name plate is present and matches recorded data. If no data is recorded fill in motor details" },
@@ -121,6 +123,9 @@ const MotorSection = ({ title, motorNumber }: MotorSectionProps) => (
 );
 
 export const FilterPressMotorInspectionPMDocument = () => {
+  const { pms } = usePMasterList();
+  const pm = pms.find((p) => p.pmName === "Filter Press - Statutory Motor Inspection");
+
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
@@ -138,29 +143,16 @@ export const FilterPressMotorInspectionPMDocument = () => {
           </div>
         </div>
 
-        {/* Header Information Grid */}
-        <div className="grid grid-cols-2 border-b border-border text-xs">
-          <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Start Date:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" type="date" /></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Finish Date:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" type="date" /></div>
-            </div>
-          </div>
-          <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Personnel:</div>
-              <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
-              <div className="px-2 py-1.5">Electrical</div>
-            </div>
-          </div>
-        </div>
+        <PMMetadataGrid
+          pmId={pm?.id}
+          projectSite="Tennant Creek"
+          plantArea="Filter Press"
+          pmGroup="Electrical"
+          pmType="Statutory Motor Inspection"
+          frequency="Weekly"
+          assetNumber={pm?.assetNumber}
+          resources={pm?.resources}
+        />
 
         {/* Safety Precautions */}
         <SafetyPrecautionsSection />

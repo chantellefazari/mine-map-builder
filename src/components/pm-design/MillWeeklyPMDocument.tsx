@@ -3,8 +3,9 @@ import { Input } from "@/components/ui/input";
 import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
-import { useCommittedAssetLinks } from "@/hooks/useCommittedAssetLinks";
 import { PMSignOffBlock } from "./PMSignOffBlock";
+import { PMMetadataGrid } from "./PMMetadataGrid";
+import { usePMasterList } from "@/hooks/usePMData";
 
 interface InspectionTask { task: string; hasTemp?: boolean; tempLabel?: string; hasPressure?: boolean; pressureLabel?: string; }
 interface EquipmentSection { equipmentId: string; equipmentName: string; tasks: InspectionTask[]; }
@@ -94,28 +95,24 @@ const inspectionData: EquipmentSection[] = [
 ];
 
 export const MillWeeklyPMDocument = () => {
-  const { getAssetNumber } = useCommittedAssetLinks();
-  const assetNumber = getAssetNumber("Ball Mill");
+  const { pms } = usePMasterList();
+  const pm = pms.find((p) => p.pmName === "Weekly Mill Inspection");
+
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
         <PMBannerHeader title="Tenant Creek - Weekly Mill Inspection" subtitle="Mechanical Running PMs - Weekly Inspection (Fitter)" />
 
-        {/* Header Information Grid */}
-        <div className="grid grid-cols-2 border-b border-border text-xs">
-          <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div><div className="px-2 py-1.5">Tenant Creek</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5 font-mono font-semibold">{assetNumber}</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div><div className="px-2 py-1.5">CIP Circuit / Tailings</div></div>
-            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div><div className="px-2 py-1.5">1x Fitter (2 hrs)</div></div>
-          </div>
-          <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div><div className="px-2 py-1.5">Mechanical</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div><div className="px-2 py-1.5">Inspection (Fitter)</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div><div className="px-2 py-1.5 font-medium">Weekly</div></div>
-            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div><div className="px-2 py-1.5"></div></div>
-          </div>
-        </div>
+        <PMMetadataGrid
+          pmId={pm?.id}
+          projectSite="Tenant Creek"
+          plantArea="CIP Circuit / Tailings"
+          pmGroup="Mechanical"
+          pmType="Inspection (Fitter)"
+          frequency="Weekly"
+          assetNumber={pm?.assetNumber}
+          resources={pm?.resources}
+        />
 
         <SafetyPrecautionsSection />
 

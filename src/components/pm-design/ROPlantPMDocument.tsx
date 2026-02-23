@@ -9,6 +9,8 @@ import {
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
+import { PMMetadataGrid } from "./PMMetadataGrid";
+import { usePMasterList } from "@/hooks/usePMData";
 
 const inspectionTasks = [
   "Inspect Reject Water Colour",
@@ -48,50 +50,16 @@ export const ROPlantPMDocument = () => {
         </div>
 
         {/* Header Information Grid */}
-        <div className="grid grid-cols-2 border-b border-border text-xs">
-          <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">
-                Project / Site:
-              </div>
-              <div className="px-2 py-1.5">Tenant Creek</div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
-              <div className="px-2 py-1.5"></div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div>
-              <div className="px-2 py-1.5">RO Plant</div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">
-                Resource/s:
-              </div>
-              <div className="px-2 py-1.5">1x Fitter (2 hrs)</div>
-            </div>
-          </div>
-          <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
-              <div className="px-2 py-1.5">Mechanical</div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div>
-              <div className="px-2 py-1.5">Inspection (Fitter)</div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">
-                Frequency:
-              </div>
-              <div className="px-2 py-1.5 font-medium">Daily</div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr]">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
-              <div className="px-2 py-1.5"></div>
-            </div>
-          </div>
-        </div>
+        <PMMetadataGrid
+          pmId={undefined} // Not linked to a specific PM ID in the component currently, could be added later
+          projectSite="Tenant Creek"
+          plantArea="RO Plant"
+          pmGroup="Mechanical"
+          pmType="Inspection (Fitter)"
+          frequency="Daily"
+          assetNumber=""
+          resources="1x Fitter (2 hrs)"
+        />
 
         {/* Safety Precautions */}
         <SafetyPrecautionsSection />
