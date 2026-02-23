@@ -2,8 +2,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
-import { useCommittedAssetLinks } from "@/hooks/useCommittedAssetLinks";
 import { PMSignOffBlock } from "./PMSignOffBlock";
+import { PMMetadataGrid } from "./PMMetadataGrid";
+import { usePMasterList } from "@/hooks/usePMData";
 
 interface Task { task: string; }
 interface InspectionSection { equipmentId: string; equipmentName: string; tasks: Task[]; }
@@ -50,27 +51,24 @@ const inspectionData: InspectionSection[] = [
 ];
 
 export const FilterPressElectricalPMDocument = () => {
-  const { getAssetNumber } = useCommittedAssetLinks();
-  const assetNumber = getAssetNumber("Filter Press");
+  const { pms } = usePMasterList();
+  const pm = pms.find((p) => p.pmName === "Tennant Creek Filtration Area – Filter Press Weekly Electrical Online Inspection (Electrician)");
+
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
         <PMBannerHeader title="Tennant Creek Filtration Area – Filter Press" subtitle="Weekly Electrical Online Inspection (Electrician)" />
 
-        <div className="grid grid-cols-2 border-b border-border text-xs">
-          <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div><div className="px-2 py-1.5">Tennant Creek</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5 font-mono font-semibold">{assetNumber}</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div><div className="px-2 py-1.5">Filter Press</div></div>
-            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div><div className="px-2 py-1.5"></div></div>
-          </div>
-          <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div><div className="px-2 py-1.5">Electrical</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Type:</div><div className="px-2 py-1.5">Online Visual Inspection</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div><div className="px-2 py-1.5 font-medium">Weekly</div></div>
-            <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div><div className="px-2 py-1.5"></div></div>
-          </div>
-        </div>
+        <PMMetadataGrid
+          pmId={pm?.id}
+          projectSite="Tennant Creek"
+          plantArea="Filter Press"
+          pmGroup="Electrical"
+          pmType="Online Visual Inspection"
+          frequency="Weekly"
+          assetNumber={pm?.assetNumber}
+          resources={pm?.resources}
+        />
 
         <SafetyPrecautionsSection />
 

@@ -3,6 +3,8 @@ import { ClipboardCheck, Info } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMSignOffBlock } from "./PMSignOffBlock";
+import { PMMetadataGrid } from "./PMMetadataGrid";
+import { usePMasterList } from "@/hooks/usePMData";
 
 const calibrationReadings = [
   { id: "reading-before-clean", label: "pH Reading before clean" },
@@ -42,39 +44,24 @@ const calibrationProcedure = [
 ];
 
 export const PHProbeCalibrationPMDocument = () => {
+  const { pms } = usePMasterList();
+  const pm = pms.find((p) => p.pmName === "pH Probe Cleaning & Calibration");
+
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
         <PMBannerHeader title="pH Probe Cleaning & Calibration" subtitle="Electrical Weekly Procedure" />
 
-        <table className="w-full border-b border-border text-xs border-collapse">
-          <tbody>
-            <tr>
-              <td className="bg-muted px-2 py-1.5 font-semibold border border-border w-[120px]">Project / Site:</td>
-              <td className="px-2 py-1.5 border border-border">Tennant Creek</td>
-              <td className="bg-muted px-2 py-1.5 font-semibold border border-border w-[120px]">PM Group:</td>
-              <td className="px-2 py-1.5 border border-border">Electrical</td>
-            </tr>
-            <tr>
-              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">pH Probe Location:</td>
-              <td className="px-2 py-1.5 border border-border">CIP Tank 1</td>
-              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">PM Type:</td>
-              <td className="px-2 py-1.5 border border-border">Calibration</td>
-            </tr>
-            <tr>
-              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">Asset Number:</td>
-              <td className="px-2 py-1.5 border border-border"></td>
-              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">Frequency:</td>
-              <td className="px-2 py-1.5 border border-border font-medium">Weekly</td>
-            </tr>
-            <tr>
-              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">Resource/s:</td>
-              <td className="px-2 py-1.5 border border-border"></td>
-              <td className="bg-muted px-2 py-1.5 font-semibold border border-border">Date:</td>
-              <td className="px-2 py-1.5 border border-border"></td>
-            </tr>
-          </tbody>
-        </table>
+        <PMMetadataGrid
+          pmId={pm?.id}
+          projectSite="Tennant Creek"
+          plantArea="CIP Tank 1"
+          pmGroup="Electrical"
+          pmType="Calibration"
+          frequency="Weekly"
+          assetNumber={pm?.assetNumber}
+          resources={pm?.resources}
+        />
 
         <SafetyPrecautionsSection />
 
