@@ -11,6 +11,7 @@ import {
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
+import { useCommittedAssetLinks } from "@/hooks/useCommittedAssetLinks";
 
 interface InspectionTask {
   task: string;
@@ -224,6 +225,8 @@ const shutdownTriggers = [
 ];
 
 export const FilterPressDailyOnlinePMDocument = () => {
+  const { getAssetNumber } = useCommittedAssetLinks();
+  const assetNumber = getAssetNumber("Filter Press");
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
@@ -260,7 +263,7 @@ export const FilterPressDailyOnlinePMDocument = () => {
             </div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
-              <div className="px-2 py-1.5"></div>
+              <div className="px-2 py-1.5 font-mono font-semibold">{assetNumber}</div>
             </div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border">
               <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div>

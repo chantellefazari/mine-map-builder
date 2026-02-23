@@ -2,6 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
+import { useCommittedAssetLinks } from "@/hooks/useCommittedAssetLinks";
 import { PMSignOffBlock } from "./PMSignOffBlock";
 
 interface Task { task: string; }
@@ -49,6 +50,8 @@ const inspectionData: InspectionSection[] = [
 ];
 
 export const FilterPressElectricalPMDocument = () => {
+  const { getAssetNumber } = useCommittedAssetLinks();
+  const assetNumber = getAssetNumber("Filter Press");
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
@@ -57,7 +60,7 @@ export const FilterPressElectricalPMDocument = () => {
         <div className="grid grid-cols-2 border-b border-border text-xs">
           <div className="border-r border-border">
             <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div><div className="px-2 py-1.5">Tennant Creek</div></div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5"></div></div>
+            <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div><div className="px-2 py-1.5 font-mono font-semibold">{assetNumber}</div></div>
             <div className="grid grid-cols-[120px_1fr] border-b border-border"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div><div className="px-2 py-1.5">Filter Press</div></div>
             <div className="grid grid-cols-[120px_1fr]"><div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div><div className="px-2 py-1.5"></div></div>
           </div>
