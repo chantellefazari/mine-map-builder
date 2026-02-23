@@ -128,16 +128,16 @@ export const areasData: Area[] = [
           { 
             label: "COMP01 Air Compressor 1", 
             equipment: [
+              { assetNumber: "COMP01", name: "Air Compressor 1" },
               { assetNumber: "COMP01-MTR01", name: "Air Compressor 1 – Motor" },
               { assetNumber: "COMP01-VLV01", name: "Air Compressor 1 – Inlet Valve", pidTags: ["XV-101A", "HV-101"] },
               { assetNumber: "COMP01-VLV02", name: "Air Compressor 1 – Outlet Valve", pidTags: ["XV-101B"] },
-            ]
-          },
-          { 
-            label: "RCVR01 Air Receiver 1", 
-            equipment: [
+              { assetNumber: "RCVR01", name: "Air Receiver 1" },
               { assetNumber: "RCVR01-VLV01", name: "Air Receiver 1 – Drain Valve" },
               { assetNumber: "RCVR01-SWT01", name: "Air Receiver 1 – Pressure Switch" },
+              { assetNumber: "RCVR02", name: "Air Receiver 2" },
+              { assetNumber: "RCVR02-VLV01", name: "Air Receiver 2 – Drain Valve" },
+              { assetNumber: "RCVR02-SWT01", name: "Air Receiver 2 – Pressure Switch" },
             ]
           },
           { 
