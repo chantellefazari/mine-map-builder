@@ -6,14 +6,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface PMMetadataGridProps {
-  pmId: string;
+  pmId?: string;
   projectSite: string;
   plantArea: string;
   pmGroup: string;
   pmType: string;
   frequency: string;
-  assetNumber: string;
-  resources: string;
+  assetNumber?: string;
+  resources?: string;
 }
 
 export const PMMetadataGrid = ({
@@ -23,8 +23,8 @@ export const PMMetadataGrid = ({
   pmGroup,
   pmType,
   frequency,
-  assetNumber: initialAssetNumber,
-  resources: initialResources,
+  assetNumber: initialAssetNumber = "",
+  resources: initialResources = "",
 }: PMMetadataGridProps) => {
   const queryClient = useQueryClient();
   const [resources, setResources] = useState(initialResources);
@@ -39,6 +39,7 @@ export const PMMetadataGrid = ({
   }, [initialAssetNumber]);
 
   const saveField = async (field: string, value: string) => {
+    if (!pmId) return; // No DB record, local-only
     const { error } = await supabase
       .from("pm_master_list")
       .update({ [field]: value } as any)
