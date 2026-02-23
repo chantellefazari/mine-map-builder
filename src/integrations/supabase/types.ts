@@ -456,10 +456,7 @@ export type Database = {
           eta: string | null
           id: string
           order_date: string | null
-          part_description: string
-          part_number: string
           po_number: string
-          quantity_ordered: number
           status: string
           supplier: string
           updated_at: string
@@ -473,10 +470,7 @@ export type Database = {
           eta?: string | null
           id?: string
           order_date?: string | null
-          part_description?: string
-          part_number?: string
           po_number: string
-          quantity_ordered?: number
           status?: string
           supplier?: string
           updated_at?: string
@@ -490,10 +484,7 @@ export type Database = {
           eta?: string | null
           id?: string
           order_date?: string | null
-          part_description?: string
-          part_number?: string
           po_number?: string
-          quantity_ordered?: number
           status?: string
           supplier?: string
           updated_at?: string
@@ -505,6 +496,53 @@ export type Database = {
             columns: ["work_order_id"]
             isOneToOne: false
             referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      po_tracker_lines: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string
+          part_description: string
+          part_number: string
+          po_tracker_id: string
+          quantity_ordered: number
+          received_qty: number
+          unit_price: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string
+          part_description?: string
+          part_number?: string
+          po_tracker_id: string
+          quantity_ordered?: number
+          received_qty?: number
+          unit_price?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string
+          part_description?: string
+          part_number?: string
+          po_tracker_id?: string
+          quantity_ordered?: number
+          received_qty?: number
+          unit_price?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "po_tracker_lines_po_tracker_id_fkey"
+            columns: ["po_tracker_id"]
+            isOneToOne: false
+            referencedRelation: "po_tracker"
             referencedColumns: ["id"]
           },
         ]
@@ -1111,6 +1149,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      next_po_number: { Args: never; Returns: string }
       next_wo_number: { Args: never; Returns: string }
     }
     Enums: {
