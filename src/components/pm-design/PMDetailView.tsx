@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +7,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
 import {
   Clock,
   Wrench,
@@ -23,10 +21,6 @@ import {
   BookOpen,
 } from "lucide-react";
 import { PMData } from "./PMFrequencySection";
-import { PMAssetSearchCombobox } from "./PMAssetSearchCombobox";
-import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 interface PMDetailViewProps {
   pm: PMData;
@@ -46,23 +40,6 @@ const disciplineColors = {
 };
 
 export const PMDetailView = ({ pm, onClose }: PMDetailViewProps) => {
-  const queryClient = useQueryClient();
-  const [assetNumber, setAssetNumber] = useState(pm.assetNumber || "");
-  const [resources, setResources] = useState(pm.resources || "");
-
-  const saveField = async (field: string, value: string) => {
-    const { error } = await supabase
-      .from("pm_master_list")
-      .update({ [field]: value } as any)
-      .eq("id", pm.id);
-    if (error) {
-      toast.error("Save failed: " + error.message);
-    } else {
-      queryClient.invalidateQueries({ queryKey: ["pm-master-list"] });
-      toast.success("Saved");
-    }
-  };
-
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] p-0">
@@ -87,33 +64,6 @@ export const PMDetailView = ({ pm, onClose }: PMDetailViewProps) => {
 
         <ScrollArea className="max-h-[calc(90vh-120px)]">
           <div className="p-6 space-y-6">
-            {/* Asset Number & Resources */}
-            <section className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground mb-1.5 block">Asset Number</label>
-                <PMAssetSearchCombobox
-                  value={assetNumber}
-                  onChange={(id) => {
-                    setAssetNumber(id);
-                    saveField("asset_number", id);
-                  }}
-                  compact
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground mb-1.5 block">Resources</label>
-                <Input
-                  value={resources}
-                  onChange={(e) => setResources(e.target.value)}
-                  onBlur={() => saveField("resources", resources)}
-                  placeholder="e.g. 1x Fitter (2 hrs)"
-                  className="h-9 text-sm"
-                />
-              </div>
-            </section>
-
-            <Separator />
-
             {/* Purpose & Overview */}
             <section>
               <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
