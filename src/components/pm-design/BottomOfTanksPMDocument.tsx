@@ -1,74 +1,9 @@
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-
-import { ClipboardCheck } from "lucide-react";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMBannerHeader } from "./PMBannerHeader";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
 import { PMSignOffBlock } from "./PMSignOffBlock";
-
-interface Task {
-  task: string;
-}
-
-interface Section {
-  equipmentName: string;
-  tasks: Task[];
-}
-
-const inspectionData: Section[] = [
-  {
-    equipmentName: "Tank 1",
-    tasks: [
-      { task: "Check bund for leaks or spills" },
-      { task: "Check tank for corrosion" },
-      { task: "Inspect level indicators for proper function" },
-    ],
-  },
-  {
-    equipmentName: "Tank 2",
-    tasks: [
-      { task: "Check bund for leaks or spills" },
-      { task: "Check tank for corrosion" },
-    ],
-  },
-  {
-    equipmentName: "Tank 3",
-    tasks: [
-      { task: "Check bund for leaks or spills" },
-      { task: "Check tank for corrosion" },
-    ],
-  },
-  {
-    equipmentName: "Tank 4",
-    tasks: [
-      { task: "Check bund for leaks or spills" },
-      { task: "Check tank for corrosion" },
-    ],
-  },
-  {
-    equipmentName: "Tank 5",
-    tasks: [
-      { task: "Check bund for leaks or spills" },
-      { task: "Check tank for corrosion" },
-    ],
-  },
-  {
-    equipmentName: "Tank 6",
-    tasks: [
-      { task: "Check bund for leaks or spills" },
-      { task: "Check tank for corrosion" },
-    ],
-  },
-  {
-    equipmentName: "Tank 7",
-    tasks: [
-      { task: "Check bund for leaks or spills" },
-      { task: "Check tank for corrosion" },
-    ],
-  },
-];
+import { DynamicInspectionTable } from "./DynamicInspectionTable";
 
 export const BottomOfTanksPMDocument = () => {
   const { pms } = usePMasterList();
@@ -91,30 +26,7 @@ export const BottomOfTanksPMDocument = () => {
 
         <SafetyPrecautionsSection />
 
-        <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-            <ClipboardCheck className="w-5 h-5 text-primary" />
-            INSPECTIONS
-          </div>
-          <table className="w-full text-xs border-collapse">
-            <thead><tr className="bg-muted"><th className="border border-border px-3 py-2 text-left font-semibold w-[46%]">Task</th><th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th><th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th><th className="border border-border px-3 py-2 text-left font-semibold w-[34%]">Comments</th></tr></thead>
-            <tbody>
-              {inspectionData.map((section, sIdx) => (
-                <>
-                  <tr key={`section-${sIdx}`} className="bg-muted/50"><td colSpan={4} className="border border-border px-3 py-2 font-bold text-primary">{section.equipmentName}</td></tr>
-                  {section.tasks.map((task, tIdx) => (
-                    <tr key={`task-${sIdx}-${tIdx}`} className="hover:bg-muted/30">
-                      <td className="border border-border px-3 py-2">{task.task}</td>
-                      <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" /></div></td>
-                      <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" /></div></td>
-                      <td className="border border-border px-2 py-4"></td>
-                    </tr>
-                  ))}
-                </>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DynamicInspectionTable tasksData={pm?.tasks} />
 
         <PMSignOffBlock />
       </div>
