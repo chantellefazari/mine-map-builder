@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Eye, Package, Link2, History, ChevronDown, ChevronUp, Settings2 } from "lucide-react";
+import { Eye, Package, Link2, History, ChevronDown, ChevronUp, Settings2, ShoppingCart } from "lucide-react";
 import { useWorkOrderParts, computeWOPartsStatus } from "@/hooks/useWorkOrderParts";
 import { usePOTracker } from "@/hooks/usePOTracker";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
+import { usePurchaseRequests } from "@/hooks/usePurchaseRequests";
 import { Badge } from "@/components/ui/badge";
 import { WOOverviewTab } from "./WOOverviewTab";
 import { WOPartsAvailabilityTab } from "./WOPartsAvailabilityTab";
 import { WOLinkedPOsTab } from "./WOLinkedPOsTab";
 import { WOActivityLogTab } from "./WOActivityLogTab";
+import { WOProcurementTab } from "./WOProcurementTab";
 
 interface WOSubTabsProps {
   woNumber?: string;
@@ -22,6 +24,10 @@ export const WOSubTabs = ({ woNumber }: WOSubTabsProps) => {
   const wo = workOrders.find((w) => w.wo_number === woNumber);
   const { parts, auditLog, addPart, updatePart, deletePart } = useWorkOrderParts(wo?.id);
   const { poItems, isLoading: poLoading } = usePOTracker(wo?.id);
+  const { listQuery: prQuery } = usePurchaseRequests();
+
+  // Filter PRs linked to this work order
+  const linkedPRs = (prQuery.data ?? []).filter((pr) => pr.work_order_id === wo?.id);
 
   if (!woNumber) return null;
 
@@ -40,6 +46,9 @@ export const WOSubTabs = ({ woNumber }: WOSubTabsProps) => {
             <Badge variant="outline" className="text-[10px]">
               {poItems.length} POs
             </Badge>
+            <Badge variant="outline" className="text-[10px]">
+              {linkedPRs.length} PRs
+            </Badge>
             {partsRequired && partsStatus !== "N/A" && (
               <Badge variant="secondary" className="text-[10px]">
                 {partsStatus}
@@ -51,12 +60,15 @@ export const WOSubTabs = ({ woNumber }: WOSubTabsProps) => {
 
         <CollapsibleContent className="mt-3">
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="w-full grid grid-cols-4">
+            <TabsList className="w-full grid grid-cols-5">
               <TabsTrigger value="overview" className="text-xs gap-1">
                 <Eye className="h-3 w-3" /> Overview
               </TabsTrigger>
               <TabsTrigger value="parts" className="text-xs gap-1">
-                <Package className="h-3 w-3" /> Parts & Availability
+                <Package className="h-3 w-3" /> Parts
+              </TabsTrigger>
+              <TabsTrigger value="procurement" className="text-xs gap-1">
+                <ShoppingCart className="h-3 w-3" /> Procurement
               </TabsTrigger>
               <TabsTrigger value="linked-pos" className="text-xs gap-1">
                 <Link2 className="h-3 w-3" /> Linked POs
@@ -87,6 +99,15 @@ export const WOSubTabs = ({ woNumber }: WOSubTabsProps) => {
               ) : (
                 <p className="text-sm text-muted-foreground">Work order not found in database.</p>
               )}
+            </TabsContent>
+
+            <TabsContent value="procurement" className="mt-4">
+              <WOProcurementTab
+                linkedPOs={poItems}
+                linkedPRs={linkedPRs}
+                poLoading={poLoading}
+                prLoading={prQuery.isLoading}
+              />
             </TabsContent>
 
             <TabsContent value="linked-pos" className="mt-4">
