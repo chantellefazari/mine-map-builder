@@ -1199,6 +1199,7 @@ export type Database = {
           priority: string
           problem_description: string | null
           requested_by: string | null
+          required_tooling: string | null
           resources_required: string
           returned_to_service: string
           scope_of_works: string | null
@@ -1227,6 +1228,7 @@ export type Database = {
           priority?: string
           problem_description?: string | null
           requested_by?: string | null
+          required_tooling?: string | null
           resources_required?: string
           returned_to_service?: string
           scope_of_works?: string | null
@@ -1255,6 +1257,7 @@ export type Database = {
           priority?: string
           problem_description?: string | null
           requested_by?: string | null
+          required_tooling?: string | null
           resources_required?: string
           returned_to_service?: string
           scope_of_works?: string | null
