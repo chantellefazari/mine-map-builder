@@ -618,7 +618,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 pt-3 border-t border-gray-200">
+              <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-200">
                 <div className="border border-gray-300 p-2">
                   <span className="text-xs text-gray-500 block mb-1">Technician Name</span>
                   <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto mb-2" placeholder="Enter name"
@@ -649,22 +649,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                     value={form.supervisor_sign_date}
                     onChange={(e) => setForm({ ...form, supervisor_sign_date: e.target.value })}
                     onBlur={(e) => handleFieldBlur("supervisor_sign_date", e.target.value)}
-                  />
-                </div>
-                <div className="border border-gray-300 p-2">
-                  <span className="text-xs text-gray-500 block mb-1">Operations Handover To</span>
-                  <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto mb-2" placeholder="Enter name"
-                    value={form.operations_handover_name}
-                    onChange={(e) => setForm({ ...form, operations_handover_name: e.target.value })}
-                    onBlur={(e) => handleFieldBlur("operations_handover_name", e.target.value)}
-                  />
-                  <span className="text-xs text-gray-500 block mb-1">Signature</span>
-                  <div className="h-8 border border-dashed border-gray-300 rounded mb-2"></div>
-                  <span className="text-xs text-gray-500 block mb-1">Date</span>
-                  <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                    value={form.operations_handover_date}
-                    onChange={(e) => setForm({ ...form, operations_handover_date: e.target.value })}
-                    onBlur={(e) => handleFieldBlur("operations_handover_date", e.target.value)}
                   />
                 </div>
               </div>
