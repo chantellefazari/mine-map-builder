@@ -23,7 +23,7 @@ const AssetTree = () => {
   const handleSeedDatabase = async () => {
     setIsSeeding(true);
     try {
-      const result = await seedProcessingPlantData();
+              const result = await seedProcessingPlantData();
       if (result.errors.length > 0) {
         toast({
           title: "Seed completed with errors",
@@ -32,8 +32,8 @@ const AssetTree = () => {
         });
       } else {
         toast({
-          title: "Processing Plant Data Locked In ✅",
-          description: `${result.assets} assets, ${result.pidTags} P&ID tags, ${result.namingConventions} naming conventions, ${result.functionalLocations} functional locations saved to database.`,
+          title: "Full Asset Tree Locked In ✅",
+          description: `${result.assets} assets (PRO + CRU), ${result.pidTags} P&ID tags, ${result.namingConventions} naming conventions, ${result.functionalLocations} functional locations saved to database.`,
         });
       }
     } catch (e: any) {
