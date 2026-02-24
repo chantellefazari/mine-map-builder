@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { description } = await req.json();
+    const { description, mode } = await req.json();
     if (!description || typeof description !== "string") {
       return new Response(
         JSON.stringify({ error: "description is required" }),
@@ -23,6 +23,22 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
+    const systemPrompts: Record<string, string> = {
+      description: `You are a maintenance work order writer for a gold mine. Rewrite the user's rough notes into a clear, professional problem/fault description.
+
+Format: A concise description (2-4 sentences) of the issue or fault, the equipment involved, and any relevant observations or context.
+
+Use proper maintenance terminology. Do NOT add safety instructions, PPE lists, steps, or sign-off sections. Return ONLY the improved description, nothing else.`,
+
+      scope: `You are a maintenance work order writer for a gold mine. Based on the user's rough notes, generate a clear scope of works / method statement.
+
+Format: A numbered list of the key steps to carry out the work (3-10 steps, keep each step to one sentence). Start directly with step 1.
+
+Use proper maintenance terminology. Do NOT add safety instructions, PPE lists, isolation procedures, or sign-off sections. Focus purely on the work method/steps. Return ONLY the numbered steps, nothing else.`,
+    };
+
+    const selectedMode = mode === "scope" ? "scope" : "description";
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -32,16 +48,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          {
-            role: "system",
-            content: `You are a maintenance work order writer for a gold mine. Rewrite the user's rough work description into a clear, professional work order description followed by rough steps to complete the work.
-
-Format:
-1. A concise description (2-3 sentences) of what needs to be done, the equipment involved, and any relevant context.
-2. Then a blank line followed by "Steps:" and a numbered list of the key steps to carry out the work (3-8 steps, keep each step to one sentence).
-
-Use proper maintenance terminology. Do NOT add safety instructions, PPE lists, or sign-off sections. Return ONLY the improved description and steps, nothing else.`,
-          },
+          { role: "system", content: systemPrompts[selectedMode] },
           { role: "user", content: description },
         ],
       }),

@@ -24,13 +24,15 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
   const { parts, addPart, deletePart } = useWorkOrderParts(wo?.id);
   const [spareLookupOpen, setSpareLookupOpen] = useState(false);
   const [assetLookupOpen, setAssetLookupOpen] = useState(false);
-  const [isEnhancing, setIsEnhancing] = useState(false);
+  const [isEnhancingDesc, setIsEnhancingDesc] = useState(false);
+  const [isEnhancingScope, setIsEnhancingScope] = useState(false);
   const [isGeneratingParts, setIsGeneratingParts] = useState(false);
   // Local form state seeded from DB
   const [form, setForm] = useState({
     asset_id: "",
     functional_location: "",
     problem_description: "",
+    scope_of_works: "",
     work_performed: "",
     priority: "Normal",
     work_type: "Breakdown",
@@ -55,6 +57,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
         asset_id: wo.asset_id || "",
         functional_location: wo.functional_location || "",
         problem_description: wo.problem_description || "",
+        scope_of_works: (wo as any).scope_of_works || "",
         work_performed: wo.work_performed || "",
         priority: wo.priority || "Normal",
         work_type: wo.work_type || "Breakdown",
@@ -90,26 +93,28 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
 
   const handlePrint = () => window.print();
 
-  const handleEnhanceDescription = async () => {
-    if (!form.problem_description.trim()) {
-      toast.error("Write a rough description first");
+  const handleEnhanceField = async (field: "problem_description" | "scope_of_works", mode: "description" | "scope") => {
+    const value = form[field].trim();
+    if (!value) {
+      toast.error("Write some rough notes first");
       return;
     }
-    setIsEnhancing(true);
+    const setLoading = mode === "description" ? setIsEnhancingDesc : setIsEnhancingScope;
+    setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("enhance-wo-description", {
-        body: { description: form.problem_description },
+        body: { description: value, mode },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       const enhanced = data.enhanced;
-      setForm((prev) => ({ ...prev, problem_description: enhanced }));
-      if (wo) saveField("problem_description", enhanced);
-      toast.success("Description enhanced");
+      setForm((prev) => ({ ...prev, [field]: enhanced }));
+      if (wo) saveField(field, enhanced);
+      toast.success(mode === "description" ? "Description enhanced" : "Scope of works generated");
     } catch (err: any) {
-      toast.error(err.message || "Failed to enhance description");
+      toast.error(err.message || "Failed to generate");
     } finally {
-      setIsEnhancing(false);
+      setLoading(false);
     }
   };
 
@@ -374,30 +379,58 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             </div>
           </div>
 
-          {/* Work Order Description */}
+          {/* Description */}
           <div className="border border-gray-300">
             <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
-              <span className="font-semibold text-gray-700">WORK ORDER DESCRIPTION</span>
+              <span className="font-semibold text-gray-700">DESCRIPTION</span>
               <Button
                 size="sm"
                 variant="outline"
                 className="gap-1.5 text-xs h-7 print:hidden"
-                onClick={handleEnhanceDescription}
-                disabled={isEnhancing || !form.problem_description.trim()}
+                onClick={() => handleEnhanceField("problem_description", "description")}
+                disabled={isEnhancingDesc || !form.problem_description.trim()}
               >
-                {isEnhancing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                {isEnhancing ? "Enhancing…" : "Generate Description & Steps"}
+                {isEnhancingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                {isEnhancingDesc ? "Enhancing…" : "Generate with AI"}
               </Button>
             </div>
             <div className="p-3">
               <Textarea
-                className="min-h-[100px] text-xs border-dashed print:border-none print:p-0 print:min-h-0 resize-none overflow-hidden"
+                className="min-h-[60px] text-xs border-dashed print:border-none print:p-0 print:min-h-0 resize-none overflow-hidden"
                 style={{ height: 'auto' }}
                 ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
                 value={form.problem_description}
                 onChange={(e) => { setForm({ ...form, problem_description: e.target.value }); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
                 onBlur={(e) => handleFieldBlur("problem_description", e.target.value)}
-                placeholder="Describe the work required, fault details, and actions taken..."
+                placeholder="Describe the fault, issue, or work required..."
+              />
+            </div>
+          </div>
+
+          {/* Scope of Works */}
+          <div className="border border-gray-300">
+            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
+              <span className="font-semibold text-gray-700">SCOPE OF WORKS</span>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5 text-xs h-7 print:hidden"
+                onClick={() => handleEnhanceField("scope_of_works", "scope")}
+                disabled={isEnhancingScope || !form.scope_of_works.trim()}
+              >
+                {isEnhancingScope ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                {isEnhancingScope ? "Generating…" : "Generate with AI"}
+              </Button>
+            </div>
+            <div className="p-3">
+              <Textarea
+                className="min-h-[60px] text-xs border-dashed print:border-none print:p-0 print:min-h-0 resize-none overflow-hidden"
+                style={{ height: 'auto' }}
+                ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
+                value={form.scope_of_works}
+                onChange={(e) => { setForm({ ...form, scope_of_works: e.target.value }); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
+                onBlur={(e) => handleFieldBlur("scope_of_works", e.target.value)}
+                placeholder="List the steps / method to carry out the work..."
               />
             </div>
           </div>

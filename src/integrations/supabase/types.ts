@@ -1201,6 +1201,7 @@ export type Database = {
           requested_by: string | null
           resources_required: string
           returned_to_service: string
+          scope_of_works: string | null
           status: string
           supervisor_name: string
           supervisor_sign_date: string
@@ -1228,6 +1229,7 @@ export type Database = {
           requested_by?: string | null
           resources_required?: string
           returned_to_service?: string
+          scope_of_works?: string | null
           status?: string
           supervisor_name?: string
           supervisor_sign_date?: string
@@ -1255,6 +1257,7 @@ export type Database = {
           requested_by?: string | null
           resources_required?: string
           returned_to_service?: string
+          scope_of_works?: string | null
           status?: string
           supervisor_name?: string
           supervisor_sign_date?: string

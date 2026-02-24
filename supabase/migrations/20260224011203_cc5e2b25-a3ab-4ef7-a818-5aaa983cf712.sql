@@ -1,0 +1,1 @@
+ALTER TABLE public.work_orders ADD COLUMN scope_of_works text DEFAULT '';
