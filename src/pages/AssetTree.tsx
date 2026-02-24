@@ -32,8 +32,8 @@ const AssetTree = () => {
         });
       } else {
         toast({
-          title: "Full Asset Tree Locked In ✅",
-          description: `${result.assets} assets (PRO + CRU), ${result.pidTags} P&ID tags, ${result.namingConventions} naming conventions, ${result.functionalLocations} functional locations saved to database.`,
+          title: "Processing Plant Data Locked In ✅",
+          description: `${result.assets} assets, ${result.pidTags} P&ID tags, ${result.namingConventions} naming conventions, ${result.functionalLocations} functional locations saved to database.`,
         });
       }
     } catch (e: any) {
