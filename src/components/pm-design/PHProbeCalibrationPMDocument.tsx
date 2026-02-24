@@ -6,46 +6,14 @@ import { PMSignOffBlock } from "./PMSignOffBlock";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
 
-const calibrationReadings = [
-  { id: "reading-before-clean", label: "pH Reading before clean" },
-  { id: "reading-after-clean", label: "pH Reading after clean" },
-  { id: "ph7-before-cal", label: "pH 7 Before Calibration" },
-  { id: "ph7-after-cal", label: "pH 7 Reading after Calibration" },
-  { id: "ph10-before-cal", label: "pH 10 Reading before Calibration" },
-  { id: "ph10-after-cal", label: "pH 10 Reading after Calibration" },
-  { id: "reading-final", label: "pH Reading after Clean" },
-];
-
-const cleaningProcedure = [
-  "Inform operations that you are about to clean the pH probes.",
-  "Place the pH control loop in manual by bringing up the faceplate for PHIT-4xxx, clicking on the MAN/AUT/CAS section of the faceplate, and selecting the manual button. Ask an operator to do this for you if you are unsure.",
-  "Remove the probe from the rougher and hose it down to remove any build up of slurry.",
-  "Remove the probe from the probe holder and after washing off any excess slurry place it in the beaker of hydrochloric acid to soak.",
-  "Rinse the probe in the potable water to dilute the acid and wipe down the probe. The paintbrush or the side of a cloth rag may be necessary to clean between the electrodes.",
-  "If necessary, scrape off any scale build up with the knife, being very careful not to fracture the glass electrode.",
-  "Repeat steps 4-6 as necessary until all the scale has been removed.",
-  "Ensure the probe is reading within the expected range before returning it to automatic control; refer to step 2.",
-];
-
-const calibrationProcedure = [
-  'Select the "Gear Icon"',
-  'Select "Calibration"',
-  'Select "Automatic"',
-  'Select "Zero/Slope"',
-  'Place Probe in pH 7 and select "pH 7"',
-  'Wait until pH settles out while in pH 7 Solution then select "Adjust now"',
-  "Once instructed to go to next Buffer, Clean the pH Probe with water first.",
-  'Place pH Probe in pH 10 Solution and select "pH 10"',
-  'Wait until pH settles out, then select "Adjust now"',
-  'When finished select "CAL COMPLETE"',
-  'Select "ACCEPT DATA"',
-  'Select "NO" to new sensor',
-  "Return to home screen",
-];
-
 export const PHProbeCalibrationPMDocument = () => {
   const { pms } = usePMasterList();
   const pm = pms.find((p) => p.pmName === "pH Probe Calibration Weekly");
+
+  const tasksData = pm?.tasks as any;
+  const calibrationReadings = (tasksData?.calibrationReadings || []) as { id: string; label: string }[];
+  const cleaningProcedure = (tasksData?.cleaningProcedure || []) as string[];
+  const calibrationProcedure = (tasksData?.calibrationProcedure || []) as string[];
 
   return (
     <div className="bg-background min-h-full">

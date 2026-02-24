@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/input";
 import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
@@ -13,97 +12,6 @@ interface GeneratorLocation {
   area: string;
   circuits: { description: string; rating: string }[];
 }
-
-const generatorLocations: GeneratorLocation[] = [
-  {
-    id: "admin",
-    name: "Admin Generator",
-    assetNumber: "GEN-009",
-    area: "ADMIN",
-    circuits: [
-      { description: "15A GPO", rating: "16A" },
-      { description: "15A GPO", rating: "16A" },
-      { description: "3 PHASE OUTLET", rating: "32A" },
-      { description: "3 PHASE OUTLET", rating: "32A" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-    ]
-  },
-  {
-    id: "juno-bore",
-    name: "Juno Bore Pump Generator",
-    assetNumber: "GEN-010",
-    area: "JUNO BORE PUMP",
-    circuits: [
-      { description: "15A OUTLET", rating: "16A" },
-      { description: "15A OUTLET", rating: "16A" },
-      { description: "3 PHASE OUTLET", rating: "32A" },
-      { description: "3 PHASE OUTLET", rating: "32A" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-    ]
-  },
-  {
-    id: "andys-dam",
-    name: "Andy's Dam Generator",
-    assetNumber: "GEN-011",
-    area: "ANDY'S DAM",
-    circuits: [
-      { description: "15A OUTLET", rating: "16A" },
-      { description: "15A OUTLET", rating: "16A" },
-      { description: "3 PHASE OUTLET", rating: "32A" },
-      { description: "3 PHASE OUTLET", rating: "32A" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-    ]
-  },
-  {
-    id: "lab",
-    name: "Lab Generator",
-    assetNumber: "GEN-012",
-    area: "LAB",
-    circuits: [
-      { description: "15A GPO", rating: "16A" },
-      { description: "15A GPO", rating: "16A" },
-      { description: "3 PHASE GPO", rating: "32A" },
-      { description: "3 PHASE GPO", rating: "32A" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-    ]
-  },
-  {
-    id: "crusher-fuel-farm",
-    name: "Crusher Fuel Farm Generator",
-    assetNumber: "GEN-013",
-    area: "CRUSHER FUEL FARM",
-    circuits: [
-      { description: "3 PHASE GPO", rating: "32A" },
-      { description: "15A GPO", rating: "16A" },
-      { description: "15A GPO", rating: "16A" },
-      { description: "15A GPO", rating: "20A" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-    ]
-  },
-  {
-    id: "crusher-workshop",
-    name: "Crusher Workshop Generator",
-    assetNumber: "GEN-014",
-    area: "CRUSHER WORKSHOP",
-    circuits: [
-      { description: "RCD", rating: "32A" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-      { description: "", rating: "" },
-    ]
-  },
-];
 
 const RCDTestSheet = ({ location }: { location: GeneratorLocation }) => {
   const { pms } = usePMasterList();
@@ -207,6 +115,11 @@ interface RCDTestingSheetsDocumentProps {
 }
 
 export const RCDTestingSheetsDocument = ({ locationId }: RCDTestingSheetsDocumentProps) => {
+  const { pms } = usePMasterList();
+  const pm = pms.find((p) => p.pmName === "RCD Injection Test 6-Monthly");
+  const tasksData = pm?.tasks as any;
+  const generatorLocations = (tasksData?.generatorLocations || []) as GeneratorLocation[];
+
   const locationsToShow = locationId 
     ? generatorLocations.filter(loc => loc.id === locationId)
     : generatorLocations;

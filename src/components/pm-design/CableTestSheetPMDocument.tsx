@@ -6,21 +6,16 @@ import { PMSignOffBlock } from "./PMSignOffBlock";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
 
-const checklistItems = [
-  { id: "earth-lock-ring", label: "Earth Lock Ring" },
-  { id: "glands-correct", label: "Glands Correct/Tight/Secured" },
-  { id: "cable-label", label: "Cable Label Fitted" },
-  { id: "cables-terminated", label: "Cables Terminated and Secured" },
-  { id: "line-shrouds", label: "Line Shrouds Fitted" },
-  { id: "bridges-removed", label: "Bridges Removed" },
-  { id: "tools-removed", label: "Tools Removed" },
-  { id: "cable-support", label: "Cable Support System OK" },
-  { id: "gland-wrapped", label: "Cable Gland Wrapped in Denso" },
-];
-
 export const CableTestSheetPMDocument = () => {
   const { pms } = usePMasterList();
   const pm = pms.find((p) => p.pmName === "Cable Test Sheet Yearly");
+
+  const tasksData = pm?.tasks as any;
+  const checklistItems = ((tasksData?.checklistItems || []) as string[]).map((label: string, i: number) => ({
+    id: `item-${i}`,
+    label,
+  }));
+  const testColumns = (tasksData?.testColumns || []) as string[];
 
   return (
     <div className="bg-background min-h-full">
@@ -71,21 +66,15 @@ export const CableTestSheetPMDocument = () => {
             <table className="w-full text-xs border-collapse">
               <thead>
                 <tr className="bg-muted">
-                  <th className="border border-border px-2 py-2 text-center font-semibold">R-W</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold">R-B</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold">W-B</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold">R-E</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold">W-E</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold">B-E</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold">R-N</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold">W-N</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold">B-N</th>
+                  {testColumns.map((col) => (
+                    <th key={col} className="border border-border px-2 py-2 text-center font-semibold">{col}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  {Array.from({ length: 9 }).map((_, i) => (
-                    <td key={i} className="border border-border px-2 py-4"></td>
+                  {testColumns.map((col) => (
+                    <td key={col} className="border border-border px-2 py-4"></td>
                   ))}
                 </tr>
               </tbody>
