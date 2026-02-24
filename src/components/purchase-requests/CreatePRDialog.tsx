@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -24,7 +23,7 @@ interface Props {
   linkedWoId?: string;
 }
 
-const DEPARTMENTS = ["Maintenance", "Processing", "Mining", "Admin", "Safety", "Environment"];
+const PRIORITIES = ["Routine", "Urgent", "Breakdown"];
 
 export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId }) => {
   const { user } = useAuth();
@@ -33,15 +32,13 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
   const { suppliers } = useSuppliers();
 
   const [prNumber, setPrNumber] = useState("");
+  const [requestTitle, setRequestTitle] = useState("");
   const [workOrderId, setWorkOrderId] = useState(linkedWoId || "");
-  const [department, setDepartment] = useState("");
   const [supplierId, setSupplierId] = useState("");
   const [supplierName, setSupplierName] = useState("");
-  const [supplierOrganisesFreight, setSupplierOrganisesFreight] = useState(false);
-  const [freightCompany, setFreightCompany] = useState("");
-  const [deliveryAddress, setDeliveryAddress] = useState("TCMG – Tennant Creek Gold Mine, NT 0861");
-  const [supplierAbn, setSupplierAbn] = useState("");
-  const [paymentTerms, setPaymentTerms] = useState("");
+  const [supplierFreeText, setSupplierFreeText] = useState("");
+  const [priority, setPriority] = useState("Routine");
+  const [descriptionScope, setDescriptionScope] = useState("");
   const [requiredDate, setRequiredDate] = useState<Date | undefined>();
   const [comments, setComments] = useState("");
   const [lines, setLines] = useState<PRLineItem[]>([
@@ -58,18 +55,20 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
   }, [open]);
 
   const handleSupplierChange = (id: string) => {
+    if (id === "__freetext__") {
+      setSupplierId("");
+      setSupplierName("");
+      return;
+    }
     setSupplierId(id);
     const s = suppliers?.find((s) => s.id === id);
     if (s) {
       setSupplierName(s.name);
-      setSupplierOrganisesFreight(s.organisesFreight);
-      setSupplierAbn(s.abn);
-      setPaymentTerms(s.paymentTerms);
-      if (s.defaultDeliveryAddress) setDeliveryAddress(s.defaultDeliveryAddress);
-      if (!s.organisesFreight && s.preferredFreightCompany) setFreightCompany(s.preferredFreightCompany);
-      else setFreightCompany("");
+      setSupplierFreeText("");
     }
   };
+
+  const resolvedSupplierName = supplierId ? supplierName : supplierFreeText;
 
   const uploadQuote = async (): Promise<string> => {
     if (!quoteFile) return "";
@@ -82,6 +81,14 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
 
   const handleSave = async (submitToAdmin: boolean) => {
     if (!prNumber) return;
+    if (!requestTitle.trim()) {
+      toast.error("Request Title is required");
+      return;
+    }
+    if (submitToAdmin && !quoteFile) {
+      toast.error("Quote attachment is required for submission");
+      return;
+    }
     setSaving(true);
     try {
       let quoteUrl = "";
@@ -89,21 +96,22 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
 
       await createPR.mutateAsync({
         pr_number: prNumber,
+        request_title: requestTitle,
+        description_scope: descriptionScope,
+        priority,
         work_order_id: workOrderId || null,
         status: submitToAdmin ? "Submitted to Admin" : "Draft",
         supervisor_name: user?.email ?? "",
         supervisor_user_id: user?.id ?? null,
-        department,
+        department: "",
         supplier_id: supplierId || null,
-        supplier_name: supplierName,
-        supplier_organises_freight: supplierOrganisesFreight,
-        freight_company: freightCompany,
-        delivery_address: deliveryAddress,
+        supplier_name: resolvedSupplierName,
+        supplier_organises_freight: false,
+        freight_company: "",
+        delivery_address: "",
         required_date: requiredDate ? format(requiredDate, "yyyy-MM-dd") : null,
         quote_url: quoteUrl,
         comments,
-        supplier_abn: supplierAbn,
-        payment_terms: paymentTerms,
         submitted_at: submitToAdmin ? new Date().toISOString() : null,
         lines,
       } as any);
@@ -128,7 +136,46 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
         </DialogHeader>
 
         <div className="space-y-5 mt-2">
-          {/* Row 1: WO Link + Department */}
+          {/* Request Title */}
+          <div className="space-y-1.5">
+            <Label className="text-xs">Request Title *</Label>
+            <Input value={requestTitle} onChange={(e) => setRequestTitle(e.target.value)} placeholder="Brief title for this purchase request" className="text-sm" />
+          </div>
+
+          {/* Supplier + Priority */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs">Supplier</Label>
+              <Select value={supplierId || "__freetext__"} onValueChange={handleSupplierChange}>
+                <SelectTrigger><SelectValue placeholder="Select or type below" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__freetext__">Manual Entry</SelectItem>
+                  {suppliers?.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {!supplierId && (
+                <Input
+                  value={supplierFreeText}
+                  onChange={(e) => setSupplierFreeText(e.target.value)}
+                  placeholder="Type supplier name"
+                  className="text-sm mt-1.5"
+                />
+              )}
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Priority</Label>
+              <Select value={priority} onValueChange={setPriority}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {PRIORITIES.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Linked WO + Required Date */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label className="text-xs">Linked Work Order (optional)</Label>
@@ -143,89 +190,7 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Department</Label>
-              <Select value={department} onValueChange={setDepartment}>
-                <SelectTrigger><SelectValue placeholder="Select department" /></SelectTrigger>
-                <SelectContent>
-                  {DEPARTMENTS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Row 2: Supervisor (auto) */}
-          <div className="space-y-1.5">
-            <Label className="text-xs">Supervisor</Label>
-            <Input value={user?.email ?? ""} readOnly className="bg-muted/50 text-sm" />
-          </div>
-
-          {/* Row 3: Supplier + Freight */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <Label className="text-xs">Supplier</Label>
-              <Select value={supplierId} onValueChange={handleSupplierChange}>
-                <SelectTrigger><SelectValue placeholder="Select supplier" /></SelectTrigger>
-                <SelectContent>
-                  {suppliers?.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          <div className="space-y-1.5">
-              <Label className="text-xs">Supplier Organises Freight?</Label>
-              <div className="flex items-center gap-2 pt-1">
-                <Switch checked={supplierOrganisesFreight} onCheckedChange={(v) => {
-                  setSupplierOrganisesFreight(v);
-                  if (v) setFreightCompany("");
-                }} />
-                <span className="text-sm text-muted-foreground">{supplierOrganisesFreight ? "Yes" : "No"}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Freight Company Selection — only when supplier does NOT organise freight */}
-          {!supplierOrganisesFreight && (
-            <div className="space-y-1.5">
-              <Label className="text-xs">Freight / Transport Company</Label>
-              {(() => {
-                const preferredOptions = suppliers
-                  ?.map((s) => s.preferredFreightCompany)
-                  .filter((v, i, arr) => v && arr.indexOf(v) === i) ?? [];
-                return (
-                  <Select
-                    value={freightCompany}
-                    onValueChange={(v) => setFreightCompany(v === "__manual__" ? "" : v)}
-                  >
-                    <SelectTrigger><SelectValue placeholder="Select freight company" /></SelectTrigger>
-                    <SelectContent>
-                      {preferredOptions.map((fc) => (
-                        <SelectItem key={fc} value={fc}>{fc}</SelectItem>
-                      ))}
-                      <SelectItem value="__manual__">Manual Entry</SelectItem>
-                    </SelectContent>
-                  </Select>
-                );
-              })()}
-              {(!suppliers?.some((s) => s.preferredFreightCompany === freightCompany) || !freightCompany) && (
-                <Input
-                  value={freightCompany}
-                  onChange={(e) => setFreightCompany(e.target.value)}
-                  placeholder="Enter freight company name"
-                  className="text-sm mt-1.5"
-                />
-              )}
-            </div>
-          )}
-
-          {/* Row 4: Delivery + Required Date */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <Label className="text-xs">Delivery Address</Label>
-              <Input value={deliveryAddress} onChange={(e) => setDeliveryAddress(e.target.value)} className="text-sm" />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs">Required Date</Label>
+              <Label className="text-xs">Required-by Date</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className="w-full justify-start text-left font-normal text-sm">
@@ -240,9 +205,15 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
             </div>
           </div>
 
+          {/* Description / Scope */}
+          <div className="space-y-1.5">
+            <Label className="text-xs">Description / Scope</Label>
+            <Textarea value={descriptionScope} onChange={(e) => setDescriptionScope(e.target.value)} placeholder="Describe what is needed and why..." rows={3} className="text-sm" />
+          </div>
+
           {/* Quote Upload */}
           <div className="space-y-1.5">
-            <Label className="text-xs">Quote Attachment (PDF)</Label>
+            <Label className="text-xs">Quote Attachment (PDF) — required for submission</Label>
             <div className="flex items-center gap-2">
               <label className="flex items-center gap-2 cursor-pointer border border-dashed rounded-lg px-4 py-2 hover:bg-muted/50 transition-colors text-sm text-muted-foreground">
                 <Upload className="h-4 w-4" />
@@ -255,10 +226,18 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
           {/* Line Items */}
           <PRLineItemsTable lines={lines} onChange={setLines} />
 
-          {/* Comments */}
+          {/* Notes */}
           <div className="space-y-1.5">
-            <Label className="text-xs">Comments</Label>
-            <Textarea value={comments} onChange={(e) => setComments(e.target.value)} placeholder="Any additional notes..." rows={3} className="text-sm" />
+            <Label className="text-xs">Notes</Label>
+            <Textarea value={comments} onChange={(e) => setComments(e.target.value)} placeholder="Any additional notes..." rows={2} className="text-sm" />
+          </div>
+
+          {/* Submitted By (auto) */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs">Submitted By (auto)</Label>
+              <Input value={user?.email ?? ""} readOnly className="bg-muted/50 text-sm" />
+            </div>
           </div>
 
           {/* Actions */}

@@ -11,8 +11,9 @@ import { PRStatusBadge } from "./PRStatusBadge";
 import { CreatePRDialog } from "./CreatePRDialog";
 import { PRDetailDialog } from "./PRDetailDialog";
 import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
 
-const STATUSES = ["All", "Draft", "Submitted to Admin", "Admin Review", "Sent for Approval", "Approved", "PO Generated"];
+const STATUSES = ["All", "Draft", "Submitted to Admin", "Admin Review", "Pending Approval", "Approved", "Rejected", "PO Raised", "Closed"];
 
 export const PurchaseRequestRegister: React.FC = () => {
   const { listQuery } = usePurchaseRequests();
@@ -27,7 +28,8 @@ export const PurchaseRequestRegister: React.FC = () => {
     const matchSearch = search === "" ||
       pr.pr_number.toLowerCase().includes(search.toLowerCase()) ||
       pr.supervisor_name.toLowerCase().includes(search.toLowerCase()) ||
-      pr.supplier_name.toLowerCase().includes(search.toLowerCase());
+      pr.supplier_name.toLowerCase().includes(search.toLowerCase()) ||
+      (pr.request_title || "").toLowerCase().includes(search.toLowerCase());
     const matchStatus = statusFilter === "All" || pr.status === statusFilter;
     return matchSearch && matchStatus;
   });
@@ -48,7 +50,7 @@ export const PurchaseRequestRegister: React.FC = () => {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <Input
-          placeholder="Search PR#, supervisor, supplier..."
+          placeholder="Search PR#, title, supervisor, supplier..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="sm:max-w-xs"
@@ -74,10 +76,11 @@ export const PurchaseRequestRegister: React.FC = () => {
             <TableHeader>
               <TableRow className="bg-muted/50">
                 <TableHead className="font-semibold">PR #</TableHead>
+                <TableHead className="font-semibold">Title</TableHead>
                 <TableHead className="font-semibold">Status</TableHead>
+                <TableHead className="font-semibold">Priority</TableHead>
                 <TableHead className="font-semibold">Supervisor</TableHead>
                 <TableHead className="font-semibold">Supplier</TableHead>
-                <TableHead className="font-semibold">Department</TableHead>
                 <TableHead className="font-semibold">Required Date</TableHead>
                 <TableHead className="font-semibold">Created</TableHead>
                 <TableHead className="w-10" />
@@ -86,7 +89,7 @@ export const PurchaseRequestRegister: React.FC = () => {
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center text-muted-foreground py-10">
+                  <TableCell colSpan={9} className="text-center text-muted-foreground py-10">
                     <FileText className="h-8 w-8 mx-auto mb-2 opacity-40" />
                     No purchase requests found
                   </TableCell>
@@ -99,10 +102,13 @@ export const PurchaseRequestRegister: React.FC = () => {
                     onClick={() => setDetailId(pr.id)}
                   >
                     <TableCell className="font-mono font-medium text-sm">{pr.pr_number}</TableCell>
+                    <TableCell className="text-sm max-w-[200px] truncate">{pr.request_title || "—"}</TableCell>
                     <TableCell><PRStatusBadge status={pr.status} /></TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="text-xs">{pr.priority || "Routine"}</Badge>
+                    </TableCell>
                     <TableCell className="text-sm">{pr.supervisor_name}</TableCell>
                     <TableCell className="text-sm">{pr.supplier_name || "—"}</TableCell>
-                    <TableCell className="text-sm">{pr.department || "—"}</TableCell>
                     <TableCell className="text-sm">
                       {pr.required_date ? format(new Date(pr.required_date), "dd MMM yyyy") : "—"}
                     </TableCell>
