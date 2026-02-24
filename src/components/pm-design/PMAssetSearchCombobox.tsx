@@ -56,11 +56,6 @@ export const PMAssetSearchCombobox = ({
             <span className={cn("font-mono font-semibold flex-shrink-0", compact ? "text-xs" : "text-sm")}>
               {value}
             </span>
-            {selectedAsset && (
-              <span className="text-muted-foreground text-xs">
-                — {selectedAsset.assetName}
-              </span>
-            )}
             <button
               onClick={() => {
                 onChange("", "");
