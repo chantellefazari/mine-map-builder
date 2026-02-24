@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,6 +27,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
   const [isEnhancingDesc, setIsEnhancingDesc] = useState(false);
   const [isEnhancingScope, setIsEnhancingScope] = useState(false);
   const [isGeneratingParts, setIsGeneratingParts] = useState(false);
+  const labourHoursRef = useRef("[]");
   // Local form state seeded from DB
   const [form, setForm] = useState({
     asset_id: "",
@@ -49,11 +50,16 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     operations_handover_name: "",
     operations_handover_date: "",
     resources_required: "",
+    labour_hours: "[]",
   });
 
   // Sync form when WO data loads
   useEffect(() => {
     if (wo) {
+      const labourRaw = (wo as any).labour_hours;
+      let labourStr = "[]";
+      if (typeof labourRaw === "string") labourStr = labourRaw;
+      else if (Array.isArray(labourRaw)) labourStr = JSON.stringify(labourRaw);
       setForm({
         asset_id: wo.asset_id || "",
         functional_location: wo.functional_location || "",
@@ -75,14 +81,43 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
         operations_handover_name: wo.operations_handover_name || "",
         operations_handover_date: wo.operations_handover_date || "",
         resources_required: (wo as any).resources_required || "",
+        labour_hours: labourStr,
       });
     }
   }, [wo?.id]);
 
   const saveField = useCallback(
-    (field: string, value: string) => {
+    async (field: string, value: string) => {
       if (!wo) return;
-      update.mutate({ id: wo.id, updates: { [field]: value } });
+      console.log(`[WO-SAVE] Env: ${import.meta.env.VITE_SUPABASE_URL} | Table: work_orders | Field: ${field} | WO: ${wo.id}`);
+      // For JSON fields, parse back to object/array for JSONB storage
+      let dbValue: any = value;
+      if (["required_tooling", "resources_required", "labour_hours"].includes(field)) {
+        try { dbValue = JSON.parse(value); } catch { dbValue = value; }
+      }
+      const { error } = await (supabase as any)
+        .from("work_orders")
+        .update({ [field]: dbValue })
+        .eq("id", wo.id);
+      if (error) {
+        console.error(`[WO-SAVE] FAILED writing ${field}:`, error);
+        toast.error(`Save failed: ${error.message}`);
+        return;
+      }
+      // Re-fetch for proof of persistence
+      const { data: refetched, error: fetchErr } = await (supabase as any)
+        .from("work_orders")
+        .select("id, updated_at")
+        .eq("id", wo.id)
+        .single();
+      if (fetchErr || !refetched) {
+        console.error(`[WO-SAVE] Re-fetch failed after saving ${field}:`, fetchErr);
+        toast.error("Saved but could not verify persistence");
+        return;
+      }
+      console.log(`[WO-SAVE] ✓ Persisted ${field} | id=${refetched.id} | updated_at=${refetched.updated_at}`);
+      // Invalidate queries to refresh UI
+      update.mutate({ id: wo.id, updates: {} }, { onSettled: () => {} });
     },
     [wo, update]
   );
@@ -677,12 +712,16 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   const resources: { trade: string; qty: string }[] = (() => {
                     try { return JSON.parse(form.resources_required || "[]"); } catch { return []; }
                   })();
-                  const rows: { trade: string; index: number }[] = [];
+                  const labourArr: { name: string; trade: string; date: string; start_time: string; end_time: string; total_hrs: string }[] = (() => {
+                    try { return JSON.parse(form.labour_hours || "[]"); } catch { return []; }
+                  })();
+                  // Build expected rows from resources
+                  const expectedRows: { trade: string; index: number }[] = [];
                   resources.forEach((r) => {
                     const count = Math.max(1, parseInt(r.qty) || 1);
-                    for (let i = 0; i < count; i++) rows.push({ trade: r.trade, index: i });
+                    for (let i = 0; i < count; i++) expectedRows.push({ trade: r.trade, index: i });
                   });
-                  if (rows.length === 0) {
+                  if (expectedRows.length === 0) {
                     return (
                       <tr className="border-b border-gray-300">
                         <td colSpan={6} className="p-3 text-center text-gray-400 italic">
@@ -691,28 +730,67 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                       </tr>
                     );
                   }
-                  return rows.map((r, idx) => (
-                    <tr key={`${r.trade}-${idx}`} className="border-b border-gray-300">
-                      <td className="p-1 border-r border-gray-300">
-                        <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" placeholder="" />
-                      </td>
-                      <td className="p-1 border-r border-gray-300 text-center">
-                        <span className="text-xs font-medium">{r.trade}</span>
-                      </td>
-                      <td className="p-1 border-r border-gray-300 text-center">
-                        <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
-                      </td>
-                      <td className="p-1 border-r border-gray-300 text-center">
-                        <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
-                      </td>
-                      <td className="p-1 border-r border-gray-300 text-center">
-                        <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
-                      </td>
-                      <td className="p-1 text-center">
-                        <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto text-center" placeholder="" />
-                      </td>
-                    </tr>
-                  ));
+                  // Ensure labourArr matches expected length
+                  while (labourArr.length < expectedRows.length) {
+                    labourArr.push({ name: "", trade: expectedRows[labourArr.length]?.trade || "", date: "", start_time: "", end_time: "", total_hrs: "" });
+                  }
+                  const updateLabourRow = (idx: number, field: string, value: string) => {
+                    const arr = [...labourArr];
+                    arr[idx] = { ...arr[idx], [field]: value };
+                    const json = JSON.stringify(arr);
+                    labourHoursRef.current = json;
+                    setForm((prev) => ({ ...prev, labour_hours: json }));
+                  };
+                  const saveLabour = () => {
+                    if (wo) saveField("labour_hours", labourHoursRef.current);
+                  };
+                  return expectedRows.map((r, idx) => {
+                    const row = labourArr[idx] || { name: "", trade: r.trade, date: "", start_time: "", end_time: "", total_hrs: "" };
+                    return (
+                      <tr key={`${r.trade}-${idx}`} className="border-b border-gray-300">
+                        <td className="p-1 border-r border-gray-300">
+                          <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                            value={row.name}
+                            onChange={(e) => updateLabourRow(idx, "name", e.target.value)}
+                            onBlur={saveLabour}
+                            placeholder=""
+                          />
+                        </td>
+                        <td className="p-1 border-r border-gray-300 text-center">
+                          <span className="text-xs font-medium">{r.trade}</span>
+                        </td>
+                        <td className="p-1 border-r border-gray-300 text-center">
+                          <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                            value={row.date}
+                            onChange={(e) => updateLabourRow(idx, "date", e.target.value)}
+                            onBlur={saveLabour}
+                          />
+                        </td>
+                        <td className="p-1 border-r border-gray-300 text-center">
+                          <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                            value={row.start_time}
+                            onChange={(e) => updateLabourRow(idx, "start_time", e.target.value)}
+                            onBlur={saveLabour}
+                          />
+                        </td>
+                        <td className="p-1 border-r border-gray-300 text-center">
+                          <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                            value={row.end_time}
+                            onChange={(e) => updateLabourRow(idx, "end_time", e.target.value)}
+                            onBlur={saveLabour}
+                          />
+                        </td>
+                        <td className="p-1 text-center">
+                          <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto text-center"
+                            value={row.total_hrs}
+                            onChange={(e) => updateLabourRow(idx, "total_hrs", e.target.value)}
+                            onBlur={saveLabour}
+                            placeholder=""
+                          />
+                        </td>
+                      </tr>
+                    );
+                  });
                 })()}
               </tbody>
             </table>

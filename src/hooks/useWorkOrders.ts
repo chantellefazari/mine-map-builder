@@ -25,6 +25,7 @@ export interface WorkOrder {
   supervisor_sign_date: string;
   operations_handover_name: string;
   operations_handover_date: string;
+  labour_hours: any;
   created_at: string;
   updated_at: string;
 }
