@@ -763,6 +763,134 @@ export type Database = {
         }
         Relationships: []
       }
+      purchase_request_lines: {
+        Row: {
+          created_at: string
+          estimated_cost: number
+          gl_code: string
+          id: string
+          part_description: string
+          purchase_request_id: string
+          quantity: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          estimated_cost?: number
+          gl_code?: string
+          id?: string
+          part_description?: string
+          purchase_request_id: string
+          quantity?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          estimated_cost?: number
+          gl_code?: string
+          id?: string
+          part_description?: string
+          purchase_request_id?: string
+          quantity?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_request_lines_purchase_request_id_fkey"
+            columns: ["purchase_request_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_requests: {
+        Row: {
+          admin_notes: string
+          approved_at: string | null
+          approved_by: string | null
+          comments: string
+          created_at: string
+          delivery_address: string
+          department: string
+          id: string
+          pr_number: string
+          quote_url: string | null
+          required_date: string | null
+          status: string
+          submitted_at: string | null
+          supervisor_name: string
+          supervisor_user_id: string | null
+          supplier_id: string | null
+          supplier_name: string
+          supplier_organises_freight: boolean
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          admin_notes?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          comments?: string
+          created_at?: string
+          delivery_address?: string
+          department?: string
+          id?: string
+          pr_number: string
+          quote_url?: string | null
+          required_date?: string | null
+          status?: string
+          submitted_at?: string | null
+          supervisor_name?: string
+          supervisor_user_id?: string | null
+          supplier_id?: string | null
+          supplier_name?: string
+          supplier_organises_freight?: boolean
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          admin_notes?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          comments?: string
+          created_at?: string
+          delivery_address?: string
+          department?: string
+          id?: string
+          pr_number?: string
+          quote_url?: string | null
+          required_date?: string | null
+          status?: string
+          submitted_at?: string | null
+          supervisor_name?: string
+          supervisor_user_id?: string | null
+          supplier_id?: string | null
+          supplier_name?: string
+          supplier_organises_freight?: boolean
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_requests_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_requests_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_config: {
         Row: {
           config_key: string
@@ -1317,6 +1445,7 @@ export type Database = {
         Returns: boolean
       }
       next_po_number: { Args: never; Returns: string }
+      next_pr_number: { Args: never; Returns: string }
       next_wo_number: { Args: never; Returns: string }
     }
     Enums: {
