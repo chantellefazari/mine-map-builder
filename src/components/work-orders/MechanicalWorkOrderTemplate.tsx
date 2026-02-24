@@ -301,16 +301,52 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
               </div>
             </div>
             {/* Row 3: Resources Required */}
-            <div className="grid grid-cols-1 gap-2">
-              <div className="border border-gray-300 p-2">
-                <span className="text-xs text-gray-500 block mb-1">Resources Required</span>
-                <Input
-                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                  value={form.resources_required}
-                  onChange={(e) => setForm({ ...form, resources_required: e.target.value })}
-                  onBlur={(e) => handleFieldBlur("resources_required", e.target.value)}
-                  placeholder="e.g. Mechanical x2, Electrical x1, Boilermaker x1"
-                />
+            <div className="border border-gray-300">
+              <div className="bg-gray-100 px-2 py-1.5 border-b border-gray-300">
+                <span className="font-semibold text-xs text-gray-700">RESOURCES REQUIRED</span>
+              </div>
+              <div className="grid grid-cols-4 gap-0">
+                {[0, 1, 2, 3].map((idx) => {
+                  const parsed = (() => {
+                    try { return JSON.parse(form.resources_required || "[]"); } catch { return []; }
+                  })();
+                  const row = parsed[idx] || { trade: "", qty: "" };
+                  const updateRow = (field: string, value: string) => {
+                    const arr = (() => {
+                      try { return JSON.parse(form.resources_required || "[]"); } catch { return []; }
+                    })();
+                    while (arr.length <= idx) arr.push({ trade: "", qty: "" });
+                    arr[idx] = { ...arr[idx], [field]: value };
+                    const json = JSON.stringify(arr);
+                    setForm((prev) => ({ ...prev, resources_required: json }));
+                    if (wo) saveField("resources_required", json);
+                  };
+                  return (
+                    <div key={idx} className={`flex items-center gap-1 p-1.5 ${idx < 3 ? "border-r border-gray-300" : ""}`}>
+                      <select
+                        className="h-7 text-xs bg-white border border-dashed border-gray-300 rounded px-1 print:border-none print:appearance-none cursor-pointer flex-1"
+                        value={row.trade}
+                        onChange={(e) => updateRow("trade", e.target.value)}
+                      >
+                        <option value="">Trade…</option>
+                        <option value="MECH">MECH</option>
+                        <option value="ELEC">ELEC</option>
+                        <option value="SHUT">SHUT</option>
+                        <option value="PROJ">PROJ</option>
+                        <option value="BOIL">BOIL</option>
+                        <option value="OPS">OPS</option>
+                      </select>
+                      <span className="text-xs text-gray-400">×</span>
+                      <Input
+                        className="h-7 w-10 text-xs text-center border-dashed print:border-none print:p-0 print:h-auto"
+                        value={row.qty}
+                        onChange={(e) => updateRow("qty", e.target.value)}
+                        placeholder="#"
+                        maxLength={2}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
