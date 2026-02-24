@@ -30,6 +30,7 @@ export interface POTrackerItem {
   date_received: string | null;
   comments: string;
   attachment_url: string;
+  freight_tracking_number: string;
   created_at: string;
   updated_at: string;
   wo_number?: string;

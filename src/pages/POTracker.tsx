@@ -231,7 +231,12 @@ const POTracker = () => {
                             </TableCell>
                             <TableCell className="text-center">
                               {po.freight_required ? (
-                                <span className="text-xs font-medium">{po.freight_company || "Yes"}</span>
+                                <div className="text-xs">
+                                  <span className="font-medium">{po.freight_company || "Yes"}</span>
+                                  {po.freight_tracking_number && (
+                                    <p className="text-muted-foreground font-mono mt-0.5">{po.freight_tracking_number}</p>
+                                  )}
+                                </div>
                               ) : (
                                 <span className="text-muted-foreground text-xs">No</span>
                               )}

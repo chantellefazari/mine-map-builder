@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, Search } from "lucide-react";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
+import { useSuppliers } from "@/hooks/useSuppliers";
 import { SparePartLookupDialog } from "./SparePartLookupDialog";
 import type { POTrackerItem, POLineItem } from "@/hooks/usePOTracker";
 
@@ -32,12 +33,19 @@ const emptyLine = (): POLineItem => ({
 
 export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkOrderId }: AddPODialogProps) => {
   const { workOrders } = useWorkOrders();
+  const { suppliers } = useSuppliers();
   const [lookupLineIdx, setLookupLineIdx] = useState<number | null>(null);
+
+  const freightOptions = (suppliers ?? [])
+    .map((s) => s.preferredFreightCompany)
+    .filter((v, i, arr): v is string => !!v && arr.indexOf(v) === i);
 
   const [form, setForm] = useState({
     work_order_id: defaultWorkOrderId ?? "",
     supplier: "",
     freight_company: "",
+    freight_company_hidden: false,
+    freight_tracking_number: "",
     order_date: "",
     eta: "",
     status: "Ordered",
@@ -54,6 +62,8 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
         work_order_id: editItem.work_order_id ?? "",
         supplier: editItem.supplier,
         freight_company: editItem.freight_company ?? "",
+        freight_company_hidden: !editItem.freight_required,
+        freight_tracking_number: (editItem as any).freight_tracking_number ?? "",
         order_date: editItem.order_date ?? "",
         eta: editItem.eta ?? "",
         status: editItem.status,
@@ -67,6 +77,8 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
         work_order_id: defaultWorkOrderId ?? "",
         supplier: "",
         freight_company: "",
+        freight_company_hidden: false,
+        freight_tracking_number: "",
         order_date: "",
         eta: "",
         status: "Ordered",
@@ -90,6 +102,7 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
         work_order_id: form.work_order_id || null,
         supplier: form.supplier,
         freight_company: form.freight_company,
+        freight_tracking_number: form.freight_tracking_number,
         order_date: form.order_date || null,
         eta: form.eta || null,
         status: form.status,
@@ -127,10 +140,31 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
             <Label>Supplier</Label>
             <Input value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} />
           </div>
-          <div className="space-y-2">
-            <Label>Freight / Transport Company</Label>
-            <Input value={form.freight_company} onChange={(e) => setForm({ ...form, freight_company: e.target.value })} placeholder="e.g. TNT, Toll, StarTrack" />
-          </div>
+          {!form.freight_company_hidden && (
+            <div className="space-y-2">
+              <Label>Freight / Transport Company</Label>
+              <Select
+                value={form.freight_company}
+                onValueChange={(v) => setForm({ ...form, freight_company: v === "__manual__" ? "" : v })}
+              >
+                <SelectTrigger><SelectValue placeholder="Select freight company" /></SelectTrigger>
+                <SelectContent>
+                  {freightOptions.map((fc) => (
+                    <SelectItem key={fc} value={fc}>{fc}</SelectItem>
+                  ))}
+                  <SelectItem value="__manual__">Manual Entry</SelectItem>
+                </SelectContent>
+              </Select>
+              {(!freightOptions.includes(form.freight_company) || !form.freight_company) && (
+                <Input
+                  value={form.freight_company}
+                  onChange={(e) => setForm({ ...form, freight_company: e.target.value })}
+                  placeholder="Enter freight company name"
+                  className="mt-1"
+                />
+              )}
+            </div>
+          )}
           <div className="space-y-2">
             <Label>Status</Label>
             <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>
@@ -204,6 +238,18 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
             </table>
           </div>
         </div>
+
+        {/* Freight Tracking Number */}
+        {!form.freight_company_hidden && form.freight_company && (
+          <div className="space-y-2 mt-2">
+            <Label>Freight Tracking Number</Label>
+            <Input
+              value={form.freight_tracking_number}
+              onChange={(e) => setForm({ ...form, freight_tracking_number: e.target.value })}
+              placeholder="e.g. TOLL-12345678"
+            />
+          </div>
+        )}
 
         {/* Comments */}
         <div className="space-y-2 mt-2">

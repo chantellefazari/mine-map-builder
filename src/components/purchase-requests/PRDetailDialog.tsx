@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Loader2, CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
@@ -412,7 +413,14 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
                 {!freightToggle && (
                   <div className="space-y-1.5">
                     <Label className="text-xs">Freight Company</Label>
-                    <Input value={freightCompany} onChange={(e) => setFreightCompany(e.target.value)} placeholder="e.g. TNT, Toll, StarTrack" className="text-sm" />
+                    <Select value={freightCompany} onValueChange={(v) => setFreightCompany(v === "__manual__" ? "" : v)}>
+                      <SelectTrigger className="text-sm"><SelectValue placeholder="Select freight company" /></SelectTrigger>
+                      <SelectContent>
+                        {/* Will be populated dynamically - for now allow manual */}
+                        <SelectItem value="__manual__">Manual Entry</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Input value={freightCompany} onChange={(e) => setFreightCompany(e.target.value)} placeholder="Enter freight company name" className="text-sm mt-1" />
                   </div>
                 )}
               </div>
