@@ -520,10 +520,19 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             );
           })()}
 
-          <div className="border border-gray-300">
-            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
-              <span className="font-semibold text-gray-700">PARTS / MATERIALS USED</span>
-              <div className="flex gap-2 print:hidden">
+          {parts.length === 0 ? (
+            <div className="border border-dashed border-gray-300 rounded p-3 flex items-center justify-between print:hidden">
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5 text-xs h-7"
+                onClick={() => { if (wo) addPart.mutate({ work_order_id: wo.id, part_number: "", part_description: "", quantity_required: 1, location: "" }); }}
+                disabled={!wo}
+              >
+                <span className="text-lg leading-none">+</span>
+                Add Part / Material
+              </Button>
+              <div className="flex gap-2">
                 <Button
                   size="sm"
                   variant="outline"
@@ -545,56 +554,70 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 </Button>
               </div>
             </div>
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-gray-300 bg-gray-50">
-                  <th className="text-left p-2 border-r border-gray-300">Part Number</th>
-                  <th className="text-left p-2 border-r border-gray-300">Description</th>
-                  <th className="text-center p-2 border-r border-gray-300 w-16">Qty</th>
-                  <th className="text-left p-2 border-r border-gray-300 w-24">Store Location</th>
-                  <th className="text-center p-2 w-10 print:hidden"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {parts.length > 0 ? (
-                  <>
-                    {parts.map((part) => (
-                      <tr key={part.id} className="border-b border-gray-300">
-                        <td className="p-2 border-r border-gray-300 h-8 font-mono">{part.part_number || ""}</td>
-                        <td className="p-2 border-r border-gray-300">{part.part_description || ""}</td>
-                        <td className="p-2 border-r border-gray-300 text-center">{part.quantity_required || ""}</td>
-                        <td className="p-2 border-r border-gray-300">{part.location || ""}</td>
-                        <td className="p-1 text-center print:hidden">
-                          <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => deletePart.mutate(part.id)}>
-                            <Trash2 className="h-3 w-3 text-destructive" />
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                    {Array.from({ length: Math.max(0, 4 - parts.length) }).map((_, i) => (
-                      <tr key={`empty-${i}`} className="border-b border-gray-300">
-                        <td className="p-2 border-r border-gray-300 h-8"></td>
-                        <td className="p-2 border-r border-gray-300"></td>
-                        <td className="p-2 border-r border-gray-300 text-center"></td>
-                        <td className="p-2 border-r border-gray-300"></td>
-                        <td className="p-1 print:hidden"></td>
-                      </tr>
-                    ))}
-                  </>
-                ) : (
-                  [1, 2, 3, 4].map((row) => (
-                    <tr key={row} className="border-b border-gray-300">
-                      <td className="p-2 border-r border-gray-300 h-8"></td>
-                      <td className="p-2 border-r border-gray-300"></td>
-                      <td className="p-2 border-r border-gray-300 text-center"></td>
-                      <td className="p-2 border-r border-gray-300"></td>
-                      <td className="p-1 print:hidden"></td>
+          ) : (
+            <div className="border border-gray-300">
+              <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
+                <span className="font-semibold text-gray-700">PARTS / MATERIALS USED</span>
+                <div className="flex gap-2 print:hidden">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 w-6 p-0"
+                    onClick={() => { if (wo) addPart.mutate({ work_order_id: wo.id, part_number: "", part_description: "", quantity_required: 1, location: "" }); }}
+                    disabled={!wo}
+                    title="Add part"
+                  >
+                    <span className="text-lg leading-none">+</span>
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="gap-1.5 text-xs h-7"
+                    onClick={handleGenerateParts}
+                    disabled={!wo || isGeneratingParts || !form.problem_description.trim()}
+                  >
+                    {isGeneratingParts ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
+                    {isGeneratingParts ? "Generating…" : "Generate with AI"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="gap-1.5 text-xs h-7"
+                    onClick={() => setSpareLookupOpen(true)}
+                    disabled={!wo}
+                  >
+                    <Search className="h-3 w-3" /> Search & Add Part
+                  </Button>
+                </div>
+              </div>
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-gray-300 bg-gray-50">
+                    <th className="text-left p-2 border-r border-gray-300">Part Number</th>
+                    <th className="text-left p-2 border-r border-gray-300">Description</th>
+                    <th className="text-center p-2 border-r border-gray-300 w-16">Qty</th>
+                    <th className="text-left p-2 border-r border-gray-300 w-24">Store Location</th>
+                    <th className="text-center p-2 w-10 print:hidden"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {parts.map((part) => (
+                    <tr key={part.id} className="border-b border-gray-300">
+                      <td className="p-2 border-r border-gray-300 h-8 font-mono">{part.part_number || ""}</td>
+                      <td className="p-2 border-r border-gray-300">{part.part_description || ""}</td>
+                      <td className="p-2 border-r border-gray-300 text-center">{part.quantity_required || ""}</td>
+                      <td className="p-2 border-r border-gray-300">{part.location || ""}</td>
+                      <td className="p-1 text-center print:hidden">
+                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => deletePart.mutate(part.id)}>
+                          <Trash2 className="h-3 w-3 text-destructive" />
+                        </Button>
+                      </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           {/* Spare Part Lookup Dialog */}
           <SparePartLookupDialog
