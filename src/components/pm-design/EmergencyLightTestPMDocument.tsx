@@ -1,20 +1,10 @@
-import { Checkbox } from "@/components/ui/checkbox";
-import { ClipboardCheck, Lightbulb } from "lucide-react";
+import { ClipboardCheck } from "lucide-react";
 import { PMBannerHeader } from "./PMBannerHeader";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
 import { PMSignOffBlock } from "./PMSignOffBlock";
-
-const inspectionSteps = [
-  { id: 1, task: "Clean fittings so free of dust." },
-  { id: 2, task: "Inspect all light fittings are working and are switched correctly. Note any not working on diagram" },
-  { id: 3, task: "Turn off circuit breakers in LAP to test emergency fittings." },
-  { id: 4, task: "Note any emergency fittings which do not work when powered off." },
-  { id: 5, task: "After 90 minutes. Check that emergency fittings are still operating. Note any which have failed." },
-  { id: 6, task: "Fill out test sheet below." },
-  { id: 7, task: "Report any faults identified." },
-];
+import { DynamicInspectionTable } from "./DynamicInspectionTable";
 
 export const EmergencyLightTestPMDocument = () => {
   const { pms } = usePMasterList();
@@ -39,33 +29,7 @@ export const EmergencyLightTestPMDocument = () => {
 
         <SafetyPrecautionsSection />
 
-        {/* Inspection Steps */}
-        <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-            <Lightbulb className="w-5 h-5 text-primary" />
-            INSPECTION
-          </div>
-          <table className="w-full text-xs border-collapse">
-            <thead>
-              <tr className="bg-muted">
-                <th className="border border-border px-3 py-2 text-left font-semibold w-[46%]">Task</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th>
-                <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th>
-                <th className="border border-border px-3 py-2 text-left font-semibold w-[34%]">Comments</th>
-              </tr>
-            </thead>
-            <tbody>
-              {inspectionSteps.map((item) => (
-                <tr key={item.id} className="hover:bg-muted/30">
-                  <td className="border border-border px-3 py-2">{item.task}</td>
-                  <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" /></div></td>
-                  <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" /></div></td>
-                  <td className="border border-border px-2 py-4"></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DynamicInspectionTable tasksData={pm?.tasks} title="INSPECTION" />
 
         {/* 6-Monthly Test Table */}
         <div className="border-b border-border">

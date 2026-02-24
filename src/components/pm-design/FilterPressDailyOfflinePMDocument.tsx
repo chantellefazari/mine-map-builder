@@ -1,89 +1,13 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  AlertTriangle,
-  ClipboardCheck,
-  AlertCircle,
-  CheckCircle2,
-  Cog,
-} from "lucide-react";
+import { AlertTriangle, AlertCircle, CheckCircle2 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
-
-interface TaskItem {
-  task: string;
-}
-
-interface EquipmentSection {
-  equipmentId: string;
-  equipmentName: string;
-  tasks: TaskItem[];
-}
-
-const inspectionData: EquipmentSection[] = [
-  {
-    equipmentId: "FP-01",
-    equipmentName: "Filter Press",
-    tasks: [
-      { task: "Check general condition of the filter press structure" },
-      { task: "Inspect filter cloths for wear, damage, or blinding" },
-      { task: "Check plate alignment and condition" },
-      { task: "Inspect plate shifting mechanism for proper operation" },
-      { task: "Check hydraulic cylinder and hoses for leaks or damage" },
-      { task: "Inspect safety interlocks and emergency stop functions" },
-      { task: "Check drip trays and containment areas for leaks or spills" },
-      { task: "Inspect filtrate discharge points for blockages or leaks" },
-      { task: "Check air blow system for proper operation (if equipped)" },
-      { task: "Inspect cake discharge system for proper operation" },
-    ],
-  },
-  {
-    equipmentId: "FP-02",
-    equipmentName: "Hydraulic Unit",
-    tasks: [
-      { task: "Check hydraulic oil level" },
-      { task: "Inspect hydraulic pump for leaks or unusual noise" },
-      { task: "Check hydraulic pressure gauges for correct readings" },
-      { task: "Inspect hydraulic hoses and fittings for leaks or damage" },
-      { task: "Check hydraulic oil cooler for proper operation" },
-      { task: "Inspect hydraulic filters and replace if necessary" },
-      { task: "Check hydraulic relief valve setting" },
-      { task: "Inspect hydraulic accumulator for proper charge (if equipped)" },
-    ],
-  },
-  {
-    equipmentId: "FP-03",
-    equipmentName: "Feed System",
-    tasks: [
-      { task: "Check feed pump for leaks or unusual noise" },
-      { task: "Inspect feed pump suction and discharge lines for leaks" },
-      { task: "Check feed pump motor for proper operation" },
-      { task: "Inspect feed tank level and condition" },
-      { task: "Check feed tank agitator for proper operation (if equipped)" },
-      { task: "Inspect feed line pressure gauges for correct readings" },
-      { task: "Check feed line flow meters for accuracy" },
-      { task: "Inspect feed line valves for proper operation" },
-    ],
-  },
-  {
-    equipmentId: "FP-04",
-    equipmentName: "Ancillary Equipment",
-    tasks: [
-      { task: "Check air compressor for proper operation (if equipped)" },
-      { task: "Inspect air lines and fittings for leaks (if equipped)" },
-      { task: "Check polymer make-up system for proper operation (if equipped)" },
-      { task: "Inspect polymer dosing pumps for leaks or damage (if equipped)" },
-      { task: "Check cake conveyor system for proper operation (if equipped)" },
-      { task: "Inspect conveyor belt for wear or damage (if equipped)" },
-      { task: "Check conveyor belt alignment (if equipped)" },
-      { task: "Inspect conveyor belt scrapers for proper operation (if equipped)" },
-    ],
-  },
-];
+import { DynamicInspectionTable } from "./DynamicInspectionTable";
 
 const immediateAttentionTriggers = [
   "Plate cracks or damaged sealing edges",
@@ -125,7 +49,6 @@ export const FilterPressDailyOfflinePMDocument = () => {
           </div>
         </div>
 
-        {/* Header Information Grid */}
         <PMMetadataGrid
           pmId={pm?.id}
           projectSite="Tenant Creek"
@@ -137,57 +60,9 @@ export const FilterPressDailyOfflinePMDocument = () => {
           resources={pm?.resources}
         />
 
-        {/* Safety Precautions */}
         <SafetyPrecautionsSection />
 
-        {/* INSPECTION TABLES */}
-        <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-            <ClipboardCheck className="w-5 h-5 text-primary" />
-            INSPECTIONS
-          </div>
-
-          {inspectionData.map((section, sectionIndex) => (
-            <div
-              key={section.equipmentId}
-              className={sectionIndex < inspectionData.length - 1 ? "border-b border-border" : ""}
-            >
-              <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Cog className="w-4 h-4 text-primary" />
-                  <span className="text-primary font-bold">{section.equipmentId}</span>
-                  <span className="text-muted-foreground">|</span>
-                  <span>{section.equipmentName}</span>
-                </div>
-              </div>
-
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-muted/50">
-                    <th className="border border-border text-left px-4 py-2 font-medium w-[46%]">Task</th>
-                    <th className="border border-border text-center px-2 py-2 font-medium w-[10%]">Serviceable</th>
-                    <th className="border border-border text-center px-2 py-2 font-medium w-[10%]">Defective</th>
-                    <th className="border border-border text-left px-4 py-2 font-medium w-[34%]">Comments</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {section.tasks.map((task, taskIndex) => (
-                    <tr key={taskIndex} className="border-b border-border hover:bg-muted/30">
-                      <td className="border border-border px-4 py-2.5 text-foreground">{task.task}</td>
-                      <td className="border border-border text-center px-2 py-2.5">
-                        <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
-                      </td>
-                      <td className="border border-border text-center px-2 py-2.5">
-                        <Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" />
-                      </td>
-                      <td className="border border-border px-4 py-4"></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ))}
-        </div>
+        <DynamicInspectionTable tasksData={pm?.tasks} showEquipmentId />
 
         {/* Immediate Attention Triggers */}
         <div className="border-b border-border">
@@ -236,22 +111,10 @@ export const FilterPressDailyOfflinePMDocument = () => {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">Name:</span>
-                <Input className="h-7" />
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">Signature:</span>
-                <div className="h-7 border border-border rounded bg-muted/30"></div>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">Date:</span>
-                <Input className="h-7" type="date" />
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">PM Duration:</span>
-                <Input className="h-7" />
-              </div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Name:</span><Input className="h-7" /></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Signature:</span><div className="h-7 border border-border rounded bg-muted/30"></div></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Date:</span><Input className="h-7" type="date" /></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">PM Duration:</span><Input className="h-7" /></div>
             </div>
           </div>
         </div>
