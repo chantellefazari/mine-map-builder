@@ -1220,6 +1220,7 @@ export type Database = {
           date_raised: string | null
           functional_location: string | null
           id: string
+          labour_hours: Json
           operations_handover_date: string
           operations_handover_name: string
           parts_used: string | null
@@ -1249,6 +1250,7 @@ export type Database = {
           date_raised?: string | null
           functional_location?: string | null
           id?: string
+          labour_hours?: Json
           operations_handover_date?: string
           operations_handover_name?: string
           parts_used?: string | null
@@ -1278,6 +1280,7 @@ export type Database = {
           date_raised?: string | null
           functional_location?: string | null
           id?: string
+          labour_hours?: Json
           operations_handover_date?: string
           operations_handover_name?: string
           parts_used?: string | null
