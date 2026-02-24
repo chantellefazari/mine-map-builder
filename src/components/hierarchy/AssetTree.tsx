@@ -2,29 +2,33 @@ import React from "react";
 import { CollapsibleTreeNode } from "./CollapsibleTreeNode";
 import { TreeBranch } from "./TreeBranch";
 import { useAssetSearch } from "@/hooks/useAssetSearch";
-import { areasData, AreaType, Component } from "./assetData";
-import { pidTagMappings } from "./pidTagMappings";
+import { AreaType, Component } from "./assetData";
 import { crushingPlantAreas } from "./crushingPlantData";
+import { useProcessingPlantAssets, useProcessingPidTags } from "@/hooks/useProcessingPlantAssets";
+import { Loader2 } from "lucide-react";
 
 interface AssetTreeProps {
   searchQuery?: string;
 }
 
-// Build a lookup map from asset number to P&ID tags
-const buildPidTagLookup = () => {
-  const lookup = new Map<string, string[]>();
-  pidTagMappings.forEach((mapping) => {
-    const existing = lookup.get(mapping.assetNumber) || [];
-    existing.push(mapping.pidTag);
-    lookup.set(mapping.assetNumber, existing);
-  });
-  return lookup;
-};
-
-const pidTagsByAsset = buildPidTagLookup();
-
 export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
-  const { matchingPaths } = useAssetSearch(areasData, searchQuery);
+  const { data: areasData, isLoading: assetsLoading } = useProcessingPlantAssets();
+  const { data: pidTagMappingsDB, isLoading: pidLoading } = useProcessingPidTags();
+
+  // Build P&ID tag lookup from DB data
+  const pidTagsByAsset = React.useMemo(() => {
+    const lookup = new Map<string, string[]>();
+    if (!pidTagMappingsDB) return lookup;
+    pidTagMappingsDB.forEach((mapping) => {
+      const existing = lookup.get(mapping.assetNumber) || [];
+      existing.push(mapping.pidTag);
+      lookup.set(mapping.assetNumber, existing);
+    });
+    return lookup;
+  }, [pidTagMappingsDB]);
+
+  const areas = areasData || [];
+  const { matchingPaths } = useAssetSearch(areas, searchQuery);
   const hasSearch = searchQuery.trim().length > 0;
 
   // Helper to check if a path should be expanded due to search
@@ -43,7 +47,6 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
   const getAllPidTags = (assetNumber: string, inlineTags?: string[]) => {
     const mappedTags = pidTagsByAsset.get(assetNumber) || [];
     const inline = inlineTags || [];
-    // Combine and deduplicate
     const allTags = [...new Set([...inline, ...mappedTags])];
     return allTags;
   };
@@ -61,6 +64,15 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
     return text.toLowerCase().includes(searchQuery.toLowerCase());
   };
 
+  if (assetsLoading || pidLoading) {
+    return (
+      <div className="w-full flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <span className="ml-3 text-muted-foreground">Loading asset hierarchy...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full overflow-x-auto py-6">
       <div className="min-w-max flex justify-center">
@@ -73,10 +85,9 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
             <CollapsibleTreeNode label="Mining" level="plant" hasChildren={false} />
           </TreeBranch>
           
-          {/* Crushing Plant – CRU hierarchy */}
+          {/* Crushing Plant – CRU hierarchy (still hardcoded) */}
           <TreeBranch horizontal>
             <CollapsibleTreeNode label="Crushing Plant" level="plant" hasChildren defaultExpanded areaType="CRU">
-              {/* CRU Sub-Areas: ROM, PRI, SCR, SEC, STK, CTL, DUS */}
               {crushingPlantAreas.map((cruArea, cruAreaIndex) => (
                 <TreeBranch key={cruArea.areaCode} isLast={cruAreaIndex === crushingPlantAreas.length - 1}>
                   <CollapsibleTreeNode
@@ -88,7 +99,6 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                     hasChildren={cruArea.parentAssets.length > 0}
                     isHighlighted={cruMatchesSearch(cruArea.label) || cruMatchesSearch(cruArea.areaCode)}
                   >
-                    {/* Parent Assets */}
                     {cruArea.parentAssets.map((parent, paIndex) => (
                       <TreeBranch key={paIndex} isLast={paIndex === cruArea.parentAssets.length - 1}>
                         <CollapsibleTreeNode
@@ -98,7 +108,6 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                           hasChildren={parent.equipment.length > 0}
                           isHighlighted={cruMatchesSearch(parent.label)}
                         >
-                          {/* Equipment */}
                           {parent.equipment.map((equip, equipIndex) => {
                             const hasComponents = equip.components && equip.components.length > 0;
                             return (
@@ -110,7 +119,6 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                   hasChildren={hasComponents}
                                   isHighlighted={cruMatchesSearch(equip.assetNumber) || cruMatchesSearch(equip.name)}
                                 >
-                                  {/* Components */}
                                   {hasComponents && equip.components!.map((comp, compIndex) => (
                                     <TreeBranch key={compIndex} isLast={compIndex === equip.components!.length - 1}>
                                       <CollapsibleTreeNode
@@ -151,17 +159,16 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
             </CollapsibleTreeNode>
           </TreeBranch>
           
-          {/* Processing Plant */}
+          {/* Processing Plant – now DB-driven */}
           <TreeBranch horizontal>
             <CollapsibleTreeNode label="Processing Plant" level="plant" hasChildren defaultExpanded>
-              {/* Level 3: Areas */}
-              {areasData.map((area, areaIndex) => {
+              {areas.map((area, areaIndex) => {
                 const areaPath = [area.code];
                 const areaExpanded = shouldExpandForSearch(areaPath);
                 const areaId = `area-${area.code}`;
                 
                 return (
-                  <TreeBranch key={area.code} isLast={areaIndex === areasData.length - 1}>
+                  <TreeBranch key={area.code} isLast={areaIndex === areas.length - 1}>
                     <CollapsibleTreeNode
                       id={areaId}
                       code={area.code}
@@ -173,7 +180,6 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                       forceExpanded={areaExpanded}
                       isHighlighted={matchesSearch(area.label) || matchesSearch(area.code)}
                     >
-                      {/* Level 4: Sub Areas */}
                       {area.subAreas.map((subArea, subIndex) => {
                         const subAreaPath = [...areaPath, subArea.label];
                         const subAreaExpanded = shouldExpandForSearch(subAreaPath);
@@ -190,7 +196,6 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                               forceExpanded={subAreaExpanded}
                               isHighlighted={matchesSearch(subArea.label)}
                             >
-                              {/* Level 5: Parent Assets */}
                               {subArea.parentAssets.map((parentAsset, paIndex) => {
                                 const parentAssetPath = [...subAreaPath, parentAsset.label];
                                 const parentAssetExpanded = shouldExpandForSearch(parentAssetPath);
@@ -207,7 +212,6 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                       forceExpanded={parentAssetExpanded}
                                       isHighlighted={matchesSearch(parentAsset.label)}
                                     >
-                                      {/* Level 6: Equipment */}
                                       {parentAsset.equipment.map((equip, equipIndex) => {
                                         const equipLabel = `${equip.assetNumber} — ${equip.name}`;
                                         const equipId = `equip-${area.code}-${subIndex}-${paIndex}-${equipIndex}`;
@@ -225,7 +229,6 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                               isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || isPidMatch}
                                               pidTags={allPidTags}
                                             >
-                                              {/* Level 7: Components (OEM parts under equipment) */}
                                               {hasComponents && equip.components!.map((comp, compIndex) => {
                                                 const compLabel = `${comp.componentCode} — ${comp.componentName}`;
                                                 const compId = `comp-${area.code}-${subIndex}-${paIndex}-${equipIndex}-${compIndex}`;
