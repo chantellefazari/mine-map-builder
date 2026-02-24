@@ -132,10 +132,10 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label className="text-xs">Linked Work Order (optional)</Label>
-              <Select value={workOrderId} onValueChange={setWorkOrderId}>
+              <Select value={workOrderId || "__none__"} onValueChange={(v) => setWorkOrderId(v === "__none__" ? "" : v)}>
                 <SelectTrigger><SelectValue placeholder="None — Standalone PR" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None — Standalone PR</SelectItem>
+                  <SelectItem value="__none__">None — Standalone PR</SelectItem>
                   {workOrders?.map((wo) => (
                     <SelectItem key={wo.id} value={wo.id}>{wo.wo_number} — {wo.problem_description?.slice(0, 40)}</SelectItem>
                   ))}
