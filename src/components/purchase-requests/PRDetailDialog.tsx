@@ -203,7 +203,9 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
           total_value: approvalAmount || total,
           freight_required: freightNeeded,
           freight_company: freightNeeded ? (pr.freight_company || "") : "",
-          status: "Ordered",
+          status: "Issued",
+          description: pr.description_scope || pr.request_title || "",
+          last_updated_by: user?.email ?? "",
           comments: `Auto-generated from ${pr.pr_number}`,
         })
         .select()

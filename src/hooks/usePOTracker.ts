@@ -20,6 +20,7 @@ export interface POTrackerItem {
   pr_id: string | null;
   supplier: string;
   supervisor: string;
+  description: string;
   total_value: number;
   freight_required: boolean;
   freight_company: string;
@@ -28,6 +29,8 @@ export interface POTrackerItem {
   status: string;
   confirmed_on_site: boolean;
   date_received: string | null;
+  received_by: string;
+  last_updated_by: string;
   comments: string;
   attachment_url: string;
   freight_tracking_number: string;
@@ -70,17 +73,22 @@ export function usePOTracker(workOrderId?: string) {
   const allocateMutation = useMutation({
     mutationFn: async (payload: {
       work_order_id?: string | null;
+      pr_id?: string | null;
       supplier: string;
+      description?: string;
       freight_company: string;
       order_date?: string | null;
       eta?: string | null;
       status: string;
       confirmed_on_site: boolean;
       date_received?: string | null;
+      received_by?: string;
+      last_updated_by?: string;
       comments: string;
+      total_value?: number;
+      freight_required?: boolean;
       lines: POLineItem[];
     }) => {
-      // Get next PO number
       const { data: nextNum, error: nextErr } = await (supabase as any).rpc("next_po_number");
       if (nextErr) throw nextErr;
 
@@ -115,14 +123,20 @@ export function usePOTracker(workOrderId?: string) {
     mutationFn: async (payload: {
       id: string;
       work_order_id?: string | null;
+      pr_id?: string | null;
       supplier: string;
+      description?: string;
       freight_company: string;
       order_date?: string | null;
       eta?: string | null;
       status: string;
       confirmed_on_site: boolean;
       date_received?: string | null;
+      received_by?: string;
+      last_updated_by?: string;
       comments: string;
+      total_value?: number;
+      freight_required?: boolean;
       lines: POLineItem[];
     }) => {
       const { lines, id, ...header } = payload;
@@ -132,7 +146,6 @@ export function usePOTracker(workOrderId?: string) {
         .eq("id", id);
       if (error) throw error;
 
-      // Replace all lines
       await (supabase as any).from("po_tracker_lines").delete().eq("po_tracker_id", id);
       if (lines.length > 0) {
         const lineRows = lines.map((l) => ({
@@ -186,7 +199,7 @@ export function computePartsStatus(
   if (linkedPOs.length === 0) return "PO Not Raised";
   if (linkedPOs.every((po) => po.confirmed_on_site)) return "Parts On Site";
   if (linkedPOs.some((po) => po.status === "In Transit")) return "In Transit";
-  if (linkedPOs.some((po) => po.status === "Ordered")) return "Awaiting Delivery";
-  if (linkedPOs.some((po) => po.status === "Partially Received")) return "Partially Received";
+  if (linkedPOs.some((po) => po.status === "Issued")) return "Awaiting Delivery";
+  if (linkedPOs.some((po) => po.status === "Received Partial")) return "Partially Received";
   return "Awaiting Delivery";
 }
