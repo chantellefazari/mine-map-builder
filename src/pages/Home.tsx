@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield, PackageSearch, FileInput } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 const ALL_SECTIONS = [
   {
@@ -119,6 +120,7 @@ const Home = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              <NotificationBell />
               {isAdmin && (
                 <Button
                   variant="outline"
