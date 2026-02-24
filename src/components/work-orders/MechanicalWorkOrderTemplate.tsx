@@ -333,7 +333,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                         <option value="ELEC">ELEC</option>
                         <option value="SHUT">SHUT</option>
                         <option value="PROJ">PROJ</option>
-                        <option value="BOIL">BOIL</option>
                         <option value="OPS">OPS</option>
                       </select>
                       <span className="text-xs text-gray-400">×</span>
