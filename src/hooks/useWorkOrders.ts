@@ -51,7 +51,7 @@ export function useWorkOrders() {
       const woNumber = nextData as string;
       const { data, error } = await (supabase as any)
         .from("work_orders")
-        .insert({ wo_number: woNumber })
+        .insert({ wo_number: woNumber, required_tooling: '[""]' })
         .select()
         .single();
       if (error) throw error;
