@@ -437,23 +437,88 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             </div>
           </div>
 
-          {/* Required Tooling */}
-          <div className="border border-gray-300">
-            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
-              <span className="font-semibold text-gray-700">REQUIRED TOOLING</span>
-            </div>
-            <div className="p-3">
-              <Textarea
-                className="min-h-[60px] text-xs border-dashed print:border-none print:p-0 print:min-h-0 resize-none overflow-hidden"
-                style={{ height: 'auto' }}
-                ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
-                value={form.required_tooling}
-                onChange={(e) => { setForm({ ...form, required_tooling: e.target.value }); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
-                onBlur={(e) => handleFieldBlur("required_tooling", e.target.value)}
-                placeholder="List tools, equipment, and special tooling required for this job..."
-              />
-            </div>
-          </div>
+          {/* Required Tooling - dynamic list */}
+          {(() => {
+            const tooling: string[] = (() => { try { return JSON.parse(form.required_tooling || "[]"); } catch { return []; } })();
+            const isVisible = Array.isArray(tooling);
+            const updateTooling = (arr: string[]) => {
+              const json = JSON.stringify(arr);
+              setForm((prev) => ({ ...prev, required_tooling: json }));
+              if (wo) saveField("required_tooling", json);
+            };
+            // If no tooling items exist, show an "Add Tooling" button
+            if (!Array.isArray(tooling) || tooling.length === 0) {
+              return (
+                <div className="border border-dashed border-gray-300 rounded p-3 flex items-center justify-center print:hidden">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="gap-1.5 text-xs h-7"
+                    onClick={() => updateTooling([""])}
+                  >
+                    <span className="text-lg leading-none">+</span>
+                    Add Required Tooling
+                  </Button>
+                </div>
+              );
+            }
+            return (
+              <div className="border border-gray-300">
+                <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
+                  <span className="font-semibold text-gray-700">REQUIRED TOOLING</span>
+                  <div className="flex gap-1 print:hidden">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 w-6 p-0"
+                      onClick={() => updateTooling([...tooling, ""])}
+                      title="Add tool"
+                    >
+                      <span className="text-lg leading-none">+</span>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                      onClick={() => updateTooling([])}
+                      title="Remove tooling section"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="p-3 space-y-1.5">
+                  {tooling.map((tool, idx) => (
+                    <div key={idx} className="flex gap-2 items-center">
+                      <span className="text-xs text-gray-400 w-4 text-right shrink-0">{idx + 1}.</span>
+                      <Input
+                        className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto flex-1"
+                        value={tool}
+                        onChange={(e) => {
+                          const arr = [...tooling];
+                          arr[idx] = e.target.value;
+                          setForm((prev) => ({ ...prev, required_tooling: JSON.stringify(arr) }));
+                        }}
+                        onBlur={() => updateTooling(tooling)}
+                        placeholder="e.g. 24mm spanner, torque wrench, bearing puller..."
+                      />
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 w-6 p-0 text-gray-400 hover:text-destructive print:hidden shrink-0"
+                        onClick={() => {
+                          const arr = tooling.filter((_, i) => i !== idx);
+                          updateTooling(arr.length > 0 ? arr : []);
+                        }}
+                      >
+                        ✕
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
 
           <div className="border border-gray-300">
             <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
