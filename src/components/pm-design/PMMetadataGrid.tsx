@@ -64,15 +64,29 @@ export const PMMetadataGrid = ({
 
   const saveField = useCallback(async (field: string, value: string) => {
     if (!pmId) return;
+    console.log(`[PM-SAVE] Env: ${import.meta.env.VITE_SUPABASE_URL} | Table: pm_master_list | Field: ${field} | PM: ${pmId}`);
     const { error } = await supabase
       .from("pm_master_list")
       .update({ [field]: value } as any)
       .eq("id", pmId);
     if (error) {
+      console.error(`[PM-SAVE] FAILED writing ${field}:`, error);
       toast.error("Failed to save: " + error.message);
-    } else {
-      queryClient.invalidateQueries({ queryKey: ["pm-master-list"] });
+      return;
     }
+    // Re-fetch for proof of persistence
+    const { data: refetched, error: fetchErr } = await supabase
+      .from("pm_master_list")
+      .select("id, updated_at")
+      .eq("id", pmId)
+      .single();
+    if (fetchErr || !refetched) {
+      console.error(`[PM-SAVE] Re-fetch failed after saving ${field}:`, fetchErr);
+      toast.error("Saved but could not verify persistence");
+      return;
+    }
+    console.log(`[PM-SAVE] ✓ Persisted ${field} | id=${refetched.id} | updated_at=${refetched.updated_at}`);
+    queryClient.invalidateQueries({ queryKey: ["pm-master-list"] });
   }, [pmId, queryClient]);
 
   const flushResourceSave = useCallback(() => {
