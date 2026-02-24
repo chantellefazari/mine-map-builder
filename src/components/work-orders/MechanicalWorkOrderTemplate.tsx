@@ -435,7 +435,24 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             </div>
           </div>
 
-          {/* Parts Used - linked to work_order_parts */}
+          {/* Required Tooling */}
+          <div className="border border-gray-300">
+            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
+              <span className="font-semibold text-gray-700">REQUIRED TOOLING</span>
+            </div>
+            <div className="p-3">
+              <Textarea
+                className="min-h-[60px] text-xs border-dashed print:border-none print:p-0 print:min-h-0 resize-none overflow-hidden"
+                style={{ height: 'auto' }}
+                ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
+                value={form.required_tooling}
+                onChange={(e) => { setForm({ ...form, required_tooling: e.target.value }); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
+                onBlur={(e) => handleFieldBlur("required_tooling", e.target.value)}
+                placeholder="List tools, equipment, and special tooling required for this job..."
+              />
+            </div>
+          </div>
+
           <div className="border border-gray-300">
             <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
               <span className="font-semibold text-gray-700">PARTS / MATERIALS USED</span>
