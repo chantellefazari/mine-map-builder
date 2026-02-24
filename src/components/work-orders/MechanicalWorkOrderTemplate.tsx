@@ -533,34 +533,47 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 </tr>
               </thead>
               <tbody>
-                {[1, 2, 3, 4, 5].map((row) => (
-                  <tr key={row} className="border-b border-gray-300">
-                    <td className="p-1 border-r border-gray-300">
-                      <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" placeholder="" />
-                    </td>
-                    <td className="p-1 border-r border-gray-300 text-center">
-                      <select className="w-full h-7 text-xs bg-transparent border border-dashed border-gray-300 rounded px-1 print:border-none print:appearance-none cursor-pointer">
-                        <option value="">—</option>
-                        <option value="MECH">MECH</option>
-                        <option value="ELEC">ELEC</option>
-                        <option value="SHUT">SHUT</option>
-                        <option value="PROJ">PROJ</option>
-                      </select>
-                    </td>
-                    <td className="p-1 border-r border-gray-300 text-center">
-                      <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
-                    </td>
-                    <td className="p-1 border-r border-gray-300 text-center">
-                      <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
-                    </td>
-                    <td className="p-1 border-r border-gray-300 text-center">
-                      <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
-                    </td>
-                    <td className="p-1 text-center">
-                      <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto text-center" placeholder="" />
-                    </td>
-                  </tr>
-                ))}
+                {(() => {
+                  const resources: { trade: string; qty: string }[] = (() => {
+                    try { return JSON.parse(form.resources_required || "[]"); } catch { return []; }
+                  })();
+                  const rows: { trade: string; index: number }[] = [];
+                  resources.forEach((r) => {
+                    const count = Math.max(1, parseInt(r.qty) || 1);
+                    for (let i = 0; i < count; i++) rows.push({ trade: r.trade, index: i });
+                  });
+                  if (rows.length === 0) {
+                    return (
+                      <tr className="border-b border-gray-300">
+                        <td colSpan={6} className="p-3 text-center text-gray-400 italic">
+                          Add resources above to generate labour rows
+                        </td>
+                      </tr>
+                    );
+                  }
+                  return rows.map((r, idx) => (
+                    <tr key={`${r.trade}-${idx}`} className="border-b border-gray-300">
+                      <td className="p-1 border-r border-gray-300">
+                        <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" placeholder="" />
+                      </td>
+                      <td className="p-1 border-r border-gray-300 text-center">
+                        <span className="text-xs font-medium">{r.trade}</span>
+                      </td>
+                      <td className="p-1 border-r border-gray-300 text-center">
+                        <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
+                      </td>
+                      <td className="p-1 border-r border-gray-300 text-center">
+                        <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
+                      </td>
+                      <td className="p-1 border-r border-gray-300 text-center">
+                        <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
+                      </td>
+                      <td className="p-1 text-center">
+                        <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto text-center" placeholder="" />
+                      </td>
+                    </tr>
+                  ));
+                })()}
               </tbody>
             </table>
           </div>
