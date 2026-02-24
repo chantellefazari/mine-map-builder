@@ -1,0 +1,1 @@
+ALTER TABLE public.work_orders ADD COLUMN resources_required text NOT NULL DEFAULT '';

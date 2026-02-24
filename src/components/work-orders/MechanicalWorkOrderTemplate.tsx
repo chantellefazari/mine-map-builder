@@ -45,6 +45,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     supervisor_sign_date: "",
     operations_handover_name: "",
     operations_handover_date: "",
+    resources_required: "",
   });
 
   // Sync form when WO data loads
@@ -68,6 +69,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
         supervisor_sign_date: wo.supervisor_sign_date || "",
         operations_handover_name: wo.operations_handover_name || "",
         operations_handover_date: wo.operations_handover_date || "",
+        resources_required: (wo as any).resources_required || "",
       });
     }
   }, [wo?.id]);
@@ -298,6 +300,19 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 />
               </div>
             </div>
+            {/* Row 3: Resources Required */}
+            <div className="grid grid-cols-1 gap-2">
+              <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block mb-1">Resources Required</span>
+                <Input
+                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                  value={form.resources_required}
+                  onChange={(e) => setForm({ ...form, resources_required: e.target.value })}
+                  onBlur={(e) => handleFieldBlur("resources_required", e.target.value)}
+                  placeholder="e.g. Mechanical x2, Electrical x1, Boilermaker x1"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Work Order Description */}
@@ -459,9 +474,11 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 </tr>
               </thead>
               <tbody>
-                {[1, 2, 3].map((row) => (
+                {[1, 2, 3, 4, 5].map((row) => (
                   <tr key={row} className="border-b border-gray-300">
-                    <td className="p-2 border-r border-gray-300 h-8"></td>
+                    <td className="p-1 border-r border-gray-300">
+                      <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" placeholder="" />
+                    </td>
                     <td className="p-1 border-r border-gray-300 text-center">
                       <select className="w-full h-7 text-xs bg-transparent border border-dashed border-gray-300 rounded px-1 print:border-none print:appearance-none cursor-pointer">
                         <option value="">—</option>
@@ -471,10 +488,18 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                         <option value="PROJ">PROJ</option>
                       </select>
                     </td>
-                    <td className="p-2 border-r border-gray-300 text-center"></td>
-                    <td className="p-2 border-r border-gray-300 text-center"></td>
-                    <td className="p-2 border-r border-gray-300 text-center"></td>
-                    <td className="p-2 text-center"></td>
+                    <td className="p-1 border-r border-gray-300 text-center">
+                      <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
+                    </td>
+                    <td className="p-1 border-r border-gray-300 text-center">
+                      <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
+                    </td>
+                    <td className="p-1 border-r border-gray-300 text-center">
+                      <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto" />
+                    </td>
+                    <td className="p-1 text-center">
+                      <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto text-center" placeholder="" />
+                    </td>
                   </tr>
                 ))}
               </tbody>
