@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useRef } from "react";
 import { Area } from "@/components/hierarchy/assetData";
-import { pidTagMappings } from "@/components/hierarchy/pidTagMappings";
+import { useProcessingPidTags } from "@/hooks/useProcessingPlantAssets";
 
 export interface SearchResult {
   type: "area" | "subarea" | "parentAsset" | "equipment";
@@ -12,35 +12,22 @@ export interface SearchResult {
   matchedPidTag?: string;
 }
 
-// Build a lookup map from asset number to P&ID tags for fast searching
-const buildPidTagLookup = () => {
-  const lookup = new Map<string, string[]>();
-  pidTagMappings.forEach((mapping) => {
-    const existing = lookup.get(mapping.assetNumber) || [];
-    existing.push(mapping.pidTag);
-    lookup.set(mapping.assetNumber, existing);
-  });
-  return lookup;
-};
-
-// Build reverse lookup: P&ID tag -> asset numbers
-const buildReversePidLookup = () => {
-  const lookup = new Map<string, string[]>();
-  pidTagMappings.forEach((mapping) => {
-    const normalizedTag = mapping.pidTag.toLowerCase();
-    const existing = lookup.get(normalizedTag) || [];
-    existing.push(mapping.assetNumber);
-    lookup.set(normalizedTag, existing);
-  });
-  return lookup;
-};
-
-const pidTagsByAsset = buildPidTagLookup();
-const assetsByPidTag = buildReversePidLookup();
-
 export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
+  const { data: pidTagMappingsDB } = useProcessingPidTags();
+
+  // Build lookups from DB data
+  const { pidTagsByAsset } = useMemo(() => {
+    const byAsset = new Map<string, string[]>();
+    if (!pidTagMappingsDB) return { pidTagsByAsset: byAsset };
+    pidTagMappingsDB.forEach((mapping) => {
+      const existing = byAsset.get(mapping.assetNumber) || [];
+      existing.push(mapping.pidTag);
+      byAsset.set(mapping.assetNumber, existing);
+    });
+    return { pidTagsByAsset: byAsset };
+  }, [pidTagMappingsDB]);
+
   const results = useMemo(() => {
     if (!searchQuery.trim()) {
       return { results: [] as SearchResult[], matchingPaths: new Set<string>(), firstMatchId: null as string | null };
@@ -55,13 +42,14 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
     const matchingAssetNumbers = new Set<string>();
     const matchedPidTagByAsset = new Map<string, string>();
     
-    // Check all P&ID tags for matches
-    pidTagMappings.forEach((mapping) => {
-      if (mapping.pidTag.toLowerCase().includes(query)) {
-        matchingAssetNumbers.add(mapping.assetNumber);
-        matchedPidTagByAsset.set(mapping.assetNumber, mapping.pidTag);
-      }
-    });
+    if (pidTagMappingsDB) {
+      pidTagMappingsDB.forEach((mapping) => {
+        if (mapping.pidTag.toLowerCase().includes(query)) {
+          matchingAssetNumbers.add(mapping.assetNumber);
+          matchedPidTagByAsset.set(mapping.assetNumber, mapping.pidTag);
+        }
+      });
+    }
 
     areasData.forEach((area) => {
       const areaPath = [area.code];
@@ -116,16 +104,13 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
             const equipLabel = `${equip.assetNumber} — ${equip.name}`;
             const equipId = `equip-${area.code}-${subIdx}-${paIdx}-${eqIdx}`;
             
-            // Check if asset number or name matches
             const nameMatch = equip.assetNumber.toLowerCase().includes(query) ||
               equip.name.toLowerCase().includes(query);
             
-            // Check if any P&ID tag matches (from inline pidTags OR from mappings)
             const inlinePidMatch = equip.pidTags?.find(tag => 
               tag.toLowerCase().includes(query)
             );
             
-            // Check if this asset has a P&ID match from the mappings
             const mappingPidMatch = matchingAssetNumbers.has(equip.assetNumber) 
               ? matchedPidTagByAsset.get(equip.assetNumber) 
               : undefined;
@@ -142,7 +127,6 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
                 uniqueId: equipId,
                 matchedPidTag: matchedPidTag,
               });
-              // Add all parent paths to expand them
               matchingPaths.add(areaPath.join("/"));
               matchingPaths.add(subAreaPath.join("/"));
               matchingPaths.add(parentAssetPath.join("/"));
@@ -154,7 +138,7 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
     });
 
     return { results: searchResults, matchingPaths, firstMatchId };
-  }, [areasData, searchQuery]);
+  }, [areasData, searchQuery, pidTagMappingsDB]);
 
   // Scroll to first match after a delay to allow tree expansion
   useEffect(() => {
@@ -163,13 +147,11 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
     }
     
     if (results.firstMatchId) {
-      // Try scrolling with increasing delays to ensure DOM has updated
       const attemptScroll = (attempt: number) => {
         const element = document.getElementById(results.firstMatchId!);
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "center" });
         } else if (attempt < 3) {
-          // Retry with longer delay if element not found yet
           scrollTimeoutRef.current = setTimeout(() => attemptScroll(attempt + 1), 200);
         }
       };
