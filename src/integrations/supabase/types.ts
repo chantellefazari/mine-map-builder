@@ -498,14 +498,17 @@ export type Database = {
           confirmed_on_site: boolean
           created_at: string
           date_received: string | null
+          description: string
           eta: string | null
           freight_company: string
           freight_required: boolean
           freight_tracking_number: string
           id: string
+          last_updated_by: string
           order_date: string | null
           po_number: string
           pr_id: string | null
+          received_by: string
           status: string
           supervisor: string
           supplier: string
@@ -519,14 +522,17 @@ export type Database = {
           confirmed_on_site?: boolean
           created_at?: string
           date_received?: string | null
+          description?: string
           eta?: string | null
           freight_company?: string
           freight_required?: boolean
           freight_tracking_number?: string
           id?: string
+          last_updated_by?: string
           order_date?: string | null
           po_number: string
           pr_id?: string | null
+          received_by?: string
           status?: string
           supervisor?: string
           supplier?: string
@@ -540,14 +546,17 @@ export type Database = {
           confirmed_on_site?: boolean
           created_at?: string
           date_received?: string | null
+          description?: string
           eta?: string | null
           freight_company?: string
           freight_required?: boolean
           freight_tracking_number?: string
           id?: string
+          last_updated_by?: string
           order_date?: string | null
           po_number?: string
           pr_id?: string | null
+          received_by?: string
           status?: string
           supervisor?: string
           supplier?: string

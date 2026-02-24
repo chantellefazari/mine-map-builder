@@ -10,14 +10,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePOTracker } from "@/hooks/usePOTracker";
 import { AddPODialog } from "@/components/po-tracker/AddPODialog";
 import type { POTrackerItem, POLineItem } from "@/hooks/usePOTracker";
+import { format } from "date-fns";
 
 const statusColor: Record<string, string> = {
-  Ordered: "bg-blue-100 text-blue-800 border-blue-200",
+  Draft: "bg-muted text-muted-foreground border-border",
+  Issued: "bg-blue-100 text-blue-800 border-blue-200",
   "In Transit": "bg-amber-100 text-amber-800 border-amber-200",
-  "On Site": "bg-green-100 text-green-800 border-green-200",
-  Closed: "bg-muted text-muted-foreground border-border",
-  "Partially Received": "bg-orange-100 text-orange-800 border-orange-200",
+  "Received Partial": "bg-orange-100 text-orange-800 border-orange-200",
+  "Received Complete": "bg-green-100 text-green-800 border-green-200",
   Cancelled: "bg-red-100 text-red-800 border-red-200",
+  // Legacy statuses
+  Ordered: "bg-blue-100 text-blue-800 border-blue-200",
+  "On Site": "bg-green-100 text-green-800 border-green-200",
+  "Partially Received": "bg-orange-100 text-orange-800 border-orange-200",
 };
 
 const POTracker = () => {
@@ -61,6 +66,7 @@ const POTracker = () => {
       (po.wo_number ?? "").toLowerCase().includes(term) ||
       (po.pr_number ?? "").toLowerCase().includes(term) ||
       po.supplier.toLowerCase().includes(term) ||
+      (po.description ?? "").toLowerCase().includes(term) ||
       (po.freight_company ?? "").toLowerCase().includes(term) ||
       po.status.toLowerCase().includes(term) ||
       po.lines?.some(
@@ -99,7 +105,7 @@ const POTracker = () => {
   const totalPOs = poItems.length;
   const totalSpend = poItems.filter(p => p.status !== "Cancelled").reduce((s, po) => s + Number(po.total_value), 0);
   const onSiteCount = poItems.filter((po) => po.confirmed_on_site).length;
-  const activeCount = poItems.filter((po) => po.status === "Ordered" || po.status === "In Transit").length;
+  const activeCount = poItems.filter((po) => ["Draft", "Issued", "In Transit", "Ordered"].includes(po.status)).length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -148,7 +154,7 @@ const POTracker = () => {
             <div className="relative max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search PO, PR, supplier, WO…"
+                placeholder="Search PO, PR, supplier, WO, description…"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-9 pr-9"
@@ -180,12 +186,12 @@ const POTracker = () => {
                       <TableHead>Linked PR</TableHead>
                       <TableHead>Work Order</TableHead>
                       <TableHead>Supplier</TableHead>
-                      <TableHead>Supervisor</TableHead>
                       <TableHead className="text-right">Total Value</TableHead>
                       <TableHead className="text-center">Freight</TableHead>
                       <TableHead>ETA</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead className="text-center">Received</TableHead>
+                      <TableHead>Received</TableHead>
+                      <TableHead>Last Updated</TableHead>
                       <TableHead className="w-20"></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -223,7 +229,6 @@ const POTracker = () => {
                               )}
                             </TableCell>
                             <TableCell className="font-medium">{po.supplier || "—"}</TableCell>
-                            <TableCell className="text-sm">{po.supervisor || "—"}</TableCell>
                             <TableCell className="text-right font-medium">
                               {Number(po.total_value) > 0
                                 ? `$${Number(po.total_value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
@@ -238,19 +243,26 @@ const POTracker = () => {
                                   )}
                                 </div>
                               ) : (
-                                <span className="text-muted-foreground text-xs">No</span>
+                                <span className="text-muted-foreground text-xs">Supplier</span>
                               )}
                             </TableCell>
                             <TableCell className="text-xs whitespace-nowrap">{po.eta ?? "—"}</TableCell>
                             <TableCell>
                               <Badge variant="outline" className={statusColor[po.status] ?? ""}>{po.status}</Badge>
                             </TableCell>
-                            <TableCell className="text-center">
-                              {po.confirmed_on_site ? (
-                                <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700">✓</span>
+                            <TableCell className="text-xs">
+                              {po.date_received ? (
+                                <div>
+                                  <span>{po.date_received}</span>
+                                  {po.received_by && <p className="text-muted-foreground">{po.received_by}</p>}
+                                </div>
                               ) : (
-                                <span className="text-muted-foreground text-xs">—</span>
+                                <span className="text-muted-foreground">—</span>
                               )}
+                            </TableCell>
+                            <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                              {po.updated_at ? format(new Date(po.updated_at), "dd MMM HH:mm") : "—"}
+                              {po.last_updated_by && <p className="truncate max-w-[100px]">{po.last_updated_by}</p>}
                             </TableCell>
                             <TableCell>
                               <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
@@ -276,6 +288,12 @@ const POTracker = () => {
                                     </span>
                                     <Badge variant="secondary" className="text-[10px]">{lineCount} items</Badge>
                                   </div>
+                                  {po.description && (
+                                    <div className="px-4 py-2 border-b text-xs">
+                                      <span className="font-medium text-muted-foreground">Description: </span>
+                                      <span>{po.description}</span>
+                                    </div>
+                                  )}
                                   <table className="w-full text-xs">
                                     <thead>
                                       <tr className="text-left">
@@ -332,7 +350,7 @@ const POTracker = () => {
                                   </table>
                                   {po.comments && (
                                     <div className="px-4 py-2 border-t text-xs">
-                                      <span className="font-medium text-muted-foreground">Comments: </span>
+                                      <span className="font-medium text-muted-foreground">Notes: </span>
                                       <span>{po.comments}</span>
                                     </div>
                                   )}
