@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ClipboardList, Plus, Trash2, Loader2, Search } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,6 +40,10 @@ const WorkOrderTemplates = () => {
   const handleAllocateWO = async () => {
     const result = await allocate.mutateAsync();
     setSelectedWO(result.wo_number);
+    // Seed one empty parts row
+    await (supabase as any)
+      .from("work_order_parts")
+      .insert({ work_order_id: result.id, part_number: "", part_description: "", quantity_required: 1, location: "", status: "Not Ordered" });
   };
 
   const handleDelete = () => {
