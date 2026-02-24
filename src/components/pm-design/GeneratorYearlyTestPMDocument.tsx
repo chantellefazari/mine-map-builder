@@ -94,7 +94,7 @@ const renderTestTable = (items: { id: number | string; item: string; action: str
 
 export const GeneratorYearlyTestPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "1Y Generator Electrical Inspection and Testing");
+  const pm = pms.find((p) => p.pmName === "Generator Electrical Test Yearly");
 
   return (
     <div className="bg-background min-h-full">

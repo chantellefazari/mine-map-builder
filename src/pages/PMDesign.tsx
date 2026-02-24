@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck } from "lucide-react";
+import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { canonicalPMs } from "@/components/pm-design/canonicalPMNames";
 import { 
   Sidebar, 
   SidebarContent, 
@@ -316,6 +320,58 @@ const PMDesign = () => {
     setShowPrintPreview(true);
   };
 
+  const queryClient = useQueryClient();
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleSyncPMs = useCallback(async () => {
+    setIsSyncing(true);
+    try {
+      // 1. Fetch current DB records
+      const { data: existing, error: fetchError } = await supabase
+        .from("pm_master_list")
+        .select("id, pm_name, asset_number, resources");
+      if (fetchError) throw fetchError;
+
+      const existingMap = new Map((existing ?? []).map((r: any) => [r.pm_name, r]));
+      const canonicalNames = new Set(canonicalPMs.map((c) => c.pmName));
+
+      // 2. Upsert missing PMs (preserve existing asset_number & resources)
+      const toInsert = canonicalPMs.filter((c) => !existingMap.has(c.pmName));
+      if (toInsert.length > 0) {
+        const rows = toInsert.map((c) => ({
+          pm_name: c.pmName,
+          discipline: c.discipline,
+          frequency: c.frequency,
+          equipment_type: c.equipmentType,
+          asset_number: "",
+          resources: "",
+        }));
+        const { error: insertError } = await supabase.from("pm_master_list").insert(rows as any);
+        if (insertError) throw insertError;
+      }
+
+      // 3. Delete orphaned records (not in canonical list)
+      const toDelete = (existing ?? []).filter((r: any) => !canonicalNames.has(r.pm_name));
+      if (toDelete.length > 0) {
+        const ids = toDelete.map((r: any) => r.id);
+        const { error: deleteError } = await supabase
+          .from("pm_master_list")
+          .delete()
+          .in("id", ids);
+        if (deleteError) throw deleteError;
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ["pm-master-list"] });
+      toast.success(
+        `PM Sync Complete: ${toInsert.length} added, ${toDelete.length} removed, ${canonicalPMs.length - toInsert.length} preserved`
+      );
+    } catch (err: any) {
+      toast.error("Sync failed: " + err.message);
+    } finally {
+      setIsSyncing(false);
+    }
+  }, [queryClient]);
+
   const getDocumentTitle = () => {
     switch (activeView) {
       case "master": return "Base PM Template";
@@ -583,8 +639,17 @@ const PMDesign = () => {
         <main className="flex-1 overflow-auto">
           {isPMDocument ? (
             <div className="p-6 overflow-auto">
-              {/* Print Button */}
-              <div className="flex justify-end mb-4 print:hidden">
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-2 mb-4 print:hidden">
+                <Button
+                  onClick={handleSyncPMs}
+                  variant="outline"
+                  className="gap-2"
+                  disabled={isSyncing}
+                >
+                  <Database className={`w-4 h-4 ${isSyncing ? "animate-spin" : ""}`} />
+                  {isSyncing ? "Syncing..." : "Sync All PMs"}
+                </Button>
                 <Button
                   onClick={handlePrint}
                   variant="outline"

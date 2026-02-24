@@ -26,7 +26,7 @@ const inspectionChecks = [
 
 export const SwitchboardInspectionPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Switchboard Inspection");
+  const pm = pms.find((p) => p.pmName === "Switchboard Inspection Yearly");
 
   return (
     <div className="bg-background min-h-full">
