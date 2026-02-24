@@ -96,7 +96,7 @@ const inspectionData: EquipmentSection[] = [
 
 export const MillWeeklyPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Weekly Mill Inspection");
+  const pm = pms.find((p) => p.pmName === "Mill Weekly Inspection");
 
   return (
     <div className="bg-background min-h-full">
