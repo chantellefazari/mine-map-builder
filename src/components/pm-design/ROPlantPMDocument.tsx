@@ -1,29 +1,13 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-  ClipboardCheck,
-  CheckCircle2,
-  Gauge
-} from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CheckCircle2, Gauge } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
-
-const inspectionTasks = [
-  "Inspect Reject Water Colour",
-  "Inspect Cartridge Filter",
-  "Record Date of Cartridge Filter Install",
-  "Inspect/Record Level of Anti-scalant",
-  "Inspect HMI for any present Faults",
-  "Inspect Pipework/Valving for Damage or Leaks",
-  "Inspect Dosing Pump Function (Should be set to 25 Pulses per minute)",
-  "Check Aircon Operation and Cleanliness",
-  "Inspect and Clean Container",
-  "Inspect Flush Tank Level",
-];
+import { DynamicInspectionTable } from "./DynamicInspectionTable";
 
 export const ROPlantPMDocument = () => {
   const { pms } = usePMasterList();
@@ -52,7 +36,6 @@ export const ROPlantPMDocument = () => {
           </div>
         </div>
 
-        {/* Header Information Grid */}
         <PMMetadataGrid
           pmId={pm?.id}
           projectSite="Tenant Creek"
@@ -64,45 +47,9 @@ export const ROPlantPMDocument = () => {
           resources={pm?.resources || ""}
         />
 
-        {/* Safety Precautions */}
         <SafetyPrecautionsSection />
 
-        {/* Inspection Tasks Table */}
-        <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-            <ClipboardCheck className="w-5 h-5 text-primary" />
-            SYSTEM, ASSEMBLY AND COMPONENTS CHECK
-          </div>
-          <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className="bg-muted">
-                <th className="border border-border px-3 py-2 text-left font-semibold w-[50%]">Task</th>
-                 <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th>
-                 <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th>
-                 <th className="border border-border px-3 py-2 text-left font-semibold w-[30%]">Comments</th>
-              </tr>
-            </thead>
-            <tbody>
-              {inspectionTasks.map((task, idx) => (
-                <tr key={idx} className="hover:bg-muted/30">
-                  <td className="border border-border px-3 py-2">{task}</td>
-                  <td className="border border-border px-2 py-2 text-center">
-                    <div className="flex justify-center">
-                      <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
-                    </div>
-                  </td>
-                  <td className="border border-border px-2 py-2 text-center">
-                    <div className="flex justify-center">
-                      <Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" />
-                    </div>
-                  </td>
-                  <td className="border border-border px-2 py-4">
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DynamicInspectionTable tasksData={pm?.tasks} title="SYSTEM, ASSEMBLY AND COMPONENTS CHECK" />
 
         {/* Data Logging Table */}
         <div className="border-b border-border">
@@ -153,47 +100,23 @@ export const ROPlantPMDocument = () => {
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium w-52">Follow up work required:</span>
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5">
-                    <Checkbox className="h-4 w-4" />
-                    <span className="text-sm">Yes</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Checkbox className="h-4 w-4" />
-                    <span className="text-sm">No</span>
-                  </div>
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">Yes</span></div>
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">No</span></div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium w-52">Document update required:</span>
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5">
-                    <Checkbox className="h-4 w-4" />
-                    <span className="text-sm">Yes</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Checkbox className="h-4 w-4" />
-                    <span className="text-sm">No</span>
-                  </div>
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">Yes</span></div>
+                  <div className="flex items-center gap-1.5"><Checkbox className="h-4 w-4" /><span className="text-sm">No</span></div>
                 </div>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">Name:</span>
-                <Input className="h-7" />
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">Signature:</span>
-                <div className="h-7 border border-border rounded bg-muted/30"></div>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">Date:</span>
-                <Input className="h-7" type="date" />
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">PM Duration:</span>
-                <Input className="h-7" />
-              </div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Name:</span><Input className="h-7" /></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Signature:</span><div className="h-7 border border-border rounded bg-muted/30"></div></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Date:</span><Input className="h-7" type="date" /></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">PM Duration:</span><Input className="h-7" /></div>
             </div>
           </div>
         </div>
