@@ -44,6 +44,18 @@ function normalizeSections(data: any): Section[] {
     return data.sections;
   }
 
+  // Shape 5: { mccSections: [...], standardTasks: [...] } (Field MCC style)
+  if (data.mccSections && Array.isArray(data.mccSections)) {
+    const standardTasks: TaskItem[] = Array.isArray(data.standardTasks)
+      ? data.standardTasks.map((t: string) => ({ task: t }))
+      : [];
+    return data.mccSections.map((mcc: any) => ({
+      mccId: mcc.mccId,
+      mccName: mcc.mccName,
+      tasks: standardTasks,
+    }));
+  }
+
   // Shape 2: flat string array
   if (Array.isArray(data) && data.length > 0 && typeof data[0] === "string") {
     return [{ tasks: data.map((t: string) => ({ task: t })) }];
