@@ -1,220 +1,13 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  ClipboardCheck,
-  Cog,
-  AlertCircle,
-  AlertTriangle,
-  CheckCircle2,
-} from "lucide-react";
+import { AlertTriangle, AlertCircle, CheckCircle2 } from "lucide-react";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
-
-interface InspectionTask {
-  task: string;
-}
-
-interface EquipmentSection {
-  equipmentName: string;
-  tasks: InspectionTask[];
-  tempGuidelines?: string;
-}
-
-const inspectionSections: EquipmentSection[] = [
-  {
-    equipmentName: "Filter Press 1 – Hydraulics",
-    tasks: [
-      { task: "Verify closing pressure at setpoint" },
-      { task: "Confirm pressure holding (no rapid decrease)" },
-      { task: "Record hydraulic oil temperature (TEMP-)" },
-      { task: "Listen for pump cavitation or whining" },
-      { task: "Inspect for visible oil leaks" },
-    ],
-    tempGuidelines: "Normal: 35–55°C | Caution: 55–65°C | Critical: >65°C → Investigate cooling / contamination",
-  },
-  {
-    equipmentName: "Filter Press 1 – Filtration",
-    tasks: [
-      { task: "Check cake dryness uniformity" },
-      { task: "Compare cycle time to baseline. Ask Operator for Baseline" },
-      { task: "Observe slurry leakage between plates" },
-      { task: "Confirm smooth plate opening" },
-      { task: "Listen for abnormal mechanical noise" },
-      { task: "Inspect Core Blow Pipe work for Leaks" },
-      { task: "Inspect Slurry Feed Pipework for leaks" },
-      { task: "Inspect Core Blow and Feed line valves for smooth operation and leaks" },
-      { task: "Inspect Filter Feed tank fill valve for smooth operation and leaks" },
-      { task: "Inspect Airlines for Leaks" },
-      { task: "Inspect Feed Tank Agitator for operation" },
-      { task: "Check pneumatic Rail shakers for operation and air leaks" },
-    ],
-  },
-  {
-    equipmentName: "Filter Press 1 – Feed Pump",
-    tasks: [
-      { task: "Check feed pressure stability" },
-      { task: "Listen for cavitation" },
-      { task: "Inspect mechanical seal" },
-      { task: "Check pump Bearing temperature (TEMP-)" },
-    ],
-    tempGuidelines: "Normal: 40–75°C | Caution: 75–85°C | Critical: >90°C",
-  },
-  {
-    equipmentName: "Filter Press 2 – Hydraulics",
-    tasks: [
-      { task: "Verify closing pressure at setpoint" },
-      { task: "Confirm pressure holding (no rapid decay)" },
-      { task: "Record hydraulic oil temperature (TEMP-)" },
-      { task: "Listen for pump cavitation or whining" },
-      { task: "Inspect for visible oil leaks" },
-    ],
-    tempGuidelines: "Normal: 35–55°C | Caution: 55–65°C | Critical: >65°C",
-  },
-  {
-    equipmentName: "Filter Press 2 – Filtration",
-    tasks: [
-      { task: "Check cake dryness uniformity" },
-      { task: "Compare cycle time to baseline. Ask Operator for Baseline" },
-      { task: "Observe slurry leakage between plates" },
-      { task: "Confirm smooth plate opening" },
-      { task: "Listen for abnormal mechanical noise" },
-      { task: "Inspect Core Blow Pipe work for Leaks" },
-      { task: "Inspect Slurry Feed Pipework for leaks" },
-      { task: "Inspect Core Blow and Feed line valves for smooth operation and leaks" },
-      { task: "Inspect Filter Feed tank fill valve for smooth operation and leaks" },
-      { task: "Inspect Airlines for Leaks" },
-      { task: "Inspect Feed Tank Agitator for operation" },
-      { task: "Check pneumatic Rail shakers for operation and air leaks" },
-    ],
-  },
-  {
-    equipmentName: "Filter Press 2 – Feed Pump",
-    tasks: [
-      { task: "Check feed pressure stability" },
-      { task: "Listen for cavitation" },
-      { task: "Inspect mechanical seal" },
-      { task: "Check pump Bearing temperature (TEMP-)" },
-    ],
-    tempGuidelines: "Normal: 40–75°C | Caution: 75–85°C | Critical: >90°C",
-  },
-  {
-    equipmentName: "Filter 1 Extraction Conveyor",
-    tasks: [
-      { task: "Check Tail Drum Bearings x2 (TEMP-)" },
-      { task: "Check Head Drum Bearings x2 (TEMP-)" },
-      { task: "Check Tension roller bearings. Located at Head end of Conveyor (TEMP-)" },
-      { task: "Check all grease points are not Damaged" },
-      { task: "Check all Wing Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check all Center Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check all Return Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check all Frames are Secure and are not moving under load" },
-      { task: "Check that Head end belt Scrapper is functioning" },
-      { task: "Verify belt centered on pulleys" },
-      { task: "Inspect for edge wear" },
-      { task: "Observe material loading alignment" },
-      { task: "Listen for belt slapping" },
-    ],
-    tempGuidelines: "Normal: 30–70°C | Monitor: 70–85°C | Warning: 85–95°C | Critical: >95°C → Immediate shutdown",
-  },
-  {
-    equipmentName: "Filter 1 Extraction – Gearbox",
-    tasks: [
-      { task: "Check Gearbox Temperature (TEMP-)" },
-      { task: "Listen for gearbox Noise" },
-      { task: "Inspect coupling vibration" },
-      { task: "Inspect Belt tension. Visual" },
-    ],
-    tempGuidelines: "Normal: 40–75°C | Critical: >85°C",
-  },
-  {
-    equipmentName: "Filter 2 Extraction Conveyor",
-    tasks: [
-      { task: "Check Tail Drum Bearings x2 (TEMP-)" },
-      { task: "Check Head Drum Bearings x2 (TEMP-)" },
-      { task: "Check Tension roller bearings. Located at Head end of Conveyor (TEMP-)" },
-      { task: "Check all grease points are not Damaged" },
-      { task: "Check all Wing Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check all Center Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check all Return Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check all Frames are Secure and are not moving under load" },
-      { task: "Check that Head end belt Scrapper is functioning" },
-      { task: "Verify belt centered on pulleys" },
-      { task: "Inspect for edge wear" },
-      { task: "Observe material loading alignment" },
-      { task: "Listen for belt slapping" },
-    ],
-  },
-  {
-    equipmentName: "Filter 2 Extraction – Gearbox",
-    tasks: [
-      { task: "Check Gearbox Temperature (TEMP-)" },
-      { task: "Listen for gearbox Noise" },
-      { task: "Inspect coupling vibration" },
-      { task: "Inspect Belt tension. Visual" },
-    ],
-    tempGuidelines: "Normal: 40–75°C | Critical: >85°C",
-  },
-  {
-    equipmentName: "Collection Conveyor",
-    tasks: [
-      { task: "Check Tail Drum Bearings x2 (TEMP-)" },
-      { task: "Check Head Drum Bearings x2 (TEMP-)" },
-      { task: "Check Tension roller bearings. Located at Head end of Conveyor (TEMP-)" },
-      { task: "Check all grease points are not Damaged" },
-      { task: "Check all Wing Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check all Center Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check all Frames are Secure and are not moving under load" },
-      { task: "Check all Return Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check that Head end belt Scrapper is functioning" },
-      { task: "Verify belt centered on pulleys" },
-      { task: "Inspect for edge wear" },
-      { task: "Observe material loading alignment" },
-      { task: "Listen for belt slapping" },
-    ],
-  },
-  {
-    equipmentName: "Collection Conveyor – Gearbox",
-    tasks: [
-      { task: "Check Gearbox Temperature (TEMP-)" },
-      { task: "Listen for gearbox Noise" },
-      { task: "Inspect coupling vibration" },
-      { task: "Inspect Belt tension. Visual" },
-    ],
-    tempGuidelines: "Normal: 40–75°C | Critical: >85°C",
-  },
-  {
-    equipmentName: "Radial Stacker Conveyor",
-    tasks: [
-      { task: "Check Tail Drum Bearings x2 (TEMP-)" },
-      { task: "Check Head Drum Bearings x2 (TEMP-)" },
-      { task: "Check Tension roller bearings (TEMP-)" },
-      { task: "Check all Wing Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check all Center Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check all Frames are Secure and are not moving under load. Mark with info tag if roller requires replacing" },
-      { task: "Check all Return Rollers are operating Correctly. Mark with info tag if roller requires replacing" },
-      { task: "Check that Head end belt Scrapper is functioning" },
-      { task: "Verify belt centered on pulleys" },
-      { task: "Observe material loading alignment" },
-      { task: "Listen for belt slapping" },
-      { task: "Ensure Turn Table is clear of Build up" },
-      { task: "Ensure wheels are operating smoothly and concrete clear of build up" },
-    ],
-  },
-  {
-    equipmentName: "Radial Stacker – Gearbox",
-    tasks: [
-      { task: "Check Gearbox Temperature (TEMP-)" },
-      { task: "Listen for gearbox Noise" },
-      { task: "Inspect coupling vibration" },
-      { task: "Inspect Belt tension. Visual" },
-    ],
-    tempGuidelines: "Normal: 40–75°C | Critical: >85°C",
-  },
-];
+import { DynamicInspectionTable } from "./DynamicInspectionTable";
 
 const shutdownTriggers = [
   "Bearing temperature >95°C",
@@ -256,7 +49,6 @@ export const FilterPressDailyOnlinePMDocument = () => {
           </div>
         </div>
 
-        {/* Header Information Grid */}
         <PMMetadataGrid
           pmId={pm?.id}
           projectSite="Tenant Creek"
@@ -268,59 +60,9 @@ export const FilterPressDailyOnlinePMDocument = () => {
           resources={pm?.resources}
         />
 
-        {/* Safety Precautions */}
         <SafetyPrecautionsSection />
 
-        {/* INSPECTION SECTIONS */}
-        <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-            <ClipboardCheck className="w-5 h-5 text-primary" />
-            INSPECTIONS
-          </div>
-
-          {inspectionSections.map((section, sectionIndex) => (
-            <div
-              key={section.equipmentName}
-              className={sectionIndex < inspectionSections.length - 1 ? "border-b border-border" : ""}
-            >
-              <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-                <Cog className="w-4 h-4 text-primary" />
-                <span>{section.equipmentName}</span>
-              </div>
-
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-muted/50">
-                    <th className="border border-border text-left px-4 py-2 font-medium w-[46%]">Task</th>
-                    <th className="border border-border text-center px-2 py-2 font-medium w-[10%]">Serviceable</th>
-                    <th className="border border-border text-center px-2 py-2 font-medium w-[10%]">Defective</th>
-                    <th className="border border-border text-left px-4 py-2 font-medium w-[34%]">Comments</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {section.tasks.map((task, taskIndex) => (
-                    <tr key={taskIndex} className="border-b border-border hover:bg-muted/30">
-                      <td className="border border-border px-4 py-2.5 text-foreground">{task.task}</td>
-                      <td className="border border-border text-center px-2 py-2.5">
-                        <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
-                      </td>
-                      <td className="border border-border text-center px-2 py-2.5">
-                        <Checkbox className="h-4 w-4 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" />
-                      </td>
-                      <td className="border border-border px-4 py-4"></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {section.tempGuidelines && (
-                <div className="px-4 py-2 bg-muted/30 text-xs text-muted-foreground border-b border-border">
-                  <span className="font-semibold">Temperature Guidelines: </span>{section.tempGuidelines}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+        <DynamicInspectionTable tasksData={pm?.tasks} showEquipmentId />
 
         {/* SHUTDOWN TRIGGERS */}
         <div className="border-b border-border">
@@ -369,22 +111,10 @@ export const FilterPressDailyOnlinePMDocument = () => {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">Name:</span>
-                <Input className="h-7" />
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">Signature:</span>
-                <div className="h-7 border border-border rounded bg-muted/30"></div>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">Date:</span>
-                <Input className="h-7" type="date" />
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-sm font-medium">PM Duration:</span>
-                <Input className="h-7" />
-              </div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Name:</span><Input className="h-7" /></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Signature:</span><div className="h-7 border border-border rounded bg-muted/30"></div></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Date:</span><Input className="h-7" type="date" /></div>
+              <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">PM Duration:</span><Input className="h-7" /></div>
             </div>
           </div>
         </div>

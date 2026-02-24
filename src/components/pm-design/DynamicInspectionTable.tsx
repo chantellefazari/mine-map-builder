@@ -11,11 +11,15 @@ import { ClipboardCheck, Cog } from "lucide-react";
  */
 
 interface TaskItem {
-  task: string;
+  task?: string;
+  description?: string;
   hasTemp?: boolean;
   tempLabel?: string;
   hasInput?: boolean;
   inputLabel?: string;
+  hasPressure?: boolean;
+  pressureLabel?: string;
+  recommendedAmount?: string;
 }
 
 interface Section {
@@ -36,12 +40,29 @@ interface DynamicInspectionTableProps {
   showEquipmentId?: boolean;
 }
 
+function normalizeTaskItem(item: any): TaskItem {
+  if (typeof item === "string") return { task: item };
+  return {
+    task: item.task || item.description || "",
+    hasTemp: item.hasTemp,
+    tempLabel: item.tempLabel,
+    hasInput: item.hasInput,
+    inputLabel: item.inputLabel,
+    hasPressure: item.hasPressure,
+    pressureLabel: item.pressureLabel,
+    recommendedAmount: item.recommendedAmount,
+  };
+}
+
 function normalizeSections(data: any): Section[] {
   if (!data) return [];
 
   // Shape 1: { sections: [...] }
   if (data.sections && Array.isArray(data.sections)) {
-    return data.sections;
+    return data.sections.map((s: any) => ({
+      ...s,
+      tasks: (s.tasks || s.items || []).map(normalizeTaskItem),
+    }));
   }
 
   // Shape 5: { mccSections: [...], standardTasks: [...] } (Field MCC style)
@@ -61,14 +82,21 @@ function normalizeSections(data: any): Section[] {
     return [{ tasks: data.map((t: string) => ({ task: t })) }];
   }
 
-  // Shape 3: flat object array with { task: string }
-  if (Array.isArray(data) && data.length > 0 && typeof data[0] === "object" && data[0].task) {
-    return [{ tasks: data }];
+  // Shape 3: flat object array with { task: string } or { description: string }
+  if (Array.isArray(data) && data.length > 0 && typeof data[0] === "object" && (data[0].task || data[0].description)) {
+    return [{ tasks: data.map(normalizeTaskItem) }];
   }
 
-  // Shape 4: array of sections directly (MCC-style with mccId)
-  if (Array.isArray(data) && data.length > 0 && typeof data[0] === "object" && data[0].tasks) {
-    return data;
+  // Shape 4: array of sections directly (with tasks or items array)
+  if (Array.isArray(data) && data.length > 0 && typeof data[0] === "object" && (data[0].tasks || data[0].items)) {
+    return data.map((s: any) => ({
+      equipmentName: s.equipmentName || s.sectionName,
+      equipmentId: s.equipmentId,
+      mccId: s.mccId,
+      mccName: s.mccName,
+      tempGuidelines: s.tempGuidelines,
+      tasks: (s.tasks || s.items || []).map(normalizeTaskItem),
+    }));
   }
 
   return [];
@@ -198,7 +226,13 @@ function SectionRows({ section, sectionIndex, label }: { section: Section; secti
 
 /** Single task row with the standard 4-column layout */
 function TaskRow({ task }: { task: TaskItem }) {
-  const commentContent = task.hasTemp ? task.tempLabel : task.hasInput ? task.inputLabel : null;
+  const commentContent = task.hasTemp
+    ? (task.tempLabel || "_______ °C")
+    : task.hasPressure
+    ? (task.pressureLabel || "_______ BAR")
+    : task.hasInput
+    ? task.inputLabel
+    : null;
 
   return (
     <tr className="hover:bg-muted/30">

@@ -1,67 +1,10 @@
-import { Checkbox } from "@/components/ui/checkbox";
-import { AlertTriangle, ClipboardCheck, AlertCircle, Cog } from "lucide-react";
+import { AlertTriangle, AlertCircle } from "lucide-react";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMBannerHeader } from "./PMBannerHeader";
 import { PMSignOffBlock } from "./PMSignOffBlock";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
-
-interface InspectionTask { task: string; }
-interface EquipmentSection { equipmentName: string; tasks: InspectionTask[]; }
-
-const inspectionSections: EquipmentSection[] = [
-  { equipmentName: "Motor and Drive Assembly", tasks: [
-    { task: "Inspect motor exterior for dust buildup or overheating marks" },
-    { task: "Manually rotate shaft (if accessible) – check for smooth rotation" },
-    { task: "Inspect motor mounting bolts and base tightness" },
-    { task: "Check coupling or belt alignment" },
-    { task: "Inspect flexible coupling insert for cracks or wear" },
-    { task: "Inspect motor cooling fan and shroud condition" },
-  ]},
-  { equipmentName: "Compressor Element", tasks: [
-    { task: "Inspect air end housing for oil leaks" },
-    { task: "Check mounting bolts for tightness" },
-    { task: "Inspect inlet valve linkage and movement" },
-    { task: "Inspect discharge piping connections" },
-    { task: "Check vibration isolators / mounts condition" },
-  ]},
-  { equipmentName: "Bearings & Rotating Components", tasks: [
-    { task: "Inspect exposed bearings for grease leakage" },
-    { task: "Check bearing housings for discoloration" },
-    { task: "Verify bearing locking collars or retaining hardware" },
-    { task: "Check shaft seals condition" },
-    { task: "Re-grease bearings if applicable" },
-    { task: "Record bearing condition and trend observations" },
-  ]},
-  { equipmentName: "Drive Couplings and Belts", tasks: [
-    { task: "Inspect belts for cracks, glazing, fraying" },
-    { task: "Check belt tension" },
-    { task: "Inspect pulley wear and alignment" },
-    { task: "Inspect rigid or flexible coupling for wear" },
-  ]},
-  { equipmentName: "Integrated Refrigerant Dryer", tasks: [
-    { task: "Inspect and clean dryer condenser and evaporator coils" },
-    { task: "Inspect refrigerant lines for oil residue or leaks" },
-    { task: "Check dryer fan blades and motor mounting" },
-    { task: "Inspect automatic condensate drain assembly" },
-    { task: "Verify drain solenoid condition" },
-    { task: "Check insulation integrity" },
-  ]},
-  { equipmentName: "Cooling System", tasks: [
-    { task: "Clean radiator / oil cooler fins" },
-    { task: "Inspect cooling fan blades for cracks" },
-    { task: "Check fan motor mounting bolts" },
-    { task: "Inspect airflow path for obstructions" },
-    { task: "Clean internal cabinet dust buildup" },
-    { task: "Clean all Filters" },
-  ]},
-  { equipmentName: "Structure", tasks: [
-    { task: "Inspect base frame for cracks or corrosion" },
-    { task: "Check anchor bolts tightness" },
-    { task: "Inspect vibration pads or anti-vibration mounts" },
-    { task: "Inspect enclosure panels and hinges" },
-  ]},
-];
+import { DynamicInspectionTable } from "./DynamicInspectionTable";
 
 const mechanicalFindings = [
   "Excessive shaft play",
@@ -95,40 +38,7 @@ export const FilterPressCompressorOfflinePMDocument = () => {
 
         <SafetyPrecautionsSection />
 
-        <div className="border-b border-border">
-          <div className="bg-primary/10 px-4 py-3 font-bold text-base border-b border-border flex items-center gap-2">
-            <ClipboardCheck className="w-5 h-5 text-primary" />
-            INSPECTION CHECKLIST
-          </div>
-          {inspectionSections.map((section, sectionIndex) => (
-            <div key={section.equipmentName} className={sectionIndex < inspectionSections.length - 1 ? "border-b border-border" : ""}>
-              <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-                <Cog className="w-4 h-4 text-primary" />
-                <span>{section.equipmentName}</span>
-              </div>
-              <table className="w-full text-xs border-collapse">
-                <thead>
-                  <tr className="bg-muted">
-                    <th className="border border-border text-left px-2 py-2 font-semibold w-[46%]">Task</th>
-                    <th className="border border-border text-center px-2 py-2 font-semibold w-[10%]">Serviceable</th>
-                    <th className="border border-border text-center px-2 py-2 font-semibold w-[10%]">Defective</th>
-                    <th className="border border-border text-left px-2 py-2 font-semibold w-[34%]">Comments</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {section.tasks.map((task, taskIndex) => (
-                    <tr key={taskIndex} className="hover:bg-muted/30">
-                      <td className="border border-border px-2 py-2">{task.task}</td>
-                      <td className="border border-border text-center px-2 py-2"><Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" /></td>
-                      <td className="border border-border text-center px-2 py-2"><Checkbox className="h-4 w-4 mx-auto data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600" /></td>
-                      <td className="border border-border px-2 py-2"></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ))}
-        </div>
+        <DynamicInspectionTable tasksData={pm?.tasks} title="INSPECTION CHECKLIST" showEquipmentId />
 
         <div className="border-b border-border">
           <div className="bg-destructive/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
