@@ -1,7 +1,12 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { pmInspectionData } from "./pmInspectionData";
+
+interface PMDataEntry {
+  sections?: unknown[];
+  items?: unknown[];
+  [key: string]: unknown;
+}
 
 export const seedPMTasks = async () => {
   try {
@@ -29,27 +34,10 @@ export const seedPMTasks = async () => {
         continue;
       }
 
-      // 2. Prepare the payload based on the data type
-      let updatePayload: any = {};
-
-      if (Array.isArray(data)) {
-        // Standard simple task list
-        updatePayload = { tasks: data };
-      } else if (data.sections) {
-        // Sectioned data (e.g., Mobile Equipment, Filter Press)
-        updatePayload = { tasks: data.sections };
-      } else if (data.items) {
-        // List of items (e.g., RCD circuits)
-        updatePayload = { tasks: data.items };
-      } else {
-        // Complex object (e.g., Mill Daily with specific fields)
-        updatePayload = { tasks: data };
-      }
-
-      // 3. Update the record
+      // 2. Store the entire data structure as-is into the JSONB tasks column
       const { error: updateError } = await supabase
         .from("pm_master_list")
-        .update(updatePayload)
+        .update({ tasks: data as any })
         .eq("id", pmData.id);
 
       if (updateError) {
@@ -66,7 +54,7 @@ export const seedPMTasks = async () => {
 
   } catch (error) {
     console.error("Seeding failed:", error);
-    toast.error("Seeding failed check console.");
+    toast.error("Seeding failed – check console.");
     return { success: false, error };
   }
 };
