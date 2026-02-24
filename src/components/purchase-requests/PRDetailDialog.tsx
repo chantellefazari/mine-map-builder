@@ -172,19 +172,46 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
     if (!pr) return;
     setAdvancing(true);
     try {
-      // Generate PO number
+      // Generate PO number (TCMG-YYYY-XXXX format)
       const { data: poNumber, error: poErr } = await supabase.rpc("next_po_number");
       if (poErr) throw poErr;
 
-      // Create PO in po_tracker
-      const { error: poInsertErr } = await supabase.from("po_tracker").insert({
-        po_number: poNumber,
-        supplier: pr.supplier_name,
-        work_order_id: pr.work_order_id || null,
-        status: "Ordered",
-        comments: `Auto-generated from ${pr.pr_number}`,
-      } as any);
+      // Create PO in po_tracker with full PR data
+      const freightNeeded = !pr.supplier_organises_freight;
+      const { data: createdPO, error: poInsertErr } = await (supabase as any)
+        .from("po_tracker")
+        .insert({
+          po_number: poNumber,
+          pr_id: pr.id,
+          supplier: pr.supplier_name,
+          supervisor: pr.supervisor_name || "",
+          work_order_id: pr.work_order_id || null,
+          total_value: total,
+          freight_required: freightNeeded,
+          freight_company: freightNeeded ? (pr.freight_company || "") : "",
+          status: "Ordered",
+          comments: `Auto-generated from ${pr.pr_number}`,
+        })
+        .select()
+        .single();
       if (poInsertErr) throw poInsertErr;
+
+      // Copy PR line items to PO line items
+      if (pr.lines.length > 0) {
+        const poLines = pr.lines.map((l) => ({
+          po_tracker_id: createdPO.id,
+          part_description: l.part_description,
+          part_number: "",
+          quantity_ordered: l.quantity,
+          unit_price: l.estimated_cost,
+          received_qty: 0,
+          notes: l.gl_code ? `GL: ${l.gl_code}` : "",
+        }));
+        const { error: lineErr } = await (supabase as any)
+          .from("po_tracker_lines")
+          .insert(poLines);
+        if (lineErr) throw lineErr;
+      }
 
       // Update PR status
       await updateStatus.mutateAsync({
@@ -196,7 +223,7 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
         },
       });
 
-      // Notify admin and supervisor
+      // Notify supervisor
       const notifyEmails = [pr.supervisor_name];
       for (const email of notifyEmails.filter(Boolean)) {
         await createNotification({

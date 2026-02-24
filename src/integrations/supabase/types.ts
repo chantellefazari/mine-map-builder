@@ -493,51 +493,73 @@ export type Database = {
       }
       po_tracker: {
         Row: {
+          attachment_url: string | null
           comments: string
           confirmed_on_site: boolean
           created_at: string
           date_received: string | null
           eta: string | null
           freight_company: string
+          freight_required: boolean
           id: string
           order_date: string | null
           po_number: string
+          pr_id: string | null
           status: string
+          supervisor: string
           supplier: string
+          total_value: number
           updated_at: string
           work_order_id: string | null
         }
         Insert: {
+          attachment_url?: string | null
           comments?: string
           confirmed_on_site?: boolean
           created_at?: string
           date_received?: string | null
           eta?: string | null
           freight_company?: string
+          freight_required?: boolean
           id?: string
           order_date?: string | null
           po_number: string
+          pr_id?: string | null
           status?: string
+          supervisor?: string
           supplier?: string
+          total_value?: number
           updated_at?: string
           work_order_id?: string | null
         }
         Update: {
+          attachment_url?: string | null
           comments?: string
           confirmed_on_site?: boolean
           created_at?: string
           date_received?: string | null
           eta?: string | null
           freight_company?: string
+          freight_required?: boolean
           id?: string
           order_date?: string | null
           po_number?: string
+          pr_id?: string | null
           status?: string
+          supervisor?: string
           supplier?: string
+          total_value?: number
           updated_at?: string
           work_order_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "po_tracker_pr_id_fkey"
+            columns: ["pr_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_requests"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "po_tracker_work_order_id_fkey"
             columns: ["work_order_id"]
