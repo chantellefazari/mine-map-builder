@@ -112,6 +112,7 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
         approval_amount: approvalAmount,
         admin_reviewed_by: user?.email ?? "",
         admin_reviewed_at: new Date().toISOString(),
+        last_updated_by: user?.email ?? "",
       } as any);
       toast.success("PR details updated");
       const updated = await getWithLines(prId);
@@ -205,6 +206,7 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
           freight_company: freightNeeded ? (pr.freight_company || "") : "",
           status: "Issued",
           description: pr.description_scope || pr.request_title || "",
+          created_by: user?.email ?? "",
           last_updated_by: user?.email ?? "",
           comments: `Auto-generated from ${pr.pr_number}`,
         })
@@ -612,6 +614,30 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
               </div>
             </div>
           )}
+
+          {/* Audit Trail */}
+          <Separator />
+          <div>
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Audit Trail</h3>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+              <div>
+                <span className="text-muted-foreground text-xs">Created By</span>
+                <p className="font-medium">{pr.created_by || pr.supervisor_name || "—"}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground text-xs">Created Date</span>
+                <p className="font-medium">{format(new Date(pr.created_at), "dd MMM yyyy HH:mm")}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground text-xs">Last Updated By</span>
+                <p className="font-medium">{pr.last_updated_by || "—"}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground text-xs">Last Updated Date</span>
+                <p className="font-medium">{format(new Date(pr.updated_at), "dd MMM yyyy HH:mm")}</p>
+              </div>
+            </div>
+          </div>
 
           {/* Status locked banner */}
           {!isAdmin && !isPendingApproval && pr.status !== "Draft" && pr.status !== "Approved" && pr.status !== "Rejected" && pr.status !== "PO Raised" && pr.status !== "Closed" && (

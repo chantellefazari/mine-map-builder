@@ -497,6 +497,7 @@ export type Database = {
           comments: string
           confirmed_on_site: boolean
           created_at: string
+          created_by: string
           date_received: string | null
           description: string
           eta: string | null
@@ -521,6 +522,7 @@ export type Database = {
           comments?: string
           confirmed_on_site?: boolean
           created_at?: string
+          created_by?: string
           date_received?: string | null
           description?: string
           eta?: string | null
@@ -545,6 +547,7 @@ export type Database = {
           comments?: string
           confirmed_on_site?: boolean
           created_at?: string
+          created_by?: string
           date_received?: string | null
           description?: string
           eta?: string | null
@@ -895,12 +898,14 @@ export type Database = {
           assigned_approver: string
           comments: string
           created_at: string
+          created_by: string
           delivery_address: string
           department: string
           description_scope: string
           estimated_freight_cost: number
           freight_company: string
           id: string
+          last_updated_by: string
           payment_terms: string
           pr_number: string
           priority: string
@@ -931,12 +936,14 @@ export type Database = {
           assigned_approver?: string
           comments?: string
           created_at?: string
+          created_by?: string
           delivery_address?: string
           department?: string
           description_scope?: string
           estimated_freight_cost?: number
           freight_company?: string
           id?: string
+          last_updated_by?: string
           payment_terms?: string
           pr_number: string
           priority?: string
@@ -967,12 +974,14 @@ export type Database = {
           assigned_approver?: string
           comments?: string
           created_at?: string
+          created_by?: string
           delivery_address?: string
           department?: string
           description_scope?: string
           estimated_freight_cost?: number
           freight_company?: string
           id?: string
+          last_updated_by?: string
           payment_terms?: string
           pr_number?: string
           priority?: string

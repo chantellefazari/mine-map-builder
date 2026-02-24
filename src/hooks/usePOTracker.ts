@@ -36,6 +36,7 @@ export interface POTrackerItem {
   freight_tracking_number: string;
   created_at: string;
   updated_at: string;
+  created_by?: string;
   wo_number?: string;
   pr_number?: string;
   lines?: POLineItem[];
