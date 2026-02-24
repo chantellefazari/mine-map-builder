@@ -6,26 +6,18 @@ import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
 
-const stationaryChecks = [
-  { id: 1, item: "Check name plate is present and matches recorded data. If no data is recorded fill in motor details" },
-  { id: 2, item: "Check terminal box cover bolts are complete and tight. Check if densyl tape is in adequate condition. Change if necessary." },
-  { id: 3, item: "Check Motor while running. Note any loud, irregular squealing or rumbling noises or vibrations" },
-  { id: 4, item: "Check for dust, dirt or rock build up on motor cooling fan or in between cooling fins. Remove excess build up if necessary" },
-  { id: 5, item: "Check cable glands are tight and shrouds are fitted. Tighten glands if necessary." },
-  { id: 6, item: "Check that push or switches are secure and not damaged" },
-  { id: 7, item: "Ensure that access to LCS is not obstructed or impaired." },
-  { id: 8, item: "Ensure fan cowling is secure and free from damage. Ensure there is no obstruction to the flow of air." },
-  { id: 9, item: "Check cable identification is secure and legible" },
-  { id: 10, item: "Ensure cables are correctly routed, undamaged and are attached to cable supports. Ensure mechanical protection is secure and in place. Ensure gland is in place" },
-  { id: 11, item: "Ensure gland plate is in place and all spare cable entries are plugged." },
-];
+interface StationaryCheck {
+  id: number;
+  item: string;
+}
 
 interface MotorSectionProps {
   title: string;
   motorNumber: number;
+  stationaryChecks: StationaryCheck[];
 }
 
-const MotorSection = ({ title, motorNumber }: MotorSectionProps) => (
+const MotorSection = ({ title, motorNumber, stationaryChecks }: MotorSectionProps) => (
   <div className="border-b border-border">
     <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
       <Cog className="w-5 h-5 text-primary" />
@@ -126,6 +118,10 @@ export const FilterPressMotorInspectionPMDocument = () => {
   const { pms } = usePMasterList();
   const pm = pms.find((p) => p.pmName === "Statutory Motor Inspection - Filter Press");
 
+  const tasksData = pm?.tasks as any;
+  const stationaryChecks = (tasksData?.stationaryChecks || []) as StationaryCheck[];
+  const motors = (tasksData?.motors || []) as { description: string }[];
+
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
@@ -154,12 +150,12 @@ export const FilterPressMotorInspectionPMDocument = () => {
           resources={pm?.resources}
         />
 
-        {/* Safety Precautions */}
         <SafetyPrecautionsSection />
 
-        {/* Motor Sections */}
-        <MotorSection title="Stacker Drive Motor - North" motorNumber={1} />
-        <MotorSection title="Stacker Drive Motor - South" motorNumber={2} />
+        {/* Motor Sections - dynamically from DB */}
+        {motors.map((motor, index) => (
+          <MotorSection key={index} title={motor.description} motorNumber={index + 1} stationaryChecks={stationaryChecks} />
+        ))}
       </div>
     </div>
   );
