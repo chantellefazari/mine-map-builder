@@ -44,6 +44,8 @@ export interface PurchaseRequest {
   approval_comment: string;
   admin_reviewed_by: string;
   admin_reviewed_at: string | null;
+  created_by: string;
+  last_updated_by: string;
   created_at: string;
   updated_at: string;
   lines?: PRLineItem[];
@@ -112,7 +114,8 @@ export function usePurchaseRequests() {
 
   const updatePR = useMutation({
     mutationFn: async ({ id, lines, ...fields }: Partial<PurchaseRequest> & { id: string; lines?: PRLineItem[] }) => {
-      const { error } = await supabase.from("purchase_requests").update(fields as any).eq("id", id);
+      const updateFields = { ...fields };
+      const { error } = await supabase.from("purchase_requests").update(updateFields as any).eq("id", id);
       if (error) throw error;
 
       if (lines) {

@@ -103,6 +103,8 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
         status: submitToAdmin ? "Submitted to Admin" : "Draft",
         supervisor_name: user?.email ?? "",
         supervisor_user_id: user?.id ?? null,
+        created_by: user?.email ?? "",
+        last_updated_by: user?.email ?? "",
         department: "",
         supplier_id: supplierId || null,
         supplier_name: resolvedSupplierName,

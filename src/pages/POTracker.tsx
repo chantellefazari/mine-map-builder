@@ -263,6 +263,7 @@ const POTracker = () => {
                             <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
                               {po.updated_at ? format(new Date(po.updated_at), "dd MMM HH:mm") : "—"}
                               {po.last_updated_by && <p className="truncate max-w-[100px]">{po.last_updated_by}</p>}
+                              {(po as any).created_by && <p className="text-[10px] truncate max-w-[100px]">Created: {(po as any).created_by}</p>}
                             </TableCell>
                             <TableCell>
                               <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>

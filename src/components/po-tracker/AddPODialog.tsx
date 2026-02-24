@@ -164,6 +164,7 @@ export const AddPODialog = ({ open, onOpenChange, onSave, editItem, defaultWorkO
         confirmed_on_site: form.confirmed_on_site,
         date_received: form.date_received || null,
         received_by: form.received_by,
+        created_by: editItem ? undefined : user?.email ?? "",
         last_updated_by: user?.email ?? "",
         comments: form.comments,
         total_value: finalTotal,
