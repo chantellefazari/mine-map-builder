@@ -172,14 +172,51 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-1.5">
+          <div className="space-y-1.5">
               <Label className="text-xs">Supplier Organises Freight?</Label>
               <div className="flex items-center gap-2 pt-1">
-                <Switch checked={supplierOrganisesFreight} onCheckedChange={setSupplierOrganisesFreight} />
+                <Switch checked={supplierOrganisesFreight} onCheckedChange={(v) => {
+                  setSupplierOrganisesFreight(v);
+                  if (v) setFreightCompany("");
+                }} />
                 <span className="text-sm text-muted-foreground">{supplierOrganisesFreight ? "Yes" : "No"}</span>
               </div>
             </div>
           </div>
+
+          {/* Freight Company Selection — only when supplier does NOT organise freight */}
+          {!supplierOrganisesFreight && (
+            <div className="space-y-1.5">
+              <Label className="text-xs">Freight / Transport Company</Label>
+              {(() => {
+                const preferredOptions = suppliers
+                  ?.map((s) => s.preferredFreightCompany)
+                  .filter((v, i, arr) => v && arr.indexOf(v) === i) ?? [];
+                return (
+                  <Select
+                    value={freightCompany}
+                    onValueChange={(v) => setFreightCompany(v === "__manual__" ? "" : v)}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select freight company" /></SelectTrigger>
+                    <SelectContent>
+                      {preferredOptions.map((fc) => (
+                        <SelectItem key={fc} value={fc}>{fc}</SelectItem>
+                      ))}
+                      <SelectItem value="__manual__">Manual Entry</SelectItem>
+                    </SelectContent>
+                  </Select>
+                );
+              })()}
+              {(!suppliers?.some((s) => s.preferredFreightCompany === freightCompany) || !freightCompany) && (
+                <Input
+                  value={freightCompany}
+                  onChange={(e) => setFreightCompany(e.target.value)}
+                  placeholder="Enter freight company name"
+                  className="text-sm mt-1.5"
+                />
+              )}
+            </div>
+          )}
 
           {/* Row 4: Delivery + Required Date */}
           <div className="grid grid-cols-2 gap-4">

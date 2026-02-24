@@ -501,6 +501,7 @@ export type Database = {
           eta: string | null
           freight_company: string
           freight_required: boolean
+          freight_tracking_number: string
           id: string
           order_date: string | null
           po_number: string
@@ -521,6 +522,7 @@ export type Database = {
           eta?: string | null
           freight_company?: string
           freight_required?: boolean
+          freight_tracking_number?: string
           id?: string
           order_date?: string | null
           po_number: string
@@ -541,6 +543,7 @@ export type Database = {
           eta?: string | null
           freight_company?: string
           freight_required?: boolean
+          freight_tracking_number?: string
           id?: string
           order_date?: string | null
           po_number?: string
