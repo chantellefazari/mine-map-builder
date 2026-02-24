@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield, PackageSearch } from "lucide-react";
+import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield, PackageSearch, FileInput } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 
@@ -75,6 +75,14 @@ const ALL_SECTIONS = [
     icon: PackageSearch,
     href: "/po-tracker",
     tabKey: "po-tracker",
+  },
+  {
+    title: "Purchase Requests",
+    subtitle: "PR Workflow",
+    description: "Create and submit purchase requests linked to work orders. Track approvals through admin review.",
+    icon: FileInput,
+    href: "/purchase-requests",
+    tabKey: "purchase-requests",
   },
 ];
 
