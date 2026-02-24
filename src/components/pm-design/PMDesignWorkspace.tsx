@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, FileText, BookOpen, List, Loader2 } from "lucide-react";
+import { Clock, FileText, BookOpen, List, Loader2, Database } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { PMFrequencySection, PMData } from "./PMFrequencySection";
 import { PMPrinciples } from "./PMPrinciples";
 import { usePMasterList } from "@/hooks/usePMData";
+import { seedPMTasks } from "@/utils/seedPMTasks";
 
 export const PMDesignWorkspace = () => {
   const { pms, isLoading } = usePMasterList();
@@ -41,6 +43,18 @@ export const PMDesignWorkspace = () => {
             This workspace is for PM DESIGN ONLY. Asset linking and scheduling happen externally in the CMMS.
           </p>
         </div>
+      </div>
+
+      <div className="flex justify-end">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={() => seedPMTasks()}
+          className="gap-2"
+        >
+          <Database className="w-4 h-4" />
+          Seed Tasks to DB
+        </Button>
       </div>
 
       {/* Main Tabs */}
