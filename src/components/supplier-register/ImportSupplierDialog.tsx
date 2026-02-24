@@ -31,6 +31,11 @@ interface ParsedSupplier {
   notes: string;
   location: string;
   isPreferred: boolean;
+  abn: string;
+  paymentTerms: string;
+  preferredFreightCompany: string;
+  defaultDeliveryAddress: string;
+  organisesFreight: boolean;
   isDuplicate: boolean;
   matchReason?: string;
   existingMatch?: Supplier;
@@ -176,6 +181,11 @@ export const ImportSupplierDialog = ({ existingSuppliers, onImportSuppliers }: I
             notes: mapped.notes || "",
             location: "",
             isPreferred: false,
+            abn: "",
+            paymentTerms: "",
+            preferredFreightCompany: "",
+            defaultDeliveryAddress: "",
+            organisesFreight: false,
           };
         })
         .filter((s) => s.name);

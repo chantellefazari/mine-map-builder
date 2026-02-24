@@ -816,7 +816,9 @@ export type Database = {
           created_at: string
           delivery_address: string
           department: string
+          freight_company: string
           id: string
+          payment_terms: string
           pr_number: string
           quote_url: string | null
           required_date: string | null
@@ -824,6 +826,7 @@ export type Database = {
           submitted_at: string | null
           supervisor_name: string
           supervisor_user_id: string | null
+          supplier_abn: string
           supplier_id: string | null
           supplier_name: string
           supplier_organises_freight: boolean
@@ -838,7 +841,9 @@ export type Database = {
           created_at?: string
           delivery_address?: string
           department?: string
+          freight_company?: string
           id?: string
+          payment_terms?: string
           pr_number: string
           quote_url?: string | null
           required_date?: string | null
@@ -846,6 +851,7 @@ export type Database = {
           submitted_at?: string | null
           supervisor_name?: string
           supervisor_user_id?: string | null
+          supplier_abn?: string
           supplier_id?: string | null
           supplier_name?: string
           supplier_organises_freight?: boolean
@@ -860,7 +866,9 @@ export type Database = {
           created_at?: string
           delivery_address?: string
           department?: string
+          freight_company?: string
           id?: string
+          payment_terms?: string
           pr_number?: string
           quote_url?: string | null
           required_date?: string | null
@@ -868,6 +876,7 @@ export type Database = {
           submitted_at?: string | null
           supervisor_name?: string
           supervisor_user_id?: string | null
+          supplier_abn?: string
           supplier_id?: string | null
           supplier_name?: string
           supplier_organises_freight?: boolean
@@ -1081,9 +1090,11 @@ export type Database = {
       }
       suppliers: {
         Row: {
+          abn: string
           code: string
           contact: string
           created_at: string
+          default_delivery_address: string
           email: string
           id: string
           is_preferred: boolean
@@ -1091,15 +1102,20 @@ export type Database = {
           mobile: string
           name: string
           notes: string
+          organises_freight: boolean
+          payment_terms: string
+          preferred_freight_company: string
           type: string
           updated_at: string
           what_used_for: string
           work_phone: string
         }
         Insert: {
+          abn?: string
           code?: string
           contact?: string
           created_at?: string
+          default_delivery_address?: string
           email?: string
           id?: string
           is_preferred?: boolean
@@ -1107,15 +1123,20 @@ export type Database = {
           mobile?: string
           name: string
           notes?: string
+          organises_freight?: boolean
+          payment_terms?: string
+          preferred_freight_company?: string
           type?: string
           updated_at?: string
           what_used_for?: string
           work_phone?: string
         }
         Update: {
+          abn?: string
           code?: string
           contact?: string
           created_at?: string
+          default_delivery_address?: string
           email?: string
           id?: string
           is_preferred?: boolean
@@ -1123,6 +1144,9 @@ export type Database = {
           mobile?: string
           name?: string
           notes?: string
+          organises_freight?: boolean
+          payment_terms?: string
+          preferred_freight_company?: string
           type?: string
           updated_at?: string
           what_used_for?: string
