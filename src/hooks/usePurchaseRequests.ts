@@ -14,6 +14,9 @@ export interface PRLineItem {
 export interface PurchaseRequest {
   id: string;
   pr_number: string;
+  request_title: string;
+  description_scope: string;
+  priority: string;
   work_order_id: string | null;
   status: string;
   supervisor_name: string;
@@ -36,6 +39,11 @@ export interface PurchaseRequest {
   approval_tier: string;
   assigned_approver: string;
   rejection_reason: string;
+  estimated_freight_cost: number;
+  approval_amount: number;
+  approval_comment: string;
+  admin_reviewed_by: string;
+  admin_reviewed_at: string | null;
   created_at: string;
   updated_at: string;
   lines?: PRLineItem[];
@@ -108,7 +116,6 @@ export function usePurchaseRequests() {
       if (error) throw error;
 
       if (lines) {
-        // Delete old lines and re-insert
         await supabase.from("purchase_request_lines").delete().eq("purchase_request_id", id);
         if (lines.length > 0) {
           const lineRows = lines.map((l, i) => ({
@@ -146,5 +153,15 @@ export function usePurchaseRequests() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEY }),
   });
 
-  return { listQuery, getWithLines, generatePRNumber, createPR, updatePR, updateStatus, deletePR };
+  const getLinkedPOs = async (prId: string) => {
+    const { data, error } = await supabase
+      .from("po_tracker")
+      .select("*")
+      .eq("pr_id", prId)
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data ?? [];
+  };
+
+  return { listQuery, getWithLines, generatePRNumber, createPR, updatePR, updateStatus, deletePR, getLinkedPOs };
 }

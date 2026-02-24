@@ -876,6 +876,10 @@ export type Database = {
       purchase_requests: {
         Row: {
           admin_notes: string
+          admin_reviewed_at: string | null
+          admin_reviewed_by: string
+          approval_amount: number
+          approval_comment: string
           approval_tier: string
           approved_at: string | null
           approved_by: string | null
@@ -884,12 +888,16 @@ export type Database = {
           created_at: string
           delivery_address: string
           department: string
+          description_scope: string
+          estimated_freight_cost: number
           freight_company: string
           id: string
           payment_terms: string
           pr_number: string
+          priority: string
           quote_url: string | null
           rejection_reason: string
+          request_title: string
           required_date: string | null
           status: string
           submitted_at: string | null
@@ -904,6 +912,10 @@ export type Database = {
         }
         Insert: {
           admin_notes?: string
+          admin_reviewed_at?: string | null
+          admin_reviewed_by?: string
+          approval_amount?: number
+          approval_comment?: string
           approval_tier?: string
           approved_at?: string | null
           approved_by?: string | null
@@ -912,12 +924,16 @@ export type Database = {
           created_at?: string
           delivery_address?: string
           department?: string
+          description_scope?: string
+          estimated_freight_cost?: number
           freight_company?: string
           id?: string
           payment_terms?: string
           pr_number: string
+          priority?: string
           quote_url?: string | null
           rejection_reason?: string
+          request_title?: string
           required_date?: string | null
           status?: string
           submitted_at?: string | null
@@ -932,6 +948,10 @@ export type Database = {
         }
         Update: {
           admin_notes?: string
+          admin_reviewed_at?: string | null
+          admin_reviewed_by?: string
+          approval_amount?: number
+          approval_comment?: string
           approval_tier?: string
           approved_at?: string | null
           approved_by?: string | null
@@ -940,12 +960,16 @@ export type Database = {
           created_at?: string
           delivery_address?: string
           department?: string
+          description_scope?: string
+          estimated_freight_cost?: number
           freight_company?: string
           id?: string
           payment_terms?: string
           pr_number?: string
+          priority?: string
           quote_url?: string | null
           rejection_reason?: string
+          request_title?: string
           required_date?: string | null
           status?: string
           submitted_at?: string | null
