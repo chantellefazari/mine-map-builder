@@ -17,7 +17,11 @@ export interface POTrackerItem {
   id: string;
   po_number: string;
   work_order_id: string | null;
+  pr_id: string | null;
   supplier: string;
+  supervisor: string;
+  total_value: number;
+  freight_required: boolean;
   freight_company: string;
   order_date: string | null;
   eta: string | null;
@@ -25,9 +29,11 @@ export interface POTrackerItem {
   confirmed_on_site: boolean;
   date_received: string | null;
   comments: string;
+  attachment_url: string;
   created_at: string;
   updated_at: string;
   wo_number?: string;
+  pr_number?: string;
   lines?: POLineItem[];
 }
 
@@ -39,7 +45,7 @@ export function usePOTracker(workOrderId?: string) {
     queryFn: async () => {
       let q = (supabase as any)
         .from("po_tracker")
-        .select("*, work_orders(wo_number), po_tracker_lines(*)")
+        .select("*, work_orders(wo_number), purchase_requests(pr_number), po_tracker_lines(*)")
         .order("created_at", { ascending: false });
 
       if (workOrderId) {
@@ -51,8 +57,10 @@ export function usePOTracker(workOrderId?: string) {
       return (data as any[]).map((row) => ({
         ...row,
         wo_number: row.work_orders?.wo_number ?? null,
+        pr_number: row.purchase_requests?.pr_number ?? null,
         lines: row.po_tracker_lines ?? [],
         work_orders: undefined,
+        purchase_requests: undefined,
         po_tracker_lines: undefined,
       })) as POTrackerItem[];
     },

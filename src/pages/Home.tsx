@@ -70,9 +70,9 @@ const ALL_SECTIONS = [
     tabKey: "planning-revision",
   },
   {
-    title: "PO Tracker",
+    title: "PO Register",
     subtitle: "Purchase Order Tracking",
-    description: "Track purchase orders linked to work orders. Monitor delivery status and confirm parts on site.",
+    description: "Auto-generated POs from approved PRs. Track delivery status, spend per supplier, and spend per work order.",
     icon: PackageSearch,
     href: "/po-tracker",
     tabKey: "po-tracker",
