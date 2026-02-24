@@ -56,6 +56,11 @@ export const AddSupplierDialog = ({ onAddSupplier }: AddSupplierDialogProps) => 
       notes: formData.notes,
       location: "",
       isPreferred: false,
+      abn: "",
+      paymentTerms: "",
+      preferredFreightCompany: "",
+      defaultDeliveryAddress: "",
+      organisesFreight: false,
     });
 
     setFormData({

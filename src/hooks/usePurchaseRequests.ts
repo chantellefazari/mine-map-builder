@@ -30,6 +30,9 @@ export interface PurchaseRequest {
   approved_at: string | null;
   approved_by: string;
   admin_notes: string;
+  freight_company: string;
+  supplier_abn: string;
+  payment_terms: string;
   created_at: string;
   updated_at: string;
   lines?: PRLineItem[];

@@ -38,7 +38,10 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
   const [supplierId, setSupplierId] = useState("");
   const [supplierName, setSupplierName] = useState("");
   const [supplierOrganisesFreight, setSupplierOrganisesFreight] = useState(false);
+  const [freightCompany, setFreightCompany] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("TCMG – Tennant Creek Gold Mine, NT 0861");
+  const [supplierAbn, setSupplierAbn] = useState("");
+  const [paymentTerms, setPaymentTerms] = useState("");
   const [requiredDate, setRequiredDate] = useState<Date | undefined>();
   const [comments, setComments] = useState("");
   const [lines, setLines] = useState<PRLineItem[]>([
@@ -57,7 +60,15 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
   const handleSupplierChange = (id: string) => {
     setSupplierId(id);
     const s = suppliers?.find((s) => s.id === id);
-    if (s) setSupplierName(s.name);
+    if (s) {
+      setSupplierName(s.name);
+      setSupplierOrganisesFreight(s.organisesFreight);
+      setSupplierAbn(s.abn);
+      setPaymentTerms(s.paymentTerms);
+      if (s.defaultDeliveryAddress) setDeliveryAddress(s.defaultDeliveryAddress);
+      if (!s.organisesFreight && s.preferredFreightCompany) setFreightCompany(s.preferredFreightCompany);
+      else setFreightCompany("");
+    }
   };
 
   const uploadQuote = async (): Promise<string> => {
@@ -86,10 +97,13 @@ export const CreatePRDialog: React.FC<Props> = ({ open, onOpenChange, linkedWoId
         supplier_id: supplierId || null,
         supplier_name: supplierName,
         supplier_organises_freight: supplierOrganisesFreight,
+        freight_company: freightCompany,
         delivery_address: deliveryAddress,
         required_date: requiredDate ? format(requiredDate, "yyyy-MM-dd") : null,
         quote_url: quoteUrl,
         comments,
+        supplier_abn: supplierAbn,
+        payment_terms: paymentTerms,
         submitted_at: submitToAdmin ? new Date().toISOString() : null,
         lines,
       } as any);

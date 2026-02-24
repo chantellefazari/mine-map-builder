@@ -17,6 +17,11 @@ export interface Supplier {
   notes: string;
   location: string;
   isPreferred: boolean;
+  abn: string;
+  paymentTerms: string;
+  preferredFreightCompany: string;
+  defaultDeliveryAddress: string;
+  organisesFreight: boolean;
 }
 
 interface DbSupplier {
@@ -32,6 +37,11 @@ interface DbSupplier {
   notes: string;
   location: string;
   is_preferred: boolean;
+  abn: string;
+  payment_terms: string;
+  preferred_freight_company: string;
+  default_delivery_address: string;
+  organises_freight: boolean;
 }
 
 const mapDbToSupplier = (row: DbSupplier): Supplier => ({
@@ -47,6 +57,11 @@ const mapDbToSupplier = (row: DbSupplier): Supplier => ({
   notes: row.notes,
   location: row.location,
   isPreferred: row.is_preferred,
+  abn: row.abn,
+  paymentTerms: row.payment_terms,
+  preferredFreightCompany: row.preferred_freight_company,
+  defaultDeliveryAddress: row.default_delivery_address,
+  organisesFreight: row.organises_freight,
 });
 
 const mapSupplierToDb = (supplier: Omit<Supplier, "id">) => ({
@@ -61,6 +76,11 @@ const mapSupplierToDb = (supplier: Omit<Supplier, "id">) => ({
   notes: supplier.notes,
   location: supplier.location || "",
   is_preferred: supplier.isPreferred || false,
+  abn: supplier.abn || "",
+  payment_terms: supplier.paymentTerms || "",
+  preferred_freight_company: supplier.preferredFreightCompany || "",
+  default_delivery_address: supplier.defaultDeliveryAddress || "",
+  organises_freight: supplier.organisesFreight || false,
 });
 
 export const useSuppliers = () => {
