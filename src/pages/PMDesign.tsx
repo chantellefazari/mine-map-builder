@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { seedPMTasks } from "@/utils/seedPMTasks";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { canonicalPMs } from "@/components/pm-design/canonicalPMNames";
@@ -322,6 +323,16 @@ const PMDesign = () => {
 
   const queryClient = useQueryClient();
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
+
+  const handleSeedTasks = useCallback(async () => {
+    setIsSeeding(true);
+    try {
+      await seedPMTasks();
+    } finally {
+      setIsSeeding(false);
+    }
+  }, []);
 
   const handleSyncPMs = useCallback(async () => {
     setIsSyncing(true);
@@ -649,6 +660,15 @@ const PMDesign = () => {
                 >
                   <Database className={`w-4 h-4 ${isSyncing ? "animate-spin" : ""}`} />
                   {isSyncing ? "Syncing..." : "Sync All PMs"}
+                </Button>
+                <Button
+                  onClick={handleSeedTasks}
+                  variant="outline"
+                  className="gap-2"
+                  disabled={isSeeding}
+                >
+                  <ClipboardCheck className={`w-4 h-4 ${isSeeding ? "animate-spin" : ""}`} />
+                  {isSeeding ? "Seeding..." : "Seed Tasks to DB"}
                 </Button>
                 <Button
                   onClick={handlePrint}
