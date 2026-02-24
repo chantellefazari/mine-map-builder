@@ -5,13 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { ExternalLink, Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ExternalLink, Loader2, CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { usePurchaseRequests, PurchaseRequest, PRLineItem } from "@/hooks/usePurchaseRequests";
+import { useNotifications } from "@/hooks/useNotifications";
 import { PRStatusBadge } from "./PRStatusBadge";
 import { PRLineItemsTable } from "./PRLineItemsTable";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   open: boolean;
@@ -19,16 +22,26 @@ interface Props {
   prId: string;
 }
 
+const APPROVAL_TIERS = [
+  { max: 5000, label: "Operations Manager", tier: "ops_manager" },
+  { max: 20000, label: "Site Manager", tier: "site_manager" },
+  { max: Infinity, label: "General Manager", tier: "gm" },
+];
+
+function getApprovalTier(total: number) {
+  return APPROVAL_TIERS.find((t) => total < t.max) ?? APPROVAL_TIERS[2];
+}
+
 const STATUS_FLOW: Record<string, string> = {
   "Submitted to Admin": "Admin Review",
   "Admin Review": "Sent for Approval",
-  "Sent for Approval": "Approved",
   Approved: "PO Generated",
 };
 
 export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const { getWithLines, updateStatus, updatePR } = usePurchaseRequests();
+  const { createNotification } = useNotifications(user?.email ?? undefined);
   const [pr, setPr] = useState<(PurchaseRequest & { lines: PRLineItem[] }) | null>(null);
   const [loading, setLoading] = useState(false);
   const [adminNotes, setAdminNotes] = useState("");
@@ -42,9 +55,16 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
   const [paymentTerms, setPaymentTerms] = useState("");
   const [savingFields, setSavingFields] = useState(false);
 
+  // Approval fields
+  const [approverEmail, setApproverEmail] = useState("");
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [showReject, setShowReject] = useState(false);
+
   useEffect(() => {
     if (open && prId) {
       setLoading(true);
+      setShowReject(false);
+      setRejectionReason("");
       getWithLines(prId)
         .then((data) => {
           setPr(data);
@@ -54,12 +74,14 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
           setDeliveryAddress(data.delivery_address);
           setSupplierAbn(data.supplier_abn);
           setPaymentTerms(data.payment_terms);
+          setApproverEmail(data.assigned_approver);
         })
         .finally(() => setLoading(false));
     }
   }, [open, prId]);
 
   const isAdminReview = pr?.status === "Admin Review" || pr?.status === "Submitted to Admin";
+  const isSentForApproval = pr?.status === "Sent for Approval";
 
   const saveAdminFields = async () => {
     if (!pr) return;
@@ -84,13 +106,167 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
     }
   };
 
+  const total = pr?.lines.reduce((s, l) => s + l.quantity * l.estimated_cost, 0) ?? 0;
+
+  const sendForApproval = async () => {
+    if (!pr || !approverEmail) {
+      toast.error("Please enter the approver's email address");
+      return;
+    }
+    setAdvancing(true);
+    try {
+      // Save admin fields first
+      await updatePR.mutateAsync({
+        id: pr.id,
+        supplier_organises_freight: freightToggle,
+        freight_company: freightCompany,
+        delivery_address: deliveryAddress,
+        supplier_abn: supplierAbn,
+        payment_terms: paymentTerms,
+        admin_notes: adminNotes,
+      } as any);
+
+      const tier = getApprovalTier(total);
+      await updateStatus.mutateAsync({
+        id: pr.id,
+        status: "Sent for Approval",
+        extra: {
+          admin_notes: adminNotes,
+          approval_tier: tier.tier,
+          assigned_approver: approverEmail,
+        },
+      });
+
+      // Create notification for approver
+      await createNotification({
+        user_email: approverEmail,
+        title: `PR ${pr.pr_number} requires your approval`,
+        message: `${pr.pr_number} — $${total.toFixed(2)} — ${tier.label} approval required. Supplier: ${pr.supplier_name || "N/A"}`,
+        link: "/purchase-requests",
+        pr_id: pr.id,
+      });
+
+      // Notify supervisor
+      if (pr.supervisor_name) {
+        await createNotification({
+          user_email: pr.supervisor_name,
+          title: `PR ${pr.pr_number} sent for approval`,
+          message: `Your PR has been sent to ${tier.label} (${approverEmail}) for approval.`,
+          link: "/purchase-requests",
+          pr_id: pr.id,
+        });
+      }
+
+      toast.success(`PR sent to ${tier.label} for approval`);
+      const updated = await getWithLines(prId);
+      setPr(updated);
+      setAdminNotes(updated.admin_notes);
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setAdvancing(false);
+    }
+  };
+
+  const handleApprove = async () => {
+    if (!pr) return;
+    setAdvancing(true);
+    try {
+      // Generate PO number
+      const { data: poNumber, error: poErr } = await supabase.rpc("next_po_number");
+      if (poErr) throw poErr;
+
+      // Create PO in po_tracker
+      const { error: poInsertErr } = await supabase.from("po_tracker").insert({
+        po_number: poNumber,
+        supplier: pr.supplier_name,
+        work_order_id: pr.work_order_id || null,
+        status: "Ordered",
+        comments: `Auto-generated from ${pr.pr_number}`,
+      } as any);
+      if (poInsertErr) throw poInsertErr;
+
+      // Update PR status
+      await updateStatus.mutateAsync({
+        id: pr.id,
+        status: "Approved",
+        extra: {
+          approved_by: user?.email ?? "",
+          approved_at: new Date().toISOString(),
+        },
+      });
+
+      // Notify admin and supervisor
+      const notifyEmails = [pr.supervisor_name];
+      for (const email of notifyEmails.filter(Boolean)) {
+        await createNotification({
+          user_email: email,
+          title: `PR ${pr.pr_number} Approved`,
+          message: `Approved by ${user?.email}. PO ${poNumber} has been generated automatically.`,
+          link: "/po-tracker",
+          pr_id: pr.id,
+        });
+      }
+
+      toast.success(`PR approved — PO ${poNumber} generated`);
+      const updated = await getWithLines(prId);
+      setPr(updated);
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setAdvancing(false);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!pr || !rejectionReason.trim()) {
+      toast.error("Please provide a rejection reason");
+      return;
+    }
+    setAdvancing(true);
+    try {
+      await updateStatus.mutateAsync({
+        id: pr.id,
+        status: "Rejected",
+        extra: { rejection_reason: rejectionReason },
+      });
+
+      // Notify supervisor and admin
+      const notifyEmails = [pr.supervisor_name];
+      for (const email of notifyEmails.filter(Boolean)) {
+        await createNotification({
+          user_email: email,
+          title: `PR ${pr.pr_number} Rejected`,
+          message: `Rejected by ${user?.email}. Reason: ${rejectionReason}`,
+          link: "/purchase-requests",
+          pr_id: pr.id,
+        });
+      }
+
+      toast.success("PR rejected");
+      const updated = await getWithLines(prId);
+      setPr(updated);
+      setShowReject(false);
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setAdvancing(false);
+    }
+  };
+
   const advanceStatus = async () => {
     if (!pr) return;
     const nextStatus = STATUS_FLOW[pr.status];
     if (!nextStatus) return;
+
+    // For "Admin Review" → use sendForApproval instead
+    if (pr.status === "Admin Review") {
+      await sendForApproval();
+      return;
+    }
+
     setAdvancing(true);
     try {
-      // Save editable fields first if in admin review
       if (isAdminReview) {
         await updatePR.mutateAsync({
           id: pr.id,
@@ -132,7 +308,7 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
 
   const nextStatus = STATUS_FLOW[pr.status];
   const isEditable = pr.status === "Draft";
-  const total = pr.lines.reduce((s, l) => s + l.quantity * l.estimated_cost, 0);
+  const tier = getApprovalTier(total);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -172,6 +348,27 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
               <p className="font-medium">{pr.required_date ? format(new Date(pr.required_date), "dd MMM yyyy") : "—"}</p>
             </div>
           </div>
+
+          {/* Approval Tier Badge */}
+          {total > 0 && (
+            <div className="flex items-center gap-2 text-sm">
+              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              <span className="text-muted-foreground">Approval tier:</span>
+              <Badge variant="outline" className="font-medium">
+                {tier.label} (${tier.max === Infinity ? "20,000+" : `< $${tier.max.toLocaleString()}`})
+              </Badge>
+            </div>
+          )}
+
+          {/* Rejection reason banner */}
+          {pr.status === "Rejected" && pr.rejection_reason && (
+            <div className="border border-destructive/30 bg-destructive/5 rounded-lg p-3 space-y-1">
+              <div className="flex items-center gap-2 text-sm font-semibold text-destructive">
+                <XCircle className="h-4 w-4" /> Rejected
+              </div>
+              <p className="text-sm text-muted-foreground">{pr.rejection_reason}</p>
+            </div>
+          )}
 
           {/* Freight & Delivery — editable by admin during review */}
           {isAdmin && isAdminReview ? (
@@ -260,10 +457,10 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
             </div>
           )}
 
-          {/* Admin section */}
-          {isAdmin && pr.status !== "Draft" && (
+          {/* Admin section — Send for Approval */}
+          {isAdmin && isAdminReview && (
             <div className="border-t pt-4 space-y-3">
-              <h3 className="text-sm font-semibold">Admin Review</h3>
+              <h3 className="text-sm font-semibold">Send for Approval</h3>
               <div className="space-y-1.5">
                 <Label className="text-xs">Admin Notes</Label>
                 <Textarea
@@ -274,17 +471,88 @@ export const PRDetailDialog: React.FC<Props> = ({ open, onOpenChange, prId }) =>
                   className="text-sm"
                 />
               </div>
-              {nextStatus && (
-                <Button onClick={advanceStatus} disabled={advancing} className="gap-1">
-                  {advancing && <Loader2 className="h-4 w-4 animate-spin" />}
-                  Advance to: {nextStatus}
-                </Button>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Approver Email ({tier.label})</Label>
+                <Input
+                  value={approverEmail}
+                  onChange={(e) => setApproverEmail(e.target.value)}
+                  placeholder={`Enter ${tier.label}'s email`}
+                  className="text-sm"
+                />
+              </div>
+              <div className="flex gap-2">
+                {pr.status === "Submitted to Admin" && (
+                  <Button variant="secondary" onClick={advanceStatus} disabled={advancing} className="gap-1">
+                    {advancing && <Loader2 className="h-4 w-4 animate-spin" />}
+                    Advance to Admin Review
+                  </Button>
+                )}
+                {pr.status === "Admin Review" && (
+                  <Button onClick={sendForApproval} disabled={advancing || !approverEmail} className="gap-1">
+                    {advancing && <Loader2 className="h-4 w-4 animate-spin" />}
+                    Send for Approval
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Approver section — Approve / Reject */}
+          {isSentForApproval && (
+            <div className="border-t pt-4 space-y-3">
+              <h3 className="text-sm font-semibold">Approval Decision</h3>
+              {pr.assigned_approver && (
+                <p className="text-xs text-muted-foreground">
+                  Assigned to: <span className="font-medium text-foreground">{pr.assigned_approver}</span>
+                  {pr.approval_tier && <> • Tier: {APPROVAL_TIERS.find(t => t.tier === pr.approval_tier)?.label ?? pr.approval_tier}</>}
+                </p>
+              )}
+
+              {!showReject ? (
+                <div className="flex gap-2">
+                  <Button onClick={handleApprove} disabled={advancing} className="gap-1 bg-emerald-600 hover:bg-emerald-700">
+                    {advancing && <Loader2 className="h-4 w-4 animate-spin" />}
+                    <CheckCircle2 className="h-4 w-4" /> Approve & Generate PO
+                  </Button>
+                  <Button variant="destructive" onClick={() => setShowReject(true)} disabled={advancing} className="gap-1">
+                    <XCircle className="h-4 w-4" /> Reject
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label className="text-xs">Rejection Reason (required)</Label>
+                  <Textarea
+                    value={rejectionReason}
+                    onChange={(e) => setRejectionReason(e.target.value)}
+                    placeholder="Explain why this PR is being rejected..."
+                    rows={3}
+                    className="text-sm"
+                  />
+                  <div className="flex gap-2">
+                    <Button variant="destructive" onClick={handleReject} disabled={advancing || !rejectionReason.trim()} className="gap-1">
+                      {advancing && <Loader2 className="h-4 w-4 animate-spin" />}
+                      Confirm Rejection
+                    </Button>
+                    <Button variant="outline" onClick={() => setShowReject(false)}>Cancel</Button>
+                  </div>
+                </div>
               )}
             </div>
           )}
 
+          {/* Approved banner */}
+          {pr.status === "Approved" && (
+            <div className="border border-emerald-500/30 bg-emerald-500/5 rounded-lg p-3 space-y-1">
+              <div className="flex items-center gap-2 text-sm font-semibold text-emerald-600">
+                <CheckCircle2 className="h-4 w-4" /> Approved
+              </div>
+              {pr.approved_by && <p className="text-xs text-muted-foreground">By: {pr.approved_by}</p>}
+              {pr.approved_at && <p className="text-xs text-muted-foreground">At: {format(new Date(pr.approved_at), "dd MMM yyyy HH:mm")}</p>}
+            </div>
+          )}
+
           {/* Status locked banner */}
-          {!isEditable && !isAdmin && (
+          {!isEditable && !isAdmin && !isSentForApproval && pr.status !== "Approved" && pr.status !== "Rejected" && (
             <div className="bg-muted/50 border rounded-lg p-3 text-sm text-muted-foreground text-center">
               This PR is locked and under review. Contact admin for changes.
             </div>

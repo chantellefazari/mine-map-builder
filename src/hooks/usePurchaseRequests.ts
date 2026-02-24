@@ -33,6 +33,9 @@ export interface PurchaseRequest {
   freight_company: string;
   supplier_abn: string;
   payment_terms: string;
+  approval_tier: string;
+  assigned_approver: string;
+  rejection_reason: string;
   created_at: string;
   updated_at: string;
   lines?: PRLineItem[];

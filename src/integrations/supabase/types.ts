@@ -133,6 +133,47 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          link: string
+          message: string
+          pr_id: string | null
+          title: string
+          user_email: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string
+          message?: string
+          pr_id?: string | null
+          title?: string
+          user_email?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string
+          message?: string
+          pr_id?: string | null
+          title?: string
+          user_email?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_pr_id_fkey"
+            columns: ["pr_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pm_asset_link_staging: {
         Row: {
           asset_match_key: string | null
@@ -810,8 +851,10 @@ export type Database = {
       purchase_requests: {
         Row: {
           admin_notes: string
+          approval_tier: string
           approved_at: string | null
           approved_by: string | null
+          assigned_approver: string
           comments: string
           created_at: string
           delivery_address: string
@@ -821,6 +864,7 @@ export type Database = {
           payment_terms: string
           pr_number: string
           quote_url: string | null
+          rejection_reason: string
           required_date: string | null
           status: string
           submitted_at: string | null
@@ -835,8 +879,10 @@ export type Database = {
         }
         Insert: {
           admin_notes?: string
+          approval_tier?: string
           approved_at?: string | null
           approved_by?: string | null
+          assigned_approver?: string
           comments?: string
           created_at?: string
           delivery_address?: string
@@ -846,6 +892,7 @@ export type Database = {
           payment_terms?: string
           pr_number: string
           quote_url?: string | null
+          rejection_reason?: string
           required_date?: string | null
           status?: string
           submitted_at?: string | null
@@ -860,8 +907,10 @@ export type Database = {
         }
         Update: {
           admin_notes?: string
+          approval_tier?: string
           approved_at?: string | null
           approved_by?: string | null
+          assigned_approver?: string
           comments?: string
           created_at?: string
           delivery_address?: string
@@ -871,6 +920,7 @@ export type Database = {
           payment_terms?: string
           pr_number?: string
           quote_url?: string | null
+          rejection_reason?: string
           required_date?: string | null
           status?: string
           submitted_at?: string | null
