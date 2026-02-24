@@ -15,6 +15,17 @@ const ALLOWED_TABLES = [
   "po_uploads",
   "pm_master_list",
   "pm_templates",
+  "pm_asset_link_staging",
+  "po_tracker",
+  "po_tracker_lines",
+  "processing_plant_assets",
+  "processing_pid_tags",
+  "processing_functional_locations",
+  "processing_naming_conventions",
+  "work_orders",
+  "work_order_parts",
+  "work_order_parts_audit",
+  "audit_log",
 ];
 
 Deno.serve(async (req) => {
