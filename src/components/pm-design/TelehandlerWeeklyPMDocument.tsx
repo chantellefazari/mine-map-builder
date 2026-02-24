@@ -80,7 +80,7 @@ const inspectionData: InspectionSection[] = [
 export const TelehandlerWeeklyPMDocument = () => {
   const [itemStatus, setItemStatus] = useState<Record<string, "pass" | "fail" | null>>({});
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Telehandler Mechanical Weekly Inspection");
+  const pm = pms.find((p) => p.pmName === "Telehandler Weekly Inspection");
 
   const setStatus = (id: string, status: "pass" | "fail") => {
     setItemStatus(prev => ({ ...prev, [id]: prev[id] === status ? null : status }));

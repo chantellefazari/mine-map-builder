@@ -8,7 +8,7 @@ import { usePMasterList } from "@/hooks/usePMData";
 export const FullTestSheetPMDocument = () => {
   const testRows = Array.from({ length: 20 }, (_, i) => i + 1);
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Electrical Installation Testing");
+  const pm = pms.find((p) => p.pmName === "Full Test Sheet Yearly");
 
   return (
     <div className="bg-background min-h-full">

@@ -20,7 +20,7 @@ const checklistItems = [
 
 export const CableTestSheetPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Cable Test Sheet");
+  const pm = pms.find((p) => p.pmName === "Cable Test Sheet Yearly");
 
   return (
     <div className="bg-background min-h-full">
