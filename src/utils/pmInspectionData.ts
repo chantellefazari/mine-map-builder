@@ -1313,4 +1313,1082 @@ export const pmInspectionData: Record<string, any> = {
       { description: "Filter Press Sump Pump", brand: "TECO", flc: "13.4 A", frequency: "50 Hz", power: "7.5 kW", voltage: "415 V", frameSize: "D132M", rpm: "1465 RPM", ambientTemp: "40°C" },
     ],
   },
+
+  // ══════════════════════════════════════════════════════════════════
+  // GENERATORS WEEKLY (shared template — Andy Dam, Juno, Lab, Portable)
+  // ══════════════════════════════════════════════════════════════════
+
+  "Andy Dam Generator Weekly Inspection": {
+    sections: [
+      { equipmentName: "Visual Running Checks", tasks: [
+        { task: "Check all gauges" },
+        { task: "Check Engine Protection Relay, record fault history, Engine Hours etc.", hasInput: true, inputLabel: "Engine Hours:" },
+        { task: "Walk around Unit - Visually Inspect/Listen for Damage/Defects" },
+        { task: "Open all doors - Visually Inspect/Listen for Damage/Defects i.e Excessive vibration, loose/rattling components or panels, leaking exhaust/Turbo etc." },
+        { task: "Check Engine Guards are in place and compliant" },
+        { task: "Push Emergency Stop Button to Shut Unit Down" },
+        { task: "Check Exhaust Flap closes" },
+      ]},
+      { equipmentName: "Fire Extinguisher", tasks: [{ task: "Check fire extinguisher charged and mounted securely" }]},
+      { equipmentName: "Electrical Offline", tasks: [
+        { task: "Check battery Isolator is Operational & Lockable" }, { task: "Check battery & battery Cabling" },
+        { task: "Check battery terminals are tight and corrosion free" }, { task: "Check condition of all battery, starter and alternator cables" },
+        { task: "Check wiring harnesses are securely mounted and undamaged" }, { task: "Check battery electrolyte level and that batteries are mounted securely" },
+        { task: "Check Engine and Generator Mounts" }, { task: "Check Generator Cabling - look for signs of damage, chaffing, secured etc." },
+        { task: "Check Generator covers and guards are all in place" }, { task: "Check Main Switch/ Circuit Breaker is Operational and Lockable" },
+        { task: "Check Main Switch/ Circuit Breaker is Labelled" },
+      ]},
+      { equipmentName: "General", tasks: [
+        { task: "Check all engine hoses, pipes and clamps for damage" }, { task: "Check engine alternator and fan v-belt adjustment" },
+        { task: "Check Engine alternator mounted securely" }, { task: "Check for engine oil leaks" },
+        { task: "Check fuel hoses mounted securely, replace any chafed or worn hoses" }, { task: "Check/drain Fuel Filters" },
+        { task: "Check all radiator hoses, clamps and coolant lines for deterioration or damage" }, { task: "Check radiator for damage, blockage and leaks" },
+      ]},
+      { equipmentName: "Service Items", tasks: [
+        { task: "Check outer air filter and clean if necessary" }, { task: "Check/Top up Coolant level" },
+        { task: "Check/Top up Engine Oil level" }, { task: "Prestart Check, Close all doors & Restart" }, { task: "Clean Pre-filter" },
+      ]},
+      { equipmentName: "Restart Unit - Electrical (Online)", tasks: [
+        { task: "Check all gauges" }, { task: "Check Engine Protection Relay" }, { task: "Check operation of all emergency stop switches (if equipped)" },
+      ]},
+    ],
+  },
+
+  "Juno Generator Weekly Inspection": {
+    sections: [
+      { equipmentName: "Visual Running Checks", tasks: [
+        { task: "Check all gauges" },
+        { task: "Check Engine Protection Relay, record fault history, Engine Hours etc.", hasInput: true, inputLabel: "Engine Hours:" },
+        { task: "Walk around Unit - Visually Inspect/Listen for Damage/Defects" },
+        { task: "Open all doors - Visually Inspect/Listen for Damage/Defects i.e Excessive vibration, loose/rattling components or panels, leaking exhaust/Turbo etc." },
+        { task: "Check Engine Guards are in place and compliant" },
+        { task: "Push Emergency Stop Button to Shut Unit Down" },
+        { task: "Check Exhaust Flap closes" },
+      ]},
+      { equipmentName: "Fire Extinguisher", tasks: [{ task: "Check fire extinguisher charged and mounted securely" }]},
+      { equipmentName: "Electrical Offline", tasks: [
+        { task: "Check battery Isolator is Operational & Lockable" }, { task: "Check battery & battery Cabling" },
+        { task: "Check battery terminals are tight and corrosion free" }, { task: "Check condition of all battery, starter and alternator cables" },
+        { task: "Check wiring harnesses are securely mounted and undamaged" }, { task: "Check battery electrolyte level and that batteries are mounted securely" },
+        { task: "Check Engine and Generator Mounts" }, { task: "Check Generator Cabling - look for signs of damage, chaffing, secured etc." },
+        { task: "Check Generator covers and guards are all in place" }, { task: "Check Main Switch/ Circuit Breaker is Operational and Lockable" },
+        { task: "Check Main Switch/ Circuit Breaker is Labelled" },
+      ]},
+      { equipmentName: "General", tasks: [
+        { task: "Check all engine hoses, pipes and clamps for damage" }, { task: "Check engine alternator and fan v-belt adjustment" },
+        { task: "Check Engine alternator mounted securely" }, { task: "Check for engine oil leaks" },
+        { task: "Check fuel hoses mounted securely, replace any chafed or worn hoses" }, { task: "Check/drain Fuel Filters" },
+        { task: "Check all radiator hoses, clamps and coolant lines for deterioration or damage" }, { task: "Check radiator for damage, blockage and leaks" },
+      ]},
+      { equipmentName: "Service Items", tasks: [
+        { task: "Check outer air filter and clean if necessary" }, { task: "Check/Top up Coolant level" },
+        { task: "Check/Top up Engine Oil level" }, { task: "Prestart Check, Close all doors & Restart" }, { task: "Clean Pre-filter" },
+      ]},
+      { equipmentName: "Restart Unit - Electrical (Online)", tasks: [
+        { task: "Check all gauges" }, { task: "Check Engine Protection Relay" }, { task: "Check operation of all emergency stop switches (if equipped)" },
+      ]},
+    ],
+  },
+
+  "Lab Generator Weekly Inspection": {
+    sections: [
+      { equipmentName: "Visual Running Checks", tasks: [
+        { task: "Check all gauges" },
+        { task: "Check Engine Protection Relay, record fault history, Engine Hours etc.", hasInput: true, inputLabel: "Engine Hours:" },
+        { task: "Walk around Unit - Visually Inspect/Listen for Damage/Defects" },
+        { task: "Open all doors - Visually Inspect/Listen for Damage/Defects i.e Excessive vibration, loose/rattling components or panels, leaking exhaust/Turbo etc." },
+        { task: "Check Engine Guards are in place and compliant" },
+        { task: "Push Emergency Stop Button to Shut Unit Down" },
+        { task: "Check Exhaust Flap closes" },
+      ]},
+      { equipmentName: "Fire Extinguisher", tasks: [{ task: "Check fire extinguisher charged and mounted securely" }]},
+      { equipmentName: "Electrical Offline", tasks: [
+        { task: "Check battery Isolator is Operational & Lockable" }, { task: "Check battery & battery Cabling" },
+        { task: "Check battery terminals are tight and corrosion free" }, { task: "Check condition of all battery, starter and alternator cables" },
+        { task: "Check wiring harnesses are securely mounted and undamaged" }, { task: "Check battery electrolyte level and that batteries are mounted securely" },
+        { task: "Check Engine and Generator Mounts" }, { task: "Check Generator Cabling - look for signs of damage, chaffing, secured etc." },
+        { task: "Check Generator covers and guards are all in place" }, { task: "Check Main Switch/ Circuit Breaker is Operational and Lockable" },
+        { task: "Check Main Switch/ Circuit Breaker is Labelled" },
+      ]},
+      { equipmentName: "General", tasks: [
+        { task: "Check all engine hoses, pipes and clamps for damage" }, { task: "Check engine alternator and fan v-belt adjustment" },
+        { task: "Check Engine alternator mounted securely" }, { task: "Check for engine oil leaks" },
+        { task: "Check fuel hoses mounted securely, replace any chafed or worn hoses" }, { task: "Check/drain Fuel Filters" },
+        { task: "Check all radiator hoses, clamps and coolant lines for deterioration or damage" }, { task: "Check radiator for damage, blockage and leaks" },
+      ]},
+      { equipmentName: "Service Items", tasks: [
+        { task: "Check outer air filter and clean if necessary" }, { task: "Check/Top up Coolant level" },
+        { task: "Check/Top up Engine Oil level" }, { task: "Prestart Check, Close all doors & Restart" }, { task: "Clean Pre-filter" },
+      ]},
+      { equipmentName: "Restart Unit - Electrical (Online)", tasks: [
+        { task: "Check all gauges" }, { task: "Check Engine Protection Relay" }, { task: "Check operation of all emergency stop switches (if equipped)" },
+      ]},
+    ],
+  },
+
+  "Portable Generators Weekly Inspection": {
+    sections: [
+      { equipmentName: "Visual Running Checks", tasks: [
+        { task: "Check all gauges" },
+        { task: "Check Engine Protection Relay, record fault history, Engine Hours etc.", hasInput: true, inputLabel: "Engine Hours:" },
+        { task: "Walk around Unit - Visually Inspect/Listen for Damage/Defects" },
+        { task: "Open all doors - Visually Inspect/Listen for Damage/Defects i.e Excessive vibration, loose/rattling components or panels, leaking exhaust/Turbo etc." },
+        { task: "Check Engine Guards are in place and compliant" },
+        { task: "Push Emergency Stop Button to Shut Unit Down" },
+        { task: "Check Exhaust Flap closes" },
+      ]},
+      { equipmentName: "Fire Extinguisher", tasks: [{ task: "Check fire extinguisher charged and mounted securely" }]},
+      { equipmentName: "Electrical Offline", tasks: [
+        { task: "Check battery Isolator is Operational & Lockable" }, { task: "Check battery & battery Cabling" },
+        { task: "Check battery terminals are tight and corrosion free" }, { task: "Check condition of all battery, starter and alternator cables" },
+        { task: "Check wiring harnesses are securely mounted and undamaged" }, { task: "Check battery electrolyte level and that batteries are mounted securely" },
+        { task: "Check Engine and Generator Mounts" }, { task: "Check Generator Cabling - look for signs of damage, chaffing, secured etc." },
+        { task: "Check Generator covers and guards are all in place" }, { task: "Check Main Switch/ Circuit Breaker is Operational and Lockable" },
+        { task: "Check Main Switch/ Circuit Breaker is Labelled" },
+      ]},
+      { equipmentName: "General", tasks: [
+        { task: "Check all engine hoses, pipes and clamps for damage" }, { task: "Check engine alternator and fan v-belt adjustment" },
+        { task: "Check Engine alternator mounted securely" }, { task: "Check for engine oil leaks" },
+        { task: "Check fuel hoses mounted securely, replace any chafed or worn hoses" }, { task: "Check/drain Fuel Filters" },
+        { task: "Check all radiator hoses, clamps and coolant lines for deterioration or damage" }, { task: "Check radiator for damage, blockage and leaks" },
+      ]},
+      { equipmentName: "Service Items", tasks: [
+        { task: "Check outer air filter and clean if necessary" }, { task: "Check/Top up Coolant level" },
+        { task: "Check/Top up Engine Oil level" }, { task: "Prestart Check, Close all doors & Restart" }, { task: "Clean Pre-filter" },
+      ]},
+      { equipmentName: "Restart Unit - Electrical (Online)", tasks: [
+        { task: "Check all gauges" }, { task: "Check Engine Protection Relay" }, { task: "Check operation of all emergency stop switches (if equipped)" },
+      ]},
+    ],
+  },
+
+  "Power Station Generator Weekly Inspection": {
+    sections: [
+      { sectionName: "Walk Around Inspection", items: [
+        { id: "1", description: "Check for any visible damage to generator housing" },
+        { id: "2", description: "Check for oil, fuel, or coolant leaks under the generator" },
+        { id: "3", description: "Ensure all warning labels and signage are intact" },
+        { id: "4", description: "Check mounting frame or skid for rust or structural damage" },
+        { id: "5", description: "Inspect vibration isolators for cracks or wear" },
+      ]},
+      { sectionName: "Fluids & Levels", items: [
+        { id: "6", description: "Engine oil level" }, { id: "7", description: "Coolant level" },
+        { id: "8", description: "Fuel level" }, { id: "9", description: "Battery electrolyte level (if applicable)" },
+        { id: "10", description: "Radiator overflow bottle level" },
+      ]},
+      { sectionName: "Engine", items: [
+        { id: "11", description: "Inspect for oil, coolant, or fuel leaks" }, { id: "12", description: "Check belts for wear and tension" },
+        { id: "13", description: "Inspect engine mounts" }, { id: "14", description: "Inspect air intake hoses and clamps" },
+        { id: "15", description: "Check radiator/cooler areas for dust buildup" },
+        { id: "16", description: "Check exhaust system for cracks, soot leaks, or loose fittings" },
+        { id: "17", description: "Check turbocharger (if equipped) for loose connections or oil leaks" },
+        { id: "18", description: "Replace Air Filter" },
+      ]},
+      { sectionName: "Cooling System", items: [
+        { id: "19", description: "Radiator clean and free of debris" }, { id: "20", description: "Radiator fins intact, not bent or blocked" },
+        { id: "21", description: "Hoses, clamps, and connections checked for wear or leaks" },
+        { id: "22", description: "Fan operation smooth" }, { id: "23", description: "Check for corrosion in cooling system" },
+      ]},
+      { sectionName: "Fuel System", items: [
+        { id: "24", description: "Fuel tank, lines, and filters inspected for leaks or damage" },
+        { id: "25", description: "Drain water separators (if fitted)" },
+        { id: "26", description: "Inspect fuel injection pump and connections" },
+        { id: "27", description: "Verify fuel cap seal integrity" },
+      ]},
+      { sectionName: "Lubrication System", items: [
+        { id: "28", description: "Inspect oil filters" }, { id: "29", description: "Inspect oil cooler and lines for leaks" },
+        { id: "30", description: "Check for correct oil pressure during operation" },
+      ]},
+      { sectionName: "Electrical System", items: [
+        { id: "31", description: "Battery terminals clean and secure" }, { id: "32", description: "Check battery charge and condition" },
+        { id: "33", description: "Inspect starter and alternator connections" },
+        { id: "34", description: "Inspect terminal connections and insulation" },
+      ]},
+      { sectionName: "Exhaust System", items: [
+        { id: "35", description: "Inspect exhaust piping and muffler for leaks" },
+        { id: "36", description: "Check mounting brackets and supports" },
+        { id: "37", description: "Inspect for excessive soot buildup" },
+      ]},
+      { sectionName: "Safety Equipment", items: [
+        { id: "38", description: "Battery Isolator Installed and Lockable" },
+        { id: "39", description: "Fire extinguisher present and charged" },
+        { id: "40", description: "Spill kit available" }, { id: "41", description: "Grounding connections secure" },
+        { id: "42", description: "Check for loose panels, covers, and guards" },
+      ]},
+      { sectionName: "Operational Checks", items: [
+        { id: "43", description: "Start generator and verify smooth operation" },
+        { id: "44", description: "Observe for unusual noises or vibrations" },
+        { id: "45", description: "Monitor gauges: oil pressure, coolant temperature, voltage, frequency" },
+        { id: "46", description: "Shutdown and verify no alarms or leaks" },
+      ]},
+    ],
+  },
+
+  "Crusher Fuel Farm Generator Weekly Electrical Inspection": [
+    { id: 1, task: "Visual Inspection: Check for any faults, warning lights or abnormal indicators" },
+    { id: 2, task: "Inspect all Wiring and Connections" },
+    { id: 3, task: "Inspect all Circuit Breakers and Fuses" },
+    { id: 4, task: "Inspect Batteries and Connections/Isolator" },
+    { id: 5, task: "Check cleanliness of Control Panel and Internal compartments" },
+    { id: 6, task: "Start Motor and Check Operation" },
+    { id: 7, task: "Check Voltage and Frequency, Test/Measure Voltage of Battery to see if Alternator is charging correctly or Regulator is failing" },
+  ],
+
+  // ══════════════════════════════════════════════════════════════════
+  // OPS / MOBILE EQUIPMENT WEEKLY (remaining)
+  // ══════════════════════════════════════════════════════════════════
+
+  "EWP Weekly Inspection": {
+    sections: [
+      { sectionName: "Safety", items: [
+        { id: "1", description: "Load chart / operating manual on machine" }, { id: "2", description: "Fire extinguisher charged & accessible" },
+        { id: "3", description: "First-aid kit checked" }, { id: "4", description: "Compliance plates legible" },
+        { id: "5", description: "Fall arrest anchor points condition" }, { id: "6", description: "Battery isolator functioning & labelled" },
+        { id: "7", description: "Starter isolator functioning & labelled" }, { id: "8", description: "Flashing beacon / rotating amber light functioning" },
+        { id: "9", description: "Horn functioning" }, { id: "10", description: "Emergency stop switches operational" },
+        { id: "11", description: "Reverse alarm functioning" },
+      ]},
+      { sectionName: "Hydraulic System", items: [
+        { id: "12", description: "Hydraulic oil level" }, { id: "13", description: "Hoses free from abrasion, leaks" },
+        { id: "14", description: "Cylinders free from leaks/damage" }, { id: "15", description: "Lift/boom/scissor functions smooth" },
+        { id: "16", description: "Pump noise normal" }, { id: "17", description: "Auxiliary hydraulics" },
+      ]},
+      { sectionName: "Engine Compartment", items: [
+        { id: "18", description: "Engine oil level" }, { id: "19", description: "Coolant level & condition" },
+        { id: "20", description: "Radiator clean, free of blockages" }, { id: "21", description: "Belts and Pulleys condition & tension" },
+        { id: "22", description: "Fuel filter / water separator drained" }, { id: "23", description: "Air filters (primary and secondary)" },
+        { id: "24", description: "No oil, coolant, or fuel leaks" }, { id: "25", description: "Fuel level" },
+      ]},
+      { sectionName: "Electrical System", items: [
+        { id: "26", description: "Battery condition & mounting" }, { id: "27", description: "Terminals clean, no corrosion" },
+        { id: "28", description: "Display screens and indicators functional" }, { id: "29", description: "Control panel buttons/switches operational" },
+        { id: "30", description: "Wiring secured, no exposed wires" },
+      ]},
+      { sectionName: "Drive Train", items: [
+        { id: "31", description: "Tyres/wheels condition" }, { id: "32", description: "Tyre pressure (if pneumatic)" },
+        { id: "33", description: "Wheel nuts tight" }, { id: "34", description: "Axles and hubs leak-free" },
+        { id: "35", description: "Brakes and parking brake work correctly" }, { id: "36", description: "All lubrication points serviced" },
+      ]},
+      { sectionName: "Platform", items: [
+        { id: "37", description: "Guardrails secure & undamaged" }, { id: "38", description: "Entry gate self-closing & latches" },
+        { id: "39", description: "Control box secure & functioning" }, { id: "40", description: "Joystick operation smooth" },
+        { id: "41", description: "Footswitch/interlock operational" }, { id: "42", description: "Platform capacity label legible" },
+        { id: "43", description: "Platform leveling system functional" },
+      ]},
+      { sectionName: "Boom", items: [
+        { id: "44", description: "Boom sections free of cracks/damage" }, { id: "45", description: "Wear pads and rollers condition" },
+        { id: "46", description: "Slew bearing, rotation smooth" }, { id: "47", description: "Safety limit switches active" },
+        { id: "48", description: "All lubrication points serviced" },
+      ]},
+    ],
+  },
+
+  "Excavator Weekly Inspection": {
+    sections: [
+      { sectionName: "Walk Around Inspection", items: [
+        { id: "1", description: "Inspect machine structure, boom, stick, bucket, and attachments for damage or cracks" },
+        { id: "2", description: "Inspect guards, panels, and covers for proper attachment" },
+        { id: "3", description: "Check for loose or missing bolts, nuts, or pins" },
+        { id: "4", description: "Inspect handrails, steps, and safety decals for condition" },
+        { id: "5", description: "Ensure warning labels and signage are intact" },
+      ]},
+      { sectionName: "Fluids & Levels", items: [
+        { id: "6", description: "Engine oil level" }, { id: "7", description: "Coolant level" },
+        { id: "8", description: "Fuel level" }, { id: "9", description: "Battery electrolyte level (if applicable)" },
+        { id: "10", description: "DEF / AdBlue level (if SCR equipped)" }, { id: "11", description: "Transmission or swing drive oil levels" },
+      ]},
+      { sectionName: "Engine Compartment", items: [
+        { id: "12", description: "Inspect for oil, coolant, or fuel leaks" }, { id: "13", description: "Check belts for wear and tension" },
+        { id: "14", description: "Check air filter restriction indicator" }, { id: "15", description: "Change/Clean air filter elements as needed" },
+        { id: "16", description: "Inspect air intake hoses and clamps" }, { id: "17", description: "Check radiator/cooler areas for dust buildup" },
+        { id: "18", description: "Check turbo and exhaust system for cracks, soot leaks, or loose fittings" },
+      ]},
+      { sectionName: "Electrical System", items: [
+        { id: "19", description: "Battery terminals clean and secure" }, { id: "20", description: "Battery isolator functional and in correct position" },
+        { id: "21", description: "Lights and indicators operational" }, { id: "22", description: "Control panel functioning correctly" },
+        { id: "23", description: "Wiring secure, no exposed or damaged cables" }, { id: "24", description: "Test warning lights and alarms" },
+      ]},
+      { sectionName: "Hydraulic System", items: [
+        { id: "25", description: "Check hydraulic oil level" }, { id: "26", description: "Inspect hydraulic hoses and fittings for leaks or damage" },
+        { id: "27", description: "Check hydraulic cylinders for leaks or scoring" }, { id: "28", description: "Test all hydraulic functions for smooth operation" },
+        { id: "29", description: "Inspect hydraulic tank breather/cap" },
+      ]},
+      { sectionName: "Undercarriage & Tracks", items: [
+        { id: "30", description: "Inspect track tension and adjustment" }, { id: "31", description: "Check track pads for wear or damage" },
+        { id: "32", description: "Inspect idlers, rollers, and sprockets for wear" }, { id: "33", description: "Check for loose or missing track bolts" },
+        { id: "34", description: "Inspect final drive for leaks" },
+      ]},
+      { sectionName: "Operator Cab / Safety", items: [
+        { id: "35", description: "Seat, seatbelt, and controls functioning properly" }, { id: "36", description: "Fire extinguisher present and charged" },
+        { id: "37", description: "Horn, backup alarm, and mirrors operational" }, { id: "38", description: "Windows and doors operate correctly" },
+        { id: "39", description: "HVAC system functioning" }, { id: "40", description: "Cab interior clean and free of debris" },
+      ]},
+      { sectionName: "Operational Checks", items: [
+        { id: "41", description: "Engine starts smoothly with no unusual noise" },
+        { id: "42", description: "Monitor gauges: oil pressure, coolant temperature, hydraulic pressure" },
+        { id: "43", description: "Observe for unusual noises, vibrations, or smoke" },
+        { id: "44", description: "Test swing function and brakes" }, { id: "45", description: "Test travel functions - forward and reverse" },
+        { id: "46", description: "Shutdown normal with no alarms" },
+      ]},
+      { sectionName: "Auto-Greaser (if equipped)", items: [
+        { id: "47", description: "Verify grease levels and automatic greasing system functioning" },
+        { id: "48", description: "Check all grease points for lubrication" },
+        { id: "49", description: "Inspect grease lines for damage or blockage" },
+      ]},
+    ],
+  },
+
+  "Forklift Weekly Inspection": {
+    sections: [
+      { sectionName: "Safety", items: [
+        { id: "1", description: "Load rating plate legible" }, { id: "2", description: "Fire extinguisher charged and accessible" },
+        { id: "3", description: "ROPS/FOPS structure undamaged" }, { id: "4", description: "Seatbelt functioning" },
+        { id: "5", description: "Flashing beacon / rotating amber light working" }, { id: "6", description: "Emergency stop switch operational" },
+      ]},
+      { sectionName: "Hydraulics", items: [
+        { id: "7", description: "Hydraulic oil level" }, { id: "8", description: "Lift/tilt/side-shift functions smooth" },
+        { id: "9", description: "Hydraulic hoses not leaking or frayed" }, { id: "10", description: "Lift cylinders not leaking" },
+        { id: "11", description: "Steering hydraulics functioning normally" },
+      ]},
+      { sectionName: "Engine Compartment", items: [
+        { id: "12", description: "Engine oil level" }, { id: "13", description: "Coolant level & condition" },
+        { id: "14", description: "Radiator clean, no debris" }, { id: "15", description: "Belts condition & tension" },
+        { id: "16", description: "Fuel filter / water separator" }, { id: "17", description: "Air filter primary & secondary" },
+        { id: "18", description: "No oil, fuel, or coolant leaks" },
+      ]},
+      { sectionName: "Electrical System", items: [
+        { id: "19", description: "Lights (work lights, beacon) operating" }, { id: "20", description: "Battery charger/maintainer operating" },
+        { id: "21", description: "Control panel displays working" }, { id: "22", description: "Battery terminals secure and clean" },
+        { id: "23", description: "Wiring secure, no exposed or damaged cables" },
+      ]},
+      { sectionName: "Transmission and Driveline", items: [
+        { id: "24", description: "Transmission oil level" }, { id: "25", description: "Gear shifting smooth" },
+        { id: "26", description: "Reverse alarm operational" }, { id: "27", description: "Gauges & displays working" },
+        { id: "28", description: "Battery isolator switch functional" }, { id: "29", description: "Starter isolator functional" },
+        { id: "30", description: "All lubrication points serviced" },
+      ]},
+      { sectionName: "Mast, Carriage and Forks", items: [
+        { id: "31", description: "Mast rails straight" }, { id: "32", description: "Mast rollers condition (not seized)" },
+        { id: "33", description: "Chains lubricated, equal tension, no cracks" }, { id: "34", description: "Carriage slides smoothly" },
+        { id: "35", description: "Forks straight, not bent" }, { id: "36", description: "Locking pins engaged" },
+        { id: "37", description: "Fork wear within limits" }, { id: "38", description: "Tilt function smooth" },
+      ]},
+      { sectionName: "Cab", items: [
+        { id: "39", description: "Cab cleanliness" }, { id: "40", description: "Mirrors clean and adjusted" },
+        { id: "41", description: "Horn functioning" }, { id: "42", description: "Seat condition and adjustment" },
+      ]},
+    ],
+  },
+
+  "Moxy Weekly Inspection": {
+    sections: [
+      { sectionName: "Walk Around Inspection", items: [
+        { id: "1", description: "Check for body damage, loose panels, cracked welds" },
+        { id: "2", description: "Check handrails, steps, and platforms for safety" },
+        { id: "3", description: "Check fuel, oil, or coolant leaks under machine" }, { id: "4", description: "Ensure all safety decals are clean and readable" },
+      ]},
+      { sectionName: "Fluids & Levels", items: [
+        { id: "5", description: "Engine oil level" }, { id: "6", description: "Coolant level" },
+        { id: "7", description: "Hydraulic oil level" }, { id: "8", description: "Transmission oil level (sight gauge)" },
+        { id: "9", description: "Fuel level" }, { id: "10", description: "AdBlue / DEF level (if equipped)" },
+      ]},
+      { sectionName: "Engine Compartment", items: [
+        { id: "11", description: "Inspect for oil, coolant, or fuel leaks" }, { id: "12", description: "Check belts for wear and tension" },
+        { id: "13", description: "Replace air filter" }, { id: "14", description: "Inspect air intake hoses and clamps" },
+        { id: "15", description: "Check radiator/cooler areas for dust buildup" },
+        { id: "16", description: "Inspect radiator and cooler fins for blockage or damage" },
+        { id: "17", description: "Verify fan operation is normal" },
+      ]},
+      { sectionName: "Hydraulic System", items: [
+        { id: "18", description: "Check hoses and fittings for leaks or damage" },
+        { id: "19", description: "Inspect lift and tilt cylinders for leaks" },
+        { id: "20", description: "Inspect hydraulic tank area for leaks" },
+        { id: "21", description: "Confirm bucket, lift, and tilt functions operate smoothly" },
+      ]},
+      { sectionName: "Auto Greaser", items: [
+        { id: "22", description: "Grease reservoir level" }, { id: "23", description: "Greaser pump cycles normally" },
+        { id: "24", description: "No damaged, leaking, or missing grease lines" },
+      ]},
+      { sectionName: "Tires", items: [
+        { id: "25", description: "Tire pressure visually OK" }, { id: "26", description: "No cuts, cracks, or sidewall damage" },
+        { id: "27", description: "No missing or loose wheel nuts" }, { id: "28", description: "Hubs show no signs of overheating or oil leak" },
+      ]},
+      { sectionName: "Steering", items: [
+        { id: "29", description: "Check articulation area for debris buildup" },
+        { id: "30", description: "No excessive free play in articulation joint" },
+        { id: "31", description: "Steering cylinders not leaking" },
+        { id: "32", description: "Oscillation joint functioning normally" },
+        { id: "33", description: "Axles free of leaks" },
+      ]},
+      { sectionName: "Braking", items: [
+        { id: "34", description: "Service brakes functioning normally" },
+        { id: "35", description: "Parking brake holding correctly" },
+        { id: "36", description: "No brake warning indicators on display" },
+      ]},
+      { sectionName: "Dump Body & Frame Structure", items: [
+        { id: "37", description: "Inspect hinge pins, bushes, and grease points" },
+        { id: "38", description: "Inspect body floor, sides, and tailgate for cracks or damage" },
+        { id: "39", description: "Inspect chassis rails and welds" },
+        { id: "40", description: "Check body cylinder mounts" },
+        { id: "41", description: "Inspect tailgate operation (if fitted)" },
+      ]},
+      { sectionName: "Electrical", items: [
+        { id: "42", description: "Lights (work lights, indicators, beacon, brake lights) operating" },
+        { id: "43", description: "Horn functioning" }, { id: "44", description: "Reverse alarm works" },
+        { id: "45", description: "Battery terminals secure and clean" }, { id: "46", description: "No exposed or damaged wiring" },
+      ]},
+      { sectionName: "Cab", items: [
+        { id: "47", description: "Seatbelt in good condition" }, { id: "48", description: "Mirrors and windows clean and intact" },
+        { id: "49", description: "HVAC functioning" }, { id: "50", description: "Check cab air filter" },
+        { id: "51", description: "Fire extinguisher present and charged" }, { id: "52", description: "First-aid kit" },
+        { id: "53", description: "Monitor/display functioning with no active warnings" },
+      ]},
+      { sectionName: "Operational Checks", items: [
+        { id: "54", description: "Engine starts smoothly with no unusual noise" },
+        { id: "55", description: "Gauges and warning lights normal" }, { id: "56", description: "Steering responsive" },
+        { id: "57", description: "Hydraulics responsive and smooth" },
+        { id: "58", description: "Run full dump cycle—smooth and stable" },
+        { id: "59", description: "Smooth gear shifting" }, { id: "60", description: "Test brake holding before travel" },
+      ]},
+    ],
+  },
+
+  "Loader Weekly Inspection": {
+    sections: [
+      { sectionName: "Walk Around Inspection", items: [
+        { id: "1", description: "Check for body damage, loose panels, cracked welds" },
+        { id: "2", description: "Check handrails, steps, and platforms for safety" },
+        { id: "3", description: "Check fuel, oil, or coolant leaks under machine" }, { id: "4", description: "Ensure all safety decals are clean and readable" },
+      ]},
+      { sectionName: "Fluids & Levels", items: [
+        { id: "5", description: "Engine oil level" }, { id: "6", description: "Coolant level" },
+        { id: "7", description: "Hydraulic oil level" }, { id: "8", description: "Transmission oil level (sight gauge)" },
+        { id: "9", description: "Fuel level" }, { id: "10", description: "AdBlue / DEF level (if equipped)" },
+      ]},
+      { sectionName: "Engine Compartment", items: [
+        { id: "11", description: "Inspect for oil, coolant, or fuel leaks" }, { id: "12", description: "Check belts for wear and tension" },
+        { id: "13", description: "Replace air filter" }, { id: "14", description: "Inspect air intake hoses and clamps" },
+        { id: "15", description: "Check radiator/cooler areas for dust buildup" },
+        { id: "16", description: "Inspect radiator and cooler fins for blockage or damage" },
+        { id: "17", description: "Verify fan operation is normal" },
+      ]},
+      { sectionName: "Hydraulic System", items: [
+        { id: "18", description: "Check hoses and fittings for leaks or damage" },
+        { id: "19", description: "Inspect lift and tilt cylinders for leaks" },
+        { id: "20", description: "Inspect hydraulic tank area for leaks" },
+        { id: "21", description: "Confirm bucket, lift, and tilt functions operate smoothly" },
+      ]},
+      { sectionName: "Auto Greaser", items: [
+        { id: "22", description: "Grease reservoir level" }, { id: "23", description: "Greaser pump cycles normally" },
+        { id: "24", description: "No damaged, leaking, or missing grease lines" },
+      ]},
+      { sectionName: "Tires", items: [
+        { id: "25", description: "Tire pressure visually OK" }, { id: "26", description: "No cuts, cracks, or sidewall damage" },
+        { id: "27", description: "No missing or loose wheel nuts" }, { id: "28", description: "Hubs show no signs of overheating or oil leak" },
+      ]},
+      { sectionName: "Steering & Articulation Joint", items: [
+        { id: "29", description: "Check articulation area for debris buildup" },
+        { id: "30", description: "No excessive free play in articulation joint" },
+        { id: "31", description: "Steering cylinders not leaking" },
+        { id: "32", description: "Oscillation joint functioning normally" },
+        { id: "33", description: "Axles free of leaks" },
+      ]},
+      { sectionName: "Braking", items: [
+        { id: "34", description: "Service brakes functioning normally" },
+        { id: "35", description: "Parking brake holding correctly" },
+        { id: "36", description: "No brake warning indicators on display" },
+      ]},
+      { sectionName: "Bucket", items: [
+        { id: "37", description: "Cutting edges and teeth intact" }, { id: "38", description: "No cracks or damage on bucket" },
+        { id: "39", description: "Linkage pins and bushes appear lubricated and secure" },
+      ]},
+      { sectionName: "Electrical", items: [
+        { id: "40", description: "Lights (work lights, indicators, beacon, brake lights) operating" },
+        { id: "41", description: "Horn functioning" }, { id: "42", description: "Reverse alarm works" },
+        { id: "43", description: "Battery terminals secure and clean" }, { id: "44", description: "No exposed or damaged wiring" },
+      ]},
+      { sectionName: "Cab", items: [
+        { id: "45", description: "Seatbelt in good condition" }, { id: "46", description: "Mirrors and windows clean and intact" },
+        { id: "47", description: "HVAC functioning" }, { id: "48", description: "Check cab air filter" },
+        { id: "49", description: "Fire extinguisher present and charged" }, { id: "50", description: "First-aid kit" },
+        { id: "51", description: "Monitor/display functioning with no active warnings" },
+      ]},
+      { sectionName: "Operational Checks", items: [
+        { id: "52", description: "Engine starts smoothly with no unusual noise" },
+        { id: "53", description: "Gauges and warning lights normal" }, { id: "54", description: "Steering responsive" },
+        { id: "55", description: "Hydraulics responsive and smooth" }, { id: "56", description: "Smooth gear shifting" },
+        { id: "57", description: "Test brake holding before travel" },
+      ]},
+    ],
+  },
+
+  "Service Truck Weekly Inspection": {
+    sections: [
+      { sectionName: "Safety", items: [
+        { id: "1", description: "Flashing beacon/strobe operational" }, { id: "2", description: "Reverse alarm functional" },
+        { id: "3", description: "Two-way radio working" }, { id: "4", description: "Fire extinguisher charged and secure" },
+        { id: "5", description: "First aid kit stocked" }, { id: "6", description: "Wheel chocks present & serviceable" },
+        { id: "7", description: "Emergency triangles present" },
+      ]},
+      { sectionName: "Tyres", items: [
+        { id: "8", description: "Tyre pressure correct" }, { id: "9", description: "Tyre tread & sidewall condition" },
+        { id: "10", description: "Rims and wheel nuts secure" }, { id: "11", description: "Tyre condition (cuts, cracks, wear)" },
+        { id: "12", description: "Rims – cracks, distortion" }, { id: "13", description: "Wheel nuts tight, no movement" },
+        { id: "14", description: "Centre pad & wheel studs condition" },
+      ]},
+      { sectionName: "Engine Compartment", items: [
+        { id: "15", description: "Engine oil level" }, { id: "16", description: "Coolant level & condition" },
+        { id: "17", description: "Radiator clean, free of blockages" }, { id: "18", description: "Belts condition & tension" },
+        { id: "19", description: "Fuel filter / water separator drained" }, { id: "20", description: "Air filters (primary and secondary)" },
+        { id: "21", description: "No oil, coolant, or fuel leaks" },
+      ]},
+      { sectionName: "Electrical System", items: [
+        { id: "22", description: "Battery isolator functioning" }, { id: "23", description: "Battery isolator clearly labelled" },
+        { id: "24", description: "Batteries secure & corrosion-free" }, { id: "25", description: "External lights working" },
+        { id: "26", description: "Internal lights working" }, { id: "27", description: "Jump Pack Charged" },
+      ]},
+      { sectionName: "Transmission", items: [
+        { id: "28", description: "Transmission oil level" }, { id: "29", description: "Differential/axle oils" },
+        { id: "30", description: "Universal joints, drivelines condition" }, { id: "31", description: "Drive performance normal" },
+        { id: "32", description: "Grease all grease points" },
+      ]},
+      { sectionName: "Steering", items: [
+        { id: "33", description: "Power steering fluid level" }, { id: "34", description: "Steering joints, tie rods, cylinder leaks" },
+        { id: "35", description: "Driveshaft/U-joints secure" }, { id: "36", description: "No abnormal noises" },
+        { id: "37", description: "No excessive free play" },
+      ]},
+      { sectionName: "Auto Greaser", items: [
+        { id: "38", description: "Inspection operation of greaser" }, { id: "39", description: "Inspect level" },
+        { id: "40", description: "Inspect grease lines and repair if required" },
+      ]},
+      { sectionName: "Braking", items: [
+        { id: "41", description: "Service brakes effective" }, { id: "42", description: "Park brake holding capacity" },
+        { id: "43", description: "Brake lines/hoses intact" }, { id: "44", description: "Air leaks" },
+        { id: "45", description: "Suspension components safe" },
+      ]},
+      { sectionName: "Body Work & Structure", items: [{ id: "46", description: "Steps, handrails, grab points secure" }]},
+      { sectionName: "Onboard Tools and Equipment", items: [
+        { id: "47", description: "Air compressor operational" }, { id: "48", description: "Hoses leak-free" },
+        { id: "49", description: "Toolboxes secure" }, { id: "50", description: "Grease system functioning" },
+        { id: "51", description: "Fuel system functional" }, { id: "52", description: "Waste oil tank level - If full decant into approved disposal tank" },
+        { id: "53", description: "Lubricant levels" },
+      ]},
+      { sectionName: "Cabin", items: [
+        { id: "54", description: "Operator controls smooth/functional" }, { id: "55", description: "Mirrors clean & intact" },
+        { id: "56", description: "Windows/windscreen clean and undamaged" }, { id: "57", description: "Wipers & washer operation" },
+        { id: "58", description: "Air-conditioning functioning" },
+      ]},
+    ],
+  },
+
+  "Skid Steer Weekly Inspection": {
+    sections: [
+      { sectionName: "Safety", items: [
+        { id: "1", description: "Fire extinguisher charged and accessible" }, { id: "2", description: "First-aid kit stocked (if fitted)" },
+        { id: "3", description: "ROPS/FOPS structure undamaged" }, { id: "4", description: "Seatbelt condition & function" },
+        { id: "5", description: "Pre-start book completed daily" },
+      ]},
+      { sectionName: "Hydraulic System", items: [
+        { id: "6", description: "Hydraulic oil level" }, { id: "7", description: "Hydraulic hoses (wear, abrasion, leaks)" },
+        { id: "8", description: "Pump noise, temperature, smooth operation" }, { id: "9", description: "Cylinders (leaks, rod damage)" },
+        { id: "10", description: "Auxiliary hydraulic couplers – leaks & dust caps intact" },
+      ]},
+      { sectionName: "Engine Compartment", items: [
+        { id: "11", description: "Engine oil level" }, { id: "12", description: "Coolant level & condition" },
+        { id: "13", description: "Radiator clean, no blockages" }, { id: "14", description: "Belts condition & tension" },
+        { id: "15", description: "Air filter (primary & secondary)" }, { id: "16", description: "Fuel filter & water trap" },
+        { id: "17", description: "Check for oil, coolant, or fuel leaks" }, { id: "18", description: "Exhaust condition and mounting" },
+      ]},
+      { sectionName: "Electrical System", items: [
+        { id: "19", description: "Battery condition (secure, clean terminals)" }, { id: "20", description: "Alternator charging correctly (no warnings)" },
+        { id: "21", description: "Wiring harness secure; no exposed wires" }, { id: "22", description: "All machine lights functioning" },
+        { id: "23", description: "Reverse alarm, horn functioning" }, { id: "24", description: "Operator display & gauges functioning" },
+        { id: "25", description: "No active electrical fault codes" }, { id: "26", description: "Battery isolator switch present & functioning" },
+        { id: "27", description: "Starter isolator operational" }, { id: "28", description: "Flashing beacon/rotating light operational" },
+      ]},
+      { sectionName: "Cabin", items: [
+        { id: "29", description: "Seat, arm rests, controls secure" }, { id: "30", description: "Joysticks/pedals smooth and responsive" },
+        { id: "31", description: "Wipers & washers working" }, { id: "32", description: "Mirrors clean & intact" },
+        { id: "33", description: "Cab cleanliness" }, { id: "34", description: "Aircon functioning" },
+      ]},
+      { sectionName: "Bucket and Attachments", items: [
+        { id: "35", description: "Pins & bushings – lubrication & wear" }, { id: "36", description: "Quick coupler operation & locking" },
+        { id: "37", description: "Bucket/attachments – cutting edge wear, cracks" }, { id: "38", description: "Auxiliary hydraulics working normally" },
+      ]},
+    ],
+  },
+
+  "Telehandler Weekly Inspection": {
+    sections: [
+      { sectionName: "Safety", items: [
+        { id: "1", description: "Load charts in cab & legible" }, { id: "2", description: "Fire extinguisher charged & accessible" },
+        { id: "3", description: "First-aid kit checked" }, { id: "4", description: "ROPS/FOPS integrity" },
+        { id: "5", description: "Seatbelt functioning & in good condition" }, { id: "6", description: "Battery isolator functioning & labelled" },
+        { id: "7", description: "Starter isolator functioning & labelled" }, { id: "8", description: "Flashing beacon / rotating amber light functioning" },
+        { id: "9", description: "Horn functioning" }, { id: "10", description: "Emergency stop switches operational" },
+        { id: "11", description: "Reversing Beeper Operational" },
+      ]},
+      { sectionName: "Hydraulics", items: [
+        { id: "12", description: "Hydraulic oil level" }, { id: "13", description: "Hydraulic hoses (cracks, abrasion, leaks)" },
+        { id: "14", description: "Pump performance & abnormal noise" }, { id: "15", description: "Lift/tilt/boom functions smooth" },
+        { id: "16", description: "Hydraulic cylinders – leaks, rod damage" }, { id: "17", description: "Auxiliary hydraulics functioning correctly" },
+        { id: "18", description: "Stabiliser hydraulics" },
+      ]},
+      { sectionName: "Engine Compartment", items: [
+        { id: "19", description: "Engine oil level" }, { id: "20", description: "Coolant level & condition" },
+        { id: "21", description: "Radiator clean, free of blockages" }, { id: "22", description: "Belts condition & tension" },
+        { id: "23", description: "Fuel filter / water separator drained" }, { id: "24", description: "Air filters (primary and secondary)" },
+        { id: "25", description: "No oil, coolant, or fuel leaks" }, { id: "26", description: "Exhaust system secure" },
+      ]},
+      { sectionName: "Electrical System", items: [
+        { id: "27", description: "Battery condition & mounting" }, { id: "28", description: "Terminals clean, no corrosion" },
+        { id: "29", description: "Wiring harness secure, no exposed wires" }, { id: "30", description: "Work lights, indicators, hazards operational" },
+        { id: "31", description: "Dashboard gauges working" }, { id: "32", description: "Reverse alarm functional" },
+        { id: "33", description: "No active electrical fault codes" },
+      ]},
+      { sectionName: "Transmission", items: [
+        { id: "34", description: "Transmission oil level" }, { id: "35", description: "Gear changes smooth" },
+        { id: "36", description: "No driveline or differential leaks" }, { id: "37", description: "Parking brake functioning" },
+        { id: "38", description: "Service brakes performing correctly" }, { id: "39", description: "Axles free from damage or leaks" },
+        { id: "40", description: "Grease all Grease points" },
+      ]},
+      { sectionName: "Steering", items: [
+        { id: "41", description: "Steering response normal" }, { id: "42", description: "Four-wheel steer & crab modes functional" },
+        { id: "43", description: "Steering cylinders and hoses intact" }, { id: "44", description: "No excessive free play" },
+        { id: "45", description: "Suspension components intact" },
+      ]},
+      { sectionName: "Auto Greaser", items: [
+        { id: "46", description: "Inspection Operation of Greaser" }, { id: "47", description: "Inspect Level" },
+        { id: "48", description: "Inspect Grease Lines and repair if Required" },
+      ]},
+      { sectionName: "Tyres", items: [
+        { id: "49", description: "Tyre condition (cuts, cracks, wear)" }, { id: "50", description: "Tyre pressures correct" },
+        { id: "51", description: "Rims – cracks, distortion" }, { id: "52", description: "Wheel nuts tight, no movement" },
+        { id: "53", description: "Hub oil levels (if applicable)" },
+      ]},
+      { sectionName: "Boom & Attachments", items: [
+        { id: "54", description: "Boom sections straight & undamaged" }, { id: "55", description: "Boom pads/rollers condition" },
+        { id: "56", description: "Boom wear pads intact" }, { id: "57", description: "Boom hoses & internal chains/cables in good condition" },
+        { id: "58", description: "Carriage locks working" }, { id: "59", description: "Forks straight, not bent or worn" },
+        { id: "60", description: "Correct attachment plate engagement" }, { id: "61", description: "Attachment (bucket, jib, man basket, etc.) secure" },
+        { id: "62", description: "Quick-hitch locking mechanism functional" },
+      ]},
+      { sectionName: "Stabilisers", items: [
+        { id: "63", description: "Stabilisers extend/retract smoothly" }, { id: "64", description: "Pads present and undamaged" },
+        { id: "65", description: "Interlock switches working" },
+      ]},
+      { sectionName: "Cabin", items: [
+        { id: "66", description: "Operator controls smooth/functional" }, { id: "67", description: "Mirrors clean & intact" },
+        { id: "68", description: "Windows/windscreen clean and undamaged" }, { id: "69", description: "Wipers & washer operation" },
+        { id: "70", description: "Air-conditioning functioning" }, { id: "71", description: "Joysticks free of sticking" },
+      ]},
+    ],
+  },
+
+  "Water Truck Weekly Inspection": {
+    sections: [
+      { sectionName: "Safety", items: [
+        { id: "1", description: "Flashing beacon/strobe operational" }, { id: "2", description: "Reverse alarm functional" },
+        { id: "3", description: "Two-way radio working" }, { id: "4", description: "Fire extinguisher charged and secure" },
+        { id: "5", description: "First aid kit stocked" }, { id: "6", description: "Wheel chocks present & serviceable" },
+        { id: "7", description: "Emergency triangles present" },
+      ]},
+      { sectionName: "Tyres", items: [
+        { id: "8", description: "Tyre pressure correct" }, { id: "9", description: "Tyre tread & sidewall condition" },
+        { id: "10", description: "Rims and wheel nuts secure" }, { id: "11", description: "Tyre condition (cuts, cracks, wear)" },
+        { id: "12", description: "Rims – cracks, distortion" }, { id: "13", description: "Wheel nuts tight, no movement" },
+        { id: "14", description: "Centre pad & wheel studs condition" },
+      ]},
+      { sectionName: "Engine Compartment", items: [
+        { id: "15", description: "Engine oil level" }, { id: "16", description: "Coolant level & condition" },
+        { id: "17", description: "Radiator clean, free of blockages" }, { id: "18", description: "Belts condition & tension" },
+        { id: "19", description: "Fuel filter / water separator drained" }, { id: "20", description: "Air filters (primary and secondary)" },
+        { id: "21", description: "No oil, coolant, or fuel leaks" },
+      ]},
+      { sectionName: "Electrical System", items: [
+        { id: "22", description: "Battery isolator functioning" }, { id: "23", description: "Battery isolator clearly labelled" },
+        { id: "24", description: "Batteries secure & corrosion-free" }, { id: "25", description: "All headlights, tail lights, indicators working" },
+        { id: "26", description: "Internal lights working" }, { id: "27", description: "Jump pack charged" },
+      ]},
+      { sectionName: "Transmission", items: [
+        { id: "28", description: "Transmission oil level" }, { id: "29", description: "Differential/axle oils" },
+        { id: "30", description: "Universal joints, drivelines condition" }, { id: "31", description: "Drive performance normal" },
+        { id: "32", description: "Grease all grease points" },
+      ]},
+      { sectionName: "Steering", items: [
+        { id: "33", description: "Power steering fluid level" }, { id: "34", description: "Steering joints, tie rods, cylinder leaks" },
+        { id: "35", description: "Driveshaft/U-joints secure" }, { id: "36", description: "No abnormal noises" },
+        { id: "37", description: "No excessive free play" },
+      ]},
+      { sectionName: "Auto Greaser", items: [
+        { id: "38", description: "Inspection operation of greaser" }, { id: "39", description: "Inspect level" },
+        { id: "40", description: "Inspect grease lines and repair if required" },
+      ]},
+      { sectionName: "Braking", items: [
+        { id: "41", description: "Service brakes effective" }, { id: "42", description: "Park brake holding capacity" },
+        { id: "43", description: "Brake lines/hoses intact" }, { id: "44", description: "Air leaks" },
+        { id: "45", description: "Suspension components safe" },
+      ]},
+      { sectionName: "Body Work & Structure", items: [{ id: "46", description: "Steps, handrails, grab points secure" }]},
+      { sectionName: "Water Tank and Spray System", items: [
+        { id: "47", description: "Tank secure, no cracks or leaks" }, { id: "48", description: "Water pump operational" },
+        { id: "49", description: "Spray bars functioning" }, { id: "50", description: "Rear spray nozzles not blocked" },
+        { id: "51", description: "Side spray nozzles working" }, { id: "52", description: "Water cannon functioning" },
+        { id: "53", description: "Hoses and fittings leak-free" },
+      ]},
+      { sectionName: "Cabin", items: [
+        { id: "54", description: "Operator controls smooth/functional" }, { id: "55", description: "Mirrors clean & intact" },
+        { id: "56", description: "Windows/windscreen clean and undamaged" }, { id: "57", description: "Wipers & washer" },
+        { id: "58", description: "Air-conditioning functioning" },
+      ]},
+    ],
+  },
+
+  // ══════════════════════════════════════════════════════════════════
+  // ELECTRICAL — Spare Mill Motor, Cable Test, Full Test, Generator Yearly
+  // ══════════════════════════════════════════════════════════════════
+
+  "Spare Mill Motor Inspection Weekly": [
+    { id: 1, task: "Check the Heater is Connected and Operational" },
+    { id: 2, task: "Rotate Motor 4x Times" },
+  ],
+
+  "Cable Test Sheet Yearly": {
+    checklistItems: [
+      "Earth Lock Ring", "Glands Correct/Tight/Secured", "Cable Label Fitted",
+      "Cables Terminated and Secured", "Line Shrouds Fitted", "Bridges Removed",
+      "Tools Removed", "Cable Support System OK", "Cable Gland Wrapped in Denso",
+    ],
+    testColumns: ["R-W", "R-B", "W-B", "R-E", "W-E", "B-E", "R-N", "W-N", "B-N"],
+  },
+
+  "Full Test Sheet Yearly": {
+    testColumns: [
+      "Test Point/Circuit No.", "Conductor Sizes (mm²)", "MCB (Rating & Type)",
+      "Active Ω (Rph)", "Earth or Ω (Re)", "Continuity Pass/Fail",
+      "Insulation Resistance (MΩ)", "Pass/Fail", "Correct Circuit Connections",
+      "Polarity Pass/Fail", "Fault Loop Impedance R (Ω)", "Max Permitted Loop Value R (Ω)",
+      "Pass/Fail", "RCD Pass/Fail", "RCD Trip Time (mSec)",
+    ],
+    testRows: 20,
+  },
+
+  "Generator Electrical Test Yearly": {
+    deadTests: [
+      { id: 1, item: "Multifunction Unit type", subItems: ["Separate windings", "Isolation Transformer fitted", "Multi-position/multi-contact switch installed"], action: "Test" },
+      { id: 2, item: "Over current and Short circuit protection provided on generator windings", action: "Check" },
+      { id: 3, item: "Neutral of 240V output bonded to earth (MEN)", action: "Check" },
+      { id: 4, item: "30mA Residual Current Device (type II) fitted to all outlets", action: "Check" },
+    ],
+    insulationTests: [
+      { id: "a", label: "U-V", voltage: "1000V" }, { id: "b", label: "V-W", voltage: "1000V" },
+      { id: "c", label: "W-U", voltage: "1000V" }, { id: "d", label: "U-E", voltage: "500V" },
+      { id: "e", label: "V-E", voltage: "500V" }, { id: "f", label: "W-E", voltage: "500V" },
+    ],
+    continuityTests: [
+      { id: "a", label: "U1-U2" }, { id: "b", label: "V1-V2" }, { id: "c", label: "W1-W2" },
+    ],
+    visualChecks: [
+      { id: 7, item: "Frame of Generator bonded to main earth bar (<1Ω)", action: "Test" },
+      { id: 8, item: "Earth Terminal on all outlets bonded to main earth bar (<1Ω)", action: "Test" },
+      { id: 9, item: "All General-Purpose Outlets individually switched", action: "Check" },
+      { id: 10, item: "Flexible equipotential bonding conductor provided", action: "Check" },
+      { id: 11, item: "Equipotential conductor fitted with approved G-Clamp or spring-loaded tong", action: "Check" },
+      { id: 12, item: "Equipotential bonding conductor connected to unit main earth bar or unit frame", action: "Check" },
+      { id: 13, item: "Visual inspection as to condition of all electrical components including wiring", action: "Check" },
+      { id: 14, item: "Internal connection and cable glands are tight", action: "Check" },
+      { id: 15, item: "Confirm lock out facilities on isolators and breakers are available", action: "Check" },
+      { id: 16, item: "Confirm all terminations and busbar in generator DB tight", action: "Check" },
+      { id: 17, item: "Confirm all cable and glands in generator DB are secure", action: "Check" },
+      { id: 18, item: "Confirm all unused cable entries have been sealed", action: "Check" },
+      { id: 19, item: "Confirm that all labelling and identification is complete and correct", action: "Check" },
+      { id: 20, item: "Confirm that the generator is clean and free from damage", action: "Check" },
+      { id: 21, item: "Bottom of any electrical cubicles are clean of dust", action: "Check" },
+    ],
+    generatorElectricalChecks: [
+      { id: 1, item: "Confirm that the fire extinguisher fitted and compliant", action: "Check" },
+      { id: 2, item: "Confirm that the Battery isolator is present, and it breaks contact", action: "Check" },
+      { id: 3, item: "Confirm that the Start isolator is present, and it breaks contact", action: "Check" },
+      { id: 4, item: "Confirm that there is an E-Stop present", action: "Check" },
+    ],
+    runningTests: [
+      { id: 1, item: "Correct polarity", action: "Test" },
+      { id: 2, item: "Injection test of RCD at idling position", action: "Test" },
+      { id: 3, item: "Push Button test of RCD", action: "Test" },
+      { id: 4, item: "Emergency Stop", action: "Check", subItems: ["Test E-Stop shunts engine", "Does E-Stop need to be manually reset", "Once E-Stop is reset does the Engine restart"] },
+      { id: 5, item: "Test Tag been placed with 6 Monthly Due Date", action: "Check" },
+    ],
+  },
+
+  // ══════════════════════════════════════════════════════════════════
+  // RCD TESTING SHEETS (12 per-generator variants)
+  // ══════════════════════════════════════════════════════════════════
+
+  "RCD Testing Sheets - Admin Generator 3M": {
+    generatorId: "admin", generatorName: "Admin Generator", assetNumber: "GEN-009", area: "ADMIN",
+    testType: "push-button", frequency: "3M",
+    circuits: [
+      { description: "15A GPO", rating: "16A" }, { description: "15A GPO", rating: "16A" },
+      { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" },
+    ],
+  },
+  "RCD Testing Sheets - Admin Generator 6M": {
+    generatorId: "admin", generatorName: "Admin Generator", assetNumber: "GEN-009", area: "ADMIN",
+    testType: "injection", frequency: "6M",
+    circuits: [
+      { description: "15A GPO", rating: "16A" }, { description: "15A GPO", rating: "16A" },
+      { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" },
+    ],
+  },
+  "RCD Testing Sheets - Andys Dam Generator 3M": {
+    generatorId: "andys-dam", generatorName: "Andy's Dam Generator", assetNumber: "GEN-011", area: "ANDY'S DAM",
+    testType: "push-button", frequency: "3M",
+    circuits: [
+      { description: "GPO", rating: "16A" }, { description: "GPO", rating: "16A" },
+      { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" },
+    ],
+  },
+  "RCD Testing Sheets - Andys Dam Generator 6M": {
+    generatorId: "andys-dam", generatorName: "Andy's Dam Generator", assetNumber: "GEN-011", area: "ANDY'S DAM",
+    testType: "injection", frequency: "6M",
+    circuits: [
+      { description: "15A OUTLET", rating: "16A" }, { description: "15A OUTLET", rating: "16A" },
+      { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" },
+    ],
+  },
+  "RCD Testing Sheets - Juno Bore Pump Generator 3M": {
+    generatorId: "juno-bore", generatorName: "Juno Bore Pump Generator", assetNumber: "GEN-010", area: "JUNO BORE PUMP",
+    testType: "push-button", frequency: "3M",
+    circuits: [
+      { description: "15A OUTLET", rating: "16A" }, { description: "15A OUTLET", rating: "16A" },
+      { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" },
+    ],
+  },
+  "RCD Testing Sheets - Juno Bore Pump Generator 6M": {
+    generatorId: "juno-bore", generatorName: "Juno Bore Pump Generator", assetNumber: "GEN-010", area: "JUNO BORE PUMP",
+    testType: "injection", frequency: "6M",
+    circuits: [
+      { description: "15A OUTLET", rating: "16A" }, { description: "15A OUTLET", rating: "16A" },
+      { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" },
+    ],
+  },
+  "RCD Testing Sheets - Lab Generator 3M": {
+    generatorId: "lab", generatorName: "Lab Generator", assetNumber: "GEN-012", area: "LAB",
+    testType: "push-button", frequency: "3M",
+    circuits: [
+      { description: "15A GPO", rating: "16A" }, { description: "15A GPO", rating: "16A" },
+      { description: "3 PHASE GPO", rating: "32A" }, { description: "3 PHASE GPO", rating: "32A" },
+    ],
+  },
+  "RCD Testing Sheets - Lab Generator 6M": {
+    generatorId: "lab", generatorName: "Lab Generator", assetNumber: "GEN-012", area: "LAB",
+    testType: "injection", frequency: "6M",
+    circuits: [
+      { description: "15A GPO", rating: "16A" }, { description: "15A GPO", rating: "16A" },
+      { description: "3 PHASE GPO", rating: "32A" }, { description: "3 PHASE GPO", rating: "32A" },
+    ],
+  },
+  "RCD Testing Sheets - Crusher Fuel Farm Generator 3M": {
+    generatorId: "crusher-fuel-farm", generatorName: "Crusher Fuel Farm Generator", assetNumber: "GEN-013", area: "CRUSHER FUEL FARM",
+    testType: "push-button", frequency: "3M",
+    circuits: [
+      { description: "3 PHASE GPO", rating: "25A" }, { description: "15A GPO", rating: "16A" },
+      { description: "15A GPO", rating: "16A" }, { description: "15A GPO", rating: "20A" },
+    ],
+  },
+  "RCD Testing Sheets - Crusher Fuel Farm Generator 6M": {
+    generatorId: "crusher-fuel-farm", generatorName: "Crusher Fuel Farm Generator", assetNumber: "GEN-013", area: "CRUSHER FUEL FARM",
+    testType: "injection", frequency: "6M",
+    circuits: [
+      { description: "3 PHASE GPO", rating: "32A" }, { description: "15A GPO", rating: "16A" },
+      { description: "15A GPO", rating: "16A" }, { description: "15A GPO", rating: "20A" },
+    ],
+  },
+  "RCD Testing Sheets - Crusher Workshop Generator 3M": {
+    generatorId: "crusher-workshop", generatorName: "Crusher Workshop Generator", assetNumber: "GEN-014", area: "CRUSHER WORKSHOP",
+    testType: "push-button", frequency: "3M",
+    circuits: [{ description: "RCD", rating: "32A" }],
+  },
+  "RCD Testing Sheets - Crusher Workshop Generator 6M": {
+    generatorId: "crusher-workshop", generatorName: "Crusher Workshop Generator", assetNumber: "GEN-014", area: "CRUSHER WORKSHOP",
+    testType: "injection", frequency: "6M",
+    circuits: [{ description: "RCD", rating: "32A" }],
+  },
+
+  // ══════════════════════════════════════════════════════════════════
+  // MOTOR INSPECTIONS YEARLY (remaining areas)
+  // ══════════════════════════════════════════════════════════════════
+
+  "Statutory Motor Inspection - Gold Room": {
+    stationaryChecks: [
+      { item: "Motor", action: "Check name plate is present and matches recorded data. If no data is recorded fill in motor details" },
+      { item: "Motor", action: "Check terminal box cover bolts are complete and tight. Check if densyl tape is in adequate condition. Change if necessary." },
+      { item: "Motor", action: "Check Motor while running. Note any loud, irregular squealing or rumbling noises or vibrations" },
+      { item: "Motor", action: "Check for dust, dirt or rock build up on motor cooling fan or in between cooling fins. Remove excess build up if necessary" },
+      { item: "Motor", action: "Check cable glands are tight and shrouds are fitted. Tighten glands if necessary." },
+      { item: "Isolator", action: "Check that push or switches are secure and not damaged" },
+      { item: "Isolator", action: "Ensure that access to LCS is not obstructed or impaired." },
+      { item: "Motor", action: "Ensure fan cowling is secure and free from damage. Ensure there is no obstruction to the flow of air." },
+      { item: "Motor", action: "Check cable identification is secure and legible" },
+      { item: "Motor", action: "Ensure cables are correctly routed, undamaged and are attached to cable supports. Ensure mechanical protection is secure and in place. Ensure gland is in place" },
+      { item: "S/Room", action: "Ensure gland plate is in place and all spare cable entries are plugged." },
+    ],
+    motors: [
+      { description: "Elution Electrowinning Extraction Fan", equipmentNumber: "FA-001", brand: "MONARCH BRG 6202", flc: "0.88 A", frequency: "50 Hz", power: "0.37 kW", voltage: "415 V", frameSize: "MS7112", rpm: "2800 RPM" },
+      { description: "Barring Furnace Rotation Motor", equipmentNumber: "FA-001", brand: "MOTOVARIO TS80A4", flc: "2.68 A", frequency: "50 Hz", power: "0.55 kW", voltage: "415 V", rpm: "1410 RPM" },
+      { description: "Shaking Table", equipmentNumber: "ST-100", brand: "WEG K23 W22", flc: "6.00 A", frequency: "50 Hz", power: "3.0 kW", voltage: "415 V", frameSize: "L100L", rpm: "1445 RPM", ambientTemp: "40°C" },
+      { description: "Gravity Tails Pump", equipmentNumber: "PU-111", brand: "TECO AEMBUCDCV", flc: "2.68 A", frequency: "50 Hz", power: "0.55 kW", voltage: "415 V", frameSize: "D100L", rpm: "1455 RPM", ambientTemp: "40°C" },
+    ],
+  },
+
+  "Statutory Motor Inspection - Kiln Area": {
+    stationaryChecks: [
+      { item: "Motor", action: "Check name plate is present and matches recorded data" },
+      { item: "Motor", action: "Check terminal box cover bolts are complete and tight" },
+      { item: "Motor", action: "Check Motor while running for noises or vibrations" },
+      { item: "Motor", action: "Check for dust/dirt build up on cooling fan" },
+      { item: "Motor", action: "Check cable glands are tight and shrouds fitted" },
+      { item: "Isolator", action: "Check switches are secure and undamaged" },
+      { item: "Isolator", action: "Ensure access to LCS not obstructed" },
+      { item: "Motor", action: "Ensure fan cowling secure and no obstruction to airflow" },
+      { item: "Motor", action: "Check cable identification secure and legible" },
+      { item: "Motor", action: "Ensure cables correctly routed and undamaged" },
+      { item: "S/Room", action: "Ensure gland plate in place and spare entries plugged" },
+    ],
+    motors: [
+      { description: "Sump Pump", brand: "TECO", flc: "9.3 A", frequency: "50 Hz", power: "5.5 KW", voltage: "415 V", frameSize: "D132S", rpm: "1460 RPM", ambientTemp: "40°C" },
+      { description: "Kiln Discharge Pump", brand: "TECO", flc: "6.01 A", frequency: "50 Hz", power: "3 KW", voltage: "415 V", frameSize: "D100L", rpm: "1460 RPM", ambientTemp: "40°C" },
+      { description: "Kiln Carbon Feed Pump", brand: "WEG", flc: "2.87 A", frequency: "50 Hz", power: "0.75 KW", voltage: "415 V", rpm: "1440 RPM", ambientTemp: "40°C" },
+      { description: "Kiln Drive Motor", brand: "BONFIGLIOLI", frequency: "50 Hz", voltage: "415 V", frameSize: "BN 80 B4" },
+    ],
+  },
+
+  "Statutory Motor Inspection - Elution": {
+    stationaryChecks: [
+      { item: "Motor", action: "Check name plate is present and matches recorded data" },
+      { item: "Motor", action: "Check terminal box cover bolts are complete and tight" },
+      { item: "Motor", action: "Check Motor while running for noises or vibrations" },
+      { item: "Motor", action: "Check for dust/dirt build up on cooling fan" },
+      { item: "Motor", action: "Check cable glands are tight and shrouds fitted" },
+      { item: "Isolator", action: "Check switches are secure and undamaged" },
+      { item: "Isolator", action: "Ensure access to LCS not obstructed" },
+      { item: "Motor", action: "Ensure fan cowling secure and no obstruction to airflow" },
+      { item: "Motor", action: "Check cable identification secure and legible" },
+      { item: "Motor", action: "Ensure cables correctly routed and undamaged" },
+      { item: "S/Room", action: "Ensure gland plate in place and spare entries plugged" },
+    ],
+    motors: [
+      { description: "Elution Pump 1" }, { description: "Elution Pump 2" },
+      { description: "Elution Heater Motor" }, { description: "Elution Feed Pump" },
+    ],
+  },
+
+  "Statutory Motor Inspection - Milling Area": {
+    stationaryChecks: [
+      { item: "Motor", action: "Check name plate is present and matches recorded data" },
+      { item: "Motor", action: "Check terminal box cover bolts are complete and tight" },
+      { item: "Motor", action: "Check Motor while running for noises or vibrations" },
+      { item: "Motor", action: "Check for dust/dirt build up on cooling fan" },
+      { item: "Motor", action: "Check cable glands are tight and shrouds fitted" },
+      { item: "Isolator", action: "Check switches are secure and undamaged" },
+      { item: "Isolator", action: "Ensure access to LCS not obstructed" },
+      { item: "Motor", action: "Ensure fan cowling secure and no obstruction to airflow" },
+      { item: "Motor", action: "Check cable identification secure and legible" },
+      { item: "Motor", action: "Ensure cables correctly routed and undamaged" },
+      { item: "S/Room", action: "Ensure gland plate in place and spare entries plugged" },
+    ],
+    motors: [
+      { description: "Mill Feed Conveyor", equipmentNumber: "BC-100", brand: "WEG KTE30 PHEM", flc: "20.2 A", frequency: "50 Hz", power: "11 kW", voltage: "415 V", frameSize: "160M", rpm: "1465 RPM", ambientTemp: "40°C" },
+      { description: "Lime Rotary Valve", brand: "WEG KTE 12 W22M", flc: "5.81 A", frequency: "50 Hz", power: "1.5 KW", voltage: "415 V", frameSize: "90L-04", rpm: "1450 RPM", ambientTemp: "40°C" },
+      { description: "Transfer Conveyor", equipmentNumber: "FE-101", brand: "SEW-EURODRIVE KA77/T DRE132M4/RS", flc: "11 A", frequency: "50 Hz", power: "5.5 KW", voltage: "415 V", rpm: "1455 RPM" },
+      { description: "Reclaim Feeder", frequency: "50 Hz", voltage: "415 V" },
+      { description: "Grinding Area Pump", equipmentNumber: "04-PU-120", brand: "WEG KTE 21 W22M", flc: "10.6 A", frequency: "50 Hz", power: "5.5 kW", voltage: "415 V", frameSize: "132S-04", rpm: "1465 RPM", ambientTemp: "40°C" },
+      { description: "Cyclone Feed Pump A (Duty)", equipmentNumber: "PU-102A", brand: "WEG KTE 50 W22M", flc: "183 A", frequency: "50 Hz", power: "110 KW", voltage: "415 V", frameSize: "280S/M", rpm: "1485 RPM", ambientTemp: "40°C" },
+      { description: "Cyclone Feed Pump B (Standby)", equipmentNumber: "PU-102B", brand: "WEG KTE 50 W22M", flc: "183 A", frequency: "50 Hz", power: "110 KW", voltage: "415 V", frameSize: "280S/M", rpm: "1485 RPM", ambientTemp: "40°C" },
+    ],
+  },
+
+  "Statutory Motor Inspection - Process Water Pond": {
+    stationaryChecks: [
+      { item: "Motor", action: "Check name plate is present and matches recorded data" },
+      { item: "Motor", action: "Check terminal box cover bolts are complete and tight" },
+      { item: "Motor", action: "Check Motor while running for noises or vibrations" },
+      { item: "Motor", action: "Check for dust/dirt build up on cooling fan" },
+      { item: "Motor", action: "Check cable glands are tight and shrouds fitted" },
+      { item: "Isolator", action: "Check switches are secure and undamaged" },
+      { item: "Isolator", action: "Ensure access to LCS not obstructed" },
+      { item: "Motor", action: "Ensure fan cowling secure and no obstruction to airflow" },
+      { item: "Motor", action: "Check cable identification secure and legible" },
+      { item: "Motor", action: "Ensure cables correctly routed and undamaged" },
+      { item: "S/Room", action: "Ensure gland plate in place and spare entries plugged" },
+    ],
+    motors: [
+      { description: "PWP Pump A", brand: "WEG", flc: "93.4 A", frequency: "50 Hz", power: "55 KW", voltage: "415 V", frameSize: "250 S/M", rpm: "1480 RPM", ambientTemp: "40°C" },
+      { description: "PWP Pump B", brand: "WEG", flc: "93.4 A", frequency: "50 Hz", power: "55 KW", voltage: "415 V", frameSize: "250 S/M", rpm: "1480 RPM", ambientTemp: "40°C" },
+    ],
+  },
+
+  "Statutory Motor Inspection - Services": {
+    stationaryChecks: [
+      { item: "Motor", action: "Check name plate is present and matches recorded data" },
+      { item: "Motor", action: "Check terminal box cover bolts are complete and tight" },
+      { item: "Motor", action: "Check Motor while running for noises or vibrations" },
+      { item: "Motor", action: "Check for dust/dirt build up on cooling fan" },
+      { item: "Motor", action: "Check cable glands are tight and shrouds fitted" },
+      { item: "Isolator", action: "Check switches are secure and undamaged" },
+      { item: "Isolator", action: "Ensure access to LCS not obstructed" },
+      { item: "Motor", action: "Ensure fan cowling secure and no obstruction to airflow" },
+      { item: "Motor", action: "Check cable identification secure and legible" },
+      { item: "Motor", action: "Ensure cables correctly routed and undamaged" },
+      { item: "S/Room", action: "Ensure gland plate in place and spare entries plugged" },
+    ],
+    motors: [
+      { description: "Safety Shower Pump A", equipmentNumber: "PU-205A", brand: "CENTRIPRO", flc: "3.72 A", frequency: "50 Hz", power: "1.1 kW", voltage: "415 V", rpm: "2820 RPM" },
+      { description: "Safety Shower Pump B", equipmentNumber: "PU-205B", brand: "LOWARA SM80B14/311 E3", flc: "4.16 A", frequency: "50 Hz", power: "1.1 kW", voltage: "415 V", rpm: "2900 RPM", ambientTemp: "50°C" },
+      { description: "Potable Water Pump A (Duty)", equipmentNumber: "PU-033A", brand: "LOWARA PLM112RB14S6/340 E3", flc: "7.61 A", frequency: "50 Hz", power: "4.00 kW", voltage: "415 V", rpm: "2910 RPM", ambientTemp: "50°C" },
+      { description: "Potable Water Pump B (Standby)", equipmentNumber: "PU-033B", brand: "LOWARA PLM112RB14S6/240 E3", flc: "7.61 A", frequency: "50 Hz", power: "4.00 kW", voltage: "415 V", rpm: "2910 RPM", ambientTemp: "50°C" },
+      { description: "Gland Water Pump A", equipmentNumber: "PU-135A", brand: "LOWARA", flc: "7.61 A", frequency: "50 Hz", power: "4.00 KW", voltage: "415 V", rpm: "2910 RPM", ambientTemp: "50°C" },
+      { description: "Gland Water Pump B (Standby)", equipmentNumber: "PU-135B", brand: "LOWARA PLM112RB14S6/340 E3", flc: "7.61 A", frequency: "50 Hz", power: "4.00 KW", voltage: "415 V", rpm: "2910 RPM", ambientTemp: "50°C" },
+      { description: "Raw Water Pump A (Duty)", equipmentNumber: "PU-026A", brand: "GRUNDFOSS 85U17524", flc: "21.8 A", frequency: "50 Hz", power: "11.0 KW", voltage: "415 V", rpm: "2940 RPM", ambientTemp: "40°C" },
+    ],
+  },
+
+  "Statutory Motor Inspection - Tanks": {
+    stationaryChecks: [
+      { item: "Motor", action: "Check name plate is present and matches recorded data" },
+      { item: "Motor", action: "Check terminal box cover bolts are complete and tight" },
+      { item: "Motor", action: "Check Motor while running for noises or vibrations" },
+      { item: "Motor", action: "Check for dust/dirt build up on cooling fan" },
+      { item: "Motor", action: "Check cable glands are tight and shrouds fitted" },
+      { item: "Isolator", action: "Check switches are secure and undamaged" },
+      { item: "Isolator", action: "Ensure access to LCS not obstructed" },
+      { item: "Motor", action: "Ensure fan cowling secure and no obstruction to airflow" },
+      { item: "Motor", action: "Check cable identification secure and legible" },
+      { item: "Motor", action: "Ensure cables correctly routed and undamaged" },
+      { item: "S/Room", action: "Ensure gland plate in place and spare entries plugged" },
+    ],
+    motors: Array.from({ length: 20 }, (_, i) => ({
+      description: `Agitator ${i + 1}`, brand: "WEG", flc: "38 A", frequency: "50 Hz", power: "22 KW", voltage: "415 V", frameSize: "180L", rpm: "1470 RPM", ambientTemp: "40°C",
+    })),
+  },
+
+  "Statutory Motor Inspection - Thickener": {
+    stationaryChecks: [
+      { item: "Motor", action: "Check name plate is present and matches recorded data" },
+      { item: "Motor", action: "Check terminal box cover bolts are complete and tight" },
+      { item: "Motor", action: "Check Motor while running for noises or vibrations" },
+      { item: "Motor", action: "Check for dust/dirt build up on cooling fan" },
+      { item: "Motor", action: "Check cable glands are tight and shrouds fitted" },
+      { item: "Isolator", action: "Check switches are secure and undamaged" },
+      { item: "Isolator", action: "Ensure access to LCS not obstructed" },
+      { item: "Motor", action: "Ensure fan cowling secure and no obstruction to airflow" },
+      { item: "Motor", action: "Check cable identification secure and legible" },
+      { item: "Motor", action: "Ensure cables correctly routed and undamaged" },
+      { item: "S/Room", action: "Ensure gland plate in place and spare entries plugged" },
+    ],
+    motors: [
+      { description: "Thickener Underflow Pump A", equipmentNumber: "Pump A", brand: "Monarch", flc: "125.2 A", frequency: "50 Hz", power: "75 KW", voltage: "415 V", frameSize: "D250M", rpm: "1485 RPM" },
+      { description: "Thickener Underflow Pump B", equipmentNumber: "Pump B", brand: "Monarch", flc: "125.2 A", frequency: "50 Hz", power: "75 KW", voltage: "415 V", frameSize: "D250M", rpm: "1485 RPM" },
+    ],
+  },
 };
