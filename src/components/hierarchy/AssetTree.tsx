@@ -77,17 +77,17 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
     <div className="w-full overflow-x-auto py-6">
       <div className="min-w-max flex justify-center">
         {/* Root: Site - Centered */}
-        <CollapsibleTreeNode label="TCMG" level="site" hasChildren defaultExpanded centered>
+        <CollapsibleTreeNode label="TCMG" level="site" hasChildren defaultExpanded centered depth={0}>
           {/* Level 2: Facilities - Mining, Crushing Plant, Processing Plant */}
           
           {/* Mining (placeholder - no areas yet) */}
           <TreeBranch horizontal>
-            <CollapsibleTreeNode label="Mining" level="plant" hasChildren={false} />
+            <CollapsibleTreeNode label="Mining" level="plant" hasChildren={false} depth={1} />
           </TreeBranch>
           
           {/* Crushing Plant – CRU hierarchy (still hardcoded) */}
           <TreeBranch horizontal>
-            <CollapsibleTreeNode label="Crushing Plant" level="plant" hasChildren defaultExpanded areaType="CRU">
+            <CollapsibleTreeNode label="Crushing Plant" level="plant" hasChildren defaultExpanded areaType="CRU" depth={1}>
               {crushingPlantAreas.map((cruArea, cruAreaIndex) => (
                 <TreeBranch key={cruArea.areaCode} isLast={cruAreaIndex === crushingPlantAreas.length - 1}>
                   <CollapsibleTreeNode
@@ -98,6 +98,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                     areaType="CRU"
                     hasChildren={cruArea.parentAssets.length > 0}
                     isHighlighted={cruMatchesSearch(cruArea.label) || cruMatchesSearch(cruArea.areaCode)}
+                    depth={2}
                   >
                     {cruArea.parentAssets.map((parent, paIndex) => (
                       <TreeBranch key={paIndex} isLast={paIndex === cruArea.parentAssets.length - 1}>
@@ -107,6 +108,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                           level="parentAsset"
                           hasChildren={parent.equipment.length > 0}
                           isHighlighted={cruMatchesSearch(parent.label)}
+                          depth={3}
                         >
                           {parent.equipment.map((equip, equipIndex) => {
                             const hasComponents = equip.components && equip.components.length > 0;
@@ -118,6 +120,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                   level="equipment"
                                   hasChildren={hasComponents}
                                   isHighlighted={cruMatchesSearch(equip.assetNumber) || cruMatchesSearch(equip.name)}
+                                  depth={4}
                                 >
                                   {hasComponents && equip.components!.map((comp, compIndex) => (
                                     <TreeBranch key={compIndex} isLast={compIndex === equip.components!.length - 1}>
@@ -128,6 +131,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                         level="component"
                                         hasChildren={false}
                                         isHighlighted={cruMatchesSearch(comp.componentCode) || cruMatchesSearch(comp.componentName) || cruMatchesSearch(comp.manufacturer)}
+                                        depth={5}
                                         componentSpecs={{
                                           model: comp.model || comp.manufacturer,
                                           serialNumber: comp.serialNumber,
@@ -161,7 +165,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
           
           {/* Processing Plant – now DB-driven */}
           <TreeBranch horizontal>
-            <CollapsibleTreeNode label="Processing Plant" level="plant" hasChildren defaultExpanded>
+            <CollapsibleTreeNode label="Processing Plant" level="plant" hasChildren defaultExpanded depth={1}>
               {areas.map((area, areaIndex) => {
                 const areaPath = [area.code];
                 const areaExpanded = shouldExpandForSearch(areaPath);
@@ -179,6 +183,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                       defaultExpanded={areaExpanded}
                       forceExpanded={areaExpanded}
                       isHighlighted={matchesSearch(area.label) || matchesSearch(area.code)}
+                      depth={2}
                     >
                       {area.subAreas.map((subArea, subIndex) => {
                         const subAreaPath = [...areaPath, subArea.label];
@@ -195,6 +200,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                               defaultExpanded={subAreaExpanded}
                               forceExpanded={subAreaExpanded}
                               isHighlighted={matchesSearch(subArea.label)}
+                              depth={3}
                             >
                               {subArea.parentAssets.map((parentAsset, paIndex) => {
                                 const parentAssetPath = [...subAreaPath, parentAsset.label];
@@ -211,6 +217,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                       defaultExpanded={parentAssetExpanded}
                                       forceExpanded={parentAssetExpanded}
                                       isHighlighted={matchesSearch(parentAsset.label)}
+                                      depth={4}
                                     >
                                       {parentAsset.equipment.map((equip, equipIndex) => {
                                         const equipLabel = `${equip.assetNumber} — ${equip.name}`;
@@ -228,6 +235,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                               hasChildren={hasComponents}
                                               isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || isPidMatch}
                                               pidTags={allPidTags}
+                                              depth={5}
                                             >
                                               {hasComponents && equip.components!.map((comp, compIndex) => {
                                                 const compLabel = `${comp.componentCode} — ${comp.componentName}`;
@@ -242,6 +250,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                       level="component"
                                                       hasChildren={false}
                                                       isHighlighted={matchesSearch(comp.componentCode) || matchesSearch(comp.componentName) || matchesSearch(comp.manufacturer)}
+                                                      depth={6}
                                                       componentSpecs={{
                                                         model: comp.model || comp.manufacturer,
                                                         serialNumber: comp.serialNumber,
