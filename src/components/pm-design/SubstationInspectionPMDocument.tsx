@@ -5,44 +5,11 @@ import { usePMasterList } from "@/hooks/usePMData";
 import { PMSignOffBlock } from "./PMSignOffBlock";
 import { DynamicInspectionTable } from "./DynamicInspectionTable";
 
-const fallbackTasks = {
-  sections: [
-    {
-      equipmentName: "INSIDE SUBSTATION",
-      tasks: [
-        { task: "Check Fire extinguishers are in position" },
-        { task: "Check Fire extinguishers in date" },
-        { task: "Check Vesda System is not in alarm" },
-        { task: "Check Fire alarm Panel for Faults" },
-        { task: "Check lights are all functioning correctly" },
-        { task: "Check air conditioner is on" },
-        { task: "Check floor is clear from items or materials" },
-        { task: "Vacuum floor inside Substation" },
-        { task: "Mop Floor" },
-        { task: "Ensure door locks function correctly and are locked" },
-        { task: "Check LV rescue kit is on hooks and in date" },
-        { task: "Check ARC Flash signs are in position and legible" },
-        { task: "Check isolation tag holder is full of Tags" },
-      ],
-    },
-    {
-      equipmentName: "OUTSIDE SUBSTATION",
-      tasks: [
-        { task: "Check Fire extinguishers are in position" },
-        { task: "Check Fire extinguishers in date" },
-        { task: "Check no rubbish or tools around the Substation" },
-      ],
-    },
-  ],
-};
-
 export const SubstationInspectionPMDocument = () => {
   const { pms } = usePMasterList();
   const pm = pms.find((p) => p.pmName === "Substation Inspection Fortnightly");
 
-  const tasksData = pm?.tasks && typeof pm.tasks === "object" && !Array.isArray(pm.tasks) && (pm.tasks as any).sections
-    ? pm.tasks
-    : fallbackTasks;
+  const tasksData = pm?.tasks || [];
 
   return (
     <div className="bg-background min-h-full">
