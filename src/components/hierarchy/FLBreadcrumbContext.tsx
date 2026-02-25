@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useRef } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 
 export interface FLPathSegment {
   level: string;
@@ -9,42 +9,31 @@ export interface FLPathSegment {
 
 interface FLBreadcrumbContextType {
   currentPath: FLPathSegment[];
-  reportExpand: (depth: number, segment: FLPathSegment) => void;
-  reportCollapse: (depth: number) => void;
+  setFullPath: (path: FLPathSegment[]) => void;
+  clearPath: () => void;
 }
 
 const FLBreadcrumbContext = createContext<FLBreadcrumbContextType>({
   currentPath: [],
-  reportExpand: () => {},
-  reportCollapse: () => {},
+  setFullPath: () => {},
+  clearPath: () => {},
 });
 
 export const useFLBreadcrumb = () => useContext(FLBreadcrumbContext);
 
 export const FLBreadcrumbProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentPath, setCurrentPath] = useState<FLPathSegment[]>([]);
-  // Use a ref to track the latest path for synchronous reads in callbacks
-  const pathRef = useRef<FLPathSegment[]>([]);
 
-  const reportExpand = useCallback((depth: number, segment: FLPathSegment) => {
-    setCurrentPath(prev => {
-      // Replace everything from this depth onward
-      const newPath = [...prev.slice(0, depth), segment];
-      pathRef.current = newPath;
-      return newPath;
-    });
+  const setFullPath = useCallback((path: FLPathSegment[]) => {
+    setCurrentPath(path);
   }, []);
 
-  const reportCollapse = useCallback((depth: number) => {
-    setCurrentPath(prev => {
-      const newPath = prev.slice(0, depth);
-      pathRef.current = newPath;
-      return newPath;
-    });
+  const clearPath = useCallback(() => {
+    setCurrentPath([]);
   }, []);
 
   return (
-    <FLBreadcrumbContext.Provider value={{ currentPath, reportExpand, reportCollapse }}>
+    <FLBreadcrumbContext.Provider value={{ currentPath, setFullPath, clearPath }}>
       {children}
     </FLBreadcrumbContext.Provider>
   );
