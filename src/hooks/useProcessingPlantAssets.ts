@@ -136,10 +136,8 @@ export function useProcessingPlantAssets() {
       const { data, error } = await supabase
         .from("processing_plant_assets")
         .select("*")
-        .order("area_code")
-        .order("sub_area")
-        .order("parent_asset_label")
-        .order("asset_number");
+        .order("created_at", { ascending: true })
+        .order("id", { ascending: true });
 
       if (error) throw error;
       return buildAreasFromRows(data as DBAssetRow[]);
