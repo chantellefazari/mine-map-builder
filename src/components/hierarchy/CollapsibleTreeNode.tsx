@@ -104,6 +104,8 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   const hasPidTags = pidTags.length > 0;
   const hasSpecs = componentSpecs && Object.values(componentSpecs).some(v => v);
   const { reportExpand, reportCollapse } = useFLBreadcrumb();
+  // Track whether the user has manually interacted with this node
+  const userInteractedRef = useRef(false);
   
   // React to forceExpanded changes from search
   useEffect(() => {
@@ -112,9 +114,9 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
     }
   }, [forceExpanded]);
 
-  // Report expansion/collapse to the FL breadcrumb context
+  // Report expansion/collapse to the FL breadcrumb context — only on user interaction
   useEffect(() => {
-    if (depth !== undefined) {
+    if (depth !== undefined && userInteractedRef.current) {
       if (isExpanded) {
         reportExpand(depth, { level, label, code: code || areaType, areaType });
       } else {
@@ -142,6 +144,7 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
 
   const handleToggle = () => {
     if (canExpand) {
+      userInteractedRef.current = true;
       setIsExpanded(!isExpanded);
     }
   };
