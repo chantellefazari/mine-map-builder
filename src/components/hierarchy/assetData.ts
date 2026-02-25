@@ -36,11 +36,15 @@ export interface Equipment {
   pidTags?: string[];
   /** OEM components nested under this equipment */
   components?: Component[];
+  /** DB-stored functional location code */
+  functionalLocation?: string;
 }
 
 export interface ParentAsset {
   label: string;
   equipment: Equipment[];
+  /** DB-stored functional location code (shared by all equipment under this parent) */
+  functionalLocation?: string;
 }
 
 export interface SubArea {

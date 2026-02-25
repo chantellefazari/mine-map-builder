@@ -259,6 +259,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                               isHighlighted={matchesSearch(parentAsset.label)}
                                               depth={4}
                                               ancestorPath={pathAfterSubArea}
+                                              storedFL={parentAsset.functionalLocation}
                                             >
                                               {parentAsset.equipment.map((equip, equipIndex) => {
                                                 const equipLabel = `${equip.assetNumber} — ${equip.name}`;
@@ -279,6 +280,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                       pidTags={allPidTags}
                                                       depth={5}
                                                       ancestorPath={pathAfterPA}
+                                                      storedFL={equip.functionalLocation || parentAsset.functionalLocation}
                                                     >
                                                       {hasComponents && equip.components!.map((comp, compIndex) => {
                                                         const compLabel = `${comp.componentCode} — ${comp.componentName}`;
@@ -294,6 +296,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                               isHighlighted={matchesSearch(comp.componentCode) || matchesSearch(comp.componentName) || matchesSearch(comp.manufacturer)}
                                                               depth={6}
                                                               ancestorPath={pathAfterEquip}
+                                                              storedFL={equip.functionalLocation || parentAsset.functionalLocation}
                                                               componentSpecs={{
                                                                 model: comp.model || comp.manufacturer,
                                                                 serialNumber: comp.serialNumber,

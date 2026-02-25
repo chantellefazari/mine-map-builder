@@ -64,7 +64,7 @@ const levelColors: Record<string, string> = {
 };
 
 export const FLBreadcrumbBar: React.FC = () => {
-  const { currentPath } = useFLBreadcrumb();
+  const { currentPath, storedFL } = useFLBreadcrumb();
 
   if (currentPath.length === 0) {
     return (
@@ -77,30 +77,35 @@ export const FLBreadcrumbBar: React.FC = () => {
     );
   }
 
-  // Build the FL code from the path
-  const flSegments: string[] = [];
-  for (const seg of currentPath) {
-    if (seg.level === "site") flSegments.push(seg.label);
-    else if (seg.level === "plant") {
-      if (seg.label === "Processing Plant") flSegments.push("PP");
-      else if (seg.label === "Crushing Plant") flSegments.push("CRU");
-      else if (seg.label === "Mining") flSegments.push("MIN");
-      else flSegments.push(seg.label.substring(0, 3).toUpperCase());
+  // Use DB-stored FL code if available, otherwise compute from path segments
+  let flCode: string;
+  if (storedFL) {
+    flCode = storedFL;
+  } else {
+    const flSegments: string[] = [];
+    for (const seg of currentPath) {
+      if (seg.level === "site") flSegments.push(seg.label);
+      else if (seg.level === "plant") {
+        if (seg.label === "Processing Plant") flSegments.push("PP");
+        else if (seg.label === "Crushing Plant") flSegments.push("CRU");
+        else if (seg.label === "Mining") flSegments.push("MIN");
+        else flSegments.push(seg.label.substring(0, 3).toUpperCase());
+      }
+      else if (seg.level === "area" && seg.code) {
+        flSegments.push(areaCodeMapping[seg.code] || seg.code);
+      }
+      else if (seg.level === "subarea") {
+        flSegments.push(subAreaCodes[seg.label] || seg.label.substring(0, 4).toUpperCase().replace(/[^A-Z]/g, ''));
+      }
+      else if (seg.code) flSegments.push(seg.code);
+      else {
+        const match = seg.label.match(/^([A-Z0-9\-]+)\s/);
+        if (match) flSegments.push(match[1]);
+        else flSegments.push(seg.label.substring(0, 6).toUpperCase());
+      }
     }
-    else if (seg.level === "area" && seg.code) {
-      flSegments.push(areaCodeMapping[seg.code] || seg.code);
-    }
-    else if (seg.level === "subarea") {
-      flSegments.push(subAreaCodes[seg.label] || seg.label.substring(0, 4).toUpperCase().replace(/[^A-Z]/g, ''));
-    }
-    else if (seg.code) flSegments.push(seg.code);
-    else {
-      const match = seg.label.match(/^([A-Z0-9\-]+)\s/);
-      if (match) flSegments.push(match[1]);
-      else flSegments.push(seg.label.substring(0, 6).toUpperCase());
-    }
+    flCode = flSegments.join("-");
   }
-  const flCode = flSegments.join("-");
 
   return (
     <div className="sticky top-0 z-20 bg-card/95 backdrop-blur-sm border-b border-border px-4 py-2.5">

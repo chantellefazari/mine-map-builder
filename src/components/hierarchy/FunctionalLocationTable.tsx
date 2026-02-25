@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from "react";
-import { functionalLocations, flSummary, FunctionalLocation } from "./functionalLocations";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -17,8 +16,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Download, CheckCircle2 } from "lucide-react";
+import { Search, Download, CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+interface DBFunctionalLocation {
+  id: string;
+  fl_code: string;
+  area: string;
+  area_code: string;
+  sub_area: string;
+  sub_area_code: string;
+  system_name: string;
+}
 
 const areaColors: Record<string, string> = {
   SITE: "bg-slate-500",
@@ -42,27 +53,48 @@ export const FunctionalLocationTable: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [areaFilter, setAreaFilter] = useState<string>("all");
 
+  const { data: functionalLocations = [], isLoading } = useQuery({
+    queryKey: ["processing-functional-locations"],
+    queryFn: async (): Promise<DBFunctionalLocation[]> => {
+      const { data, error } = await supabase
+        .from("processing_functional_locations")
+        .select("*")
+        .order("fl_code", { ascending: true });
+      if (error) throw error;
+      return data as DBFunctionalLocation[];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const flSummary = useMemo(() => {
+    const byArea: Record<string, number> = {};
+    for (const fl of functionalLocations) {
+      byArea[fl.area_code] = (byArea[fl.area_code] || 0) + 1;
+    }
+    return { totalFunctionalLocations: functionalLocations.length, byArea };
+  }, [functionalLocations]);
+
   const filteredLocations = useMemo(() => {
     return functionalLocations.filter((fl) => {
       const matchesSearch =
         searchQuery === "" ||
-        fl.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        fl.systemName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        fl.subArea.toLowerCase().includes(searchQuery.toLowerCase());
+        fl.fl_code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        fl.system_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        fl.sub_area.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesArea = areaFilter === "all" || fl.areaCode === areaFilter;
+      const matchesArea = areaFilter === "all" || fl.area_code === areaFilter;
 
       return matchesSearch && matchesArea;
     });
-  }, [searchQuery, areaFilter]);
+  }, [searchQuery, areaFilter, functionalLocations]);
 
   const exportToCSV = () => {
     const headers = ["Functional Location Code", "Area", "Sub Area", "System Name"];
     const rows = functionalLocations.map((fl) => [
-      fl.code,
+      fl.fl_code,
       fl.area,
-      fl.subArea,
-      fl.systemName,
+      fl.sub_area,
+      fl.system_name,
     ]);
 
     const csvContent = [
@@ -76,6 +108,15 @@ export const FunctionalLocationTable: React.FC = () => {
     link.download = "TCMG_Functional_Locations.csv";
     link.click();
   };
+
+  if (isLoading) {
+    return (
+      <div className="w-full flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <span className="ml-3 text-muted-foreground">Loading functional locations...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -177,19 +218,19 @@ export const FunctionalLocationTable: React.FC = () => {
           </TableHeader>
           <TableBody>
             {filteredLocations.map((fl, index) => (
-              <TableRow key={fl.code} className={index % 2 === 0 ? "bg-background" : "bg-muted/30"}>
+              <TableRow key={fl.id} className={index % 2 === 0 ? "bg-background" : "bg-muted/30"}>
                 <TableCell className="font-mono text-sm font-medium">
-                  {fl.code}
+                  {fl.fl_code}
                 </TableCell>
                 <TableCell>
-                  <Badge className={`${areaColors[fl.areaCode]} text-white`}>
-                    {fl.areaCode}
+                  <Badge className={`${areaColors[fl.area_code]} text-white`}>
+                    {fl.area_code}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {fl.subArea}
+                  {fl.sub_area}
                 </TableCell>
-                <TableCell>{fl.systemName}</TableCell>
+                <TableCell>{fl.system_name}</TableCell>
               </TableRow>
             ))}
           </TableBody>
