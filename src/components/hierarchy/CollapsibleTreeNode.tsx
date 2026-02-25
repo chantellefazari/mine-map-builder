@@ -52,6 +52,8 @@ interface CollapsibleTreeNodeProps {
   depth?: number;
   /** Full ancestry path for FL breadcrumb (passed from parent) */
   ancestorPath?: FLPathSegment[];
+  /** DB-stored functional location code */
+  storedFL?: string;
 }
 
 const levelStyles: Record<NodeLevel, string> = {
@@ -101,6 +103,7 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   componentSpecs,
   depth,
   ancestorPath = [],
+  storedFL,
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded || forceExpanded);
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -142,8 +145,8 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
       const willExpand = !isExpanded;
       setIsExpanded(willExpand);
       if (willExpand && depth !== undefined) {
-        // Report the full correct path from root to this node
-        setFullPath(fullPath);
+        // Report the full correct path from root to this node, with stored FL if available
+        setFullPath(fullPath, storedFL || null);
       }
     }
   };

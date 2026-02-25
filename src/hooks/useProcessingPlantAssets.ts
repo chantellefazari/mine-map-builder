@@ -17,6 +17,7 @@ interface DBAssetRow {
   asset_name: string;
   pid_tags: string[] | null;
   components: any;
+  functional_location: string | null;
 }
 
 interface DBPidTagRow {
@@ -66,6 +67,7 @@ function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
       label: string;
       parentAssets: Map<string, {
         label: string;
+        functionalLocation?: string;
         equipment: Equipment[];
       }>;
     }>;
@@ -95,6 +97,7 @@ function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
     if (!subArea.parentAssets.has(row.parent_asset_label)) {
       subArea.parentAssets.set(row.parent_asset_label, {
         label: row.parent_asset_label,
+        functionalLocation: row.functional_location || undefined,
         equipment: [],
       });
     }
@@ -107,6 +110,7 @@ function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
       name: row.asset_name,
       pidTags: row.pid_tags?.length ? row.pid_tags : undefined,
       components: components.length > 0 ? components : undefined,
+      functionalLocation: row.functional_location || undefined,
     };
     parentAsset.equipment.push(equip);
   }
@@ -118,7 +122,11 @@ function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
     label: area.label,
     subAreas: Array.from(area.subAreas.values()).map((sub) => ({
       label: sub.label,
-      parentAssets: Array.from(sub.parentAssets.values()),
+      parentAssets: Array.from(sub.parentAssets.values()).map((pa) => ({
+        label: pa.label,
+        functionalLocation: pa.functionalLocation,
+        equipment: pa.equipment,
+      })),
     })),
   }));
   return unsorted.sort((a, b) => {
