@@ -1,8 +1,9 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database } from "lucide-react";
+import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { seedPMTasks } from "@/utils/seedPMTasks";
+import { exportPMWorkbook } from "@/utils/exportPMWorkbook";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { canonicalPMs } from "@/components/pm-design/canonicalPMNames";
@@ -652,6 +653,14 @@ const PMDesign = () => {
             <div className="p-6 overflow-auto">
               {/* Action Buttons */}
               <div className="flex justify-end gap-2 mb-4 print:hidden">
+                <Button
+                  onClick={() => exportPMWorkbook()}
+                  variant="outline"
+                  className="gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Workbook
+                </Button>
                 <Button
                   onClick={handleSyncPMs}
                   variant="outline"
