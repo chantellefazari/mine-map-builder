@@ -7,6 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useFLBreadcrumb } from "./FLBreadcrumbContext";
 
 export type NodeLevel = "site" | "plant" | "area" | "subarea" | "parentAsset" | "equipment" | "component";
 export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP" | "CRU";
@@ -47,6 +48,8 @@ interface CollapsibleTreeNodeProps {
   pidTags?: string[];
   /** Component specifications for tooltip display */
   componentSpecs?: ComponentSpecs;
+  /** Depth in the tree for FL breadcrumb tracking */
+  depth?: number;
 }
 
 const levelStyles: Record<NodeLevel, string> = {
@@ -94,11 +97,13 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   centered = false,
   pidTags = [],
   componentSpecs,
+  depth,
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded || forceExpanded);
   const nodeRef = useRef<HTMLDivElement>(null);
   const hasPidTags = pidTags.length > 0;
   const hasSpecs = componentSpecs && Object.values(componentSpecs).some(v => v);
+  const { reportExpand, reportCollapse } = useFLBreadcrumb();
   
   // React to forceExpanded changes from search
   useEffect(() => {
@@ -106,6 +111,17 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
       setIsExpanded(true);
     }
   }, [forceExpanded]);
+
+  // Report expansion/collapse to the FL breadcrumb context
+  useEffect(() => {
+    if (depth !== undefined) {
+      if (isExpanded) {
+        reportExpand(depth, { level, label, code: code || areaType, areaType });
+      } else {
+        reportCollapse(depth);
+      }
+    }
+  }, [isExpanded, depth]);
 
   // Pulse animation for highlighted nodes
   useEffect(() => {

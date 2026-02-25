@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { FLBreadcrumbProvider } from "@/components/hierarchy/FLBreadcrumbContext";
+import { FLBreadcrumbBar } from "@/components/hierarchy/FLBreadcrumbBar";
 import { Link } from "react-router-dom";
 import { AssetTree as AssetTreeComponent } from "@/components/hierarchy/AssetTree";
 import { Legend } from "@/components/hierarchy/Legend";
@@ -146,27 +148,34 @@ const AssetTree = () => {
             <Legend />
 
             {/* Hierarchy Diagram */}
-            <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                <div className="flex items-center gap-4">
-                  <h2 className="text-lg font-semibold text-foreground">
-                    Asset Structure
-                  </h2>
-                  <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
-                    Levels 1–7 • Click nodes to expand
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <AssetSearch value={searchQuery} onChange={setSearchQuery} />
-                  <Button variant="outline" size="sm" onClick={exportAssetTreeCSV} className="gap-2">
-                    <Download className="h-4 w-4" />
-                    Export CSV
-                  </Button>
+            <FLBreadcrumbProvider>
+              <div className="bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+                {/* FL Breadcrumb Bar - sticky at top of card */}
+                <FLBreadcrumbBar />
+                
+                <div className="p-6">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <div className="flex items-center gap-4">
+                      <h2 className="text-lg font-semibold text-foreground">
+                        Asset Structure
+                      </h2>
+                      <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
+                        Levels 1–7 • Click nodes to expand
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <AssetSearch value={searchQuery} onChange={setSearchQuery} />
+                      <Button variant="outline" size="sm" onClick={exportAssetTreeCSV} className="gap-2">
+                        <Download className="h-4 w-4" />
+                        Export CSV
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <AssetTreeComponent searchQuery={searchQuery} />
                 </div>
               </div>
-              
-              <AssetTreeComponent searchQuery={searchQuery} />
-            </div>
+            </FLBreadcrumbProvider>
           </TabsContent>
 
           <TabsContent value="functional-locations" className="mt-6">
