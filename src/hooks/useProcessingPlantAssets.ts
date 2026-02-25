@@ -111,8 +111,9 @@ function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
     parentAsset.equipment.push(equip);
   }
 
-  // Convert maps to arrays
-  return Array.from(areaMap.values()).map((area) => ({
+  // Convert maps to arrays, then sort to match the approved hierarchy order
+  const AREA_ORDER: string[] = ["SITE", "UTL", "COM", "REC", "TAIL", "SUP"];
+  const unsorted = Array.from(areaMap.values()).map((area) => ({
     code: area.code,
     label: area.label,
     subAreas: Array.from(area.subAreas.values()).map((sub) => ({
@@ -120,6 +121,11 @@ function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
       parentAssets: Array.from(sub.parentAssets.values()),
     })),
   }));
+  return unsorted.sort((a, b) => {
+    const ia = AREA_ORDER.indexOf(a.code);
+    const ib = AREA_ORDER.indexOf(b.code);
+    return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+  });
 }
 
 export function useProcessingPlantAssets() {
