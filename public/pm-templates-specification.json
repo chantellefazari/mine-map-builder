@@ -1,0 +1,463 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "generatedFrom": "TCMG Mine Map Builder",
+    "generatedDate": "2026-02-25",
+    "totalTemplates": 77,
+    "description": "Complete PM template specification including design structure, naming conventions, layout rules, component hierarchy, formatting standards, and all inspection task data. Use this file to verify or replicate the exact PM system in another project."
+  },
+
+  "designSystem": {
+    "documentLayout": {
+      "targetFormat": "A4 Portrait (210mm x 297mm)",
+      "printMargins": "8mm all sides",
+      "baseFontSize": "8px-10px for max content density",
+      "printRules": [
+        "break-inside: avoid on table rows (tr)",
+        "UI-only elements use 'print-hide' class to suppress in print",
+        "Clear buttons (X) hidden in print output"
+      ]
+    },
+    "sectionOrder": [
+      "PMBannerHeader",
+      "PMMetadataGrid",
+      "MobileEquipmentHeader (mobile/generator templates only)",
+      "SafetyPrecautionsSection",
+      "DynamicInspectionTable",
+      "PMSignOffBlock"
+    ],
+    "inspectionTableStandard": {
+      "columns": [
+        { "name": "Task", "width": "46%", "align": "left" },
+        { "name": "Serviceable", "width": "10%", "align": "center", "type": "checkbox", "checkedColor": "green-600" },
+        { "name": "Defective", "width": "10%", "align": "center", "type": "checkbox", "checkedColor": "red-600" },
+        { "name": "Comments", "width": "34%", "align": "left", "content": "empty for handwriting, py-4 padding" }
+      ],
+      "cellBorders": "border border-border on all cells",
+      "headerBg": "bg-muted",
+      "sectionHeaderBg": "bg-primary/10",
+      "hoverState": "hover:bg-muted/30"
+    },
+    "bannerHeader": {
+      "component": "PMBannerHeader",
+      "props": ["title: string", "subtitle?: string"],
+      "assets": ["tennant-banner-new.png", "tennant-icon.png"],
+      "layout": "Full-width banner image with centered title/subtitle overlay, WO# input at bottom-right"
+    },
+    "metadataGrid": {
+      "component": "PMMetadataGrid",
+      "layout": "2-column grid, each column has 4 rows with 120px label + content",
+      "leftColumn": ["Project / Site", "Asset Number (searchable combobox)", "Plant Area (auto-derived from asset)", "Resource/s (editable, 800ms debounce autosave)"],
+      "rightColumn": ["PM Group", "PM Type", "Frequency", "Date (empty for manual entry)"],
+      "persistence": {
+        "assetNumber": "pm_master_list.asset_number → immediate save on selection",
+        "resources": "pm_master_list.resources → 800ms debounce + flush on blur/unmount"
+      }
+    },
+    "safetySection": {
+      "component": "SafetyPrecautionsSection",
+      "standardContent": {
+        "items": [
+          "Conduct Take 5 and/or JSEA as required.",
+          "Ensure isolations and/or safeguards are in place where required before commencing.",
+          "Follow OEM instructions and site procedures as required."
+        ],
+        "minimumPPE": "Steel cap boots, hard hat, safety glasses. Gloves and hearing protection as required.",
+        "mandatoryWarning": "Under no circumstances will personnel place themselves in an unsafe position while carrying out these inspection tasks."
+      },
+      "icons": {
+        "sectionHeader": "Shield (destructive color)",
+        "item1": "AlertTriangle (amber)",
+        "item2": "Lock (amber-600)",
+        "item3": "FileText (primary)",
+        "ppe": "HardHat (amber-600)",
+        "warning": "Shield (destructive)"
+      }
+    },
+    "signOffBlock": {
+      "component": "PMSignOffBlock",
+      "sections": [
+        {
+          "name": "COMMENTS",
+          "content": "Textarea, min-h-[80px], resize-none"
+        },
+        {
+          "name": "SIGN OFF",
+          "fields": [
+            "Follow up work required: Yes/No checkboxes",
+            "Document update required: Yes/No checkboxes",
+            "Name: Input",
+            "Signature: Empty bordered box",
+            "Date: date input",
+            "PM Duration: Input",
+            "Elec. Cert No: Input (conditional, showElecCertNo prop, for Statutory Motor Inspections only)"
+          ]
+        },
+        {
+          "name": "APPROVAL",
+          "table": {
+            "columns": ["Role", "Name", "Sign", "Date"],
+            "rows": [{ "role": "Supervisor" }]
+          },
+          "headerColor": "bg-green-500/10, text-green-700"
+        }
+      ],
+      "footerText": "Tennant Creek Mining Operations – Inspection Form"
+    },
+    "mobileEquipmentHeader": {
+      "component": "MobileEquipmentHeader",
+      "defaultColumns": ["Make/Model", "Serial No", "Hours", "Next Service Due"],
+      "usage": "Used for Ops/Mobile equipment and generator templates. Asset Number is NOT duplicated here — it's managed centrally in PMMetadataGrid.",
+      "appliesTo": [
+        "CAT D8 Dozer Daily Inspection",
+        "Excavator Daily Inspection",
+        "Excavator Weekly Inspection",
+        "Lighting Tower Daily Inspection",
+        "Moxy Daily Inspection",
+        "Moxy Weekly Inspection",
+        "Crane Weekly Inspection",
+        "EWP Weekly Inspection",
+        "Forklift Weekly Inspection",
+        "Loader Weekly Inspection",
+        "Service Truck Weekly Inspection",
+        "Skid Steer Weekly Inspection",
+        "Telehandler Weekly Inspection",
+        "Water Truck Weekly Inspection",
+        "Admin Generator Weekly Inspection",
+        "Andy Dam Generator Weekly Inspection",
+        "Juno Generator Weekly Inspection",
+        "Lab Generator Weekly Inspection",
+        "Portable Generators Weekly Inspection",
+        "Power Station Generator Weekly Inspection"
+      ]
+    }
+  },
+
+  "dataArchitecture": {
+    "databaseTable": "pm_master_list",
+    "columns": {
+      "id": "uuid, PK, auto-generated",
+      "pm_name": "text, NOT NULL — exact match to canonical registry",
+      "equipment_type": "text, NOT NULL",
+      "frequency": "text, NOT NULL — values: Daily, 1 Week, 2 Week, 6 Week, 12 Week, 24 Week, 52 Week",
+      "discipline": "text, NOT NULL — values: Mechanical, Electrical, Ops",
+      "duty_type": "text, default 'Both' — values: Duty, Standby, Both",
+      "purpose": "text",
+      "estimated_duration": "text",
+      "skill_level": "text",
+      "required_tools": "text[]",
+      "required_ppe": "text[]",
+      "isolation_requirements": "text",
+      "safety_notes": "text[]",
+      "tasks": "jsonb — main inspection data, normalized by DynamicInspectionTable",
+      "inspection_points": "jsonb",
+      "acceptable_criteria": "text[]",
+      "signs_of_failure": "text[]",
+      "lubrication_notes": "text",
+      "oem_references": "text",
+      "status": "text, default 'Draft' — values: Draft, Reviewed, Approved",
+      "asset_number": "text — linked asset ID from hierarchy",
+      "resources": "text — e.g. '1x Fitter (2 hrs)'",
+      "created_at": "timestamptz",
+      "updated_at": "timestamptz"
+    },
+    "tasksJsonbShapes": {
+      "description": "The 'tasks' JSONB column supports multiple data shapes, all normalized by DynamicInspectionTable",
+      "shape1_sections": {
+        "format": "{ sections: [{ equipmentName?, equipmentId?, mccId?, mccName?, tasks: [{ task, hasTemp?, tempLabel?, hasInput?, inputLabel?, hasPressure?, pressureLabel?, recommendedAmount? }], tempGuidelines? }] }",
+        "usedBy": "Most mechanical plant inspections (Mill, Filter Press, Thickener, Tanks, etc.)"
+      },
+      "shape2_flatStringArray": {
+        "format": "[\"task1\", \"task2\", ...]",
+        "usedBy": "Simple inspections (RO Plant Daily, Switchboard Yearly)"
+      },
+      "shape3_flatObjectArray": {
+        "format": "[{ task: \"...\", hasTemp?, ... }]",
+        "usedBy": "Grease & Oils, Ice Machine, Crusher Generator Electrical"
+      },
+      "shape4_arraySections": {
+        "format": "[{ sectionName, items: [{ id, description }] }]",
+        "usedBy": "All mobile equipment / Ops templates (Dozer, Excavator, Moxy, Crane, etc.)"
+      },
+      "shape5_mccSections": {
+        "format": "{ mccSections: [{ mccId, mccName }], standardTasks: [\"task1\", ...] }",
+        "usedBy": "Field MCC Inspections"
+      },
+      "specialShapes": {
+        "visualZoneChecks": "{ generalAreaChecks: [...], lightingChecks: [...], generatorChecks: [...], cleansTasks: [...] }",
+        "safetyShower": "{ inspectionItems: [...], locations: [...] }",
+        "substationFortnightly": "{ insideSubstationChecks: [...], outsideSubstationChecks: [...] }",
+        "emergencyLightTest": "{ inspectionSteps: [...], testTableRows: number }",
+        "acService": "{ serviceInfoFields: [...], testItems: [...] }",
+        "pullWireChecks": "{ assetSections: [{ assetName, checks: [...] }] }",
+        "rcdInjectionTest": "{ generatorLocations: [{ id, name, assetNumber, area, circuits: [{ description, rating }] }] }",
+        "rcdPushButtonTest": "Same as rcdInjectionTest",
+        "generatorYearlyTest": "{ deadTests, insulationTests, continuityTests, visualChecks, generatorElectricalChecks, runningTests }",
+        "cableTestSheet": "{ checklistItems: [...], testColumns: [...] }",
+        "fullTestSheet": "{ testColumns: [...], testRows: number }",
+        "motorInspection": "{ stationaryChecks: [{ item, action }], motors: [{ description, brand, flc, frequency, power, voltage, frameSize?, rpm, ambientTemp?, equipmentNumber? }] }",
+        "rcdTestingSheets": "{ generatorId, generatorName, assetNumber, area, testType: 'push-button'|'injection', frequency: '3M'|'6M', circuits: [{ description, rating }] }"
+      }
+    },
+    "renderingComponent": {
+      "name": "DynamicInspectionTable",
+      "props": {
+        "tasksData": "any — the raw JSONB from pm_master_list.tasks",
+        "title": "string, default 'INSPECTIONS'",
+        "showEquipmentId": "boolean, default false"
+      },
+      "normalization": "Automatically detects shape and renders consistent 4-column table"
+    }
+  },
+
+  "canonicalRegistry": [
+    { "pmName": "Filter Press Daily Offline Inspection", "discipline": "Mechanical", "frequency": "Daily", "equipmentType": "Filter Press" },
+    { "pmName": "Filter Press Daily Online Inspection", "discipline": "Mechanical", "frequency": "Daily", "equipmentType": "Filter Press" },
+    { "pmName": "Mill Daily Inspection", "discipline": "Mechanical", "frequency": "Daily", "equipmentType": "Ball Mill" },
+    { "pmName": "RO Plant Daily Inspection", "discipline": "Mechanical", "frequency": "Daily", "equipmentType": "RO Plant" },
+    { "pmName": "Acid Wash & Elution Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Acid Wash & Elution" },
+    { "pmName": "Air & Water Services Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Air & Water Services" },
+    { "pmName": "Bottom of Tanks Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Bottom of Tanks" },
+    { "pmName": "Diesel Farm Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Diesel Farm" },
+    { "pmName": "Filter Press Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Filter Press" },
+    { "pmName": "Filter Press Compressor (Online) Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Filter Press Compressor" },
+    { "pmName": "Filter Press Compressor (Offline) Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Filter Press Compressor" },
+    { "pmName": "Gold Room Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Gold Room" },
+    { "pmName": "Grease & Oils Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Grease & Oils" },
+    { "pmName": "Mill Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Ball Mill" },
+    { "pmName": "Potable Water Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Potable Water" },
+    { "pmName": "Reagents Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Reagents" },
+    { "pmName": "Thickener Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Thickener" },
+    { "pmName": "Top of Tanks Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Top of Tanks" },
+    { "pmName": "Admin Generator Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Admin Generator" },
+    { "pmName": "Andy Dam Generator Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Andy Dam Generator" },
+    { "pmName": "Juno Generator Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Juno Generator" },
+    { "pmName": "Lab Generator Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Lab Generator" },
+    { "pmName": "Portable Generators Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Portable Generators" },
+    { "pmName": "Power Station Generator Weekly Inspection", "discipline": "Mechanical", "frequency": "1 Week", "equipmentType": "Power Station Generator" },
+    { "pmName": "CAT D8 Dozer Daily Inspection", "discipline": "Ops", "frequency": "Daily", "equipmentType": "CAT D8 Dozer" },
+    { "pmName": "Excavator Daily Inspection", "discipline": "Ops", "frequency": "Daily", "equipmentType": "Excavator" },
+    { "pmName": "Lighting Tower Daily Inspection", "discipline": "Ops", "frequency": "Daily", "equipmentType": "Lighting Tower" },
+    { "pmName": "Moxy Daily Inspection", "discipline": "Ops", "frequency": "Daily", "equipmentType": "Moxy" },
+    { "pmName": "Crane Weekly Inspection", "discipline": "Ops", "frequency": "1 Week", "equipmentType": "Crane" },
+    { "pmName": "EWP Weekly Inspection", "discipline": "Ops", "frequency": "1 Week", "equipmentType": "EWP" },
+    { "pmName": "Excavator Weekly Inspection", "discipline": "Ops", "frequency": "1 Week", "equipmentType": "Excavator" },
+    { "pmName": "Forklift Weekly Inspection", "discipline": "Ops", "frequency": "1 Week", "equipmentType": "Forklift" },
+    { "pmName": "Loader Weekly Inspection", "discipline": "Ops", "frequency": "1 Week", "equipmentType": "Loader" },
+    { "pmName": "Moxy Weekly Inspection", "discipline": "Ops", "frequency": "1 Week", "equipmentType": "Moxy" },
+    { "pmName": "Service Truck Weekly Inspection", "discipline": "Ops", "frequency": "1 Week", "equipmentType": "Service Truck" },
+    { "pmName": "Skid Steer Weekly Inspection", "discipline": "Ops", "frequency": "1 Week", "equipmentType": "Skid Steer" },
+    { "pmName": "Telehandler Weekly Inspection", "discipline": "Ops", "frequency": "1 Week", "equipmentType": "Telehandler" },
+    { "pmName": "Water Truck Weekly Inspection", "discipline": "Ops", "frequency": "1 Week", "equipmentType": "Water Truck" },
+    { "pmName": "Crusher Fuel Farm Generator Weekly Electrical Inspection", "discipline": "Electrical", "frequency": "1 Week", "equipmentType": "Crusher Fuel Farm Generator" },
+    { "pmName": "Field MCC Inspections Weekly", "discipline": "Electrical", "frequency": "1 Week", "equipmentType": "Field MCC" },
+    { "pmName": "Filter Press Electrical Weekly Inspection", "discipline": "Electrical", "frequency": "1 Week", "equipmentType": "Filter Press" },
+    { "pmName": "Ice Machine Weekly Inspection", "discipline": "Electrical", "frequency": "1 Week", "equipmentType": "Ice Machine" },
+    { "pmName": "pH Probe Calibration Weekly", "discipline": "Electrical", "frequency": "1 Week", "equipmentType": "pH Probe" },
+    { "pmName": "Safety Shower Inspection Weekly", "discipline": "Electrical", "frequency": "1 Week", "equipmentType": "Safety Shower" },
+    { "pmName": "Spare Mill Motor Inspection Weekly", "discipline": "Electrical", "frequency": "1 Week", "equipmentType": "Spare Mill Motor" },
+    { "pmName": "Visual Zone Checks Weekly", "discipline": "Electrical", "frequency": "1 Week", "equipmentType": "Visual Zone" },
+    { "pmName": "Substation Inspection Fortnightly", "discipline": "Electrical", "frequency": "2 Week", "equipmentType": "Substation" },
+    { "pmName": "Air Conditioner Service Quarterly", "discipline": "Electrical", "frequency": "12 Week", "equipmentType": "Air Conditioner" },
+    { "pmName": "Emergency Light Test Quarterly", "discipline": "Electrical", "frequency": "12 Week", "equipmentType": "Emergency Lighting" },
+    { "pmName": "Pull Wire Checks Quarterly", "discipline": "Electrical", "frequency": "12 Week", "equipmentType": "Pull Wire" },
+    { "pmName": "RCD Push-button Test Quarterly", "discipline": "Electrical", "frequency": "12 Week", "equipmentType": "RCD" },
+    { "pmName": "RCD Injection Test 6-Monthly", "discipline": "Electrical", "frequency": "24 Week", "equipmentType": "RCD" },
+    { "pmName": "Generator Electrical Test Yearly", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Generator" },
+    { "pmName": "Switchboard Inspection Yearly", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Switchboard" },
+    { "pmName": "Cable Test Sheet Yearly", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Cable" },
+    { "pmName": "Full Test Sheet Yearly", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Full Test Sheet" },
+    { "pmName": "Statutory Motor Inspection - Filter Press", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Motor Inspection" },
+    { "pmName": "Statutory Motor Inspection - Gold Room", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Motor Inspection" },
+    { "pmName": "Statutory Motor Inspection - Kiln Area", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Motor Inspection" },
+    { "pmName": "Statutory Motor Inspection - Elution", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Motor Inspection" },
+    { "pmName": "Statutory Motor Inspection - Milling Area", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Motor Inspection" },
+    { "pmName": "Statutory Motor Inspection - Process Water Pond", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Motor Inspection" },
+    { "pmName": "Statutory Motor Inspection - Services", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Motor Inspection" },
+    { "pmName": "Statutory Motor Inspection - Tanks", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Motor Inspection" },
+    { "pmName": "Statutory Motor Inspection - Thickener", "discipline": "Electrical", "frequency": "52 Week", "equipmentType": "Motor Inspection" },
+    { "pmName": "RCD Testing Sheets - Admin Generator 6M", "discipline": "Electrical", "frequency": "24 Week", "equipmentType": "Admin Generator" },
+    { "pmName": "RCD Testing Sheets - Juno Bore Pump Generator 6M", "discipline": "Electrical", "frequency": "24 Week", "equipmentType": "Juno Generator" },
+    { "pmName": "RCD Testing Sheets - Andys Dam Generator 6M", "discipline": "Electrical", "frequency": "24 Week", "equipmentType": "Andy Dam Generator" },
+    { "pmName": "RCD Testing Sheets - Lab Generator 6M", "discipline": "Electrical", "frequency": "24 Week", "equipmentType": "Lab Generator" },
+    { "pmName": "RCD Testing Sheets - Crusher Fuel Farm Generator 6M", "discipline": "Electrical", "frequency": "24 Week", "equipmentType": "Crusher Fuel Farm Generator" },
+    { "pmName": "RCD Testing Sheets - Crusher Workshop Generator 6M", "discipline": "Electrical", "frequency": "24 Week", "equipmentType": "Crusher Workshop Generator" },
+    { "pmName": "RCD Testing Sheets - Admin Generator 3M", "discipline": "Electrical", "frequency": "12 Week", "equipmentType": "Admin Generator" },
+    { "pmName": "RCD Testing Sheets - Juno Bore Pump Generator 3M", "discipline": "Electrical", "frequency": "12 Week", "equipmentType": "Juno Generator" },
+    { "pmName": "RCD Testing Sheets - Andys Dam Generator 3M", "discipline": "Electrical", "frequency": "12 Week", "equipmentType": "Andy Dam Generator" },
+    { "pmName": "RCD Testing Sheets - Lab Generator 3M", "discipline": "Electrical", "frequency": "12 Week", "equipmentType": "Lab Generator" },
+    { "pmName": "RCD Testing Sheets - Crusher Fuel Farm Generator 3M", "discipline": "Electrical", "frequency": "12 Week", "equipmentType": "Crusher Fuel Farm Generator" },
+    { "pmName": "RCD Testing Sheets - Crusher Workshop Generator 3M", "discipline": "Electrical", "frequency": "12 Week", "equipmentType": "Crusher Workshop Generator" }
+  ],
+
+  "currentDatabaseState": {
+    "description": "Current asset_number and resources assignments from the live database",
+    "assignments": [
+      { "pmName": "Acid Wash & Elution Weekly Inspection", "assetNumber": "", "resources": "1x MECH (1hr)" },
+      { "pmName": "Admin Generator Weekly Inspection", "assetNumber": "GEN-ADM01", "resources": "1x MECH (1hr)" },
+      { "pmName": "Air & Water Services Weekly Inspection", "assetNumber": "", "resources": "2x MECH (2hrs)" },
+      { "pmName": "Air Conditioner Service Quarterly", "assetNumber": "", "resources": "1x ELEC (9hrs)" },
+      { "pmName": "Andy Dam Generator Weekly Inspection", "assetNumber": "", "resources": "1x MECH (1hr)" },
+      { "pmName": "Bottom of Tanks Weekly Inspection", "assetNumber": "CIP Tanks", "resources": "1x MECH (3hrs)" },
+      { "pmName": "CAT D8 Dozer Daily Inspection", "assetNumber": "DZR01", "resources": "" },
+      { "pmName": "Crane Weekly Inspection", "assetNumber": "", "resources": "" },
+      { "pmName": "Crusher Fuel Farm Generator Weekly Electrical Inspection", "assetNumber": "", "resources": "" },
+      { "pmName": "Diesel Farm Weekly Inspection", "assetNumber": "", "resources": "1x MECH (1hr)" },
+      { "pmName": "Emergency Light Test Quarterly", "assetNumber": "", "resources": "1x ELEC (5hrs)" },
+      { "pmName": "EWP Weekly Inspection", "assetNumber": "EWP01", "resources": "" },
+      { "pmName": "Excavator Daily Inspection", "assetNumber": "EXC01", "resources": "" },
+      { "pmName": "Excavator Weekly Inspection", "assetNumber": "EXC01", "resources": "" },
+      { "pmName": "Field MCC Inspections Weekly", "assetNumber": "", "resources": "1x ELEC (4hrs)" },
+      { "pmName": "Filter Press Compressor (Offline) Weekly Inspection", "assetNumber": "FPAC01", "resources": "1x MECH (2hrs)" },
+      { "pmName": "Filter Press Compressor (Online) Weekly Inspection", "assetNumber": "FPAC01", "resources": "1x MECH (1hr)" },
+      { "pmName": "Filter Press Daily Offline Inspection", "assetNumber": "", "resources": "3x MECH (6hrs)" },
+      { "pmName": "Filter Press Daily Online Inspection", "assetNumber": "FP01", "resources": "1x MECH (2hrs)" },
+      { "pmName": "Filter Press Electrical Weekly Inspection", "assetNumber": "FP01", "resources": "1x ELEC (2hrs)" },
+      { "pmName": "Filter Press Weekly Inspection", "assetNumber": "FP01", "resources": "1x MECH (2hrs)" },
+      { "pmName": "Forklift Weekly Inspection", "assetNumber": "FLT01", "resources": "" },
+      { "pmName": "Gold Room Weekly Inspection", "assetNumber": "", "resources": "1x MECH (2hrs)" },
+      { "pmName": "Grease & Oils Weekly Inspection", "assetNumber": "", "resources": "1x MECH (2hrs)" },
+      { "pmName": "Ice Machine Weekly Inspection", "assetNumber": "", "resources": "1x ELEC (1hr)" },
+      { "pmName": "Juno Generator Weekly Inspection", "assetNumber": "", "resources": "1x MECH (1hr)" },
+      { "pmName": "Lab Generator Weekly Inspection", "assetNumber": "", "resources": "1x MECH (1hr)" },
+      { "pmName": "Lighting Tower Daily Inspection", "assetNumber": "LT01", "resources": "" },
+      { "pmName": "Loader Weekly Inspection", "assetNumber": "LDR01", "resources": "" },
+      { "pmName": "Mill Daily Inspection", "assetNumber": "BM01", "resources": "1x MECH (3hrs)" },
+      { "pmName": "Mill Weekly Inspection", "assetNumber": "BM01", "resources": "1x MECH (4hrs)" },
+      { "pmName": "Moxy Daily Inspection", "assetNumber": "MXY01", "resources": "" },
+      { "pmName": "Moxy Weekly Inspection", "assetNumber": "MXY01", "resources": "" },
+      { "pmName": "pH Probe Calibration Weekly", "assetNumber": "", "resources": "1x ELEC (2hrs)" },
+      { "pmName": "Portable Generators Weekly Inspection", "assetNumber": "", "resources": "1x MECH (1hr)" },
+      { "pmName": "Potable Water Weekly Inspection", "assetNumber": "", "resources": "1x MECH (1hr)" },
+      { "pmName": "Power Station Generator Weekly Inspection", "assetNumber": "", "resources": "1x MECH (2hrs)" },
+      { "pmName": "Reagents Weekly Inspection", "assetNumber": "", "resources": "1x MECH (2hrs)" },
+      { "pmName": "RO Plant Daily Inspection", "assetNumber": "", "resources": "1x MECH (30min)" },
+      { "pmName": "Safety Shower Inspection Weekly", "assetNumber": "", "resources": "1x ELEC (2hrs)" },
+      { "pmName": "Service Truck Weekly Inspection", "assetNumber": "ST01", "resources": "" },
+      { "pmName": "Skid Steer Weekly Inspection", "assetNumber": "SS01", "resources": "" },
+      { "pmName": "Spare Mill Motor Inspection Weekly", "assetNumber": "", "resources": "1x ELEC (30min)" },
+      { "pmName": "Substation Inspection Fortnightly", "assetNumber": "", "resources": "1x ELEC (2hrs)" },
+      { "pmName": "Telehandler Weekly Inspection", "assetNumber": "TH01", "resources": "" },
+      { "pmName": "Thickener Weekly Inspection", "assetNumber": "", "resources": "1x MECH (2hrs)" },
+      { "pmName": "Top of Tanks Weekly Inspection", "assetNumber": "", "resources": "1x MECH (4hrs)" },
+      { "pmName": "Visual Zone Checks Weekly", "assetNumber": "", "resources": "1x ELEC (3hrs)" },
+      { "pmName": "Water Truck Weekly Inspection", "assetNumber": "WT01", "resources": "" }
+    ]
+  },
+
+  "templateDocumentMapping": {
+    "description": "Maps each PM name to its React document component and document-specific configuration",
+    "templates": {
+      "Mill Daily Inspection": { "component": "MillDailyPMDocument", "bannerTitle": "Tennant Creek – Mill Area", "bannerSubtitle": "Mechanical Running PMs - Daily Inspection (Fitter)", "metadataOverrides": { "projectSite": "Tennant Creek", "plantArea": "Mill Area", "pmGroup": "Mechanical", "pmType": "Inspection (Fitter)", "frequency": "Daily" }, "showEquipmentId": true, "hasMobileEquipmentHeader": false },
+      "Mill Weekly Inspection": { "component": "MillWeeklyPMDocument", "bannerTitle": "Tennant Creek – Mill Area", "bannerSubtitle": "Mechanical Running PMs - Weekly Inspection (Fitter)", "metadataOverrides": { "projectSite": "Tennant Creek", "plantArea": "Mill Area", "pmGroup": "Mechanical", "pmType": "Inspection (Fitter)", "frequency": "Weekly" }, "showEquipmentId": true },
+      "Filter Press Daily Online Inspection": { "component": "FilterPressDailyOnlinePMDocument", "bannerTitle": "Tennant Creek – Filter Press", "bannerSubtitle": "Mechanical Running PMs - Daily Online Inspection (Fitter)" },
+      "Filter Press Daily Offline Inspection": { "component": "FilterPressDailyOfflinePMDocument", "bannerTitle": "Tennant Creek – Filter Press", "bannerSubtitle": "Mechanical Running PMs - Daily Offline Inspection (Fitter)", "showEquipmentId": true },
+      "RO Plant Daily Inspection": { "component": "ROPlantPMDocument", "bannerTitle": "Tennant Creek – RO Plant", "bannerSubtitle": "Mechanical Running PMs - Daily Inspection (Fitter)" },
+      "Thickener Weekly Inspection": { "component": "ThickenerPMDocument", "bannerTitle": "Tenant Creek Leaching Area - Thickener", "bannerSubtitle": "Mechanical Running PMs - Weekly Inspection (Fitter)" },
+      "Top of Tanks Weekly Inspection": { "component": "TopOfTanksPMDocument", "bannerTitle": "Tenant Creek - Top of Tanks", "bannerSubtitle": "Mechanical Running PMs - Weekly Inspection (Fitter)" },
+      "Bottom of Tanks Weekly Inspection": { "component": "BottomOfTanksPMDocument", "bannerTitle": "Tenant Creek - Bottom of Tanks", "bannerSubtitle": "Mechanical Running PMs - Weekly Inspection (Fitter)" },
+      "Gold Room Weekly Inspection": { "component": "GoldRoomPMDocument", "bannerTitle": "Tennant Creek - Gold Room Area", "bannerSubtitle": "Mechanical Running PMs - Weekly Inspection (Fitter)" },
+      "Reagents Weekly Inspection": { "component": "ReagentsPMDocument", "bannerTitle": "Tenant Creek Reagents Area", "bannerSubtitle": "Mechanical Running PMs - Weekly Inspection (Fitter)" },
+      "Diesel Farm Weekly Inspection": { "component": "DieselFarmPMDocument", "bannerTitle": "Tenant Creek - Diesel Farm Check", "bannerSubtitle": "Mechanical Running PMs - Weekly Inspection (Fitter)" },
+      "Acid Wash & Elution Weekly Inspection": { "component": "AcidElutionPMDocument" },
+      "Air & Water Services Weekly Inspection": { "component": "AirWaterServicesPMDocument" },
+      "Grease & Oils Weekly Inspection": { "component": "GreaseOilsPMDocument" },
+      "Potable Water Weekly Inspection": { "component": "PotableWaterPMDocument" },
+      "Filter Press Weekly Inspection": { "component": "FilterPressWeeklyPMDocument", "showEquipmentId": true },
+      "Filter Press Compressor (Online) Weekly Inspection": { "component": "FilterPressCompressorPMDocument" },
+      "Filter Press Compressor (Offline) Weekly Inspection": { "component": "FilterPressCompressorOfflinePMDocument" },
+      "Filter Press Electrical Weekly Inspection": { "component": "FilterPressElectricalPMDocument", "showEquipmentId": true },
+      "Admin Generator Weekly Inspection": { "component": "AdminGeneratorPMDocument", "hasMobileEquipmentHeader": true },
+      "Andy Dam Generator Weekly Inspection": { "component": "AndyDamGeneratorPMDocument", "hasMobileEquipmentHeader": true },
+      "Juno Generator Weekly Inspection": { "component": "JunoGeneratorPMDocument", "hasMobileEquipmentHeader": true },
+      "Lab Generator Weekly Inspection": { "component": "LabGeneratorPMDocument", "hasMobileEquipmentHeader": true },
+      "Portable Generators Weekly Inspection": { "component": "PortableGeneratorsPMDocument", "hasMobileEquipmentHeader": true },
+      "Power Station Generator Weekly Inspection": { "component": "PowerStationGeneratorWeeklyPMDocument", "hasMobileEquipmentHeader": true },
+      "CAT D8 Dozer Daily Inspection": { "component": "DozerDailyPMDocument", "hasMobileEquipmentHeader": true },
+      "Excavator Daily Inspection": { "component": "ExcavatorDailyPMDocument", "hasMobileEquipmentHeader": true },
+      "Excavator Weekly Inspection": { "component": "ExcavatorWeeklyPMDocument", "hasMobileEquipmentHeader": true },
+      "Lighting Tower Daily Inspection": { "component": "LightingTowerDailyPMDocument", "hasMobileEquipmentHeader": true },
+      "Moxy Daily Inspection": { "component": "MoxyDailyPMDocument", "hasMobileEquipmentHeader": true },
+      "Moxy Weekly Inspection": { "component": "MoxyWeeklyPMDocument", "hasMobileEquipmentHeader": true },
+      "Crane Weekly Inspection": { "component": "CraneWeeklyPMDocument", "hasMobileEquipmentHeader": true },
+      "EWP Weekly Inspection": { "component": "EWPWeeklyPMDocument", "hasMobileEquipmentHeader": true },
+      "Forklift Weekly Inspection": { "component": "ForkliftWeeklyPMDocument", "hasMobileEquipmentHeader": true },
+      "Loader Weekly Inspection": { "component": "LoaderWeeklyPMDocument", "hasMobileEquipmentHeader": true },
+      "Service Truck Weekly Inspection": { "component": "ServiceTruckWeeklyPMDocument", "hasMobileEquipmentHeader": true },
+      "Skid Steer Weekly Inspection": { "component": "SkidSteerWeeklyPMDocument", "hasMobileEquipmentHeader": true },
+      "Telehandler Weekly Inspection": { "component": "TelehandlerWeeklyPMDocument", "hasMobileEquipmentHeader": true },
+      "Water Truck Weekly Inspection": { "component": "WaterTruckWeeklyPMDocument", "hasMobileEquipmentHeader": true },
+      "Crusher Fuel Farm Generator Weekly Electrical Inspection": { "component": "CrusherFuelFarmGeneratorElectricalPMDocument" },
+      "Field MCC Inspections Weekly": { "component": "FieldMCCInspectionsPMDocument" },
+      "Ice Machine Weekly Inspection": { "component": "IceMachineInspectionPMDocument" },
+      "pH Probe Calibration Weekly": { "component": "PHProbeCalibrationPMDocument" },
+      "Safety Shower Inspection Weekly": { "component": "SafetyShowerInspectionPMDocument" },
+      "Spare Mill Motor Inspection Weekly": { "component": "SpareMillMotorInspectionPMDocument" },
+      "Visual Zone Checks Weekly": { "component": "VisualZoneChecksPMDocument" },
+      "Substation Inspection Fortnightly": { "component": "SubstationInspectionPMDocument" },
+      "Air Conditioner Service Quarterly": { "component": "ACInspectionPMDocument" },
+      "Emergency Light Test Quarterly": { "component": "EmergencyLightTestPMDocument" },
+      "Pull Wire Checks Quarterly": { "component": "PullWireChecksPMDocument" },
+      "RCD Push-button Test Quarterly": { "component": "RCDPushButtonTestPMDocument" },
+      "RCD Injection Test 6-Monthly": { "component": "RCDInjectionTestPMDocument" },
+      "Generator Electrical Test Yearly": { "component": "GeneratorYearlyTestPMDocument" },
+      "Switchboard Inspection Yearly": { "component": "SwitchboardInspectionPMDocument" },
+      "Cable Test Sheet Yearly": { "component": "CableTestSheetPMDocument" },
+      "Full Test Sheet Yearly": { "component": "FullTestSheetPMDocument" },
+      "Statutory Motor Inspection - Filter Press": { "component": "MotorInspectionsSheetsDocument", "showElecCertNo": true },
+      "Statutory Motor Inspection - Gold Room": { "component": "MotorInspectionsSheetsDocument", "showElecCertNo": true },
+      "Statutory Motor Inspection - Kiln Area": { "component": "MotorInspectionsSheetsDocument", "showElecCertNo": true },
+      "Statutory Motor Inspection - Elution": { "component": "MotorInspectionsSheetsDocument", "showElecCertNo": true },
+      "Statutory Motor Inspection - Milling Area": { "component": "MotorInspectionsSheetsDocument", "showElecCertNo": true },
+      "Statutory Motor Inspection - Process Water Pond": { "component": "MotorInspectionsSheetsDocument", "showElecCertNo": true },
+      "Statutory Motor Inspection - Services": { "component": "MotorInspectionsSheetsDocument", "showElecCertNo": true },
+      "Statutory Motor Inspection - Tanks": { "component": "MotorInspectionsSheetsDocument", "showElecCertNo": true },
+      "Statutory Motor Inspection - Thickener": { "component": "MotorInspectionsSheetsDocument", "showElecCertNo": true },
+      "RCD Testing Sheets - Admin Generator 6M": { "component": "RCDTestingSheetsDocument" },
+      "RCD Testing Sheets - Juno Bore Pump Generator 6M": { "component": "RCDTestingSheetsDocument" },
+      "RCD Testing Sheets - Andys Dam Generator 6M": { "component": "RCDTestingSheetsDocument" },
+      "RCD Testing Sheets - Lab Generator 6M": { "component": "RCDTestingSheetsDocument" },
+      "RCD Testing Sheets - Crusher Fuel Farm Generator 6M": { "component": "RCDTestingSheetsDocument" },
+      "RCD Testing Sheets - Crusher Workshop Generator 6M": { "component": "RCDTestingSheetsDocument" },
+      "RCD Testing Sheets - Admin Generator 3M": { "component": "RCDPushButtonTestingSheetsDocument" },
+      "RCD Testing Sheets - Juno Bore Pump Generator 3M": { "component": "RCDPushButtonTestingSheetsDocument" },
+      "RCD Testing Sheets - Andys Dam Generator 3M": { "component": "RCDPushButtonTestingSheetsDocument" },
+      "RCD Testing Sheets - Lab Generator 3M": { "component": "RCDPushButtonTestingSheetsDocument" },
+      "RCD Testing Sheets - Crusher Fuel Farm Generator 3M": { "component": "RCDPushButtonTestingSheetsDocument" },
+      "RCD Testing Sheets - Crusher Workshop Generator 3M": { "component": "RCDPushButtonTestingSheetsDocument" },
+      "Filter Press Motor Inspection": { "component": "FilterPressMotorInspectionPMDocument" }
+    }
+  },
+
+  "persistenceRules": {
+    "writeFlow": [
+      "1. User edits field in UI",
+      "2. Debounce (800ms for resources) or immediate (asset selection)",
+      "3. supabase.from('pm_master_list').update({ field: value }).eq('id', pmId)",
+      "4. Re-fetch single row to verify: supabase.from('pm_master_list').select('id, updated_at').eq('id', pmId).single()",
+      "5. Log proof: [PM-SAVE] ✓ Persisted field | id=... | updated_at=...",
+      "6. queryClient.invalidateQueries({ queryKey: ['pm-master-list'] })"
+    ],
+    "focusProtection": "isFocusedRef prevents external query invalidation from overwriting user's active typing",
+    "flushOnUnmount": "useEffect cleanup calls flushResourceSave() to persist any pending debounced edits"
+  },
+
+  "colorTokens": {
+    "disciplineBadges": {
+      "Mechanical": "bg-blue-500/20 text-blue-700",
+      "Electrical": "bg-amber-500/20 text-amber-700",
+      "Ops": "bg-purple-500/20 text-purple-700"
+    },
+    "statusBadges": {
+      "Draft": "bg-muted text-muted-foreground",
+      "Reviewed": "bg-primary/20 text-primary",
+      "Approved": "bg-green-500/20 text-green-700"
+    },
+    "sectionHeaders": {
+      "safety": "bg-destructive/10, text-destructive",
+      "inspections": "bg-primary/10, text with ClipboardCheck icon",
+      "signOff": "bg-muted",
+      "approval": "bg-green-500/10, text-green-700 with CheckCircle2 icon"
+    }
+  }
+}
