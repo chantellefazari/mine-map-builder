@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useFLBreadcrumb } from "./FLBreadcrumbContext";
+import { useFLBreadcrumb, FLPathSegment } from "./FLBreadcrumbContext";
 
 export type NodeLevel = "site" | "plant" | "area" | "subarea" | "parentAsset" | "equipment" | "component";
 export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP" | "CRU";
@@ -50,6 +50,8 @@ interface CollapsibleTreeNodeProps {
   componentSpecs?: ComponentSpecs;
   /** Depth in the tree for FL breadcrumb tracking */
   depth?: number;
+  /** Full ancestry path for FL breadcrumb (passed from parent) */
+  ancestorPath?: FLPathSegment[];
 }
 
 const levelStyles: Record<NodeLevel, string> = {
@@ -98,14 +100,18 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   pidTags = [],
   componentSpecs,
   depth,
+  ancestorPath = [],
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded || forceExpanded);
   const nodeRef = useRef<HTMLDivElement>(null);
   const hasPidTags = pidTags.length > 0;
   const hasSpecs = componentSpecs && Object.values(componentSpecs).some(v => v);
-  const { reportExpand, reportCollapse } = useFLBreadcrumb();
-  // Track whether the user has manually interacted with this node
-  const userInteractedRef = useRef(false);
+  const { setFullPath } = useFLBreadcrumb();
+
+  // Build this node's own segment
+  const selfSegment: FLPathSegment = { level, label, code: code || areaType, areaType };
+  // Full path from root to this node
+  const fullPath = [...ancestorPath, selfSegment];
   
   // React to forceExpanded changes from search
   useEffect(() => {
@@ -113,17 +119,6 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
       setIsExpanded(true);
     }
   }, [forceExpanded]);
-
-  // Report expansion/collapse to the FL breadcrumb context — only on user interaction
-  useEffect(() => {
-    if (depth !== undefined && userInteractedRef.current) {
-      if (isExpanded) {
-        reportExpand(depth, { level, label, code: code || areaType, areaType });
-      } else {
-        reportCollapse(depth);
-      }
-    }
-  }, [isExpanded, depth]);
 
   // Pulse animation for highlighted nodes
   useEffect(() => {
@@ -144,8 +139,12 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
 
   const handleToggle = () => {
     if (canExpand) {
-      userInteractedRef.current = true;
-      setIsExpanded(!isExpanded);
+      const willExpand = !isExpanded;
+      setIsExpanded(willExpand);
+      if (willExpand && depth !== undefined) {
+        // Report the full correct path from root to this node
+        setFullPath(fullPath);
+      }
     }
   };
 
