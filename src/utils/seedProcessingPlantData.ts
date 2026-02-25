@@ -37,6 +37,7 @@ export async function seedProcessingPlantData(): Promise<SeedResult> {
     await supabase.from("processing_plant_assets" as any).delete().neq("id", "00000000-0000-0000-0000-000000000000");
 
     const assetRows: any[] = [];
+    let sortOrder = 0;
     for (const area of areasData) {
       if (area.code === "CRU") continue;
       for (const subArea of area.subAreas) {
@@ -52,7 +53,9 @@ export async function seedProcessingPlantData(): Promise<SeedResult> {
               asset_name: eq.name,
               pid_tags: eq.pidTags || [],
               components: eq.components ? JSON.stringify(eq.components) : "[]",
+              sort_order: sortOrder,
             });
+            sortOrder++;
           }
         }
       }

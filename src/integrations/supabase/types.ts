@@ -782,6 +782,7 @@ export type Database = {
           id: string
           parent_asset_label: string
           pid_tags: string[] | null
+          sort_order: number
           sub_area: string
           updated_at: string
         }
@@ -797,6 +798,7 @@ export type Database = {
           id?: string
           parent_asset_label: string
           pid_tags?: string[] | null
+          sort_order?: number
           sub_area: string
           updated_at?: string
         }
@@ -812,6 +814,7 @@ export type Database = {
           id?: string
           parent_asset_label?: string
           pid_tags?: string[] | null
+          sort_order?: number
           sub_area?: string
           updated_at?: string
         }
