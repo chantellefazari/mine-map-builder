@@ -94,7 +94,7 @@ const RCDPushButtonTestSheet = ({ location }: { location: GeneratorLocation }) =
           </table>
         </div>
 
-        <PMSignOffBlock footerText={`Tennant Creek Mining Operations – ${location.name} RCD Push-button Test Form`} />
+        <PMSignOffBlock footerText={`Tennant Creek Mining Operations – ${location.name} RCD Push-button Test Form`} showElecCertNo />
       </div>
     </div>
   );
