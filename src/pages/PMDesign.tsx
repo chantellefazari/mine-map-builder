@@ -180,7 +180,7 @@ const disciplines = [
         pms: [
           { id: "crusher-fuel-farm-generator-electrical-weekly", name: "Crusher Fuel Farm Generator" },
           { id: "field-mcc-inspections-weekly", name: "Field MCC Inspections" },
-          { id: "filter-press-electrical-weekly", name: "Filter Press Electrical" },
+          { id: "filter-press-electrical-weekly", name: "Filter Press Electrical (Online)" },
           { id: "ice-machine-weekly", name: "Ice Machine" },
           { id: "ph-probe-calibration-weekly", name: "pH Probe Calibration" },
           { id: "safety-shower-weekly", name: "Safety Shower Inspection" },
