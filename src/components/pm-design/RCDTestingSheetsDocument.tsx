@@ -104,7 +104,7 @@ const RCDTestSheet = ({ location }: { location: GeneratorLocation }) => {
           </table>
         </div>
 
-        <PMSignOffBlock footerText={`Tennant Creek Mining Operations – ${location.name} RCD Test Form`} />
+        <PMSignOffBlock footerText={`Tennant Creek Mining Operations – ${location.name} RCD Test Form`} showElecCertNo />
       </div>
     </div>
   );
