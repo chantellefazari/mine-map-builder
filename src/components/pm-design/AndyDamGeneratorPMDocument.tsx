@@ -31,7 +31,7 @@ export const AndyDamGeneratorPMDocument = () => {
 
         <DynamicInspectionTable tasksData={pm?.tasks} />
 
-        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Andy Dam Generator Weekly Inspection Form" />
+        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Andy Dam Generator Weekly Inspection Form" showElecCertNo />
       </div>
     </div>
   );
