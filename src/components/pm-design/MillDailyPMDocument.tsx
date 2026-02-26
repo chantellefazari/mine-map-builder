@@ -5,6 +5,7 @@ import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
 import { PMSignOffBlock } from "./PMSignOffBlock";
 import { DynamicInspectionTable } from "./DynamicInspectionTable";
+import { MillBearingDiagrams } from "./MillBearingDiagrams";
 
 export const MillDailyPMDocument = () => {
   const { pms } = usePMasterList();
@@ -97,13 +98,7 @@ export const MillDailyPMDocument = () => {
           <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">
             BEARING NUMBERING SYSTEM & VIBRATION MEASUREMENTS
           </div>
-          <div className="p-4 flex justify-center">
-            <img
-              src="/images/mill-bearing-vibration-diagrams.png"
-              alt="Bearing Numbering System and Vibration Measurements reference diagram"
-              className="max-w-full h-auto"
-            />
-          </div>
+          <MillBearingDiagrams />
         </div>
 
         <PMSignOffBlock />
