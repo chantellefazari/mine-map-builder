@@ -4,6 +4,7 @@ import { PMSignOffBlock } from "./PMSignOffBlock";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
 import { DynamicInspectionTable } from "./DynamicInspectionTable";
+import { MillBearingDiagrams } from "./MillBearingDiagrams";
 
 export const MillWeeklyPMDocument = () => {
   const { pms } = usePMasterList();
@@ -27,7 +28,9 @@ export const MillWeeklyPMDocument = () => {
 
         <SafetyPrecautionsSection />
 
-        <DynamicInspectionTable tasksData={pm?.tasks} />
+        <DynamicInspectionTable tasksData={pm?.tasks} showEquipmentId />
+
+        <MillBearingDiagrams />
 
         <PMSignOffBlock footerText="Tennant Creek Mining Operations – Processing Plant Inspection Form" />
       </div>
