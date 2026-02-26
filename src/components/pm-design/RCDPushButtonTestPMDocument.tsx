@@ -84,7 +84,7 @@ export const RCDPushButtonTestPMDocument = () => {
           </table>
         </div>
 
-        <PMSignOffBlock footerText="Tennant Creek Mining Operations – RCD Push-button Test Form" />
+        <PMSignOffBlock footerText="Tennant Creek Mining Operations – RCD Push-button Test Form" showElecCertNo />
       </div>
     </div>
   );
