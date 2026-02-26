@@ -39,16 +39,14 @@ export const EmergencyLightTestPMDocument = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-xs border-collapse min-w-[700px]">
+            <table className="w-full text-xs border-collapse min-w-[500px]">
               <thead>
                 <tr className="bg-muted">
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[8%]">Fitting #</th>
-                  <th className="border border-border px-2 py-2 text-left font-semibold w-[20%]">Fitting Location</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[12%]">Fitting Type</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[14%]">Test (With Power)</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[14%]">Test (Without Power)</th>
-                  <th className="border border-border px-2 py-2 text-center font-semibold w-[12%]">Overall Result</th>
-                  <th className="border border-border px-2 py-2 text-left font-semibold w-[20%]">Comments</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Fitting #</th>
+                  <th className="border border-border px-2 py-2 text-left font-semibold w-[30%]">Fitting Location</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[20%]">Fitting Type</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[20%]">Test (With Power)</th>
+                  <th className="border border-border px-2 py-2 text-center font-semibold w-[20%]">Test (Without Power)</th>
                 </tr>
               </thead>
               <tbody>
@@ -59,8 +57,6 @@ export const EmergencyLightTestPMDocument = () => {
                     <td className="border border-border px-2 py-4"></td>
                     <td className="border border-border px-1 py-1 text-center text-xs">Y / N</td>
                     <td className="border border-border px-1 py-1 text-center text-xs">Y / N</td>
-                    <td className="border border-border px-1 py-1 text-center text-xs">PASS / FAIL</td>
-                    <td className="border border-border px-2 py-4"></td>
                   </tr>
                 ))}
               </tbody>
