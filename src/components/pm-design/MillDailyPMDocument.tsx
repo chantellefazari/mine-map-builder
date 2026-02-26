@@ -9,6 +9,13 @@ import { DynamicInspectionTable } from "./DynamicInspectionTable";
 export const MillDailyPMDocument = () => {
   const { pms } = usePMasterList();
   const pm = pms.find((p) => p.pmName === "Mill Daily Inspection");
+
+  // Split tasks into before-BC100 (inclusive) and after-BC100
+  const allSections = (pm?.tasks as any)?.sections || [];
+  const bc100Index = allSections.findIndex((s: any) => s.equipmentId === "BC-100");
+  const beforeAndBC100 = bc100Index >= 0 ? { sections: allSections.slice(0, bc100Index + 1) } : null;
+  const afterBC100 = bc100Index >= 0 ? { sections: allSections.slice(bc100Index + 1) } : null;
+
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
@@ -27,20 +34,32 @@ export const MillDailyPMDocument = () => {
 
         <SafetyPrecautionsSection />
 
-        <DynamicInspectionTable tasksData={pm?.tasks} showEquipmentId />
+        {/* Sections up to and including BC-100 */}
+        {beforeAndBC100 ? (
+          <DynamicInspectionTable tasksData={beforeAndBC100} showEquipmentId />
+        ) : (
+          <DynamicInspectionTable tasksData={pm?.tasks} showEquipmentId />
+        )}
 
-        {/* BC-100 Additional Temperature Records */}
-        <div className="border-b border-border">
-          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
-            <Thermometer className="w-4 h-4 text-primary" />
-            BC-100 ADDITIONAL BEARING TEMPERATURES
+        {/* BC-100 Additional Bearing Temperatures — immediately after BC-100 */}
+        {bc100Index >= 0 && (
+          <div className="border-b border-border">
+            <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
+              <Thermometer className="w-4 h-4 text-primary" />
+              BC-100 ADDITIONAL BEARING TEMPERATURES
+            </div>
+            <div className="p-4 grid grid-cols-3 gap-4 text-sm">
+              <div className="flex items-center gap-2"><span className="font-medium">Upper Bend Pulley:</span><span className="text-muted-foreground">D/S: ___°C | N/D: ___°C</span></div>
+              <div className="flex items-center gap-2"><span className="font-medium">Lower Bend Pulley:</span><span className="text-muted-foreground">D/S: ___°C | N/D: ___°C</span></div>
+              <div className="flex items-center gap-2"><span className="font-medium">Take-up Pulley:</span><span className="text-muted-foreground">D/S: ___°C | N/D: ___°C</span></div>
+            </div>
           </div>
-          <div className="p-4 grid grid-cols-3 gap-4 text-sm">
-            <div className="flex items-center gap-2"><span className="font-medium">Upper Bend Pulley:</span><span className="text-muted-foreground">D/S: ___°C | N/D: ___°C</span></div>
-            <div className="flex items-center gap-2"><span className="font-medium">Lower Bend Pulley:</span><span className="text-muted-foreground">D/S: ___°C | N/D: ___°C</span></div>
-            <div className="flex items-center gap-2"><span className="font-medium">Take-up Pulley:</span><span className="text-muted-foreground">D/S: ___°C | N/D: ___°C</span></div>
-          </div>
-        </div>
+        )}
+
+        {/* Remaining sections after BC-100 */}
+        {afterBC100 && afterBC100.sections.length > 0 && (
+          <DynamicInspectionTable tasksData={afterBC100} showEquipmentId />
+        )}
 
         {/* Mill Specific Data */}
         <div className="border-b border-border">
@@ -70,6 +89,20 @@ export const MillDailyPMDocument = () => {
               </div>
             </div>
             <div className="flex items-center gap-2"><span className="font-medium">GEARBOX LUBE TEMP (from Control Room):</span><span className="text-muted-foreground">___°C</span></div>
+          </div>
+        </div>
+
+        {/* Bearing Numbering System & Vibration Measurements Reference Diagrams */}
+        <div className="border-b border-border">
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">
+            BEARING NUMBERING SYSTEM & VIBRATION MEASUREMENTS
+          </div>
+          <div className="p-4 flex justify-center">
+            <img
+              src="/images/mill-bearing-vibration-diagrams.png"
+              alt="Bearing Numbering System and Vibration Measurements reference diagram"
+              className="max-w-full h-auto"
+            />
           </div>
         </div>
 
