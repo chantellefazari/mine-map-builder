@@ -20,6 +20,7 @@ interface TaskItem {
   hasPressure?: boolean;
   pressureLabel?: string;
   recommendedAmount?: string;
+  comments?: string;
 }
 
 interface Section {
@@ -51,6 +52,7 @@ function normalizeTaskItem(item: any): TaskItem {
     hasPressure: item.hasPressure,
     pressureLabel: item.pressureLabel,
     recommendedAmount: item.recommendedAmount,
+    comments: item.comments,
   };
 }
 
@@ -233,7 +235,9 @@ function SectionRows({ section, sectionIndex, label }: { section: Section; secti
 
 /** Single task row with the standard 4-column layout */
 function TaskRow({ task }: { task: TaskItem }) {
-  const commentContent = task.hasTemp
+  const commentContent = task.comments
+    ? task.comments
+    : task.hasTemp
     ? (task.tempLabel || "_______ °C")
     : task.hasPressure
     ? (task.pressureLabel || "_______ BAR")
