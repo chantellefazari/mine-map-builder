@@ -31,7 +31,7 @@ export const CrusherFuelFarmGeneratorElectricalPMDocument = () => {
 
         <DynamicInspectionTable tasksData={pm?.tasks} title="INSPECTION TASKS" />
 
-        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Crusher Fuel Farm Generator Electrical Inspection Form" />
+        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Crusher Fuel Farm Generator Electrical Inspection Form" showElecCertNo />
       </div>
     </div>
   );

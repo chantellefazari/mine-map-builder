@@ -31,7 +31,7 @@ export const AdminGeneratorPMDocument = () => {
 
         <DynamicInspectionTable tasksData={pm?.tasks} />
 
-        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Admin Generator Weekly Inspection Form" />
+        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Admin Generator Weekly Inspection Form" showElecCertNo />
       </div>
     </div>
   );

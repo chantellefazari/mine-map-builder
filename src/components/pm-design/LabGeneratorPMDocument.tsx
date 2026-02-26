@@ -31,7 +31,7 @@ export const LabGeneratorPMDocument = () => {
 
         <DynamicInspectionTable tasksData={pm?.tasks} />
 
-        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Lab Generator Weekly Inspection Form" />
+        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Lab Generator Weekly Inspection Form" showElecCertNo />
       </div>
     </div>
   );

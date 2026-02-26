@@ -29,7 +29,7 @@ export const JunoGeneratorPMDocument = () => {
 
         <DynamicInspectionTable tasksData={pm?.tasks} />
 
-        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Juno Generator Weekly Inspection Form" />
+        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Juno Generator Weekly Inspection Form" showElecCertNo />
       </div>
     </div>
   );
