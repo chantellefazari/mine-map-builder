@@ -220,6 +220,13 @@ function SectionRows({ section, sectionIndex, label }: { section: Section; secti
       {section.tasks.map((task, tIdx) => (
         <TaskRow key={`${sectionIndex}-${tIdx}`} task={task} />
       ))}
+      {section.tempGuidelines && (
+        <tr>
+          <td colSpan={4} className="border border-border px-4 py-2 text-xs bg-amber-500/10 text-amber-700">
+            <span className="font-semibold">Temp Guidelines: </span>{section.tempGuidelines}
+          </td>
+        </tr>
+      )}
     </>
   );
 }
