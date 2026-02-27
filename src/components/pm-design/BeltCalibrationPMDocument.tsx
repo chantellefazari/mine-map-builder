@@ -34,30 +34,26 @@ export const BeltCalibrationPMDocument = () => {
           CALIBRATION PROCEDURE
         </div>
 
-        {/* Calibration Steps Table */}
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-muted">
-              <th className="border border-border px-2 py-2 text-center font-semibold w-[6%]">Step</th>
-              <th className="border border-border px-3 py-2 text-left font-semibold w-[60%]">Action/Steps</th>
-              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Pass / Fail</th>
-              <th className="border border-border px-3 py-2 text-left font-semibold w-[24%]">Results and Comments</th>
+              <th className="border border-border px-3 py-2 text-left font-semibold w-[46%]">Task</th>
+              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th>
+              <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th>
+              <th className="border border-border px-3 py-2 text-left font-semibold w-[34%]">Comments</th>
             </tr>
           </thead>
           <tbody>
-            {/* Section Header */}
             <tr className="bg-muted/50">
               <td colSpan={4} className="border border-border px-3 py-2 font-bold text-primary">
                 STATIONARY CHECKS – PM INSPECTION
               </td>
             </tr>
 
-            {/* Step 1 */}
-            <tr className="border-b border-border">
-              <td className="border border-border px-2 py-2 text-center font-bold align-top">1</td>
+            <tr className="border-b border-border hover:bg-muted/30">
               <td className="border border-border px-3 py-2 align-top">
                 <p className="font-bold uppercase text-xs mb-2">
-                  MAKE SURE THE BELT & SCALE ARE EMPTY AND CLEAN, ALSO BE CERTAIN THE CALIBRATION WEIGHTS ARE IN THE 'UP' POSITION OR HANDLES ARE IN THE HORIZONTAL POSITION.
+                  1. MAKE SURE THE BELT & SCALE ARE EMPTY AND CLEAN, ALSO BE CERTAIN THE CALIBRATION WEIGHTS ARE IN THE 'UP' POSITION OR HANDLES ARE IN THE HORIZONTAL POSITION.
                 </p>
                 <div className="flex justify-center my-2">
                   <img
@@ -67,47 +63,32 @@ export const BeltCalibrationPMDocument = () => {
                   />
                 </div>
               </td>
-              <td className="border border-border px-2 py-2 text-center align-top">
-                <div className="flex justify-center">
-                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
-                </div>
-              </td>
+              <td className="border border-border px-2 py-2 text-center align-top"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
+              <td className="border border-border px-2 py-2 text-center align-top"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
               <td className="border border-border px-2 py-4"></td>
             </tr>
 
-            {/* Step 2 */}
-            <tr className="border-b border-border">
-              <td className="border border-border px-2 py-2 text-center font-bold align-top">2</td>
+            <tr className="border-b border-border hover:bg-muted/30">
               <td className="border border-border px-3 py-2">
-                Visual check the scale to ensure no material could be affecting the readings. Check all rollers for flat spots or material build-up. Clean/replace as required.
+                2. Visual check the scale to ensure no material could be affecting the readings. Check all rollers for flat spots or material build-up. Clean/replace as required.
               </td>
-              <td className="border border-border px-2 py-2 text-center">
-                <div className="flex justify-center">
-                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
-                </div>
-              </td>
+              <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
+              <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
               <td className="border border-border px-2 py-4"></td>
             </tr>
 
-            {/* Step 3 */}
-            <tr className="border-b border-border">
-              <td className="border border-border px-2 py-2 text-center font-bold align-top">3</td>
+            <tr className="border-b border-border hover:bg-muted/30">
               <td className="border border-border px-3 py-2">
-                Start the conveyor belt and allow a couple of minutes for the belt to settle down.
+                3. Start the conveyor belt and allow a couple of minutes for the belt to settle down.
               </td>
-              <td className="border border-border px-2 py-2 text-center">
-                <div className="flex justify-center">
-                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
-                </div>
-              </td>
+              <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
+              <td className="border border-border px-2 py-2 text-center"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
               <td className="border border-border px-2 py-4"></td>
             </tr>
 
-            {/* Step 4 - Auto Zero */}
-            <tr className="border-b border-border">
-              <td className="border border-border px-2 py-2 text-center font-bold align-top">4</td>
+            <tr className="border-b border-border hover:bg-muted/30">
               <td className="border border-border px-3 py-2 align-top">
-                <p className="mb-2">With the belt running, begin the "Auto Zero" procedure as follows</p>
+                <p className="mb-2">4. With the belt running, begin the "Auto Zero" procedure as follows</p>
                 <ul className="list-disc list-inside space-y-1 ml-2 text-xs mb-2">
                   <li>Press and hold the "Auto Zero" button for five seconds during which time the MODE WINDOW will read "hold to zero"</li>
                   <li>After the five seconds it should read "auto zero (wait)". The Controller will now perform an Auto Zero. You can cancel an Auto Zero at any time by pressing Reset.</li>
@@ -130,15 +111,11 @@ export const BeltCalibrationPMDocument = () => {
                   <p className="ml-4">Calibration Weight: 45.04kg</p>
                 </div>
               </td>
-              <td className="border border-border px-2 py-2 text-center align-top">
-                <div className="flex justify-center">
-                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
-                </div>
-              </td>
+              <td className="border border-border px-2 py-2 text-center align-top"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
+              <td className="border border-border px-2 py-2 text-center align-top"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
               <td className="border border-border px-2 py-4"></td>
             </tr>
 
-            {/* As Found / As Left Result */}
             <tr className="border-b border-border">
               <td colSpan={4} className="border border-border px-3 py-3">
                 <div className="grid grid-cols-2 gap-4">
@@ -154,25 +131,19 @@ export const BeltCalibrationPMDocument = () => {
               </td>
             </tr>
 
-            {/* Warning banner */}
             <tr className="border-b border-border">
               <td colSpan={4} className="border border-border px-3 py-2 text-center">
                 <span className="font-bold text-destructive underline text-sm">AN AUTO ZERO MUST BE PERFORMED BEFORE AN AUTO SPAN!</span>
               </td>
             </tr>
 
-            {/* Section Header */}
             <tr className="bg-muted/50">
-              <td colSpan={4} className="border border-border px-3 py-2 font-bold text-primary">
-                AUTO SPAN PROCEDURE
-              </td>
+              <td colSpan={4} className="border border-border px-3 py-2 font-bold text-primary">AUTO SPAN PROCEDURE</td>
             </tr>
 
-            {/* Step 5 - Auto Span */}
-            <tr className="border-b border-border">
-              <td className="border border-border px-2 py-2 text-center font-bold align-top">5</td>
+            <tr className="border-b border-border hover:bg-muted/30">
               <td className="border border-border px-3 py-2 align-top">
-                <p className="font-bold mb-2">Completing an Auto Span</p>
+                <p className="font-bold mb-2">5. Completing an Auto Span</p>
                 <ol className="list-[lower-alpha] list-inside space-y-1.5 ml-2 text-xs mb-3">
                   <li>With the conveyor belt running, press and hold the AUTO SPAN button for five seconds. The MODE window should display "Lower Cal Weight".</li>
                   <li>Lower both calibration weights.</li>
@@ -195,26 +166,18 @@ export const BeltCalibrationPMDocument = () => {
                   />
                 </div>
               </td>
-              <td className="border border-border px-2 py-2 text-center align-top">
-                <div className="flex justify-center">
-                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
-                </div>
-              </td>
+              <td className="border border-border px-2 py-2 text-center align-top"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
+              <td className="border border-border px-2 py-2 text-center align-top"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
               <td className="border border-border px-2 py-4"></td>
             </tr>
 
-            {/* Section Header */}
             <tr className="bg-muted/50">
-              <td colSpan={4} className="border border-border px-3 py-2 font-bold text-primary">
-                RUNNING SYSTEM CHECKS
-              </td>
+              <td colSpan={4} className="border border-border px-3 py-2 font-bold text-primary">RUNNING SYSTEM CHECKS</td>
             </tr>
 
-            {/* Step 6 - Running the system */}
-            <tr className="border-b border-border">
-              <td className="border border-border px-2 py-2 text-center font-bold align-top">6</td>
+            <tr className="border-b border-border hover:bg-muted/30">
               <td className="border border-border px-3 py-2 align-top">
-                <p className="font-bold mb-2">Running the system</p>
+                <p className="font-bold mb-2">6. Running the system</p>
                 <p className="text-xs mb-2">Your system is ready to run, please complete the final checks.</p>
                 <ul className="list-disc list-inside space-y-1 ml-2 text-xs">
                   <li>With the calibration weights up (in the storage position), the rate should be zero.</li>
@@ -223,19 +186,14 @@ export const BeltCalibrationPMDocument = () => {
                   <li>Press the FUNCTION key momentarily to toggle between the flow rate (tons per hour) and the present belt speed (meters per minute).</li>
                 </ul>
               </td>
-              <td className="border border-border px-2 py-2 text-center align-top">
-                <div className="flex justify-center">
-                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
-                </div>
-              </td>
+              <td className="border border-border px-2 py-2 text-center align-top"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
+              <td className="border border-border px-2 py-2 text-center align-top"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
               <td className="border border-border px-2 py-4"></td>
             </tr>
 
-            {/* Step 7 - Span Calibration Flow Rates */}
-            <tr className="border-b border-border">
-              <td className="border border-border px-2 py-2 text-center font-bold align-top">7</td>
-              <td colSpan={3} className="border border-border px-3 py-2 align-top">
-                <p className="font-bold mb-2">Span Calibration Flow Rates</p>
+            <tr className="border-b border-border hover:bg-muted/30">
+              <td className="border border-border px-3 py-2 align-top">
+                <p className="font-bold mb-2">7. Span Calibration Flow Rates</p>
                 <p className="text-xs mb-2">
                   Below is a list of the belt weighers in the Mill Feed circuit. The table below lists the conveyor and the calibration weight and the calculated flow rate for the weigher.
                 </p>
@@ -244,6 +202,9 @@ export const BeltCalibrationPMDocument = () => {
                   BC-100 has 2 x calibration weights totaling 45.04kg. The calculated flow rate for BC-100 with both calibration weights lowered is 133.3 tons per hour. On completion of the span calibration, the Rate screen should display a rate averaging 133.3 tons per hour, bearing in mind that the displayed rate will oscillate as described above.
                 </p>
               </td>
+              <td className="border border-border px-2 py-2 text-center align-top"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
+              <td className="border border-border px-2 py-2 text-center align-top"><div className="flex justify-center"><Checkbox className="h-4 w-4" /></div></td>
+              <td className="border border-border px-2 py-4"></td>
             </tr>
           </tbody>
         </table>
