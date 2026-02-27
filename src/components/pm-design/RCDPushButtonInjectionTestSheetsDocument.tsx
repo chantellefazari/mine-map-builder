@@ -23,7 +23,8 @@ const rcdLocations: RCDLocation[] = [
     assetDescription: "TITRATION HUT",
     circuits: [
       { description: "LIGHTS", rating: "10A" },
-      ...Array.from({ length: 19 }, () => ({ description: "", rating: "" })),
+      { description: "POWER", rating: "16A" },
+      ...Array.from({ length: 18 }, () => ({ description: "", rating: "" })),
     ],
   },
   {
