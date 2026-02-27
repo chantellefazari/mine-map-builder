@@ -69,26 +69,6 @@ const RCDPushButtonInjectionTestSheet = ({ location }: { location: RCDLocation }
           resources={pm?.resources}
         />
 
-        {/* Preparation & Procedure */}
-        <div className="border-b border-border px-4 py-3 text-sm space-y-3">
-          <div>
-            <h3 className="font-bold text-foreground mb-1">PREPARATION</h3>
-            <ul className="list-disc list-inside text-muted-foreground text-xs space-y-1">
-              <li>Ensure all meters are within calibrated dates.</li>
-              <li>Ensure all parts, materials and tooling are available and prepared prior to requesting machine for service.</li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-bold text-foreground mb-1">PROCEDURE</h3>
-            <p className="text-muted-foreground text-xs">
-              Inspection, testing and the recording of results shall be completed in accordance with the requirements of Procedure XYZ.
-            </p>
-            <p className="text-muted-foreground text-xs mt-1">
-              Any equipment failing its test or inspection shall be rectified at the time of test or inspection. If rectification cannot be achieved, the unserviceable circuit shall be tagged out of service and the Electrical Supervisor and/or PTCEW notified immediately upon identification.
-            </p>
-          </div>
-        </div>
-
         <SafetyPrecautionsSection />
 
         {/* Test Information */}
