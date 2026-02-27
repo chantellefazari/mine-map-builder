@@ -1,45 +1,40 @@
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+import { PMBannerHeader } from "./PMBannerHeader";
+import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
 import { PMSignOffBlock } from "./PMSignOffBlock";
+import { PMMetadataGrid } from "./PMMetadataGrid";
+import { usePMasterList } from "@/hooks/usePMData";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ClipboardCheck } from "lucide-react";
 
 export const BeltCalibrationPMDocument = () => {
+  const { pms } = usePMasterList();
+  const pm = pms.find((p) => p.pmName === "Weightometer Calibration Monthly BC-100");
+
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
-        {/* Page Header - Red diamond pattern banner */}
-        <div className="flex items-center border-b border-border">
-          <div className="bg-destructive/10 px-4 py-3 flex items-center gap-3 w-[120px] border-r border-border">
-            <span className="font-bold text-sm text-destructive">ASPECT</span>
-          </div>
-          <div className="flex-1 px-4 py-3 text-center">
-            <h1 className="text-xl font-bold tracking-wide text-destructive">Monthly Weightometer Calibration</h1>
-          </div>
-          <div className="px-4 py-3 border-l border-border">
-            <span className="text-xs font-semibold">Statutory Inspection</span>
-          </div>
+        <PMBannerHeader title="Monthly Weightometer Calibration" subtitle="Statutory Inspection - BC-100" />
+
+        <PMMetadataGrid
+          pmId={pm?.id}
+          projectSite="Tennant Creek"
+          plantArea="Mill Feed Circuit"
+          pmGroup="Mechanical"
+          pmType="Calibration"
+          frequency="4 Weekly"
+          assetNumber={pm?.assetNumber}
+          resources={pm?.resources}
+        />
+
+        <SafetyPrecautionsSection />
+
+        {/* Inspections Header */}
+        <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+          <ClipboardCheck className="w-5 h-5 text-primary" />
+          CALIBRATION PROCEDURE
         </div>
 
-        {/* NAME / DATE / CONVEYOR fields */}
-        <table className="w-full text-sm border-collapse">
-          <tbody>
-            <tr className="border-b border-border">
-              <td className="border border-border px-3 py-2 font-bold w-[33%]">NAME :</td>
-              <td className="border border-border px-3 py-2 font-bold w-[33%]">DATE:</td>
-              <td className="border border-border px-3 py-2 font-bold w-[34%]">CONVEYOR:</td>
-            </tr>
-            <tr className="border-b border-border">
-              <td className="border border-border px-3 py-6"></td>
-              <td className="border border-border px-3 py-6"></td>
-              <td className="border border-border px-3 py-6"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        {/* STATIONARY CHECKS – PM INSPECTION */}
-        <div className="px-3 py-2 font-bold text-sm border-b border-border underline">
-          STATIONARY CHECKS – PM INSPECTION
-        </div>
-
+        {/* Calibration Steps Table */}
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-muted">
@@ -50,6 +45,13 @@ export const BeltCalibrationPMDocument = () => {
             </tr>
           </thead>
           <tbody>
+            {/* Section Header */}
+            <tr className="bg-muted/50">
+              <td colSpan={4} className="border border-border px-3 py-2 font-bold text-primary">
+                STATIONARY CHECKS – PM INSPECTION
+              </td>
+            </tr>
+
             {/* Step 1 */}
             <tr className="border-b border-border">
               <td className="border border-border px-2 py-2 text-center font-bold align-top">1</td>
@@ -66,13 +68,11 @@ export const BeltCalibrationPMDocument = () => {
                 </div>
               </td>
               <td className="border border-border px-2 py-2 text-center align-top">
-                <div className="flex justify-center gap-1 items-center">
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">Y</span>
-                  <span className="text-xs">/</span>
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">N</span>
+                <div className="flex justify-center">
+                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
                 </div>
               </td>
-              <td className="border border-border px-3 py-6"></td>
+              <td className="border border-border px-2 py-4"></td>
             </tr>
 
             {/* Step 2 */}
@@ -82,13 +82,11 @@ export const BeltCalibrationPMDocument = () => {
                 Visual check the scale to ensure no material could be affecting the readings. Check all rollers for flat spots or material build-up. Clean/replace as required.
               </td>
               <td className="border border-border px-2 py-2 text-center">
-                <div className="flex justify-center gap-1 items-center">
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">Y</span>
-                  <span className="text-xs">/</span>
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">N</span>
+                <div className="flex justify-center">
+                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
                 </div>
               </td>
-              <td className="border border-border px-3 py-6"></td>
+              <td className="border border-border px-2 py-4"></td>
             </tr>
 
             {/* Step 3 */}
@@ -98,13 +96,11 @@ export const BeltCalibrationPMDocument = () => {
                 Start the conveyor belt and allow a couple of minutes for the belt to settle down.
               </td>
               <td className="border border-border px-2 py-2 text-center">
-                <div className="flex justify-center gap-1 items-center">
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">Y</span>
-                  <span className="text-xs">/</span>
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">N</span>
+                <div className="flex justify-center">
+                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
                 </div>
               </td>
-              <td className="border border-border px-3 py-6"></td>
+              <td className="border border-border px-2 py-4"></td>
             </tr>
 
             {/* Step 4 - Auto Zero */}
@@ -116,7 +112,6 @@ export const BeltCalibrationPMDocument = () => {
                   <li>Press and hold the "Auto Zero" button for five seconds during which time the MODE WINDOW will read "hold to zero"</li>
                   <li>After the five seconds it should read "auto zero (wait)". The Controller will now perform an Auto Zero. You can cancel an Auto Zero at any time by pressing Reset.</li>
                 </ul>
-
                 <div className="flex justify-center my-3">
                   <img
                     src="/images/belt-cal-auto-zero-after.jpg"
@@ -124,28 +119,23 @@ export const BeltCalibrationPMDocument = () => {
                     className="max-h-[120px] object-contain"
                   />
                 </div>
-
                 <ul className="list-disc list-inside space-y-1 ml-2 text-xs mb-2">
                   <li>On completion of the Auto Zero cycle, the Controller RATE WINDOW should read zero. Note the rate may bounce around zero to some extent. This is normally due to variations in belt thickness and/or the condition of the belt.</li>
                 </ul>
-
                 <p className="text-xs mt-2 italic">
                   <strong>Note:</strong> Severe Zero rate bounce is generally caused by mechanical issues in the weighing area, examine & rectify any issues with the rollers, belt, belt tracking & string line check if all else fails.
                 </p>
-
                 <div className="mt-3 space-y-1 text-xs">
                   <p className="ml-4">Conveyor Number: BC-100</p>
                   <p className="ml-4">Calibration Weight: 45.04kg</p>
                 </div>
               </td>
               <td className="border border-border px-2 py-2 text-center align-top">
-                <div className="flex justify-center gap-1 items-center">
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">Y</span>
-                  <span className="text-xs">/</span>
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">N</span>
+                <div className="flex justify-center">
+                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
                 </div>
               </td>
-              <td className="border border-border px-3 py-6"></td>
+              <td className="border border-border px-2 py-4"></td>
             </tr>
 
             {/* As Found / As Left Result */}
@@ -171,6 +161,13 @@ export const BeltCalibrationPMDocument = () => {
               </td>
             </tr>
 
+            {/* Section Header */}
+            <tr className="bg-muted/50">
+              <td colSpan={4} className="border border-border px-3 py-2 font-bold text-primary">
+                AUTO SPAN PROCEDURE
+              </td>
+            </tr>
+
             {/* Step 5 - Auto Span */}
             <tr className="border-b border-border">
               <td className="border border-border px-2 py-2 text-center font-bold align-top">5</td>
@@ -185,7 +182,6 @@ export const BeltCalibrationPMDocument = () => {
                   <li>On completion of the Auto Span cycle, the Controller RATE WINDOW will show "XXX" TPH. Note the rate may bounce around to some extent. This is normally due to variations in belt thickness and/or the condition of the belt.</li>
                   <li>After the Auto Span cycle is complete, the MODE WINDOW will change to "raise cal weight" until the calibration weight is lifted, or the RESET button is pressed momentarily. Remember to raise the cal weight to avoid false rate readings.</li>
                 </ol>
-
                 <div className="space-y-3 my-3">
                   <img
                     src="/images/belt-cal-auto-span-screens.jpg"
@@ -200,13 +196,18 @@ export const BeltCalibrationPMDocument = () => {
                 </div>
               </td>
               <td className="border border-border px-2 py-2 text-center align-top">
-                <div className="flex justify-center gap-1 items-center">
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">Y</span>
-                  <span className="text-xs">/</span>
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">N</span>
+                <div className="flex justify-center">
+                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
                 </div>
               </td>
-              <td className="border border-border px-3 py-6"></td>
+              <td className="border border-border px-2 py-4"></td>
+            </tr>
+
+            {/* Section Header */}
+            <tr className="bg-muted/50">
+              <td colSpan={4} className="border border-border px-3 py-2 font-bold text-primary">
+                RUNNING SYSTEM CHECKS
+              </td>
             </tr>
 
             {/* Step 6 - Running the system */}
@@ -223,13 +224,11 @@ export const BeltCalibrationPMDocument = () => {
                 </ul>
               </td>
               <td className="border border-border px-2 py-2 text-center align-top">
-                <div className="flex justify-center gap-1 items-center">
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">Y</span>
-                  <span className="text-xs">/</span>
-                  <Checkbox className="h-4 w-4" /><span className="text-xs">N</span>
+                <div className="flex justify-center">
+                  <Checkbox className="h-4 w-4 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />
                 </div>
               </td>
-              <td className="border border-border px-3 py-6"></td>
+              <td className="border border-border px-2 py-4"></td>
             </tr>
 
             {/* Step 7 - Span Calibration Flow Rates */}
@@ -244,54 +243,65 @@ export const BeltCalibrationPMDocument = () => {
                 <p className="text-xs mb-3">
                   BC-100 has 2 x calibration weights totaling 45.04kg. The calculated flow rate for BC-100 with both calibration weights lowered is 133.3 tons per hour. On completion of the span calibration, the Rate screen should display a rate averaging 133.3 tons per hour, bearing in mind that the displayed rate will oscillate as described above.
                 </p>
-
-                {/* Calibration Reference Data */}
-                <table className="w-full text-xs border-collapse mb-4">
-                  <tbody>
-                    <tr className="border-b border-border">
-                      <td className="border border-border px-3 py-2 font-medium w-[40%]">Conveyor Number:</td>
-                      <td className="border border-border px-3 py-2">BC-100</td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="border border-border px-3 py-2 font-medium">Calibration Weight:</td>
-                      <td className="border border-border px-3 py-2">45.04 kg</td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="border border-border px-3 py-2 font-medium">Target Flow Rate:</td>
-                      <td className="border border-border px-3 py-2">133.3 tph</td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* Recorded Data */}
-                <p className="font-bold text-xs mb-2">Recorded Data</p>
-                <table className="w-full text-xs border-collapse mb-2">
-                  <tbody>
-                    <tr className="border-b border-border">
-                      <td className="border border-border px-3 py-2 font-medium w-[40%]">Target</td>
-                      <td className="border border-border px-3 py-2">133.3 tph</td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="border border-border px-3 py-2 font-medium">Actual Flow Rate</td>
-                      <td className="border border-border px-3 py-6"></td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="border border-border px-3 py-2 font-medium">Variance</td>
-                      <td className="border border-border px-3 py-6"></td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <p className="text-xs mt-2">
-                  <strong>NOTE:</strong>
-                </p>
-                <ul className="list-disc list-inside text-xs ml-2">
-                  <li className="font-bold">A maximum/minimum variance to be confirmed by site</li>
-                </ul>
               </td>
             </tr>
           </tbody>
         </table>
+
+        {/* Calibration Reference Data */}
+        <div className="border-b border-border">
+          <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">CALIBRATION REFERENCE DATA</div>
+          <table className="w-full text-sm border-collapse">
+            <tbody>
+              <tr className="border-b border-border">
+                <td className="px-4 py-2 font-medium w-[40%] bg-muted/30">Conveyor Number</td>
+                <td className="px-4 py-2">BC-100</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-4 py-2 font-medium bg-muted/30">Calibration Weight</td>
+                <td className="px-4 py-2">45.04 kg</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-4 py-2 font-medium bg-muted/30">Target Flow Rate</td>
+                <td className="px-4 py-2">133.3 tph</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/* Recorded Data */}
+        <div className="border-b border-border">
+          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border">RECORDED DATA</div>
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-muted">
+                <th className="border border-border px-4 py-2 text-left font-semibold w-[40%]">Parameter</th>
+                <th className="border border-border px-4 py-2 text-left font-semibold w-[30%]">As Found</th>
+                <th className="border border-border px-4 py-2 text-left font-semibold w-[30%]">As Left</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-border">
+                <td className="border border-border px-4 py-2 font-medium">Target (133.3 tph)</td>
+                <td className="border border-border px-4 py-6"></td>
+                <td className="border border-border px-4 py-6"></td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="border border-border px-4 py-2 font-medium">Actual Flow Rate</td>
+                <td className="border border-border px-4 py-6"></td>
+                <td className="border border-border px-4 py-6"></td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="border border-border px-4 py-2 font-medium">Variance</td>
+                <td className="border border-border px-4 py-6"></td>
+                <td className="border border-border px-4 py-6"></td>
+              </tr>
+            </tbody>
+          </table>
+          <div className="px-4 py-2 text-xs text-muted-foreground italic">
+            NOTE: A maximum/minimum variance to be confirmed by site
+          </div>
+        </div>
 
         <PMSignOffBlock footerText="Tennant Creek Mining Operations – Monthly Weightometer Calibration Form" />
       </div>
