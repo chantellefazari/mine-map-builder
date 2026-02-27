@@ -822,7 +822,92 @@ export const pmInspectionData: Record<string, any> = {
     ],
   },
 
-  "Dozer Weekly Inspection": {
+  "Loader Daily Inspection": {
+    sections: [
+      { sectionName: "Walk Around Inspection", items: [
+        { id: "1", description: "Check for body damage, loose panels, cracked welds" },
+        { id: "2", description: "Check handrails, steps, and platforms for safety" },
+        { id: "3", description: "Check fuel, oil, or coolant leaks under machine" },
+        { id: "4", description: "Ensure all safety decals are clean and readable" },
+      ]},
+      { sectionName: "Fluids & Levels", items: [
+        { id: "5", description: "Engine oil level" },
+        { id: "6", description: "Coolant level" },
+        { id: "7", description: "Hydraulic oil level" },
+        { id: "8", description: "Transmission oil level (sight gauge)" },
+        { id: "9", description: "Fuel level" },
+        { id: "10", description: "AdBlue / DEF level (if equipped)" },
+      ]},
+      { sectionName: "Engine Compartment", items: [
+        { id: "11", description: "Inspect for oil, coolant, or fuel leaks" },
+        { id: "12", description: "Check belts for wear and tension" },
+        { id: "13", description: "Check air filter restriction indicator" },
+        { id: "14", description: "Inspect air intake hoses and clamps" },
+        { id: "15", description: "Check radiator/cooler areas for dust buildup" },
+        { id: "16", description: "Inspect radiator and cooler fins for blockage or damage" },
+        { id: "17", description: "Verify fan operation is normal" },
+      ]},
+      { sectionName: "Hydraulic System", items: [
+        { id: "18", description: "Check hoses and fittings for leaks or damage" },
+        { id: "19", description: "Inspect lift and tilt cylinders for leaks" },
+        { id: "20", description: "Inspect hydraulic tank area for leaks" },
+        { id: "21", description: "Confirm bucket, lift, and tilt functions operate smoothly" },
+      ]},
+      { sectionName: "Auto Greaser", items: [
+        { id: "22", description: "Grease reservoir level" },
+        { id: "23", description: "Greaser pump cycles normally" },
+        { id: "24", description: "No damaged, leaking, or missing grease lines" },
+      ]},
+      { sectionName: "Tires", items: [
+        { id: "25", description: "Tire pressure visually OK" },
+        { id: "26", description: "No cuts, cracks, or sidewall damage" },
+        { id: "27", description: "No missing or loose wheel nuts" },
+        { id: "28", description: "Hubs show no signs of overheating or oil leak" },
+      ]},
+      { sectionName: "Steering", items: [
+        { id: "29", description: "Check articulation area for debris buildup" },
+        { id: "30", description: "No excessive free play in articulation joint" },
+        { id: "31", description: "Steering cylinders not leaking" },
+        { id: "32", description: "Oscillation joint functioning normally" },
+        { id: "33", description: "Axles free of leaks" },
+      ]},
+      { sectionName: "Braking", items: [
+        { id: "34", description: "Service brakes functioning normally" },
+        { id: "35", description: "Parking brake holding correctly" },
+        { id: "36", description: "No brake warning indicators on display" },
+      ]},
+      { sectionName: "Bucket", items: [
+        { id: "37", description: "Cutting edges and teeth intact" },
+        { id: "38", description: "No cracks or damage on bucket" },
+        { id: "39", description: "Linkage pins and bushes appear lubricated and secure" },
+      ]},
+      { sectionName: "Electrical", items: [
+        { id: "40", description: "Lights (work lights, indicators, beacon, brake lights) operating" },
+        { id: "41", description: "Horn functioning" },
+        { id: "42", description: "Reverse alarm works" },
+        { id: "43", description: "Battery terminals secure and clean" },
+        { id: "44", description: "No exposed or damaged wiring" },
+      ]},
+      { sectionName: "Cab", items: [
+        { id: "45", description: "Seatbelt in good condition" },
+        { id: "46", description: "Mirrors and windows clean and intact" },
+        { id: "47", description: "HVAC functioning" },
+        { id: "48", description: "Check Cab air filter" },
+        { id: "49", description: "Fire extinguisher present and charged" },
+        { id: "50", description: "First-aid kit present" },
+        { id: "51", description: "Monitor/display functioning with no active warnings" },
+      ]},
+      { sectionName: "Operational Checks", items: [
+        { id: "52", description: "Engine starts smoothly with no unusual noise" },
+        { id: "53", description: "Gauges and warning lights normal" },
+        { id: "54", description: "Steering responsive" },
+        { id: "55", description: "Hydraulics responsive and smooth" },
+        { id: "56", description: "Smooth gear shifting" },
+        { id: "57", description: "Test brake holding before travel" },
+      ]},
+    ],
+  },
+
     sections: [
       { sectionName: "Walk Around Inspection", items: [
         { id: "1", description: "Inspect the dozer frame, blade, ripper, and attachments for damage or cracks" },
