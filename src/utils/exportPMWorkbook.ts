@@ -105,11 +105,11 @@ const templateRegistry: PMTemplateDefinition[] = [
   { pmName: "Cable Test Sheet Yearly", discipline: "Electrical", frequency: "52 Week", equipmentType: "Cable", bannerTitle: "Cable Test Sheet", bannerSubtitle: "Electrical Yearly Test", projectSite: "Tennant Creek", plantArea: "", pmGroup: "Electrical", pmType: "Test", footerText: "Tennant Creek Mining Operations – Cable Test Sheet", hasMobileEquipmentHeader: false, templateType: "CustomLayout", customLayoutNotes: "Custom cable test table layout" },
   { pmName: "Full Test Sheet Yearly", discipline: "Electrical", frequency: "52 Week", equipmentType: "Full Test Sheet", bannerTitle: "Full Test Sheet", bannerSubtitle: "Electrical Yearly Test", projectSite: "Tennant Creek", plantArea: "", pmGroup: "Electrical", pmType: "Test", footerText: "Tennant Creek Mining Operations – Full Test Sheet", hasMobileEquipmentHeader: false, templateType: "CustomLayout", customLayoutNotes: "Custom full electrical test table layout" },
 
-  // ── ELECTRICAL MOTOR INSPECTIONS (YEARLY) ──
+  // ── ELECTRICAL MOTOR INSPECTIONS (6 WEEKLY) ──
   ...["Filter Press", "Gold Room", "Kiln Area", "Elution", "Milling Area", "Process Water Pond", "Services", "Tanks", "Thickener"].map(area => ({
     pmName: `Statutory Motor Inspection - ${area}`,
     discipline: "Electrical" as const,
-    frequency: "52 Week",
+    frequency: "6 Week",
     equipmentType: "Motor Inspection",
     bannerTitle: `${area} - Statutory Motor Inspection`,
     bannerSubtitle: area === "Filter Press" ? "& Lubrication" : "",

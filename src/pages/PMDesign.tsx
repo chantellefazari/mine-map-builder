@@ -215,6 +215,26 @@ const disciplines = [
         ],
         subgroups: []
       },
+      "6-week": {
+        pms: [],
+        subgroups: [
+          {
+            id: "motor-inspections",
+            label: "Statutory Motor Inspections",
+            pms: [
+              { id: "motor-inspections-filter-press", name: "Filter Press" },
+              { id: "motor-inspections-gold-room", name: "Gold Room" },
+              { id: "motor-inspections-kiln-area", name: "Kiln Area" },
+              { id: "motor-inspections-elution", name: "Elution" },
+              { id: "motor-inspections-milling-area", name: "Milling Area" },
+              { id: "motor-inspections-pwp", name: "Process Water Pond" },
+              { id: "motor-inspections-services", name: "Services" },
+              { id: "motor-inspections-tanks", name: "Tanks" },
+              { id: "motor-inspections-thickener", name: "Thickener" },
+            ]
+          },
+        ]
+      },
       "12-week": { 
         pms: [
           { id: "ac-inspection-12-weekly", name: "Air Conditioner Service" },
@@ -280,23 +300,7 @@ const disciplines = [
       },
     },
     // Standalone groups that appear directly under the discipline (not under a frequency)
-    standaloneGroups: [
-      { 
-        id: "motor-inspections", 
-        label: "Statutory Motor Inspections", 
-        pms: [
-          { id: "motor-inspections-filter-press", name: "Filter Press" },
-          { id: "motor-inspections-gold-room", name: "Gold Room" },
-          { id: "motor-inspections-kiln-area", name: "Kiln Area" },
-          { id: "motor-inspections-elution", name: "Elution" },
-          { id: "motor-inspections-milling-area", name: "Milling Area" },
-          { id: "motor-inspections-pwp", name: "Process Water Pond" },
-          { id: "motor-inspections-services", name: "Services" },
-          { id: "motor-inspections-tanks", name: "Tanks" },
-          { id: "motor-inspections-thickener", name: "Thickener" },
-        ] 
-      },
-    ]
+    standaloneGroups: []
   },
   { 
     id: "mobile-equipment" as Discipline, 
