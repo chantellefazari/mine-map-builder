@@ -173,9 +173,7 @@ const disciplines = [
         ]
       },
       "4-week": {
-        pms: [
-          { id: "belt-calibration-bc100-monthly", name: "Weightometer Calibration" },
-        ],
+        pms: [],
         subgroups: []
       },
     }
@@ -207,6 +205,7 @@ const disciplines = [
       "4-week": {
         pms: [
           { id: "ac-inspection-4-weekly", name: "AC Inspection & Filter Clean" },
+          { id: "belt-calibration-bc100-monthly", name: "Weightometer Calibration" },
         ],
         subgroups: []
       },
