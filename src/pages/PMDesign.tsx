@@ -173,7 +173,7 @@ const disciplines = [
       },
       "4-week": {
         pms: [
-          { id: "belt-calibration-bc100-monthly", name: "Weightometer Calibration BC-100" },
+          { id: "belt-calibration-bc100-monthly", name: "Weightometer Calibration" },
         ],
         subgroups: []
       },
@@ -472,7 +472,7 @@ const PMDesign = () => {
       case "rcd-3m-testing-lab": return "Lab Generator RCD Test (12 Week)";
       case "rcd-3m-testing-crusher-workshop": return "Crusher Workshop Generator RCD Test (12 Week)";
       case "rcd-3m-testing-crusher-fuel-farm": return "Crusher Fuel Farm Generator RCD Test (12 Week)";
-      case "belt-calibration-bc100-monthly": return "Weightometer Calibration BC-100 (4 Week)";
+      case "belt-calibration-bc100-monthly": return "Weightometer Calibration (4 Week)";
       default: return "PM Document";
     }
   };
