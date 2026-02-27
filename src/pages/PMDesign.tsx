@@ -87,7 +87,7 @@ import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical" | "mobile-equipment";
-type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week" | "24-week" | "52-week";
+type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week" | "26-week" | "52-week";
 type ViewType = "master" | "filter-press-daily-offline" | "filter-press-daily-online" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "filter-press-compressor-weekly" | "filter-press-compressor-offline-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | "crusher-fuel-farm-generator-electrical-weekly" | "substation-2-weekly" | "ac-inspection-12-weekly" | "generator-yearly-test" | "pull-wire-checks-12-weekly" | "rcd-pushbutton-12-weekly" | "rcd-injection-24-weekly" | "rcd-testing-admin" | "rcd-testing-juno-bore" | "rcd-testing-andys-dam" | "rcd-testing-lab" | "rcd-testing-crusher-fuel-farm" | "rcd-testing-crusher-workshop" | "rcd-3m-testing-admin" | "rcd-3m-testing-juno-bore" | "rcd-3m-testing-andys-dam" | "rcd-3m-testing-lab" | "rcd-3m-testing-crusher-workshop" | "rcd-3m-testing-crusher-fuel-farm" | "switchboard-52-weekly" | "cable-test-sheet" | "emergency-light-12-weekly" | "filter-press-motor-inspection" | "full-test-sheet" | "motor-inspections-filter-press" | "motor-inspections-gold-room" | "motor-inspections-kiln-area" | "motor-inspections-elution" | "motor-inspections-milling-area" | "motor-inspections-pwp" | "motor-inspections-services" | "motor-inspections-tanks" | "motor-inspections-thickener" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
@@ -96,7 +96,7 @@ const frequencyGroups = [
   { id: "2-week" as FrequencyGroup, label: "2 WEEK", shortLabel: "2W" },
   { id: "6-week" as FrequencyGroup, label: "6 WEEK", shortLabel: "6W" },
   { id: "12-week" as FrequencyGroup, label: "12 WEEK", shortLabel: "12W" },
-  { id: "24-week" as FrequencyGroup, label: "24 WEEK", shortLabel: "24W" },
+  { id: "26-week" as FrequencyGroup, label: "26 WEEK", shortLabel: "26W" },
   { id: "52-week" as FrequencyGroup, label: "52 WEEK", shortLabel: "52W" },
 ];
 
@@ -217,7 +217,7 @@ const disciplines = [
           },
         ]
       },
-      "24-week": { 
+      "26-week": { 
         pms: [
           { id: "rcd-injection-24-weekly", name: "RCD Injection Test" },
         ], 
@@ -437,13 +437,13 @@ const PMDesign = () => {
       case "ac-inspection-12-weekly": return "Air Conditioner Service (12 Week)";
       case "pull-wire-checks-12-weekly": return "Pull Wire Checks (12 Week)";
       case "rcd-pushbutton-12-weekly": return "RCD Push-button Test (12 Week)";
-      case "rcd-injection-24-weekly": return "RCD Injection Test (24 Week)";
-      case "rcd-testing-admin": return "Admin Generator RCD Test (24 Week)";
-      case "rcd-testing-juno-bore": return "Juno Bore Pump Generator RCD Test (24 Week)";
-      case "rcd-testing-andys-dam": return "Andy's Dam Generator RCD Test (24 Week)";
-      case "rcd-testing-lab": return "Lab Generator RCD Test (24 Week)";
-      case "rcd-testing-crusher-fuel-farm": return "Crusher Fuel Farm Generator RCD Test (24 Week)";
-      case "rcd-testing-crusher-workshop": return "Crusher Workshop Generator RCD Test (24 Week)";
+      case "rcd-injection-24-weekly": return "RCD Injection Test (26 Week)";
+      case "rcd-testing-admin": return "Admin Generator RCD Test (26 Week)";
+      case "rcd-testing-juno-bore": return "Juno Bore Pump Generator RCD Test (26 Week)";
+      case "rcd-testing-andys-dam": return "Andy's Dam Generator RCD Test (26 Week)";
+      case "rcd-testing-lab": return "Lab Generator RCD Test (26 Week)";
+      case "rcd-testing-crusher-fuel-farm": return "Crusher Fuel Farm Generator RCD Test (26 Week)";
+      case "rcd-testing-crusher-workshop": return "Crusher Workshop Generator RCD Test (26 Week)";
       case "generator-yearly-test": return "Generator Electrical Inspection (52 Week)";
       case "switchboard-52-weekly": return "Switchboard Inspection (52 Week)";
       case "cable-test-sheet": return "Cable Test Sheet";

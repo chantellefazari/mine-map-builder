@@ -79,8 +79,8 @@ export const canonicalPMs: CanonicalPM[] = [
   { pmName: "Pull Wire Checks Quarterly", discipline: "Electrical", frequency: "12 Week", equipmentType: "Pull Wire" },
   { pmName: "RCD Push-button Test Quarterly", discipline: "Electrical", frequency: "12 Week", equipmentType: "RCD" },
 
-  // ── ELECTRICAL 6-MONTHLY (24 WEEK) ──
-  { pmName: "RCD Injection Test 6-Monthly", discipline: "Electrical", frequency: "24 Week", equipmentType: "RCD" },
+  // ── ELECTRICAL 6-MONTHLY (26 WEEK) ──
+  { pmName: "RCD Injection Test 6-Monthly", discipline: "Electrical", frequency: "26 Week", equipmentType: "RCD" },
 
   // ── ELECTRICAL YEARLY (52 WEEK) ──
   { pmName: "Generator Electrical Test Yearly", discipline: "Electrical", frequency: "52 Week", equipmentType: "Generator" },
@@ -100,12 +100,12 @@ export const canonicalPMs: CanonicalPM[] = [
   { pmName: "Statutory Motor Inspection - Thickener", discipline: "Electrical", frequency: "52 Week", equipmentType: "Motor Inspection" },
 
   // ── RCD TESTING SHEETS (6-MONTHLY) ──
-  { pmName: "RCD Testing Sheets - Admin Generator 6M", discipline: "Electrical", frequency: "24 Week", equipmentType: "Admin Generator" },
-  { pmName: "RCD Testing Sheets - Juno Bore Pump Generator 6M", discipline: "Electrical", frequency: "24 Week", equipmentType: "Juno Generator" },
-  { pmName: "RCD Testing Sheets - Andys Dam Generator 6M", discipline: "Electrical", frequency: "24 Week", equipmentType: "Andy Dam Generator" },
-  { pmName: "RCD Testing Sheets - Lab Generator 6M", discipline: "Electrical", frequency: "24 Week", equipmentType: "Lab Generator" },
-  { pmName: "RCD Testing Sheets - Crusher Fuel Farm Generator 6M", discipline: "Electrical", frequency: "24 Week", equipmentType: "Crusher Fuel Farm Generator" },
-  { pmName: "RCD Testing Sheets - Crusher Workshop Generator 6M", discipline: "Electrical", frequency: "24 Week", equipmentType: "Crusher Workshop Generator" },
+  { pmName: "RCD Testing Sheets - Admin Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Admin Generator" },
+  { pmName: "RCD Testing Sheets - Juno Bore Pump Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Juno Generator" },
+  { pmName: "RCD Testing Sheets - Andys Dam Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Andy Dam Generator" },
+  { pmName: "RCD Testing Sheets - Lab Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Lab Generator" },
+  { pmName: "RCD Testing Sheets - Crusher Fuel Farm Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Crusher Fuel Farm Generator" },
+  { pmName: "RCD Testing Sheets - Crusher Workshop Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Crusher Workshop Generator" },
 
   // ── RCD TESTING SHEETS (3-MONTHLY) ──
   { pmName: "RCD Testing Sheets - Admin Generator 3M", discipline: "Electrical", frequency: "12 Week", equipmentType: "Admin Generator" },

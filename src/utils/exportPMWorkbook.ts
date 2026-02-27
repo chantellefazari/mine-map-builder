@@ -93,8 +93,8 @@ const templateRegistry: PMTemplateDefinition[] = [
   { pmName: "Pull Wire Checks Quarterly", discipline: "Electrical", frequency: "12 Week", equipmentType: "Pull Wire", bannerTitle: "Quarterly Pull Wire & E-Stop Verification", bannerSubtitle: "Electrical Quarterly Inspection", projectSite: "Tennant Creek", plantArea: "Filter Press / Conveyors", pmGroup: "Electrical", pmType: "Verification", footerText: "Tennant Creek Mining Operations – Pull Wire Checks Form", hasMobileEquipmentHeader: false, templateType: "CustomLayout", customLayoutNotes: "HARDCODED: 5 asset sections – Filter Press 1 (3 checks), Filter Press 2 (3 checks), Extraction Conveyor (2 checks), Transfer Conveyor (2 checks), Reclaim Stacker (2 checks). Each checks Pull Wire Head/Tail End and LCS E-STOP Function." },
   { pmName: "RCD Push-button Test Quarterly", discipline: "Electrical", frequency: "12 Week", equipmentType: "RCD", bannerTitle: "RCD Push-button Test", bannerSubtitle: "Electrical Quarterly Test", projectSite: "Tennant Creek", plantArea: "", pmGroup: "Electrical", pmType: "Test", footerText: "Tennant Creek Mining Operations – RCD Push-button Test Form", hasMobileEquipmentHeader: false, templateType: "CustomLayout", customLayoutNotes: "HARDCODED: 21-row circuit test table with columns: Circuit No, RCD Rating (mA), Trip Time (ms), Result (Pass/Fail). Uses generated array." },
 
-  // ── ELECTRICAL 6-MONTHLY (24 WEEK) ──
-  { pmName: "RCD Injection Test 6-Monthly", discipline: "Electrical", frequency: "24 Week", equipmentType: "RCD", bannerTitle: "RCD Injection Test", bannerSubtitle: "Electrical 6-Monthly Test", projectSite: "Tennant Creek", plantArea: "", pmGroup: "Electrical", pmType: "Test", footerText: "Tennant Creek Mining Operations – RCD Injection Test Form", hasMobileEquipmentHeader: false, templateType: "CustomLayout", customLayoutNotes: "Custom test table layout from DB tasks data" },
+  // ── ELECTRICAL 6-MONTHLY (26 WEEK) ──
+  { pmName: "RCD Injection Test 6-Monthly", discipline: "Electrical", frequency: "26 Week", equipmentType: "RCD", bannerTitle: "RCD Injection Test", bannerSubtitle: "Electrical 6-Monthly Test", projectSite: "Tennant Creek", plantArea: "", pmGroup: "Electrical", pmType: "Test", footerText: "Tennant Creek Mining Operations – RCD Injection Test Form", hasMobileEquipmentHeader: false, templateType: "CustomLayout", customLayoutNotes: "Custom test table layout from DB tasks data" },
 
   // ── ELECTRICAL YEARLY (52 WEEK) ──
   { pmName: "Generator Electrical Test Yearly", discipline: "Electrical", frequency: "52 Week", equipmentType: "Generator", bannerTitle: "Generator Electrical Test", bannerSubtitle: "Electrical Yearly Test", projectSite: "Tennant Creek", plantArea: "", pmGroup: "Electrical", pmType: "Test", footerText: "Tennant Creek Mining Operations – Generator Electrical Test Form", hasMobileEquipmentHeader: false, templateType: "CustomLayout", customLayoutNotes: "HARDCODED: renderTestTable helper with hardcoded table structure for yearly generator electrical tests" },
@@ -124,7 +124,7 @@ const templateRegistry: PMTemplateDefinition[] = [
   ...["Admin Generator", "Juno Bore Pump Generator", "Andys Dam Generator", "Lab Generator", "Crusher Fuel Farm Generator", "Crusher Workshop Generator"].map(loc => ({
     pmName: `RCD Testing Sheets - ${loc} 6M`,
     discipline: "Electrical" as const,
-    frequency: "24 Week",
+    frequency: "26 Week",
     equipmentType: loc,
     bannerTitle: `RCD Testing Sheet - ${loc}`,
     bannerSubtitle: "6-Monthly RCD Injection Test",
@@ -441,7 +441,7 @@ export const exportPMWorkbook = async () => {
       { "Table": "pm_master_list", "Column": "pm_name", "Type": "text", "Description": "Unique PM template name (canonical)" },
       { "Table": "pm_master_list", "Column": "discipline", "Type": "text", "Description": "Mechanical | Electrical | Ops" },
       { "Table": "pm_master_list", "Column": "equipment_type", "Type": "text", "Description": "Equipment category this PM applies to" },
-      { "Table": "pm_master_list", "Column": "frequency", "Type": "text", "Description": "Daily | 1 Week | 2 Week | 6 Week | 12 Week | 24 Week | 52 Week" },
+      { "Table": "pm_master_list", "Column": "frequency", "Type": "text", "Description": "Daily | 1 Week | 2 Week | 6 Week | 12 Week | 26 Week | 52 Week" },
       { "Table": "pm_master_list", "Column": "duty_type", "Type": "text", "Description": "Both | Online | Offline" },
       { "Table": "pm_master_list", "Column": "status", "Type": "text", "Description": "Draft | Reviewed | Approved" },
       { "Table": "pm_master_list", "Column": "asset_number", "Type": "text", "Description": "Linked asset ID from processing_plant_assets" },
