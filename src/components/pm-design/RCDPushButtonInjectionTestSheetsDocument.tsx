@@ -5,13 +5,19 @@ import { PMSignOffBlock } from "./PMSignOffBlock";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
 
+interface RCDCircuit {
+  circuitNumber?: string;
+  description: string;
+  rating: string;
+}
+
 interface RCDLocation {
   id: string;
   name: string;
   area: string;
   asset: string;
   assetDescription: string;
-  circuits: { description: string; rating: string }[];
+  circuits: RCDCircuit[];
 }
 
 const rcdLocations: RCDLocation[] = [
@@ -40,6 +46,47 @@ const rcdLocations: RCDLocation[] = [
       { description: "SMOKE ALARMS", rating: "10A" },
       { description: "POWER", rating: "20A" },
       { description: "POWER", rating: "20A" },
+      ...Array.from({ length: 14 }, () => ({ description: "", rating: "" })),
+    ],
+  },
+  {
+    id: "elution-mcc-130",
+    name: "Elution / MCC-130",
+    area: "ELUTION",
+    asset: "MCC-130-SB-001A",
+    assetDescription: "MCC-130",
+    circuits: [
+      { circuitNumber: "16W", description: "HEATER BURNER", rating: "6A" },
+      { circuitNumber: "16B", description: "CATHODE WASHER", rating: "20A" },
+      { circuitNumber: "18R", description: "PANEL GPO", rating: "16A" },
+      { circuitNumber: "18W", description: "CYANIDE DOSING UNIT", rating: "6A" },
+      { circuitNumber: "18B", description: "BULLION SCALE UNIT", rating: "20A" },
+      { circuitNumber: "20W", description: "GOLD ROOM LIGHTS", rating: "16A" },
+      { circuitNumber: "20B", description: "SECUTRITY", rating: "20A" },
+      { circuitNumber: "21R", description: "LOCAL LIGHTS", rating: "16A" },
+      { circuitNumber: "21W", description: "FLOOD LIGHTS", rating: "16A" },
+      { circuitNumber: "21B", description: "REGEN KILN LIGHTS", rating: "16A" },
+      { circuitNumber: "22W", description: "MILL COOLING FAN", rating: "6A" },
+      { circuitNumber: "23R", description: "GOLD ROOM GPO'S", rating: "20A" },
+      { circuitNumber: "23W", description: "REGEN KILN GPO", rating: "20A" },
+      { circuitNumber: "23B", description: "GPO BOARD", rating: "20A" },
+      ...Array.from({ length: 5 }, () => ({ description: "", rating: "" })),
+    ],
+  },
+  {
+    id: "filter-press-mcc-125",
+    name: "Filter Press / MCC-125",
+    area: "FILTER PRESS",
+    asset: "MCC-125-SB-001A",
+    assetDescription: "MCC-125",
+    circuits: [
+      { description: "PANEL GPO", rating: "10A" },
+      { description: "", rating: "" },
+      { description: "", rating: "" },
+      { description: "", rating: "" },
+      { description: "", rating: "" },
+      { description: "EMERGENCY LIGHTS", rating: "10A" },
+      { description: "FLOOD LIGHTS", rating: "10A" },
       ...Array.from({ length: 14 }, () => ({ description: "", rating: "" })),
     ],
   },
@@ -99,7 +146,7 @@ const RCDPushButtonInjectionTestSheet = ({ location }: { location: RCDLocation }
               <tbody>
                 {location.circuits.map((circuit, idx) => (
                   <tr key={idx} className="hover:bg-muted/30">
-                    <td className="border border-border px-2 py-1 text-center font-medium">{idx + 1}</td>
+                    <td className="border border-border px-2 py-1 text-center font-medium">{circuit.circuitNumber || idx + 1}</td>
                     <td className="border border-border px-1 py-1">
                       {circuit.description ? <span className="text-xs px-1">{circuit.description}</span> : <span className="px-2 py-4"></span>}
                     </td>
