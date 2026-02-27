@@ -244,7 +244,7 @@ const disciplines = [
         subgroups: [
           { 
             id: "rcd-testing", 
-            label: "RCD Testing Sheets", 
+            label: "RCD Generator Testing Sheets", 
             pms: [
               { id: "rcd-testing-admin", name: "Admin Generator" },
               { id: "rcd-testing-juno-bore", name: "Juno Bore Pump Generator" },
