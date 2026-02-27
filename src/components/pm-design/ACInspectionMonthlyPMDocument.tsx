@@ -29,11 +29,7 @@ export const ACInspectionMonthlyPMDocument = () => {
 
         <DynamicInspectionTable tasksData={pm?.tasks} />
 
-        {/* Comments Section */}
-        <div className="border-t border-border px-3 py-2">
-          <p className="text-xs font-bold text-foreground mb-1">COMMENTS -</p>
-          <div className="border border-border min-h-[40px]" />
-        </div>
+
 
         {/* Unit Details Section */}
         <div className="border-t-2 border-foreground">
