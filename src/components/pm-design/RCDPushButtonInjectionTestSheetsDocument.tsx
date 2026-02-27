@@ -71,19 +71,6 @@ const RCDPushButtonInjectionTestSheet = ({ location }: { location: RCDLocation }
 
         <SafetyPrecautionsSection />
 
-        {/* Test Information */}
-        <div className="border-b border-border px-4 py-2">
-          <h3 className="font-bold text-sm text-foreground mb-2">Test Information</h3>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
-            <div className="flex gap-2"><span className="font-medium">Start Date:</span><span className="border-b border-border flex-1"></span></div>
-            <div className="flex gap-2"><span className="font-medium">Personnel:</span><span className="border-b border-border flex-1"></span></div>
-            <div className="flex gap-2"><span className="font-medium">Finish Date:</span><span className="border-b border-border flex-1"></span></div>
-            <div className="flex gap-2"><span className="font-medium">Area:</span><span className="text-foreground font-semibold">{location.area}</span></div>
-            <div className="flex gap-2"><span className="font-medium">Asset:</span><span className="text-foreground">{location.asset}</span></div>
-            <div className="flex gap-2"><span className="font-medium">Asset Description:</span><span className="text-foreground">{location.assetDescription}</span></div>
-          </div>
-        </div>
-
         {/* RCD Test Table */}
         <div className="border-b border-border">
           <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
