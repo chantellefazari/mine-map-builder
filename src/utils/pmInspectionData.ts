@@ -2392,6 +2392,21 @@ export const pmInspectionData: Record<string, any> = {
     ],
   },
 
+  "Air Conditioner Monthly Inspection and Filter Clean": {
+    sections: [
+      { equipmentName: "AIR CONDITIONER – MONTHLY INSPECTION", tasks: [
+        { task: "Clean Air Filter" },
+        { task: "Brush and Clean indoor unit housing" },
+        { task: "Brush and Clean outdoor unit housing" },
+        { task: "Clean Condensate Tray and flush water down drain" },
+        { task: "Check electrical connections" },
+        { task: "Check pipework insulation" },
+        { task: "Check Mounting supports" },
+        { task: "Check for any signs of rust" },
+      ]},
+    ],
+  },
+
   "Weightometer Calibration Monthly BC-100": {
     sections: [
       { equipmentName: "STATIONARY CHECKS – PM INSPECTION", tasks: [
