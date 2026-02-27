@@ -53,6 +53,7 @@ export const canonicalPMs: CanonicalPM[] = [
   { pmName: "Moxy Daily Inspection", discipline: "Ops", frequency: "Daily", equipmentType: "Moxy" },
 
   // ── OPS / MOBILE EQUIPMENT WEEKLY ──
+  { pmName: "Dozer Weekly Inspection", discipline: "Ops", frequency: "1 Week", equipmentType: "Dozer" },
   { pmName: "Crane Weekly Inspection", discipline: "Ops", frequency: "1 Week", equipmentType: "Crane" },
   { pmName: "EWP Weekly Inspection", discipline: "Ops", frequency: "1 Week", equipmentType: "EWP" },
   { pmName: "Excavator Weekly Inspection", discipline: "Ops", frequency: "1 Week", equipmentType: "Excavator" },

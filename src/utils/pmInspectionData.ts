@@ -822,6 +822,85 @@ export const pmInspectionData: Record<string, any> = {
     ],
   },
 
+  "Dozer Weekly Inspection": {
+    sections: [
+      { sectionName: "Walk Around Inspection", items: [
+        { id: "1", description: "Inspect the dozer frame, blade, ripper, and attachments for damage or cracks" },
+        { id: "2", description: "Inspect guards, panels, and covers for correct attachment" },
+        { id: "3", description: "Check for fluid leaks (oil, fuel, coolant, hydraulic)" },
+        { id: "4", description: "Ensure steps, handrails, and safety decals are intact" },
+        { id: "5", description: "Check mounting bolts, nuts, and pins for tightness" },
+      ]},
+      { sectionName: "Fluids & Levels", items: [
+        { id: "6", description: "Engine oil level" },
+        { id: "7", description: "Coolant level" },
+        { id: "8", description: "Fuel level" },
+        { id: "9", description: "Battery electrolyte level (if applicable)" },
+        { id: "10", description: "Transmission and final drive oil levels" },
+        { id: "11", description: "DEF / AdBlue level (if applicable)" },
+        { id: "12", description: "Verify hydraulic oil levels" },
+      ]},
+      { sectionName: "Engine System", items: [
+        { id: "13", description: "Inspect for oil, coolant, or fuel leaks" },
+        { id: "14", description: "Check belts for wear and tension" },
+        { id: "15", description: "Inspect air filter and restriction indicator" },
+        { id: "16", description: "Check air intake hoses and clamps" },
+        { id: "17", description: "Inspect exhaust system for leaks or damage" },
+        { id: "18", description: "Check turbocharger and intercooler (if fitted)" },
+        { id: "19", description: "Inspect engine mounts" },
+      ]},
+      { sectionName: "Cooling System", items: [
+        { id: "20", description: "Radiator clean and free of debris" },
+        { id: "21", description: "Radiator fins intact and not bent or blocked" },
+        { id: "22", description: "Hoses, clamps, and connections inspected for wear or leaks" },
+        { id: "23", description: "Fan operation smooth" },
+        { id: "24", description: "Thermostat and temperature gauges functioning" },
+      ]},
+      { sectionName: "Hydraulic System", items: [
+        { id: "25", description: "Inspect hoses, fittings, and cylinders for leaks or damage" },
+        { id: "26", description: "Check blade, ripper, and lift cylinders for wear or cracks" },
+        { id: "27", description: "Inspect hydraulic filter and replace if needed" },
+        { id: "28", description: "Check hydraulic pump and connections" },
+      ]},
+      { sectionName: "Undercarriage", items: [
+        { id: "29", description: "Inspect tracks, rollers, idlers, and sprockets for wear" },
+        { id: "30", description: "Check track tension and alignment" },
+        { id: "31", description: "Check for damaged or missing track shoes" },
+        { id: "32", description: "Inspect track pins and bushings for excessive wear" },
+      ]},
+      { sectionName: "Electrical System", items: [
+        { id: "33", description: "Battery terminals clean and secure" },
+        { id: "34", description: "Battery isolator functional and in correct position" },
+        { id: "35", description: "Lights and indicators operational" },
+        { id: "36", description: "Control panel and gauges functioning correctly" },
+        { id: "37", description: "Wiring free from damage or chafing" },
+        { id: "38", description: "Check flashing light is operational" },
+        { id: "39", description: "Check UHF is fitted and operational" },
+      ]},
+      { sectionName: "Blade and Attachments", items: [
+        { id: "40", description: "Inspect blade and cutting edges for wear or damage" },
+        { id: "41", description: "Inspect ripper and teeth for wear or cracks" },
+        { id: "42", description: "Check attachment pins, bushings, and mounts for wear" },
+      ]},
+      { sectionName: "Operator Cab / Safety", items: [
+        { id: "43", description: "Check seat, seatbelt, and controls for correct operation" },
+        { id: "44", description: "Fire extinguisher present and charged" },
+        { id: "45", description: "Horn, backup alarm, and mirrors functional" },
+        { id: "46", description: "Windows and doors operate correctly" },
+      ]},
+      { sectionName: "Operational Checks", items: [
+        { id: "47", description: "Start engine and check for smooth operation" },
+        { id: "48", description: "Make note of any unusual noises, vibrations, or smoke" },
+        { id: "49", description: "Test blade, ripper, and travel functions" },
+        { id: "50", description: "Ensure operation of gauges: oil pressure, coolant temperature, hydraulic pressure" },
+      ]},
+      { sectionName: "Auto Greaser", items: [
+        { id: "51", description: "Verify grease levels and automatic greasing system functioning" },
+        { id: "52", description: "Check grease points for lubrication" },
+      ]},
+    ],
+  },
+
   "Excavator Daily Inspection": {
     sections: [
       { sectionName: "Walk Around Inspection", items: [
