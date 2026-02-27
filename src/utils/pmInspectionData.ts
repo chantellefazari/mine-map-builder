@@ -2431,4 +2431,43 @@ export const pmInspectionData: Record<string, any> = {
       ]},
     ],
   },
+
+  // ══════════════════════════════════════════════════════════════════
+  // ELECTRICAL 12-WEEK — WELDERS VRD TEST
+  // ══════════════════════════════════════════════════════════════════
+
+  "Welders VRD Test & Tag Inspection 3-Monthly": {
+    sections: [
+      { equipmentName: "Operational Tests", tasks: [
+        { task: "Check the leads are undamaged" },
+        { task: "Check the Work clamp is in good condition" },
+        { task: "Check the handpiece is functional and insulation is in good condition" },
+        { task: "Test earth continuity (<0.5Ω)" },
+        { task: "Insulation Resistance of Primary phase to earth (@500V >1MΩ)" },
+        { task: "a. RED - EARTH", hasInput: true, inputLabel: "MΩ @ 500V" },
+        { task: "b. WHITE - EARTH", hasInput: true, inputLabel: "MΩ @ 500V" },
+        { task: "c. BLUE – EARTH", hasInput: true, inputLabel: "MΩ @ 500V" },
+        { task: "Insulation Resistance of Primary phase to Neutral (@250V >1MΩ)" },
+        { task: "a. RED - NEUTRAL", hasInput: true, inputLabel: "MΩ @ 250V" },
+        { task: "b. WHITE – NEUTRAL", hasInput: true, inputLabel: "MΩ @ 250V" },
+        { task: "c. BLUE - NEUTRAL", hasInput: true, inputLabel: "MΩ @ 250V" },
+        { task: "Insulation Resistance of secondary to earth (@250V >1MΩ)", hasInput: true, inputLabel: "MΩ @ 250V" },
+        { task: "Note: If unit is AC/DC select AC before performing this test", comments: "Note" },
+        { task: "Insulation Resistance of Primary to secondary (@500V >1MΩ)" },
+        { task: "Note: If unit is AC/DC select AC before performing this test", comments: "Note" },
+        { task: "a. RED – SECONDARY", hasInput: true, inputLabel: "MΩ @ 500V" },
+        { task: "b. WHITE – SECONDARY", hasInput: true, inputLabel: "MΩ @ 500V" },
+        { task: "c. BLUE - SECONDARY", hasInput: true, inputLabel: "MΩ @ 500V" },
+        { task: "Clean welder internal and external as required" },
+        { task: "Confirm correct function of welder" },
+      ]},
+      { equipmentName: "VRD Testing: Internal / External", tasks: [
+        { task: "Note: If unit is a MIG welder there is no requirement for a VRD", comments: "Note" },
+        { task: "Note: If the unit is not fitted with a VRD and the unit is not a MIG, the unit must be placed Out Of Service", comments: "Note" },
+        { task: "Test Open circuit voltage (Max 35V DC/Peak)", hasInput: true, inputLabel: "V DC" },
+        { task: "Carry out VRD Functional Test using Safe-Tac VRD Tester (Series 3) – Voltage stays below limits (OK)" },
+        { task: "Fill out and place test tag x 2, One for appliance and one for VRD testing (3 Monthly test intervals)" },
+      ]},
+    ],
+  },
 };

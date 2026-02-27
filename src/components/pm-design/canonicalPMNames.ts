@@ -82,6 +82,7 @@ export const canonicalPMs: CanonicalPM[] = [
   { pmName: "Emergency Light Test Quarterly", discipline: "Electrical", frequency: "12 Week", equipmentType: "Emergency Lighting" },
   { pmName: "Pull Wire Checks Quarterly", discipline: "Electrical", frequency: "12 Week", equipmentType: "Pull Wire" },
   { pmName: "RCD Push-button Test Quarterly", discipline: "Electrical", frequency: "12 Week", equipmentType: "RCD" },
+  { pmName: "Welders VRD Test & Tag Inspection 3-Monthly", discipline: "Electrical", frequency: "12 Week", equipmentType: "Welders" },
 
   // ── ELECTRICAL 6-MONTHLY (26 WEEK) ──
   { pmName: "RCD Injection Test 6-Monthly", discipline: "Electrical", frequency: "26 Week", equipmentType: "RCD" },
