@@ -36,8 +36,8 @@ export const ACInspectionMonthlyPMDocument = () => {
         </div>
 
         {/* Unit Details Section */}
-        <div className="border-t-2 border-border">
-          <div className="bg-destructive text-destructive-foreground text-center text-xs font-bold py-1 uppercase tracking-wide">
+        <div className="border-t-2 border-foreground">
+          <div className="bg-foreground text-background text-center text-xs font-bold py-1 uppercase tracking-wide">
             Unit Details
           </div>
           <div className="grid grid-cols-2 border-b border-border">
