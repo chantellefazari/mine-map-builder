@@ -35,7 +35,7 @@ export const canonicalPMs: CanonicalPM[] = [
   { pmName: "Top of Tanks Weekly Inspection", discipline: "Mechanical", frequency: "1 Week", equipmentType: "Top of Tanks" },
 
   // ── MECHANICAL 4-WEEKLY (MONTHLY) ──
-  { pmName: "Weightometer Calibration Monthly BC-100", discipline: "Mechanical", frequency: "4 Week", equipmentType: "Belt Weigher" },
+  { pmName: "Weightometer Calibration Monthly BC-100", discipline: "Electrical", frequency: "4 Week", equipmentType: "Belt Weigher" },
   { pmName: "Air Conditioner Monthly Inspection and Filter Clean", discipline: "Electrical", frequency: "4 Week", equipmentType: "Air Conditioner" },
 
   // ── MECHANICAL GENERATORS WEEKLY ──
