@@ -59,7 +59,7 @@ export const BeltCalibrationPMDocument = () => {
                 </p>
                 <div className="flex justify-center my-2">
                   <img
-                    src="/images/belt-cal-handles-position.jpg"
+                    src="/images/belt-cal-auto-zero-before.jpg"
                     alt="Handles in horizontal zero & run position"
                     className="max-h-[140px] object-contain"
                   />
@@ -117,17 +117,11 @@ export const BeltCalibrationPMDocument = () => {
                   <li>After the five seconds it should read "auto zero (wait)". The Controller will now perform an Auto Zero. You can cancel an Auto Zero at any time by pressing Reset.</li>
                 </ul>
 
-                <div className="flex items-center justify-center gap-4 my-3">
-                  <img
-                    src="/images/belt-cal-auto-zero-before.jpg"
-                    alt="Auto Zero - Before"
-                    className="max-h-[100px] object-contain"
-                  />
-                  <span className="text-lg font-bold">→</span>
+                <div className="flex justify-center my-3">
                   <img
                     src="/images/belt-cal-auto-zero-after.jpg"
-                    alt="Auto Zero - After"
-                    className="max-h-[100px] object-contain"
+                    alt="Auto Zero procedure - hold to zero then auto zero (wait)"
+                    className="max-h-[120px] object-contain"
                   />
                 </div>
 
@@ -195,13 +189,13 @@ export const BeltCalibrationPMDocument = () => {
                 <div className="space-y-3 my-3">
                   <img
                     src="/images/belt-cal-auto-span-screens.jpg"
-                    alt="Auto Span screen sequence"
-                    className="max-h-[160px] object-contain mx-auto"
+                    alt="a) Hold Auto Span for 5 sec until Lower Cal Weight appears"
+                    className="max-h-[140px] object-contain mx-auto"
                   />
                   <img
                     src="/images/belt-cal-lower-weights.jpg"
-                    alt="Lower calibration weights and span procedure"
-                    className="max-h-[200px] object-contain mx-auto"
+                    alt="b) Lift handles to lower calibration weights, c) Auto Span begins, g) Raise Cal weights"
+                    className="max-h-[220px] object-contain mx-auto"
                   />
                 </div>
               </td>
