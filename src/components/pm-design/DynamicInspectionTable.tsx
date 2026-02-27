@@ -63,6 +63,7 @@ function normalizeSections(data: any): Section[] {
   if (data.sections && Array.isArray(data.sections)) {
     return data.sections.map((s: any) => ({
       ...s,
+      equipmentName: s.equipmentName || s.sectionName,
       tasks: (s.tasks || s.items || []).map(normalizeTaskItem),
     }));
   }
