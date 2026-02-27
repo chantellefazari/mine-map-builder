@@ -908,6 +908,7 @@ export const pmInspectionData: Record<string, any> = {
     ],
   },
 
+  "Dozer Weekly Inspection": {
     sections: [
       { sectionName: "Walk Around Inspection", items: [
         { id: "1", description: "Inspect the dozer frame, blade, ripper, and attachments for damage or cracks" },
