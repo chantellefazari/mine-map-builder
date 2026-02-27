@@ -81,19 +81,21 @@ import { CrusherFuelFarmGeneratorElectricalPMDocument } from "@/components/pm-de
 import { FilterPressCompressorPMDocument } from "@/components/pm-design/FilterPressCompressorPMDocument";
 import { FilterPressCompressorOfflinePMDocument } from "@/components/pm-design/FilterPressCompressorOfflinePMDocument";
 import { FilterPressDailyOnlinePMDocument } from "@/components/pm-design/FilterPressDailyOnlinePMDocument";
+import { BeltCalibrationPMDocument } from "@/components/pm-design/BeltCalibrationPMDocument";
 
 import { MotorInspectionsSheetsDocument } from "@/components/pm-design/MotorInspectionsSheetsDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical" | "mobile-equipment";
-type FrequencyGroup = "daily" | "1-week" | "2-week" | "6-week" | "12-week" | "26-week" | "52-week";
-type ViewType = "master" | "filter-press-daily-offline" | "filter-press-daily-online" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "filter-press-compressor-weekly" | "filter-press-compressor-offline-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | "crusher-fuel-farm-generator-electrical-weekly" | "substation-2-weekly" | "ac-inspection-12-weekly" | "generator-yearly-test" | "pull-wire-checks-12-weekly" | "rcd-pushbutton-12-weekly" | "rcd-injection-24-weekly" | "rcd-testing-admin" | "rcd-testing-juno-bore" | "rcd-testing-andys-dam" | "rcd-testing-lab" | "rcd-testing-crusher-fuel-farm" | "rcd-testing-crusher-workshop" | "rcd-3m-testing-admin" | "rcd-3m-testing-juno-bore" | "rcd-3m-testing-andys-dam" | "rcd-3m-testing-lab" | "rcd-3m-testing-crusher-workshop" | "rcd-3m-testing-crusher-fuel-farm" | "switchboard-52-weekly" | "cable-test-sheet" | "emergency-light-12-weekly" | "filter-press-motor-inspection" | "full-test-sheet" | "motor-inspections-filter-press" | "motor-inspections-gold-room" | "motor-inspections-kiln-area" | "motor-inspections-elution" | "motor-inspections-milling-area" | "motor-inspections-pwp" | "motor-inspections-services" | "motor-inspections-tanks" | "motor-inspections-thickener" | `${Discipline}-${FrequencyGroup}`;
+type FrequencyGroup = "daily" | "1-week" | "2-week" | "4-week" | "6-week" | "12-week" | "26-week" | "52-week";
+type ViewType = "master" | "filter-press-daily-offline" | "filter-press-daily-online" | "mill-daily" | "ro-plant-daily" | "acid-elution-weekly" | "air-water-services-weekly" | "bottom-of-tanks-weekly" | "diesel-farm-weekly" | "filter-press-weekly" | "filter-press-compressor-weekly" | "filter-press-compressor-offline-weekly" | "gold-room-weekly" | "grease-oils-weekly" | "mill-weekly" | "potable-water-weekly" | "reagents-weekly" | "thickener-weekly" | "top-of-tanks-weekly" | "admin-generator-weekly" | "andy-dam-generator-weekly" | "juno-generator-weekly" | "lab-generator-weekly" | "portable-generators-weekly" | "power-station-generator-weekly" | "forklift-weekly" | "ewp-weekly" | "crane-weekly" | "water-truck-weekly" | "loader-weekly" | "excavator-daily" | "excavator-weekly" | "moxy-daily" | "moxy-weekly" | "dozer-daily" | "telehandler-weekly" | "lighting-tower-daily" | "service-truck-weekly" | "skid-steer-weekly" | "field-mcc-inspections-weekly" | "filter-press-electrical-weekly" | "ice-machine-weekly" | "ph-probe-calibration-weekly" | "safety-shower-weekly" | "spare-mill-motor-weekly" | "visual-zone-checks-weekly" | "crusher-fuel-farm-generator-electrical-weekly" | "substation-2-weekly" | "ac-inspection-12-weekly" | "generator-yearly-test" | "pull-wire-checks-12-weekly" | "rcd-pushbutton-12-weekly" | "rcd-injection-24-weekly" | "rcd-testing-admin" | "rcd-testing-juno-bore" | "rcd-testing-andys-dam" | "rcd-testing-lab" | "rcd-testing-crusher-fuel-farm" | "rcd-testing-crusher-workshop" | "rcd-3m-testing-admin" | "rcd-3m-testing-juno-bore" | "rcd-3m-testing-andys-dam" | "rcd-3m-testing-lab" | "rcd-3m-testing-crusher-workshop" | "rcd-3m-testing-crusher-fuel-farm" | "switchboard-52-weekly" | "cable-test-sheet" | "emergency-light-12-weekly" | "filter-press-motor-inspection" | "full-test-sheet" | "motor-inspections-filter-press" | "motor-inspections-gold-room" | "motor-inspections-kiln-area" | "motor-inspections-elution" | "motor-inspections-milling-area" | "motor-inspections-pwp" | "motor-inspections-services" | "motor-inspections-tanks" | "motor-inspections-thickener" | "belt-calibration-bc100-monthly" | `${Discipline}-${FrequencyGroup}`;
 
 const frequencyGroups = [
   { id: "daily" as FrequencyGroup, label: "DAILY", shortLabel: "D" },
   { id: "1-week" as FrequencyGroup, label: "1 WEEK", shortLabel: "1W" },
   { id: "2-week" as FrequencyGroup, label: "2 WEEK", shortLabel: "2W" },
+  { id: "4-week" as FrequencyGroup, label: "4 WEEK", shortLabel: "4W" },
   { id: "6-week" as FrequencyGroup, label: "6 WEEK", shortLabel: "6W" },
   { id: "12-week" as FrequencyGroup, label: "12 WEEK", shortLabel: "12W" },
   { id: "26-week" as FrequencyGroup, label: "26 WEEK", shortLabel: "26W" },
@@ -168,6 +170,12 @@ const disciplines = [
           { id: "generators", label: "Generators", pms: generatorPMs },
           { id: "equipment", label: "Equipment", pms: otherWeeklyPMs },
         ]
+      },
+      "4-week": {
+        pms: [
+          { id: "belt-calibration-bc100-monthly", name: "Weightometer Calibration BC-100" },
+        ],
+        subgroups: []
       },
     }
   },
@@ -464,6 +472,7 @@ const PMDesign = () => {
       case "rcd-3m-testing-lab": return "Lab Generator RCD Test (12 Week)";
       case "rcd-3m-testing-crusher-workshop": return "Crusher Workshop Generator RCD Test (12 Week)";
       case "rcd-3m-testing-crusher-fuel-farm": return "Crusher Fuel Farm Generator RCD Test (12 Week)";
+      case "belt-calibration-bc100-monthly": return "Weightometer Calibration BC-100 (4 Week)";
       default: return "PM Document";
     }
   };
@@ -628,12 +637,14 @@ const PMDesign = () => {
         return <RCDPushButtonTestingSheetsDocument locationId="crusher-workshop" />;
       case "rcd-3m-testing-crusher-fuel-farm":
         return <RCDPushButtonTestingSheetsDocument locationId="crusher-fuel-farm" />;
+      case "belt-calibration-bc100-monthly":
+        return <BeltCalibrationPMDocument />;
       default:
         return null;
     }
   };
 
-  const isPMDocument = ["master", "filter-press-daily-offline", "filter-press-daily-online", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "filter-press-compressor-weekly", "filter-press-compressor-offline-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "power-station-generator-weekly", "forklift-weekly", "ewp-weekly", "crane-weekly", "water-truck-weekly", "loader-weekly", "telehandler-weekly", "dozer-daily", "excavator-daily", "excavator-weekly", "moxy-daily", "moxy-weekly", "lighting-tower-daily", "service-truck-weekly", "skid-steer-weekly", "field-mcc-inspections-weekly", "filter-press-electrical-weekly", "ice-machine-weekly", "ph-probe-calibration-weekly", "safety-shower-weekly", "spare-mill-motor-weekly", "visual-zone-checks-weekly", "crusher-fuel-farm-generator-electrical-weekly", "substation-2-weekly", "ac-inspection-12-weekly", "pull-wire-checks-12-weekly", "rcd-pushbutton-12-weekly", "rcd-injection-24-weekly", "rcd-testing-admin", "rcd-testing-juno-bore", "rcd-testing-andys-dam", "rcd-testing-lab", "rcd-testing-crusher-fuel-farm", "rcd-testing-crusher-workshop", "rcd-3m-testing-admin", "rcd-3m-testing-juno-bore", "rcd-3m-testing-andys-dam", "rcd-3m-testing-lab", "rcd-3m-testing-crusher-workshop", "rcd-3m-testing-crusher-fuel-farm", "generator-yearly-test", "switchboard-52-weekly", "cable-test-sheet", "emergency-light-12-weekly", "filter-press-motor-inspection", "full-test-sheet", "motor-inspections-filter-press", "motor-inspections-gold-room", "motor-inspections-kiln-area", "motor-inspections-elution", "motor-inspections-milling-area", "motor-inspections-pwp", "motor-inspections-services", "motor-inspections-tanks", "motor-inspections-thickener"].includes(activeView);
+  const isPMDocument = ["master", "filter-press-daily-offline", "filter-press-daily-online", "mill-daily", "ro-plant-daily", "acid-elution-weekly", "air-water-services-weekly", "bottom-of-tanks-weekly", "diesel-farm-weekly", "filter-press-weekly", "filter-press-compressor-weekly", "filter-press-compressor-offline-weekly", "gold-room-weekly", "grease-oils-weekly", "mill-weekly", "potable-water-weekly", "reagents-weekly", "thickener-weekly", "top-of-tanks-weekly", "admin-generator-weekly", "andy-dam-generator-weekly", "juno-generator-weekly", "lab-generator-weekly", "portable-generators-weekly", "power-station-generator-weekly", "forklift-weekly", "ewp-weekly", "crane-weekly", "water-truck-weekly", "loader-weekly", "telehandler-weekly", "dozer-daily", "excavator-daily", "excavator-weekly", "moxy-daily", "moxy-weekly", "lighting-tower-daily", "service-truck-weekly", "skid-steer-weekly", "field-mcc-inspections-weekly", "filter-press-electrical-weekly", "ice-machine-weekly", "ph-probe-calibration-weekly", "safety-shower-weekly", "spare-mill-motor-weekly", "visual-zone-checks-weekly", "crusher-fuel-farm-generator-electrical-weekly", "substation-2-weekly", "ac-inspection-12-weekly", "pull-wire-checks-12-weekly", "rcd-pushbutton-12-weekly", "rcd-injection-24-weekly", "rcd-testing-admin", "rcd-testing-juno-bore", "rcd-testing-andys-dam", "rcd-testing-lab", "rcd-testing-crusher-fuel-farm", "rcd-testing-crusher-workshop", "rcd-3m-testing-admin", "rcd-3m-testing-juno-bore", "rcd-3m-testing-andys-dam", "rcd-3m-testing-lab", "rcd-3m-testing-crusher-workshop", "rcd-3m-testing-crusher-fuel-farm", "generator-yearly-test", "switchboard-52-weekly", "cable-test-sheet", "emergency-light-12-weekly", "filter-press-motor-inspection", "full-test-sheet", "motor-inspections-filter-press", "motor-inspections-gold-room", "motor-inspections-kiln-area", "motor-inspections-elution", "motor-inspections-milling-area", "motor-inspections-pwp", "motor-inspections-services", "motor-inspections-tanks", "motor-inspections-thickener", "belt-calibration-bc100-monthly"].includes(activeView);
 
   return (
     <SidebarProvider>

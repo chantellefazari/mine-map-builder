@@ -2391,4 +2391,29 @@ export const pmInspectionData: Record<string, any> = {
       { description: "Thickener Underflow Pump B", equipmentNumber: "Pump B", brand: "Monarch", flc: "125.2 A", frequency: "50 Hz", power: "75 KW", voltage: "415 V", frameSize: "D250M", rpm: "1485 RPM" },
     ],
   },
+
+  "Weightometer Calibration Monthly BC-100": {
+    sections: [
+      { equipmentName: "STATIONARY CHECKS – PM INSPECTION", tasks: [
+        { task: "Ensure belt & scale are empty and clean. Confirm calibration weights are in the 'UP' position or handles are in the horizontal position" },
+        { task: "Visual check the scale – ensure no material affecting readings. Check all rollers for flat spots or material build-up. Clean/replace as required" },
+        { task: "Start the conveyor belt and allow a couple of minutes for the belt to settle down" },
+        { task: "With belt running, begin Auto Zero procedure: Press and hold 'Auto Zero' button for 5 seconds until MODE WINDOW reads 'auto zero (wait)'. Rate window should read zero on completion" },
+      ]},
+      { equipmentName: "AUTO SPAN CALIBRATION", tasks: [
+        { task: "With conveyor belt running, press and hold AUTO SPAN button for 5 seconds until MODE window displays 'Lower Cal Weight'" },
+        { task: "Lower both calibration weights (lift handles up to lower weights)" },
+        { task: "Press AUTO SPAN button again to begin span calibration immediately, or wait 30 seconds for automatic start" },
+        { task: "MODE WINDOW should read 'auto span (wait)' during calibration" },
+        { task: "On completion, RATE WINDOW will show TPH reading. Note rate may bounce due to belt thickness/condition" },
+        { task: "When complete, MODE WINDOW will display 'raise cal weight' – raise calibration weights to storage position" },
+      ]},
+      { equipmentName: "RUNNING SYSTEM CHECKS", tasks: [
+        { task: "With calibration weights up (storage position), confirm rate reads zero" },
+        { task: "Reset the total by holding RESET button for 5 seconds" },
+        { task: "Begin running material on belt – confirm rate and total increase" },
+        { task: "Press FUNCTION key to toggle between flow rate (tph) and belt speed (m/min) – confirm both display correctly" },
+      ]},
+    ],
+  },
 };
