@@ -102,16 +102,16 @@ export const canonicalPMs: CanonicalPM[] = [
   { pmName: "Cable Test Sheet Yearly", discipline: "Electrical", frequency: "52 Week", equipmentType: "Cable" },
   { pmName: "Full Test Sheet Yearly", discipline: "Electrical", frequency: "52 Week", equipmentType: "Full Test Sheet" },
 
-  // ── ELECTRICAL MOTOR INSPECTIONS (YEARLY) ──
-  { pmName: "Statutory Motor Inspection - Filter Press", discipline: "Electrical", frequency: "52 Week", equipmentType: "Motor Inspection" },
-  { pmName: "Statutory Motor Inspection - Gold Room", discipline: "Electrical", frequency: "52 Week", equipmentType: "Motor Inspection" },
-  { pmName: "Statutory Motor Inspection - Kiln Area", discipline: "Electrical", frequency: "52 Week", equipmentType: "Motor Inspection" },
-  { pmName: "Statutory Motor Inspection - Elution", discipline: "Electrical", frequency: "52 Week", equipmentType: "Motor Inspection" },
-  { pmName: "Statutory Motor Inspection - Milling Area", discipline: "Electrical", frequency: "52 Week", equipmentType: "Motor Inspection" },
-  { pmName: "Statutory Motor Inspection - Process Water Pond", discipline: "Electrical", frequency: "52 Week", equipmentType: "Motor Inspection" },
-  { pmName: "Statutory Motor Inspection - Services", discipline: "Electrical", frequency: "52 Week", equipmentType: "Motor Inspection" },
-  { pmName: "Statutory Motor Inspection - Tanks", discipline: "Electrical", frequency: "52 Week", equipmentType: "Motor Inspection" },
-  { pmName: "Statutory Motor Inspection - Thickener", discipline: "Electrical", frequency: "52 Week", equipmentType: "Motor Inspection" },
+  // ── ELECTRICAL MOTOR INSPECTIONS (6 WEEKLY) ──
+  { pmName: "Statutory Motor Inspection - Filter Press", discipline: "Electrical", frequency: "6 Week", equipmentType: "Motor Inspection" },
+  { pmName: "Statutory Motor Inspection - Gold Room", discipline: "Electrical", frequency: "6 Week", equipmentType: "Motor Inspection" },
+  { pmName: "Statutory Motor Inspection - Kiln Area", discipline: "Electrical", frequency: "6 Week", equipmentType: "Motor Inspection" },
+  { pmName: "Statutory Motor Inspection - Elution", discipline: "Electrical", frequency: "6 Week", equipmentType: "Motor Inspection" },
+  { pmName: "Statutory Motor Inspection - Milling Area", discipline: "Electrical", frequency: "6 Week", equipmentType: "Motor Inspection" },
+  { pmName: "Statutory Motor Inspection - Process Water Pond", discipline: "Electrical", frequency: "6 Week", equipmentType: "Motor Inspection" },
+  { pmName: "Statutory Motor Inspection - Services", discipline: "Electrical", frequency: "6 Week", equipmentType: "Motor Inspection" },
+  { pmName: "Statutory Motor Inspection - Tanks", discipline: "Electrical", frequency: "6 Week", equipmentType: "Motor Inspection" },
+  { pmName: "Statutory Motor Inspection - Thickener", discipline: "Electrical", frequency: "6 Week", equipmentType: "Motor Inspection" },
 
   // ── RCD TESTING SHEETS (6-MONTHLY) ──
   { pmName: "RCD Testing Sheets - Admin Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Admin Generator" },
