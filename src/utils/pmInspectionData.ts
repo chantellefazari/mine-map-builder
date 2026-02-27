@@ -2285,8 +2285,9 @@ export const pmInspectionData: Record<string, any> = {
       { item: "S/Room", action: "Ensure gland plate in place and spare entries plugged" },
     ],
     motors: [
-      { description: "Elution Pump 1" }, { description: "Elution Pump 2" },
-      { description: "Elution Heater Motor" }, { description: "Elution Feed Pump" },
+      { description: "Eluate Pump", equipmentNumber: "PU-001", brand: "GRUND FOSS CRI20-07", frequency: "50 Hz", power: "7.5 kW", voltage: "415 V", rpm: "2919 RPM", serialNo: "003" },
+      { description: "Caustic Pump", frequency: "50 Hz", voltage: "415 V" },
+      { description: "Elution Sump Pump", brand: "TECO", frequency: "50 Hz", voltage: "415 V" },
     ],
   },
 
