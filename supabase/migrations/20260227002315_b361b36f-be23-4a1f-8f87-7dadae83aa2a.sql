@@ -1,0 +1,2 @@
+ALTER TABLE public.pm_master_list DROP CONSTRAINT pm_master_list_frequency_check;
+ALTER TABLE public.pm_master_list ADD CONSTRAINT pm_master_list_frequency_check CHECK (frequency = ANY (ARRAY['Daily'::text, '1 Week'::text, '2 Week'::text, '4 Week'::text, '6 Week'::text, '12 Week'::text]));
