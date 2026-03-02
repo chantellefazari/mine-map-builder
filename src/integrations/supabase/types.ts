@@ -1020,6 +1020,60 @@ export type Database = {
           },
         ]
       }
+      rev_b_pid_extraction_register: {
+        Row: {
+          area_clue: string
+          confidence: string
+          created_at: string
+          description: string
+          downstream_tag: string
+          drawing_number: string
+          id: string
+          notes: string
+          page_number: number
+          sort_order: number
+          source_doc_name: string
+          tag_id: string
+          tag_type: string
+          updated_at: string
+          upstream_tag: string
+        }
+        Insert: {
+          area_clue?: string
+          confidence?: string
+          created_at?: string
+          description?: string
+          downstream_tag?: string
+          drawing_number?: string
+          id?: string
+          notes?: string
+          page_number: number
+          sort_order?: number
+          source_doc_name: string
+          tag_id: string
+          tag_type: string
+          updated_at?: string
+          upstream_tag?: string
+        }
+        Update: {
+          area_clue?: string
+          confidence?: string
+          created_at?: string
+          description?: string
+          downstream_tag?: string
+          drawing_number?: string
+          id?: string
+          notes?: string
+          page_number?: number
+          sort_order?: number
+          source_doc_name?: string
+          tag_id?: string
+          tag_type?: string
+          updated_at?: string
+          upstream_tag?: string
+        }
+        Relationships: []
+      }
       site_config: {
         Row: {
           config_key: string
