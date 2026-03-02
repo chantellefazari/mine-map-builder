@@ -9,7 +9,7 @@ import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocati
 import { CRUFunctionalLocationTable } from "@/components/hierarchy/CRUFunctionalLocationTable";
 import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet, HardHat, Database, Loader2 } from "lucide-react";
+import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet, HardHat, Database, Loader2, GitBranch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportAssetTreeCSV } from "@/utils/exportAssetTreeCSV";
 import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
@@ -17,6 +17,7 @@ import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
 import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
 import { seedProcessingPlantData } from "@/utils/seedProcessingPlantData";
 import { toast } from "@/hooks/use-toast";
+import { RevBAssetTree } from "@/components/hierarchy/RevBAssetTree";
 
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -115,11 +116,16 @@ const AssetTree = () => {
 
         {/* Tabs: Asset Tree, Functional Locations, and Naming Convention */}
         <Tabs defaultValue="hierarchy" className="w-full">
-          <TabsList className="grid w-full max-w-4xl grid-cols-5">
+          <TabsList className="grid w-full max-w-5xl grid-cols-6">
             <TabsTrigger value="hierarchy" className="gap-2 text-xs sm:text-sm">
               <TreePine className="h-4 w-4" />
               <span className="hidden sm:inline">Asset Hierarchy</span>
               <span className="sm:hidden">Hierarchy</span>
+            </TabsTrigger>
+            <TabsTrigger value="rev-b" className="gap-2 text-xs sm:text-sm">
+              <GitBranch className="h-4 w-4" />
+              <span className="hidden sm:inline">Rev B (Draft)</span>
+              <span className="sm:hidden">Rev B</span>
             </TabsTrigger>
             <TabsTrigger value="functional-locations" className="gap-2 text-xs sm:text-sm">
               <TableProperties className="h-4 w-4" />
@@ -176,6 +182,10 @@ const AssetTree = () => {
                 </div>
               </div>
             </FLBreadcrumbProvider>
+          </TabsContent>
+
+          <TabsContent value="rev-b" className="mt-6">
+            <RevBAssetTree />
           </TabsContent>
 
           <TabsContent value="functional-locations" className="mt-6">
