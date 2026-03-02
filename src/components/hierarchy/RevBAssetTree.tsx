@@ -9,6 +9,7 @@ import { RevBAsset, DiffSummary, AssetTable } from "./revb/RevBAssetTable";
 import { ExtractionTag, ExtractionTable } from "./revb/RevBExtractionTable";
 import { RevBFlowMap } from "./revb/RevBFlowMap";
 import { RevBCoverageCheck } from "./revb/RevBCoverageCheck";
+import { RevBDeltaReport } from "./revb/RevBDeltaReport";
 
 function useRevBAssets() {
   return useQuery({
@@ -92,11 +93,12 @@ export const RevBAssetTree: React.FC = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="tree" className="w-full">
-        <TabsList className="w-full max-w-2xl grid grid-cols-4">
+        <TabsList className="w-full max-w-2xl grid grid-cols-5">
           <TabsTrigger value="tree" className="text-xs">Asset Tree ({assets?.length || 0})</TabsTrigger>
           <TabsTrigger value="source" className="text-xs">Source Index ({tags?.length || 0})</TabsTrigger>
           <TabsTrigger value="flow" className="text-xs">Flow Map</TabsTrigger>
           <TabsTrigger value="coverage" className="text-xs">Coverage Check</TabsTrigger>
+          <TabsTrigger value="delta" className="text-xs">Delta Report</TabsTrigger>
         </TabsList>
 
         <TabsContent value="tree" className="mt-4">
@@ -120,6 +122,12 @@ export const RevBAssetTree: React.FC = () => {
         <TabsContent value="coverage" className="mt-4">
           <div className="bg-card border border-border rounded-lg p-4">
             <RevBCoverageCheck />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="delta" className="mt-4">
+          <div className="bg-card border border-border rounded-lg p-4">
+            <RevBDeltaReport />
           </div>
         </TabsContent>
       </Tabs>
