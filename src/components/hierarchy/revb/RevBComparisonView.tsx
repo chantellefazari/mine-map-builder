@@ -1,13 +1,14 @@
 import React, { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Search, X, ChevronRight, ChevronDown, Eye, EyeOff } from "lucide-react";
+import { Loader2, Search, X, ChevronRight, ChevronDown, Eye, EyeOff, Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ── types ── */
 interface AssetRow {
@@ -261,7 +262,8 @@ const ParentBranch: React.FC<{
                 <span className="font-mono font-medium w-[110px] flex-shrink-0 truncate text-foreground" title={a.asset_number}>{a.asset_number}</span>
                 <span className="flex-1 truncate text-muted-foreground" title={a.asset_name}>{a.asset_name}</span>
                 {hl === "new" && <Badge variant="default" className="text-[9px] px-1 py-0 h-3.5">NEW</Badge>}
-                {hl === "moved" && <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5">MOVED</Badge>}
+                {hl === "moved" && <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-amber-500 text-amber-700 dark:text-amber-400">MOVED</Badge>}
+                {hl === "missing" && <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-red-500 text-red-700 dark:text-red-400">REVIEW</Badge>}
               </div>
             );
           })}
@@ -369,13 +371,73 @@ export const RevBComparisonView: React.FC = () => {
         </div>
       </div>
 
-      {/* Optional legend (only when highlights enabled) */}
+      {/* Optional legend with tooltip definitions (only when highlights enabled) */}
       {showHighlights && (
-        <div className="flex flex-wrap gap-3 text-xs">
-          <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-green-500" /> New in Rev B (not in Rev A)</span>
-          <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-amber-500" /> Same asset, different location</span>
-          <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm border border-border" /> Unchanged</span>
-        </div>
+        <TooltipProvider delayDuration={200}>
+          <div className="flex flex-wrap items-center gap-4 text-xs bg-muted/30 border border-border rounded-lg px-4 py-2.5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="flex items-center gap-1.5 cursor-help">
+                  <span className="w-3 h-3 rounded-sm bg-green-500" />
+                  <span className="font-medium">New in Rev B</span>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[260px] text-xs">
+                <p className="font-semibold">Green — New Asset</p>
+                <p className="text-muted-foreground mt-0.5">Asset exists only in Rev B. This is a new physical asset identified in the updated 2026 P&ID set that was not present in the original Rev A structure.</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="flex items-center gap-1.5 cursor-help">
+                  <span className="w-3 h-3 rounded-sm bg-red-500" />
+                  <span className="font-medium">Rev A Only</span>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[280px] text-xs">
+                <p className="font-semibold">Red — Requires Engineering Review</p>
+                <p className="text-muted-foreground mt-0.5">Asset exists only in Rev A and is not present in the updated P&ID. This does NOT mean automatic deletion. Red items require manual engineering approval before any removal action is taken.</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="flex items-center gap-1.5 cursor-help">
+                  <span className="w-3 h-3 rounded-sm bg-amber-500" />
+                  <span className="font-medium">Structural Move</span>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[280px] text-xs">
+                <p className="font-semibold">Orange — Structural Reclassification</p>
+                <p className="text-muted-foreground mt-0.5">Asset exists in both Rev A and Rev B but is located under a different parent header. This indicates a structural reclassification, not a deletion. The asset has been repositioned in the hierarchy based on the updated P&ID layout.</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="flex items-center gap-1.5 cursor-help">
+                  <span className="w-3 h-3 rounded-sm border border-border bg-background" />
+                  <span className="font-medium">Unchanged</span>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[220px] text-xs">
+                <p className="font-semibold">No Highlight — Unchanged</p>
+                <p className="text-muted-foreground mt-0.5">Asset exists in both revisions at the same location. No structural difference detected.</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help ml-auto" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[300px] text-xs">
+                <p className="font-semibold">Highlight Mode — Read Only</p>
+                <p className="text-muted-foreground mt-0.5">No automatic deletion is permitted. Red items require manual engineering approval before removal. Orange items indicate reclassification only — no data is merged or synced.</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       )}
 
       {/* Dual tree panels */}
