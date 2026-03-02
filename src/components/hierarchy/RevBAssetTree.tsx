@@ -1,43 +1,14 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, X, Plus, Pencil, Minus, Check, AlertTriangle, Loader2 } from "lucide-react";
+import { Search, X, AlertTriangle, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-interface RevBAsset {
-  id: string;
-  area_code: string;
-  area_label: string;
-  sub_area: string;
-  parent_asset_label: string;
-  asset_number: string;
-  asset_name: string;
-  change_type: string;
-  rev_status: string;
-  notes: string;
-  sort_order: number;
-}
-
-interface ExtractionTag {
-  id: string;
-  tag_id: string;
-  tag_type: string;
-  description: string;
-  area_clue: string;
-  page_number: number;
-  confidence: string;
-  drawing_number: string;
-}
-
-const CHANGE_CONFIG: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
-  Unchanged: { icon: <Check className="h-3 w-3" />, color: "bg-muted text-muted-foreground", label: "Unchanged" },
-  New: { icon: <Plus className="h-3 w-3" />, color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300", label: "New" },
-  Modified: { icon: <Pencil className="h-3 w-3" />, color: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300", label: "Modified" },
-  Removed: { icon: <Minus className="h-3 w-3" />, color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300", label: "Removed" },
-};
+import { RevBAsset, DiffSummary, AssetTable } from "./revb/RevBAssetTable";
+import { ExtractionTag, ExtractionTable } from "./revb/RevBExtractionTable";
+import { RevBFlowMap } from "./revb/RevBFlowMap";
+import { RevBCoverageCheck } from "./revb/RevBCoverageCheck";
 
 function useRevBAssets() {
   return useQuery({
@@ -70,155 +41,6 @@ function useExtractionRegister() {
   });
 }
 
-const DiffSummary: React.FC<{ assets: RevBAsset[] }> = ({ assets }) => {
-  const counts = {
-    Unchanged: assets.filter(a => a.change_type === "Unchanged").length,
-    New: assets.filter(a => a.change_type === "New").length,
-    Modified: assets.filter(a => a.change_type === "Modified").length,
-    Removed: assets.filter(a => a.change_type === "Removed").length,
-  };
-
-  return (
-    <div className="flex items-center gap-4 flex-wrap">
-      {Object.entries(counts).map(([type, count]) => {
-        const cfg = CHANGE_CONFIG[type];
-        return (
-          <div key={type} className="flex items-center gap-2">
-            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${cfg.color}`}>
-              {cfg.icon} {cfg.label}
-            </span>
-            <span className="text-sm font-mono text-foreground">{count}</span>
-          </div>
-        );
-      })}
-      <span className="text-xs text-muted-foreground ml-auto">Total: {assets.length}</span>
-    </div>
-  );
-};
-
-const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ assets, filter }) => {
-  const filtered = filter
-    ? assets.filter(a =>
-        a.asset_number.toLowerCase().includes(filter.toLowerCase()) ||
-        a.asset_name.toLowerCase().includes(filter.toLowerCase()) ||
-        a.area_label.toLowerCase().includes(filter.toLowerCase()) ||
-        a.parent_asset_label.toLowerCase().includes(filter.toLowerCase())
-      )
-    : assets;
-
-  // Group by area
-  const grouped = new Map<string, RevBAsset[]>();
-  for (const a of filtered) {
-    const key = `${a.area_code} – ${a.area_label}`;
-    if (!grouped.has(key)) grouped.set(key, []);
-    grouped.get(key)!.push(a);
-  }
-
-  return (
-    <div className="space-y-4 max-h-[600px] overflow-auto">
-      {Array.from(grouped.entries()).map(([areaKey, areaAssets]) => (
-        <div key={areaKey}>
-          <h4 className="text-sm font-semibold text-foreground sticky top-0 bg-card py-1 border-b border-border mb-1">
-            {areaKey} <span className="text-muted-foreground font-normal">({areaAssets.length})</span>
-          </h4>
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="text-muted-foreground">
-                <th className="text-left p-1.5 w-20">Status</th>
-                <th className="text-left p-1.5 w-28">Asset #</th>
-                <th className="text-left p-1.5">Name</th>
-                <th className="text-left p-1.5 w-40">Parent</th>
-                <th className="text-left p-1.5 w-32">Sub-Area</th>
-              </tr>
-            </thead>
-            <tbody>
-              {areaAssets.map(a => {
-                const cfg = CHANGE_CONFIG[a.change_type] || CHANGE_CONFIG.Unchanged;
-                return (
-                  <tr key={a.id} className="border-b border-border/50 hover:bg-muted/30">
-                    <td className="p-1.5">
-                      <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium ${cfg.color}`}>
-                        {cfg.icon} {cfg.label}
-                      </span>
-                    </td>
-                    <td className="p-1.5 font-mono font-medium text-primary">{a.asset_number}</td>
-                    <td className="p-1.5">{a.asset_name}</td>
-                    <td className="p-1.5 text-muted-foreground">{a.parent_asset_label}</td>
-                    <td className="p-1.5 text-muted-foreground">{a.sub_area}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      ))}
-      {filtered.length === 0 && (
-        <p className="text-sm text-muted-foreground text-center py-8">No assets match the filter.</p>
-      )}
-    </div>
-  );
-};
-
-const ExtractionTable: React.FC<{ tags: ExtractionTag[]; filter: string }> = ({ tags, filter }) => {
-  const filtered = filter
-    ? tags.filter(t =>
-        t.tag_id.toLowerCase().includes(filter.toLowerCase()) ||
-        t.description.toLowerCase().includes(filter.toLowerCase()) ||
-        t.area_clue.toLowerCase().includes(filter.toLowerCase())
-      )
-    : tags;
-
-  // Group by page
-  const grouped = new Map<number, ExtractionTag[]>();
-  for (const t of filtered) {
-    if (!grouped.has(t.page_number)) grouped.set(t.page_number, []);
-    grouped.get(t.page_number)!.push(t);
-  }
-
-  return (
-    <div className="space-y-4 max-h-[600px] overflow-auto">
-      {Array.from(grouped.entries()).sort(([a],[b]) => a - b).map(([page, pageTags]) => (
-        <div key={page}>
-          <h4 className="text-sm font-semibold text-foreground sticky top-0 bg-card py-1 border-b border-border mb-1">
-            Page {page} — {pageTags[0]?.drawing_number} <span className="text-muted-foreground font-normal">({pageTags.length} tags)</span>
-          </h4>
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="text-muted-foreground">
-                <th className="text-left p-1.5 w-20">Type</th>
-                <th className="text-left p-1.5 w-28">Tag ID</th>
-                <th className="text-left p-1.5">Description</th>
-                <th className="text-left p-1.5 w-28">Area Clue</th>
-                <th className="text-left p-1.5 w-16">Conf.</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pageTags.map(t => (
-                <tr key={t.id} className="border-b border-border/50 hover:bg-muted/30">
-                  <td className="p-1.5">
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                      {t.tag_type}
-                    </Badge>
-                  </td>
-                  <td className="p-1.5 font-mono font-medium text-primary">{t.tag_id}</td>
-                  <td className="p-1.5">{t.description}</td>
-                  <td className="p-1.5 text-muted-foreground">{t.area_clue}</td>
-                  <td className="p-1.5">
-                    <span className={`text-[10px] font-medium ${
-                      t.confidence === "High" ? "text-green-600" :
-                      t.confidence === "Med" ? "text-amber-600" : "text-red-600"
-                    }`}>{t.confidence}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ))}
-    </div>
-  );
-};
-
 export const RevBAssetTree: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { data: assets, isLoading: assetsLoading } = useRevBAssets();
@@ -233,7 +55,7 @@ export const RevBAssetTree: React.FC = () => {
     );
   }
 
-  const equipmentTags = tags?.filter(t => t.tag_type === "Equipment") || [];
+  const equipmentCount = tags?.filter(t => t.tag_type === "Equipment").length || 0;
 
   return (
     <div className="space-y-4">
@@ -243,7 +65,7 @@ export const RevBAssetTree: React.FC = () => {
         <div className="text-sm">
           <p className="font-semibold text-amber-800 dark:text-amber-300">Rev B — Draft (2026 P&ID Updates)</p>
           <p className="text-amber-700 dark:text-amber-400 mt-0.5">
-            This revision is isolated from Rev A. {equipmentTags.length} equipment tags extracted from 14 P&ID pages.
+            Built from extraction register only. {assets?.length || 0} assets mapped from {equipmentCount} equipment + {(tags?.length || 0) - equipmentCount} valves/instruments/lines/motors across 14 P&ID pages.
             Changes are tracked but NOT yet applied to the live hierarchy.
           </p>
         </div>
@@ -253,7 +75,7 @@ export const RevBAssetTree: React.FC = () => {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Search assets or tags..."
+          placeholder="Search assets, tags, or areas..."
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
           className="pl-10 pr-10 h-9 text-sm"
@@ -268,14 +90,16 @@ export const RevBAssetTree: React.FC = () => {
       {/* Summary */}
       {assets && <DiffSummary assets={assets} />}
 
-      {/* Sub-tabs: Asset Diff vs Source Register */}
-      <Tabs defaultValue="diff" className="w-full">
-        <TabsList className="w-full max-w-md grid grid-cols-2">
-          <TabsTrigger value="diff" className="text-xs">Asset Diff ({assets?.length || 0})</TabsTrigger>
-          <TabsTrigger value="source" className="text-xs">P&ID Source Index ({tags?.length || 0})</TabsTrigger>
+      {/* Tabs */}
+      <Tabs defaultValue="tree" className="w-full">
+        <TabsList className="w-full max-w-2xl grid grid-cols-4">
+          <TabsTrigger value="tree" className="text-xs">Asset Tree ({assets?.length || 0})</TabsTrigger>
+          <TabsTrigger value="source" className="text-xs">Source Index ({tags?.length || 0})</TabsTrigger>
+          <TabsTrigger value="flow" className="text-xs">Flow Map</TabsTrigger>
+          <TabsTrigger value="coverage" className="text-xs">Coverage Check</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="diff" className="mt-4">
+        <TabsContent value="tree" className="mt-4">
           <div className="bg-card border border-border rounded-lg p-4">
             {assets && <AssetTable assets={assets} filter={searchTerm} />}
           </div>
@@ -284,6 +108,18 @@ export const RevBAssetTree: React.FC = () => {
         <TabsContent value="source" className="mt-4">
           <div className="bg-card border border-border rounded-lg p-4">
             {tags && <ExtractionTable tags={tags} filter={searchTerm} />}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="flow" className="mt-4">
+          <div className="bg-card border border-border rounded-lg p-4">
+            <RevBFlowMap />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="coverage" className="mt-4">
+          <div className="bg-card border border-border rounded-lg p-4">
+            <RevBCoverageCheck />
           </div>
         </TabsContent>
       </Tabs>
