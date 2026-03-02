@@ -820,6 +820,72 @@ export type Database = {
         }
         Relationships: []
       }
+      processing_plant_assets_rev_b: {
+        Row: {
+          area_code: string
+          area_label: string
+          asset_name: string
+          asset_number: string
+          change_type: string
+          components: Json | null
+          created_at: string
+          facility: string
+          functional_location: string | null
+          id: string
+          notes: string | null
+          parent_asset_label: string
+          pid_tags: string[] | null
+          rev_a_asset_id: string | null
+          rev_status: string
+          sort_order: number
+          source_extraction_ids: string[] | null
+          sub_area: string
+          updated_at: string
+        }
+        Insert: {
+          area_code: string
+          area_label: string
+          asset_name: string
+          asset_number: string
+          change_type?: string
+          components?: Json | null
+          created_at?: string
+          facility?: string
+          functional_location?: string | null
+          id?: string
+          notes?: string | null
+          parent_asset_label: string
+          pid_tags?: string[] | null
+          rev_a_asset_id?: string | null
+          rev_status?: string
+          sort_order?: number
+          source_extraction_ids?: string[] | null
+          sub_area: string
+          updated_at?: string
+        }
+        Update: {
+          area_code?: string
+          area_label?: string
+          asset_name?: string
+          asset_number?: string
+          change_type?: string
+          components?: Json | null
+          created_at?: string
+          facility?: string
+          functional_location?: string | null
+          id?: string
+          notes?: string | null
+          parent_asset_label?: string
+          pid_tags?: string[] | null
+          rev_a_asset_id?: string | null
+          rev_status?: string
+          sort_order?: number
+          source_extraction_ids?: string[] | null
+          sub_area?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
