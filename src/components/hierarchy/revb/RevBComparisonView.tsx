@@ -140,6 +140,62 @@ function buildHighlightMap(revA: AssetRow[], revB: RevBAssetRow[]): Map<string, 
   return map;
 }
 
+/* ── Equipment/Component grouping ── */
+interface EquipmentNode {
+  asset: AssetRow;
+  components: AssetRow[];
+}
+
+function groupEquipmentAndComponents(assets: AssetRow[]): EquipmentNode[] {
+  const sorted = [...assets].sort((a, b) =>
+    a.asset_number.length - b.asset_number.length || a.asset_number.localeCompare(b.asset_number)
+  );
+  const assigned = new Set<string>();
+  const nodes: EquipmentNode[] = [];
+  for (const asset of sorted) {
+    if (assigned.has(asset.asset_number)) continue;
+    assigned.add(asset.asset_number);
+    const comps = sorted.filter(o =>
+      !assigned.has(o.asset_number) &&
+      o.asset_number.startsWith(asset.asset_number) &&
+      o.asset_number.length > asset.asset_number.length
+    );
+    comps.forEach(c => assigned.add(c.asset_number));
+    nodes.push({ asset, components: comps });
+  }
+  return nodes;
+}
+
+function getHlBg(hl: HighlightStatus): string {
+  if (hl === "filled") return "bg-purple-50 dark:bg-purple-950/30 border-l-2 border-l-purple-500";
+  if (hl === "new") return "bg-green-50 dark:bg-green-950/30 border-l-2 border-l-green-500";
+  if (hl === "moved") return "bg-amber-50 dark:bg-amber-950/30 border-l-2 border-l-amber-500";
+  if (hl === "missing") return "bg-red-50 dark:bg-red-950/30 border-l-2 border-l-red-500";
+  return "";
+}
+
+const HlBadge: React.FC<{ hl: HighlightStatus }> = ({ hl }) => {
+  if (hl === "filled") return <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-purple-500 text-purple-700 dark:text-purple-400">FILLED</Badge>;
+  if (hl === "new") return <Badge variant="default" className="text-[9px] px-1 py-0 h-3.5">NEW</Badge>;
+  if (hl === "moved") return <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-amber-500 text-amber-700 dark:text-amber-400">MOVED</Badge>;
+  if (hl === "missing") return <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-red-500 text-red-700 dark:text-red-400">REVIEW</Badge>;
+  return null;
+};
+
+/* ── Level indicator dots ── */
+const LEVEL_STYLES: Record<number, string> = {
+  1: "w-2.5 h-2.5 rounded-full bg-foreground",
+  2: "w-2 h-2 rounded-full bg-amber-600 dark:bg-amber-500",
+  3: "w-2 h-2 rounded-full bg-amber-400",
+  4: "w-1.5 h-1.5 rounded-full border border-muted-foreground/50",
+  5: "w-1.5 h-1.5 rounded-full border border-muted-foreground/40 bg-muted-foreground/10",
+  6: "w-1.5 h-1.5 rounded-full bg-green-500",
+  7: "w-1 h-1 rounded-full bg-muted-foreground/30",
+};
+const LevelDot: React.FC<{ level: number }> = ({ level }) => (
+  <span className={`${LEVEL_STYLES[level] || ""} flex-shrink-0`} />
+);
+
 /* ── Collapsible tree node components ── */
 const AreaBranch: React.FC<{
   area: AreaNode;
@@ -149,7 +205,6 @@ const AreaBranch: React.FC<{
 }> = ({ area, filter, highlightMap, showHighlights }) => {
   const [open, setOpen] = useState(true);
   const filterLower = filter.toLowerCase();
-
   const visibleSubs = area.subAreas.filter(sub =>
     !filter || sub.parents.some(p =>
       p.assets.some(a =>
@@ -162,11 +217,9 @@ const AreaBranch: React.FC<{
 
   return (
     <div className="mb-1">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 w-full text-left py-1.5 px-2 rounded hover:bg-muted/50 transition-colors"
-      >
+      <button onClick={() => setOpen(!open)} className="flex items-center gap-1.5 w-full text-left py-1.5 px-2 rounded hover:bg-muted/50 transition-colors">
         {open ? <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
+        <LevelDot level={3} />
         <span className="text-xs font-mono font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">{area.code}</span>
         <span className="text-sm font-semibold text-foreground">{area.label}</span>
         <span className="text-[10px] text-muted-foreground ml-auto">{area.subAreas.reduce((s, sa) => s + sa.parents.reduce((ps, p) => ps + p.assets.length, 0), 0)}</span>
@@ -190,7 +243,6 @@ const SubAreaBranch: React.FC<{
 }> = ({ sub, filter, highlightMap, showHighlights }) => {
   const [open, setOpen] = useState(!!filter);
   const filterLower = filter.toLowerCase();
-
   const visibleParents = sub.parents.filter(p =>
     !filter || p.assets.some(a =>
       a.asset_number.toLowerCase().includes(filterLower) ||
@@ -201,11 +253,9 @@ const SubAreaBranch: React.FC<{
 
   return (
     <div>
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 w-full text-left py-1 px-2 rounded hover:bg-muted/30 text-xs"
-      >
+      <button onClick={() => setOpen(!open)} className="flex items-center gap-1.5 w-full text-left py-1 px-2 rounded hover:bg-muted/30 text-xs">
         {open ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
+        <LevelDot level={4} />
         <span className="font-medium text-muted-foreground">{sub.label}</span>
       </button>
       {open && (
@@ -227,43 +277,75 @@ const ParentBranch: React.FC<{
 }> = ({ parent, filter, highlightMap, showHighlights }) => {
   const [open, setOpen] = useState(!!filter);
   const filterLower = filter.toLowerCase();
-
-  const assets = filter
+  const filteredAssets = filter
     ? parent.assets.filter(a =>
         a.asset_number.toLowerCase().includes(filterLower) ||
         a.asset_name.toLowerCase().includes(filterLower)
       )
     : parent.assets;
-  if (assets.length === 0) return null;
+  const equipmentNodes = useMemo(() => groupEquipmentAndComponents(filteredAssets), [filteredAssets]);
+  if (equipmentNodes.length === 0) return null;
 
   return (
     <div>
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 w-full text-left py-0.5 px-2 rounded hover:bg-muted/20 text-[11px]"
-      >
+      <button onClick={() => setOpen(!open)} className="flex items-center gap-1.5 w-full text-left py-0.5 px-2 rounded hover:bg-muted/20 text-[11px]">
         {open ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
+        <LevelDot level={5} />
         <span className="font-semibold text-foreground/70">{parent.label}</span>
-        <span className="text-[10px] text-muted-foreground ml-auto">{assets.length}</span>
+        <span className="text-[10px] text-muted-foreground ml-auto">{filteredAssets.length}</span>
       </button>
       {open && (
         <div className="ml-4 pl-2 space-y-px">
-          {assets.map(a => {
-            const hl = showHighlights && highlightMap ? highlightMap.get(a.asset_number) : null;
-            let bgClass = "";
-            if (hl === "filled") bgClass = "bg-purple-50 dark:bg-purple-950/30 border-l-2 border-l-purple-500";
-            else if (hl === "new") bgClass = "bg-green-50 dark:bg-green-950/30 border-l-2 border-l-green-500";
-            else if (hl === "moved") bgClass = "bg-amber-50 dark:bg-amber-950/30 border-l-2 border-l-amber-500";
-            else if (hl === "missing") bgClass = "bg-red-50 dark:bg-red-950/30 border-l-2 border-l-red-500";
+          {equipmentNodes.map(eq => (
+            <EquipmentBranch key={eq.asset.asset_number} node={eq} highlightMap={highlightMap} showHighlights={showHighlights} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
+const EquipmentBranch: React.FC<{
+  node: EquipmentNode;
+  highlightMap?: Map<string, HighlightStatus>;
+  showHighlights: boolean;
+}> = ({ node, highlightMap, showHighlights }) => {
+  const [open, setOpen] = useState(false);
+  const { asset, components } = node;
+  const hl = showHighlights && highlightMap ? highlightMap.get(asset.asset_number) : null;
+  const bg = getHlBg(hl);
+
+  if (components.length === 0) {
+    return (
+      <div className={`flex items-center gap-2 py-0.5 px-2 rounded text-xs ${bg}`}>
+        <LevelDot level={6} />
+        <span className="font-mono font-medium w-[110px] flex-shrink-0 truncate text-foreground" title={asset.asset_number}>{asset.asset_number}</span>
+        <span className="flex-1 truncate text-muted-foreground" title={asset.asset_name}>{asset.asset_name}</span>
+        <HlBadge hl={hl} />
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <button onClick={() => setOpen(!open)} className={`flex items-center gap-1.5 w-full text-left py-0.5 px-2 rounded hover:bg-muted/20 text-xs ${bg}`}>
+        {open ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
+        <LevelDot level={6} />
+        <span className="font-mono font-medium w-[100px] flex-shrink-0 truncate text-foreground" title={asset.asset_number}>{asset.asset_number}</span>
+        <span className="flex-1 truncate text-muted-foreground" title={asset.asset_name}>{asset.asset_name}</span>
+        <span className="text-[10px] text-muted-foreground">{components.length}</span>
+        <HlBadge hl={hl} />
+      </button>
+      {open && (
+        <div className="ml-5 border-l border-border/20 pl-2 space-y-px">
+          {components.map(c => {
+            const chl = showHighlights && highlightMap ? highlightMap.get(c.asset_number) : null;
             return (
-              <div key={a.asset_number} className={`flex items-center gap-2 py-0.5 px-2 rounded text-xs ${bgClass}`}>
-                <span className="font-mono font-medium w-[110px] flex-shrink-0 truncate text-foreground" title={a.asset_number}>{a.asset_number}</span>
-                <span className="flex-1 truncate text-muted-foreground" title={a.asset_name}>{a.asset_name}</span>
-                {hl === "filled" && <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-purple-500 text-purple-700 dark:text-purple-400">FILLED</Badge>}
-                {hl === "new" && <Badge variant="default" className="text-[9px] px-1 py-0 h-3.5">NEW</Badge>}
-                {hl === "moved" && <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-amber-500 text-amber-700 dark:text-amber-400">MOVED</Badge>}
-                {hl === "missing" && <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-red-500 text-red-700 dark:text-red-400">REVIEW</Badge>}
+              <div key={c.asset_number} className={`flex items-center gap-2 py-0.5 px-2 rounded text-xs ${getHlBg(chl)}`}>
+                <LevelDot level={7} />
+                <span className="font-mono font-medium w-[110px] flex-shrink-0 truncate text-foreground/80" title={c.asset_number}>{c.asset_number}</span>
+                <span className="flex-1 truncate text-muted-foreground" title={c.asset_name}>{c.asset_name}</span>
+                <HlBadge hl={chl} />
               </div>
             );
           })}
@@ -329,9 +411,28 @@ const TreePanel: React.FC<{
       {/* Tree body */}
       <ScrollArea className="h-[calc(100vh-340px)] min-h-[500px]">
         <div className="p-3 space-y-0.5">
-          {tree.map(area => (
-            <AreaBranch key={area.code} area={area} filter={filter} highlightMap={highlightMap} showHighlights={showHighlights} />
-          ))}
+          {/* Level 1 — Site */}
+          <div className="mb-1">
+            <div className="flex items-center gap-1.5 py-1.5 px-2">
+              <LevelDot level={1} />
+              <span className="text-sm font-bold text-foreground">TCMG</span>
+              <span className="text-[10px] text-muted-foreground">Tennant Creek Gold Mine</span>
+            </div>
+            <div className="ml-4 border-l border-border/50 pl-3">
+              {/* Level 2 — Facility */}
+              <div className="mb-1">
+                <div className="flex items-center gap-1.5 py-1 px-2">
+                  <LevelDot level={2} />
+                  <span className="text-xs font-semibold text-foreground">Processing Plant</span>
+                </div>
+                <div className="ml-4 border-l border-border/40 pl-3 space-y-0.5">
+                  {tree.map(area => (
+                    <AreaBranch key={area.code} area={area} filter={filter} highlightMap={highlightMap} showHighlights={showHighlights} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </ScrollArea>
     </div>
@@ -452,6 +553,18 @@ export const RevBComparisonView: React.FC = () => {
           </div>
         </TooltipProvider>
       )}
+
+      {/* Hierarchy Levels */}
+      <div className="flex flex-wrap items-center gap-5 text-xs bg-muted/30 border border-border rounded-lg px-4 py-2.5">
+        <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mr-1">Hierarchy Levels</span>
+        <span className="flex items-center gap-1.5"><LevelDot level={1} />Level 1 — <span className="text-muted-foreground">Business Entity</span></span>
+        <span className="flex items-center gap-1.5"><LevelDot level={2} />Level 2 — <span className="text-muted-foreground">Facility</span></span>
+        <span className="flex items-center gap-1.5"><LevelDot level={3} />Level 3 — <span className="text-muted-foreground">Major Area</span></span>
+        <span className="flex items-center gap-1.5"><LevelDot level={4} />Level 4 — <span className="text-muted-foreground">Sub-Area</span></span>
+        <span className="flex items-center gap-1.5"><LevelDot level={5} />Level 5 — <span className="text-muted-foreground">System</span></span>
+        <span className="flex items-center gap-1.5"><LevelDot level={6} />Level 6 — <span className="text-muted-foreground">Equipment</span></span>
+        <span className="flex items-center gap-1.5"><LevelDot level={7} />Level 7 — <span className="text-muted-foreground">Component</span></span>
+      </div>
 
       {/* Dual tree panels */}
       <div className="flex gap-0 border border-border rounded-lg overflow-hidden bg-card">
