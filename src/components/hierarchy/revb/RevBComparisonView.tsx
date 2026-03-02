@@ -18,11 +18,6 @@ interface AssetRow {
   parent_asset_label: string;
 }
 
-interface RevBRow extends AssetRow {
-  change_type: string;
-  notes: string | null;
-}
-
 interface AreaGroup {
   code: string;
   label: string;
@@ -33,26 +28,6 @@ interface ParentGroup {
   label: string;
   assets: AssetRow[];
 }
-
-/* ── Known renames from delta report ── */
-const KNOWN_RENAMES: Record<string, string> = {
-  "BM01": "04-GR-100",
-  "RHOP01": "04-FB-099",
-  "APN01": "04-FE-100",
-  "MFC01": "04-BE-100",
-  "FHOP01": "04-CH-102",
-  "FP01": "04-FL-400",
-  "THK01": "04-TH-200",
-  "PWT01": "11-TK-202",
-  "HCMP01": "05-CP-132",
-  "HCMP02": "05-CP-133",
-  "EWCL01": "04-EC-600",
-  "CY01": "04-CY-106",
-  "GRT01": "04-SC-100",
-};
-
-const REVERSE_RENAMES: Record<string, string> = {};
-Object.entries(KNOWN_RENAMES).forEach(([a, b]) => { REVERSE_RENAMES[b] = a; });
 
 /* ── hooks ── */
 function useRevAAssets() {
@@ -76,16 +51,18 @@ function useRevBAssets() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("processing_plant_assets_rev_b")
-        .select("asset_number, asset_name, area_code, area_label, sub_area, parent_asset_label, change_type, notes")
+        .select("asset_number, asset_name, area_code, area_label, sub_area, parent_asset_label")
         .order("sort_order", { ascending: true });
       if (error) throw error;
-      return data as RevBRow[];
+      return data as AssetRow[];
     },
     staleTime: 5 * 60 * 1000,
   });
 }
 
 /* ── helpers ── */
+const AREA_ORDER = ["SITE", "UTL", "COM", "REC", "TAIL", "SUP"];
+
 function groupByArea(assets: AssetRow[]): AreaGroup[] {
   const map = new Map<string, AreaGroup>();
   for (const a of assets) {
@@ -104,12 +81,16 @@ function groupByArea(assets: AssetRow[]): AreaGroup[] {
     }
     parent.assets.push(a);
   }
-  const ORDER = ["SITE", "UTL", "COM", "REC", "TAIL", "SUP"];
   return Array.from(map.values()).sort((a, b) => {
-    const ia = ORDER.indexOf(a.code);
-    const ib = ORDER.indexOf(b.code);
+    const ia = AREA_ORDER.indexOf(a.code);
+    const ib = AREA_ORDER.indexOf(b.code);
     return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
   });
+}
+
+/** Normalize asset name for structural matching (case-insensitive, trimmed) */
+function normalizeKey(name: string): string {
+  return name.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
 function classifyAsset(name: string, parent: string): "equipment" | "valve" | "instrument" | "line" | "motor" {
@@ -120,6 +101,23 @@ function classifyAsset(name: string, parent: string): "equipment" | "valve" | "i
   if (n.includes("line") || n.includes("pipe")) return "line";
   return "equipment";
 }
+
+/* ── Diff status ── */
+type DiffStatus = "new" | "missing" | "moved" | "unchanged";
+
+const statusColors: Record<DiffStatus, string> = {
+  new: "bg-green-50 dark:bg-green-950/30 border-l-2 border-l-green-500",
+  missing: "bg-red-50 dark:bg-red-950/30 border-l-2 border-l-red-500",
+  moved: "bg-amber-50 dark:bg-amber-950/30 border-l-2 border-l-amber-500",
+  unchanged: "",
+};
+
+const statusBadge: Record<DiffStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+  new: { label: "NEW", variant: "default" },
+  missing: { label: "MISSING", variant: "destructive" },
+  moved: { label: "MOVED", variant: "outline" },
+  unchanged: { label: "", variant: "secondary" },
+};
 
 /* ── Metric card ── */
 const MetricCard: React.FC<{ label: string; revA: number; revB: number }> = ({ label, revA, revB }) => {
@@ -141,26 +139,8 @@ const MetricCard: React.FC<{ label: string; revA: number; revB: number }> = ({ l
   );
 };
 
-/* ── Color-coded asset row (leaf level) ── */
-type DiffStatus = "new" | "missing" | "renamed" | "moved" | "unchanged";
-
-const statusColors: Record<DiffStatus, string> = {
-  new: "bg-green-50 dark:bg-green-950/30 border-l-2 border-l-green-500",
-  missing: "bg-red-50 dark:bg-red-950/30 border-l-2 border-l-red-500",
-  renamed: "bg-blue-50 dark:bg-blue-950/30 border-l-2 border-l-blue-500",
-  moved: "bg-amber-50 dark:bg-amber-950/30 border-l-2 border-l-amber-500",
-  unchanged: "",
-};
-
-const statusBadge: Record<DiffStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-  new: { label: "NEW", variant: "default" },
-  missing: { label: "MISSING", variant: "destructive" },
-  renamed: { label: "RENAMED", variant: "secondary" },
-  moved: { label: "MOVED", variant: "outline" },
-  unchanged: { label: "", variant: "secondary" },
-};
-
-const AssetLine: React.FC<{ asset: AssetRow; status: DiffStatus; renamedTo?: string }> = ({ asset, status, renamedTo }) => (
+/* ── Asset row ── */
+const AssetLine: React.FC<{ asset: AssetRow; status: DiffStatus }> = ({ asset, status }) => (
   <div className={`flex items-center gap-2 py-1 px-2 rounded text-xs ${statusColors[status]}`}>
     <span className="font-mono font-medium w-[120px] flex-shrink-0 truncate" title={asset.asset_number}>
       {asset.asset_number}
@@ -171,9 +151,6 @@ const AssetLine: React.FC<{ asset: AssetRow; status: DiffStatus; renamedTo?: str
         {statusBadge[status].label}
       </Badge>
     )}
-    {renamedTo && (
-      <span className="text-[10px] text-blue-600 dark:text-blue-400 flex-shrink-0">→ {renamedTo}</span>
-    )}
   </div>
 );
 
@@ -182,10 +159,9 @@ const TreePanel: React.FC<{
   title: string;
   areas: AreaGroup[];
   diffMap: Map<string, DiffStatus>;
-  renameMap: Record<string, string>;
   filter: string;
   side: "left" | "right";
-}> = ({ title, areas, diffMap, renameMap, filter, side }) => {
+}> = ({ title, areas, diffMap, filter, side }) => {
   const filterLower = filter.toLowerCase();
 
   return (
@@ -246,7 +222,6 @@ const TreePanel: React.FC<{
                                     key={a.asset_number}
                                     asset={a}
                                     status={diffMap.get(a.asset_number) || "unchanged"}
-                                    renamedTo={renameMap[a.asset_number]}
                                   />
                                 ))}
                               </div>
@@ -266,6 +241,85 @@ const TreePanel: React.FC<{
   );
 };
 
+/* ── Structural matching logic ── */
+function buildStructuralDiff(revA: AssetRow[], revB: AssetRow[]) {
+  // Build lookup by normalized asset name for structural matching
+  const revAByName = new Map<string, AssetRow[]>();
+  for (const a of revA) {
+    const key = normalizeKey(a.asset_name);
+    if (!revAByName.has(key)) revAByName.set(key, []);
+    revAByName.get(key)!.push(a);
+  }
+
+  const revBByName = new Map<string, AssetRow[]>();
+  for (const b of revB) {
+    const key = normalizeKey(b.asset_name);
+    if (!revBByName.has(key)) revBByName.set(key, []);
+    revBByName.get(key)!.push(b);
+  }
+
+  // Also match by asset_number directly
+  const revAByNumber = new Map(revA.map(a => [a.asset_number, a]));
+  const revBByNumber = new Map(revB.map(b => [b.asset_number, b]));
+
+  const aDiff = new Map<string, DiffStatus>();
+  const bDiff = new Map<string, DiffStatus>();
+
+  // Check Rev A assets against Rev B
+  for (const a of revA) {
+    // Direct number match
+    const directMatch = revBByNumber.get(a.asset_number);
+    if (directMatch) {
+      // Same asset number exists — check if parent changed
+      if (directMatch.parent_asset_label !== a.parent_asset_label || directMatch.area_code !== a.area_code) {
+        aDiff.set(a.asset_number, "moved");
+      }
+      continue;
+    }
+
+    // Structural name match
+    const nameKey = normalizeKey(a.asset_name);
+    const nameMatches = revBByName.get(nameKey);
+    if (nameMatches && nameMatches.length > 0) {
+      // Asset exists structurally but under different number — check parent
+      const bestMatch = nameMatches[0];
+      if (bestMatch.parent_asset_label !== a.parent_asset_label || bestMatch.area_code !== a.area_code) {
+        aDiff.set(a.asset_number, "moved");
+      }
+      continue;
+    }
+
+    // Not found in Rev B
+    aDiff.set(a.asset_number, "missing");
+  }
+
+  // Check Rev B assets against Rev A
+  for (const b of revB) {
+    const directMatch = revAByNumber.get(b.asset_number);
+    if (directMatch) {
+      if (directMatch.parent_asset_label !== b.parent_asset_label || directMatch.area_code !== b.area_code) {
+        bDiff.set(b.asset_number, "moved");
+      }
+      continue;
+    }
+
+    const nameKey = normalizeKey(b.asset_name);
+    const nameMatches = revAByName.get(nameKey);
+    if (nameMatches && nameMatches.length > 0) {
+      const bestMatch = nameMatches[0];
+      if (bestMatch.parent_asset_label !== b.parent_asset_label || bestMatch.area_code !== b.area_code) {
+        bDiff.set(b.asset_number, "moved");
+      }
+      continue;
+    }
+
+    // New in Rev B
+    bDiff.set(b.asset_number, "new");
+  }
+
+  return { aDiff, bDiff };
+}
+
 /* ── Main comparison view ── */
 export const RevBComparisonView: React.FC = () => {
   const [filter, setFilter] = useState("");
@@ -275,32 +329,8 @@ export const RevBComparisonView: React.FC = () => {
   const { revAGroups, revBGroups, revADiff, revBDiff, metrics } = useMemo(() => {
     if (!revA || !revB) return { revAGroups: [], revBGroups: [], revADiff: new Map(), revBDiff: new Map(), metrics: null };
 
-    const revAIds = new Set(revA.map(a => a.asset_number));
-    const revBIds = new Set(revB.map(b => b.asset_number));
+    const { aDiff, bDiff } = buildStructuralDiff(revA, revB);
 
-    // Build diff maps
-    const aDiff = new Map<string, DiffStatus>();
-    const bDiff = new Map<string, DiffStatus>();
-
-    // Rev A items: mark as missing if not in Rev B (and not a known rename)
-    for (const a of revA) {
-      if (KNOWN_RENAMES[a.asset_number]) {
-        aDiff.set(a.asset_number, "renamed");
-      } else if (!revBIds.has(a.asset_number)) {
-        aDiff.set(a.asset_number, "missing");
-      }
-    }
-
-    // Rev B items: mark as new if not in Rev A (and not a known rename target)
-    for (const b of revB) {
-      if (REVERSE_RENAMES[b.asset_number]) {
-        bDiff.set(b.asset_number, "renamed");
-      } else if (!revAIds.has(b.asset_number)) {
-        bDiff.set(b.asset_number, "new");
-      }
-    }
-
-    // Metrics
     const countBy = (items: AssetRow[], type: ReturnType<typeof classifyAsset>) =>
       items.filter(a => classifyAsset(a.asset_name, a.parent_asset_label) === type).length;
 
@@ -345,8 +375,8 @@ export const RevBComparisonView: React.FC = () => {
       <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 flex items-start gap-3">
         <Eye className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
         <div className="text-xs">
-          <p className="font-semibold text-foreground">READ-ONLY Audit Comparison</p>
-          <p className="text-muted-foreground">No changes applied. Rev A is locked. This is a visual diff only.</p>
+          <p className="font-semibold text-foreground">READ-ONLY Structural Comparison</p>
+          <p className="text-muted-foreground">No changes applied. Rev A is locked. This compares physical asset existence and hierarchy placement — not tag IDs.</p>
         </div>
       </div>
 
@@ -365,10 +395,10 @@ export const RevBComparisonView: React.FC = () => {
 
       {/* Legend */}
       <div className="flex flex-wrap gap-3 text-xs">
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-green-500" /> New in Rev B</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-red-500" /> Missing from Rev B</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-amber-500" /> Moved</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-blue-500" /> Renamed</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-green-500" /> Exists in Rev B but not Rev A</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-red-500" /> Exists in Rev A but not Rev B</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-amber-500" /> Same asset, different parent</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm border border-border" /> Same asset, same location</span>
       </div>
 
       {/* Search */}
@@ -390,19 +420,17 @@ export const RevBComparisonView: React.FC = () => {
       {/* Side-by-side panels */}
       <div className="flex gap-0 border border-border rounded-lg overflow-hidden bg-card">
         <TreePanel
-          title="Processing Plant – Rev A (Original Build)"
+          title="Rev A – Original Processing Structure"
           areas={revAGroups}
           diffMap={revADiff}
-          renameMap={KNOWN_RENAMES}
           filter={filter}
           side="left"
         />
         <div className="w-px bg-border flex-shrink-0" />
         <TreePanel
-          title="Processing Plant – Rev B (2026 P&ID Extract)"
+          title="Rev B – P&ID Flow Structure (2026)"
           areas={revBGroups}
           diffMap={revBDiff}
-          renameMap={REVERSE_RENAMES}
           filter={filter}
           side="right"
         />
@@ -410,7 +438,7 @@ export const RevBComparisonView: React.FC = () => {
 
       {/* Footer */}
       <div className="text-xs text-muted-foreground text-center py-2">
-        Comparison based on Phase 3 Delta Report • {Object.keys(KNOWN_RENAMES).length} confirmed renames mapped • No data modified
+        Structural comparison based on physical asset existence and hierarchy placement • No data modified • No tags reassigned
       </div>
     </div>
   );
