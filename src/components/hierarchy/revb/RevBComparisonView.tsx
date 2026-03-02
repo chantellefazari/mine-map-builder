@@ -107,7 +107,7 @@ function buildTree(assets: AssetRow[]): AreaNode[] {
     }));
 }
 
-type HighlightStatus = "new" | "moved" | "missing" | null;
+type HighlightStatus = "new" | "moved" | "missing" | "filled" | null;
 
 function buildHighlightMap(revA: AssetRow[], revB: AssetRow[]): Map<string, HighlightStatus> {
   const map = new Map<string, HighlightStatus>();
