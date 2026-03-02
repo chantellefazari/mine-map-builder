@@ -52,20 +52,7 @@ function useRevAAssets() {
   });
 }
 
-function useRevBAssets() {
-  return useQuery({
-    queryKey: ["dual-tree-rev-b"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("processing_plant_assets_rev_b")
-        .select("asset_number, asset_name, area_code, area_label, sub_area, parent_asset_label")
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      return data as AssetRow[];
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-}
+// useRevBAssets removed — replaced by useRevBAssetsExtended below
 
 /* ── helpers ── */
 const AREA_ORDER = ["SITE", "UTL", "COM", "REC", "TAIL", "SUP"];
@@ -109,28 +96,39 @@ function buildTree(assets: AssetRow[]): AreaNode[] {
 
 type HighlightStatus = "new" | "moved" | "missing" | "filled" | null;
 
-function buildHighlightMap(revA: AssetRow[], revB: AssetRow[]): Map<string, HighlightStatus> {
+interface RevBAssetRow extends AssetRow {
+  change_type?: string;
+}
+
+function useRevBAssetsExtended() {
+  return useQuery({
+    queryKey: ["dual-tree-rev-b-extended"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("processing_plant_assets_rev_b")
+        .select("asset_number, asset_name, area_code, area_label, sub_area, parent_asset_label, change_type")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as RevBAssetRow[];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+function buildHighlightMap(revA: AssetRow[], revB: RevBAssetRow[]): Map<string, HighlightStatus> {
   const map = new Map<string, HighlightStatus>();
-  const revANames = new Map<string, AssetRow>();
-  for (const a of revA) {
-    revANames.set(a.asset_name.trim().toLowerCase(), a);
-  }
   const revANumbers = new Set(revA.map(a => a.asset_number));
 
   for (const b of revB) {
-    const nameKey = b.asset_name.trim().toLowerCase();
-    // Check by number first
+    // Component Fill from Excel master — purple
+    if (b.change_type === 'Component Fill') {
+      map.set(b.asset_number, "filled");
+      continue;
+    }
+    // Check by number
     if (revANumbers.has(b.asset_number)) {
       const matchA = revA.find(a => a.asset_number === b.asset_number);
       if (matchA && (matchA.parent_asset_label !== b.parent_asset_label || matchA.area_code !== b.area_code)) {
-        map.set(b.asset_number, "moved");
-      }
-      continue;
-    }
-    // Check by name
-    const nameMatch = revANames.get(nameKey);
-    if (nameMatch) {
-      if (nameMatch.parent_asset_label !== b.parent_asset_label || nameMatch.area_code !== b.area_code) {
         map.set(b.asset_number, "moved");
       }
       continue;
@@ -253,7 +251,8 @@ const ParentBranch: React.FC<{
           {assets.map(a => {
             const hl = showHighlights && highlightMap ? highlightMap.get(a.asset_number) : null;
             let bgClass = "";
-            if (hl === "new") bgClass = "bg-green-50 dark:bg-green-950/30 border-l-2 border-l-green-500";
+            if (hl === "filled") bgClass = "bg-purple-50 dark:bg-purple-950/30 border-l-2 border-l-purple-500";
+            else if (hl === "new") bgClass = "bg-green-50 dark:bg-green-950/30 border-l-2 border-l-green-500";
             else if (hl === "moved") bgClass = "bg-amber-50 dark:bg-amber-950/30 border-l-2 border-l-amber-500";
             else if (hl === "missing") bgClass = "bg-red-50 dark:bg-red-950/30 border-l-2 border-l-red-500";
 
@@ -261,6 +260,7 @@ const ParentBranch: React.FC<{
               <div key={a.asset_number} className={`flex items-center gap-2 py-0.5 px-2 rounded text-xs ${bgClass}`}>
                 <span className="font-mono font-medium w-[110px] flex-shrink-0 truncate text-foreground" title={a.asset_number}>{a.asset_number}</span>
                 <span className="flex-1 truncate text-muted-foreground" title={a.asset_name}>{a.asset_name}</span>
+                {hl === "filled" && <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-purple-500 text-purple-700 dark:text-purple-400">FILLED</Badge>}
                 {hl === "new" && <Badge variant="default" className="text-[9px] px-1 py-0 h-3.5">NEW</Badge>}
                 {hl === "moved" && <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-amber-500 text-amber-700 dark:text-amber-400">MOVED</Badge>}
                 {hl === "missing" && <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-red-500 text-red-700 dark:text-red-400">REVIEW</Badge>}
@@ -345,7 +345,7 @@ export const RevBComparisonView: React.FC = () => {
   const [showHighlights, setShowHighlights] = useState(false);
 
   const { data: revA, isLoading: loadA } = useRevAAssets();
-  const { data: revB, isLoading: loadB } = useRevBAssets();
+  const { data: revB, isLoading: loadB } = useRevBAssetsExtended();
 
   const treeA = useMemo(() => (revA ? buildTree(revA) : []), [revA]);
   const treeB = useMemo(() => (revB ? buildTree(revB) : []), [revB]);
@@ -375,6 +375,19 @@ export const RevBComparisonView: React.FC = () => {
       {showHighlights && (
         <TooltipProvider delayDuration={200}>
           <div className="flex flex-wrap items-center gap-4 text-xs bg-muted/30 border border-border rounded-lg px-4 py-2.5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="flex items-center gap-1.5 cursor-help">
+                  <span className="w-3 h-3 rounded-sm bg-purple-500" />
+                  <span className="font-medium">Component Fill</span>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[280px] text-xs">
+                <p className="font-semibold">Purple — Component Fill</p>
+                <p className="text-muted-foreground mt-0.5">Sub-equipment component added from the TCMG Asset Hierarchy Master spreadsheet. These are motors, gearboxes, MCC cells, instruments, and other sub-assets not shown on P&IDs but physically present on site.</p>
+              </TooltipContent>
+            </Tooltip>
+
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="flex items-center gap-1.5 cursor-help">
