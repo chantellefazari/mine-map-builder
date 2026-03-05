@@ -7,6 +7,7 @@ import { crushingPlantAreas } from "./crushingPlantData";
 import { useProcessingPlantAssets, useProcessingPidTags } from "@/hooks/useProcessingPlantAssets";
 import { Loader2 } from "lucide-react";
 import { FLPathSegment } from "./FLBreadcrumbContext";
+import { RevBTreeBranch } from "./RevBTreeBranch";
 
 interface AssetTreeProps {
   searchQuery?: string;
@@ -338,6 +339,9 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                   </TreeBranch>
                 );
               })()}
+
+              {/* Processing Plant (Rev B) – DB-driven from rev_b table */}
+              <RevBTreeBranch searchQuery={searchQuery} pathAfterSite={pathAfterSite} />
             </CollapsibleTreeNode>
           );
         })()}
