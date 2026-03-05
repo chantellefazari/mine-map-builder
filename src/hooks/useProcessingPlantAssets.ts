@@ -153,6 +153,22 @@ export function useProcessingPlantAssets() {
   });
 }
 
+export function useRevBPlantAssets() {
+  return useQuery({
+    queryKey: ["rev-b-plant-assets-tree"],
+    queryFn: async (): Promise<Area[]> => {
+      const { data, error } = await supabase
+        .from("processing_plant_assets_rev_b")
+        .select("id, area_code, area_label, sub_area, parent_asset_label, asset_number, asset_name, pid_tags, components, functional_location, sort_order")
+        .order("sort_order", { ascending: true });
+
+      if (error) throw error;
+      return buildAreasFromRows(data as DBAssetRow[]);
+    },
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
 export interface PidTagMapping {
   pidTag: string;
   assetNumber: string;
