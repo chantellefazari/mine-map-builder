@@ -227,7 +227,7 @@ export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ 
                                         {cfg.icon}
                                       </span>
                                     </td>
-                                    <td className={`p-1 font-mono font-medium text-primary w-32 ${isVirtual ? 'italic' : ''}`}>
+                                    <td className="p-1 font-mono font-medium text-primary w-32">
                                       {group.equipment.asset_number}
                                     </td>
                                     <td className="p-1">{group.equipment.asset_name}</td>
