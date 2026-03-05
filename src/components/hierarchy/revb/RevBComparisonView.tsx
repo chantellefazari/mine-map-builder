@@ -145,25 +145,66 @@ function buildHighlightMap(revA: AssetRow[], revB: RevBAssetRow[]): Map<string, 
 interface EquipmentNode {
   asset: AssetRow;
   components: AssetRow[];
+  isVirtual?: boolean;
+}
+
+const COMPONENT_SUFFIXES = ["-EXA-LCS", "-EXB-LCS", "-LCS", "-MCC", "-MTR", "-VSD", "-BRG", "-GBX", "-CPL", "-EXA", "-EXB", "-PIP"];
+
+function getParentAssetNumber(assetNumber: string): string | null {
+  for (const suffix of COMPONENT_SUFFIXES) {
+    if (assetNumber.endsWith(suffix)) {
+      return assetNumber.slice(0, -suffix.length);
+    }
+  }
+  return null;
 }
 
 function groupEquipmentAndComponents(assets: AssetRow[]): EquipmentNode[] {
-  const sorted = [...assets].sort((a, b) =>
-    a.asset_number.length - b.asset_number.length || a.asset_number.localeCompare(b.asset_number)
-  );
-  const assigned = new Set<string>();
-  const nodes: EquipmentNode[] = [];
-  for (const asset of sorted) {
-    if (assigned.has(asset.asset_number)) continue;
-    assigned.add(asset.asset_number);
-    const comps = sorted.filter(o =>
-      !assigned.has(o.asset_number) &&
-      o.asset_number.startsWith(asset.asset_number) &&
-      o.asset_number.length > asset.asset_number.length
-    );
-    comps.forEach(c => assigned.add(c.asset_number));
-    nodes.push({ asset, components: comps });
+  const componentMap = new Map<string, AssetRow[]>();
+  const equipment: AssetRow[] = [];
+
+  // Preserve incoming DB order to keep process flow sequence stable
+  for (const asset of assets) {
+    const parentNumber = getParentAssetNumber(asset.asset_number);
+    if (parentNumber) {
+      if (!componentMap.has(parentNumber)) componentMap.set(parentNumber, []);
+      componentMap.get(parentNumber)!.push(asset);
+    } else {
+      equipment.push(asset);
+    }
   }
+
+  const nodes: EquipmentNode[] = [];
+  const matchedParents = new Set<string>();
+
+  // Real equipment rows + their components
+  for (const eq of equipment) {
+    const comps = componentMap.get(eq.asset_number) ?? [];
+    if (comps.length > 0) matchedParents.add(eq.asset_number);
+    nodes.push({ asset: eq, components: comps });
+  }
+
+  // Orphan components (no explicit equipment row): create virtual parent
+  for (const [parentNumber, comps] of componentMap.entries()) {
+    if (matchedParents.has(parentNumber)) continue;
+
+    const baseName = comps[0]?.asset_name
+      ?.replace(/\s+(LCS|MCC Cell|MCC|Motor|VSD|Bearing|Gearbox|Coupling|Pipework)$/i, "")
+      ?.trim() || parentNumber;
+
+    const virtualParent: AssetRow = {
+      asset_number: parentNumber,
+      asset_name: baseName,
+      area_code: comps[0].area_code,
+      area_label: comps[0].area_label,
+      sub_area: comps[0].sub_area,
+      parent_asset_label: comps[0].parent_asset_label,
+      pid_tags: null,
+    };
+
+    nodes.push({ asset: virtualParent, components: comps, isVirtual: true });
+  }
+
   return nodes;
 }
 
