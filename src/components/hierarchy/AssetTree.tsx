@@ -339,6 +339,9 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                   </TreeBranch>
                 );
               })()}
+
+              {/* Processing Plant (Rev B) – DB-driven from rev_b table */}
+              <RevBTreeBranch searchQuery={searchQuery} pathAfterSite={pathAfterSite} />
             </CollapsibleTreeNode>
           );
         })()}
