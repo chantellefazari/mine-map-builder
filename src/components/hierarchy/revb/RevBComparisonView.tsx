@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Search, X, ChevronRight, ChevronDown, Eye, EyeOff, Info } from "lucide-react";
+import { Loader2, Search, X, ChevronRight, ChevronDown, Eye, EyeOff, Info, Tag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,7 @@ interface AssetRow {
   area_label: string;
   sub_area: string;
   parent_asset_label: string;
+  pid_tags?: string[] | null;
 }
 
 interface AreaNode {
@@ -106,7 +107,7 @@ function useRevBAssetsExtended() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("processing_plant_assets_rev_b")
-        .select("asset_number, asset_name, area_code, area_label, sub_area, parent_asset_label, change_type")
+        .select("asset_number, asset_name, area_code, area_label, sub_area, parent_asset_label, change_type, pid_tags")
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return data as RevBAssetRow[];
@@ -305,6 +306,25 @@ const ParentBranch: React.FC<{
   );
 };
 
+const PidTagIcon: React.FC<{ tags?: string[] | null }> = ({ tags }) => {
+  if (!tags || tags.length === 0) return null;
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Tag className="h-3 w-3 text-blue-500 flex-shrink-0 cursor-help" />
+        </TooltipTrigger>
+        <TooltipContent side="left" className="max-w-xs">
+          <p className="text-[10px] font-semibold mb-0.5">P&ID Tag(s)</p>
+          {tags.map((tag, i) => (
+            <p key={i} className="text-xs font-mono">{tag}</p>
+          ))}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
+
 const EquipmentBranch: React.FC<{
   node: EquipmentNode;
   highlightMap?: Map<string, HighlightStatus>;
@@ -321,6 +341,7 @@ const EquipmentBranch: React.FC<{
         <LevelDot level={6} />
         <span className="font-mono font-medium w-[110px] flex-shrink-0 truncate text-foreground" title={asset.asset_number}>{asset.asset_number}</span>
         <span className="flex-1 truncate text-muted-foreground" title={asset.asset_name}>{asset.asset_name}</span>
+        <PidTagIcon tags={asset.pid_tags} />
         <HlBadge hl={hl} />
       </div>
     );
@@ -333,6 +354,7 @@ const EquipmentBranch: React.FC<{
         <LevelDot level={6} />
         <span className="font-mono font-medium w-[100px] flex-shrink-0 truncate text-foreground" title={asset.asset_number}>{asset.asset_number}</span>
         <span className="flex-1 truncate text-muted-foreground" title={asset.asset_name}>{asset.asset_name}</span>
+        <PidTagIcon tags={asset.pid_tags} />
         <span className="text-[10px] text-muted-foreground">{components.length}</span>
         <HlBadge hl={hl} />
       </button>
@@ -345,6 +367,7 @@ const EquipmentBranch: React.FC<{
                 <LevelDot level={7} />
                 <span className="font-mono font-medium w-[110px] flex-shrink-0 truncate text-foreground/80" title={c.asset_number}>{c.asset_number}</span>
                 <span className="flex-1 truncate text-muted-foreground" title={c.asset_name}>{c.asset_name}</span>
+                <PidTagIcon tags={c.pid_tags} />
                 <HlBadge hl={chl} />
               </div>
             );
