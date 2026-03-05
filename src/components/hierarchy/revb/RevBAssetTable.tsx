@@ -1,5 +1,6 @@
 import React from "react";
-import { Plus, Pencil, Minus, Check } from "lucide-react";
+import { Plus, Pencil, Minus, Check, Tag } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export interface RevBAsset {
   id: string;
@@ -13,6 +14,7 @@ export interface RevBAsset {
   rev_status: string;
   notes: string;
   sort_order: number;
+  pid_tags: string[] | null;
 }
 
 export const CHANGE_CONFIG: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
@@ -106,6 +108,23 @@ export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ 
                               </td>
                               <td className="p-1 font-mono font-medium text-primary w-32">{a.asset_number}</td>
                               <td className="p-1">{a.asset_name}</td>
+                              <td className="p-1 w-8">
+                                {a.pid_tags && a.pid_tags.length > 0 && (
+                                  <TooltipProvider delayDuration={200}>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Tag className="h-3.5 w-3.5 text-blue-500 cursor-help" />
+                                      </TooltipTrigger>
+                                      <TooltipContent side="left" className="max-w-xs">
+                                        <p className="text-[10px] font-semibold mb-0.5">P&ID Tag(s)</p>
+                                        {a.pid_tags.map((tag, i) => (
+                                          <p key={i} className="text-xs font-mono">{tag}</p>
+                                        ))}
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                )}
+                              </td>
                             </tr>
                           );
                         })}
