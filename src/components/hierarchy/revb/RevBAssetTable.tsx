@@ -90,34 +90,29 @@ export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ 
                 <h4 className="text-xs font-semibold text-primary sticky top-8 bg-card py-1 border-b border-border mb-1 z-[5]">
                   {subArea} <span className="text-muted-foreground font-normal">({subAssets.length})</span>
                 </h4>
-                {Array.from(parentGroups.entries()).map(([parent, items]) => {
-                  const skipParentHeader = parent === subArea;
-                  return (
-                    <div key={parent} className={skipParentHeader ? "ml-1 mb-2" : "ml-3 mb-2"}>
-                      {!skipParentHeader && (
-                        <p className="text-[11px] font-medium text-muted-foreground mb-0.5">▸ {parent}</p>
-                      )}
-                      <table className="w-full text-xs ml-2">
-                        <tbody>
-                          {items.map(a => {
-                            const cfg = CHANGE_CONFIG[a.change_type] || CHANGE_CONFIG.New;
-                            return (
-                              <tr key={a.id} className="border-b border-border/30 hover:bg-muted/30">
-                                <td className="p-1 w-16">
-                                  <span className={`inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-medium ${cfg.color}`}>
-                                    {cfg.icon}
-                                  </span>
-                                </td>
-                                <td className="p-1 font-mono font-medium text-primary w-32">{a.asset_number}</td>
-                                <td className="p-1">{a.asset_name}</td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  );
-                })}
+                {Array.from(parentGroups.entries()).map(([parent, items]) => (
+                  <div key={parent} className="ml-3 mb-2">
+                    <p className="text-[11px] font-medium text-muted-foreground mb-0.5">▸ {parent}</p>
+                    <table className="w-full text-xs ml-2">
+                      <tbody>
+                        {items.map(a => {
+                          const cfg = CHANGE_CONFIG[a.change_type] || CHANGE_CONFIG.New;
+                          return (
+                            <tr key={a.id} className="border-b border-border/30 hover:bg-muted/30">
+                              <td className="p-1 w-16">
+                                <span className={`inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-medium ${cfg.color}`}>
+                                  {cfg.icon}
+                                </span>
+                              </td>
+                              <td className="p-1 font-mono font-medium text-primary w-32">{a.asset_number}</td>
+                              <td className="p-1">{a.asset_name}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                ))}
               </div>
             );
           })}
