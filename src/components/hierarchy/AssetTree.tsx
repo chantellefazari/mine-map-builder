@@ -7,6 +7,7 @@ import { crushingPlantAreas } from "./crushingPlantData";
 import { useProcessingPlantAssets, useProcessingPidTags } from "@/hooks/useProcessingPlantAssets";
 import { Loader2 } from "lucide-react";
 import { FLPathSegment } from "./FLBreadcrumbContext";
+import { RevBTreeBranch } from "./RevBTreeBranch";
 
 interface AssetTreeProps {
   searchQuery?: string;
