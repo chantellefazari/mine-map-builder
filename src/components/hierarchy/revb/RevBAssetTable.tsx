@@ -51,6 +51,121 @@ export const DiffSummary: React.FC<{ assets: RevBAsset[] }> = ({ assets }) => {
   );
 };
 
+// Component suffixes that indicate Level 7 sub-equipment
+const COMPONENT_SUFFIXES = ["-LCS", "-MCC", "-MTR", "-VSD", "-BRG", "-GBX", "-CPL", "-EXA-LCS", "-EXB-LCS", "-EXA", "-EXB", "-PIP"];
+
+function getParentAssetNumber(assetNumber: string): string | null {
+  // Try longest suffixes first
+  for (const suffix of COMPONENT_SUFFIXES.sort((a, b) => b.length - a.length)) {
+    if (assetNumber.endsWith(suffix)) {
+      return assetNumber.slice(0, -suffix.length);
+    }
+  }
+  return null;
+}
+
+interface EquipmentGroup {
+  equipment: RevBAsset;
+  components: RevBAsset[];
+}
+
+function groupEquipmentAndComponents(items: RevBAsset[]): (EquipmentGroup | RevBAsset)[] {
+  // Separate items into equipment and components
+  const componentMap = new Map<string, RevBAsset[]>();
+  const equipmentList: RevBAsset[] = [];
+
+  for (const item of items) {
+    const parentId = getParentAssetNumber(item.asset_number);
+    if (parentId) {
+      if (!componentMap.has(parentId)) componentMap.set(parentId, []);
+      componentMap.get(parentId)!.push(item);
+    } else {
+      equipmentList.push(item);
+    }
+  }
+
+  const result: (EquipmentGroup | RevBAsset)[] = [];
+
+  // Match components to their parent equipment
+  const usedComponentKeys = new Set<string>();
+  for (const equip of equipmentList) {
+    const comps = componentMap.get(equip.asset_number);
+    if (comps && comps.length > 0) {
+      result.push({ equipment: equip, components: comps });
+      usedComponentKeys.add(equip.asset_number);
+    } else {
+      result.push(equip);
+    }
+  }
+
+  // Orphaned components (parent equipment row doesn't exist) — create virtual parent
+  for (const [parentId, comps] of componentMap.entries()) {
+    if (!usedComponentKeys.has(parentId)) {
+      // Derive a name from the first component
+      const firstName = comps[0].asset_name;
+      // Strip the component type suffix from the name (e.g. "Elution Pump 1 LCS" -> "Elution Pump 1")
+      const cleanName = firstName
+        .replace(/\s+(LCS|MCC Cell|MCC|Motor|VSD|Bearing|Gearbox|Coupling|Exciter [AB]|Pipework)$/i, "")
+        .trim();
+      const virtualParent: RevBAsset = {
+        id: `virtual-${parentId}`,
+        area_code: comps[0].area_code,
+        area_label: comps[0].area_label,
+        sub_area: comps[0].sub_area,
+        parent_asset_label: comps[0].parent_asset_label,
+        asset_number: parentId,
+        asset_name: cleanName,
+        change_type: comps[0].change_type,
+        rev_status: comps[0].rev_status,
+        notes: "",
+        sort_order: comps[0].sort_order,
+        pid_tags: null,
+      };
+      result.push({ equipment: virtualParent, components: comps });
+    }
+  }
+
+  return result;
+}
+
+const ComponentRow: React.FC<{ asset: RevBAsset }> = ({ asset }) => {
+  const cfg = CHANGE_CONFIG[asset.change_type] || CHANGE_CONFIG.New;
+  // Extract just the component type from the name
+  const parentId = getParentAssetNumber(asset.asset_number);
+  const suffix = parentId ? asset.asset_number.slice(parentId.length + 1) : asset.asset_number;
+  
+  return (
+    <tr className="border-b border-border/20 hover:bg-muted/20">
+      <td className="p-1 w-16">
+        <span className={`inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-medium ${cfg.color}`}>
+          {cfg.icon}
+        </span>
+      </td>
+      <td className="p-1 pl-6 font-mono text-[11px] text-muted-foreground w-32">
+        └ {suffix}
+      </td>
+      <td className="p-1 text-[11px] text-muted-foreground">{asset.asset_name}</td>
+      <td className="p-1 w-8">
+        {asset.pid_tags && asset.pid_tags.length > 0 && (
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Tag className="h-3 w-3 text-blue-500 cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent side="left" className="max-w-xs">
+                <p className="text-[10px] font-semibold mb-0.5">P&ID Tag(s)</p>
+                {asset.pid_tags.map((tag, i) => (
+                  <p key={i} className="text-xs font-mono">{tag}</p>
+                ))}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </td>
+    </tr>
+  );
+};
+
 export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ assets, filter }) => {
   const filtered = filter
     ? assets.filter(a =>
@@ -92,46 +207,91 @@ export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ 
                 <h4 className="text-xs font-semibold text-primary sticky top-8 bg-card py-1 border-b border-border mb-1 z-[5]">
                   {subArea} <span className="text-muted-foreground font-normal">({subAssets.length})</span>
                 </h4>
-                {Array.from(parentGroups.entries()).map(([parent, items]) => (
-                  <div key={parent} className="ml-3 mb-2">
-                    <p className="text-[11px] font-medium text-muted-foreground mb-0.5">▸ {parent}</p>
-                    <table className="w-full text-xs ml-2">
-                      <tbody>
-                        {items.map(a => {
-                          const cfg = CHANGE_CONFIG[a.change_type] || CHANGE_CONFIG.New;
-                          return (
-                            <tr key={a.id} className="border-b border-border/30 hover:bg-muted/30">
-                              <td className="p-1 w-16">
-                                <span className={`inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-medium ${cfg.color}`}>
-                                  {cfg.icon}
-                                </span>
-                              </td>
-                              <td className="p-1 font-mono font-medium text-primary w-32">{a.asset_number}</td>
-                              <td className="p-1">{a.asset_name}</td>
-                              <td className="p-1 w-8">
-                                {a.pid_tags && a.pid_tags.length > 0 && (
-                                  <TooltipProvider delayDuration={200}>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Tag className="h-3.5 w-3.5 text-blue-500 cursor-help" />
-                                      </TooltipTrigger>
-                                      <TooltipContent side="left" className="max-w-xs">
-                                        <p className="text-[10px] font-semibold mb-0.5">P&ID Tag(s)</p>
-                                        {a.pid_tags.map((tag, i) => (
-                                          <p key={i} className="text-xs font-mono">{tag}</p>
-                                        ))}
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                )}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                ))}
+                {Array.from(parentGroups.entries()).map(([parent, items]) => {
+                  const groupedItems = groupEquipmentAndComponents(items);
+                  return (
+                    <div key={parent} className="ml-3 mb-2">
+                      <p className="text-[11px] font-medium text-muted-foreground mb-0.5">▸ {parent}</p>
+                      <table className="w-full text-xs ml-2">
+                        <tbody>
+                          {groupedItems.map(item => {
+                            if ('equipment' in item && 'components' in item) {
+                              const group = item as EquipmentGroup;
+                              const cfg = CHANGE_CONFIG[group.equipment.change_type] || CHANGE_CONFIG.New;
+                              const isVirtual = group.equipment.id.startsWith("virtual-");
+                              return (
+                                <React.Fragment key={group.equipment.id}>
+                                  <tr className="border-b border-border/30 hover:bg-muted/30">
+                                    <td className="p-1 w-16">
+                                      <span className={`inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-medium ${cfg.color}`}>
+                                        {cfg.icon}
+                                      </span>
+                                    </td>
+                                    <td className={`p-1 font-mono font-medium text-primary w-32 ${isVirtual ? 'italic' : ''}`}>
+                                      {group.equipment.asset_number}
+                                    </td>
+                                    <td className="p-1">{group.equipment.asset_name}</td>
+                                    <td className="p-1 w-8">
+                                      {group.equipment.pid_tags && group.equipment.pid_tags.length > 0 && (
+                                        <TooltipProvider delayDuration={200}>
+                                          <Tooltip>
+                                            <TooltipTrigger asChild>
+                                              <Tag className="h-3.5 w-3.5 text-blue-500 cursor-help" />
+                                            </TooltipTrigger>
+                                            <TooltipContent side="left" className="max-w-xs">
+                                              <p className="text-[10px] font-semibold mb-0.5">P&ID Tag(s)</p>
+                                              {group.equipment.pid_tags.map((tag, i) => (
+                                                <p key={i} className="text-xs font-mono">{tag}</p>
+                                              ))}
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        </TooltipProvider>
+                                      )}
+                                    </td>
+                                  </tr>
+                                  {group.components.map(comp => (
+                                    <ComponentRow key={comp.id} asset={comp} />
+                                  ))}
+                                </React.Fragment>
+                              );
+                            } else {
+                              const a = item as RevBAsset;
+                              const cfg = CHANGE_CONFIG[a.change_type] || CHANGE_CONFIG.New;
+                              return (
+                                <tr key={a.id} className="border-b border-border/30 hover:bg-muted/30">
+                                  <td className="p-1 w-16">
+                                    <span className={`inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-medium ${cfg.color}`}>
+                                      {cfg.icon}
+                                    </span>
+                                  </td>
+                                  <td className="p-1 font-mono font-medium text-primary w-32">{a.asset_number}</td>
+                                  <td className="p-1">{a.asset_name}</td>
+                                  <td className="p-1 w-8">
+                                    {a.pid_tags && a.pid_tags.length > 0 && (
+                                      <TooltipProvider delayDuration={200}>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <Tag className="h-3.5 w-3.5 text-blue-500 cursor-help" />
+                                          </TooltipTrigger>
+                                          <TooltipContent side="left" className="max-w-xs">
+                                            <p className="text-[10px] font-semibold mb-0.5">P&ID Tag(s)</p>
+                                            {a.pid_tags.map((tag, i) => (
+                                              <p key={i} className="text-xs font-mono">{tag}</p>
+                                            ))}
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                    )}
+                                  </td>
+                                </tr>
+                              );
+                            }
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  );
+                })}
               </div>
             );
           })}
