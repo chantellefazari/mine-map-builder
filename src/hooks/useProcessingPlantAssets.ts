@@ -162,18 +162,12 @@ const COMPONENT_TYPE_PATTERNS = [
 /**
  * Determines if an asset number represents a component of another asset.
  * Returns the parent asset number if it is, or null if not.
- * Handles patterns like:
- *   RWPA01-LCS → RWPA01
- *   CIP-TK01-MTR01 → CIP-TK01
- *   PMP-GRV01-LCS → PMP-GRV01
- *   TRSCN01-EXA-LCS → TRSCN01-EXA
  */
 function getComponentParent(assetNumber: string): string | null {
   const lastDash = assetNumber.lastIndexOf("-");
   if (lastDash <= 0) return null;
 
   const lastSegment = assetNumber.slice(lastDash + 1);
-  // Strip trailing digits to get the type code
   const typeCode = lastSegment.replace(/\d+$/, "");
 
   if (COMPONENT_TYPE_PATTERNS.includes(typeCode)) {
@@ -182,51 +176,80 @@ function getComponentParent(assetNumber: string): string | null {
   return null;
 }
 
+function inferVirtualParentName(componentName: string): string {
+  return componentName
+    .replace(/\s+(LCS|Motor|MCC\s*Cell|Gearbox|Variable\s*Speed\s*Drive|VSD|Coupling|Bearing|Seal|PH\s*Probe)$/i, "")
+    .trim();
+}
+
 /**
  * Auto-nest component-suffix assets under their parent equipment.
- * Handles multi-level nesting (e.g., TRSCN01 → TRSCN01-EXA → TRSCN01-EXA-LCS).
+ * If parent equipment is missing, create a virtual parent to preserve Level 6 → Level 7 structure.
  */
 function nestComponentsInAreas(areas: Area[]): Area[] {
   for (const area of areas) {
     for (const subArea of area.subAreas) {
       for (const pa of subArea.parentAssets) {
         const equipMap = new Map<string, Equipment>();
-        const allItems = [...pa.equipment];
-
-        // Index all equipment by asset number
-        for (const equip of allItems) {
-          equipMap.set(equip.assetNumber, equip);
-        }
-
-        // Sort by asset number length (shortest first) so parents exist before children
-        const sorted = [...allItems].sort((a, b) => a.assetNumber.length - b.assetNumber.length);
-
+        const orderIndex = new Map<string, number>();
+        const virtualParents = new Set<string>();
         const nested = new Set<string>();
 
-        // Nest components under parents
+        pa.equipment.forEach((equip, idx) => {
+          equipMap.set(equip.assetNumber, equip);
+          orderIndex.set(equip.assetNumber, idx);
+        });
+
+        // Process deeper asset numbers first so child rows can create/find their immediate parent
+        const sorted = [...pa.equipment].sort((a, b) => {
+          const aDepth = (a.assetNumber.match(/-/g) || []).length;
+          const bDepth = (b.assetNumber.match(/-/g) || []).length;
+          if (aDepth !== bDepth) return bDepth - aDepth;
+          return b.assetNumber.length - a.assetNumber.length;
+        });
+
         for (const equip of sorted) {
           const parentKey = getComponentParent(equip.assetNumber);
           if (!parentKey) continue;
 
-          const parentEquip = equipMap.get(parentKey);
-          if (parentEquip) {
-            if (!parentEquip.components) parentEquip.components = [];
-            const lastDash = equip.assetNumber.lastIndexOf("-");
-            const lastSegment = equip.assetNumber.slice(lastDash + 1);
-            const typeCode = lastSegment.replace(/\d+$/, "");
-
-            parentEquip.components.push({
-              componentCode: equip.assetNumber,
-              componentType: typeCode,
-              componentName: equip.name,
-              manufacturer: "",
-            });
-            nested.add(equip.assetNumber);
+          let parentEquip = equipMap.get(parentKey);
+          if (!parentEquip) {
+            parentEquip = {
+              assetNumber: parentKey,
+              name: inferVirtualParentName(equip.name) || parentKey,
+              components: [],
+              functionalLocation: equip.functionalLocation,
+            };
+            equipMap.set(parentKey, parentEquip);
+            virtualParents.add(parentKey);
+            orderIndex.set(parentKey, orderIndex.get(equip.assetNumber) ?? 9999);
           }
+
+          if (!parentEquip.components) parentEquip.components = [];
+          const lastDash = equip.assetNumber.lastIndexOf("-");
+          const lastSegment = equip.assetNumber.slice(lastDash + 1);
+          const typeCode = lastSegment.replace(/\d+$/, "");
+
+          parentEquip.components.push({
+            componentCode: equip.assetNumber,
+            componentType: typeCode,
+            componentName: equip.name,
+            manufacturer: "",
+          });
+          nested.add(equip.assetNumber);
         }
 
-        // Remove nested items from equipment array
-        pa.equipment = pa.equipment.filter(e => !nested.has(e.assetNumber));
+        const remainingOriginal = pa.equipment.filter((e) => !nested.has(e.assetNumber));
+        const virtualEquipment = [...virtualParents]
+          .map((assetNumber) => equipMap.get(assetNumber)!)
+          .filter(Boolean);
+
+        pa.equipment = [...remainingOriginal, ...virtualEquipment].sort((a, b) => {
+          const ia = orderIndex.get(a.assetNumber) ?? 9999;
+          const ib = orderIndex.get(b.assetNumber) ?? 9999;
+          if (ia !== ib) return ia - ib;
+          return a.assetNumber.localeCompare(b.assetNumber);
+        });
       }
     }
   }
