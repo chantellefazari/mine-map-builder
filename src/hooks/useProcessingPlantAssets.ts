@@ -58,7 +58,7 @@ function parseComponents(raw: any): Component[] {
   }
 }
 
-function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
+export function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
   // Preserve insertion order via Map
   const areaMap = new Map<string, {
     code: AreaType;
