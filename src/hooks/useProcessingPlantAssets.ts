@@ -153,80 +153,80 @@ export function useProcessingPlantAssets() {
   });
 }
 
-// Component suffixes that indicate Level 7 sub-equipment
-const COMPONENT_SUFFIXES = ["-LCS", "-MTR", "-MCC", "-VSD", "-GBX", "-CPL", "-BRG", "-SEAL", "-AGT"];
+// Component suffix patterns (without leading dash) that indicate Level 7 sub-equipment
+const COMPONENT_TYPE_PATTERNS = [
+  "LCS", "MTR", "MCC", "VSD", "GBX", "CPL", "BRG", "SEAL", "AGT",
+  "PH", "MC", "CP", "HST", "EXA", "EXB", "EXC",
+];
+
+/**
+ * Determines if an asset number represents a component of another asset.
+ * Returns the parent asset number if it is, or null if not.
+ * Handles patterns like:
+ *   RWPA01-LCS → RWPA01
+ *   CIP-TK01-MTR01 → CIP-TK01
+ *   PMP-GRV01-LCS → PMP-GRV01
+ *   TRSCN01-EXA-LCS → TRSCN01-EXA
+ */
+function getComponentParent(assetNumber: string): string | null {
+  const lastDash = assetNumber.lastIndexOf("-");
+  if (lastDash <= 0) return null;
+
+  const lastSegment = assetNumber.slice(lastDash + 1);
+  // Strip trailing digits to get the type code
+  const typeCode = lastSegment.replace(/\d+$/, "");
+
+  if (COMPONENT_TYPE_PATTERNS.includes(typeCode)) {
+    return assetNumber.slice(0, lastDash);
+  }
+  return null;
+}
 
 /**
  * Auto-nest component-suffix assets under their parent equipment.
- * e.g. RWPA01-MTR becomes a component of RWPA01.
+ * Handles multi-level nesting (e.g., TRSCN01 → TRSCN01-EXA → TRSCN01-EXA-LCS).
  */
 function nestComponentsInAreas(areas: Area[]): Area[] {
   for (const area of areas) {
     for (const subArea of area.subAreas) {
       for (const pa of subArea.parentAssets) {
         const equipMap = new Map<string, Equipment>();
-        const componentRows: Equipment[] = [];
-        const kept: Equipment[] = [];
+        const allItems = [...pa.equipment];
 
-        // First pass: identify parent equipment vs components
-        for (const equip of pa.equipment) {
-          let isComponent = false;
-          for (const suffix of COMPONENT_SUFFIXES) {
-            if (equip.assetNumber.endsWith(suffix)) {
-              isComponent = true;
-              break;
-            }
-          }
-          // Also check numbered suffixes like -MTR01, -LCS01
-          if (!isComponent) {
-            for (const suffix of COMPONENT_SUFFIXES) {
-              const baseSuffix = suffix; // e.g. "-MTR"
-              const idx = equip.assetNumber.lastIndexOf(baseSuffix);
-              if (idx > 0) {
-                const afterSuffix = equip.assetNumber.slice(idx + baseSuffix.length);
-                if (/^\d*$/.test(afterSuffix)) {
-                  isComponent = true;
-                  break;
-                }
-              }
-            }
-          }
-
-          if (isComponent) {
-            componentRows.push(equip);
-          } else {
-            equipMap.set(equip.assetNumber, equip);
-            kept.push(equip);
-          }
+        // Index all equipment by asset number
+        for (const equip of allItems) {
+          equipMap.set(equip.assetNumber, equip);
         }
 
-        // Second pass: nest components under their parent
-        for (const comp of componentRows) {
-          let parentKey: string | null = null;
-          for (const suffix of COMPONENT_SUFFIXES) {
-            const idx = comp.assetNumber.lastIndexOf(suffix);
-            if (idx > 0) {
-              parentKey = comp.assetNumber.slice(0, idx);
-              break;
-            }
-          }
+        // Sort by asset number length (shortest first) so parents exist before children
+        const sorted = [...allItems].sort((a, b) => a.assetNumber.length - b.assetNumber.length);
 
-          const parentEquip = parentKey ? equipMap.get(parentKey) : null;
+        const nested = new Set<string>();
+
+        // Nest components under parents
+        for (const equip of sorted) {
+          const parentKey = getComponentParent(equip.assetNumber);
+          if (!parentKey) continue;
+
+          const parentEquip = equipMap.get(parentKey);
           if (parentEquip) {
             if (!parentEquip.components) parentEquip.components = [];
+            const lastDash = equip.assetNumber.lastIndexOf("-");
+            const lastSegment = equip.assetNumber.slice(lastDash + 1);
+            const typeCode = lastSegment.replace(/\d+$/, "");
+
             parentEquip.components.push({
-              componentCode: comp.assetNumber,
-              componentType: comp.assetNumber.slice(comp.assetNumber.lastIndexOf("-") + 1).replace(/\d+$/, ""),
-              componentName: comp.name,
+              componentCode: equip.assetNumber,
+              componentType: typeCode,
+              componentName: equip.name,
               manufacturer: "",
             });
-          } else {
-            // No parent found — keep as equipment
-            kept.push(comp);
+            nested.add(equip.assetNumber);
           }
         }
 
-        pa.equipment = kept;
+        // Remove nested items from equipment array
+        pa.equipment = pa.equipment.filter(e => !nested.has(e.assetNumber));
       }
     }
   }
