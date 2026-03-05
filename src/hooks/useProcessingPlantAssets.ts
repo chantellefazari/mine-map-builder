@@ -153,6 +153,86 @@ export function useProcessingPlantAssets() {
   });
 }
 
+// Component suffix patterns (without leading dash) that indicate Level 7 sub-equipment
+const COMPONENT_TYPE_PATTERNS = [
+  "LCS", "MTR", "MCC", "VSD", "GBX", "CPL", "BRG", "SEAL", "AGT",
+  "PH", "MC", "CP", "HST", "EXA", "EXB", "EXC",
+];
+
+/**
+ * Determines if an asset number represents a component of another asset.
+ * Returns the parent asset number if it is, or null if not.
+ * Handles patterns like:
+ *   RWPA01-LCS → RWPA01
+ *   CIP-TK01-MTR01 → CIP-TK01
+ *   PMP-GRV01-LCS → PMP-GRV01
+ *   TRSCN01-EXA-LCS → TRSCN01-EXA
+ */
+function getComponentParent(assetNumber: string): string | null {
+  const lastDash = assetNumber.lastIndexOf("-");
+  if (lastDash <= 0) return null;
+
+  const lastSegment = assetNumber.slice(lastDash + 1);
+  // Strip trailing digits to get the type code
+  const typeCode = lastSegment.replace(/\d+$/, "");
+
+  if (COMPONENT_TYPE_PATTERNS.includes(typeCode)) {
+    return assetNumber.slice(0, lastDash);
+  }
+  return null;
+}
+
+/**
+ * Auto-nest component-suffix assets under their parent equipment.
+ * Handles multi-level nesting (e.g., TRSCN01 → TRSCN01-EXA → TRSCN01-EXA-LCS).
+ */
+function nestComponentsInAreas(areas: Area[]): Area[] {
+  for (const area of areas) {
+    for (const subArea of area.subAreas) {
+      for (const pa of subArea.parentAssets) {
+        const equipMap = new Map<string, Equipment>();
+        const allItems = [...pa.equipment];
+
+        // Index all equipment by asset number
+        for (const equip of allItems) {
+          equipMap.set(equip.assetNumber, equip);
+        }
+
+        // Sort by asset number length (shortest first) so parents exist before children
+        const sorted = [...allItems].sort((a, b) => a.assetNumber.length - b.assetNumber.length);
+
+        const nested = new Set<string>();
+
+        // Nest components under parents
+        for (const equip of sorted) {
+          const parentKey = getComponentParent(equip.assetNumber);
+          if (!parentKey) continue;
+
+          const parentEquip = equipMap.get(parentKey);
+          if (parentEquip) {
+            if (!parentEquip.components) parentEquip.components = [];
+            const lastDash = equip.assetNumber.lastIndexOf("-");
+            const lastSegment = equip.assetNumber.slice(lastDash + 1);
+            const typeCode = lastSegment.replace(/\d+$/, "");
+
+            parentEquip.components.push({
+              componentCode: equip.assetNumber,
+              componentType: typeCode,
+              componentName: equip.name,
+              manufacturer: "",
+            });
+            nested.add(equip.assetNumber);
+          }
+        }
+
+        // Remove nested items from equipment array
+        pa.equipment = pa.equipment.filter(e => !nested.has(e.assetNumber));
+      }
+    }
+  }
+  return areas;
+}
+
 export function useRevBPlantAssets() {
   return useQuery({
     queryKey: ["rev-b-plant-assets-tree"],
@@ -163,7 +243,8 @@ export function useRevBPlantAssets() {
         .order("sort_order", { ascending: true });
 
       if (error) throw error;
-      return buildAreasFromRows(data as DBAssetRow[]);
+      const areas = buildAreasFromRows(data as DBAssetRow[]);
+      return nestComponentsInAreas(areas);
     },
     staleTime: 2 * 60 * 1000,
   });
