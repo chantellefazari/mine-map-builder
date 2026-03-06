@@ -56,8 +56,8 @@ Deno.serve(async (req) => {
 
     const confirmToken = po.confirmation_token;
     const email = supplier_email || "";
-    const confirmLink = `https://mine-map-builder.lovable.app/supplier-portal?mode=confirm&token=${confirmToken}`;
-    const trackingLink = `https://mine-map-builder.lovable.app/track-shipment?po=${po.id}`;
+    const confirmLink = `https://parts.minesite.ai/supplier-portal?mode=confirm&token=${confirmToken}`;
+    const trackingLink = `https://parts.minesite.ai/track-shipment?po=${po.id}`;
 
     // Build line items HTML
     const linesHtml = (lines || []).map((l: any, i: number) => `

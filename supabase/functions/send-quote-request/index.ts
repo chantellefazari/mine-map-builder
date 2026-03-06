@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
     const projectRef = supabaseUrl.replace("https://", "").split(".")[0];
     const appUrl = `https://${projectRef}.supabase.co`;
     // Use the preview/published app URL pattern
-    const portalLink = `https://mine-map-builder.lovable.app/supplier-portal?mode=quote&token=${qr.token}`;
+    const portalLink = `https://parts.minesite.ai/supplier-portal?mode=quote&token=${qr.token}`;
 
     // Build HTML email
     const imageBlock = image_url
