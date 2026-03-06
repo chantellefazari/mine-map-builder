@@ -41,7 +41,7 @@ const SYSTEM_CODES: Record<string, string> = {
   "BM01 Primary Ball Mill": "BM01",
   "MLUB01 Mill Lubrication System": "MLUB01",
   "CFP01 Cyclone Feed Pumps": "CFP01",
-  "MANC01 Milling Ancillary": "MANC01",
+  "MLANC01 Milling Ancillary": "MLANC01",
   // COM – Classification
   "CYC01 Primary Cyclones": "CYC01",
   "CANC01 Classification Ancillary": "CANC01",
