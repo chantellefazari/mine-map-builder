@@ -14,3 +14,15 @@ verify_jwt = false
 
 [functions.external-api]
 verify_jwt = false
+
+[functions.send-quote-request]
+verify_jwt = false
+
+[functions.submit-quote-response]
+verify_jwt = false
+
+[functions.send-purchase-order]
+verify_jwt = false
+
+[functions.confirm-purchase-order]
+verify_jwt = false

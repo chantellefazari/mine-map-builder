@@ -495,6 +495,7 @@ export type Database = {
         Row: {
           attachment_url: string | null
           comments: string
+          confirmation_token: string | null
           confirmed_on_site: boolean
           created_at: string
           created_by: string
@@ -509,10 +510,14 @@ export type Database = {
           order_date: string | null
           po_number: string
           pr_id: string | null
+          quote_request_id: string | null
           received_by: string
           status: string
           supervisor: string
           supplier: string
+          supplier_confirmed: boolean
+          supplier_confirmed_at: string | null
+          supplier_eta_update: string
           total_value: number
           updated_at: string
           work_order_id: string | null
@@ -520,6 +525,7 @@ export type Database = {
         Insert: {
           attachment_url?: string | null
           comments?: string
+          confirmation_token?: string | null
           confirmed_on_site?: boolean
           created_at?: string
           created_by?: string
@@ -534,10 +540,14 @@ export type Database = {
           order_date?: string | null
           po_number: string
           pr_id?: string | null
+          quote_request_id?: string | null
           received_by?: string
           status?: string
           supervisor?: string
           supplier?: string
+          supplier_confirmed?: boolean
+          supplier_confirmed_at?: string | null
+          supplier_eta_update?: string
           total_value?: number
           updated_at?: string
           work_order_id?: string | null
@@ -545,6 +555,7 @@ export type Database = {
         Update: {
           attachment_url?: string | null
           comments?: string
+          confirmation_token?: string | null
           confirmed_on_site?: boolean
           created_at?: string
           created_by?: string
@@ -559,10 +570,14 @@ export type Database = {
           order_date?: string | null
           po_number?: string
           pr_id?: string | null
+          quote_request_id?: string | null
           received_by?: string
           status?: string
           supervisor?: string
           supplier?: string
+          supplier_confirmed?: boolean
+          supplier_confirmed_at?: string | null
+          supplier_eta_update?: string
           total_value?: number
           updated_at?: string
           work_order_id?: string | null
@@ -573,6 +588,13 @@ export type Database = {
             columns: ["pr_id"]
             isOneToOne: false
             referencedRelation: "purchase_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "po_tracker_quote_request_id_fkey"
+            columns: ["quote_request_id"]
+            isOneToOne: false
+            referencedRelation: "quote_requests"
             referencedColumns: ["id"]
           },
           {
@@ -1082,6 +1104,131 @@ export type Database = {
             columns: ["work_order_id"]
             isOneToOne: false
             referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quote_requests: {
+        Row: {
+          created_at: string
+          created_by: string
+          expires_at: string | null
+          id: string
+          image_url: string
+          notes: string
+          part_description: string
+          part_number: string
+          quantity: number
+          spare_id: string | null
+          specifications: string
+          status: string
+          supplier_email: string
+          supplier_id: string | null
+          supplier_name: string
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          expires_at?: string | null
+          id?: string
+          image_url?: string
+          notes?: string
+          part_description?: string
+          part_number?: string
+          quantity?: number
+          spare_id?: string | null
+          specifications?: string
+          status?: string
+          supplier_email?: string
+          supplier_id?: string | null
+          supplier_name?: string
+          token?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          expires_at?: string | null
+          id?: string
+          image_url?: string
+          notes?: string
+          part_description?: string
+          part_number?: string
+          quantity?: number
+          spare_id?: string | null
+          specifications?: string
+          status?: string
+          supplier_email?: string
+          supplier_id?: string | null
+          supplier_name?: string
+          token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_requests_spare_id_fkey"
+            columns: ["spare_id"]
+            isOneToOne: false
+            referencedRelation: "site_spares"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quote_requests_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quote_responses: {
+        Row: {
+          created_at: string
+          currency: string
+          id: string
+          lead_time_days: number
+          notes: string
+          quote_request_id: string
+          responded_at: string
+          supplier_reference: string
+          total_price: number
+          unit_price: number
+          validity_days: number
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          id?: string
+          lead_time_days?: number
+          notes?: string
+          quote_request_id: string
+          responded_at?: string
+          supplier_reference?: string
+          total_price?: number
+          unit_price?: number
+          validity_days?: number
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          id?: string
+          lead_time_days?: number
+          notes?: string
+          quote_request_id?: string
+          responded_at?: string
+          supplier_reference?: string
+          total_price?: number
+          unit_price?: number
+          validity_days?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_responses_quote_request_id_fkey"
+            columns: ["quote_request_id"]
+            isOneToOne: false
+            referencedRelation: "quote_requests"
             referencedColumns: ["id"]
           },
         ]
