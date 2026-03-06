@@ -214,6 +214,17 @@ export const PurchaseOrdersTab: React.FC = () => {
                   Please confirm receipt and provide delivery updates using the link below.
                 </p>
 
+                {/* Part image */}
+                {emailPreviewPO.image_url && (
+                  <div className="flex justify-center">
+                    <img
+                      src={emailPreviewPO.image_url}
+                      alt="Part reference"
+                      className="rounded-md border max-h-40 object-contain bg-white"
+                    />
+                  </div>
+                )}
+
                 {/* PO details */}
                 <div className="rounded-md border bg-muted/20 p-4 space-y-3">
                   <div className="grid grid-cols-2 gap-2 text-sm">
