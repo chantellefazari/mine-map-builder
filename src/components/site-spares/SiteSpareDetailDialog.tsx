@@ -28,7 +28,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ChevronLeft, ChevronRight, Trash2, Upload, X, ImageIcon, FileText } from "lucide-react";
+import { ChevronLeft, ChevronRight, Trash2, Upload, X, ImageIcon, FileText, FlaskConical } from "lucide-react";
 import { Sparkles, Loader2, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -36,6 +36,7 @@ import type { SiteSpareItem } from "@/hooks/useSiteSpares";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
 import { getEdgeFunctionErrorMessage } from "@/utils/getEdgeFunctionErrorMessage";
 import { SupplierSelector } from "@/components/shared/SupplierSelector";
+import { Switch } from "@/components/ui/switch";
 import { QuoteComparisonDialog } from "@/components/shared/QuoteComparisonDialog";
 import { classifyCategory, getAllCategories, getCategoryColor, type SpareCategory } from "@/utils/categoryClassification";
 
@@ -89,6 +90,7 @@ export const SiteSpareDetailDialog = ({
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [selectedGeneratedIndex, setSelectedGeneratedIndex] = useState<number | null>(null);
   const [showQuoteComparison, setShowQuoteComparison] = useState(false);
+  const [practiceMode, setPracticeMode] = useState(false);
 
   useEffect(() => {
     if (spare) {
@@ -374,6 +376,23 @@ export const SiteSpareDetailDialog = ({
               </Button>
             </div>
 
+            {/* Practice Mode Toggle */}
+            <div className="flex items-center justify-between p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
+              <div className="flex items-center gap-1.5">
+                <FlaskConical className="h-4 w-4 text-amber-500" />
+                <div>
+                  <span className="text-xs font-medium">Practice Mode</span>
+                  <p className="text-[10px] text-muted-foreground leading-tight">
+                    {practiceMode ? "Using demo suppliers" : "Using real suppliers"}
+                  </p>
+                </div>
+              </div>
+              <Switch
+                checked={practiceMode}
+                onCheckedChange={setPracticeMode}
+              />
+            </div>
+
             {/* Generated Images Gallery */}
             {generatedImages.length > 0 && (
               <div className="space-y-2">
@@ -527,6 +546,7 @@ export const SiteSpareDetailDialog = ({
                 imageUrl={localSpare.image_urls?.[0] || undefined}
                 quantity={localSpare.qty_on_hand ?? undefined}
                 specifications={localSpare.specifications || undefined}
+                practiceMode={practiceMode}
               />
               <Button
                 variant="ghost"

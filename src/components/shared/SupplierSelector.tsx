@@ -17,8 +17,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
-import { FileText, Users, Send, Plus, Loader2, FlaskConical } from "lucide-react";
+import { Users, Send, Plus, Loader2, FlaskConical } from "lucide-react";
 import { useSuppliers } from "@/hooks/useSuppliers";
 import { usePracticeSuppliers } from "@/hooks/usePracticeSuppliers";
 import { useSupplierMatching, type MatchedSupplier } from "@/hooks/useSupplierMatching";
@@ -38,6 +37,8 @@ interface SupplierSelectorProps {
   imageUrl?: string;
   quantity?: number;
   specifications?: string;
+  /** When true, uses practice suppliers instead of real ones */
+  practiceMode?: boolean;
 }
 
 export const SupplierSelector = ({
@@ -50,11 +51,10 @@ export const SupplierSelector = ({
   imageUrl,
   quantity,
   specifications,
+  practiceMode = false,
 }: SupplierSelectorProps) => {
   const { suppliers: realSuppliers, isLoading: realLoading } = useSuppliers();
   const { suppliers: practiceSuppliersList, isLoading: practiceLoading } = usePracticeSuppliers();
-
-  const [practiceMode, setPracticeMode] = useState(false);
 
   const activeSuppliers = practiceMode ? practiceSuppliersList : realSuppliers;
   const isLoading = practiceMode ? practiceLoading : realLoading;
@@ -115,21 +115,9 @@ export const SupplierSelector = ({
 
   return (
     <div className="space-y-2">
-      {/* Practice Mode Toggle */}
-      <div className="flex items-center justify-between p-2 rounded-md bg-muted/50 border">
-        <div className="flex items-center gap-1.5">
-          <FlaskConical className="h-3.5 w-3.5 text-amber-500" />
-          <span className="text-[11px] font-medium">Practice Mode</span>
-        </div>
-        <Switch
-          checked={practiceMode}
-          onCheckedChange={setPracticeMode}
-          className="scale-75"
-        />
-      </div>
-
       {practiceMode && (
-        <div className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded px-2 py-1">
+        <div className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded px-2 py-1 flex items-center gap-1">
+          <FlaskConical className="h-3 w-3 shrink-0" />
           Using practice suppliers — emails go to demo addresses only.
         </div>
       )}
