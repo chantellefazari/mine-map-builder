@@ -139,7 +139,7 @@ export const SupplierSelector = ({
           value={currentPreferredSupplier || NONE_VALUE}
           onValueChange={(val) => onSelectSupplier(val === NONE_VALUE ? "" : val)}
         >
-          <SelectTrigger className="h-8 text-sm">
+          <SelectTrigger className="h-auto min-h-[2.25rem] text-sm whitespace-normal text-left py-1.5">
             <SelectValue placeholder="Select supplier" />
           </SelectTrigger>
           <SelectContent>
@@ -148,8 +148,8 @@ export const SupplierSelector = ({
             </SelectItem>
             {matchedSuppliers.map((s) => (
               <SelectItem key={s.id} value={s.name}>
-                <span className="flex items-center gap-2">
-                  <span>{s.name}</span>
+                <span className="flex items-center gap-2 flex-wrap">
+                  <span className="break-words">{s.name}</span>
                   {s.isPreferredForPart && (
                     <Badge className="bg-emerald-500/20 text-emerald-700 border-emerald-500/30 text-[9px] px-1 py-0">
                       Preferred
@@ -175,20 +175,39 @@ export const SupplierSelector = ({
         </p>
       )}
 
-      {/* Request Quote button */}
+      {/* Request Quote to ALL matching suppliers */}
       {hasMatchedSuppliers ? (
         <Button
           variant="outline"
           size="sm"
           className="w-full text-xs"
-          onClick={() => {
-            const selected = matchedSuppliers.find(
-              (s) => s.name === currentPreferredSupplier
-            );
-            if (selected) {
-              handleRequestQuote(selected.name, selected.email, selected.id);
-            } else {
-              toast.info("Select a supplier first, or use manual entry below");
+          onClick={async () => {
+            if (!partDescription) return;
+            setSending(true);
+            let sentCount = 0;
+            try {
+              for (const s of matchedSuppliers) {
+                if (!s.email) continue;
+                await sendQuoteRequest.mutateAsync({
+                  spare_id: spareId,
+                  part_description: partDescription,
+                  part_number: partNumber || "",
+                  image_url: imageUrl || "",
+                  quantity: quantity || 1,
+                  specifications: specifications || "",
+                  supplier_name: s.name,
+                  supplier_email: s.email,
+                  supplier_id: s.id,
+                });
+                sentCount++;
+              }
+              toast.success(`Quote requests sent to ${sentCount} supplier${sentCount !== 1 ? "s" : ""}`);
+            } catch {
+              if (sentCount > 0) {
+                toast.warning(`Sent to ${sentCount} suppliers before an error occurred`);
+              }
+            } finally {
+              setSending(false);
             }
           }}
           disabled={sending || !partDescription}
@@ -198,7 +217,7 @@ export const SupplierSelector = ({
           ) : (
             <Send className="h-3.5 w-3.5 mr-1.5" />
           )}
-          Request Quote
+          Request Quote from All ({matchedSuppliers.length})
         </Button>
       ) : (
         <Button
