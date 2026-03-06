@@ -18,6 +18,7 @@ export interface POTrackerItem {
   po_number: string;
   work_order_id: string | null;
   pr_id: string | null;
+  quote_request_id: string | null;
   supplier: string;
   supervisor: string;
   description: string;
@@ -34,6 +35,10 @@ export interface POTrackerItem {
   comments: string;
   attachment_url: string;
   freight_tracking_number: string;
+  confirmation_token: string | null;
+  supplier_confirmed: boolean;
+  supplier_confirmed_at: string | null;
+  supplier_eta_update: string;
   created_at: string;
   updated_at: string;
   created_by?: string;
