@@ -3,9 +3,6 @@ import { Send, Clock, CheckCircle2, AlertCircle, Loader2, FileText, ChevronDown,
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
@@ -304,147 +301,134 @@ export const QuoteRequestsTab: React.FC = () => {
                 {/* Expanded: supplier comparison table */}
                 {isExpanded && (
                   <div className="border-t">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="bg-muted/40">
-                          <TableHead className="text-xs font-semibold">Supplier</TableHead>
-                          <TableHead className="text-xs font-semibold">Email</TableHead>
-                          <TableHead className="text-xs font-semibold">Status</TableHead>
-                          <TableHead className="text-xs font-semibold">Unit Price</TableHead>
-                          <TableHead className="text-xs font-semibold">Total Price</TableHead>
-                          <TableHead className="text-xs font-semibold">Lead Time</TableHead>
-                         <TableHead className="text-xs font-semibold">Validity</TableHead>
-                          <TableHead className="text-xs font-semibold">Supplier Ref</TableHead>
-                          <TableHead className="text-xs font-semibold">Sent</TableHead>
-                          <TableHead className="text-xs font-semibold">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {group.requests.map((qr) => {
-                          const qrResponses = responses[qr.id] || [];
-                          const latestResponse = qrResponses[0];
-                          const isLowest = latestResponse && lowestPrice !== null && latestResponse.unit_price === lowestPrice;
-                          const isLoadingResp = loadingResponses.has(qr.id);
+                    <div className="divide-y">
+                      {group.requests.map((qr) => {
+                        const qrResponses = responses[qr.id] || [];
+                        const latestResponse = qrResponses[0];
+                        const isLowest = latestResponse && lowestPrice !== null && latestResponse.unit_price === lowestPrice;
+                        const isLoadingResp = loadingResponses.has(qr.id);
+                        const respNotes = qrResponses.filter((r) => r.notes);
 
-                          return (
-                            <TableRow key={qr.id} className="hover:bg-muted/20">
-                              <TableCell className="text-sm font-medium">{qr.supplier_name || "—"}</TableCell>
-                              <TableCell className="text-xs text-muted-foreground">{qr.supplier_email}</TableCell>
-                              <TableCell>
+                        return (
+                          <div key={qr.id} className="px-4 py-3 hover:bg-muted/20 transition-colors">
+                            {/* Main row info */}
+                            <div className="flex items-start gap-4 flex-wrap">
+                              {/* Supplier info */}
+                              <div className="min-w-[180px] flex-1">
+                                <p className="text-sm font-medium">{qr.supplier_name || "—"}</p>
+                                <p className="text-xs text-muted-foreground">{qr.supplier_email}</p>
+                              </div>
+
+                              {/* Status */}
+                              <div className="shrink-0">
                                 <Badge className={`text-[10px] gap-1 ${statusColors[qr.status] || ""}`}>
                                   {qr.status === "Sent" && <Clock className="h-3 w-3" />}
                                   {qr.status === "Quoted" && <FileText className="h-3 w-3" />}
                                   {qr.status === "Accepted" && <CheckCircle2 className="h-3 w-3" />}
                                   {qr.status}
                                 </Badge>
-                              </TableCell>
-                              <TableCell className="text-sm">
-                                {isLoadingResp ? (
-                                  <Loader2 className="h-3 w-3 animate-spin" />
-                                ) : latestResponse ? (
-                                  <span className={isLowest ? "font-bold text-emerald-600" : ""}>
-                                    ${latestResponse.unit_price.toFixed(2)}
-                                    {isLowest && " ★"}
-                                  </span>
-                                ) : (
-                                  <span className="text-muted-foreground">—</span>
-                                )}
-                              </TableCell>
-                              <TableCell className="text-sm">
-                                {latestResponse ? `$${latestResponse.total_price.toFixed(2)}` : "—"}
-                              </TableCell>
-                              <TableCell className="text-sm">
-                                {latestResponse ? `${latestResponse.lead_time_days} days` : "—"}
-                              </TableCell>
-                              <TableCell className="text-sm">
-                                {latestResponse ? `${latestResponse.validity_days} days` : "—"}
-                              </TableCell>
-                              <TableCell className="text-xs text-muted-foreground">
-                                {latestResponse?.supplier_reference || "—"}
-                              </TableCell>
-                              <TableCell className="text-xs text-muted-foreground">
-                                {format(new Date(qr.created_at), "dd MMM yyyy")}
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-1">
+                              </div>
+
+                              {/* Pricing & details */}
+                              {isLoadingResp ? (
+                                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                              ) : latestResponse ? (
+                                <div className="flex items-center gap-4 text-sm flex-wrap">
+                                  <div>
+                                    <p className="text-[10px] text-muted-foreground">Unit Price</p>
+                                    <p className={isLowest ? "font-bold text-emerald-600" : "font-medium"}>
+                                      ${latestResponse.unit_price.toFixed(2)}{isLowest && " ★"}
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] text-muted-foreground">Total</p>
+                                    <p className="font-medium">${latestResponse.total_price.toFixed(2)}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] text-muted-foreground">Lead Time</p>
+                                    <p>{latestResponse.lead_time_days} days</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] text-muted-foreground">Validity</p>
+                                    <p>{latestResponse.validity_days} days</p>
+                                  </div>
+                                  {latestResponse.supplier_reference && (
+                                    <div>
+                                      <p className="text-[10px] text-muted-foreground">Supplier Ref</p>
+                                      <p className="font-mono text-xs">{latestResponse.supplier_reference}</p>
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <span className="text-xs text-muted-foreground">Awaiting response</span>
+                              )}
+
+                              {/* Sent date */}
+                              <div className="shrink-0 text-right">
+                                <p className="text-[10px] text-muted-foreground">Sent</p>
+                                <p className="text-xs">{format(new Date(qr.created_at), "dd MMM yyyy")}</p>
+                              </div>
+
+                              {/* Actions */}
+                              <div className="flex items-center gap-1 shrink-0">
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-7 text-xs gap-1 text-muted-foreground"
+                                  onClick={() => setEmailPreview(qr)}
+                                >
+                                  <Mail className="h-3 w-3" /> Email
+                                </Button>
+                                {qr.status === "Quoted" && (
                                   <Button
                                     size="sm"
-                                    variant="ghost"
-                                    className="h-7 text-xs gap-1 text-muted-foreground"
-                                    onClick={() => setEmailPreview(qr)}
+                                    variant="outline"
+                                    className="h-7 text-xs gap-1"
+                                    onClick={() => handleAccept(qr)}
+                                    disabled={accepting === qr.id}
                                   >
-                                    <Mail className="h-3 w-3" /> Email
+                                    {accepting === qr.id ? (
+                                      <Loader2 className="h-3 w-3 animate-spin" />
+                                    ) : (
+                                      <CheckCircle2 className="h-3 w-3" />
+                                    )}
+                                    {accepting === qr.id ? "Processing..." : "Accept & Create PO"}
                                   </Button>
-                                  {qr.status === "Quoted" && (
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      className="h-7 text-xs gap-1"
-                                      onClick={() => handleAccept(qr)}
-                                      disabled={accepting === qr.id}
-                                    >
-                                      {accepting === qr.id ? (
-                                        <Loader2 className="h-3 w-3 animate-spin" />
-                                      ) : (
-                                        <CheckCircle2 className="h-3 w-3" />
-                                      )}
-                                      {accepting === qr.id ? "Processing..." : "Accept & Create PO"}
-                                    </Button>
-                                  )}
-                                  {qr.status === "Sent" && (
-                                    <Badge variant="outline" className="text-xs gap-1">
-                                      <Clock className="h-3 w-3" /> Awaiting
-                                    </Badge>
-                                  )}
-                                  {(qr.status === "Accepted" || qr.status === "PO Issued") && (
-                                    <Badge className="bg-primary/20 text-primary border-primary/30 text-[10px] gap-1">
-                                      <CheckCircle2 className="h-3 w-3" /> {qr.status === "PO Issued" ? "PO Issued" : "Selected"}
-                                    </Badge>
-                                  )}
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-
-                    {/* Supplier Response Notes & Conditions */}
-                    {group.requests.some((qr) => {
-                      const qrResp = responses[qr.id] || [];
-                      return qrResp.some((r) => r.notes) || qr.notes;
-                    }) && (
-                      <div className="px-4 py-3 border-t bg-muted/20 space-y-2">
-                        {/* Supplier response notes */}
-                        {group.requests.map((qr) => {
-                          const qrResp = responses[qr.id] || [];
-                          const respWithNotes = qrResp.filter((r) => r.notes);
-                          if (respWithNotes.length === 0 && !qr.notes) return null;
-                          return (
-                            <div key={qr.id} className="space-y-1">
-                              {respWithNotes.length > 0 && respWithNotes.map((r) => (
-                                <div key={r.id} className="rounded-md border border-emerald-500/20 bg-emerald-500/5 p-2">
-                                  <p className="text-[10px] font-semibold text-emerald-700 mb-0.5 flex items-center gap-1">
-                                    <FileText className="h-3 w-3" />
-                                    Supplier Response — {qr.supplier_name}
-                                  </p>
-                                  <p className="text-xs text-foreground">{r.notes}</p>
-                                  {r.supplier_reference && (
-                                    <p className="text-[10px] text-muted-foreground mt-1">Ref: {r.supplier_reference}</p>
-                                  )}
-                                </div>
-                              ))}
-                              {qr.notes && (
-                                <div className="rounded-md border bg-muted/30 p-2">
-                                  <p className="text-[10px] font-semibold text-muted-foreground mb-0.5">Our Notes — {qr.supplier_name}</p>
-                                  <p className="text-xs text-muted-foreground">{qr.notes}</p>
-                                </div>
-                              )}
+                                )}
+                                {qr.status === "Sent" && (
+                                  <Badge variant="outline" className="text-xs gap-1">
+                                    <Clock className="h-3 w-3" /> Awaiting
+                                  </Badge>
+                                )}
+                                {(qr.status === "Accepted" || qr.status === "PO Issued") && (
+                                  <Badge className="bg-primary/20 text-primary border-primary/30 text-[10px] gap-1">
+                                    <CheckCircle2 className="h-3 w-3" /> {qr.status === "PO Issued" ? "PO Issued" : "Selected"}
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
-                          );
-                        })}
-                      </div>
-                    )}
+
+                            {/* Inline supplier conditions / notes */}
+                            {(respNotes.length > 0 || qr.notes) && (
+                              <div className="mt-2 space-y-1.5 ml-0">
+                                {respNotes.map((r) => (
+                                  <div key={r.id} className="rounded-md border border-emerald-500/20 bg-emerald-500/5 px-3 py-2">
+                                    <p className="text-[10px] font-semibold text-emerald-700 mb-0.5">Supplier Conditions:</p>
+                                    <p className="text-xs text-foreground">{r.notes}</p>
+                                  </div>
+                                ))}
+                                {qr.notes && (
+                                  <div className="rounded-md border bg-muted/30 px-3 py-2">
+                                    <p className="text-[10px] font-semibold text-muted-foreground mb-0.5">Our Notes:</p>
+                                    <p className="text-xs text-muted-foreground">{qr.notes}</p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
 
                     <div className="px-4 py-2 border-t bg-muted/10">
                       <p className="text-[10px] text-muted-foreground text-center">
