@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ShoppingCart, Building2, Package } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Building2, Package, FlaskConical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SupplierRegisterSection } from "@/components/suppliers-procurement/SupplierRegisterSection";
 import { SupplierCatalogueSection } from "@/components/suppliers-procurement/SupplierCatalogueSection";
+import { PracticeSupplierSection } from "@/components/suppliers-procurement/PracticeSupplierSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const SuppliersProcurement = () => {
@@ -54,6 +55,13 @@ const SuppliersProcurement = () => {
                 <Package className="h-4 w-4 mr-2" />
                 Supplier Catalogue & OEM Data
               </TabsTrigger>
+              <TabsTrigger 
+                value="practice" 
+                className="h-14 rounded-none border-b-2 border-transparent px-6 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              >
+                <FlaskConical className="h-4 w-4 mr-2" />
+                Practice Suppliers
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -78,6 +86,15 @@ const SuppliersProcurement = () => {
               </p>
             </div>
             <SupplierCatalogueSection />
+          </TabsContent>
+
+          <TabsContent value="practice" className="mt-0">
+            <div className="mb-4 p-4 bg-amber-500/10 rounded-lg border border-amber-500/30">
+              <p className="text-sm text-amber-700 dark:text-amber-400">
+                <strong>Practice Suppliers</strong> — Use this tab to add demo/test suppliers for presentations. These are separate from the real supplier register and won't affect production data.
+              </p>
+            </div>
+            <PracticeSupplierSection />
           </TabsContent>
         </Tabs>
       </main>

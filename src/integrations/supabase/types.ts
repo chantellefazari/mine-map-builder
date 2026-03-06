@@ -739,6 +739,72 @@ export type Database = {
         }
         Relationships: []
       }
+      practice_suppliers: {
+        Row: {
+          abn: string
+          code: string
+          contact: string
+          created_at: string
+          default_delivery_address: string
+          email: string
+          id: string
+          is_preferred: boolean
+          location: string
+          mobile: string
+          name: string
+          notes: string
+          organises_freight: boolean
+          payment_terms: string
+          preferred_freight_company: string
+          type: string
+          updated_at: string
+          what_used_for: string
+          work_phone: string
+        }
+        Insert: {
+          abn?: string
+          code?: string
+          contact?: string
+          created_at?: string
+          default_delivery_address?: string
+          email?: string
+          id?: string
+          is_preferred?: boolean
+          location?: string
+          mobile?: string
+          name: string
+          notes?: string
+          organises_freight?: boolean
+          payment_terms?: string
+          preferred_freight_company?: string
+          type?: string
+          updated_at?: string
+          what_used_for?: string
+          work_phone?: string
+        }
+        Update: {
+          abn?: string
+          code?: string
+          contact?: string
+          created_at?: string
+          default_delivery_address?: string
+          email?: string
+          id?: string
+          is_preferred?: boolean
+          location?: string
+          mobile?: string
+          name?: string
+          notes?: string
+          organises_freight?: boolean
+          payment_terms?: string
+          preferred_freight_company?: string
+          type?: string
+          updated_at?: string
+          what_used_for?: string
+          work_phone?: string
+        }
+        Relationships: []
+      }
       processing_functional_locations: {
         Row: {
           area: string
