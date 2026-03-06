@@ -11,7 +11,7 @@ const SYSTEM_CODES: Record<string, string> = {
   "BLDG01 Site Buildings": "BLDG01",
   // UTL – Power Generation
   "GEN01 Generators": "GEN01",
-  "PSTA01 Power Station": "PSTA01",
+  // PSTA01 removed — all generators sit under GEN01
   // UTL – Electrical / Controls
   "CR01 Control Room": "CR01",
   "FMCC01 Field MCCs": "FMCC01",
