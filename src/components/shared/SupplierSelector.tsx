@@ -66,6 +66,7 @@ export const SupplierSelector = ({
   const [manualName, setManualName] = useState("");
   const [manualEmail, setManualEmail] = useState("");
   const [sending, setSending] = useState(false);
+  const [requestQty, setRequestQty] = useState<number>(quantity || 1);
 
   const handleRequestQuote = async (supplierName?: string, supplierEmail?: string, supplierId?: string) => {
     if (!partDescription) {
@@ -86,7 +87,7 @@ export const SupplierSelector = ({
         part_description: partDescription,
         part_number: partNumber || "",
         image_url: imageUrl || "",
-        quantity: quantity || 1,
+        quantity: requestQty,
         specifications: specifications || "",
         supplier_name: supplierName || "",
         supplier_email: emailToUse,
@@ -175,6 +176,18 @@ export const SupplierSelector = ({
         </p>
       )}
 
+      {/* Quantity input */}
+      <div className="flex items-center gap-2">
+        <label className="text-xs font-medium text-muted-foreground shrink-0">Qty:</label>
+        <Input
+          type="number"
+          min={1}
+          value={requestQty}
+          onChange={(e) => setRequestQty(Math.max(1, Number(e.target.value)))}
+          className="h-8 w-20 text-xs"
+        />
+      </div>
+
       {/* Request Quote to ALL matching suppliers */}
       {hasMatchedSuppliers ? (
         <Button
@@ -193,7 +206,7 @@ export const SupplierSelector = ({
                   part_description: partDescription,
                   part_number: partNumber || "",
                   image_url: imageUrl || "",
-                  quantity: quantity || 1,
+                  quantity: requestQty,
                   specifications: specifications || "",
                   supplier_name: s.name,
                   supplier_email: s.email,
@@ -276,7 +289,7 @@ export const SupplierSelector = ({
               <p className="font-medium">Part Details:</p>
               <p>{partDescription || "—"}</p>
               {partNumber && <p>P/N: {partNumber}</p>}
-              {quantity && <p>Qty: {quantity}</p>}
+              {requestQty && <p>Qty: {requestQty}</p>}
             </div>
           </div>
           <DialogFooter>
