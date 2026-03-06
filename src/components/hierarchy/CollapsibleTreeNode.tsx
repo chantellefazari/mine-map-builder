@@ -126,14 +126,21 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
     }
   }, [forceExpanded]);
 
-  // Pulse animation for highlighted nodes
+  // Pulse animation + scroll into view for highlighted nodes
   useEffect(() => {
     if (isHighlighted && nodeRef.current) {
       nodeRef.current.classList.add("animate-pulse");
-      const timeout = setTimeout(() => {
+      // Scroll to first highlighted match after tree expansion settles
+      const scrollTimeout = setTimeout(() => {
+        nodeRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 400);
+      const pulseTimeout = setTimeout(() => {
         nodeRef.current?.classList.remove("animate-pulse");
       }, 2000);
-      return () => clearTimeout(timeout);
+      return () => {
+        clearTimeout(scrollTimeout);
+        clearTimeout(pulseTimeout);
+      };
     }
   }, [isHighlighted]);
   
