@@ -34,6 +34,7 @@ interface PODetails {
   status: string;
   supplier_confirmed: boolean;
   eta: string | null;
+  image_url?: string | null;
   lines: Array<{
     part_description: string;
     part_number: string;
@@ -420,8 +421,18 @@ const SupplierPortal = () => {
               <div className="text-sm space-y-1">
                 <p><span className="text-muted-foreground">Supplier:</span> {poDetails.supplier}</p>
                 <p><span className="text-muted-foreground">Description:</span> {poDetails.description}</p>
-                <p><span className="text-muted-foreground">Total Value:</span> ${poDetails.total_value?.toFixed(2)}</p>
+                <p><span className="text-muted-foreground">Total Value:</span> ${Number(poDetails.total_value || 0).toFixed(2)}</p>
               </div>
+
+              {poDetails.image_url && (
+                <div className="flex justify-center py-2">
+                  <img
+                    src={poDetails.image_url}
+                    alt="Part reference"
+                    className="rounded-md border max-h-48 object-contain bg-white"
+                  />
+                </div>
+              )}
 
               {poDetails.lines.length > 0 && (
                 <div className="border rounded-md overflow-hidden">

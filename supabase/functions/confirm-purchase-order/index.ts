@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
 
       const { data: po, error } = await supabase
         .from("po_tracker")
-        .select("id, po_number, supplier, description, total_value, status, supplier_confirmed, eta")
+        .select("id, po_number, supplier, description, total_value, status, supplier_confirmed, eta, quote_request_id")
         .eq("confirmation_token", token)
         .single();
 
@@ -41,7 +41,20 @@ Deno.serve(async (req) => {
         .select("part_description, part_number, quantity_ordered, unit_price")
         .eq("po_tracker_id", po.id);
 
-      return new Response(JSON.stringify({ ...po, lines: lines || [] }), {
+      // Fetch image from linked quote request
+      let image_url = null;
+      if (po.quote_request_id) {
+        const { data: qr } = await supabase
+          .from("quote_requests")
+          .select("image_url")
+          .eq("id", po.quote_request_id)
+          .single();
+        if (qr?.image_url) image_url = qr.image_url;
+      }
+
+      const { quote_request_id, ...poData } = po;
+
+      return new Response(JSON.stringify({ ...poData, lines: lines || [], image_url }), {
         status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

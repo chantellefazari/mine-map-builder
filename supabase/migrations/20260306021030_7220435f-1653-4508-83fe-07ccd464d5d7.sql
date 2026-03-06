@@ -1,0 +1,2 @@
+UPDATE po_tracker SET total_value = 70 WHERE id = 'b578d275-59e6-4260-ac2c-4e54f14ac9eb' AND total_value = 0;
+UPDATE po_tracker_lines SET unit_price = 14 WHERE po_tracker_id = 'b578d275-59e6-4260-ac2c-4e54f14ac9eb' AND unit_price = 0;
