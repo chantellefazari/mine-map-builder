@@ -313,7 +313,8 @@ export const QuoteRequestsTab: React.FC = () => {
                           <TableHead className="text-xs font-semibold">Unit Price</TableHead>
                           <TableHead className="text-xs font-semibold">Total Price</TableHead>
                           <TableHead className="text-xs font-semibold">Lead Time</TableHead>
-                          <TableHead className="text-xs font-semibold">Validity</TableHead>
+                         <TableHead className="text-xs font-semibold">Validity</TableHead>
+                          <TableHead className="text-xs font-semibold">Supplier Ref</TableHead>
                           <TableHead className="text-xs font-semibold">Sent</TableHead>
                           <TableHead className="text-xs font-semibold">Actions</TableHead>
                         </TableRow>
@@ -357,6 +358,9 @@ export const QuoteRequestsTab: React.FC = () => {
                               </TableCell>
                               <TableCell className="text-sm">
                                 {latestResponse ? `${latestResponse.validity_days} days` : "—"}
+                              </TableCell>
+                              <TableCell className="text-xs text-muted-foreground">
+                                {latestResponse?.supplier_reference || "—"}
                               </TableCell>
                               <TableCell className="text-xs text-muted-foreground">
                                 {format(new Date(qr.created_at), "dd MMM yyyy")}
@@ -405,15 +409,40 @@ export const QuoteRequestsTab: React.FC = () => {
                       </TableBody>
                     </Table>
 
-                    {/* Notes section */}
-                    {group.requests.some((qr) => qr.notes) && (
-                      <div className="px-4 py-2 border-t bg-muted/20">
-                        <p className="text-[10px] font-semibold text-muted-foreground mb-1">Notes:</p>
-                        {group.requests.filter((qr) => qr.notes).map((qr) => (
-                          <p key={qr.id} className="text-[11px] text-muted-foreground">
-                            <span className="font-medium">{qr.supplier_name}:</span> {qr.notes}
-                          </p>
-                        ))}
+                    {/* Supplier Response Notes & Conditions */}
+                    {group.requests.some((qr) => {
+                      const qrResp = responses[qr.id] || [];
+                      return qrResp.some((r) => r.notes) || qr.notes;
+                    }) && (
+                      <div className="px-4 py-3 border-t bg-muted/20 space-y-2">
+                        {/* Supplier response notes */}
+                        {group.requests.map((qr) => {
+                          const qrResp = responses[qr.id] || [];
+                          const respWithNotes = qrResp.filter((r) => r.notes);
+                          if (respWithNotes.length === 0 && !qr.notes) return null;
+                          return (
+                            <div key={qr.id} className="space-y-1">
+                              {respWithNotes.length > 0 && respWithNotes.map((r) => (
+                                <div key={r.id} className="rounded-md border border-emerald-500/20 bg-emerald-500/5 p-2">
+                                  <p className="text-[10px] font-semibold text-emerald-700 mb-0.5 flex items-center gap-1">
+                                    <FileText className="h-3 w-3" />
+                                    Supplier Response — {qr.supplier_name}
+                                  </p>
+                                  <p className="text-xs text-foreground">{r.notes}</p>
+                                  {r.supplier_reference && (
+                                    <p className="text-[10px] text-muted-foreground mt-1">Ref: {r.supplier_reference}</p>
+                                  )}
+                                </div>
+                              ))}
+                              {qr.notes && (
+                                <div className="rounded-md border bg-muted/30 p-2">
+                                  <p className="text-[10px] font-semibold text-muted-foreground mb-0.5">Our Notes — {qr.supplier_name}</p>
+                                  <p className="text-xs text-muted-foreground">{qr.notes}</p>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
 
