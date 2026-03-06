@@ -393,6 +393,36 @@ export const SiteSpareDetailDialog = ({
               />
             </div>
 
+            {/* Practice Supplier Selector — shown on left when practice mode is active */}
+            {practiceMode && (
+              <div className="space-y-1 border border-amber-500/30 rounded-lg p-3 bg-amber-500/5">
+                <SupplierSelector
+                  category={localSpare.category}
+                  currentPreferredSupplier={localSpare.preferred_supplier}
+                  onSelectSupplier={(name) => {
+                    handleFieldChange("preferred_supplier", name);
+                    if (spare) onUpdate(spare.id, { preferred_supplier: name });
+                  }}
+                  spareId={spare?.id}
+                  partDescription={localSpare.description}
+                  partNumber={localSpare.part_number || undefined}
+                  imageUrl={localSpare.image_urls?.[0] || undefined}
+                  quantity={localSpare.qty_on_hand ?? undefined}
+                  specifications={localSpare.specifications || undefined}
+                  practiceMode={true}
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full text-xs mt-1"
+                  onClick={() => setShowQuoteComparison(true)}
+                >
+                  <FileText className="h-3.5 w-3.5 mr-1.5" />
+                  View Quote History
+                </Button>
+              </div>
+            )}
+
             {/* Generated Images Gallery */}
             {generatedImages.length > 0 && (
               <div className="space-y-2">
@@ -531,8 +561,13 @@ export const SiteSpareDetailDialog = ({
               />
             </div>
 
-            {/* Supplier Matching Section */}
-            <div className="border-t pt-3 mt-3">
+            {/* Supplier Matching Section — dimmed when practice mode is on */}
+            <div className={`border-t pt-3 mt-3 transition-all ${practiceMode ? "opacity-30 pointer-events-none select-none" : ""}`}>
+              {practiceMode && (
+                <p className="text-[10px] text-muted-foreground italic mb-2">
+                  Disabled — practice mode is active on the left panel.
+                </p>
+              )}
               <SupplierSelector
                 category={localSpare.category}
                 currentPreferredSupplier={localSpare.preferred_supplier}
@@ -546,7 +581,6 @@ export const SiteSpareDetailDialog = ({
                 imageUrl={localSpare.image_urls?.[0] || undefined}
                 quantity={localSpare.qty_on_hand ?? undefined}
                 specifications={localSpare.specifications || undefined}
-                practiceMode={practiceMode}
               />
               <Button
                 variant="ghost"
