@@ -653,6 +653,47 @@ export type Database = {
           },
         ]
       }
+      po_transit_checkpoints: {
+        Row: {
+          created_at: string
+          id: string
+          latitude: number | null
+          location: string
+          longitude: number | null
+          notes: string
+          po_tracker_id: string
+          scanned_by: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          location?: string
+          longitude?: number | null
+          notes?: string
+          po_tracker_id: string
+          scanned_by?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          location?: string
+          longitude?: number | null
+          notes?: string
+          po_tracker_id?: string
+          scanned_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "po_transit_checkpoints_po_tracker_id_fkey"
+            columns: ["po_tracker_id"]
+            isOneToOne: false
+            referencedRelation: "po_tracker"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       po_uploads: {
         Row: {
           category: string

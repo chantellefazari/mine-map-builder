@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Package, Loader2, CheckCircle2, Clock, Mail } from "lucide-react";
+import { POPdfGenerator } from "./POPdfGenerator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -160,7 +161,8 @@ export const PurchaseOrdersTab: React.FC = () => {
                     <TableCell className="text-sm text-muted-foreground">
                       {po.order_date ? format(new Date(po.order_date), "dd MMM yyyy") : "—"}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="flex gap-1">
+                      <POPdfGenerator po={po} />
                       <Button
                         size="sm"
                         variant="ghost"
@@ -287,6 +289,13 @@ export const PurchaseOrdersTab: React.FC = () => {
                   <p className="text-xs text-muted-foreground mb-1">Supplier Confirmation Link</p>
                   <code className="text-xs text-primary break-all">
                     {window.location.origin}/supplier-portal?mode=confirm&token={emailPreviewPO.confirmation_token || "pending"}
+                  </code>
+                </div>
+
+                <div className="rounded-md bg-muted/50 border p-3 text-center">
+                  <p className="text-xs text-muted-foreground mb-1">📦 Shipment Tracking Link (QR on PDF)</p>
+                  <code className="text-xs text-foreground break-all">
+                    {window.location.origin}/track-shipment?po={emailPreviewPO.id}
                   </code>
                 </div>
 
