@@ -55,7 +55,7 @@ const SYSTEM_CODES: Record<string, string> = {
   "LCH01 Leach Tanks": "LCH01",
   "CIP01 CIP Tanks & Agitators": "CIP01",
   "CT01 Carbon Transfer": "CT01",
-  "LANC01 Leaching Ancillary": "LANC01",
+  "LCANC01 Leaching Ancillary": "LCANC01",
   "ADS01 Adsorption Ancillary": "ADS01",
   // REC – Elution
   "AW01 Acid Wash": "AW01",
