@@ -159,12 +159,15 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
     );
   }
 
+  const hasRevBMatches = expandedPaths.size > 0;
+
   return (
     <TreeBranch horizontal>
-      <CollapsibleTreeNode label="Processing Plant (Rev B)" level="plant" hasChildren defaultExpanded={false} depth={1} ancestorPath={pathAfterSite}>
+      <CollapsibleTreeNode label="Processing Plant (Rev B)" level="plant" hasChildren defaultExpanded={hasRevBMatches} forceExpanded={hasRevBMatches} depth={1} ancestorPath={pathAfterSite}>
         {areas.map((area, areaIndex) => {
           const areaSegment: FLPathSegment = { level: "area", label: area.label, code: area.code, areaType: area.code };
           const pathAfterArea = [...pathAfterPP, areaSegment];
+          const areaExpanded = expandedPaths.has(area.code);
 
           return (
             <TreeBranch key={area.code} isLast={areaIndex === areas.length - 1}>
@@ -175,6 +178,8 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                 level="area"
                 areaType={area.code as AreaType}
                 hasChildren={area.subAreas.length > 0}
+                defaultExpanded={areaExpanded}
+                forceExpanded={areaExpanded}
                 isHighlighted={matchesSearch(area.label) || matchesSearch(area.code)}
                 depth={2}
                 ancestorPath={pathAfterPP}
@@ -182,6 +187,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                 {area.subAreas.map((subArea, subIndex) => {
                   const subAreaSegment: FLPathSegment = { level: "subarea", label: subArea.label };
                   const pathAfterSubArea = [...pathAfterArea, subAreaSegment];
+                  const subAreaExpanded = expandedPaths.has(`${area.code}/${subArea.label}`);
 
                   return (
                     <TreeBranch key={subIndex} isLast={subIndex === area.subAreas.length - 1}>
@@ -190,6 +196,8 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                         label={subArea.label}
                         level="subarea"
                         hasChildren={subArea.parentAssets.length > 0}
+                        defaultExpanded={subAreaExpanded}
+                        forceExpanded={subAreaExpanded}
                         isHighlighted={matchesSearch(subArea.label)}
                         depth={3}
                         ancestorPath={pathAfterArea}
@@ -197,6 +205,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                         {subArea.parentAssets.map((parentAsset, paIndex) => {
                           const paSegment: FLPathSegment = { level: "parentAsset", label: parentAsset.label };
                           const pathAfterPA = [...pathAfterSubArea, paSegment];
+                          const paExpanded = expandedPaths.has(`${area.code}/${subArea.label}/${parentAsset.label}`);
 
                           return (
                             <TreeBranch key={paIndex} isLast={paIndex === subArea.parentAssets.length - 1}>
@@ -206,6 +215,8 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                 label={parentAsset.label}
                                 level="parentAsset"
                                 hasChildren={parentAsset.equipment.length > 0}
+                                defaultExpanded={paExpanded}
+                                forceExpanded={paExpanded}
                                 isHighlighted={matchesSearch(parentAsset.label)}
                                 depth={4}
                                 ancestorPath={pathAfterSubArea}
@@ -216,6 +227,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                   const hasComponents = equip.components && equip.components.length > 0;
                                   const equipSegment: FLPathSegment = { level: "equipment", label: equipLabel };
                                   const pathAfterEquip = [...pathAfterPA, equipSegment];
+                                  const isPidMatch = pidMatchesSearch(equip.pidTags);
 
                                   return (
                                     <TreeBranch key={equipIndex} isLast={equipIndex === parentAsset.equipment.length - 1}>
@@ -224,7 +236,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                         label={equipLabel}
                                         level="equipment"
                                         hasChildren={hasComponents}
-                                        isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name)}
+                                        isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || isPidMatch}
                                         pidTags={equip.pidTags}
                                         depth={5}
                                         ancestorPath={pathAfterPA}
