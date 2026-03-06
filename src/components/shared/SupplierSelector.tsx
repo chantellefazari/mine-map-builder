@@ -90,7 +90,7 @@ export const SupplierSelector = ({
         specifications: specifications || "",
         supplier_name: supplierName || "",
         supplier_email: emailToUse,
-        supplier_id: supplierId,
+        supplier_id: practiceMode ? undefined : supplierId,
       });
       toast.success(`Quote request sent to ${supplierName || emailToUse}`);
     } catch {
@@ -197,7 +197,7 @@ export const SupplierSelector = ({
                   specifications: specifications || "",
                   supplier_name: s.name,
                   supplier_email: s.email,
-                  supplier_id: s.id,
+                  supplier_id: practiceMode ? undefined : s.id,
                 });
                 sentCount++;
               }
