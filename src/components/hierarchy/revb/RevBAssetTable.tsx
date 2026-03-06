@@ -168,13 +168,17 @@ const ComponentRow: React.FC<{ asset: RevBAsset }> = ({ asset }) => {
 
 export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ assets, filter }) => {
   const filtered = filter
-    ? assets.filter(a =>
-        a.asset_number.toLowerCase().includes(filter.toLowerCase()) ||
-        a.asset_name.toLowerCase().includes(filter.toLowerCase()) ||
-        a.area_label.toLowerCase().includes(filter.toLowerCase()) ||
-        a.parent_asset_label.toLowerCase().includes(filter.toLowerCase()) ||
-        a.sub_area.toLowerCase().includes(filter.toLowerCase())
-      )
+    ? assets.filter(a => {
+        const q = filter.toLowerCase();
+        return (
+          a.asset_number.toLowerCase().includes(q) ||
+          a.asset_name.toLowerCase().includes(q) ||
+          a.area_label.toLowerCase().includes(q) ||
+          a.parent_asset_label.toLowerCase().includes(q) ||
+          a.sub_area.toLowerCase().includes(q) ||
+          (a.pid_tags && a.pid_tags.some(tag => tag.toLowerCase().includes(q)))
+        );
+      })
     : assets;
 
   // Group by area → sub-area → parent
