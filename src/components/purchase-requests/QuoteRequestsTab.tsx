@@ -101,14 +101,23 @@ export const QuoteRequestsTab: React.FC = () => {
   const [accepting, setAccepting] = useState<string | null>(null);
 
   const handleAccept = async (qr: QuoteRequest) => {
+    // Ensure we have responses loaded
+    const qrResponses = responses[qr.id] || [];
+    const latestResponse = qrResponses[0];
+
+    if (!latestResponse) {
+      toast.error("No quote response found. Cannot accept without pricing data.");
+      return;
+    }
+
     setAccepting(qr.id);
     try {
-      // 1. Get the quote response for pricing
-      const qrResponses = responses[qr.id] || [];
-      const latestResponse = qrResponses[0];
-
-      // 2. Update quote status to Accepted
+      // 1. Update quote status to Accepted
       await updateStatus.mutateAsync({ id: qr.id, status: "Accepted" });
+
+      // 2. Calculate ETA from lead time
+      const etaDate = new Date();
+      etaDate.setDate(etaDate.getDate() + latestResponse.lead_time_days);
 
       // 3. Auto-create Purchase Order
       const po = await allocatePO.mutateAsync({
@@ -117,16 +126,18 @@ export const QuoteRequestsTab: React.FC = () => {
         freight_company: "",
         status: "Draft",
         confirmed_on_site: false,
+        order_date: new Date().toISOString().split("T")[0],
+        eta: etaDate.toISOString().split("T")[0],
         comments: `Auto-generated from accepted quote. Supplier: ${qr.supplier_name}`,
-        total_value: latestResponse ? latestResponse.total_price : 0,
+        total_value: latestResponse.total_price,
         quote_request_id: qr.id,
         lines: [{
           part_description: qr.part_description,
           part_number: qr.part_number || "",
           quantity_ordered: qr.quantity,
-          unit_price: latestResponse ? latestResponse.unit_price : 0,
+          unit_price: latestResponse.unit_price,
           received_qty: 0,
-          notes: latestResponse ? `Lead time: ${latestResponse.lead_time_days} days` : "",
+          notes: `Lead time: ${latestResponse.lead_time_days} days | Validity: ${latestResponse.validity_days} days`,
         }],
       } as any);
 
