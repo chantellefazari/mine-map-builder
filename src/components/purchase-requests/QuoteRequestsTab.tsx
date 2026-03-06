@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Send, Clock, CheckCircle2, AlertCircle, Loader2, FileText, ChevronDown, ChevronRight, Package } from "lucide-react";
+import { Send, Clock, CheckCircle2, AlertCircle, Loader2, FileText, ChevronDown, ChevronRight, Package, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,10 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 import { useQuoteRequests, type QuoteRequest, type QuoteResponse } from "@/hooks/useQuoteRequests";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -52,6 +56,7 @@ export const QuoteRequestsTab: React.FC = () => {
   const [responses, setResponses] = useState<Record<string, QuoteResponse[]>>({});
   const [expandedPart, setExpandedPart] = useState<string | null>(null);
   const [loadingResponses, setLoadingResponses] = useState<Set<string>>(new Set());
+  const [emailPreview, setEmailPreview] = useState<QuoteRequest | null>(null);
 
   const loadResponsesForGroup = async (group: PartGroup) => {
     for (const qr of group.requests) {
@@ -284,26 +289,36 @@ export const QuoteRequestsTab: React.FC = () => {
                                 {format(new Date(qr.created_at), "dd MMM yyyy")}
                               </TableCell>
                               <TableCell>
-                                {qr.status === "Quoted" && (
+                                <div className="flex items-center gap-1">
                                   <Button
                                     size="sm"
-                                    variant="outline"
-                                    className="h-7 text-xs gap-1"
-                                    onClick={() => handleAccept(qr)}
+                                    variant="ghost"
+                                    className="h-7 text-xs gap-1 text-muted-foreground"
+                                    onClick={() => setEmailPreview(qr)}
                                   >
-                                    <CheckCircle2 className="h-3 w-3" /> Accept
+                                    <Mail className="h-3 w-3" /> Email
                                   </Button>
-                                )}
-                                {qr.status === "Sent" && (
-                                  <Badge variant="outline" className="text-xs gap-1">
-                                    <Clock className="h-3 w-3" /> Awaiting
-                                  </Badge>
-                                )}
-                                {qr.status === "Accepted" && (
-                                  <Badge className="bg-primary/20 text-primary border-primary/30 text-[10px] gap-1">
-                                    <CheckCircle2 className="h-3 w-3" /> Selected
-                                  </Badge>
-                                )}
+                                  {qr.status === "Quoted" && (
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="h-7 text-xs gap-1"
+                                      onClick={() => handleAccept(qr)}
+                                    >
+                                      <CheckCircle2 className="h-3 w-3" /> Accept
+                                    </Button>
+                                  )}
+                                  {qr.status === "Sent" && (
+                                    <Badge variant="outline" className="text-xs gap-1">
+                                      <Clock className="h-3 w-3" /> Awaiting
+                                    </Badge>
+                                  )}
+                                  {qr.status === "Accepted" && (
+                                    <Badge className="bg-primary/20 text-primary border-primary/30 text-[10px] gap-1">
+                                      <CheckCircle2 className="h-3 w-3" /> Selected
+                                    </Badge>
+                                  )}
+                                </div>
                               </TableCell>
                             </TableRow>
                           );
@@ -335,6 +350,100 @@ export const QuoteRequestsTab: React.FC = () => {
           })}
         </div>
       )}
+
+      {/* Email Preview Dialog */}
+      <Dialog open={!!emailPreview} onOpenChange={() => setEmailPreview(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-base flex items-center gap-2">
+              <Mail className="h-4 w-4" /> Email Sent to Supplier
+            </DialogTitle>
+          </DialogHeader>
+          {emailPreview && (
+            <div className="space-y-4">
+              {/* Email header */}
+              <div className="rounded-lg border bg-muted/30 p-4 space-y-2 text-sm">
+                <div className="flex gap-2">
+                  <span className="font-semibold text-muted-foreground w-16">To:</span>
+                  <span>{emailPreview.supplier_email}</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="font-semibold text-muted-foreground w-16">Subject:</span>
+                  <span>Request for Quote — {emailPreview.part_description}</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="font-semibold text-muted-foreground w-16">Date:</span>
+                  <span>{format(new Date(emailPreview.created_at), "dd MMM yyyy, HH:mm")}</span>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Email body */}
+              <div className="rounded-lg border p-5 space-y-4 bg-background">
+                <p className="text-sm">Dear {emailPreview.supplier_name || "Supplier"},</p>
+                <p className="text-sm">
+                  We are requesting a quotation for the following part. Please review the details below and submit your pricing using the provided link.
+                </p>
+
+                {/* Part details card */}
+                <div className="rounded-md border bg-muted/20 p-4 space-y-2">
+                  <div className="flex gap-4">
+                    {emailPreview.image_url && (
+                      <img
+                        src={emailPreview.image_url}
+                        alt="Part"
+                        className="h-20 w-20 rounded-md object-cover border shrink-0"
+                      />
+                    )}
+                    <div className="space-y-1 text-sm">
+                      <p><span className="font-semibold">Part:</span> {emailPreview.part_description}</p>
+                      {emailPreview.part_number && (
+                        <p><span className="font-semibold">Part Number:</span> <span className="font-mono">{emailPreview.part_number}</span></p>
+                      )}
+                      <p><span className="font-semibold">Quantity Required:</span> {emailPreview.quantity}</p>
+                      {emailPreview.specifications && (
+                        <p><span className="font-semibold">Specifications:</span> {emailPreview.specifications}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {emailPreview.notes && (
+                  <div className="text-sm">
+                    <span className="font-semibold">Additional Notes:</span>
+                    <p className="text-muted-foreground mt-1">{emailPreview.notes}</p>
+                  </div>
+                )}
+
+                <p className="text-sm">
+                  Please submit your quotation including unit price, lead time, and validity period using the secure link below:
+                </p>
+
+                <div className="rounded-md bg-primary/5 border border-primary/20 p-3 text-center">
+                  <p className="text-xs text-muted-foreground mb-1">Supplier Quote Submission Link</p>
+                  <code className="text-xs text-primary break-all">
+                    {window.location.origin}/supplier-portal?token={emailPreview.token}
+                  </code>
+                </div>
+
+                <p className="text-sm">
+                  If you have any questions regarding this request, please don't hesitate to contact us.
+                </p>
+                <p className="text-sm">Kind regards,<br /><span className="font-semibold">TCMG Procurement</span></p>
+              </div>
+
+              {/* Status footer */}
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>Token: <code className="font-mono">{emailPreview.token.slice(0, 12)}...</code></span>
+                <Badge className={`text-[10px] ${statusColors[emailPreview.status] || ""}`}>
+                  {emailPreview.status}
+                </Badge>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
