@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { useQuoteRequests, type QuoteRequest, type QuoteResponse } from "@/hooks/useQuoteRequests";
+import { usePOTracker } from "@/hooks/usePOTracker";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -52,6 +54,7 @@ const groupByPart = (requests: QuoteRequest[]): PartGroup[] => {
 
 export const QuoteRequestsTab: React.FC = () => {
   const { quoteRequests, isLoading, getResponses, updateStatus } = useQuoteRequests();
+  const { allocate: allocatePO } = usePOTracker();
   const [search, setSearch] = useState("");
   const [responses, setResponses] = useState<Record<string, QuoteResponse[]>>({});
   const [expandedPart, setExpandedPart] = useState<string | null>(null);
@@ -95,11 +98,70 @@ export const QuoteRequestsTab: React.FC = () => {
     accepted: quoteRequests.filter((q) => q.status === "Accepted").length,
   };
 
+  const [accepting, setAccepting] = useState<string | null>(null);
+
   const handleAccept = async (qr: QuoteRequest) => {
+    setAccepting(qr.id);
     try {
+      // 1. Get the quote response for pricing
+      const qrResponses = responses[qr.id] || [];
+      const latestResponse = qrResponses[0];
+
+      // 2. Update quote status to Accepted
       await updateStatus.mutateAsync({ id: qr.id, status: "Accepted" });
-      toast.success(`Quote from ${qr.supplier_name} accepted`);
-    } catch { /* handled */ }
+
+      // 3. Auto-create Purchase Order
+      const po = await allocatePO.mutateAsync({
+        supplier: qr.supplier_name,
+        description: qr.part_description,
+        freight_company: "",
+        status: "Draft",
+        confirmed_on_site: false,
+        comments: `Auto-generated from accepted quote. Supplier: ${qr.supplier_name}`,
+        total_value: latestResponse ? latestResponse.total_price : 0,
+        quote_request_id: qr.id,
+        lines: [{
+          part_description: qr.part_description,
+          part_number: qr.part_number || "",
+          quantity_ordered: qr.quantity,
+          unit_price: latestResponse ? latestResponse.unit_price : 0,
+          received_qty: 0,
+          notes: latestResponse ? `Lead time: ${latestResponse.lead_time_days} days` : "",
+        }],
+      } as any);
+
+      // 4. Send PO email (mocked) via edge function
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      try {
+        const res = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/send-purchase-order`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              po_id: po.id,
+              supplier_email: qr.supplier_email,
+            }),
+          }
+        );
+        const emailResult = await res.json();
+        if (res.ok) {
+          // 5. Update quote status to PO Issued
+          await updateStatus.mutateAsync({ id: qr.id, status: "PO Issued" });
+          toast.success(`PO ${po.po_number} created and sent to ${qr.supplier_name}`);
+        } else {
+          toast.warning(`PO created but email failed: ${emailResult.error}`);
+        }
+      } catch (emailErr) {
+        toast.warning("PO created but email sending failed");
+        console.error("PO email error:", emailErr);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to process acceptance");
+      console.error("Accept flow error:", err);
+    } finally {
+      setAccepting(null);
+    }
   };
 
   const toggleGroup = (key: string, group: PartGroup) => {
@@ -304,8 +366,14 @@ export const QuoteRequestsTab: React.FC = () => {
                                       variant="outline"
                                       className="h-7 text-xs gap-1"
                                       onClick={() => handleAccept(qr)}
+                                      disabled={accepting === qr.id}
                                     >
-                                      <CheckCircle2 className="h-3 w-3" /> Accept
+                                      {accepting === qr.id ? (
+                                        <Loader2 className="h-3 w-3 animate-spin" />
+                                      ) : (
+                                        <CheckCircle2 className="h-3 w-3" />
+                                      )}
+                                      {accepting === qr.id ? "Processing..." : "Accept & Create PO"}
                                     </Button>
                                   )}
                                   {qr.status === "Sent" && (
@@ -313,9 +381,9 @@ export const QuoteRequestsTab: React.FC = () => {
                                       <Clock className="h-3 w-3" /> Awaiting
                                     </Badge>
                                   )}
-                                  {qr.status === "Accepted" && (
+                                  {(qr.status === "Accepted" || qr.status === "PO Issued") && (
                                     <Badge className="bg-primary/20 text-primary border-primary/30 text-[10px] gap-1">
-                                      <CheckCircle2 className="h-3 w-3" /> Selected
+                                      <CheckCircle2 className="h-3 w-3" /> {qr.status === "PO Issued" ? "PO Issued" : "Selected"}
                                     </Badge>
                                   )}
                                 </div>
