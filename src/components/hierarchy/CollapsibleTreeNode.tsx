@@ -120,6 +120,9 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   useEffect(() => {
     if (forceExpanded) {
       setIsExpanded(true);
+    } else if (!forceExpanded && !defaultExpanded) {
+      // Collapse back when search is cleared (unless it was default expanded)
+      setIsExpanded(false);
     }
   }, [forceExpanded]);
 
