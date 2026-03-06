@@ -167,18 +167,23 @@ const ComponentRow: React.FC<{ asset: RevBAsset }> = ({ asset }) => {
 };
 
 export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ assets, filter }) => {
+  // Normalize P&ID tags by stripping leading zeros (04-FE-100 → 4-FE-100)
+  const normalizeTag = (t: string) => t.toLowerCase().replace(/^0+(?=\d)/, "");
   const filtered = filter
-    ? assets.filter(a => {
+    ? (() => {
         const q = filter.toLowerCase();
-        return (
-          a.asset_number.toLowerCase().includes(q) ||
-          a.asset_name.toLowerCase().includes(q) ||
-          a.area_label.toLowerCase().includes(q) ||
-          a.parent_asset_label.toLowerCase().includes(q) ||
-          a.sub_area.toLowerCase().includes(q) ||
-          (a.pid_tags && a.pid_tags.some(tag => tag.toLowerCase().includes(q)))
-        );
-      })
+        const nq = normalizeTag(q);
+        return assets.filter(a => {
+          return (
+            a.asset_number.toLowerCase().includes(q) ||
+            a.asset_name.toLowerCase().includes(q) ||
+            a.area_label.toLowerCase().includes(q) ||
+            a.parent_asset_label.toLowerCase().includes(q) ||
+            a.sub_area.toLowerCase().includes(q) ||
+            (a.pid_tags && a.pid_tags.some(tag => tag.toLowerCase().includes(q) || normalizeTag(tag).includes(nq)))
+          );
+        });
+      })()
     : assets;
 
   // Group by area → sub-area → parent

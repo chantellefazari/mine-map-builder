@@ -38,13 +38,17 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
     const matchingPaths = new Set<string>();
     let firstMatchId: string | null = null;
 
+    // Normalize P&ID tags by stripping leading zeros from numeric prefix (04-FE-100 → 4-FE-100)
+    const normalizeTag = (t: string) => t.toLowerCase().replace(/^0+(?=\d)/, "");
+    const normalizedQuery = normalizeTag(query);
+
     // Find asset numbers that match P&ID tag search
     const matchingAssetNumbers = new Set<string>();
     const matchedPidTagByAsset = new Map<string, string>();
     
     if (pidTagMappingsDB) {
       pidTagMappingsDB.forEach((mapping) => {
-        if (mapping.pidTag.toLowerCase().includes(query)) {
+        if (mapping.pidTag.toLowerCase().includes(query) || normalizeTag(mapping.pidTag).includes(normalizedQuery)) {
           matchingAssetNumbers.add(mapping.assetNumber);
           matchedPidTagByAsset.set(mapping.assetNumber, mapping.pidTag);
         }
@@ -108,7 +112,7 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
               equip.name.toLowerCase().includes(query);
             
             const inlinePidMatch = equip.pidTags?.find(tag => 
-              tag.toLowerCase().includes(query)
+              tag.toLowerCase().includes(query) || normalizeTag(tag).includes(normalizedQuery)
             );
             
             const mappingPidMatch = matchingAssetNumbers.has(equip.assetNumber) 
