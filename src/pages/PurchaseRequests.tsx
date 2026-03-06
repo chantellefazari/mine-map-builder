@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, FileText, Send, Package, History } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PurchaseRequestRegister } from "@/components/purchase-requests/PurchaseRequestRegister";
+import { QuoteRequestsTab } from "@/components/purchase-requests/QuoteRequestsTab";
+import { PurchaseOrdersTab } from "@/components/purchase-requests/PurchaseOrdersTab";
+import { HistoryAuditTab } from "@/components/purchase-requests/HistoryAuditTab";
 
 const PurchaseRequests = () => {
   return (
@@ -18,16 +22,52 @@ const PurchaseRequests = () => {
               <span className="text-primary-foreground font-bold text-lg">TC</span>
             </div>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-foreground">Purchase Requests</h1>
+              <h1 className="text-2xl font-bold text-foreground">Procurement Hub</h1>
               <p className="text-muted-foreground text-sm">
-                Create, submit, and track purchase requests through the approval workflow
+                Purchase requests, quotes, purchase orders, and audit history
               </p>
             </div>
           </div>
         </div>
       </header>
       <main className="container py-8">
-        <PurchaseRequestRegister />
+        <Tabs defaultValue="pr-register" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsTrigger value="pr-register" className="gap-2 py-2.5 text-xs sm:text-sm">
+              <FileText className="h-4 w-4" />
+              <span className="hidden sm:inline">PR Register</span>
+              <span className="sm:hidden">PRs</span>
+            </TabsTrigger>
+            <TabsTrigger value="quote-requests" className="gap-2 py-2.5 text-xs sm:text-sm">
+              <Send className="h-4 w-4" />
+              <span className="hidden sm:inline">Quote Requests</span>
+              <span className="sm:hidden">Quotes</span>
+            </TabsTrigger>
+            <TabsTrigger value="purchase-orders" className="gap-2 py-2.5 text-xs sm:text-sm">
+              <Package className="h-4 w-4" />
+              <span className="hidden sm:inline">Purchase Orders</span>
+              <span className="sm:hidden">POs</span>
+            </TabsTrigger>
+            <TabsTrigger value="history" className="gap-2 py-2.5 text-xs sm:text-sm">
+              <History className="h-4 w-4" />
+              <span className="hidden sm:inline">History & Audit</span>
+              <span className="sm:hidden">History</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="pr-register">
+            <PurchaseRequestRegister />
+          </TabsContent>
+          <TabsContent value="quote-requests">
+            <QuoteRequestsTab />
+          </TabsContent>
+          <TabsContent value="purchase-orders">
+            <PurchaseOrdersTab />
+          </TabsContent>
+          <TabsContent value="history">
+            <HistoryAuditTab />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
