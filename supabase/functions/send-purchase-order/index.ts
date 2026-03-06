@@ -136,7 +136,7 @@ function buildPdf(po: any, lines: any[], trackingUrl: string, qrDataUrl: string 
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(0);
-  doc.text("\u{1F4E6} Shipment Tracking", 20, y);
+  doc.text("Shipment Tracking", 20, y);
   y += 5;
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
