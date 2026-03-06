@@ -57,8 +57,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let isMounted = true;
+    let initialUserId: string | null = null;
 
-    // Initial load — fetch session and permissions BEFORE setting loading=false
+    // Set up auth listener FIRST (per Supabase best practice)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, newSession) => {
+        if (!isMounted) return;
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+
+        if (newSession?.user) {
+          // Skip if this is the same user we already loaded permissions for during init
+          if (newSession.user.id === initialUserId) {
+            initialUserId = null; // Clear so future changes still trigger
+            return;
+          }
+          setTimeout(() => {
+            if (isMounted) fetchPermissions(newSession.user.id);
+          }, 0);
+        } else {
+          setIsAdmin(false);
+          setAllowedTabs([]);
+          if (!isMounted) return;
+          setLoading(false);
+        }
+      }
+    );
+
+    // Then fetch initial session
     const initializeAuth = async () => {
       try {
         const { data: { session: currentSession } } = await supabase.auth.getSession();
@@ -68,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(currentSession?.user ?? null);
 
         if (currentSession?.user) {
+          initialUserId = currentSession.user.id;
           await fetchPermissions(currentSession.user.id);
         }
       } catch (error) {
@@ -78,24 +105,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     initializeAuth();
-
-    // Ongoing auth changes — do NOT await inside callback to avoid deadlock
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, newSession) => {
-        if (!isMounted) return;
-        setSession(newSession);
-        setUser(newSession?.user ?? null);
-
-        if (newSession?.user) {
-          setTimeout(() => {
-            if (isMounted) fetchPermissions(newSession.user.id);
-          }, 0);
-        } else {
-          setIsAdmin(false);
-          setAllowedTabs([]);
-        }
-      }
-    );
 
     return () => {
       isMounted = false;
