@@ -44,7 +44,7 @@ const SYSTEM_CODES: Record<string, string> = {
   "MLANC01 Milling Ancillary": "MLANC01",
   // COM – Classification
   "CYC01 Primary Cyclones": "CYC01",
-  "CANC01 Classification Ancillary": "CANC01",
+  "CLANC01 Classification Ancillary": "CLANC01",
   // REC – Gravity Circuit
   "GSCN01 Gravity Screen": "GSCN01",
   "KNL01 Knelson Concentrator": "KNL01",
