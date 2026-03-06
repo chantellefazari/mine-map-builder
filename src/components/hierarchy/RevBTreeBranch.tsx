@@ -87,6 +87,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                     <TreeBranch key={subIndex} isLast={subIndex === area.subAreas.length - 1}>
                       <CollapsibleTreeNode
                         id={`revb-subarea-${area.code}-${subIndex}`}
+                        code={SUB_AREA_CODES[subArea.label]}
                         label={subArea.label}
                         level="subarea"
                         hasChildren={subArea.parentAssets.length > 0}
