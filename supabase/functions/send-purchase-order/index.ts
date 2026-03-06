@@ -137,7 +137,7 @@ Deno.serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "TCMG Procurement <onboarding@resend.dev>",
+          from: "TCMG Procurement <admin@send.minesite.ai>",
           to: [email],
           subject: `Purchase Order ${po.po_number}`,
           html: htmlBody,
