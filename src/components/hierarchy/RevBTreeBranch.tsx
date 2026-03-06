@@ -5,26 +5,85 @@ import { AreaType } from "./assetData";
 import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
 import { Loader2 } from "lucide-react";
 
-/** Short 2–3 letter codes for Level 4 sub-areas */
-const SUB_AREA_CODES: Record<string, string> = {
-  "Buildings": "BLD",
-  "Power Generation": "PWR",
-  "Electrical / Controls": "ELC",
-  "Compressed Air": "AIR",
-  "Water": "WTR",
-  "Reagents": "RGT",
-  "Feed / Reclaim": "FDR",
-  "Grinding": "GRD",
-  "Classification": "CLS",
-  "Gravity Circuit": "GRV",
-  "CIP": "CIP",
-  "Elution": "ELU",
-  "Carbon Regeneration": "CRG",
-  "Gold Room": "GLD",
-  "Thickening": "THK",
-  "Filtering": "FLT",
-  "Mobile Equipment": "MOB",
-  "Light Vehicles": "LTV",
+/** Level 5 System codes — derived from the common equipment prefix under each parent asset header */
+const SYSTEM_CODES: Record<string, string> = {
+  // SITE
+  "Site Buildings": "BLDG",
+  // UTL – Power Generation
+  "Generators": "GEN",
+  "Power Station": "PSTA",
+  // UTL – Electrical / Controls
+  "CR01 Control Room": "CR01",
+  "Field MCCs": "FMCC",
+  "LTW01 Lighting Towers": "LTW",
+  "MDB01 Main Distribution Board": "MDB01",
+  "MSUB01 Main Sub Station": "MSUB",
+  "SDB01 Sub Distribution Board": "SDB01",
+  // UTL – Compressed Air
+  "Compressed Air System": "COMP",
+  // UTL – Water
+  "Raw Water": "RW",
+  "Potable Water": "PW",
+  "Gland Water": "GW",
+  "Process Water": "PCW",
+  "RO Plant": "RO",
+  // UTL – Reagents
+  "Cyanide System": "CN",
+  "Caustic & Acid Dosing": "CAD",
+  "Diesel System": "DSL",
+  "Lime System": "LIME",
+  "Flocculant & Clarometer": "FLOC",
+  "Reagents Ancillary": "RANC",
+  // COM – Feed / Reclaim
+  "Reclaim Hopper & Feeder": "RCFD",
+  "Transfer Conveyor": "TRCV",
+  "Mill Feed Conveyor": "MFCV",
+  // COM – Grinding
+  "Primary Ball Mill": "BM",
+  "Mill Lubrication System": "MLUB",
+  "Cyclone Feed Pumps": "CFPA",
+  "Milling Ancillary": "MANC",
+  // COM – Classification
+  "Primary Cyclones": "CYC",
+  "Classification Ancillary": "CANC",
+  // REC – Gravity Circuit
+  "Gravity Screen": "GSCN",
+  "Knelson Concentrator": "KNL",
+  "Shaking Table & Tails": "STBL",
+  "Gravity Ancillary": "GANC",
+  // REC – CIP
+  "Trash Screen": "TRSCN",
+  "Leach Tanks": "LCH",
+  "CIP Tanks & Agitators": "CIP",
+  "Carbon Transfer": "CTR",
+  "Leaching Ancillary": "LANC",
+  "Adsorption Ancillary": "AANC",
+  // REC – Elution
+  "Acid Wash": "AW",
+  "Elution Column & Heating": "ELU",
+  "Elution Ancillary": "EANC",
+  // REC – Carbon Regen
+  "Carbon Regen System": "CREG",
+  "Regeneration Kiln": "KLN",
+  // REC – Gold Room
+  "Electrowinning": "ELUT",
+  "Gold Room": "GR",
+  // TAIL – Thickening
+  "Tails Thickener": "THK",
+  "Thickener Hydraulic System": "THYD",
+  "Thickener Underflow Pumps": "TUFP",
+  "Thickener Ancillary": "TANC",
+  "Flocculant System": "TFLO",
+  // TAIL – Filtering
+  "Filter Press 1": "FP01",
+  "Filter Press 2": "FP02",
+  "Filter Press Conveyors": "FPCV",
+  "Filter Press Compressed Air": "FPAR",
+  "Filter Press Ancillary": "FPAN",
+  "Slurry Homogenisers": "HMGN",
+  // SUP
+  "Mobile Equipment Fleet": "MOB",
+  "Light Vehicle Fleet": "LTV",
 };
 import { FLPathSegment } from "./FLBreadcrumbContext";
 
