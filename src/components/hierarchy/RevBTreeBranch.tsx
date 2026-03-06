@@ -29,11 +29,11 @@ const SYSTEM_CODES: Record<string, string> = {
   "RO Plant": "RO",
   // UTL – Reagents
   "Cyanide System": "CN",
-  "Caustic & Acid Dosing": "CAD",
+  "Caustic & Acid Dosing": "CS",
   "Diesel System": "DSL",
   "Lime System": "LIME",
   "Flocculant & Clarometer": "FLOC",
-  "Reagents Ancillary": "RANC",
+  "Reagents Ancillary": "RA",
   // COM – Feed / Reclaim
   "Reclaim Hopper & Feeder": "RCFD",
   "Transfer Conveyor": "TRCV",
@@ -41,7 +41,7 @@ const SYSTEM_CODES: Record<string, string> = {
   // COM – Grinding
   "Primary Ball Mill": "BM",
   "Mill Lubrication System": "MLUB",
-  "Cyclone Feed Pumps": "CFPA",
+  "Cyclone Feed Pumps": "CFP",
   "Milling Ancillary": "MANC",
   // COM – Classification
   "Primary Cyclones": "CYC",
@@ -50,14 +50,14 @@ const SYSTEM_CODES: Record<string, string> = {
   "Gravity Screen": "GSCN",
   "Knelson Concentrator": "KNL",
   "Shaking Table & Tails": "STBL",
-  "Gravity Ancillary": "GANC",
+  "Gravity Ancillary": "GRV",
   // REC – CIP
-  "Trash Screen": "TRSCN",
+  "Trash Screen": "TSCN",
   "Leach Tanks": "LCH",
   "CIP Tanks & Agitators": "CIP",
-  "Carbon Transfer": "CTR",
+  "Carbon Transfer": "CT",
   "Leaching Ancillary": "LANC",
-  "Adsorption Ancillary": "AANC",
+  "Adsorption Ancillary": "ADS",
   // REC – Elution
   "Acid Wash": "AW",
   "Elution Column & Heating": "ELU",
@@ -66,7 +66,7 @@ const SYSTEM_CODES: Record<string, string> = {
   "Carbon Regen System": "CREG",
   "Regeneration Kiln": "KLN",
   // REC – Gold Room
-  "Electrowinning": "ELUT",
+  "Electrowinning": "EW",
   "Gold Room": "GR",
   // TAIL – Thickening
   "Tails Thickener": "THK",
