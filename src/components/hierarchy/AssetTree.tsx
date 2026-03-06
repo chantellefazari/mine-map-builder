@@ -53,11 +53,16 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
     return allTags;
   };
 
+  // Normalize P&ID tags by stripping leading zeros (04-FE-100 → 4-FE-100)
+  const normalizeTag = (t: string) => t.toLowerCase().replace(/^0+(?=\d)/, "");
+
   // Helper to check if P&ID tag matches search
   const pidTagMatchesSearch = (assetNumber: string, inlineTags?: string[]) => {
     if (!hasSearch) return false;
+    const query = searchQuery.toLowerCase();
+    const normalizedQuery = normalizeTag(query);
     const allTags = getAllPidTags(assetNumber, inlineTags);
-    return allTags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+    return allTags.some(tag => tag.toLowerCase().includes(query) || normalizeTag(tag).includes(normalizedQuery));
   };
 
   // CRU search helper
