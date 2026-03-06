@@ -26,6 +26,7 @@ const PlanningRevisionControl = lazy(() => import("./pages/PlanningRevisionContr
 const POTracker = lazy(() => import("./pages/POTracker"));
 const PurchaseRequests = lazy(() => import("./pages/PurchaseRequests"));
 const SupplierPortal = lazy(() => import("./pages/SupplierPortal"));
+const TrackShipment = lazy(() => import("./pages/TrackShipment"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -53,6 +54,7 @@ const App = () => (
               {/* Public */}
               <Route path="/login" element={<Login />} />
               <Route path="/supplier-portal" element={<SupplierPortal />} />
+              <Route path="/track-shipment" element={<TrackShipment />} />
 
               {/* Protected: Home */}
               <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
