@@ -17,8 +17,10 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { FileText, Users, Send, Plus, Loader2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { FileText, Users, Send, Plus, Loader2, FlaskConical } from "lucide-react";
 import { useSuppliers } from "@/hooks/useSuppliers";
+import { usePracticeSuppliers } from "@/hooks/usePracticeSuppliers";
 import { useSupplierMatching, type MatchedSupplier } from "@/hooks/useSupplierMatching";
 import { useQuoteRequests } from "@/hooks/useQuoteRequests";
 import { toast } from "sonner";
@@ -49,8 +51,15 @@ export const SupplierSelector = ({
   quantity,
   specifications,
 }: SupplierSelectorProps) => {
-  const { suppliers, isLoading } = useSuppliers();
-  const matchedSuppliers = useSupplierMatching(suppliers, category, currentPreferredSupplier);
+  const { suppliers: realSuppliers, isLoading: realLoading } = useSuppliers();
+  const { suppliers: practiceSuppliersList, isLoading: practiceLoading } = usePracticeSuppliers();
+
+  const [practiceMode, setPracticeMode] = useState(false);
+
+  const activeSuppliers = practiceMode ? practiceSuppliersList : realSuppliers;
+  const isLoading = practiceMode ? practiceLoading : realLoading;
+
+  const matchedSuppliers = useSupplierMatching(activeSuppliers, category, currentPreferredSupplier);
   const { sendQuoteRequest } = useQuoteRequests(spareId);
 
   const [showManualDialog, setShowManualDialog] = useState(false);
@@ -64,7 +73,7 @@ export const SupplierSelector = ({
       return;
     }
 
-    const emailToUse = supplierEmail || suppliers.find(s => s.name === supplierName)?.email || "";
+    const emailToUse = supplierEmail || activeSuppliers.find(s => s.name === supplierName)?.email || "";
     if (!emailToUse) {
       toast.error("No email found for this supplier. Use manual entry.");
       return;
@@ -106,6 +115,25 @@ export const SupplierSelector = ({
 
   return (
     <div className="space-y-2">
+      {/* Practice Mode Toggle */}
+      <div className="flex items-center justify-between p-2 rounded-md bg-muted/50 border">
+        <div className="flex items-center gap-1.5">
+          <FlaskConical className="h-3.5 w-3.5 text-amber-500" />
+          <span className="text-[11px] font-medium">Practice Mode</span>
+        </div>
+        <Switch
+          checked={practiceMode}
+          onCheckedChange={setPracticeMode}
+          className="scale-75"
+        />
+      </div>
+
+      {practiceMode && (
+        <div className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded px-2 py-1">
+          Using practice suppliers — emails go to demo addresses only.
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <Label className="text-xs flex items-center gap-1">
           <Users className="h-3 w-3" />
