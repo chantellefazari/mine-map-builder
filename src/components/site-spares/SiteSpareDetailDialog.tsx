@@ -28,7 +28,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ChevronLeft, ChevronRight, Trash2, Upload, X, ImageIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, Trash2, Upload, X, ImageIcon, FileText } from "lucide-react";
 import { Sparkles, Loader2, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -36,6 +36,7 @@ import type { SiteSpareItem } from "@/hooks/useSiteSpares";
 import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
 import { getEdgeFunctionErrorMessage } from "@/utils/getEdgeFunctionErrorMessage";
 import { SupplierSelector } from "@/components/shared/SupplierSelector";
+import { QuoteComparisonDialog } from "@/components/shared/QuoteComparisonDialog";
 import { classifyCategory, getAllCategories, getCategoryColor, type SpareCategory } from "@/utils/categoryClassification";
 
 
@@ -87,6 +88,7 @@ export const SiteSpareDetailDialog = ({
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [selectedGeneratedIndex, setSelectedGeneratedIndex] = useState<number | null>(null);
+  const [showQuoteComparison, setShowQuoteComparison] = useState(false);
 
   useEffect(() => {
     if (spare) {
@@ -519,6 +521,27 @@ export const SiteSpareDetailDialog = ({
                   handleFieldChange("preferred_supplier", name);
                   if (spare) onUpdate(spare.id, { preferred_supplier: name });
                 }}
+                spareId={spare?.id}
+                partDescription={localSpare.description}
+                partNumber={localSpare.part_number || undefined}
+                imageUrl={localSpare.image_urls?.[0] || undefined}
+                quantity={localSpare.qty_on_hand ?? undefined}
+                specifications={localSpare.specifications || undefined}
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full text-xs mt-1"
+                onClick={() => setShowQuoteComparison(true)}
+              >
+                <FileText className="h-3.5 w-3.5 mr-1.5" />
+                View Quote History
+              </Button>
+              <QuoteComparisonDialog
+                open={showQuoteComparison}
+                onOpenChange={setShowQuoteComparison}
+                spareId={spare?.id}
+                partDescription={localSpare.description}
               />
             </div>
 
