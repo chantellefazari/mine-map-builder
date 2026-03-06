@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Package, Loader2, CheckCircle2, Clock, Mail, MessageSquare, Image as ImageIcon, MapPin, Truck } from "lucide-react";
+import { Package, Loader2, CheckCircle2, Clock, Mail, MessageSquare, Image as ImageIcon, MapPin, Truck, PackageCheck } from "lucide-react";
+import { ReceivePODialog } from "./ReceivePODialog";
 import { POPdfGenerator } from "./POPdfGenerator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ export const PurchaseOrdersTab: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const [emailPreviewPO, setEmailPreviewPO] = useState<POTrackerItem | null>(null);
   const [trackingPO, setTrackingPO] = useState<POTrackerItem | null>(null);
+  const [receivePO, setReceivePO] = useState<POTrackerItem | null>(null);
 
   const checkpointsQuery = useQuery({
     queryKey: ["po_transit_checkpoints", trackingPO?.id],
@@ -218,6 +220,16 @@ export const PurchaseOrdersTab: React.FC = () => {
                       >
                         <Truck className="h-3 w-3" /> Track
                       </Button>
+                      {po.status !== "Received Complete" && po.status !== "Cancelled" && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 text-xs gap-1 text-emerald-700"
+                          onClick={() => setReceivePO(po)}
+                        >
+                          <PackageCheck className="h-3 w-3" /> Receive
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
@@ -453,6 +465,13 @@ export const PurchaseOrdersTab: React.FC = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Receive PO Dialog */}
+      <ReceivePODialog
+        po={receivePO}
+        open={!!receivePO}
+        onOpenChange={(open) => { if (!open) setReceivePO(null); }}
+      />
     </div>
   );
 };
