@@ -136,7 +136,12 @@ export const PurchaseOrdersTab: React.FC = () => {
                       <Badge className={`text-[10px] ${statusBadge(po.status)}`}>{po.status}</Badge>
                     </TableCell>
                     <TableCell className="text-sm font-medium">
-                      ${Number(po.total_value || 0).toLocaleString("en-AU", { minimumFractionDigits: 2 })}
+                      {(() => {
+                        const headerVal = Number(po.total_value || 0);
+                        const linesTotal = (po.lines || []).reduce((sum: number, l: any) => sum + (Number(l.unit_price || 0) * Number(l.quantity_ordered || 0)), 0);
+                        const displayVal = headerVal > 0 ? headerVal : linesTotal;
+                        return `$${displayVal.toLocaleString("en-AU", { minimumFractionDigits: 2 })}`;
+                      })()}
                     </TableCell>
                     <TableCell className="text-sm">
                       {po.eta ? format(new Date(po.eta), "dd MMM yyyy") : "—"}
@@ -156,16 +161,14 @@ export const PurchaseOrdersTab: React.FC = () => {
                       {po.order_date ? format(new Date(po.order_date), "dd MMM yyyy") : "—"}
                     </TableCell>
                     <TableCell>
-                      {(po.status === "Issued" || po.status === "In Transit") && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-7 text-xs gap-1 text-muted-foreground"
-                          onClick={() => setEmailPreviewPO(po)}
-                        >
-                          <Mail className="h-3 w-3" /> Email
-                        </Button>
-                      )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-7 text-xs gap-1 text-muted-foreground"
+                        onClick={() => setEmailPreviewPO(po)}
+                      >
+                        <Mail className="h-3 w-3" /> Email
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
@@ -215,7 +218,11 @@ export const PurchaseOrdersTab: React.FC = () => {
                 <div className="rounded-md border bg-muted/20 p-4 space-y-3">
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div><span className="font-semibold">PO Number:</span> <span className="font-mono">{emailPreviewPO.po_number}</span></div>
-                    <div><span className="font-semibold">Total Value:</span> ${Number(emailPreviewPO.total_value || 0).toLocaleString("en-AU", { minimumFractionDigits: 2 })}</div>
+                    <div><span className="font-semibold">Total Value:</span> ${(() => {
+                      const headerVal = Number(emailPreviewPO.total_value || 0);
+                      const linesTotal = (emailPreviewPO.lines || []).reduce((sum: number, l: any) => sum + (Number(l.unit_price || 0) * Number(l.quantity_ordered || 0)), 0);
+                      return (headerVal > 0 ? headerVal : linesTotal).toLocaleString("en-AU", { minimumFractionDigits: 2 });
+                    })()}</div>
                     {emailPreviewPO.eta && (
                       <div><span className="font-semibold">Expected Delivery:</span> {format(new Date(emailPreviewPO.eta), "dd MMM yyyy")}</div>
                     )}
@@ -268,7 +275,7 @@ export const PurchaseOrdersTab: React.FC = () => {
                 <div className="rounded-md bg-primary/5 border border-primary/20 p-3 text-center">
                   <p className="text-xs text-muted-foreground mb-1">Supplier Confirmation Link</p>
                   <code className="text-xs text-primary break-all">
-                    {window.location.origin}/supplier-portal?token={emailPreviewPO.confirmation_token || "pending"}
+                    {window.location.origin}/supplier-portal?mode=confirm&token={emailPreviewPO.confirmation_token || "pending"}
                   </code>
                 </div>
 
