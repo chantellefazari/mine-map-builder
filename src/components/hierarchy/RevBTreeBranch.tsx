@@ -41,10 +41,10 @@ const SYSTEM_CODES: Record<string, string> = {
   "BM01 Primary Ball Mill": "BM01",
   "MLUB01 Mill Lubrication System": "MLUB01",
   "CFP01 Cyclone Feed Pumps": "CFP01",
-  "MANC01 Milling Ancillary": "MANC01",
+  "MLANC01 Milling Ancillary": "MLANC01",
   // COM – Classification
   "CYC01 Primary Cyclones": "CYC01",
-  "CANC01 Classification Ancillary": "CANC01",
+  "CLANC01 Classification Ancillary": "CLANC01",
   // REC – Gravity Circuit
   "GSCN01 Gravity Screen": "GSCN01",
   "KNL01 Knelson Concentrator": "KNL01",
@@ -55,12 +55,12 @@ const SYSTEM_CODES: Record<string, string> = {
   "LCH01 Leach Tanks": "LCH01",
   "CIP01 CIP Tanks & Agitators": "CIP01",
   "CT01 Carbon Transfer": "CT01",
-  "LANC01 Leaching Ancillary": "LANC01",
+  "LCANC01 Leaching Ancillary": "LCANC01",
   "ADS01 Adsorption Ancillary": "ADS01",
   // REC – Elution
   "AW01 Acid Wash": "AW01",
   "ELU01 Elution Column & Heating": "ELU01",
-  "EANC01 Elution Ancillary": "EANC01",
+  "ELANC01 Elution Ancillary": "ELANC01",
   // REC – Carbon Regen
   "CREG01 Carbon Regen System": "CREG01",
   "KLN01 Regeneration Kiln": "KLN01",
@@ -71,7 +71,7 @@ const SYSTEM_CODES: Record<string, string> = {
   "THK01 Tails Thickener": "THK01",
   "THYD01 Thickener Hydraulic System": "THYD01",
   "TUFP01 Thickener Underflow Pumps": "TUFP01",
-  "TANC01 Thickener Ancillary": "TANC01",
+  "THANC01 Thickener Ancillary": "THANC01",
   "TFLO01 Flocculant System": "TFLO01",
   // TAIL – Filtering
   "FP01 Filter Press 1": "FP01",
