@@ -112,7 +112,7 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
               equip.name.toLowerCase().includes(query);
             
             const inlinePidMatch = equip.pidTags?.find(tag => 
-              tag.toLowerCase().includes(query)
+              tag.toLowerCase().includes(query) || normalizeTag(tag).includes(normalizedQuery)
             );
             
             const mappingPidMatch = matchingAssetNumbers.has(equip.assetNumber) 
