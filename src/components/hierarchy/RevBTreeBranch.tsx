@@ -60,7 +60,7 @@ const SYSTEM_CODES: Record<string, string> = {
   // REC – Elution
   "AW01 Acid Wash": "AW01",
   "ELU01 Elution Column & Heating": "ELU01",
-  "EANC01 Elution Ancillary": "EANC01",
+  "ELANC01 Elution Ancillary": "ELANC01",
   // REC – Carbon Regen
   "CREG01 Carbon Regen System": "CREG01",
   "KLN01 Regeneration Kiln": "KLN01",
