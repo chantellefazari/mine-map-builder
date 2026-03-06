@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Package, Loader2, CheckCircle2, Clock, Mail, MessageSquare, Image as ImageIcon } from "lucide-react";
+import { Package, Loader2, CheckCircle2, Clock, Mail, MessageSquare, Image as ImageIcon, MapPin, Truck } from "lucide-react";
 import { POPdfGenerator } from "./POPdfGenerator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { usePOTracker, type POTrackerItem } from "@/hooks/usePOTracker";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 
 const PO_STATUSES = ["All", "Draft", "Issued", "In Transit", "Received Partial", "Received Complete", "Cancelled"];
@@ -36,6 +38,21 @@ export const PurchaseOrdersTab: React.FC = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [emailPreviewPO, setEmailPreviewPO] = useState<POTrackerItem | null>(null);
+  const [trackingPO, setTrackingPO] = useState<POTrackerItem | null>(null);
+
+  const checkpointsQuery = useQuery({
+    queryKey: ["po_transit_checkpoints", trackingPO?.id],
+    enabled: !!trackingPO,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("po_transit_checkpoints")
+        .select("*")
+        .eq("po_tracker_id", trackingPO!.id)
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return data as any[];
+    },
+  });
 
   const filtered = (poItems || []).filter((po: any) => {
     const matchSearch = !search ||
@@ -193,6 +210,14 @@ export const PurchaseOrdersTab: React.FC = () => {
                       >
                         <Mail className="h-3 w-3" /> Email
                       </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-7 text-xs gap-1 text-muted-foreground"
+                        onClick={() => setTrackingPO(po)}
+                      >
+                        <Truck className="h-3 w-3" /> Track
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
@@ -336,6 +361,93 @@ export const PurchaseOrdersTab: React.FC = () => {
                 <Badge className={`text-[10px] ${statusBadge(emailPreviewPO.status)}`}>
                   {emailPreviewPO.status}
                 </Badge>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Shipment Tracking Dialog */}
+      <Dialog open={!!trackingPO} onOpenChange={() => setTrackingPO(null)}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle className="text-base flex items-center gap-2">
+              <Truck className="h-4 w-4" /> Shipment Tracking — {trackingPO?.po_number}
+            </DialogTitle>
+          </DialogHeader>
+          {trackingPO && (
+            <div className="space-y-4">
+              {/* PO Summary */}
+              <div className="rounded-lg border bg-muted/30 p-3 grid grid-cols-2 gap-2 text-sm">
+                <div><span className="font-semibold">Supplier:</span> {trackingPO.supplier}</div>
+                <div><span className="font-semibold">Status:</span> <Badge className={`text-[10px] ${statusBadge(trackingPO.status)}`}>{trackingPO.status}</Badge></div>
+                <div><span className="font-semibold">ETA:</span> {trackingPO.eta ? format(new Date(trackingPO.eta), "dd MMM yyyy") : "—"}</div>
+                {trackingPO.freight_tracking_number && (
+                  <div><span className="font-semibold">Tracking #:</span> <span className="font-mono text-xs">{trackingPO.freight_tracking_number}</span></div>
+                )}
+              </div>
+
+              {/* Part image */}
+              {trackingPO.image_url && (
+                <div className="flex justify-center">
+                  <img src={trackingPO.image_url} alt="Part" className="rounded-md border max-h-32 object-contain bg-white" />
+                </div>
+              )}
+
+              <Separator />
+
+              {/* Checkpoints Timeline */}
+              <div>
+                <p className="text-sm font-semibold mb-3 flex items-center gap-1.5">
+                  <MapPin className="h-4 w-4" /> Transit Checkpoints
+                </p>
+                {checkpointsQuery.isLoading ? (
+                  <div className="flex justify-center py-6">
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  </div>
+                ) : !checkpointsQuery.data || checkpointsQuery.data.length === 0 ? (
+                  <div className="text-center py-6 text-sm text-muted-foreground">
+                    <MapPin className="h-6 w-6 mx-auto mb-2 opacity-40" />
+                    No checkpoints recorded yet
+                  </div>
+                ) : (
+                  <div className="space-y-0 relative ml-3">
+                    {/* Timeline line */}
+                    <div className="absolute left-[7px] top-2 bottom-2 w-px bg-border" />
+                    {checkpointsQuery.data.map((cp: any, i: number) => (
+                      <div key={cp.id} className="relative flex gap-3 pb-4 last:pb-0">
+                        <div className={`relative z-10 mt-1.5 h-4 w-4 rounded-full border-2 shrink-0 ${
+                          i === checkpointsQuery.data!.length - 1
+                            ? "bg-primary border-primary"
+                            : "bg-background border-muted-foreground/30"
+                        }`} />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-baseline gap-2">
+                            <p className="text-sm font-medium">{cp.location || "Unknown location"}</p>
+                            <span className="text-[10px] text-muted-foreground shrink-0">
+                              {format(new Date(cp.created_at), "dd MMM yyyy, HH:mm")}
+                            </span>
+                          </div>
+                          {cp.notes && <p className="text-xs text-muted-foreground mt-0.5">{cp.notes}</p>}
+                          {cp.scanned_by && <p className="text-[10px] text-muted-foreground/70">by {cp.scanned_by}</p>}
+                          {cp.latitude && cp.longitude && (
+                            <p className="text-[10px] text-muted-foreground/50 font-mono">
+                              📍 {Number(cp.latitude).toFixed(4)}, {Number(cp.longitude).toFixed(4)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Public tracking link */}
+              <div className="rounded-md bg-muted/50 border p-3 text-center">
+                <p className="text-xs text-muted-foreground mb-1">📦 Public Tracking Link</p>
+                <code className="text-xs text-foreground break-all">
+                  {window.location.origin}/track-shipment?po={trackingPO.id}
+                </code>
               </div>
             </div>
           )}
