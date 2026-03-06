@@ -71,7 +71,7 @@ const SYSTEM_CODES: Record<string, string> = {
   "THK01 Tails Thickener": "THK01",
   "THYD01 Thickener Hydraulic System": "THYD01",
   "TUFP01 Thickener Underflow Pumps": "TUFP01",
-  "TANC01 Thickener Ancillary": "TANC01",
+  "THANC01 Thickener Ancillary": "THANC01",
   "TFLO01 Flocculant System": "TFLO01",
   // TAIL – Filtering
   "FP01 Filter Press 1": "FP01",
