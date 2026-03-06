@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Package, Loader2, CheckCircle2, Clock, Mail } from "lucide-react";
+import { Package, Loader2, CheckCircle2, Clock, Mail, MessageSquare, Image as ImageIcon } from "lucide-react";
 import { POPdfGenerator } from "./POPdfGenerator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -108,6 +108,7 @@ export const PurchaseOrdersTab: React.FC = () => {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
+                <TableHead className="font-semibold w-[50px]">Image</TableHead>
                 <TableHead className="font-semibold">PO #</TableHead>
                 <TableHead className="font-semibold">Supplier</TableHead>
                 <TableHead className="font-semibold">Description</TableHead>
@@ -122,7 +123,7 @@ export const PurchaseOrdersTab: React.FC = () => {
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center text-muted-foreground py-10">
+                  <TableCell colSpan={10} className="text-center text-muted-foreground py-10">
                     <Package className="h-8 w-8 mx-auto mb-2 opacity-40" />
                     No purchase orders found
                   </TableCell>
@@ -130,6 +131,19 @@ export const PurchaseOrdersTab: React.FC = () => {
               ) : (
                 filtered.map((po: any) => (
                   <TableRow key={po.id} className="hover:bg-muted/30 transition-colors">
+                    <TableCell>
+                      {po.image_url ? (
+                        <img
+                          src={po.image_url}
+                          alt="Part"
+                          className="h-10 w-10 rounded border object-contain bg-white"
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded border bg-muted/30 flex items-center justify-center">
+                          <ImageIcon className="h-4 w-4 text-muted-foreground/40" />
+                        </div>
+                      )}
+                    </TableCell>
                     <TableCell className="font-mono font-medium text-sm">{po.po_number}</TableCell>
                     <TableCell className="text-sm">{po.supplier || "—"}</TableCell>
                     <TableCell className="text-sm max-w-[200px] truncate">{po.description || "—"}</TableCell>
@@ -149,9 +163,17 @@ export const PurchaseOrdersTab: React.FC = () => {
                     </TableCell>
                     <TableCell className="text-sm">
                       {po.supplier_confirmed ? (
-                        <Badge className="bg-emerald-500/20 text-emerald-700 border-emerald-500/30 text-[10px] gap-1">
-                          <CheckCircle2 className="h-3 w-3" /> Yes
-                        </Badge>
+                        <div className="space-y-1">
+                          <Badge className="bg-emerald-500/20 text-emerald-700 border-emerald-500/30 text-[10px] gap-1">
+                            <CheckCircle2 className="h-3 w-3" /> Yes
+                          </Badge>
+                          {po.supplier_eta_update && (
+                            <div className="flex items-start gap-1 text-[10px] text-muted-foreground max-w-[160px]">
+                              <MessageSquare className="h-3 w-3 mt-0.5 shrink-0" />
+                              <span className="line-clamp-2 italic">"{po.supplier_eta_update}"</span>
+                            </div>
+                          )}
+                        </div>
                       ) : (
                         <Badge variant="outline" className="text-[10px] gap-1">
                           <Clock className="h-3 w-3" /> Pending
