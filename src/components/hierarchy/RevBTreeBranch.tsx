@@ -95,11 +95,53 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
   const { data: revBAreasData, isLoading } = useRevBPlantAssets();
   const areas = revBAreasData || [];
   const hasSearch = searchQuery.trim().length > 0;
+  const normalizeTag = (t: string) => t.toLowerCase().replace(/^0+(?=\d)/, "");
 
   const matchesSearch = (text: string) => {
     if (!hasSearch) return false;
     return text.toLowerCase().includes(searchQuery.toLowerCase());
   };
+
+  const pidMatchesSearch = (pidTags?: string[]) => {
+    if (!hasSearch || !pidTags) return false;
+    const q = searchQuery.toLowerCase();
+    const nq = normalizeTag(q);
+    return pidTags.some(tag => tag.toLowerCase().includes(q) || normalizeTag(tag).includes(nq));
+  };
+
+  // Build a set of paths that should be force-expanded for search
+  const expandedPaths = React.useMemo(() => {
+    const paths = new Set<string>();
+    if (!hasSearch) return paths;
+    const q = searchQuery.toLowerCase();
+    const nq = normalizeTag(q);
+
+    areas.forEach((area) => {
+      area.subAreas.forEach((subArea) => {
+        subArea.parentAssets.forEach((parentAsset) => {
+          parentAsset.equipment.forEach((equip) => {
+            const nameMatch = equip.assetNumber.toLowerCase().includes(q) || equip.name.toLowerCase().includes(q);
+            const pidMatch = equip.pidTags?.some(tag => tag.toLowerCase().includes(q) || normalizeTag(tag).includes(nq));
+            if (nameMatch || pidMatch) {
+              paths.add(area.code);
+              paths.add(`${area.code}/${subArea.label}`);
+              paths.add(`${area.code}/${subArea.label}/${parentAsset.label}`);
+            }
+          });
+          // parent asset name match
+          if (parentAsset.label.toLowerCase().includes(q)) {
+            paths.add(area.code);
+            paths.add(`${area.code}/${subArea.label}`);
+          }
+          // sub area match
+          if (subArea.label.toLowerCase().includes(q)) {
+            paths.add(area.code);
+          }
+        });
+      });
+    });
+    return paths;
+  }, [areas, searchQuery, hasSearch]);
 
   const ppSegment: FLPathSegment = { level: "plant", label: "Processing Plant (Rev B)" };
   const pathAfterPP = [...pathAfterSite, ppSegment];
