@@ -75,6 +75,7 @@ export function usePOTracker(workOrderId?: string) {
     mutationFn: async (payload: {
       work_order_id?: string | null;
       pr_id?: string | null;
+      quote_request_id?: string | null;
       supplier: string;
       description?: string;
       freight_company: string;
