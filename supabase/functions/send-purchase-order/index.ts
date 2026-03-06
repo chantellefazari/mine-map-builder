@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
       console.log(`  ${i + 1}. ${l.part_description} — Qty: ${l.quantity_ordered} @ $${l.unit_price}`);
     });
     console.log(`Please confirm receipt using the confirmation link below:`);
-    console.log(`  [Confirmation token: ${confirmToken}]`);
+    console.log(`  [Supplier portal link: /supplier-portal?mode=confirm&token=${confirmToken}]`);
     console.log("=== END MOCK EMAIL ===");
 
     // Update PO status to Issued

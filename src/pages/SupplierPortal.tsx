@@ -77,24 +77,46 @@ const SupplierPortal = () => {
 
     const fetchDetails = async () => {
       try {
-        const endpoint = mode === "confirm" ? "confirm-purchase-order" : "submit-quote-response";
-        const res = await fetch(
-          `https://${projectId}.supabase.co/functions/v1/${endpoint}?token=${token}`
-        );
-        const data = await res.json();
+        if (mode === "confirm") {
+          // PO confirmation mode
+          const res = await fetch(
+            `https://${projectId}.supabase.co/functions/v1/confirm-purchase-order?token=${token}`
+          );
+          const data = await res.json();
+          if (res.ok) {
+            setPODetails(data);
+            if (data.supplier_confirmed) setSubmitted(true);
+            return;
+          }
+        }
 
-        if (!res.ok) {
-          setError(data.error || "Invalid or expired link");
+        // Try quote response mode first
+        const quoteRes = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/submit-quote-response?token=${token}`
+        );
+        const quoteData = await quoteRes.json();
+
+        if (quoteRes.ok) {
+          setQuoteDetails(quoteData);
+          if (quoteData.already_responded) setSubmitted(true);
           return;
         }
 
-        if (mode === "confirm") {
-          setPODetails(data);
-          if (data.supplier_confirmed) setSubmitted(true);
-        } else {
-          setQuoteDetails(data);
-          if (data.already_responded) setSubmitted(true);
+        // If quote mode failed and we haven't tried confirm yet, try PO confirm
+        if (mode !== "confirm") {
+          const poRes = await fetch(
+            `https://${projectId}.supabase.co/functions/v1/confirm-purchase-order?token=${token}`
+          );
+          const poData = await poRes.json();
+
+          if (poRes.ok) {
+            setPODetails(poData);
+            if (poData.supplier_confirmed) setSubmitted(true);
+            return;
+          }
         }
+
+        setError("Invalid or expired token");
       } catch {
         setError("Failed to load details. Please try again.");
       } finally {
