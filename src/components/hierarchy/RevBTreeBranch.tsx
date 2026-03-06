@@ -4,6 +4,28 @@ import { TreeBranch } from "./TreeBranch";
 import { AreaType } from "./assetData";
 import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
 import { Loader2 } from "lucide-react";
+
+/** Short 2–3 letter codes for Level 4 sub-areas */
+const SUB_AREA_CODES: Record<string, string> = {
+  "Buildings": "BLD",
+  "Power Generation": "PWR",
+  "Electrical / Controls": "ELC",
+  "Compressed Air": "AIR",
+  "Water": "WTR",
+  "Reagents": "RGT",
+  "Feed / Reclaim": "FDR",
+  "Grinding": "GRD",
+  "Classification": "CLS",
+  "Gravity Circuit": "GRV",
+  "CIP": "CIP",
+  "Elution": "ELU",
+  "Carbon Regeneration": "CRG",
+  "Gold Room": "GLD",
+  "Thickening": "THK",
+  "Filtering": "FLT",
+  "Mobile Equipment": "MOB",
+  "Light Vehicles": "LTV",
+};
 import { FLPathSegment } from "./FLBreadcrumbContext";
 
 interface RevBTreeBranchProps {
