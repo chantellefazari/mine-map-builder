@@ -44,8 +44,8 @@ const ComponentSpecsIcon: React.FC<{ components?: ComponentSpec[] | string | nul
           <div className="space-y-1">
             {specs.map((c, i) => (
               <div key={i} className="grid grid-cols-[80px_1fr] gap-1 text-xs">
-                <span className="text-muted-foreground font-medium">{c.componentType}:</span>
-                <span className="font-mono">{c.manufacturer || "—"}</span>
+                <span className="text-muted-foreground font-medium">{c.componentName || c.componentType}:</span>
+                <span className="font-mono">{c.model || c.manufacturer || "—"}</span>
               </div>
             ))}
           </div>

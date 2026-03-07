@@ -462,7 +462,7 @@ export const BulkComponentImportDialog: React.FC = () => {
                     <th className="p-2 text-left">Status</th>
                     <th className="p-2 text-left">P&ID Tag</th>
                     <th className="p-2 text-left">Component</th>
-                    <th className="p-2 text-left">Description</th>
+                    <th className="p-2 text-left">Specs</th>
                     <th className="p-2 text-left">Matched Asset</th>
                   </tr>
                 </thead>
