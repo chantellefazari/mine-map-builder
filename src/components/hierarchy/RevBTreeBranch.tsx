@@ -176,7 +176,8 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                 storedFL={parentAsset.functionalLocation}
                               >
                                 {parentAsset.equipment.map((equip, equipIndex) => {
-                                  const equipLabel = `${equip.assetNumber} — ${equip.name}`;
+                                  const equipNodeLabel = equip.assetNumber;
+                                  const equipBreadcrumbLabel = `${equip.assetNumber} — ${equip.name}`;
                                   const comps = equip.components || [];
                                   const equivalentComponents = comps.filter((comp) =>
                                     isEquivalentComponent(equip.name, comp.componentName, comp.componentType) ||
@@ -187,7 +188,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                       isGearboxAliasComponent(equip.assetNumber, comp.componentName, comp.componentType))
                                   );
                                   const hasChildComponents = childComponents.length > 0;
-                                  const equipSegment: FLPathSegment = { level: "equipment", label: equipLabel };
+                                  const equipSegment: FLPathSegment = { level: "equipment", label: equipBreadcrumbLabel };
                                   const pathAfterEquip = [...pathAfterPA, equipSegment];
                                   const isPidMatch = pidMatchesSearch(equip.pidTags);
 
@@ -217,7 +218,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                     <TreeBranch key={equipIndex} isLast={equipIndex === parentAsset.equipment.length - 1}>
                                       <CollapsibleTreeNode
                                         id={`revb-equip-${area.code}-${subIndex}-${paIndex}-${equipIndex}`}
-                                        label={equipLabel}
+                                        label={equipNodeLabel}
                                         level="equipment"
                                         hasChildren={hasChildComponents}
                                         isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || isPidMatch}
