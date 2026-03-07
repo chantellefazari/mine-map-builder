@@ -132,6 +132,13 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
     return equipmentNorm === componentNorm || equipmentNorm.includes(componentNorm) || componentNorm.includes(equipmentNorm);
   };
 
+  const isGearboxAliasComponent = (equipmentAssetNumber: string, componentName?: string, componentType?: string) => {
+    const isGearboxEquipment = /-(gb|gbx)\d*$/i.test(equipmentAssetNumber);
+    if (!isGearboxEquipment) return false;
+    const text = `${componentName || ""} ${componentType || ""}`.toLowerCase();
+    return /gear\s*reducer|gear\s*box|gearbox/.test(text);
+  };
+
   const expandedPaths = React.useMemo(() => {
     const paths = new Set<string>();
     if (!hasSearch) return paths;
