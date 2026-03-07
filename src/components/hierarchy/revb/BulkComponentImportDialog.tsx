@@ -300,7 +300,7 @@ export const BulkComponentImportDialog: React.FC = () => {
           byAsset.set(row.matchedAssetId, { assetId: row.matchedAssetId, components: [] });
         }
 
-        const cleanedDescription = sanitizeField(row.description);
+        const cleanedDescription = stripRepMarkers(sanitizeField(row.description));
         const effectiveComponentType = inferComponentType(row.componentType, cleanedDescription);
         const componentName = cleanedDescription || `${row.matchedAssetName} ${effectiveComponentType}`;
 
