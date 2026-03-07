@@ -281,11 +281,21 @@ export const BulkComponentImportDialog: React.FC = () => {
 
         const normalizedType = inferComponentType(row.componentType, row.description).toLowerCase();
         const normalizedDescription = stripRepMarkers(sanitizeField(row.description)).toLowerCase();
+        const normalizedSpecs = (row.specs || "").trim().toLowerCase();
 
         const isDuplicate = bestAsset.existingComponents.some((c: any) => {
           const existingType = sanitizeField(c.componentType || "").toLowerCase();
           const existingName = sanitizeField(c.componentName || "").toLowerCase();
-          return existingType === normalizedType || (normalizedDescription && existingName === normalizedDescription);
+          const existingModel = sanitizeField(c.model || "").toLowerCase();
+          // Must match on type/name AND specs/model to be a true duplicate
+          const typeMatch = existingType === normalizedType || (normalizedDescription && existingName === normalizedDescription);
+          if (!typeMatch) return false;
+          // If both have specs, they must match to be duplicate
+          if (normalizedSpecs && existingModel) {
+            return existingModel === normalizedSpecs;
+          }
+          // If no specs to compare, fall back to type-only match
+          return true;
         });
 
         return {
