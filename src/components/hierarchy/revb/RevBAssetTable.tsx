@@ -25,9 +25,12 @@ export interface RevBAsset {
   components?: ComponentSpec[] | null;
 }
 
-const ComponentSpecsIcon: React.FC<{ components?: ComponentSpec[] | null }> = ({ components }) => {
-  const specs = components?.filter(c => c.manufacturer || c.componentType);
-  if (!specs || specs.length === 0) return null;
+const ComponentSpecsIcon: React.FC<{ components?: ComponentSpec[] | string | null }> = ({ components }) => {
+  let parsed: ComponentSpec[] = [];
+  if (Array.isArray(components)) parsed = components;
+  else if (typeof components === "string") { try { const p = JSON.parse(components); if (Array.isArray(p)) parsed = p; } catch { /* ignore */ } }
+  const specs = parsed.filter(c => c.manufacturer || c.componentType);
+  if (specs.length === 0) return null;
   return (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
