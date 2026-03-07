@@ -176,7 +176,7 @@ export const BulkComponentImportDialog: React.FC = () => {
         reducer: ["GR", "GRTE"],
       };
 
-      const findBestAsset = (componentType: string, assetList: AssetEntry[]): AssetEntry => {
+      const findBestAsset = (componentType: string, assetList: AssetEntry[]): AssetEntry | null => {
         if (assetList.length === 1) return assetList[0];
 
         // Sort by asset_number length (shortest = parent system)
@@ -216,8 +216,8 @@ export const BulkComponentImportDialog: React.FC = () => {
           }
         }
 
-        // Default: parent system
-        return parentAsset;
+        // No confident child match: refuse to auto-route to parent to avoid wrong imports.
+        return null;
       };
 
       const matched: MatchedRow[] = parsedRows.map((row) => {
