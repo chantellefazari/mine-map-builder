@@ -170,7 +170,7 @@ export const BulkComponentImportDialog: React.FC = () => {
     setIsImporting(true);
     try {
       // Group by asset ID
-      const byAsset = new Map<string, { assetId: string; components: { componentType: string; componentName: string; manufacturer: string | null }[] }>();
+      const byAsset = new Map<string, { assetId: string; components: { componentType: string; componentName: string; manufacturer: string | null; model: string | null }[] }>();
 
       for (const row of toImport) {
         if (!row.matchedAssetId) continue;
@@ -181,11 +181,12 @@ export const BulkComponentImportDialog: React.FC = () => {
         const cleanedDescription = row.description.trim();
         const componentName = cleanedDescription || `${row.matchedAssetName} ${row.componentType}`;
 
-        // Description is treated as component name; specs remain blank unless explicitly provided.
+        // Persist pasted spec text into `model` so the tree can show the ℹ️ spec icon/tooltip.
         byAsset.get(row.matchedAssetId)!.components.push({
           componentType: row.componentType,
           componentName,
           manufacturer: null,
+          model: cleanedDescription || null,
         });
       }
 
@@ -211,6 +212,7 @@ export const BulkComponentImportDialog: React.FC = () => {
             componentType: c.componentType,
             componentName: c.componentName,
             manufacturer: c.manufacturer,
+            model: c.model,
           })),
         ];
 
