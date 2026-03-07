@@ -81,29 +81,29 @@ export const BulkComponentImportDialog: React.FC = () => {
         // Filter out empty columns
         const filled = parts.filter((p) => p.length > 0);
 
-        if (parts.length >= 5) {
-          const pidTag = parts[0];
-          const lastFilled = filled[filled.length - 1] || "";
-          const secondLast = filled.length >= 3 ? filled[filled.length - 2] : "";
-          const thirdLast = filled.length >= 4 ? filled[filled.length - 3] : "";
-          const componentType = secondLast === thirdLast && filled.length >= 4 
-            ? secondLast 
-            : secondLast;
-          return { pidTag, componentType: sanitizeField(componentType), description: sanitizeField(lastFilled) };
-        }
-        if (parts.length >= 3) {
+        if (parts.length >= 2) {
+          const pidTag = sanitizeField(parts[0] || "");
+          const columnsAfterTag = parts.slice(1).filter((p) => p.length > 0);
+
+          const rawDescription = sanitizeField(columnsAfterTag[columnsAfterTag.length - 1] || "");
+          const rawTypeCandidate = sanitizeField(
+            columnsAfterTag.length >= 2 ? columnsAfterTag[columnsAfterTag.length - 2] : columnsAfterTag[0] || ""
+          );
+
           return {
-            pidTag: parts[0],
-            componentType: sanitizeField(parts[1]),
-            description: sanitizeField(parts[2]),
+            pidTag,
+            componentType: inferComponentType(rawTypeCandidate, rawDescription),
+            description: rawDescription,
           };
         }
+
         // Fallback: comma-separated
         const cParts = line.split(",").map((p) => p.trim());
+        const csvDescription = sanitizeField(cParts.slice(2).filter(Boolean).join(" | "));
         return {
-          pidTag: cParts[0] || "",
-          componentType: sanitizeField(cParts[1] || ""),
-          description: sanitizeField(cParts[2] || ""),
+          pidTag: sanitizeField(cParts[0] || ""),
+          componentType: inferComponentType(sanitizeField(cParts[1] || ""), csvDescription),
+          description: csvDescription,
         };
       })
       .filter((r) => r.pidTag && r.componentType);
