@@ -293,10 +293,7 @@ const SubAreaBranch: React.FC<{
   const [open, setOpen] = useState(!!filter);
   const filterLower = filter.toLowerCase();
   const visibleParents = sub.parents.filter(p =>
-    !filter || p.assets.some(a =>
-      a.asset_number.toLowerCase().includes(filterLower) ||
-      a.asset_name.toLowerCase().includes(filterLower)
-    )
+    !filter || p.assets.some(a => assetMatchesFilter(a, filterLower))
   );
   if (visibleParents.length === 0) return null;
 
