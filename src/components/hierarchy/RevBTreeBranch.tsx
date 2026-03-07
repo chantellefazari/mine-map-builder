@@ -224,10 +224,33 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                               >
                                 {parentAsset.equipment.map((equip, equipIndex) => {
                                   const equipLabel = `${equip.assetNumber} — ${equip.name}`;
-                                  const hasComponents = equip.components && equip.components.length > 0;
+                                  const comps = equip.components || [];
+                                  // If only 1 component, show its specs on the equipment node directly (no redundant child)
+                                  const isSingleSpec = comps.length === 1;
+                                  const hasChildComponents = comps.length > 1;
                                   const equipSegment: FLPathSegment = { level: "equipment", label: equipLabel };
                                   const pathAfterEquip = [...pathAfterPA, equipSegment];
                                   const isPidMatch = pidMatchesSearch(equip.pidTags);
+
+                                  // Build componentSpecs from single component for inline ℹ️
+                                  const singleSpec = isSingleSpec ? comps[0] : null;
+                                  const equipSpecs = singleSpec ? {
+                                    model: singleSpec.model || singleSpec.manufacturer,
+                                    serialNumber: singleSpec.serialNumber,
+                                    motorRef: singleSpec.motorRef,
+                                    pumpRef: singleSpec.pumpRef,
+                                    motorSpeed: singleSpec.motorSpeed,
+                                    protection: singleSpec.protection,
+                                    voltage: singleSpec.voltage,
+                                    pumpFlow: singleSpec.pumpFlow,
+                                    operatingPressure: singleSpec.operatingPressure,
+                                    displacement: singleSpec.displacement,
+                                    oilType: singleSpec.oilType,
+                                    oilVolume: singleSpec.oilVolume,
+                                    inputSpeed: singleSpec.inputSpeed,
+                                    outputSpeed: singleSpec.outputSpeed,
+                                    weight: singleSpec.weight,
+                                  } : undefined;
 
                                   return (
                                     <TreeBranch key={equipIndex} isLast={equipIndex === parentAsset.equipment.length - 1}>
@@ -235,18 +258,19 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                         id={`revb-equip-${area.code}-${subIndex}-${paIndex}-${equipIndex}`}
                                         label={equipLabel}
                                         level="equipment"
-                                        hasChildren={hasComponents}
+                                        hasChildren={hasChildComponents}
                                         isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || isPidMatch}
                                         pidTags={equip.pidTags}
                                         depth={5}
                                         ancestorPath={pathAfterPA}
                                         storedFL={equip.functionalLocation || parentAsset.functionalLocation}
+                                        componentSpecs={equipSpecs}
                                       >
-                                        {hasComponents && equip.components!.map((comp, compIndex) => {
+                                        {hasChildComponents && comps.map((comp, compIndex) => {
                                           const compLabel = `${comp.componentCode} — ${comp.componentName}`;
 
                                           return (
-                                            <TreeBranch key={compIndex} isLast={compIndex === equip.components!.length - 1}>
+                                            <TreeBranch key={compIndex} isLast={compIndex === comps.length - 1}>
                                               <CollapsibleTreeNode
                                                 id={`revb-comp-${area.code}-${subIndex}-${paIndex}-${equipIndex}-${compIndex}`}
                                                 label={compLabel}
