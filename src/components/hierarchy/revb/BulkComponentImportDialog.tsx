@@ -287,18 +287,15 @@ export const BulkComponentImportDialog: React.FC = () => {
           byAsset.set(row.matchedAssetId, { assetId: row.matchedAssetId, components: [] });
         }
 
-        const cleanedDescription = row.description.trim();
-        const componentName = cleanedDescription || `${row.matchedAssetName} ${row.componentType}`;
-
-        // Only persist to `model` if the description contains real specs
-        // (part numbers, dimensions, manufacturer refs) — not just a generic name.
-        const isRealSpec = cleanedDescription && looksLikeSpec(cleanedDescription);
+        const cleanedDescription = sanitizeField(row.description);
+        const effectiveComponentType = inferComponentType(row.componentType, cleanedDescription);
+        const componentName = cleanedDescription || `${row.matchedAssetName} ${effectiveComponentType}`;
 
         byAsset.get(row.matchedAssetId)!.components.push({
-          componentType: row.componentType,
+          componentType: effectiveComponentType,
           componentName,
           manufacturer: null,
-          model: isRealSpec ? cleanedDescription : null,
+          model: cleanedDescription || null,
         });
       }
 
