@@ -18,6 +18,7 @@ interface ParsedRow {
   pidTag: string;
   componentType: string;
   description: string;
+  specs: string;
 }
 
 interface MatchedRow extends ParsedRow {
@@ -88,15 +89,42 @@ export const BulkComponentImportDialog: React.FC = () => {
           const pidTag = sanitizeField(parts[0] || "");
           const columnsAfterTag = parts.slice(1).filter((p) => p.length > 0);
 
-          const rawDescription = sanitizeField(columnsAfterTag[columnsAfterTag.length - 1] || "");
-          const rawTypeCandidate = sanitizeField(
-            columnsAfterTag.length >= 2 ? columnsAfterTag[columnsAfterTag.length - 2] : columnsAfterTag[0] || ""
-          );
+          // Detect if last column looks like a standalone part number / spec code
+          // (typically short alphanumeric with no spaces or very few)
+          const lastCol = sanitizeField(columnsAfterTag[columnsAfterTag.length - 1] || "");
+          const secondLastCol = columnsAfterTag.length >= 2 ? sanitizeField(columnsAfterTag[columnsAfterTag.length - 2] || "") : "";
+          const thirdLastCol = columnsAfterTag.length >= 3 ? sanitizeField(columnsAfterTag[columnsAfterTag.length - 3] || "") : "";
 
+          // If we have 3+ columns after tag, last one is likely a part number
+          if (columnsAfterTag.length >= 3) {
+            const componentDesc = stripRepMarkers(secondLastCol);
+            const systemName = thirdLastCol; // generic system name, often discarded
+            return {
+              pidTag,
+              componentType: inferComponentType(systemName, componentDesc),
+              description: componentDesc,
+              specs: lastCol,
+            };
+          }
+
+          // 2 columns after tag: could be [description, spec] or [system, description]
+          if (columnsAfterTag.length === 2) {
+            const rawDescription = stripRepMarkers(lastCol);
+            const rawTypeCandidate = secondLastCol;
+            return {
+              pidTag,
+              componentType: inferComponentType(rawTypeCandidate, rawDescription),
+              description: rawDescription,
+              specs: "",
+            };
+          }
+
+          // Single column after tag
           return {
             pidTag,
-            componentType: inferComponentType(rawTypeCandidate, rawDescription),
-            description: rawDescription,
+            componentType: inferComponentType(lastCol, ""),
+            description: lastCol,
+            specs: "",
           };
         }
 
@@ -107,6 +135,7 @@ export const BulkComponentImportDialog: React.FC = () => {
           pidTag: sanitizeField(cParts[0] || ""),
           componentType: inferComponentType(sanitizeField(cParts[1] || ""), csvDescription),
           description: csvDescription,
+          specs: "",
         };
       })
       .filter((r) => r.pidTag && r.componentType);
@@ -308,7 +337,7 @@ export const BulkComponentImportDialog: React.FC = () => {
           componentType: effectiveComponentType,
           componentName,
           manufacturer: null,
-          model: cleanedDescription || null,
+          model: row.specs || cleanedDescription || null,
         });
       }
 
@@ -462,7 +491,7 @@ export const BulkComponentImportDialog: React.FC = () => {
                     <th className="p-2 text-left">Status</th>
                     <th className="p-2 text-left">P&ID Tag</th>
                     <th className="p-2 text-left">Component</th>
-                    <th className="p-2 text-left">Description</th>
+                    <th className="p-2 text-left">Specs</th>
                     <th className="p-2 text-left">Matched Asset</th>
                   </tr>
                 </thead>
@@ -505,7 +534,7 @@ export const BulkComponentImportDialog: React.FC = () => {
                       </td>
                       <td className="p-2 font-mono">{row.pidTag}</td>
                       <td className="p-2 font-medium">{row.componentType}</td>
-                      <td className="p-2 text-muted-foreground truncate max-w-[200px]">{row.description}</td>
+                      <td className="p-2 text-muted-foreground truncate max-w-[200px] font-mono">{row.specs || row.description}</td>
                       <td className="p-2 font-mono text-primary">
                         {row.matchedAssetNumber || "—"}
                         {row.matchedAssetName && (
