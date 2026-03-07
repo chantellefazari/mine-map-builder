@@ -271,9 +271,9 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                   const isPidMatch = pidMatchesSearch(equip.pidTags);
 
                                   const inlineSpec = equivalentComponents[0];
-                                  const equipSpecs = inlineSpec
+                                  const equipSpecValues = inlineSpec
                                     ? {
-                                        model: inlineSpec.model || inlineSpec.manufacturer,
+                                        model: inlineSpec.model || undefined,
                                         serialNumber: inlineSpec.serialNumber,
                                         motorRef: inlineSpec.motorRef,
                                         pumpRef: inlineSpec.pumpRef,
@@ -290,6 +290,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                         weight: inlineSpec.weight,
                                       }
                                     : undefined;
+                                  const equipSpecs = equipSpecValues && Object.values(equipSpecValues).some(v => v) ? equipSpecValues : undefined;
 
                                   return (
                                     <TreeBranch key={equipIndex} isLast={equipIndex === parentAsset.equipment.length - 1}>
