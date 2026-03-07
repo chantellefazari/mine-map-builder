@@ -308,7 +308,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                               storedFL={equip.functionalLocation || parentAsset.functionalLocation}
                                                               componentSpecs={(() => {
                                                                 const s = {
-                                                                  model: comp.model || undefined,
+                                                                  model: comp.model || comp.manufacturer || undefined,
                                                                   serialNumber: comp.serialNumber,
                                                                   motorRef: comp.motorRef,
                                                                   pumpRef: comp.pumpRef,

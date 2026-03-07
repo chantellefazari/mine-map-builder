@@ -309,7 +309,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                         {hasChildComponents && childComponents.map((comp, compIndex) => {
                                           const compLabel = `${comp.componentCode} — ${comp.componentName}`;
                                           const compSpecValues = {
-                                            model: comp.model || undefined,
+                                            model: comp.model || comp.manufacturer || undefined,
                                             serialNumber: comp.serialNumber,
                                             motorRef: comp.motorRef,
                                             pumpRef: comp.pumpRef,
