@@ -164,17 +164,22 @@ export const BulkComponentImportDialog: React.FC = () => {
     setIsImporting(true);
     try {
       // Group by asset ID
-      const byAsset = new Map<string, { assetId: string; components: { componentType: string; componentName: string; manufacturer: string }[] }>();
+      const byAsset = new Map<string, { assetId: string; components: { componentType: string; componentName: string; manufacturer: string | null }[] }>();
 
       for (const row of toImport) {
         if (!row.matchedAssetId) continue;
         if (!byAsset.has(row.matchedAssetId)) {
           byAsset.set(row.matchedAssetId, { assetId: row.matchedAssetId, components: [] });
         }
+
+        const cleanedDescription = row.description.trim();
+        const componentName = cleanedDescription || `${row.matchedAssetName} ${row.componentType}`;
+
+        // Description is treated as component name; specs remain blank unless explicitly provided.
         byAsset.get(row.matchedAssetId)!.components.push({
           componentType: row.componentType,
-          componentName: `${row.matchedAssetName} ${row.componentType}`,
-          manufacturer: row.description,
+          componentName,
+          manufacturer: null,
         });
       }
 
