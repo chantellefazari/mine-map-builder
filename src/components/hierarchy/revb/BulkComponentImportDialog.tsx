@@ -534,7 +534,7 @@ export const BulkComponentImportDialog: React.FC = () => {
                       </td>
                       <td className="p-2 font-mono">{row.pidTag}</td>
                       <td className="p-2 font-medium">{row.componentType}</td>
-                      <td className="p-2 text-muted-foreground truncate max-w-[200px]">{row.description}</td>
+                      <td className="p-2 text-muted-foreground truncate max-w-[200px] font-mono">{row.specs || row.description}</td>
                       <td className="p-2 font-mono text-primary">
                         {row.matchedAssetNumber || "—"}
                         {row.matchedAssetName && (
