@@ -309,8 +309,10 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                               ancestorPath={pathAfterEquip}
                                                               storedFL={equip.functionalLocation || parentAsset.functionalLocation}
                                                               componentSpecs={(() => {
-                                                                const s = {
-                                                                  model: comp.model || comp.manufacturer || undefined,
+                                                                 const rawModel = comp.model || comp.manufacturer || undefined;
+                                                                 const modelIsJustName = rawModel && comp.componentName && rawModel.toLowerCase().trim() === comp.componentName.toLowerCase().trim();
+                                                                 const s = {
+                                                                   model: modelIsJustName ? undefined : rawModel,
                                                                   serialNumber: comp.serialNumber,
                                                                   motorRef: comp.motorRef,
                                                                   pumpRef: comp.pumpRef,
