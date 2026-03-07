@@ -36,6 +36,10 @@ export const BulkComponentImportDialog: React.FC = () => {
   const [step, setStep] = useState<"paste" | "review">("paste");
   const queryClient = useQueryClient();
 
+  // Strip advisory notes like "(Robbie please advice)" from any field
+  const sanitizeField = (val: string) =>
+    val.replace(/\(?\s*Robbie\s+please\s+advi[sc]e\s*\)?/gi, "").replace(/\s{2,}/g, " ").trim();
+
   const parsedRows = useMemo((): ParsedRow[] => {
     if (!rawText.trim()) return [];
     return rawText
@@ -48,32 +52,28 @@ export const BulkComponentImportDialog: React.FC = () => {
         const filled = parts.filter((p) => p.length > 0);
 
         if (parts.length >= 5) {
-          // Spreadsheet format: PID | Asset Name | ... | Component | Component | Description
-          // PID is always col 0. Scan from the end: last filled = description, 
-          // second-to-last filled = component type, everything before is PID + asset name
           const pidTag = parts[0];
           const lastFilled = filled[filled.length - 1] || "";
           const secondLast = filled.length >= 3 ? filled[filled.length - 2] : "";
           const thirdLast = filled.length >= 4 ? filled[filled.length - 3] : "";
-          // If secondLast and thirdLast are the same (e.g. "Motor" "Motor"), use one as type
           const componentType = secondLast === thirdLast && filled.length >= 4 
             ? secondLast 
             : secondLast;
-          return { pidTag, componentType, description: lastFilled };
+          return { pidTag, componentType: sanitizeField(componentType), description: sanitizeField(lastFilled) };
         }
         if (parts.length >= 3) {
           return {
             pidTag: parts[0],
-            componentType: parts[1],
-            description: parts[2],
+            componentType: sanitizeField(parts[1]),
+            description: sanitizeField(parts[2]),
           };
         }
         // Fallback: comma-separated
         const cParts = line.split(",").map((p) => p.trim());
         return {
           pidTag: cParts[0] || "",
-          componentType: cParts[1] || "",
-          description: cParts[2] || "",
+          componentType: sanitizeField(cParts[1] || ""),
+          description: sanitizeField(cParts[2] || ""),
         };
       })
       .filter((r) => r.pidTag && r.componentType);
