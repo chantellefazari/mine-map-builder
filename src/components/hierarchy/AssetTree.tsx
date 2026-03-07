@@ -165,8 +165,10 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                     depth={5}
                                                     ancestorPath={pathAfterEquip}
                                                     componentSpecs={(() => {
-                                                      const s = {
-                                                        model: comp.model || comp.manufacturer || undefined,
+                                                       const rawModel = comp.model || comp.manufacturer || undefined;
+                                                       const modelIsJustName = rawModel && comp.componentName && rawModel.toLowerCase().trim() === comp.componentName.toLowerCase().trim();
+                                                       const s = {
+                                                         model: modelIsJustName ? undefined : rawModel,
                                                         serialNumber: comp.serialNumber,
                                                         motorSpeed: comp.motorSpeed,
                                                         protection: comp.protection,
