@@ -287,7 +287,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                   <TreeBranch key={equipIndex} isLast={equipIndex === parentAsset.equipment.length - 1}>
                                                     <CollapsibleTreeNode
                                                       id={`equip-${area.code}-${subIndex}-${paIndex}-${equipIndex}`}
-                                                      label={equipLabel}
+                                                      label={equipNodeLabel}
                                                       level="equipment"
                                                       hasChildren={hasComponents}
                                                       isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || isPidMatch}

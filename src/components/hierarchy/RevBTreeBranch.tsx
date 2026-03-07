@@ -218,7 +218,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                     <TreeBranch key={equipIndex} isLast={equipIndex === parentAsset.equipment.length - 1}>
                                       <CollapsibleTreeNode
                                         id={`revb-equip-${area.code}-${subIndex}-${paIndex}-${equipIndex}`}
-                                        label={equipLabel}
+                                        label={equipNodeLabel}
                                         level="equipment"
                                         hasChildren={hasChildComponents}
                                         isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || isPidMatch}
