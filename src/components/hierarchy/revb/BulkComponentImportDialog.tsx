@@ -181,11 +181,12 @@ export const BulkComponentImportDialog: React.FC = () => {
         const cleanedDescription = row.description.trim();
         const componentName = cleanedDescription || `${row.matchedAssetName} ${row.componentType}`;
 
-        // Description is treated as component name; specs remain blank unless explicitly provided.
+        // Persist pasted spec text into `model` so the tree can show the ℹ️ spec icon/tooltip.
         byAsset.get(row.matchedAssetId)!.components.push({
           componentType: row.componentType,
           componentName,
           manufacturer: null,
+          model: cleanedDescription || null,
         });
       }
 
