@@ -158,7 +158,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                   <CollapsibleTreeNode
                                                     id={`cru-comp-${cruArea.areaCode}-${paIndex}-${equipIndex}-${compIndex}`}
                                                     code={comp.componentType}
-                                                    label={`${comp.componentCode} — ${comp.componentName}`}
+                                                    label={comp.componentCode ? `${comp.componentCode} — ${comp.componentName}` : comp.componentName}
                                                     level="component"
                                                     hasChildren={false}
                                                     isHighlighted={cruMatchesSearch(comp.componentCode) || cruMatchesSearch(comp.componentName) || cruMatchesSearch(comp.manufacturer)}
@@ -292,7 +292,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                       storedFL={equip.functionalLocation || parentAsset.functionalLocation}
                                                     >
                                                       {hasComponents && equip.components!.map((comp, compIndex) => {
-                                                        const compLabel = `${comp.componentCode} — ${comp.componentName}`;
+                                                        const compLabel = comp.componentCode ? `${comp.componentCode} — ${comp.componentName}` : comp.componentName;
                                                         
                                                         return (
                                                           <TreeBranch key={compIndex} isLast={compIndex === equip.components!.length - 1}>
