@@ -164,21 +164,24 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                     isHighlighted={cruMatchesSearch(comp.componentCode) || cruMatchesSearch(comp.componentName) || cruMatchesSearch(comp.manufacturer)}
                                                     depth={5}
                                                     ancestorPath={pathAfterEquip}
-                                                    componentSpecs={{
-                                                      model: comp.model || comp.manufacturer,
-                                                      serialNumber: comp.serialNumber,
-                                                      motorSpeed: comp.motorSpeed,
-                                                      protection: comp.protection,
-                                                      voltage: comp.voltage,
-                                                      pumpFlow: comp.pumpFlow,
-                                                      operatingPressure: comp.operatingPressure,
-                                                      displacement: comp.displacement,
-                                                      oilType: comp.oilType,
-                                                      oilVolume: comp.oilVolume,
-                                                      inputSpeed: comp.inputSpeed,
-                                                      outputSpeed: comp.outputSpeed,
-                                                      weight: comp.weight,
-                                                    }}
+                                                    componentSpecs={(() => {
+                                                      const s = {
+                                                        model: comp.model || undefined,
+                                                        serialNumber: comp.serialNumber,
+                                                        motorSpeed: comp.motorSpeed,
+                                                        protection: comp.protection,
+                                                        voltage: comp.voltage,
+                                                        pumpFlow: comp.pumpFlow,
+                                                        operatingPressure: comp.operatingPressure,
+                                                        displacement: comp.displacement,
+                                                        oilType: comp.oilType,
+                                                        oilVolume: comp.oilVolume,
+                                                        inputSpeed: comp.inputSpeed,
+                                                        outputSpeed: comp.outputSpeed,
+                                                        weight: comp.weight,
+                                                      };
+                                                      return Object.values(s).some(v => v) ? s : undefined;
+                                                    })()}
                                                   />
                                                 </TreeBranch>
                                               ))}
