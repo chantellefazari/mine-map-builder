@@ -18,6 +18,7 @@ interface ParsedRow {
   pidTag: string;
   componentType: string;
   description: string;
+  specs: string;
 }
 
 interface MatchedRow extends ParsedRow {
