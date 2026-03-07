@@ -255,10 +255,12 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                   const equipLabel = `${equip.assetNumber} — ${equip.name}`;
                                   const comps = equip.components || [];
                                   const equivalentComponents = comps.filter((comp) =>
-                                    isEquivalentComponent(equip.name, comp.componentName, comp.componentType)
+                                    isEquivalentComponent(equip.name, comp.componentName, comp.componentType) ||
+                                    isGearboxAliasComponent(equip.assetNumber, comp.componentName, comp.componentType)
                                   );
                                   const childComponents = comps.filter((comp) =>
-                                    !isEquivalentComponent(equip.name, comp.componentName, comp.componentType)
+                                    !(isEquivalentComponent(equip.name, comp.componentName, comp.componentType) ||
+                                      isGearboxAliasComponent(equip.assetNumber, comp.componentName, comp.componentType))
                                   );
                                   const hasChildComponents = childComponents.length > 0;
                                   const equipSegment: FLPathSegment = { level: "equipment", label: equipLabel };
