@@ -230,12 +230,23 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
           const lastSegment = equip.assetNumber.slice(lastDash + 1);
           const typeCode = lastSegment.replace(/\d+$/, "");
 
+          // Merge: add auto-nested component, but also preserve any DB-stored components from the child
           parentEquip.components.push({
             componentCode: equip.assetNumber,
             componentType: typeCode,
             componentName: equip.name,
             manufacturer: "",
           });
+
+          // If the child equipment itself had DB-stored components (specs), carry them forward
+          if (equip.components && equip.components.length > 0) {
+            for (const childComp of equip.components) {
+              // Avoid duplicates by checking componentCode
+              if (!parentEquip.components.some(c => c.componentCode === childComp.componentCode)) {
+                parentEquip.components.push(childComp);
+              }
+            }
+          }
           nested.add(equip.assetNumber);
         }
 
