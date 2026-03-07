@@ -102,12 +102,18 @@ export const BulkComponentImportDialog: React.FC = () => {
         if (!tags) continue;
         const existingComponents = Array.isArray(a.components) ? a.components : [];
         for (const tag of tags) {
-          tagToAsset.set(normalizeTag(tag), {
-            id: a.id,
-            asset_number: a.asset_number,
-            asset_name: a.asset_name,
-            existingComponents,
-          });
+          const normTag = normalizeTag(tag);
+          const existing = tagToAsset.get(normTag);
+          // When multiple assets share a P&ID tag, prefer the shortest asset_number
+          // (the parent/system-level equipment, e.g. MFCV01 over MFCV01-BASD)
+          if (!existing || a.asset_number.length < existing.asset_number.length) {
+            tagToAsset.set(normTag, {
+              id: a.id,
+              asset_number: a.asset_number,
+              asset_name: a.asset_name,
+              existingComponents,
+            });
+          }
         }
       }
 
