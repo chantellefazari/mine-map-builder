@@ -58,6 +58,16 @@ function useRevAAssets() {
 /* ── helpers ── */
 const AREA_ORDER = ["SITE", "UTL", "COM", "REC", "TAIL", "SUP"];
 
+function assetMatchesFilter(a: AssetRow, filterLower: string): boolean {
+  if (a.asset_number.toLowerCase().includes(filterLower)) return true;
+  if (a.asset_name.toLowerCase().includes(filterLower)) return true;
+  if (a.pid_tags?.some(t => t.toLowerCase().includes(filterLower))) return true;
+  // Forgiving leading-zero match for P&ID tags (e.g. "4-FE" matches "04-FE")
+  const norm = filterLower.replace(/\b0+/g, '');
+  if (norm !== filterLower && a.pid_tags?.some(t => t.toLowerCase().replace(/\b0+/g, '').includes(norm))) return true;
+  return false;
+}
+
 function buildTree(assets: AssetRow[]): AreaNode[] {
   const areaMap = new Map<string, { code: string; label: string; subMap: Map<string, Map<string, AssetRow[]>> }>();
 
@@ -249,10 +259,7 @@ const AreaBranch: React.FC<{
   const filterLower = filter.toLowerCase();
   const visibleSubs = area.subAreas.filter(sub =>
     !filter || sub.parents.some(p =>
-      p.assets.some(a =>
-        a.asset_number.toLowerCase().includes(filterLower) ||
-        a.asset_name.toLowerCase().includes(filterLower)
-      )
+      p.assets.some(a => assetMatchesFilter(a, filterLower))
     )
   );
   if (visibleSubs.length === 0) return null;
@@ -286,10 +293,7 @@ const SubAreaBranch: React.FC<{
   const [open, setOpen] = useState(!!filter);
   const filterLower = filter.toLowerCase();
   const visibleParents = sub.parents.filter(p =>
-    !filter || p.assets.some(a =>
-      a.asset_number.toLowerCase().includes(filterLower) ||
-      a.asset_name.toLowerCase().includes(filterLower)
-    )
+    !filter || p.assets.some(a => assetMatchesFilter(a, filterLower))
   );
   if (visibleParents.length === 0) return null;
 
@@ -320,10 +324,7 @@ const ParentBranch: React.FC<{
   const [open, setOpen] = useState(!!filter);
   const filterLower = filter.toLowerCase();
   const filteredAssets = filter
-    ? parent.assets.filter(a =>
-        a.asset_number.toLowerCase().includes(filterLower) ||
-        a.asset_name.toLowerCase().includes(filterLower)
-      )
+    ? parent.assets.filter(a => assetMatchesFilter(a, filterLower))
     : parent.assets;
   const equipmentNodes = useMemo(() => groupEquipmentAndComponents(filteredAssets), [filteredAssets]);
   if (equipmentNodes.length === 0) return null;
