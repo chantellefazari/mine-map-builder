@@ -139,7 +139,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                     >
                                       {parent.equipment.map((equip, equipIndex) => {
                                         const hasComponents = equip.components && equip.components.length > 0;
-                                        const equipNodeLabel = equip.name;
+                                        const equipNodeLabel = `${equip.assetNumber} — ${equip.name}`;
                                         const equipBreadcrumbLabel = `${equip.assetNumber} — ${equip.name}`;
                                         const equipSegment: FLPathSegment = { level: "equipment", label: equipBreadcrumbLabel };
                                         const pathAfterEquip = [...pathAfterPA, equipSegment];
