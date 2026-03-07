@@ -292,7 +292,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                       storedFL={equip.functionalLocation || parentAsset.functionalLocation}
                                                     >
                                                       {hasComponents && equip.components!.map((comp, compIndex) => {
-                                                        const compLabel = `${comp.componentCode} — ${comp.componentName}`;
+                                                        const compLabel = comp.componentCode ? `${comp.componentCode} — ${comp.componentName}` : comp.componentName;
                                                         
                                                         return (
                                                           <TreeBranch key={compIndex} isLast={compIndex === equip.components!.length - 1}>
