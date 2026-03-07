@@ -1,0 +1,2 @@
+UPDATE public.processing_plant_assets_rev_b SET pid_tags = ARRAY['11-PD-004'] WHERE asset_number = 'RWSMP01';
+UPDATE public.rev_b_pid_extraction_register SET tag_id = '11-PD-004' WHERE tag_id = '11-PD-006' AND description = 'Nobles Natural Sump';
