@@ -122,14 +122,17 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
 
   const isEquivalentComponent = (equipmentName: string, componentName?: string, componentType?: string) => {
     const equipmentNorm = normalizeMeaning(equipmentName);
-    const componentNorm = normalizeMeaning(`${componentName || ""} ${componentType || ""}`);
+    const componentNorm = normalizeMeaning(`${componentName || ""}`);
     if (!equipmentNorm || !componentNorm) return false;
 
+    // Only match if the component name is essentially identical to equipment name
+    // (e.g., "Main Gear Reducer" ≈ "Gearbox"), NOT if it's a sub-component like "Motor" or "Gearbox" of a parent
     const equipmentGearLike = /\bgearbox\b/.test(equipmentNorm) || (equipmentNorm.includes("gear") && equipmentNorm.includes("reduc"));
     const componentGearLike = /\bgearbox\b/.test(componentNorm) || (componentNorm.includes("gear") && componentNorm.includes("reduc"));
     if (equipmentGearLike && componentGearLike) return true;
 
-    return equipmentNorm === componentNorm || equipmentNorm.includes(componentNorm) || componentNorm.includes(equipmentNorm);
+    // Strict equality only — don't suppress components that merely contain the parent name
+    return equipmentNorm === componentNorm;
   };
 
   const isGearboxAliasComponent = (equipmentAssetNumber: string, componentName?: string, componentType?: string) => {
