@@ -109,7 +109,24 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
     return pidTags.some(tag => tag.toLowerCase().includes(q) || normalizeTag(tag).includes(nq));
   };
 
-  // Build a set of paths that should be force-expanded for search
+
+  const normalizeMeaning = (text?: string) => (text || "")
+    .toLowerCase()
+    .replace(/main/g, "")
+    .replace(/primary\s+ball\s+mill/g, "")
+    .replace(/mill/g, "")
+    .replace(/\b(gear\s*reducer|gearbox)\b/g, "gearbox")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const isEquivalentComponent = (equipmentName: string, componentName?: string, componentType?: string) => {
+    const equipmentNorm = normalizeMeaning(equipmentName);
+    const componentNorm = normalizeMeaning(`${componentName || ""} ${componentType || ""}`);
+    if (!equipmentNorm || !componentNorm) return false;
+    return equipmentNorm === componentNorm || equipmentNorm.includes(componentNorm) || componentNorm.includes(equipmentNorm);
+  };
+
   const expandedPaths = React.useMemo(() => {
     const paths = new Set<string>();
     if (!hasSearch) return paths;
