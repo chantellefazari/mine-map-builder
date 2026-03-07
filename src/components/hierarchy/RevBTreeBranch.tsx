@@ -115,7 +115,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
     .replace(/main/g, "")
     .replace(/primary\s+ball\s+mill/g, "")
     .replace(/mill/g, "")
-    .replace(/\b(gear\s*reducer|gearbox)\b/g, "gearbox")
+    .replace(/\b(gear\s*reducer|gear\s*box|gearbox)\b/g, "gearbox")
     .replace(/[^a-z0-9\s]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -124,6 +124,11 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
     const equipmentNorm = normalizeMeaning(equipmentName);
     const componentNorm = normalizeMeaning(`${componentName || ""} ${componentType || ""}`);
     if (!equipmentNorm || !componentNorm) return false;
+
+    const equipmentGearLike = /\bgearbox\b/.test(equipmentNorm) || (equipmentNorm.includes("gear") && equipmentNorm.includes("reduc"));
+    const componentGearLike = /\bgearbox\b/.test(componentNorm) || (componentNorm.includes("gear") && componentNorm.includes("reduc"));
+    if (equipmentGearLike && componentGearLike) return true;
+
     return equipmentNorm === componentNorm || equipmentNorm.includes(componentNorm) || componentNorm.includes(equipmentNorm);
   };
 
