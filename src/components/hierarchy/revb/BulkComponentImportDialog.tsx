@@ -59,19 +59,15 @@ export const BulkComponentImportDialog: React.FC = () => {
   };
 
   const inferComponentType = (rawType: string, rawDescription: string): string => {
-    const cleanedType = sanitizeField(rawType || "");
-    const cleanedDescription = sanitizeField(rawDescription || "");
+    const cleanedType = stripRepMarkers(sanitizeField(rawType || ""));
+    const cleanedDescription = stripRepMarkers(sanitizeField(rawDescription || ""));
 
     if (cleanedType && !isGenericComponentType(cleanedType)) {
       return cleanedType;
     }
 
     if (cleanedDescription) {
-      return cleanedDescription
-        .replace(/\((?:Rep\.?|Ref\.?)\s*[\w.-]+\)/gi, "")
-        .replace(/\s+-\s+(?:Rep\.?|Ref\.?)\s*[\w.-]+/gi, "")
-        .replace(/\s{2,}/g, " ")
-        .trim();
+      return cleanedDescription;
     }
 
     return cleanedType || "Component";
