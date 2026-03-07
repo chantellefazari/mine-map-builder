@@ -5,85 +5,6 @@ import { AreaType } from "./assetData";
 import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
 import { Loader2 } from "lucide-react";
 
-/** Level 5 System codes — derived from the common equipment prefix under each parent asset header */
-const SYSTEM_CODES: Record<string, string> = {
-  // SITE
-  "BLDG01 Site Buildings": "BLDG01",
-  // UTL – Power Generation
-  "GEN01 Generators": "GEN01",
-  // PSTA01 removed — all generators sit under GEN01
-  // UTL – Electrical / Controls
-  "CR01 Control Room": "CR01",
-  "FMCC01 Field MCCs": "FMCC01",
-  "LTW01 Lighting Towers": "LTW01",
-  "MDB01 Main Distribution Board": "MDB01",
-  "MSUB01 Main Sub Station": "MSUB01",
-  "SDB01 Sub Distribution Board": "SDB01",
-  // UTL – Compressed Air
-  "COMP01 Compressed Air System": "COMP01",
-  // UTL – Water
-  "RW01 Raw Water": "RW01",
-  "PW01 Potable Water": "PW01",
-  "GW01 Gland Water": "GW01",
-  "PCW01 Process Water": "PCW01",
-  // UTL – Reagents
-  "CN01 Cyanide System": "CN01",
-  "CS01 Caustic & Acid Dosing": "CS01",
-  "DSL01 Diesel System": "DSL01",
-  "LIME01 Lime System": "LIME01",
-  "FLOC01 Flocculant & Clarometer": "FLOC01",
-  "RA01 Reagents Ancillary": "RA01",
-  // COM – Feed / Reclaim
-  "RCFD01 Reclaim Hopper & Feeder": "RCFD01",
-  "TRCV01 Transfer Conveyor": "TRCV01",
-  "MFCV01 Mill Feed Conveyor": "MFCV01",
-  // COM – Grinding
-  "BM01 Primary Ball Mill": "BM01",
-  "MLUB01 Mill Lubrication System": "MLUB01",
-  "CFP01 Cyclone Feed Pumps": "CFP01",
-  "MLANC01 Milling Ancillary": "MLANC01",
-  // COM – Classification
-  "CYC01 Primary Cyclones": "CYC01",
-  "CLANC01 Classification Ancillary": "CLANC01",
-  // REC – Gravity Circuit
-  "GSCN01 Gravity Screen": "GSCN01",
-  "KNL01 Knelson Concentrator": "KNL01",
-  "STBL01 Shaking Table & Tails": "STBL01",
-  "GRV01 Gravity Ancillary": "GRV01",
-  // REC – CIP
-  "TSCN01 Trash Screen": "TSCN01",
-  "LCH01 Leach Tanks": "LCH01",
-  "CIP01 CIP Tanks & Agitators": "CIP01",
-  "CT01 Carbon Transfer": "CT01",
-  "LCANC01 Leaching Ancillary": "LCANC01",
-  "ADS01 Adsorption Ancillary": "ADS01",
-  // REC – Elution
-  "AW01 Acid Wash": "AW01",
-  "ELU01 Elution Column & Heating": "ELU01",
-  "ELANC01 Elution Ancillary": "ELANC01",
-  // REC – Carbon Regen
-  "CREG01 Carbon Regen System": "CREG01",
-  "KLN01 Regeneration Kiln": "KLN01",
-  // REC – Gold Room
-  "EW01 Electrowinning": "EW01",
-  "GR01 Gold Room": "GR01",
-  // TAIL – Thickening
-  "THK01 Tails Thickener": "THK01",
-  "THYD01 Thickener Hydraulic System": "THYD01",
-  "TUFP01 Thickener Underflow Pumps": "TUFP01",
-  "THANC01 Thickener Ancillary": "THANC01",
-  "TFLO01 Flocculant System": "TFLO01",
-  // TAIL – Filtering
-  "FP01 Filter Press 1": "FP01",
-  "FP02 Filter Press 2": "FP02",
-  "FPCV01 Filter Press Conveyors": "FPCV01",
-  "FPAR01 Filter Press Compressed Air": "FPAR01",
-  "FPAN01 Filter Press Ancillary": "FPAN01",
-  "HMGN01 Slurry Homogenisers": "HMGN01",
-  // SUP
-  "MOB01 Mobile Equipment Fleet": "MOB01",
-  "LTV01 Light Vehicle Fleet": "LTV01",
-};
 import { FLPathSegment } from "./FLBreadcrumbContext";
 
 interface RevBTreeBranchProps {
@@ -243,7 +164,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                             <TreeBranch key={paIndex} isLast={paIndex === subArea.parentAssets.length - 1}>
                               <CollapsibleTreeNode
                                 id={`revb-parent-${area.code}-${subIndex}-${paIndex}`}
-                                code={SYSTEM_CODES[parentAsset.label]}
+                                
                                 label={parentAsset.label}
                                 level="parentAsset"
                                 hasChildren={parentAsset.equipment.length > 0}
