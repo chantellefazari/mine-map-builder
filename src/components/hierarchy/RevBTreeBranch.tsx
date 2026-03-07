@@ -132,6 +132,13 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
     return equipmentNorm === componentNorm || equipmentNorm.includes(componentNorm) || componentNorm.includes(equipmentNorm);
   };
 
+  const isGearboxAliasComponent = (equipmentAssetNumber: string, componentName?: string, componentType?: string) => {
+    const isGearboxEquipment = /-(gb|gbx)\d*$/i.test(equipmentAssetNumber);
+    if (!isGearboxEquipment) return false;
+    const text = `${componentName || ""} ${componentType || ""}`.toLowerCase();
+    return /gear\s*reducer|gear\s*box|gearbox/.test(text);
+  };
+
   const expandedPaths = React.useMemo(() => {
     const paths = new Set<string>();
     if (!hasSearch) return paths;
@@ -248,10 +255,12 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                   const equipLabel = `${equip.assetNumber} — ${equip.name}`;
                                   const comps = equip.components || [];
                                   const equivalentComponents = comps.filter((comp) =>
-                                    isEquivalentComponent(equip.name, comp.componentName, comp.componentType)
+                                    isEquivalentComponent(equip.name, comp.componentName, comp.componentType) ||
+                                    isGearboxAliasComponent(equip.assetNumber, comp.componentName, comp.componentType)
                                   );
                                   const childComponents = comps.filter((comp) =>
-                                    !isEquivalentComponent(equip.name, comp.componentName, comp.componentType)
+                                    !(isEquivalentComponent(equip.name, comp.componentName, comp.componentType) ||
+                                      isGearboxAliasComponent(equip.assetNumber, comp.componentName, comp.componentType))
                                   );
                                   const hasChildComponents = childComponents.length > 0;
                                   const equipSegment: FLPathSegment = { level: "equipment", label: equipLabel };
