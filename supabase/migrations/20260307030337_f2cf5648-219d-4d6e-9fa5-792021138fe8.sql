@@ -1,0 +1,1 @@
+UPDATE processing_plant_assets_rev_b SET components = '[]'::jsonb, updated_at = now() WHERE components IS NOT NULL AND components::text != '[]' AND components::text != 'null'
