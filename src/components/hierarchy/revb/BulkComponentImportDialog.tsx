@@ -212,6 +212,7 @@ export const BulkComponentImportDialog: React.FC = () => {
             componentType: c.componentType,
             componentName: c.componentName,
             manufacturer: c.manufacturer,
+            model: c.model,
           })),
         ];
 
