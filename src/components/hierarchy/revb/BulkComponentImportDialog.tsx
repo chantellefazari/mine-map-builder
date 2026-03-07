@@ -43,13 +43,29 @@ export const BulkComponentImportDialog: React.FC = () => {
       .map((line) => line.trim())
       .filter((line) => line.length > 0)
       .map((line) => {
-        // Support tab-separated: PID_TAG \t COMPONENT_TYPE \t DESCRIPTION
-        const parts = line.split("\t");
+        const parts = line.split("\t").map((p) => p.trim());
+        // Filter out empty columns
+        const filled = parts.filter((p) => p.length > 0);
+
+        if (parts.length >= 5) {
+          // Spreadsheet format: PID | Asset Name | ... | Component | Component | Description
+          // PID is always col 0. Scan from the end: last filled = description, 
+          // second-to-last filled = component type, everything before is PID + asset name
+          const pidTag = parts[0];
+          const lastFilled = filled[filled.length - 1] || "";
+          const secondLast = filled.length >= 3 ? filled[filled.length - 2] : "";
+          const thirdLast = filled.length >= 4 ? filled[filled.length - 3] : "";
+          // If secondLast and thirdLast are the same (e.g. "Motor" "Motor"), use one as type
+          const componentType = secondLast === thirdLast && filled.length >= 4 
+            ? secondLast 
+            : secondLast;
+          return { pidTag, componentType, description: lastFilled };
+        }
         if (parts.length >= 3) {
           return {
-            pidTag: parts[0].trim(),
-            componentType: parts[1].trim(),
-            description: parts[2].trim(),
+            pidTag: parts[0],
+            componentType: parts[1],
+            description: parts[2],
           };
         }
         // Fallback: comma-separated
