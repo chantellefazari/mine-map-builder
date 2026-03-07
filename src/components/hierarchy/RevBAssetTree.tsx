@@ -73,20 +73,23 @@ export const RevBAssetTree: React.FC = () => {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          placeholder="Search assets, tags, or areas..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          className="pl-10 pr-10 h-9 text-sm"
-        />
-        {searchTerm && (
-          <Button variant="ghost" size="sm" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0" onClick={() => setSearchTerm("")}>
-            <X className="w-4 h-4" />
-          </Button>
-        )}
+      {/* Search + Import */}
+      <div className="flex items-center gap-3">
+        <div className="relative max-w-md flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder="Search assets, tags, or areas..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="pl-10 pr-10 h-9 text-sm"
+          />
+          {searchTerm && (
+            <Button variant="ghost" size="sm" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0" onClick={() => setSearchTerm("")}>
+              <X className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
+        <BulkComponentImportDialog />
       </div>
 
       {/* Summary */}
