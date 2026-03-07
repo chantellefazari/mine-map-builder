@@ -40,14 +40,32 @@ interface ParentNode {
 /* ── hooks ── */
 function useRevAAssets() {
   return useQuery({
-    queryKey: ["dual-tree-rev-a"],
+    queryKey: ["dual-tree-rev-a-with-tags"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("processing_plant_assets")
-        .select("asset_number, asset_name, area_code, area_label, sub_area, parent_asset_label, pid_tags")
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      return data as AssetRow[];
+      const [assetsRes, tagsRes] = await Promise.all([
+        supabase
+          .from("processing_plant_assets")
+          .select("asset_number, asset_name, area_code, area_label, sub_area, parent_asset_label, pid_tags")
+          .order("sort_order", { ascending: true }),
+        supabase
+          .from("processing_pid_tags")
+          .select("asset_number, pid_tag"),
+      ]);
+      if (assetsRes.error) throw assetsRes.error;
+      if (tagsRes.error) throw tagsRes.error;
+
+      // Build a map of asset_number → pid_tags from the dedicated tags table
+      const tagMap = new Map<string, string[]>();
+      for (const t of tagsRes.data) {
+        if (!tagMap.has(t.asset_number)) tagMap.set(t.asset_number, []);
+        tagMap.get(t.asset_number)!.push(t.pid_tag);
+      }
+
+      // Merge: prefer existing pid_tags on the asset, fall back to the tags table
+      return assetsRes.data.map(a => ({
+        ...a,
+        pid_tags: (a.pid_tags && a.pid_tags.length > 0) ? a.pid_tags : (tagMap.get(a.asset_number) ?? null),
+      })) as AssetRow[];
     },
     staleTime: 5 * 60 * 1000,
   });
