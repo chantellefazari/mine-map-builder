@@ -273,7 +273,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                   const inlineSpec = equivalentComponents[0];
                                   const equipSpecValues = inlineSpec
                                     ? {
-                                        model: inlineSpec.model || undefined,
+                                        model: inlineSpec.model || inlineSpec.manufacturer || undefined,
                                         serialNumber: inlineSpec.serialNumber,
                                         motorRef: inlineSpec.motorRef,
                                         pumpRef: inlineSpec.pumpRef,
