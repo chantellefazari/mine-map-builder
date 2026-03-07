@@ -192,8 +192,15 @@ const AssetTree = () => {
             </FLBreadcrumbProvider>
           </TabsContent>
 
-          <TabsContent value="rev-b" className="mt-6">
+          <TabsContent value="rev-b" className="mt-6 space-y-4">
+            <div className="flex justify-end">
+              <Button variant="outline" onClick={() => setTransferDialogOpen(true)} className="gap-2">
+                <ArrowRightLeft className="h-4 w-4" />
+                Transfer Component Specs (Rev A → Rev B)
+              </Button>
+            </div>
             <RevBAssetTree />
+            <ComponentTransferDialog open={transferDialogOpen} onOpenChange={setTransferDialogOpen} />
           </TabsContent>
 
           <TabsContent value="comparison" className="mt-6">
