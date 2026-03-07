@@ -324,10 +324,7 @@ const ParentBranch: React.FC<{
   const [open, setOpen] = useState(!!filter);
   const filterLower = filter.toLowerCase();
   const filteredAssets = filter
-    ? parent.assets.filter(a =>
-        a.asset_number.toLowerCase().includes(filterLower) ||
-        a.asset_name.toLowerCase().includes(filterLower)
-      )
+    ? parent.assets.filter(a => assetMatchesFilter(a, filterLower))
     : parent.assets;
   const equipmentNodes = useMemo(() => groupEquipmentAndComponents(filteredAssets), [filteredAssets]);
   if (equipmentNodes.length === 0) return null;
