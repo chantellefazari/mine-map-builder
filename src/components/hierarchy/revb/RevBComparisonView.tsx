@@ -259,10 +259,7 @@ const AreaBranch: React.FC<{
   const filterLower = filter.toLowerCase();
   const visibleSubs = area.subAreas.filter(sub =>
     !filter || sub.parents.some(p =>
-      p.assets.some(a =>
-        a.asset_number.toLowerCase().includes(filterLower) ||
-        a.asset_name.toLowerCase().includes(filterLower)
-      )
+      p.assets.some(a => assetMatchesFilter(a, filterLower))
     )
   );
   if (visibleSubs.length === 0) return null;
