@@ -31,7 +31,7 @@ const ComponentSpecsIcon: React.FC<{ components?: ComponentSpec[] | string | nul
   if (Array.isArray(components)) parsed = components;
   else if (typeof components === "string") { try { const p = JSON.parse(components); if (Array.isArray(p)) parsed = p; } catch { /* ignore */ } }
   // Only show info icon when there are actual specification values (not just type/name)
-  const specs = parsed.filter(c => c.manufacturer);
+  const specs = parsed.filter(c => c.manufacturer || c.model);
   if (specs.length === 0) return null;
   return (
     <TooltipProvider delayDuration={200}>
