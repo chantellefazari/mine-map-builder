@@ -242,30 +242,37 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                 {parentAsset.equipment.map((equip, equipIndex) => {
                                   const equipLabel = `${equip.assetNumber} — ${equip.name}`;
                                   const comps = equip.components || [];
-                                  const singleComp = comps.length === 1 ? comps[0] : null;
-                                  const inlineEquivalentSpec = !!singleComp && isEquivalentComponent(equip.name, singleComp.componentName, singleComp.componentType);
-                                  const hasChildComponents = comps.length > 0 && !inlineEquivalentSpec;
+                                  const equivalentComponents = comps.filter((comp) =>
+                                    isEquivalentComponent(equip.name, comp.componentName, comp.componentType)
+                                  );
+                                  const childComponents = comps.filter((comp) =>
+                                    !isEquivalentComponent(equip.name, comp.componentName, comp.componentType)
+                                  );
+                                  const hasChildComponents = childComponents.length > 0;
                                   const equipSegment: FLPathSegment = { level: "equipment", label: equipLabel };
                                   const pathAfterEquip = [...pathAfterPA, equipSegment];
                                   const isPidMatch = pidMatchesSearch(equip.pidTags);
 
-                                  const equipSpecs = inlineEquivalentSpec ? {
-                                    model: singleComp?.model || singleComp?.manufacturer,
-                                    serialNumber: singleComp?.serialNumber,
-                                    motorRef: singleComp?.motorRef,
-                                    pumpRef: singleComp?.pumpRef,
-                                    motorSpeed: singleComp?.motorSpeed,
-                                    protection: singleComp?.protection,
-                                    voltage: singleComp?.voltage,
-                                    pumpFlow: singleComp?.pumpFlow,
-                                    operatingPressure: singleComp?.operatingPressure,
-                                    displacement: singleComp?.displacement,
-                                    oilType: singleComp?.oilType,
-                                    oilVolume: singleComp?.oilVolume,
-                                    inputSpeed: singleComp?.inputSpeed,
-                                    outputSpeed: singleComp?.outputSpeed,
-                                    weight: singleComp?.weight,
-                                  } : undefined;
+                                  const inlineSpec = equivalentComponents[0];
+                                  const equipSpecs = inlineSpec
+                                    ? {
+                                        model: inlineSpec.model || inlineSpec.manufacturer,
+                                        serialNumber: inlineSpec.serialNumber,
+                                        motorRef: inlineSpec.motorRef,
+                                        pumpRef: inlineSpec.pumpRef,
+                                        motorSpeed: inlineSpec.motorSpeed,
+                                        protection: inlineSpec.protection,
+                                        voltage: inlineSpec.voltage,
+                                        pumpFlow: inlineSpec.pumpFlow,
+                                        operatingPressure: inlineSpec.operatingPressure,
+                                        displacement: inlineSpec.displacement,
+                                        oilType: inlineSpec.oilType,
+                                        oilVolume: inlineSpec.oilVolume,
+                                        inputSpeed: inlineSpec.inputSpeed,
+                                        outputSpeed: inlineSpec.outputSpeed,
+                                        weight: inlineSpec.weight,
+                                      }
+                                    : undefined;
 
                                   return (
                                     <TreeBranch key={equipIndex} isLast={equipIndex === parentAsset.equipment.length - 1}>
@@ -281,7 +288,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                         storedFL={equip.functionalLocation || parentAsset.functionalLocation}
                                         componentSpecs={equipSpecs}
                                       >
-                                        {hasChildComponents && comps.map((comp, compIndex) => {
+                                        {hasChildComponents && childComponents.map((comp, compIndex) => {
                                           const compLabel = `${comp.componentCode} — ${comp.componentName}`;
 
                                           return (
