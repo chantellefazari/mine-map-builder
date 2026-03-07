@@ -44,7 +44,7 @@ function useRevAAssets() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("processing_plant_assets")
-        .select("asset_number, asset_name, area_code, area_label, sub_area, parent_asset_label")
+        .select("asset_number, asset_name, area_code, area_label, sub_area, parent_asset_label, pid_tags")
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return data as AssetRow[];
