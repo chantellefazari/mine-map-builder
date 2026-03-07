@@ -40,25 +40,34 @@ export const BulkComponentImportDialog: React.FC = () => {
   const sanitizeField = (val: string) =>
     val.replace(/\(?\s*Robbie\s+please\s+advi[sc]e\s*\)?/gi, "").replace(/\s{2,}/g, " ").trim();
 
-  /**
-   * Returns true if a description string contains real technical specs
-   * (part numbers, dimensions, manufacturer references) rather than
-   * just a generic component name like "Motor" or "Bearing".
-   */
-  const looksLikeSpec = (text: string): boolean => {
-    if (!text || text.length < 4) return false;
-    // Contains a part number pattern (P/N:, alphanumeric with dashes/slashes)
-    if (/P\/N[:\s]/i.test(text)) return true;
-    // Contains model-like alphanumeric strings (e.g., KA107R77, DRN112M4)
-    if (/[A-Z]{2,}\d{2,}/i.test(text) && text.length > 8) return true;
-    // Contains dimensions (e.g., 60x125, 600mm, 50NB)
-    if (/\d+\s*[xX×]\s*\d+|\d+\s*mm|\d+\s*NB/i.test(text)) return true;
-    // Contains known manufacturer keywords
-    if (/SEW|SIEMENS|ABB|WEG|FLENDER|SKF|NSK|FAG|WARMAN|METSO|ROPER/i.test(text)) return true;
-    // Contains slash-separated codes (e.g., V/V, K-ROL-SG)
-    if (/[A-Z]-[A-Z]{2,}-[A-Z]/i.test(text)) return true;
-    // Generic short names are NOT specs
-    return false;
+  const isGenericComponentType = (text: string): boolean => {
+    if (!text) return true;
+    const normalized = text.trim().toLowerCase();
+    if (!normalized) return true;
+
+    return (
+      /\b(system|plant|facility|circuit|area|sub\s*area|section|line|package|unit|train)\b/i.test(normalized) ||
+      /\b(primary|secondary|tertiary)\s+ball\s+mill\b/i.test(normalized)
+    );
+  };
+
+  const inferComponentType = (rawType: string, rawDescription: string): string => {
+    const cleanedType = sanitizeField(rawType || "");
+    const cleanedDescription = sanitizeField(rawDescription || "");
+
+    if (cleanedType && !isGenericComponentType(cleanedType)) {
+      return cleanedType;
+    }
+
+    if (cleanedDescription) {
+      return cleanedDescription
+        .replace(/\((?:Rep\.?|Ref\.?)\s*[\w.-]+\)/gi, "")
+        .replace(/\s+-\s+(?:Rep\.?|Ref\.?)\s*[\w.-]+/gi, "")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+    }
+
+    return cleanedType || "Component";
   };
 
   const parsedRows = useMemo((): ParsedRow[] => {
@@ -72,29 +81,29 @@ export const BulkComponentImportDialog: React.FC = () => {
         // Filter out empty columns
         const filled = parts.filter((p) => p.length > 0);
 
-        if (parts.length >= 5) {
-          const pidTag = parts[0];
-          const lastFilled = filled[filled.length - 1] || "";
-          const secondLast = filled.length >= 3 ? filled[filled.length - 2] : "";
-          const thirdLast = filled.length >= 4 ? filled[filled.length - 3] : "";
-          const componentType = secondLast === thirdLast && filled.length >= 4 
-            ? secondLast 
-            : secondLast;
-          return { pidTag, componentType: sanitizeField(componentType), description: sanitizeField(lastFilled) };
-        }
-        if (parts.length >= 3) {
+        if (parts.length >= 2) {
+          const pidTag = sanitizeField(parts[0] || "");
+          const columnsAfterTag = parts.slice(1).filter((p) => p.length > 0);
+
+          const rawDescription = sanitizeField(columnsAfterTag[columnsAfterTag.length - 1] || "");
+          const rawTypeCandidate = sanitizeField(
+            columnsAfterTag.length >= 2 ? columnsAfterTag[columnsAfterTag.length - 2] : columnsAfterTag[0] || ""
+          );
+
           return {
-            pidTag: parts[0],
-            componentType: sanitizeField(parts[1]),
-            description: sanitizeField(parts[2]),
+            pidTag,
+            componentType: inferComponentType(rawTypeCandidate, rawDescription),
+            description: rawDescription,
           };
         }
+
         // Fallback: comma-separated
         const cParts = line.split(",").map((p) => p.trim());
+        const csvDescription = sanitizeField(cParts.slice(2).filter(Boolean).join(" | "));
         return {
-          pidTag: cParts[0] || "",
-          componentType: sanitizeField(cParts[1] || ""),
-          description: sanitizeField(cParts[2] || ""),
+          pidTag: sanitizeField(cParts[0] || ""),
+          componentType: inferComponentType(sanitizeField(cParts[1] || ""), csvDescription),
+          description: csvDescription,
         };
       })
       .filter((r) => r.pidTag && r.componentType);
@@ -167,7 +176,7 @@ export const BulkComponentImportDialog: React.FC = () => {
         reducer: ["GR", "GRTE"],
       };
 
-      const findBestAsset = (componentType: string, assetList: AssetEntry[]): AssetEntry => {
+      const findBestAsset = (componentType: string, assetList: AssetEntry[]): AssetEntry | null => {
         if (assetList.length === 1) return assetList[0];
 
         // Sort by asset_number length (shortest = parent system)
@@ -207,8 +216,8 @@ export const BulkComponentImportDialog: React.FC = () => {
           }
         }
 
-        // Default: parent system
-        return parentAsset;
+        // No confident child match: refuse to auto-route to parent to avoid wrong imports.
+        return null;
       };
 
       const matched: MatchedRow[] = parsedRows.map((row) => {
@@ -228,11 +237,24 @@ export const BulkComponentImportDialog: React.FC = () => {
         // Find the best-fit asset for this specific component type
         const bestAsset = findBestAsset(row.componentType, assetList);
 
-        // Check if this component type already exists on the matched asset
-        const isDuplicate = bestAsset.existingComponents.some(
-          (c: any) =>
-            c.componentType?.toLowerCase() === row.componentType.toLowerCase()
-        );
+        if (!bestAsset) {
+          return {
+            ...row,
+            matchedAssetId: null,
+            matchedAssetNumber: "",
+            matchedAssetName: "",
+            status: "not_found" as const,
+          };
+        }
+
+        const normalizedType = inferComponentType(row.componentType, row.description).toLowerCase();
+        const normalizedDescription = sanitizeField(row.description).toLowerCase();
+
+        const isDuplicate = bestAsset.existingComponents.some((c: any) => {
+          const existingType = sanitizeField(c.componentType || "").toLowerCase();
+          const existingName = sanitizeField(c.componentName || "").toLowerCase();
+          return existingType === normalizedType || (normalizedDescription && existingName === normalizedDescription);
+        });
 
         return {
           ...row,
@@ -275,18 +297,15 @@ export const BulkComponentImportDialog: React.FC = () => {
           byAsset.set(row.matchedAssetId, { assetId: row.matchedAssetId, components: [] });
         }
 
-        const cleanedDescription = row.description.trim();
-        const componentName = cleanedDescription || `${row.matchedAssetName} ${row.componentType}`;
-
-        // Only persist to `model` if the description contains real specs
-        // (part numbers, dimensions, manufacturer refs) — not just a generic name.
-        const isRealSpec = cleanedDescription && looksLikeSpec(cleanedDescription);
+        const cleanedDescription = sanitizeField(row.description);
+        const effectiveComponentType = inferComponentType(row.componentType, cleanedDescription);
+        const componentName = cleanedDescription || `${row.matchedAssetName} ${effectiveComponentType}`;
 
         byAsset.get(row.matchedAssetId)!.components.push({
-          componentType: row.componentType,
+          componentType: effectiveComponentType,
           componentName,
           manufacturer: null,
-          model: isRealSpec ? cleanedDescription : null,
+          model: cleanedDescription || null,
         });
       }
 
