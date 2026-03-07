@@ -7,6 +7,7 @@ interface ComponentSpec {
   componentType?: string;
   componentName?: string;
   manufacturer?: string;
+  model?: string;
 }
 
 export interface RevBAsset {
