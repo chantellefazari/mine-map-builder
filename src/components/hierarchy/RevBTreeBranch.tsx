@@ -229,8 +229,12 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                       >
                                         {hasChildComponents && childComponents.map((comp, compIndex) => {
                                           const compLabel = comp.componentCode ? `${comp.componentCode} — ${comp.componentName}` : comp.componentName;
+                                          // Only show model as spec if it differs from the component name (not a duplicate)
+                                          const rawModel = comp.model || comp.manufacturer || undefined;
+                                          const modelIsJustName = rawModel && comp.componentName && 
+                                            rawModel.toLowerCase().trim() === comp.componentName.toLowerCase().trim();
                                           const compSpecValues = {
-                                            model: comp.model || comp.manufacturer || undefined,
+                                            model: modelIsJustName ? undefined : rawModel,
                                             serialNumber: comp.serialNumber,
                                             motorRef: comp.motorRef,
                                             pumpRef: comp.pumpRef,

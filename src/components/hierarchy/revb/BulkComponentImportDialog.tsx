@@ -40,6 +40,27 @@ export const BulkComponentImportDialog: React.FC = () => {
   const sanitizeField = (val: string) =>
     val.replace(/\(?\s*Robbie\s+please\s+advi[sc]e\s*\)?/gi, "").replace(/\s{2,}/g, " ").trim();
 
+  /**
+   * Returns true if a description string contains real technical specs
+   * (part numbers, dimensions, manufacturer references) rather than
+   * just a generic component name like "Motor" or "Bearing".
+   */
+  const looksLikeSpec = (text: string): boolean => {
+    if (!text || text.length < 4) return false;
+    // Contains a part number pattern (P/N:, alphanumeric with dashes/slashes)
+    if (/P\/N[:\s]/i.test(text)) return true;
+    // Contains model-like alphanumeric strings (e.g., KA107R77, DRN112M4)
+    if (/[A-Z]{2,}\d{2,}/i.test(text) && text.length > 8) return true;
+    // Contains dimensions (e.g., 60x125, 600mm, 50NB)
+    if (/\d+\s*[xX×]\s*\d+|\d+\s*mm|\d+\s*NB/i.test(text)) return true;
+    // Contains known manufacturer keywords
+    if (/SEW|SIEMENS|ABB|WEG|FLENDER|SKF|NSK|FAG|WARMAN|METSO|ROPER/i.test(text)) return true;
+    // Contains slash-separated codes (e.g., V/V, K-ROL-SG)
+    if (/[A-Z]-[A-Z]{2,}-[A-Z]/i.test(text)) return true;
+    // Generic short names are NOT specs
+    return false;
+  };
+
   const parsedRows = useMemo((): ParsedRow[] => {
     if (!rawText.trim()) return [];
     return rawText
@@ -181,12 +202,15 @@ export const BulkComponentImportDialog: React.FC = () => {
         const cleanedDescription = row.description.trim();
         const componentName = cleanedDescription || `${row.matchedAssetName} ${row.componentType}`;
 
-        // Persist pasted spec text into `model` so the tree can show the ℹ️ spec icon/tooltip.
+        // Only persist to `model` if the description contains real specs
+        // (part numbers, dimensions, manufacturer refs) — not just a generic name.
+        const isRealSpec = cleanedDescription && looksLikeSpec(cleanedDescription);
+
         byAsset.get(row.matchedAssetId)!.components.push({
           componentType: row.componentType,
           componentName,
           manufacturer: null,
-          model: cleanedDescription || null,
+          model: isRealSpec ? cleanedDescription : null,
         });
       }
 
