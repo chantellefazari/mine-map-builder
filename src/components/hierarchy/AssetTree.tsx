@@ -139,14 +139,16 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                     >
                                       {parent.equipment.map((equip, equipIndex) => {
                                         const hasComponents = equip.components && equip.components.length > 0;
-                                        const equipSegment: FLPathSegment = { level: "equipment", label: `${equip.assetNumber} — ${equip.name}` };
+                                        const equipNodeLabel = equip.assetNumber;
+                                        const equipBreadcrumbLabel = `${equip.assetNumber} — ${equip.name}`;
+                                        const equipSegment: FLPathSegment = { level: "equipment", label: equipBreadcrumbLabel };
                                         const pathAfterEquip = [...pathAfterPA, equipSegment];
 
                                         return (
                                           <TreeBranch key={equipIndex} isLast={equipIndex === parent.equipment.length - 1}>
                                             <CollapsibleTreeNode
                                               id={`cru-eq-${cruArea.areaCode}-${paIndex}-${equipIndex}`}
-                                              label={`${equip.assetNumber} — ${equip.name}`}
+                                              label={equipNodeLabel}
                                               level="equipment"
                                               hasChildren={hasComponents}
                                               isHighlighted={cruMatchesSearch(equip.assetNumber) || cruMatchesSearch(equip.name)}
