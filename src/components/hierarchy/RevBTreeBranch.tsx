@@ -307,6 +307,24 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                       >
                                         {hasChildComponents && childComponents.map((comp, compIndex) => {
                                           const compLabel = `${comp.componentCode} — ${comp.componentName}`;
+                                          const compSpecValues = {
+                                            model: comp.model || undefined,
+                                            serialNumber: comp.serialNumber,
+                                            motorRef: comp.motorRef,
+                                            pumpRef: comp.pumpRef,
+                                            motorSpeed: comp.motorSpeed,
+                                            protection: comp.protection,
+                                            voltage: comp.voltage,
+                                            pumpFlow: comp.pumpFlow,
+                                            operatingPressure: comp.operatingPressure,
+                                            displacement: comp.displacement,
+                                            oilType: comp.oilType,
+                                            oilVolume: comp.oilVolume,
+                                            inputSpeed: comp.inputSpeed,
+                                            outputSpeed: comp.outputSpeed,
+                                            weight: comp.weight,
+                                          };
+                                          const hasRealSpecs = Object.values(compSpecValues).some(v => v);
 
                                           return (
                                             <TreeBranch key={compIndex} isLast={compIndex === comps.length - 1}>
@@ -319,23 +337,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                                 depth={6}
                                                 ancestorPath={pathAfterEquip}
                                                 storedFL={equip.functionalLocation || parentAsset.functionalLocation}
-                                                componentSpecs={{
-                                                  model: comp.model || comp.manufacturer,
-                                                  serialNumber: comp.serialNumber,
-                                                  motorRef: comp.motorRef,
-                                                  pumpRef: comp.pumpRef,
-                                                  motorSpeed: comp.motorSpeed,
-                                                  protection: comp.protection,
-                                                  voltage: comp.voltage,
-                                                  pumpFlow: comp.pumpFlow,
-                                                  operatingPressure: comp.operatingPressure,
-                                                  displacement: comp.displacement,
-                                                  oilType: comp.oilType,
-                                                  oilVolume: comp.oilVolume,
-                                                  inputSpeed: comp.inputSpeed,
-                                                  outputSpeed: comp.outputSpeed,
-                                                  weight: comp.weight,
-                                                }}
+                                                componentSpecs={hasRealSpecs ? compSpecValues : undefined}
                                               />
                                             </TreeBranch>
                                           );
