@@ -18,7 +18,7 @@ function useRevBAssets() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("processing_plant_assets_rev_b")
-        .select("id, area_code, area_label, sub_area, parent_asset_label, asset_number, asset_name, change_type, rev_status, notes, sort_order, pid_tags")
+        .select("id, area_code, area_label, sub_area, parent_asset_label, asset_number, asset_name, change_type, rev_status, notes, sort_order, pid_tags, components")
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return data as RevBAsset[];
