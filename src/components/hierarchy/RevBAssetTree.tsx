@@ -10,6 +10,7 @@ import { ExtractionTag, ExtractionTable } from "./revb/RevBExtractionTable";
 import { RevBFlowMap } from "./revb/RevBFlowMap";
 import { RevBCoverageCheck } from "./revb/RevBCoverageCheck";
 import { RevBDeltaReport } from "./revb/RevBDeltaReport";
+import { BulkComponentImportDialog } from "./revb/BulkComponentImportDialog";
 
 function useRevBAssets() {
   return useQuery({
@@ -17,7 +18,7 @@ function useRevBAssets() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("processing_plant_assets_rev_b")
-        .select("id, area_code, area_label, sub_area, parent_asset_label, asset_number, asset_name, change_type, rev_status, notes, sort_order, pid_tags")
+        .select("id, area_code, area_label, sub_area, parent_asset_label, asset_number, asset_name, change_type, rev_status, notes, sort_order, pid_tags, components")
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return data as RevBAsset[];
@@ -72,20 +73,23 @@ export const RevBAssetTree: React.FC = () => {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          placeholder="Search assets, tags, or areas..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          className="pl-10 pr-10 h-9 text-sm"
-        />
-        {searchTerm && (
-          <Button variant="ghost" size="sm" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0" onClick={() => setSearchTerm("")}>
-            <X className="w-4 h-4" />
-          </Button>
-        )}
+      {/* Search + Import */}
+      <div className="flex items-center gap-3">
+        <div className="relative max-w-md flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder="Search assets, tags, or areas..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="pl-10 pr-10 h-9 text-sm"
+          />
+          {searchTerm && (
+            <Button variant="ghost" size="sm" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0" onClick={() => setSearchTerm("")}>
+              <X className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
+        <BulkComponentImportDialog />
       </div>
 
       {/* Summary */}

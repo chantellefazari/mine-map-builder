@@ -1,6 +1,13 @@
 import React from "react";
-import { Plus, Pencil, Minus, Check, Tag } from "lucide-react";
+import { Plus, Pencil, Minus, Check, Tag, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+interface ComponentSpec {
+  componentCode?: string;
+  componentType?: string;
+  componentName?: string;
+  manufacturer?: string;
+}
 
 export interface RevBAsset {
   id: string;
@@ -15,7 +22,33 @@ export interface RevBAsset {
   notes: string;
   sort_order: number;
   pid_tags: string[] | null;
+  components?: ComponentSpec[] | null;
 }
+
+const ComponentSpecsIcon: React.FC<{ components?: ComponentSpec[] | null }> = ({ components }) => {
+  const specs = components?.filter(c => c.manufacturer || c.componentType);
+  if (!specs || specs.length === 0) return null;
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Info className="h-3.5 w-3.5 text-primary cursor-help" />
+        </TooltipTrigger>
+        <TooltipContent side="left" className="max-w-sm">
+          <p className="text-[10px] font-semibold mb-1 border-b pb-1">Component Specifications</p>
+          <div className="space-y-1">
+            {specs.map((c, i) => (
+              <div key={i} className="grid grid-cols-[80px_1fr] gap-1 text-xs">
+                <span className="text-muted-foreground font-medium">{c.componentType}:</span>
+                <span className="font-mono">{c.manufacturer || "—"}</span>
+              </div>
+            ))}
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
 
 export const CHANGE_CONFIG: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
   Unchanged: { icon: <Check className="h-3 w-3" />, color: "bg-muted text-muted-foreground", label: "Unchanged" },
@@ -240,7 +273,7 @@ export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ 
                                       {group.equipment.asset_number}
                                     </td>
                                     <td className="p-1">{group.equipment.asset_name}</td>
-                                    <td className="p-1 w-8">
+                                    <td className="p-1 w-8 flex items-center gap-1">
                                       {group.equipment.pid_tags && group.equipment.pid_tags.length > 0 && (
                                         <TooltipProvider delayDuration={200}>
                                           <Tooltip>
@@ -256,6 +289,7 @@ export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ 
                                           </Tooltip>
                                         </TooltipProvider>
                                       )}
+                                      <ComponentSpecsIcon components={group.equipment.components} />
                                     </td>
                                   </tr>
                                   {group.components.map(comp => (
@@ -275,7 +309,7 @@ export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ 
                                   </td>
                                   <td className="p-1 font-mono font-medium text-primary w-32">{a.asset_number}</td>
                                   <td className="p-1">{a.asset_name}</td>
-                                  <td className="p-1 w-8">
+                                  <td className="p-1 w-8 flex items-center gap-1">
                                     {a.pid_tags && a.pid_tags.length > 0 && (
                                       <TooltipProvider delayDuration={200}>
                                         <Tooltip>
@@ -291,6 +325,7 @@ export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ 
                                         </Tooltip>
                                       </TooltipProvider>
                                     )}
+                                    <ComponentSpecsIcon components={a.components} />
                                   </td>
                                 </tr>
                               );
