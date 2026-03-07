@@ -25,6 +25,31 @@ export interface RevBAsset {
   components?: ComponentSpec[] | null;
 }
 
+const ComponentSpecsIcon: React.FC<{ components?: ComponentSpec[] | null }> = ({ components }) => {
+  const specs = components?.filter(c => c.manufacturer || c.componentType);
+  if (!specs || specs.length === 0) return null;
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Info className="h-3.5 w-3.5 text-primary cursor-help" />
+        </TooltipTrigger>
+        <TooltipContent side="left" className="max-w-sm">
+          <p className="text-[10px] font-semibold mb-1 border-b pb-1">Component Specifications</p>
+          <div className="space-y-1">
+            {specs.map((c, i) => (
+              <div key={i} className="grid grid-cols-[80px_1fr] gap-1 text-xs">
+                <span className="text-muted-foreground font-medium">{c.componentType}:</span>
+                <span className="font-mono">{c.manufacturer || "—"}</span>
+              </div>
+            ))}
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
+
 export const CHANGE_CONFIG: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
   Unchanged: { icon: <Check className="h-3 w-3" />, color: "bg-muted text-muted-foreground", label: "Unchanged" },
   New: { icon: <Plus className="h-3 w-3" />, color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300", label: "New" },
