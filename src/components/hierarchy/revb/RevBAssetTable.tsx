@@ -1,6 +1,13 @@
 import React from "react";
-import { Plus, Pencil, Minus, Check, Tag } from "lucide-react";
+import { Plus, Pencil, Minus, Check, Tag, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+interface ComponentSpec {
+  componentCode?: string;
+  componentType?: string;
+  componentName?: string;
+  manufacturer?: string;
+}
 
 export interface RevBAsset {
   id: string;
@@ -15,6 +22,7 @@ export interface RevBAsset {
   notes: string;
   sort_order: number;
   pid_tags: string[] | null;
+  components?: ComponentSpec[] | null;
 }
 
 export const CHANGE_CONFIG: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
