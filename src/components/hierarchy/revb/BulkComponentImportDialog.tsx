@@ -237,11 +237,14 @@ export const BulkComponentImportDialog: React.FC = () => {
         // Find the best-fit asset for this specific component type
         const bestAsset = findBestAsset(row.componentType, assetList);
 
-        // Check if this component type already exists on the matched asset
-        const isDuplicate = bestAsset.existingComponents.some(
-          (c: any) =>
-            c.componentType?.toLowerCase() === row.componentType.toLowerCase()
-        );
+        const normalizedType = inferComponentType(row.componentType, row.description).toLowerCase();
+        const normalizedDescription = sanitizeField(row.description).toLowerCase();
+
+        const isDuplicate = bestAsset.existingComponents.some((c: any) => {
+          const existingType = sanitizeField(c.componentType || "").toLowerCase();
+          const existingName = sanitizeField(c.componentName || "").toLowerCase();
+          return existingType === normalizedType || (normalizedDescription && existingName === normalizedDescription);
+        });
 
         return {
           ...row,
