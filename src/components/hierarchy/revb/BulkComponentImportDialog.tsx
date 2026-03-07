@@ -251,7 +251,7 @@ export const BulkComponentImportDialog: React.FC = () => {
         }
 
         const normalizedType = inferComponentType(row.componentType, row.description).toLowerCase();
-        const normalizedDescription = sanitizeField(row.description).toLowerCase();
+        const normalizedDescription = stripRepMarkers(sanitizeField(row.description)).toLowerCase();
 
         const isDuplicate = bestAsset.existingComponents.some((c: any) => {
           const existingType = sanitizeField(c.componentType || "").toLowerCase();
