@@ -337,7 +337,7 @@ export const BulkComponentImportDialog: React.FC = () => {
           componentType: effectiveComponentType,
           componentName,
           manufacturer: null,
-          model: cleanedDescription || null,
+          model: row.specs || cleanedDescription || null,
         });
       }
 
