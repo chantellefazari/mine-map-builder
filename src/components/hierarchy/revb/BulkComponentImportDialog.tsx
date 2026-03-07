@@ -112,11 +112,18 @@ export const BulkComponentImportDialog: React.FC = () => {
 
       if (error) throw error;
 
-      // Build a lookup: normalised P&ID tag → asset
+      // Build a lookup: normalised P&ID tag → ALL assets sharing that tag
       const normalizeTag = (t: string) =>
         t.toLowerCase().replace(/\b0+(\d)/g, "$1");
 
-      const tagToAsset = new Map<string, { id: string; asset_number: string; asset_name: string; existingComponents: any[] }>();
+      interface AssetEntry {
+        id: string;
+        asset_number: string;
+        asset_name: string;
+        existingComponents: any[];
+      }
+
+      const tagToAssets = new Map<string, AssetEntry[]>();
 
       for (const a of assets || []) {
         const tags = a.pid_tags as string[] | null;
@@ -124,25 +131,91 @@ export const BulkComponentImportDialog: React.FC = () => {
         const existingComponents = Array.isArray(a.components) ? a.components : [];
         for (const tag of tags) {
           const normTag = normalizeTag(tag);
-          const existing = tagToAsset.get(normTag);
-          // When multiple assets share a P&ID tag, prefer the shortest asset_number
-          // (the parent/system-level equipment, e.g. MFCV01 over MFCV01-BASD)
-          if (!existing || a.asset_number.length < existing.asset_number.length) {
-            tagToAsset.set(normTag, {
-              id: a.id,
-              asset_number: a.asset_number,
-              asset_name: a.asset_name,
-              existingComponents,
-            });
-          }
+          if (!tagToAssets.has(normTag)) tagToAssets.set(normTag, []);
+          tagToAssets.get(normTag)!.push({
+            id: a.id,
+            asset_number: a.asset_number,
+            asset_name: a.asset_name,
+            existingComponents,
+          });
         }
       }
 
+      /**
+       * Smart best-fit matching: given a component type (e.g. "Pinion")
+       * and a list of assets sharing the same P&ID tag (e.g. BM01, BM01-PIN, BM01-MTR),
+       * find the most specific sub-asset whose name/suffix matches the component type.
+       * Falls back to the parent system (shortest asset_number) if no match found.
+       */
+      const COMPONENT_SUFFIX_MAP: Record<string, string[]> = {
+        motor: ["MTR", "MOTOR"],
+        gearbox: ["GB", "GBX", "GEAR", "GR"],
+        pinion: ["PIN"],
+        bearing: ["BRG", "BEARING"],
+        pump: ["PMP", "PUMP"],
+        valve: ["VLV", "VALVE", "V"],
+        agitator: ["AGT"],
+        impeller: ["IMP"],
+        cyclone: ["CYC"],
+        hopper: ["HOP", "DHP"],
+        chute: ["CHT", "LDCH"],
+        conveyor: ["CONV", "CV"],
+        compressor: ["COMP"],
+        filter: ["FLT", "FILT"],
+        instrument: ["INST"],
+        monorail: ["MNR"],
+        reducer: ["GR", "GRTE"],
+      };
+
+      const findBestAsset = (componentType: string, assetList: AssetEntry[]): AssetEntry => {
+        if (assetList.length === 1) return assetList[0];
+
+        // Sort by asset_number length (shortest = parent system)
+        const sorted = [...assetList].sort((a, b) => a.asset_number.length - b.asset_number.length);
+        const parentAsset = sorted[0];
+        const childAssets = sorted.slice(1);
+
+        if (childAssets.length === 0) return parentAsset;
+
+        const compTypeLower = componentType.toLowerCase().trim();
+
+        // 1. Check suffix map for known component types
+        const suffixes = COMPONENT_SUFFIX_MAP[compTypeLower];
+        if (suffixes) {
+          for (const child of childAssets) {
+            const suffix = child.asset_number.replace(parentAsset.asset_number, "").replace(/^[-_]/, "").toUpperCase();
+            if (suffixes.some(s => suffix === s || suffix.startsWith(s))) {
+              return child;
+            }
+          }
+        }
+
+        // 2. Fuzzy match: check if any child asset name contains the component type
+        for (const child of childAssets) {
+          const childNameLower = child.asset_name.toLowerCase();
+          if (childNameLower.includes(compTypeLower) || compTypeLower.includes(childNameLower.split(" ").pop() || "")) {
+            return child;
+          }
+        }
+
+        // 3. Check if any child asset_number suffix loosely matches component type
+        for (const child of childAssets) {
+          const suffix = child.asset_number.replace(parentAsset.asset_number, "").replace(/^[-_]/, "").toLowerCase();
+          // Compare first 3 chars of suffix vs component type
+          if (suffix.length >= 2 && compTypeLower.startsWith(suffix.substring(0, 3))) {
+            return child;
+          }
+        }
+
+        // Default: parent system
+        return parentAsset;
+      };
+
       const matched: MatchedRow[] = parsedRows.map((row) => {
         const normTag = normalizeTag(row.pidTag);
-        const asset = tagToAsset.get(normTag);
+        const assetList = tagToAssets.get(normTag);
 
-        if (!asset) {
+        if (!assetList || assetList.length === 0) {
           return {
             ...row,
             matchedAssetId: null,
@@ -152,17 +225,20 @@ export const BulkComponentImportDialog: React.FC = () => {
           };
         }
 
-        // Check if this component type already exists on the asset
-        const isDuplicate = asset.existingComponents.some(
+        // Find the best-fit asset for this specific component type
+        const bestAsset = findBestAsset(row.componentType, assetList);
+
+        // Check if this component type already exists on the matched asset
+        const isDuplicate = bestAsset.existingComponents.some(
           (c: any) =>
             c.componentType?.toLowerCase() === row.componentType.toLowerCase()
         );
 
         return {
           ...row,
-          matchedAssetId: asset.id,
-          matchedAssetNumber: asset.asset_number,
-          matchedAssetName: asset.asset_name,
+          matchedAssetId: bestAsset.id,
+          matchedAssetNumber: bestAsset.asset_number,
+          matchedAssetName: bestAsset.asset_name,
           status: isDuplicate ? ("duplicate" as const) : ("matched" as const),
         };
       });
