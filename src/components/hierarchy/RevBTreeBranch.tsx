@@ -242,10 +242,30 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                 {parentAsset.equipment.map((equip, equipIndex) => {
                                   const equipLabel = `${equip.assetNumber} — ${equip.name}`;
                                   const comps = equip.components || [];
-                                  const hasComponents = comps.length > 0;
+                                  const singleComp = comps.length === 1 ? comps[0] : null;
+                                  const inlineEquivalentSpec = !!singleComp && isEquivalentComponent(equip.name, singleComp.componentName, singleComp.componentType);
+                                  const hasChildComponents = comps.length > 0 && !inlineEquivalentSpec;
                                   const equipSegment: FLPathSegment = { level: "equipment", label: equipLabel };
                                   const pathAfterEquip = [...pathAfterPA, equipSegment];
                                   const isPidMatch = pidMatchesSearch(equip.pidTags);
+
+                                  const equipSpecs = inlineEquivalentSpec ? {
+                                    model: singleComp?.model || singleComp?.manufacturer,
+                                    serialNumber: singleComp?.serialNumber,
+                                    motorRef: singleComp?.motorRef,
+                                    pumpRef: singleComp?.pumpRef,
+                                    motorSpeed: singleComp?.motorSpeed,
+                                    protection: singleComp?.protection,
+                                    voltage: singleComp?.voltage,
+                                    pumpFlow: singleComp?.pumpFlow,
+                                    operatingPressure: singleComp?.operatingPressure,
+                                    displacement: singleComp?.displacement,
+                                    oilType: singleComp?.oilType,
+                                    oilVolume: singleComp?.oilVolume,
+                                    inputSpeed: singleComp?.inputSpeed,
+                                    outputSpeed: singleComp?.outputSpeed,
+                                    weight: singleComp?.weight,
+                                  } : undefined;
 
                                   return (
                                     <TreeBranch key={equipIndex} isLast={equipIndex === parentAsset.equipment.length - 1}>
@@ -253,14 +273,15 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                         id={`revb-equip-${area.code}-${subIndex}-${paIndex}-${equipIndex}`}
                                         label={equipLabel}
                                         level="equipment"
-                                        hasChildren={hasComponents}
+                                        hasChildren={hasChildComponents}
                                         isHighlighted={matchesSearch(equip.assetNumber) || matchesSearch(equip.name) || isPidMatch}
                                         pidTags={equip.pidTags}
                                         depth={5}
                                         ancestorPath={pathAfterPA}
                                         storedFL={equip.functionalLocation || parentAsset.functionalLocation}
+                                        componentSpecs={equipSpecs}
                                       >
-                                        {hasComponents && comps.map((comp, compIndex) => {
+                                        {hasChildComponents && comps.map((comp, compIndex) => {
                                           const compLabel = `${comp.componentCode} — ${comp.componentName}`;
 
                                           return (
