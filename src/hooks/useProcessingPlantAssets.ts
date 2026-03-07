@@ -230,18 +230,36 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
           const lastSegment = equip.assetNumber.slice(lastDash + 1);
           const typeCode = lastSegment.replace(/\d+$/, "");
 
-          // Merge: add auto-nested component, but also preserve any DB-stored components from the child
+          // Merge: add auto-nested component row for this equipment.
+          // If the equipment has exactly one DB-stored component, treat it as the equipment's own spec
+          // and attach those specs directly to this nested component row (avoid duplicate child row).
+          const singleSpec = equip.components && equip.components.length === 1 ? equip.components[0] : null;
+
           parentEquip.components.push({
             componentCode: equip.assetNumber,
             componentType: typeCode,
             componentName: equip.name,
-            manufacturer: "",
+            manufacturer: singleSpec?.manufacturer || "",
+            model: singleSpec?.model,
+            serialNumber: singleSpec?.serialNumber,
+            oilType: singleSpec?.oilType,
+            oilVolume: singleSpec?.oilVolume,
+            inputSpeed: singleSpec?.inputSpeed,
+            outputSpeed: singleSpec?.outputSpeed,
+            weight: singleSpec?.weight,
+            motorSpeed: singleSpec?.motorSpeed,
+            protection: singleSpec?.protection,
+            voltage: singleSpec?.voltage,
+            pumpFlow: singleSpec?.pumpFlow,
+            operatingPressure: singleSpec?.operatingPressure,
+            displacement: singleSpec?.displacement,
+            motorRef: singleSpec?.motorRef,
+            pumpRef: singleSpec?.pumpRef,
           });
 
-          // If the child equipment itself had DB-stored components (specs), carry them forward
-          if (equip.components && equip.components.length > 0) {
+          // If the child equipment had multiple DB-stored components, carry them forward as children.
+          if (equip.components && equip.components.length > 1) {
             for (const childComp of equip.components) {
-              // Avoid duplicates by checking componentCode
               if (!parentEquip.components.some(c => c.componentCode === childComp.componentCode)) {
                 parentEquip.components.push(childComp);
               }
