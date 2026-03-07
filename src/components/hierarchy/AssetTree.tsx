@@ -158,7 +158,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                   <CollapsibleTreeNode
                                                     id={`cru-comp-${cruArea.areaCode}-${paIndex}-${equipIndex}-${compIndex}`}
                                                     code={comp.componentType}
-                                                    label={`${comp.componentCode} — ${comp.componentName}`}
+                                                    label={comp.componentCode ? `${comp.componentCode} — ${comp.componentName}` : comp.componentName}
                                                     level="component"
                                                     hasChildren={false}
                                                     isHighlighted={cruMatchesSearch(comp.componentCode) || cruMatchesSearch(comp.componentName) || cruMatchesSearch(comp.manufacturer)}
