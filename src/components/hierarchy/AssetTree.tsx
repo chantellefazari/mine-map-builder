@@ -275,7 +275,7 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                               storedFL={parentAsset.functionalLocation}
                                             >
                                               {parentAsset.equipment.map((equip, equipIndex) => {
-                                                const equipNodeLabel = equip.assetNumber;
+                                                const equipNodeLabel = equip.name;
                                                 const equipBreadcrumbLabel = `${equip.assetNumber} — ${equip.name}`;
                                                 const allPidTags = getAllPidTags(equip.assetNumber, equip.pidTags);
                                                 const isPidMatch = pidTagMatchesSearch(equip.assetNumber, equip.pidTags);
