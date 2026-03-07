@@ -306,23 +306,26 @@ export const AssetTree: React.FC<AssetTreeProps> = ({ searchQuery = "" }) => {
                                                               depth={6}
                                                               ancestorPath={pathAfterEquip}
                                                               storedFL={equip.functionalLocation || parentAsset.functionalLocation}
-                                                              componentSpecs={{
-                                                                model: comp.model || comp.manufacturer,
-                                                                serialNumber: comp.serialNumber,
-                                                                motorRef: comp.motorRef,
-                                                                pumpRef: comp.pumpRef,
-                                                                motorSpeed: comp.motorSpeed,
-                                                                protection: comp.protection,
-                                                                voltage: comp.voltage,
-                                                                pumpFlow: comp.pumpFlow,
-                                                                operatingPressure: comp.operatingPressure,
-                                                                displacement: comp.displacement,
-                                                                oilType: comp.oilType,
-                                                                oilVolume: comp.oilVolume,
-                                                                inputSpeed: comp.inputSpeed,
-                                                                outputSpeed: comp.outputSpeed,
-                                                                weight: comp.weight,
-                                                              }}
+                                                              componentSpecs={(() => {
+                                                                const s = {
+                                                                  model: comp.model || undefined,
+                                                                  serialNumber: comp.serialNumber,
+                                                                  motorRef: comp.motorRef,
+                                                                  pumpRef: comp.pumpRef,
+                                                                  motorSpeed: comp.motorSpeed,
+                                                                  protection: comp.protection,
+                                                                  voltage: comp.voltage,
+                                                                  pumpFlow: comp.pumpFlow,
+                                                                  operatingPressure: comp.operatingPressure,
+                                                                  displacement: comp.displacement,
+                                                                  oilType: comp.oilType,
+                                                                  oilVolume: comp.oilVolume,
+                                                                  inputSpeed: comp.inputSpeed,
+                                                                  outputSpeed: comp.outputSpeed,
+                                                                  weight: comp.weight,
+                                                                };
+                                                                return Object.values(s).some(v => v) ? s : undefined;
+                                                              })()}
                                                             />
                                                           </TreeBranch>
                                                         );
