@@ -10,6 +10,7 @@ import { ExtractionTag, ExtractionTable } from "./revb/RevBExtractionTable";
 import { RevBFlowMap } from "./revb/RevBFlowMap";
 import { RevBCoverageCheck } from "./revb/RevBCoverageCheck";
 import { RevBDeltaReport } from "./revb/RevBDeltaReport";
+import { RevBPidAudit } from "./revb/RevBPidAudit";
 import { BulkComponentImportDialog } from "./revb/BulkComponentImportDialog";
 
 function useRevBAssets() {
@@ -97,12 +98,13 @@ export const RevBAssetTree: React.FC = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="tree" className="w-full">
-        <TabsList className="w-full max-w-2xl grid grid-cols-5">
+        <TabsList className="w-full max-w-3xl grid grid-cols-6">
           <TabsTrigger value="tree" className="text-xs">Asset Tree ({assets?.length || 0})</TabsTrigger>
           <TabsTrigger value="source" className="text-xs">Source Index ({tags?.length || 0})</TabsTrigger>
           <TabsTrigger value="flow" className="text-xs">Flow Map</TabsTrigger>
           <TabsTrigger value="coverage" className="text-xs">Coverage Check</TabsTrigger>
           <TabsTrigger value="delta" className="text-xs">Delta Report</TabsTrigger>
+          <TabsTrigger value="pid-audit" className="text-xs">P&ID Audit</TabsTrigger>
         </TabsList>
 
         <TabsContent value="tree" className="mt-4">
@@ -132,6 +134,12 @@ export const RevBAssetTree: React.FC = () => {
         <TabsContent value="delta" className="mt-4">
           <div className="bg-card border border-border rounded-lg p-4">
             <RevBDeltaReport />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="pid-audit" className="mt-4">
+          <div className="bg-card border border-border rounded-lg p-4">
+            <RevBPidAudit />
           </div>
         </TabsContent>
       </Tabs>
