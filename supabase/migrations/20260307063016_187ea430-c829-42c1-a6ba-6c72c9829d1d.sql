@@ -1,0 +1,1 @@
+UPDATE processing_plant_assets_rev_b SET asset_name = 'Primary Mill Scats Conveyor' WHERE id = 'cb120770-d12c-41c8-af0f-708cda364f7e';
