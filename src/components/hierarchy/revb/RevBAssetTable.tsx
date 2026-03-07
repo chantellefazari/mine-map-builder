@@ -248,7 +248,7 @@ export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ 
                                       {group.equipment.asset_number}
                                     </td>
                                     <td className="p-1">{group.equipment.asset_name}</td>
-                                    <td className="p-1 w-8">
+                                    <td className="p-1 w-8 flex items-center gap-1">
                                       {group.equipment.pid_tags && group.equipment.pid_tags.length > 0 && (
                                         <TooltipProvider delayDuration={200}>
                                           <Tooltip>
@@ -264,6 +264,7 @@ export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ 
                                           </Tooltip>
                                         </TooltipProvider>
                                       )}
+                                      <ComponentSpecsIcon components={group.equipment.components} />
                                     </td>
                                   </tr>
                                   {group.components.map(comp => (
