@@ -16,7 +16,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
   const { data: revBAreasData, isLoading } = useRevBPlantAssets();
   const areas = revBAreasData || [];
   const hasSearch = searchQuery.trim().length > 0;
-  const normalizeTag = (t: string) => t.toLowerCase().replace(/^0+(?=\d)/, "");
+  const normalizeTag = (t: string) => t.toLowerCase().replace(/\b0+(\d)/g, "$1");
 
   const matchesSearch = (text: string) => {
     if (!hasSearch) return false;

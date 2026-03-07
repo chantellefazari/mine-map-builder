@@ -39,7 +39,7 @@ export const useAssetSearch = (areasData: Area[], searchQuery: string) => {
     let firstMatchId: string | null = null;
 
     // Normalize P&ID tags by stripping leading zeros from numeric prefix (04-FE-100 → 4-FE-100)
-    const normalizeTag = (t: string) => t.toLowerCase().replace(/^0+(?=\d)/, "");
+    const normalizeTag = (t: string) => t.toLowerCase().replace(/\b0+(\d)/g, "$1");
     const normalizedQuery = normalizeTag(query);
 
     // Find asset numbers that match P&ID tag search
