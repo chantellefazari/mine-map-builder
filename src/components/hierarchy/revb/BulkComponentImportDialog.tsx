@@ -40,6 +40,13 @@ export const BulkComponentImportDialog: React.FC = () => {
   const sanitizeField = (val: string) =>
     val.replace(/\(?\s*Robbie\s+please\s+advi[sc]e\s*\)?/gi, "").replace(/\s{2,}/g, " ").trim();
 
+  const stripRepMarkers = (text: string): string =>
+    text
+      .replace(/\s*\((?:Rep\.?|Ref\.?)\s*[^)]*\)/gi, "")
+      .replace(/\s+-\s+(?:Rep\.?|Ref\.?)\s*[\w.-]+/gi, "")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+
   const isGenericComponentType = (text: string): boolean => {
     if (!text) return true;
     const normalized = text.trim().toLowerCase();
