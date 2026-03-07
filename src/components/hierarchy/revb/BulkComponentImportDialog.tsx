@@ -40,6 +40,13 @@ export const BulkComponentImportDialog: React.FC = () => {
   const sanitizeField = (val: string) =>
     val.replace(/\(?\s*Robbie\s+please\s+advi[sc]e\s*\)?/gi, "").replace(/\s{2,}/g, " ").trim();
 
+  const stripRepMarkers = (text: string): string =>
+    text
+      .replace(/\s*\((?:Rep\.?|Ref\.?)\s*[^)]*\)/gi, "")
+      .replace(/\s+-\s+(?:Rep\.?|Ref\.?)\s*[\w.-]+/gi, "")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+
   const isGenericComponentType = (text: string): boolean => {
     if (!text) return true;
     const normalized = text.trim().toLowerCase();
@@ -52,19 +59,15 @@ export const BulkComponentImportDialog: React.FC = () => {
   };
 
   const inferComponentType = (rawType: string, rawDescription: string): string => {
-    const cleanedType = sanitizeField(rawType || "");
-    const cleanedDescription = sanitizeField(rawDescription || "");
+    const cleanedType = stripRepMarkers(sanitizeField(rawType || ""));
+    const cleanedDescription = stripRepMarkers(sanitizeField(rawDescription || ""));
 
     if (cleanedType && !isGenericComponentType(cleanedType)) {
       return cleanedType;
     }
 
     if (cleanedDescription) {
-      return cleanedDescription
-        .replace(/\((?:Rep\.?|Ref\.?)\s*[\w.-]+\)/gi, "")
-        .replace(/\s+-\s+(?:Rep\.?|Ref\.?)\s*[\w.-]+/gi, "")
-        .replace(/\s{2,}/g, " ")
-        .trim();
+      return cleanedDescription;
     }
 
     return cleanedType || "Component";
@@ -248,7 +251,7 @@ export const BulkComponentImportDialog: React.FC = () => {
         }
 
         const normalizedType = inferComponentType(row.componentType, row.description).toLowerCase();
-        const normalizedDescription = sanitizeField(row.description).toLowerCase();
+        const normalizedDescription = stripRepMarkers(sanitizeField(row.description)).toLowerCase();
 
         const isDuplicate = bestAsset.existingComponents.some((c: any) => {
           const existingType = sanitizeField(c.componentType || "").toLowerCase();
@@ -297,7 +300,7 @@ export const BulkComponentImportDialog: React.FC = () => {
           byAsset.set(row.matchedAssetId, { assetId: row.matchedAssetId, components: [] });
         }
 
-        const cleanedDescription = sanitizeField(row.description);
+        const cleanedDescription = stripRepMarkers(sanitizeField(row.description));
         const effectiveComponentType = inferComponentType(row.componentType, cleanedDescription);
         const componentName = cleanedDescription || `${row.matchedAssetName} ${effectiveComponentType}`;
 
