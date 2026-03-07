@@ -231,25 +231,27 @@ export const BulkComponentImportDialog: React.FC = () => {
           }
         }
 
-        // 2. Fuzzy match: check if any child asset name contains the component type
+        // 2. Exact name match: only route to a child if the child name IS the component type
         for (const child of childAssets) {
-          const childNameLower = child.asset_name.toLowerCase();
-          if (childNameLower.includes(compTypeLower) || compTypeLower.includes(childNameLower.split(" ").pop() || "")) {
+          const childNameLower = child.asset_name.toLowerCase().trim();
+          if (childNameLower === compTypeLower) {
             return child;
           }
         }
 
-        // 3. Check if any child asset_number suffix loosely matches component type
+        // 3. Check suffix map with child asset_number suffix
         for (const child of childAssets) {
           const suffix = child.asset_number.replace(parentAsset.asset_number, "").replace(/^[-_]/, "").toLowerCase();
-          // Compare first 3 chars of suffix vs component type
-          if (suffix.length >= 2 && compTypeLower.startsWith(suffix.substring(0, 3))) {
-            return child;
+          // Only match if the suffix IS the component type abbreviation (exact)
+          for (const [key, suffixList] of Object.entries(COMPONENT_SUFFIX_MAP)) {
+            if (compTypeLower === key && suffixList.some(s => suffix.toUpperCase() === s)) {
+              return child;
+            }
           }
         }
 
-        // No confident child match: refuse to auto-route to parent to avoid wrong imports.
-        return null;
+        // No confident child match: default to parent system (the screen/pump/mill itself)
+        return parentAsset;
       };
 
       const matched: MatchedRow[] = parsedRows.map((row) => {
