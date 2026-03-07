@@ -58,6 +58,16 @@ function useRevAAssets() {
 /* ── helpers ── */
 const AREA_ORDER = ["SITE", "UTL", "COM", "REC", "TAIL", "SUP"];
 
+function assetMatchesFilter(a: AssetRow, filterLower: string): boolean {
+  if (a.asset_number.toLowerCase().includes(filterLower)) return true;
+  if (a.asset_name.toLowerCase().includes(filterLower)) return true;
+  if (a.pid_tags?.some(t => t.toLowerCase().includes(filterLower))) return true;
+  // Forgiving leading-zero match for P&ID tags (e.g. "4-FE" matches "04-FE")
+  const norm = filterLower.replace(/\b0+/g, '');
+  if (norm !== filterLower && a.pid_tags?.some(t => t.toLowerCase().replace(/\b0+/g, '').includes(norm))) return true;
+  return false;
+}
+
 function buildTree(assets: AssetRow[]): AreaNode[] {
   const areaMap = new Map<string, { code: string; label: string; subMap: Map<string, Map<string, AssetRow[]>> }>();
 
