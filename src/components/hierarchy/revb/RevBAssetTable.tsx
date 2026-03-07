@@ -206,7 +206,7 @@ const ComponentRow: React.FC<{ asset: RevBAsset }> = ({ asset }) => {
 
 export const AssetTable: React.FC<{ assets: RevBAsset[]; filter: string }> = ({ assets, filter }) => {
   // Normalize P&ID tags by stripping leading zeros (04-FE-100 → 4-FE-100)
-  const normalizeTag = (t: string) => t.toLowerCase().replace(/^0+(?=\d)/, "");
+  const normalizeTag = (t: string) => t.toLowerCase().replace(/\b0+(\d)/g, "$1");
   const filtered = filter
     ? (() => {
         const q = filter.toLowerCase();
