@@ -237,6 +237,16 @@ export const BulkComponentImportDialog: React.FC = () => {
         // Find the best-fit asset for this specific component type
         const bestAsset = findBestAsset(row.componentType, assetList);
 
+        if (!bestAsset) {
+          return {
+            ...row,
+            matchedAssetId: null,
+            matchedAssetNumber: "",
+            matchedAssetName: "",
+            status: "not_found" as const,
+          };
+        }
+
         const normalizedType = inferComponentType(row.componentType, row.description).toLowerCase();
         const normalizedDescription = sanitizeField(row.description).toLowerCase();
 
