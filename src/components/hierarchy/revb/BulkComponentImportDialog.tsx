@@ -170,7 +170,7 @@ export const BulkComponentImportDialog: React.FC = () => {
     setIsImporting(true);
     try {
       // Group by asset ID
-      const byAsset = new Map<string, { assetId: string; components: { componentType: string; componentName: string; manufacturer: string | null }[] }>();
+      const byAsset = new Map<string, { assetId: string; components: { componentType: string; componentName: string; manufacturer: string | null; model: string | null }[] }>();
 
       for (const row of toImport) {
         if (!row.matchedAssetId) continue;
