@@ -9,7 +9,7 @@ import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocati
 import { CRUFunctionalLocationTable } from "@/components/hierarchy/CRUFunctionalLocationTable";
 import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet, HardHat, Database, Loader2, GitBranch, Columns } from "lucide-react";
+import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet, HardHat, Database, Loader2, GitBranch, Columns, ArrowRightLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportAssetTreeCSV } from "@/utils/exportAssetTreeCSV";
 import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
@@ -19,10 +19,12 @@ import { seedProcessingPlantData } from "@/utils/seedProcessingPlantData";
 import { toast } from "@/hooks/use-toast";
 import { RevBAssetTree } from "@/components/hierarchy/RevBAssetTree";
 import { RevBComparisonView } from "@/components/hierarchy/revb/RevBComparisonView";
+import { ComponentTransferDialog } from "@/components/hierarchy/revb/ComponentTransferDialog";
 
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSeeding, setIsSeeding] = useState(false);
+  const [transferDialogOpen, setTransferDialogOpen] = useState(false);
 
   const handleSeedDatabase = async () => {
     setIsSeeding(true);
