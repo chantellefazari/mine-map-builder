@@ -176,7 +176,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                 storedFL={parentAsset.functionalLocation}
                               >
                                 {parentAsset.equipment.map((equip, equipIndex) => {
-                                  const equipNodeLabel = equip.assetNumber;
+                                  const equipNodeLabel = equip.name;
                                   const equipBreadcrumbLabel = `${equip.assetNumber} — ${equip.name}`;
                                   const comps = equip.components || [];
                                   const equivalentComponents = comps.filter((comp) =>
