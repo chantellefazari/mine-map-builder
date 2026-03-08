@@ -287,7 +287,7 @@ export function useRevBPlantAssets() {
       const areas = buildAreasFromRows(data as DBAssetRow[]);
       return nestComponentsInAreas(areas);
     },
-    staleTime: 2 * 60 * 1000,
+    staleTime: 2 * 60 * 1000, // CIP agitator tags corrected 2026-03-08
   });
 }
 
