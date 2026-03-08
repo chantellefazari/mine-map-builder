@@ -150,7 +150,7 @@ export const useProcessingPlantAssets = useRevBPlantAssets;
 // Component suffix patterns (without leading dash) that indicate Level 7 sub-equipment
 const COMPONENT_TYPE_PATTERNS = [
   "LCS", "MTR", "MCC", "VSD", "GBX", "GB", "CPL", "BRG", "SEAL", "AGT",
-  "PH", "MC", "CP", "HST", "EXA", "EXB", "EXC",
+  "PH", "MC", "CP", "HST", "EXA", "EXB", "EXC", "NZL",
 ];
 
 /**
