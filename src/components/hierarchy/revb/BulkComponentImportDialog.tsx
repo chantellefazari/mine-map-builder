@@ -428,52 +428,7 @@ export const BulkComponentImportDialog: React.FC = () => {
           </div>
         </div>
 
-        {/* STEP 1: Select area */}
-        {step === "select-area" && (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Target Area</label>
-              <Select value={selectedArea} onValueChange={(v) => { setSelectedArea(v); setSelectedSubArea(""); }}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select parent area..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {areaOptions.map((a) => (
-                    <SelectItem key={a.areaCode} value={a.areaCode}>
-                      {a.areaCode} — {a.areaLabel}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {currentAreaOption && currentAreaOption.subAreas.length > 0 && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Target Sub-Area <span className="text-muted-foreground font-normal">(optional — narrows scope)</span></label>
-                <Select value={selectedSubArea} onValueChange={setSelectedSubArea}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All sub-areas" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__all__">All sub-areas</SelectItem>
-                    {currentAreaOption.subAreas.map((sa) => (
-                      <SelectItem key={sa} value={sa}>{sa}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            <Button
-              onClick={() => { if (selectedSubArea === "__all__") setSelectedSubArea(""); setStep("paste"); }}
-              disabled={!selectedArea}
-              size="sm"
-              className="w-full"
-            >
-              Continue to Paste Data →
-            </Button>
-          </div>
-        )}
+        {/* Paste step is now the first step — no area selection needed */}
 
         {/* STEP 2: Paste */}
         {step === "paste" && (
