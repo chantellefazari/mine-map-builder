@@ -1,0 +1,1 @@
+UPDATE processing_plant_assets_rev_b SET pid_tags = ARRAY['08-HX-001'] WHERE asset_number = 'ELU-HEX01';
