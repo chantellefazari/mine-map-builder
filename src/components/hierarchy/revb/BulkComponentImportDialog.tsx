@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,13 +13,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface ParsedRow {
   pidTag: string;
@@ -35,62 +28,20 @@ interface MatchedRow extends ParsedRow {
   status: "matched" | "not_found" | "duplicate";
 }
 
-interface AreaOption {
-  areaCode: string;
-  areaLabel: string;
-  subAreas: string[];
-}
-
 export const BulkComponentImportDialog: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState("");
   const [matchedRows, setMatchedRows] = useState<MatchedRow[]>([]);
   const [isMatching, setIsMatching] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-  const [step, setStep] = useState<"select-area" | "paste" | "review" | "summary">("select-area");
-  const [areaOptions, setAreaOptions] = useState<AreaOption[]>([]);
-  const [selectedArea, setSelectedArea] = useState("");
-  const [selectedSubArea, setSelectedSubArea] = useState("");
+  const [step, setStep] = useState<"paste" | "review" | "summary">("paste");
   const [importSummary, setImportSummary] = useState<{
     imported: number;
     duplicates: number;
     rejected: number;
-    parentArea: string;
-    subArea: string;
     details: string[];
   } | null>(null);
   const queryClient = useQueryClient();
-
-  // Fetch available areas/sub-areas from Rev B
-  useEffect(() => {
-    if (!open) return;
-    const fetchAreas = async () => {
-      const { data, error } = await supabase
-        .from("processing_plant_assets_rev_b")
-        .select("area_code, area_label, sub_area")
-        .order("area_code");
-      if (error || !data) return;
-
-      const areaMap = new Map<string, AreaOption>();
-      for (const row of data) {
-        if (!areaMap.has(row.area_code)) {
-          areaMap.set(row.area_code, {
-            areaCode: row.area_code,
-            areaLabel: row.area_label,
-            subAreas: [],
-          });
-        }
-        const opt = areaMap.get(row.area_code)!;
-        if (row.sub_area && !opt.subAreas.includes(row.sub_area)) {
-          opt.subAreas.push(row.sub_area);
-        }
-      }
-      setAreaOptions(Array.from(areaMap.values()));
-    };
-    fetchAreas();
-  }, [open]);
-
-  const currentAreaOption = areaOptions.find((a) => a.areaCode === selectedArea);
 
   // Strip advisory notes
   const sanitizeField = (val: string) =>
@@ -161,19 +112,10 @@ export const BulkComponentImportDialog: React.FC = () => {
     setIsMatching(true);
 
     try {
-      // Only fetch assets within the selected area/sub-area — controlled scope
-      let query = supabase
+      // Fetch ALL assets — match across entire plant by P&ID tag
+      const { data: assets, error } = await supabase
         .from("processing_plant_assets_rev_b")
         .select("id, asset_number, asset_name, pid_tags, components, area_code, sub_area");
-
-      if (selectedArea) {
-        query = query.eq("area_code", selectedArea);
-      }
-      if (selectedSubArea) {
-        query = query.eq("sub_area", selectedSubArea);
-      }
-
-      const { data: assets, error } = await query;
       if (error) throw error;
 
       // Build lookup: normalised P&ID tag → assets (scoped to selected area only)
@@ -378,20 +320,17 @@ export const BulkComponentImportDialog: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ["rev-b-assets"] });
       queryClient.invalidateQueries({ queryKey: ["rev-b-plant-assets-tree"] });
 
-      const areaLabel = currentAreaOption?.areaLabel || selectedArea;
       setImportSummary({
         imported: toImport.length,
         duplicates: duplicateCount,
         rejected: notFoundCount,
-        parentArea: areaLabel,
-        subArea: selectedSubArea || "All",
         details,
       });
       setStep("summary");
 
       toast({
         title: "Components imported ✅",
-        description: `${toImport.length} components added to ${successCount} assets in ${areaLabel}.`,
+        description: `${toImport.length} components added to ${successCount} assets.`,
       });
     } catch (e: any) {
       toast({ title: "Import failed", description: e.message, variant: "destructive" });
@@ -406,11 +345,9 @@ export const BulkComponentImportDialog: React.FC = () => {
   };
 
   const handleFullReset = () => {
-    setStep("select-area");
+    setStep("paste");
     setRawText("");
     setMatchedRows([]);
-    setSelectedArea("");
-    setSelectedSubArea("");
     setImportSummary(null);
   };
 
@@ -439,68 +376,15 @@ export const BulkComponentImportDialog: React.FC = () => {
           </div>
         </div>
 
-        {/* STEP 1: Select area */}
-        {step === "select-area" && (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Target Area</label>
-              <Select value={selectedArea} onValueChange={(v) => { setSelectedArea(v); setSelectedSubArea(""); }}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select parent area..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {areaOptions.map((a) => (
-                    <SelectItem key={a.areaCode} value={a.areaCode}>
-                      {a.areaCode} — {a.areaLabel}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {currentAreaOption && currentAreaOption.subAreas.length > 0 && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Target Sub-Area <span className="text-muted-foreground font-normal">(optional — narrows scope)</span></label>
-                <Select value={selectedSubArea} onValueChange={setSelectedSubArea}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All sub-areas" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__all__">All sub-areas</SelectItem>
-                    {currentAreaOption.subAreas.map((sa) => (
-                      <SelectItem key={sa} value={sa}>{sa}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            <Button
-              onClick={() => { if (selectedSubArea === "__all__") setSelectedSubArea(""); setStep("paste"); }}
-              disabled={!selectedArea}
-              size="sm"
-              className="w-full"
-            >
-              Continue to Paste Data →
-            </Button>
-          </div>
-        )}
+        {/* Paste step is now the first step — no area selection needed */}
 
         {/* STEP 2: Paste */}
         {step === "paste" && (
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm">
               <Badge variant="outline" className="gap-1">
-                Area: {currentAreaOption?.areaLabel || selectedArea}
+                Scope: Entire Plant (auto-match by P&ID tag)
               </Badge>
-              {selectedSubArea && (
-                <Badge variant="outline" className="gap-1">
-                  Sub-Area: {selectedSubArea}
-                </Badge>
-              )}
-              <Button variant="ghost" size="sm" className="text-xs h-6 px-2" onClick={() => setStep("select-area")}>
-                Change
-              </Button>
             </div>
 
             <div className="bg-muted/50 border border-border rounded-lg p-3 text-xs space-y-1">
@@ -541,8 +425,7 @@ export const BulkComponentImportDialog: React.FC = () => {
         {step === "review" && (
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm mb-1">
-              <Badge variant="outline">Area: {currentAreaOption?.areaLabel || selectedArea}</Badge>
-              {selectedSubArea && <Badge variant="outline">Sub-Area: {selectedSubArea}</Badge>}
+              <Badge variant="outline">Scope: Entire Plant</Badge>
             </div>
 
             <div className="flex items-center gap-3 flex-wrap">
@@ -639,10 +522,6 @@ export const BulkComponentImportDialog: React.FC = () => {
                 <CheckCircle className="h-4 w-4 text-green-600" /> Import Complete
               </h3>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="font-medium">Parent Area:</div>
-                <div>{importSummary.parentArea}</div>
-                <div className="font-medium">Sub-Area:</div>
-                <div>{importSummary.subArea}</div>
                 <div className="font-medium">Imported:</div>
                 <div className="text-green-700 dark:text-green-400 font-semibold">{importSummary.imported}</div>
                 <div className="font-medium">Duplicates Skipped:</div>
