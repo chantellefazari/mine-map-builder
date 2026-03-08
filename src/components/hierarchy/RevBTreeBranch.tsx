@@ -102,7 +102,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
   if (isLoading) {
     return (
       <TreeBranch horizontal>
-        <CollapsibleTreeNode label="Processing Plant (Rev B)" level="plant" hasChildren={false} depth={1} ancestorPath={pathAfterSite}>
+        <CollapsibleTreeNode label="Processing Plant" level="plant" hasChildren={false} depth={1} ancestorPath={pathAfterSite}>
           <div className="flex items-center gap-2 py-4 pl-6">
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
             <span className="text-xs text-muted-foreground">Loading Rev B…</span>
