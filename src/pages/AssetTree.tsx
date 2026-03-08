@@ -18,8 +18,7 @@ import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
 import { seedProcessingPlantData } from "@/utils/seedProcessingPlantData";
 import { toast } from "@/hooks/use-toast";
 import { RevBAssetTree } from "@/components/hierarchy/RevBAssetTree";
-import { RevBComparisonView } from "@/components/hierarchy/revb/RevBComparisonView";
-import { ComponentTransferDialog } from "@/components/hierarchy/revb/ComponentTransferDialog";
+// RevBComparisonView and ComponentTransferDialog removed (Rev A deleted)
 
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
