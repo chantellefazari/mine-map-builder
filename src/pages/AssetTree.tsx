@@ -147,6 +147,7 @@ const AssetTree = () => {
 
           <TabsContent value="pid-register" className="mt-6">
             <RevBAssetTree />
+          </TabsContent>
 
           <TabsContent value="functional-locations" className="mt-6">
             <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
