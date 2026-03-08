@@ -1015,6 +1015,78 @@ export type Database = {
         }
         Relationships: []
       }
+      processing_plant_assets_rev_b_backup: {
+        Row: {
+          area_code: string | null
+          area_label: string | null
+          asset_name: string | null
+          asset_number: string | null
+          backed_up_at: string
+          backup_label: string
+          change_type: string | null
+          components: Json | null
+          created_at: string | null
+          facility: string | null
+          functional_location: string | null
+          id: string
+          notes: string | null
+          parent_asset_label: string | null
+          pid_tags: string[] | null
+          rev_a_asset_id: string | null
+          rev_status: string | null
+          sort_order: number | null
+          source_extraction_ids: string[] | null
+          sub_area: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          area_code?: string | null
+          area_label?: string | null
+          asset_name?: string | null
+          asset_number?: string | null
+          backed_up_at?: string
+          backup_label?: string
+          change_type?: string | null
+          components?: Json | null
+          created_at?: string | null
+          facility?: string | null
+          functional_location?: string | null
+          id: string
+          notes?: string | null
+          parent_asset_label?: string | null
+          pid_tags?: string[] | null
+          rev_a_asset_id?: string | null
+          rev_status?: string | null
+          sort_order?: number | null
+          source_extraction_ids?: string[] | null
+          sub_area?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          area_code?: string | null
+          area_label?: string | null
+          asset_name?: string | null
+          asset_number?: string | null
+          backed_up_at?: string
+          backup_label?: string
+          change_type?: string | null
+          components?: Json | null
+          created_at?: string | null
+          facility?: string | null
+          functional_location?: string | null
+          id?: string
+          notes?: string | null
+          parent_asset_label?: string | null
+          pid_tags?: string[] | null
+          rev_a_asset_id?: string | null
+          rev_status?: string | null
+          sort_order?: number | null
+          source_extraction_ids?: string[] | null
+          sub_area?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -1391,6 +1463,66 @@ export type Database = {
           tag_type?: string
           updated_at?: string
           upstream_tag?: string
+        }
+        Relationships: []
+      }
+      rev_b_pid_extraction_register_backup: {
+        Row: {
+          area_clue: string | null
+          backed_up_at: string
+          backup_label: string
+          confidence: string | null
+          created_at: string | null
+          description: string | null
+          downstream_tag: string | null
+          drawing_number: string | null
+          id: string
+          notes: string | null
+          page_number: number | null
+          sort_order: number | null
+          source_doc_name: string | null
+          tag_id: string | null
+          tag_type: string | null
+          updated_at: string | null
+          upstream_tag: string | null
+        }
+        Insert: {
+          area_clue?: string | null
+          backed_up_at?: string
+          backup_label?: string
+          confidence?: string | null
+          created_at?: string | null
+          description?: string | null
+          downstream_tag?: string | null
+          drawing_number?: string | null
+          id: string
+          notes?: string | null
+          page_number?: number | null
+          sort_order?: number | null
+          source_doc_name?: string | null
+          tag_id?: string | null
+          tag_type?: string | null
+          updated_at?: string | null
+          upstream_tag?: string | null
+        }
+        Update: {
+          area_clue?: string | null
+          backed_up_at?: string
+          backup_label?: string
+          confidence?: string | null
+          created_at?: string | null
+          description?: string | null
+          downstream_tag?: string | null
+          drawing_number?: string | null
+          id?: string
+          notes?: string | null
+          page_number?: number | null
+          sort_order?: number | null
+          source_doc_name?: string | null
+          tag_id?: string | null
+          tag_type?: string | null
+          updated_at?: string | null
+          upstream_tag?: string | null
         }
         Relationships: []
       }
