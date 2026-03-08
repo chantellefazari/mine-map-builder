@@ -108,14 +108,28 @@ export function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
     }
     const parentAsset = subArea.parentAssets.get(row.parent_asset_label)!;
 
-    // Skip system header rows that exist only to create the Level 5 grouping node.
-    // These are rows where parent_asset_label === "ASSET_NUMBER ASSET_NAME" (self-referencing).
+    // System header rows: parent_asset_label === "ASSET_NUMBER ASSET_NAME" (self-referencing).
+    // If they carry components or P&ID tags, keep them as equipment; otherwise skip (pure grouping node).
     const isSelfReferencing = row.parent_asset_label === `${row.asset_number} ${row.asset_name}`;
     if (isSelfReferencing) {
-      // Still update FL on the parent grouping if present
       if (row.functional_location) {
         parentAsset.functionalLocation = row.functional_location;
       }
+      const components = parseComponents(row.components);
+      const hasPidTags = row.pid_tags && row.pid_tags.length > 0;
+      // Only render as equipment if it has real data (components or tags)
+      if (components.length === 0 && !hasPidTags) {
+        continue;
+      }
+      // Render with components attached
+      const equip: Equipment = {
+        assetNumber: row.asset_number,
+        name: row.asset_name,
+        pidTags: hasPidTags ? row.pid_tags! : undefined,
+        components: components.length > 0 ? components : undefined,
+        functionalLocation: row.functional_location || undefined,
+      };
+      parentAsset.equipment.push(equip);
       continue;
     }
 
