@@ -116,7 +116,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
 
   return (
     <TreeBranch horizontal>
-      <CollapsibleTreeNode label="Processing Plant (Rev B)" level="plant" hasChildren defaultExpanded={hasRevBMatches} forceExpanded={hasRevBMatches} depth={1} ancestorPath={pathAfterSite}>
+      <CollapsibleTreeNode label="Processing Plant" level="plant" hasChildren defaultExpanded={hasRevBMatches} forceExpanded={hasRevBMatches} depth={1} ancestorPath={pathAfterSite}>
         {areas.map((area, areaIndex) => {
           const areaSegment: FLPathSegment = { level: "area", label: area.label, code: area.code, areaType: area.code };
           const pathAfterArea = [...pathAfterPP, areaSegment];
