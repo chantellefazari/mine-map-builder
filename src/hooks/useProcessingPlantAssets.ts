@@ -136,22 +136,11 @@ export function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
   });
 }
 
-export function useProcessingPlantAssets() {
-  return useQuery({
-    queryKey: ["processing-plant-assets"],
-    queryFn: async (): Promise<Area[]> => {
-      // Fetch all assets (may need pagination if >1000)
-      const { data, error } = await supabase
-        .from("processing_plant_assets")
-        .select("*")
-        .order("sort_order", { ascending: true });
-
-      if (error) throw error;
-      return buildAreasFromRows(data as DBAssetRow[]);
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-}
+/**
+ * @deprecated Rev A has been deleted. Use useRevBPlantAssets() instead.
+ * Kept as alias to prevent broken imports during transition.
+ */
+export const useProcessingPlantAssets = useRevBPlantAssets;
 
 // Component suffix patterns (without leading dash) that indicate Level 7 sub-equipment
 const COMPONENT_TYPE_PATTERNS = [
@@ -309,20 +298,23 @@ export interface PidTagMapping {
   status: string;
 }
 
+/**
+ * Fetches P&ID tags from the Rev B extraction register (sole source of truth).
+ */
 export function useProcessingPidTags() {
   return useQuery({
-    queryKey: ["processing-pid-tags"],
+    queryKey: ["rev-b-pid-tags"],
     queryFn: async (): Promise<PidTagMapping[]> => {
       const { data, error } = await supabase
-        .from("processing_pid_tags")
-        .select("*");
+        .from("rev_b_pid_extraction_register")
+        .select("tag_id, description");
 
       if (error) throw error;
-      return (data as DBPidTagRow[]).map((r) => ({
-        pidTag: r.pid_tag,
-        assetNumber: r.asset_number,
+      return (data as any[]).map((r) => ({
+        pidTag: r.tag_id,
+        assetNumber: "",
         description: r.description,
-        status: r.status,
+        status: "mapped",
       }));
     },
     staleTime: 5 * 60 * 1000,

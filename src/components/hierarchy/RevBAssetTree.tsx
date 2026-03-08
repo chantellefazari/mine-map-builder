@@ -9,7 +9,7 @@ import { RevBAsset, DiffSummary, AssetTable } from "./revb/RevBAssetTable";
 import { ExtractionTag, ExtractionTable } from "./revb/RevBExtractionTable";
 import { RevBFlowMap } from "./revb/RevBFlowMap";
 import { RevBCoverageCheck } from "./revb/RevBCoverageCheck";
-import { RevBDeltaReport } from "./revb/RevBDeltaReport";
+// RevBDeltaReport removed (Rev A deleted — no comparison baseline)
 import { RevBPidAudit } from "./revb/RevBPidAudit";
 import { BulkComponentImportDialog } from "./revb/BulkComponentImportDialog";
 
@@ -63,13 +63,12 @@ export const RevBAssetTree: React.FC = () => {
   return (
     <div className="space-y-4">
       {/* Rev B Banner */}
-      <div className="bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 rounded-lg p-4 flex items-start gap-3">
-        <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+      <div className="bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4 flex items-start gap-3">
+        <AlertTriangle className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
         <div className="text-sm">
-          <p className="font-semibold text-amber-800 dark:text-amber-300">Rev B — Draft (2026 P&ID Updates)</p>
-          <p className="text-amber-700 dark:text-amber-400 mt-0.5">
-            Built from extraction register only. {assets?.length || 0} assets mapped from {equipmentCount} equipment + {(tags?.length || 0) - equipmentCount} valves/instruments/lines/motors across 14 P&ID pages.
-            Changes are tracked but NOT yet applied to the live hierarchy.
+          <p className="font-semibold text-emerald-800 dark:text-emerald-300">Processing Plant — Live Asset Register</p>
+          <p className="text-emerald-700 dark:text-emerald-400 mt-0.5">
+            Single source of truth. {assets?.length || 0} assets mapped from {equipmentCount} equipment + {(tags?.length || 0) - equipmentCount} valves/instruments/lines/motors across 14 P&ID pages.
           </p>
         </div>
       </div>
@@ -98,12 +97,11 @@ export const RevBAssetTree: React.FC = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="tree" className="w-full">
-        <TabsList className="w-full max-w-3xl grid grid-cols-6">
+        <TabsList className="w-full max-w-3xl grid grid-cols-5">
           <TabsTrigger value="tree" className="text-xs">Asset Tree ({assets?.length || 0})</TabsTrigger>
           <TabsTrigger value="source" className="text-xs">Source Index ({tags?.length || 0})</TabsTrigger>
           <TabsTrigger value="flow" className="text-xs">Flow Map</TabsTrigger>
           <TabsTrigger value="coverage" className="text-xs">Coverage Check</TabsTrigger>
-          <TabsTrigger value="delta" className="text-xs">Delta Report</TabsTrigger>
           <TabsTrigger value="pid-audit" className="text-xs">P&ID Audit</TabsTrigger>
         </TabsList>
 
@@ -131,11 +129,6 @@ export const RevBAssetTree: React.FC = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="delta" className="mt-4">
-          <div className="bg-card border border-border rounded-lg p-4">
-            <RevBDeltaReport />
-          </div>
-        </TabsContent>
 
         <TabsContent value="pid-audit" className="mt-4">
           <div className="bg-card border border-border rounded-lg p-4">
