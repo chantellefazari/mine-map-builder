@@ -129,11 +129,6 @@ export const RevBAssetTree: React.FC = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="delta" className="mt-4">
-          <div className="bg-card border border-border rounded-lg p-4">
-            <RevBDeltaReport />
-          </div>
-        </TabsContent>
 
         <TabsContent value="pid-audit" className="mt-4">
           <div className="bg-card border border-border rounded-lg p-4">
