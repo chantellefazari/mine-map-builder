@@ -275,9 +275,11 @@ export const BulkComponentImportDialog: React.FC = () => {
         const cleanedDescription = stripRepMarkers(sanitizeField(row.description));
         // Preserve exact names from user Excel — NO auto-rename
         const componentName = cleanedDescription || `${row.matchedAssetName} ${row.componentType}`;
+        // componentType must NOT be the parent asset name — use componentName instead
+        const safeComponentType = (row.componentType === row.matchedAssetName) ? componentName : row.componentType;
 
         byAsset.get(row.matchedAssetId)!.components.push({
-          componentType: row.componentType, // exact as provided
+          componentType: safeComponentType,
           componentName,
           manufacturer: null,
           model: row.specs || cleanedDescription || null,
