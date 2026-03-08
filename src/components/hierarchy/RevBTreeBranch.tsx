@@ -235,6 +235,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                       >
                                         {hasChildComponents && childComponents.map((comp, compIndex) => {
                                           const compLabel = comp.componentCode ? `${comp.componentCode} — ${comp.componentName}` : comp.componentName;
+                                          const isComponentPidMatch = pidMatchesSearch(comp.pidTags);
                                           // Only show model as spec if it differs from the component name (not a duplicate)
                                           const rawModel = comp.model || comp.manufacturer || undefined;
                                           const modelIsJustName = rawModel && comp.componentName && 
@@ -259,13 +260,14 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                           const hasRealSpecs = Object.values(compSpecValues).some(v => v);
 
                                           return (
-                                            <TreeBranch key={compIndex} isLast={compIndex === comps.length - 1}>
+                                            <TreeBranch key={compIndex} isLast={compIndex === childComponents.length - 1}>
                                               <CollapsibleTreeNode
                                                 id={`revb-comp-${area.code}-${subIndex}-${paIndex}-${equipIndex}-${compIndex}`}
                                                 label={compLabel}
                                                 level="component"
                                                 hasChildren={false}
-                                                isHighlighted={matchesSearch(comp.componentCode) || matchesSearch(comp.componentName)}
+                                                isHighlighted={matchesSearch(comp.componentCode) || matchesSearch(comp.componentName) || isComponentPidMatch}
+                                                pidTags={comp.pidTags}
                                                 depth={6}
                                                 ancestorPath={pathAfterEquip}
                                                 storedFL={equip.functionalLocation || parentAsset.functionalLocation}
