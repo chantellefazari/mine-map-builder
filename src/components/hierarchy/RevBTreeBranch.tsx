@@ -46,6 +46,10 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
     const componentNorm = normalizeMeaning(`${componentName || ""}`);
     if (!equipmentNorm || !componentNorm) return false;
 
+    // Safety: if componentType was set to the equipment name (bad import), never suppress
+    const typeNorm = normalizeMeaning(`${componentType || ""}`);
+    if (typeNorm && typeNorm === equipmentNorm && componentNorm !== equipmentNorm) return false;
+
     // Only match if the component name is essentially identical to equipment name
     // (e.g., "Main Gear Reducer" ≈ "Gearbox"), NOT if it's a sub-component like "Motor" or "Gearbox" of a parent
     const equipmentGearLike = /\bgearbox\b/.test(equipmentNorm) || (equipmentNorm.includes("gear") && equipmentNorm.includes("reduc"));
