@@ -161,19 +161,10 @@ export const BulkComponentImportDialog: React.FC = () => {
     setIsMatching(true);
 
     try {
-      // Only fetch assets within the selected area/sub-area — controlled scope
-      let query = supabase
+      // Fetch ALL assets — match across entire plant by P&ID tag
+      const { data: assets, error } = await supabase
         .from("processing_plant_assets_rev_b")
         .select("id, asset_number, asset_name, pid_tags, components, area_code, sub_area");
-
-      if (selectedArea) {
-        query = query.eq("area_code", selectedArea);
-      }
-      if (selectedSubArea) {
-        query = query.eq("sub_area", selectedSubArea);
-      }
-
-      const { data: assets, error } = await query;
       if (error) throw error;
 
       // Build lookup: normalised P&ID tag → assets (scoped to selected area only)
