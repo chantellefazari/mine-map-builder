@@ -47,7 +47,7 @@ export const BulkComponentImportDialog: React.FC = () => {
   const [matchedRows, setMatchedRows] = useState<MatchedRow[]>([]);
   const [isMatching, setIsMatching] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-  const [step, setStep] = useState<"select-area" | "paste" | "review" | "summary">("select-area");
+  const [step, setStep] = useState<"paste" | "review" | "summary">("paste");
   const [areaOptions, setAreaOptions] = useState<AreaOption[]>([]);
   const [selectedArea, setSelectedArea] = useState("");
   const [selectedSubArea, setSelectedSubArea] = useState("");
