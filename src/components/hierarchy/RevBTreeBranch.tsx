@@ -96,7 +96,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
     return paths;
   }, [areas, searchQuery, hasSearch]);
 
-  const ppSegment: FLPathSegment = { level: "plant", label: "Processing Plant (Rev B)" };
+  const ppSegment: FLPathSegment = { level: "plant", label: "Processing Plant" };
   const pathAfterPP = [...pathAfterSite, ppSegment];
 
   if (isLoading) {
