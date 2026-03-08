@@ -23,7 +23,7 @@ import { RevBAssetTree } from "@/components/hierarchy/RevBAssetTree";
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSeeding, setIsSeeding] = useState(false);
-  const [transferDialogOpen, setTransferDialogOpen] = useState(false);
+  // transferDialogOpen removed (Rev A deleted)
 
   const handleSeedDatabase = async () => {
     setIsSeeding(true);
