@@ -397,11 +397,9 @@ export const BulkComponentImportDialog: React.FC = () => {
   };
 
   const handleFullReset = () => {
-    setStep("select-area");
+    setStep("paste");
     setRawText("");
     setMatchedRows([]);
-    setSelectedArea("");
-    setSelectedSubArea("");
     setImportSummary(null);
   };
 
