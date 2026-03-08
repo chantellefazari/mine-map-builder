@@ -97,12 +97,11 @@ export const RevBAssetTree: React.FC = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="tree" className="w-full">
-        <TabsList className="w-full max-w-3xl grid grid-cols-6">
+        <TabsList className="w-full max-w-3xl grid grid-cols-5">
           <TabsTrigger value="tree" className="text-xs">Asset Tree ({assets?.length || 0})</TabsTrigger>
           <TabsTrigger value="source" className="text-xs">Source Index ({tags?.length || 0})</TabsTrigger>
           <TabsTrigger value="flow" className="text-xs">Flow Map</TabsTrigger>
           <TabsTrigger value="coverage" className="text-xs">Coverage Check</TabsTrigger>
-          <TabsTrigger value="delta" className="text-xs">Delta Report</TabsTrigger>
           <TabsTrigger value="pid-audit" className="text-xs">P&ID Audit</TabsTrigger>
         </TabsList>
 
