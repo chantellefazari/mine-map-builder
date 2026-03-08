@@ -1,0 +1,1 @@
+DELETE FROM processing_plant_assets_rev_b WHERE asset_number = 'RCFD01-SIT';
