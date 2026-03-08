@@ -529,10 +529,6 @@ export const BulkComponentImportDialog: React.FC = () => {
                 <CheckCircle className="h-4 w-4 text-green-600" /> Import Complete
               </h3>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="font-medium">Parent Area:</div>
-                <div>{importSummary.parentArea}</div>
-                <div className="font-medium">Sub-Area:</div>
-                <div>{importSummary.subArea}</div>
                 <div className="font-medium">Imported:</div>
                 <div className="text-green-700 dark:text-green-400 font-semibold">{importSummary.imported}</div>
                 <div className="font-medium">Duplicates Skipped:</div>
