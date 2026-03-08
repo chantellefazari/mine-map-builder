@@ -1,0 +1,1 @@
+UPDATE processing_plant_assets_rev_b SET area_label = 'Support Services' WHERE area_code = 'SUP' AND area_label = 'Support & Utilities';
