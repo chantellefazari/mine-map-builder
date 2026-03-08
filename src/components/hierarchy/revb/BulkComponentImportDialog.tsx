@@ -327,20 +327,17 @@ export const BulkComponentImportDialog: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ["rev-b-assets"] });
       queryClient.invalidateQueries({ queryKey: ["rev-b-plant-assets-tree"] });
 
-      const areaLabel = currentAreaOption?.areaLabel || selectedArea;
       setImportSummary({
         imported: toImport.length,
         duplicates: duplicateCount,
         rejected: notFoundCount,
-        parentArea: areaLabel,
-        subArea: selectedSubArea || "All",
         details,
       });
       setStep("summary");
 
       toast({
         title: "Components imported ✅",
-        description: `${toImport.length} components added to ${successCount} assets in ${areaLabel}.`,
+        description: `${toImport.length} components added to ${successCount} assets.`,
       });
     } catch (e: any) {
       toast({ title: "Import failed", description: e.message, variant: "destructive" });
