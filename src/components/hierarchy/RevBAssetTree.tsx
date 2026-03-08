@@ -9,7 +9,7 @@ import { RevBAsset, DiffSummary, AssetTable } from "./revb/RevBAssetTable";
 import { ExtractionTag, ExtractionTable } from "./revb/RevBExtractionTable";
 import { RevBFlowMap } from "./revb/RevBFlowMap";
 import { RevBCoverageCheck } from "./revb/RevBCoverageCheck";
-import { RevBDeltaReport } from "./revb/RevBDeltaReport";
+// RevBDeltaReport removed (Rev A deleted — no comparison baseline)
 import { RevBPidAudit } from "./revb/RevBPidAudit";
 import { BulkComponentImportDialog } from "./revb/BulkComponentImportDialog";
 
