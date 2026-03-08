@@ -63,13 +63,12 @@ export const RevBAssetTree: React.FC = () => {
   return (
     <div className="space-y-4">
       {/* Rev B Banner */}
-      <div className="bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 rounded-lg p-4 flex items-start gap-3">
-        <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+      <div className="bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4 flex items-start gap-3">
+        <AlertTriangle className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
         <div className="text-sm">
-          <p className="font-semibold text-amber-800 dark:text-amber-300">Rev B — Draft (2026 P&ID Updates)</p>
-          <p className="text-amber-700 dark:text-amber-400 mt-0.5">
-            Built from extraction register only. {assets?.length || 0} assets mapped from {equipmentCount} equipment + {(tags?.length || 0) - equipmentCount} valves/instruments/lines/motors across 14 P&ID pages.
-            Changes are tracked but NOT yet applied to the live hierarchy.
+          <p className="font-semibold text-emerald-800 dark:text-emerald-300">Processing Plant — Live Asset Register</p>
+          <p className="text-emerald-700 dark:text-emerald-400 mt-0.5">
+            Single source of truth. {assets?.length || 0} assets mapped from {equipmentCount} equipment + {(tags?.length || 0) - equipmentCount} valves/instruments/lines/motors across 14 P&ID pages.
           </p>
         </div>
       </div>
