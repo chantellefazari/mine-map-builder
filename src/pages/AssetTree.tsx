@@ -11,7 +11,7 @@ import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet, HardHat, Database, Loader2, GitBranch, Columns, ArrowRightLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { exportAssetTreeCSV } from "@/utils/exportAssetTreeCSV";
+// exportAssetTreeCSV removed (Rev A deleted)
 import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
 import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
 import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
