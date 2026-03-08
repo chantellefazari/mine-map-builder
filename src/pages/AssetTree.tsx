@@ -81,11 +81,16 @@ const AssetTree = () => {
 
         {/* Tabs: Asset Tree, Functional Locations, and Naming Convention */}
         <Tabs defaultValue="hierarchy" className="w-full">
-          <TabsList className="grid w-full max-w-5xl grid-cols-5">
+          <TabsList className="grid w-full max-w-5xl grid-cols-6">
             <TabsTrigger value="hierarchy" className="gap-2 text-xs sm:text-sm">
               <TreePine className="h-4 w-4" />
               <span className="hidden sm:inline">Asset Tree</span>
               <span className="sm:hidden">Tree</span>
+            </TabsTrigger>
+            <TabsTrigger value="pid-register" className="gap-2 text-xs sm:text-sm">
+              <TableProperties className="h-4 w-4" />
+              <span className="hidden sm:inline">P&ID Register</span>
+              <span className="sm:hidden">P&ID</span>
             </TabsTrigger>
             <TabsTrigger value="functional-locations" className="gap-2 text-xs sm:text-sm">
               <TableProperties className="h-4 w-4" />
