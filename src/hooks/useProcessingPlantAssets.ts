@@ -255,7 +255,16 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
           // If the child equipment had multiple DB-stored components, carry them forward as children.
           if (equip.components && equip.components.length > 1) {
             for (const childComp of equip.components) {
-              if (!parentEquip.components.some(c => c.componentCode === childComp.componentCode)) {
+              const childKey = `${childComp.componentType || ""}::${childComp.componentName || ""}::${childComp.model || ""}`.toLowerCase();
+              const exists = parentEquip.components.some((c) => {
+                if (c.componentCode && childComp.componentCode) {
+                  return c.componentCode === childComp.componentCode;
+                }
+                const existingKey = `${c.componentType || ""}::${c.componentName || ""}::${c.model || ""}`.toLowerCase();
+                return existingKey === childKey;
+              });
+
+              if (!exists) {
                 parentEquip.components.push(childComp);
               }
             }
