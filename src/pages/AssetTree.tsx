@@ -145,6 +145,9 @@ const AssetTree = () => {
             </FLBreadcrumbProvider>
           </TabsContent>
 
+          <TabsContent value="pid-register" className="mt-6">
+            <RevBAssetTree />
+
           <TabsContent value="functional-locations" className="mt-6">
             <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
               <FunctionalLocationTable />
