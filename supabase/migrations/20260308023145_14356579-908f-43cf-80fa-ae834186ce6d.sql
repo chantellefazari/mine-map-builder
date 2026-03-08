@@ -1,0 +1,1 @@
+UPDATE rev_b_pid_extraction_register SET tag_id = '08-HX-001' WHERE id = '58e35e87-0ecb-4bac-8760-0cb9c39a1368';
