@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Printer, Save, Search, Trash2, Sparkles, Loader2, Wand2, SendHorizontal } from "lucide-react";
-import { areasData } from "@/components/hierarchy/assetData";
+// areasData removed (Rev A deleted) – WO parts suggestion uses edge function directly
 import tennantIcon from "@/assets/tennant-icon.png";
 import { WOSubTabs } from "./WOSubTabs";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
