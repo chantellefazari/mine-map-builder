@@ -37,6 +37,11 @@ function parseComponents(raw: any): Component[] {
       componentType: c.componentType || "",
       componentName: c.componentName || "",
       manufacturer: c.manufacturer || "",
+      pidTags: Array.isArray(c.pidTags)
+        ? c.pidTags
+        : Array.isArray(c.pid_tags)
+          ? c.pid_tags
+          : undefined,
       serialNumber: c.serialNumber,
       model: c.model,
       oilType: c.oilType,
