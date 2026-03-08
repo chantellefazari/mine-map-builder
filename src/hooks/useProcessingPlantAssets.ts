@@ -298,20 +298,23 @@ export interface PidTagMapping {
   status: string;
 }
 
+/**
+ * Fetches P&ID tags from the Rev B extraction register (sole source of truth).
+ */
 export function useProcessingPidTags() {
   return useQuery({
-    queryKey: ["processing-pid-tags"],
+    queryKey: ["rev-b-pid-tags"],
     queryFn: async (): Promise<PidTagMapping[]> => {
       const { data, error } = await supabase
-        .from("processing_pid_tags")
-        .select("*");
+        .from("rev_b_pid_extraction_register")
+        .select("tag_id, description");
 
       if (error) throw error;
-      return (data as DBPidTagRow[]).map((r) => ({
-        pidTag: r.pid_tag,
-        assetNumber: r.asset_number,
+      return (data as any[]).map((r) => ({
+        pidTag: r.tag_id,
+        assetNumber: "",
         description: r.description,
-        status: r.status,
+        status: "mapped",
       }));
     },
     staleTime: 5 * 60 * 1000,
