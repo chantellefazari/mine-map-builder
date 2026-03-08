@@ -108,6 +108,17 @@ export function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
     }
     const parentAsset = subArea.parentAssets.get(row.parent_asset_label)!;
 
+    // Skip system header rows that exist only to create the Level 5 grouping node.
+    // These are rows where parent_asset_label === "ASSET_NUMBER ASSET_NAME" (self-referencing).
+    const isSelfReferencing = row.parent_asset_label === `${row.asset_number} ${row.asset_name}`;
+    if (isSelfReferencing) {
+      // Still update FL on the parent grouping if present
+      if (row.functional_location) {
+        parentAsset.functionalLocation = row.functional_location;
+      }
+      continue;
+    }
+
     // Equipment
     const components = parseComponents(row.components);
     const equip: Equipment = {
