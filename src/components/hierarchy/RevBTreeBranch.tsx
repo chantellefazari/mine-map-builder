@@ -96,13 +96,13 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
     return paths;
   }, [areas, searchQuery, hasSearch]);
 
-  const ppSegment: FLPathSegment = { level: "plant", label: "Processing Plant (Rev B)" };
+  const ppSegment: FLPathSegment = { level: "plant", label: "Processing Plant" };
   const pathAfterPP = [...pathAfterSite, ppSegment];
 
   if (isLoading) {
     return (
       <TreeBranch horizontal>
-        <CollapsibleTreeNode label="Processing Plant (Rev B)" level="plant" hasChildren={false} depth={1} ancestorPath={pathAfterSite}>
+        <CollapsibleTreeNode label="Processing Plant" level="plant" hasChildren={false} depth={1} ancestorPath={pathAfterSite}>
           <div className="flex items-center gap-2 py-4 pl-6">
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
             <span className="text-xs text-muted-foreground">Loading Rev B…</span>
@@ -116,7 +116,7 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
 
   return (
     <TreeBranch horizontal>
-      <CollapsibleTreeNode label="Processing Plant (Rev B)" level="plant" hasChildren defaultExpanded={hasRevBMatches} forceExpanded={hasRevBMatches} depth={1} ancestorPath={pathAfterSite}>
+      <CollapsibleTreeNode label="Processing Plant" level="plant" hasChildren defaultExpanded={hasRevBMatches} forceExpanded={hasRevBMatches} depth={1} ancestorPath={pathAfterSite}>
         {areas.map((area, areaIndex) => {
           const areaSegment: FLPathSegment = { level: "area", label: area.label, code: area.code, areaType: area.code };
           const pathAfterArea = [...pathAfterPP, areaSegment];

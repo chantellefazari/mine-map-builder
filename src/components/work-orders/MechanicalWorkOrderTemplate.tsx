@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Printer, Save, Search, Trash2, Sparkles, Loader2, Wand2, SendHorizontal } from "lucide-react";
-import { areasData } from "@/components/hierarchy/assetData";
+// areasData removed (Rev A deleted) – WO parts suggestion uses edge function directly
 import tennantIcon from "@/assets/tennant-icon.png";
 import { WOSubTabs } from "./WOSubTabs";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
@@ -163,19 +163,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     setIsGeneratingParts(true);
     try {
       let assetComponents: any[] = [];
-      if (form.asset_id) {
-        for (const area of areasData) {
-          for (const sub of area.subAreas) {
-            for (const parent of sub.parentAssets) {
-              for (const equip of parent.equipment) {
-                if (equip.assetNumber === form.asset_id && equip.components) {
-                  assetComponents = equip.components;
-                }
-              }
-            }
-          }
-        }
-      }
+      // Asset component lookup is now handled server-side via the edge function
       const { data, error } = await supabase.functions.invoke("suggest-wo-parts", {
         body: { description: form.problem_description, asset_number: form.asset_id, asset_components: assetComponents },
       });

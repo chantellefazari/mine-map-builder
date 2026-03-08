@@ -9,45 +9,15 @@ import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocati
 import { CRUFunctionalLocationTable } from "@/components/hierarchy/CRUFunctionalLocationTable";
 import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet, HardHat, Database, Loader2, GitBranch, Columns, ArrowRightLeft } from "lucide-react";
+import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet, HardHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { exportAssetTreeCSV } from "@/utils/exportAssetTreeCSV";
 import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
 import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
 import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
-import { seedProcessingPlantData } from "@/utils/seedProcessingPlantData";
-import { toast } from "@/hooks/use-toast";
 import { RevBAssetTree } from "@/components/hierarchy/RevBAssetTree";
-import { RevBComparisonView } from "@/components/hierarchy/revb/RevBComparisonView";
-import { ComponentTransferDialog } from "@/components/hierarchy/revb/ComponentTransferDialog";
 
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSeeding, setIsSeeding] = useState(false);
-  const [transferDialogOpen, setTransferDialogOpen] = useState(false);
-
-  const handleSeedDatabase = async () => {
-    setIsSeeding(true);
-    try {
-              const result = await seedProcessingPlantData();
-      if (result.errors.length > 0) {
-        toast({
-          title: "Seed completed with errors",
-          description: `Assets: ${result.assets}, P&IDs: ${result.pidTags}, Naming: ${result.namingConventions}, FLs: ${result.functionalLocations}. Errors: ${result.errors.length}`,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Processing Plant Data Locked In ✅",
-          description: `${result.assets} assets, ${result.pidTags} P&ID tags, ${result.namingConventions} naming conventions, ${result.functionalLocations} functional locations saved to database.`,
-        });
-      }
-    } catch (e: any) {
-      toast({ title: "Seed Failed", description: e.message, variant: "destructive" });
-    } finally {
-      setIsSeeding(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -78,15 +48,7 @@ const AssetTree = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={handleSeedDatabase}
-                disabled={isSeeding}
-                className="gap-2"
-              >
-                {isSeeding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Database className="h-4 w-4" />}
-                {isSeeding ? "Saving..." : "Lock In to Database"}
-              </Button>
+
               <Button variant="outline" onClick={exportHierarchyWorkbook} className="gap-2">
                 <Download className="h-4 w-4" />
                 Hierarchy Workbook
@@ -119,21 +81,11 @@ const AssetTree = () => {
 
         {/* Tabs: Asset Tree, Functional Locations, and Naming Convention */}
         <Tabs defaultValue="hierarchy" className="w-full">
-          <TabsList className="grid w-full max-w-6xl grid-cols-7">
+          <TabsList className="grid w-full max-w-5xl grid-cols-5">
             <TabsTrigger value="hierarchy" className="gap-2 text-xs sm:text-sm">
               <TreePine className="h-4 w-4" />
-              <span className="hidden sm:inline">Rev A (Original)</span>
-              <span className="sm:hidden">Rev A</span>
-            </TabsTrigger>
-            <TabsTrigger value="rev-b" className="gap-2 text-xs sm:text-sm">
-              <GitBranch className="h-4 w-4" />
-              <span className="hidden sm:inline">Rev B (P&ID 2026)</span>
-              <span className="sm:hidden">Rev B</span>
-            </TabsTrigger>
-            <TabsTrigger value="comparison" className="gap-2 text-xs sm:text-sm">
-              <Columns className="h-4 w-4" />
-              <span className="hidden sm:inline">Side-by-Side</span>
-              <span className="sm:hidden">Compare</span>
+              <span className="hidden sm:inline">Asset Tree</span>
+              <span className="sm:hidden">Tree</span>
             </TabsTrigger>
             <TabsTrigger value="functional-locations" className="gap-2 text-xs sm:text-sm">
               <TableProperties className="h-4 w-4" />
@@ -179,10 +131,6 @@ const AssetTree = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <AssetSearch value={searchQuery} onChange={setSearchQuery} />
-                      <Button variant="outline" size="sm" onClick={exportAssetTreeCSV} className="gap-2">
-                        <Download className="h-4 w-4" />
-                        Export CSV
-                      </Button>
                     </div>
                   </div>
                   
@@ -190,21 +138,6 @@ const AssetTree = () => {
                 </div>
               </div>
             </FLBreadcrumbProvider>
-          </TabsContent>
-
-          <TabsContent value="rev-b" className="mt-6 space-y-4">
-            <div className="flex justify-end">
-              <Button variant="outline" onClick={() => setTransferDialogOpen(true)} className="gap-2">
-                <ArrowRightLeft className="h-4 w-4" />
-                Transfer Component Specs (Rev A → Rev B)
-              </Button>
-            </div>
-            <RevBAssetTree />
-            <ComponentTransferDialog open={transferDialogOpen} onOpenChange={setTransferDialogOpen} />
-          </TabsContent>
-
-          <TabsContent value="comparison" className="mt-6">
-            <RevBComparisonView />
           </TabsContent>
 
           <TabsContent value="functional-locations" className="mt-6">
