@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Check, Package, GitBranch } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { areasData } from "@/components/hierarchy/assetData";
+import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
 
 interface SpareResult {
   id: string;

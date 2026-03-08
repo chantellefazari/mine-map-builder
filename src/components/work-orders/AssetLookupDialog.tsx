@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
-import { areasData, type Area } from "@/components/hierarchy/assetData";
+import { type Area } from "@/components/hierarchy/assetData";
+import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
 
 interface AssetLookupResult {
   assetNumber: string;
@@ -42,10 +43,11 @@ function flattenAssets(areas: Area[]): AssetLookupResult[] {
   return results;
 }
 
-const allAssets = flattenAssets(areasData);
-
 export const AssetLookupDialog = ({ open, onOpenChange, onSelect }: AssetLookupDialogProps) => {
   const [query, setQuery] = useState("");
+  const { data: areas } = useRevBPlantAssets();
+
+  const allAssets = useMemo(() => flattenAssets(areas || []), [areas]);
 
   const filtered = useMemo(() => {
     if (!query.trim()) return allAssets.slice(0, 50);
@@ -57,7 +59,7 @@ export const AssetLookupDialog = ({ open, onOpenChange, onSelect }: AssetLookupD
         a.parentAsset.toLowerCase().includes(q) ||
         a.subArea.toLowerCase().includes(q)
     ).slice(0, 50);
-  }, [query]);
+  }, [query, allAssets]);
 
   const handleSelect = (asset: AssetLookupResult) => {
     onSelect(asset);
