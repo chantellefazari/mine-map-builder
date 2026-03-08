@@ -48,15 +48,7 @@ const AssetTree = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={handleSeedDatabase}
-                disabled={isSeeding}
-                className="gap-2"
-              >
-                {isSeeding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Database className="h-4 w-4" />}
-                {isSeeding ? "Saving..." : "Lock In to Database"}
-              </Button>
+
               <Button variant="outline" onClick={exportHierarchyWorkbook} className="gap-2">
                 <Download className="h-4 w-4" />
                 Hierarchy Workbook
