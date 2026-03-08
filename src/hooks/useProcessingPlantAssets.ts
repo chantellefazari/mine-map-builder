@@ -234,6 +234,7 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
             componentType: typeCode,
             componentName: equip.name,
             manufacturer: singleSpec?.manufacturer || "",
+            pidTags: equip.pidTags?.length ? equip.pidTags : undefined,
             model: singleSpec?.model,
             serialNumber: singleSpec?.serialNumber,
             oilType: singleSpec?.oilType,

@@ -9,6 +9,8 @@ export interface Component {
   componentType: string;
   componentName: string;
   manufacturer: string;
+  /** Optional legacy P&ID references carried by nested sub-equipment */
+  pidTags?: string[];
   // Extended attributes (metadata)
   serialNumber?: string;
   model?: string;
