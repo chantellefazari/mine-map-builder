@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Upload, CheckCircle, AlertTriangle, Loader2, Info } from "lucide-react";
+import { Upload, CheckCircle, AlertTriangle, Loader2, Info, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
@@ -13,6 +13,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ParsedRow {
   pidTag: string;
@@ -28,16 +35,64 @@ interface MatchedRow extends ParsedRow {
   status: "matched" | "not_found" | "duplicate";
 }
 
+interface AreaOption {
+  areaCode: string;
+  areaLabel: string;
+  subAreas: string[];
+}
+
 export const BulkComponentImportDialog: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState("");
   const [matchedRows, setMatchedRows] = useState<MatchedRow[]>([]);
   const [isMatching, setIsMatching] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-  const [step, setStep] = useState<"paste" | "review">("paste");
+  const [step, setStep] = useState<"select-area" | "paste" | "review" | "summary">("select-area");
+  const [areaOptions, setAreaOptions] = useState<AreaOption[]>([]);
+  const [selectedArea, setSelectedArea] = useState("");
+  const [selectedSubArea, setSelectedSubArea] = useState("");
+  const [importSummary, setImportSummary] = useState<{
+    imported: number;
+    duplicates: number;
+    rejected: number;
+    parentArea: string;
+    subArea: string;
+    details: string[];
+  } | null>(null);
   const queryClient = useQueryClient();
 
-  // Strip advisory notes like "(Robbie please advice)" from any field
+  // Fetch available areas/sub-areas from Rev B
+  useEffect(() => {
+    if (!open) return;
+    const fetchAreas = async () => {
+      const { data, error } = await supabase
+        .from("processing_plant_assets_rev_b")
+        .select("area_code, area_label, sub_area")
+        .order("area_code");
+      if (error || !data) return;
+
+      const areaMap = new Map<string, AreaOption>();
+      for (const row of data) {
+        if (!areaMap.has(row.area_code)) {
+          areaMap.set(row.area_code, {
+            areaCode: row.area_code,
+            areaLabel: row.area_label,
+            subAreas: [],
+          });
+        }
+        const opt = areaMap.get(row.area_code)!;
+        if (row.sub_area && !opt.subAreas.includes(row.sub_area)) {
+          opt.subAreas.push(row.sub_area);
+        }
+      }
+      setAreaOptions(Array.from(areaMap.values()));
+    };
+    fetchAreas();
+  }, [open]);
+
+  const currentAreaOption = areaOptions.find((a) => a.areaCode === selectedArea);
+
+  // Strip advisory notes
   const sanitizeField = (val: string) =>
     val.replace(/\(?\s*Robbie\s+please\s+advi[sc]e\s*\)?/gi, "").replace(/\s{2,}/g, " ").trim();
 
@@ -48,32 +103,6 @@ export const BulkComponentImportDialog: React.FC = () => {
       .replace(/\s{2,}/g, " ")
       .trim();
 
-  const isGenericComponentType = (text: string): boolean => {
-    if (!text) return true;
-    const normalized = text.trim().toLowerCase();
-    if (!normalized) return true;
-
-    return (
-      /\b(system|plant|facility|circuit|area|sub\s*area|section|line|package|unit|train)\b/i.test(normalized) ||
-      /\b(primary|secondary|tertiary)\s+ball\s+mill\b/i.test(normalized)
-    );
-  };
-
-  const inferComponentType = (rawType: string, rawDescription: string): string => {
-    const cleanedType = stripRepMarkers(sanitizeField(rawType || ""));
-    const cleanedDescription = stripRepMarkers(sanitizeField(rawDescription || ""));
-
-    if (cleanedType && !isGenericComponentType(cleanedType)) {
-      return cleanedType;
-    }
-
-    if (cleanedDescription) {
-      return cleanedDescription;
-    }
-
-    return cleanedType || "Component";
-  };
-
   const parsedRows = useMemo((): ParsedRow[] => {
     if (!rawText.trim()) return [];
     return rawText
@@ -82,59 +111,45 @@ export const BulkComponentImportDialog: React.FC = () => {
       .filter((line) => line.length > 0)
       .map((line) => {
         const parts = line.split("\t").map((p) => p.trim());
-        // Filter out empty columns
-        const filled = parts.filter((p) => p.length > 0);
 
         if (parts.length >= 2) {
           const pidTag = sanitizeField(parts[0] || "");
           const columnsAfterTag = parts.slice(1).filter((p) => p.length > 0);
-
-          // Detect if last column looks like a standalone part number / spec code
-          // (typically short alphanumeric with no spaces or very few)
           const lastCol = sanitizeField(columnsAfterTag[columnsAfterTag.length - 1] || "");
           const secondLastCol = columnsAfterTag.length >= 2 ? sanitizeField(columnsAfterTag[columnsAfterTag.length - 2] || "") : "";
-          const thirdLastCol = columnsAfterTag.length >= 3 ? sanitizeField(columnsAfterTag[columnsAfterTag.length - 3] || "") : "";
 
-          // If we have 3+ columns after tag, last one is likely a part number
           if (columnsAfterTag.length >= 3) {
-            const componentDesc = stripRepMarkers(secondLastCol);
-            const systemName = thirdLastCol; // generic system name, often discarded
+            const thirdLastCol = columnsAfterTag.length >= 3 ? sanitizeField(columnsAfterTag[columnsAfterTag.length - 3] || "") : "";
             return {
               pidTag,
-              componentType: inferComponentType(systemName, componentDesc),
-              description: componentDesc,
+              componentType: stripRepMarkers(sanitizeField(secondLastCol || thirdLastCol)),
+              description: stripRepMarkers(sanitizeField(secondLastCol)),
               specs: lastCol,
             };
           }
 
-          // 2 columns after tag: could be [description, spec] or [system, description]
           if (columnsAfterTag.length === 2) {
-            const rawDescription = stripRepMarkers(lastCol);
-            const rawTypeCandidate = secondLastCol;
             return {
               pidTag,
-              componentType: inferComponentType(rawTypeCandidate, rawDescription),
-              description: rawDescription,
+              componentType: stripRepMarkers(sanitizeField(columnsAfterTag[0])),
+              description: stripRepMarkers(lastCol),
               specs: "",
             };
           }
 
-          // Single column after tag
           return {
             pidTag,
-            componentType: inferComponentType(lastCol, ""),
+            componentType: stripRepMarkers(lastCol),
             description: lastCol,
             specs: "",
           };
         }
 
-        // Fallback: comma-separated
         const cParts = line.split(",").map((p) => p.trim());
-        const csvDescription = sanitizeField(cParts.slice(2).filter(Boolean).join(" | "));
         return {
           pidTag: sanitizeField(cParts[0] || ""),
-          componentType: inferComponentType(sanitizeField(cParts[1] || ""), csvDescription),
-          description: csvDescription,
+          componentType: sanitizeField(cParts[1] || "Component"),
+          description: sanitizeField(cParts.slice(2).filter(Boolean).join(" | ")),
           specs: "",
         };
       })
@@ -146,14 +161,22 @@ export const BulkComponentImportDialog: React.FC = () => {
     setIsMatching(true);
 
     try {
-      // Fetch all Rev B assets with their pid_tags
-      const { data: assets, error } = await supabase
+      // Only fetch assets within the selected area/sub-area — controlled scope
+      let query = supabase
         .from("processing_plant_assets_rev_b")
-        .select("id, asset_number, asset_name, pid_tags, components");
+        .select("id, asset_number, asset_name, pid_tags, components, area_code, sub_area");
 
+      if (selectedArea) {
+        query = query.eq("area_code", selectedArea);
+      }
+      if (selectedSubArea) {
+        query = query.eq("sub_area", selectedSubArea);
+      }
+
+      const { data: assets, error } = await query;
       if (error) throw error;
 
-      // Build a lookup: normalised P&ID tag → ALL assets sharing that tag
+      // Build lookup: normalised P&ID tag → assets (scoped to selected area only)
       const normalizeTag = (t: string) =>
         t.toLowerCase().replace(/\b0+(\d)/g, "$1");
 
@@ -182,78 +205,7 @@ export const BulkComponentImportDialog: React.FC = () => {
         }
       }
 
-      /**
-       * Smart best-fit matching: given a component type (e.g. "Pinion")
-       * and a list of assets sharing the same P&ID tag (e.g. BM01, BM01-PIN, BM01-MTR),
-       * find the most specific sub-asset whose name/suffix matches the component type.
-       * Falls back to the parent system (shortest asset_number) if no match found.
-       */
-      const COMPONENT_SUFFIX_MAP: Record<string, string[]> = {
-        motor: ["MTR", "MOTOR"],
-        gearbox: ["GB", "GBX", "GEAR", "GR"],
-        pinion: ["PIN"],
-        bearing: ["BRG", "BEARING"],
-        pump: ["PMP", "PUMP"],
-        valve: ["VLV", "VALVE", "V"],
-        agitator: ["AGT"],
-        impeller: ["IMP"],
-        cyclone: ["CYC"],
-        hopper: ["HOP", "DHP"],
-        chute: ["CHT", "LDCH"],
-        conveyor: ["CONV", "CV"],
-        compressor: ["COMP"],
-        filter: ["FLT", "FILT"],
-        instrument: ["INST"],
-        monorail: ["MNR"],
-        reducer: ["GR", "GRTE"],
-      };
-
-      const findBestAsset = (componentType: string, assetList: AssetEntry[]): AssetEntry | null => {
-        if (assetList.length === 1) return assetList[0];
-
-        // Sort by asset_number length (shortest = parent system)
-        const sorted = [...assetList].sort((a, b) => a.asset_number.length - b.asset_number.length);
-        const parentAsset = sorted[0];
-        const childAssets = sorted.slice(1);
-
-        if (childAssets.length === 0) return parentAsset;
-
-        const compTypeLower = componentType.toLowerCase().trim();
-
-        // 1. Check suffix map for known component types
-        const suffixes = COMPONENT_SUFFIX_MAP[compTypeLower];
-        if (suffixes) {
-          for (const child of childAssets) {
-            const suffix = child.asset_number.replace(parentAsset.asset_number, "").replace(/^[-_]/, "").toUpperCase();
-            if (suffixes.some(s => suffix === s || suffix.startsWith(s))) {
-              return child;
-            }
-          }
-        }
-
-        // 2. Exact name match: only route to a child if the child name IS the component type
-        for (const child of childAssets) {
-          const childNameLower = child.asset_name.toLowerCase().trim();
-          if (childNameLower === compTypeLower) {
-            return child;
-          }
-        }
-
-        // 3. Check suffix map with child asset_number suffix
-        for (const child of childAssets) {
-          const suffix = child.asset_number.replace(parentAsset.asset_number, "").replace(/^[-_]/, "").toLowerCase();
-          // Only match if the suffix IS the component type abbreviation (exact)
-          for (const [key, suffixList] of Object.entries(COMPONENT_SUFFIX_MAP)) {
-            if (compTypeLower === key && suffixList.some(s => suffix.toUpperCase() === s)) {
-              return child;
-            }
-          }
-        }
-
-        // No confident child match: default to parent system (the screen/pump/mill itself)
-        return parentAsset;
-      };
-
+      // No fuzzy matching, no OCR guessing — exact tag lookup only
       const matched: MatchedRow[] = parsedRows.map((row) => {
         const normTag = normalizeTag(row.pidTag);
         const assetList = tagToAssets.get(normTag);
@@ -268,9 +220,8 @@ export const BulkComponentImportDialog: React.FC = () => {
           };
         }
 
-        // Find the best-fit asset for this specific component type
+        // Pick the most specific sub-asset by suffix or exact name match
         const bestAsset = findBestAsset(row.componentType, assetList);
-
         if (!bestAsset) {
           return {
             ...row,
@@ -281,22 +232,18 @@ export const BulkComponentImportDialog: React.FC = () => {
           };
         }
 
-        const normalizedType = inferComponentType(row.componentType, row.description).toLowerCase();
-        const normalizedDescription = stripRepMarkers(sanitizeField(row.description)).toLowerCase();
+        // Duplicate check — exact match on type + specs
+        const normalizedType = sanitizeField(row.componentType).toLowerCase();
         const normalizedSpecs = (row.specs || "").trim().toLowerCase();
 
         const isDuplicate = bestAsset.existingComponents.some((c: any) => {
           const existingType = sanitizeField(c.componentType || "").toLowerCase();
-          const existingName = sanitizeField(c.componentName || "").toLowerCase();
           const existingModel = sanitizeField(c.model || "").toLowerCase();
-          // Must match on type/name AND specs/model to be a true duplicate
-          const typeMatch = existingType === normalizedType || (normalizedDescription && existingName === normalizedDescription);
+          const typeMatch = existingType === normalizedType;
           if (!typeMatch) return false;
-          // If both have specs, they must match to be duplicate
           if (normalizedSpecs && existingModel) {
             return existingModel === normalizedSpecs;
           }
-          // If no specs to compare, fall back to type-only match
           return true;
         });
 
@@ -312,14 +259,52 @@ export const BulkComponentImportDialog: React.FC = () => {
       setMatchedRows(matched);
       setStep("review");
     } catch (e: any) {
-      toast({
-        title: "Match failed",
-        description: e.message,
-        variant: "destructive",
-      });
+      toast({ title: "Match failed", description: e.message, variant: "destructive" });
     } finally {
       setIsMatching(false);
     }
+  };
+
+  // Suffix-based routing (no fuzzy/OCR)
+  const COMPONENT_SUFFIX_MAP: Record<string, string[]> = {
+    motor: ["MTR", "MOTOR"],
+    gearbox: ["GB", "GBX", "GEAR", "GR"],
+    pinion: ["PIN"],
+    bearing: ["BRG", "BEARING"],
+    pump: ["PMP", "PUMP"],
+    valve: ["VLV", "VALVE", "V"],
+    agitator: ["AGT"],
+    impeller: ["IMP"],
+    cyclone: ["CYC"],
+    hopper: ["HOP", "DHP"],
+    chute: ["CHT", "LDCH"],
+    conveyor: ["CONV", "CV"],
+    compressor: ["COMP"],
+    filter: ["FLT", "FILT"],
+    instrument: ["INST"],
+    monorail: ["MNR"],
+    reducer: ["GR", "GRTE"],
+  };
+
+  const findBestAsset = (componentType: string, assetList: { id: string; asset_number: string; asset_name: string; existingComponents: any[] }[]) => {
+    if (assetList.length === 1) return assetList[0];
+    const sorted = [...assetList].sort((a, b) => a.asset_number.length - b.asset_number.length);
+    const parentAsset = sorted[0];
+    const childAssets = sorted.slice(1);
+    if (childAssets.length === 0) return parentAsset;
+
+    const compTypeLower = componentType.toLowerCase().trim();
+    const suffixes = COMPONENT_SUFFIX_MAP[compTypeLower];
+    if (suffixes) {
+      for (const child of childAssets) {
+        const suffix = child.asset_number.replace(parentAsset.asset_number, "").replace(/^[-_]/, "").toUpperCase();
+        if (suffixes.some((s) => suffix === s || suffix.startsWith(s))) return child;
+      }
+    }
+    for (const child of childAssets) {
+      if (child.asset_name.toLowerCase().trim() === compTypeLower) return child;
+    }
+    return parentAsset;
   };
 
   const matchedCount = matchedRows.filter((r) => r.status === "matched").length;
@@ -331,29 +316,27 @@ export const BulkComponentImportDialog: React.FC = () => {
     if (toImport.length === 0) return;
 
     setIsImporting(true);
+    const details: string[] = [];
     try {
-      // Group by asset ID
-      const byAsset = new Map<string, { assetId: string; components: { componentType: string; componentName: string; manufacturer: string | null; model: string | null }[] }>();
+      const byAsset = new Map<string, { assetId: string; assetNumber: string; components: { componentType: string; componentName: string; manufacturer: string | null; model: string | null }[] }>();
 
       for (const row of toImport) {
         if (!row.matchedAssetId) continue;
         if (!byAsset.has(row.matchedAssetId)) {
-          byAsset.set(row.matchedAssetId, { assetId: row.matchedAssetId, components: [] });
+          byAsset.set(row.matchedAssetId, { assetId: row.matchedAssetId, assetNumber: row.matchedAssetNumber, components: [] });
         }
-
         const cleanedDescription = stripRepMarkers(sanitizeField(row.description));
-        const effectiveComponentType = inferComponentType(row.componentType, cleanedDescription);
-        const componentName = cleanedDescription || `${row.matchedAssetName} ${effectiveComponentType}`;
+        // Preserve exact names from user Excel — NO auto-rename
+        const componentName = cleanedDescription || `${row.matchedAssetName} ${row.componentType}`;
 
         byAsset.get(row.matchedAssetId)!.components.push({
-          componentType: effectiveComponentType,
+          componentType: row.componentType, // exact as provided
           componentName,
           manufacturer: null,
           model: row.specs || cleanedDescription || null,
         });
       }
 
-      // Fetch current components for each asset and merge
       let successCount = 0;
       for (const [assetId, entry] of byAsset.entries()) {
         const { data: current, error: fetchError } = await supabase
@@ -363,7 +346,7 @@ export const BulkComponentImportDialog: React.FC = () => {
           .single();
 
         if (fetchError) {
-          console.error("Fetch error for", assetId, fetchError);
+          details.push(`❌ Fetch failed: ${entry.assetNumber}`);
           continue;
         }
 
@@ -385,31 +368,33 @@ export const BulkComponentImportDialog: React.FC = () => {
           .eq("id", assetId);
 
         if (updateError) {
-          console.error("Update error for", assetId, updateError);
+          details.push(`❌ Write failed: ${entry.assetNumber}`);
         } else {
+          details.push(`✅ ${entry.components.length} component(s) → ${entry.assetNumber}`);
           successCount++;
         }
       }
 
-      // Invalidate queries
       queryClient.invalidateQueries({ queryKey: ["rev-b-assets"] });
       queryClient.invalidateQueries({ queryKey: ["rev-b-plant-assets-tree"] });
 
+      const areaLabel = currentAreaOption?.areaLabel || selectedArea;
+      setImportSummary({
+        imported: toImport.length,
+        duplicates: duplicateCount,
+        rejected: notFoundCount,
+        parentArea: areaLabel,
+        subArea: selectedSubArea || "All",
+        details,
+      });
+      setStep("summary");
+
       toast({
         title: "Components imported ✅",
-        description: `${toImport.length} components added to ${successCount} assets.`,
+        description: `${toImport.length} components added to ${successCount} assets in ${areaLabel}.`,
       });
-
-      setOpen(false);
-      setStep("paste");
-      setRawText("");
-      setMatchedRows([]);
     } catch (e: any) {
-      toast({
-        title: "Import failed",
-        description: e.message,
-        variant: "destructive",
-      });
+      toast({ title: "Import failed", description: e.message, variant: "destructive" });
     } finally {
       setIsImporting(false);
     }
@@ -420,8 +405,17 @@ export const BulkComponentImportDialog: React.FC = () => {
     setMatchedRows([]);
   };
 
+  const handleFullReset = () => {
+    setStep("select-area");
+    setRawText("");
+    setMatchedRows([]);
+    setSelectedArea("");
+    setSelectedSubArea("");
+    setImportSummary(null);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setStep("paste"); setRawText(""); setMatchedRows([]); } }}>
+    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) handleFullReset(); }}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-1.5">
           <Upload className="h-3.5 w-3.5" />
@@ -431,19 +425,89 @@ export const BulkComponentImportDialog: React.FC = () => {
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5" />
-            Bulk Component Import — Rev B
+            <ShieldCheck className="h-5 w-5 text-primary" />
+            Controlled Component Import — Rev B
           </DialogTitle>
         </DialogHeader>
 
+        {/* Governance banner */}
+        <div className="bg-primary/5 border border-primary/20 rounded-lg p-2.5 text-xs text-muted-foreground flex items-start gap-2">
+          <ShieldCheck className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+          <div>
+            <span className="font-semibold text-foreground">Manual-Controlled Import Mode</span>
+            <span className="block mt-0.5">No auto-rename · No area reclassification · No OCR guessing · Exact placement only</span>
+          </div>
+        </div>
+
+        {/* STEP 1: Select area */}
+        {step === "select-area" && (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Target Area</label>
+              <Select value={selectedArea} onValueChange={(v) => { setSelectedArea(v); setSelectedSubArea(""); }}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select parent area..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {areaOptions.map((a) => (
+                    <SelectItem key={a.areaCode} value={a.areaCode}>
+                      {a.areaCode} — {a.areaLabel}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {currentAreaOption && currentAreaOption.subAreas.length > 0 && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Target Sub-Area <span className="text-muted-foreground font-normal">(optional — narrows scope)</span></label>
+                <Select value={selectedSubArea} onValueChange={setSelectedSubArea}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All sub-areas" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__all__">All sub-areas</SelectItem>
+                    {currentAreaOption.subAreas.map((sa) => (
+                      <SelectItem key={sa} value={sa}>{sa}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <Button
+              onClick={() => { if (selectedSubArea === "__all__") setSelectedSubArea(""); setStep("paste"); }}
+              disabled={!selectedArea}
+              size="sm"
+              className="w-full"
+            >
+              Continue to Paste Data →
+            </Button>
+          </div>
+        )}
+
+        {/* STEP 2: Paste */}
         {step === "paste" && (
           <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm">
+              <Badge variant="outline" className="gap-1">
+                Area: {currentAreaOption?.areaLabel || selectedArea}
+              </Badge>
+              {selectedSubArea && (
+                <Badge variant="outline" className="gap-1">
+                  Sub-Area: {selectedSubArea}
+                </Badge>
+              )}
+              <Button variant="ghost" size="sm" className="text-xs h-6 px-2" onClick={() => setStep("select-area")}>
+                Change
+              </Button>
+            </div>
+
             <div className="bg-muted/50 border border-border rounded-lg p-3 text-xs space-y-1">
               <p className="font-semibold text-foreground">Paste tab-separated rows (from Excel/Sheets):</p>
               <p className="text-muted-foreground font-mono">P&ID Tag &lt;tab&gt; Component Type &lt;tab&gt; Description/Part Number</p>
               <p className="text-muted-foreground mt-1">Example:</p>
-              <p className="font-mono text-primary">4-FE-100{"\t"}Motor{"\t"}SEW-EURODRIVE KA107R77 DRN112M4/V</p>
-              <p className="font-mono text-primary">4-FE-100{"\t"}Gearbox{"\t"}SEW-EURODRIVE KA107R77 DRN112M4/V</p>
+              <p className="font-mono text-primary">4-FE-100{"\t"}Motor{"\t"}SEW-EURODRIVE KA107R77</p>
             </div>
 
             <Textarea
@@ -464,10 +528,7 @@ export const BulkComponentImportDialog: React.FC = () => {
                 size="sm"
               >
                 {isMatching ? (
-                  <>
-                    <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
-                    Matching...
-                  </>
+                  <><Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> Matching...</>
                 ) : (
                   "Match to Rev B Assets"
                 )}
@@ -476,9 +537,14 @@ export const BulkComponentImportDialog: React.FC = () => {
           </div>
         )}
 
+        {/* STEP 3: Review */}
         {step === "review" && (
           <div className="space-y-4">
-            {/* Summary */}
+            <div className="flex items-center gap-2 text-sm mb-1">
+              <Badge variant="outline">Area: {currentAreaOption?.areaLabel || selectedArea}</Badge>
+              {selectedSubArea && <Badge variant="outline">Sub-Area: {selectedSubArea}</Badge>}
+            </div>
+
             <div className="flex items-center gap-3 flex-wrap">
               <Badge variant="default" className="bg-green-600 gap-1">
                 <CheckCircle className="h-3 w-3" /> {matchedCount} matched
@@ -495,7 +561,6 @@ export const BulkComponentImportDialog: React.FC = () => {
               )}
             </div>
 
-            {/* Results table */}
             <div className="max-h-[400px] overflow-auto border border-border rounded-lg">
               <table className="w-full text-xs">
                 <thead className="bg-muted sticky top-0">
@@ -520,26 +585,20 @@ export const BulkComponentImportDialog: React.FC = () => {
                       }`}
                     >
                       <td className="p-2">
-                        {row.status === "matched" && (
-                          <CheckCircle className="h-3.5 w-3.5 text-green-600" />
-                        )}
+                        {row.status === "matched" && <CheckCircle className="h-3.5 w-3.5 text-green-600" />}
                         {row.status === "not_found" && (
                           <TooltipProvider delayDuration={100}>
                             <Tooltip>
-                              <TooltipTrigger>
-                                <AlertTriangle className="h-3.5 w-3.5 text-red-500" />
-                              </TooltipTrigger>
-                              <TooltipContent>No Rev B asset has this P&ID tag</TooltipContent>
+                              <TooltipTrigger><AlertTriangle className="h-3.5 w-3.5 text-red-500" /></TooltipTrigger>
+                              <TooltipContent>No Rev B asset in selected area has this P&ID tag</TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                         )}
                         {row.status === "duplicate" && (
                           <TooltipProvider delayDuration={100}>
                             <Tooltip>
-                              <TooltipTrigger>
-                                <Info className="h-3.5 w-3.5 text-amber-500" />
-                              </TooltipTrigger>
-                              <TooltipContent>Component type already exists on this asset</TooltipContent>
+                              <TooltipTrigger><Info className="h-3.5 w-3.5 text-amber-500" /></TooltipTrigger>
+                              <TooltipContent>Component already exists on this asset — skipped</TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                         )}
@@ -550,9 +609,7 @@ export const BulkComponentImportDialog: React.FC = () => {
                       <td className="p-2 font-mono text-primary">
                         {row.matchedAssetNumber || "—"}
                         {row.matchedAssetName && (
-                          <span className="text-muted-foreground ml-1 font-sans">
-                            ({row.matchedAssetName})
-                          </span>
+                          <span className="text-muted-foreground ml-1 font-sans">({row.matchedAssetName})</span>
                         )}
                       </td>
                     </tr>
@@ -561,24 +618,55 @@ export const BulkComponentImportDialog: React.FC = () => {
               </table>
             </div>
 
-            {/* Actions */}
             <div className="flex items-center justify-between">
-              <Button variant="outline" size="sm" onClick={handleReset}>
-                ← Back to Edit
-              </Button>
-              <Button
-                onClick={handleImport}
-                disabled={matchedCount === 0 || isImporting}
-                size="sm"
-              >
+              <Button variant="outline" size="sm" onClick={handleReset}>← Back to Edit</Button>
+              <Button onClick={handleImport} disabled={matchedCount === 0 || isImporting} size="sm">
                 {isImporting ? (
-                  <>
-                    <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
-                    Importing...
-                  </>
+                  <><Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> Importing...</>
                 ) : (
                   `Import ${matchedCount} Component${matchedCount !== 1 ? "s" : ""}`
                 )}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 4: Summary */}
+        {step === "summary" && importSummary && (
+          <div className="space-y-4">
+            <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-4 space-y-3">
+              <h3 className="font-semibold text-sm flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-green-600" /> Import Complete
+              </h3>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="font-medium">Parent Area:</div>
+                <div>{importSummary.parentArea}</div>
+                <div className="font-medium">Sub-Area:</div>
+                <div>{importSummary.subArea}</div>
+                <div className="font-medium">Imported:</div>
+                <div className="text-green-700 dark:text-green-400 font-semibold">{importSummary.imported}</div>
+                <div className="font-medium">Duplicates Skipped:</div>
+                <div className="text-amber-600">{importSummary.duplicates}</div>
+                <div className="font-medium">Rejected (Not Found):</div>
+                <div className="text-red-600">{importSummary.rejected}</div>
+              </div>
+            </div>
+
+            {importSummary.details.length > 0 && (
+              <div className="border border-border rounded-lg p-3 max-h-[200px] overflow-auto">
+                <p className="text-xs font-semibold mb-2">Detail Log</p>
+                {importSummary.details.map((d, i) => (
+                  <p key={i} className="text-xs font-mono">{d}</p>
+                ))}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between">
+              <Button variant="outline" size="sm" onClick={handleFullReset}>
+                Import More
+              </Button>
+              <Button variant="default" size="sm" onClick={() => setOpen(false)}>
+                Done
               </Button>
             </div>
           </div>
