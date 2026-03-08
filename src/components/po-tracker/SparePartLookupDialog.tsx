@@ -40,11 +40,12 @@ export const SparePartLookupDialog = ({ open, onOpenChange, onSelect }: SparePar
   const [results, setResults] = useState<SpareResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState("catalogue");
+  const { data: revBData } = useRevBPlantAssets();
 
-  // Flatten asset tree components
+  // Flatten asset tree components from Rev B
   const flatComponents = useMemo(() => {
     const items: FlatComponent[] = [];
-    areasData.forEach((area) => {
+    (revBData || []).forEach((area) => {
       area.subAreas.forEach((sub) => {
         sub.parentAssets.forEach((parent) => {
           parent.equipment.forEach((equip) => {
@@ -64,7 +65,7 @@ export const SparePartLookupDialog = ({ open, onOpenChange, onSelect }: SparePar
       });
     });
     return items;
-  }, []);
+  }, [revBData]);
 
   // Filter components by search
   const filteredComponents = useMemo(() => {
