@@ -183,10 +183,15 @@ export const BulkComponentImportDialog: React.FC = () => {
           const existingModel = sanitizeField(c.model || "").toLowerCase();
           const typeMatch = existingType === normalizedType;
           if (!typeMatch) return false;
+          // Only duplicate if BOTH have specs and they match, or BOTH have no specs
           if (normalizedSpecs && existingModel) {
             return existingModel === normalizedSpecs;
           }
-          return true;
+          if (!normalizedSpecs && !existingModel) {
+            return true;
+          }
+          // One has specs, the other doesn't — not a duplicate
+          return false;
         });
 
         return {
