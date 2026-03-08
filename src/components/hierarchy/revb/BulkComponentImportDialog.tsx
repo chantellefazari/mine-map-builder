@@ -35,12 +35,6 @@ interface MatchedRow extends ParsedRow {
   status: "matched" | "not_found" | "duplicate";
 }
 
-interface AreaOption {
-  areaCode: string;
-  areaLabel: string;
-  subAreas: string[];
-}
-
 export const BulkComponentImportDialog: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState("");
@@ -48,49 +42,13 @@ export const BulkComponentImportDialog: React.FC = () => {
   const [isMatching, setIsMatching] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [step, setStep] = useState<"paste" | "review" | "summary">("paste");
-  const [areaOptions, setAreaOptions] = useState<AreaOption[]>([]);
-  const [selectedArea, setSelectedArea] = useState("");
-  const [selectedSubArea, setSelectedSubArea] = useState("");
   const [importSummary, setImportSummary] = useState<{
     imported: number;
     duplicates: number;
     rejected: number;
-    parentArea: string;
-    subArea: string;
     details: string[];
   } | null>(null);
   const queryClient = useQueryClient();
-
-  // Fetch available areas/sub-areas from Rev B
-  useEffect(() => {
-    if (!open) return;
-    const fetchAreas = async () => {
-      const { data, error } = await supabase
-        .from("processing_plant_assets_rev_b")
-        .select("area_code, area_label, sub_area")
-        .order("area_code");
-      if (error || !data) return;
-
-      const areaMap = new Map<string, AreaOption>();
-      for (const row of data) {
-        if (!areaMap.has(row.area_code)) {
-          areaMap.set(row.area_code, {
-            areaCode: row.area_code,
-            areaLabel: row.area_label,
-            subAreas: [],
-          });
-        }
-        const opt = areaMap.get(row.area_code)!;
-        if (row.sub_area && !opt.subAreas.includes(row.sub_area)) {
-          opt.subAreas.push(row.sub_area);
-        }
-      }
-      setAreaOptions(Array.from(areaMap.values()));
-    };
-    fetchAreas();
-  }, [open]);
-
-  const currentAreaOption = areaOptions.find((a) => a.areaCode === selectedArea);
 
   // Strip advisory notes
   const sanitizeField = (val: string) =>
