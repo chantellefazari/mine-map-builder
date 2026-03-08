@@ -435,16 +435,8 @@ export const BulkComponentImportDialog: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm">
               <Badge variant="outline" className="gap-1">
-                Area: {currentAreaOption?.areaLabel || selectedArea}
+                Scope: Entire Plant (auto-match by P&ID tag)
               </Badge>
-              {selectedSubArea && (
-                <Badge variant="outline" className="gap-1">
-                  Sub-Area: {selectedSubArea}
-                </Badge>
-              )}
-              <Button variant="ghost" size="sm" className="text-xs h-6 px-2" onClick={() => setStep("select-area")}>
-                Change
-              </Button>
             </div>
 
             <div className="bg-muted/50 border border-border rounded-lg p-3 text-xs space-y-1">
