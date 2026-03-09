@@ -17,11 +17,7 @@ const SuppliersProcurement = () => {
       <header className="border-b border-border bg-card">
         <div className="container py-6">
           <div className="flex items-center gap-4">
-            <Link to="/">
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-            </Link>
+            <PageNavDropdown />
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
               <ShoppingCart className="w-6 h-6 text-primary" />
             </div>
