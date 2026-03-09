@@ -1,3 +1,4 @@
+import { Package } from "lucide-react";
 import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { SiteSparesCatalogue as SiteSparesGrid } from "@/components/site-spares/SiteSparesCatalogue";
 

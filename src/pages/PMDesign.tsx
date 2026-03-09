@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download } from "lucide-react";
+import { FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download } from "lucide-react";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { supabase } from "@/integrations/supabase/client";
 import { seedPMTasks } from "@/utils/seedPMTasks";
 import { exportPMWorkbook } from "@/utils/exportPMWorkbook";
