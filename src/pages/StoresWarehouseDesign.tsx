@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Warehouse, AlertTriangle, Download, Printer } from "lucide-react";
+import { Warehouse, AlertTriangle, Download, Printer } from "lucide-react";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { StoresDesignPrinciples } from "@/components/stores-warehouse/StoresDesignPrinciples";
