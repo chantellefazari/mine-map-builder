@@ -20,6 +20,12 @@ interface PMAssetSearchComboboxProps {
   compact?: boolean;
 }
 
+/** Parse comma-separated asset IDs into an array */
+function parseValues(value: string): string[] {
+  if (!value.trim()) return [];
+  return value.split(",").map((v) => v.trim()).filter(Boolean);
+}
+
 export const PMAssetSearchCombobox = ({
   value,
   onChange,
@@ -48,11 +54,12 @@ export const PMAssetSearchCombobox = ({
     }
     return result;
   }, [areas]);
+
+  const selectedIds = useMemo(() => parseValues(value), [value]);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -64,58 +71,76 @@ export const PMAssetSearchCombobox = ({
   }, []);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return assets.slice(0, 200);
+    const selected = new Set(selectedIds);
+    const pool = assets.filter((a) => !selected.has(a.assetId));
+    if (!search.trim()) return pool.slice(0, 200);
     const q = search.toLowerCase();
-    return assets.filter(
+    return pool.filter(
       (a) =>
         a.assetId.toLowerCase().includes(q) ||
         a.assetName.toLowerCase().includes(q) ||
         a.area.toLowerCase().includes(q) ||
         a.parentAsset.toLowerCase().includes(q)
     );
-  }, [search, assets]);
+  }, [search, assets, selectedIds]);
 
-  const selectedAsset = assets.find((a) => a.assetId === value);
+  const addAsset = (asset: FlatAsset) => {
+    const newIds = [...selectedIds, asset.assetId];
+    onChange(newIds.join(", "), asset.assetName, asset.area);
+    setSearch("");
+  };
+
+  const removeAsset = (assetId: string) => {
+    const newIds = selectedIds.filter((id) => id !== assetId);
+    if (newIds.length === 0) {
+      onChange("", "");
+    } else {
+      const lastAsset = assets.find((a) => a.assetId === newIds[newIds.length - 1]);
+      onChange(newIds.join(", "), lastAsset?.assetName || "", lastAsset?.area);
+    }
+  };
+
+  const selectedAssets = selectedIds.map((id) => assets.find((a) => a.assetId === id)).filter(Boolean) as FlatAsset[];
 
   return (
     <div ref={containerRef} className={cn("relative", className)}>
-      <div className="flex items-center gap-1">
-        {value ? (
-          <div className="flex items-center gap-1 flex-1 min-w-0 flex-wrap">
-            <span className={cn("font-mono font-semibold flex-shrink-0", compact ? "text-xs" : "text-sm")}>
-              {value}
-            </span>
+      <div className="flex items-center gap-1 flex-wrap">
+        {selectedAssets.map((asset) => (
+          <span
+            key={asset.assetId}
+            className={cn(
+              "inline-flex items-center gap-0.5 bg-primary/10 text-primary rounded px-1.5 font-mono font-semibold flex-shrink-0",
+              compact ? "text-[10px] py-0" : "text-xs py-0.5"
+            )}
+          >
+            {asset.assetId}
             <button
-              onClick={() => {
-                onChange("", "");
-                setSearch("");
-              }}
-              className="ml-1 p-0.5 hover:bg-muted rounded flex-shrink-0 print-hide"
+              onClick={() => removeAsset(asset.assetId)}
+              className="p-0 hover:bg-primary/20 rounded print-hide"
             >
-              <X className="h-3 w-3 text-muted-foreground" />
+              <X className="h-2.5 w-2.5" />
             </button>
-          </div>
-        ) : (
-          <div className="relative flex-1">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setOpen(true);
-              }}
-              onFocus={() => setOpen(true)}
-              placeholder="Search asset tree..."
-              className={cn(
-                "pl-7 pr-2 border-none shadow-none focus-visible:ring-0 bg-transparent",
-                compact ? "h-auto text-xs py-0" : "h-8 text-sm"
-              )}
-            />
-          </div>
-        )}
+          </span>
+        ))}
+        <div className="relative flex-1 min-w-[120px]">
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground print-hide" />
+          <Input
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setOpen(true);
+            }}
+            onFocus={() => setOpen(true)}
+            placeholder={selectedIds.length > 0 ? "Add another asset..." : "Search asset tree..."}
+            className={cn(
+              "pl-7 pr-2 border-none shadow-none focus-visible:ring-0 bg-transparent print-hide",
+              compact ? "h-auto text-xs py-0" : "h-8 text-sm"
+            )}
+          />
+        </div>
       </div>
 
-      {open && !value && (
+      {open && (
         <div className="absolute z-50 top-full left-0 mt-1 bg-popover border border-border rounded-md shadow-lg min-w-[400px]">
           <ScrollArea className="max-h-80">
             {filtered.length === 0 ? (
@@ -128,11 +153,7 @@ export const PMAssetSearchCombobox = ({
                   <button
                     key={`${asset.assetId}-${asset.area}-${asset.subArea}`}
                     className="w-full text-left px-3 py-2 hover:bg-muted/60 flex flex-col gap-0.5 transition-colors"
-                    onClick={() => {
-                      onChange(asset.assetId, asset.assetName, asset.area);
-                      setSearch("");
-                      setOpen(false);
-                    }}
+                    onClick={() => addAsset(asset)}
                   >
                     <div className="flex items-center gap-2">
                       <span className="font-mono font-semibold text-xs text-primary">
