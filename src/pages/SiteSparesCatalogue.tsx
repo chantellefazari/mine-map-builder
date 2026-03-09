@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft, Package } from "lucide-react";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { SiteSparesCatalogue as SiteSparesGrid } from "@/components/site-spares/SiteSparesCatalogue";
 
 const SiteSparesCatalogue = () => {
