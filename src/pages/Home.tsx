@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield, PackageSearch, FileInput } from "lucide-react";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -108,6 +109,7 @@ const Home = () => {
       <header className="border-b border-border bg-card">
         <div className="container py-6">
           <div className="flex items-center gap-4">
+            <PageNavDropdown />
             <div className="w-14 h-14 rounded-lg bg-primary flex items-center justify-center shadow-gold">
               <span className="text-primary-foreground font-bold text-xl">TC</span>
             </div>
