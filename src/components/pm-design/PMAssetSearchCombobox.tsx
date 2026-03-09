@@ -2,8 +2,16 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Search, X, MapPin } from "lucide-react";
-import { flattenAssetTree, FlatAsset } from "@/utils/flattenAssetTree";
+import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
 import { cn } from "@/lib/utils";
+
+interface FlatAsset {
+  assetId: string;
+  assetName: string;
+  area: string;
+  subArea: string;
+  parentAsset: string;
+}
 
 interface PMAssetSearchComboboxProps {
   value: string;
@@ -18,7 +26,28 @@ export const PMAssetSearchCombobox = ({
   className,
   compact = false,
 }: PMAssetSearchComboboxProps) => {
-  const assets = useMemo(() => flattenAssetTree(), []);
+  const { data: areas } = useRevBPlantAssets();
+
+  const assets = useMemo<FlatAsset[]>(() => {
+    if (!areas) return [];
+    const result: FlatAsset[] = [];
+    for (const area of areas) {
+      for (const subArea of area.subAreas) {
+        for (const parent of subArea.parentAssets) {
+          for (const eq of parent.equipment) {
+            result.push({
+              assetId: eq.assetNumber,
+              assetName: eq.name,
+              area: area.label,
+              subArea: subArea.label,
+              parentAsset: parent.label,
+            });
+          }
+        }
+      }
+    }
+    return result;
+  }, [areas]);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
