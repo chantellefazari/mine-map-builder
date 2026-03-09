@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronRight, ChevronDown, Minus, Tag, Info } from "lucide-react";
+import { ChevronRight, ChevronDown, Minus, Tag } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -109,6 +109,27 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   const nodeRef = useRef<HTMLDivElement>(null);
   const hasPidTags = pidTags.length > 0;
   const hasSpecs = componentSpecs && Object.values(componentSpecs).some(v => v);
+  
+  // Build inline spec rows for display beneath the node
+  const specEntries = hasSpecs ? Object.entries({
+    Model: componentSpecs?.model,
+    Serial: componentSpecs?.serialNumber,
+    "Motor Ref": componentSpecs?.motorRef,
+    "Pump Ref": componentSpecs?.pumpRef,
+    "Motor Speed": componentSpecs?.motorSpeed,
+    Protection: componentSpecs?.protection,
+    Voltage: componentSpecs?.voltage,
+    "Pump Flow": componentSpecs?.pumpFlow,
+    "Operating Pressure": componentSpecs?.operatingPressure,
+    Displacement: componentSpecs?.displacement,
+    "Oil Type": componentSpecs?.oilType,
+    "Oil Volume": componentSpecs?.oilVolume,
+    "Input Speed": componentSpecs?.inputSpeed,
+    "Output Speed": componentSpecs?.outputSpeed,
+    Weight: componentSpecs?.weight,
+    Manufacturer: componentSpecs?.manufacturer,
+  }).filter(([, v]) => v) as [string, string][] : [];
+
   const { setFullPath, clearPath } = useFLBreadcrumb();
 
   // Build this node's own segment
@@ -151,7 +172,8 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   const areaColor = level === "area" && areaType
     ? (areaType === "CRU" && code ? (cruSubAreaColors[code] ?? areaColors["CRU"]) : areaColors[areaType])
     : "";
-  const canExpand = hasChildren && children;
+  const hasInlineSpecs = specEntries.length > 0;
+  const canExpand = (hasChildren && children) || hasInlineSpecs;
 
 
   const handleToggle = () => {
@@ -208,113 +230,13 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
         <Tag className="w-3 h-3 opacity-60 ml-1" />
       )}
       
-      {/* Component specs indicator */}
-      {hasSpecs && (
-        <Info className="w-3 h-3 opacity-60 ml-1 text-primary" />
-      )}
     </div>
   );
 
-  // Determine if we need a tooltip (P&ID tags or component specs)
-  const needsTooltip = hasPidTags || hasSpecs;
+  // Determine if we need a tooltip (P&ID tags only — specs are now inline)
+  const needsTooltip = hasPidTags;
 
-  const tooltipContent = hasSpecs ? (
-    <div className="space-y-2">
-      <p className="text-xs font-semibold border-b pb-1">Component Specifications</p>
-      <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-        {componentSpecs?.model && (
-          <>
-            <span className="text-muted-foreground">Model:</span>
-            <span className="font-mono">{componentSpecs.model}</span>
-          </>
-        )}
-        {componentSpecs?.serialNumber && (
-          <>
-            <span className="text-muted-foreground">Serial:</span>
-            <span className="font-mono">{componentSpecs.serialNumber}</span>
-          </>
-        )}
-        {componentSpecs?.motorRef && (
-          <>
-            <span className="text-muted-foreground">Motor Ref:</span>
-            <span className="font-mono">{componentSpecs.motorRef}</span>
-          </>
-        )}
-        {componentSpecs?.pumpRef && (
-          <>
-            <span className="text-muted-foreground">Pump Ref:</span>
-            <span className="font-mono">{componentSpecs.pumpRef}</span>
-          </>
-        )}
-        {componentSpecs?.motorSpeed && (
-          <>
-            <span className="text-muted-foreground">Motor Speed:</span>
-            <span className="font-mono">{componentSpecs.motorSpeed}</span>
-          </>
-        )}
-        {componentSpecs?.protection && (
-          <>
-            <span className="text-muted-foreground">Protection:</span>
-            <span className="font-mono">{componentSpecs.protection}</span>
-          </>
-        )}
-        {componentSpecs?.voltage && (
-          <>
-            <span className="text-muted-foreground">Voltage:</span>
-            <span className="font-mono">{componentSpecs.voltage}</span>
-          </>
-        )}
-        {componentSpecs?.pumpFlow && (
-          <>
-            <span className="text-muted-foreground">Pump Flow:</span>
-            <span className="font-mono">{componentSpecs.pumpFlow}</span>
-          </>
-        )}
-        {componentSpecs?.operatingPressure && (
-          <>
-            <span className="text-muted-foreground">Operating Pressure:</span>
-            <span className="font-mono">{componentSpecs.operatingPressure}</span>
-          </>
-        )}
-        {componentSpecs?.displacement && (
-          <>
-            <span className="text-muted-foreground">Displacement:</span>
-            <span className="font-mono">{componentSpecs.displacement}</span>
-          </>
-        )}
-        {componentSpecs?.oilType && (
-          <>
-            <span className="text-muted-foreground">Oil Type:</span>
-            <span className="font-mono">{componentSpecs.oilType}</span>
-          </>
-        )}
-        {componentSpecs?.oilVolume && (
-          <>
-            <span className="text-muted-foreground">Oil Volume:</span>
-            <span className="font-mono">{componentSpecs.oilVolume}</span>
-          </>
-        )}
-        {componentSpecs?.inputSpeed && (
-          <>
-            <span className="text-muted-foreground">Input Speed:</span>
-            <span className="font-mono">{componentSpecs.inputSpeed}</span>
-          </>
-        )}
-        {componentSpecs?.outputSpeed && (
-          <>
-            <span className="text-muted-foreground">Output Speed:</span>
-            <span className="font-mono">{componentSpecs.outputSpeed}</span>
-          </>
-        )}
-        {componentSpecs?.weight && (
-          <>
-            <span className="text-muted-foreground">Weight:</span>
-            <span className="font-mono">{componentSpecs.weight}</span>
-          </>
-        )}
-      </div>
-    </div>
-  ) : hasPidTags ? (
+  const tooltipContent = hasPidTags ? (
     <div className="space-y-1">
       <p className="text-xs font-medium text-muted-foreground">Legacy Reference – P&ID</p>
       <div className="flex flex-wrap gap-1">
@@ -329,6 +251,7 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
       </div>
     </div>
   ) : null;
+
 
   return (
     <div className={cn("flex flex-col", centered ? "items-center" : "items-start")}>
@@ -361,6 +284,20 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
           {/* Children container */}
           <div className={cn("flex gap-1", centered ? "flex-row items-start" : "flex-col")}>
             {children}
+            {/* Inline spec rows */}
+            {hasInlineSpecs && (
+              <div className="flex flex-col gap-0.5 ml-1">
+                {specEntries.map(([specLabel, specValue]) => (
+                  <div
+                    key={specLabel}
+                    className="flex items-center gap-2 rounded bg-muted/50 border border-border/50 px-2 py-0.5 text-[9px] font-mono"
+                  >
+                    <span className="text-muted-foreground whitespace-nowrap">{specLabel}:</span>
+                    <span className="text-foreground">{specValue}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
