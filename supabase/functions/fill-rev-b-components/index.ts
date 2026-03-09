@@ -493,6 +493,20 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     )
 
+    // Check hard-lock before any write operations
+    const { data: lockConfig } = await supabase
+      .from('site_config')
+      .select('config_value')
+      .eq('config_key', 'processing_plant_tree_locked')
+      .maybeSingle()
+    
+    if (lockConfig?.config_value === 'true' || lockConfig?.config_value === true) {
+      return new Response(JSON.stringify({
+        error: 'Asset tree is hard-locked. Bulk component fill is disabled.',
+        locked: true,
+      }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
     // Get all existing Rev B asset_numbers
     const { data: existing, error: fetchErr } = await supabase
       .from('processing_plant_assets_rev_b')

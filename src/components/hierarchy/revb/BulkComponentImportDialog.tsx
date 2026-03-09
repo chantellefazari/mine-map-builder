@@ -7,6 +7,7 @@ import { Upload, CheckCircle, AlertTriangle, Loader2, Info, ShieldCheck } from "
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
+import { useTreeLockStatus } from "@/hooks/useTreeLockStatus";
 import {
   Tooltip,
   TooltipContent,
@@ -42,7 +43,9 @@ export const BulkComponentImportDialog: React.FC = () => {
     details: string[];
   } | null>(null);
   const queryClient = useQueryClient();
+  const { isLocked } = useTreeLockStatus();
 
+  // Helper functions (must be before useMemo)
   // Strip advisory notes
   const sanitizeField = (val: string) =>
     val.replace(/\(?\s*Robbie\s+please\s+advi[sc]e\s*\)?/gi, "").replace(/\s{2,}/g, " ").trim();
@@ -53,6 +56,7 @@ export const BulkComponentImportDialog: React.FC = () => {
       .replace(/\s+-\s+(?:Rep\.?|Ref\.?)\s*[\w.-]+/gi, "")
       .replace(/\s{2,}/g, " ")
       .trim();
+
 
   const parsedRows = useMemo((): ParsedRow[] => {
     if (!rawText.trim()) return [];
@@ -106,6 +110,25 @@ export const BulkComponentImportDialog: React.FC = () => {
       })
       .filter((r) => r.pidTag && r.componentType);
   }, [rawText]);
+
+  // Block all write operations when tree is locked
+  if (isLocked) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="outline" size="sm" disabled className="opacity-50">
+              <ShieldCheck className="w-4 h-4 mr-1" />
+              Bulk Import (Locked)
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="text-xs">Asset tree is hard-locked. Bulk imports are disabled.</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
 
   const handleMatch = async () => {
     if (parsedRows.length === 0) return;
