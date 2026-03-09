@@ -9,7 +9,7 @@ import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocati
 import { CRUFunctionalLocationTable } from "@/components/hierarchy/CRUFunctionalLocationTable";
 import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet, HardHat } from "lucide-react";
+import { TreePine, TableProperties, BookText, Download, FileSpreadsheet, HardHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
 import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
