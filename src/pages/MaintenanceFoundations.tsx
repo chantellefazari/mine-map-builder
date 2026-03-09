@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Printer } from "lucide-react";
+import { BookOpen, Printer } from "lucide-react";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { Button } from "@/components/ui/button";
 import { FoundationsContent } from "@/components/maintenance-foundations/FoundationsContent";
 import { PrintAllFoundationsModal } from "@/components/maintenance-foundations/PrintAllFoundationsModal";
