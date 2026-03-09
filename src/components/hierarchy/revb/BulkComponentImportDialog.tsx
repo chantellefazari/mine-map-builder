@@ -45,24 +45,17 @@ export const BulkComponentImportDialog: React.FC = () => {
   const queryClient = useQueryClient();
   const { isLocked } = useTreeLockStatus();
 
-  // Block all write operations when tree is locked
-  if (isLocked) {
-    return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="outline" size="sm" disabled className="opacity-50">
-              <ShieldCheck className="w-4 h-4 mr-1" />
-              Bulk Import (Locked)
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p className="text-xs">Asset tree is hard-locked. Bulk imports are disabled.</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
-  }
+  // Helper functions (must be before useMemo)
+  // Strip advisory notes
+  const sanitizeField = (val: string) =>
+    val.replace(/\(?\s*Robbie\s+please\s+advi[sc]e\s*\)?/gi, "").replace(/\s{2,}/g, " ").trim();
+
+  const stripRepMarkers = (text: string): string =>
+    text
+      .replace(/\s*\((?:Rep\.?|Ref\.?)\s*[^)]*\)/gi, "")
+      .replace(/\s+-\s+(?:Rep\.?|Ref\.?)\s*[\w.-]+/gi, "")
+      .replace(/\s{2,}/g, " ")
+      .trim();
 
   // Strip advisory notes
   const sanitizeField = (val: string) =>
