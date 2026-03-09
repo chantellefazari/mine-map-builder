@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.confirm-purchase-order]
 verify_jwt = false
+
+[functions.ocr-pid-audit]
+verify_jwt = false
