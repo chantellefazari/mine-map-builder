@@ -208,10 +208,6 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
         <Tag className="w-3 h-3 opacity-60 ml-1" />
       )}
       
-      {/* Component specs indicator */}
-      {hasSpecs && (
-        <Info className="w-3 h-3 opacity-60 ml-1 text-primary" />
-      )}
     </div>
   );
 
