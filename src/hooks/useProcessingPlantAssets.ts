@@ -227,9 +227,15 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
           return b.assetNumber.length - a.assetNumber.length;
         });
 
+        // Derive system header asset number from the parent asset label (e.g. "THYD01 Thickener Hydraulic System" → "THYD01")
+        const systemHeaderAssetNumber = pa.label.split(" ")[0];
+
         for (const equip of sorted) {
           const parentKey = getComponentParent(equip.assetNumber);
           if (!parentKey) continue;
+
+          // Don't nest under the system header — these are peer Level 6 equipment, not Level 7 components
+          if (parentKey === systemHeaderAssetNumber && !equipMap.has(parentKey)) continue;
 
           let parentEquip = equipMap.get(parentKey);
           if (!parentEquip) {
