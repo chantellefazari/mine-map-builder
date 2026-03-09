@@ -282,6 +282,20 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
           {/* Children container */}
           <div className={cn("flex gap-1", centered ? "flex-row items-start" : "flex-col")}>
             {children}
+            {/* Inline spec rows */}
+            {hasInlineSpecs && (
+              <div className="flex flex-col gap-0.5 ml-1">
+                {specEntries.map(([specLabel, specValue]) => (
+                  <div
+                    key={specLabel}
+                    className="flex items-center gap-2 rounded bg-muted/50 border border-border/50 px-2 py-0.5 text-[9px] font-mono"
+                  >
+                    <span className="text-muted-foreground whitespace-nowrap">{specLabel}:</span>
+                    <span className="text-foreground">{specValue}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
