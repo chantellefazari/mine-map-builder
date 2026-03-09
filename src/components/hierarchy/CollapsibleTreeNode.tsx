@@ -109,7 +109,7 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   const nodeRef = useRef<HTMLDivElement>(null);
   const hasPidTags = pidTags.length > 0;
   const hasSpecs = componentSpecs && Object.values(componentSpecs).some(v => v);
-  const { setFullPath } = useFLBreadcrumb();
+  const { setFullPath, clearPath } = useFLBreadcrumb();
 
   // Build this node's own segment
   const selfSegment: FLPathSegment = { level, label, code: code || areaType, areaType };
