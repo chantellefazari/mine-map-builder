@@ -151,7 +151,8 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   const areaColor = level === "area" && areaType
     ? (areaType === "CRU" && code ? (cruSubAreaColors[code] ?? areaColors["CRU"]) : areaColors[areaType])
     : "";
-  const canExpand = hasChildren && children;
+  const hasInlineSpecs = specEntries.length > 0;
+  const canExpand = (hasChildren && children) || hasInlineSpecs;
 
 
   const handleToggle = () => {
