@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download } from "lucide-react";
+import { FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download } from "lucide-react";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { supabase } from "@/integrations/supabase/client";
 import { seedPMTasks } from "@/utils/seedPMTasks";
 import { exportPMWorkbook } from "@/utils/exportPMWorkbook";
@@ -842,13 +843,7 @@ const PMSidebarContent = ({
 
         {/* Back to Home */}
         <div className="px-4 mb-6">
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {!isCollapsed && "Back to Home"}
-          </Link>
+          <PageNavDropdown />
         </div>
 
         {/* Header */}

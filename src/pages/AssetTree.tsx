@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FLBreadcrumbProvider } from "@/components/hierarchy/FLBreadcrumbContext";
 import { FLBreadcrumbBar } from "@/components/hierarchy/FLBreadcrumbBar";
-import { Link } from "react-router-dom";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { AssetTree as AssetTreeComponent } from "@/components/hierarchy/AssetTree";
 import { Legend } from "@/components/hierarchy/Legend";
 import { AssetSearch } from "@/components/hierarchy/AssetSearch";
@@ -9,7 +9,7 @@ import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocati
 import { CRUFunctionalLocationTable } from "@/components/hierarchy/CRUFunctionalLocationTable";
 import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties, ArrowLeft, BookText, Download, FileSpreadsheet, HardHat } from "lucide-react";
+import { TreePine, TableProperties, BookText, Download, FileSpreadsheet, HardHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
 import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
@@ -25,12 +25,7 @@ const AssetTree = () => {
       <header className="border-b border-border bg-card">
         <div className="container py-6">
           <div className="flex items-center gap-4">
-            <Link
-              to="/"
-              className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-            </Link>
+            <PageNavDropdown />
             <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shadow-gold">
               <span className="text-primary-foreground font-bold text-lg">TC</span>
             </div>

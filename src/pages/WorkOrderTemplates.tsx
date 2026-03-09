@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ClipboardList, Plus, Trash2, Loader2, Search } from "lucide-react";
+import { ClipboardList, Plus, Trash2, Loader2, Search } from "lucide-react";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -70,10 +71,9 @@ const WorkOrderTemplates = () => {
       {/* Sidebar */}
       <aside className="w-72 border-r border-border bg-card flex flex-col">
         <div className="p-4 border-b border-border">
-          <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4">
-            <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm">Back to Home</span>
-          </Link>
+          <div className="mb-4">
+            <PageNavDropdown />
+          </div>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <ClipboardList className="w-5 h-5 text-primary" />

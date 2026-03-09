@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Warehouse, AlertTriangle, Download, Printer } from "lucide-react";
+import { Warehouse, AlertTriangle, Download, Printer } from "lucide-react";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { StoresDesignPrinciples } from "@/components/stores-warehouse/StoresDesignPrinciples";
@@ -22,13 +23,7 @@ const StoresWarehouseDesign = () => {
       <header className="border-b border-border bg-card sticky top-0 z-10">
         <div className="container py-4">
           <div className="flex items-center gap-4">
-            <Link
-              to="/"
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="text-sm">Back to Home</span>
-            </Link>
+            <PageNavDropdown />
           </div>
           <div className="flex items-center justify-between mt-4">
             <div className="flex items-center gap-3">

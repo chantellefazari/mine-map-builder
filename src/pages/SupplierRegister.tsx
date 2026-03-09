@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft, Building2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Building2 } from "lucide-react";
 import { SupplierRegisterTable } from "@/components/supplier-register/SupplierRegisterTable";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 
 const SupplierRegister = () => {
   return (
@@ -10,11 +9,7 @@ const SupplierRegister = () => {
       <header className="border-b border-border bg-card">
         <div className="container py-6">
           <div className="flex items-center gap-4">
-            <Link to="/">
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-            </Link>
+            <PageNavDropdown />
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
               <Building2 className="w-6 h-6 text-primary" />
             </div>

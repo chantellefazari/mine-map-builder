@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Printer } from "lucide-react";
+import { BookOpen, Printer } from "lucide-react";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { Button } from "@/components/ui/button";
 import { FoundationsContent } from "@/components/maintenance-foundations/FoundationsContent";
 import { PrintAllFoundationsModal } from "@/components/maintenance-foundations/PrintAllFoundationsModal";
@@ -14,12 +14,7 @@ const MaintenanceFoundations = () => {
       <header className="border-b border-border bg-card">
         <div className="container py-6">
           <div className="flex items-center gap-4">
-            <Link
-              to="/"
-              className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-            </Link>
+            <PageNavDropdown />
             <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shadow-gold">
               <BookOpen className="w-6 h-6 text-primary-foreground" />
             </div>
