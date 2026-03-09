@@ -7,6 +7,7 @@ import { Upload, CheckCircle, AlertTriangle, Loader2, Info, ShieldCheck } from "
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
+import { useTreeLockStatus } from "@/hooks/useTreeLockStatus";
 import {
   Tooltip,
   TooltipContent,
