@@ -109,7 +109,7 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   const nodeRef = useRef<HTMLDivElement>(null);
   const hasPidTags = pidTags.length > 0;
   const hasSpecs = componentSpecs && Object.values(componentSpecs).some(v => v);
-  const { setFullPath } = useFLBreadcrumb();
+  const { setFullPath, clearPath } = useFLBreadcrumb();
 
   // Build this node's own segment
   const selfSegment: FLPathSegment = { level, label, code: code || areaType, areaType };
@@ -153,6 +153,7 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
     : "";
   const canExpand = hasChildren && children;
 
+
   const handleToggle = () => {
     if (canExpand) {
       const willExpand = !isExpanded;
@@ -160,6 +161,13 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
       if (willExpand && depth !== undefined) {
         // Report the full correct path from root to this node, with stored FL if available
         setFullPath(fullPath, storedFL || null);
+      } else if (!willExpand) {
+        // On collapse: show parent path (everything except this node's segment)
+        if (fullPath.length > 1) {
+          setFullPath(fullPath.slice(0, -1), null);
+        } else {
+          clearPath();
+        }
       }
     }
   };
