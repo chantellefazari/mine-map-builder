@@ -43,6 +43,26 @@ export const BulkComponentImportDialog: React.FC = () => {
     details: string[];
   } | null>(null);
   const queryClient = useQueryClient();
+  const { isLocked } = useTreeLockStatus();
+
+  // Block all write operations when tree is locked
+  if (isLocked) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="outline" size="sm" disabled className="opacity-50">
+              <ShieldCheck className="w-4 h-4 mr-1" />
+              Bulk Import (Locked)
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="text-xs">Asset tree is hard-locked. Bulk imports are disabled.</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
 
   // Strip advisory notes
   const sanitizeField = (val: string) =>
