@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronRight, ChevronDown, Minus, Tag, Info } from "lucide-react";
+import { ChevronRight, ChevronDown, Minus, Tag } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
