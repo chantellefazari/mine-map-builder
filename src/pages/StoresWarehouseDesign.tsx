@@ -24,7 +24,6 @@ const StoresWarehouseDesign = () => {
         <div className="container py-4">
           <div className="flex items-center gap-4">
             <PageNavDropdown />
-            </Link>
           </div>
           <div className="flex items-center justify-between mt-4">
             <div className="flex items-center gap-3">
