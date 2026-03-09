@@ -109,6 +109,27 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
   const nodeRef = useRef<HTMLDivElement>(null);
   const hasPidTags = pidTags.length > 0;
   const hasSpecs = componentSpecs && Object.values(componentSpecs).some(v => v);
+  
+  // Build inline spec rows for display beneath the node
+  const specEntries = hasSpecs ? Object.entries({
+    Model: componentSpecs?.model,
+    Serial: componentSpecs?.serialNumber,
+    "Motor Ref": componentSpecs?.motorRef,
+    "Pump Ref": componentSpecs?.pumpRef,
+    "Motor Speed": componentSpecs?.motorSpeed,
+    Protection: componentSpecs?.protection,
+    Voltage: componentSpecs?.voltage,
+    "Pump Flow": componentSpecs?.pumpFlow,
+    "Operating Pressure": componentSpecs?.operatingPressure,
+    Displacement: componentSpecs?.displacement,
+    "Oil Type": componentSpecs?.oilType,
+    "Oil Volume": componentSpecs?.oilVolume,
+    "Input Speed": componentSpecs?.inputSpeed,
+    "Output Speed": componentSpecs?.outputSpeed,
+    Weight: componentSpecs?.weight,
+    Manufacturer: componentSpecs?.manufacturer,
+  }).filter(([, v]) => v) as [string, string][] : [];
+
   const { setFullPath, clearPath } = useFLBreadcrumb();
 
   // Build this node's own segment
