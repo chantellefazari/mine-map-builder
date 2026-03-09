@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft, Building2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Building2 } from "lucide-react";
 import { SupplierRegisterTable } from "@/components/supplier-register/SupplierRegisterTable";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 
 const SupplierRegister = () => {
   return (
