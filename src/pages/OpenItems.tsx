@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { OpenItemsList } from "@/components/open-items/OpenItemsList";
 
 const OpenItems = () => {
