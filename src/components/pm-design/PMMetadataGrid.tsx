@@ -124,15 +124,15 @@ export const PMMetadataGrid = ({
   }, [flushResourceSave]);
 
   return (
-    <div className="grid grid-cols-2 border-b border-border text-xs">
-      <div className="border-r border-border">
+    <div className="grid grid-cols-2 border-b border-border text-xs overflow-visible">
+      <div className="border-r border-border overflow-visible">
         <div className="grid grid-cols-[120px_1fr] border-b border-border">
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div>
           <div className="px-2 py-1.5">{projectSite}</div>
         </div>
-        <div className="grid grid-cols-[120px_1fr] border-b border-border">
+        <div className="grid grid-cols-[120px_1fr] border-b border-border overflow-visible relative z-20">
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Asset Number:</div>
-          <div className="px-2 py-1.5 flex items-center">
+          <div className="px-2 py-1.5 flex items-center overflow-visible relative">
             <PMAssetSearchCombobox
               value={assetNumber}
               onChange={(id, _name, area) => {
