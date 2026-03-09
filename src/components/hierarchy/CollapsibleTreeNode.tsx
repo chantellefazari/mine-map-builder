@@ -153,8 +153,7 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
     : "";
   const canExpand = hasChildren && children;
 
-  const { clearPath } = useFLBreadcrumb();
-  
+
   const handleToggle = () => {
     if (canExpand) {
       const willExpand = !isExpanded;
