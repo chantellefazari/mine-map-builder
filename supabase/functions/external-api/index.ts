@@ -27,6 +27,12 @@ const ALLOWED_TABLES = [
   "work_order_parts_audit",
   "audit_log",
   "site_config",
+  "purchase_requests",
+  "purchase_request_lines",
+  "quote_requests",
+  "quote_responses",
+  "practice_suppliers",
+  "notifications",
 ];
 
 Deno.serve(async (req) => {
