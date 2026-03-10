@@ -80,10 +80,9 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Download PDF file using file-saver for sandbox compatibility */
+/** Download PDF file — uses jsPDF built-in save (synchronous, preserves user gesture) */
 function triggerPdfDownload(pdf: jsPDF, filename: string) {
-  const blob = pdf.output("blob");
-  saveAs(blob, filename);
+  pdf.save(filename);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
