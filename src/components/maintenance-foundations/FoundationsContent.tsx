@@ -9,7 +9,6 @@ import {
   Shield,
   FileText,
   ListOrdered,
-  Tag,
   MapPin,
   Printer,
   Download,
@@ -24,7 +23,6 @@ import { PMStandardsSection } from "./PMStandardsSection";
 import { SparesStrategySection } from "./SparesStrategySection";
 import { DataGovernanceSection } from "./DataGovernanceSection";
 import { SitePartNumberingSection } from "./SitePartNumberingSection";
-import { ProcessingPlantAssetTaggingSection } from "./ProcessingPlantAssetTaggingSection";
 import { AssetTagRolloutPlanSection } from "./AssetTagRolloutPlanSection";
 import { PMAssetLinkingSection } from "./PMAssetLinkingSection";
 
@@ -36,7 +34,6 @@ const TAB_LABELS: Record<string, string> = {
   "pm-standards": "PM Standards",
   "spares": "Spare Parts Strategy & Criticality",
   "governance": "Data Governance & Change Control",
-  "asset-tagging": "Processing Plant Asset Tagging",
   "tag-rollout": "Asset Tag Rollout Plan",
   "pm-asset-linking": "PM-to-Asset Linking",
 };
@@ -180,11 +177,6 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">Data Governance & Change Control</span>
             <span className="sm:hidden">Governance</span>
           </TabsTrigger>
-          <TabsTrigger value="asset-tagging" className="flex items-center gap-2 text-xs">
-            <Tag className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Processing Plant Asset Tagging</span>
-            <span className="sm:hidden">Tagging</span>
-          </TabsTrigger>
           <TabsTrigger value="tag-rollout" className="flex items-center gap-2 text-xs">
             <MapPin className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Asset Tag Rollout Plan</span>
@@ -246,10 +238,6 @@ export const FoundationsContent = () => {
 
         <TabsContent value="governance">
           <DataGovernanceSection />
-        </TabsContent>
-
-        <TabsContent value="asset-tagging">
-          <ProcessingPlantAssetTaggingSection />
         </TabsContent>
 
         <TabsContent value="tag-rollout">
