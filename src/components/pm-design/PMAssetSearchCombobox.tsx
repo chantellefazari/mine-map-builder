@@ -166,22 +166,36 @@ export const PMAssetSearchCombobox = ({
               <div className="py-1">
                 {filtered.map((asset) => (
                   <button
-                    key={`${asset.assetId}-${asset.area}-${asset.subArea}`}
+                    key={`${asset.assetId}-${asset.area}-${asset.subArea}-${asset.isSubArea ? 'sub' : 'eq'}`}
                     className="w-full text-left px-3 py-2 hover:bg-muted/60 flex flex-col gap-0.5 transition-colors"
                     onClick={() => addAsset(asset)}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="font-mono font-semibold text-xs text-primary">
-                        {asset.assetId}
-                      </span>
-                      <span className="text-xs text-foreground">
-                        {asset.assetName}
-                      </span>
+                      {asset.isSubArea ? (
+                        <>
+                          <MapPin className="h-3 w-3 text-amber-600" />
+                          <span className="font-semibold text-xs text-foreground">
+                            {asset.assetName}
+                          </span>
+                          <span className="text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-1.5 rounded">
+                            Sub-Area
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="font-mono font-semibold text-xs text-primary">
+                            {asset.assetId}
+                          </span>
+                          <span className="text-xs text-foreground">
+                            {asset.assetName}
+                          </span>
+                        </>
+                      )}
                     </div>
                     <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                       <MapPin className="h-2.5 w-2.5" />
                       <span className="truncate">
-                        {asset.area} › {asset.parentAsset}
+                        {asset.area}{asset.parentAsset ? ` › ${asset.parentAsset}` : ''}
                       </span>
                     </div>
                   </button>
