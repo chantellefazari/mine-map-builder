@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { saveAs } from "file-saver";
 
 // Pre-load the Gravotech LS100 image as base64 for PDF embedding
 let gravoImageBase64: string | null = null;
@@ -80,9 +81,10 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Download PDF file */
+/** Download PDF file using file-saver for sandbox compatibility */
 function triggerPdfDownload(pdf: jsPDF, filename: string) {
-  pdf.save(filename);
+  const blob = pdf.output("blob");
+  saveAs(blob, filename);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
