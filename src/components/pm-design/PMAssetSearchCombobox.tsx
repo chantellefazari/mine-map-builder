@@ -9,6 +9,7 @@ interface FlatAsset {
   assetId: string;
   assetName: string;
   area: string;
+  areaCode: string;
   subArea: string;
   parentAsset: string;
   isSubArea?: boolean;
@@ -50,6 +51,7 @@ export const PMAssetSearchCombobox = ({
             assetId: subArea.label,
             assetName: subArea.label,
             area: area.label,
+            areaCode: area.code,
             subArea: subArea.label,
             parentAsset: "",
             isSubArea: true,
@@ -64,9 +66,10 @@ export const PMAssetSearchCombobox = ({
               assetId: parent.label,
               assetName: parent.label,
               area: area.label,
+              areaCode: area.code,
               subArea: subArea.label,
               parentAsset: "",
-              isSubArea: true, // reuse styling for area-level targets
+              isSubArea: true,
             });
           }
           for (const eq of parent.equipment) {
@@ -74,6 +77,7 @@ export const PMAssetSearchCombobox = ({
               assetId: eq.assetNumber,
               assetName: eq.name,
               area: area.label,
+              areaCode: area.code,
               subArea: subArea.label,
               parentAsset: parent.label,
             });
@@ -115,7 +119,7 @@ export const PMAssetSearchCombobox = ({
 
   const addAsset = (asset: FlatAsset) => {
     const newIds = [...selectedIds, asset.assetId];
-    onChange(newIds.join(", "), asset.assetName, asset.area);
+    onChange(newIds.join(", "), asset.assetName, asset.isSubArea ? asset.areaCode : asset.subArea);
     setSearch("");
   };
 
@@ -125,7 +129,7 @@ export const PMAssetSearchCombobox = ({
       onChange("", "");
     } else {
       const lastAsset = assets.find((a) => a.assetId === newIds[newIds.length - 1]);
-      onChange(newIds.join(", "), lastAsset?.assetName || "", lastAsset?.area);
+      onChange(newIds.join(", "), lastAsset?.assetName || "", lastAsset?.isSubArea ? lastAsset.areaCode : lastAsset?.subArea);
     }
   };
 
