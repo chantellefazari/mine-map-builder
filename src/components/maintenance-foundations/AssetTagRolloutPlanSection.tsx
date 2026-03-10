@@ -86,7 +86,7 @@ export const AssetTagRolloutPlanSection = () => {
           .from("processing_plant_assets_rev_b")
           .select("asset_name, asset_number, parent_asset_label, pid_tags, area_label, sub_area, functional_location")
           .not("pid_tags", "is", null)
-          .neq("pid_tags", "{}")
+          .not("pid_tags", "eq", "{}")
           .order("sort_order", { ascending: true })
           .range(from, from + batchSize - 1);
         if (error) throw error;
