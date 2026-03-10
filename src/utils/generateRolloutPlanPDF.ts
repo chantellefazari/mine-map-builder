@@ -339,12 +339,63 @@ export async function generateRolloutPlanPDF(
 
   // 06
   y = addSectionTitle(pdf, y, "06", "TAG NUMBERING");
+  y = addParagraph(pdf, y, "Tag numbers are derived directly from the asset register. No independent numbering systems are permitted.");
   y = addBullets(pdf, y, [
     "Tag number = Asset Number from the approved asset register (e.g. BM01, CFP01-PA01, THYD01-PMP01)",
-    "P&ID tag shown as secondary reference where space permits",
+    "The P&ID tag is shown as a secondary reference where space permits",
     "No site-local numbering, ad-hoc labels, or sequential tag numbers permitted",
     "If an asset is renumbered in the register, the physical tag must be replaced",
   ]);
+
+  // Tag layout mockups
+  y = ensureSpace(pdf, y, 32);
+  const tagBoxW = 78;
+  const tagBoxH = 24;
+  const tagBoxGap = 10;
+  const tagStartX = MARGIN + 3;
+
+  // Type A mockup
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(7);
+  pdf.setTextColor(...MUTED);
+  pdf.text("TYPE A TAG LAYOUT", tagStartX, y); y += 3;
+  pdf.setDrawColor(60, 60, 60);
+  pdf.setLineWidth(0.6);
+  pdf.roundedRect(tagStartX, y, tagBoxW, tagBoxH, 2, 2, "S");
+  pdf.setDrawColor(120, 120, 120);
+  pdf.setLineWidth(0.3);
+  pdf.roundedRect(tagStartX + 3, y + 2, tagBoxW - 6, tagBoxH - 4, 1, 1, "S");
+  pdf.setFont("courier", "bold");
+  pdf.setFontSize(14);
+  pdf.setTextColor(...DARK);
+  pdf.text("BM01", tagStartX + tagBoxW / 2, y + 10, { align: "center" });
+  pdf.setFont("courier", "normal");
+  pdf.setFontSize(8);
+  pdf.setTextColor(...MUTED);
+  pdf.text("Primary Ball Mill", tagStartX + tagBoxW / 2, y + 17, { align: "center" });
+
+  // Type B mockup
+  const tagBX = tagStartX + tagBoxW + tagBoxGap;
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(7);
+  pdf.setTextColor(...MUTED);
+  pdf.text("TYPE B TAG LAYOUT", tagBX, y - 3);
+  pdf.setDrawColor(60, 60, 60);
+  pdf.setLineWidth(0.6);
+  pdf.roundedRect(tagBX, y, tagBoxW, tagBoxH, 2, 2, "S");
+  pdf.setDrawColor(120, 120, 120);
+  pdf.setLineWidth(0.3);
+  pdf.roundedRect(tagBX + 3, y + 2, tagBoxW - 6, tagBoxH - 4, 1, 1, "S");
+  pdf.setFont("courier", "bold");
+  pdf.setFontSize(12);
+  pdf.setTextColor(...DARK);
+  pdf.text("CFP01-PA01", tagBX + tagBoxW / 2, y + 10, { align: "center" });
+  pdf.setFont("courier", "normal");
+  pdf.setFontSize(7);
+  pdf.setTextColor(...MUTED);
+  pdf.text("Cyclone Feed Pump (Duty)", tagBX + tagBoxW / 2, y + 17, { align: "center" });
+
+  y += tagBoxH + 6;
 
   // 07
   y = addSectionTitle(pdf, y, "07", "TAG INSTALLATION WORKFLOW");
@@ -445,6 +496,26 @@ export async function generateRolloutPlanPDF(
   pdf.text(`${productionTagCount} tags  |  Type A: ${typeACount}  |  Type B: ${typeBCount}. Manufacturing batch list.`, MARGIN + 5, y + 10);
   pdf.text("File: TCMG_Asset_Tag_Production_List.pdf", MARGIN + 5, y + 14);
   y += 26;
+
+  // System Alignment Note
+  y = ensureSpace(pdf, y, 22);
+  pdf.setFillColor(245, 240, 224);
+  pdf.roundedRect(MARGIN, y - 2, 180, 18, 2, 2, "F");
+  pdf.setDrawColor(...GOLD);
+  pdf.setLineWidth(0.4);
+  pdf.roundedRect(MARGIN, y - 2, 180, 18, 2, 2, "S");
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(7);
+  pdf.setTextColor(...DARK);
+  pdf.text("SYSTEM ALIGNMENT NOTE", MARGIN + 5, y + 3);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(7);
+  pdf.setTextColor(...MUTED);
+  const alignNote = "All asset hierarchy, functional locations, and system structure are stored within Minesite AI. The physical tag is for rapid visual identification only. Tag numbers match the asset register - no independent numbering systems exist. The tag rollout does not define or alter any system hierarchy.";
+  const alignLines = pdf.splitTextToSize(alignNote, 170);
+  let alignY = y + 7;
+  for (const line of alignLines) { pdf.text(line, MARGIN + 5, alignY); alignY += 3.5; }
+  y += 22;
 
   // Scope reminder
   y = ensureSpace(pdf, y, 14);
