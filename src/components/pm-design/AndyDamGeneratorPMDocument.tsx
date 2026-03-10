@@ -8,7 +8,7 @@ import { DynamicInspectionTable } from "./DynamicInspectionTable";
 
 export const AndyDamGeneratorPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Andy Dam Generator Weekly Inspection");
+  const pm = pms.find((p) => p.pmName === "Nobles Natural Sump Generator Weekly Inspection");
 
   return (
     <div className="bg-background min-h-full">
