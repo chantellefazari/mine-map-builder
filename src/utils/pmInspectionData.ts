@@ -1480,7 +1480,7 @@ export const pmInspectionData: Record<string, any> = {
   },
 
   // ══════════════════════════════════════════════════════════════════
-  // GENERATORS WEEKLY (shared template — Andy Dam, Juno, Lab, Portable)
+  // GENERATORS WEEKLY (shared template — Nobles Natural Sump, Juno, Lab, Portable)
   // ══════════════════════════════════════════════════════════════════
 
   "Nobles Natural Sump Generator Weekly Inspection": {
