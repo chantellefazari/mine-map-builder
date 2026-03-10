@@ -154,13 +154,10 @@ function addPageNumbers(pdf: jsPDF, label: string) {
   }
 }
 
-const TABLE_STYLES = {
-  headStyles: { fillColor: [...HEADER_BG], textColor: [...DARK], fontStyle: "bold" as const, fontSize: 7 },
-  bodyStyles: { fontSize: 7, textColor: [...DARK] },
-  alternateRowStyles: { fillColor: [...LIGHT_BG] },
-  theme: "grid" as const,
-  margin: { left: MARGIN, right: MARGIN },
-};
+const tblHead = { fillColor: HEADER_BG, textColor: DARK, fontStyle: "bold" as const, fontSize: 7 };
+const tblBody = { fontSize: 7, textColor: DARK };
+const tblAlt = { fillColor: LIGHT_BG };
+const tblMargin = { left: MARGIN, right: MARGIN };
 
 // ════════════════════════════════════════════════
 // 1. MAIN ROLLOUT PLAN PDF (Sections 01–13, no data tables)
