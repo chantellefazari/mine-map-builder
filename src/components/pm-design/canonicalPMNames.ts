@@ -115,16 +115,16 @@ export const canonicalPMs: CanonicalPM[] = [
 
   // ── RCD TESTING SHEETS (6-MONTHLY) ──
   { pmName: "RCD Testing Sheets - Admin Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Admin Generator" },
-  { pmName: "RCD Testing Sheets - Juno Bore Pump Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Juno Generator" },
-  { pmName: "RCD Testing Sheets - Andys Dam Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Andy Dam Generator" },
+  { pmName: "RCD Testing Sheets - Juno Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Juno Generator" },
+  { pmName: "RCD Testing Sheets - Nobles Natural Sump Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Nobles Natural Sump Generator" },
   { pmName: "RCD Testing Sheets - Lab Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Lab Generator" },
   { pmName: "RCD Testing Sheets - Crusher Fuel Farm Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Crusher Fuel Farm Generator" },
   { pmName: "RCD Testing Sheets - Crusher Workshop Generator 6M", discipline: "Electrical", frequency: "26 Week", equipmentType: "Crusher Workshop Generator" },
 
   // ── RCD TESTING SHEETS (3-MONTHLY) ──
   { pmName: "RCD Testing Sheets - Admin Generator 3M", discipline: "Electrical", frequency: "12 Week", equipmentType: "Admin Generator" },
-  { pmName: "RCD Testing Sheets - Juno Bore Pump Generator 3M", discipline: "Electrical", frequency: "12 Week", equipmentType: "Juno Generator" },
-  { pmName: "RCD Testing Sheets - Andys Dam Generator 3M", discipline: "Electrical", frequency: "12 Week", equipmentType: "Andy Dam Generator" },
+  { pmName: "RCD Testing Sheets - Juno Generator 3M", discipline: "Electrical", frequency: "12 Week", equipmentType: "Juno Generator" },
+  { pmName: "RCD Testing Sheets - Nobles Natural Sump Generator 3M", discipline: "Electrical", frequency: "12 Week", equipmentType: "Nobles Natural Sump Generator" },
   { pmName: "RCD Testing Sheets - Lab Generator 3M", discipline: "Electrical", frequency: "12 Week", equipmentType: "Lab Generator" },
   { pmName: "RCD Testing Sheets - Crusher Fuel Farm Generator 3M", discipline: "Electrical", frequency: "12 Week", equipmentType: "Crusher Fuel Farm Generator" },
   { pmName: "RCD Testing Sheets - Crusher Workshop Generator 3M", discipline: "Electrical", frequency: "12 Week", equipmentType: "Crusher Workshop Generator" },

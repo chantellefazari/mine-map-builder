@@ -124,7 +124,7 @@ const templateRegistry: PMTemplateDefinition[] = [
   })),
 
   // ── RCD TESTING SHEETS (6-MONTHLY) ──
-  ...["Admin Generator", "Juno Bore Pump Generator", "Andys Dam Generator", "Lab Generator", "Crusher Fuel Farm Generator", "Crusher Workshop Generator"].map(loc => ({
+  ...["Admin Generator", "Juno Generator", "Nobles Natural Sump Generator", "Lab Generator", "Crusher Fuel Farm Generator", "Crusher Workshop Generator"].map(loc => ({
     pmName: `RCD Testing Sheets - ${loc} 6M`,
     discipline: "Electrical" as const,
     frequency: "26 Week",
@@ -142,7 +142,7 @@ const templateRegistry: PMTemplateDefinition[] = [
   })),
 
   // ── RCD TESTING SHEETS (3-MONTHLY) ──
-  ...["Admin Generator", "Juno Bore Pump Generator", "Andys Dam Generator", "Lab Generator", "Crusher Fuel Farm Generator", "Crusher Workshop Generator"].map(loc => ({
+  ...["Admin Generator", "Juno Generator", "Nobles Natural Sump Generator", "Lab Generator", "Crusher Fuel Farm Generator", "Crusher Workshop Generator"].map(loc => ({
     pmName: `RCD Testing Sheets - ${loc} 3M`,
     discipline: "Electrical" as const,
     frequency: "12 Week",
@@ -389,7 +389,7 @@ export const exportPMWorkbook = async () => {
       ...["Conveyors", "Ball Mill", "CIP TANKS", "Filter Press", "Process Fuel Farm", "Air Compressors", "Lime", "Reagents", "Tail Thickener", "Raw Water", "Process Water", "Admin/Mining", "Warehouse", "Control Room", "Workshop", "Laboratory"].map(zone => ({
         "PM Name": "Visual Zone Checks Weekly", "Section": "Lighting Checks", "Item": zone,
       })),
-      ...["Juno Generator", "Admin Generator", "Andy Dam Generator", "Crusher Generator", "Lab Generator", "Fuel Farm Generator"].map(gen => ({
+      ...["Juno Generator", "Admin Generator", "Nobles Natural Sump Generator", "Crusher Generator", "Lab Generator", "Fuel Farm Generator"].map(gen => ({
         "PM Name": "Visual Zone Checks Weekly", "Section": "Generator Checks", "Item": gen,
       })),
       ...["Weekly Workshop Cleans", "Fortnightly Light Vehicle Cleans", "Clean filters in VSD's in MCC"].map(task => ({

@@ -246,8 +246,8 @@ const disciplines = [
             label: "3M RCD Testing Sheets", 
             pms: [
               { id: "rcd-3m-testing-admin", name: "Admin Generator" },
-              { id: "rcd-3m-testing-juno-bore", name: "Juno Bore Pump Generator" },
-              { id: "rcd-3m-testing-andys-dam", name: "Andy's Dam Generator" },
+              { id: "rcd-3m-testing-juno-bore", name: "Juno Generator" },
+              { id: "rcd-3m-testing-andys-dam", name: "Nobles Natural Sump Generator" },
               { id: "rcd-3m-testing-lab", name: "Lab Generator" },
               { id: "rcd-3m-testing-crusher-workshop", name: "Crusher Workshop Generator" },
               { id: "rcd-3m-testing-crusher-fuel-farm", name: "Crusher Fuel Farm Generator" },
@@ -265,8 +265,8 @@ const disciplines = [
             label: "RCD Generator Testing Sheets", 
             pms: [
               { id: "rcd-testing-admin", name: "Admin Generator" },
-              { id: "rcd-testing-juno-bore", name: "Juno Bore Pump Generator" },
-              { id: "rcd-testing-andys-dam", name: "Andy's Dam Generator" },
+              { id: "rcd-testing-juno-bore", name: "Juno Generator" },
+              { id: "rcd-testing-andys-dam", name: "Nobles Natural Sump Generator" },
               { id: "rcd-testing-lab", name: "Lab Generator" },
               { id: "rcd-testing-crusher-fuel-farm", name: "Crusher Fuel Farm Generator" },
               { id: "rcd-testing-crusher-workshop", name: "Crusher Workshop Generator" },
@@ -474,8 +474,8 @@ const PMDesign = () => {
       case "rcd-pushbutton-12-weekly": return "RCD Push-button Test (12 Week)";
       case "rcd-injection-24-weekly": return "RCD Injection Test (26 Week)";
       case "rcd-testing-admin": return "Admin Generator RCD Test (26 Week)";
-      case "rcd-testing-juno-bore": return "Juno Bore Pump Generator RCD Test (26 Week)";
-      case "rcd-testing-andys-dam": return "Andy's Dam Generator RCD Test (26 Week)";
+      case "rcd-testing-juno-bore": return "Juno Generator RCD Test (26 Week)";
+      case "rcd-testing-andys-dam": return "Nobles Natural Sump Generator RCD Test (26 Week)";
       case "rcd-testing-lab": return "Lab Generator RCD Test (26 Week)";
       case "rcd-testing-crusher-fuel-farm": return "Crusher Fuel Farm Generator RCD Test (26 Week)";
       case "rcd-testing-crusher-workshop": return "Crusher Workshop Generator RCD Test (26 Week)";
@@ -500,8 +500,8 @@ const PMDesign = () => {
       case "motor-inspections-services": return "Services Motor Inspection";
       case "motor-inspections-tanks": return "Tanks Motor Inspection";
       case "rcd-3m-testing-admin": return "Admin Generator RCD Test (12 Week)";
-      case "rcd-3m-testing-juno-bore": return "Juno Bore Pump Generator RCD Test (12 Week)";
-      case "rcd-3m-testing-andys-dam": return "Andy's Dam Generator RCD Test (12 Week)";
+      case "rcd-3m-testing-juno-bore": return "Juno Generator RCD Test (12 Week)";
+      case "rcd-3m-testing-andys-dam": return "Nobles Natural Sump Generator RCD Test (12 Week)";
       case "rcd-3m-testing-lab": return "Lab Generator RCD Test (12 Week)";
       case "rcd-3m-testing-crusher-workshop": return "Crusher Workshop Generator RCD Test (12 Week)";
       case "rcd-3m-testing-crusher-fuel-farm": return "Crusher Fuel Farm Generator RCD Test (12 Week)";
