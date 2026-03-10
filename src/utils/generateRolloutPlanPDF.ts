@@ -207,18 +207,18 @@ export function generateRolloutPlanPDF(
   autoTable(pdf, {
     startY: y,
     headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
-    head: [["Specification", "Option 1 — 316 Stainless Steel", "Option 2 — DuraBlack"]],
+    head: [["Specification", "Option 1 - 316 Stainless Steel", "Option 2 - DuraBlack"]],
     body: [
-      ["Type A Size", "100mm × 50mm × 1.5mm", "100mm × 40mm × 0.5mm"],
-      ["Type B Size", "70mm × 25mm × 1.5mm", "80mm × 30mm × 0.5mm"],
-      ["Material", "316 Stainless Steel — engraved", "DuraBlack — laser etched"],
+      ["Type A Size", "100mm x 50mm x 1.5mm", "100mm x 40mm x 0.5mm"],
+      ["Type B Size", "70mm x 25mm x 1.5mm", "80mm x 30mm x 0.5mm"],
+      ["Material", "316 Stainless Steel - engraved", "DuraBlack - laser etched"],
       ["Price Estimate", "$7.20 per tag (500+ order)", "$4.65 per tag (500+ order)"],
-      ["Durability", "Excellent — 10+ year lifespan, chemical resistant", "Very Good — UV/oil resistant, 5–8 years outdoor"],
+      ["Durability", "Excellent - 10+ year lifespan, chemical resistant", "Very Good - UV/oil resistant, 5-8 years outdoor"],
       ["Best For", "Chemical areas, heavy wear zones", "General plant areas, cost-effective bulk orders"],
     ],
   });
   y = (pdf as any).lastAutoTable.finalY + 4;
-  y = addParagraph(pdf, y, "Supplier: Trophy Central Alice Springs — quote provided for both options at 500+ quantity pricing.");
+  y = addParagraph(pdf, y, "Supplier: Trophy Central Alice Springs - quote provided for both options at 500+ quantity pricing.");
   y = addParagraph(pdf, y, "Recommendation: Use 316 Stainless Steel for chemical/reagent areas (Gold Room, CIL, Reagents). Use DuraBlack for general plant areas (Water, Compressed Air, Comminution) to reduce cost while maintaining durability.");
 
   // 05
