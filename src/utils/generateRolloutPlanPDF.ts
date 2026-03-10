@@ -304,12 +304,12 @@ export function generateRolloutPlanPDF(
   y = addSectionTitle(pdf, y, "11", "COMPLETION DELIVERABLES");
   y = addParagraph(pdf, y, "The following must be produced and filed upon rollout completion.");
   y = addBullets(pdf, y, [
-    "Tagged Asset Register — full list of every tagged asset with ID, description, location, and photo reference",
-    "Completion Report — summary of tag counts, discrepancies resolved, QC audit results",
-    "Before/After photo archive — organised by area",
-    "Updated asset tree status — all tagged assets marked as 'Tagged – Verified' in system",
+    "Tagged Asset Register - full list of every tagged asset with ID, description, location, and photo reference",
+    "Completion Report - summary of tag counts, discrepancies resolved, QC audit results",
+    "Before/After photo archive - organised by area",
+    "Updated asset tree status - all tagged assets marked as 'Tagged - Verified' in system",
     "Signed close-out sheets for each area",
-    "Outstanding items list — any deferred assets with justification and target completion date",
+    "Outstanding items list - any deferred assets with justification and target completion date",
   ]);
 
   // 12 — Attachments Reference
