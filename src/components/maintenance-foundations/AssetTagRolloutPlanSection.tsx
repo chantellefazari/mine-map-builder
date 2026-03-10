@@ -289,7 +289,139 @@ export const AssetTagRolloutPlanSection = () => {
         </CardContent>
       </Card>
 
-      {/* 05. Tag Numbering */}
+      {/* 05. Asset Tag Production Options */}
+      <Card>
+        <CardContent className="pt-5">
+          <SectionHeading icon={Factory} number="05" title="Asset Tag Production Options" />
+          <p className="text-sm text-muted-foreground mb-4">
+            Management may choose between outsourcing tag production to a specialist supplier or purchasing equipment for internal on-demand production.
+            Both approaches are viable — the decision should be based on budget, volume, and long-term operational flexibility.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Option 1 — Outsource */}
+            <Card className="border-l-4 border-l-primary">
+              <CardContent className="py-4 px-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Package className="w-5 h-5 text-primary" />
+                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Option 1 – Outsource Tag Production</span>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Supplier</p>
+                  <p className="text-sm text-foreground font-medium">Trophy Central – Alice Springs</p>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Material Options</p>
+                  <div className="flex flex-wrap gap-1">
+                    <Badge variant="outline" className="text-[10px]">Stainless Steel</Badge>
+                    <Badge variant="outline" className="text-[10px]">DuraBlack</Badge>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Pricing Estimate (500+ qty)</p>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-xs bg-muted/50 rounded px-2 py-1">
+                      <span>Stainless Steel</span>
+                      <span className="font-bold font-mono">$7.20 / tag</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs bg-muted/50 rounded px-2 py-1">
+                      <span>DuraBlack</span>
+                      <span className="font-bold font-mono">$4.65 / tag</span>
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold text-primary uppercase tracking-wider">Pros</p>
+                  <CheckItem>No capital equipment required</CheckItem>
+                  <CheckItem>Professional engraving quality</CheckItem>
+                  <CheckItem>Quick production turnaround</CheckItem>
+                </div>
+
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold text-destructive uppercase tracking-wider">Cons</p>
+                  <WarnItem>Ongoing cost per tag for every order</WarnItem>
+                  <WarnItem>Lead time for additional or replacement tags</WarnItem>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Option 2 — In-House */}
+            <Card className="border-l-4 border-l-amber-500">
+              <CardContent className="py-4 px-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Wrench className="w-5 h-5 text-amber-500" />
+                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Option 2 – In-House Tag Production</span>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Equipment</p>
+                  <p className="text-sm text-foreground font-medium">Gravotech LS100 Laser Engraver</p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Reference</p>
+                  <a
+                    href="https://www.gravotech.com.au/products/laser-engravers-laser-cutters/ls100"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary underline break-all"
+                  >
+                    gravotech.com.au — LS100 Laser Engraver
+                  </a>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Machine Capability</p>
+                  <div className="space-y-0.5">
+                    <CheckItem>CO₂ laser engraver and cutter</CheckItem>
+                    <CheckItem>Suitable for asset tags and industrial signage</CheckItem>
+                    <CheckItem>Able to engrave stainless plates and laminates</CheckItem>
+                    <CheckItem>Allows on-demand tag production</CheckItem>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold text-primary uppercase tracking-wider">Pros</p>
+                  <CheckItem>Immediate production of tags — no supplier lead time</CheckItem>
+                  <CheckItem>Ability to create tags when new assets are installed</CheckItem>
+                  <CheckItem>Can produce additional labels and signage for site</CheckItem>
+                </div>
+
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold text-destructive uppercase tracking-wider">Cons</p>
+                  <WarnItem>Initial capital equipment purchase required</WarnItem>
+                  <WarnItem>Operator training required</WarnItem>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-4 bg-primary/5 border border-primary/20 rounded-md px-3 py-2">
+            <div className="flex items-start gap-2">
+              <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-foreground">
+                <strong>Management Decision:</strong> Either option delivers the required outcome. Outsourcing is the lowest-risk path for the initial
+                batch. In-house production becomes cost-effective if the site anticipates ongoing tag requirements for new assets, replacements,
+                and general industrial signage. A hybrid approach — outsource the first batch, then transition to in-house — is also viable.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 06. Tag Numbering */}
       <Card>
         <CardContent className="pt-5">
           <SectionHeading icon={Hash} number="05" title="Tag Numbering" />
