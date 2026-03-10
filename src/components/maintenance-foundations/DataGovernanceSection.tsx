@@ -85,10 +85,13 @@ export const DataGovernanceSection = () => {
                 Locked (Read-Only)
               </h4>
               <ul className="text-sm space-y-1 text-muted-foreground">
-                <li>• Asset Hierarchy structure</li>
-                <li>• Functional Location codes</li>
-                <li>• Assigned Asset Numbers</li>
-                <li>• Approved PM Templates</li>
+                <li>• Asset Hierarchy structure (7-level model)</li>
+                <li>• 6 Approved Main Area codes (SITE, UTL, COM, REC, TAIL, SUP)</li>
+                <li>• Functional Location codes (TCMG-PP-AREA-SUBAREA-SYSTEM)</li>
+                <li>• Assigned Asset Numbers (Area-Prefix First format)</li>
+                <li>• P&ID extraction register (14-page verified set)</li>
+                <li>• Approved PM Templates (88 templates across 3 disciplines)</li>
+                <li>• Electrical asset identifiers (17-GN-xxx, 18-MCC-xxx series)</li>
               </ul>
             </div>
 
@@ -98,10 +101,12 @@ export const DataGovernanceSection = () => {
                 Editable (With Approval)
               </h4>
               <ul className="text-sm space-y-1 text-muted-foreground">
-                <li>• Component OEM details</li>
-                <li>• Spare parts criticality</li>
-                <li>• Draft PM Templates</li>
-                <li>• Stock levels and suppliers</li>
+                <li>• Component OEM details and specifications</li>
+                <li>• Spare parts criticality classification</li>
+                <li>• Draft PM Templates (before approval)</li>
+                <li>• Stock levels, min/max, and supplier linkages</li>
+                <li>• PM-to-Asset linking (staging table only)</li>
+                <li>• Asset tag rollout installation status</li>
               </ul>
             </div>
           </div>
