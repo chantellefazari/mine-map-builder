@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Factory, Search, Download, ChevronLeft, ChevronRight, Square, Circle } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { Factory, Search, Download, ChevronLeft, ChevronRight, Square, Circle, Database, FileText, Loader2 } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import * as XLSX from "xlsx";
 
 interface TaggedAsset {
@@ -21,82 +22,53 @@ interface TaggedAsset {
 }
 
 // ── Type A: Major fixed infrastructure that IS the structure ──
-// Tags are flat plates permanently mounted directly to the asset.
 const TYPE_A_PATTERNS = [
-  /TK/i,        // Tanks
-  /^BM/i,       // Ball Mills
-  /CV|BC/i,     // Conveyors / Belt Conveyors
-  /FE/i,        // Feeders (vibrating/apron - bolted to structure)
-  /CH/i,        // Chutes
-  /HP/i,        // Hoppers
-  /CY/i,        // Cyclones (welded cluster)
-  /TH/i,        // Thickener
-  /FP/i,        // Filter Press (frame)
-  /PIPE/i,      // Pipes / Lines (pipe stand or support)
-  /PND|SMP/i,   // Ponds / Sumps
-  /CELL/i,      // EW Cells (fixed tanks)
-  /ARCV/i,      // Air Receivers (pressure vessels)
-  /RO/i,        // RO Plant (skid)
-  /COMP01$/i,   // Compressed Air System (skid)
-  /^EW/i,       // Electrowinning (structure)
-  /SSTK/i,      // Safety Shower Tank
-  /^RCFD/i,     // Reclaim system structure
-  /^MFCV/i,     // Mill Feed Conveyor
-  /^TRCV/i,     // Transfer Conveyor
+  /TK/i, /^BM/i, /CV|BC/i, /FE/i, /CH/i, /HP/i, /CY/i, /TH/i, /FP/i,
+  /PIPE/i, /PND|SMP/i, /CELL/i, /ARCV/i, /RO/i, /COMP01$/i, /^EW/i,
+  /SSTK/i, /^RCFD/i, /^MFCV/i, /^TRCV/i,
 ];
 
 // ── Type B: Removable equipment at a P&ID position ──
-// Tags mounted to nearby structure with bolt or cable tie.
 const TYPE_B_PATTERNS = [
-  /PMP|PU|PA\d|PB\d|SSPA|SSPB|ASDP|HPP|RP|LPPA|LPPB/i,  // Pumps
-  /VLV/i,       // Valves
-  /MTR/i,       // Motors
-  /GBX|GB/i,    // Gearboxes
-  /AGT|AG/i,    // Agitators (removable drive)
-  /HPAC/i,      // HP Air Compressors (packaged unit)
-  /AFLT/i,      // Air Filters
-  /CLR|FA-/i,   // Coolers / Fans
-  /FL[AB]/i,    // Lube Filters
-  /DSP|DP/i,    // Dosing Pumps
-  /SCR|SS/i,    // Screens (removable assemblies)
-  /GEN/i,       // Generators
-  /TTV/i,       // TechTaylor Valves
-  /MK/i,        // Hoists
-  /LUB|LS/i,    // Lube systems (packaged skid — position tag)
-  /SCV/i,       // Scats Conveyor (small removable)
-  /FBB|LDCH/i,  // Feed Boiler Box / Loading Chute
+  /PMP|PU|PA\d|PB\d|SSPA|SSPB|ASDP|HPP|RP|LPPA|LPPB/i,
+  /VLV/i, /MTR/i, /GBX|GB/i, /AGT|AG/i, /HPAC/i, /AFLT/i, /CLR|FA-/i,
+  /FL[AB]/i, /DSP|DP/i, /SCR|SS/i, /GEN/i, /TTV/i, /MK/i, /LUB|LS/i,
+  /SCV/i, /FBB|LDCH/i,
 ];
 
-interface ProductionTag {
+export interface ProductionTag {
   assetName: string;
   assetNumber: string;
   pidTag: string;
   parentSystem: string;
   tagType: "A" | "B";
+  tagSize: string;
   mountingLocation: string;
   mountingMethod: string;
   areaLabel: string;
   subArea: string;
+  functionalLocation: string;
+  tagInstalled: boolean;
 }
 
 function classifyTagType(assetNumber: string, assetName: string): "A" | "B" {
-  // Check Type A first (fixed infrastructure)
   for (const pattern of TYPE_A_PATTERNS) {
     if (pattern.test(assetNumber)) return "A";
   }
-  // Check Type B (removable equipment positions)
   for (const pattern of TYPE_B_PATTERNS) {
     if (pattern.test(assetNumber)) return "B";
   }
-  // Fallback: check asset name for clues
   const nameLower = assetName.toLowerCase();
   if (/tank|conveyor|hopper|chute|thickener|cyclone|sump|pond|pipe|cell|receiver/.test(nameLower)) return "A";
   if (/pump|valve|motor|gearbox|agitator|instrument|filter|compressor|screen|generator|hoist/.test(nameLower)) return "B";
-  // Default to B (position tag) for safety
   return "B";
 }
 
-function inferMountingLocation(tagType: "A" | "B", assetName: string, assetNumber: string): string {
+function inferTagSize(tagType: "A" | "B"): string {
+  return tagType === "A" ? "100mm x 50mm x 1.5mm" : "70mm x 25mm x 1.5mm";
+}
+
+function inferMountingLocation(tagType: "A" | "B", assetName: string): string {
   if (tagType === "A") {
     const n = assetName.toLowerCase();
     if (/tank/.test(n)) return "Tank shell or support leg";
@@ -115,7 +87,6 @@ function inferMountingLocation(tagType: "A" | "B", assetName: string, assetNumbe
     if (/feeder/.test(n)) return "Feeder support frame";
     return "Fixed structure or frame";
   }
-  // Type B
   const n = assetName.toLowerCase();
   if (/pump/.test(n)) return "Pump baseplate or adjacent steelwork";
   if (/valve/.test(n)) return "Pipe support near valve body";
@@ -140,22 +111,39 @@ function inferMountingMethod(tagType: "A" | "B"): string {
 }
 
 function buildProductionList(assets: TaggedAsset[]): ProductionTag[] {
-  const list: ProductionTag[] = [];
-  for (const a of assets) {
+  return assets.map((a) => {
     const tagType = classifyTagType(a.asset_number, a.asset_name);
-    list.push({
+    return {
       assetName: a.asset_name,
       assetNumber: a.asset_number,
       pidTag: a.pid_tags.join("; "),
       parentSystem: a.parent_asset_label,
       tagType,
-      mountingLocation: inferMountingLocation(tagType, a.asset_name, a.asset_number),
+      tagSize: inferTagSize(tagType),
+      mountingLocation: inferMountingLocation(tagType, a.asset_name),
       mountingMethod: inferMountingMethod(tagType),
       areaLabel: a.area_label,
       subArea: a.sub_area,
-    });
-  }
-  return list;
+      functionalLocation: a.functional_location || "",
+      tagInstalled: false,
+    };
+  });
+}
+
+function toExportRow(t: ProductionTag, idx: number) {
+  return {
+    "#": idx + 1,
+    "Asset Number": t.assetNumber,
+    "Asset Name": t.assetName,
+    "P&ID Tag": t.pidTag,
+    "Tag Type": `Type ${t.tagType}`,
+    "Tag Size": t.tagSize,
+    "Mounting Location": t.mountingLocation,
+    "Mounting Method": t.mountingMethod,
+    "Parent System": t.parentSystem,
+    "Location": t.functionalLocation || `${t.areaLabel} > ${t.subArea}`,
+    "Tag Installed": t.tagInstalled ? "Yes" : "No",
+  };
 }
 
 const PAGE_SIZE = 50;
@@ -164,6 +152,7 @@ export const AssetTagProductionList = () => {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [page, setPage] = useState(0);
+  const queryClient = useQueryClient();
 
   const { data: assets = [], isLoading } = useQuery({
     queryKey: ["pid-tagged-assets-register"],
@@ -221,32 +210,73 @@ export const AssetTagProductionList = () => {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paged = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
-  const handleExport = () => {
-    const rows = filtered.map((t, idx) => ({
-      "#": idx + 1,
-      "Asset Name": t.assetName,
-      "Asset Number": t.assetNumber,
-      "P&ID Tag": t.pidTag,
-      "Parent System": t.parentSystem,
-      "Tag Type": `Type ${t.tagType}`,
-      "Mounting Location": t.mountingLocation,
-      "Mounting Method": t.mountingMethod,
-      "Area": t.areaLabel,
-      "Sub-Area": t.subArea,
-    }));
+  // ── Export helpers ──
 
-    // Add summary rows
+  const buildExportRows = () => {
+    const rows = filtered.map((t, idx) => toExportRow(t, idx));
     rows.push({} as any);
-    rows.push({ "#": "" as any, "Asset Name": "SUMMARY", "Asset Number": "", "P&ID Tag": "", "Parent System": "", "Tag Type": "", "Mounting Location": "", "Mounting Method": "", "Area": "", "Sub-Area": "" });
-    rows.push({ "#": "" as any, "Asset Name": "Total TYPE A (Major Asset Plates)", "Asset Number": String(totals.typeA), "P&ID Tag": "", "Parent System": "", "Tag Type": "", "Mounting Location": "", "Mounting Method": "", "Area": "", "Sub-Area": "" });
-    rows.push({ "#": "" as any, "Asset Name": "Total TYPE B (Equipment Position Tags)", "Asset Number": String(totals.typeB), "P&ID Tag": "", "Parent System": "", "Tag Type": "", "Mounting Location": "", "Mounting Method": "", "Area": "", "Sub-Area": "" });
-    rows.push({ "#": "" as any, "Asset Name": "TOTAL TAGS REQUIRED", "Asset Number": String(totals.total), "P&ID Tag": "", "Parent System": "", "Tag Type": "", "Mounting Location": "", "Mounting Method": "", "Area": "", "Sub-Area": "" });
+    rows.push({ "#": "" as any, "Asset Number": "SUMMARY", "Asset Name": "", "P&ID Tag": "", "Tag Type": "", "Tag Size": "", "Mounting Location": "", "Mounting Method": "", "Parent System": "", "Location": "", "Tag Installed": "" });
+    rows.push({ "#": "" as any, "Asset Number": `Total TYPE A: ${totals.typeA}`, "Asset Name": "", "P&ID Tag": "", "Tag Type": "", "Tag Size": "", "Mounting Location": "", "Mounting Method": "", "Parent System": "", "Location": "", "Tag Installed": "" });
+    rows.push({ "#": "" as any, "Asset Number": `Total TYPE B: ${totals.typeB}`, "Asset Name": "", "P&ID Tag": "", "Tag Type": "", "Tag Size": "", "Mounting Location": "", "Mounting Method": "", "Parent System": "", "Location": "", "Tag Installed": "" });
+    rows.push({ "#": "" as any, "Asset Number": `TOTAL TAGS: ${totals.total}`, "Asset Name": "", "P&ID Tag": "", "Tag Type": "", "Tag Size": "", "Mounting Location": "", "Mounting Method": "", "Parent System": "", "Location": "", "Tag Installed": "" });
+    return rows;
+  };
 
-    const ws = XLSX.utils.json_to_sheet(rows);
+  const handleExportXLSX = () => {
+    const ws = XLSX.utils.json_to_sheet(buildExportRows());
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Tag Production List");
     XLSX.writeFile(wb, "Asset_Tag_Production_List_Tennant_Creek.xlsx");
+    toast.success("XLSX exported successfully");
   };
+
+  const handleExportCSV = () => {
+    const ws = XLSX.utils.json_to_sheet(buildExportRows());
+    const csv = XLSX.utils.sheet_to_csv(ws);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Asset_Tag_Production_List_Tennant_Creek.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("CSV exported successfully");
+  };
+
+  const saveToDb = useMutation({
+    mutationFn: async (tags: ProductionTag[]) => {
+      // Clear existing and re-insert
+      const { error: delErr } = await supabase.from("asset_tag_production").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+      if (delErr) throw delErr;
+
+      // Insert in batches of 200
+      for (let i = 0; i < tags.length; i += 200) {
+        const batch = tags.slice(i, i + 200).map((t) => ({
+          asset_number: t.assetNumber,
+          asset_name: t.assetName,
+          pid_tag: t.pidTag,
+          tag_type: t.tagType,
+          tag_size: t.tagSize,
+          mounting_location: t.mountingLocation,
+          mounting_method: t.mountingMethod,
+          parent_system: t.parentSystem,
+          area_label: t.areaLabel,
+          sub_area: t.subArea,
+          functional_location: t.functionalLocation,
+          tag_installed: false,
+        }));
+        const { error } = await supabase.from("asset_tag_production").insert(batch);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success(`${productionList.length} tags saved to database`);
+      queryClient.invalidateQueries({ queryKey: ["asset-tag-production"] });
+    },
+    onError: (err: any) => {
+      toast.error(`Save failed: ${err.message}`);
+    },
+  });
 
   return (
     <Card className="border-primary/20">
@@ -264,13 +294,30 @@ export const AssetTagProductionList = () => {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Badge variant="outline" className="text-xs font-mono">
               {totals.total} tags
             </Badge>
-            <Button variant="outline" size="sm" onClick={handleExport} disabled={filtered.length === 0}>
+            <Button variant="outline" size="sm" onClick={handleExportXLSX} disabled={filtered.length === 0}>
               <Download className="w-3.5 h-3.5 mr-1.5" />
-              Export XLSX
+              XLSX
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleExportCSV} disabled={filtered.length === 0}>
+              <FileText className="w-3.5 h-3.5 mr-1.5" />
+              CSV
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => saveToDb.mutate(productionList)}
+              disabled={productionList.length === 0 || saveToDb.isPending}
+            >
+              {saveToDb.isPending ? (
+                <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+              ) : (
+                <Database className="w-3.5 h-3.5 mr-1.5" />
+              )}
+              Save to Database
             </Button>
           </div>
         </div>
@@ -286,7 +333,7 @@ export const AssetTagProductionList = () => {
                 <span className="text-xs font-bold text-foreground uppercase tracking-wide">Type A – Major Asset Plates</span>
               </div>
               <p className="text-[11px] text-muted-foreground mb-2">
-                Flat plate, no hole. Permanently mounted to fixed infrastructure (tanks, conveyors, structures).
+                Flat plate, no hole. 100mm × 50mm × 1.5mm. Permanently mounted to fixed infrastructure.
               </p>
               <span className="text-2xl font-bold text-primary">{totals.typeA}</span>
               <span className="text-xs text-muted-foreground ml-1">tags</span>
@@ -299,7 +346,7 @@ export const AssetTagProductionList = () => {
                 <span className="text-xs font-bold text-foreground uppercase tracking-wide">Type B – Position Tags</span>
               </div>
               <p className="text-[11px] text-muted-foreground mb-2">
-                Smaller tag, single hole. Bolt or cable tie to nearby structure (pumps, valves, motors, instruments).
+                Smaller tag, single hole. 70mm × 25mm × 1.5mm. Bolt or cable tie to nearby structure.
               </p>
               <span className="text-2xl font-bold text-amber-600">{totals.typeB}</span>
               <span className="text-xs text-muted-foreground ml-1">tags</span>
@@ -360,27 +407,29 @@ export const AssetTagProductionList = () => {
                 <thead>
                   <tr className="bg-muted/50">
                     <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border w-8">#</th>
+                    <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">Asset Number</th>
                     <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">Asset Name</th>
-                    <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">Asset No.</th>
                     <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">P&ID Tag</th>
-                    <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">Parent System</th>
                     <th className="text-center px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border w-20">Type</th>
+                    <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">Tag Size</th>
                     <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">Mounting Location</th>
                     <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">Method</th>
+                    <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">Parent System</th>
+                    <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border">Location</th>
+                    <th className="text-center px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border w-20">Installed</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paged.map((t, idx) => (
                     <tr key={t.assetNumber + idx} className="border-b border-border hover:bg-muted/30 transition-colors">
                       <td className="px-3 py-1.5 text-xs text-muted-foreground">{page * PAGE_SIZE + idx + 1}</td>
-                      <td className="px-3 py-1.5 text-xs font-medium">{t.assetName}</td>
                       <td className="px-3 py-1.5 text-xs font-mono">{t.assetNumber}</td>
+                      <td className="px-3 py-1.5 text-xs font-medium">{t.assetName}</td>
                       <td className="px-3 py-1.5">
                         <Badge variant="secondary" className="text-[10px] font-mono px-1.5 py-0">
                           {t.pidTag}
                         </Badge>
                       </td>
-                      <td className="px-3 py-1.5 text-xs">{t.parentSystem}</td>
                       <td className="px-3 py-1.5 text-center">
                         <Badge
                           className={`text-[10px] font-bold px-2 py-0.5 ${
@@ -392,8 +441,14 @@ export const AssetTagProductionList = () => {
                           {t.tagType}
                         </Badge>
                       </td>
+                      <td className="px-3 py-1.5 text-xs text-muted-foreground font-mono">{t.tagSize}</td>
                       <td className="px-3 py-1.5 text-xs text-muted-foreground">{t.mountingLocation}</td>
                       <td className="px-3 py-1.5 text-xs text-muted-foreground">{t.mountingMethod}</td>
+                      <td className="px-3 py-1.5 text-xs">{t.parentSystem}</td>
+                      <td className="px-3 py-1.5 text-xs text-muted-foreground font-mono">{t.functionalLocation || `${t.areaLabel} > ${t.subArea}`}</td>
+                      <td className="px-3 py-1.5 text-center">
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">No</Badge>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

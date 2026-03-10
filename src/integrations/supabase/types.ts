@@ -14,6 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      asset_tag_production: {
+        Row: {
+          area_label: string
+          asset_name: string
+          asset_number: string
+          created_at: string
+          functional_location: string | null
+          id: string
+          installed_by: string | null
+          installed_date: string | null
+          mounting_location: string
+          mounting_method: string
+          parent_system: string
+          pid_tag: string
+          sub_area: string
+          tag_installed: boolean
+          tag_size: string
+          tag_type: string
+          updated_at: string
+        }
+        Insert: {
+          area_label?: string
+          asset_name: string
+          asset_number: string
+          created_at?: string
+          functional_location?: string | null
+          id?: string
+          installed_by?: string | null
+          installed_date?: string | null
+          mounting_location?: string
+          mounting_method?: string
+          parent_system?: string
+          pid_tag?: string
+          sub_area?: string
+          tag_installed?: boolean
+          tag_size?: string
+          tag_type?: string
+          updated_at?: string
+        }
+        Update: {
+          area_label?: string
+          asset_name?: string
+          asset_number?: string
+          created_at?: string
+          functional_location?: string | null
+          id?: string
+          installed_by?: string | null
+          installed_date?: string | null
+          mounting_location?: string
+          mounting_method?: string
+          parent_system?: string
+          pid_tag?: string
+          sub_area?: string
+          tag_installed?: boolean
+          tag_size?: string
+          tag_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
           changed_at: string
