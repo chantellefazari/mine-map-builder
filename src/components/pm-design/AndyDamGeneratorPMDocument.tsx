@@ -13,7 +13,7 @@ export const AndyDamGeneratorPMDocument = () => {
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
-        <PMBannerHeader title="Tenant Creek - Andy Dam Generator" subtitle="Mechanical Running PMs - Weekly Inspection (Fitter)" />
+        <PMBannerHeader title="Tenant Creek - Nobles Natural Sump Generator" subtitle="Mechanical Running PMs - Weekly Inspection (Fitter)" />
 
         <PMMetadataGrid
           pmId={pm?.id}
