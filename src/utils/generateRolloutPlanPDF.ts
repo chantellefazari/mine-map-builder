@@ -80,6 +80,19 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
+/** Force download via blob URL — works in sandboxed iframes where pdf.save() is blocked */
+function triggerPdfDownload(pdf: jsPDF, filename: string) {
+  const blob = pdf.output("blob");
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
   const w = pdf.internal.pageSize.getWidth();
   pdf.setFillColor(...GOLD);
