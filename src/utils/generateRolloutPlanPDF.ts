@@ -81,9 +81,10 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Download PDF file */
+/** Download PDF file using file-saver for sandbox compatibility */
 function triggerPdfDownload(pdf: jsPDF, filename: string) {
-  pdf.save(filename);
+  const blob = pdf.output("blob");
+  saveAs(blob, filename);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
