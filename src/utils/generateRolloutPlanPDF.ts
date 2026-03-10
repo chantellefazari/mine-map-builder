@@ -226,7 +226,7 @@ export function generateRolloutPlanPDF(
   y = addParagraph(pdf, y, "Management may choose between outsourcing tag production to a specialist supplier or purchasing equipment for internal on-demand production.");
   autoTable(pdf, {
     startY: y,
-    ...TABLE_STYLES,
+    headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
     head: [["", "Option 1 — Outsource", "Option 2 — In-House"]],
     body: [
       ["Provider", "Trophy Central – Alice Springs", "Gravotech LS100 Laser Engraver"],
