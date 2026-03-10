@@ -651,12 +651,12 @@ export const AssetTagRolloutPlanSection = () => {
           </p>
           <div className="space-y-0.5">
             <StepItem step={1}>
-              <strong>Generate P&ID Asset Register</strong> - Extract all assets with linked P&ID tags from the database.
-              This produces the "P&ID Tagged Asset Register" (see Attachment A).
+              <strong>Confirm P&ID Asset Register</strong> - Verify the P&ID Tagged Asset Register (Attachment A) is the latest
+              approved revision and reflects the current asset tree.
             </StepItem>
             <StepItem step={2}>
-              <strong>Produce Tag Production List</strong> - Classify each asset as Type A or Type B.
-              Determine mounting location and method for each tag. Generate quantities for the manufacturing order (see Attachment B).
+              <strong>Review Tag Production List</strong> - Confirm the Tag Production List (Attachment B) has classified each asset
+              as Type A or Type B with correct mounting locations, methods, and quantities for the manufacturing order.
             </StepItem>
             <StepItem step={3}>
               <strong>Manufacture Tags</strong> - Submit production list to tag supplier.
@@ -668,8 +668,8 @@ export const AssetTagRolloutPlanSection = () => {
               Photograph installed tag showing Asset ID and surrounding context.
             </StepItem>
             <StepItem step={5}>
-              <strong>Update Asset Record</strong> - Mark asset status as "Tagged - Verified" in the asset register.
-              Upload confirmation photo linked to the asset record.
+              <strong>Update Asset Record</strong> - Mark asset status as "Tagged - Verified" in the master asset register.
+              File confirmation photo against the asset record for audit purposes.
             </StepItem>
           </div>
           <div className="mt-3 bg-muted/40 rounded-md px-3 py-2">
@@ -757,7 +757,7 @@ export const AssetTagRolloutPlanSection = () => {
             <CheckItem>Tagged Asset Register - full list of every tagged asset with ID, description, location, and photo reference</CheckItem>
             <CheckItem>Completion Report - summary of tag counts, discrepancies resolved, QC audit results</CheckItem>
             <CheckItem>Before/After photo archive - organised by area</CheckItem>
-            <CheckItem>Updated asset tree status - all tagged assets marked as "Tagged - Verified" in system</CheckItem>
+            <CheckItem>Updated asset tree status - all tagged assets marked as "Tagged - Verified" in the master asset register</CheckItem>
             <CheckItem>Signed close-out sheets for each area</CheckItem>
             <CheckItem>Outstanding items list - any deferred assets with justification and target completion date</CheckItem>
           </div>
@@ -813,8 +813,8 @@ export const AssetTagRolloutPlanSection = () => {
         <CardContent className="pt-5">
           <SectionHeading icon={FileText} number="14" title="Attachments" />
           <p className="text-sm text-muted-foreground mb-4">
-            The following attachments form part of this document and must be generated from the live database before commencing the rollout.
-            Download each attachment using the buttons in the document header above.
+            The following attachments form part of this document and must be current before commencing the rollout.
+            Both attachments are included as separate documents within this deliverable package.
           </p>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="border border-border rounded-lg p-4 space-y-2">
@@ -824,7 +824,7 @@ export const AssetTagRolloutPlanSection = () => {
               </div>
               <p className="text-xs text-muted-foreground">
                 Complete register of all Processing Plant assets with linked P&ID tags. This is the sole source of truth
-                for the tagging scope - only assets listed here receive a physical tag. Generated from the live asset database.
+                for the tagging scope - only assets listed here receive a physical tag.
               </p>
               <div className="bg-muted/40 rounded-md px-3 py-2 mt-2">
                 <p className="text-xs text-foreground"><strong>Contains:</strong> Asset Number, Asset Name, Parent System, P&ID Tag(s), Area, Sub-Area, Functional Location</p>
@@ -846,8 +846,8 @@ export const AssetTagRolloutPlanSection = () => {
           </div>
           <div className="mt-3 bg-muted/40 rounded-md px-3 py-2">
             <p className="text-xs text-muted-foreground">
-              <strong>Note:</strong> Both attachments are generated dynamically from the live database. Always download the latest version
-              before commencing any rollout activity to ensure the data reflects the current approved asset tree.
+              <strong>Note:</strong> Both attachments must reflect the current approved asset tree at the time of rollout.
+              Confirm with the project lead that the attached versions are the latest approved revision before commencing any rollout activity.
             </p>
           </div>
         </CardContent>
