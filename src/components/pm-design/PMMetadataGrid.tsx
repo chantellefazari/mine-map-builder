@@ -4,7 +4,7 @@ import { PMAssetSearchCombobox } from "./PMAssetSearchCombobox";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { flattenAssetTree } from "@/utils/flattenAssetTree";
+
 
 interface PMMetadataGridProps {
   pmId?: string;
