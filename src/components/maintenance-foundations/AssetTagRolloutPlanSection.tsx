@@ -496,7 +496,7 @@ export const AssetTagRolloutPlanSection = () => {
       {/* 07. Pre-Rollout Gate */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Shield} number="07" title="Pre-Rollout Requirements — Gate 1" />
+          <SectionHeading icon={Shield} number="08" title="Pre-Rollout Requirements — Gate 1" />
           <p className="text-sm text-muted-foreground mb-3">
             All items below must be confirmed and signed off before any physical tagging commences.
           </p>
