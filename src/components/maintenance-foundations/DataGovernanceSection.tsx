@@ -25,12 +25,12 @@ export const DataGovernanceSection = () => {
             <h4 className="font-medium text-foreground">Data Integrity Rules</h4>
             <div className="grid gap-3 md:grid-cols-2">
               {[
-                { rule: "No Invention", desc: "Do NOT invent, assume, or estimate OEM details" },
-                { rule: "Document Source Only", desc: "Only use information from attached documents" },
-                { rule: "Mark Unknown", desc: "If value cannot be determined, mark as 'TBC'" },
-                { rule: "P&ID Verification", desc: "All mappings sourced from provided data dump only" },
-                { rule: "Baseline Snapshot", desc: "Baseline data is not final, pending walkdown" },
-                { rule: "No Fabrication", desc: "P&ID tags never invented or synthesised" },
+                { rule: "No Invention", desc: "Do NOT invent, assume, or estimate OEM details — mark as 'TBC' if unknown" },
+                { rule: "Document Source Only", desc: "Only use information from verified P&IDs, OEM manuals, or walkdown records" },
+                { rule: "6 Approved Area Codes Only", desc: "SITE, UTL, COM, REC, TAIL, SUP — no other area codes permitted" },
+                { rule: "P&ID Verification", desc: "All equipment mappings sourced from the 14-page P&ID set (PI-001 to PI-014)" },
+                { rule: "Immutable Identifiers", desc: "Asset numbers, FL codes, and part numbers are never reused or changed once assigned" },
+                { rule: "No Fabrication", desc: "P&ID tags, asset numbers, and FL codes are never invented or synthesised" },
               ].map((item, index) => (
                 <div key={index} className="flex items-start gap-2 bg-background rounded-md p-3 border border-border">
                   <Lock className="w-4 h-4 text-rose-600 mt-0.5 flex-shrink-0" />
