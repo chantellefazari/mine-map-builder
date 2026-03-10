@@ -634,5 +634,5 @@ export function generateProductionListPDF(productionTags: ProductionTag[]) {
   pdf.text("Scope: Processing Plant ONLY — Crushing Plant excluded until P&IDs are finalised.", 16, y + 13);
 
   addPageNumbers(pdf, "TCMG Asset Tag Production List - Attachment B");
-  pdf.save("TCMG_Asset_Tag_Production_List.pdf");
+  triggerPdfDownload(pdf, "TCMG_Asset_Tag_Production_List.pdf");
 }
