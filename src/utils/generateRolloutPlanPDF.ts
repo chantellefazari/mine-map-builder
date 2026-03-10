@@ -169,7 +169,7 @@ export function generateRolloutPlanPDF(
   typeBCount: number
 ) {
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant — Tennant Mines Gold");
+  let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant - Tennant Mines Gold");
 
   // 01
   y = addSectionTitle(pdf, y, "01", "TAGGING CRITERIA");
