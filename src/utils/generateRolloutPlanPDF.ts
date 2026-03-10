@@ -27,11 +27,11 @@ interface ProductionTag {
 }
 
 // ── Colours ──
-const GOLD = [212, 160, 23] as const;
-const DARK = [17, 17, 17] as const;
-const MUTED = [100, 100, 100] as const;
-const HEADER_BG = [245, 240, 224] as const;
-const LIGHT_BG = [250, 250, 250] as const;
+const GOLD: [number, number, number] = [212, 160, 23];
+const DARK: [number, number, number] = [17, 17, 17];
+const MUTED: [number, number, number] = [100, 100, 100];
+const HEADER_BG: [number, number, number] = [245, 240, 224];
+const LIGHT_BG: [number, number, number] = [250, 250, 250];
 
 const PAGE_H = 297;
 const MARGIN = 15;
