@@ -80,41 +80,47 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Download PDF using multiple fallback strategies */
+/** Download PDF — tries multiple strategies for sandboxed environments */
 function triggerPdfDownload(pdf: jsPDF, filename: string) {
+  const blob = pdf.output("blob");
+  const blobUrl = URL.createObjectURL(blob);
+
+  // Strategy 1: MouseEvent dispatch on anchor (works in some sandboxes)
   try {
-    // Strategy 1: direct jsPDF save (uses internal FileSaver)
-    pdf.save(filename);
-  } catch (e1) {
-    console.warn("pdf.save() failed, trying blob approach:", e1);
-    try {
-      // Strategy 2: manual blob + anchor
-      const blob = pdf.output("blob");
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 1000);
-    } catch (e2) {
-      console.warn("Blob anchor failed, trying data URI:", e2);
-      try {
-        // Strategy 3: data URI in new tab
-        const dataUri = pdf.output("datauristring");
-        const w = window.open();
-        if (w) {
-          w.document.write(`<iframe width="100%" height="100%" src="${dataUri}"></iframe>`);
-        }
-      } catch (e3) {
-        console.error("All PDF download strategies failed:", e3);
-      }
-    }
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = filename;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    const evt = new MouseEvent("click", { bubbles: true, cancelable: true, view: window });
+    a.dispatchEvent(evt);
+    document.body.removeChild(a);
+    console.log("[PDF] Strategy 1 (MouseEvent anchor) executed");
+  } catch (e) {
+    console.warn("[PDF] Strategy 1 failed:", e);
   }
+
+  // Strategy 2: pdf.save() 
+  try {
+    pdf.save(filename);
+    console.log("[PDF] Strategy 2 (pdf.save) executed");
+  } catch (e) {
+    console.warn("[PDF] Strategy 2 failed:", e);
+  }
+
+  // Strategy 3: open blob in new tab (user can save from there)
+  try {
+    const opened = window.open(blobUrl, "_blank");
+    if (opened) {
+      console.log("[PDF] Strategy 3 (window.open) executed");
+    } else {
+      console.warn("[PDF] Strategy 3: window.open returned null (blocked)");
+    }
+  } catch (e) {
+    console.warn("[PDF] Strategy 3 failed:", e);
+  }
+
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
