@@ -80,47 +80,16 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Download PDF — tries multiple strategies for sandboxed environments */
+/** Download PDF using data URI approach — works in sandboxed iframes */
 function triggerPdfDownload(pdf: jsPDF, filename: string) {
-  const blob = pdf.output("blob");
-  const blobUrl = URL.createObjectURL(blob);
-
-  // Strategy 1: MouseEvent dispatch on anchor (works in some sandboxes)
-  try {
-    const a = document.createElement("a");
-    a.href = blobUrl;
-    a.download = filename;
-    a.rel = "noopener";
-    document.body.appendChild(a);
-    const evt = new MouseEvent("click", { bubbles: true, cancelable: true, view: window });
-    a.dispatchEvent(evt);
-    document.body.removeChild(a);
-    console.log("[PDF] Strategy 1 (MouseEvent anchor) executed");
-  } catch (e) {
-    console.warn("[PDF] Strategy 1 failed:", e);
-  }
-
-  // Strategy 2: pdf.save() 
-  try {
-    pdf.save(filename);
-    console.log("[PDF] Strategy 2 (pdf.save) executed");
-  } catch (e) {
-    console.warn("[PDF] Strategy 2 failed:", e);
-  }
-
-  // Strategy 3: open blob in new tab (user can save from there)
-  try {
-    const opened = window.open(blobUrl, "_blank");
-    if (opened) {
-      console.log("[PDF] Strategy 3 (window.open) executed");
-    } else {
-      console.warn("[PDF] Strategy 3: window.open returned null (blocked)");
-    }
-  } catch (e) {
-    console.warn("[PDF] Strategy 3 failed:", e);
-  }
-
-  setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+  const dataUri = pdf.output("datauristring");
+  const link = document.createElement("a");
+  link.href = dataUri;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  console.log("[PDF] Download triggered via data URI for:", filename);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
