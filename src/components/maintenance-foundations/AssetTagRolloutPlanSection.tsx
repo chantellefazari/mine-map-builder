@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Package,
 } from "lucide-react";
+import { PidTaggedAssetRegister } from "./PidTaggedAssetRegister";
 
 const SectionHeading = ({
   icon: Icon,
@@ -420,6 +421,9 @@ export const AssetTagRolloutPlanSection = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* P&ID Tagged Asset Register — Production List */}
+      <PidTaggedAssetRegister />
 
       {/* Scope reminder */}
       <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
