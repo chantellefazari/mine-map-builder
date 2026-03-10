@@ -545,7 +545,7 @@ export const AssetTagRolloutPlanSection = () => {
       {/* 09. Safety */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Shield} number="09" title="Safety Considerations" />
+          <SectionHeading icon={Shield} number="10" title="Safety Considerations" />
           <div className="space-y-0.5">
             <WarnItem>Apply LOTO (Lockout/Tagout) before tagging any asset near rotating or energised equipment</WarnItem>
             <WarnItem>No tagging during active plant operation unless the asset and access point are confirmed safe</WarnItem>
