@@ -115,9 +115,10 @@ export const DataGovernanceSection = () => {
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
             <h4 className="font-medium text-foreground mb-2">Audit Trail</h4>
             <p className="text-sm text-muted-foreground">
-              All changes to critical data (hierarchy, FLs, approved PMs) must be logged with timestamp, 
-              user, before/after values, and justification. This ensures traceability for compliance and 
-              future CMMS migration.
+              All changes to critical data (hierarchy, FLs, approved PMs, asset numbers) are logged automatically 
+              with timestamp, user, before/after values, and justification. The audit log (audit_log table) ensures 
+              traceability for compliance and future CMMS migration. Key tables tracked include processing plant 
+              assets, PM templates, work orders, and purchase requests.
             </p>
           </div>
         </CardContent>
