@@ -18,7 +18,7 @@ export const AndyDamGeneratorPMDocument = () => {
         <PMMetadataGrid
           pmId={pm?.id}
           projectSite="Tenant Creek"
-          plantArea="Andy Dam Generator"
+          plantArea="Nobles Natural Sump Generator"
           pmGroup="Mechanical"
           pmType="Inspection (Fitter)"
           frequency="Weekly"
