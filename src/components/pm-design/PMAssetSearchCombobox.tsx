@@ -51,6 +51,7 @@ export const PMAssetSearchCombobox = ({
             assetId: subArea.label,
             assetName: subArea.label,
             area: area.label,
+            areaCode: area.code,
             subArea: subArea.label,
             parentAsset: "",
             isSubArea: true,
