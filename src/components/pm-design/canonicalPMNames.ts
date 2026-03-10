@@ -40,7 +40,7 @@ export const canonicalPMs: CanonicalPM[] = [
 
   // ── MECHANICAL GENERATORS WEEKLY ──
   { pmName: "Admin Generator Weekly Inspection", discipline: "Mechanical", frequency: "1 Week", equipmentType: "Admin Generator" },
-  { pmName: "Andy Dam Generator Weekly Inspection", discipline: "Mechanical", frequency: "1 Week", equipmentType: "Andy Dam Generator" },
+  { pmName: "Nobles Natural Sump Generator Weekly Inspection", discipline: "Mechanical", frequency: "1 Week", equipmentType: "Nobles Natural Sump Generator" },
   { pmName: "Juno Generator Weekly Inspection", discipline: "Mechanical", frequency: "1 Week", equipmentType: "Juno Generator" },
   { pmName: "Lab Generator Weekly Inspection", discipline: "Mechanical", frequency: "1 Week", equipmentType: "Lab Generator" },
   { pmName: "Portable Generators Weekly Inspection", discipline: "Mechanical", frequency: "1 Week", equipmentType: "Portable Generators" },

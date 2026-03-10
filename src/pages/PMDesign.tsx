@@ -440,7 +440,7 @@ const PMDesign = () => {
       case "thickener-weekly": return "Thickener Weekly Inspection";
       case "top-of-tanks-weekly": return "Top of Tanks Weekly Inspection";
       case "admin-generator-weekly": return "Admin Generator Weekly Inspection";
-      case "andy-dam-generator-weekly": return "Andy Dam Generator Weekly Inspection";
+      case "nobles-natural-sump-generator-weekly": return "Nobles Natural Sump Generator Weekly Inspection";
       case "juno-generator-weekly": return "Juno Generator Weekly Inspection";
       case "lab-generator-weekly": return "Lab Generator Weekly Inspection";
       case "portable-generators-weekly": return "Portable Generators Weekly Inspection";

@@ -1483,7 +1483,7 @@ export const pmInspectionData: Record<string, any> = {
   // GENERATORS WEEKLY (shared template — Andy Dam, Juno, Lab, Portable)
   // ══════════════════════════════════════════════════════════════════
 
-  "Andy Dam Generator Weekly Inspection": {
+  "Nobles Natural Sump Generator Weekly Inspection": {
     sections: [
       { equipmentName: "Visual Running Checks", tasks: [
         { task: "Check all gauges" },
