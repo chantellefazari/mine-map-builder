@@ -19,7 +19,7 @@ export const PMStandardsSection = () => {
     },
     {
       discipline: "Electrical",
-      frequencies: ["1-Week", "2-Week", "12-Week", "24-Week", "52-Week"],
+      frequencies: ["1-Week", "2-Week", "4-Week", "6-Week", "12-Week", "26-Week", "52-Week"],
       color: "text-amber-600",
     },
     {
@@ -196,18 +196,18 @@ export const PMStandardsSection = () => {
         </CardHeader>
         <CardContent>
           <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4">
-            <ul className="text-sm space-y-2 text-muted-foreground">
+           <ul className="text-sm space-y-2 text-muted-foreground">
               <li className="flex items-start gap-2">
                 <span className="text-destructive font-bold">✗</span>
                 <span>Do NOT copy-paste generic OEM manuals</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-destructive font-bold">✗</span>
-                <span>Do NOT create schedules here</span>
+                <span>Do NOT create schedules here — this section is design only</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-destructive font-bold">✗</span>
-                <span>Do NOT link PMs to specific assets</span>
+                <span>Do NOT design PMs for individual assets — templates target equipment categories</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-destructive font-bold">✗</span>
@@ -215,7 +215,7 @@ export const PMStandardsSection = () => {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-destructive font-bold">✗</span>
-                <span>This section is <strong>design only</strong>, not execution</span>
+                <span>Do NOT invent frequencies — use risk-based analysis and failure history</span>
               </li>
             </ul>
           </div>

@@ -25,12 +25,12 @@ export const DataGovernanceSection = () => {
             <h4 className="font-medium text-foreground">Data Integrity Rules</h4>
             <div className="grid gap-3 md:grid-cols-2">
               {[
-                { rule: "No Invention", desc: "Do NOT invent, assume, or estimate OEM details" },
-                { rule: "Document Source Only", desc: "Only use information from attached documents" },
-                { rule: "Mark Unknown", desc: "If value cannot be determined, mark as 'TBC'" },
-                { rule: "P&ID Verification", desc: "All mappings sourced from provided data dump only" },
-                { rule: "Baseline Snapshot", desc: "Baseline data is not final, pending walkdown" },
-                { rule: "No Fabrication", desc: "P&ID tags never invented or synthesised" },
+                { rule: "No Invention", desc: "Do NOT invent, assume, or estimate OEM details — mark as 'TBC' if unknown" },
+                { rule: "Document Source Only", desc: "Only use information from verified P&IDs, OEM manuals, or walkdown records" },
+                { rule: "6 Approved Area Codes Only", desc: "SITE, UTL, COM, REC, TAIL, SUP — no other area codes permitted" },
+                { rule: "P&ID Verification", desc: "All equipment mappings sourced from the 14-page P&ID set (PI-001 to PI-014)" },
+                { rule: "Immutable Identifiers", desc: "Asset numbers, FL codes, and part numbers are never reused or changed once assigned" },
+                { rule: "No Fabrication", desc: "P&ID tags, asset numbers, and FL codes are never invented or synthesised" },
               ].map((item, index) => (
                 <div key={index} className="flex items-start gap-2 bg-background rounded-md p-3 border border-border">
                   <Lock className="w-4 h-4 text-rose-600 mt-0.5 flex-shrink-0" />
@@ -85,10 +85,13 @@ export const DataGovernanceSection = () => {
                 Locked (Read-Only)
               </h4>
               <ul className="text-sm space-y-1 text-muted-foreground">
-                <li>• Asset Hierarchy structure</li>
-                <li>• Functional Location codes</li>
-                <li>• Assigned Asset Numbers</li>
-                <li>• Approved PM Templates</li>
+                <li>• Asset Hierarchy structure (7-level model)</li>
+                <li>• 6 Approved Main Area codes (SITE, UTL, COM, REC, TAIL, SUP)</li>
+                <li>• Functional Location codes (TCMG-PP-AREA-SUBAREA-SYSTEM)</li>
+                <li>• Assigned Asset Numbers (Area-Prefix First format)</li>
+                <li>• P&ID extraction register (14-page verified set)</li>
+                <li>• Approved PM Templates (88 templates across 3 disciplines)</li>
+                <li>• Electrical asset identifiers (17-GN-xxx, 18-MCC-xxx series)</li>
               </ul>
             </div>
 
@@ -98,10 +101,12 @@ export const DataGovernanceSection = () => {
                 Editable (With Approval)
               </h4>
               <ul className="text-sm space-y-1 text-muted-foreground">
-                <li>• Component OEM details</li>
-                <li>• Spare parts criticality</li>
-                <li>• Draft PM Templates</li>
-                <li>• Stock levels and suppliers</li>
+                <li>• Component OEM details and specifications</li>
+                <li>• Spare parts criticality classification</li>
+                <li>• Draft PM Templates (before approval)</li>
+                <li>• Stock levels, min/max, and supplier linkages</li>
+                <li>• PM-to-Asset linking (staging table only)</li>
+                <li>• Asset tag rollout installation status</li>
               </ul>
             </div>
           </div>
@@ -110,9 +115,10 @@ export const DataGovernanceSection = () => {
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
             <h4 className="font-medium text-foreground mb-2">Audit Trail</h4>
             <p className="text-sm text-muted-foreground">
-              All changes to critical data (hierarchy, FLs, approved PMs) must be logged with timestamp, 
-              user, before/after values, and justification. This ensures traceability for compliance and 
-              future CMMS migration.
+              All changes to critical data (hierarchy, FLs, approved PMs, asset numbers) are logged automatically 
+              with timestamp, user, before/after values, and justification. The audit log (audit_log table) ensures 
+              traceability for compliance and future CMMS migration. Key tables tracked include processing plant 
+              assets, PM templates, work orders, and purchase requests.
             </p>
           </div>
         </CardContent>
