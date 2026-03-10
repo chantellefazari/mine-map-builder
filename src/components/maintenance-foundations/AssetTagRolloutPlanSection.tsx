@@ -846,8 +846,8 @@ export const AssetTagRolloutPlanSection = () => {
           </div>
           <div className="mt-3 bg-muted/40 rounded-md px-3 py-2">
             <p className="text-xs text-muted-foreground">
-              <strong>Note:</strong> Both attachments are generated dynamically from the live database. Always download the latest version
-              before commencing any rollout activity to ensure the data reflects the current approved asset tree.
+              <strong>Note:</strong> Both attachments must reflect the current approved asset tree at the time of rollout.
+              Confirm with the project lead that the attached versions are the latest approved revision before commencing any rollout activity.
             </p>
           </div>
         </CardContent>
