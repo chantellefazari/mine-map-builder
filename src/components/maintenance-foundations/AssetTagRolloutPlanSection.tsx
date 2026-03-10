@@ -1,5 +1,7 @@
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   ClipboardList,
@@ -19,9 +21,14 @@ import {
   Hash,
   Square,
   Circle,
+  Download,
+  Loader2,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { PidTaggedAssetRegister } from "./PidTaggedAssetRegister";
-import { AssetTagProductionList } from "./AssetTagProductionList";
+import { AssetTagProductionList, type ProductionTag } from "./AssetTagProductionList";
+import { generateRolloutPlanPDF } from "@/utils/generateRolloutPlanPDF";
 
 const SectionHeading = ({
   icon: Icon,
@@ -67,6 +74,92 @@ const WarnItem = ({ children }: { children: React.ReactNode }) => (
 );
 
 export const AssetTagRolloutPlanSection = () => {
+  const [downloading, setDownloading] = useState(false);
+
+  // Fetch tagged assets for PDF export
+  const { data: taggedAssets = [] } = useQuery({
+    queryKey: ["pid-tagged-assets-register"],
+    queryFn: async () => {
+      const allRows: any[] = [];
+      let from = 0;
+      const batchSize = 1000;
+      while (true) {
+        const { data, error } = await supabase
+          .from("processing_plant_assets_rev_b")
+          .select("asset_name, asset_number, parent_asset_label, pid_tags, area_label, sub_area, functional_location")
+          .not("pid_tags", "is", null)
+          .order("sort_order", { ascending: true })
+          .range(from, from + batchSize - 1);
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        const filtered = data.filter((r: any) => Array.isArray(r.pid_tags) && r.pid_tags.length > 0);
+        allRows.push(...filtered);
+        if (data.length < batchSize) break;
+        from += batchSize;
+      }
+      return allRows;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Build production tags from assets (same logic as AssetTagProductionList)
+  const productionTags = useMemo(() => {
+    const TYPE_A = [/TK/i, /^BM/i, /CV|BC/i, /FE/i, /CH/i, /HP/i, /CY/i, /TH/i, /FP/i, /PIPE/i, /PND|SMP/i, /CELL/i, /ARCV/i, /RO/i, /^EW/i];
+    const TYPE_B = [/PMP|PU|PA\d|PB\d/i, /VLV/i, /MTR/i, /GBX|GB/i, /AGT|AG/i, /HPAC/i, /AFLT/i, /CLR|FA-/i, /DSP|DP/i, /SCR|SS/i, /GEN/i, /MK/i, /LUB|LS/i];
+
+    function classify(an: string, name: string): "A" | "B" {
+      for (const p of TYPE_A) if (p.test(an)) return "A";
+      for (const p of TYPE_B) if (p.test(an)) return "B";
+      const n = name.toLowerCase();
+      if (/tank|conveyor|hopper|chute|thickener|cyclone|sump|pond|pipe|cell|receiver/.test(n)) return "A";
+      return "B";
+    }
+
+    function mountLoc(type: "A" | "B", name: string): string {
+      const n = name.toLowerCase();
+      if (type === "A") {
+        if (/tank/.test(n)) return "Tank shell or support leg";
+        if (/conveyor|belt/.test(n)) return "Conveyor frame or stringer";
+        if (/hopper/.test(n)) return "Hopper frame or skirt";
+        if (/mill/.test(n)) return "Mill foundation pedestal";
+        return "Fixed structure or frame";
+      }
+      if (/pump/.test(n)) return "Pump baseplate or adjacent steelwork";
+      if (/valve/.test(n)) return "Pipe support near valve body";
+      if (/motor/.test(n)) return "Motor mounting bracket";
+      return "Adjacent fixed steelwork or support";
+    }
+
+    return taggedAssets.map((a: any): ProductionTag => {
+      const tagType = classify(a.asset_number, a.asset_name);
+      return {
+        assetName: a.asset_name,
+        assetNumber: a.asset_number,
+        pidTag: a.pid_tags.join("; "),
+        parentSystem: a.parent_asset_label,
+        tagType,
+        tagSize: tagType === "A" ? "100mm x 50mm x 1.5mm" : "70mm x 25mm x 1.5mm",
+        mountingLocation: mountLoc(tagType, a.asset_name),
+        mountingMethod: tagType === "A" ? "Adhesive plate or rivet to fixed surface" : "Bolt or cable tie to nearby structure",
+        areaLabel: a.area_label,
+        subArea: a.sub_area,
+        functionalLocation: a.functional_location || "",
+        tagInstalled: false,
+      };
+    });
+  }, [taggedAssets]);
+
+  const handleDownloadPDF = async () => {
+    setDownloading(true);
+    try {
+      generateRolloutPlanPDF(taggedAssets, productionTags);
+    } catch (err) {
+      console.error("PDF generation error:", err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -85,10 +178,26 @@ export const AssetTagRolloutPlanSection = () => {
                 Aligned with the rebuilt asset tree and P&ID extraction register.
               </p>
             </div>
-            <div className="flex flex-col gap-1 text-right">
-              <Badge variant="outline" className="text-xs font-mono">TCMG-ROLLOUT-001</Badge>
-              <Badge variant="outline" className="text-xs font-mono">Rev 2.0</Badge>
+            <div className="flex flex-col gap-1 items-end">
+              <div className="flex gap-1">
+                <Badge variant="outline" className="text-xs font-mono">TCMG-ROLLOUT-001</Badge>
+                <Badge variant="outline" className="text-xs font-mono">Rev 2.0</Badge>
+              </div>
               <Badge className="text-xs bg-amber-500 text-white">Processing Plant Only</Badge>
+              <Button
+                variant="default"
+                size="sm"
+                className="gap-2 mt-1"
+                onClick={handleDownloadPDF}
+                disabled={downloading || taggedAssets.length === 0}
+              >
+                {downloading ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                {downloading ? "Generating…" : "Download Full Plan as PDF"}
+              </Button>
             </div>
           </div>
 
