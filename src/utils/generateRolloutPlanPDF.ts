@@ -262,12 +262,12 @@ export function generateRolloutPlanPDF(
   y = addParagraph(pdf, y, "CRITICAL RULE: No tag shall be applied without a matching system record and confirmed P&ID reference. If the asset is not in the register or has no P&ID tag - STOP, do not tag.");
 
   // 08
-  y = addSectionTitle(pdf, y, "08", "PRE-ROLLOUT REQUIREMENTS — GATE 1");
+  y = addSectionTitle(pdf, y, "08", "PRE-ROLLOUT REQUIREMENTS - GATE 1");
   y = addParagraph(pdf, y, "All items below must be confirmed and signed off before any physical tagging commences.");
   y = addBullets(pdf, y, [
     "Final approved Processing Plant asset tree exported and locked",
     "P&IDs reviewed and validated against asset tree (14-page set verified)",
-    "Asset IDs frozen — no renumbering permitted during rollout",
+    "Asset IDs frozen - no renumbering permitted during rollout",
     "Tag material option selected and supplier confirmed",
     "Tag production list generated with Type A/B classification",
     "Manufacturing order placed and delivery date confirmed",
