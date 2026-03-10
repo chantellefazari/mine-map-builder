@@ -32,7 +32,7 @@ const SITE_EQUIPMENT_MAP: Record<string, string> = {
   "admin generator": "17-GN-009",         // "Admin Generator 50kVA"
   "lab generator": "17-GN-012",           // "Lab Generator 30kVA"
   "juno generator": "17-GN-016",          // "Juno Bore Generator 200kVA"
-  "juno bore pump generator": "17-GN-016",// "Juno Bore Generator 200kVA"
+  "juno bore generator": "17-GN-016",    // "Juno Bore Generator 200kVA"
   "nobles natural sump generator": "17-GN-011", // "Nobles Natural Sump Generator 30kVA"
   "crusher fuel farm generator": "17-GN-013",   // "Crusher Fuel Farm 15kVA"
   "potable water": "PW01",               // "Potable Water"
