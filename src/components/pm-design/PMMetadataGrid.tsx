@@ -4,7 +4,7 @@ import { PMAssetSearchCombobox } from "./PMAssetSearchCombobox";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-
+import { flattenAssetTree } from "@/utils/flattenAssetTree";
 
 interface PMMetadataGridProps {
   pmId?: string;
@@ -46,6 +46,16 @@ export const PMMetadataGrid = ({
 
   useEffect(() => {
     setAssetNumber(initialAssetNumber);
+    // Derive plant area from initial asset number
+    if (initialAssetNumber) {
+      const assets = flattenAssetTree();
+      const match = assets.find((a) => a.assetId === initialAssetNumber);
+      if (match) {
+        setDerivedPlantArea(match.area);
+      }
+    } else {
+      setDerivedPlantArea("");
+    }
   }, [initialAssetNumber]);
 
   useEffect(() => {
