@@ -169,7 +169,7 @@ export function generateRolloutPlanPDF(
   typeBCount: number
 ) {
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant — Tennant Mines Gold");
+  let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant - Tennant Mines Gold");
 
   // 01
   y = addSectionTitle(pdf, y, "01", "TAGGING CRITERIA");
@@ -193,7 +193,7 @@ export function generateRolloutPlanPDF(
   autoTable(pdf, {
     startY: y,
     headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
-    head: [["", "Type A — Major Asset Plates", "Type B — Equipment Position Tags"]],
+    head: [["", "Type A - Major Asset Plates", "Type B - Equipment Position Tags"]],
     body: [
       ["Plate Style", "Flat plate, no hole", "Smaller tag, single hole"],
       ["Mounting", "Adhesive or rivet to asset shell/frame", "Bolt or cable tie to nearby structure"],
@@ -207,29 +207,31 @@ export function generateRolloutPlanPDF(
   autoTable(pdf, {
     startY: y,
     headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
-    head: [["Specification", "Option 1 — 316 Stainless Steel", "Option 2 — DuraBlack"]],
+    head: [["Specification", "Option 1 - 316 Stainless Steel", "Option 2 - DuraBlack"]],
     body: [
-      ["Type A Size", "100mm × 50mm × 1.5mm", "100mm × 40mm × 0.5mm"],
-      ["Type B Size", "70mm × 25mm × 1.5mm", "80mm × 30mm × 0.5mm"],
-      ["Material", "316 Stainless Steel — engraved", "DuraBlack — laser etched"],
+      ["Type A Size", "100mm x 50mm x 1.5mm", "100mm x 40mm x 0.5mm"],
+      ["Type B Size", "70mm x 25mm x 1.5mm", "80mm x 30mm x 0.5mm"],
+      ["Material", "316 Stainless Steel - engraved", "DuraBlack - laser etched"],
       ["Price Estimate", "$7.20 per tag (500+ order)", "$4.65 per tag (500+ order)"],
-      ["Durability", "Excellent — 10+ year lifespan, chemical resistant", "Very Good — UV/oil resistant, 5–8 years outdoor"],
+      ["Durability", "Excellent - 10+ year lifespan, chemical resistant", "Very Good - UV/oil resistant, 5-8 years outdoor"],
       ["Best For", "Chemical areas, heavy wear zones", "General plant areas, cost-effective bulk orders"],
     ],
   });
   y = (pdf as any).lastAutoTable.finalY + 4;
-  y = addParagraph(pdf, y, "Supplier: Trophy Central Alice Springs — quote provided for both options at 500+ quantity pricing.");
+  y = addParagraph(pdf, y, "Supplier: Trophy Central Alice Springs - quote provided for both options at 500+ quantity pricing.");
   y = addParagraph(pdf, y, "Recommendation: Use 316 Stainless Steel for chemical/reagent areas (Gold Room, CIL, Reagents). Use DuraBlack for general plant areas (Water, Compressed Air, Comminution) to reduce cost while maintaining durability.");
 
-  // 05
+  // 05 — Force onto new page so it stays together
+  pdf.addPage();
+  y = MARGIN;
   y = addSectionTitle(pdf, y, "05", "ASSET TAG PRODUCTION OPTIONS");
   y = addParagraph(pdf, y, "Management may choose between outsourcing tag production to a specialist supplier or purchasing equipment for internal on-demand production.");
   autoTable(pdf, {
     startY: y,
     headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
-    head: [["", "Option 1 — Outsource", "Option 2 — In-House"]],
+    head: [["", "Option 1 - Outsource", "Option 2 - In-House"]],
     body: [
-      ["Provider", "Trophy Central – Alice Springs", "Gravotech LS100 Laser Engraver"],
+      ["Provider", "Trophy Central - Alice Springs", "Gravotech LS100 Laser Engraver"],
       ["Materials", "Stainless Steel / DuraBlack", "Stainless plates / laminates"],
       ["Pricing", "$7.20 / $4.65 per tag (500+)", "Capital purchase + consumables"],
       ["Pros", "No capital outlay, professional quality, fast turnaround", "Immediate production, on-demand, can produce additional signage"],
@@ -251,21 +253,21 @@ export function generateRolloutPlanPDF(
   // 07
   y = addSectionTitle(pdf, y, "07", "TAG INSTALLATION WORKFLOW");
   y = addBullets(pdf, y, [
-    "Step 1 — Generate P&ID Asset Register from the database (see Attachment A)",
-    "Step 2 — Produce Tag Production List with Type A/B classification and mounting details (see Attachment B)",
-    "Step 3 — Manufacture tags: submit production list to supplier or produce in-house per Section 05",
-    "Step 4 — Install tags during field verification. Photograph each installed tag showing Asset ID and context.",
-    "Step 5 — Update asset record with 'Tag Installed' status and upload confirmation photo",
+    "Step 1 - Generate P&ID Asset Register from the database (see Attachment A)",
+    "Step 2 - Produce Tag Production List with Type A/B classification and mounting details (see Attachment B)",
+    "Step 3 - Manufacture tags: submit production list to supplier or produce in-house per Section 05",
+    "Step 4 - Install tags during field verification. Photograph each installed tag showing Asset ID and context.",
+    "Step 5 - Update asset record with 'Tag Installed' status and upload confirmation photo",
   ]);
-  y = addParagraph(pdf, y, "CRITICAL RULE: No tag shall be applied without a matching system record and confirmed P&ID reference. If the asset is not in the register or has no P&ID tag — STOP, do not tag.");
+  y = addParagraph(pdf, y, "CRITICAL RULE: No tag shall be applied without a matching system record and confirmed P&ID reference. If the asset is not in the register or has no P&ID tag - STOP, do not tag.");
 
   // 08
-  y = addSectionTitle(pdf, y, "08", "PRE-ROLLOUT REQUIREMENTS — GATE 1");
+  y = addSectionTitle(pdf, y, "08", "PRE-ROLLOUT REQUIREMENTS - GATE 1");
   y = addParagraph(pdf, y, "All items below must be confirmed and signed off before any physical tagging commences.");
   y = addBullets(pdf, y, [
     "Final approved Processing Plant asset tree exported and locked",
     "P&IDs reviewed and validated against asset tree (14-page set verified)",
-    "Asset IDs frozen — no renumbering permitted during rollout",
+    "Asset IDs frozen - no renumbering permitted during rollout",
     "Tag material option selected and supplier confirmed",
     "Tag production list generated with Type A/B classification",
     "Manufacturing order placed and delivery date confirmed",
@@ -283,7 +285,7 @@ export function generateRolloutPlanPDF(
     "Confirm zero duplicated Asset IDs across all tagged positions",
     "Confirm no assets on the production list are missing a physical tag",
     "Photo evidence reviewed and linked to system record for audited assets",
-    "Verify tags are mounted on fixed structure — not on replaceable equipment",
+    "Verify tags are mounted on fixed structure, not on replaceable equipment",
     "Confirm tag text matches asset register exactly (no abbreviations or variations)",
   ]);
 
@@ -293,21 +295,21 @@ export function generateRolloutPlanPDF(
     "Apply LOTO (Lockout/Tagout) before tagging any asset near rotating or energised equipment",
     "No tagging during active plant operation unless the asset and access point are confirmed safe",
     "PPE requirements: Safety glasses, gloves, steel cap boots, high-vis vest at all times",
-    "Ladder use must comply with site ladder management procedure — two-person rule applies",
-    "Do not tag hot surfaces — allow equipment to cool before working in proximity",
-    "Chemical areas (reagents, cyanide) — wear chemical-resistant gloves and face shield",
+    "Ladder use must comply with site ladder management procedure - two-person rule applies",
+    "Do not tag hot surfaces - allow equipment to cool before working in proximity",
+    "Chemical areas (reagents, cyanide) - wear chemical-resistant gloves and face shield",
   ]);
 
   // 11
   y = addSectionTitle(pdf, y, "11", "COMPLETION DELIVERABLES");
   y = addParagraph(pdf, y, "The following must be produced and filed upon rollout completion.");
   y = addBullets(pdf, y, [
-    "Tagged Asset Register — full list of every tagged asset with ID, description, location, and photo reference",
-    "Completion Report — summary of tag counts, discrepancies resolved, QC audit results",
-    "Before/After photo archive — organised by area",
-    "Updated asset tree status — all tagged assets marked as 'Tagged – Verified' in system",
+    "Tagged Asset Register - full list of every tagged asset with ID, description, location, and photo reference",
+    "Completion Report - summary of tag counts, discrepancies resolved, QC audit results",
+    "Before/After photo archive - organised by area",
+    "Updated asset tree status - all tagged assets marked as 'Tagged - Verified' in system",
     "Signed close-out sheets for each area",
-    "Outstanding items list — any deferred assets with justification and target completion date",
+    "Outstanding items list - any deferred assets with justification and target completion date",
   ]);
 
   // 12 — Attachments Reference
@@ -324,7 +326,7 @@ export function generateRolloutPlanPDF(
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(9);
   pdf.setTextColor(...DARK);
-  pdf.text("Attachment A — P&ID Tagged Asset Register", MARGIN + 5, y + 4);
+  pdf.text("Attachment A - P&ID Tagged Asset Register", MARGIN + 5, y + 4);
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(7);
   pdf.setTextColor(...MUTED);
@@ -340,7 +342,7 @@ export function generateRolloutPlanPDF(
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(9);
   pdf.setTextColor(...DARK);
-  pdf.text("Attachment B — Asset Tag Production List", MARGIN + 5, y + 4);
+  pdf.text("Attachment B - Asset Tag Production List", MARGIN + 5, y + 4);
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(7);
   pdf.setTextColor(...MUTED);
@@ -366,7 +368,7 @@ export function generateRolloutPlanPDF(
 // ════════════════════════════════════════════════
 export function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-  let y = addDocHeader(pdf, "P&ID Tagged Asset Register", "Attachment A — Tennant Mines Gold");
+  let y = addDocHeader(pdf, "P&ID Tagged Asset Register", "Attachment A - Tennant Mines Gold");
 
   y = addParagraph(pdf, y, `${taggedAssets.length} assets with linked P&ID references. This register is the sole source of truth for the asset tag rollout scope. Only equipment listed here will receive a physical asset tag.`, 260);
 
@@ -400,7 +402,7 @@ export function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
     theme: "grid",
   });
 
-  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register — Attachment A");
+  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register - Attachment A");
   pdf.save("TCMG_PID_Tagged_Asset_Register.pdf");
 }
 
@@ -412,7 +414,7 @@ export function generateProductionListPDF(productionTags: ProductionTag[]) {
   const typeA = productionTags.filter(t => t.tagType === "A").length;
   const typeB = productionTags.filter(t => t.tagType === "B").length;
 
-  let y = addDocHeader(pdf, "Asset Tag Production List", "Attachment B — Tennant Mines Gold");
+  let y = addDocHeader(pdf, "Asset Tag Production List", "Attachment B - Tennant Mines Gold");
 
   y = addParagraph(pdf, y, `${productionTags.length} tags total  |  Type A (Major Asset Plates): ${typeA}  |  Type B (Position Tags): ${typeB}`, 260);
   y = addParagraph(pdf, y, "Manufacturing batch list for tag production. Tags identify P&ID equipment positions — mount on fixed structure, never on replaceable equipment.", 260);
@@ -464,6 +466,6 @@ export function generateProductionListPDF(productionTags: ProductionTag[]) {
   pdf.text(`Type A (Major Asset Plates): ${typeA}   |   Type B (Position Tags): ${typeB}   |   TOTAL TAGS: ${productionTags.length}`, 16, y + 8);
   pdf.text("Scope: Processing Plant ONLY — Crushing Plant excluded until P&IDs are finalised.", 16, y + 13);
 
-  addPageNumbers(pdf, "TCMG Asset Tag Production List — Attachment B");
+  addPageNumbers(pdf, "TCMG Asset Tag Production List - Attachment B");
   pdf.save("TCMG_Asset_Tag_Production_List.pdf");
 }
