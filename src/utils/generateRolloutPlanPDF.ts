@@ -402,7 +402,7 @@ export function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
     theme: "grid",
   });
 
-  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register — Attachment A");
+  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register - Attachment A");
   pdf.save("TCMG_PID_Tagged_Asset_Register.pdf");
 }
 
