@@ -424,7 +424,7 @@ export const AssetTagRolloutPlanSection = () => {
       {/* 06. Tag Numbering */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Hash} number="05" title="Tag Numbering" />
+          <SectionHeading icon={Hash} number="06" title="Tag Numbering" />
           <p className="text-sm text-muted-foreground mb-3">
             Tag numbers are derived directly from the asset register. No independent numbering systems are permitted.
           </p>
