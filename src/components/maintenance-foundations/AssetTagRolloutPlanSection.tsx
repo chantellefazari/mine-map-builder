@@ -73,7 +73,7 @@ const WarnItem = ({ children }: { children: React.ReactNode }) => (
 );
 
 export const AssetTagRolloutPlanSection = () => {
-  const [downloading, setDownloading] = useState(false);
+  const [downloading] = useState(false);
 
   const { data: taggedAssets = [] } = useQuery({
     queryKey: ["pid-tagged-assets-register"],
@@ -150,30 +150,20 @@ export const AssetTagRolloutPlanSection = () => {
   const typeACnt = productionTags.filter(t => t.tagType === "A").length;
   const typeBCnt = productionTags.filter(t => t.tagType === "B").length;
 
-  const handleDownloadPlan = async () => {
-    console.log("Starting PDF generation...", { assets: taggedAssets.length, tags: productionTags.length });
-    setDownloading(true);
+  const handleDownloadPlan = () => {
     try {
-      await generateRolloutPlanPDF(taggedAssets.length, productionTags.length, typeACnt, typeBCnt);
-      console.log("PDF generation complete");
+      generateRolloutPlanPDF(taggedAssets.length, productionTags.length, typeACnt, typeBCnt);
     } catch (err) { console.error("PDF generation error:", err); }
-    finally { setDownloading(false); }
   };
 
   const handleDownloadRegister = () => {
-    console.log("Starting Asset Register PDF...", { assets: taggedAssets.length });
-    try {
-      generateAssetRegisterPDF(taggedAssets);
-      console.log("Asset Register PDF complete");
-    } catch (err) { console.error("Asset Register PDF error:", err); }
+    try { generateAssetRegisterPDF(taggedAssets); }
+    catch (err) { console.error("Asset Register PDF error:", err); }
   };
 
   const handleDownloadProductionList = () => {
-    console.log("Starting Production List PDF...", { tags: productionTags.length });
-    try {
-      generateProductionListPDF(productionTags);
-      console.log("Production List PDF complete");
-    } catch (err) { console.error("Production List PDF error:", err); }
+    try { generateProductionListPDF(productionTags); }
+    catch (err) { console.error("Production List PDF error:", err); }
   };
 
   return (

@@ -1,18 +1,17 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { saveAs } from "file-saver";
 
 // Pre-load the Gravotech LS100 image as base64 for PDF embedding
 let gravoImageBase64: string | null = null;
-const gravoImagePromise = (async () => {
+
+// Load image eagerly at module init — will be ready by user click time
+(async () => {
   try {
     const resp = await fetch("/images/gravotech-ls100.png");
     const blob = await resp.blob();
-    return new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.readAsDataURL(blob);
-    }).then((d) => { gravoImageBase64 = d; });
+    const reader = new FileReader();
+    reader.onloadend = () => { gravoImageBase64 = reader.result as string; };
+    reader.readAsDataURL(blob);
   } catch { /* silent */ }
 })();
 
@@ -81,10 +80,9 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Download PDF file using file-saver for sandbox compatibility */
+/** Download PDF file — uses jsPDF built-in save (synchronous, preserves user gesture) */
 function triggerPdfDownload(pdf: jsPDF, filename: string) {
-  const blob = pdf.output("blob");
-  saveAs(blob, filename);
+  pdf.save(filename);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
@@ -183,17 +181,14 @@ const tblMargin = { left: MARGIN, right: MARGIN };
 // ════════════════════════════════════════════════
 // 1. MAIN ROLLOUT PLAN PDF (Sections 01–13, no data tables)
 // ════════════════════════════════════════════════
-export async function generateRolloutPlanPDF(
+export function generateRolloutPlanPDF(
   taggedAssetCount: number,
   productionTagCount: number,
   typeACount: number,
   typeBCount: number
 ) {
-  console.log("[PDF] Step 0: awaiting gravoImagePromise");
-  await gravoImagePromise;
-  console.log("[PDF] Step 1: creating jsPDF instance");
+  // gravoImageBase64 is pre-loaded at module init — no await needed
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  console.log("[PDF] Step 2: adding doc header");
   let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant - Tennant Mines Gold");
 
   // 01
@@ -536,11 +531,8 @@ export async function generateRolloutPlanPDF(
   pdf.setTextColor(120, 80, 0);
   pdf.text("⚠  Scope: Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised. Do not apply this rollout plan to crushing or mining equipment.", MARGIN + 4, y + 4);
 
-  console.log("[PDF] Step 3: adding page numbers");
   addPageNumbers(pdf, "TCMG Asset Tag Rollout Plan");
-  console.log("[PDF] Step 4: triggering download");
   triggerPdfDownload(pdf, "TCMG_Asset_Tag_Rollout_Plan.pdf");
-  console.log("[PDF] Step 5: download triggered successfully");
 }
 
 // ════════════════════════════════════════════════
