@@ -176,12 +176,13 @@ const tblMargin = { left: MARGIN, right: MARGIN };
 // ════════════════════════════════════════════════
 // 1. MAIN ROLLOUT PLAN PDF (Sections 01–13, no data tables)
 // ════════════════════════════════════════════════
-export function generateRolloutPlanPDF(
+export async function generateRolloutPlanPDF(
   taggedAssetCount: number,
   productionTagCount: number,
   typeACount: number,
   typeBCount: number
 ) {
+  await gravoImagePromise;
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant - Tennant Mines Gold");
 
