@@ -221,15 +221,17 @@ export function generateRolloutPlanPDF(
   y = addParagraph(pdf, y, "Supplier: Trophy Central Alice Springs - quote provided for both options at 500+ quantity pricing.");
   y = addParagraph(pdf, y, "Recommendation: Use 316 Stainless Steel for chemical/reagent areas (Gold Room, CIL, Reagents). Use DuraBlack for general plant areas (Water, Compressed Air, Comminution) to reduce cost while maintaining durability.");
 
-  // 05
+  // 05 — Force onto new page so it stays together
+  pdf.addPage();
+  y = MARGIN;
   y = addSectionTitle(pdf, y, "05", "ASSET TAG PRODUCTION OPTIONS");
   y = addParagraph(pdf, y, "Management may choose between outsourcing tag production to a specialist supplier or purchasing equipment for internal on-demand production.");
   autoTable(pdf, {
     startY: y,
     headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
-    head: [["", "Option 1 — Outsource", "Option 2 — In-House"]],
+    head: [["", "Option 1 - Outsource", "Option 2 - In-House"]],
     body: [
-      ["Provider", "Trophy Central – Alice Springs", "Gravotech LS100 Laser Engraver"],
+      ["Provider", "Trophy Central - Alice Springs", "Gravotech LS100 Laser Engraver"],
       ["Materials", "Stainless Steel / DuraBlack", "Stainless plates / laminates"],
       ["Pricing", "$7.20 / $4.65 per tag (500+)", "Capital purchase + consumables"],
       ["Pros", "No capital outlay, professional quality, fast turnaround", "Immediate production, on-demand, can produce additional signage"],
