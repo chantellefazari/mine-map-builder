@@ -77,6 +77,7 @@ export const PMAssetSearchCombobox = ({
               assetId: eq.assetNumber,
               assetName: eq.name,
               area: area.label,
+              areaCode: area.code,
               subArea: subArea.label,
               parentAsset: parent.label,
             });
