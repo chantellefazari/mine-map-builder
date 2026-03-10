@@ -326,7 +326,7 @@ export function generateRolloutPlanPDF(
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(9);
   pdf.setTextColor(...DARK);
-  pdf.text("Attachment A — P&ID Tagged Asset Register", MARGIN + 5, y + 4);
+  pdf.text("Attachment A - P&ID Tagged Asset Register", MARGIN + 5, y + 4);
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(7);
   pdf.setTextColor(...MUTED);
