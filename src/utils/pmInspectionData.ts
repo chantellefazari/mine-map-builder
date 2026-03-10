@@ -1196,7 +1196,7 @@ export const pmInspectionData: Record<string, any> = {
       "Lime", "Reagents", "Tail Thickener", "Raw Water", "Process Water", "Admin/Mining", "Warehouse", "Control Room", "Workshop", "Laboratory",
     ],
     generatorChecks: [
-      "Juno Generator", "Admin Generator", "Andy Dam Generator", "Crusher Generator", "Lab Generator", "Fuel Farm Generator",
+      "Juno Generator", "Admin Generator", "Nobles Natural Sump Generator", "Crusher Generator", "Lab Generator", "Fuel Farm Generator",
     ],
     cleansTasks: [
       "Weekly Workshop Cleans", "Fortnightly Light Vehicle Cleans", "Clean filters in VSD's in MCC",
