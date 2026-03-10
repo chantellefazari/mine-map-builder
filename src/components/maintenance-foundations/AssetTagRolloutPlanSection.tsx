@@ -560,7 +560,7 @@ export const AssetTagRolloutPlanSection = () => {
       {/* 10. Deliverables */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Camera} number="10" title="Completion Deliverables" />
+          <SectionHeading icon={Camera} number="11" title="Completion Deliverables" />
           <p className="text-sm text-muted-foreground mb-3">
             The following must be produced and filed upon rollout completion.
           </p>
