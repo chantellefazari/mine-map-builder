@@ -497,6 +497,26 @@ export async function generateRolloutPlanPDF(
   pdf.text("File: TCMG_Asset_Tag_Production_List.pdf", MARGIN + 5, y + 14);
   y += 26;
 
+  // System Alignment Note
+  y = ensureSpace(pdf, y, 22);
+  pdf.setFillColor(245, 240, 224);
+  pdf.roundedRect(MARGIN, y - 2, 180, 18, 2, 2, "F");
+  pdf.setDrawColor(...GOLD);
+  pdf.setLineWidth(0.4);
+  pdf.roundedRect(MARGIN, y - 2, 180, 18, 2, 2, "S");
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(7);
+  pdf.setTextColor(...DARK);
+  pdf.text("SYSTEM ALIGNMENT NOTE", MARGIN + 5, y + 3);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(7);
+  pdf.setTextColor(...MUTED);
+  const alignNote = "All asset hierarchy, functional locations, and system structure are stored within Minesite AI. The physical tag is for rapid visual identification only. Tag numbers match the asset register - no independent numbering systems exist. The tag rollout does not define or alter any system hierarchy.";
+  const alignLines = pdf.splitTextToSize(alignNote, 170);
+  let alignY = y + 7;
+  for (const line of alignLines) { pdf.text(line, MARGIN + 5, alignY); alignY += 3.5; }
+  y += 22;
+
   // Scope reminder
   y = ensureSpace(pdf, y, 14);
   pdf.setFillColor(255, 248, 230);
