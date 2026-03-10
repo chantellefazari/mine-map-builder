@@ -141,8 +141,8 @@ export const PMAssetSearchCombobox = ({
       </div>
 
       {open && (
-        <div className="absolute z-50 top-full left-0 mt-1 bg-popover border border-border rounded-md shadow-lg min-w-[400px]">
-          <ScrollArea className="max-h-80">
+        <div className="absolute z-50 top-full left-0 mt-1 bg-popover border border-border rounded-md shadow-lg min-w-[400px] max-h-72 overflow-hidden flex flex-col">
+          <ScrollArea className="flex-1 h-72">
             {filtered.length === 0 ? (
               <div className="p-3 text-xs text-muted-foreground text-center">
                 No assets found
