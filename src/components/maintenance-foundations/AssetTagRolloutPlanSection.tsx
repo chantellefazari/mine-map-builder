@@ -17,6 +17,7 @@ import {
   Package,
 } from "lucide-react";
 import { PidTaggedAssetRegister } from "./PidTaggedAssetRegister";
+import { AssetTagProductionList } from "./AssetTagProductionList";
 
 const SectionHeading = ({
   icon: Icon,
