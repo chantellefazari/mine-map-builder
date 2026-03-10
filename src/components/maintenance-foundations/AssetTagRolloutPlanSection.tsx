@@ -242,111 +242,94 @@ export const AssetTagRolloutPlanSection = () => {
         </CardContent>
       </Card>
 
-      {/* ── Collapsible Tagging Standard Reference ── */}
-      <Collapsible>
-        <Card className="border-primary/20">
-          <CardContent className="pt-4 pb-3">
-            <CollapsibleTrigger className="flex items-center justify-between w-full group">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center flex-shrink-0">
-                  <Tag className="w-4 h-4 text-primary-foreground" />
-                </div>
-                <div className="text-left">
-                  <p className="text-sm font-bold text-foreground uppercase tracking-wide">Tagging Standard Reference</p>
-                  <p className="text-xs text-muted-foreground">TCMG-STD-TAG-002 — Tag format, sizes, placement rules, and governance</p>
-                </div>
-              </div>
-              <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="mt-4 space-y-5">
-              <Separator />
-
-              {/* Purpose */}
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Purpose</p>
-                <p className="text-sm text-muted-foreground">
-                  Physical tags carry only the Asset ID — nothing else. All hierarchy, functional location codes, and system data are stored in Minesite AI, not on the tag.
-                </p>
-              </div>
-
-              {/* Tag Format */}
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Tag Format — Two Lines Only</p>
-                <div className="bg-muted rounded-lg p-4 font-mono text-center mb-3">
-                  <p className="text-2xl font-black text-foreground tracking-widest">BM01</p>
-                  <p className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Primary Ball Mill</p>
-                  <p className="text-xs text-muted-foreground mt-2">← That is the entire tag. Nothing else.</p>
-                </div>
-                <div className="space-y-0.5">
-                  <CheckItem>Line 1 = Asset ID (large bold) · Line 2 = Short equipment description (smaller)</CheckItem>
-                  <CheckItem>No functional location, area code, QR code, or system strings on the tag</CheckItem>
-                  <CheckItem>Asset ID must match the asset register exactly</CheckItem>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Tag Sizes */}
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Tag Sizes</p>
-                <div className="grid sm:grid-cols-3 gap-3">
-                  <div className="border border-border rounded-lg p-3 space-y-1">
-                    <Badge variant="outline" className="text-[10px] font-mono">Size A</Badge>
-                    <p className="text-xs font-bold text-foreground">100mm × 50mm Plate</p>
-                    <p className="text-xs text-muted-foreground">Panels, tanks, frames, conveyors — adhesive/bolt</p>
-                  </div>
-                  <div className="border border-border rounded-lg p-3 space-y-1">
-                    <Badge variant="outline" className="text-[10px] font-mono">Size B</Badge>
-                    <p className="text-xs font-bold text-foreground">80mm × 30mm Label</p>
-                    <p className="text-xs text-muted-foreground">Small instruments, valves, sensors — adhesive</p>
-                  </div>
-                  <div className="border border-border rounded-lg p-3 space-y-1">
-                    <Badge variant="outline" className="text-[10px] font-mono">Size C</Badge>
-                    <p className="text-xs font-bold text-foreground">100mm × 50mm + Hole</p>
-                    <p className="text-xs text-muted-foreground">Pumps, motors — ring/cable-tie hanging</p>
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Placement Rules */}
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Placement Rules</p>
-                <div className="grid sm:grid-cols-2 gap-1">
-                  <CheckItem>Mount at eye level where possible</CheckItem>
-                  <CheckItem>Mount on non-wear surfaces only</CheckItem>
-                  <CheckItem>Tag must be visible during normal operation</CheckItem>
-                  <CheckItem>Do not mount on removable guards or covers</CheckItem>
-                  <CheckItem>Do not mount on vibration-critical or hot surfaces</CheckItem>
-                  <CheckItem>Do not mount on the equipment itself — mount on fixed structure</CheckItem>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Governance */}
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Governance Controls</p>
-                <div className="grid sm:grid-cols-2 gap-1">
-                  <CheckItem>No asset installed without a physical tag</CheckItem>
-                  <CheckItem>No tag created without a system record</CheckItem>
-                  <CheckItem>Damaged/missing tags replaced immediately</CheckItem>
-                  <CheckItem>Temp handwritten tags max 48 hours</CheckItem>
-                </div>
-              </div>
-
-              <div className="text-xs text-muted-foreground border-t border-border pt-3 mt-2">
-                TCMG-STD-TAG-002 · Simplified Format · Crushing Plant excluded
-              </div>
-            </CollapsibleContent>
-          </CardContent>
-        </Card>
-      </Collapsible>
-
+      {/* 01. Purpose & Scope */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={FileText} number="01" title="Tagging Criteria" />
+          <SectionHeading icon={FileText} number="01" title="Purpose & Scope" />
+          <p className="text-sm text-muted-foreground mb-3">
+            This standard defines a simple, durable physical tagging system for Processing Plant assets.
+            The physical tag carries only the Asset ID - nothing else. All hierarchy, functional location
+            codes, area structures, and system data are stored in Minesite AI, not on the tag.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-1">
+            <CheckItem>Rapid visual identification from Asset ID alone</CheckItem>
+            <CheckItem>Asset ID matches the existing asset tree exactly - no new numbering</CheckItem>
+            <CheckItem>No functional location codes, area codes, or system strings on the tag</CheckItem>
+            <CheckItem>Simple enough to produce internally or order externally on demand</CheckItem>
+            <CheckItem>Robust performance in dusty, wet, and corrosive mining conditions</CheckItem>
+            <CheckItem>Eliminates cluttered, hard-to-read tag formats</CheckItem>
+          </div>
+          <div className="mt-3 bg-muted/40 rounded-md px-3 py-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Exclusion Rule</p>
+            <p className="text-xs text-foreground">
+              System headers, functional locations, and Level 7 sub-components (motors, gearboxes, VSDs) that do not carry their own P&ID tag
+              are <strong>excluded</strong> from the tagging program. Only equipment with a direct P&ID reference is tagged.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 02. Tag Format & Design Specification */}
+      <Card>
+        <CardContent className="pt-5">
+          <SectionHeading icon={Tag} number="02" title="Tag Format & Design Specification" />
+          <p className="text-sm text-muted-foreground mb-3">
+            The physical tag displays <strong>two lines only</strong>: the Asset ID (large, bold) and the equipment
+            description (smaller). No functional location, no area code, no system strings, no QR code.
+          </p>
+
+          {/* Format template */}
+          <div className="bg-muted rounded-lg p-5 font-mono space-y-1 text-center mb-4">
+            <p className="text-2xl font-black text-foreground tracking-widest">BM01</p>
+            <p className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Primary Ball Mill</p>
+            <p className="text-xs text-muted-foreground mt-3">← That is the entire tag. Nothing else.</p>
+          </div>
+
+          <div className="space-y-0.5 mb-4">
+            <CheckItem>Line 1 = Asset ID (large bold, ALL CAPS) - Line 2 = Short equipment description (smaller, uppercase)</CheckItem>
+            <CheckItem>No functional location, area code, QR code, or system strings on the tag</CheckItem>
+            <CheckItem>Asset ID on tag must match Minesite AI system record exactly</CheckItem>
+            <CheckItem>All hierarchy in system - FL codes and area structure remain in Minesite AI only</CheckItem>
+          </div>
+
+          <Separator className="my-4" />
+
+          {/* Material & Marking */}
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Material & Marking</p>
+          <div className="grid sm:grid-cols-2 gap-1 mb-4">
+            <CheckItem>Material: Laser-engraved industrial label or printed industrial label</CheckItem>
+            <CheckItem>Background: White or silver - high contrast for readability</CheckItem>
+            <CheckItem>Font: Bold black sans-serif - minimum 20mm text height for Asset ID</CheckItem>
+            <CheckItem>Finish: Oil-resistant, dust-resistant, UV-resistant coating</CheckItem>
+            <CheckItem>Backing: Industrial adhesive backing - permanent mounting</CheckItem>
+            <CheckItem>Optional: Single hole punch on one end for ring or cable-tie attachment</CheckItem>
+          </div>
+
+          <Separator className="my-4" />
+
+          {/* Tag Layout Examples */}
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Layout Examples</p>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="bg-muted/40 rounded-md px-3 py-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Type A Tag Layout</p>
+              <div className="bg-background border border-border rounded px-4 py-3 text-center font-mono">
+                <p className="text-lg font-bold text-foreground">BM01</p>
+                <p className="text-xs text-muted-foreground">Primary Ball Mill</p>
+              </div>
+            </div>
+            <div className="bg-muted/40 rounded-md px-3 py-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Type B Tag Layout</p>
+              <div className="bg-background border border-border rounded px-4 py-3 text-center font-mono">
+                <p className="text-base font-bold text-foreground">CFP01-PA01</p>
+                <p className="text-[11px] text-muted-foreground">Cyclone Feed Pump (Duty)</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 03. Tagging Criteria */}
+
           <p className="text-sm text-muted-foreground mb-3">
             Physical asset tags are issued exclusively to equipment that has a linked P&ID equipment tag.
             This ensures every tag has a verified engineering reference and eliminates uncontrolled tagging.
