@@ -193,7 +193,7 @@ export function generateRolloutPlanPDF(
   autoTable(pdf, {
     startY: y,
     headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
-    head: [["", "Type A — Major Asset Plates", "Type B — Equipment Position Tags"]],
+    head: [["", "Type A - Major Asset Plates", "Type B - Equipment Position Tags"]],
     body: [
       ["Plate Style", "Flat plate, no hole", "Smaller tag, single hole"],
       ["Mounting", "Adhesive or rivet to asset shell/frame", "Bolt or cable tie to nearby structure"],
