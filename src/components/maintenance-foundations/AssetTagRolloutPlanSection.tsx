@@ -824,7 +824,7 @@ export const AssetTagRolloutPlanSection = () => {
               </div>
               <p className="text-xs text-muted-foreground">
                 Complete register of all Processing Plant assets with linked P&ID tags. This is the sole source of truth
-                for the tagging scope - only assets listed here receive a physical tag. Generated from the live asset database.
+                for the tagging scope - only assets listed here receive a physical tag.
               </p>
               <div className="bg-muted/40 rounded-md px-3 py-2 mt-2">
                 <p className="text-xs text-foreground"><strong>Contains:</strong> Asset Number, Asset Name, Parent System, P&ID Tag(s), Area, Sub-Area, Functional Location</p>
