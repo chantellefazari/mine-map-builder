@@ -813,8 +813,8 @@ export const AssetTagRolloutPlanSection = () => {
         <CardContent className="pt-5">
           <SectionHeading icon={FileText} number="14" title="Attachments" />
           <p className="text-sm text-muted-foreground mb-4">
-            The following attachments form part of this document and must be generated from the live database before commencing the rollout.
-            Download each attachment using the buttons in the document header above.
+            The following attachments form part of this document and must be current before commencing the rollout.
+            Both attachments are included as separate documents within this deliverable package.
           </p>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="border border-border rounded-lg p-4 space-y-2">
