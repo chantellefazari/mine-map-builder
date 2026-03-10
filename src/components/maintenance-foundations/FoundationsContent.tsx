@@ -24,7 +24,6 @@ import { PMStandardsSection } from "./PMStandardsSection";
 import { SparesStrategySection } from "./SparesStrategySection";
 import { DataGovernanceSection } from "./DataGovernanceSection";
 import { SitePartNumberingSection } from "./SitePartNumberingSection";
-import { ProcessingPlantAssetTaggingSection } from "./ProcessingPlantAssetTaggingSection";
 import { AssetTagRolloutPlanSection } from "./AssetTagRolloutPlanSection";
 import { PMAssetLinkingSection } from "./PMAssetLinkingSection";
 
