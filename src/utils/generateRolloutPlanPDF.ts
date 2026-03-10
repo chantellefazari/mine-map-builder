@@ -285,7 +285,7 @@ export function generateRolloutPlanPDF(
     "Confirm zero duplicated Asset IDs across all tagged positions",
     "Confirm no assets on the production list are missing a physical tag",
     "Photo evidence reviewed and linked to system record for audited assets",
-    "Verify tags are mounted on fixed structure — not on replaceable equipment",
+    "Verify tags are mounted on fixed structure, not on replaceable equipment",
     "Confirm tag text matches asset register exactly (no abbreviations or variations)",
   ]);
 
@@ -295,9 +295,9 @@ export function generateRolloutPlanPDF(
     "Apply LOTO (Lockout/Tagout) before tagging any asset near rotating or energised equipment",
     "No tagging during active plant operation unless the asset and access point are confirmed safe",
     "PPE requirements: Safety glasses, gloves, steel cap boots, high-vis vest at all times",
-    "Ladder use must comply with site ladder management procedure — two-person rule applies",
-    "Do not tag hot surfaces — allow equipment to cool before working in proximity",
-    "Chemical areas (reagents, cyanide) — wear chemical-resistant gloves and face shield",
+    "Ladder use must comply with site ladder management procedure - two-person rule applies",
+    "Do not tag hot surfaces - allow equipment to cool before working in proximity",
+    "Chemical areas (reagents, cyanide) - wear chemical-resistant gloves and face shield",
   ]);
 
   // 11
