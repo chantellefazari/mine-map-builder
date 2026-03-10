@@ -150,14 +150,10 @@ export const AssetTagRolloutPlanSection = () => {
   const typeACnt = productionTags.filter(t => t.tagType === "A").length;
   const typeBCnt = productionTags.filter(t => t.tagType === "B").length;
 
-  const handleDownloadPlan = async () => {
-    console.log("Starting PDF generation...", { assets: taggedAssets.length, tags: productionTags.length });
-    setDownloading(true);
+  const handleDownloadPlan = () => {
     try {
-      await generateRolloutPlanPDF(taggedAssets.length, productionTags.length, typeACnt, typeBCnt);
-      console.log("PDF generation complete");
+      generateRolloutPlanPDF(taggedAssets.length, productionTags.length, typeACnt, typeBCnt);
     } catch (err) { console.error("PDF generation error:", err); }
-    finally { setDownloading(false); }
   };
 
   const handleDownloadRegister = () => {
