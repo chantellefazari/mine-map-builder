@@ -39,6 +39,7 @@ export const PMAssetSearchCombobox = ({
     if (!areas) return [];
     const result: FlatAsset[] = [];
     const seenSubAreas = new Set<string>();
+    const seenSystems = new Set<string>();
     for (const area of areas) {
       for (const subArea of area.subAreas) {
         // Add sub-area as a selectable entry
@@ -55,6 +56,19 @@ export const PMAssetSearchCombobox = ({
           });
         }
         for (const parent of subArea.parentAssets) {
+          // Add parent asset (system header) as a selectable entry
+          const sysKey = `${area.code}-${subArea.label}-${parent.label}`;
+          if (!seenSystems.has(sysKey)) {
+            seenSystems.add(sysKey);
+            result.push({
+              assetId: parent.label,
+              assetName: parent.label,
+              area: area.label,
+              subArea: subArea.label,
+              parentAsset: "",
+              isSubArea: true, // reuse styling for area-level targets
+            });
+          }
           for (const eq of parent.equipment) {
             result.push({
               assetId: eq.assetNumber,
