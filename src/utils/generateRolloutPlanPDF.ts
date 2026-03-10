@@ -80,6 +80,19 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
+/** Force download via blob URL — works in sandboxed iframes where pdf.save() is blocked */
+function triggerPdfDownload(pdf: jsPDF, filename: string) {
+  const blob = pdf.output("blob");
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
   const w = pdf.internal.pageSize.getWidth();
   pdf.setFillColor(...GOLD);
@@ -527,7 +540,7 @@ export async function generateRolloutPlanPDF(
   pdf.text("⚠  Scope: Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised. Do not apply this rollout plan to crushing or mining equipment.", MARGIN + 4, y + 4);
 
   addPageNumbers(pdf, "TCMG Asset Tag Rollout Plan");
-  pdf.save("TCMG_Asset_Tag_Rollout_Plan.pdf");
+  triggerPdfDownload(pdf, "TCMG_Asset_Tag_Rollout_Plan.pdf");
 }
 
 // ════════════════════════════════════════════════
@@ -570,7 +583,7 @@ export function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
   });
 
   addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register - Attachment A");
-  pdf.save("TCMG_PID_Tagged_Asset_Register.pdf");
+  triggerPdfDownload(pdf, "TCMG_PID_Tagged_Asset_Register.pdf");
 }
 
 // ════════════════════════════════════════════════
@@ -634,5 +647,5 @@ export function generateProductionListPDF(productionTags: ProductionTag[]) {
   pdf.text("Scope: Processing Plant ONLY — Crushing Plant excluded until P&IDs are finalised.", 16, y + 13);
 
   addPageNumbers(pdf, "TCMG Asset Tag Production List - Attachment B");
-  pdf.save("TCMG_Asset_Tag_Production_List.pdf");
+  triggerPdfDownload(pdf, "TCMG_Asset_Tag_Production_List.pdf");
 }
