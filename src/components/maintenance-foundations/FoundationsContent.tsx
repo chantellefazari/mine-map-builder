@@ -9,7 +9,6 @@ import {
   Shield,
   FileText,
   ListOrdered,
-  Tag,
   MapPin,
   Printer,
   Download,

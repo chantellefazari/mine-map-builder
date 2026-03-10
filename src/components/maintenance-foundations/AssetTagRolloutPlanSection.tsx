@@ -16,6 +16,7 @@ import {
   Wrench,
   FileText,
   ChevronRight,
+  ChevronDown,
   Package,
   Tag,
   Layers,
@@ -24,6 +25,9 @@ import {
   Circle,
   Download,
   Loader2,
+  MapPin,
+  Settings,
+  Ruler,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
