@@ -414,7 +414,7 @@ export function generateProductionListPDF(productionTags: ProductionTag[]) {
   const typeA = productionTags.filter(t => t.tagType === "A").length;
   const typeB = productionTags.filter(t => t.tagType === "B").length;
 
-  let y = addDocHeader(pdf, "Asset Tag Production List", "Attachment B — Tennant Mines Gold");
+  let y = addDocHeader(pdf, "Asset Tag Production List", "Attachment B - Tennant Mines Gold");
 
   y = addParagraph(pdf, y, `${productionTags.length} tags total  |  Type A (Major Asset Plates): ${typeA}  |  Type B (Position Tags): ${typeB}`, 260);
   y = addParagraph(pdf, y, "Manufacturing batch list for tag production. Tags identify P&ID equipment positions — mount on fixed structure, never on replaceable equipment.", 260);
