@@ -808,11 +808,6 @@ export const AssetTagRolloutPlanSection = () => {
         </CardContent>
       </Card>
 
-      {/* Attachment A - P&ID Tagged Asset Register */}
-      <PidTaggedAssetRegister />
-
-      {/* Attachment B - Asset Tag Production List */}
-      <AssetTagProductionList />
 
       {/* Scope reminder */}
       <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
