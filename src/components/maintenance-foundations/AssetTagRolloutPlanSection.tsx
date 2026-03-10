@@ -242,7 +242,108 @@ export const AssetTagRolloutPlanSection = () => {
         </CardContent>
       </Card>
 
-      {/* 01. Tagging Criteria */}
+      {/* ── Collapsible Tagging Standard Reference ── */}
+      <Collapsible>
+        <Card className="border-primary/20">
+          <CardContent className="pt-4 pb-3">
+            <CollapsibleTrigger className="flex items-center justify-between w-full group">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center flex-shrink-0">
+                  <Tag className="w-4 h-4 text-primary-foreground" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-bold text-foreground uppercase tracking-wide">Tagging Standard Reference</p>
+                  <p className="text-xs text-muted-foreground">TCMG-STD-TAG-002 — Tag format, sizes, placement rules, and governance</p>
+                </div>
+              </div>
+              <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-4 space-y-5">
+              <Separator />
+
+              {/* Purpose */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Purpose</p>
+                <p className="text-sm text-muted-foreground">
+                  Physical tags carry only the Asset ID — nothing else. All hierarchy, functional location codes, and system data are stored in Minesite AI, not on the tag.
+                </p>
+              </div>
+
+              {/* Tag Format */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Tag Format — Two Lines Only</p>
+                <div className="bg-muted rounded-lg p-4 font-mono text-center mb-3">
+                  <p className="text-2xl font-black text-foreground tracking-widest">BM01</p>
+                  <p className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Primary Ball Mill</p>
+                  <p className="text-xs text-muted-foreground mt-2">← That is the entire tag. Nothing else.</p>
+                </div>
+                <div className="space-y-0.5">
+                  <CheckItem>Line 1 = Asset ID (large bold) · Line 2 = Short equipment description (smaller)</CheckItem>
+                  <CheckItem>No functional location, area code, QR code, or system strings on the tag</CheckItem>
+                  <CheckItem>Asset ID must match the asset register exactly</CheckItem>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Tag Sizes */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Tag Sizes</p>
+                <div className="grid sm:grid-cols-3 gap-3">
+                  <div className="border border-border rounded-lg p-3 space-y-1">
+                    <Badge variant="outline" className="text-[10px] font-mono">Size A</Badge>
+                    <p className="text-xs font-bold text-foreground">100mm × 50mm Plate</p>
+                    <p className="text-xs text-muted-foreground">Panels, tanks, frames, conveyors — adhesive/bolt</p>
+                  </div>
+                  <div className="border border-border rounded-lg p-3 space-y-1">
+                    <Badge variant="outline" className="text-[10px] font-mono">Size B</Badge>
+                    <p className="text-xs font-bold text-foreground">80mm × 30mm Label</p>
+                    <p className="text-xs text-muted-foreground">Small instruments, valves, sensors — adhesive</p>
+                  </div>
+                  <div className="border border-border rounded-lg p-3 space-y-1">
+                    <Badge variant="outline" className="text-[10px] font-mono">Size C</Badge>
+                    <p className="text-xs font-bold text-foreground">100mm × 50mm + Hole</p>
+                    <p className="text-xs text-muted-foreground">Pumps, motors — ring/cable-tie hanging</p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Placement Rules */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Placement Rules</p>
+                <div className="grid sm:grid-cols-2 gap-1">
+                  <CheckItem>Mount at eye level where possible</CheckItem>
+                  <CheckItem>Mount on non-wear surfaces only</CheckItem>
+                  <CheckItem>Tag must be visible during normal operation</CheckItem>
+                  <CheckItem>Do not mount on removable guards or covers</CheckItem>
+                  <CheckItem>Do not mount on vibration-critical or hot surfaces</CheckItem>
+                  <CheckItem>Do not mount on the equipment itself — mount on fixed structure</CheckItem>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Governance */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Governance Controls</p>
+                <div className="grid sm:grid-cols-2 gap-1">
+                  <CheckItem>No asset installed without a physical tag</CheckItem>
+                  <CheckItem>No tag created without a system record</CheckItem>
+                  <CheckItem>Damaged/missing tags replaced immediately</CheckItem>
+                  <CheckItem>Temp handwritten tags max 48 hours</CheckItem>
+                </div>
+              </div>
+
+              <div className="text-xs text-muted-foreground border-t border-border pt-3 mt-2">
+                TCMG-STD-TAG-002 · Simplified Format · Crushing Plant excluded
+              </div>
+            </CollapsibleContent>
+          </CardContent>
+        </Card>
+      </Collapsible>
+
       <Card>
         <CardContent className="pt-5">
           <SectionHeading icon={FileText} number="01" title="Tagging Criteria" />
