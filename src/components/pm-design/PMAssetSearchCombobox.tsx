@@ -38,8 +38,22 @@ export const PMAssetSearchCombobox = ({
   const assets = useMemo<FlatAsset[]>(() => {
     if (!areas) return [];
     const result: FlatAsset[] = [];
+    const seenSubAreas = new Set<string>();
     for (const area of areas) {
       for (const subArea of area.subAreas) {
+        // Add sub-area as a selectable entry
+        const subAreaKey = `${area.code}-${subArea.label}`;
+        if (!seenSubAreas.has(subAreaKey)) {
+          seenSubAreas.add(subAreaKey);
+          result.push({
+            assetId: subArea.label,
+            assetName: subArea.label,
+            area: area.label,
+            subArea: subArea.label,
+            parentAsset: "",
+            isSubArea: true,
+          });
+        }
         for (const parent of subArea.parentAssets) {
           for (const eq of parent.equipment) {
             result.push({
