@@ -80,16 +80,9 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Download PDF using data URI approach — works in sandboxed iframes */
+/** Download PDF file */
 function triggerPdfDownload(pdf: jsPDF, filename: string) {
-  const dataUri = pdf.output("datauristring");
-  const link = document.createElement("a");
-  link.href = dataUri;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  console.log("[PDF] Download triggered via data URI for:", filename);
+  pdf.save(filename);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
