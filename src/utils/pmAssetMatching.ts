@@ -24,17 +24,22 @@ export interface MatchResult {
  * Only entries where the mapping is certain from assetData.ts / crushingPlantData.ts.
  */
 const SITE_EQUIPMENT_MAP: Record<string, string> = {
-  // ── Verified from assetData.ts ──
+  // ── Verified from processing_plant_assets_rev_b ──
   "ball mill": "BM01",                    // "Primary Ball Mill"
   "filter press": "FP01",                 // "Filter Press"
   "filter press motor": "FP01-MTR01",     // "Filter Press – HPU Motor"
   "thickener": "THK01",                   // "Tails Thickener"
-  "admin generator": "GEN-ADM01",         // "Admin Generator (50kVA)"
-  "lab generator": "GEN-LAB01",           // "Lab Generator (30kVA)"
-  "juno generator": "GEN-JUNO01",         // "Juno Bore Generator (200kVA)"
-  "potable water": "PWT01",               // "Potable Water Tank"
+  "admin generator": "17-GN-009",         // "Admin Generator 50kVA"
+  "lab generator": "17-GN-012",           // "Lab Generator 30kVA"
+  "juno generator": "17-GN-016",          // "Juno Bore Generator 200kVA"
+  "juno bore pump generator": "17-GN-016",// "Juno Bore Generator 200kVA"
+  "nobles natural sump generator": "17-GN-011", // "Nobles Natural Sump Generator 30kVA"
+  "crusher fuel farm generator": "17-GN-013",   // "Crusher Fuel Farm 15kVA"
+  "potable water": "PW01",               // "Potable Water"
+  "power station generator": "GEN01",    // "Generation (parent system)"
+  "generator": "GEN01",                  // "Generation (parent system)"
+  "lighting tower": "LTW01",             // "Lighting Tower 1"
   "milling area motor": "BM01-MTR01",     // "Primary Ball Mill – Main Motor"
-  "process water pond motor": "UTL-PW-PMP-D", // "Process Water Pump (Duty)"
   "electrowinning cell": "EWCL01",        // "Electrowinning Cell"
 };
 
