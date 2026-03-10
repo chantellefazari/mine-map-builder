@@ -2312,32 +2312,32 @@ export const pmInspectionData: Record<string, any> = {
       { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" },
     ],
   },
-  "RCD Testing Sheets - Andys Dam Generator 3M": {
-    generatorId: "andys-dam", generatorName: "Andy's Dam Generator", assetNumber: "GEN-011", area: "ANDY'S DAM",
+  "RCD Testing Sheets - Nobles Natural Sump Generator 3M": {
+    generatorId: "nobles-natural-sump", generatorName: "Nobles Natural Sump Generator", assetNumber: "17-GN-011", area: "NOBLES NATURAL SUMP",
     testType: "push-button", frequency: "3M",
     circuits: [
       { description: "GPO", rating: "16A" }, { description: "GPO", rating: "16A" },
       { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" },
     ],
   },
-  "RCD Testing Sheets - Andys Dam Generator 6M": {
-    generatorId: "andys-dam", generatorName: "Andy's Dam Generator", assetNumber: "GEN-011", area: "ANDY'S DAM",
+  "RCD Testing Sheets - Nobles Natural Sump Generator 6M": {
+    generatorId: "nobles-natural-sump", generatorName: "Nobles Natural Sump Generator", assetNumber: "17-GN-011", area: "NOBLES NATURAL SUMP",
     testType: "injection", frequency: "6M",
     circuits: [
       { description: "15A OUTLET", rating: "16A" }, { description: "15A OUTLET", rating: "16A" },
       { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" },
     ],
   },
-  "RCD Testing Sheets - Juno Bore Pump Generator 3M": {
-    generatorId: "juno-bore", generatorName: "Juno Bore Pump Generator", assetNumber: "GEN-010", area: "JUNO BORE PUMP",
+  "RCD Testing Sheets - Juno Generator 3M": {
+    generatorId: "juno-bore", generatorName: "Juno Generator", assetNumber: "17-GN-016", area: "JUNO BORE",
     testType: "push-button", frequency: "3M",
     circuits: [
       { description: "15A OUTLET", rating: "16A" }, { description: "15A OUTLET", rating: "16A" },
       { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" },
     ],
   },
-  "RCD Testing Sheets - Juno Bore Pump Generator 6M": {
-    generatorId: "juno-bore", generatorName: "Juno Bore Pump Generator", assetNumber: "GEN-010", area: "JUNO BORE PUMP",
+  "RCD Testing Sheets - Juno Generator 6M": {
+    generatorId: "juno-bore", generatorName: "Juno Generator", assetNumber: "17-GN-016", area: "JUNO BORE",
     testType: "injection", frequency: "6M",
     circuits: [
       { description: "15A OUTLET", rating: "16A" }, { description: "15A OUTLET", rating: "16A" },

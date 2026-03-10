@@ -500,8 +500,8 @@ const PMDesign = () => {
       case "motor-inspections-services": return "Services Motor Inspection";
       case "motor-inspections-tanks": return "Tanks Motor Inspection";
       case "rcd-3m-testing-admin": return "Admin Generator RCD Test (12 Week)";
-      case "rcd-3m-testing-juno-bore": return "Juno Bore Pump Generator RCD Test (12 Week)";
-      case "rcd-3m-testing-andys-dam": return "Andy's Dam Generator RCD Test (12 Week)";
+      case "rcd-3m-testing-juno-bore": return "Juno Generator RCD Test (12 Week)";
+      case "rcd-3m-testing-andys-dam": return "Nobles Natural Sump Generator RCD Test (12 Week)";
       case "rcd-3m-testing-lab": return "Lab Generator RCD Test (12 Week)";
       case "rcd-3m-testing-crusher-workshop": return "Crusher Workshop Generator RCD Test (12 Week)";
       case "rcd-3m-testing-crusher-fuel-farm": return "Crusher Fuel Farm Generator RCD Test (12 Week)";

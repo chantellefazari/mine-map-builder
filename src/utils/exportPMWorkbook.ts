@@ -389,7 +389,7 @@ export const exportPMWorkbook = async () => {
       ...["Conveyors", "Ball Mill", "CIP TANKS", "Filter Press", "Process Fuel Farm", "Air Compressors", "Lime", "Reagents", "Tail Thickener", "Raw Water", "Process Water", "Admin/Mining", "Warehouse", "Control Room", "Workshop", "Laboratory"].map(zone => ({
         "PM Name": "Visual Zone Checks Weekly", "Section": "Lighting Checks", "Item": zone,
       })),
-      ...["Juno Generator", "Admin Generator", "Andy Dam Generator", "Crusher Generator", "Lab Generator", "Fuel Farm Generator"].map(gen => ({
+      ...["Juno Generator", "Admin Generator", "Nobles Natural Sump Generator", "Crusher Generator", "Lab Generator", "Fuel Farm Generator"].map(gen => ({
         "PM Name": "Visual Zone Checks Weekly", "Section": "Generator Checks", "Item": gen,
       })),
       ...["Weekly Workshop Cleans", "Fortnightly Light Vehicle Cleans", "Clean filters in VSD's in MCC"].map(task => ({
