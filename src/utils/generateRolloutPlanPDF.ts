@@ -253,13 +253,13 @@ export function generateRolloutPlanPDF(
   // 07
   y = addSectionTitle(pdf, y, "07", "TAG INSTALLATION WORKFLOW");
   y = addBullets(pdf, y, [
-    "Step 1 — Generate P&ID Asset Register from the database (see Attachment A)",
-    "Step 2 — Produce Tag Production List with Type A/B classification and mounting details (see Attachment B)",
-    "Step 3 — Manufacture tags: submit production list to supplier or produce in-house per Section 05",
-    "Step 4 — Install tags during field verification. Photograph each installed tag showing Asset ID and context.",
-    "Step 5 — Update asset record with 'Tag Installed' status and upload confirmation photo",
+    "Step 1 - Generate P&ID Asset Register from the database (see Attachment A)",
+    "Step 2 - Produce Tag Production List with Type A/B classification and mounting details (see Attachment B)",
+    "Step 3 - Manufacture tags: submit production list to supplier or produce in-house per Section 05",
+    "Step 4 - Install tags during field verification. Photograph each installed tag showing Asset ID and context.",
+    "Step 5 - Update asset record with 'Tag Installed' status and upload confirmation photo",
   ]);
-  y = addParagraph(pdf, y, "CRITICAL RULE: No tag shall be applied without a matching system record and confirmed P&ID reference. If the asset is not in the register or has no P&ID tag — STOP, do not tag.");
+  y = addParagraph(pdf, y, "CRITICAL RULE: No tag shall be applied without a matching system record and confirmed P&ID reference. If the asset is not in the register or has no P&ID tag - STOP, do not tag.");
 
   // 08
   y = addSectionTitle(pdf, y, "08", "PRE-ROLLOUT REQUIREMENTS — GATE 1");
