@@ -1,22 +1,19 @@
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   ClipboardList,
   CheckCircle2,
   AlertTriangle,
   Factory,
   Shield,
-  Calendar,
   Camera,
   Database,
   Wrench,
   FileText,
   ChevronRight,
-  ChevronDown,
   Package,
   Tag,
   Layers,
@@ -26,8 +23,6 @@ import {
   Download,
   Loader2,
   MapPin,
-  Settings,
-  Ruler,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -81,7 +76,6 @@ const WarnItem = ({ children }: { children: React.ReactNode }) => (
 export const AssetTagRolloutPlanSection = () => {
   const [downloading, setDownloading] = useState(false);
 
-  // Fetch tagged assets for PDF export
   const { data: taggedAssets = [] } = useQuery({
     queryKey: ["pid-tagged-assets-register"],
     queryFn: async () => {
@@ -107,7 +101,6 @@ export const AssetTagRolloutPlanSection = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Build production tags from assets (same logic as AssetTagProductionList)
   const productionTags = useMemo(() => {
     const TYPE_A = [/TK/i, /^BM/i, /CV|BC/i, /FE/i, /CH/i, /HP/i, /CY/i, /TH/i, /FP/i, /PIPE/i, /PND|SMP/i, /CELL/i, /ARCV/i, /RO/i, /^EW/i];
     const TYPE_B = [/PMP|PU|PA\d|PB\d/i, /VLV/i, /MTR/i, /GBX|GB/i, /AGT|AG/i, /HPAC/i, /AFLT/i, /CLR|FA-/i, /DSP|DP/i, /SCR|SS/i, /GEN/i, /MK/i, /LUB|LS/i];
@@ -183,20 +176,20 @@ export const AssetTagRolloutPlanSection = () => {
               <div className="flex items-center gap-2 mb-1">
                 <ClipboardList className="w-5 h-5 text-primary" />
                 <h2 className="text-lg font-bold text-foreground">
-                  Processing Plant – Asset Tag Rollout Plan
+                  Processing Plant - Asset Tagging Standard & Rollout Plan
                 </h2>
               </div>
               <p className="text-sm text-muted-foreground max-w-2xl">
-                Structured implementation plan for physical asset tagging across the processing plant.
+                Complete tagging standard and structured implementation plan for physical asset tagging across the processing plant.
                 Aligned with the rebuilt asset tree and P&ID extraction register.
               </p>
             </div>
             <div className="flex flex-col gap-1.5 items-end">
               <div className="flex gap-1">
-                <Badge variant="outline" className="text-xs font-mono">TCMG-ROLLOUT-001</Badge>
+                <Badge variant="outline" className="text-xs font-mono">TCMG-STD-TAG-002</Badge>
                 <Badge variant="outline" className="text-xs font-mono">Rev 2.0</Badge>
               </div>
-              <Badge className="text-xs bg-amber-500 text-white">Processing Plant Only</Badge>
+              <Badge className="text-xs bg-primary text-primary-foreground">Processing Plant Only</Badge>
               <div className="flex flex-col gap-1 mt-1">
                 <Button
                   variant="default"
@@ -216,7 +209,7 @@ export const AssetTagRolloutPlanSection = () => {
                   disabled={taggedAssets.length === 0}
                 >
                   <FileText className="w-3.5 h-3.5" />
-                  Attachment A — Asset Register PDF
+                  Attachment A - Asset Register PDF
                 </Button>
                 <Button
                   variant="outline"
@@ -226,7 +219,7 @@ export const AssetTagRolloutPlanSection = () => {
                   disabled={productionTags.length === 0}
                 >
                   <FileText className="w-3.5 h-3.5" />
-                  Attachment B — Production List PDF
+                  Attachment B - Production List PDF
                 </Button>
               </div>
             </div>
@@ -236,11 +229,15 @@ export const AssetTagRolloutPlanSection = () => {
 
           <div className="bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
             <p className="text-xs text-amber-800 font-medium">
-              ⚠ Scope Notice: This rollout plan applies to the Processing Plant ONLY. The Crushing Plant is excluded until P&IDs are finalised and approved.
+              ⚠ Scope Notice: This plan applies to the Processing Plant ONLY. The Crushing Plant is excluded until P&IDs are finalised and approved.
             </p>
           </div>
         </CardContent>
       </Card>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          PART A — TAGGING STANDARD
+          ═══════════════════════════════════════════════════════════════════════ */}
 
       {/* 01. Purpose & Scope */}
       <Card>
@@ -258,13 +255,6 @@ export const AssetTagRolloutPlanSection = () => {
             <CheckItem>Simple enough to produce internally or order externally on demand</CheckItem>
             <CheckItem>Robust performance in dusty, wet, and corrosive mining conditions</CheckItem>
             <CheckItem>Eliminates cluttered, hard-to-read tag formats</CheckItem>
-          </div>
-          <div className="mt-3 bg-muted/40 rounded-md px-3 py-2">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Exclusion Rule</p>
-            <p className="text-xs text-foreground">
-              System headers, functional locations, and Level 7 sub-components (motors, gearboxes, VSDs) that do not carry their own P&ID tag
-              are <strong>excluded</strong> from the tagging program. Only equipment with a direct P&ID reference is tagged.
-            </p>
           </div>
         </CardContent>
       </Card>
@@ -329,7 +319,9 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 03. Tagging Criteria */}
-
+      <Card>
+        <CardContent className="pt-5">
+          <SectionHeading icon={ClipboardList} number="03" title="Tagging Criteria" />
           <p className="text-sm text-muted-foreground mb-3">
             Physical asset tags are issued exclusively to equipment that has a linked P&ID equipment tag.
             This ensures every tag has a verified engineering reference and eliminates uncontrolled tagging.
@@ -337,7 +329,7 @@ export const AssetTagRolloutPlanSection = () => {
           <div className="space-y-0.5">
             <CheckItem>Only assets with a linked P&ID tag number will receive a physical asset tag</CheckItem>
             <CheckItem>Assets without P&ID references are excluded from the tagging program</CheckItem>
-            <CheckItem>Tag numbers must match the asset number used in the asset register and P&ID — no independent numbering systems permitted</CheckItem>
+            <CheckItem>Tag numbers must match the asset number used in the asset register and P&ID - no independent numbering systems permitted</CheckItem>
             <CheckItem>The P&ID Tagged Asset Register (generated from the live database) is the sole source of truth for the tagging scope</CheckItem>
           </div>
           <div className="mt-3 bg-muted/40 rounded-md px-3 py-2">
@@ -350,10 +342,77 @@ export const AssetTagRolloutPlanSection = () => {
         </CardContent>
       </Card>
 
-      {/* 02. Tag Mounting Philosophy */}
+      {/* 04. Tag Categories & Sizes */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Shield} number="02" title="Tag Mounting Philosophy" />
+          <SectionHeading icon={Layers} number="04" title="Tag Categories & Sizes" />
+          <p className="text-sm text-muted-foreground mb-4">
+            Two tag types are used to distinguish between fixed infrastructure and equipment positions.
+          </p>
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Type A */}
+            <Card className="border-l-4 border-l-primary">
+              <CardContent className="py-4 px-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Square className="w-5 h-5 text-primary" />
+                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Type A - Major Asset Plates</span>
+                </div>
+                <p className="text-xs text-muted-foreground font-mono font-bold">100mm × 50mm × 1.5mm</p>
+                <p className="text-xs text-muted-foreground">
+                  Flat plate with <strong>no hole</strong>. Permanently mounted to large fixed infrastructure using adhesive or rivets.
+                </p>
+                <Separator />
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Examples</p>
+                  <div className="flex flex-wrap gap-1">
+                    {["Tanks", "Conveyors", "Crushers", "Mills", "Thickeners", "Hoppers", "Chutes", "Cyclone Clusters", "Filter Presses", "Air Receivers", "Major Structures"].map((item) => (
+                      <Badge key={item} variant="outline" className="text-[10px]">{item}</Badge>
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-muted/50 rounded-md px-2 py-1.5">
+                  <p className="text-[11px] text-muted-foreground">
+                    <strong>Mounting:</strong> Adhesive plate or rivet directly to the asset shell, frame, or support structure.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Type B */}
+            <Card className="border-l-4 border-l-amber-500">
+              <CardContent className="py-4 px-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Circle className="w-5 h-5 text-amber-500" />
+                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Type B - Equipment Position Tags</span>
+                </div>
+                <p className="text-xs text-muted-foreground font-mono font-bold">70mm × 25mm × 1.5mm</p>
+                <p className="text-xs text-muted-foreground">
+                  Smaller tag with a <strong>single hole</strong>. Mounted to nearby fixed structure using bolt or cable tie at the equipment connection point.
+                </p>
+                <Separator />
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Examples</p>
+                  <div className="flex flex-wrap gap-1">
+                    {["Pumps", "Valves", "Motors", "Instruments", "Agitators", "Compressors", "Screens", "Lube Systems", "Dosing Pumps", "Generators", "Hoists", "Fans / Coolers"].map((item) => (
+                      <Badge key={item} variant="outline" className="text-[10px]">{item}</Badge>
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-muted/50 rounded-md px-2 py-1.5">
+                  <p className="text-[11px] text-muted-foreground">
+                    <strong>Mounting:</strong> Bolt or cable tie to adjacent steelwork, pipe support, baseplate or skid frame - never on the equipment itself.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 05. Tag Mounting Philosophy & Placement */}
+      <Card>
+        <CardContent className="pt-5">
+          <SectionHeading icon={Shield} number="05" title="Tag Mounting Philosophy & Placement" />
           <p className="text-sm text-muted-foreground mb-3">
             Asset tags represent the P&ID equipment <strong>position</strong>, not the removable equipment itself.
             Tags must be mounted on the fixed structure at the equipment connection point so they remain correct
@@ -384,12 +443,45 @@ export const AssetTagRolloutPlanSection = () => {
               </div>
             </div>
           </div>
+
+          <Separator className="my-4" />
+
+          {/* Placement by Equipment Type */}
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Placement by Equipment Type</p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-muted/60">
+                  <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase border border-border">Equipment Type</th>
+                  <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase border border-border">Placement Location</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {[
+                  ["Motors",     "Mount on frame side - non-drive end - avoid cooling fins"],
+                  ["Pumps",      "Mount on base frame - discharge side - not on removable guards"],
+                  ["Conveyors",  "Drive side near motor - 1.0-1.5m above ground - not on belt guards"],
+                  ["Screens",    "Structural frame near drive side - eye level where accessible"],
+                  ["Tanks",      "Near manway or ladder access point - eye level where possible"],
+                  ["Electrical panels", "Front exterior door - eye level"],
+                  ["Gearboxes",  "Oil filler or inspection side - avoid hot surfaces"],
+                  ["Crushers",   "Main frame structural section - non-wear, non-impact area"],
+                ].map(([type, placement]) => (
+                  <tr key={type} className="hover:bg-muted/30">
+                    <td className="px-3 py-2 text-sm font-semibold text-foreground border border-border">{type}</td>
+                    <td className="px-3 py-2 text-sm text-muted-foreground border border-border">{placement}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
           <div className="mt-4 bg-primary/5 border border-primary/20 rounded-md px-3 py-2">
             <div className="flex items-start gap-2">
               <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
               <p className="text-xs text-foreground">
                 <strong>Rationale:</strong> When a pump is replaced, the P&ID position remains the same. The tag identifies
-                <em> where</em> the equipment connects to the process — not <em>which</em> specific unit is installed.
+                <em> where</em> the equipment connects to the process - not <em>which</em> specific unit is installed.
                 This eliminates re-tagging after every equipment changeout.
               </p>
             </div>
@@ -397,75 +489,14 @@ export const AssetTagRolloutPlanSection = () => {
         </CardContent>
       </Card>
 
-      {/* 03. Tag Categories */}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          PART B — ROLLOUT PLAN
+          ═══════════════════════════════════════════════════════════════════════ */}
+
+      {/* 06. Tag Material Options */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Layers} number="03" title="Tag Categories" />
-          <p className="text-sm text-muted-foreground mb-4">
-            Two tag types are used to distinguish between fixed infrastructure and equipment positions.
-          </p>
-          <div className="grid md:grid-cols-2 gap-4">
-            {/* Type A */}
-            <Card className="border-l-4 border-l-primary">
-              <CardContent className="py-4 px-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Square className="w-5 h-5 text-primary" />
-                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Type A – Major Asset Plates</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Flat plate with <strong>no hole</strong>. Permanently mounted to large fixed infrastructure using adhesive or rivets.
-                </p>
-                <Separator />
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Examples</p>
-                  <div className="flex flex-wrap gap-1">
-                    {["Tanks", "Conveyors", "Crushers", "Mills", "Thickeners", "Hoppers", "Chutes", "Cyclone Clusters", "Filter Presses", "Air Receivers", "Buildings", "Major Structures"].map((item) => (
-                      <Badge key={item} variant="outline" className="text-[10px]">{item}</Badge>
-                    ))}
-                  </div>
-                </div>
-                <div className="bg-muted/50 rounded-md px-2 py-1.5">
-                  <p className="text-[11px] text-muted-foreground">
-                    <strong>Mounting:</strong> Adhesive plate or rivet directly to the asset shell, frame, or support structure.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Type B */}
-            <Card className="border-l-4 border-l-amber-500">
-              <CardContent className="py-4 px-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Circle className="w-5 h-5 text-amber-500" />
-                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Type B – Equipment Position Tags</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Smaller tag with a <strong>single hole</strong>. Mounted to nearby fixed structure using bolt or cable tie at the equipment connection point.
-                </p>
-                <Separator />
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Examples</p>
-                  <div className="flex flex-wrap gap-1">
-                    {["Pumps", "Valves", "Motors", "Instruments", "Agitators", "Compressors", "Screens", "Lube Systems", "Dosing Pumps", "Generators", "Hoists", "Fans / Coolers"].map((item) => (
-                      <Badge key={item} variant="outline" className="text-[10px]">{item}</Badge>
-                    ))}
-                  </div>
-                </div>
-                <div className="bg-muted/50 rounded-md px-2 py-1.5">
-                  <p className="text-[11px] text-muted-foreground">
-                    <strong>Mounting:</strong> Bolt or cable tie to adjacent steelwork, pipe support, baseplate or skid frame — never on the equipment itself.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* 04. Tag Material Options */}
-      <Card>
-        <CardContent className="pt-5">
-          <SectionHeading icon={Package} number="04" title="Tag Material Options" />
+          <SectionHeading icon={Package} number="06" title="Tag Material Options" />
           <p className="text-sm text-muted-foreground mb-4">
             Two material options have been quoted. Final selection must be locked before tag manufacturing begins.
           </p>
@@ -474,19 +505,19 @@ export const AssetTagRolloutPlanSection = () => {
               <thead>
                 <tr className="bg-muted/50">
                   <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border border-border">Specification</th>
-                  <th className="text-left px-3 py-2 text-xs font-semibold text-primary uppercase tracking-wide border border-border">Option 1 — 316 Stainless Steel</th>
-                  <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border border-border">Option 2 — DuraBlack</th>
+                  <th className="text-left px-3 py-2 text-xs font-semibold text-primary uppercase tracking-wide border border-border">Option 1 - 316 Stainless Steel</th>
+                  <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border border-border">Option 2 - DuraBlack</th>
                 </tr>
               </thead>
               <tbody>
                 {[
                   ["Type A Size (Major Assets)", "100mm × 50mm × 1.5mm", "100mm × 40mm × 0.5mm"],
                   ["Type B Size (Position Tags)", "70mm × 25mm × 1.5mm", "80mm × 30mm × 0.5mm"],
-                  ["Material", "316 Stainless Steel – engraved", "DuraBlack – laser etched"],
+                  ["Material", "316 Stainless Steel - engraved", "DuraBlack - laser etched"],
                   ["Price Estimate", "$7.20 per tag (500+ order)", "$4.65 per tag (500+ order)"],
-                  ["Durability", "Excellent — 10+ year lifespan, chemical resistant", "Very Good — UV/oil resistant, 5–8 years outdoor"],
-                  ["Legibility", "Engraved text — permanent, high contrast", "Laser etched — high contrast black/white"],
-                  ["Weight", "Heavier — solid plate", "Lighter — thin profile"],
+                  ["Durability", "Excellent - 10+ year lifespan, chemical resistant", "Very Good - UV/oil resistant, 5-8 years outdoor"],
+                  ["Legibility", "Engraved text - permanent, high contrast", "Laser etched - high contrast black/white"],
+                  ["Weight", "Heavier - solid plate", "Lighter - thin profile"],
                   ["Best For", "Harsh environments, chemical areas, heavy wear", "General plant areas, cost-effective bulk orders"],
                 ].map(([spec, opt1, opt2]) => (
                   <tr key={spec} className="border-b border-border hover:bg-muted/30 transition-colors">
@@ -500,7 +531,7 @@ export const AssetTagRolloutPlanSection = () => {
           </div>
           <div className="mt-3 bg-muted/40 rounded-md px-3 py-2">
             <p className="text-xs text-muted-foreground">
-              <strong>Supplier:</strong> Trophy Central Alice Springs — quote provided for both options at 500+ quantity pricing.
+              <strong>Supplier:</strong> Trophy Central Alice Springs - quote provided for both options at 500+ quantity pricing.
             </p>
           </div>
           <div className="mt-2 flex items-start gap-2 bg-primary/5 rounded-md px-3 py-2">
@@ -513,41 +544,29 @@ export const AssetTagRolloutPlanSection = () => {
         </CardContent>
       </Card>
 
-      {/* 05. Asset Tag Production Options */}
+      {/* 07. Asset Tag Production Options */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Factory} number="05" title="Asset Tag Production Options" />
+          <SectionHeading icon={Factory} number="07" title="Asset Tag Production Options" />
           <p className="text-sm text-muted-foreground mb-4">
             Management may choose between outsourcing tag production to a specialist supplier or purchasing equipment for internal on-demand production.
-            Both approaches are viable — the decision should be based on budget, volume, and long-term operational flexibility.
           </p>
 
           <div className="grid md:grid-cols-2 gap-4">
-            {/* Option 1 — Outsource */}
+            {/* Option 1 - Outsource */}
             <Card className="border-l-4 border-l-primary">
               <CardContent className="py-4 px-4 space-y-3">
                 <div className="flex items-center gap-2">
                   <Package className="w-5 h-5 text-primary" />
-                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Option 1 – Outsource Tag Production</span>
+                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Option 1 - Outsource</span>
                 </div>
-
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Supplier</p>
-                  <p className="text-sm text-foreground font-medium">Trophy Central – Alice Springs</p>
+                  <p className="text-sm text-foreground font-medium">Trophy Central - Alice Springs</p>
                 </div>
-
                 <Separator />
-
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Material Options</p>
-                  <div className="flex flex-wrap gap-1">
-                    <Badge variant="outline" className="text-[10px]">Stainless Steel</Badge>
-                    <Badge variant="outline" className="text-[10px]">DuraBlack</Badge>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Pricing Estimate (500+ qty)</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Pricing (500+ qty)</p>
                   <div className="space-y-1">
                     <div className="flex items-center justify-between text-xs bg-muted/50 rounded px-2 py-1">
                       <span>Stainless Steel</span>
@@ -559,16 +578,13 @@ export const AssetTagRolloutPlanSection = () => {
                     </div>
                   </div>
                 </div>
-
                 <Separator />
-
                 <div className="space-y-0.5">
                   <p className="text-xs font-semibold text-primary uppercase tracking-wider">Pros</p>
                   <CheckItem>No capital equipment required</CheckItem>
                   <CheckItem>Professional engraving quality</CheckItem>
                   <CheckItem>Quick production turnaround</CheckItem>
                 </div>
-
                 <div className="space-y-0.5">
                   <p className="text-xs font-semibold text-destructive uppercase tracking-wider">Cons</p>
                   <WarnItem>Ongoing cost per tag for every order</WarnItem>
@@ -577,19 +593,17 @@ export const AssetTagRolloutPlanSection = () => {
               </CardContent>
             </Card>
 
-            {/* Option 2 — In-House */}
+            {/* Option 2 - In-House */}
             <Card className="border-l-4 border-l-amber-500">
               <CardContent className="py-4 px-4 space-y-3">
                 <div className="flex items-center gap-2">
                   <Wrench className="w-5 h-5 text-amber-500" />
-                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Option 2 – In-House Tag Production</span>
+                  <span className="text-sm font-bold text-foreground uppercase tracking-wide">Option 2 - In-House</span>
                 </div>
-
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Equipment</p>
                   <p className="text-sm text-foreground font-medium">Gravotech LS100 Laser Engraver</p>
                 </div>
-
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Reference</p>
                   <a
@@ -598,31 +612,16 @@ export const AssetTagRolloutPlanSection = () => {
                     rel="noopener noreferrer"
                     className="text-xs text-primary underline break-all"
                   >
-                    gravotech.com.au — LS100 Laser Engraver
+                    gravotech.com.au - LS100 Laser Engraver
                   </a>
                 </div>
-
                 <Separator />
-
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Machine Capability</p>
-                  <div className="space-y-0.5">
-                    <CheckItem>CO₂ laser engraver and cutter</CheckItem>
-                    <CheckItem>Suitable for asset tags and industrial signage</CheckItem>
-                    <CheckItem>Able to engrave stainless plates and laminates</CheckItem>
-                    <CheckItem>Allows on-demand tag production</CheckItem>
-                  </div>
-                </div>
-
-                <Separator />
-
                 <div className="space-y-0.5">
                   <p className="text-xs font-semibold text-primary uppercase tracking-wider">Pros</p>
-                  <CheckItem>Immediate production of tags — no supplier lead time</CheckItem>
-                  <CheckItem>Ability to create tags when new assets are installed</CheckItem>
-                  <CheckItem>Can produce additional labels and signage for site</CheckItem>
+                  <CheckItem>Immediate production - no supplier lead time</CheckItem>
+                  <CheckItem>Tags produced when new assets are installed</CheckItem>
+                  <CheckItem>Can produce additional labels and signage</CheckItem>
                 </div>
-
                 <div className="space-y-0.5">
                   <p className="text-xs font-semibold text-destructive uppercase tracking-wider">Cons</p>
                   <WarnItem>Initial capital equipment purchase required</WarnItem>
@@ -636,74 +635,41 @@ export const AssetTagRolloutPlanSection = () => {
             <div className="flex items-start gap-2">
               <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
               <p className="text-xs text-foreground">
-                <strong>Management Decision:</strong> Either option delivers the required outcome. Outsourcing is the lowest-risk path for the initial
-                batch. In-house production becomes cost-effective if the site anticipates ongoing tag requirements for new assets, replacements,
-                and general industrial signage. A hybrid approach — outsource the first batch, then transition to in-house — is also viable.
+                <strong>Management Decision:</strong> Either option delivers the required outcome. A hybrid approach -
+                outsource the first batch, then transition to in-house - is also viable.
               </p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* 06. Tag Numbering */}
+      {/* 08. Tag Installation Workflow */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Hash} number="06" title="Tag Numbering" />
-          <p className="text-sm text-muted-foreground mb-3">
-            Tag numbers are derived directly from the asset register. No independent numbering systems are permitted.
-          </p>
-          <div className="space-y-0.5">
-            <CheckItem>Tag number = Asset Number from the approved asset register (e.g. BM01, CFP01-PA01, THYD01-PMP01)</CheckItem>
-            <CheckItem>The P&ID tag is shown as a secondary reference where space permits</CheckItem>
-            <CheckItem>No site-local numbering, ad-hoc labels, or sequential tag numbers</CheckItem>
-            <CheckItem>If an asset is renumbered in the register, the physical tag must be replaced</CheckItem>
-          </div>
-          <div className="mt-3 grid sm:grid-cols-2 gap-3">
-            <div className="bg-muted/40 rounded-md px-3 py-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Type A Tag Layout</p>
-              <div className="bg-background border border-border rounded px-4 py-3 text-center font-mono">
-                <p className="text-lg font-bold text-foreground">BM01</p>
-                <p className="text-xs text-muted-foreground">Primary Ball Mill</p>
-              </div>
-            </div>
-            <div className="bg-muted/40 rounded-md px-3 py-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Type B Tag Layout</p>
-              <div className="bg-background border border-border rounded px-4 py-3 text-center font-mono">
-                <p className="text-base font-bold text-foreground">CFP01-PA01</p>
-                <p className="text-[11px] text-muted-foreground">Cyclone Feed Pump (Duty)</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* 06. Tag Installation Workflow */}
-      <Card>
-        <CardContent className="pt-5">
-          <SectionHeading icon={Wrench} number="07" title="Tag Installation Workflow" />
+          <SectionHeading icon={Wrench} number="08" title="Tag Installation Workflow" />
           <p className="text-sm text-muted-foreground mb-3">
             Follow this five-step workflow. Each step must be completed before proceeding to the next.
           </p>
           <div className="space-y-0.5">
             <StepItem step={1}>
-              <strong>Generate P&ID Asset Register</strong> — Extract all assets with linked P&ID tags from the database.
-              This produces the "P&ID Tagged Asset Register – Tennant Creek" (see Section 12 below).
+              <strong>Generate P&ID Asset Register</strong> - Extract all assets with linked P&ID tags from the database.
+              This produces the "P&ID Tagged Asset Register" (see Attachment A).
             </StepItem>
             <StepItem step={2}>
-              <strong>Produce Tag Production List</strong> — Classify each asset as Type A or Type B.
-              Determine mounting location and method for each tag. Generate quantities for the manufacturing order (see Section 13 below).
+              <strong>Produce Tag Production List</strong> - Classify each asset as Type A or Type B.
+              Determine mounting location and method for each tag. Generate quantities for the manufacturing order (see Attachment B).
             </StepItem>
             <StepItem step={3}>
-              <strong>Manufacture Tags</strong> — Submit production list to tag supplier.
-              Confirm material, size, and engraving/etching specifications per Section 04.
+              <strong>Manufacture Tags</strong> - Submit production list to tag supplier.
+              Confirm material, size, and engraving/etching specifications per Section 06.
             </StepItem>
             <StepItem step={4}>
-              <strong>Install Tags During Field Verification</strong> — Walk down each area with the production list.
+              <strong>Install Tags During Field Verification</strong> - Walk down each area with the production list.
               Verify equipment exists at the P&ID position. Clean mounting surface. Install tag on fixed structure.
               Photograph installed tag showing Asset ID and surrounding context.
             </StepItem>
             <StepItem step={5}>
-              <strong>Update Asset Record</strong> — Mark asset status as "Tagged – Verified" in the asset register.
+              <strong>Update Asset Record</strong> - Mark asset status as "Tagged - Verified" in the asset register.
               Upload confirmation photo linked to the asset record.
             </StepItem>
           </div>
@@ -711,16 +677,16 @@ export const AssetTagRolloutPlanSection = () => {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Critical Rule</p>
             <p className="text-xs text-foreground">
               No tag shall be applied without a matching system record and confirmed P&ID reference.
-              If the asset is not in the register or has no P&ID tag, <strong>stop — do not tag</strong>.
+              If the asset is not in the register or has no P&ID tag, <strong>stop - do not tag</strong>.
             </p>
           </div>
         </CardContent>
       </Card>
 
-      {/* 07. Pre-Rollout Gate */}
+      {/* 09. Pre-Rollout Requirements */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Shield} number="08" title="Pre-Rollout Requirements — Gate 1" />
+          <SectionHeading icon={Shield} number="09" title="Pre-Rollout Requirements - Gate 1" />
           <p className="text-sm text-muted-foreground mb-3">
             All items below must be confirmed and signed off before any physical tagging commences.
           </p>
@@ -728,7 +694,7 @@ export const AssetTagRolloutPlanSection = () => {
             {[
               "Final approved Processing Plant asset tree exported and locked",
               "P&IDs reviewed and validated against asset tree (14-page set verified)",
-              "Asset IDs frozen — no renumbering permitted during rollout",
+              "Asset IDs frozen - no renumbering permitted during rollout",
               "Tag material option selected and supplier confirmed",
               "Tag production list generated with Type A/B classification",
               "Manufacturing order placed and delivery date confirmed",
@@ -745,10 +711,10 @@ export const AssetTagRolloutPlanSection = () => {
         </CardContent>
       </Card>
 
-      {/* 08. Quality Control */}
+      {/* 10. Quality Control */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={CheckCircle2} number="09" title="Quality Control" />
+          <SectionHeading icon={CheckCircle2} number="10" title="Quality Control" />
           <div className="grid sm:grid-cols-2 gap-x-6 gap-y-0">
             {[
               "Maintenance supervisor sign-off required per area before proceeding to next zone",
@@ -757,7 +723,7 @@ export const AssetTagRolloutPlanSection = () => {
               "Confirm zero duplicated Asset IDs across all tagged positions",
               "Confirm no assets on the production list are missing a physical tag",
               "Photo evidence reviewed and linked to system record for audited assets",
-              "Verify tags are mounted on fixed structure — not on replaceable equipment",
+              "Verify tags are mounted on fixed structure - not on replaceable equipment",
               "Confirm tag text matches asset register exactly (no abbreviations or variations)",
             ].map((item) => (
               <CheckItem key={item}>{item}</CheckItem>
@@ -766,35 +732,61 @@ export const AssetTagRolloutPlanSection = () => {
         </CardContent>
       </Card>
 
-      {/* 09. Safety */}
+      {/* 11. Safety Considerations */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Shield} number="10" title="Safety Considerations" />
+          <SectionHeading icon={Shield} number="11" title="Safety Considerations" />
           <div className="space-y-0.5">
             <WarnItem>Apply LOTO (Lockout/Tagout) before tagging any asset near rotating or energised equipment</WarnItem>
             <WarnItem>No tagging during active plant operation unless the asset and access point are confirmed safe</WarnItem>
             <WarnItem>PPE requirements: Safety glasses, gloves, steel cap boots, high-vis vest at all times in processing area</WarnItem>
-            <WarnItem>Ladder use must comply with site ladder management procedure — two-person rule applies</WarnItem>
-            <WarnItem>Do not tag hot surfaces — allow equipment to cool before working in proximity</WarnItem>
-            <WarnItem>Chemical areas (reagents, cyanide) — wear chemical-resistant gloves and face shield</WarnItem>
+            <WarnItem>Ladder use must comply with site ladder management procedure - two-person rule applies</WarnItem>
+            <WarnItem>Do not tag hot surfaces - allow equipment to cool before working in proximity</WarnItem>
+            <WarnItem>Chemical areas (reagents, cyanide) - wear chemical-resistant gloves and face shield</WarnItem>
           </div>
         </CardContent>
       </Card>
 
-      {/* 10. Deliverables */}
+      {/* 12. Completion Deliverables */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Camera} number="11" title="Completion Deliverables" />
+          <SectionHeading icon={Camera} number="12" title="Completion Deliverables" />
           <p className="text-sm text-muted-foreground mb-3">
             The following must be produced and filed upon rollout completion.
           </p>
           <div className="grid sm:grid-cols-2 gap-x-6 gap-y-0">
-            <CheckItem>Tagged Asset Register — full list of every tagged asset with ID, description, location, and photo reference</CheckItem>
-            <CheckItem>Completion Report — summary of tag counts, discrepancies resolved, QC audit results</CheckItem>
-            <CheckItem>Before/After photo archive — organised by area</CheckItem>
-            <CheckItem>Updated asset tree status — all tagged assets marked as "Tagged – Verified" in system</CheckItem>
+            <CheckItem>Tagged Asset Register - full list of every tagged asset with ID, description, location, and photo reference</CheckItem>
+            <CheckItem>Completion Report - summary of tag counts, discrepancies resolved, QC audit results</CheckItem>
+            <CheckItem>Before/After photo archive - organised by area</CheckItem>
+            <CheckItem>Updated asset tree status - all tagged assets marked as "Tagged - Verified" in system</CheckItem>
             <CheckItem>Signed close-out sheets for each area</CheckItem>
-            <CheckItem>Outstanding items list — any deferred assets with justification and target completion date</CheckItem>
+            <CheckItem>Outstanding items list - any deferred assets with justification and target completion date</CheckItem>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 13. Governance Controls */}
+      <Card className="border-destructive/20">
+        <CardContent className="pt-5">
+          <SectionHeading icon={Shield} number="13" title="Governance Controls" />
+          <p className="text-sm text-muted-foreground mb-3">
+            The following governance controls are mandatory for all Processing Plant assets.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-1">
+            <CheckItem>No asset installed or commissioned without a physical tag</CheckItem>
+            <CheckItem>No physical tag created without an existing asset record in Minesite AI</CheckItem>
+            <CheckItem>Asset ID on tag must match the system record exactly</CheckItem>
+            <CheckItem>Damaged or missing tags must be replaced immediately</CheckItem>
+            <CheckItem>Tag replacement must be recorded in the asset's work order history</CheckItem>
+            <CheckItem>Any change to Asset ID requires formal change control and hierarchy update</CheckItem>
+          </div>
+          <Separator className="my-3" />
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Prohibited Practices</p>
+            <WarnItem>Temporary handwritten tags are not permitted beyond commissioning period (max 48 hours)</WarnItem>
+            <WarnItem>Adhesive paper or plastic labels are not acceptable as a permanent tagging solution</WarnItem>
+            <WarnItem>Tags must not be created outside the system - all Asset IDs originate from a validated Minesite AI record</WarnItem>
+            <WarnItem>Functional location codes, area codes, or system strings must NOT be printed on physical tags</WarnItem>
           </div>
         </CardContent>
       </Card>
@@ -808,7 +800,7 @@ export const AssetTagRolloutPlanSection = () => {
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">System Alignment Note</p>
               <p className="text-sm text-foreground">
                 All asset hierarchy, functional locations, and system structure are stored within <strong>Minesite AI</strong>.
-                The physical tag is for rapid visual identification only. Tag numbers match the asset register — no independent
+                The physical tag is for rapid visual identification only. Tag numbers match the asset register - no independent
                 numbering systems exist. The tag rollout does not define or alter any system hierarchy.
               </p>
             </div>
@@ -816,10 +808,10 @@ export const AssetTagRolloutPlanSection = () => {
         </CardContent>
       </Card>
 
-      {/* 11. P&ID Tagged Asset Register */}
+      {/* Attachment A - P&ID Tagged Asset Register */}
       <PidTaggedAssetRegister />
 
-      {/* 12. Asset Tag Production List */}
+      {/* Attachment B - Asset Tag Production List */}
       <AssetTagProductionList />
 
       {/* Scope reminder */}
@@ -829,6 +821,12 @@ export const AssetTagRolloutPlanSection = () => {
           <strong>Scope:</strong> Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised.
           Do not apply this rollout plan to crushing or mining equipment.
         </p>
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4">
+        <span>TCMG-STD-TAG-002 · Processing Plant Asset Tagging Standard & Rollout Plan · Rev 2.0</span>
+        <span>Crushing Plant excluded · Internal use only</span>
       </div>
     </div>
   );
