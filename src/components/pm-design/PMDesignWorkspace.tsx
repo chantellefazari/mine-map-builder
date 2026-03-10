@@ -260,12 +260,16 @@ const PMMasterListView = ({ pms }: { pms: PMData[] }) => {
               <TableCell className="text-xs">{pm.equipmentType}</TableCell>
               <TableCell className="text-xs">{pm.frequency}</TableCell>
               <TableCell className="text-xs">{pm.discipline}</TableCell>
-              <TableCell>
-                <PMAssetSearchCombobox
-                  value={pm.assetNumber}
-                  onChange={(id) => saveField(pm.id, "asset_number", id)}
-                  compact
-                />
+              <TableCell className="text-xs">
+                {pm.assetNumber ? (
+                  <span>{pm.assetNumber}</span>
+                ) : (
+                  <PMAssetSearchCombobox
+                    value={pm.assetNumber}
+                    onChange={(id) => saveField(pm.id, "asset_number", id)}
+                    compact
+                  />
+                )}
               </TableCell>
               <TableCell>
                 <Input
