@@ -181,17 +181,14 @@ const tblMargin = { left: MARGIN, right: MARGIN };
 // ════════════════════════════════════════════════
 // 1. MAIN ROLLOUT PLAN PDF (Sections 01–13, no data tables)
 // ════════════════════════════════════════════════
-export async function generateRolloutPlanPDF(
+export function generateRolloutPlanPDF(
   taggedAssetCount: number,
   productionTagCount: number,
   typeACount: number,
   typeBCount: number
 ) {
-  console.log("[PDF] Step 0: awaiting gravoImagePromise");
-  await gravoImagePromise;
-  console.log("[PDF] Step 1: creating jsPDF instance");
+  // gravoImageBase64 is pre-loaded at module init — no await needed
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  console.log("[PDF] Step 2: adding doc header");
   let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant - Tennant Mines Gold");
 
   // 01
