@@ -124,7 +124,7 @@ const templateRegistry: PMTemplateDefinition[] = [
   })),
 
   // ── RCD TESTING SHEETS (6-MONTHLY) ──
-  ...["Admin Generator", "Juno Bore Pump Generator", "Andys Dam Generator", "Lab Generator", "Crusher Fuel Farm Generator", "Crusher Workshop Generator"].map(loc => ({
+  ...["Admin Generator", "Juno Generator", "Nobles Natural Sump Generator", "Lab Generator", "Crusher Fuel Farm Generator", "Crusher Workshop Generator"].map(loc => ({
     pmName: `RCD Testing Sheets - ${loc} 6M`,
     discipline: "Electrical" as const,
     frequency: "26 Week",
