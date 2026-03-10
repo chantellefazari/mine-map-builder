@@ -162,11 +162,8 @@ export const AssetTagRolloutPlanSection = () => {
   };
 
   const handleDownloadProductionList = () => {
-    console.log("Starting Production List PDF...", { tags: productionTags.length });
-    try {
-      generateProductionListPDF(productionTags);
-      console.log("Production List PDF complete");
-    } catch (err) { console.error("Production List PDF error:", err); }
+    try { generateProductionListPDF(productionTags); }
+    catch (err) { console.error("Production List PDF error:", err); }
   };
 
   return (
