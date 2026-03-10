@@ -80,23 +80,41 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Open PDF — tries save, falls back to new-tab blob viewer */
+/** Download PDF using multiple fallback strategies */
 function triggerPdfDownload(pdf: jsPDF, filename: string) {
-  const blob = pdf.output("blob");
-  const url = URL.createObjectURL(blob);
-  // Open in new tab — works even in sandboxed preview iframes
-  const w = window.open(url, "_blank");
-  if (!w) {
-    // Popup blocked fallback — force download via anchor
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.target = "_blank";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  try {
+    // Strategy 1: direct jsPDF save (uses internal FileSaver)
+    pdf.save(filename);
+  } catch (e1) {
+    console.warn("pdf.save() failed, trying blob approach:", e1);
+    try {
+      // Strategy 2: manual blob + anchor
+      const blob = pdf.output("blob");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 1000);
+    } catch (e2) {
+      console.warn("Blob anchor failed, trying data URI:", e2);
+      try {
+        // Strategy 3: data URI in new tab
+        const dataUri = pdf.output("datauristring");
+        const w = window.open();
+        if (w) {
+          w.document.write(`<iframe width="100%" height="100%" src="${dataUri}"></iframe>`);
+        }
+      } catch (e3) {
+        console.error("All PDF download strategies failed:", e3);
+      }
+    }
   }
-  setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
