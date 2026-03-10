@@ -1,5 +1,7 @@
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   ClipboardList,
@@ -19,9 +21,14 @@ import {
   Hash,
   Square,
   Circle,
+  Download,
+  Loader2,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { PidTaggedAssetRegister } from "./PidTaggedAssetRegister";
-import { AssetTagProductionList } from "./AssetTagProductionList";
+import { AssetTagProductionList, type ProductionTag } from "./AssetTagProductionList";
+import { generateRolloutPlanPDF } from "@/utils/generateRolloutPlanPDF";
 
 const SectionHeading = ({
   icon: Icon,
