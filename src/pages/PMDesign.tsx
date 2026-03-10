@@ -111,7 +111,7 @@ const frequencyGroups = [
 // Generator PMs grouped together
 const generatorPMs = [
   { id: "admin-generator-weekly", name: "Admin Generator" },
-  { id: "andy-dam-generator-weekly", name: "Andy Dam Generator" },
+  { id: "nobles-natural-sump-generator-weekly", name: "Nobles Natural Sump Generator" },
   { id: "juno-generator-weekly", name: "Juno Generator" },
   { id: "lab-generator-weekly", name: "Lab Generator" },
   { id: "portable-generators-weekly", name: "Portable Generators" },
