@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Package,
 } from "lucide-react";
+import { PidTaggedAssetRegister } from "./PidTaggedAssetRegister";
 
 const SectionHeading = ({
   icon: Icon,
