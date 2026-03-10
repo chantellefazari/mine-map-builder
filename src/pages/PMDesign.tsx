@@ -553,7 +553,7 @@ const PMDesign = () => {
         return <TopOfTanksPMDocument />;
       case "admin-generator-weekly":
         return <AdminGeneratorPMDocument />;
-      case "andy-dam-generator-weekly":
+      case "nobles-natural-sump-generator-weekly":
         return <AndyDamGeneratorPMDocument />;
       case "juno-generator-weekly":
         return <JunoGeneratorPMDocument />;
