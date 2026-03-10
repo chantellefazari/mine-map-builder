@@ -129,7 +129,7 @@ export const PMAssetSearchCombobox = ({
       onChange("", "");
     } else {
       const lastAsset = assets.find((a) => a.assetId === newIds[newIds.length - 1]);
-      onChange(newIds.join(", "), lastAsset?.assetName || "", lastAsset?.area);
+      onChange(newIds.join(", "), lastAsset?.assetName || "", lastAsset?.isSubArea ? lastAsset.areaCode : lastAsset?.subArea);
     }
   };
 
