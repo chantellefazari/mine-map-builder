@@ -149,15 +149,23 @@ export const AssetTagRolloutPlanSection = () => {
     });
   }, [taggedAssets]);
 
-  const handleDownloadPDF = async () => {
+  const typeACnt = productionTags.filter(t => t.tagType === "A").length;
+  const typeBCnt = productionTags.filter(t => t.tagType === "B").length;
+
+  const handleDownloadPlan = () => {
     setDownloading(true);
     try {
-      generateRolloutPlanPDF(taggedAssets, productionTags);
-    } catch (err) {
-      console.error("PDF generation error:", err);
-    } finally {
-      setDownloading(false);
-    }
+      generateRolloutPlanPDF(taggedAssets.length, productionTags.length, typeACnt, typeBCnt);
+    } catch (err) { console.error("PDF error:", err); }
+    finally { setDownloading(false); }
+  };
+
+  const handleDownloadRegister = () => {
+    generateAssetRegisterPDF(taggedAssets);
+  };
+
+  const handleDownloadProductionList = () => {
+    generateProductionListPDF(productionTags);
   };
 
   return (
@@ -178,26 +186,44 @@ export const AssetTagRolloutPlanSection = () => {
                 Aligned with the rebuilt asset tree and P&ID extraction register.
               </p>
             </div>
-            <div className="flex flex-col gap-1 items-end">
+            <div className="flex flex-col gap-1.5 items-end">
               <div className="flex gap-1">
                 <Badge variant="outline" className="text-xs font-mono">TCMG-ROLLOUT-001</Badge>
                 <Badge variant="outline" className="text-xs font-mono">Rev 2.0</Badge>
               </div>
               <Badge className="text-xs bg-amber-500 text-white">Processing Plant Only</Badge>
-              <Button
-                variant="default"
-                size="sm"
-                className="gap-2 mt-1"
-                onClick={handleDownloadPDF}
-                disabled={downloading || taggedAssets.length === 0}
-              >
-                {downloading ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Download className="w-3.5 h-3.5" />
-                )}
-                {downloading ? "Generating…" : "Download Full Plan as PDF"}
-              </Button>
+              <div className="flex flex-col gap-1 mt-1">
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="gap-2"
+                  onClick={handleDownloadPlan}
+                  disabled={downloading || taggedAssets.length === 0}
+                >
+                  {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                  {downloading ? "Generating…" : "Download Rollout Plan PDF"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={handleDownloadRegister}
+                  disabled={taggedAssets.length === 0}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  Attachment A — Asset Register PDF
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={handleDownloadProductionList}
+                  disabled={productionTags.length === 0}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  Attachment B — Production List PDF
+                </Button>
+              </div>
             </div>
           </div>
 
