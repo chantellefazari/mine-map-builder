@@ -160,7 +160,7 @@ export const AssetNumberingSection = () => {
                 The System is the <strong>lowest level</strong> that receives a Functional Location code. A System represents a complete functional unit, a maintainable process boundary, and the parent asset for all child equipment.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {["Reclaim Feeder", "Mill Feed Conveyor", "Primary Ball Mill", "CIP Tank 01", "Gold Room Furnace", "Main Substation", "Power Generator Set 01"].map((sys) => (
+                {["Reclaim Feeder", "Mill Feed Conveyor", "Primary Ball Mill", "CIP Tank 01", "Electrowinning Cell", "Main Substation", "Power Station Generator PGEN01"].map((sys) => (
                   <div key={sys} className="bg-muted/50 rounded-md px-2 py-1.5 text-xs text-center">{sys}</div>
                 ))}
               </div>
