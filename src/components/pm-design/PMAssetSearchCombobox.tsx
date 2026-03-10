@@ -119,7 +119,7 @@ export const PMAssetSearchCombobox = ({
 
   const addAsset = (asset: FlatAsset) => {
     const newIds = [...selectedIds, asset.assetId];
-    onChange(newIds.join(", "), asset.assetName, asset.area);
+    onChange(newIds.join(", "), asset.assetName, asset.isSubArea ? asset.areaCode : asset.subArea);
     setSearch("");
   };
 
