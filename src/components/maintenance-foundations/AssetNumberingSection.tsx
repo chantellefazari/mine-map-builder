@@ -116,22 +116,30 @@ export const AssetNumberingSection = () => {
                   <h5 className="font-medium text-sm">Areas</h5>
                   <p className="text-xs text-muted-foreground">Major process or infrastructure groupings</p>
                   <div className="flex flex-wrap gap-1">
-                    {["Feed & Reclaim", "Conveying", "Grinding", "CIP", "Gold Room", "Tailings", "Utilities", "Power Generation", "Admin & Buildings", "Support Services"].map((area) => (
-                      <Badge key={area} variant="outline" className="text-xs">{area}</Badge>
+                    {[
+                      "SITE — Site Infrastructure",
+                      "UTL — Utilities & Power",
+                      "COM — Comminution / Process",
+                      "REC — Gold Recovery",
+                      "TAIL — Tailings",
+                      "SUP — Support Services",
+                    ].map((area) => (
+                      <Badge key={area} variant="outline" className="text-xs font-mono">{area}</Badge>
                     ))}
                   </div>
                   <ul className="text-xs text-muted-foreground space-y-1 mt-2">
+                    <li>• Strictly limited to 6 approved Main Area codes</li>
                     <li>• One Area can contain multiple Sub-Areas</li>
-                    <li>• Area names remain stable over time</li>
+                    <li>• Area codes are immutable once assigned</li>
                   </ul>
                 </div>
                 <div className="space-y-2">
                   <h5 className="font-medium text-sm">Sub-Areas</h5>
                   <p className="text-xs text-muted-foreground">Distinct functional groupings within an Area</p>
                   <div className="text-xs space-y-1">
-                    <div><span className="font-medium">Grinding →</span> Ball Mill, Classification</div>
-                    <div><span className="font-medium">Utilities →</span> Water, Compressed Air, Electrical</div>
-                    <div><span className="font-medium">Gold Room →</span> Gravity Circuit, Smelting</div>
+                    <div><span className="font-medium">COM →</span> Ball Mill Circuit, Classification, CIP, Elution</div>
+                    <div><span className="font-medium">UTL →</span> Potable Water, Compressed Air, Power Generation</div>
+                    <div><span className="font-medium">REC →</span> Gold Room, Gravity Circuit, Electrowinning</div>
                   </div>
                   <ul className="text-xs text-muted-foreground space-y-1 mt-2">
                     <li>• Must be clearly defined and non-overlapping</li>
