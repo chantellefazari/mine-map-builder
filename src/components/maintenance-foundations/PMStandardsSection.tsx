@@ -19,7 +19,7 @@ export const PMStandardsSection = () => {
     },
     {
       discipline: "Electrical",
-      frequencies: ["1-Week", "2-Week", "12-Week", "24-Week", "52-Week"],
+      frequencies: ["1-Week", "2-Week", "4-Week", "6-Week", "12-Week", "26-Week", "52-Week"],
       color: "text-amber-600",
     },
     {
