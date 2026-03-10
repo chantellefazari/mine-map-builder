@@ -152,10 +152,10 @@ export const AssetTagRolloutPlanSection = () => {
   const typeACnt = productionTags.filter(t => t.tagType === "A").length;
   const typeBCnt = productionTags.filter(t => t.tagType === "B").length;
 
-  const handleDownloadPlan = () => {
+  const handleDownloadPlan = async () => {
     setDownloading(true);
     try {
-      generateRolloutPlanPDF(taggedAssets.length, productionTags.length, typeACnt, typeBCnt);
+      await generateRolloutPlanPDF(taggedAssets.length, productionTags.length, typeACnt, typeBCnt);
     } catch (err) { console.error("PDF error:", err); }
     finally { setDownloading(false); }
   };

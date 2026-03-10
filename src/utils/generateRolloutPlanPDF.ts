@@ -1,6 +1,20 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
+// Pre-load the Gravotech LS100 image as base64 for PDF embedding
+let gravoImageBase64: string | null = null;
+const gravoImagePromise = (async () => {
+  try {
+    const resp = await fetch("/images/gravotech-ls100.png");
+    const blob = await resp.blob();
+    return new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(blob);
+    }).then((d) => { gravoImageBase64 = d; });
+  } catch { /* silent */ }
+})();
+
 interface TaggedAsset {
   asset_name: string;
   asset_number: string;
@@ -162,12 +176,13 @@ const tblMargin = { left: MARGIN, right: MARGIN };
 // ════════════════════════════════════════════════
 // 1. MAIN ROLLOUT PLAN PDF (Sections 01–13, no data tables)
 // ════════════════════════════════════════════════
-export function generateRolloutPlanPDF(
+export async function generateRolloutPlanPDF(
   taggedAssetCount: number,
   productionTagCount: number,
   typeACount: number,
   typeBCount: number
 ) {
+  await gravoImagePromise;
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant - Tennant Mines Gold");
 
@@ -225,21 +240,102 @@ export function generateRolloutPlanPDF(
   pdf.addPage();
   y = MARGIN;
   y = addSectionTitle(pdf, y, "05", "ASSET TAG PRODUCTION OPTIONS");
-  y = addParagraph(pdf, y, "Management may choose between outsourcing tag production to a specialist supplier or purchasing equipment for internal on-demand production.");
+  y = addParagraph(pdf, y, "Management may choose between outsourcing tag production to a specialist supplier or purchasing equipment for internal on-demand production. Both approaches are viable. The decision should be based on budget, volume, and long-term operational flexibility.");
+
+  // Option 1 sub-heading
+  y = ensureSpace(pdf, y, 8);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(9);
+  pdf.setTextColor(...DARK);
+  pdf.text("Option 1 - Outsource Tag Production", MARGIN + 3, y);
+  y += 5;
+
   autoTable(pdf, {
     startY: y,
     headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
-    head: [["", "Option 1 - Outsource", "Option 2 - In-House"]],
+    head: [["Specification", "Detail"]],
     body: [
-      ["Provider", "Trophy Central - Alice Springs", "Gravotech LS100 Laser Engraver"],
-      ["Materials", "Stainless Steel / DuraBlack", "Stainless plates / laminates"],
-      ["Pricing", "$7.20 / $4.65 per tag (500+)", "Capital purchase + consumables"],
-      ["Pros", "No capital outlay, professional quality, fast turnaround", "Immediate production, on-demand, can produce additional signage"],
-      ["Cons", "Ongoing cost per tag, lead time for orders", "Capital equipment purchase, operator training required"],
+      ["Supplier", "Trophy Central - Alice Springs"],
+      ["Materials", "316 Stainless Steel (engraved) / DuraBlack (laser etched)"],
+      ["Pricing (500+ qty)", "Stainless Steel: $7.20 per tag  |  DuraBlack: $4.65 per tag"],
     ],
   });
-  y = (pdf as any).lastAutoTable.finalY + 4;
-  y = addParagraph(pdf, y, "Recommendation: Outsource the first batch (lowest risk). Evaluate in-house production for ongoing requirements. A hybrid approach is also viable.");
+  y = (pdf as any).lastAutoTable.finalY + 3;
+
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(7.5);
+  pdf.setTextColor(34, 120, 60);
+  pdf.text("Pros:", MARGIN + 3, y); y += 4;
+  y = addBullets(pdf, y, [
+    "No capital equipment required",
+    "Professional engraving quality",
+    "Quick production turnaround",
+  ]);
+
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(7.5);
+  pdf.setTextColor(180, 50, 50);
+  pdf.text("Cons:", MARGIN + 3, y); y += 4;
+  y = addBullets(pdf, y, [
+    "Ongoing cost per tag for every order",
+    "Lead time for additional or replacement tags",
+  ]);
+
+  // Option 2 sub-heading
+  y = ensureSpace(pdf, y, 8);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(9);
+  pdf.setTextColor(...DARK);
+  pdf.text("Option 2 - In-House Tag Production", MARGIN + 3, y);
+  y += 5;
+
+  autoTable(pdf, {
+    startY: y,
+    headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
+    head: [["Specification", "Detail"]],
+    body: [
+      ["Equipment", "Gravotech LS100 Laser Engraver"],
+      ["Website", "https://www.gravotech.com.au/products/laser-engravers-laser-cutters/ls100"],
+      ["Capability", "CO2 laser engraver and cutter. Suitable for asset tags, industrial signage, stainless plates and laminates."],
+      ["Investment", "Capital equipment purchase + consumables (plates, laminates)"],
+    ],
+  });
+  y = (pdf as any).lastAutoTable.finalY + 3;
+
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(7.5);
+  pdf.setTextColor(34, 120, 60);
+  pdf.text("Pros:", MARGIN + 3, y); y += 4;
+  y = addBullets(pdf, y, [
+    "Immediate production of tags with no supplier lead time",
+    "Ability to create tags when new assets are installed",
+    "Can produce additional labels and signage for site",
+  ]);
+
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(7.5);
+  pdf.setTextColor(180, 50, 50);
+  pdf.text("Cons:", MARGIN + 3, y); y += 4;
+  y = addBullets(pdf, y, [
+    "Initial capital equipment purchase required",
+    "Operator training required",
+  ]);
+
+  // Gravotech LS100 image
+  if (gravoImageBase64) {
+    y = ensureSpace(pdf, y, 55);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(7);
+    pdf.setTextColor(...MUTED);
+    pdf.text("Gravotech LS100 Laser Engraver", MARGIN + 3, y); y += 2;
+    try {
+      pdf.addImage(gravoImageBase64, "PNG", MARGIN + 3, y, 80, 50);
+      y += 54;
+    } catch { /* image embed failed silently */ }
+  }
+
+  y = addParagraph(pdf, y, "Recommendation: Outsource the first batch (lowest risk). Evaluate in-house production for ongoing requirements. A hybrid approach - outsource the first batch, then transition to in-house - is also viable.");
+
 
   // 06
   y = addSectionTitle(pdf, y, "06", "TAG NUMBERING");
