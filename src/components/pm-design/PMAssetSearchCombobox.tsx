@@ -66,9 +66,10 @@ export const PMAssetSearchCombobox = ({
               assetId: parent.label,
               assetName: parent.label,
               area: area.label,
+              areaCode: area.code,
               subArea: subArea.label,
               parentAsset: "",
-              isSubArea: true, // reuse styling for area-level targets
+              isSubArea: true,
             });
           }
           for (const eq of parent.equipment) {
