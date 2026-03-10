@@ -9,6 +9,7 @@ interface FlatAsset {
   assetId: string;
   assetName: string;
   area: string;
+  areaCode: string;
   subArea: string;
   parentAsset: string;
   isSubArea?: boolean;
