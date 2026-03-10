@@ -426,6 +426,9 @@ export const AssetTagRolloutPlanSection = () => {
       {/* P&ID Tagged Asset Register — Production List */}
       <PidTaggedAssetRegister />
 
+      {/* Asset Tag Production List — Manufacturing Batch */}
+      <AssetTagProductionList />
+
       {/* Scope reminder */}
       <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
         <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
