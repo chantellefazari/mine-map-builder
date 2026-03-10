@@ -456,7 +456,7 @@ export const AssetTagRolloutPlanSection = () => {
       {/* 06. Tag Installation Workflow */}
       <Card>
         <CardContent className="pt-5">
-          <SectionHeading icon={Wrench} number="06" title="Tag Installation Workflow" />
+          <SectionHeading icon={Wrench} number="07" title="Tag Installation Workflow" />
           <p className="text-sm text-muted-foreground mb-3">
             Follow this five-step workflow. Each step must be completed before proceeding to the next.
           </p>
