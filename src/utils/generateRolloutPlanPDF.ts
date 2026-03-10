@@ -80,17 +80,23 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Force download via blob URL — works in sandboxed iframes where pdf.save() is blocked */
+/** Open PDF — tries save, falls back to new-tab blob viewer */
 function triggerPdfDownload(pdf: jsPDF, filename: string) {
   const blob = pdf.output("blob");
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  // Open in new tab — works even in sandboxed preview iframes
+  const w = window.open(url, "_blank");
+  if (!w) {
+    // Popup blocked fallback — force download via anchor
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
