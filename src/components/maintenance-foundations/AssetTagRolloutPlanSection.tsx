@@ -757,7 +757,7 @@ export const AssetTagRolloutPlanSection = () => {
             <CheckItem>Tagged Asset Register - full list of every tagged asset with ID, description, location, and photo reference</CheckItem>
             <CheckItem>Completion Report - summary of tag counts, discrepancies resolved, QC audit results</CheckItem>
             <CheckItem>Before/After photo archive - organised by area</CheckItem>
-            <CheckItem>Updated asset tree status - all tagged assets marked as "Tagged - Verified" in system</CheckItem>
+            <CheckItem>Updated asset tree status - all tagged assets marked as "Tagged - Verified" in the master asset register</CheckItem>
             <CheckItem>Signed close-out sheets for each area</CheckItem>
             <CheckItem>Outstanding items list - any deferred assets with justification and target completion date</CheckItem>
           </div>
