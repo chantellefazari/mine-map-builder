@@ -1406,11 +1406,11 @@ export const pmInspectionData: Record<string, any> = {
         { description: "15A GPO", rating: "16A" }, { description: "15A GPO", rating: "16A" },
         { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" }, { description: "", rating: "" }, { description: "", rating: "" },
       ]},
-      { id: "juno-bore", name: "Juno Bore Pump Generator", assetNumber: "GEN-010", area: "JUNO BORE PUMP", circuits: [
+      { id: "juno-bore", name: "Juno Generator", assetNumber: "17-GN-016", area: "JUNO BORE", circuits: [
         { description: "15A OUTLET", rating: "16A" }, { description: "15A OUTLET", rating: "16A" },
         { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" }, { description: "", rating: "" }, { description: "", rating: "" },
       ]},
-      { id: "andys-dam", name: "Andy's Dam Generator", assetNumber: "GEN-011", area: "ANDY'S DAM", circuits: [
+      { id: "nobles-natural-sump", name: "Nobles Natural Sump Generator", assetNumber: "17-GN-011", area: "NOBLES NATURAL SUMP", circuits: [
         { description: "GPO", rating: "16A" }, { description: "GPO", rating: "16A" },
         { description: "3 PHASE OUTLET", rating: "32A" }, { description: "3 PHASE OUTLET", rating: "32A" }, { description: "", rating: "" }, { description: "", rating: "" },
       ]},
