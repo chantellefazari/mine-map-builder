@@ -246,8 +246,8 @@ const disciplines = [
             label: "3M RCD Testing Sheets", 
             pms: [
               { id: "rcd-3m-testing-admin", name: "Admin Generator" },
-              { id: "rcd-3m-testing-juno-bore", name: "Juno Bore Pump Generator" },
-              { id: "rcd-3m-testing-andys-dam", name: "Andy's Dam Generator" },
+              { id: "rcd-3m-testing-juno-bore", name: "Juno Generator" },
+              { id: "rcd-3m-testing-andys-dam", name: "Nobles Natural Sump Generator" },
               { id: "rcd-3m-testing-lab", name: "Lab Generator" },
               { id: "rcd-3m-testing-crusher-workshop", name: "Crusher Workshop Generator" },
               { id: "rcd-3m-testing-crusher-fuel-farm", name: "Crusher Fuel Farm Generator" },
