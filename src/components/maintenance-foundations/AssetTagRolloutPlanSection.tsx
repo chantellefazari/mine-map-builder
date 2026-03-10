@@ -28,7 +28,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PidTaggedAssetRegister } from "./PidTaggedAssetRegister";
 import { AssetTagProductionList, type ProductionTag } from "./AssetTagProductionList";
-import { generateRolloutPlanPDF } from "@/utils/generateRolloutPlanPDF";
+import { generateRolloutPlanPDF, generateAssetRegisterPDF, generateProductionListPDF } from "@/utils/generateRolloutPlanPDF";
 
 const SectionHeading = ({
   icon: Icon,
