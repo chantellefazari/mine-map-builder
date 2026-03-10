@@ -808,6 +808,51 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
 
+      {/* 14. Attachments */}
+      <Card>
+        <CardContent className="pt-5">
+          <SectionHeading icon={FileText} number="14" title="Attachments" />
+          <p className="text-sm text-muted-foreground mb-4">
+            The following attachments form part of this document and must be generated from the live database before commencing the rollout.
+            Download each attachment using the buttons in the document header above.
+          </p>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="border border-border rounded-lg p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs font-mono">Attachment A</Badge>
+                <p className="text-sm font-bold text-foreground">P&ID Tagged Asset Register</p>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Complete register of all Processing Plant assets with linked P&ID tags. This is the sole source of truth
+                for the tagging scope - only assets listed here receive a physical tag. Generated from the live asset database.
+              </p>
+              <div className="bg-muted/40 rounded-md px-3 py-2 mt-2">
+                <p className="text-xs text-foreground"><strong>Contains:</strong> Asset Number, Asset Name, Parent System, P&ID Tag(s), Area, Sub-Area, Functional Location</p>
+              </div>
+            </div>
+            <div className="border border-border rounded-lg p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs font-mono">Attachment B</Badge>
+                <p className="text-sm font-bold text-foreground">Tag Production List</p>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Manufacturing-ready list with Type A/B classification, tag sizes, mounting locations, and mounting methods
+                for every asset in scope. Submit directly to tag supplier or use for in-house production.
+              </p>
+              <div className="bg-muted/40 rounded-md px-3 py-2 mt-2">
+                <p className="text-xs text-foreground"><strong>Contains:</strong> Asset Number, Tag Type (A/B), Tag Size, Mounting Location, Mounting Method, Area</p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-3 bg-muted/40 rounded-md px-3 py-2">
+            <p className="text-xs text-muted-foreground">
+              <strong>Note:</strong> Both attachments are generated dynamically from the live database. Always download the latest version
+              before commencing any rollout activity to ensure the data reflects the current approved asset tree.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Scope reminder */}
       <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
         <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
