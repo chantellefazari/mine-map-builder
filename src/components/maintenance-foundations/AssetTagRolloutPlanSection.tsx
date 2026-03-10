@@ -668,8 +668,8 @@ export const AssetTagRolloutPlanSection = () => {
               Photograph installed tag showing Asset ID and surrounding context.
             </StepItem>
             <StepItem step={5}>
-              <strong>Update Asset Record</strong> - Mark asset status as "Tagged - Verified" in the asset register.
-              Upload confirmation photo linked to the asset record.
+              <strong>Update Asset Record</strong> - Mark asset status as "Tagged - Verified" in the master asset register.
+              File confirmation photo against the asset record for audit purposes.
             </StepItem>
           </div>
           <div className="mt-3 bg-muted/40 rounded-md px-3 py-2">
