@@ -192,7 +192,7 @@ export function generateRolloutPlanPDF(
   y = addSectionTitle(pdf, y, "03", "TAG CATEGORIES");
   autoTable(pdf, {
     startY: y,
-    ...TABLE_STYLES,
+    headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
     head: [["", "Type A — Major Asset Plates", "Type B — Equipment Position Tags"]],
     body: [
       ["Plate Style", "Flat plate, no hole", "Smaller tag, single hole"],
