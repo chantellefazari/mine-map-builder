@@ -11,6 +11,7 @@ interface FlatAsset {
   area: string;
   subArea: string;
   parentAsset: string;
+  isSubArea?: boolean;
 }
 
 interface PMAssetSearchComboboxProps {
