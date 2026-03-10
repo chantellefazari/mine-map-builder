@@ -206,7 +206,7 @@ export function generateRolloutPlanPDF(
   y = addSectionTitle(pdf, y, "04", "TAG MATERIAL OPTIONS");
   autoTable(pdf, {
     startY: y,
-    ...TABLE_STYLES,
+    headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
     head: [["Specification", "Option 1 — 316 Stainless Steel", "Option 2 — DuraBlack"]],
     body: [
       ["Type A Size", "100mm × 50mm × 1.5mm", "100mm × 40mm × 0.5mm"],
