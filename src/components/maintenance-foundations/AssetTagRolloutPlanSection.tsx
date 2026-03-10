@@ -651,8 +651,8 @@ export const AssetTagRolloutPlanSection = () => {
           </p>
           <div className="space-y-0.5">
             <StepItem step={1}>
-              <strong>Generate P&ID Asset Register</strong> - Extract all assets with linked P&ID tags from the database.
-              This produces the "P&ID Tagged Asset Register" (see Attachment A).
+              <strong>Confirm P&ID Asset Register</strong> - Verify the P&ID Tagged Asset Register (Attachment A) is the latest
+              approved revision and reflects the current asset tree.
             </StepItem>
             <StepItem step={2}>
               <strong>Produce Tag Production List</strong> - Classify each asset as Type A or Type B.
