@@ -219,8 +219,11 @@ export async function generateRolloutPlanPDF(
   typeACount: number,
   typeBCount: number
 ) {
+  console.log("[PDF] Step 0: awaiting gravoImagePromise");
   await gravoImagePromise;
+  console.log("[PDF] Step 1: creating jsPDF instance");
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  console.log("[PDF] Step 2: adding doc header");
   let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant - Tennant Mines Gold");
 
   // 01
