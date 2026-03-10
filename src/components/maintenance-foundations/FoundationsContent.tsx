@@ -241,10 +241,6 @@ export const FoundationsContent = () => {
           <DataGovernanceSection />
         </TabsContent>
 
-        <TabsContent value="asset-tagging">
-          <ProcessingPlantAssetTaggingSection />
-        </TabsContent>
-
         <TabsContent value="tag-rollout">
           <AssetTagRolloutPlanSection />
         </TabsContent>
