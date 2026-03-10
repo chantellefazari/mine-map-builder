@@ -467,7 +467,7 @@ export const AssetTagRolloutPlanSection = () => {
             </StepItem>
             <StepItem step={2}>
               <strong>Produce Tag Production List</strong> — Classify each asset as Type A or Type B.
-              Determine mounting location and method for each tag. Generate quantities for the manufacturing order (see Section 12 below).
+              Determine mounting location and method for each tag. Generate quantities for the manufacturing order (see Section 13 below).
             </StepItem>
             <StepItem step={3}>
               <strong>Manufacture Tags</strong> — Submit production list to tag supplier.
