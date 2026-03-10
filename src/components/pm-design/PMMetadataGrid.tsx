@@ -46,16 +46,6 @@ export const PMMetadataGrid = ({
 
   useEffect(() => {
     setAssetNumber(initialAssetNumber);
-    // Derive plant area from initial asset number
-    if (initialAssetNumber) {
-      const assets = flattenAssetTree();
-      const match = assets.find((a) => a.assetId === initialAssetNumber);
-      if (match) {
-        setDerivedPlantArea(match.area);
-      }
-    } else {
-      setDerivedPlantArea("");
-    }
   }, [initialAssetNumber]);
 
   useEffect(() => {
