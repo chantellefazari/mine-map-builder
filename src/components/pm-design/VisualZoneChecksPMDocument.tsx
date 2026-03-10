@@ -37,7 +37,7 @@ const fallbackTasks = {
       equipmentName: "CHECK PORTABLE GENERATORS FOR ANY ELECTRICAL FAULTS OR CABLE DAMAGE",
       tasks: [
         { task: "Juno Generator" }, { task: "Admin Generator" },
-        { task: "Andy Dam Generator" }, { task: "Crusher Generator" },
+        { task: "Nobles Natural Sump Generator" }, { task: "Crusher Generator" },
         { task: "Lab Generator" }, { task: "Fuel Farm Generator" },
       ],
     },

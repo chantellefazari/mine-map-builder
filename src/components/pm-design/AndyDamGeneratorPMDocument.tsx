@@ -8,17 +8,17 @@ import { DynamicInspectionTable } from "./DynamicInspectionTable";
 
 export const AndyDamGeneratorPMDocument = () => {
   const { pms } = usePMasterList();
-  const pm = pms.find((p) => p.pmName === "Andy Dam Generator Weekly Inspection");
+  const pm = pms.find((p) => p.pmName === "Nobles Natural Sump Generator Weekly Inspection");
 
   return (
     <div className="bg-background min-h-full">
       <div className="border-2 border-border">
-        <PMBannerHeader title="Tenant Creek - Andy Dam Generator" subtitle="Mechanical Running PMs - Weekly Inspection (Fitter)" />
+        <PMBannerHeader title="Tenant Creek - Nobles Natural Sump Generator" subtitle="Mechanical Running PMs - Weekly Inspection (Fitter)" />
 
         <PMMetadataGrid
           pmId={pm?.id}
           projectSite="Tenant Creek"
-          plantArea="Andy Dam Generator"
+          plantArea="Nobles Natural Sump Generator"
           pmGroup="Mechanical"
           pmType="Inspection (Fitter)"
           frequency="Weekly"
@@ -31,7 +31,7 @@ export const AndyDamGeneratorPMDocument = () => {
 
         <DynamicInspectionTable tasksData={pm?.tasks} />
 
-        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Andy Dam Generator Weekly Inspection Form" showElecCertNo />
+        <PMSignOffBlock footerText="Tennant Creek Mining Operations – Nobles Natural Sump Generator Weekly Inspection Form" showElecCertNo />
       </div>
     </div>
   );
