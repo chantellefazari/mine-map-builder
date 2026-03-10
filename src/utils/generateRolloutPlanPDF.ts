@@ -1,6 +1,20 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
+// Pre-load the Gravotech LS100 image as base64 for PDF embedding
+let gravoImageBase64: string | null = null;
+const gravoImagePromise = (async () => {
+  try {
+    const resp = await fetch("/images/gravotech-ls100.png");
+    const blob = await resp.blob();
+    return new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(blob);
+    }).then((d) => { gravoImageBase64 = d; });
+  } catch { /* silent */ }
+})();
+
 interface TaggedAsset {
   asset_name: string;
   asset_number: string;
