@@ -157,11 +157,8 @@ export const AssetTagRolloutPlanSection = () => {
   };
 
   const handleDownloadRegister = () => {
-    console.log("Starting Asset Register PDF...", { assets: taggedAssets.length });
-    try {
-      generateAssetRegisterPDF(taggedAssets);
-      console.log("Asset Register PDF complete");
-    } catch (err) { console.error("Asset Register PDF error:", err); }
+    try { generateAssetRegisterPDF(taggedAssets); }
+    catch (err) { console.error("Asset Register PDF error:", err); }
   };
 
   const handleDownloadProductionList = () => {
