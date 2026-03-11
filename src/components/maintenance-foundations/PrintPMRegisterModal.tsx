@@ -391,7 +391,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Format:</span>
-              <span className="font-medium">A4 Landscape</span>
+              <span className="font-medium">A4 Portrait</span>
             </div>
           </div>
 
