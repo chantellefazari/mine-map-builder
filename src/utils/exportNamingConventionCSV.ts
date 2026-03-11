@@ -1,4 +1,5 @@
-import { 
+import { downloadCsv } from "@/utils/safariDownload";
+import {
   areaCodes, 
   equipmentPrefixes, 
   componentSuffixes, 
