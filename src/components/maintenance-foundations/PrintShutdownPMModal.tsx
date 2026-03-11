@@ -236,9 +236,9 @@ export const PrintShutdownPMModal = ({ isOpen, onClose, areas }: Props) => {
               <X className="w-4 h-4 mr-2" />
               Cancel
             </Button>
-            <Button onClick={handlePrint} className="gap-2">
-              <Printer className="w-4 h-4" />
-              Generate PDF
+            <Button onClick={handlePrint} disabled={generating} className="gap-2">
+              {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
+              {generating ? "Generating..." : "Generate PDF"}
             </Button>
           </div>
         </div>
