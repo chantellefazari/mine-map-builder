@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import { writeXlsxFile } from "@/utils/safariDownload";
 import {
   CONTAINER_DISCIPLINE_MAP,
   VALID_BAYS,
