@@ -13,6 +13,7 @@ import {
   Printer,
   Download,
   Link2,
+  BarChart3,
 } from "lucide-react";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
@@ -23,6 +24,7 @@ import { DataGovernanceSection } from "./DataGovernanceSection";
 import { SitePartNumberingSection } from "./SitePartNumberingSection";
 import { AssetTagRolloutPlanSection } from "./AssetTagRolloutPlanSection";
 import { PMAssetLinkingSection } from "./PMAssetLinkingSection";
+import { PMCoverageAnalysisSection } from "./PMCoverageAnalysisSection";
 
 const TAB_LABELS: Record<string, string> = {
   "hierarchy": "Asset Hierarchy & Parent-Child Rules",
@@ -34,6 +36,7 @@ const TAB_LABELS: Record<string, string> = {
   "governance": "Data Governance & Change Control",
   "tag-rollout": "Asset Tag Rollout Plan",
   "pm-asset-linking": "PM-to-Asset Linking",
+  "pm-coverage": "PM Coverage Analysis",
 };
 
 export const FoundationsContent = () => {
@@ -167,6 +170,11 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">PM-to-Asset Linking</span>
             <span className="sm:hidden">PM Link</span>
           </TabsTrigger>
+          <TabsTrigger value="pm-coverage" className="flex items-center gap-2 text-xs">
+            <BarChart3 className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">PM Coverage Analysis</span>
+            <span className="sm:hidden">Coverage</span>
+          </TabsTrigger>
         </TabsList>
         <div className="flex flex-col gap-1.5 shrink-0 mt-1">
           <Button
@@ -225,6 +233,10 @@ export const FoundationsContent = () => {
 
         <TabsContent value="pm-asset-linking">
           <PMAssetLinkingSection />
+        </TabsContent>
+
+        <TabsContent value="pm-coverage">
+          <PMCoverageAnalysisSection />
         </TabsContent>
       </div>
     </Tabs>
