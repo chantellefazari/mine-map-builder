@@ -1052,7 +1052,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 13. Governance Controls */}
-      <Card className="border-destructive/20">
+      <Card data-pdf-section className="border-destructive/20">
         <CardContent className="pt-5">
           <SectionHeading icon={Shield} number="13" title="Governance Controls" />
           <p className="text-sm text-muted-foreground mb-3">
