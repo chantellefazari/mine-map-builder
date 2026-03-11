@@ -178,6 +178,11 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">PM Coverage Analysis</span>
             <span className="sm:hidden">Coverage</span>
           </TabsTrigger>
+          <TabsTrigger value="shutdown-pms" className="flex items-center gap-2 text-xs">
+            <AlertTriangle className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Shutdown PM Requirements</span>
+            <span className="sm:hidden">Shutdown</span>
+          </TabsTrigger>
         </TabsList>
         <div className="flex flex-col gap-1.5 shrink-0 mt-1">
           <Button
