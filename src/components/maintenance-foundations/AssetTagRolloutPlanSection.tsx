@@ -780,7 +780,7 @@ export const AssetTagRolloutPlanSection = () => {
           ═══════════════════════════════════════════════════════════════════════ */}
 
       {/* 06. Tag Material Options */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Package} number="06" title="Tag Material Options" />
           <p className="text-sm text-muted-foreground mb-4">
