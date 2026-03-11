@@ -11,6 +11,11 @@ import { ChevronDown, ChevronRight, Wrench, Zap, Eye, FileDown } from "lucide-re
 import { useState } from "react";
 import type { PMData } from "@/components/pm-design/PMFrequencySection";
 
+const FREQ_ORDER: Record<string, number> = {
+  "Daily": 0, "1 Week": 1, "2 Week": 2, "4 Week": 3, "6 Week": 4, "12 Week": 5, "26 Week": 6, "52 Week": 7,
+};
+const freqRank = (f: string) => FREQ_ORDER[f] ?? 99;
+
 interface Props {
   currentPMs: PMData[];
   isLoading: boolean;
