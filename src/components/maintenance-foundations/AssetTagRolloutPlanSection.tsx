@@ -1161,11 +1161,6 @@ export const AssetTagRolloutPlanSection = () => {
         </p>
       </div>
 
-      {/* Footer */}
-      <div data-pdf-section className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4 pb-2">
-        <span>TCMG-STD-TAG-002 · Processing Plant Asset Tagging Standard & Rollout Plan · Rev 2.0</span>
-        <span>Crushing Plant excluded · Internal use only</span>
-      </div>
     </div>
   );
 };
