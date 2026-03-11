@@ -44,9 +44,57 @@ const oreHandlingElec: ShutdownPM[] = [
   { name: "52W OFF-LINE ELECT ORE HANDLING TOUCH POTENTIAL EARTHING TEST", frequency: "52W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "Earthing infrastructure in Feed / Reclaim area", tcPidTag: "" },
 ];
 
+// ── Grinding Data ───────────────────────────────────────────
+const grindingMech: ShutdownPM[] = [
+  { name: "6W OFF-LINE MECH GRINDING CYCLONE FEED PUMP DISCHARGE PIPES/VALVES", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 0.5, tcAssetMatch: "CFP01 - Cyclone Feed Pumps discharge pipework", tcPidTag: "04-PU-102A/B" },
+  { name: "6W OFF-LINE MECH GRINDING CYCLONE INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 0.5, tcAssetMatch: "CYC01-CLU01, CYC01-CYA/B/C - Primary Cyclones", tcPidTag: "04-CY-100" },
+  { name: "6W OFF-LINE MECH GRINDING BALL MILL INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 2, tcAssetMatch: "BM01 - Primary Ball Mill", tcPidTag: "04-ML-100" },
+  { name: "12W OFF-LINE MECH GRINDING CYCLONE INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 0.5, tcAssetMatch: "CYC01-CLU01, CYC01-CYA/B/C - Primary Cyclones", tcPidTag: "04-CY-100" },
+  { name: "12W OFF-LINE MECH GRINDING BALL MILL INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 1, tcAssetMatch: "BM01 - Primary Ball Mill", tcPidTag: "04-ML-100" },
+  { name: "12W OFF-LINE MECH GRINDING BALL MILL FEED CHUTE INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "BM01-LDCH - Primary Ball Mill Loading Chute", tcPidTag: "04-CH-010" },
+  { name: "12W OFF-LINE MECH GRINDING BALL MILL INSPECT-REPLACE FEED END LIP SEAL", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 12, tcAssetMatch: "BM01 - Primary Ball Mill", tcPidTag: "04-ML-100" },
+  { name: "12W OFF-LINE MECH GRINDING BALL MILL LUBRICATION UNIT SERVICE/INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 1, tcAssetMatch: "MLUB01 - Primary Ball Mill Lube System", tcPidTag: "04-LS-100" },
+  { name: "12W OFF-LINE MECH GRINDING BALL MILL GIRTH GEAR LUBRICATION UNIT INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "MLUB02 - Girth Gear Lube System", tcPidTag: "04-LS-101" },
+  { name: "12W OFF-LINE MECH GRINDING BALL MILL GIRTH GEAR INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 12, tcAssetMatch: "BM01 - Primary Ball Mill girth gear", tcPidTag: "04-ML-100" },
+  { name: "12W OFF-LINE MECH GRINDING BALL MILL PINION INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 12, tcAssetMatch: "BM01 - Primary Ball Mill pinion", tcPidTag: "04-ML-100" },
+  { name: "12W OFF-LINE MECH GRINDING BALL MILL DRIVE ALIGNMENT/INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 12, tcAssetMatch: "BM01-GBX01 - Gear Reducer / drive train", tcPidTag: "04-GR-100" },
+  { name: "12W OFF-LINE MECH GRINDING BALL MILL INTERNAL SCAN OF MILL", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "BM01 - Primary Ball Mill (liner wear scan)", tcPidTag: "04-ML-100" },
+  { name: "12W OFF-LINE MECH GRINDING BALL MILL TROMMEL INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 1, tcAssetMatch: "BM01 - Primary Ball Mill trommel screen", tcPidTag: "04-ML-100" },
+  { name: "12W OFF-LINE MECH GRINDING BALL MILL SPRAY BAR INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 1, tcAssetMatch: "BM01 - Primary Ball Mill spray bars", tcPidTag: "04-ML-100" },
+  { name: "12W OFF-LINE MECH GRINDING MILL DISCHARGE HOPPER INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 1, tcAssetMatch: "CFP01-HP01 - Primary Mill Discharge Hopper", tcPidTag: "04-PB-100" },
+  { name: "12W OFF-LINE MECH GRINDING CYCLONE FEED PUMP DISCHARGE PIPES/VALVES INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 0.5, tcAssetMatch: "CFP01 - Cyclone Feed Pumps discharge pipework", tcPidTag: "04-PU-102A/B" },
+  { name: "12W OFF-LINE MECH GRINDING BOILER BOX INSPECTIONS", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 2, tcAssetMatch: "BM01-FBB - Primary Mill Feed Boiler Box", tcPidTag: "04-PB-105" },
+  { name: "12W OFF-LINE MECH GRINDING AREA OIL SAMPLES", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "BM01-GBX01, MLUB01, MLUB02 gearboxes & lube systems", tcPidTag: "" },
+];
+
+const grindingPumps: ShutdownPM[] = [
+  { name: "6W OFF-LINE MECH GRINDING CYCLONE FEED PUMP 1 WET END INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "CFP01-PA01 - Primary Cyclone Feed Pump (Duty)", tcPidTag: "04-PU-102A" },
+  { name: "6W OFF-LINE MECH GRINDING CYCLONE FEED PUMP 2 WET END INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "CFP01-PB01 - Primary Cyclone Feed Pump (Standby)", tcPidTag: "04-PU-102B" },
+  { name: "12W OFF-LINE MECH GRINDING CYCLONE FEED PUMP 1 WET END INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "CFP01-PA01 - Primary Cyclone Feed Pump (Duty)", tcPidTag: "04-PU-102A" },
+  { name: "12W OFF-LINE MECH GRINDING CYCLONE FEED PUMP 2 WET END INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "CFP01-PB01 - Primary Cyclone Feed Pump (Standby)", tcPidTag: "04-PU-102B" },
+];
+
+const grindingElec: ShutdownPM[] = [
+  { name: "6W ON-LINE ELECT GRINDING MILL PNEUMATIC VALVE INSPECTION AND TEST", frequency: "6W", type: "PM", discipline: "ES", estimatedHours: 1, tcAssetMatch: "CFP01-TTV01 - TechTaylor Valve & mill pneumatic valves", tcPidTag: "04-XV-" },
+  { name: "12W OFF-LINE GRINDING AREA E-STOP CHECKS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "E-stops on BM01, CFP01, conveyors", tcPidTag: "" },
+  { name: "12W OFF-LINE ELECT GRINDING AREA RCD PUSH BUTTON TEST", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "RCD protection in Grinding area", tcPidTag: "" },
+  { name: "12W OFF-LINE ELECT GRINDING MILL VSD INSPECTIONS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 3, tcAssetMatch: "Mill VSD (PWR01 - Mill VSD)", tcPidTag: "" },
+  { name: "12W OFF-LINE ELECT GRINDING RCD PUSH BUTTON TEST MILL MCC", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 3, tcAssetMatch: "Mill MCC RCD protection", tcPidTag: "" },
+  { name: "12W OFF-LINE ELECT GRINDING MILL MCC VESDA TEST", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 3, tcAssetMatch: "Mill MCC VESDA fire detection", tcPidTag: "" },
+  { name: "12W OFF-LINE ELECT GRINDING HV MCC BALL MILL INSPECTION", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 3, tcAssetMatch: "HV MCC for BM01 - Primary Ball Mill", tcPidTag: "" },
+  { name: "26W OFF-LINE ELECT GRINDING DENSITY GAUGE CALIBRATION", frequency: "26W", type: "PM", discipline: "ES", estimatedHours: 6, tcAssetMatch: "Density gauges on cyclone feed / mill circuit", tcPidTag: "" },
+  { name: "26W OFF-LINE GRINDING AREA MOTOR CHECKS", frequency: "26W", type: "PM", discipline: "ES", estimatedHours: 12, tcAssetMatch: "Motors on BM01, CFP01-PA01/PB01, MLUB pumps", tcPidTag: "" },
+  { name: "26W OFF-LINE ELECT GRINDING AREA BUCKET TEST", frequency: "26W", type: "PM", discipline: "ES", estimatedHours: 10, tcAssetMatch: "Grinding area electrical bucket testing", tcPidTag: "" },
+  { name: "52W OFF-LINE ELECT GRINDING MILL MCC INJECTION TEST", frequency: "52W", type: "PM", discipline: "ES", estimatedHours: 4, tcAssetMatch: "Mill MCC injection testing", tcPidTag: "" },
+  { name: "52W OFF-LINE ELECT GRINDING HV MCC BALL MILL INJECTION TEST", frequency: "52W", type: "PM", discipline: "ES", estimatedHours: 4, tcAssetMatch: "HV MCC for BM01 injection testing", tcPidTag: "" },
+  { name: "52W OFF-LINE ELECT GRINDING TOUCH POTENTIAL EARTHING TEST", frequency: "52W", type: "PM", discipline: "ES", estimatedHours: 12, tcAssetMatch: "Earthing infrastructure in Grinding area", tcPidTag: "" },
+  { name: "52W OFF-LINE GRINDING TRANSFORMER OIL TEST", frequency: "52W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "Grinding area transformer oil sampling", tcPidTag: "" },
+];
+
 // ── All areas registry (add new areas here) ─────────────────
 const SHUTDOWN_AREAS: ShutdownArea[] = [
   { area: "Ore Handling (Feed / Reclaim)", mechanical: oreHandlingMech, electrical: oreHandlingElec },
+  { area: "Grinding (Comminution)", mechanical: [...grindingMech, ...grindingPumps], electrical: grindingElec },
 ];
 
 // ── Helpers ─────────────────────────────────────────────────
