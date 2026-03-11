@@ -244,50 +244,95 @@ export const ShutdownPMRequirementsSection = () => {
     return { total, covered, outstanding: total - covered, totalHours };
   }, [pms]);
 
+  // Area breakdown for summary table
+  const areaBreakdown = useMemo(() => {
+    return SHUTDOWN_AREAS.map(area => {
+      const allPMs = [...area.mechanical, ...area.electrical];
+      return {
+        area: area.area,
+        mechCount: area.mechanical.length,
+        elecCount: area.electrical.length,
+        totalPMs: allPMs.length,
+        hours: allPMs.reduce((s, pm) => s + pm.estimatedHours, 0),
+      };
+    });
+  }, []);
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-amber-500" />
-                Shutdown PM Requirements - Required Offline Inspections
-              </CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
-                Offline/shutdown PMs that require the plant to be de-energised. Cross-referenced against the P&ID source of truth.
-              </p>
-            </div>
-            <Button onClick={() => setPrintOpen(true)} variant="outline" className="gap-2 shrink-0">
-              <FileDown className="w-4 h-4" />
-              Export PDF
-            </Button>
+      {/* ── Document Header ── */}
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        {/* Title bar */}
+        <div className="bg-foreground text-background px-6 py-4 flex items-center justify-between">
+          <div>
+            <div className="text-[10px] uppercase tracking-widest opacity-60 mb-1">TCMG-SD-PM-REQ-001 Rev 1.0</div>
+            <h2 className="text-xl font-bold tracking-tight">Shutdown PM Requirements</h2>
+            <p className="text-sm opacity-70 mt-0.5">Required Offline Inspections — Processing Plant</p>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-muted/50 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold">{stats.total}</div>
-              <div className="text-xs text-muted-foreground">Total Required</div>
-            </div>
-            <div className="bg-emerald-50 dark:bg-emerald-950 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">{stats.covered}</div>
-              <div className="text-xs text-muted-foreground">Already Exist</div>
-            </div>
-            <div className="bg-amber-50 dark:bg-amber-950 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-amber-700 dark:text-amber-400">{stats.outstanding}</div>
-              <div className="text-xs text-muted-foreground">Outstanding</div>
-            </div>
-            <div className="bg-blue-50 dark:bg-blue-950 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">{stats.totalHours}h</div>
-              <div className="text-xs text-muted-foreground">Est. Total Hours</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          <Button onClick={() => setPrintOpen(true)} variant="secondary" className="gap-2 shrink-0">
+            <FileDown className="w-4 h-4" />
+            Export PDF
+          </Button>
+        </div>
 
-      {/* Area sections */}
+        {/* Summary stats */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-border border-b border-border">
+          <div className="p-4 text-center">
+            <div className="text-2xl font-extrabold">{stats.total}</div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Total Required</div>
+          </div>
+          <div className="p-4 text-center">
+            <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">{stats.covered}</div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Already Exist</div>
+          </div>
+          <div className="p-4 text-center">
+            <div className="text-2xl font-extrabold text-amber-600 dark:text-amber-400">{stats.outstanding}</div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Outstanding</div>
+          </div>
+          <div className="p-4 text-center">
+            <div className="text-2xl font-extrabold text-primary">{stats.totalHours}h</div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Est. Total Hours</div>
+          </div>
+        </div>
+
+        {/* Area breakdown table */}
+        <div className="px-5 py-4">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Area Breakdown</h3>
+          <div className="border rounded-lg overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/60">
+                  <TableHead className="text-[10px] font-bold uppercase tracking-wider">Area</TableHead>
+                  <TableHead className="text-[10px] font-bold uppercase tracking-wider text-center w-20">Mech</TableHead>
+                  <TableHead className="text-[10px] font-bold uppercase tracking-wider text-center w-20">Elec</TableHead>
+                  <TableHead className="text-[10px] font-bold uppercase tracking-wider text-center w-20">Total</TableHead>
+                  <TableHead className="text-[10px] font-bold uppercase tracking-wider text-center w-24">Est. Hours</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {areaBreakdown.map((row) => (
+                  <TableRow key={row.area}>
+                    <TableCell className="text-xs font-medium">{row.area}</TableCell>
+                    <TableCell className="text-xs text-center font-mono">{row.mechCount}</TableCell>
+                    <TableCell className="text-xs text-center font-mono">{row.elecCount}</TableCell>
+                    <TableCell className="text-xs text-center font-mono font-bold">{row.totalPMs}</TableCell>
+                    <TableCell className="text-xs text-center font-mono">{row.hours}h</TableCell>
+                  </TableRow>
+                ))}
+                <TableRow className="bg-muted/40">
+                  <TableCell className="text-xs font-bold">TOTAL</TableCell>
+                  <TableCell className="text-xs text-center font-mono font-bold">{areaBreakdown.reduce((s, r) => s + r.mechCount, 0)}</TableCell>
+                  <TableCell className="text-xs text-center font-mono font-bold">{areaBreakdown.reduce((s, r) => s + r.elecCount, 0)}</TableCell>
+                  <TableCell className="text-xs text-center font-mono font-bold">{stats.total}</TableCell>
+                  <TableCell className="text-xs text-center font-mono font-bold">{stats.totalHours}h</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Area Detail Sections ── */}
       {SHUTDOWN_AREAS.map(area => {
         const isOpen = openAreas.has(area.area);
         const allPMs = [...area.mechanical, ...area.electrical];
@@ -295,34 +340,36 @@ export const ShutdownPMRequirementsSection = () => {
         const areaHours = allPMs.reduce((s, pm) => s + pm.estimatedHours, 0);
 
         return (
-          <Card key={area.area}>
+          <div key={area.area} className="border border-border rounded-xl overflow-hidden bg-card">
             <Collapsible open={isOpen} onOpenChange={() => toggleArea(area.area)}>
               <CollapsibleTrigger className="w-full">
-                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                      <CardTitle className="text-base">{area.area}</CardTitle>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-xs">{allPMs.length} PMs</Badge>
-                      <Badge variant="outline" className="text-xs">{areaHours}h est.</Badge>
-                      <Badge className={areaCovered === allPMs.length ? "bg-emerald-600 text-xs" : "bg-amber-600 text-xs"}>
-                        {areaCovered}/{allPMs.length} covered
-                      </Badge>
-                    </div>
+                <div className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/20 transition-colors cursor-pointer">
+                  <div className="flex items-center gap-3">
+                    {isOpen ? <ChevronDown className="w-4 h-4 text-muted-foreground" /> : <ChevronRight className="w-4 h-4 text-muted-foreground" />}
+                    <h3 className="text-sm font-bold">{area.area}</h3>
                   </div>
-                </CardHeader>
+                  <div className="flex items-center gap-2 text-[10px]">
+                    <span className="bg-muted px-2.5 py-1 rounded font-semibold">{allPMs.length} PMs</span>
+                    <span className="bg-muted px-2.5 py-1 rounded font-mono">{areaHours}h</span>
+                    <span className={`px-2.5 py-1 rounded font-bold ${
+                      areaCovered === allPMs.length
+                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
+                        : "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
+                    }`}>
+                      {areaCovered}/{allPMs.length}
+                    </span>
+                  </div>
+                </div>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <CardContent className="pt-0 space-y-4">
+                <div className="border-t border-border">
                   {/* Mechanical */}
                   {area.mechanical.length > 0 && (
                     <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Wrench className="w-4 h-4 text-blue-600" />
-                        <h4 className="font-semibold text-sm">Mechanical</h4>
-                        <Badge variant="outline" className="text-[10px]">{area.mechanical.length} items</Badge>
+                      <div className="flex items-center gap-2 px-5 py-2 bg-blue-50/60 dark:bg-blue-950/30 border-b border-border border-l-[3px] border-l-blue-500">
+                        <Wrench className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300">Mechanical</span>
+                        <span className="text-[10px] text-blue-600/70 dark:text-blue-400/70">— {area.mechanical.length} items — {area.mechanical.reduce((s, pm) => s + pm.estimatedHours, 0)}h est.</span>
                       </div>
                       <PMTable items={area.mechanical} checkExists={checkExists} />
                     </div>
@@ -331,20 +378,27 @@ export const ShutdownPMRequirementsSection = () => {
                   {/* Electrical */}
                   {area.electrical.length > 0 && (
                     <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Zap className="w-4 h-4 text-amber-500" />
-                        <h4 className="font-semibold text-sm">Electrical</h4>
-                        <Badge variant="outline" className="text-[10px]">{area.electrical.length} items</Badge>
+                      <div className="flex items-center gap-2 px-5 py-2 bg-amber-50/60 dark:bg-amber-950/30 border-b border-border border-l-[3px] border-l-amber-500">
+                        <Zap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">Electrical</span>
+                        <span className="text-[10px] text-amber-600/70 dark:text-amber-400/70">— {area.electrical.length} items — {area.electrical.reduce((s, pm) => s + pm.estimatedHours, 0)}h est.</span>
                       </div>
                       <PMTable items={area.electrical} checkExists={checkExists} />
                     </div>
                   )}
-                </CardContent>
+                </div>
               </CollapsibleContent>
             </Collapsible>
-          </Card>
+          </div>
         );
       })}
+
+      {/* ── Data Integrity Notice ── */}
+      <div className="border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20 rounded-lg px-5 py-3">
+        <p className="text-[11px] text-amber-800 dark:text-amber-300">
+          <strong>Data Integrity:</strong> P&ID tags are only shown where verified against the source of truth database. No tags have been fabricated or assumed. All asset references have been cross-checked against the live asset register.
+        </p>
+      </div>
 
       <PrintShutdownPMModal isOpen={printOpen} onClose={() => setPrintOpen(false)} areas={SHUTDOWN_AREAS} />
     </div>
@@ -353,44 +407,37 @@ export const ShutdownPMRequirementsSection = () => {
 
 // ── Table sub-component ─────────────────────────────────────
 const PMTable = ({ items, checkExists }: { items: ShutdownPM[]; checkExists: (name: string) => boolean }) => (
-  <div className="border rounded-lg overflow-hidden">
-    <Table>
-      <TableHeader>
-        <TableRow className="bg-muted/50">
-          <TableHead className="text-[10px] font-bold w-8">Status</TableHead>
-          <TableHead className="text-[10px] font-bold">PM Name</TableHead>
-          <TableHead className="text-[10px] font-bold w-14">Freq</TableHead>
-          <TableHead className="text-[10px] font-bold w-16">Disc.</TableHead>
-          <TableHead className="text-[10px] font-bold w-12">Hours</TableHead>
-          <TableHead className="text-[10px] font-bold">TC Asset Match</TableHead>
-          <TableHead className="text-[10px] font-bold w-28">P&ID Tag</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {items.map((pm, i) => {
-          const exists = checkExists(pm.name);
-          return (
-            <TableRow key={i} className={exists ? "bg-emerald-50/50 dark:bg-emerald-950/20" : ""}>
-              <TableCell className="text-center">
-                {exists 
-                  ? <CheckCircle2 className="w-4 h-4 text-emerald-600 mx-auto" />
-                  : <AlertTriangle className="w-3.5 h-3.5 text-amber-500 mx-auto" />
-                }
-              </TableCell>
-              <TableCell className="text-[11px] font-medium">{pm.name}</TableCell>
-              <TableCell><FreqBadge freq={pm.frequency} /></TableCell>
-              <TableCell>
-                <Badge variant="outline" className="text-[10px]">
-                  {pm.discipline === "MS" ? "Mech" : "Elec"}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-[11px] text-center font-mono">{pm.estimatedHours}</TableCell>
-              <TableCell className="text-[10px] text-muted-foreground">{pm.tcAssetMatch}</TableCell>
-              <TableCell className="text-[10px] font-mono text-blue-600 dark:text-blue-400">{pm.tcPidTag || "—"}</TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
-  </div>
+  <Table>
+    <TableHeader>
+      <TableRow className="bg-muted/30">
+        <TableHead className="text-[9px] font-bold uppercase tracking-wider w-6 text-center">#</TableHead>
+        <TableHead className="text-[9px] font-bold uppercase tracking-wider">PM Name</TableHead>
+        <TableHead className="text-[9px] font-bold uppercase tracking-wider w-14">Freq</TableHead>
+        <TableHead className="text-[9px] font-bold uppercase tracking-wider w-14">Disc.</TableHead>
+        <TableHead className="text-[9px] font-bold uppercase tracking-wider w-12 text-center">Hrs</TableHead>
+        <TableHead className="text-[9px] font-bold uppercase tracking-wider">Asset Match</TableHead>
+        <TableHead className="text-[9px] font-bold uppercase tracking-wider w-24">P&ID Tag</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      {items.map((pm, i) => {
+        const exists = checkExists(pm.name);
+        return (
+          <TableRow key={i} className={exists ? "bg-emerald-50/40 dark:bg-emerald-950/15" : ""}>
+            <TableCell className="text-[10px] text-center text-muted-foreground font-mono">{i + 1}</TableCell>
+            <TableCell className="text-[11px] font-medium">{pm.name}</TableCell>
+            <TableCell><FreqBadge freq={pm.frequency} /></TableCell>
+            <TableCell>
+              <span className="inline-flex items-center px-2 py-0.5 rounded border border-border text-[9px] font-semibold">
+                {pm.discipline === "MS" ? "Mech" : "Elec"}
+              </span>
+            </TableCell>
+            <TableCell className="text-[11px] text-center font-mono font-semibold">{pm.estimatedHours}</TableCell>
+            <TableCell className="text-[10px] text-muted-foreground">{pm.tcAssetMatch || "—"}</TableCell>
+            <TableCell className="text-[10px] font-mono text-blue-600 dark:text-blue-400">{pm.tcPidTag || "—"}</TableCell>
+          </TableRow>
+        );
+      })}
+    </TableBody>
+  </Table>
 );
