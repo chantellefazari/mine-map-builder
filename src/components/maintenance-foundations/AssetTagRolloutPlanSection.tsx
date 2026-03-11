@@ -647,24 +647,24 @@ export const AssetTagRolloutPlanSection = () => {
             <Card className="border-l-4 border-l-primary">
               <CardContent className="py-4 px-4 space-y-3">
                 <div className="flex items-center gap-2">
-                  <Square className="w-5 h-5 text-primary" />
+                  <Square className="w-5 h-5 text-primary flex-shrink-0" />
                   <span className="text-sm font-bold text-foreground uppercase tracking-wide">Type A - Major Asset Plates</span>
                 </div>
                 <p className="text-xs text-muted-foreground font-mono font-bold">100mm × 50mm × 1.5mm</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   Flat plate with <strong>no hole</strong>. Permanently mounted to large fixed infrastructure using adhesive or rivets.
                 </p>
                 <Separator />
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Examples</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
                   <div className="flex flex-wrap gap-1">
                     {["Tanks", "Conveyors", "Crushers", "Mills", "Thickeners", "Hoppers", "Chutes", "Cyclone Clusters", "Filter Presses", "Air Receivers", "Major Structures"].map((item) => (
                       <Badge key={item} variant="outline" className="text-[10px]">{item}</Badge>
                     ))}
                   </div>
                 </div>
-                <div className="bg-muted/50 rounded-md px-2 py-1.5">
-                  <p className="text-[11px] text-muted-foreground">
+                <div className="bg-muted/50 rounded-md px-3 py-2">
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
                     <strong>Mounting:</strong> Adhesive plate or rivet directly to the asset shell, frame, or support structure.
                   </p>
                 </div>
@@ -675,24 +675,24 @@ export const AssetTagRolloutPlanSection = () => {
             <Card className="border-l-4 border-l-amber-500">
               <CardContent className="py-4 px-4 space-y-3">
                 <div className="flex items-center gap-2">
-                  <Circle className="w-5 h-5 text-amber-500" />
+                  <Circle className="w-5 h-5 text-amber-500 flex-shrink-0" />
                   <span className="text-sm font-bold text-foreground uppercase tracking-wide">Type B - Equipment Position Tags</span>
                 </div>
                 <p className="text-xs text-muted-foreground font-mono font-bold">70mm × 25mm × 1.5mm</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   Smaller tag with a <strong>single hole</strong>. Mounted to nearby fixed structure using bolt or cable tie at the equipment connection point.
                 </p>
                 <Separator />
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Examples</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
                   <div className="flex flex-wrap gap-1">
                     {["Pumps", "Valves", "Motors", "Instruments", "Agitators", "Compressors", "Screens", "Lube Systems", "Dosing Pumps", "Generators", "Hoists", "Fans / Coolers"].map((item) => (
                       <Badge key={item} variant="outline" className="text-[10px]">{item}</Badge>
                     ))}
                   </div>
                 </div>
-                <div className="bg-muted/50 rounded-md px-2 py-1.5">
-                  <p className="text-[11px] text-muted-foreground">
+                <div className="bg-muted/50 rounded-md px-3 py-2">
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
                     <strong>Mounting:</strong> Bolt or cable tie to adjacent steelwork, pipe support, baseplate or skid frame - never on the equipment itself.
                   </p>
                 </div>
