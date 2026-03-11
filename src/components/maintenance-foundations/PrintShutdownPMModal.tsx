@@ -1,5 +1,4 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Printer, X } from "lucide-react";
 import { downloadBlob } from "@/utils/safariDownload";
