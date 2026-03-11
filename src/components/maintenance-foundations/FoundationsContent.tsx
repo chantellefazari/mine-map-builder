@@ -130,7 +130,16 @@ export const FoundationsContent = () => {
       }
 
       const safeName = (TAB_LABELS[activeTab] || "Section").replace(/[^a-zA-Z0-9]/g, "-");
-      pdf.save(`TCMG-${safeName}.pdf`);
+      const filename = `TCMG-${safeName}.pdf`;
+      const blob = pdf.output("blob");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
     } catch (err) {
       console.error("PDF export error:", err);
     } finally {
