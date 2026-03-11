@@ -278,7 +278,15 @@ export const AssetTagRolloutPlanSection = () => {
         pdf.rect(0, A4_H - 3, A4_W, 3, "F");
       }
 
-      pdf.save("TCMG_Asset_Tag_Rollout_Plan.pdf");
+      const pdfBlob = pdf.output("blob");
+      const url = URL.createObjectURL(pdfBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "TCMG_Asset_Tag_Rollout_Plan.pdf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
     } catch (err) {
       console.error("PDF download error:", err);
     } finally {
