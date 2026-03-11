@@ -78,7 +78,7 @@ const grindingElec: ShutdownPM[] = [
   { name: "6W ON-LINE ELECT GRINDING MILL PNEUMATIC VALVE INSPECTION AND TEST", frequency: "6W", type: "PM", discipline: "ES", estimatedHours: 1, tcAssetMatch: "CFP01-TTV01 - TechTaylor Valve & mill pneumatic valves", tcPidTag: "04-XV-" },
   { name: "12W OFF-LINE GRINDING AREA E-STOP CHECKS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "E-stops on BM01, CFP01, conveyors", tcPidTag: "" },
   { name: "12W OFF-LINE ELECT GRINDING AREA RCD PUSH BUTTON TEST", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "RCD protection in Grinding area", tcPidTag: "" },
-  { name: "12W OFF-LINE ELECT GRINDING MILL VSD INSPECTIONS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 3, tcAssetMatch: "Mill VSD (PWR01 - Mill VSD)", tcPidTag: "" },
+  { name: "12W OFF-LINE ELECT GRINDING MILL VSD INSPECTIONS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 3, tcAssetMatch: "BM01 VSD (electrical sub-component of Primary Ball Mill)", tcPidTag: "" },
   { name: "12W OFF-LINE ELECT GRINDING RCD PUSH BUTTON TEST MILL MCC", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 3, tcAssetMatch: "Mill MCC RCD protection", tcPidTag: "" },
   { name: "12W OFF-LINE ELECT GRINDING MILL MCC VESDA TEST", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 3, tcAssetMatch: "Mill MCC VESDA fire detection", tcPidTag: "" },
   { name: "12W OFF-LINE ELECT GRINDING HV MCC BALL MILL INSPECTION", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 3, tcAssetMatch: "HV MCC for BM01 - Primary Ball Mill", tcPidTag: "" },
