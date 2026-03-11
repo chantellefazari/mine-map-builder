@@ -1141,7 +1141,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* Scope reminder */}
-      <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
+      <div data-pdf-section className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
         <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
         <p className="text-xs text-amber-800">
           <strong>Scope:</strong> Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised.
