@@ -1,10 +1,12 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronRight, Wrench, Zap, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
+import { ChevronDown, ChevronRight, Wrench, Zap, AlertTriangle, CheckCircle2, Clock, FileDown } from "lucide-react";
 import { usePMasterList } from "@/hooks/usePMData";
+import { PrintShutdownPMModal } from "./PrintShutdownPMModal";
 
 // ── Types ───────────────────────────────────────────────────
 interface ShutdownPM {
@@ -206,6 +208,7 @@ const FreqBadge = ({ freq }: { freq: string }) => {
 export const ShutdownPMRequirementsSection = () => {
   const { pms } = usePMasterList();
   const [openAreas, setOpenAreas] = useState<Set<string>>(new Set(SHUTDOWN_AREAS.map(a => a.area)));
+  const [printOpen, setPrintOpen] = useState(false);
 
   const toggleArea = (area: string) => {
     setOpenAreas(prev => {
@@ -246,13 +249,21 @@ export const ShutdownPMRequirementsSection = () => {
       {/* Header */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-amber-500" />
-            Shutdown PM Requirements - Required Offline Inspections
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Offline/shutdown PMs that require the plant to be de-energised. These are cross-referenced against the Tennant Creek P&ID source of truth.
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-amber-500" />
+                Shutdown PM Requirements - Required Offline Inspections
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                Offline/shutdown PMs that require the plant to be de-energised. Cross-referenced against the P&ID source of truth.
+              </p>
+            </div>
+            <Button onClick={() => setPrintOpen(true)} variant="outline" className="gap-2 shrink-0">
+              <FileDown className="w-4 h-4" />
+              Export PDF
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -335,16 +346,7 @@ export const ShutdownPMRequirementsSection = () => {
         );
       })}
 
-      {/* Placeholder for future areas */}
-      {SHUTDOWN_AREAS.length < 2 && (
-        <Card className="border-dashed border-2 border-muted-foreground/20">
-          <CardContent className="py-8 text-center text-muted-foreground">
-            <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm font-medium">More areas coming</p>
-            <p className="text-xs">Additional shutdown PM areas (Milling, CIP, Elution, Tailings, etc.) will be added as data is provided.</p>
-          </CardContent>
-        </Card>
-      )}
+      <PrintShutdownPMModal isOpen={printOpen} onClose={() => setPrintOpen(false)} areas={SHUTDOWN_AREAS} />
     </div>
   );
 };
