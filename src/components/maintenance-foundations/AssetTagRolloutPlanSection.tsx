@@ -692,7 +692,7 @@ export const AssetTagRolloutPlanSection = () => {
                   </div>
                 </div>
                 <div className="bg-muted/50 rounded-md px-3 py-2">
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  <p className="text-[11px] text-muted-foreground leading-relaxed text-center">
                     <strong>Mounting:</strong> Bolt or cable tie to adjacent steelwork, pipe support, baseplate or skid frame - never on the equipment itself.
                   </p>
                 </div>
