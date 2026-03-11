@@ -128,7 +128,7 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
           </div>
           <div className="p-4 text-center">
             <div className="text-2xl font-extrabold text-muted-foreground">{opsCount}</div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Ops / Inspection</div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Mobile Equipment</div>
           </div>
           <div className="p-4 text-center">
             <div className="text-2xl font-extrabold text-primary">{freqBreakdown.length}</div>
