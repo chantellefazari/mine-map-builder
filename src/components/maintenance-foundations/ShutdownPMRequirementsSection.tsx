@@ -249,13 +249,21 @@ export const ShutdownPMRequirementsSection = () => {
       {/* Header */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-amber-500" />
-            Shutdown PM Requirements - Required Offline Inspections
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Offline/shutdown PMs that require the plant to be de-energised. These are cross-referenced against the Tennant Creek P&ID source of truth.
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-amber-500" />
+                Shutdown PM Requirements - Required Offline Inspections
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                Offline/shutdown PMs that require the plant to be de-energised. Cross-referenced against the P&ID source of truth.
+              </p>
+            </div>
+            <Button onClick={() => setPrintOpen(true)} variant="outline" className="gap-2 shrink-0">
+              <FileDown className="w-4 h-4" />
+              Export PDF
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
