@@ -20,6 +20,7 @@ import {
 import { usePMasterList } from "@/hooks/usePMData";
 import { toast } from "sonner";
 import { PrintPMRegisterModal } from "./PrintPMRegisterModal";
+import { CurrentPMsDocumentView } from "./CurrentPMsDocumentView";
 
 /* ── Required PM type ─────────────────────────────────────── */
 export interface RequiredPM {

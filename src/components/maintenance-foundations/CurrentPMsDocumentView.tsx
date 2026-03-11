@@ -209,7 +209,7 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
                           <TableCell className="text-[10px] text-muted-foreground">{pm.equipmentType}</TableCell>
                           <TableCell className="text-center">
                             <span className={`inline-flex items-center px-2 py-0.5 rounded text-[9px] font-semibold ${
-                              pm.dutyType === "Offline"
+                              (pm.dutyType as string) === "Offline"
                                 ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
                                 : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
                             }`}>
