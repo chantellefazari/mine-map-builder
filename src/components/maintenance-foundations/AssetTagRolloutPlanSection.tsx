@@ -1019,7 +1019,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 11. Safety Considerations */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Shield} number="11" title="Safety Considerations" />
           <div className="space-y-0.5">
