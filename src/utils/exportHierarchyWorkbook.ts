@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import { writeXlsxFile } from "@/utils/safariDownload";
 import { areasData } from "@/components/hierarchy/assetData";
 import { pidTagMappings } from "@/components/hierarchy/pidTagMappings";
 
@@ -134,5 +135,5 @@ export function exportHierarchyWorkbook() {
 
   XLSX.utils.book_append_sheet(wb, ws, "Processing Plant Hierarchy");
 
-  XLSX.writeFile(wb, "TCMG_Processing_Plant_Hierarchy.xlsx");
+  writeXlsxFile(wb, "TCMG_Processing_Plant_Hierarchy.xlsx");
 }

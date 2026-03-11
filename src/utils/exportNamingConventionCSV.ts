@@ -1,4 +1,5 @@
-import { 
+import { downloadCsv } from "@/utils/safariDownload";
+import {
   areaCodes, 
   equipmentPrefixes, 
   componentSuffixes, 
@@ -48,11 +49,5 @@ export function exportNamingConventionCSV() {
   specialPatterns.forEach(p => rows.push([p.pattern, p.meaning, p.example]));
 
   const csvContent = rows.map(row => row.map(escapeCSV).join(",")).join("\n");
-  const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "TCMG_Naming_Convention.csv";
-  link.click();
-  URL.revokeObjectURL(url);
+  downloadCsv(csvContent, "TCMG_Naming_Convention.csv");
 }

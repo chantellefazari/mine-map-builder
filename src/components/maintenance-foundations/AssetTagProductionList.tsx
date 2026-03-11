@@ -10,6 +10,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
+import { writeXlsxFile, downloadCsv } from "@/utils/safariDownload";
 
 interface TaggedAsset {
   asset_name: string;
@@ -226,20 +227,14 @@ export const AssetTagProductionList = () => {
     const ws = XLSX.utils.json_to_sheet(buildExportRows());
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Tag Production List");
-    XLSX.writeFile(wb, "Asset_Tag_Production_List_Tennant_Creek.xlsx");
+    writeXlsxFile(wb, "Asset_Tag_Production_List_Tennant_Creek.xlsx");
     toast.success("XLSX exported successfully");
   };
 
   const handleExportCSV = () => {
     const ws = XLSX.utils.json_to_sheet(buildExportRows());
     const csv = XLSX.utils.sheet_to_csv(ws);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "Asset_Tag_Production_List_Tennant_Creek.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCsv(csv, "Asset_Tag_Production_List_Tennant_Creek.csv");
     toast.success("CSV exported successfully");
   };
 
