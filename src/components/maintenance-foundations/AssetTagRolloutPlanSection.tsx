@@ -645,8 +645,8 @@ export const AssetTagRolloutPlanSection = () => {
           <div className="grid md:grid-cols-2 gap-4">
             {/* Type A */}
             <Card className="border-l-4 border-l-primary">
-              <CardContent className="py-4 px-4 space-y-3">
-                <div className="flex items-center gap-2">
+              <CardContent className="py-4 px-4 space-y-3 text-center">
+                <div className="flex items-center justify-center gap-2">
                   <Square className="w-5 h-5 text-primary flex-shrink-0" />
                   <span className="text-sm font-bold text-foreground uppercase tracking-wide">Type A - Major Asset Plates</span>
                 </div>
@@ -657,7 +657,7 @@ export const AssetTagRolloutPlanSection = () => {
                 <Separator />
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap justify-center gap-1">
                     {["Tanks", "Conveyors", "Crushers", "Mills", "Thickeners", "Hoppers", "Chutes", "Cyclone Clusters", "Filter Presses", "Air Receivers", "Major Structures"].map((item) => (
                       <Badge key={item} variant="outline" className="text-[10px]">{item}</Badge>
                     ))}
@@ -673,8 +673,8 @@ export const AssetTagRolloutPlanSection = () => {
 
             {/* Type B */}
             <Card className="border-l-4 border-l-amber-500">
-              <CardContent className="py-4 px-4 space-y-3">
-                <div className="flex items-center gap-2">
+              <CardContent className="py-4 px-4 space-y-3 text-center">
+                <div className="flex items-center justify-center gap-2">
                   <Circle className="w-5 h-5 text-amber-500 flex-shrink-0" />
                   <span className="text-sm font-bold text-foreground uppercase tracking-wide">Type B - Equipment Position Tags</span>
                 </div>
@@ -685,7 +685,7 @@ export const AssetTagRolloutPlanSection = () => {
                 <Separator />
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap justify-center gap-1">
                     {["Pumps", "Valves", "Motors", "Instruments", "Agitators", "Compressors", "Screens", "Lube Systems", "Dosing Pumps", "Generators", "Hoists", "Fans / Coolers"].map((item) => (
                       <Badge key={item} variant="outline" className="text-[10px]">{item}</Badge>
                     ))}
