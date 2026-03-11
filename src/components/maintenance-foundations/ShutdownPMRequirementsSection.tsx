@@ -128,12 +128,32 @@ const thickeningElec: ShutdownPM[] = [
   { name: "26W OFF-LINE ELECT THICKENING AREA MOTOR CHECKS", frequency: "26W", type: "PM", discipline: "ES", estimatedHours: 12, tcAssetMatch: "Motors on THYD01-MTR01, TUFP01 pumps" },
 ];
 
+// ── Tailings Data ───────────────────────────────────────────
+const tailingsMech: ShutdownPM[] = [
+  { name: "6W OFF-LINE MECH TAILS PUMP 1 WET END INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "ADS01-PMP03 - CIP Tailings Pump (Duty)" },
+  { name: "6W OFF-LINE MECH TAILS PUMP 2 WET END INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "ADS01-PMP02 - CIP Tailings Pump (Standby)" },
+  { name: "12W OFF-LINE MECH TAILS PUMP 1 WET END INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "ADS01-PMP03 - CIP Tailings Pump (Duty)" },
+  { name: "12W OFF-LINE MECH TAILS PUMP 2 WET END INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "ADS01-PMP02 - CIP Tailings Pump (Standby)" },
+  { name: "6W OFF-LINE MECH FILTER FEED TANK PUMP 1 WET END INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "FP01-PMP01 - Filter 1 Feed Pump" },
+  { name: "6W OFF-LINE MECH FILTER FEED TANK PUMP 2 WET END INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "FP02-PMP01 - Filter 2 Feed Pump" },
+  { name: "6W OFF-LINE MECH FILTER FEED TANKPUMP 1 WET END INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 5, tcAssetMatch: "FP01-PMP01 - Filter 1 Feed Pump" },
+  { name: "6W OFF-LINE MECH FILTER FEED TANK PUMP 2 WET END INSPECTION (12W)", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "FP02-PMP01 - Filter 2 Feed Pump" },
+];
+
+const tailingsElec: ShutdownPM[] = [
+  { name: "12W OFF-LINE TAILS AREA E-STOP CHECKS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "E-stops in Tailings / Filter area" },
+  { name: "12W OFF-LINE ELECT TAILS AREA RCD PUSH BUTTON TEST", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "RCD protection in Tailings / Filter area" },
+  { name: "12W OFF-LINE ELECT TAILS AREA ELECTRICAL INSPECTIONS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "Electrical infrastructure in Tailings / Filter area" },
+  { name: "26W OFF-LINE ELECT TAILS AREA MOTOR CHECKS", frequency: "26W", type: "PM", discipline: "ES", estimatedHours: 12, tcAssetMatch: "Motors on ADS01-PMP02/03, FP01-PMP01, FP02-PMP01" },
+];
+
 // ── All areas registry (add new areas here) ─────────────────
 const SHUTDOWN_AREAS: ShutdownArea[] = [
   { area: "Ore Handling (Feed / Reclaim)", mechanical: oreHandlingMech, electrical: oreHandlingElec },
   { area: "Grinding (Comminution)", mechanical: [...grindingMech, ...grindingPumps], electrical: grindingElec },
   { area: "Leaching (CIP)", mechanical: leachingMech, electrical: leachingElec },
   { area: "Thickening", mechanical: thickeningMech, electrical: thickeningElec },
+  { area: "Tailings / Filtering", mechanical: tailingsMech, electrical: tailingsElec },
 ];
 
 // ── Helpers ─────────────────────────────────────────────────
