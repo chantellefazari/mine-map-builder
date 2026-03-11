@@ -159,61 +159,83 @@ export const AssetTagRolloutPlanSection = () => {
     if (!el) return;
     setDownloading(true);
     try {
-      const A4_W = 210;
+      const A4_W = 210; // mm
       const A4_H = 297;
       const MARGIN = 12;
       const CONTENT_W = A4_W - MARGIN * 2;
-      const GAP = 3;
+      const HEADER_H = 18; // mm reserved for doc header
+      const FOOTER_H = 10; // mm reserved for page numbers
+      const USABLE_H = A4_H - MARGIN - FOOTER_H;
+
+      // Create a hidden clone at a fixed pixel width for consistent rendering
+      const RENDER_PX_W = 794; // A4 at ~96dpi minus margins
+      const wrapper = document.createElement("div");
+      wrapper.style.cssText = `position:fixed;top:-9999px;left:-9999px;width:${RENDER_PX_W}px;background:#fff;z-index:-1;padding:16px;`;
+      wrapper.innerHTML = el.innerHTML;
+      // Remove buttons from clone
+      wrapper.querySelectorAll("button").forEach(b => b.remove());
+      document.body.appendChild(wrapper);
+
+      // Render full content as one canvas
+      const canvas = await html2canvas(wrapper, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+        width: RENDER_PX_W,
+      });
+      document.body.removeChild(wrapper);
+
+      // Calculate how the canvas maps to mm
+      const pxPerMm = (canvas.width) / CONTENT_W;
+      const totalHeightMM = canvas.height / pxPerMm;
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      let currentY = MARGIN;
 
-      // Add document header on first page
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(14);
-      pdf.setTextColor(17, 17, 17);
-      pdf.text("Processing Plant — Asset Tagging Standard & Rollout Plan", MARGIN, currentY + 5);
-      pdf.setFont("helvetica", "normal");
-      pdf.setFontSize(8);
-      pdf.setTextColor(100, 100, 100);
-      const dateStr = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" });
-      pdf.text(`TCMG-STD-TAG-002 Rev 2.0 | Tennant Mines Gold | ${dateStr}`, MARGIN, currentY + 10);
-      pdf.setDrawColor(212, 160, 23);
-      pdf.setLineWidth(1);
-      pdf.line(MARGIN, currentY + 13, A4_W - MARGIN, currentY + 13);
-      currentY += 18;
+      // Draw document header
+      const drawHeader = () => {
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(14);
+        pdf.setTextColor(17, 17, 17);
+        pdf.text("Processing Plant — Asset Tagging Standard & Rollout Plan", MARGIN, MARGIN + 5);
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(8);
+        pdf.setTextColor(100, 100, 100);
+        const dateStr = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" });
+        pdf.text(`TCMG-STD-TAG-002 Rev 2.0 | Tennant Mines Gold | ${dateStr}`, MARGIN, MARGIN + 10);
+        pdf.setDrawColor(212, 160, 23);
+        pdf.setLineWidth(1);
+        pdf.line(MARGIN, MARGIN + 13, A4_W - MARGIN, MARGIN + 13);
+      };
 
-      // Capture each Card section as a separate canvas for page-break control
-      const sections = Array.from(el.children) as HTMLElement[];
+      // Slice the single canvas into pages
+      let srcY = 0; // current y in canvas pixels
+      let pageNum = 0;
+      const firstPageContentH = USABLE_H - HEADER_H; // mm available on first page
+      const laterPageContentH = USABLE_H - MARGIN; // mm available on subsequent pages
 
-      for (const section of sections) {
-        // Skip buttons and non-visible elements
-        if (section.tagName === "BUTTON" || section.offsetHeight === 0) continue;
+      while (srcY < canvas.height) {
+        if (pageNum > 0) pdf.addPage();
+        const isFirst = pageNum === 0;
+        if (isFirst) drawHeader();
 
-        const canvas = await html2canvas(section, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: "#ffffff",
-          logging: false,
-          windowWidth: 800,
-        });
+        const sliceHeightMM = isFirst ? firstPageContentH : laterPageContentH;
+        const sliceHeightPx = Math.min(sliceHeightMM * pxPerMm, canvas.height - srcY);
+        const sliceMMActual = sliceHeightPx / pxPerMm;
 
-        const imgW = canvas.width / 2;
-        const imgH = canvas.height / 2;
-        const scaleFactor = CONTENT_W / imgW;
-        const heightMM = imgH * scaleFactor;
+        // Extract slice from canvas
+        const sliceCanvas = document.createElement("canvas");
+        sliceCanvas.width = canvas.width;
+        sliceCanvas.height = Math.ceil(sliceHeightPx);
+        const ctx = sliceCanvas.getContext("2d")!;
+        ctx.drawImage(canvas, 0, srcY, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
 
-        // Check if section fits on current page
-        const remaining = A4_H - MARGIN - currentY;
-        if (heightMM > remaining && currentY > MARGIN + 18) {
-          pdf.addPage();
-          currentY = MARGIN;
-        }
+        const imgData = sliceCanvas.toDataURL("image/png");
+        const placeY = isFirst ? MARGIN + HEADER_H : MARGIN;
+        pdf.addImage(imgData, "PNG", MARGIN, placeY, CONTENT_W, sliceMMActual);
 
-        // If a single section is taller than one page, we still place it (it may overflow but avoids infinite loop)
-        const imgData = canvas.toDataURL("image/png");
-        pdf.addImage(imgData, "PNG", MARGIN, currentY, CONTENT_W, heightMM);
-        currentY += heightMM + GAP;
+        srcY += sliceHeightPx;
+        pageNum++;
       }
 
       // Add page numbers
@@ -228,6 +250,9 @@ export const AssetTagRolloutPlanSection = () => {
           A4_H - 6,
           { align: "center" }
         );
+        // Gold bottom bar
+        pdf.setFillColor(212, 160, 23);
+        pdf.rect(0, A4_H - 3, A4_W, 3, "F");
       }
 
       pdf.save("TCMG_Asset_Tag_Rollout_Plan.pdf");
