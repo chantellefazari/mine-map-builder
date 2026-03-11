@@ -998,7 +998,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 10. Quality Control */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={CheckCircle2} number="10" title="Quality Control" />
           <div className="grid sm:grid-cols-2 gap-x-6 gap-y-0">
