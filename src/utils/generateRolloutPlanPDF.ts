@@ -564,7 +564,7 @@ export async function generateRolloutPlanPDF(
 // ════════════════════════════════════════════════
 // 2. ATTACHMENT A — P&ID TAGGED ASSET REGISTER PDF
 // ════════════════════════════════════════════════
-export function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
+export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   let y = addDocHeader(pdf, "P&ID Tagged Asset Register", "Attachment A - Tennant Mines Gold");
 
