@@ -592,19 +592,19 @@ export const AssetTagRolloutPlanSection = () => {
 
           {/* Tag Layout Examples */}
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Layout Examples</p>
-          <div className="grid sm:grid-cols-2 gap-3">
-            <div className="bg-muted/40 rounded-md px-3 py-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Type A Tag Layout</p>
-              <div className="bg-background border border-border rounded px-4 py-3 text-center font-mono">
-                <p className="text-lg font-bold text-foreground">BM01</p>
-                <p className="text-xs text-muted-foreground">Primary Ball Mill</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="bg-muted/40 rounded-md p-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Type A Tag Layout</p>
+              <div className="bg-background border border-border rounded px-4 py-4 text-center font-mono">
+                <p className="text-lg font-bold text-foreground leading-none">BM01</p>
+                <p className="text-xs text-muted-foreground mt-1.5">Primary Ball Mill</p>
               </div>
             </div>
-            <div className="bg-muted/40 rounded-md px-3 py-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Type B Tag Layout</p>
-              <div className="bg-background border border-border rounded px-4 py-3 text-center font-mono">
-                <p className="text-base font-bold text-foreground">CFP01-PA01</p>
-                <p className="text-[11px] text-muted-foreground">Cyclone Feed Pump (Duty)</p>
+            <div className="bg-muted/40 rounded-md p-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Type B Tag Layout</p>
+              <div className="bg-background border border-border rounded px-4 py-4 text-center font-mono">
+                <p className="text-base font-bold text-foreground leading-none">CFP01-PA01</p>
+                <p className="text-[11px] text-muted-foreground mt-1.5">Cyclone Feed Pump (Duty)</p>
               </div>
             </div>
           </div>
