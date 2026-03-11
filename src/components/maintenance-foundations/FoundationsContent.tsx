@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import { supabase } from "@/integrations/supabase/client";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
 import { JobNumberingSection } from "./JobNumberingSection";
