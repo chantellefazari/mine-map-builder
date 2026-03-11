@@ -76,14 +76,23 @@ export const PrintAllFoundationsModal: React.FC<PrintAllFoundationsModalProps> =
       }
 
       const blob = pdf.output("blob");
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "TCMG-Maintenance-Foundations.pdf";
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+      const filename = "TCMG-Maintenance-Foundations.pdf";
+      const storagePath = `exports/${Date.now()}-${filename}`;
+      const { error: uploadError } = await supabase.storage
+        .from("temp-pdfs")
+        .upload(storagePath, blob, { contentType: "application/pdf", upsert: true });
+      if (!uploadError) {
+        const { data: urlData } = supabase.storage.from("temp-pdfs").getPublicUrl(storagePath);
+        if (urlData?.publicUrl) {
+          const a = document.createElement("a");
+          a.href = urlData.publicUrl;
+          a.target = "_blank";
+          a.rel = "noopener";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+      } else { console.error("[PDF] Upload failed:", uploadError); }
     } catch (err) {
       console.error("PDF download error:", err);
     } finally {
