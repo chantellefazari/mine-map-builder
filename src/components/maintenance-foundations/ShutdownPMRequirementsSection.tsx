@@ -109,11 +109,31 @@ const leachingElec: ShutdownPM[] = [
   { name: "26W OFF-LINE ELECT LEACHING AREA MOTOR CHECKS", frequency: "26W", type: "PM", discipline: "ES", estimatedHours: 12, tcAssetMatch: "Motors in CIP/Leaching area", tcPidTag: "" },
 ];
 
+// ── Thickening Data ─────────────────────────────────────────
+const thickeningMech: ShutdownPM[] = [
+  { name: "12W OFF-LINE THICKENER INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "THK01 - Tails Thickener" },
+  { name: "12W OFF-LINE TRASH SCREEN INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 2, tcAssetMatch: "THK01 trash screen (Thickening area)" },
+  { name: "12W OFF-LINE THICKENER AREA OIL SAMPLES", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "THYD01 hydraulic system, TUFP01 pump gearboxes" },
+  { name: "12W OFF-LINE THICKENER DRIVE INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "THYD01 - Thickener Hydraulic System (drive)" },
+  { name: "6W OFF-LINE MECH THICKENER UNDERFLOW PUMP 1 INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "TUFP01-PMP01 - Thickener Underflow Pump (Duty)" },
+  { name: "6W OFF-LINE MECH THICKENER UNDERFLOW PUMP 2 INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "TUFP01-PMP02 - Thickener Underflow Pump (Standby)" },
+  { name: "12W OFF-LINE MECH THICKENER UNDERFLOW PUMP 1 INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "TUFP01-PMP01 - Thickener Underflow Pump (Duty)" },
+  { name: "12W OFF-LINE MECH THICKENER UNDERFLOW PUMP 2 INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "TUFP01-PMP02 - Thickener Underflow Pump (Standby)" },
+];
+
+const thickeningElec: ShutdownPM[] = [
+  { name: "12W OFF-LINE THICKENING AREA E-STOP CHECKS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "E-stops in Thickening area" },
+  { name: "12W OFF-LINE ELECT THICKENING AREA RCD PUSH BUTTON TEST", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "RCD protection in Thickening area" },
+  { name: "12W OFF-LINE ELECT THICKENER AREA ELECTRICAL INSPECTIONS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "Electrical infrastructure in Thickening area" },
+  { name: "26W OFF-LINE ELECT THICKENING AREA MOTOR CHECKS", frequency: "26W", type: "PM", discipline: "ES", estimatedHours: 12, tcAssetMatch: "Motors on THYD01-MTR01, TUFP01 pumps" },
+];
+
 // ── All areas registry (add new areas here) ─────────────────
 const SHUTDOWN_AREAS: ShutdownArea[] = [
   { area: "Ore Handling (Feed / Reclaim)", mechanical: oreHandlingMech, electrical: oreHandlingElec },
   { area: "Grinding (Comminution)", mechanical: [...grindingMech, ...grindingPumps], electrical: grindingElec },
   { area: "Leaching (CIP)", mechanical: leachingMech, electrical: leachingElec },
+  { area: "Thickening", mechanical: thickeningMech, electrical: thickeningElec },
 ];
 
 // ── Helpers ─────────────────────────────────────────────────
