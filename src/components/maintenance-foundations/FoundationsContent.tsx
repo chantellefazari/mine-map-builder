@@ -38,7 +38,6 @@ const TAB_LABELS: Record<string, string> = {
 
 export const FoundationsContent = () => {
   const [activeTab, setActiveTab] = useState("hierarchy");
-  const [downloading, setDownloading] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handlePrintTab = () => {
