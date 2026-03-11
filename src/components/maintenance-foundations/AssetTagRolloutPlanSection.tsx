@@ -153,6 +153,7 @@ export const AssetTagRolloutPlanSection = () => {
 
   const typeACnt = productionTags.filter(t => t.tagType === "A").length;
   const typeBCnt = productionTags.filter(t => t.tagType === "B").length;
+  const centeredPillClass = "inline-flex items-center justify-center text-center leading-none";
 
   const handleDownloadPlan = async () => {
     const el = planRef.current;
@@ -418,7 +419,7 @@ export const AssetTagRolloutPlanSection = () => {
           [role="separator"], hr { border: none; border-top: 1px solid #e5e5e5; margin: 6px 0; }
 
           /* Badges */
-          [class*="inline-flex"][class*="rounded-full"], [class*="inline-flex"][class*="rounded-md"] { display: inline-flex; padding: 2px 8px; border-radius: 9999px; font-size: 9px; border: 1px solid #ddd; }
+          [class*="inline-flex"][class*="rounded-full"], [class*="inline-flex"][class*="rounded-md"] { display: inline-flex; align-items: center; justify-content: center; text-align: center; line-height: 1; padding: 2px 8px; min-height: 20px; border-radius: 9999px; font-size: 9px; border: 1px solid #ddd; }
 
           /* Shrink flex-shrink-0 items */
           [class*="flex-shrink-0"] { flex-shrink: 0; }
@@ -468,10 +469,10 @@ export const AssetTagRolloutPlanSection = () => {
           </p>
 
           {/* Document Meta Row */}
-          <div className="flex items-center gap-2 mb-4">
-            <Badge variant="outline" className="text-xs font-mono">TCMG-STD-TAG-002</Badge>
-            <Badge variant="outline" className="text-xs font-mono">Rev 2.0</Badge>
-            <Badge className="text-xs bg-primary text-primary-foreground">Processing Plant Only</Badge>
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>TCMG-STD-TAG-002</Badge>
+            <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>Rev 2.0</Badge>
+            <Badge className={`${centeredPillClass} h-6 px-3 text-xs bg-primary text-primary-foreground`}>Processing Plant Only</Badge>
           </div>
 
           <Separator className="my-3" />
@@ -658,8 +659,10 @@ export const AssetTagRolloutPlanSection = () => {
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
                   <div className="flex flex-wrap justify-center gap-1">
-                    {["Tanks", "Conveyors", "Crushers", "Mills", "Thickeners", "Hoppers", "Chutes", "Cyclone Clusters", "Filter Presses", "Air Receivers", "Major Structures"].map((item) => (
-                      <Badge key={item} variant="outline" className="h-5 px-3 text-[10px] leading-none inline-flex items-center justify-center">{item}</Badge>
+                    {[
+                      "Tanks", "Conveyors", "Crushers", "Mills", "Thickeners", "Hoppers", "Chutes", "Cyclone Clusters", "Filter Presses", "Air Receivers", "Major Structures"
+                    ].map((item) => (
+                      <Badge key={item} variant="outline" className={`${centeredPillClass} h-5 px-3 text-[10px]`}>{item}</Badge>
                     ))}
                   </div>
                 </div>
@@ -686,8 +689,10 @@ export const AssetTagRolloutPlanSection = () => {
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
                   <div className="flex flex-wrap justify-center gap-1">
-                    {["Pumps", "Valves", "Motors", "Instruments", "Agitators", "Compressors", "Screens", "Lube Systems", "Dosing Pumps", "Generators", "Hoists", "Fans / Coolers"].map((item) => (
-                      <Badge key={item} variant="outline" className="h-5 px-3 text-[10px] leading-none inline-flex items-center justify-center">{item}</Badge>
+                    {[
+                      "Pumps", "Valves", "Motors", "Instruments", "Agitators", "Compressors", "Screens", "Lube Systems", "Dosing Pumps", "Generators", "Hoists", "Fans / Coolers"
+                    ].map((item) => (
+                      <Badge key={item} variant="outline" className={`${centeredPillClass} h-5 px-3 text-[10px]`}>{item}</Badge>
                     ))}
                   </div>
                 </div>
@@ -1113,7 +1118,7 @@ export const AssetTagRolloutPlanSection = () => {
           <div className="grid md:grid-cols-2 gap-4">
             <div className="border border-border rounded-lg p-4 space-y-2">
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs font-mono">Attachment A</Badge>
+                <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>Attachment A</Badge>
                 <p className="text-sm font-bold text-foreground">P&ID Tagged Asset Register</p>
               </div>
               <p className="text-xs text-muted-foreground">
@@ -1126,7 +1131,7 @@ export const AssetTagRolloutPlanSection = () => {
             </div>
             <div className="border border-border rounded-lg p-4 space-y-2">
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs font-mono">Attachment B</Badge>
+                <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>Attachment B</Badge>
                 <p className="text-sm font-bold text-foreground">Tag Production List</p>
               </div>
               <p className="text-xs text-muted-foreground">
