@@ -27,6 +27,7 @@ import { AssetTagRolloutPlanSection } from "./AssetTagRolloutPlanSection";
 
 import { PMCoverageAnalysisSection } from "./PMCoverageAnalysisSection";
 import { ShutdownPMRequirementsSection } from "./ShutdownPMRequirementsSection";
+import { NamingConventionDocument } from "./NamingConventionDocument";
 
 const TAB_LABELS: Record<string, string> = {
   "hierarchy": "Asset Hierarchy & Parent-Child Rules",
@@ -40,6 +41,7 @@ const TAB_LABELS: Record<string, string> = {
   
   "pm-coverage": "Current Site PM Register",
   "shutdown-pms": "Shutdown PM Requirements",
+  "naming-convention": "Site Naming Convention Reference",
 };
 
 export const FoundationsContent = () => {
@@ -178,6 +180,11 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">Shutdown PM Requirements</span>
             <span className="sm:hidden">Shutdown</span>
           </TabsTrigger>
+          <TabsTrigger value="naming-convention" className="flex items-center gap-2 text-xs">
+            <FileText className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Site Naming Convention</span>
+            <span className="sm:hidden">Naming</span>
+          </TabsTrigger>
         </TabsList>
         <div className="flex flex-col gap-1.5 shrink-0 mt-1">
           <Button
@@ -241,6 +248,10 @@ export const FoundationsContent = () => {
 
         <TabsContent value="shutdown-pms">
           <ShutdownPMRequirementsSection />
+        </TabsContent>
+
+        <TabsContent value="naming-convention">
+          <NamingConventionDocument />
         </TabsContent>
       </div>
     </Tabs>
