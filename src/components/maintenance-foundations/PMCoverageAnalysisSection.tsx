@@ -20,6 +20,7 @@ import {
 import { usePMasterList } from "@/hooks/usePMData";
 import { toast } from "sonner";
 import { PrintPMRegisterModal } from "./PrintPMRegisterModal";
+import { CurrentPMsDocumentView } from "./CurrentPMsDocumentView";
 
 /* ── Required PM type ─────────────────────────────────────── */
 export interface RequiredPM {
@@ -324,48 +325,11 @@ export const PMCoverageAnalysisSection = () => {
 
         {/* ── CURRENT PMs TAB ───────────────────────────────── */}
         <TabsContent value="current">
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-foreground">
-                Current PMs in PM Design ({currentPMs.length})
-              </h3>
-              <Button size="sm" onClick={() => setPdfOpen(true)} className="gap-1 text-xs h-8">
-                <FileDown className="h-3.5 w-3.5" /> Export PDF
-              </Button>
-            </div>
-            {isLoading ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">Loading...</p>
-            ) : (
-              <div className="max-h-[500px] overflow-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-xs">#</TableHead>
-                      <TableHead className="text-xs">PM Name</TableHead>
-                      <TableHead className="text-xs">Discipline</TableHead>
-                      <TableHead className="text-xs">Frequency</TableHead>
-                      <TableHead className="text-xs">Equipment Type</TableHead>
-                      <TableHead className="text-xs">Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {currentPMs.map((pm, i) => (
-                      <TableRow key={pm.id}>
-                        <TableCell className="text-xs text-muted-foreground">{i + 1}</TableCell>
-                        <TableCell className="text-xs font-medium">{pm.pmName}</TableCell>
-                        <TableCell><Badge variant="secondary" className="text-[10px]">{pm.discipline}</Badge></TableCell>
-                        <TableCell className="text-xs">{pm.frequency}</TableCell>
-                        <TableCell className="text-xs">{pm.equipmentType}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-[10px]">{pm.status}</Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </Card>
+          <CurrentPMsDocumentView
+            currentPMs={currentPMs}
+            isLoading={isLoading}
+            onExportPdf={() => setPdfOpen(true)}
+          />
         </TabsContent>
 
         {/* ── REQUIRED PMs TAB ──────────────────────────────── */}
