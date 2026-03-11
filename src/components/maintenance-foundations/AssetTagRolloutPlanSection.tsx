@@ -455,73 +455,72 @@ export const AssetTagRolloutPlanSection = () => {
       {/* Header */}
       <Card data-pdf-section className="border-primary/20 bg-primary/5">
         <CardContent className="pt-5 pb-4">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <ClipboardList className="w-5 h-5 text-primary" />
-                <h2 className="text-lg font-bold text-foreground">
-                  Processing Plant - Asset Tagging Standard & Rollout Plan
-                </h2>
-              </div>
-              <p className="text-sm text-muted-foreground max-w-2xl">
-                Complete tagging standard and structured implementation plan for physical asset tagging across the processing plant.
-                Aligned with the rebuilt asset tree and P&ID extraction register.
-              </p>
-            </div>
-            <div className="flex flex-col gap-1.5 items-end">
-              <div className="flex gap-1">
-                <Badge variant="outline" className="text-xs font-mono">TCMG-STD-TAG-002</Badge>
-                <Badge variant="outline" className="text-xs font-mono">Rev 2.0</Badge>
-              </div>
-              <Badge className="text-xs bg-primary text-primary-foreground">Processing Plant Only</Badge>
-              <div className="flex flex-col gap-1 mt-1">
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="gap-2"
-                  onClick={handleDownloadPlan}
-                  disabled={downloading || taggedAssets.length === 0}
-                >
-                  {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-                  {downloading ? "Generating…" : "Download Rollout Plan PDF"}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  onClick={handlePrintPlan}
-                  disabled={taggedAssets.length === 0}
-                >
-                  <Printer className="w-3.5 h-3.5" />
-                  Print / Preview Plan
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  onClick={handleDownloadRegister}
-                  disabled={taggedAssets.length === 0}
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  Attachment A - Asset Register PDF
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  onClick={handleDownloadProductionList}
-                  disabled={productionTags.length === 0}
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  Attachment B - Production List PDF
-                </Button>
-              </div>
-            </div>
+          {/* Document Title Block */}
+          <div className="flex items-center gap-2 mb-2">
+            <ClipboardList className="w-5 h-5 text-primary flex-shrink-0" />
+            <h2 className="text-lg font-bold text-foreground leading-tight">
+              Processing Plant - Asset Tagging Standard & Rollout Plan
+            </h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-3">
+            Complete tagging standard and structured implementation plan for physical asset tagging across the
+            processing plant. Aligned with the rebuilt asset tree and P&ID extraction register.
+          </p>
+
+          {/* Document Meta Row */}
+          <div className="flex items-center gap-2 mb-4">
+            <Badge variant="outline" className="text-xs font-mono">TCMG-STD-TAG-002</Badge>
+            <Badge variant="outline" className="text-xs font-mono">Rev 2.0</Badge>
+            <Badge className="text-xs bg-primary text-primary-foreground">Processing Plant Only</Badge>
           </div>
 
           <Separator className="my-3" />
 
-          <div className="bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+          {/* Action Buttons */}
+          <div className="grid grid-cols-2 gap-2 print-hide">
+            <Button
+              variant="default"
+              size="sm"
+              className="gap-2 justify-start"
+              onClick={handleDownloadPlan}
+              disabled={downloading || taggedAssets.length === 0}
+            >
+              {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              {downloading ? "Generating…" : "Download Rollout Plan PDF"}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 justify-start"
+              onClick={handlePrintPlan}
+              disabled={taggedAssets.length === 0}
+            >
+              <Printer className="w-3.5 h-3.5" />
+              Print / Preview Plan
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 justify-start"
+              onClick={handleDownloadRegister}
+              disabled={taggedAssets.length === 0}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              Attachment A - Asset Register PDF
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 justify-start"
+              onClick={handleDownloadProductionList}
+              disabled={productionTags.length === 0}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              Attachment B - Production List PDF
+            </Button>
+          </div>
+
+          <div className="mt-3 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
             <p className="text-xs text-amber-800 font-medium">
               ⚠ Scope Notice: This plan applies to the Processing Plant ONLY. The Crushing Plant is excluded until P&IDs are finalised and approved.
             </p>
