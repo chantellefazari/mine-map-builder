@@ -34,18 +34,9 @@ export interface RequiredPM {
   notes: string;
 }
 
-const STORAGE_KEY = "tcmg-required-pms";
+/* localStorage migration: on first load, push any localStorage items to DB */
+const LS_KEY = "tcmg-required-pms";
 
-function loadRequired(): RequiredPM[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
-}
-
-function saveRequired(list: RequiredPM[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-}
 
 /* ── fuzzy name normaliser ────────────────────────────────── */
 function normalise(s: string) {
