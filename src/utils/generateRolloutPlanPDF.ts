@@ -618,7 +618,7 @@ export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
   });
 
   addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register - Attachment A");
-  triggerPdfDownload(pdf, "TCMG_PID_Tagged_Asset_Register.pdf");
+  await triggerPdfDownload(pdf, "TCMG_PID_Tagged_Asset_Register.pdf");
 }
 
 // ════════════════════════════════════════════════
