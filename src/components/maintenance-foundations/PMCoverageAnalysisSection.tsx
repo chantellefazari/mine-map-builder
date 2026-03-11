@@ -74,6 +74,7 @@ export const PMCoverageAnalysisSection = () => {
   const [addOpen, setAddOpen] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [subTab, setSubTab] = useState("coverage");
+  const [pdfOpen, setPdfOpen] = useState(false);
 
   // ── New PM form state
   const [newPM, setNewPM] = useState<Omit<RequiredPM, "id">>({
