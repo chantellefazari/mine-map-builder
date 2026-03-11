@@ -5,7 +5,6 @@ import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
 // Pre-load the Gravotech LS100 image as base64 for PDF embedding
 let gravoImageBase64: string | null = null;
 
-// Load image eagerly at module init — will be ready by user click time
 (async () => {
   try {
     const resp = await fetch("/images/gravotech-ls100.png");
@@ -48,9 +47,15 @@ const MUTED: [number, number, number] = [100, 100, 100];
 const HEADER_BG: [number, number, number] = [245, 240, 224];
 const LIGHT_BG: [number, number, number] = [250, 250, 250];
 
+const PAGE_W = 210;
 const PAGE_H = 297;
 const MARGIN = 15;
-const BOTTOM_SAFE = PAGE_H - MARGIN - 5; // safe zone before footer
+const CONTENT_LEFT = MARGIN + 4; // consistent left edge for all body content
+const CONTENT_W = PAGE_W - MARGIN - CONTENT_LEFT; // max text width
+const BULLET_DOT = CONTENT_LEFT + 2;
+const BULLET_TEXT = CONTENT_LEFT + 7;
+const BULLET_TEXT_W = PAGE_W - MARGIN - BULLET_TEXT;
+const BOTTOM_SAFE = PAGE_H - MARGIN - 8;
 
 function inferAssetType(pidTag: string): string {
   const t = pidTag.toUpperCase();
@@ -76,7 +81,7 @@ function inferAssetType(pidTag: string): string {
 function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   if (y + needed > BOTTOM_SAFE) {
     pdf.addPage();
-    return MARGIN;
+    return MARGIN + 4;
   }
   return y;
 }
@@ -89,58 +94,72 @@ async function triggerPdfDownload(pdf: jsPDF, filename: string, title?: string) 
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
   const w = pdf.internal.pageSize.getWidth();
+
+  // Gold top bar
   pdf.setFillColor(...GOLD);
   pdf.rect(0, 0, w, 3, "F");
 
+  // Title
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(18);
   pdf.setTextColor(...DARK);
   pdf.text(title, MARGIN, 18);
 
+  // Subtitle
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(9);
   pdf.setTextColor(...MUTED);
   pdf.text(subtitle, MARGIN, 24);
+
+  // Doc ref line
   pdf.text(
     `TCMG-ROLLOUT-001  |  Rev 2.0  |  ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}`,
     MARGIN, 29
   );
 
+  // Scope badge
   pdf.setFillColor(255, 193, 7);
   pdf.roundedRect(w - 65, 10, 50, 7, 1, 1, "F");
   pdf.setFontSize(7);
   pdf.setTextColor(80, 50, 0);
   pdf.text("Processing Plant Only", w - 63, 15);
 
+  // Divider
   pdf.setDrawColor(...GOLD);
   pdf.setLineWidth(0.5);
   pdf.line(MARGIN, 33, w - MARGIN, 33);
 
-  return 38;
+  return 40;
 }
 
 function addSectionTitle(pdf: jsPDF, y: number, number: string, title: string): number {
   y = ensureSpace(pdf, y, 14);
+
+  // Gold accent bar
   pdf.setFillColor(...GOLD);
   pdf.rect(MARGIN, y - 3, 2, 8, "F");
+
+  // Section number + title
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(10);
   pdf.setTextColor(...DARK);
-  pdf.text(`${number}  ${title}`, MARGIN + 5, y + 2);
-  return y + 10;
+  pdf.text(`${number}  ${title}`, CONTENT_LEFT, y + 2);
+
+  return y + 12;
 }
 
-function addParagraph(pdf: jsPDF, y: number, text: string, maxW = 180): number {
+function addParagraph(pdf: jsPDF, y: number, text: string, maxW?: number): number {
+  const textWidth = maxW || CONTENT_W;
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(8);
   pdf.setTextColor(...MUTED);
-  const lines = pdf.splitTextToSize(text, maxW);
+  const lines = pdf.splitTextToSize(text, textWidth);
   for (const line of lines) {
     y = ensureSpace(pdf, y, 5);
-    pdf.text(line, MARGIN, y);
+    pdf.text(line, CONTENT_LEFT, y);
     y += 4;
   }
-  return y + 2;
+  return y + 3;
 }
 
 function addBullets(pdf: jsPDF, y: number, items: string[]): number {
@@ -148,17 +167,34 @@ function addBullets(pdf: jsPDF, y: number, items: string[]): number {
   pdf.setFontSize(8);
   pdf.setTextColor(...DARK);
   for (const item of items) {
-    const lines = pdf.splitTextToSize(item, 170);
-    // Check if the entire bullet (all its lines) fits
+    const lines = pdf.splitTextToSize(item, BULLET_TEXT_W);
     y = ensureSpace(pdf, y, lines.length * 4 + 2);
-    pdf.text("•", MARGIN + 3, y);
-    for (const line of lines) {
-      pdf.text(line, MARGIN + 8, y);
+    pdf.text("•", BULLET_DOT, y);
+    for (let j = 0; j < lines.length; j++) {
+      pdf.text(lines[j], BULLET_TEXT, y);
       y += 4;
     }
     y += 1;
   }
   return y + 2;
+}
+
+function addSubHeading(pdf: jsPDF, y: number, text: string): number {
+  y = ensureSpace(pdf, y, 10);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(9);
+  pdf.setTextColor(...DARK);
+  pdf.text(text, CONTENT_LEFT, y);
+  return y + 6;
+}
+
+function addProConLabel(pdf: jsPDF, y: number, label: string, color: [number, number, number]): number {
+  y = ensureSpace(pdf, y, 6);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(7.5);
+  pdf.setTextColor(...color);
+  pdf.text(label, CONTENT_LEFT, y);
+  return y + 4;
 }
 
 function addPageNumbers(pdf: jsPDF, label: string) {
@@ -175,13 +211,13 @@ function addPageNumbers(pdf: jsPDF, label: string) {
   }
 }
 
-const tblHead = { fillColor: HEADER_BG, textColor: DARK, fontStyle: "bold" as const, fontSize: 7 };
-const tblBody = { fontSize: 7, textColor: DARK };
+const tblHead = { fillColor: HEADER_BG, textColor: DARK, fontStyle: "bold" as const, fontSize: 7, cellPadding: 2.5 };
+const tblBody = { fontSize: 7, textColor: DARK, cellPadding: 2 };
 const tblAlt = { fillColor: LIGHT_BG };
-const tblMargin = { left: MARGIN, right: MARGIN };
+const tblMargin = { left: CONTENT_LEFT, right: MARGIN };
 
 // ════════════════════════════════════════════════
-// 1. MAIN ROLLOUT PLAN PDF (Sections 01–13, no data tables)
+// 1. MAIN ROLLOUT PLAN PDF (Sections 01–12)
 // ════════════════════════════════════════════════
 export async function generateRolloutPlanPDF(
   taggedAssetCount: number,
@@ -189,11 +225,10 @@ export async function generateRolloutPlanPDF(
   typeACount: number,
   typeBCount: number
 ) {
-  // gravoImageBase64 is pre-loaded at module init — no await needed
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant - Tennant Mines Gold");
+  let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant — Tennant Mines Gold");
 
-  // 01
+  // ── 01 TAGGING CRITERIA ──
   y = addSectionTitle(pdf, y, "01", "TAGGING CRITERIA");
   y = addParagraph(pdf, y, "Physical asset tags are issued exclusively to equipment that has a linked P&ID equipment tag.");
   y = addBullets(pdf, y, [
@@ -204,98 +239,80 @@ export async function generateRolloutPlanPDF(
     "System headers, functional locations, and Level 7 sub-components without their own P&ID tag are excluded",
   ]);
 
-  // 02
+  // ── 02 TAG MOUNTING PHILOSOPHY ──
   y = addSectionTitle(pdf, y, "02", "TAG MOUNTING PHILOSOPHY");
   y = addParagraph(pdf, y, "Asset tags represent the P&ID equipment POSITION, not the removable equipment itself. Tags must be mounted on the fixed structure at the equipment connection point so they remain correct when pumps, motors, gearboxes or instruments are replaced.");
   y = addParagraph(pdf, y, "MOUNT ON: Equipment frames, baseplates, pipe supports, skids, handrails, structural steel, tank shells, conveyor stringers.");
   y = addParagraph(pdf, y, "NEVER ON: Pumps, motors, gearboxes, instruments, valves, or any equipment that may be removed for repair or replacement.");
 
-  // 03
+  // ── 03 TAG CATEGORIES ──
   y = addSectionTitle(pdf, y, "03", "TAG CATEGORIES");
   autoTable(pdf, {
     startY: y,
     headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
-    head: [["", "Type A - Major Asset Plates", "Type B - Equipment Position Tags"]],
+    head: [["", "Type A — Major Asset Plates", "Type B — Equipment Position Tags"]],
     body: [
       ["Plate Style", "Flat plate, no hole", "Smaller tag, single hole"],
       ["Mounting", "Adhesive or rivet to asset shell/frame", "Bolt or cable tie to nearby structure"],
       ["Examples", "Tanks, Conveyors, Crushers, Mills, Thickeners, Hoppers, Chutes, Cyclones, Filter Presses", "Pumps, Valves, Motors, Instruments, Agitators, Compressors, Screens, Generators"],
     ],
   });
-  y = (pdf as any).lastAutoTable.finalY + 6;
+  y = (pdf as any).lastAutoTable.finalY + 8;
 
-  // 04
+  // ── 04 TAG MATERIAL OPTIONS ──
   y = addSectionTitle(pdf, y, "04", "TAG MATERIAL OPTIONS");
   autoTable(pdf, {
     startY: y,
     headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
-    head: [["Specification", "Option 1 - 316 Stainless Steel", "Option 2 - DuraBlack"]],
+    head: [["Specification", "Option 1 — 316 Stainless Steel", "Option 2 — DuraBlack"]],
     body: [
-      ["Type A Size", "100mm x 50mm x 1.5mm", "100mm x 40mm x 0.5mm"],
-      ["Type B Size", "70mm x 25mm x 1.5mm", "80mm x 30mm x 0.5mm"],
-      ["Material", "316 Stainless Steel - engraved", "DuraBlack - laser etched"],
+      ["Type A Size", "100mm × 50mm × 1.5mm", "100mm × 40mm × 0.5mm"],
+      ["Type B Size", "70mm × 25mm × 1.5mm", "80mm × 30mm × 0.5mm"],
+      ["Material", "316 Stainless Steel — engraved", "DuraBlack — laser etched"],
       ["Price Estimate", "$7.20 per tag (500+ order)", "$4.65 per tag (500+ order)"],
-      ["Durability", "Excellent - 10+ year lifespan, chemical resistant", "Very Good - UV/oil resistant, 5-8 years outdoor"],
+      ["Durability", "Excellent — 10+ year lifespan, chemical resistant", "Very Good — UV/oil resistant, 5–8 years outdoor"],
       ["Best For", "Chemical areas, heavy wear zones", "General plant areas, cost-effective bulk orders"],
     ],
   });
-  y = (pdf as any).lastAutoTable.finalY + 4;
-  y = addParagraph(pdf, y, "Supplier: Trophy Central Alice Springs - quote provided for both options at 500+ quantity pricing.");
+  y = (pdf as any).lastAutoTable.finalY + 5;
+  y = addParagraph(pdf, y, "Supplier: Trophy Central Alice Springs — quote provided for both options at 500+ quantity pricing.");
   y = addParagraph(pdf, y, "Recommendation: Use 316 Stainless Steel for chemical/reagent areas (Gold Room, CIL, Reagents). Use DuraBlack for general plant areas (Water, Compressed Air, Comminution) to reduce cost while maintaining durability.");
 
-  // 05 — Force onto new page so it stays together
+  // ── 05 ASSET TAG PRODUCTION OPTIONS ── (force new page)
   pdf.addPage();
-  y = MARGIN;
+  y = MARGIN + 4;
   y = addSectionTitle(pdf, y, "05", "ASSET TAG PRODUCTION OPTIONS");
-  y = addParagraph(pdf, y, "Management may choose between outsourcing tag production to a specialist supplier or purchasing equipment for internal on-demand production. Both approaches are viable. The decision should be based on budget, volume, and long-term operational flexibility.");
+  y = addParagraph(pdf, y, "Management may choose between outsourcing tag production to a specialist supplier or purchasing equipment for internal on-demand production. Both approaches are viable.");
 
-  // Option 1 sub-heading
-  y = ensureSpace(pdf, y, 8);
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(9);
-  pdf.setTextColor(...DARK);
-  pdf.text("Option 1 - Outsource Tag Production", MARGIN + 3, y);
-  y += 5;
-
+  // Option 1
+  y = addSubHeading(pdf, y, "Option 1 — Outsource Tag Production");
   autoTable(pdf, {
     startY: y,
     headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
     head: [["Specification", "Detail"]],
     body: [
-      ["Supplier", "Trophy Central - Alice Springs"],
+      ["Supplier", "Trophy Central — Alice Springs"],
       ["Materials", "316 Stainless Steel (engraved) / DuraBlack (laser etched)"],
       ["Pricing (500+ qty)", "Stainless Steel: $7.20 per tag  |  DuraBlack: $4.65 per tag"],
     ],
   });
-  y = (pdf as any).lastAutoTable.finalY + 3;
+  y = (pdf as any).lastAutoTable.finalY + 5;
 
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(7.5);
-  pdf.setTextColor(34, 120, 60);
-  pdf.text("Pros:", MARGIN + 3, y); y += 4;
+  y = addProConLabel(pdf, y, "Pros:", [34, 120, 60]);
   y = addBullets(pdf, y, [
     "No capital equipment required",
     "Professional engraving quality",
     "Quick production turnaround",
   ]);
 
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(7.5);
-  pdf.setTextColor(180, 50, 50);
-  pdf.text("Cons:", MARGIN + 3, y); y += 4;
+  y = addProConLabel(pdf, y, "Cons:", [180, 50, 50]);
   y = addBullets(pdf, y, [
     "Ongoing cost per tag for every order",
     "Lead time for additional or replacement tags",
   ]);
 
-  // Option 2 sub-heading
-  y = ensureSpace(pdf, y, 8);
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(9);
-  pdf.setTextColor(...DARK);
-  pdf.text("Option 2 - In-House Tag Production", MARGIN + 3, y);
-  y += 5;
-
+  // Option 2
+  y = addSubHeading(pdf, y, "Option 2 — In-House Tag Production");
   autoTable(pdf, {
     startY: y,
     headStyles: tblHead, bodyStyles: tblBody, alternateRowStyles: tblAlt, theme: "grid", margin: tblMargin,
@@ -303,26 +320,20 @@ export async function generateRolloutPlanPDF(
     body: [
       ["Equipment", "Gravotech LS100 Laser Engraver"],
       ["Website", "https://www.gravotech.com.au/products/laser-engravers-laser-cutters/ls100"],
-      ["Capability", "CO2 laser engraver and cutter. Suitable for asset tags, industrial signage, stainless plates and laminates."],
+      ["Capability", "CO₂ laser engraver and cutter. Suitable for asset tags, industrial signage, stainless plates and laminates."],
       ["Investment", "Capital equipment purchase + consumables (plates, laminates)"],
     ],
   });
-  y = (pdf as any).lastAutoTable.finalY + 3;
+  y = (pdf as any).lastAutoTable.finalY + 5;
 
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(7.5);
-  pdf.setTextColor(34, 120, 60);
-  pdf.text("Pros:", MARGIN + 3, y); y += 4;
+  y = addProConLabel(pdf, y, "Pros:", [34, 120, 60]);
   y = addBullets(pdf, y, [
     "Immediate production of tags with no supplier lead time",
     "Ability to create tags when new assets are installed",
     "Can produce additional labels and signage for site",
   ]);
 
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(7.5);
-  pdf.setTextColor(180, 50, 50);
-  pdf.text("Cons:", MARGIN + 3, y); y += 4;
+  y = addProConLabel(pdf, y, "Cons:", [180, 50, 50]);
   y = addBullets(pdf, y, [
     "Initial capital equipment purchase required",
     "Operator training required",
@@ -330,21 +341,21 @@ export async function generateRolloutPlanPDF(
 
   // Gravotech LS100 image
   if (gravoImageBase64) {
-    y = ensureSpace(pdf, y, 55);
+    y = ensureSpace(pdf, y, 58);
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(7);
     pdf.setTextColor(...MUTED);
-    pdf.text("Gravotech LS100 Laser Engraver", MARGIN + 3, y); y += 2;
+    pdf.text("Gravotech LS100 Laser Engraver", CONTENT_LEFT, y);
+    y += 3;
     try {
-      pdf.addImage(gravoImageBase64, "PNG", MARGIN + 3, y, 80, 50);
+      pdf.addImage(gravoImageBase64, "PNG", CONTENT_LEFT, y, 80, 50);
       y += 54;
     } catch { /* image embed failed silently */ }
   }
 
-  y = addParagraph(pdf, y, "Recommendation: Outsource the first batch (lowest risk). Evaluate in-house production for ongoing requirements. A hybrid approach - outsource the first batch, then transition to in-house - is also viable.");
+  y = addParagraph(pdf, y, "Recommendation: Outsource the first batch (lowest risk). Evaluate in-house production for ongoing requirements. A hybrid approach — outsource the first batch, then transition to in-house — is also viable.");
 
-
-  // 06
+  // ── 06 TAG NUMBERING ──
   y = addSectionTitle(pdf, y, "06", "TAG NUMBERING");
   y = addParagraph(pdf, y, "Tag numbers are derived directly from the asset register. No independent numbering systems are permitted.");
   y = addBullets(pdf, y, [
@@ -355,34 +366,34 @@ export async function generateRolloutPlanPDF(
   ]);
 
   // Tag layout mockups
-  y = ensureSpace(pdf, y, 32);
+  y = ensureSpace(pdf, y, 34);
   const tagBoxW = 78;
   const tagBoxH = 24;
   const tagBoxGap = 10;
-  const tagStartX = MARGIN + 3;
 
   // Type A mockup
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(7);
   pdf.setTextColor(...MUTED);
-  pdf.text("TYPE A TAG LAYOUT", tagStartX, y); y += 3;
+  pdf.text("TYPE A TAG LAYOUT", CONTENT_LEFT, y);
+  y += 3;
   pdf.setDrawColor(60, 60, 60);
   pdf.setLineWidth(0.6);
-  pdf.roundedRect(tagStartX, y, tagBoxW, tagBoxH, 2, 2, "S");
+  pdf.roundedRect(CONTENT_LEFT, y, tagBoxW, tagBoxH, 2, 2, "S");
   pdf.setDrawColor(120, 120, 120);
   pdf.setLineWidth(0.3);
-  pdf.roundedRect(tagStartX + 3, y + 2, tagBoxW - 6, tagBoxH - 4, 1, 1, "S");
+  pdf.roundedRect(CONTENT_LEFT + 3, y + 2, tagBoxW - 6, tagBoxH - 4, 1, 1, "S");
   pdf.setFont("courier", "bold");
   pdf.setFontSize(14);
   pdf.setTextColor(...DARK);
-  pdf.text("BM01", tagStartX + tagBoxW / 2, y + 10, { align: "center" });
+  pdf.text("BM01", CONTENT_LEFT + tagBoxW / 2, y + 10, { align: "center" });
   pdf.setFont("courier", "normal");
   pdf.setFontSize(8);
   pdf.setTextColor(...MUTED);
-  pdf.text("Primary Ball Mill", tagStartX + tagBoxW / 2, y + 17, { align: "center" });
+  pdf.text("Primary Ball Mill", CONTENT_LEFT + tagBoxW / 2, y + 17, { align: "center" });
 
   // Type B mockup
-  const tagBX = tagStartX + tagBoxW + tagBoxGap;
+  const tagBX = CONTENT_LEFT + tagBoxW + tagBoxGap;
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(7);
   pdf.setTextColor(...MUTED);
@@ -402,26 +413,26 @@ export async function generateRolloutPlanPDF(
   pdf.setTextColor(...MUTED);
   pdf.text("Cyclone Feed Pump (Duty)", tagBX + tagBoxW / 2, y + 17, { align: "center" });
 
-  y += tagBoxH + 6;
+  y += tagBoxH + 8;
 
-  // 07
+  // ── 07 TAG INSTALLATION WORKFLOW ──
   y = addSectionTitle(pdf, y, "07", "TAG INSTALLATION WORKFLOW");
   y = addBullets(pdf, y, [
-    "Step 1 - Generate P&ID Asset Register from the database (see Attachment A)",
-    "Step 2 - Produce Tag Production List with Type A/B classification and mounting details (see Attachment B)",
-    "Step 3 - Manufacture tags: submit production list to supplier or produce in-house per Section 05",
-    "Step 4 - Install tags during field verification. Photograph each installed tag showing Asset ID and context.",
-    "Step 5 - Update asset record with 'Tag Installed' status and upload confirmation photo",
+    "Step 1 — Generate P&ID Asset Register from the database (see Attachment A)",
+    "Step 2 — Produce Tag Production List with Type A/B classification and mounting details (see Attachment B)",
+    "Step 3 — Manufacture tags: submit production list to supplier or produce in-house per Section 05",
+    "Step 4 — Install tags during field verification. Photograph each installed tag showing Asset ID and context.",
+    "Step 5 — Update asset record with 'Tag Installed' status and upload confirmation photo",
   ]);
-  y = addParagraph(pdf, y, "CRITICAL RULE: No tag shall be applied without a matching system record and confirmed P&ID reference. If the asset is not in the register or has no P&ID tag - STOP, do not tag.");
+  y = addParagraph(pdf, y, "CRITICAL RULE: No tag shall be applied without a matching system record and confirmed P&ID reference. If the asset is not in the register or has no P&ID tag — STOP, do not tag.");
 
-  // 08
-  y = addSectionTitle(pdf, y, "08", "PRE-ROLLOUT REQUIREMENTS - GATE 1");
+  // ── 08 PRE-ROLLOUT REQUIREMENTS ──
+  y = addSectionTitle(pdf, y, "08", "PRE-ROLLOUT REQUIREMENTS — GATE 1");
   y = addParagraph(pdf, y, "All items below must be confirmed and signed off before any physical tagging commences.");
   y = addBullets(pdf, y, [
     "Final approved Processing Plant asset tree exported and locked",
     "P&IDs reviewed and validated against asset tree (14-page set verified)",
-    "Asset IDs frozen - no renumbering permitted during rollout",
+    "Asset IDs frozen — no renumbering permitted during rollout",
     "Tag material option selected and supplier confirmed",
     "Tag production list generated with Type A/B classification",
     "Manufacturing order placed and delivery date confirmed",
@@ -430,7 +441,7 @@ export async function generateRolloutPlanPDF(
   ]);
   y = addParagraph(pdf, y, "Gate 1 Sign-off Required By: Maintenance Superintendent + Asset Owner");
 
-  // 09
+  // ── 09 QUALITY CONTROL ──
   y = addSectionTitle(pdf, y, "09", "QUALITY CONTROL");
   y = addBullets(pdf, y, [
     "Maintenance supervisor sign-off required per area before proceeding to next zone",
@@ -443,95 +454,98 @@ export async function generateRolloutPlanPDF(
     "Confirm tag text matches asset register exactly (no abbreviations or variations)",
   ]);
 
-  // 10
+  // ── 10 SAFETY CONSIDERATIONS ──
   y = addSectionTitle(pdf, y, "10", "SAFETY CONSIDERATIONS");
   y = addBullets(pdf, y, [
     "Apply LOTO (Lockout/Tagout) before tagging any asset near rotating or energised equipment",
     "No tagging during active plant operation unless the asset and access point are confirmed safe",
     "PPE requirements: Safety glasses, gloves, steel cap boots, high-vis vest at all times",
-    "Ladder use must comply with site ladder management procedure - two-person rule applies",
-    "Do not tag hot surfaces - allow equipment to cool before working in proximity",
-    "Chemical areas (reagents, cyanide) - wear chemical-resistant gloves and face shield",
+    "Ladder use must comply with site ladder management procedure — two-person rule applies",
+    "Do not tag hot surfaces — allow equipment to cool before working in proximity",
+    "Chemical areas (reagents, cyanide) — wear chemical-resistant gloves and face shield",
   ]);
 
-  // 11
+  // ── 11 COMPLETION DELIVERABLES ──
   y = addSectionTitle(pdf, y, "11", "COMPLETION DELIVERABLES");
   y = addParagraph(pdf, y, "The following must be produced and filed upon rollout completion.");
   y = addBullets(pdf, y, [
-    "Tagged Asset Register - full list of every tagged asset with ID, description, location, and photo reference",
-    "Completion Report - summary of tag counts, discrepancies resolved, QC audit results",
-    "Before/After photo archive - organised by area",
-    "Updated asset tree status - all tagged assets marked as 'Tagged - Verified' in system",
+    "Tagged Asset Register — full list of every tagged asset with ID, description, location, and photo reference",
+    "Completion Report — summary of tag counts, discrepancies resolved, QC audit results",
+    "Before/After photo archive — organised by area",
+    "Updated asset tree status — all tagged assets marked as 'Tagged — Verified' in system",
     "Signed close-out sheets for each area",
-    "Outstanding items list - any deferred assets with justification and target completion date",
+    "Outstanding items list — any deferred assets with justification and target completion date",
   ]);
 
-  // 12 — Attachments Reference
+  // ── 12 ATTACHMENTS ──
   y = addSectionTitle(pdf, y, "12", "ATTACHMENTS");
   y = addParagraph(pdf, y, "The following data registers are provided as separate PDF attachments to this rollout plan. These documents contain the full dataset required for tag manufacturing and field installation.");
 
-  y = ensureSpace(pdf, y, 30);
   // Attachment A box
+  const boxW = PAGE_W - MARGIN - CONTENT_LEFT;
+  y = ensureSpace(pdf, y, 48);
+
   pdf.setFillColor(245, 245, 245);
-  pdf.roundedRect(MARGIN, y - 2, 180, 20, 2, 2, "F");
+  pdf.roundedRect(CONTENT_LEFT, y, boxW, 20, 2, 2, "F");
   pdf.setDrawColor(...GOLD);
   pdf.setLineWidth(0.4);
-  pdf.roundedRect(MARGIN, y - 2, 180, 20, 2, 2, "S");
+  pdf.roundedRect(CONTENT_LEFT, y, boxW, 20, 2, 2, "S");
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(9);
   pdf.setTextColor(...DARK);
-  pdf.text("Attachment A - P&ID Tagged Asset Register", MARGIN + 5, y + 4);
+  pdf.text("Attachment A — P&ID Tagged Asset Register", CONTENT_LEFT + 5, y + 6);
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(7);
   pdf.setTextColor(...MUTED);
-  pdf.text(`${taggedAssetCount} assets with linked P&ID references. Source of truth for tagging scope.`, MARGIN + 5, y + 10);
-  pdf.text("File: TCMG_PID_Tagged_Asset_Register.pdf", MARGIN + 5, y + 14);
+  pdf.text(`${taggedAssetCount} assets with linked P&ID references. Source of truth for tagging scope.`, CONTENT_LEFT + 5, y + 12);
+  pdf.text("File: TCMG_PID_Tagged_Asset_Register.pdf", CONTENT_LEFT + 5, y + 16);
   y += 24;
 
   // Attachment B box
   pdf.setFillColor(245, 245, 245);
-  pdf.roundedRect(MARGIN, y - 2, 180, 20, 2, 2, "F");
+  pdf.roundedRect(CONTENT_LEFT, y, boxW, 20, 2, 2, "F");
   pdf.setDrawColor(...GOLD);
-  pdf.roundedRect(MARGIN, y - 2, 180, 20, 2, 2, "S");
+  pdf.roundedRect(CONTENT_LEFT, y, boxW, 20, 2, 2, "S");
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(9);
   pdf.setTextColor(...DARK);
-  pdf.text("Attachment B - Asset Tag Production List", MARGIN + 5, y + 4);
+  pdf.text("Attachment B — Asset Tag Production List", CONTENT_LEFT + 5, y + 6);
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(7);
   pdf.setTextColor(...MUTED);
-  pdf.text(`${productionTagCount} tags  |  Type A: ${typeACount}  |  Type B: ${typeBCount}. Manufacturing batch list.`, MARGIN + 5, y + 10);
-  pdf.text("File: TCMG_Asset_Tag_Production_List.pdf", MARGIN + 5, y + 14);
+  pdf.text(`${productionTagCount} tags  |  Type A: ${typeACount}  |  Type B: ${typeBCount}. Manufacturing batch list.`, CONTENT_LEFT + 5, y + 12);
+  pdf.text("File: TCMG_Asset_Tag_Production_List.pdf", CONTENT_LEFT + 5, y + 16);
   y += 26;
 
   // System Alignment Note
-  y = ensureSpace(pdf, y, 22);
+  y = ensureSpace(pdf, y, 24);
   pdf.setFillColor(245, 240, 224);
-  pdf.roundedRect(MARGIN, y - 2, 180, 18, 2, 2, "F");
+  pdf.roundedRect(CONTENT_LEFT, y, boxW, 20, 2, 2, "F");
   pdf.setDrawColor(...GOLD);
   pdf.setLineWidth(0.4);
-  pdf.roundedRect(MARGIN, y - 2, 180, 18, 2, 2, "S");
+  pdf.roundedRect(CONTENT_LEFT, y, boxW, 20, 2, 2, "S");
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(7);
   pdf.setTextColor(...DARK);
-  pdf.text("SYSTEM ALIGNMENT NOTE", MARGIN + 5, y + 3);
+  pdf.text("SYSTEM ALIGNMENT NOTE", CONTENT_LEFT + 5, y + 5);
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(7);
   pdf.setTextColor(...MUTED);
-  const alignNote = "All asset hierarchy, functional locations, and system structure are stored within Minesite AI. The physical tag is for rapid visual identification only. Tag numbers match the asset register - no independent numbering systems exist. The tag rollout does not define or alter any system hierarchy.";
-  const alignLines = pdf.splitTextToSize(alignNote, 170);
-  let alignY = y + 7;
-  for (const line of alignLines) { pdf.text(line, MARGIN + 5, alignY); alignY += 3.5; }
-  y += 22;
+  const alignNote = "All asset hierarchy, functional locations, and system structure are stored within Minesite AI. The physical tag is for rapid visual identification only. Tag numbers match the asset register — no independent numbering systems exist. The tag rollout does not define or alter any system hierarchy.";
+  const alignLines = pdf.splitTextToSize(alignNote, boxW - 10);
+  let alignY = y + 9;
+  for (const line of alignLines) { pdf.text(line, CONTENT_LEFT + 5, alignY); alignY += 3.5; }
+  y += 24;
 
   // Scope reminder
   y = ensureSpace(pdf, y, 14);
   pdf.setFillColor(255, 248, 230);
-  pdf.roundedRect(MARGIN, y - 2, 180, 10, 2, 2, "F");
+  pdf.roundedRect(CONTENT_LEFT, y, boxW, 10, 2, 2, "F");
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(7);
   pdf.setTextColor(120, 80, 0);
-  pdf.text("⚠  Scope: Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised. Do not apply this rollout plan to crushing or mining equipment.", MARGIN + 4, y + 4);
+  const scopeText = "⚠  Scope: Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised. Do not apply this rollout plan to crushing or mining equipment.";
+  pdf.text(scopeText, CONTENT_LEFT + 4, y + 5);
 
   addPageNumbers(pdf, "TCMG Asset Tag Rollout Plan");
   await triggerPdfDownload(pdf, "TCMG_Asset_Tag_Rollout_Plan.pdf");
@@ -542,7 +556,7 @@ export async function generateRolloutPlanPDF(
 // ════════════════════════════════════════════════
 export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-  let y = addDocHeader(pdf, "P&ID Tagged Asset Register", "Attachment A - Tennant Mines Gold");
+  let y = addDocHeader(pdf, "P&ID Tagged Asset Register", "Attachment A — Tennant Mines Gold");
 
   y = addParagraph(pdf, y, `${taggedAssets.length} assets with linked P&ID references. This register is the sole source of truth for the asset tag rollout scope. Only equipment listed here will receive a physical asset tag.`, 260);
 
@@ -576,7 +590,7 @@ export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
     theme: "grid",
   });
 
-  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register - Attachment A");
+  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register — Attachment A");
   await triggerPdfDownload(pdf, "TCMG_PID_Tagged_Asset_Register.pdf");
 }
 
@@ -588,7 +602,7 @@ export async function generateProductionListPDF(productionTags: ProductionTag[])
   const typeA = productionTags.filter(t => t.tagType === "A").length;
   const typeB = productionTags.filter(t => t.tagType === "B").length;
 
-  let y = addDocHeader(pdf, "Asset Tag Production List", "Attachment B - Tennant Mines Gold");
+  let y = addDocHeader(pdf, "Asset Tag Production List", "Attachment B — Tennant Mines Gold");
 
   y = addParagraph(pdf, y, `${productionTags.length} tags total  |  Type A (Major Asset Plates): ${typeA}  |  Type B (Position Tags): ${typeB}`, 260);
   y = addParagraph(pdf, y, "Manufacturing batch list for tag production. Tags identify P&ID equipment positions — mount on fixed structure, never on replaceable equipment.", 260);
@@ -640,6 +654,6 @@ export async function generateProductionListPDF(productionTags: ProductionTag[])
   pdf.text(`Type A (Major Asset Plates): ${typeA}   |   Type B (Position Tags): ${typeB}   |   TOTAL TAGS: ${productionTags.length}`, 16, y + 8);
   pdf.text("Scope: Processing Plant ONLY — Crushing Plant excluded until P&IDs are finalised.", 16, y + 13);
 
-  addPageNumbers(pdf, "TCMG Asset Tag Production List - Attachment B");
+  addPageNumbers(pdf, "TCMG Asset Tag Production List — Attachment B");
   await triggerPdfDownload(pdf, "TCMG_Asset_Tag_Production_List.pdf");
 }
