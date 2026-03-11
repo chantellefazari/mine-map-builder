@@ -249,6 +249,10 @@ export const FoundationsContent = () => {
         <TabsContent value="shutdown-pms">
           <ShutdownPMRequirementsSection />
         </TabsContent>
+
+        <TabsContent value="naming-convention">
+          <NamingConventionDocument />
+        </TabsContent>
       </div>
     </Tabs>
   );
