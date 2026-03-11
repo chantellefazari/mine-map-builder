@@ -79,62 +79,43 @@ export const FoundationsContent = () => {
     setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
   };
 
-  const handleExportPDF = async () => {
+  const handleExportPDF = () => {
     const el = contentRef.current;
     if (!el) return;
-    setDownloading(true);
-    try {
-      // A4 at 96dpi = 794 x 1123px; 15mm margins each side = ~57px
-      const A4_PX_W = 794;
-      const MARGIN_PX = 57;
-      const CONTENT_W = A4_PX_W - MARGIN_PX * 2; // ~680px
-
-      // Clone content into a fixed-width offscreen container for accurate A4 rendering
-      const wrapper = document.createElement("div");
-      wrapper.style.cssText = `position:absolute;left:-9999px;top:0;width:${CONTENT_W}px;background:#fff;padding:0;`;
-      wrapper.innerHTML = el.innerHTML;
-      document.body.appendChild(wrapper);
-
-      const canvas = await html2canvas(wrapper, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-        width: CONTENT_W,
-      });
-
-      document.body.removeChild(wrapper);
-
-      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const A4_W = 210;
-      const A4_H = 297;
-      const MARGIN_MM = 15;
-      const printW = A4_W - MARGIN_MM * 2; // 180mm
-      const printH = (canvas.height / canvas.width) * printW;
-
-      let heightLeft = printH;
-      let position = MARGIN_MM;
-      const pageContentH = A4_H - MARGIN_MM * 2; // 267mm
-
-      pdf.addImage(canvas.toDataURL("image/jpeg", 0.9), "JPEG", MARGIN_MM, position, printW, printH);
-      heightLeft -= pageContentH;
-
-      while (heightLeft > 0) {
-        pdf.addPage();
-        position -= pageContentH;
-        pdf.addImage(canvas.toDataURL("image/jpeg", 0.9), "JPEG", MARGIN_MM, position, printW, printH);
-        heightLeft -= pageContentH;
-      }
-
-      const safeName = (TAB_LABELS[activeTab] || "Section").replace(/[^a-zA-Z0-9]/g, "-");
-      const filename = `TCMG-${safeName}.pdf`;
-      const blob = pdf.output("blob");
-      await uploadAndShowPdf(blob, filename, TAB_LABELS[activeTab] || "PDF Export");
-    } catch (err) {
-      console.error("PDF export error:", err);
-    } finally {
-      setDownloading(false);
-    }
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+    printWindow.document.write(`
+      <!DOCTYPE html><html><head>
+        <title>${TAB_LABELS[activeTab]} — TCMG (Save as PDF)</title>
+        <style>
+          @page { size: A4 portrait; margin: 15mm; }
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 11px; line-height: 1.5; color: #111; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .doc-header { border-bottom: 3px solid #d4a017; margin-bottom: 8mm; padding-bottom: 4mm; }
+          .doc-header h1 { font-size: 16px; font-weight: 700; }
+          .doc-header p { font-size: 10px; color: #666; margin-top: 2px; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+          th, td { border: 1px solid #ccc; padding: 5px 8px; text-align: left; font-size: 10px; }
+          th { background-color: #f5f0e0; font-weight: 600; }
+          button, input, select { display: none !important; }
+          svg { display: block; }
+          h2, h3, h4 { margin-bottom: 4px; font-weight: 600; }
+          ul, ol { padding-left: 16px; margin-bottom: 6px; }
+          li, p { margin-bottom: 2px; font-size: 10px; }
+          .separator, hr { border: none; border-top: 1px solid #ddd; margin: 6px 0; }
+          [class*="rounded"], .card { border: 1px solid #ddd; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; }
+        </style>
+      </head><body>
+        <div class="doc-header">
+          <h1>${TAB_LABELS[activeTab]}</h1>
+          <p>Tennant Mines Gold — Maintenance Process Foundations | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
+        </div>
+        ${el.innerHTML}
+      </body></html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
   };
 
   return (
