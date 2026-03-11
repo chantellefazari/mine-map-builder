@@ -539,6 +539,22 @@ export const PMCoverageAnalysisSection = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* PM Register PDF Modal */}
+      <PrintPMRegisterModal
+        isOpen={pdfOpen}
+        onClose={() => setPdfOpen(false)}
+        pms={currentPMs.map(pm => ({
+          id: pm.id,
+          pmName: pm.pmName,
+          discipline: pm.discipline,
+          frequency: pm.frequency,
+          equipmentType: pm.equipmentType,
+          status: pm.status,
+          estimatedDuration: pm.estimatedDuration,
+          dutyType: pm.dutyType,
+        }))}
+      />
     </div>
   );
 };
