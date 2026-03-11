@@ -388,23 +388,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
       }
 
       const blob = pdf.output("blob");
-      const filename = "TCMG-Stores-Implementation-Plan.pdf";
-      const storagePath = `exports/${Date.now()}-${filename}`;
-      const { error: uploadError } = await supabase.storage
-        .from("temp-pdfs")
-        .upload(storagePath, blob, { contentType: "application/pdf", upsert: true });
-      if (!uploadError) {
-        const { data: urlData } = supabase.storage.from("temp-pdfs").getPublicUrl(storagePath);
-        if (urlData?.publicUrl) {
-          const a = document.createElement("a");
-          a.href = urlData.publicUrl;
-          a.target = "_blank";
-          a.rel = "noopener";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }
-      } else { console.error("[PDF] Upload failed:", uploadError); }
+      await uploadAndShowPdf(blob, "TCMG-Stores-Implementation-Plan.pdf", "Stores Implementation Plan");
     } catch (err) {
       console.error("PDF download error:", err);
     } finally {

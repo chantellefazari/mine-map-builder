@@ -44,23 +44,7 @@ export const POPdfGenerator: React.FC<POPdfGeneratorProps> = ({ po }) => {
       const pdfH = (canvas.height * pdfW) / canvas.width;
       pdf.addImage(imgData, "PNG", 0, 0, pdfW, Math.min(pdfH, 297));
       const blob = pdf.output("blob");
-      const filename = `${po.po_number}.pdf`;
-      const storagePath = `exports/${Date.now()}-${filename}`;
-      const { error: uploadError } = await supabase.storage
-        .from("temp-pdfs")
-        .upload(storagePath, blob, { contentType: "application/pdf", upsert: true });
-      if (!uploadError) {
-        const { data: urlData } = supabase.storage.from("temp-pdfs").getPublicUrl(storagePath);
-        if (urlData?.publicUrl) {
-          const a = document.createElement("a");
-          a.href = urlData.publicUrl;
-          a.target = "_blank";
-          a.rel = "noopener";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }
-      } else { console.error("[PDF] Upload failed:", uploadError); }
+      await uploadAndShowPdf(blob, `${po.po_number}.pdf`, `Purchase Order ${po.po_number}`);
     } finally {
       wrapper.style.display = "none";
     }

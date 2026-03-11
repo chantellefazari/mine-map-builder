@@ -188,22 +188,6 @@ export async function generateSparesPDF(onProgress?: (msg: string) => void) {
   }
 
   const blob = doc.output("blob");
-  const filename = "Site_Spares_Parts_List.pdf";
-  const storagePath = `exports/${Date.now()}-${filename}`;
-  const { error: uploadError } = await supabase.storage
-    .from("temp-pdfs")
-    .upload(storagePath, blob, { contentType: "application/pdf", upsert: true });
-  if (!uploadError) {
-    const { data: urlData } = supabase.storage.from("temp-pdfs").getPublicUrl(storagePath);
-    if (urlData?.publicUrl) {
-      const a = document.createElement("a");
-      a.href = urlData.publicUrl;
-      a.target = "_blank";
-      a.rel = "noopener";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-  } else { console.error("[PDF] Upload failed:", uploadError); }
+  await uploadAndShowPdf(blob, "Site_Spares_Parts_List.pdf", "Site Spares Parts List");
   return allItems.length;
 }
