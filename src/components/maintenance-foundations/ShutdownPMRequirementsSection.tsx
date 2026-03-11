@@ -171,6 +171,14 @@ const reagentsMech: ShutdownPM[] = [
 
 const reagentsElec: ShutdownPM[] = [];
 
+// ── Water Data ──────────────────────────────────────────────
+const waterMech: ShutdownPM[] = [
+  { name: "52W STAT ON-LINE MECH FIRE WATER DIESEL PUMP INSPECTION", frequency: "4W", type: "PM", discipline: "MS", estimatedHours: 0.5, tcAssetMatch: "MCC-FP - Fire Pump 45kW (diesel driven)" },
+  { name: "52W OFF-LINE DIESEL POTABLE WATER PUMP STAT INSPECTION", frequency: "52W", type: "PM", discipline: "MS", estimatedHours: 12, tcAssetMatch: "PW01 - Potable Water system pumps" },
+];
+
+const waterElec: ShutdownPM[] = [];
+
 // ── All areas registry (add new areas here) ─────────────────
 const SHUTDOWN_AREAS: ShutdownArea[] = [
   { area: "Ore Handling (Feed / Reclaim)", mechanical: oreHandlingMech, electrical: oreHandlingElec },
@@ -180,6 +188,7 @@ const SHUTDOWN_AREAS: ShutdownArea[] = [
   { area: "Tailings / Filtering", mechanical: tailingsMech, electrical: tailingsElec },
   { area: "Gold Room / Elution", mechanical: goldRoomMech, electrical: goldRoomElec },
   { area: "Reagents", mechanical: reagentsMech, electrical: reagentsElec },
+  { area: "Water", mechanical: waterMech, electrical: waterElec },
 ];
 
 // ── Helpers ─────────────────────────────────────────────────
