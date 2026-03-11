@@ -687,7 +687,7 @@ export const AssetTagRolloutPlanSection = () => {
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
                   <div className="flex flex-wrap justify-center gap-1">
                     {["Pumps", "Valves", "Motors", "Instruments", "Agitators", "Compressors", "Screens", "Lube Systems", "Dosing Pumps", "Generators", "Hoists", "Fans / Coolers"].map((item) => (
-                      <Badge key={item} variant="outline" className="text-[10px]">{item}</Badge>
+                      <Badge key={item} variant="outline" className="h-5 px-3 text-[10px] leading-none inline-flex items-center justify-center">{item}</Badge>
                     ))}
                   </div>
                 </div>
