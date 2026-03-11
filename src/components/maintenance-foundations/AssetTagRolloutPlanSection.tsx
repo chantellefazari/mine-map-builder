@@ -163,36 +163,21 @@ export const AssetTagRolloutPlanSection = () => {
       const A4_H = 297;
       const MARGIN = 12;
       const CONTENT_W = A4_W - MARGIN * 2;
-      const HEADER_H = 18; // mm reserved for doc header
-      const FOOTER_H = 10; // mm reserved for page numbers
+      const HEADER_H = 18; // mm reserved for doc header on page 1
+      const FOOTER_H = 10;
       const USABLE_H = A4_H - MARGIN - FOOTER_H;
+      const SECTION_GAP = 3; // mm gap between sections
 
-      // Create a hidden clone at a fixed pixel width for consistent rendering
-      const RENDER_PX_W = 794; // A4 at ~96dpi minus margins
-      const wrapper = document.createElement("div");
-      wrapper.style.cssText = `position:fixed;top:-9999px;left:-9999px;width:${RENDER_PX_W}px;background:#fff;z-index:-1;padding:16px;`;
-      wrapper.innerHTML = el.innerHTML;
-      // Remove buttons from clone
-      wrapper.querySelectorAll("button").forEach(b => b.remove());
-      document.body.appendChild(wrapper);
-
-      // Render full content as one canvas
-      const canvas = await html2canvas(wrapper, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-        width: RENDER_PX_W,
-      });
-      document.body.removeChild(wrapper);
-
-      // Calculate how the canvas maps to mm
-      const pxPerMm = (canvas.width) / CONTENT_W;
-      const totalHeightMM = canvas.height / pxPerMm;
+      // Find all sections marked with data-pdf-section
+      const sections = Array.from(el.querySelectorAll("[data-pdf-section]")) as HTMLElement[];
+      if (sections.length === 0) {
+        setDownloading(false);
+        return;
+      }
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-      // Draw document header
+      // Draw document header on page 1
       const drawHeader = () => {
         pdf.setFont("helvetica", "bold");
         pdf.setFontSize(14);
@@ -208,37 +193,76 @@ export const AssetTagRolloutPlanSection = () => {
         pdf.line(MARGIN, MARGIN + 13, A4_W - MARGIN, MARGIN + 13);
       };
 
-      // Slice the single canvas into pages
-      let srcY = 0; // current y in canvas pixels
-      let pageNum = 0;
-      const firstPageContentH = USABLE_H - HEADER_H; // mm available on first page
-      const laterPageContentH = USABLE_H - MARGIN; // mm available on subsequent pages
+      drawHeader();
+      let currentY = MARGIN + HEADER_H;
+      const RENDER_PX_W = 794;
 
-      while (srcY < canvas.height) {
-        if (pageNum > 0) pdf.addPage();
-        const isFirst = pageNum === 0;
-        if (isFirst) drawHeader();
+      for (const section of sections) {
+        // Create a hidden clone for consistent rendering
+        const wrapper = document.createElement("div");
+        wrapper.style.cssText = `position:fixed;top:-9999px;left:-9999px;width:${RENDER_PX_W}px;background:#fff;z-index:-1;padding:12px;`;
+        wrapper.appendChild(section.cloneNode(true));
+        // Remove buttons from clone
+        wrapper.querySelectorAll("button").forEach(b => b.remove());
+        document.body.appendChild(wrapper);
 
-        const sliceHeightMM = isFirst ? firstPageContentH : laterPageContentH;
-        const sliceHeightPx = Math.min(sliceHeightMM * pxPerMm, canvas.height - srcY);
-        const sliceMMActual = sliceHeightPx / pxPerMm;
+        const canvas = await html2canvas(wrapper, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+          width: RENDER_PX_W,
+        });
+        document.body.removeChild(wrapper);
 
-        // Extract slice from canvas
-        const sliceCanvas = document.createElement("canvas");
-        sliceCanvas.width = canvas.width;
-        sliceCanvas.height = Math.ceil(sliceHeightPx);
-        const ctx = sliceCanvas.getContext("2d")!;
-        ctx.drawImage(canvas, 0, srcY, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
+        const scale = 2;
+        const widthPx = canvas.width / scale;
+        const heightPx = canvas.height / scale;
+        const scaleFactor = CONTENT_W / widthPx;
+        const heightMM = heightPx * scaleFactor;
 
-        const imgData = sliceCanvas.toDataURL("image/png");
-        const placeY = isFirst ? MARGIN + HEADER_H : MARGIN;
-        pdf.addImage(imgData, "PNG", MARGIN, placeY, CONTENT_W, sliceMMActual);
+        const remainingSpace = USABLE_H - currentY;
 
-        srcY += sliceHeightPx;
-        pageNum++;
+        // If section doesn't fit on current page, start a new page
+        if (heightMM > remainingSpace && currentY > MARGIN + HEADER_H) {
+          pdf.addPage();
+          currentY = MARGIN;
+        }
+
+        // If a single section is taller than a full page, slice it across pages
+        if (heightMM > USABLE_H - MARGIN) {
+          const pxPerMm = (canvas.width) / CONTENT_W;
+          let srcY = 0;
+          while (srcY < canvas.height) {
+            const sliceAvail = USABLE_H - currentY;
+            const sliceHeightPx = Math.min(sliceAvail * pxPerMm, canvas.height - srcY);
+            const sliceMMActual = sliceHeightPx / pxPerMm;
+
+            const sliceCanvas = document.createElement("canvas");
+            sliceCanvas.width = canvas.width;
+            sliceCanvas.height = Math.ceil(sliceHeightPx);
+            const ctx = sliceCanvas.getContext("2d")!;
+            ctx.drawImage(canvas, 0, srcY, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
+
+            const imgData = sliceCanvas.toDataURL("image/jpeg", 0.92);
+            pdf.addImage(imgData, "JPEG", MARGIN, currentY, CONTENT_W, sliceMMActual);
+
+            srcY += sliceHeightPx;
+            if (srcY < canvas.height) {
+              pdf.addPage();
+              currentY = MARGIN;
+            } else {
+              currentY += sliceMMActual + SECTION_GAP;
+            }
+          }
+        } else {
+          const imgData = canvas.toDataURL("image/jpeg", 0.92);
+          pdf.addImage(imgData, "JPEG", MARGIN, currentY, CONTENT_W, heightMM);
+          currentY += heightMM + SECTION_GAP;
+        }
       }
 
-      // Add page numbers
+      // Add page numbers and gold footer bar
       const totalPages = pdf.getNumberOfPages();
       for (let i = 1; i <= totalPages; i++) {
         pdf.setPage(i);
@@ -250,7 +274,6 @@ export const AssetTagRolloutPlanSection = () => {
           A4_H - 6,
           { align: "center" }
         );
-        // Gold bottom bar
         pdf.setFillColor(212, 160, 23);
         pdf.rect(0, A4_H - 3, A4_W, 3, "F");
       }
@@ -422,7 +445,7 @@ export const AssetTagRolloutPlanSection = () => {
   return (
     <div ref={planRef} className="space-y-6">
       {/* Header */}
-      <Card className="border-primary/20 bg-primary/5">
+      <Card data-pdf-section className="border-primary/20 bg-primary/5">
         <CardContent className="pt-5 pb-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -503,7 +526,7 @@ export const AssetTagRolloutPlanSection = () => {
           ═══════════════════════════════════════════════════════════════════════ */}
 
       {/* 01. Purpose & Scope */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={FileText} number="01" title="Purpose & Scope" />
           <p className="text-sm text-muted-foreground mb-3">
@@ -523,7 +546,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 02. Tag Format & Design Specification */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Tag} number="02" title="Tag Format & Design Specification" />
           <p className="text-sm text-muted-foreground mb-3">
@@ -582,7 +605,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 03. Tagging Criteria */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={ClipboardList} number="03" title="Tagging Criteria" />
           <p className="text-sm text-muted-foreground mb-3">
@@ -606,7 +629,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 04. Tag Categories & Sizes */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Layers} number="04" title="Tag Categories & Sizes" />
           <p className="text-sm text-muted-foreground mb-4">
@@ -673,7 +696,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 05. Tag Mounting Philosophy & Placement */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Shield} number="05" title="Tag Mounting Philosophy & Placement" />
           <p className="text-sm text-muted-foreground mb-3">
@@ -757,7 +780,7 @@ export const AssetTagRolloutPlanSection = () => {
           ═══════════════════════════════════════════════════════════════════════ */}
 
       {/* 06. Tag Material Options */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Package} number="06" title="Tag Material Options" />
           <p className="text-sm text-muted-foreground mb-4">
@@ -808,7 +831,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 07. Asset Tag Production Options */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Factory} number="07" title="Asset Tag Production Options" />
           <p className="text-sm text-muted-foreground mb-4">
@@ -907,7 +930,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 08. Tag Installation Workflow */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Wrench} number="08" title="Tag Installation Workflow" />
           <p className="text-sm text-muted-foreground mb-3">
@@ -947,7 +970,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 09. Pre-Rollout Requirements */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Shield} number="09" title="Pre-Rollout Requirements - Gate 1" />
           <p className="text-sm text-muted-foreground mb-3">
@@ -975,7 +998,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 10. Quality Control */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={CheckCircle2} number="10" title="Quality Control" />
           <div className="grid sm:grid-cols-2 gap-x-6 gap-y-0">
@@ -996,7 +1019,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 11. Safety Considerations */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Shield} number="11" title="Safety Considerations" />
           <div className="space-y-0.5">
@@ -1011,7 +1034,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 12. Completion Deliverables */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Camera} number="12" title="Completion Deliverables" />
           <p className="text-sm text-muted-foreground mb-3">
@@ -1029,7 +1052,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 13. Governance Controls */}
-      <Card className="border-destructive/20">
+      <Card data-pdf-section className="border-destructive/20">
         <CardContent className="pt-5">
           <SectionHeading icon={Shield} number="13" title="Governance Controls" />
           <p className="text-sm text-muted-foreground mb-3">
@@ -1055,7 +1078,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* System Alignment Note */}
-      <Card className="border-primary/30 bg-primary/5">
+      <Card data-pdf-section className="border-primary/30 bg-primary/5">
         <CardContent className="pt-4 pb-4">
           <div className="flex items-start gap-3">
             <Database className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
@@ -1073,7 +1096,7 @@ export const AssetTagRolloutPlanSection = () => {
 
 
       {/* 14. Attachments */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={FileText} number="14" title="Attachments" />
           <p className="text-sm text-muted-foreground mb-4">
@@ -1118,7 +1141,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* Scope reminder */}
-      <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
+      <div data-pdf-section className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
         <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
         <p className="text-xs text-amber-800">
           <strong>Scope:</strong> Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised.
@@ -1127,7 +1150,7 @@ export const AssetTagRolloutPlanSection = () => {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4">
+      <div data-pdf-section className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4">
         <span>TCMG-STD-TAG-002 · Processing Plant Asset Tagging Standard & Rollout Plan · Rev 2.0</span>
         <span>Crushing Plant excluded · Internal use only</span>
       </div>
