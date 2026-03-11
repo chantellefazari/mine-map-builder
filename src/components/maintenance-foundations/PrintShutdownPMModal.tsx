@@ -43,7 +43,7 @@ export const PrintShutdownPMModal = ({ isOpen, onClose, areas }: Props) => {
           <th>PM Name</th>
           <th style="width:8%">Freq</th>
           <th style="width:7%">Disc.</th>
-          <th style="width:7%">Hours</th>
+          <th style="width:7%">Est. Hours</th>
           <th style="width:22%">Asset Match</th>
           <th style="width:12%">P&ID Tag</th>
         </tr></thead>
