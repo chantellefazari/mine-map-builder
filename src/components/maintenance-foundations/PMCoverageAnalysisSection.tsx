@@ -180,64 +180,39 @@ export const PMCoverageAnalysisSection = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header with Export */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-foreground">Site PM Register</h2>
-        <Button onClick={() => setPdfOpen(true)} className="gap-2" size="sm">
-          <FileDown className="w-4 h-4" />
-          Export PDF
-        </Button>
-      </div>
+      {/* ── Document View (matches PDF export) ── */}
+      <CurrentPMsDocumentView
+        currentPMs={currentPMs}
+        isLoading={isLoading}
+        onExportPdf={() => setPdfOpen(true)}
+      />
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="p-4 text-center">
-          <p className="text-2xl font-bold text-foreground">{currentPMs.length}</p>
-          <p className="text-xs text-muted-foreground">Current PMs in System</p>
-        </Card>
-        <Card className="p-4 text-center">
-          <p className="text-2xl font-bold text-foreground">{totalRequired}</p>
-          <p className="text-xs text-muted-foreground">Required PMs Listed</p>
-        </Card>
-        <Card className="p-4 text-center">
-          <p className="text-2xl font-bold text-primary">{covered}</p>
-          <p className="text-xs text-muted-foreground">Covered</p>
-        </Card>
-        <Card className="p-4 text-center">
-          <p className="text-2xl font-bold" style={{ color: outstanding > 0 ? "hsl(var(--destructive))" : "hsl(var(--primary))" }}>
-            {outstanding}
-          </p>
-          <p className="text-xs text-muted-foreground">Outstanding</p>
-        </Card>
-      </div>
-
-      {/* Coverage bar */}
-      {totalRequired > 0 && (
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-foreground">PM Coverage</span>
-            <span className="text-sm font-bold text-foreground">{coveragePct}%</span>
-          </div>
-          <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${coveragePct}%`,
-                backgroundColor: coveragePct === 100 ? "hsl(var(--primary))" : coveragePct >= 70 ? "hsl(45, 80%, 50%)" : "hsl(var(--destructive))",
-              }}
-            />
-          </div>
-        </Card>
-      )}
-
-      {/* Sub-tabs */}
+      {/* ── Coverage Analysis Sub-tabs ── */}
       <Tabs value={subTab} onValueChange={setSubTab}>
         <TabsList className="bg-muted/50">
           <TabsTrigger value="coverage">Coverage Analysis</TabsTrigger>
-          <TabsTrigger value="current">Current PMs ({currentPMs.length})</TabsTrigger>
           <TabsTrigger value="required">Required PMs ({requiredPMs.length})</TabsTrigger>
           <TabsTrigger value="unmatched">Additional in System ({unmatchedExisting.length})</TabsTrigger>
         </TabsList>
+
+        {/* Coverage bar */}
+        {totalRequired > 0 && (
+          <Card className="p-4 mt-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-foreground">PM Coverage</span>
+              <span className="text-sm font-bold text-foreground">{coveragePct}%</span>
+            </div>
+            <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: `${coveragePct}%`,
+                  backgroundColor: coveragePct === 100 ? "hsl(var(--primary))" : coveragePct >= 70 ? "hsl(45, 80%, 50%)" : "hsl(var(--destructive))",
+                }}
+              />
+            </div>
+          </Card>
+        )}
 
         {/* ── COVERAGE ANALYSIS TAB ─────────────────────────── */}
         <TabsContent value="coverage">
