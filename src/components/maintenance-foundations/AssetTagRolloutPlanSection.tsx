@@ -1078,7 +1078,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* System Alignment Note */}
-      <Card className="border-primary/30 bg-primary/5">
+      <Card data-pdf-section className="border-primary/30 bg-primary/5">
         <CardContent className="pt-4 pb-4">
           <div className="flex items-start gap-3">
             <Database className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
