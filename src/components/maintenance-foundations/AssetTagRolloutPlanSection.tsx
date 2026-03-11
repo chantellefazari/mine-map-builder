@@ -203,7 +203,7 @@ export const AssetTagRolloutPlanSection = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div ref={planRef} className="space-y-6">
       {/* Header */}
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="pt-5 pb-4">
