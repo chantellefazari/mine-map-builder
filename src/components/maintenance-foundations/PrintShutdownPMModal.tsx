@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Printer, X } from "lucide-react";
-import { downloadBlob } from "@/utils/safariDownload";
+import { Printer, X, Loader2 } from "lucide-react";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 interface ShutdownPM {
   name: string;
@@ -134,21 +136,69 @@ export const PrintShutdownPMModal = ({ isOpen, onClose, areas }: Props) => {
 </body></html>`;
   };
 
-  const handlePrint = () => {
-    const html = buildHtml();
-    
-    // Try window.open first
-    const printWindow = window.open("", "_blank");
-    if (printWindow) {
-      printWindow.document.write(html);
-      printWindow.document.close();
-      setTimeout(() => printWindow.print(), 400);
-      return;
-    }
+  const [generating, setGenerating] = useState(false);
 
-    // Fallback: download as HTML file that user can open and print
-    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-    downloadBlob(blob, "TCMG-Shutdown-PM-Requirements.html");
+  const handlePrint = async () => {
+    const html = buildHtml();
+    setGenerating(true);
+
+    try {
+      // Create a hidden container, render the HTML, capture with html2canvas
+      const container = document.createElement("div");
+      container.style.position = "fixed";
+      container.style.left = "-9999px";
+      container.style.top = "0";
+      container.style.width = "794px"; // A4 at 96dpi
+      container.style.background = "white";
+      container.innerHTML = html.replace(/<!DOCTYPE.*?<body>/s, "").replace(/<\/body>.*$/s, "");
+
+      // Inject the styles
+      const styleEl = document.createElement("style");
+      const styleMatch = html.match(/<style>([\s\S]*?)<\/style>/);
+      if (styleMatch) styleEl.textContent = styleMatch[1];
+      container.prepend(styleEl);
+
+      document.body.appendChild(container);
+
+      // Wait for rendering
+      await new Promise(r => setTimeout(r, 300));
+
+      const canvas = await html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        width: 794,
+        windowWidth: 794,
+      });
+
+      document.body.removeChild(container);
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgWidth = 210;
+      const pageHeight = 297;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save("TCMG-Shutdown-PM-Requirements.pdf");
+      onClose();
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    } finally {
+      setGenerating(false);
+    }
   };
 
   return (
@@ -186,9 +236,9 @@ export const PrintShutdownPMModal = ({ isOpen, onClose, areas }: Props) => {
               <X className="w-4 h-4 mr-2" />
               Cancel
             </Button>
-            <Button onClick={handlePrint} className="gap-2">
-              <Printer className="w-4 h-4" />
-              Generate PDF
+            <Button onClick={handlePrint} disabled={generating} className="gap-2">
+              {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
+              {generating ? "Generating..." : "Generate PDF"}
             </Button>
           </div>
         </div>
