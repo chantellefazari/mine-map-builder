@@ -168,11 +168,6 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">Asset Tag Rollout Plan</span>
             <span className="sm:hidden">Rollout</span>
           </TabsTrigger>
-          <TabsTrigger value="pm-asset-linking" className="flex items-center gap-2 text-xs">
-            <Link2 className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">PM-to-Asset Linking</span>
-            <span className="sm:hidden">PM Link</span>
-          </TabsTrigger>
           <TabsTrigger value="pm-coverage" className="flex items-center gap-2 text-xs">
             <BarChart3 className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Site PM Register</span>
