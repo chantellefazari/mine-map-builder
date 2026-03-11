@@ -37,7 +37,7 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
 
   const mechCount = currentPMs.filter(p => p.discipline === "Mechanical").length;
   const elecCount = currentPMs.filter(p => p.discipline === "Electrical").length;
-  const opsCount = currentPMs.filter(p => p.discipline === "Ops" || p.discipline === "Inspection").length;
+  const opsCount = currentPMs.filter(p => p.discipline === "Ops" || (p.discipline as string) === "Inspection").length;
 
   // Group by discipline
   const grouped = useMemo(() => {
