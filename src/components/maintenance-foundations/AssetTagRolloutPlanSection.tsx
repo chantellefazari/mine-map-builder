@@ -25,6 +25,8 @@ import {
   Printer,
   MapPin,
 } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { generateAssetRegisterPDF, generateProductionListPDF } from "@/utils/generateRolloutPlanPDF";
@@ -153,27 +155,82 @@ export const AssetTagRolloutPlanSection = () => {
   const typeBCnt = productionTags.filter(t => t.tagType === "B").length;
 
   const handleDownloadPlan = async () => {
+    const el = planRef.current;
+    if (!el) return;
     setDownloading(true);
     try {
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-      const resp = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/generate-rollout-pdf`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ typeACount: typeACnt, typeBCount: typeBCnt }),
+      const A4_W = 210;
+      const A4_H = 297;
+      const MARGIN = 12;
+      const CONTENT_W = A4_W - MARGIN * 2;
+      const GAP = 3;
+
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      let currentY = MARGIN;
+
+      // Add document header on first page
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(14);
+      pdf.setTextColor(17, 17, 17);
+      pdf.text("Processing Plant — Asset Tagging Standard & Rollout Plan", MARGIN, currentY + 5);
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(8);
+      pdf.setTextColor(100, 100, 100);
+      const dateStr = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" });
+      pdf.text(`TCMG-STD-TAG-002 Rev 2.0 | Tennant Mines Gold | ${dateStr}`, MARGIN, currentY + 10);
+      pdf.setDrawColor(212, 160, 23);
+      pdf.setLineWidth(1);
+      pdf.line(MARGIN, currentY + 13, A4_W - MARGIN, currentY + 13);
+      currentY += 18;
+
+      // Capture each Card section as a separate canvas for page-break control
+      const sections = Array.from(el.children) as HTMLElement[];
+
+      for (const section of sections) {
+        // Skip buttons and non-visible elements
+        if (section.tagName === "BUTTON" || section.offsetHeight === 0) continue;
+
+        const canvas = await html2canvas(section, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+          windowWidth: 800,
+        });
+
+        const imgW = canvas.width / 2;
+        const imgH = canvas.height / 2;
+        const scaleFactor = CONTENT_W / imgW;
+        const heightMM = imgH * scaleFactor;
+
+        // Check if section fits on current page
+        const remaining = A4_H - MARGIN - currentY;
+        if (heightMM > remaining && currentY > MARGIN + 18) {
+          pdf.addPage();
+          currentY = MARGIN;
         }
-      );
-      if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
-      const blob = await resp.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "TCMG_Asset_Tag_Rollout_Plan.pdf";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+        // If a single section is taller than one page, we still place it (it may overflow but avoids infinite loop)
+        const imgData = canvas.toDataURL("image/png");
+        pdf.addImage(imgData, "PNG", MARGIN, currentY, CONTENT_W, heightMM);
+        currentY += heightMM + GAP;
+      }
+
+      // Add page numbers
+      const totalPages = pdf.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(7);
+        pdf.setTextColor(100, 100, 100);
+        pdf.text(
+          `TCMG Asset Tag Rollout Plan  |  Page ${i} of ${totalPages}`,
+          A4_W / 2,
+          A4_H - 6,
+          { align: "center" }
+        );
+      }
+
+      pdf.save("TCMG_Asset_Tag_Rollout_Plan.pdf");
     } catch (err) {
       console.error("PDF download error:", err);
     } finally {
@@ -186,6 +243,7 @@ export const AssetTagRolloutPlanSection = () => {
     if (!el) return;
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
+    const dateStr = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" });
     printWindow.document.write(`
       <!DOCTYPE html><html><head>
         <title>Processing Plant - Asset Tagging Standard & Rollout Plan — TCMG</title>
@@ -208,52 +266,115 @@ export const AssetTagRolloutPlanSection = () => {
           svg { width: 16px; height: 16px; }
           button { display: none !important; }
           .print-hide { display: none !important; }
-          [class*="rounded"] { border: 1px solid #ddd; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; page-break-inside: avoid; }
-          [class*="border-primary"] { border-color: #d4a017 !important; }
-          [class*="border-l-4"] { border-left: 4px solid; }
-          [class*="bg-primary\\/5"] { background-color: rgba(212, 160, 23, 0.05) !important; }
-          [class*="bg-primary"] { background-color: #d4a017 !important; }
-          [class*="bg-muted"] { background-color: #f5f5f5 !important; }
+
+          /* Card containers */
+          [class*="rounded"] { border: 1px solid #e5e5e5; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; page-break-inside: avoid; }
+
+          /* Specific background overrides - order matters */
           [class*="bg-amber-50"] { background-color: #fffbeb !important; }
+          [class*="bg-muted"] { background-color: #f5f5f5 !important; }
+
+          /* Primary backgrounds - only small elements like badges/icons, NOT cards */
+          .w-8.h-8[class*="bg-primary"], [class*="bg-primary"][class*="w-8"] { background-color: #d4a017 !important; }
+          [class*="inline-flex"][class*="bg-primary"] { background-color: #d4a017 !important; }
+          
+          /* Header card and info cards - subtle tint only, NOT full gold */
+          [class*="border-primary"][class*="bg-primary\\/5"],
+          [class*="bg-primary\\/5"] { background-color: rgba(212, 160, 23, 0.04) !important; }
+          [class*="border-primary"] { border-color: rgba(212, 160, 23, 0.25) !important; }
+          [class*="border-l-4"] { border-left: 4px solid; }
+          [class*="border-l-primary"] { border-left-color: #d4a017 !important; }
+          [class*="border-l-amber"] { border-left-color: #f59e0b !important; }
+          [class*="border-destructive"] { border-color: rgba(220, 38, 38, 0.2) !important; }
+
+          /* Text colors */
           [class*="text-foreground"] { color: #111 !important; }
           [class*="text-primary-foreground"] { color: #fff !important; }
           [class*="text-primary"] { color: #d4a017 !important; }
           [class*="text-muted-foreground"] { color: #666 !important; }
           [class*="text-destructive"] { color: #dc2626 !important; }
+          [class*="text-amber-500"] { color: #f59e0b !important; }
+          [class*="text-amber-600"] { color: #d97706 !important; }
+          [class*="text-amber-800"] { color: #92400e !important; }
+
+          /* Font sizes */
           [class*="text-2xl"] { font-size: 18px !important; }
+          [class*="text-xl"] { font-size: 15px !important; }
           [class*="text-lg"] { font-size: 13px !important; }
+          [class*="text-base"] { font-size: 11px !important; }
           [class*="text-sm"] { font-size: 10px !important; }
           [class*="text-xs"] { font-size: 9px !important; }
-          [class*="font-bold"] { font-weight: 700 !important; }
+          [class*="text-\\[10px\\]"] { font-size: 8px !important; }
+          [class*="text-\\[11px\\]"] { font-size: 9px !important; }
+          [class*="font-bold"], [class*="font-black"] { font-weight: 700 !important; }
+          [class*="font-semibold"] { font-weight: 600 !important; }
           [class*="font-mono"] { font-family: monospace !important; }
+
+          /* Layout */
           [class*="flex"] { display: flex; }
           [class*="flex-col"] { flex-direction: column; }
           [class*="flex-wrap"] { flex-wrap: wrap; }
           [class*="items-center"] { align-items: center; }
           [class*="items-start"] { align-items: start; }
+          [class*="justify-between"] { justify-content: space-between; }
           [class*="grid"] { display: grid; }
           [class*="grid-cols-2"], [class*="sm\\:grid-cols-2"] { grid-template-columns: repeat(2, 1fr); }
+          [class*="md\\:grid-cols-2"] { grid-template-columns: repeat(2, 1fr); }
+          [class*="gap-0\\.5"] { gap: 2px; }
           [class*="gap-1"] { gap: 4px; }
           [class*="gap-2"] { gap: 8px; }
           [class*="gap-3"] { gap: 12px; }
           [class*="gap-4"] { gap: 16px; }
-          .space-y-6 > * + * { margin-top: 12px; }
+          [class*="gap-6"] { gap: 20px; }
+          .space-y-6 > * + * { margin-top: 10px; }
+          .space-y-5 > * + * { margin-top: 8px; }
           .space-y-3 > * + * { margin-top: 6px; }
+          .space-y-2 > * + * { margin-top: 4px; }
           .space-y-1 > * + * { margin-top: 2px; }
+          .space-y-0\\.5 > * + * { margin-top: 1px; }
+
+          /* Spacing */
+          [class*="mb-1"] { margin-bottom: 4px; }
+          [class*="mb-2"] { margin-bottom: 8px; }
           [class*="mb-3"] { margin-bottom: 12px; }
           [class*="mb-4"] { margin-bottom: 16px; }
+          [class*="mt-1"] { margin-top: 4px; }
+          [class*="mt-2"] { margin-top: 8px; }
+          [class*="mt-3"] { margin-top: 12px; }
+          [class*="mt-4"] { margin-top: 16px; }
+          [class*="px-2"] { padding-left: 8px; padding-right: 8px; }
           [class*="px-3"] { padding-left: 12px; padding-right: 12px; }
+          [class*="px-4"] { padding-left: 16px; padding-right: 16px; }
+          [class*="py-1"] { padding-top: 4px; padding-bottom: 4px; }
           [class*="py-2"] { padding-top: 8px; padding-bottom: 8px; }
+          [class*="py-4"] { padding-top: 16px; padding-bottom: 16px; }
+          [class*="pt-4"] { padding-top: 16px; }
           [class*="pt-5"] { padding-top: 20px; }
+          [class*="pb-4"] { padding-bottom: 16px; }
+          [class*="p-4"] { padding: 16px; }
+          [class*="p-5"] { padding: 20px; }
+
+          /* Text styling */
           [class*="uppercase"] { text-transform: uppercase; }
           [class*="tracking-wide"] { letter-spacing: 0.025em; }
-          [role="separator"], hr { border: none; border-top: 1px solid #e5e5e5; margin: 8px 0; }
+          [class*="tracking-widest"] { letter-spacing: 0.1em; }
+          [class*="tracking-wider"] { letter-spacing: 0.05em; }
+          [role="separator"], hr { border: none; border-top: 1px solid #e5e5e5; margin: 6px 0; }
+
+          /* Badges */
           [class*="inline-flex"][class*="rounded-full"], [class*="inline-flex"][class*="rounded-md"] { display: inline-flex; padding: 2px 8px; border-radius: 9999px; font-size: 9px; border: 1px solid #ddd; }
+
+          /* Shrink flex-shrink-0 items */
+          [class*="flex-shrink-0"] { flex-shrink: 0; }
+
+          /* Border bottom for border-t */
+          [class*="border-t"] { border-top: 1px solid #e5e5e5; }
+          [class*="border-b"] { border-bottom: 1px solid #e5e5e5; }
         </style>
       </head><body>
         <div class="doc-header">
           <h1>Processing Plant — Asset Tagging Standard & Rollout Plan</h1>
-          <p>TCMG-STD-TAG-002 Rev 2.0 | Tennant Mines Gold | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
+          <p>TCMG-STD-TAG-002 Rev 2.0 | Tennant Mines Gold | ${dateStr}</p>
         </div>
         ${el.innerHTML}
       </body></html>
