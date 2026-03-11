@@ -303,10 +303,20 @@ export const AssetTagRolloutPlanSection = () => {
                   size="sm"
                   className="gap-2"
                   onClick={handleDownloadPlan}
+                  disabled={downloading || taggedAssets.length === 0}
+                >
+                  {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                  {downloading ? "Generating…" : "Download Rollout Plan PDF"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={handlePrintPlan}
                   disabled={taggedAssets.length === 0}
                 >
                   <Printer className="w-3.5 h-3.5" />
-                  Download Rollout Plan PDF
+                  Print / Preview Plan
                 </Button>
                 <Button
                   variant="outline"
