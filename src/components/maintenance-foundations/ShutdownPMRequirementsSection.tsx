@@ -208,6 +208,7 @@ const FreqBadge = ({ freq }: { freq: string }) => {
 export const ShutdownPMRequirementsSection = () => {
   const { pms } = usePMasterList();
   const [openAreas, setOpenAreas] = useState<Set<string>>(new Set(SHUTDOWN_AREAS.map(a => a.area)));
+  const [printOpen, setPrintOpen] = useState(false);
 
   const toggleArea = (area: string) => {
     setOpenAreas(prev => {
