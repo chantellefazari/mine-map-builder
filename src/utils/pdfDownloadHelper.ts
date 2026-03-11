@@ -2,6 +2,14 @@
 export async function uploadAndShowPdf(blob: Blob, filename: string, _title?: string) {
   const url = URL.createObjectURL(blob);
 
+  // Safari (including iOS) blocks window.open with blob URLs — always use direct download
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+  if (isSafari) {
+    triggerDownload(url, filename);
+    return;
+  }
+
   // Try opening in a new tab (native browser PDF viewer)
   const win = window.open(url, "_blank");
   if (win) {
@@ -9,12 +17,16 @@ export async function uploadAndShowPdf(blob: Blob, filename: string, _title?: st
     setTimeout(() => URL.revokeObjectURL(url), 60000);
   } else {
     // Popup blocked — fall back to direct download
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    triggerDownload(url, filename);
   }
+}
+
+function triggerDownload(url: string, filename: string) {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
