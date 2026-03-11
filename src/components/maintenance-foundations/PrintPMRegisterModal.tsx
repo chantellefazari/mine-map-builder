@@ -290,7 +290,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
       `;
 
       // Create a hidden container and render each section for capture
-      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       let currentY = MARGIN_MM;
       let pageNum = 0;
       const SECTION_GAP_MM = 2;
