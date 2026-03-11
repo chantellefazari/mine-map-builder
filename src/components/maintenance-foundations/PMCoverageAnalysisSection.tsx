@@ -125,40 +125,41 @@ export const PMCoverageAnalysisSection = () => {
   // ── Add single PM
   const handleAdd = () => {
     if (!newPM.pmName.trim()) { toast.error("PM Name is required"); return; }
-    const pm: RequiredPM = { ...newPM, id: crypto.randomUUID() };
-    updateRequired([...requiredPMs, pm]);
+    addPM.mutate({
+      pm_name: newPM.pmName,
+      discipline: newPM.discipline,
+      frequency: newPM.frequency,
+      equipment_type: newPM.equipmentType,
+      source: newPM.source,
+      notes: newPM.notes,
+    });
     setNewPM({ pmName: "", discipline: "Mechanical", frequency: "", equipmentType: "", source: "", notes: "" });
     setAddOpen(false);
-    toast.success("Required PM added");
   };
 
   // ── Bulk import
   const handleBulkImport = () => {
     const lines = bulkText.split("\n").map((l) => l.trim()).filter(Boolean);
     if (lines.length === 0) { toast.error("No lines to import"); return; }
-    const newItems: RequiredPM[] = lines.map((line) => {
-      // Try tab-delimited: Name\tDiscipline\tFrequency\tEquipment\tSource
+    const newItems = lines.map((line) => {
       const parts = line.split("\t");
       return {
-        id: crypto.randomUUID(),
-        pmName: parts[0]?.trim() || line,
-        discipline: (parts[1]?.trim() as RequiredPM["discipline"]) || "Mechanical",
+        pm_name: parts[0]?.trim() || line,
+        discipline: parts[1]?.trim() || "Mechanical",
         frequency: parts[2]?.trim() || "",
-        equipmentType: parts[3]?.trim() || "",
+        equipment_type: parts[3]?.trim() || "",
         source: parts[4]?.trim() || "Bulk Import",
         notes: "",
       };
     });
-    updateRequired([...requiredPMs, ...newItems]);
+    addMany.mutate(newItems);
     setBulkText("");
     setBulkOpen(false);
-    toast.success(`${newItems.length} required PMs imported`);
   };
 
   // ── Delete
   const handleDelete = (id: string) => {
-    updateRequired(requiredPMs.filter((r) => r.id !== id));
-    toast.success("Removed from required list");
+    deletePM.mutate(id);
   };
 
   // ── Export CSV
