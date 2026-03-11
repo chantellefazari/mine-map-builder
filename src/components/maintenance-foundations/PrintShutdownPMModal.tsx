@@ -153,10 +153,10 @@ export const PrintShutdownPMModal = ({ isOpen, onClose, areas }: Props) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md" aria-describedby={undefined}>
+        <DialogTitle className="text-lg font-bold">Export Shutdown PM Requirements</DialogTitle>
         <div className="space-y-4">
           <div>
-            <h3 className="text-lg font-bold">Export Shutdown PM Requirements</h3>
             <p className="text-sm text-muted-foreground">
               Generate a professional PDF document with title page, executive summary, and detailed area breakdowns.
             </p>
