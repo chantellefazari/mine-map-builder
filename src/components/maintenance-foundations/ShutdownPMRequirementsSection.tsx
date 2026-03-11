@@ -164,6 +164,13 @@ const goldRoomElec: ShutdownPM[] = [
   { name: "26W OFF-LINE ELECT ELUTION AREA MOTOR CHECKS", frequency: "26W", type: "PM", discipline: "ES", estimatedHours: 12, tcAssetMatch: "Motors in Elution / Gold Room area" },
 ];
 
+// ── Reagents Data ───────────────────────────────────────────
+const reagentsMech: ShutdownPM[] = [
+  { name: "52W OFF-LINE INTERNAL INSPECTION OF TANKS", frequency: "52W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "CN01-MXT01, CN01-ST01, DSL01-TK01 - Reagent area tanks" },
+];
+
+const reagentsElec: ShutdownPM[] = [];
+
 // ── All areas registry (add new areas here) ─────────────────
 const SHUTDOWN_AREAS: ShutdownArea[] = [
   { area: "Ore Handling (Feed / Reclaim)", mechanical: oreHandlingMech, electrical: oreHandlingElec },
@@ -172,6 +179,7 @@ const SHUTDOWN_AREAS: ShutdownArea[] = [
   { area: "Thickening", mechanical: thickeningMech, electrical: thickeningElec },
   { area: "Tailings / Filtering", mechanical: tailingsMech, electrical: tailingsElec },
   { area: "Gold Room / Elution", mechanical: goldRoomMech, electrical: goldRoomElec },
+  { area: "Reagents", mechanical: reagentsMech, electrical: reagentsElec },
 ];
 
 // ── Helpers ─────────────────────────────────────────────────
