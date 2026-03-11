@@ -45,7 +45,22 @@ const AssetTree = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  try {
+                    toast.loading("Exporting CSV...", { id: "csv-export" });
+                    await exportProcessingPlantCSV();
+                    toast.success("CSV downloaded", { id: "csv-export" });
+                  } catch (e: any) {
+                    toast.error(e.message || "Export failed", { id: "csv-export" });
+                  }
+                }}
+                className="gap-2"
+              >
+                <FileDown className="h-4 w-4" />
+                CSV Export
+              </Button>
               <Button variant="outline" onClick={exportHierarchyWorkbook} className="gap-2">
                 <Download className="h-4 w-4" />
                 Hierarchy Workbook
