@@ -624,7 +624,7 @@ export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
 // ════════════════════════════════════════════════
 // 3. ATTACHMENT B — ASSET TAG PRODUCTION LIST PDF
 // ════════════════════════════════════════════════
-export function generateProductionListPDF(productionTags: ProductionTag[]) {
+export async function generateProductionListPDF(productionTags: ProductionTag[]) {
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   const typeA = productionTags.filter(t => t.tagType === "A").length;
   const typeB = productionTags.filter(t => t.tagType === "B").length;
