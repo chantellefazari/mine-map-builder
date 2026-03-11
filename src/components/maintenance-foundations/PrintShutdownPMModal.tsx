@@ -27,7 +27,6 @@ interface Props {
 }
 
 export const PrintShutdownPMModal = ({ isOpen, onClose, areas }: Props) => {
-  const printRef = useRef<HTMLDivElement>(null);
 
   const buildHtml = () => {
     const totalPMs = areas.reduce((s, a) => s + a.mechanical.length + a.electrical.length, 0);
