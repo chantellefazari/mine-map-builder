@@ -175,8 +175,8 @@ export const FoundationsContent = () => {
           </TabsTrigger>
           <TabsTrigger value="pm-coverage" className="flex items-center gap-2 text-xs">
             <BarChart3 className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">PM Coverage Analysis</span>
-            <span className="sm:hidden">Coverage</span>
+            <span className="hidden sm:inline">Site PM Register</span>
+            <span className="sm:hidden">PM Register</span>
           </TabsTrigger>
           <TabsTrigger value="shutdown-pms" className="flex items-center gap-2 text-xs">
             <AlertTriangle className="w-3.5 h-3.5" />
