@@ -234,9 +234,6 @@ export const FoundationsContent = () => {
           <AssetTagRolloutPlanSection />
         </TabsContent>
 
-        <TabsContent value="pm-asset-linking">
-          <PMAssetLinkingSection />
-        </TabsContent>
 
         <TabsContent value="pm-coverage">
           <PMCoverageAnalysisSection />
