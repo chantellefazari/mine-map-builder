@@ -60,7 +60,7 @@ function namesMatch(a: string, b: string): boolean {
 /* ── Component ────────────────────────────────────────────── */
 export const PMCoverageAnalysisSection = () => {
   const { pms: currentPMs, isLoading } = usePMasterList();
-  const [requiredPMs, setRequiredPMs] = useState<RequiredPM[]>(loadRequired);
+  const { requiredPMs: dbRequiredPMs, isLoading: reqLoading, addPM, addMany, deletePM } = useRequiredPMs();
   const [search, setSearch] = useState("");
   const [filterDiscipline, setFilterDiscipline] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -69,6 +69,17 @@ export const PMCoverageAnalysisSection = () => {
   const [subTab, setSubTab] = useState("coverage");
   const [pdfOpen, setPdfOpen] = useState(false);
 
+  // Map DB rows to component interface
+  const requiredPMs: RequiredPM[] = useMemo(() => dbRequiredPMs.map(r => ({
+    id: r.id,
+    pmName: r.pm_name,
+    discipline: r.discipline as RequiredPM["discipline"],
+    frequency: r.frequency,
+    equipmentType: r.equipment_type,
+    source: r.source,
+    notes: r.notes,
+  })), [dbRequiredPMs]);
+
   // ── New PM form state
   const [newPM, setNewPM] = useState<Omit<RequiredPM, "id">>({
     pmName: "", discipline: "Mechanical", frequency: "", equipmentType: "", source: "", notes: "",
@@ -76,12 +87,6 @@ export const PMCoverageAnalysisSection = () => {
 
   // ── Bulk import state
   const [bulkText, setBulkText] = useState("");
-
-  // ── Persist helper
-  const updateRequired = (list: RequiredPM[]) => {
-    setRequiredPMs(list);
-    saveRequired(list);
-  };
 
   // ── Coverage analysis
   const coverageData = useMemo(() => {
