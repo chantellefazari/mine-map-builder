@@ -14,9 +14,6 @@ import {
   Download,
   Link2,
 } from "lucide-react";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
 import { JobNumberingSection } from "./JobNumberingSection";
