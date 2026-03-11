@@ -103,8 +103,8 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
         <div className="bg-foreground text-background px-6 py-4 flex items-center justify-between">
           <div>
             <div className="text-[10px] uppercase tracking-widest opacity-60 mb-1">TCMG-PM-REG-001 Rev 1.0</div>
-            <h2 className="text-xl font-bold tracking-tight">Site PM Register</h2>
-            <p className="text-sm opacity-70 mt-0.5">Complete Preventive Maintenance Task Register — Processing Plant</p>
+            <h2 className="text-xl font-bold tracking-tight">Current Site PM Register</h2>
+            <p className="text-sm opacity-70 mt-0.5">Existing Preventive Maintenance Tasks — Processing Plant</p>
           </div>
           <Button onClick={onExportPdf} variant="secondary" className="gap-2 shrink-0">
             <FileDown className="w-4 h-4" />
