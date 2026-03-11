@@ -72,7 +72,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
             <td style="font-weight:500">${pm.pmName}</td>
             <td><span class="freq-badge freq-${pm.frequency.toLowerCase().replace(/\s+/g, '-')}">${pm.frequency}</span></td>
             <td class="equip-type">${pm.equipmentType}</td>
-            <td style="text-align:center"><span class="duty-badge duty-${(pm.dutyType || 'Both').toLowerCase()}">${pm.dutyType || "Both"}</span></td>
+            <td style="text-align:center"><span class="duty-badge duty-${(pm.dutyType || 'Online').toLowerCase()}">${pm.dutyType || "Online"}</span></td>
             <td style="text-align:center; font-weight:500">${pm.estimatedDuration || "—"}</td>
             <td><span class="status-badge status-${pm.status.toLowerCase()}">${pm.status}</span></td>
           </tr>`).join("")}</tbody>
@@ -268,10 +268,10 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
 
         .equip-type { color: #666; font-size: 8px; }
 
-        .duty-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 7px; font-weight: 600; }
-        .duty-badge.duty-duty { background: #dbeafe; color: #1e40af; }
-        .duty-badge.duty-standby { background: #fef3c7; color: #92400e; }
-        .duty-badge.duty-both { background: #e0e7ff; color: #3730a3; }
+         .duty-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 7px; font-weight: 600; }
+         .duty-badge.duty-online { background: #dcfce7; color: #166534; }
+         .duty-badge.duty-offline { background: #fee2e2; color: #991b1b; }
+         .duty-badge.duty-both { background: #e0e7ff; color: #3730a3; }
 
         .status-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 7px; font-weight: 600; }
         .status-badge.status-active, .status-badge.status-approved { background: #dcfce7; color: #166534; }

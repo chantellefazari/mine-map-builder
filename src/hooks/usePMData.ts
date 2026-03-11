@@ -14,7 +14,7 @@ function rowToPMData(row: any): PMData {
     frequency: row.frequency as PMData["frequency"],
     purpose: row.purpose ?? "",
     discipline: row.discipline as PMData["discipline"],
-    dutyType: (row.duty_type ?? "Both") as PMData["dutyType"],
+    dutyType: (row.duty_type ?? "Online") as PMData["dutyType"],
     estimatedDuration: row.estimated_duration ?? "",
     skillLevel: row.skill_level ?? "",
     requiredTools: row.required_tools ?? [],
