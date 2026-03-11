@@ -179,6 +179,15 @@ export const PMCoverageAnalysisSection = () => {
 
   return (
     <div className="space-y-6">
+      {/* Header with Export */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold text-foreground">Site PM Register</h2>
+        <Button onClick={() => setPdfOpen(true)} className="gap-2" size="sm">
+          <FileDown className="w-4 h-4" />
+          Export PDF
+        </Button>
+      </div>
+
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="p-4 text-center">
