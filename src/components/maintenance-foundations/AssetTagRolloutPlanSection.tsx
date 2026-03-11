@@ -970,7 +970,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 09. Pre-Rollout Requirements */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Shield} number="09" title="Pre-Rollout Requirements - Gate 1" />
           <p className="text-sm text-muted-foreground mb-3">
