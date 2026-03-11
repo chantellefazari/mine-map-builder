@@ -23,6 +23,7 @@ import { DataGovernanceSection } from "./DataGovernanceSection";
 import { SitePartNumberingSection } from "./SitePartNumberingSection";
 import { AssetTagRolloutPlanSection } from "./AssetTagRolloutPlanSection";
 import { PMAssetLinkingSection } from "./PMAssetLinkingSection";
+import { PMCoverageAnalysisSection } from "./PMCoverageAnalysisSection";
 
 const TAB_LABELS: Record<string, string> = {
   "hierarchy": "Asset Hierarchy & Parent-Child Rules",
