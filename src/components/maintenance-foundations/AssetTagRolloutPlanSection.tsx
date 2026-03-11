@@ -73,7 +73,7 @@ const WarnItem = ({ children }: { children: React.ReactNode }) => (
 );
 
 export const AssetTagRolloutPlanSection = () => {
-  const [downloading] = useState(false);
+  const planRef = useRef<HTMLDivElement>(null);
   const planRef = useRef<HTMLDivElement>(null);
 
   const { data: taggedAssets = [] } = useQuery({
