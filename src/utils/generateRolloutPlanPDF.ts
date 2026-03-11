@@ -194,7 +194,7 @@ const tblMargin = { left: MARGIN, right: MARGIN };
 // ════════════════════════════════════════════════
 // 1. MAIN ROLLOUT PLAN PDF (Sections 01–13, no data tables)
 // ════════════════════════════════════════════════
-export async function generateRolloutPlanPDF(
+export function generateRolloutPlanPDF(
   taggedAssetCount: number,
   productionTagCount: number,
   typeACount: number,
