@@ -664,7 +664,7 @@ export const AssetTagRolloutPlanSection = () => {
                   </div>
                 </div>
                 <div className="bg-muted/50 rounded-md px-3 py-2">
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  <p className="text-[11px] text-muted-foreground leading-relaxed text-center">
                     <strong>Mounting:</strong> Adhesive plate or rivet directly to the asset shell, frame, or support structure.
                   </p>
                 </div>
