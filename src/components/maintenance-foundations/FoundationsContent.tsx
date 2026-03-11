@@ -170,6 +170,11 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">PM-to-Asset Linking</span>
             <span className="sm:hidden">PM Link</span>
           </TabsTrigger>
+          <TabsTrigger value="pm-coverage" className="flex items-center gap-2 text-xs">
+            <BarChart3 className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">PM Coverage Analysis</span>
+            <span className="sm:hidden">Coverage</span>
+          </TabsTrigger>
         </TabsList>
         <div className="flex flex-col gap-1.5 shrink-0 mt-1">
           <Button
