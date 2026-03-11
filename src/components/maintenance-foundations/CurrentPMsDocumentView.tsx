@@ -52,6 +52,10 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
       if (!map.has(key)) map.set(key, []);
       map.get(key)!.push(pm);
     }
+    // Sort each group by frequency order (Daily first → 52 Week last)
+    for (const [, items] of map) {
+      items.sort((a, b) => freqRank(a.frequency) - freqRank(b.frequency));
+    }
     return map;
   }, [currentPMs]);
 
