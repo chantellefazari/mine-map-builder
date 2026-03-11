@@ -74,6 +74,7 @@ const WarnItem = ({ children }: { children: React.ReactNode }) => (
 
 export const AssetTagRolloutPlanSection = () => {
   const [downloading] = useState(false);
+  const planRef = useRef<HTMLDivElement>(null);
 
   const { data: taggedAssets = [] } = useQuery({
     queryKey: ["pid-tagged-assets-register"],
