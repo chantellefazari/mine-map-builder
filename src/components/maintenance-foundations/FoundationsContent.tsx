@@ -39,6 +39,7 @@ const TAB_LABELS: Record<string, string> = {
   "tag-rollout": "Asset Tag Rollout Plan",
   "pm-asset-linking": "PM-to-Asset Linking",
   "pm-coverage": "PM Coverage Analysis",
+  "shutdown-pms": "Shutdown PM Requirements",
 };
 
 export const FoundationsContent = () => {
