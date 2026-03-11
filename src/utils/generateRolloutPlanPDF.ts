@@ -81,34 +81,22 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Download PDF by uploading to storage and opening the public URL.
- *  This bypasses iframe sandbox restrictions that block blob downloads. */
-async function triggerPdfDownload(pdf: jsPDF, filename: string) {
+/** Download PDF using an anchor element with blob URL.
+ *  This works in sandboxed iframes where pdf.save() and window.open() are blocked. */
+function triggerPdfDownload(pdf: jsPDF, filename: string) {
   const blob = pdf.output("blob");
-  const storagePath = `exports/${Date.now()}-${filename}`;
-
-  // Upload to temp-pdfs bucket
-  const { error: uploadError } = await supabase.storage
-    .from("temp-pdfs")
-    .upload(storagePath, blob, { contentType: "application/pdf", upsert: true });
-
-  if (uploadError) {
-    console.error("PDF upload failed, falling back to pdf.save():", uploadError);
-    pdf.save(filename);
-    return;
-  }
-
-  // Get public URL and open it — this is a real HTTPS URL that bypasses sandbox
-  const { data: urlData } = supabase.storage
-    .from("temp-pdfs")
-    .getPublicUrl(storagePath, { download: filename });
-
-  if (urlData?.publicUrl) {
-    window.open(urlData.publicUrl, "_blank");
-  } else {
-    // Fallback
-    pdf.save(filename);
-  }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  // Clean up after a short delay
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 200);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
