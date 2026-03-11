@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import { supabase } from "@/integrations/supabase/client";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
 import { JobNumberingSection } from "./JobNumberingSection";
@@ -132,14 +133,29 @@ export const FoundationsContent = () => {
       const safeName = (TAB_LABELS[activeTab] || "Section").replace(/[^a-zA-Z0-9]/g, "-");
       const filename = `TCMG-${safeName}.pdf`;
       const blob = pdf.output("blob");
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+
+      // Upload to cloud storage and open public URL (bypasses iframe sandbox)
+      const storagePath = `exports/${Date.now()}-${filename}`;
+      const { error: uploadError } = await supabase.storage
+        .from("temp-pdfs")
+        .upload(storagePath, blob, { contentType: "application/pdf", upsert: true });
+
+      if (!uploadError) {
+        const { data: urlData } = supabase.storage
+          .from("temp-pdfs")
+          .getPublicUrl(storagePath);
+        if (urlData?.publicUrl) {
+          const a = document.createElement("a");
+          a.href = urlData.publicUrl;
+          a.target = "_blank";
+          a.rel = "noopener";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+      } else {
+        console.error("[PDF] Upload failed:", uploadError);
+      }
     } catch (err) {
       console.error("PDF export error:", err);
     } finally {
