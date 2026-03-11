@@ -419,7 +419,7 @@ export const AssetTagRolloutPlanSection = () => {
           [role="separator"], hr { border: none; border-top: 1px solid #e5e5e5; margin: 6px 0; }
 
           /* Badges */
-          [class*="inline-flex"][class*="rounded-full"], [class*="inline-flex"][class*="rounded-md"] { display: inline-flex; padding: 2px 8px; border-radius: 9999px; font-size: 9px; border: 1px solid #ddd; }
+          [class*="inline-flex"][class*="rounded-full"], [class*="inline-flex"][class*="rounded-md"] { display: inline-flex; align-items: center; justify-content: center; text-align: center; line-height: 1; padding: 2px 8px; min-height: 20px; border-radius: 9999px; font-size: 9px; border: 1px solid #ddd; }
 
           /* Shrink flex-shrink-0 items */
           [class*="flex-shrink-0"] { flex-shrink: 0; }
