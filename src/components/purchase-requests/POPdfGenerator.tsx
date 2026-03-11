@@ -42,7 +42,15 @@ export const POPdfGenerator: React.FC<POPdfGeneratorProps> = ({ po }) => {
       const pdfW = 210;
       const pdfH = (canvas.height * pdfW) / canvas.width;
       pdf.addImage(imgData, "PNG", 0, 0, pdfW, Math.min(pdfH, 297));
-      pdf.save(`${po.po_number}.pdf`);
+      const blob = pdf.output("blob");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${po.po_number}.pdf`;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
     } finally {
       wrapper.style.display = "none";
     }

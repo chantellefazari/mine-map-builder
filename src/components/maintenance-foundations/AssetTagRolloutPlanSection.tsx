@@ -150,19 +150,19 @@ export const AssetTagRolloutPlanSection = () => {
   const typeACnt = productionTags.filter(t => t.tagType === "A").length;
   const typeBCnt = productionTags.filter(t => t.tagType === "B").length;
 
-  const handleDownloadPlan = async () => {
+  const handleDownloadPlan = () => {
     try {
-      await generateRolloutPlanPDF(taggedAssets.length, productionTags.length, typeACnt, typeBCnt);
+      generateRolloutPlanPDF(taggedAssets.length, productionTags.length, typeACnt, typeBCnt);
     } catch (err) { console.error("PDF generation error:", err); }
   };
 
-  const handleDownloadRegister = async () => {
-    try { await generateAssetRegisterPDF(taggedAssets); }
+  const handleDownloadRegister = () => {
+    try { generateAssetRegisterPDF(taggedAssets); }
     catch (err) { console.error("Asset Register PDF error:", err); }
   };
 
-  const handleDownloadProductionList = async () => {
-    try { await generateProductionListPDF(productionTags); }
+  const handleDownloadProductionList = () => {
+    try { generateProductionListPDF(productionTags); }
     catch (err) { console.error("Production List PDF error:", err); }
   };
 

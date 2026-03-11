@@ -74,7 +74,15 @@ export const PrintAllFoundationsModal: React.FC<PrintAllFoundationsModalProps> =
         heightLeft -= A4_H;
       }
 
-      pdf.save("TCMG-Maintenance-Foundations.pdf");
+      const blob = pdf.output("blob");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "TCMG-Maintenance-Foundations.pdf";
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
     } catch (err) {
       console.error("PDF download error:", err);
     } finally {

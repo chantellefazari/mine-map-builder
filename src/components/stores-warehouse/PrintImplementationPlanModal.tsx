@@ -386,7 +386,15 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
         pdf.addImage(imgData, "JPEG", 0, 0, imgW, imgH);
       }
 
-      pdf.save("TCMG-Stores-Implementation-Plan.pdf");
+      const blob = pdf.output("blob");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "TCMG-Stores-Implementation-Plan.pdf";
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
     } catch (err) {
       console.error("PDF download error:", err);
     } finally {

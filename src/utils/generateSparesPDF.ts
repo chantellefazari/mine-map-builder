@@ -187,6 +187,14 @@ export async function generateSparesPDF(onProgress?: (msg: string) => void) {
     doc.text("TCMG Site Spares Register", 14, doc.internal.pageSize.getHeight() - 5);
   }
 
-  doc.save("Site_Spares_Parts_List.pdf");
+  const blob = doc.output("blob");
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Site_Spares_Parts_List.pdf";
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
   return allItems.length;
 }
