@@ -1114,7 +1114,7 @@ export const AssetTagRolloutPlanSection = () => {
           <div className="grid md:grid-cols-2 gap-4">
             <div className="border border-border rounded-lg p-4 space-y-2">
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs font-mono">Attachment A</Badge>
+                <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>Attachment A</Badge>
                 <p className="text-sm font-bold text-foreground">P&ID Tagged Asset Register</p>
               </div>
               <p className="text-xs text-muted-foreground">
@@ -1127,7 +1127,7 @@ export const AssetTagRolloutPlanSection = () => {
             </div>
             <div className="border border-border rounded-lg p-4 space-y-2">
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs font-mono">Attachment B</Badge>
+                <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>Attachment B</Badge>
                 <p className="text-sm font-bold text-foreground">Tag Production List</p>
               </div>
               <p className="text-xs text-muted-foreground">
