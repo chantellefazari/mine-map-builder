@@ -155,27 +155,82 @@ export const AssetTagRolloutPlanSection = () => {
   const typeBCnt = productionTags.filter(t => t.tagType === "B").length;
 
   const handleDownloadPlan = async () => {
+    const el = planRef.current;
+    if (!el) return;
     setDownloading(true);
     try {
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-      const resp = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/generate-rollout-pdf`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ typeACount: typeACnt, typeBCount: typeBCnt }),
+      const A4_W = 210;
+      const A4_H = 297;
+      const MARGIN = 12;
+      const CONTENT_W = A4_W - MARGIN * 2;
+      const GAP = 3;
+
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      let currentY = MARGIN;
+
+      // Add document header on first page
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(14);
+      pdf.setTextColor(17, 17, 17);
+      pdf.text("Processing Plant — Asset Tagging Standard & Rollout Plan", MARGIN, currentY + 5);
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(8);
+      pdf.setTextColor(100, 100, 100);
+      const dateStr = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" });
+      pdf.text(`TCMG-STD-TAG-002 Rev 2.0 | Tennant Mines Gold | ${dateStr}`, MARGIN, currentY + 10);
+      pdf.setDrawColor(212, 160, 23);
+      pdf.setLineWidth(1);
+      pdf.line(MARGIN, currentY + 13, A4_W - MARGIN, currentY + 13);
+      currentY += 18;
+
+      // Capture each Card section as a separate canvas for page-break control
+      const sections = Array.from(el.children) as HTMLElement[];
+
+      for (const section of sections) {
+        // Skip buttons and non-visible elements
+        if (section.tagName === "BUTTON" || section.offsetHeight === 0) continue;
+
+        const canvas = await html2canvas(section, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+          windowWidth: 800,
+        });
+
+        const imgW = canvas.width / 2;
+        const imgH = canvas.height / 2;
+        const scaleFactor = CONTENT_W / imgW;
+        const heightMM = imgH * scaleFactor;
+
+        // Check if section fits on current page
+        const remaining = A4_H - MARGIN - currentY;
+        if (heightMM > remaining && currentY > MARGIN + 18) {
+          pdf.addPage();
+          currentY = MARGIN;
         }
-      );
-      if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
-      const blob = await resp.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "TCMG_Asset_Tag_Rollout_Plan.pdf";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+        // If a single section is taller than one page, we still place it (it may overflow but avoids infinite loop)
+        const imgData = canvas.toDataURL("image/png");
+        pdf.addImage(imgData, "PNG", MARGIN, currentY, CONTENT_W, heightMM);
+        currentY += heightMM + GAP;
+      }
+
+      // Add page numbers
+      const totalPages = pdf.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(7);
+        pdf.setTextColor(100, 100, 100);
+        pdf.text(
+          `TCMG Asset Tag Rollout Plan  |  Page ${i} of ${totalPages}`,
+          A4_W / 2,
+          A4_H - 6,
+          { align: "center" }
+        );
+      }
+
+      pdf.save("TCMG_Asset_Tag_Rollout_Plan.pdf");
     } catch (err) {
       console.error("PDF download error:", err);
     } finally {
