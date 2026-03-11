@@ -163,36 +163,21 @@ export const AssetTagRolloutPlanSection = () => {
       const A4_H = 297;
       const MARGIN = 12;
       const CONTENT_W = A4_W - MARGIN * 2;
-      const HEADER_H = 18; // mm reserved for doc header
-      const FOOTER_H = 10; // mm reserved for page numbers
+      const HEADER_H = 18; // mm reserved for doc header on page 1
+      const FOOTER_H = 10;
       const USABLE_H = A4_H - MARGIN - FOOTER_H;
+      const SECTION_GAP = 3; // mm gap between sections
 
-      // Create a hidden clone at a fixed pixel width for consistent rendering
-      const RENDER_PX_W = 794; // A4 at ~96dpi minus margins
-      const wrapper = document.createElement("div");
-      wrapper.style.cssText = `position:fixed;top:-9999px;left:-9999px;width:${RENDER_PX_W}px;background:#fff;z-index:-1;padding:16px;`;
-      wrapper.innerHTML = el.innerHTML;
-      // Remove buttons from clone
-      wrapper.querySelectorAll("button").forEach(b => b.remove());
-      document.body.appendChild(wrapper);
-
-      // Render full content as one canvas
-      const canvas = await html2canvas(wrapper, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-        width: RENDER_PX_W,
-      });
-      document.body.removeChild(wrapper);
-
-      // Calculate how the canvas maps to mm
-      const pxPerMm = (canvas.width) / CONTENT_W;
-      const totalHeightMM = canvas.height / pxPerMm;
+      // Find all sections marked with data-pdf-section
+      const sections = Array.from(el.querySelectorAll("[data-pdf-section]")) as HTMLElement[];
+      if (sections.length === 0) {
+        setDownloading(false);
+        return;
+      }
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-      // Draw document header
+      // Draw document header on page 1
       const drawHeader = () => {
         pdf.setFont("helvetica", "bold");
         pdf.setFontSize(14);
@@ -208,37 +193,76 @@ export const AssetTagRolloutPlanSection = () => {
         pdf.line(MARGIN, MARGIN + 13, A4_W - MARGIN, MARGIN + 13);
       };
 
-      // Slice the single canvas into pages
-      let srcY = 0; // current y in canvas pixels
-      let pageNum = 0;
-      const firstPageContentH = USABLE_H - HEADER_H; // mm available on first page
-      const laterPageContentH = USABLE_H - MARGIN; // mm available on subsequent pages
+      drawHeader();
+      let currentY = MARGIN + HEADER_H;
+      const RENDER_PX_W = 794;
 
-      while (srcY < canvas.height) {
-        if (pageNum > 0) pdf.addPage();
-        const isFirst = pageNum === 0;
-        if (isFirst) drawHeader();
+      for (const section of sections) {
+        // Create a hidden clone for consistent rendering
+        const wrapper = document.createElement("div");
+        wrapper.style.cssText = `position:fixed;top:-9999px;left:-9999px;width:${RENDER_PX_W}px;background:#fff;z-index:-1;padding:12px;`;
+        wrapper.appendChild(section.cloneNode(true));
+        // Remove buttons from clone
+        wrapper.querySelectorAll("button").forEach(b => b.remove());
+        document.body.appendChild(wrapper);
 
-        const sliceHeightMM = isFirst ? firstPageContentH : laterPageContentH;
-        const sliceHeightPx = Math.min(sliceHeightMM * pxPerMm, canvas.height - srcY);
-        const sliceMMActual = sliceHeightPx / pxPerMm;
+        const canvas = await html2canvas(wrapper, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+          width: RENDER_PX_W,
+        });
+        document.body.removeChild(wrapper);
 
-        // Extract slice from canvas
-        const sliceCanvas = document.createElement("canvas");
-        sliceCanvas.width = canvas.width;
-        sliceCanvas.height = Math.ceil(sliceHeightPx);
-        const ctx = sliceCanvas.getContext("2d")!;
-        ctx.drawImage(canvas, 0, srcY, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
+        const scale = 2;
+        const widthPx = canvas.width / scale;
+        const heightPx = canvas.height / scale;
+        const scaleFactor = CONTENT_W / widthPx;
+        const heightMM = heightPx * scaleFactor;
 
-        const imgData = sliceCanvas.toDataURL("image/png");
-        const placeY = isFirst ? MARGIN + HEADER_H : MARGIN;
-        pdf.addImage(imgData, "PNG", MARGIN, placeY, CONTENT_W, sliceMMActual);
+        const remainingSpace = USABLE_H - currentY;
 
-        srcY += sliceHeightPx;
-        pageNum++;
+        // If section doesn't fit on current page, start a new page
+        if (heightMM > remainingSpace && currentY > MARGIN + HEADER_H) {
+          pdf.addPage();
+          currentY = MARGIN;
+        }
+
+        // If a single section is taller than a full page, slice it across pages
+        if (heightMM > USABLE_H - MARGIN) {
+          const pxPerMm = (canvas.width) / CONTENT_W;
+          let srcY = 0;
+          while (srcY < canvas.height) {
+            const sliceAvail = USABLE_H - currentY;
+            const sliceHeightPx = Math.min(sliceAvail * pxPerMm, canvas.height - srcY);
+            const sliceMMActual = sliceHeightPx / pxPerMm;
+
+            const sliceCanvas = document.createElement("canvas");
+            sliceCanvas.width = canvas.width;
+            sliceCanvas.height = Math.ceil(sliceHeightPx);
+            const ctx = sliceCanvas.getContext("2d")!;
+            ctx.drawImage(canvas, 0, srcY, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
+
+            const imgData = sliceCanvas.toDataURL("image/jpeg", 0.92);
+            pdf.addImage(imgData, "JPEG", MARGIN, currentY, CONTENT_W, sliceMMActual);
+
+            srcY += sliceHeightPx;
+            if (srcY < canvas.height) {
+              pdf.addPage();
+              currentY = MARGIN;
+            } else {
+              currentY += sliceMMActual + SECTION_GAP;
+            }
+          }
+        } else {
+          const imgData = canvas.toDataURL("image/jpeg", 0.92);
+          pdf.addImage(imgData, "JPEG", MARGIN, currentY, CONTENT_W, heightMM);
+          currentY += heightMM + SECTION_GAP;
+        }
       }
 
-      // Add page numbers
+      // Add page numbers and gold footer bar
       const totalPages = pdf.getNumberOfPages();
       for (let i = 1; i <= totalPages; i++) {
         pdf.setPage(i);
@@ -250,7 +274,6 @@ export const AssetTagRolloutPlanSection = () => {
           A4_H - 6,
           { align: "center" }
         );
-        // Gold bottom bar
         pdf.setFillColor(212, 160, 23);
         pdf.rect(0, A4_H - 3, A4_W, 3, "F");
       }
