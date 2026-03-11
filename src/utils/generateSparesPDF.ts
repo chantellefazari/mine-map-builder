@@ -2,7 +2,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { classifyCriticality } from "@/utils/criticalityClassification";
 import { getContainerForCategory } from "@/utils/categoryContainerMapping";
-import { supabase } from "@/integrations/supabase/client";
+import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
 
 interface SpareRow {
   id: string;
