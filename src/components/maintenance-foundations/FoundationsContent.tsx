@@ -12,7 +12,7 @@ import {
   MapPin,
   Printer,
   Download,
-  Link2,
+  
   BarChart3,
   AlertTriangle,
 } from "lucide-react";
@@ -24,7 +24,7 @@ import { SparesStrategySection } from "./SparesStrategySection";
 import { DataGovernanceSection } from "./DataGovernanceSection";
 import { SitePartNumberingSection } from "./SitePartNumberingSection";
 import { AssetTagRolloutPlanSection } from "./AssetTagRolloutPlanSection";
-import { PMAssetLinkingSection } from "./PMAssetLinkingSection";
+
 import { PMCoverageAnalysisSection } from "./PMCoverageAnalysisSection";
 import { ShutdownPMRequirementsSection } from "./ShutdownPMRequirementsSection";
 
@@ -37,7 +37,7 @@ const TAB_LABELS: Record<string, string> = {
   "spares": "Spare Parts Strategy & Criticality",
   "governance": "Data Governance & Change Control",
   "tag-rollout": "Asset Tag Rollout Plan",
-  "pm-asset-linking": "PM-to-Asset Linking",
+  
   "pm-coverage": "Current Site PM Register",
   "shutdown-pms": "Shutdown PM Requirements",
 };
@@ -168,11 +168,6 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">Asset Tag Rollout Plan</span>
             <span className="sm:hidden">Rollout</span>
           </TabsTrigger>
-          <TabsTrigger value="pm-asset-linking" className="flex items-center gap-2 text-xs">
-            <Link2 className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">PM-to-Asset Linking</span>
-            <span className="sm:hidden">PM Link</span>
-          </TabsTrigger>
           <TabsTrigger value="pm-coverage" className="flex items-center gap-2 text-xs">
             <BarChart3 className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Site PM Register</span>
@@ -239,9 +234,6 @@ export const FoundationsContent = () => {
           <AssetTagRolloutPlanSection />
         </TabsContent>
 
-        <TabsContent value="pm-asset-linking">
-          <PMAssetLinkingSection />
-        </TabsContent>
 
         <TabsContent value="pm-coverage">
           <PMCoverageAnalysisSection />
