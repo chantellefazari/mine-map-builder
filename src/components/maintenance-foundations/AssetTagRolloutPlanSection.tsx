@@ -45,9 +45,9 @@ const SectionHeading = ({
     <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center flex-shrink-0">
       <Icon className="w-4 h-4 text-primary-foreground" />
     </div>
-    <div className="flex items-center gap-2">
-      <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">{number}</span>
-      <h3 className="text-base font-bold text-foreground uppercase tracking-wide">{title}</h3>
+    <div className="flex items-baseline gap-2 min-w-0">
+      <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest flex-shrink-0">{number}</span>
+      <h3 className="text-base font-bold text-foreground uppercase tracking-wide leading-tight">{title}</h3>
     </div>
   </div>
 );
@@ -455,73 +455,72 @@ export const AssetTagRolloutPlanSection = () => {
       {/* Header */}
       <Card data-pdf-section className="border-primary/20 bg-primary/5">
         <CardContent className="pt-5 pb-4">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <ClipboardList className="w-5 h-5 text-primary" />
-                <h2 className="text-lg font-bold text-foreground">
-                  Processing Plant - Asset Tagging Standard & Rollout Plan
-                </h2>
-              </div>
-              <p className="text-sm text-muted-foreground max-w-2xl">
-                Complete tagging standard and structured implementation plan for physical asset tagging across the processing plant.
-                Aligned with the rebuilt asset tree and P&ID extraction register.
-              </p>
-            </div>
-            <div className="flex flex-col gap-1.5 items-end">
-              <div className="flex gap-1">
-                <Badge variant="outline" className="text-xs font-mono">TCMG-STD-TAG-002</Badge>
-                <Badge variant="outline" className="text-xs font-mono">Rev 2.0</Badge>
-              </div>
-              <Badge className="text-xs bg-primary text-primary-foreground">Processing Plant Only</Badge>
-              <div className="flex flex-col gap-1 mt-1">
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="gap-2"
-                  onClick={handleDownloadPlan}
-                  disabled={downloading || taggedAssets.length === 0}
-                >
-                  {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-                  {downloading ? "Generating…" : "Download Rollout Plan PDF"}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  onClick={handlePrintPlan}
-                  disabled={taggedAssets.length === 0}
-                >
-                  <Printer className="w-3.5 h-3.5" />
-                  Print / Preview Plan
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  onClick={handleDownloadRegister}
-                  disabled={taggedAssets.length === 0}
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  Attachment A - Asset Register PDF
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  onClick={handleDownloadProductionList}
-                  disabled={productionTags.length === 0}
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  Attachment B - Production List PDF
-                </Button>
-              </div>
-            </div>
+          {/* Document Title Block */}
+          <div className="flex items-center gap-2 mb-2">
+            <ClipboardList className="w-5 h-5 text-primary flex-shrink-0" />
+            <h2 className="text-lg font-bold text-foreground leading-tight">
+              Processing Plant - Asset Tagging Standard & Rollout Plan
+            </h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-3">
+            Complete tagging standard and structured implementation plan for physical asset tagging across the
+            processing plant. Aligned with the rebuilt asset tree and P&ID extraction register.
+          </p>
+
+          {/* Document Meta Row */}
+          <div className="flex items-center gap-2 mb-4">
+            <Badge variant="outline" className="text-xs font-mono">TCMG-STD-TAG-002</Badge>
+            <Badge variant="outline" className="text-xs font-mono">Rev 2.0</Badge>
+            <Badge className="text-xs bg-primary text-primary-foreground">Processing Plant Only</Badge>
           </div>
 
           <Separator className="my-3" />
 
-          <div className="bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+          {/* Action Buttons */}
+          <div className="grid grid-cols-2 gap-2 print-hide">
+            <Button
+              variant="default"
+              size="sm"
+              className="gap-2 justify-start"
+              onClick={handleDownloadPlan}
+              disabled={downloading || taggedAssets.length === 0}
+            >
+              {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              {downloading ? "Generating…" : "Download Rollout Plan PDF"}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 justify-start"
+              onClick={handlePrintPlan}
+              disabled={taggedAssets.length === 0}
+            >
+              <Printer className="w-3.5 h-3.5" />
+              Print / Preview Plan
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 justify-start"
+              onClick={handleDownloadRegister}
+              disabled={taggedAssets.length === 0}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              Attachment A - Asset Register PDF
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 justify-start"
+              onClick={handleDownloadProductionList}
+              disabled={productionTags.length === 0}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              Attachment B - Production List PDF
+            </Button>
+          </div>
+
+          <div className="mt-3 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
             <p className="text-xs text-amber-800 font-medium">
               ⚠ Scope Notice: This plan applies to the Processing Plant ONLY. The Crushing Plant is excluded until P&IDs are finalised and approved.
             </p>
@@ -563,9 +562,9 @@ export const AssetTagRolloutPlanSection = () => {
           </p>
 
           {/* Format template */}
-          <div className="bg-muted rounded-lg p-5 font-mono space-y-1 text-center mb-4">
-            <p className="text-2xl font-black text-foreground tracking-widest">BM01</p>
-            <p className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Primary Ball Mill</p>
+          <div className="bg-muted rounded-lg p-5 font-mono text-center mb-4">
+            <p className="text-2xl font-black text-foreground tracking-widest leading-none">BM01</p>
+            <p className="text-sm font-semibold text-foreground/80 uppercase tracking-wide mt-1.5">Primary Ball Mill</p>
             <p className="text-xs text-muted-foreground mt-3">← That is the entire tag. Nothing else.</p>
           </div>
 
@@ -593,19 +592,19 @@ export const AssetTagRolloutPlanSection = () => {
 
           {/* Tag Layout Examples */}
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Layout Examples</p>
-          <div className="grid sm:grid-cols-2 gap-3">
-            <div className="bg-muted/40 rounded-md px-3 py-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Type A Tag Layout</p>
-              <div className="bg-background border border-border rounded px-4 py-3 text-center font-mono">
-                <p className="text-lg font-bold text-foreground">BM01</p>
-                <p className="text-xs text-muted-foreground">Primary Ball Mill</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="bg-muted/40 rounded-md p-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Type A Tag Layout</p>
+              <div className="bg-background border border-border rounded px-4 py-4 text-center font-mono">
+                <p className="text-lg font-bold text-foreground leading-none">BM01</p>
+                <p className="text-xs text-muted-foreground mt-1.5">Primary Ball Mill</p>
               </div>
             </div>
-            <div className="bg-muted/40 rounded-md px-3 py-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Type B Tag Layout</p>
-              <div className="bg-background border border-border rounded px-4 py-3 text-center font-mono">
-                <p className="text-base font-bold text-foreground">CFP01-PA01</p>
-                <p className="text-[11px] text-muted-foreground">Cyclone Feed Pump (Duty)</p>
+            <div className="bg-muted/40 rounded-md p-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Type B Tag Layout</p>
+              <div className="bg-background border border-border rounded px-4 py-4 text-center font-mono">
+                <p className="text-base font-bold text-foreground leading-none">CFP01-PA01</p>
+                <p className="text-[11px] text-muted-foreground mt-1.5">Cyclone Feed Pump (Duty)</p>
               </div>
             </div>
           </div>
@@ -648,24 +647,24 @@ export const AssetTagRolloutPlanSection = () => {
             <Card className="border-l-4 border-l-primary">
               <CardContent className="py-4 px-4 space-y-3">
                 <div className="flex items-center gap-2">
-                  <Square className="w-5 h-5 text-primary" />
+                  <Square className="w-5 h-5 text-primary flex-shrink-0" />
                   <span className="text-sm font-bold text-foreground uppercase tracking-wide">Type A - Major Asset Plates</span>
                 </div>
                 <p className="text-xs text-muted-foreground font-mono font-bold">100mm × 50mm × 1.5mm</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   Flat plate with <strong>no hole</strong>. Permanently mounted to large fixed infrastructure using adhesive or rivets.
                 </p>
                 <Separator />
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Examples</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
                   <div className="flex flex-wrap gap-1">
                     {["Tanks", "Conveyors", "Crushers", "Mills", "Thickeners", "Hoppers", "Chutes", "Cyclone Clusters", "Filter Presses", "Air Receivers", "Major Structures"].map((item) => (
                       <Badge key={item} variant="outline" className="text-[10px]">{item}</Badge>
                     ))}
                   </div>
                 </div>
-                <div className="bg-muted/50 rounded-md px-2 py-1.5">
-                  <p className="text-[11px] text-muted-foreground">
+                <div className="bg-muted/50 rounded-md px-3 py-2">
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
                     <strong>Mounting:</strong> Adhesive plate or rivet directly to the asset shell, frame, or support structure.
                   </p>
                 </div>
@@ -676,24 +675,24 @@ export const AssetTagRolloutPlanSection = () => {
             <Card className="border-l-4 border-l-amber-500">
               <CardContent className="py-4 px-4 space-y-3">
                 <div className="flex items-center gap-2">
-                  <Circle className="w-5 h-5 text-amber-500" />
+                  <Circle className="w-5 h-5 text-amber-500 flex-shrink-0" />
                   <span className="text-sm font-bold text-foreground uppercase tracking-wide">Type B - Equipment Position Tags</span>
                 </div>
                 <p className="text-xs text-muted-foreground font-mono font-bold">70mm × 25mm × 1.5mm</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   Smaller tag with a <strong>single hole</strong>. Mounted to nearby fixed structure using bolt or cable tie at the equipment connection point.
                 </p>
                 <Separator />
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Examples</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
                   <div className="flex flex-wrap gap-1">
                     {["Pumps", "Valves", "Motors", "Instruments", "Agitators", "Compressors", "Screens", "Lube Systems", "Dosing Pumps", "Generators", "Hoists", "Fans / Coolers"].map((item) => (
                       <Badge key={item} variant="outline" className="text-[10px]">{item}</Badge>
                     ))}
                   </div>
                 </div>
-                <div className="bg-muted/50 rounded-md px-2 py-1.5">
-                  <p className="text-[11px] text-muted-foreground">
+                <div className="bg-muted/50 rounded-md px-3 py-2">
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
                     <strong>Mounting:</strong> Bolt or cable tie to adjacent steelwork, pipe support, baseplate or skid frame - never on the equipment itself.
                   </p>
                 </div>
@@ -1149,7 +1148,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* Scope reminder */}
-      <div data-pdf-section className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
+      <div data-pdf-section className="flex items-center gap-2 px-3 py-2.5 rounded-md bg-amber-50 border border-amber-200">
         <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
         <p className="text-xs text-amber-800">
           <strong>Scope:</strong> Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised.
@@ -1158,7 +1157,7 @@ export const AssetTagRolloutPlanSection = () => {
       </div>
 
       {/* Footer */}
-      <div data-pdf-section className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4">
+      <div data-pdf-section className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4 pb-2">
         <span>TCMG-STD-TAG-002 · Processing Plant Asset Tagging Standard & Rollout Plan · Rev 2.0</span>
         <span>Crushing Plant excluded · Internal use only</span>
       </div>
