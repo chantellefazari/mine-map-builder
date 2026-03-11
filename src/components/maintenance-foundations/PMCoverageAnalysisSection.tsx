@@ -15,10 +15,11 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  CheckCircle2, XCircle, AlertTriangle, Plus, Search, Download, Trash2, Upload,
+  CheckCircle2, XCircle, AlertTriangle, Plus, Search, Download, Trash2, Upload, FileDown,
 } from "lucide-react";
 import { usePMasterList } from "@/hooks/usePMData";
 import { toast } from "sonner";
+import { PrintPMRegisterModal } from "./PrintPMRegisterModal";
 
 /* ── Required PM type ─────────────────────────────────────── */
 export interface RequiredPM {
