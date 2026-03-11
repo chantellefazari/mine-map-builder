@@ -147,6 +147,23 @@ const tailingsElec: ShutdownPM[] = [
   { name: "26W OFF-LINE ELECT TAILS AREA MOTOR CHECKS", frequency: "26W", type: "PM", discipline: "ES", estimatedHours: 12, tcAssetMatch: "Motors on ADS01-PMP02/03, FP01-PMP01, FP02-PMP01" },
 ];
 
+// ── Gold Room / Elution Data ────────────────────────────────
+const goldRoomMech: ShutdownPM[] = [
+  { name: "12W OFF-LINE MECH KILN INSPECTIONS", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 2, tcAssetMatch: "GR01-KLN01 - Kiln" },
+  { name: "12W OFF-LINE MECH KILN OIL SAMPLES", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 1, tcAssetMatch: "GR01-KLN01 - Kiln gearbox" },
+  { name: "12W OFF-LINE MECH KILN LUBE", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 1, tcAssetMatch: "GR01-KLN01 - Kiln lubrication" },
+];
+
+const goldRoomElec: ShutdownPM[] = [
+  { name: "12W OFF-LINE ELECT ELECTROWINNING CELLS INSPECTION", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "EWCL01 - Electrowinning Cell" },
+  { name: "12W OFF-LINE ELECT KILN INSPECTION", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "GR01-KLN01 - Kiln (electrical)" },
+  { name: "12W OFF-LINE ELECT ELUTION AREA E-STOP CHECKS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "E-stops in Elution / Gold Room area" },
+  { name: "12W OFF-LINE ELECT ELUTION AREA RCD PUSH BUTTON TEST", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "RCD protection in Elution / Gold Room area" },
+  { name: "12W OFF-LINE ELECT ELUTION AREA INSTRUMENT INSPECTION", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 6, tcAssetMatch: "Instrumentation in Elution area (ELU01, AW01)" },
+  { name: "12W OFF-LINE ELECT ELUTION AREA ELECTRICAL INSPECTIONS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "Electrical infrastructure in Elution / Gold Room area" },
+  { name: "26W OFF-LINE ELECT ELUTION AREA MOTOR CHECKS", frequency: "26W", type: "PM", discipline: "ES", estimatedHours: 12, tcAssetMatch: "Motors in Elution / Gold Room area" },
+];
+
 // ── All areas registry (add new areas here) ─────────────────
 const SHUTDOWN_AREAS: ShutdownArea[] = [
   { area: "Ore Handling (Feed / Reclaim)", mechanical: oreHandlingMech, electrical: oreHandlingElec },
@@ -154,6 +171,7 @@ const SHUTDOWN_AREAS: ShutdownArea[] = [
   { area: "Leaching (CIP)", mechanical: leachingMech, electrical: leachingElec },
   { area: "Thickening", mechanical: thickeningMech, electrical: thickeningElec },
   { area: "Tailings / Filtering", mechanical: tailingsMech, electrical: tailingsElec },
+  { area: "Gold Room / Elution", mechanical: goldRoomMech, electrical: goldRoomElec },
 ];
 
 // ── Helpers ─────────────────────────────────────────────────
