@@ -6,6 +6,7 @@ import { type POTrackerItem } from "@/hooks/usePOTracker";
 import { format } from "date-fns";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { supabase } from "@/integrations/supabase/client";
 
 interface POPdfGeneratorProps {
   po: POTrackerItem;
