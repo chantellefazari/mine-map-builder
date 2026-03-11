@@ -1,14 +1,5 @@
-type PdfReadyCallback = (url: string, title: string) => void;
-
-let _onPdfReady: PdfReadyCallback | null = null;
-
-/** Register a listener for when a PDF is ready to view */
-export function onPdfReady(cb: PdfReadyCallback) {
-  _onPdfReady = cb;
-}
-
 /** Open PDF in a new browser tab for viewing / Save as PDF, with direct download fallback */
-export async function uploadAndShowPdf(blob: Blob, filename: string, title?: string) {
+export async function uploadAndShowPdf(blob: Blob, filename: string, _title?: string) {
   const url = URL.createObjectURL(blob);
 
   // Try opening in a new tab (native browser PDF viewer)
@@ -25,10 +16,5 @@ export async function uploadAndShowPdf(blob: Blob, filename: string, title?: str
     a.click();
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-
-  // Also notify modal listener if registered
-  if (_onPdfReady) {
-    _onPdfReady(url, title || filename);
   }
 }
