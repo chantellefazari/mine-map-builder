@@ -28,13 +28,13 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
   const handleGeneratePDF = async () => {
     setGenerating(true);
     try {
-      // A4 Landscape dimensions
-      const A4_WIDTH_MM = 297;
-      const A4_HEIGHT_MM = 210;
+      // A4 Portrait dimensions
+      const A4_WIDTH_MM = 210;
+      const A4_HEIGHT_MM = 297;
       const MARGIN_MM = 8;
       const CONTENT_WIDTH_MM = A4_WIDTH_MM - MARGIN_MM * 2;
       const CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
-      const containerWidthPx = 1122; // ~297mm at 96dpi
+      const containerWidthPx = 794; // ~210mm at 96dpi
 
       const today = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" });
       const mechCount = pms.filter(p => p.discipline === "Mechanical").length;
@@ -290,7 +290,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
       `;
 
       // Create a hidden container and render each section for capture
-      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       let currentY = MARGIN_MM;
       let pageNum = 0;
       const SECTION_GAP_MM = 2;
@@ -391,7 +391,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Format:</span>
-              <span className="font-medium">A4 Landscape</span>
+              <span className="font-medium">A4 Portrait</span>
             </div>
           </div>
 
