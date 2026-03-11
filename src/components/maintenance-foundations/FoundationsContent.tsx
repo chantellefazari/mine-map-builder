@@ -13,6 +13,7 @@ import {
   Printer,
   Download,
   Link2,
+  BarChart3,
 } from "lucide-react";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
