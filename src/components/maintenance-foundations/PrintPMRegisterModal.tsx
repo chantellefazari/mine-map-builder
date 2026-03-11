@@ -143,19 +143,8 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
         </div>
       `);
 
-      // Section 2: Duty Type Legend
-      sections.push(`
-        <div data-pdf-section>
-          <div class="section-title">Column Definitions</div>
-          <table class="breakdown-table">
-            <thead><tr><th>Column</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td style="font-weight:600">Duty Type</td><td>Indicates whether the PM applies when equipment is in <b>Duty</b> (running), <b>Standby</b> (offline/backup), or <b>Both</b> states.</td></tr>
-              <tr><td style="font-weight:600">Duration</td><td>Estimated time to complete the PM task, sourced from the PM Design template resource configuration.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      `);
+
+
 
       // Sections 3+: Each discipline group
       for (const [disc, items] of grouped.entries()) {
