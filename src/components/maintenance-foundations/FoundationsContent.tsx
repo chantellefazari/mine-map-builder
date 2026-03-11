@@ -38,7 +38,7 @@ const TAB_LABELS: Record<string, string> = {
   "governance": "Data Governance & Change Control",
   "tag-rollout": "Asset Tag Rollout Plan",
   "pm-asset-linking": "PM-to-Asset Linking",
-  "pm-coverage": "Site PM Register",
+  "pm-coverage": "Current Site PM Register",
   "shutdown-pms": "Shutdown PM Requirements",
 };
 
