@@ -1138,23 +1138,17 @@ export const AssetTagRolloutPlanSection = () => {
           </p>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="border border-border rounded-lg p-4 space-y-2">
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>Attachment A</Badge>
-                <p className="text-sm font-bold text-foreground">P&ID Tagged Asset Register</p>
-              </div>
+              <p className="text-sm font-bold text-foreground">Attachment A – P&ID Tagged Asset Register</p>
               <p className="text-xs text-muted-foreground">
                 Complete register of all Processing Plant assets with linked P&ID tags. This is the sole source of truth
-                for the tagging scope - only assets listed here receive a physical tag.
+                for the tagging scope – only assets listed here receive a physical tag.
               </p>
               <div className="bg-muted/40 rounded-md px-3 py-2 mt-2">
                 <p className="text-xs text-foreground"><strong>Contains:</strong> Asset Number, Asset Name, Parent System, P&ID Tag(s), Area, Sub-Area, Functional Location</p>
               </div>
             </div>
             <div className="border border-border rounded-lg p-4 space-y-2">
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>Attachment B</Badge>
-                <p className="text-sm font-bold text-foreground">Tag Production List</p>
-              </div>
+              <p className="text-sm font-bold text-foreground">Attachment B – Tag Production List</p>
               <p className="text-xs text-muted-foreground">
                 Manufacturing-ready list with Type A/B classification, tag sizes, mounting locations, and mounting methods
                 for every asset in scope. Submit directly to tag supplier or use for in-house production.
