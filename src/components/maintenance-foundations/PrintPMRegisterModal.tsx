@@ -41,12 +41,21 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
       const elecCount = pms.filter(p => p.discipline === "Electrical").length;
       const opsCount = pms.filter(p => p.discipline === "Ops" || p.discipline === "Inspection").length;
 
-      // Group by discipline
+      // Frequency sort order
+      const FREQ_ORDER: Record<string, number> = {
+        "Daily": 0, "1 Week": 1, "2 Week": 2, "4 Week": 3, "6 Week": 4, "12 Week": 5, "26 Week": 6, "52 Week": 7,
+      };
+      const freqRank = (f: string) => FREQ_ORDER[f] ?? 99;
+
+      // Group by discipline, sorted by frequency
       const grouped = new Map<string, PMItem[]>();
       for (const pm of pms) {
         const key = pm.discipline || "Other";
         if (!grouped.has(key)) grouped.set(key, []);
         grouped.get(key)!.push(pm);
+      }
+      for (const [, items] of grouped) {
+        items.sort((a, b) => freqRank(a.frequency) - freqRank(b.frequency));
       }
 
       // Group by frequency for summary
