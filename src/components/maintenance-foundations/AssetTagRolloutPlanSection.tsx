@@ -213,6 +213,31 @@ export const AssetTagRolloutPlanSection = () => {
           onclone: (clonedDoc: Document) => {
             clonedDoc.querySelectorAll("button, .print-hide, [data-pdf-exclude]").forEach((node) => node.remove());
 
+            clonedDoc.querySelectorAll<HTMLElement>("[data-pdf-chip-group]").forEach((group) => {
+              const labels = Array.from(group.querySelectorAll<HTMLElement>("[data-pdf-chip]"))
+                .map((chip) => chip.textContent?.trim())
+                .filter((label): label is string => Boolean(label));
+
+              if (!labels.length) return;
+
+              const replacement = clonedDoc.createElement("div");
+              replacement.style.cssText = [
+                "display:block",
+                "width:100%",
+                "text-align:center",
+                "font-size:10px",
+                "line-height:1.45",
+                "color:#111827",
+                "padding:6px 8px",
+                "border:1px solid #d1d5db",
+                "border-radius:8px",
+                "background:#ffffff",
+                "font-weight:600",
+              ].join(";");
+              replacement.textContent = labels.join(" • ");
+              group.replaceWith(replacement);
+            });
+
             clonedDoc.querySelectorAll("span, p, div").forEach((node) => {
               const text = node.textContent?.replace(/\s+/g, " ").trim() || "";
               if (
@@ -667,11 +692,11 @@ export const AssetTagRolloutPlanSection = () => {
                 <Separator />
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
-                  <div className="flex flex-wrap justify-center gap-1">
+                  <div data-pdf-chip-group className="flex flex-wrap justify-center gap-1">
                     {[
                       "Tanks", "Conveyors", "Crushers", "Mills", "Thickeners", "Hoppers", "Chutes", "Cyclone Clusters", "Filter Presses", "Air Receivers", "Major Structures"
                     ].map((item) => (
-                      <Badge key={item} variant="outline" className={`${centeredPillClass} h-5 px-3 text-[10px]`}>{item}</Badge>
+                      <Badge data-pdf-chip key={item} variant="outline" className={`${centeredPillClass} h-5 px-3 text-[10px]`}>{item}</Badge>
                     ))}
                   </div>
                 </div>
@@ -697,11 +722,11 @@ export const AssetTagRolloutPlanSection = () => {
                 <Separator />
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
-                  <div className="flex flex-wrap justify-center gap-1">
+                  <div data-pdf-chip-group className="flex flex-wrap justify-center gap-1">
                     {[
                       "Pumps", "Valves", "Motors", "Instruments", "Agitators", "Compressors", "Screens", "Lube Systems", "Dosing Pumps", "Generators", "Hoists", "Fans / Coolers"
                     ].map((item) => (
-                      <Badge key={item} variant="outline" className={`${centeredPillClass} h-5 px-3 text-[10px]`}>{item}</Badge>
+                      <Badge data-pdf-chip key={item} variant="outline" className={`${centeredPillClass} h-5 px-3 text-[10px]`}>{item}</Badge>
                     ))}
                   </div>
                 </div>
