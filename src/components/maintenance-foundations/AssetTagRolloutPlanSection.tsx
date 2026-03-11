@@ -1148,7 +1148,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* Scope reminder */}
-      <div data-pdf-section className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
+      <div data-pdf-section className="flex items-center gap-2 px-3 py-2.5 rounded-md bg-amber-50 border border-amber-200">
         <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
         <p className="text-xs text-amber-800">
           <strong>Scope:</strong> Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised.
@@ -1157,7 +1157,7 @@ export const AssetTagRolloutPlanSection = () => {
       </div>
 
       {/* Footer */}
-      <div data-pdf-section className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4">
+      <div data-pdf-section className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4 pb-2">
         <span>TCMG-STD-TAG-002 · Processing Plant Asset Tagging Standard & Rollout Plan · Rev 2.0</span>
         <span>Crushing Plant excluded · Internal use only</span>
       </div>
