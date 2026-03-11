@@ -298,14 +298,6 @@ export const PMCoverageAnalysisSection = () => {
           </Card>
         </TabsContent>
 
-        {/* ── CURRENT PMs TAB ───────────────────────────────── */}
-        <TabsContent value="current">
-          <CurrentPMsDocumentView
-            currentPMs={currentPMs}
-            isLoading={isLoading}
-            onExportPdf={() => setPdfOpen(true)}
-          />
-        </TabsContent>
 
         {/* ── REQUIRED PMs TAB ──────────────────────────────── */}
         <TabsContent value="required">
