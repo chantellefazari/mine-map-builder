@@ -325,9 +325,14 @@ export const PMCoverageAnalysisSection = () => {
         {/* ── CURRENT PMs TAB ───────────────────────────────── */}
         <TabsContent value="current">
           <Card className="p-4">
-            <h3 className="text-sm font-semibold text-foreground mb-3">
-              Current PMs in PM Design ({currentPMs.length})
-            </h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-foreground">
+                Current PMs in PM Design ({currentPMs.length})
+              </h3>
+              <Button size="sm" onClick={() => setPdfOpen(true)} className="gap-1 text-xs h-8">
+                <FileDown className="h-3.5 w-3.5" /> Export PDF
+              </Button>
+            </div>
             {isLoading ? (
               <p className="text-sm text-muted-foreground py-4 text-center">Loading...</p>
             ) : (
