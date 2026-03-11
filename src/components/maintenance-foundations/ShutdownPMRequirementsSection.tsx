@@ -91,10 +91,29 @@ const grindingElec: ShutdownPM[] = [
   { name: "52W OFF-LINE GRINDING TRANSFORMER OIL TEST", frequency: "52W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "Grinding area transformer oil sampling", tcPidTag: "" },
 ];
 
+// ── Leaching Data ───────────────────────────────────────────
+const leachingMech: ShutdownPM[] = [
+  { name: "12W OFF-LINE MECH LEACHING AGI INSPECTIONS", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "CIP Agitators (CIP area)", tcPidTag: "" },
+  { name: "12W OFF-LINE MECH LEACHING AREA OIL SAMPLES", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "CIP area gearboxes & lube systems", tcPidTag: "" },
+  { name: "12W OFF-LINE MECH LEACHING AREA BARREN CARBON SCREEN INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 2, tcAssetMatch: "Barren carbon screen (CIP area)", tcPidTag: "" },
+  { name: "12W OFF-LINE MECH LEACHING AREA TRANSFER PUMPS INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "CIP area transfer pumps", tcPidTag: "" },
+  { name: "12W OFF-LINE MECH LEACHING AREA INTER TANK SCREEN INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 4, tcAssetMatch: "Inter-tank screens (CIP area)", tcPidTag: "" },
+  { name: "12W OFF-LINE TANK INTERNAL TANK INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 10, tcAssetMatch: "CIP/Leach tank internals", tcPidTag: "" },
+];
+
+const leachingElec: ShutdownPM[] = [
+  { name: "12W OFF-LINE ELECT LEACHING AREA E-STOP CHECKS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "E-stops in CIP/Leaching area", tcPidTag: "" },
+  { name: "12W OFF-LINE ELECT LEACHING AREA RCD PUSH BUTTON TEST", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "RCD protection in CIP/Leaching area", tcPidTag: "" },
+  { name: "12W OFF-LINE ELECT LEACHING AREA INSTRUMENT INSPECTION", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 6, tcAssetMatch: "Instrumentation in CIP/Leaching area", tcPidTag: "" },
+  { name: "12W OFF-LINE ELECT LEACHING AREA ELECTRICAL INSPECTIONS", frequency: "12W", type: "PM", discipline: "ES", estimatedHours: 2, tcAssetMatch: "Electrical infrastructure in CIP/Leaching area", tcPidTag: "" },
+  { name: "26W OFF-LINE ELECT LEACHING AREA MOTOR CHECKS", frequency: "26W", type: "PM", discipline: "ES", estimatedHours: 12, tcAssetMatch: "Motors in CIP/Leaching area", tcPidTag: "" },
+];
+
 // ── All areas registry (add new areas here) ─────────────────
 const SHUTDOWN_AREAS: ShutdownArea[] = [
   { area: "Ore Handling (Feed / Reclaim)", mechanical: oreHandlingMech, electrical: oreHandlingElec },
   { area: "Grinding (Comminution)", mechanical: [...grindingMech, ...grindingPumps], electrical: grindingElec },
+  { area: "Leaching (CIP)", mechanical: leachingMech, electrical: leachingElec },
 ];
 
 // ── Helpers ─────────────────────────────────────────────────
