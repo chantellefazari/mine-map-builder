@@ -87,13 +87,7 @@ const App = () => {
           </AuthProvider>
         </BrowserRouter>
 
-        {/* Global PDF Viewer Modal */}
-        <PdfViewerModal
-          isOpen={pdfState.open}
-          onClose={() => setPdfState(s => ({ ...s, open: false }))}
-          pdfUrl={pdfState.url}
-          title={pdfState.title}
-        />
+
       </TooltipProvider>
     </QueryClientProvider>
   );
