@@ -1,5 +1,7 @@
 import { jsPDF } from "npm:jspdf@2.5.2";
-import autoTable from "npm:jspdf-autotable@3.8.4";
+import jsPDFAutoTable from "npm:jspdf-autotable@3.8.4";
+
+const autoTable = (jsPDFAutoTable as any).default || jsPDFAutoTable;
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 
 const corsHeaders = {
