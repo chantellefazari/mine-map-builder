@@ -45,9 +45,9 @@ const SectionHeading = ({
     <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center flex-shrink-0">
       <Icon className="w-4 h-4 text-primary-foreground" />
     </div>
-    <div className="flex items-center gap-2">
-      <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">{number}</span>
-      <h3 className="text-base font-bold text-foreground uppercase tracking-wide">{title}</h3>
+    <div className="flex items-baseline gap-2 min-w-0">
+      <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest flex-shrink-0">{number}</span>
+      <h3 className="text-base font-bold text-foreground uppercase tracking-wide leading-tight">{title}</h3>
     </div>
   </div>
 );
