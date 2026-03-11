@@ -1,10 +1,12 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronRight, Wrench, Zap, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
+import { ChevronDown, ChevronRight, Wrench, Zap, AlertTriangle, CheckCircle2, Clock, FileDown } from "lucide-react";
 import { usePMasterList } from "@/hooks/usePMData";
+import { PrintShutdownPMModal } from "./PrintShutdownPMModal";
 
 // ── Types ───────────────────────────────────────────────────
 interface ShutdownPM {
