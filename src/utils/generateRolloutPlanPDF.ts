@@ -118,11 +118,15 @@ function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
   );
 
   // Scope badge
+  const badgeX = w - 65;
+  const badgeY = 10;
+  const badgeW = 50;
+  const badgeH = 7;
   pdf.setFillColor(255, 193, 7);
-  pdf.roundedRect(w - 65, 10, 50, 7, 1, 1, "F");
+  pdf.roundedRect(badgeX, badgeY, badgeW, badgeH, 1, 1, "F");
   pdf.setFontSize(7);
   pdf.setTextColor(80, 50, 0);
-  pdf.text("Processing Plant Only", w - 63, 15);
+  pdf.text("Processing Plant Only", badgeX + badgeW / 2, badgeY + badgeH / 2 + 0.3, { align: "center" });
 
   // Divider
   pdf.setDrawColor(...GOLD);
