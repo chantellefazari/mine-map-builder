@@ -15,10 +15,11 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  CheckCircle2, XCircle, AlertTriangle, Plus, Search, Download, Trash2, Upload,
+  CheckCircle2, XCircle, AlertTriangle, Plus, Search, Download, Trash2, Upload, FileDown,
 } from "lucide-react";
 import { usePMasterList } from "@/hooks/usePMData";
 import { toast } from "sonner";
+import { PrintPMRegisterModal } from "./PrintPMRegisterModal";
 
 /* ── Required PM type ─────────────────────────────────────── */
 export interface RequiredPM {
@@ -73,6 +74,7 @@ export const PMCoverageAnalysisSection = () => {
   const [addOpen, setAddOpen] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [subTab, setSubTab] = useState("coverage");
+  const [pdfOpen, setPdfOpen] = useState(false);
 
   // ── New PM form state
   const [newPM, setNewPM] = useState<Omit<RequiredPM, "id">>({
@@ -177,6 +179,15 @@ export const PMCoverageAnalysisSection = () => {
 
   return (
     <div className="space-y-6">
+      {/* Header with Export */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold text-foreground">Site PM Register</h2>
+        <Button onClick={() => setPdfOpen(true)} className="gap-2" size="sm">
+          <FileDown className="w-4 h-4" />
+          Export PDF
+        </Button>
+      </div>
+
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="p-4 text-center">
@@ -528,6 +539,22 @@ export const PMCoverageAnalysisSection = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* PM Register PDF Modal */}
+      <PrintPMRegisterModal
+        isOpen={pdfOpen}
+        onClose={() => setPdfOpen(false)}
+        pms={currentPMs.map(pm => ({
+          id: pm.id,
+          pmName: pm.pmName,
+          discipline: pm.discipline,
+          frequency: pm.frequency,
+          equipmentType: pm.equipmentType,
+          status: pm.status,
+          estimatedDuration: pm.estimatedDuration,
+          dutyType: pm.dutyType,
+        }))}
+      />
     </div>
   );
 };
