@@ -34,8 +34,7 @@ export interface RequiredPM {
   notes: string;
 }
 
-/* localStorage migration: on first load, push any localStorage items to DB */
-const LS_KEY = "tcmg-required-pms";
+
 
 
 /* ── fuzzy name normaliser ────────────────────────────────── */
