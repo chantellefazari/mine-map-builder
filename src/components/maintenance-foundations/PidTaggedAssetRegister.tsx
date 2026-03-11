@@ -160,7 +160,7 @@ export const PidTaggedAssetRegister = () => {
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "P&ID Tagged Assets");
-    XLSX.writeFile(wb, "PID_Tagged_Asset_Register_Tennant_Creek.xlsx");
+    writeXlsxFile(wb, "PID_Tagged_Asset_Register_Tennant_Creek.xlsx");
   };
 
   return (

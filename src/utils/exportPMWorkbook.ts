@@ -469,7 +469,7 @@ export const exportPMWorkbook = async () => {
     XLSX.utils.book_append_sheet(wb, wsSchema, "Data Schema");
 
     // Write file
-    XLSX.writeFile(wb, "TCMG_PM_Templates_Complete.xlsx");
+    writeXlsxFile(wb, "TCMG_PM_Templates_Complete.xlsx");
     toast.success(`PM Workbook exported – ${templateRegistry.length} templates, ${taskRows.length} tasks`);
 
   } catch (err) {

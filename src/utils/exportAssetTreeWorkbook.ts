@@ -100,5 +100,5 @@ export function exportAssetTreeWorkbook() {
   const ws3 = XLSX.utils.aoa_to_sheet(ncRows);
   XLSX.utils.book_append_sheet(wb, ws3, "Naming Convention");
 
-  XLSX.writeFile(wb, "TCMG_Asset_Tree_Workbook.xlsx");
+  writeXlsxFile(wb, "TCMG_Asset_Tree_Workbook.xlsx");
 }

@@ -135,5 +135,5 @@ export function exportHierarchyWorkbook() {
 
   XLSX.utils.book_append_sheet(wb, ws, "Processing Plant Hierarchy");
 
-  XLSX.writeFile(wb, "TCMG_Processing_Plant_Hierarchy.xlsx");
+  writeXlsxFile(wb, "TCMG_Processing_Plant_Hierarchy.xlsx");
 }

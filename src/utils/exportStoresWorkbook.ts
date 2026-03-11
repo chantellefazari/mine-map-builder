@@ -382,5 +382,5 @@ export function exportStoresWorkbook() {
   addDesignInputs(wb);
   addCapacityAnalysis(wb);
   addStockControl(wb);
-  XLSX.writeFile(wb, "TCMG_Stores_Warehouse_Design.xlsx");
+  writeXlsxFile(wb, "TCMG_Stores_Warehouse_Design.xlsx");
 }
