@@ -183,10 +183,10 @@ export const FoundationsContent = () => {
             size="sm"
             onClick={handleExportPDF}
             className="gap-2 w-full justify-start"
-            disabled={downloading}
           >
             <Download className="w-3.5 h-3.5" />
-            {downloading ? "Exporting…" : "Export PDF"}
+            Save as PDF
+          </Button>
           </Button>
         </div>
       </div>
