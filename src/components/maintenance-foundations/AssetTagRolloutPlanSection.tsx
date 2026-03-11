@@ -21,7 +21,7 @@ import {
   Square,
   Circle,
   Download,
-  Loader2,
+  Printer,
   MapPin,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
