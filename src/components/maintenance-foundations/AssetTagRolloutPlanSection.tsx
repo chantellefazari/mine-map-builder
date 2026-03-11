@@ -151,7 +151,36 @@ export const AssetTagRolloutPlanSection = () => {
   const typeACnt = productionTags.filter(t => t.tagType === "A").length;
   const typeBCnt = productionTags.filter(t => t.tagType === "B").length;
 
-  const handleDownloadPlan = () => {
+  const handleDownloadPlan = async () => {
+    setDownloading(true);
+    try {
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const resp = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/generate-rollout-pdf`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ typeACount: typeACnt, typeBCount: typeBCnt }),
+        }
+      );
+      if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "TCMG_Asset_Tag_Rollout_Plan.pdf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+    } catch (err) {
+      console.error("PDF download error:", err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const handlePrintPlan = () => {
     const el = planRef.current;
     if (!el) return;
     const printWindow = window.open("", "_blank");
@@ -163,157 +192,62 @@ export const AssetTagRolloutPlanSection = () => {
           @page { size: A4 portrait; margin: 15mm; }
           * { box-sizing: border-box; margin: 0; padding: 0; }
           body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; line-height: 1.5; color: #111; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-
-          /* Document header */
           .doc-header { border-bottom: 3px solid #d4a017; margin-bottom: 8mm; padding-bottom: 4mm; }
           .doc-header h1 { font-size: 16px; font-weight: 700; color: #111; }
           .doc-header p { font-size: 10px; color: #666; margin-top: 2px; }
-
-          /* Typography */
           h2, h3, h4 { margin-bottom: 4px; font-weight: 600; color: #111; }
           p { margin-bottom: 2px; font-size: 10px; color: #111; }
           ul, ol { padding-left: 16px; margin-bottom: 6px; }
           li { margin-bottom: 2px; font-size: 10px; }
-          strong { font-weight: 700; }
-          em { font-style: italic; }
-
-          /* Tables */
           table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-          th, td { border: 1px solid #ccc; padding: 5px 8px; text-align: left; font-size: 10px; word-wrap: break-word; }
-          th { background-color: #f5f0e0 !important; font-weight: 600; color: #555; }
+          th, td { border: 1px solid #ccc; padding: 5px 8px; text-align: left; font-size: 10px; }
+          th { background-color: #f5f0e0 !important; font-weight: 600; }
           tr { page-break-inside: avoid; break-inside: avoid; }
-          thead { display: table-header-group; }
-
-          /* Images & icons */
           img { max-width: 100%; height: auto; }
-          svg { width: 16px; height: 16px; flex-shrink: 0; }
+          svg { width: 16px; height: 16px; }
           button { display: none !important; }
           .print-hide { display: none !important; }
-
-          /* Cards & containers */
+          [class*="rounded"] { border: 1px solid #ddd; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; page-break-inside: avoid; }
           [class*="border-primary"] { border-color: #d4a017 !important; }
-          [class*="border-amber"] { border-color: #f59e0b !important; }
           [class*="border-l-4"] { border-left: 4px solid; }
-          [class*="rounded"] { border: 1px solid #ddd; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid; }
-
-          /* Backgrounds */
-          [class*="bg-primary\\/5"], [class*="bg-primary\\/10"] { background-color: rgba(212, 160, 23, 0.05) !important; }
+          [class*="bg-primary\\/5"] { background-color: rgba(212, 160, 23, 0.05) !important; }
           [class*="bg-primary"] { background-color: #d4a017 !important; }
           [class*="bg-muted"] { background-color: #f5f5f5 !important; }
           [class*="bg-amber-50"] { background-color: #fffbeb !important; }
-          [class*="bg-amber-500"] { background-color: #f59e0b !important; }
-          [class*="bg-green-50"] { background-color: #f0fdf4 !important; }
-          [class*="bg-background"] { background-color: #fff !important; }
-
-          /* Text colors */
           [class*="text-foreground"] { color: #111 !important; }
           [class*="text-primary-foreground"] { color: #fff !important; }
           [class*="text-primary"] { color: #d4a017 !important; }
           [class*="text-muted-foreground"] { color: #666 !important; }
-          [class*="text-amber-500"] { color: #f59e0b !important; }
-          [class*="text-amber-800"] { color: #92400e !important; }
           [class*="text-destructive"] { color: #dc2626 !important; }
-          [class*="text-green-700"] { color: #15803d !important; }
-
-          /* Font sizes */
           [class*="text-2xl"] { font-size: 18px !important; }
-          [class*="text-xl"] { font-size: 15px !important; }
           [class*="text-lg"] { font-size: 13px !important; }
-          [class*="text-base"] { font-size: 11px !important; }
           [class*="text-sm"] { font-size: 10px !important; }
           [class*="text-xs"] { font-size: 9px !important; }
-          [class*="text-\\[10px\\]"] { font-size: 9px !important; }
-          [class*="text-\\[11px\\]"] { font-size: 10px !important; }
-
-          /* Font weights */
-          [class*="font-black"] { font-weight: 900 !important; }
           [class*="font-bold"] { font-weight: 700 !important; }
-          [class*="font-semibold"] { font-weight: 600 !important; }
-          [class*="font-mono"] { font-family: ui-monospace, monospace !important; }
-
-          /* Layout */
+          [class*="font-mono"] { font-family: monospace !important; }
           [class*="flex"] { display: flex; }
           [class*="flex-col"] { flex-direction: column; }
           [class*="flex-wrap"] { flex-wrap: wrap; }
-          [class*="flex-shrink-0"] { flex-shrink: 0; }
           [class*="items-center"] { align-items: center; }
           [class*="items-start"] { align-items: start; }
-          [class*="justify-center"] { justify-content: center; }
-          [class*="justify-between"] { justify-content: space-between; }
           [class*="grid"] { display: grid; }
-          [class*="grid-cols-2"] { grid-template-columns: repeat(2, 1fr); }
-          [class*="sm\\:grid-cols-2"] { grid-template-columns: repeat(2, 1fr); }
-          [class*="md\\:grid-cols-2"] { grid-template-columns: repeat(2, 1fr); }
-          [class*="text-center"] { text-align: center; }
-
-          /* Spacing */
+          [class*="grid-cols-2"], [class*="sm\\:grid-cols-2"] { grid-template-columns: repeat(2, 1fr); }
           [class*="gap-1"] { gap: 4px; }
           [class*="gap-2"] { gap: 8px; }
           [class*="gap-3"] { gap: 12px; }
           [class*="gap-4"] { gap: 16px; }
-          [class*="gap-x-6"] { column-gap: 24px; }
-          [class*="gap-y-0"] { row-gap: 0; }
           .space-y-6 > * + * { margin-top: 12px; }
-          .space-y-4 > * + * { margin-top: 8px; }
           .space-y-3 > * + * { margin-top: 6px; }
-          .space-y-2 > * + * { margin-top: 4px; }
           .space-y-1 > * + * { margin-top: 2px; }
-          [class*="space-y-0\\.5"] > * + * { margin-top: 1px; }
-          [class*="mb-1"] { margin-bottom: 4px; }
-          [class*="mb-2"] { margin-bottom: 8px; }
           [class*="mb-3"] { margin-bottom: 12px; }
           [class*="mb-4"] { margin-bottom: 16px; }
-          [class*="mt-0\\.5"] { margin-top: 2px; }
-          [class*="mt-1"] { margin-top: 4px; }
-          [class*="mt-3"] { margin-top: 12px; }
-          [class*="mt-4"] { margin-top: 16px; }
-          [class*="my-3"] { margin-top: 12px; margin-bottom: 12px; }
-          [class*="my-4"] { margin-top: 16px; margin-bottom: 16px; }
-          [class*="px-2"] { padding-left: 8px; padding-right: 8px; }
           [class*="px-3"] { padding-left: 12px; padding-right: 12px; }
-          [class*="px-4"] { padding-left: 16px; padding-right: 16px; }
-          [class*="py-1"] { padding-top: 4px; padding-bottom: 4px; }
-          [class*="py-1\\.5"] { padding-top: 6px; padding-bottom: 6px; }
           [class*="py-2"] { padding-top: 8px; padding-bottom: 8px; }
-          [class*="py-3"] { padding-top: 12px; padding-bottom: 12px; }
-          [class*="py-4"] { padding-top: 16px; padding-bottom: 16px; }
           [class*="pt-5"] { padding-top: 20px; }
-          [class*="pb-4"] { padding-bottom: 16px; }
-          [class*="p-5"] { padding: 20px; }
-          [class*="max-w-2xl"] { max-width: 42rem; }
-
-          /* Border & separator */
-          [class*="border-border"] { border-color: #e5e5e5 !important; }
-          [class*="border-amber-200"] { border-color: #fde68a !important; }
-          [class*="border-green-200"] { border-color: #bbf7d0 !important; }
-          [class*="divide-y"] > * + * { border-top: 1px solid #e5e5e5; }
-          [role="separator"], hr { border: none; border-top: 1px solid #e5e5e5; margin: 8px 0; height: 0; }
-
-          /* Badges */
-          [class*="inline-flex"][class*="rounded-full"],
-          [class*="inline-flex"][class*="rounded-md"] {
-            display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: 9px; font-weight: 500; border: 1px solid #ddd;
-          }
-
-          /* Tag layout mockups */
-          [class*="tracking-widest"] { letter-spacing: 0.1em; }
-          [class*="tracking-wide"] { letter-spacing: 0.025em; }
-          [class*="tracking-wider"] { letter-spacing: 0.05em; }
           [class*="uppercase"] { text-transform: uppercase; }
-          [class*="overflow-x-auto"] { overflow-x: visible; }
-
-          /* Section number circles */
-          .w-8 { width: 32px; }
-          .h-8 { height: 32px; }
-          .w-6 { width: 24px; }
-          .h-6 { height: 24px; }
-          .w-5 { width: 20px; }
-          .h-5 { height: 20px; }
-          .w-4 { width: 16px; }
-          .h-4 { height: 16px; }
-
-          /* Page break control */
-          [class*="CardContent"], [class*="pt-5"] { page-break-inside: avoid; break-inside: avoid; }
+          [class*="tracking-wide"] { letter-spacing: 0.025em; }
+          [role="separator"], hr { border: none; border-top: 1px solid #e5e5e5; margin: 8px 0; }
+          [class*="inline-flex"][class*="rounded-full"], [class*="inline-flex"][class*="rounded-md"] { display: inline-flex; padding: 2px 8px; border-radius: 9999px; font-size: 9px; border: 1px solid #ddd; }
         </style>
       </head><body>
         <div class="doc-header">
