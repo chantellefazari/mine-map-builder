@@ -44,12 +44,19 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
           </div>
         </div>
         <div className="flex-1 overflow-hidden">
-          <iframe
-            src={pdfUrl}
+          <object
+            data={pdfUrl}
+            type="application/pdf"
             className="w-full h-full border-0"
             style={{ minHeight: "calc(95vh - 52px)" }}
-            title={title}
-          />
+          >
+            <embed
+              src={pdfUrl}
+              type="application/pdf"
+              className="w-full h-full border-0"
+              style={{ minHeight: "calc(95vh - 52px)" }}
+            />
+          </object>
         </div>
       </DialogContent>
     </Dialog>
