@@ -46,7 +46,7 @@ const oreHandlingElec: ShutdownPM[] = [
 
 // ── Grinding Data ───────────────────────────────────────────
 const grindingMech: ShutdownPM[] = [
-  { name: "6W OFF-LINE MECH GRINDING CYCLONE FEED PUMP DISCHARGE PIPES/VALVES", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 0.5, tcAssetMatch: "CFP01 - Cyclone Feed Pumps discharge pipework", tcPidTag: "04-PU-102A/B" },
+  { name: "6W OFF-LINE MECH GRINDING CYCLONE FEED PUMP DISCHARGE PIPES/VALVES", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 0.5, tcAssetMatch: "CFP01 discharge pipework (CLA01-PIPE02)", tcPidTag: "" },
   { name: "6W OFF-LINE MECH GRINDING CYCLONE INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 0.5, tcAssetMatch: "CYC01-CLU01, CYC01-CYA/B/C - Primary Cyclones", tcPidTag: "04-CY-100" },
   { name: "6W OFF-LINE MECH GRINDING BALL MILL INSPECTION", frequency: "6W", type: "PM", discipline: "MS", estimatedHours: 2, tcAssetMatch: "BM01 - Primary Ball Mill", tcPidTag: "04-ML-100" },
   { name: "12W OFF-LINE MECH GRINDING CYCLONE INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 0.5, tcAssetMatch: "CYC01-CLU01, CYC01-CYA/B/C - Primary Cyclones", tcPidTag: "04-CY-100" },
