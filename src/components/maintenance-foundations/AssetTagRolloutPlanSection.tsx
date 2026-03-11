@@ -169,8 +169,9 @@ export const AssetTagRolloutPlanSection = () => {
       const USABLE_H = A4_H - MARGIN - FOOTER_H;
       const SECTION_GAP = 3; // mm gap between sections
 
-      // Find all sections marked with data-pdf-section
-      const sections = Array.from(el.querySelectorAll("[data-pdf-section]")) as HTMLElement[];
+      // Find all sections marked with data-pdf-section (excluding any legacy footer sections)
+      const sections = Array.from(el.querySelectorAll("[data-pdf-section]"))
+        .filter((section) => !section.textContent?.includes("Internal use only")) as HTMLElement[];
       if (sections.length === 0) {
         setDownloading(false);
         return;
@@ -196,25 +197,33 @@ export const AssetTagRolloutPlanSection = () => {
 
       drawHeader();
       let currentY = MARGIN + HEADER_H;
-      const RENDER_PX_W = 794;
+      await document.fonts.ready;
 
       for (const section of sections) {
-        // Create a hidden clone for consistent rendering
-        const wrapper = document.createElement("div");
-        wrapper.style.cssText = `position:fixed;top:-9999px;left:-9999px;width:${RENDER_PX_W}px;background:#fff;z-index:-1;padding:12px;`;
-        wrapper.appendChild(section.cloneNode(true));
-        // Remove buttons from clone
-        wrapper.querySelectorAll("button").forEach(b => b.remove());
-        document.body.appendChild(wrapper);
+        const rect = section.getBoundingClientRect();
 
-        const canvas = await html2canvas(wrapper, {
+        const canvas = await html2canvas(section, {
           scale: 2,
           useCORS: true,
           backgroundColor: "#ffffff",
           logging: false,
-          width: RENDER_PX_W,
+          width: Math.ceil(rect.width),
+          height: Math.ceil(rect.height),
+          windowWidth: document.documentElement.clientWidth,
+          onclone: (clonedDoc: Document) => {
+            clonedDoc.querySelectorAll("button, .print-hide, [data-pdf-exclude]").forEach((node) => node.remove());
+
+            clonedDoc.querySelectorAll("span, p, div").forEach((node) => {
+              const text = node.textContent?.replace(/\s+/g, " ").trim() || "";
+              if (
+                text.includes("TCMG-STD-TAG-002 · Processing Plant Asset Tagging Standard & Rollout Plan · Rev 2.0") ||
+                text.includes("Internal use only")
+              ) {
+                node.closest("div")?.remove();
+              }
+            });
+          },
         });
-        document.body.removeChild(wrapper);
 
         const scale = 2;
         const widthPx = canvas.width / scale;
@@ -232,7 +241,7 @@ export const AssetTagRolloutPlanSection = () => {
 
         // If a single section is taller than a full page, slice it across pages
         if (heightMM > USABLE_H - MARGIN) {
-          const pxPerMm = (canvas.width) / CONTENT_W;
+          const pxPerMm = canvas.width / CONTENT_W;
           let srcY = 0;
           while (srcY < canvas.height) {
             const sliceAvail = USABLE_H - currentY;
