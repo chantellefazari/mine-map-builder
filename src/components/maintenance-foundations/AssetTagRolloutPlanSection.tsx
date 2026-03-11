@@ -502,13 +502,6 @@ export const AssetTagRolloutPlanSection = () => {
             processing plant. Aligned with the rebuilt asset tree and P&ID extraction register.
           </p>
 
-          {/* Document Meta Row */}
-          <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>TCMG-STD-TAG-002</Badge>
-            <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>Rev 2.0</Badge>
-            <Badge className={`${centeredPillClass} h-6 px-3 text-xs bg-primary text-primary-foreground`}>Processing Plant Only</Badge>
-          </div>
-
           <Separator className="my-3" />
 
           {/* Action Buttons */}
@@ -553,12 +546,6 @@ export const AssetTagRolloutPlanSection = () => {
               <FileText className="w-3.5 h-3.5" />
               Attachment B - Production List PDF
             </Button>
-          </div>
-
-          <div className="mt-3 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
-            <p className="text-xs text-amber-800 font-medium">
-              ⚠ Scope Notice: This plan applies to the Processing Plant ONLY. The Crushing Plant is excluded until P&IDs are finalised and approved.
-            </p>
           </div>
         </CardContent>
       </Card>
