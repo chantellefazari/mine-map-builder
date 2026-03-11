@@ -346,16 +346,7 @@ export const ShutdownPMRequirementsSection = () => {
         );
       })}
 
-      {/* Placeholder for future areas */}
-      {SHUTDOWN_AREAS.length < 2 && (
-        <Card className="border-dashed border-2 border-muted-foreground/20">
-          <CardContent className="py-8 text-center text-muted-foreground">
-            <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm font-medium">More areas coming</p>
-            <p className="text-xs">Additional shutdown PM areas (Milling, CIP, Elution, Tailings, etc.) will be added as data is provided.</p>
-          </CardContent>
-        </Card>
-      )}
+      <PrintShutdownPMModal isOpen={printOpen} onClose={() => setPrintOpen(false)} areas={SHUTDOWN_AREAS} />
     </div>
   );
 };
