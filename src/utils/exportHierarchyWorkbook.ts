@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import { writeXlsxFile } from "@/utils/safariDownload";
 import { areasData } from "@/components/hierarchy/assetData";
 import { pidTagMappings } from "@/components/hierarchy/pidTagMappings";
 
