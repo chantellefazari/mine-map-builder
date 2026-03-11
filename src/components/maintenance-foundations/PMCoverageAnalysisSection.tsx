@@ -551,7 +551,7 @@ export const PMCoverageAnalysisSection = () => {
           frequency: pm.frequency,
           equipmentType: pm.equipmentType,
           status: pm.status,
-          estimatedDuration: pm.estimatedDuration,
+          estimatedDuration: pm.resources || pm.estimatedDuration || "",
           dutyType: pm.dutyType,
         }))}
       />
