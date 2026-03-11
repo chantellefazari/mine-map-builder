@@ -273,13 +273,23 @@ export const PrintShutdownPMModal = ({ isOpen, onClose, areas }: Props) => {
     setGenerating(true);
 
     try {
+      // A4 dimensions
+      const A4_WIDTH_MM = 210;
+      const A4_HEIGHT_MM = 297;
+      const MARGIN_MM = 8;
+      const CONTENT_WIDTH_MM = A4_WIDTH_MM - MARGIN_MM * 2;
+      const CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
+
+      // Render hidden container at exact A4 pixel width (96dpi)
+      const containerWidthPx = 794; // ~210mm at 96dpi
+
       const container = document.createElement("div");
       container.style.position = "fixed";
       container.style.left = "-9999px";
       container.style.top = "0";
-      container.style.width = "794px";
+      container.style.width = `${containerWidthPx}px`;
       container.style.background = "white";
-      container.style.overflow = "hidden";
+      container.style.overflow = "visible";
 
       const styleEl = document.createElement("style");
       styleEl.textContent = pdfStyles;
@@ -290,38 +300,61 @@ export const PrintShutdownPMModal = ({ isOpen, onClose, areas }: Props) => {
       container.appendChild(content);
 
       document.body.appendChild(container);
+      await new Promise(r => setTimeout(r, 500));
 
-      // Allow render
-      await new Promise(r => setTimeout(r, 400));
-
-      const canvas = await html2canvas(container, {
+      // Capture the full content as one tall canvas
+      const fullCanvas = await html2canvas(container, {
         scale: 2,
         useCORS: true,
         logging: false,
-        width: 794,
-        windowWidth: 794,
+        width: containerWidthPx,
+        windowWidth: containerWidthPx,
         backgroundColor: "#ffffff",
       });
 
       document.body.removeChild(container);
 
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = 210;
-      const pdfPageHeight = 297;
-      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+      const imgWidthPx = fullCanvas.width;
+      const imgHeightPx = fullCanvas.height;
 
-      let heightLeft = imgHeight;
-      let position = 0;
+      // Scale factor: how many mm per pixel
+      const scaleFactor = CONTENT_WIDTH_MM / imgWidthPx;
 
-      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
-      heightLeft -= pdfPageHeight;
+      // How many pixels fit on one page of content area
+      const pageContentHeightPx = CONTENT_HEIGHT_MM / scaleFactor;
 
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
-        heightLeft -= pdfPageHeight;
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+      let yOffsetPx = 0;
+      let pageNum = 0;
+
+      while (yOffsetPx < imgHeightPx) {
+        if (pageNum > 0) pdf.addPage();
+
+        // Calculate how much of the image to slice for this page
+        const sliceHeightPx = Math.min(pageContentHeightPx, imgHeightPx - yOffsetPx);
+        const sliceHeightMM = sliceHeightPx * scaleFactor;
+
+        // Create a temporary canvas for this page slice
+        const pageCanvas = document.createElement("canvas");
+        pageCanvas.width = imgWidthPx;
+        pageCanvas.height = sliceHeightPx;
+        const ctx = pageCanvas.getContext("2d");
+        if (ctx) {
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, imgWidthPx, sliceHeightPx);
+          ctx.drawImage(
+            fullCanvas,
+            0, yOffsetPx, imgWidthPx, sliceHeightPx,  // source
+            0, 0, imgWidthPx, sliceHeightPx             // dest
+          );
+        }
+
+        const pageImgData = pageCanvas.toDataURL("image/png");
+        pdf.addImage(pageImgData, "PNG", MARGIN_MM, MARGIN_MM, CONTENT_WIDTH_MM, sliceHeightMM);
+
+        yOffsetPx += sliceHeightPx;
+        pageNum++;
       }
 
       pdf.save("TCMG-Shutdown-PM-Requirements.pdf");
