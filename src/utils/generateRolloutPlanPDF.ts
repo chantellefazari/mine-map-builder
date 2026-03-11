@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { supabase } from "@/integrations/supabase/client";
 
 // Pre-load the Gravotech LS100 image as base64 for PDF embedding
 let gravoImageBase64: string | null = null;
@@ -80,9 +81,34 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Download PDF file — uses jsPDF built-in save (synchronous, preserves user gesture) */
-function triggerPdfDownload(pdf: jsPDF, filename: string) {
-  pdf.save(filename);
+/** Download PDF by uploading to storage and opening the public URL.
+ *  This bypasses iframe sandbox restrictions that block blob downloads. */
+async function triggerPdfDownload(pdf: jsPDF, filename: string) {
+  const blob = pdf.output("blob");
+  const storagePath = `exports/${Date.now()}-${filename}`;
+
+  // Upload to temp-pdfs bucket
+  const { error: uploadError } = await supabase.storage
+    .from("temp-pdfs")
+    .upload(storagePath, blob, { contentType: "application/pdf", upsert: true });
+
+  if (uploadError) {
+    console.error("PDF upload failed, falling back to pdf.save():", uploadError);
+    pdf.save(filename);
+    return;
+  }
+
+  // Get public URL and open it — this is a real HTTPS URL that bypasses sandbox
+  const { data: urlData } = supabase.storage
+    .from("temp-pdfs")
+    .getPublicUrl(storagePath, { download: filename });
+
+  if (urlData?.publicUrl) {
+    window.open(urlData.publicUrl, "_blank");
+  } else {
+    // Fallback
+    pdf.save(filename);
+  }
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
@@ -181,7 +207,7 @@ const tblMargin = { left: MARGIN, right: MARGIN };
 // ════════════════════════════════════════════════
 // 1. MAIN ROLLOUT PLAN PDF (Sections 01–13, no data tables)
 // ════════════════════════════════════════════════
-export function generateRolloutPlanPDF(
+export async function generateRolloutPlanPDF(
   taggedAssetCount: number,
   productionTagCount: number,
   typeACount: number,
@@ -532,13 +558,13 @@ export function generateRolloutPlanPDF(
   pdf.text("⚠  Scope: Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised. Do not apply this rollout plan to crushing or mining equipment.", MARGIN + 4, y + 4);
 
   addPageNumbers(pdf, "TCMG Asset Tag Rollout Plan");
-  triggerPdfDownload(pdf, "TCMG_Asset_Tag_Rollout_Plan.pdf");
+  await triggerPdfDownload(pdf, "TCMG_Asset_Tag_Rollout_Plan.pdf");
 }
 
 // ════════════════════════════════════════════════
 // 2. ATTACHMENT A — P&ID TAGGED ASSET REGISTER PDF
 // ════════════════════════════════════════════════
-export function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
+export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   let y = addDocHeader(pdf, "P&ID Tagged Asset Register", "Attachment A - Tennant Mines Gold");
 
@@ -575,13 +601,13 @@ export function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
   });
 
   addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register - Attachment A");
-  triggerPdfDownload(pdf, "TCMG_PID_Tagged_Asset_Register.pdf");
+  await triggerPdfDownload(pdf, "TCMG_PID_Tagged_Asset_Register.pdf");
 }
 
 // ════════════════════════════════════════════════
 // 3. ATTACHMENT B — ASSET TAG PRODUCTION LIST PDF
 // ════════════════════════════════════════════════
-export function generateProductionListPDF(productionTags: ProductionTag[]) {
+export async function generateProductionListPDF(productionTags: ProductionTag[]) {
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   const typeA = productionTags.filter(t => t.tagType === "A").length;
   const typeB = productionTags.filter(t => t.tagType === "B").length;
@@ -639,5 +665,5 @@ export function generateProductionListPDF(productionTags: ProductionTag[]) {
   pdf.text("Scope: Processing Plant ONLY — Crushing Plant excluded until P&IDs are finalised.", 16, y + 13);
 
   addPageNumbers(pdf, "TCMG Asset Tag Production List - Attachment B");
-  triggerPdfDownload(pdf, "TCMG_Asset_Tag_Production_List.pdf");
+  await triggerPdfDownload(pdf, "TCMG_Asset_Tag_Production_List.pdf");
 }
