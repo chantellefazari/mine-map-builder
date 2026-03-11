@@ -692,11 +692,11 @@ export const AssetTagRolloutPlanSection = () => {
                 <Separator />
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Examples</p>
-                  <div className="flex flex-wrap justify-center gap-1">
+                  <div data-pdf-chip-group className="flex flex-wrap justify-center gap-1">
                     {[
                       "Tanks", "Conveyors", "Crushers", "Mills", "Thickeners", "Hoppers", "Chutes", "Cyclone Clusters", "Filter Presses", "Air Receivers", "Major Structures"
                     ].map((item) => (
-                      <Badge key={item} variant="outline" className={`${centeredPillClass} h-5 px-3 text-[10px]`}>{item}</Badge>
+                      <Badge data-pdf-chip key={item} variant="outline" className={`${centeredPillClass} h-5 px-3 text-[10px]`}>{item}</Badge>
                     ))}
                   </div>
                 </div>
