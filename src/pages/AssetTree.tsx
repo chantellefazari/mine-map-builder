@@ -9,11 +9,13 @@ import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocati
 import { CRUFunctionalLocationTable } from "@/components/hierarchy/CRUFunctionalLocationTable";
 import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties, BookText, Download, FileSpreadsheet, HardHat } from "lucide-react";
+import { TreePine, TableProperties, BookText, Download, FileSpreadsheet, HardHat, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
 import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
 import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
+import { exportProcessingPlantCSV } from "@/utils/exportProcessingPlantCSV";
+import { toast } from "sonner";
 import { RevBAssetTree } from "@/components/hierarchy/RevBAssetTree";
 
 const AssetTree = () => {
@@ -43,7 +45,22 @@ const AssetTree = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  try {
+                    toast.loading("Exporting CSV...", { id: "csv-export" });
+                    await exportProcessingPlantCSV();
+                    toast.success("CSV downloaded", { id: "csv-export" });
+                  } catch (e: any) {
+                    toast.error(e.message || "Export failed", { id: "csv-export" });
+                  }
+                }}
+                className="gap-2"
+              >
+                <FileDown className="h-4 w-4" />
+                CSV Export
+              </Button>
               <Button variant="outline" onClick={exportHierarchyWorkbook} className="gap-2">
                 <Download className="h-4 w-4" />
                 Hierarchy Workbook
