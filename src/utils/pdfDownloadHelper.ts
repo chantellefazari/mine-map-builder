@@ -7,11 +7,16 @@ export function onPdfReady(cb: PdfReadyCallback) {
   _onPdfReady = cb;
 }
 
-/** Create a blob URL from the PDF and trigger the inline viewer */
+/** Convert blob to base64 data URL and trigger the inline viewer */
 export async function uploadAndShowPdf(blob: Blob, filename: string, title?: string) {
-  const url = URL.createObjectURL(blob);
-  console.log("[PDF] Blob URL created:", url, "size:", blob.size);
+  console.log("[PDF] Converting to data URL, size:", blob.size);
+  const dataUrl = await new Promise<string>((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.readAsDataURL(blob);
+  });
+  console.log("[PDF] Data URL ready, length:", dataUrl.length);
   if (_onPdfReady) {
-    _onPdfReady(url, title || filename);
+    _onPdfReady(dataUrl, title || filename);
   }
 }
