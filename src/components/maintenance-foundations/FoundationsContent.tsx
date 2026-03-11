@@ -187,7 +187,6 @@ export const FoundationsContent = () => {
             <Download className="w-3.5 h-3.5" />
             Save as PDF
           </Button>
-          </Button>
         </div>
       </div>
 
