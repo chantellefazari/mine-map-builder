@@ -153,6 +153,7 @@ export const AssetTagRolloutPlanSection = () => {
 
   const typeACnt = productionTags.filter(t => t.tagType === "A").length;
   const typeBCnt = productionTags.filter(t => t.tagType === "B").length;
+  const centeredPillClass = "inline-flex items-center justify-center text-center leading-none";
 
   const handleDownloadPlan = async () => {
     const el = planRef.current;
