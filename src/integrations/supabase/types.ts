@@ -1472,6 +1472,42 @@ export type Database = {
           },
         ]
       }
+      required_pms: {
+        Row: {
+          created_at: string
+          discipline: string
+          equipment_type: string
+          frequency: string
+          id: string
+          notes: string
+          pm_name: string
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          discipline?: string
+          equipment_type?: string
+          frequency?: string
+          id?: string
+          notes?: string
+          pm_name: string
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          discipline?: string
+          equipment_type?: string
+          frequency?: string
+          id?: string
+          notes?: string
+          pm_name?: string
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       rev_b_pid_extraction_register: {
         Row: {
           area_clue: string
@@ -1583,6 +1619,48 @@ export type Database = {
           tag_type?: string | null
           updated_at?: string | null
           upstream_tag?: string | null
+        }
+        Relationships: []
+      }
+      shutdown_pm_requirements: {
+        Row: {
+          area: string
+          created_at: string
+          discipline: string
+          estimated_hours: number
+          frequency: string
+          id: string
+          name: string
+          sort_order: number
+          tc_asset_match: string
+          tc_pid_tag: string
+          updated_at: string
+        }
+        Insert: {
+          area: string
+          created_at?: string
+          discipline: string
+          estimated_hours?: number
+          frequency: string
+          id?: string
+          name: string
+          sort_order?: number
+          tc_asset_match?: string
+          tc_pid_tag?: string
+          updated_at?: string
+        }
+        Update: {
+          area?: string
+          created_at?: string
+          discipline?: string
+          estimated_hours?: number
+          frequency?: string
+          id?: string
+          name?: string
+          sort_order?: number
+          tc_asset_match?: string
+          tc_pid_tag?: string
+          updated_at?: string
         }
         Relationships: []
       }

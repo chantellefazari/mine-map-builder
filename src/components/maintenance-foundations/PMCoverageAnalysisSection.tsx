@@ -18,6 +18,7 @@ import {
   CheckCircle2, XCircle, AlertTriangle, Plus, Search, Download, Trash2, Upload, FileDown,
 } from "lucide-react";
 import { usePMasterList } from "@/hooks/usePMData";
+import { useRequiredPMs } from "@/hooks/useRequiredPMs";
 import { toast } from "sonner";
 import { PrintPMRegisterModal } from "./PrintPMRegisterModal";
 import { CurrentPMsDocumentView } from "./CurrentPMsDocumentView";
@@ -33,18 +34,8 @@ export interface RequiredPM {
   notes: string;
 }
 
-const STORAGE_KEY = "tcmg-required-pms";
 
-function loadRequired(): RequiredPM[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
-}
 
-function saveRequired(list: RequiredPM[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-}
 
 /* ── fuzzy name normaliser ────────────────────────────────── */
 function normalise(s: string) {
@@ -68,7 +59,7 @@ function namesMatch(a: string, b: string): boolean {
 /* ── Component ────────────────────────────────────────────── */
 export const PMCoverageAnalysisSection = () => {
   const { pms: currentPMs, isLoading } = usePMasterList();
-  const [requiredPMs, setRequiredPMs] = useState<RequiredPM[]>(loadRequired);
+  const { requiredPMs: dbRequiredPMs, isLoading: reqLoading, addPM, addMany, deletePM } = useRequiredPMs();
   const [search, setSearch] = useState("");
   const [filterDiscipline, setFilterDiscipline] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -77,6 +68,17 @@ export const PMCoverageAnalysisSection = () => {
   const [subTab, setSubTab] = useState("coverage");
   const [pdfOpen, setPdfOpen] = useState(false);
 
+  // Map DB rows to component interface
+  const requiredPMs: RequiredPM[] = useMemo(() => dbRequiredPMs.map(r => ({
+    id: r.id,
+    pmName: r.pm_name,
+    discipline: r.discipline as RequiredPM["discipline"],
+    frequency: r.frequency,
+    equipmentType: r.equipment_type,
+    source: r.source,
+    notes: r.notes,
+  })), [dbRequiredPMs]);
+
   // ── New PM form state
   const [newPM, setNewPM] = useState<Omit<RequiredPM, "id">>({
     pmName: "", discipline: "Mechanical", frequency: "", equipmentType: "", source: "", notes: "",
@@ -84,12 +86,6 @@ export const PMCoverageAnalysisSection = () => {
 
   // ── Bulk import state
   const [bulkText, setBulkText] = useState("");
-
-  // ── Persist helper
-  const updateRequired = (list: RequiredPM[]) => {
-    setRequiredPMs(list);
-    saveRequired(list);
-  };
 
   // ── Coverage analysis
   const coverageData = useMemo(() => {
@@ -128,40 +124,41 @@ export const PMCoverageAnalysisSection = () => {
   // ── Add single PM
   const handleAdd = () => {
     if (!newPM.pmName.trim()) { toast.error("PM Name is required"); return; }
-    const pm: RequiredPM = { ...newPM, id: crypto.randomUUID() };
-    updateRequired([...requiredPMs, pm]);
+    addPM.mutate({
+      pm_name: newPM.pmName,
+      discipline: newPM.discipline,
+      frequency: newPM.frequency,
+      equipment_type: newPM.equipmentType,
+      source: newPM.source,
+      notes: newPM.notes,
+    });
     setNewPM({ pmName: "", discipline: "Mechanical", frequency: "", equipmentType: "", source: "", notes: "" });
     setAddOpen(false);
-    toast.success("Required PM added");
   };
 
   // ── Bulk import
   const handleBulkImport = () => {
     const lines = bulkText.split("\n").map((l) => l.trim()).filter(Boolean);
     if (lines.length === 0) { toast.error("No lines to import"); return; }
-    const newItems: RequiredPM[] = lines.map((line) => {
-      // Try tab-delimited: Name\tDiscipline\tFrequency\tEquipment\tSource
+    const newItems = lines.map((line) => {
       const parts = line.split("\t");
       return {
-        id: crypto.randomUUID(),
-        pmName: parts[0]?.trim() || line,
-        discipline: (parts[1]?.trim() as RequiredPM["discipline"]) || "Mechanical",
+        pm_name: parts[0]?.trim() || line,
+        discipline: parts[1]?.trim() || "Mechanical",
         frequency: parts[2]?.trim() || "",
-        equipmentType: parts[3]?.trim() || "",
+        equipment_type: parts[3]?.trim() || "",
         source: parts[4]?.trim() || "Bulk Import",
         notes: "",
       };
     });
-    updateRequired([...requiredPMs, ...newItems]);
+    addMany.mutate(newItems);
     setBulkText("");
     setBulkOpen(false);
-    toast.success(`${newItems.length} required PMs imported`);
   };
 
   // ── Delete
   const handleDelete = (id: string) => {
-    updateRequired(requiredPMs.filter((r) => r.id !== id));
-    toast.success("Removed from required list");
+    deletePM.mutate(id);
   };
 
   // ── Export CSV
