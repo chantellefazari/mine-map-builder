@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Printer, X } from "lucide-react";
-import { downloadBlob } from "@/utils/safariDownload";
+import { Printer, X, Loader2 } from "lucide-react";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 interface ShutdownPM {
   name: string;
