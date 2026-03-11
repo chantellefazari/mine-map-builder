@@ -25,6 +25,8 @@ import {
   Printer,
   MapPin,
 } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { generateAssetRegisterPDF, generateProductionListPDF } from "@/utils/generateRolloutPlanPDF";
