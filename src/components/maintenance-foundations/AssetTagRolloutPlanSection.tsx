@@ -21,6 +21,7 @@ import {
   Square,
   Circle,
   Download,
+  Loader2,
   Printer,
   MapPin,
 } from "lucide-react";
