@@ -1034,7 +1034,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 12. Completion Deliverables */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Camera} number="12" title="Completion Deliverables" />
           <p className="text-sm text-muted-foreground mb-3">
