@@ -27,6 +27,7 @@ import { AssetTagRolloutPlanSection } from "./AssetTagRolloutPlanSection";
 
 import { PMCoverageAnalysisSection } from "./PMCoverageAnalysisSection";
 import { ShutdownPMRequirementsSection } from "./ShutdownPMRequirementsSection";
+import { NamingConventionDocument } from "./NamingConventionDocument";
 
 const TAB_LABELS: Record<string, string> = {
   "hierarchy": "Asset Hierarchy & Parent-Child Rules",
