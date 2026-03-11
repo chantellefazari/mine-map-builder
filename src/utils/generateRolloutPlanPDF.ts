@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { supabase } from "@/integrations/supabase/client";
+import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
 
 // Pre-load the Gravotech LS100 image as base64 for PDF embedding
 let gravoImageBase64: string | null = null;
@@ -81,51 +81,10 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Download PDF — tries multiple strategies to bypass iframe sandbox restrictions */
-async function triggerPdfDownload(pdf: jsPDF, filename: string) {
+/** Upload PDF to storage and show in inline viewer modal */
+async function triggerPdfDownload(pdf: jsPDF, filename: string, title?: string) {
   const blob = pdf.output("blob");
-
-  // Strategy 1: Upload to cloud storage, open public URL in new tab
-  try {
-    const storagePath = `exports/${Date.now()}-${filename}`;
-    console.log("[PDF] Uploading to storage...", storagePath);
-    const { error: uploadError } = await supabase.storage
-      .from("temp-pdfs")
-      .upload(storagePath, blob, { contentType: "application/pdf", upsert: true });
-
-    if (uploadError) {
-      console.error("[PDF] Upload failed:", uploadError);
-    } else {
-      const { data: urlData } = supabase.storage
-        .from("temp-pdfs")
-        .getPublicUrl(storagePath);
-      if (urlData?.publicUrl) {
-        console.log("[PDF] Opening public URL:", urlData.publicUrl);
-        // Use anchor with target=_blank — more reliable than window.open in sandboxes
-        const a = document.createElement("a");
-        a.href = urlData.publicUrl;
-        a.target = "_blank";
-        a.rel = "noopener";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        return;
-      }
-    }
-  } catch (err) {
-    console.error("[PDF] Storage strategy failed:", err);
-  }
-
-  // Strategy 2: Blob URL with anchor download
-  console.log("[PDF] Trying blob URL download...");
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.style.display = "none";
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+  await uploadAndShowPdf(blob, filename, title || filename.replace(/_/g, " ").replace(".pdf", ""));
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {

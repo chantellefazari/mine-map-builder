@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect, useCallback } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { PdfViewerModal } from "@/components/shared/PdfViewerModal";
+import { onPdfReady } from "@/utils/pdfDownloadHelper";
 
 // Lazy-load all pages for code splitting
 const Home = lazy(() => import("./pages/Home"));
@@ -42,50 +44,70 @@ const PageLoader = () => (
   </div>
 );
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              {/* Public */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/supplier-portal" element={<SupplierPortal />} />
-              <Route path="/track-shipment" element={<TrackShipment />} />
+const App = () => {
+  const [pdfState, setPdfState] = useState({ open: false, url: "", title: "" });
 
-              {/* Protected: Home */}
-              <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+  const handlePdfReady = useCallback((url: string, title: string) => {
+    setPdfState({ open: true, url, title });
+  }, []);
 
-              {/* Admin only */}
-              <Route path="/admin" element={<ProtectedRoute adminOnly><AdminPanel /></ProtectedRoute>} />
+  useEffect(() => {
+    onPdfReady(handlePdfReady);
+  }, [handlePdfReady]);
 
-              {/* Tab-protected routes */}
-              <Route path="/asset-tree" element={<ProtectedRoute tabKey="asset-tree"><AssetTree /></ProtectedRoute>} />
-              <Route path="/pm-design" element={<ProtectedRoute tabKey="pm-design"><PMDesign /></ProtectedRoute>} />
-              
-              <Route path="/site-spares" element={<ProtectedRoute tabKey="site-spares"><SiteSparesCatalogue /></ProtectedRoute>} />
-              
-              <Route path="/work-order-templates" element={<ProtectedRoute tabKey="work-order-templates"><WorkOrderTemplates /></ProtectedRoute>} />
-              <Route path="/maintenance-foundations" element={<ProtectedRoute tabKey="maintenance-foundations"><MaintenanceFoundations /></ProtectedRoute>} />
-              <Route path="/supplier-register" element={<ProtectedRoute tabKey="suppliers-procurement"><SupplierRegister /></ProtectedRoute>} />
-              <Route path="/suppliers-procurement" element={<ProtectedRoute tabKey="suppliers-procurement"><SuppliersProcurement /></ProtectedRoute>} />
-              
-              <Route path="/stores-warehouse-design" element={<ProtectedRoute tabKey="stores-warehouse-design"><StoresWarehouseDesign /></ProtectedRoute>} />
-              <Route path="/planning-revision" element={<ProtectedRoute tabKey="planning-revision"><PlanningRevisionControl /></ProtectedRoute>} />
-              <Route path="/po-tracker" element={<ProtectedRoute tabKey="po-tracker"><POTracker /></ProtectedRoute>} />
-              <Route path="/purchase-requests" element={<ProtectedRoute tabKey="purchase-requests"><PurchaseRequests /></ProtectedRoute>} />
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Public */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/supplier-portal" element={<SupplierPortal />} />
+                <Route path="/track-shipment" element={<TrackShipment />} />
 
-              {/* Catch-all */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+                {/* Protected: Home */}
+                <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+
+                {/* Admin only */}
+                <Route path="/admin" element={<ProtectedRoute adminOnly><AdminPanel /></ProtectedRoute>} />
+
+                {/* Tab-protected routes */}
+                <Route path="/asset-tree" element={<ProtectedRoute tabKey="asset-tree"><AssetTree /></ProtectedRoute>} />
+                <Route path="/pm-design" element={<ProtectedRoute tabKey="pm-design"><PMDesign /></ProtectedRoute>} />
+                
+                <Route path="/site-spares" element={<ProtectedRoute tabKey="site-spares"><SiteSparesCatalogue /></ProtectedRoute>} />
+                
+                <Route path="/work-order-templates" element={<ProtectedRoute tabKey="work-order-templates"><WorkOrderTemplates /></ProtectedRoute>} />
+                <Route path="/maintenance-foundations" element={<ProtectedRoute tabKey="maintenance-foundations"><MaintenanceFoundations /></ProtectedRoute>} />
+                <Route path="/supplier-register" element={<ProtectedRoute tabKey="suppliers-procurement"><SupplierRegister /></ProtectedRoute>} />
+                <Route path="/suppliers-procurement" element={<ProtectedRoute tabKey="suppliers-procurement"><SuppliersProcurement /></ProtectedRoute>} />
+                
+                <Route path="/stores-warehouse-design" element={<ProtectedRoute tabKey="stores-warehouse-design"><StoresWarehouseDesign /></ProtectedRoute>} />
+                <Route path="/planning-revision" element={<ProtectedRoute tabKey="planning-revision"><PlanningRevisionControl /></ProtectedRoute>} />
+                <Route path="/po-tracker" element={<ProtectedRoute tabKey="po-tracker"><POTracker /></ProtectedRoute>} />
+                <Route path="/purchase-requests" element={<ProtectedRoute tabKey="purchase-requests"><PurchaseRequests /></ProtectedRoute>} />
+
+                {/* Catch-all */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </AuthProvider>
+        </BrowserRouter>
+
+        {/* Global PDF Viewer Modal */}
+        <PdfViewerModal
+          isOpen={pdfState.open}
+          onClose={() => setPdfState(s => ({ ...s, open: false }))}
+          pdfUrl={pdfState.url}
+          title={pdfState.title}
+        />
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

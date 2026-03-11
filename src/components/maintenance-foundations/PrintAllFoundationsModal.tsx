@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { X, Printer, FileText, Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import { supabase } from "@/integrations/supabase/client";
+import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -76,23 +76,7 @@ export const PrintAllFoundationsModal: React.FC<PrintAllFoundationsModalProps> =
       }
 
       const blob = pdf.output("blob");
-      const filename = "TCMG-Maintenance-Foundations.pdf";
-      const storagePath = `exports/${Date.now()}-${filename}`;
-      const { error: uploadError } = await supabase.storage
-        .from("temp-pdfs")
-        .upload(storagePath, blob, { contentType: "application/pdf", upsert: true });
-      if (!uploadError) {
-        const { data: urlData } = supabase.storage.from("temp-pdfs").getPublicUrl(storagePath);
-        if (urlData?.publicUrl) {
-          const a = document.createElement("a");
-          a.href = urlData.publicUrl;
-          a.target = "_blank";
-          a.rel = "noopener";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }
-      } else { console.error("[PDF] Upload failed:", uploadError); }
+      await uploadAndShowPdf(blob, "TCMG-Maintenance-Foundations.pdf", "Maintenance Foundations - All Tabs");
     } catch (err) {
       console.error("PDF download error:", err);
     } finally {
