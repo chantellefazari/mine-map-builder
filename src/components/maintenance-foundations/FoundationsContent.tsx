@@ -246,6 +246,10 @@ export const FoundationsContent = () => {
         <TabsContent value="pm-coverage">
           <PMCoverageAnalysisSection />
         </TabsContent>
+
+        <TabsContent value="shutdown-pms">
+          <ShutdownPMRequirementsSection />
+        </TabsContent>
       </div>
     </Tabs>
   );
