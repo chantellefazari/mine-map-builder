@@ -469,10 +469,10 @@ export const AssetTagRolloutPlanSection = () => {
           </p>
 
           {/* Document Meta Row */}
-          <div className="flex items-center gap-2 mb-4">
-            <Badge variant="outline" className="text-xs font-mono">TCMG-STD-TAG-002</Badge>
-            <Badge variant="outline" className="text-xs font-mono">Rev 2.0</Badge>
-            <Badge className="text-xs bg-primary text-primary-foreground">Processing Plant Only</Badge>
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>TCMG-STD-TAG-002</Badge>
+            <Badge variant="outline" className={`${centeredPillClass} h-6 px-3 text-xs font-mono`}>Rev 2.0</Badge>
+            <Badge className={`${centeredPillClass} h-6 px-3 text-xs bg-primary text-primary-foreground`}>Processing Plant Only</Badge>
           </div>
 
           <Separator className="my-3" />
