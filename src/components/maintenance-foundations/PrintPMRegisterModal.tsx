@@ -59,12 +59,12 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
       const renderTable = (items: PMItem[]) => `
         <table class="pm-table">
           <thead><tr>
-            <th style="width:3%">#</th>
-            <th style="width:30%">PM Name</th>
+           <th style="width:3%">#</th>
+            <th style="width:28%">PM Name</th>
             <th style="width:10%">Frequency</th>
-            <th style="width:20%">Equipment Type</th>
-            <th style="width:10%">Duty Type</th>
-            <th style="width:10%">Duration</th>
+            <th style="width:18%">Equipment Type</th>
+            <th style="width:8%">Duty Type</th>
+            <th style="width:16%">Resources</th>
             <th style="width:8%">Status</th>
           </tr></thead>
           <tbody>${items.map((pm, i) => `<tr>
