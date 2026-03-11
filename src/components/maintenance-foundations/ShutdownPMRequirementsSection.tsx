@@ -62,7 +62,7 @@ const grindingMech: ShutdownPM[] = [
   { name: "12W OFF-LINE MECH GRINDING BALL MILL TROMMEL INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 1, tcAssetMatch: "BM01 - Primary Ball Mill trommel screen", tcPidTag: "04-ML-100" },
   { name: "12W OFF-LINE MECH GRINDING BALL MILL SPRAY BAR INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 1, tcAssetMatch: "BM01 - Primary Ball Mill spray bars", tcPidTag: "04-ML-100" },
   { name: "12W OFF-LINE MECH GRINDING MILL DISCHARGE HOPPER INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 1, tcAssetMatch: "CFP01-HP01 - Primary Mill Discharge Hopper", tcPidTag: "04-PB-100" },
-  { name: "12W OFF-LINE MECH GRINDING CYCLONE FEED PUMP DISCHARGE PIPES/VALVES INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 0.5, tcAssetMatch: "CFP01 - Cyclone Feed Pumps discharge pipework", tcPidTag: "04-PU-102A/B" },
+  { name: "12W OFF-LINE MECH GRINDING CYCLONE FEED PUMP DISCHARGE PIPES/VALVES INSPECTION", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 0.5, tcAssetMatch: "CFP01 discharge pipework (CLA01-PIPE02)", tcPidTag: "" },
   { name: "12W OFF-LINE MECH GRINDING BOILER BOX INSPECTIONS", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 2, tcAssetMatch: "BM01-FBB - Primary Mill Feed Boiler Box", tcPidTag: "04-PB-105" },
   { name: "12W OFF-LINE MECH GRINDING AREA OIL SAMPLES", frequency: "12W", type: "PM", discipline: "MS", estimatedHours: 6, tcAssetMatch: "BM01-GBX01, MLUB01, MLUB02 gearboxes & lube systems", tcPidTag: "" },
 ];
