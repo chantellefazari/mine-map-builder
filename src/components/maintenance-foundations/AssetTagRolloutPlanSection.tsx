@@ -526,7 +526,7 @@ export const AssetTagRolloutPlanSection = () => {
           ═══════════════════════════════════════════════════════════════════════ */}
 
       {/* 01. Purpose & Scope */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={FileText} number="01" title="Purpose & Scope" />
           <p className="text-sm text-muted-foreground mb-3">
