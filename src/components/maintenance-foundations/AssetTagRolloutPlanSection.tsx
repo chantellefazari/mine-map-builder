@@ -605,7 +605,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 03. Tagging Criteria */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={ClipboardList} number="03" title="Tagging Criteria" />
           <p className="text-sm text-muted-foreground mb-3">
