@@ -696,7 +696,7 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
       {/* 05. Tag Mounting Philosophy & Placement */}
-      <Card>
+      <Card data-pdf-section>
         <CardContent className="pt-5">
           <SectionHeading icon={Shield} number="05" title="Tag Mounting Philosophy & Placement" />
           <p className="text-sm text-muted-foreground mb-3">
