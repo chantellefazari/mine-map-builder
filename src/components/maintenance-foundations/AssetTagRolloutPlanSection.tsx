@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from "react";
+import gravotechLs100 from "@/assets/gravotech-ls100-engraver.png";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -919,20 +920,29 @@ export const AssetTagRolloutPlanSection = () => {
                   <Wrench className="w-5 h-5 text-amber-500" />
                   <span className="text-sm font-bold text-foreground uppercase tracking-wide">Option 2 - In-House</span>
                 </div>
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Equipment</p>
-                  <p className="text-sm text-foreground font-medium">Gravotech LS100 Laser Engraver</p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Reference</p>
-                  <a
-                    href="https://www.gravotech.com.au/products/laser-engravers-laser-cutters/ls100"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-primary underline break-all"
-                  >
-                    gravotech.com.au - LS100 Laser Engraver
-                  </a>
+                <div className="flex gap-4">
+                  <img
+                    src={gravotechLs100}
+                    alt="Gravotech LS100 Laser Engraver"
+                    className="w-40 h-auto rounded-md border border-border object-contain flex-shrink-0"
+                  />
+                  <div className="space-y-2">
+                    <div>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Equipment</p>
+                      <p className="text-sm text-foreground font-medium">Gravotech LS100 Laser Engraver</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Reference</p>
+                      <a
+                        href="https://www.gravotech.com.au/products/laser-engravers-laser-cutters/ls100"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-primary underline break-all"
+                      >
+                        gravotech.com.au - LS100 Laser Engraver
+                      </a>
+                    </div>
+                  </div>
                 </div>
                 <Separator />
                 <div className="space-y-0.5">
