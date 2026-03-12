@@ -48,6 +48,7 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   scale: 1.5,
   sliceOverlapPx: 14,
   addBorder: false,
+  blankPageThreshold: 15,
 };
 
 /**
