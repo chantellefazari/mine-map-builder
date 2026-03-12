@@ -11,79 +11,10 @@ import {
   instrumentationSuffixes,
   specialPatterns,
 } from "@/components/hierarchy/namingConventionData";
-import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
-
-interface LiveAssetRow {
-  area: string;
-  id: string;
-  desc: string;
-  level: "System" | "Comp";
-}
-
 
 export const NamingConventionDocument = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
-  const { data: liveAreas = [] } = useRevBPlantAssets();
-
-  const liveRows = useMemo<LiveAssetRow[]>(() => {
-    const rows: LiveAssetRow[] = [];
-
-    for (const area of liveAreas) {
-      for (const subArea of area.subAreas) {
-        for (const parentAsset of subArea.parentAssets) {
-          for (const equipment of parentAsset.equipment) {
-            if (equipment.assetNumber) {
-              rows.push({
-                area: area.code,
-                id: equipment.assetNumber,
-                desc: equipment.name || parentAsset.label,
-                level: "System",
-              });
-            }
-
-            for (const component of equipment.components || []) {
-              if (!component.componentCode) continue;
-              rows.push({
-                area: "",
-                id: component.componentCode,
-                desc: component.componentName || component.componentType || "Component",
-                level: "Comp",
-              });
-            }
-          }
-        }
-      }
-    }
-
-    const seen = new Set<string>();
-    return rows.filter((row) => {
-      const key = `${row.level}:${row.id}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  }, [liveAreas]);
-
-  const liveSystemRows = useMemo(
-    () => liveRows.filter((row) => row.level === "System").slice(0, 12),
-    [liveRows]
-  );
-
-  const liveComponentRows = useMemo(
-    () => liveRows.filter((row) => row.level === "Comp").slice(0, 12),
-    [liveRows]
-  );
-
-  const hiddenSystemCount = useMemo(
-    () => Math.max(0, liveRows.filter((row) => row.level === "System").length - liveSystemRows.length),
-    [liveRows, liveSystemRows.length]
-  );
-
-  const hiddenComponentCount = useMemo(
-    () => Math.max(0, liveRows.filter((row) => row.level === "Comp").length - liveComponentRows.length),
-    [liveRows, liveComponentRows.length]
-  );
 
   const handleDownloadPdf = async () => {
     if (!contentRef.current) return;
