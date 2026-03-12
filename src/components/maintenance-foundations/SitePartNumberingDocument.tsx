@@ -118,73 +118,73 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           </div>
 
           {/* Metadata row with gold labels */}
-          <table style={{ width: "100%", fontSize: 10.5, borderCollapse: "collapse", marginBottom: 14 }}>
+          <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 14 }}>
             <tbody>
               <tr>
-                <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Prepared By</td>
-                <td style={{ padding: "3px 6px", border: "1px solid #ddd", width: "36%" }}>TCMG Maintenance Team</td>
-                <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Approved By</td>
-                <td style={{ padding: "3px 6px", border: "1px solid #ddd", width: "36%" }}>Maintenance Superintendent</td>
+                <td style={{ padding: "5px 10px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Prepared By</td>
+                <td style={{ padding: "5px 10px", border: "1px solid #ddd", width: "36%" }}>TCMG Maintenance Team</td>
+                <td style={{ padding: "5px 10px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Approved By</td>
+                <td style={{ padding: "5px 10px", border: "1px solid #ddd", width: "36%" }}>Maintenance Superintendent</td>
               </tr>
               <tr>
-                <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Status</td>
-                <td style={{ padding: "3px 6px", border: "1px solid #ddd" }}>Approved</td>
-                <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Effective Date</td>
-                <td style={{ padding: "3px 6px", border: "1px solid #ddd" }}>{today}</td>
+                <td style={{ padding: "5px 10px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Status</td>
+                <td style={{ padding: "5px 10px", border: "1px solid #ddd" }}>Approved</td>
+                <td style={{ padding: "5px 10px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Effective Date</td>
+                <td style={{ padding: "5px 10px", border: "1px solid #ddd" }}>{today}</td>
               </tr>
             </tbody>
           </table>
 
           {/* 1. Purpose */}
           <h2 style={headingStyle("1", "Purpose")}>1. Purpose</h2>
-          <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 4px 0" }}>
+          <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 6px 0" }}>
             This standard defines the site based internal part numbering system developed for Tennant Creek Mine. The system was designed to solve a core problem: the site had no unified way to identify, search, or catalogue spare parts across stores, the CMMS, and procurement. OEM part numbers vary by supplier, are inconsistent, and cannot be used as a universal key. This standard creates a single, permanent, numeric identifier for every physical spare part on site.
           </p>
-          <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 4px 0" }}>
+          <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 6px 0" }}>
             The numbering logic was developed by analysing 2,000+ historical purchase order line items, grouping them into logical equipment categories, and assigning a fixed 2 digit category code to each group. The result is a 7 digit all numeric format that is barcode compatible, CMMS friendly, and human readable.
           </p>
 
           {/* 2. Approved Format */}
           <h2 style={headingStyle("2", "Format")}>2. How the Format Was Developed</h2>
-          <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 6px 0" }}>
+          <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 8px 0" }}>
             The format <strong>SSCCNNN</strong> was chosen for three reasons: (1) The site code SS allows the system to scale if the company operates multiple sites in the future. (2) The category code CC groups parts by equipment type so that stores personnel can locate items by function, not by supplier. (3) The sequential number NNN provides a unique identifier within each category, supporting up to 999 parts per category before requiring extension.
           </p>
-          <div style={{ display: "inline-block", border: `2px solid ${GOLD}`, borderRadius: 5, padding: "6px 20px", marginBottom: 8, backgroundColor: GOLD_BG }}>
-            <span style={{ fontSize: 22, fontWeight: 700, fontFamily: "monospace", letterSpacing: 4, color: DARK }}>SSCCNNN</span>
+          <div style={{ display: "inline-block", border: `2px solid ${GOLD}`, borderRadius: 5, padding: "8px 24px", marginBottom: 10, backgroundColor: GOLD_BG }}>
+            <span style={{ fontSize: 24, fontWeight: 700, fontFamily: "monospace", letterSpacing: 4, color: DARK }}>SSCCNNN</span>
           </div>
 
-          <table style={{ width: "100%", fontSize: 11.5, borderCollapse: "collapse", marginBottom: 8 }}>
+          <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 10 }}>
             <thead>
               <tr>
                 <th style={{ ...thGoldStyle, width: 70 }}>Code</th>
                 <th style={thGoldStyle}>Meaning</th>
-                <th style={{ ...thGoldStyle, width: 180 }}>Rationale</th>
+                <th style={{ ...thGoldStyle, width: 200 }}>Rationale</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>SS</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Site Code, always 10 for Tennant Creek</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Enables multi site expansion without renumbering</td></tr>
-              <tr style={{ backgroundColor: GOLD_BG }}><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>CC</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Part Category Code (2 digits, e.g. 01 = Pump Component)</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Derived from PO history analysis of 2,000+ line items</td></tr>
-              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>NNN</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Sequential Identifier within that category (001 to 999)</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Auto assigned, no manual selection required</td></tr>
+              <tr><td style={{ padding: "5px 10px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>SS</td><td style={{ padding: "5px 10px", border: "1px solid #ddd" }}>Site Code, always 10 for Tennant Creek</td><td style={{ padding: "5px 10px", border: "1px solid #ddd", fontSize: 12, color: "#555" }}>Enables multi site expansion without renumbering</td></tr>
+              <tr style={{ backgroundColor: GOLD_BG }}><td style={{ padding: "5px 10px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>CC</td><td style={{ padding: "5px 10px", border: "1px solid #ddd" }}>Part Category Code (2 digits, e.g. 01 = Pump Component)</td><td style={{ padding: "5px 10px", border: "1px solid #ddd", fontSize: 12, color: "#555" }}>Derived from PO history analysis of 2,000+ line items</td></tr>
+              <tr><td style={{ padding: "5px 10px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>NNN</td><td style={{ padding: "5px 10px", border: "1px solid #ddd" }}>Sequential Identifier within that category (001 to 999)</td><td style={{ padding: "5px 10px", border: "1px solid #ddd", fontSize: 12, color: "#555" }}>Auto assigned, no manual selection required</td></tr>
             </tbody>
           </table>
 
           {/* Examples inline */}
-          <div style={{ display: "flex", gap: 16, marginBottom: 10 }}>
+          <div style={{ display: "flex", gap: 16, marginBottom: 12 }}>
             {[
               { n: "1001001", d: "Site 10 | Pump (CC01) | Part 001" },
               { n: "1004015", d: "Site 10 | Bearing (CC04) | Part 015" },
               { n: "1021099", d: "Site 10 | Fastener (CC21) | Part 099" },
             ].map((ex) => (
-              <div key={ex.n} style={{ flex: 1, border: `1px solid ${GOLD}`, borderRadius: 4, padding: "4px 8px", backgroundColor: GOLD_BG, textAlign: "center" }}>
-                <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 14, color: DARK }}>{ex.n}</span>
-                <p style={{ fontSize: 9.5, color: "#666", margin: "2px 0 0 0" }}>{ex.d}</p>
+              <div key={ex.n} style={{ flex: 1, border: `1px solid ${GOLD}`, borderRadius: 4, padding: "6px 10px", backgroundColor: GOLD_BG, textAlign: "center" }}>
+                <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 16, color: DARK }}>{ex.n}</span>
+                <p style={{ fontSize: 11, color: "#666", margin: "2px 0 0 0" }}>{ex.d}</p>
               </div>
             ))}
           </div>
 
           {/* 3. Rules */}
           <h2 style={headingStyle("3", "Rules")}>3. Rules (Non-Negotiable)</h2>
-          <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+          <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
             <thead>
               <tr>
                 <th style={{ ...thStyle, width: "28%" }}>Rule</th>
@@ -194,8 +194,8 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
             <tbody>
               {rules.map((r, i) => (
                 <tr key={i} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600 }}>{r.rule}</td>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd" }}>{r.desc}</td>
+                  <td style={{ padding: "5px 10px", border: "1px solid #ddd", fontWeight: 600 }}>{r.rule}</td>
+                  <td style={{ padding: "5px 10px", border: "1px solid #ddd" }}>{r.desc}</td>
                 </tr>
               ))}
             </tbody>
@@ -203,47 +203,47 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
 
           {/* 4. Part Category Codes */}
           <h2 style={headingStyle("4", "Categories")}>4. Part Category Codes (CC) - Live Inventory Aligned</h2>
-          <table style={{ width: "100%", fontSize: 10.5, borderCollapse: "collapse", marginBottom: 4 }}>
+          <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginBottom: 6 }}>
             <thead>
               <tr>
-                <th style={{ ...thGoldStyle, width: 36, fontSize: 10 }}>CC</th>
-                <th style={{ ...thGoldStyle, width: 110, fontSize: 10 }}>Category</th>
-                <th style={{ ...thGoldStyle, fontSize: 10 }}>What It Covers / Examples</th>
-                <th style={{ ...thGoldStyle, width: 95, fontSize: 10 }}>Storage</th>
+                <th style={{ ...thGoldStyle, width: 40, fontSize: 12 }}>CC</th>
+                <th style={{ ...thGoldStyle, width: 120, fontSize: 12 }}>Category</th>
+                <th style={{ ...thGoldStyle, fontSize: 12 }}>What It Covers / Examples</th>
+                <th style={{ ...thGoldStyle, width: 100, fontSize: 12 }}>Storage</th>
               </tr>
             </thead>
             <tbody>
               {categoryData.map((cat, i) => (
                 <tr key={cat.code} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
-                  <td style={{ padding: "2px 4px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700, fontSize: 10, color: GOLD }}>{cat.code}</td>
-                  <td style={{ padding: "2px 4px", border: "1px solid #ddd", fontWeight: 600, fontSize: 10 }}>{cat.name}</td>
-                  <td style={{ padding: "2px 4px", border: "1px solid #ddd", fontSize: 9.5, color: "#444" }}>{cat.examples}</td>
-                  <td style={{ padding: "2px 4px", border: "1px solid #ddd", fontFamily: "monospace", fontSize: 9.5 }}>{cat.container}</td>
+                  <td style={{ padding: "4px 8px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700, fontSize: 12, color: GOLD }}>{cat.code}</td>
+                  <td style={{ padding: "4px 8px", border: "1px solid #ddd", fontWeight: 600, fontSize: 12 }}>{cat.name}</td>
+                  <td style={{ padding: "4px 8px", border: "1px solid #ddd", fontSize: 11.5, color: "#444" }}>{cat.examples}</td>
+                  <td style={{ padding: "4px 8px", border: "1px solid #ddd", fontFamily: "monospace", fontSize: 11.5 }}>{cat.container}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <p style={{ fontSize: 9, color: "#888", fontStyle: "italic", margin: "0 0 10px 0" }}>
+          <p style={{ fontSize: 10, color: "#888", fontStyle: "italic", margin: "0 0 12px 0" }}>
             * CC 10b, 19b, 19c are sub categories sharing the parent CC code for part numbering sequences.
           </p>
 
           {/* 5. Allocation Process */}
           <h2 style={headingStyle("5", "Allocation")}>5. How to Allocate a New Part Number</h2>
-          <p style={{ fontSize: 11, lineHeight: 1.45, color: "#333", margin: "0 0 6px 0" }}>
+          <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 8px 0" }}>
             When a new spare part arrives on site or is identified for the first time, follow these steps to assign a permanent site part number:
           </p>
-          <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+          <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
             <thead>
               <tr>
-                <th style={{ ...thStyle, width: 40, textAlign: "center" as const }}>Step</th>
+                <th style={{ ...thStyle, width: 50, textAlign: "center" as const }}>Step</th>
                 <th style={thStyle}>Action</th>
               </tr>
             </thead>
             <tbody>
               {allocationSteps.map((step, i) => (
                 <tr key={i} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 700, textAlign: "center", color: GOLD }}>{i + 1}</td>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd" }}>{step}</td>
+                  <td style={{ padding: "5px 10px", border: "1px solid #ddd", fontWeight: 700, textAlign: "center", color: GOLD }}>{i + 1}</td>
+                  <td style={{ padding: "5px 10px", border: "1px solid #ddd" }}>{step}</td>
                 </tr>
               ))}
             </tbody>
@@ -251,7 +251,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
 
           {/* 6. Notes & Key Decisions */}
           <h2 style={headingStyle("6", "Notes")}>6. Key Design Decisions</h2>
-          <ul style={{ fontSize: 11, lineHeight: 1.5, paddingLeft: 18, margin: "0 0 10px 0", color: "#333" }}>
+          <ul style={{ fontSize: 13, lineHeight: 1.6, paddingLeft: 20, margin: "0 0 12px 0", color: "#333" }}>
             <li><strong>Why numbers only?</strong> Purely numeric part numbers are faster to search, barcode compatible, and eliminate confusion between letters (O vs 0, I vs 1).</li>
             <li><strong>Why not use OEM numbers?</strong> OEM numbers change between suppliers, vary in format, and cannot be used as a universal key across stores and CMMS.</li>
             <li><strong>Why 7 digits?</strong> 7 digits gives 22 categories x 999 parts = 21,978 unique numbers per site. More than sufficient for a single processing plant.</li>
@@ -261,15 +261,15 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           </ul>
 
           {/* 7. Notice */}
-          <div style={{ border: `2px solid ${GOLD}`, backgroundColor: GOLD_BG, borderRadius: 4, padding: "8px 12px", marginBottom: 12 }}>
-            <p style={{ fontSize: 11.5, fontWeight: 700, margin: "0 0 3px 0", color: GOLD }}>Important Notice</p>
-            <p style={{ fontSize: 11, color: "#444", margin: 0 }}>
+          <div style={{ border: `2px solid ${GOLD}`, backgroundColor: GOLD_BG, borderRadius: 4, padding: "10px 14px", marginBottom: 14 }}>
+            <p style={{ fontSize: 13, fontWeight: 700, margin: "0 0 4px 0", color: GOLD }}>Important Notice</p>
+            <p style={{ fontSize: 13, color: "#444", margin: 0 }}>
               This document does not alter any existing part numbers. It defines the approved numbering standard for all future part creation at Tennant Creek Mine. All 2,184 existing parts in the catalogue have already been allocated under this system.
             </p>
           </div>
 
           {/* Footer */}
-          <div style={{ borderTop: `2px solid ${GOLD}`, paddingTop: 8, marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 9.5, color: "#888" }}>
+          <div style={{ borderTop: `2px solid ${GOLD}`, paddingTop: 8, marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#888" }}>
             <span>TCMG-STD-SPN-001 Rev 1.0</span>
             <span>Tennant Creek Mine - Confidential</span>
             <span>{today}</span>
