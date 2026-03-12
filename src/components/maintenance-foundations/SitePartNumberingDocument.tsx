@@ -144,11 +144,17 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           {/* 1. Purpose */}
           <h2 style={headingStyle("1", "Purpose")}>1. Purpose</h2>
           <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 4px 0" }}>
-            This standard defines the site-based internal part number used at Tennant Creek Mine for searching, cataloguing, and inventory control. This is not a supplier or OEM part number. OEM and supplier numbers must be stored in a separate field.
+            This standard defines the site-based internal part numbering system developed for Tennant Creek Mine. The system was designed to solve a core problem: the site had no unified way to identify, search, or catalogue spare parts across stores, the CMMS, and procurement. OEM part numbers vary by supplier, are inconsistent, and cannot be used as a universal key. This standard creates a single, permanent, numeric identifier for every physical spare part on site.
+          </p>
+          <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 4px 0" }}>
+            The numbering logic was developed by analysing 2,000+ historical purchase order line items, grouping them into logical equipment categories, and assigning a fixed 2-digit category code to each group. The result is a 7-digit all-numeric format that is barcode-compatible, CMMS-friendly, and human-readable.
           </p>
 
           {/* 2. Approved Format */}
-          <h2 style={headingStyle("2", "Format")}>2. Approved Format (7 Digits, Numbers Only)</h2>
+          <h2 style={headingStyle("2", "Format")}>2. How the Format Was Developed</h2>
+          <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 6px 0" }}>
+            The format <strong>SSCCNNN</strong> was chosen for three reasons: (1) The site code SS allows the system to scale if the company operates multiple sites in the future. (2) The category code CC groups parts by equipment type so that stores personnel can locate items by function, not by supplier. (3) The sequential number NNN provides a unique identifier within each category, supporting up to 999 parts per category before requiring extension.
+          </p>
           <div style={{ display: "inline-block", border: `2px solid ${GOLD}`, borderRadius: 5, padding: "6px 20px", marginBottom: 8, backgroundColor: GOLD_BG }}>
             <span style={{ fontSize: 22, fontWeight: 700, fontFamily: "monospace", letterSpacing: 4, color: DARK }}>SSCCNNN</span>
           </div>
@@ -158,12 +164,13 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
               <tr>
                 <th style={{ ...thGoldStyle, width: 70 }}>Code</th>
                 <th style={thGoldStyle}>Meaning</th>
+                <th style={{ ...thGoldStyle, width: 180 }}>Rationale</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>SS</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Site Code - always 10 for Tennant Creek</td></tr>
-              <tr style={{ backgroundColor: GOLD_BG }}><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>CC</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Part Category Code (2 digits, e.g. 01 = Pump Component)</td></tr>
-              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>NNN</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Sequential Identifier within that category (001 to 999)</td></tr>
+              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>SS</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Site Code - always 10 for Tennant Creek</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Enables multi-site expansion without renumbering</td></tr>
+              <tr style={{ backgroundColor: GOLD_BG }}><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>CC</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Part Category Code (2 digits, e.g. 01 = Pump Component)</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Derived from PO history analysis of 2,000+ line items</td></tr>
+              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>NNN</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Sequential Identifier within that category (001 to 999)</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Auto-assigned; no manual selection required</td></tr>
             </tbody>
           </table>
 
