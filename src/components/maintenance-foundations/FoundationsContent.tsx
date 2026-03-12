@@ -15,6 +15,7 @@ import {
   BarChart3,
   AlertTriangle,
   Database,
+  Gauge,
 } from "lucide-react";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
@@ -29,6 +30,7 @@ import { PMCoverageAnalysisSection } from "./PMCoverageAnalysisSection";
 import { ShutdownPMRequirementsSection } from "./ShutdownPMRequirementsSection";
 import { NamingConventionDocument } from "./NamingConventionDocument";
 import { DataMappingReadinessSection } from "./DataMappingReadinessSection";
+import { AssetCriticalitySection } from "./AssetCriticalitySection";
 
 const TAB_LABELS: Record<string, string> = {
   "hierarchy": "Asset Hierarchy & Parent-Child Rules",
@@ -44,6 +46,7 @@ const TAB_LABELS: Record<string, string> = {
   "shutdown-pms": "Shutdown PM Requirements",
   "naming-convention": "Site Naming Convention Reference",
   "data-mapping": "Data Mapping & Readiness",
+  "criticality": "Asset Criticality Assessment",
 };
 
 export const FoundationsContent = () => {
@@ -192,6 +195,11 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">Data Mapping & Readiness</span>
             <span className="sm:hidden">Mapping</span>
           </TabsTrigger>
+          <TabsTrigger value="criticality" className="flex items-center gap-2 text-xs">
+            <Gauge className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Asset Criticality</span>
+            <span className="sm:hidden">Criticality</span>
+          </TabsTrigger>
         </TabsList>
         <div className="flex flex-col gap-1.5 shrink-0 mt-1">
           <Button
@@ -263,6 +271,10 @@ export const FoundationsContent = () => {
 
         <TabsContent value="data-mapping">
           <DataMappingReadinessSection />
+        </TabsContent>
+
+        <TabsContent value="criticality">
+          <AssetCriticalitySection />
         </TabsContent>
       </div>
     </Tabs>
