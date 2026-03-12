@@ -165,8 +165,14 @@ export async function exportSectionsToPdf(
       currentY += sliceHeightMm;
 
       if (!reachedEnd) {
-        pdf.addPage();
-        currentY = MARGIN;
+        // Only start a new page if we've used most of the available space.
+        // If we snapped to a row break well above the page bottom, keep
+        // drawing on the same page so there's no visible gap.
+        const leftOnPage = A4_H - MARGIN - currentY;
+        if (leftOnPage < 5) {
+          pdf.addPage();
+          currentY = MARGIN;
+        }
       }
     }
   };
