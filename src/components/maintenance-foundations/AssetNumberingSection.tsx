@@ -54,7 +54,16 @@ export const AssetNumberingSection = () => {
       const { exportSectionsToPdf } = await import("@/utils/sectionPdfExport");
       await exportSectionsToPdf(
         contentRef.current,
-        "TCMG-STD-FL-001_Functional_Location_Codes.pdf"
+        "TCMG-STD-FL-001_Functional_Location_Codes.pdf",
+        {
+          margin: 10,
+          gap: 2,
+          renderWidth: 700,
+          fontSize: "14px",
+          lineHeight: "1.5",
+          sliceOverlapPx: 14,
+          addBorder: true,
+        }
       );
     } catch (err) {
       console.error("PDF generation failed:", err);
