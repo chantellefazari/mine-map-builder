@@ -1,7 +1,10 @@
+import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
+import { Download, Loader2 } from "lucide-react";
 import {
   areaCodes,
   equipmentPrefixes,
@@ -27,12 +30,37 @@ const suggestedCrusherPrefixes = [
 const reservedPrefixes = equipmentPrefixes.map((e) => e.prefix);
 
 export const NamingConventionDocument = () => {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadPdf = async () => {
+    if (!contentRef.current) return;
+    setDownloading(true);
+    try {
+      const { exportSectionsToPdf } = await import("@/utils/sectionPdfExport");
+      await exportSectionsToPdf(
+        contentRef.current,
+        "TCMG-STD-NAM-001_Site_Naming_Convention.pdf"
+      );
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" ref={contentRef}>
       {/* Document Header */}
-      <Card className="border-primary/30 bg-primary/5">
+      <Card data-pdf-section className="border-primary/30 bg-primary/5">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">TCMG Site Asset Naming Convention — Reference Document</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg">TCMG Site Asset Naming Convention — Reference Document</CardTitle>
+            <Button onClick={handleDownloadPdf} variant="outline" size="sm" className="gap-2" disabled={downloading}>
+              {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+              {downloading ? "Generating..." : "Download PDF"}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground space-y-2">
           <p>
@@ -48,7 +76,7 @@ export const NamingConventionDocument = () => {
       </Card>
 
       {/* Section 1: Area Codes */}
-      <Card>
+      <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-[10px] font-bold">SECTION 1</Badge>
@@ -81,7 +109,7 @@ export const NamingConventionDocument = () => {
       </Card>
 
       {/* Section 2: Equipment Prefixes — RESERVED */}
-      <Card>
+      <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-[10px] font-bold">SECTION 2</Badge>
@@ -114,7 +142,7 @@ export const NamingConventionDocument = () => {
       </Card>
 
       {/* Section 3: Component Suffixes */}
-      <Card>
+      <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-[10px] font-bold">SECTION 3</Badge>
@@ -147,7 +175,7 @@ export const NamingConventionDocument = () => {
       </Card>
 
       {/* Section 4: Instrumentation Suffixes */}
-      <Card>
+      <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-[10px] font-bold">SECTION 4</Badge>
@@ -177,7 +205,7 @@ export const NamingConventionDocument = () => {
       </Card>
 
       {/* Section 5: Special Patterns */}
-      <Card>
+      <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-[10px] font-bold">SECTION 5</Badge>
@@ -209,7 +237,7 @@ export const NamingConventionDocument = () => {
       <Separator />
 
       {/* Section 6: Suggested Crusher Prefixes */}
-      <Card className="border-amber-500/30 bg-amber-500/5">
+      <Card data-pdf-section className="border-amber-500/30 bg-amber-500/5">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <Badge className="bg-amber-500/20 text-amber-700 border-amber-500/30 text-[10px] font-bold">SECTION 6</Badge>
@@ -255,7 +283,7 @@ export const NamingConventionDocument = () => {
       </Card>
 
       {/* Section 7: Example Crusher Asset Tree */}
-      <Card className="border-amber-500/30 bg-amber-500/5">
+      <Card data-pdf-section className="border-amber-500/30 bg-amber-500/5">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <Badge className="bg-amber-500/20 text-amber-700 border-amber-500/30 text-[10px] font-bold">SECTION 7</Badge>
