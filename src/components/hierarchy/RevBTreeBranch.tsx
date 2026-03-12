@@ -243,7 +243,8 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                 {parentAsset.equipment.map((equip, equipIndex) => {
                                   const equipNodeLabel = `${equip.assetNumber} — ${equip.name}`;
                                   const equipBreadcrumbLabel = `${equip.assetNumber} — ${equip.name}`;
-                                  const comps = equip.components || [];
+                                  const rawComps = equip.components || [];
+                                  const comps = deduplicateComponents(rawComps);
                                   const equivalentComponents = comps.filter((comp) =>
                                     isEquivalentComponent(equip.name, comp.componentName, comp.componentType) ||
                                     isGearboxAliasComponent(equip.assetNumber, comp.componentName, comp.componentType)
@@ -258,9 +259,13 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                   const isPidMatch = pidMatchesSearch(equip.pidTags);
 
                                   const inlineSpec = equivalentComponents[0];
+                                  const equipModelRaw = inlineSpec?.model || undefined;
+                                  const equipModelIsName = equipModelRaw && equip.name &&
+                                    equipModelRaw.toLowerCase().trim() === equip.name.toLowerCase().trim();
                                   const equipSpecValues = inlineSpec
                                     ? {
-                                        model: inlineSpec.model || inlineSpec.manufacturer || undefined,
+                                        model: equipModelIsName ? undefined : equipModelRaw,
+                                        manufacturer: inlineSpec.manufacturer || undefined,
                                         serialNumber: inlineSpec.serialNumber,
                                         motorRef: inlineSpec.motorRef,
                                         pumpRef: inlineSpec.pumpRef,
@@ -297,11 +302,16 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                           const compLabel = comp.componentCode ? `${comp.componentCode} — ${comp.componentName}` : comp.componentName;
                                           const isComponentPidMatch = pidMatchesSearch(comp.pidTags);
                                           // Only show model as spec if it differs from the component name (not a duplicate)
-                                          const rawModel = comp.model || comp.manufacturer || undefined;
+                                          const rawModel = comp.model || undefined;
                                           const modelIsJustName = rawModel && comp.componentName && 
                                             rawModel.toLowerCase().trim() === comp.componentName.toLowerCase().trim();
+                                          // Only show manufacturer if it differs from model and component name
+                                          const rawMfr = comp.manufacturer || undefined;
+                                          const mfrIsJustName = rawMfr && comp.componentName &&
+                                            rawMfr.toLowerCase().trim() === comp.componentName.toLowerCase().trim();
                                           const compSpecValues = {
                                             model: modelIsJustName ? undefined : rawModel,
+                                            manufacturer: mfrIsJustName ? undefined : rawMfr,
                                             serialNumber: comp.serialNumber,
                                             motorRef: comp.motorRef,
                                             pumpRef: comp.pumpRef,
