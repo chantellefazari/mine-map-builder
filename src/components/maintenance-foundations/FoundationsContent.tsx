@@ -272,6 +272,10 @@ export const FoundationsContent = () => {
         <TabsContent value="data-mapping">
           <DataMappingReadinessSection />
         </TabsContent>
+
+        <TabsContent value="criticality">
+          <AssetCriticalitySection />
+        </TabsContent>
       </div>
     </Tabs>
   );
