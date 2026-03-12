@@ -109,7 +109,7 @@ export const NamingConventionDocument = () => {
       </Card>
 
       {/* Section 2: Equipment Prefixes — RESERVED */}
-      <Card>
+      <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-[10px] font-bold">SECTION 2</Badge>
