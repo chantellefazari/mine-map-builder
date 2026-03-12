@@ -133,7 +133,7 @@ export const PMStandardsSection = () => {
         className="bg-white text-black rounded-lg border shadow-sm overflow-auto max-h-[70vh]"
         style={{ fontFamily: "'Segoe UI', Arial, Helvetica, sans-serif" }}
       >
-        {/* Page 1: Header + Purpose + Principles */}
+        {/* Single continuous section for PDF export */}
         <div data-pdf-section style={{ padding: "28px 36px" }}>
           {/* Document Header */}
           <div style={{ borderBottom: `3px solid ${GOLD}`, paddingBottom: 12, marginBottom: 16 }}>
@@ -195,10 +195,8 @@ export const PMStandardsSection = () => {
               ))}
             </tbody>
           </table>
-        </div>
 
-        {/* Page 2: Template Structure + Mandatory Fields */}
-        <div data-pdf-section style={{ padding: "28px 36px" }}>
+
           {/* 3. Standard PM Template Structure */}
           {sectionHeading("3", "Standard PM Template Structure")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
@@ -246,10 +244,8 @@ export const PMStandardsSection = () => {
               ))}
             </tbody>
           </table>
-        </div>
 
-        {/* Page 3: Frequencies + Workflow */}
-        <div data-pdf-section style={{ padding: "28px 36px" }}>
+
           {/* 5. Frequency Standards */}
           {sectionHeading("5", "Frequency Standards by Discipline")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
@@ -311,10 +307,8 @@ export const PMStandardsSection = () => {
               <strong>Rule:</strong> Only PMs with "Approved" or "Ready for CMMS" status may be issued to field crews or imported into the CMMS. Draft and Reviewed PMs must not be used for operational maintenance.
             </p>
           </div>
-        </div>
 
-        {/* Page 4: Inspection Data + Coverage Summary */}
-        <div data-pdf-section style={{ padding: "28px 36px" }}>
+
           {/* 7. Inspection Task Data Architecture */}
           {sectionHeading("7", "Inspection Task Data Architecture")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
@@ -369,10 +363,8 @@ export const PMStandardsSection = () => {
               </tr>
             </tbody>
           </table>
-        </div>
 
-        {/* Page 5: Constraints + Baseline + Governance */}
-        <div data-pdf-section style={{ padding: "28px 36px" }}>
+
           {/* 9. Constraints (Non-Negotiable) */}
           {sectionHeading("9", "Constraints (Non-Negotiable)")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
