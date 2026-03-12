@@ -78,11 +78,34 @@ const AssetTree = () => {
                 <FileDown className="h-4 w-4" />
                 CSV Export
               </Button>
-              <Button variant="outline" onClick={exportHierarchyWorkbook} className="gap-2">
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  try {
+                    toast.loading("Exporting workbook...", { id: "hierarchy-wb" });
+                    await exportHierarchyWorkbook();
+                    toast.success("Workbook downloaded", { id: "hierarchy-wb" });
+                  } catch (e: any) {
+                    toast.error(e.message || "Export failed", { id: "hierarchy-wb" });
+                  }
+                }}
+                className="gap-2"
+              >
                 <Download className="h-4 w-4" />
                 Hierarchy Workbook
               </Button>
-              <Button onClick={exportAssetTreeWorkbook} className="gap-2">
+              <Button
+                onClick={async () => {
+                  try {
+                    toast.loading("Exporting workbook...", { id: "asset-wb" });
+                    await exportAssetTreeWorkbook();
+                    toast.success("Workbook downloaded", { id: "asset-wb" });
+                  } catch (e: any) {
+                    toast.error(e.message || "Export failed", { id: "asset-wb" });
+                  }
+                }}
+                className="gap-2"
+              >
                 <FileSpreadsheet className="h-4 w-4" />
                 Download Workbook
               </Button>
