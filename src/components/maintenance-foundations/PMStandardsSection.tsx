@@ -264,7 +264,7 @@ export const PMStandardsSection = () => {
         </div>
 
         {/* Page 3: Frequencies + Workflow */}
-        <div data-pdf-section style={{ padding: "28px 36px" }}>
+        <div data-pdf-section data-pdf-new-page style={{ padding: "28px 36px" }}>
           {/* 5. Frequency Standards */}
           {sectionHeading("5", "Frequency Standards by Discipline")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
