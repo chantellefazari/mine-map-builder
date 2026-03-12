@@ -97,17 +97,17 @@ export async function generateProcessingPlantCSVContent(): Promise<string> {
           ]));
 
           // Level 7 — Components
-          if (equip.components) {
+           if (equip.components) {
             for (const comp of equip.components) {
               const compTags = comp.pidTags?.join("; ") || "";
               csvLines.push(rowToCSV([
                 "7", SITE, FACILITY, area.code, area.label, sub.label, pa.label, pa.functionalLocation || "",
                 equip.assetNumber, equip.name, equip.functionalLocation || "", "",
-                comp.componentCode, comp.componentType, comp.componentName, comp.manufacturer,
-                comp.model || "", comp.serialNumber || "", compTags,
+                comp.componentCode, comp.componentType, comp.componentName,
+                comp.model || "", comp.manufacturer, comp.serialNumber || "", compTags,
+                comp.motorSpeed || "", comp.voltage || "", comp.protection || "",
                 comp.oilType || "", comp.oilVolume || "", comp.inputSpeed || "", comp.outputSpeed || "",
-                comp.weight || "", comp.motorSpeed || "", comp.protection || "", comp.voltage || "",
-                comp.pumpFlow || "", comp.operatingPressure || "", comp.displacement || "",
+                comp.weight || "", comp.pumpFlow || "", comp.operatingPressure || "", comp.displacement || "",
                 comp.motorRef || "", comp.pumpRef || "",
               ]));
             }
