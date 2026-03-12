@@ -9,12 +9,13 @@ import { FunctionalLocationTable } from "@/components/hierarchy/FunctionalLocati
 import { CRUFunctionalLocationTable } from "@/components/hierarchy/CRUFunctionalLocationTable";
 import { NamingConvention } from "@/components/hierarchy/NamingConvention";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TreePine, TableProperties, BookText, Download, FileSpreadsheet, HardHat, FileDown } from "lucide-react";
+import { TreePine, TableProperties, BookText, Download, FileSpreadsheet, HardHat, FileDown, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
 import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
 import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
 import { exportProcessingPlantCSV } from "@/utils/exportProcessingPlantCSV";
+import { exportAssetTreePDF } from "@/utils/exportAssetTreePDF";
 import { toast } from "sonner";
 import { RevBAssetTree } from "@/components/hierarchy/RevBAssetTree";
 
@@ -45,6 +46,22 @@ const AssetTree = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  try {
+                    toast.loading("Generating PDF...", { id: "pdf-export" });
+                    await exportAssetTreePDF();
+                    toast.success("PDF ready", { id: "pdf-export" });
+                  } catch (e: any) {
+                    toast.error(e.message || "PDF export failed", { id: "pdf-export" });
+                  }
+                }}
+                className="gap-2"
+              >
+                <FileText className="h-4 w-4" />
+                Download PDF
+              </Button>
               <Button
                 variant="outline"
                 onClick={async () => {
