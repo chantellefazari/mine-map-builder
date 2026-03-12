@@ -99,10 +99,17 @@ export const AssetNumberingSection = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6" ref={contentRef}>
-        {/* FL Format */}
-        <div data-pdf-section className="space-y-4">
-          <h4 className="font-semibold text-foreground text-base">FL Code Format</h4>
+      <CardContent className="space-y-5" ref={contentRef}>
+        {/* Document Title + FL Format + Purpose + Hierarchy */}
+        <div data-pdf-section className="space-y-3 border-b border-border pb-4">
+          <h2 className="text-2xl font-bold text-foreground tracking-tight">Functional Location Codes</h2>
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <span className="font-mono font-semibold">TCMG-STD-FL-001</span>
+            <span>Rev 2.0</span>
+            <span>Tennant Creek Mining Group</span>
+          </div>
+
+          <h4 className="font-semibold text-foreground text-base pt-2">FL Code Format</h4>
           <code className="text-lg font-mono font-bold text-primary block">
             TCMG-PP-[AREA]-[SUBAREA]-[SYSTEM]
           </code>
@@ -113,22 +120,16 @@ export const AssetNumberingSection = () => {
             <p><span className="font-mono font-bold text-foreground">SUBAREA</span> - Functional sub-area within the area</p>
             <p><span className="font-mono font-bold text-foreground">SYSTEM</span> - Parent Asset / System (lowest FL level)</p>
           </div>
-        </div>
 
-        {/* Purpose */}
-        <div data-pdf-section className="space-y-2">
-          <h4 className="font-semibold text-foreground text-base flex items-center gap-2">
+          <h4 className="font-semibold text-foreground text-base pt-2 flex items-center gap-2">
             <Info className="w-4 h-4 text-primary" />
             Purpose
           </h4>
           <p className="text-sm text-muted-foreground">
             FL codes define where assets physically and functionally exist within the plant. They answer: <strong>"Where in the plant does this equipment belong?"</strong> Used for asset hierarchy, maintenance planning, work history, PM alignment, and D365 integration.
           </p>
-        </div>
 
-        {/* Hierarchy Diagram */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">Functional Location Hierarchy</h4>
+          <h4 className="font-semibold text-foreground text-base pt-2">Functional Location Hierarchy</h4>
           <div className="font-mono text-sm space-y-0.5">
             <p className="font-bold text-foreground">TCMG</p>
             <p className="text-muted-foreground ml-4">└── PP (Processing Plant)</p>
@@ -140,9 +141,7 @@ export const AssetNumberingSection = () => {
           </div>
         </div>
 
-        <Separator />
-
-        {/* Area Codes */}
+        {/* 1. Area Codes + 2. Sub-Area Codes */}
         <div data-pdf-section className="space-y-3">
           <h4 className="font-semibold text-foreground text-base">1. Area Codes (6 Approved)</h4>
           <Table>
@@ -163,11 +162,8 @@ export const AssetNumberingSection = () => {
               ))}
             </TableBody>
           </Table>
-        </div>
 
-        {/* Sub-Area Codes */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">2. Sub-Area Codes & Live Examples</h4>
+          <h4 className="font-semibold text-foreground text-base pt-2">2. Sub-Area Codes & Live Examples</h4>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
@@ -190,9 +186,7 @@ export const AssetNumberingSection = () => {
           </Table>
         </div>
 
-        <Separator />
-
-        {/* Rules & Constraints */}
+        {/* 3. Rules + 4. Inheritance */}
         <div data-pdf-section className="space-y-3">
           <h4 className="font-semibold text-foreground text-base">3. Rules & Constraints</h4>
           <ul className="text-sm space-y-2 text-muted-foreground">
@@ -213,11 +207,8 @@ export const AssetNumberingSection = () => {
               <span><strong className="text-foreground">Immutable Once Assigned</strong> - FL codes are never renamed, reused, or changed</span>
             </li>
           </ul>
-        </div>
 
-        {/* Inheritance Examples */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">4. Inheritance - Live Examples</h4>
+          <h4 className="font-semibold text-foreground text-base pt-2">4. Inheritance - Live Examples</h4>
           <p className="text-sm text-muted-foreground">
             Assets and components do NOT receive new FL codes. They inherit the FL code of their parent System.
           </p>
@@ -241,9 +232,7 @@ export const AssetNumberingSection = () => {
           </Table>
         </div>
 
-        <Separator />
-
-        {/* Immutability Rules */}
+        {/* 5+6+7+8 combined */}
         <div data-pdf-section className="space-y-3">
           <h4 className="font-semibold text-foreground text-base">5. Immutability Rules</h4>
           <ul className="text-sm text-muted-foreground space-y-1.5">
@@ -254,11 +243,8 @@ export const AssetNumberingSection = () => {
           <p className="text-sm text-muted-foreground">
             If equipment is replaced: the FL stays the same, only asset/component records are updated. This preserves maintenance history, failure data, and long-term reporting integrity.
           </p>
-        </div>
 
-        {/* When New FLs Can Be Created */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">6. When New FLs Can Be Created</h4>
+          <h4 className="font-semibold text-foreground text-base pt-2">6. When New FLs Can Be Created</h4>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <p className="font-medium text-sm text-foreground">Allowed:</p>
@@ -278,22 +264,16 @@ export const AssetNumberingSection = () => {
               </ul>
             </div>
           </div>
-        </div>
 
-        {/* Governance */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">7. Governance & Control</h4>
+          <h4 className="font-semibold text-foreground text-base pt-2">7. Governance & Control</h4>
           <ul className="text-sm text-muted-foreground space-y-1.5">
             <li>• Functional Location creation follows this standard</li>
             <li>• All new FLs must align to the approved hierarchy</li>
             <li>• Temporary or unknown systems are flagged and reviewed</li>
             <li>• FL Standards take precedence over asset naming preferences, OEM terminology, and historical site naming habits</li>
           </ul>
-        </div>
 
-        {/* Relationship */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">8. Relationship to Asset & Parts Numbering</h4>
+          <h4 className="font-semibold text-foreground text-base pt-2">8. Relationship to Asset & Parts Numbering</h4>
           <div className="text-sm text-muted-foreground space-y-1.5">
             <p><strong className="text-foreground">FL Codes</strong> define WHERE an asset sits in the plant</p>
             <p><strong className="text-foreground">Asset Numbers</strong> define WHAT the equipment is</p>
@@ -302,11 +282,6 @@ export const AssetNumberingSection = () => {
           <p className="font-mono text-sm text-muted-foreground mt-2">
             FL → Asset → Component → Part (all three systems are independent but linked)
           </p>
-        </div>
-
-        {/* Footer */}
-        <div data-pdf-section className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
-          TCMG-STD-FL-001 Rev 2.0 - All FL codes are database-governed and aligned to the live Processing Plant Asset Tree
         </div>
       </CardContent>
     </Card>
