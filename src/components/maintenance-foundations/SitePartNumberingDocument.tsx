@@ -37,19 +37,22 @@ const categoryData = [
 ];
 
 const rules = [
-  { rule: "Numbers Only", desc: "No letters or alphanumeric characters in the site part number." },
-  { rule: "One Part = One Number", desc: "One unique part number per item. Never reused." },
-  { rule: "Sequential Numbering", desc: "Sequential within each category (001, 002, 003...)." },
-  { rule: "Leading Zeros Required", desc: "Always use 3-digit format: 001, 002, 003." },
-  { rule: "Immutable Once Assigned", desc: "Do not change part numbers after assignment." },
-  { rule: "Per-Category Sequence", desc: "Each category maintains its own independent NNN sequence." },
+  { rule: "Numbers Only", desc: "No letters or alphanumeric characters in the site part number. Purely numeric for barcode compatibility and CMMS search speed." },
+  { rule: "One Part = One Number", desc: "Every unique physical part receives one number. Never reused, even if a part is obsoleted." },
+  { rule: "Sequential Numbering", desc: "Sequential within each category (001, 002, 003...). The system auto-assigns the next available number." },
+  { rule: "Leading Zeros Required", desc: "Always use 3-digit format: 001, 002, 003. This ensures consistent sorting and barcode formatting." },
+  { rule: "Immutable Once Assigned", desc: "Do not change part numbers after assignment. If a part is superseded, create a new number and link the old one." },
+  { rule: "Per-Category Sequence", desc: "Each category (CC) maintains its own independent NNN sequence starting at 001." },
 ];
 
 const allocationSteps = [
-  "Confirm the correct Part Category Code (CC) by matching the physical part to the category table.",
-  "Identify the highest existing NNN in that category from the Site Parts Catalogue.",
-  "Assign the next available sequential number.",
-  "Record the number in the Site Parts Catalogue and update the CMMS.",
+  "Identify the physical part and confirm what it is (pump seal, bearing, valve, etc.).",
+  "Match the part to the correct Part Category Code (CC) using the category table in Section 4.",
+  "Open the Site Spares Catalogue and filter by that category code.",
+  "Check the highest existing NNN sequence number already allocated in that category.",
+  "Assign the next sequential number (e.g. if the last bearing was 1004087, the next is 1004088).",
+  "Enter the full 7-digit number into the Site Spares Catalogue and the CMMS asset record.",
+  "Record the OEM part number and supplier part number in the separate designated fields - never as the site number.",
 ];
 
 export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
