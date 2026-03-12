@@ -301,17 +301,30 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                         {hasChildComponents && childComponents.map((comp, compIndex) => {
                                           const compLabel = comp.componentCode ? `${comp.componentCode} — ${comp.componentName}` : comp.componentName;
                                           const isComponentPidMatch = pidMatchesSearch(comp.pidTags);
-                                          // Only show model as spec if it differs from the component name (not a duplicate)
+                                          
+                                          // Normalize for comparison — strip non-alphanumeric, lowercase
+                                          const normName = (comp.componentName || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+                                          const normLabel = compLabel.toLowerCase().replace(/[^a-z0-9]/g, "");
+                                          
+                                          // Suppress model if it's just repeating the name (exact, contains, or contained-in)
                                           const rawModel = comp.model || undefined;
-                                          const modelIsJustName = rawModel && comp.componentName && 
-                                            rawModel.toLowerCase().trim() === comp.componentName.toLowerCase().trim();
-                                          // Only show manufacturer if it differs from model and component name
+                                          const normModel = (rawModel || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+                                          const modelIsRedundant = rawModel && normModel.length > 0 && (
+                                            normModel === normName || normName.includes(normModel) || normModel.includes(normName) ||
+                                            normLabel.includes(normModel) || normModel === normLabel
+                                          );
+                                          
+                                          // Suppress manufacturer if it's just repeating the name
                                           const rawMfr = comp.manufacturer || undefined;
-                                          const mfrIsJustName = rawMfr && comp.componentName &&
-                                            rawMfr.toLowerCase().trim() === comp.componentName.toLowerCase().trim();
+                                          const normMfr = (rawMfr || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+                                          const mfrIsRedundant = rawMfr && normMfr.length > 0 && (
+                                            normMfr === normName || normName.includes(normMfr) || normMfr.includes(normName) ||
+                                            normLabel.includes(normMfr) || normMfr === normLabel
+                                          );
+                                          
                                           const compSpecValues = {
-                                            model: modelIsJustName ? undefined : rawModel,
-                                            manufacturer: mfrIsJustName ? undefined : rawMfr,
+                                            model: modelIsRedundant ? undefined : rawModel,
+                                            manufacturer: mfrIsRedundant ? undefined : rawMfr,
                                             serialNumber: comp.serialNumber,
                                             motorRef: comp.motorRef,
                                             pumpRef: comp.pumpRef,
