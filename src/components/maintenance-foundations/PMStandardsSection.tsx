@@ -158,21 +158,6 @@ export const PMStandardsSection = () => {
             </div>
           </div>
 
-          {/* Metadata table */}
-          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16, fontSize: 12 }}>
-            <tbody>
-              <tr>
-                <td style={{ padding: "5px 10px", backgroundColor: GOLD_LIGHT, fontWeight: 600, width: "15%", border: `1px solid #ddd` }}>Prepared By</td>
-                <td style={{ padding: "5px 10px", width: "35%", border: `1px solid #ddd` }}>Maintenance Planning Team</td>
-                <td style={{ padding: "5px 10px", backgroundColor: GOLD_LIGHT, fontWeight: 600, width: "15%", border: `1px solid #ddd` }}>Approved By</td>
-                <td style={{ padding: "5px 10px", width: "35%", border: `1px solid #ddd` }}>Maintenance Superintendent</td>
-              </tr>
-              <tr>
-                <td style={{ padding: "5px 10px", backgroundColor: GOLD_LIGHT, fontWeight: 600, border: `1px solid #ddd` }}>Scope</td>
-                <td colSpan={3} style={{ padding: "5px 10px", border: `1px solid #ddd` }}>All preventive maintenance templates, frequencies, and design governance for Tennant Creek Mine processing plant, mobile fleet, and infrastructure</td>
-              </tr>
-            </tbody>
-          </table>
 
           {/* 1. Purpose & Scope */}
           {sectionHeading("1", "Purpose & Scope")}
