@@ -234,7 +234,10 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           </p>
 
           {/* 5. Allocation Process */}
-          <h2 style={headingStyle("5", "Allocation")}>5. Part Number Allocation Process</h2>
+          <h2 style={headingStyle("5", "Allocation")}>5. How to Allocate a New Part Number</h2>
+          <p style={{ fontSize: 11, lineHeight: 1.45, color: "#333", margin: "0 0 6px 0" }}>
+            When a new spare part arrives on site or is identified for the first time, follow these steps to assign a permanent site part number:
+          </p>
           <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
             <thead>
               <tr>
@@ -252,20 +255,22 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
             </tbody>
           </table>
 
-          {/* 6. Notes */}
-          <h2 style={headingStyle("6", "Notes")}>6. Notes</h2>
+          {/* 6. Notes & Key Decisions */}
+          <h2 style={headingStyle("6", "Notes")}>6. Key Design Decisions</h2>
           <ul style={{ fontSize: 11, lineHeight: 1.5, paddingLeft: 18, margin: "0 0 10px 0", color: "#333" }}>
-            <li>OEM and supplier numbers must be stored in a separate field, never as the site part number.</li>
-            <li>This site part number is the primary identifier for stores, cataloguing, barcode scanning, and CMMS.</li>
-            <li>All 25 categories are live and aligned with the site spares inventory system.</li>
-            <li>Auto-numbering is available in the Site Spares Catalogue module.</li>
+            <li><strong>Why numbers only?</strong> Purely numeric part numbers are faster to search, barcode-compatible, and eliminate confusion between letters (O vs 0, I vs 1).</li>
+            <li><strong>Why not use OEM numbers?</strong> OEM numbers change between suppliers, vary in format, and cannot be used as a universal key across stores and CMMS.</li>
+            <li><strong>Why 7 digits?</strong> 7 digits gives 22 categories x 999 parts = 21,978 unique numbers per site - more than sufficient for a single processing plant.</li>
+            <li><strong>Why site code 10?</strong> Tennant Creek is the first site. If a second site is added, it would use 20, keeping all existing numbers valid.</li>
+            <li><strong>How were categories chosen?</strong> Categories were derived from analysis of 2,000+ PO line items, grouped by equipment function and aligned with the physical stores container layout.</li>
+            <li><strong>Auto-numbering:</strong> The Site Spares Catalogue module automatically assigns the next available NNN when adding a new part - no manual counting required.</li>
           </ul>
 
           {/* 7. Notice */}
           <div style={{ border: `2px solid ${GOLD}`, backgroundColor: GOLD_BG, borderRadius: 4, padding: "8px 12px", marginBottom: 12 }}>
             <p style={{ fontSize: 11.5, fontWeight: 700, margin: "0 0 3px 0", color: GOLD }}>Important Notice</p>
             <p style={{ fontSize: 11, color: "#444", margin: 0 }}>
-              This document does not alter any existing part numbers. It defines the approved numbering standard for future part creation at Tennant Creek Mine.
+              This document does not alter any existing part numbers. It defines the approved numbering standard for all future part creation at Tennant Creek Mine. All 2,184 existing parts in the catalogue have already been allocated under this system.
             </p>
           </div>
 
