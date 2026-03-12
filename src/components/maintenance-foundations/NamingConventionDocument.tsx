@@ -12,18 +12,16 @@ import {
 
 const suggestedCrusherPrefixes = [
   { prefix: "CRS", meaning: "Crusher (Jaw / Cone)", example: "CRS01, CRS02, CRS03", notes: "CRS01 Primary Jaw, CRS02 Secondary Cone, CRS03 Tertiary Cone" },
-  { prefix: "ROM-BIN", meaning: "ROM Bin", example: "ROM-BIN01", notes: "Steel structure with Hardox liners" },
-  { prefix: "ROM-FDR", meaning: "Primary Vibrating Feeder", example: "ROM-FDR01", notes: "Hydraulic drive feeder under ROM bin" },
-  { prefix: "PRI-MAG", meaning: "Overband Magnet", example: "PRI-MAG01", notes: "Self-cleaning overband on CRS01 discharge" },
-  { prefix: "PRI-GFB", meaning: "Ground Feed Bin", example: "PRI-GFB01", notes: "CV01 discharge into screen feed system" },
-  { prefix: "SEC-CFB", meaning: "Cone Feed Bin", example: "SEC-CFB01", notes: "Dual chamber bin feeding CRS02 & CRS03" },
+  { prefix: "RBIN", meaning: "ROM Bin", example: "RBIN01", notes: "Steel structure with Hardox liners" },
+  { prefix: "RFDR", meaning: "Primary Vibrating Feeder", example: "RFDR01", notes: "Hydraulic drive feeder under ROM bin" },
+  { prefix: "MAG", meaning: "Overband Magnet", example: "MAG01", notes: "Self-cleaning overband on CRS01 discharge" },
+  { prefix: "GFB", meaning: "Ground Feed Bin", example: "GFB01", notes: "CV01 discharge into screen feed system" },
+  { prefix: "CFB", meaning: "Cone Feed Bin", example: "CFB01", notes: "Dual chamber bin feeding CRS02 & CRS03" },
   { prefix: "SCN", meaning: "Vibrating Screen", example: "SCN01", notes: "Horizontal vibrating screen (3-deck)" },
   { prefix: "CV", meaning: "Conveyor", example: "CV01–CV15", notes: "Shared prefix with Processing Plant — different numbering range" },
-  { prefix: "SEC-CFB-FDR", meaning: "Cone Feed Vibrating Feeder", example: "SEC-CFB01-FDR01, FDR02", notes: "Feeders A & B under cone feed bin" },
-  { prefix: "CV12/CV15", meaning: "Radial Stacker", example: "CV12, CV15", notes: "Fines product radial stackers" },
   { prefix: "MDE", meaning: "Metal Detector", example: "CV07-MDE01", notes: "Component suffix on cone feed conveyors" },
   { prefix: "DST", meaning: "Dust Suppression", example: "DST01", notes: "Spray bars and enclosures" },
-  { prefix: "LVL", meaning: "Level Sensor", example: "ROM-BIN01-LVL01", notes: "Vega level sensors on bins" },
+  { prefix: "LVL", meaning: "Level Sensor", example: "RBIN01-LVL01", notes: "Vega level sensors on bins" },
 ];
 
 const reservedPrefixes = equipmentPrefixes.map((e) => e.prefix);
@@ -273,14 +271,14 @@ export const NamingConventionDocument = () => {
             <div>
               <p className="font-bold text-foreground mb-1">ROM & Primary Feed</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">ROM-BIN01</span> — ROM Bin</p>
-                <p className="pl-4"><span className="text-primary">ROM-BIN01-LVL01</span> — Vega Level Sensor</p>
-                <p className="pl-4"><span className="text-primary">ROM-BIN01-STR01</span> — Bin Structure</p>
-                <p><span className="text-primary font-semibold">ROM-FDR01</span> — Primary Vibrating Feeder</p>
-                <p className="pl-4"><span className="text-primary">ROM-FDR01-MTR01</span> — Feeder Motor</p>
-                <p className="pl-4"><span className="text-primary">ROM-FDR01-HYD01</span> — Hydraulic Motor Drive</p>
-                <p className="pl-4"><span className="text-primary">ROM-FDR01-VSD01</span> — Variable Speed Drive</p>
-                <p className="pl-4"><span className="text-primary">ROM-FDR01-EXC01</span> — Exciter Unit A</p>
+                <p><span className="text-primary font-semibold">RBIN01</span> — ROM Bin</p>
+                <p className="pl-4"><span className="text-primary">RBIN01-LVL01</span> — Vega Level Sensor</p>
+                <p className="pl-4"><span className="text-primary">RBIN01-STR01</span> — Bin Structure</p>
+                <p><span className="text-primary font-semibold">RFDR01</span> — Primary Vibrating Feeder</p>
+                <p className="pl-4"><span className="text-primary">RFDR01-MTR01</span> — Feeder Motor</p>
+                <p className="pl-4"><span className="text-primary">RFDR01-HYD01</span> — Hydraulic Motor Drive</p>
+                <p className="pl-4"><span className="text-primary">RFDR01-VSD01</span> — Variable Speed Drive</p>
+                <p className="pl-4"><span className="text-primary">RFDR01-EXC01</span> — Exciter Unit A</p>
               </div>
             </div>
 
@@ -293,9 +291,9 @@ export const NamingConventionDocument = () => {
                 <p className="pl-4"><span className="text-primary">CRS01-JKS01</span> — Jackshaft Assembly</p>
                 <p className="pl-4"><span className="text-primary">CRS01-LUB01</span> — Lubrication System</p>
                 <p className="pl-4"><span className="text-primary">CRS01-HOP01</span> — Feed Hopper</p>
-                <p><span className="text-primary font-semibold">PRI-MAG01</span> — Overband Magnet</p>
-                <p className="pl-4"><span className="text-primary">PRI-MAG01-MTR01</span> — Magnet Drive Motor</p>
-                <p className="pl-4"><span className="text-primary">PRI-MAG01-BLT01</span> — Self-Cleaning Belt</p>
+                <p><span className="text-primary font-semibold">MAG01</span> — Overband Magnet</p>
+                <p className="pl-4"><span className="text-primary">MAG01-MTR01</span> — Magnet Drive Motor</p>
+                <p className="pl-4"><span className="text-primary">MAG01-BLT01</span> — Self-Cleaning Belt</p>
               </div>
             </div>
 
@@ -329,9 +327,9 @@ export const NamingConventionDocument = () => {
             <div>
               <p className="font-bold text-foreground mb-1">Secondary & Tertiary Crushing</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">SEC-CFB01</span> — Cone Feed Bin (Dual Chamber)</p>
-                <p className="pl-4"><span className="text-primary">SEC-CFB01-FDR01</span> — Vibrating Feeder A → CRS02</p>
-                <p className="pl-4"><span className="text-primary">SEC-CFB01-FDR02</span> — Vibrating Feeder B → CRS03</p>
+                <p><span className="text-primary font-semibold">CFB01</span> — Cone Feed Bin (Dual Chamber)</p>
+                <p className="pl-4"><span className="text-primary">CFB01-FDR01</span> — Vibrating Feeder A → CRS02</p>
+                <p className="pl-4"><span className="text-primary">CFB01-FDR02</span> — Vibrating Feeder B → CRS03</p>
                 <p><span className="text-primary font-semibold">CRS02</span> — Secondary Cone Crusher</p>
                 <p className="pl-4"><span className="text-primary">CRS02-MTR01</span> — Crusher Motor 220kW</p>
                 <p className="pl-4"><span className="text-primary">CRS02-LUB01</span> — Lubrication System</p>
