@@ -206,7 +206,7 @@ export async function exportSectionsToPdf(
   // ── Main loop ───────────────────────────────────────────────────
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
-    const { canvas, rowBreaksPx } = await renderSectionCanvas(section);
+    const canvas = await renderSectionCanvas(section);
 
     const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
     const remainingMm = A4_H - MARGIN - currentY;
@@ -220,7 +220,7 @@ export async function exportSectionsToPdf(
       currentY = MARGIN;
     }
 
-    addCanvasAcrossPages(canvas, rowBreaksPx);
+    addCanvasAcrossPages(canvas);
 
     if (i < sections.length - 1) {
       currentY += GAP;
