@@ -116,23 +116,41 @@ function norm(s: string): string {
   return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
-// ── Build spec list from a Level 7 row, suppressing redundant values ─
-function buildSpecs(r: CsvRow): { key: string; value: string }[] {
-  const specs: { key: string; value: string }[] = [];
-  const compName = norm(r.compName);
-  const compLabel = norm(r.compCode ? `${r.compCode}${r.compName}` : r.compName);
+function isRedundantText(value: string, against: string): boolean {
+  const nv = norm(value);
+  const na = norm(against);
+  if (!nv) return true;
+  if (!na) return false;
+  return nv === na || na.includes(nv) || nv.includes(na);
+}
 
-  const isRedundant = (v: string) => {
-    const nv = norm(v);
-    if (!nv) return true;
-    return nv === compName || compName.includes(nv) || nv.includes(compName) ||
-           compLabel.includes(nv) || nv === compLabel;
+function buildComponentLabel(r: CsvRow): string {
+  const code = r.compCode || "";
+  const name = r.compName || "";
+  if (!code) return name;
+  if (!name) return code;
+  return isRedundantText(code, name) ? name : `${code} - ${name}`;
+}
+
+function shouldShowComponentBadge(r: CsvRow, compLabel: string): boolean {
+  if (!r.compType) return false;
+  return !isRedundantText(r.compType, r.compName) && !isRedundantText(r.compType, compLabel);
+}
+
+// ── Build spec list from a Level 7 row, suppressing redundant values ─
+function buildSpecs(r: CsvRow, compLabel: string): { key: string; value: string }[] {
+  const specs: { key: string; value: string }[] = [];
+
+  const add = (k: string, v: string) => {
+    if (v && !isRedundantText(v, r.compName) && !isRedundantText(v, compLabel)) {
+      specs.push({ key: k, value: v });
+    }
   };
 
-  const add = (k: string, v: string) => { if (v && !isRedundant(v)) specs.push({ key: k, value: v }); };
   // Manufacturer and Model get redundancy checks
   add("Manufacturer", r.manufacturer);
   add("Model", r.model);
+
   // Other specs are always real engineering data — no suppression
   const addRaw = (k: string, v: string) => { if (v) specs.push({ key: k, value: v }); };
   addRaw("Serial No", r.serialNumber);
@@ -183,15 +201,13 @@ function flattenCsvToTree(csvRows: CsvRow[]): TreeRow[] {
         });
         break;
       case 7: {
-        const specs = buildSpecs(r);
-        const compLabel = r.compCode
-          ? `${r.compCode} - ${r.compName}`
-          : r.compName;
+        const compLabel = buildComponentLabel(r);
+        const specs = buildSpecs(r, compLabel);
         tree.push({
           depth: 6,
           label: compLabel,
           type: "component",
-          badge: r.compType || undefined,
+          badge: shouldShowComponentBadge(r, compLabel) ? r.compType : undefined,
           pidTags: r.compPidTags || undefined,
           specs: specs.length > 0 ? specs : undefined,
         });
