@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      asset_criticality_ratings: {
+        Row: {
+          area_label: string
+          assessed_at: string
+          assessed_by: string
+          asset_name: string
+          asset_number: string
+          created_at: string
+          criticality: string
+          id: string
+          justification: string
+          sub_area: string
+          updated_at: string
+        }
+        Insert: {
+          area_label?: string
+          assessed_at?: string
+          assessed_by?: string
+          asset_name?: string
+          asset_number: string
+          created_at?: string
+          criticality?: string
+          id?: string
+          justification?: string
+          sub_area?: string
+          updated_at?: string
+        }
+        Update: {
+          area_label?: string
+          assessed_at?: string
+          assessed_by?: string
+          asset_name?: string
+          asset_number?: string
+          created_at?: string
+          criticality?: string
+          id?: string
+          justification?: string
+          sub_area?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       asset_tag_production: {
         Row: {
           area_label: string
