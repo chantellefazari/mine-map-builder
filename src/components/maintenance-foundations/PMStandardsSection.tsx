@@ -78,7 +78,7 @@ const inspectionDataShapes = [
   { shape: "Sectioned Tasks", desc: "Tasks grouped by equipment section with section headers (e.g. Mill Daily: Trunnion, Pinion, Discharge)", jsonKey: "Grouped sections", usage: "Most mechanical PMs" },
   { shape: "MCC Sections", desc: "Standard tasks repeated across multiple MCC panels (e.g. Field MCC Inspections)", jsonKey: "Panel groups", usage: "Electrical field inspections" },
   { shape: "Flat Task List", desc: "Simple sequential checklist without grouping (e.g. Safety Shower Inspection)", jsonKey: "Sequential list", usage: "Simple inspections" },
-  { shape: "Temperature / Pressure", desc: "Tasks with inline measurement fields for recording readings", jsonKey: "hasTemp, hasPressure", usage: "Motor inspections, bearing checks" },
+  { shape: "Temperature / Pressure", desc: "Tasks with inline measurement fields for recording readings", jsonKey: "Measurement fields", usage: "Motor inspections, bearing checks" },
 ];
 
 
