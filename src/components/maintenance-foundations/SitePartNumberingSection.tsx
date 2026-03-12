@@ -231,5 +231,13 @@ export const SitePartNumberingSection = () => {
         </div>
       </CardContent>
     </Card>
+
+    {/* Professional PDF Document Dialog */}
+    <Dialog open={docOpen} onOpenChange={setDocOpen}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+        <SitePartNumberingDocument onClose={() => setDocOpen(false)} />
+      </DialogContent>
+    </Dialog>
+    </>
   );
 };
