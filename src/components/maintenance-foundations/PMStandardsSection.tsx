@@ -387,7 +387,7 @@ export const PMStandardsSection = () => {
         </div>
 
         {/* Page 5: Constraints + Baseline + Governance */}
-        <div data-pdf-section data-pdf-new-page style={{ padding: "28px 36px" }}>
+        <div data-pdf-section style={{ padding: "28px 36px" }}>
           {/* 9. Constraints (Non-Negotiable) */}
           {sectionHeading("9", "Constraints (Non-Negotiable)")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
