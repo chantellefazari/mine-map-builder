@@ -32,20 +32,31 @@ function classifyCrit(desc) {
   return "LOW";
 }
 
-async function fetchImageAsBase64(url, timeoutMs = 5000) {
+async function fetchImageAsBase64(url, timeoutMs = 15000) {
   try {
     const controller = new AbortController();
     const tid = setTimeout(() => controller.abort(), timeoutMs);
     const res = await fetch(url, { signal: controller.signal });
     clearTimeout(tid);
-    if (!res.ok) return null;
+    if (!res.ok) {
+      return null;
+    }
     const buffer = await res.arrayBuffer();
-    if (buffer.byteLength > 300000) return null; // skip > 300KB
+    // Allow up to 5MB per image — they compress well in the PDF
+    if (buffer.byteLength > 5000000) return null;
     const ct = (res.headers.get("content-type") || "").toLowerCase();
     const fmt = ct.includes("png") ? "PNG" : "JPEG";
-    const b64 = Buffer.from(buffer).toString("base64");
+    // Chunk-based base64 conversion to avoid stack overflow on large buffers
+    const bytes = new Uint8Array(buffer);
+    const CHUNK_SIZE = 8192;
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += CHUNK_SIZE) {
+      const chunk = bytes.subarray(i, i + CHUNK_SIZE);
+      binary += String.fromCharCode.apply(null, Array.from(chunk));
+    }
+    const b64 = btoa(binary);
     return { b64, fmt };
-  } catch {
+  } catch (err) {
     return null;
   }
 }
