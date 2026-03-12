@@ -60,7 +60,7 @@ export const NamingConventionDocument = () => {
             <div>
               <CardTitle className="text-xl">Site Asset Naming Convention</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                TCMG-STD-NAM-001 Rev 1.0 — Tennant Creek Gold Mine
+                TCMG-STD-NAM-001 Rev 1.0
               </p>
             </div>
           </div>
