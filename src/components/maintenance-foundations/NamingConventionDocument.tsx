@@ -240,10 +240,6 @@ export const NamingConventionDocument = () => {
           </Table>
         </div>
 
-        {/* Footer */}
-        <div data-pdf-section className="text-sm text-muted-foreground text-center pt-2 border-t border-border">
-          TCMG-STD-NAM-001 Rev 1.0 | Tennant Creek Mining Group - Asset Naming Standards
-        </div>
       </CardContent>
     </Card>
   );
