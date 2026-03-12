@@ -17,8 +17,8 @@ export interface FunctionalLocation {
 const areaCodeMapping: Record<string, string> = {
   "SITE": "SITE",
   "UTL": "UTL",
-  "COM": "COMM",  // COMM as per approved codes
-  "REC": "GR",    // GR = Gold Recovery as per approved codes
+  "COM": "COM",
+  "REC": "GR",
   "TAIL": "TAIL",
   "SUP": "SUP",
 };

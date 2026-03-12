@@ -34,7 +34,7 @@ interface DBFunctionalLocation {
 const areaColors: Record<string, string> = {
   SITE: "bg-slate-500",
   UTL: "bg-amber-500",
-  COMM: "bg-emerald-500",
+  COM: "bg-emerald-500",
   GR: "bg-yellow-500",
   TAIL: "bg-rose-500",
   SUP: "bg-violet-500",
@@ -43,7 +43,7 @@ const areaColors: Record<string, string> = {
 const areaLabels: Record<string, string> = {
   SITE: "Site",
   UTL: "Utilities & Power",
-  COMM: "Comminution / Process",
+  COM: "Comminution / Process",
   GR: "Gold Recovery",
   TAIL: "Tailings",
   SUP: "Support Services",
