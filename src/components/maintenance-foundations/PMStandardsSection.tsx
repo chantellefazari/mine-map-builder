@@ -213,7 +213,7 @@ export const PMStandardsSection = () => {
         </div>
 
         {/* Page 2: Template Structure + Mandatory Fields */}
-        <div data-pdf-section style={{ padding: "28px 36px" }}>
+        <div data-pdf-section data-pdf-new-page style={{ padding: "28px 36px" }}>
           {/* 3. Standard PM Template Structure */}
           {sectionHeading("3", "Standard PM Template Structure")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
@@ -264,7 +264,7 @@ export const PMStandardsSection = () => {
         </div>
 
         {/* Page 3: Frequencies + Workflow */}
-        <div data-pdf-section style={{ padding: "28px 36px" }}>
+        <div data-pdf-section data-pdf-new-page style={{ padding: "28px 36px" }}>
           {/* 5. Frequency Standards */}
           {sectionHeading("5", "Frequency Standards by Discipline")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
@@ -329,7 +329,7 @@ export const PMStandardsSection = () => {
         </div>
 
         {/* Page 4: Inspection Data + Coverage Summary */}
-        <div data-pdf-section style={{ padding: "28px 36px" }}>
+        <div data-pdf-section data-pdf-new-page style={{ padding: "28px 36px" }}>
           {/* 7. Inspection Task Data Architecture */}
           {sectionHeading("7", "Inspection Task Data Architecture")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
@@ -387,7 +387,7 @@ export const PMStandardsSection = () => {
         </div>
 
         {/* Page 5: Constraints + Baseline + Governance */}
-        <div data-pdf-section style={{ padding: "28px 36px" }}>
+        <div data-pdf-section data-pdf-new-page style={{ padding: "28px 36px" }}>
           {/* 9. Constraints (Non-Negotiable) */}
           {sectionHeading("9", "Constraints (Non-Negotiable)")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
