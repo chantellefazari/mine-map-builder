@@ -195,10 +195,8 @@ export const PMStandardsSection = () => {
               ))}
             </tbody>
           </table>
-        </div>
 
-        {/* Page 2: Template Structure + Mandatory Fields */}
-        <div data-pdf-section style={{ padding: "28px 36px" }}>
+
           {/* 3. Standard PM Template Structure */}
           {sectionHeading("3", "Standard PM Template Structure")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
