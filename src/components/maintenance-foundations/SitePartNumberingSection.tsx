@@ -43,12 +43,16 @@ export const SitePartNumberingSection = () => {
           <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
             <Hash className="w-5 h-5 text-emerald-600" />
           </div>
-          <div>
+          <div className="flex-1">
             <CardTitle className="text-xl">Site Parts Numbering Standard (TCMG)</CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              Approved 7-digit numeric format for Tennant Creek Mine — aligned with live inventory categories
+              Approved 7-digit numeric format for Tennant Creek Mine - aligned with live inventory categories
             </p>
           </div>
+          <Button variant="outline" className="gap-2 shrink-0" onClick={() => setDocOpen(true)}>
+            <FileText className="w-4 h-4" />
+            Download PDF
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
