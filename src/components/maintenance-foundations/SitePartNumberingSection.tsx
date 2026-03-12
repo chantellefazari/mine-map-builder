@@ -1,8 +1,13 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Hash, CheckCircle2, Target, Layers, Info, AlertTriangle, ClipboardList } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Hash, CheckCircle2, Target, Layers, Info, AlertTriangle, ClipboardList, FileText } from "lucide-react";
+import { SitePartNumberingDocument } from "./SitePartNumberingDocument";
 
 export const SitePartNumberingSection = () => {
+  const [docOpen, setDocOpen] = useState(false);
   const categoryData = [
     { code: "01", name: "Pump Component", examples: "Slurry pumps, centrifugal pumps, dosing pumps, impellers, volutes, pump casings, lantern rings, throat bushes, pump sleeves, wet end kits", container: "C04-MP / C03-ME / LD" },
     { code: "02", name: "Motor Component", examples: "Electric motors (all sizes), motor assemblies, motor couplings, motor fans, spare motors", container: "LD / C04-MP" },
@@ -32,18 +37,23 @@ export const SitePartNumberingSection = () => {
   ];
 
   return (
+    <>
     <Card className="border-border">
       <CardHeader className="pb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
             <Hash className="w-5 h-5 text-emerald-600" />
           </div>
-          <div>
+          <div className="flex-1">
             <CardTitle className="text-xl">Site Parts Numbering Standard (TCMG)</CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              Approved 7-digit numeric format for Tennant Creek Mine — aligned with live inventory categories
+              Approved 7-digit numeric format for Tennant Creek Mine - aligned with live inventory categories
             </p>
           </div>
+          <Button variant="outline" className="gap-2 shrink-0" onClick={() => setDocOpen(true)}>
+            <FileText className="w-4 h-4" />
+            Download PDF
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -222,5 +232,13 @@ export const SitePartNumberingSection = () => {
         </div>
       </CardContent>
     </Card>
+
+    {/* Professional PDF Document Dialog */}
+    <Dialog open={docOpen} onOpenChange={setDocOpen}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+        <SitePartNumberingDocument onClose={() => setDocOpen(false)} />
+      </DialogContent>
+    </Dialog>
+    </>
   );
 };
