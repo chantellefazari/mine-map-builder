@@ -1,6 +1,8 @@
+import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Hash, CheckCircle2, Info, AlertTriangle, Lock, ArrowRight } from "lucide-react";
+import { Hash, CheckCircle2, Info, AlertTriangle, Lock, ArrowRight, Download, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -48,6 +50,59 @@ const flExamples = [
 ];
 
 export const AssetNumberingSection = () => {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadPdf = async () => {
+    if (!contentRef.current) return;
+    setDownloading(true);
+    try {
+      const html2canvas = (await import("html2canvas")).default;
+      const jsPDF = (await import("jspdf")).default;
+      const { uploadAndShowPdf } = await import("@/utils/pdfDownloadHelper");
+
+      // Expand all accordions for capture
+      const accordionEl = contentRef.current;
+      const triggers = accordionEl.querySelectorAll<HTMLButtonElement>('[data-state="closed"] > button, button[data-state="closed"]');
+      triggers.forEach((t) => t.click());
+      await new Promise((r) => setTimeout(r, 400));
+
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const pageW = 210;
+      const pageH = 297;
+      const margin = 8;
+      const contentW = pageW - margin * 2;
+
+      const canvas = await html2canvas(contentRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        windowWidth: 900,
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const imgW = contentW;
+      const imgH = (canvas.height * imgW) / canvas.width;
+      const sliceH = pageH - margin * 2;
+      let yOffset = 0;
+      let page = 0;
+
+      while (yOffset < imgH) {
+        if (page > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", margin, margin - yOffset, imgW, imgH);
+        yOffset += sliceH;
+        page++;
+      }
+
+      const blob = pdf.output("blob");
+      await uploadAndShowPdf(blob, "TCMG-STD-FL-001_Functional_Location_Codes.pdf");
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <Card className="border-border">
       <CardHeader className="pb-4">
@@ -63,13 +118,19 @@ export const AssetNumberingSection = () => {
               </p>
             </div>
           </div>
-          <Badge className="bg-green-500/10 text-green-600 border-green-500/30">
-            <CheckCircle2 className="w-3 h-3 mr-1" />
-            Defined & Stable
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Button onClick={handleDownloadPdf} variant="outline" size="sm" className="gap-2" disabled={downloading}>
+              {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+              {downloading ? "Generating..." : "Download PDF"}
+            </Button>
+            <Badge className="bg-green-500/10 text-green-600 border-green-500/30">
+              <CheckCircle2 className="w-3 h-3 mr-1" />
+              Defined & Stable
+            </Badge>
+          </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6" ref={contentRef}>
         {/* FL Format */}
         <div className="bg-muted/50 rounded-lg p-5 space-y-4">
           <h4 className="font-medium text-foreground">FL Code Format</h4>
