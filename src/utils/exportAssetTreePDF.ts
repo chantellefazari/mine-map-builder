@@ -177,6 +177,7 @@ function buildSpecs(r: CsvRow, compLabel: string): { key: string; value: string 
 // ── Flatten CSV rows into tree rows, deduplicating Level 7 ────────
 function flattenCsvToTree(csvRows: CsvRow[]): TreeRow[] {
   const tree: TreeRow[] = [];
+  let currentEquipName = "";
 
   for (const r of csvRows) {
     switch (r.level) {
@@ -196,6 +197,7 @@ function flattenCsvToTree(csvRows: CsvRow[]): TreeRow[] {
         tree.push({ depth: 4, label: r.system, type: "system", fl: r.systemFL || undefined });
         break;
       case 6:
+        currentEquipName = r.equipmentName;
         tree.push({
           depth: 5,
           label: `${r.assetNumber} - ${r.equipmentName}`,
@@ -211,7 +213,7 @@ function flattenCsvToTree(csvRows: CsvRow[]): TreeRow[] {
           depth: 6,
           label: compLabel,
           type: "component",
-          badge: shouldShowComponentBadge(r, compLabel) ? r.compType : undefined,
+          badge: shouldShowComponentBadge(r, compLabel, currentEquipName) ? r.compType : undefined,
           pidTags: r.compPidTags || undefined,
           specs: specs.length > 0 ? specs : undefined,
         });
