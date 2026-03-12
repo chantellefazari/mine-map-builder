@@ -87,7 +87,7 @@ const baselinePurposes = [
   "Identify gaps in coverage across equipment types and disciplines",
   "Highlight duplication where multiple PMs address the same failure mode",
   "Support PM optimisation by comparing current vs. ideal state",
-  "Provide the foundation for CMMS migration, ensuring no PM is lost in transition",
+  "Provide the foundation for maintenance system setup, ensuring no PM is lost in transition",
   "Enable before/after comparison to measure improvement over time",
   "Track PM maturity as the site progresses through implementation phases",
 ];
