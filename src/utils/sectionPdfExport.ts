@@ -282,7 +282,7 @@ export async function exportSectionsToPdf(
   if (totalPages > 1) {
     pdf.setPage(totalPages);
     // If nothing meaningful was drawn on this page, delete it
-    if (currentY <= MARGIN + 15) {
+    if (currentY <= MARGIN + cfg.blankPageThreshold) {
       pdf.deletePage(totalPages);
     }
   }
