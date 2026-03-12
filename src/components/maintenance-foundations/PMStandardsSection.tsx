@@ -44,11 +44,11 @@ const mandatoryFields = [
 ];
 
 const templateStructure = [
-  { component: "PM Banner Header", purpose: "Gold-themed header with PM title, document number, revision, and site branding" },
+  { component: "PM Banner Header", purpose: "Gold themed header with PM title, document number, revision, and site branding" },
   { component: "Metadata Grid", purpose: "Equipment type, frequency, discipline, duration, skill level, duty type, asset linkage" },
   { component: "Safety Precautions", purpose: "Mandatory safety warnings, isolation requirements, PPE, required tools, and hazard identification" },
-  { component: "Dynamic Inspection Table", purpose: "Task-by-task checklist with Serviceable/Defective checkboxes and Comments column, grouped by equipment section" },
-  { component: "Sign-Off Block", purpose: "Performed By, Reviewed By, Approved By with signature lines and date fields" },
+  { component: "Dynamic Inspection Table", purpose: "Task by task checklist with Serviceable/Defective checkboxes and Comments column, grouped by equipment section" },
+  { component: "Sign Off Block", purpose: "Performed By, Reviewed By, Approved By with signature lines and date fields" },
 ];
 
 const statusWorkflow = [
