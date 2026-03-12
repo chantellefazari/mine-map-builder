@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Download, FileText, Loader2, CheckCircle2, Trash2, RefreshCw } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { downloadBlob } from "@/utils/safariDownload";
 import { toast } from "sonner";
 import {
   countAllSpares,
