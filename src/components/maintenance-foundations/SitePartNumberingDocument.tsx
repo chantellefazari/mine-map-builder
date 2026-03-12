@@ -39,10 +39,10 @@ const categoryData = [
 const rules = [
   { rule: "Numbers Only", desc: "No letters or alphanumeric characters in the site part number. Purely numeric for barcode compatibility and CMMS search speed." },
   { rule: "One Part = One Number", desc: "Every unique physical part receives one number. Never reused, even if a part is obsoleted." },
-  { rule: "Sequential Numbering", desc: "Sequential within each category (001, 002, 003...). The system auto-assigns the next available number." },
-  { rule: "Leading Zeros Required", desc: "Always use 3-digit format: 001, 002, 003. This ensures consistent sorting and barcode formatting." },
+  { rule: "Sequential Numbering", desc: "Sequential within each category (001, 002, 003...). The system auto assigns the next available number." },
+  { rule: "Leading Zeros Required", desc: "Always use 3 digit format: 001, 002, 003. This ensures consistent sorting and barcode formatting." },
   { rule: "Immutable Once Assigned", desc: "Do not change part numbers after assignment. If a part is superseded, create a new number and link the old one." },
-  { rule: "Per-Category Sequence", desc: "Each category (CC) maintains its own independent NNN sequence starting at 001." },
+  { rule: "Per Category Sequence", desc: "Each category (CC) maintains its own independent NNN sequence starting at 001." },
 ];
 
 const allocationSteps = [
@@ -51,8 +51,8 @@ const allocationSteps = [
   "Open the Site Spares Catalogue and filter by that category code.",
   "Check the highest existing NNN sequence number already allocated in that category.",
   "Assign the next sequential number (e.g. if the last bearing was 1004087, the next is 1004088).",
-  "Enter the full 7-digit number into the Site Spares Catalogue and the CMMS asset record.",
-  "Record the OEM part number and supplier part number in the separate designated fields - never as the site number.",
+  "Enter the full 7 digit number into the Site Spares Catalogue and the CMMS asset record.",
+  "Record the OEM part number and supplier part number in the separate designated fields. Never as the site number.",
 ];
 
 export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
@@ -112,7 +112,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
                   Site Parts Numbering Standard
                 </h1>
                 <p style={{ fontSize: 12, color: "#666", margin: "2px 0 0 0" }}>
-                  Gold Processing Plant - Internal Part Number Convention
+                  Gold Processing Plant | Internal Part Number Convention
                 </p>
               </div>
               <div style={{ textAlign: "right", fontSize: 10, color: "#666", borderLeft: `3px solid ${GOLD}`, paddingLeft: 10 }}>
@@ -144,10 +144,10 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           {/* 1. Purpose */}
           <h2 style={headingStyle("1", "Purpose")}>1. Purpose</h2>
           <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 4px 0" }}>
-            This standard defines the site-based internal part numbering system developed for Tennant Creek Mine. The system was designed to solve a core problem: the site had no unified way to identify, search, or catalogue spare parts across stores, the CMMS, and procurement. OEM part numbers vary by supplier, are inconsistent, and cannot be used as a universal key. This standard creates a single, permanent, numeric identifier for every physical spare part on site.
+            This standard defines the site based internal part numbering system developed for Tennant Creek Mine. The system was designed to solve a core problem: the site had no unified way to identify, search, or catalogue spare parts across stores, the CMMS, and procurement. OEM part numbers vary by supplier, are inconsistent, and cannot be used as a universal key. This standard creates a single, permanent, numeric identifier for every physical spare part on site.
           </p>
           <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 4px 0" }}>
-            The numbering logic was developed by analysing 2,000+ historical purchase order line items, grouping them into logical equipment categories, and assigning a fixed 2-digit category code to each group. The result is a 7-digit all-numeric format that is barcode-compatible, CMMS-friendly, and human-readable.
+            The numbering logic was developed by analysing 2,000+ historical purchase order line items, grouping them into logical equipment categories, and assigning a fixed 2 digit category code to each group. The result is a 7 digit all numeric format that is barcode compatible, CMMS friendly, and human readable.
           </p>
 
           {/* 2. Approved Format */}
@@ -168,9 +168,9 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
               </tr>
             </thead>
             <tbody>
-              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>SS</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Site Code - always 10 for Tennant Creek</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Enables multi-site expansion without renumbering</td></tr>
+              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>SS</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Site Code, always 10 for Tennant Creek</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Enables multi site expansion without renumbering</td></tr>
               <tr style={{ backgroundColor: GOLD_BG }}><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>CC</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Part Category Code (2 digits, e.g. 01 = Pump Component)</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Derived from PO history analysis of 2,000+ line items</td></tr>
-              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>NNN</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Sequential Identifier within that category (001 to 999)</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Auto-assigned; no manual selection required</td></tr>
+              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>NNN</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Sequential Identifier within that category (001 to 999)</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Auto assigned, no manual selection required</td></tr>
             </tbody>
           </table>
 
@@ -230,7 +230,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
             </tbody>
           </table>
           <p style={{ fontSize: 9, color: "#888", fontStyle: "italic", margin: "0 0 10px 0" }}>
-            * CC 10b, 19b, 19c are sub-categories sharing the parent CC code for part numbering sequences.
+            * CC 10b, 19b, 19c are sub categories sharing the parent CC code for part numbering sequences.
           </p>
 
           {/* 5. Allocation Process */}
@@ -258,12 +258,12 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           {/* 6. Notes & Key Decisions */}
           <h2 style={headingStyle("6", "Notes")}>6. Key Design Decisions</h2>
           <ul style={{ fontSize: 11, lineHeight: 1.5, paddingLeft: 18, margin: "0 0 10px 0", color: "#333" }}>
-            <li><strong>Why numbers only?</strong> Purely numeric part numbers are faster to search, barcode-compatible, and eliminate confusion between letters (O vs 0, I vs 1).</li>
+            <li><strong>Why numbers only?</strong> Purely numeric part numbers are faster to search, barcode compatible, and eliminate confusion between letters (O vs 0, I vs 1).</li>
             <li><strong>Why not use OEM numbers?</strong> OEM numbers change between suppliers, vary in format, and cannot be used as a universal key across stores and CMMS.</li>
-            <li><strong>Why 7 digits?</strong> 7 digits gives 22 categories x 999 parts = 21,978 unique numbers per site - more than sufficient for a single processing plant.</li>
+            <li><strong>Why 7 digits?</strong> 7 digits gives 22 categories x 999 parts = 21,978 unique numbers per site. More than sufficient for a single processing plant.</li>
             <li><strong>Why site code 10?</strong> Tennant Creek is the first site. If a second site is added, it would use 20, keeping all existing numbers valid.</li>
             <li><strong>How were categories chosen?</strong> Categories were derived from analysis of 2,000+ PO line items, grouped by equipment function and aligned with the physical stores container layout.</li>
-            <li><strong>Auto-numbering:</strong> The Site Spares Catalogue module automatically assigns the next available NNN when adding a new part - no manual counting required.</li>
+            <li><strong>Auto numbering:</strong> The Site Spares Catalogue module automatically assigns the next available NNN when adding a new part. No manual counting required.</li>
           </ul>
 
           {/* 7. Notice */}
