@@ -41,7 +41,7 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   renderWidth: 740,
   fontSize: "13px",
   lineHeight: "1.4",
-  scale: 2,
+  scale: 1.5,
   sliceOverlapPx: 14,
 };
 
