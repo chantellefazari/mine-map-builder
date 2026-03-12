@@ -390,7 +390,7 @@ export const PMStandardsSection = () => {
           {/* 10. Baseline PM List */}
           {sectionHeading("10", "Baseline PM List (Reference)")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            The baseline PM list captures all currently defined preventive maintenance activities. This serves as the foundation for future optimisation, scheduling, and CMMS configuration. The baseline is maintained in the digital PM register and is not a static document.
+            The baseline PM list captures all currently defined preventive maintenance activities. This serves as the foundation for future optimisation and scheduling. The baseline is maintained in the master PM register.
           </p>
           <div style={{ backgroundColor: GOLD_BG, border: `1px solid ${GOLD_LIGHT}`, borderRadius: 6, padding: "12px 14px", marginBottom: 16 }}>
             <p style={{ fontSize: 13, fontWeight: 600, color: DARK, marginBottom: 6 }}>Purpose of the Baseline:</p>
