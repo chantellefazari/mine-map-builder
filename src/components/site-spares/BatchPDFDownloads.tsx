@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Download, FileText, Loader2, CheckCircle2, Trash2, RefreshCw } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { downloadBlob } from "@/utils/safariDownload";
 import { toast } from "sonner";
 import {
   countAllSpares,
@@ -9,7 +11,6 @@ import {
   getBatchLabel,
   getExistingBatches,
   generateBatchPDF,
-  downloadBatchPDF,
   clearAllBatchPDFs,
 } from "@/utils/generateBatchSparesPDF";
 
@@ -77,9 +78,15 @@ export const BatchPDFDownloads = () => {
     }
   };
 
-  const handleDownload = (batchIndex: number) => {
-    const url = downloadBatchPDF(batchIndex, totalItems);
-    window.open(url, "_blank");
+  const handleDownload = async (batchIndex: number) => {
+    const label = getBatchLabel(batchIndex, totalItems);
+    const storagePath = `spares-batches/Parts_List_${label}.pdf`;
+    const { data, error } = await supabase.storage.from("temp-pdfs").download(storagePath);
+    if (error || !data) {
+      toast.error("Failed to download PDF");
+      return;
+    }
+    downloadBlob(data, `Parts_List_${label}.pdf`);
   };
 
   const handleClearAll = async () => {
