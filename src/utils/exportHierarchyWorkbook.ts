@@ -1,34 +1,17 @@
 import * as XLSX from "xlsx";
 import { writeXlsxFile } from "@/utils/safariDownload";
-import { areasData } from "@/components/hierarchy/assetData";
-import { pidTagMappings } from "@/components/hierarchy/pidTagMappings";
+import { fetchProcessingPlantAreas } from "@/utils/fetchProcessingPlantData";
 
 /**
  * Exports a workbook with one row per hierarchy node, with explicit level columns.
  * This format allows any platform to reconstruct the full 7-level tree.
- *
- * Level 1: Site (TCMG)
- * Level 2: Facility (Processing Plant)
- * Level 3: Major Area (SITE, UTL, COM, REC, TAIL, SUP)
- * Level 4: Sub-Area
- * Level 5: Parent Asset / System
- * Level 6: Equipment
- * Level 7: Component
+ * Now pulls live data from the database (single source of truth).
  */
 
-const buildPidTagLookup = () => {
-  const lookup = new Map<string, string[]>();
-  pidTagMappings.forEach((m) => {
-    const existing = lookup.get(m.assetNumber) || [];
-    existing.push(m.pidTag);
-    lookup.set(m.assetNumber, existing);
-  });
-  return lookup;
-};
+export async function exportHierarchyWorkbook() {
+  const areasData = await fetchProcessingPlantAreas();
 
-export function exportHierarchyWorkbook() {
   const wb = XLSX.utils.book_new();
-  const pidTagsByAsset = buildPidTagLookup();
 
   const headers = [
     "Level",
@@ -70,43 +53,23 @@ export function exportHierarchyWorkbook() {
         rows.push([5, SITE, FACILITY, `${area.code} — ${area.label}`, sub.label, parent.label, "", "", "", "", "", "", ""]);
 
         parent.equipment.forEach((equip) => {
-          const inlineTags = equip.pidTags || [];
-          const mappedTags = pidTagsByAsset.get(equip.assetNumber) || [];
-          const allTags = [...new Set([...inlineTags, ...mappedTags])];
+          const allTags = equip.pidTags?.join("; ") || "";
 
           // Row for Level 6 — Equipment
           rows.push([
-            6,
-            SITE,
-            FACILITY,
-            `${area.code} — ${area.label}`,
-            sub.label,
-            parent.label,
-            equip.assetNumber,
-            equip.name,
-            "",
-            "",
-            "",
-            "",
-            allTags.join("; "),
+            6, SITE, FACILITY,
+            `${area.code} — ${area.label}`, sub.label, parent.label,
+            equip.assetNumber, equip.name,
+            "", "", "", "", allTags,
           ]);
 
           // Rows for Level 7 — Components
           equip.components?.forEach((comp) => {
             rows.push([
-              7,
-              SITE,
-              FACILITY,
-              `${area.code} — ${area.label}`,
-              sub.label,
-              parent.label,
-              equip.assetNumber,
-              equip.name,
-              comp.componentCode,
-              comp.componentType,
-              comp.componentName,
-              comp.manufacturer,
-              "",
+              7, SITE, FACILITY,
+              `${area.code} — ${area.label}`, sub.label, parent.label,
+              equip.assetNumber, equip.name,
+              comp.componentCode, comp.componentType, comp.componentName, comp.manufacturer, "",
             ]);
           });
         });

@@ -192,10 +192,9 @@ const LIGHT_GOLD_BG = [253, 248, 234] as const;
 
 // ── Export function ────────────────────────────────────────────────
 export async function exportAssetTreePDF() {
-  // Fetch CSV
-  const resp = await fetch("/data/TCMG_Processing_Plant_Hierarchy.csv");
-  if (!resp.ok) throw new Error("Failed to load hierarchy CSV");
-  const csvText = await resp.text();
+  // Fetch live data from database (single source of truth)
+  const { generateProcessingPlantCSVContent } = await import("@/utils/exportProcessingPlantCSV");
+  const csvText = await generateProcessingPlantCSVContent();
   const csvRows = parseCsvText(csvText);
   const treeRows = flattenCsvToTree(csvRows);
 

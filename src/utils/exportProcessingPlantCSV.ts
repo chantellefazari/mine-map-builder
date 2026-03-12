@@ -5,21 +5,8 @@
  * Includes all 7 hierarchy levels, functional locations, P&ID tags,
  * and component-level engineering specifications.
  */
-import { supabase } from "@/integrations/supabase/client";
+import { fetchAllProcessingPlantRows } from "@/utils/fetchProcessingPlantData";
 import { buildAreasFromRows } from "@/hooks/useProcessingPlantAssets";
-
-interface DBAssetRow {
-  id: string;
-  area_code: string;
-  area_label: string;
-  sub_area: string;
-  parent_asset_label: string;
-  asset_number: string;
-  asset_name: string;
-  pid_tags: string[] | null;
-  components: any;
-  functional_location: string | null;
-}
 
 function escapeCSV(value: string): string {
   if (!value) return "";
@@ -33,27 +20,12 @@ function rowToCSV(row: string[]): string {
   return row.map(escapeCSV).join(",");
 }
 
-export async function exportProcessingPlantCSV() {
-  // Fetch all rows – paginate to avoid the 1000-row default limit
-  let allRows: DBAssetRow[] = [];
-  let from = 0;
-  const pageSize = 1000;
-
-  while (true) {
-    const { data, error } = await supabase
-      .from("processing_plant_assets_rev_b")
-      .select("id, area_code, area_label, sub_area, parent_asset_label, asset_number, asset_name, pid_tags, components, functional_location, sort_order")
-      .order("sort_order", { ascending: true })
-      .range(from, from + pageSize - 1);
-
-    if (error) throw new Error(`Failed to fetch assets: ${error.message}`);
-    if (!data || data.length === 0) break;
-    allRows = allRows.concat(data as DBAssetRow[]);
-    if (data.length < pageSize) break;
-    from += pageSize;
-  }
-
-  // Build the tree structure (same logic as the UI)
+/**
+ * Generates CSV content string from live database data.
+ * Used by both the CSV download and the PDF export.
+ */
+export async function generateProcessingPlantCSVContent(): Promise<string> {
+  const allRows = await fetchAllProcessingPlantRows();
   const areas = buildAreasFromRows(allRows);
 
   const SITE = "TCMG";
@@ -145,7 +117,11 @@ export async function exportProcessingPlantCSV() {
     }
   }
 
-  const csvContent = csvLines.join("\n");
+  return csvLines.join("\n");
+}
+
+export async function exportProcessingPlantCSV() {
+  const csvContent = await generateProcessingPlantCSVContent();
   const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
