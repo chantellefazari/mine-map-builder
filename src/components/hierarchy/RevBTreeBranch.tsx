@@ -15,9 +15,11 @@ import { FLPathSegment } from "./FLBreadcrumbContext";
 function deduplicateComponents(comps: Component[]): Component[] {
   if (comps.length <= 1) return comps;
 
+  const norm = (s?: string) => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
+
   const groups = new Map<string, Component[]>();
   for (const comp of comps) {
-    const key = (comp.componentName || "").toLowerCase().trim();
+    const key = norm(comp.componentName);
     if (!key) { groups.set(`__anon_${groups.size}`, [comp]); continue; }
     const arr = groups.get(key) || [];
     arr.push(comp);
@@ -29,7 +31,7 @@ function deduplicateComponents(comps: Component[]): Component[] {
     if (group.length === 1) { result.push(group[0]); continue; }
 
     const isRedundantModel = (c: Component) =>
-      !c.model || c.model.toLowerCase().trim() === key;
+      !c.model || norm(c.model) === key;
 
     const withRealModel = group.filter((c) => !isRedundantModel(c));
     const withRedundant = group.filter((c) => isRedundantModel(c));
@@ -52,10 +54,10 @@ function deduplicateComponents(comps: Component[]): Component[] {
         result.push(real);
       }
     } else {
-      // All entries are same kind — keep unique ones (differ by manufacturer, serial, model)
+      // All entries are same kind — keep unique ones by normalized specs
       const seen = new Set<string>();
       for (const comp of group) {
-        const uk = `${comp.manufacturer || ""}_${comp.serialNumber || ""}_${comp.model || ""}`;
+        const uk = `${norm(comp.manufacturer)}_${norm(comp.serialNumber)}_${norm(comp.model)}`;
         if (!seen.has(uk)) { seen.add(uk); result.push(comp); }
       }
     }
