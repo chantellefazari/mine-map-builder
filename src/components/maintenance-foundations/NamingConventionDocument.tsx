@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
@@ -11,79 +11,10 @@ import {
   instrumentationSuffixes,
   specialPatterns,
 } from "@/components/hierarchy/namingConventionData";
-import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
-
-interface LiveAssetRow {
-  area: string;
-  id: string;
-  desc: string;
-  level: "System" | "Comp";
-}
-
 
 export const NamingConventionDocument = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
-  const { data: liveAreas = [] } = useRevBPlantAssets();
-
-  const liveRows = useMemo<LiveAssetRow[]>(() => {
-    const rows: LiveAssetRow[] = [];
-
-    for (const area of liveAreas) {
-      for (const subArea of area.subAreas) {
-        for (const parentAsset of subArea.parentAssets) {
-          for (const equipment of parentAsset.equipment) {
-            if (equipment.assetNumber) {
-              rows.push({
-                area: area.code,
-                id: equipment.assetNumber,
-                desc: equipment.name || parentAsset.label,
-                level: "System",
-              });
-            }
-
-            for (const component of equipment.components || []) {
-              if (!component.componentCode) continue;
-              rows.push({
-                area: "",
-                id: component.componentCode,
-                desc: component.componentName || component.componentType || "Component",
-                level: "Comp",
-              });
-            }
-          }
-        }
-      }
-    }
-
-    const seen = new Set<string>();
-    return rows.filter((row) => {
-      const key = `${row.level}:${row.id}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  }, [liveAreas]);
-
-  const liveSystemRows = useMemo(
-    () => liveRows.filter((row) => row.level === "System").slice(0, 12),
-    [liveRows]
-  );
-
-  const liveComponentRows = useMemo(
-    () => liveRows.filter((row) => row.level === "Comp").slice(0, 12),
-    [liveRows]
-  );
-
-  const hiddenSystemCount = useMemo(
-    () => Math.max(0, liveRows.filter((row) => row.level === "System").length - liveSystemRows.length),
-    [liveRows, liveSystemRows.length]
-  );
-
-  const hiddenComponentCount = useMemo(
-    () => Math.max(0, liveRows.filter((row) => row.level === "Comp").length - liveComponentRows.length),
-    [liveRows, liveComponentRows.length]
-  );
 
   const handleDownloadPdf = async () => {
     if (!contentRef.current) return;
@@ -277,75 +208,10 @@ export const NamingConventionDocument = () => {
           </Table>
         </div>
 
-        <Separator />
-
-        {/* 6. Live System Codes from Processing Plant Asset Tree */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">6. Live System Asset Codes (Sample)</h4>
-          <p className="text-xs text-muted-foreground mb-2">
-            Showing a concise sample pulled directly from your live Processing Plant asset tree.
-            {hiddenSystemCount > 0 ? ` (${hiddenSystemCount} additional system codes available in the tree)` : ""}
-          </p>
-          {liveSystemRows.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="w-20 font-semibold">Area</TableHead>
-                  <TableHead className="w-40 font-semibold">Asset ID</TableHead>
-                  <TableHead className="font-semibold">Description</TableHead>
-                  <TableHead className="w-20 font-semibold">Level</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {liveSystemRows.map((row) => (
-                  <TableRow key={`${row.level}-${row.id}`}>
-                    <TableCell className="text-xs font-medium text-foreground">{row.area}</TableCell>
-                    <TableCell className="font-mono text-xs font-bold text-primary">{row.id}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{row.desc}</TableCell>
-                    <TableCell className="text-[10px] font-semibold text-foreground">{row.level}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="text-xs text-muted-foreground">No live system asset rows were returned from the Processing Plant asset tree.</p>
-          )}
-        </div>
-
-        {/* 7. Live Component Codes from Processing Plant Asset Tree */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">7. Live Component Asset Codes (Sample)</h4>
-          <p className="text-xs text-muted-foreground mb-2">
-            Component sample is also pulled directly from the same live Processing Plant asset tree.
-            {hiddenComponentCount > 0 ? ` (${hiddenComponentCount} additional component codes available in the tree)` : ""}
-          </p>
-          {liveComponentRows.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="w-32 font-semibold">Asset ID</TableHead>
-                  <TableHead className="font-semibold">Description</TableHead>
-                  <TableHead className="w-20 font-semibold">Level</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {liveComponentRows.map((row) => (
-                  <TableRow key={`${row.level}-${row.id}`}>
-                    <TableCell className="font-mono text-xs text-primary">{row.id}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{row.desc}</TableCell>
-                    <TableCell className="text-[10px] text-muted-foreground">{row.level}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="text-xs text-muted-foreground">No live component rows were returned from the Processing Plant asset tree.</p>
-          )}
-        </div>
 
         {/* Footer */}
         <div data-pdf-section className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
-          TCMG-STD-NAM-001 Rev 1.0 | Asset naming standards aligned to the live Processing Plant Asset Tree
+          TCMG-STD-NAM-001 Rev 1.0 | Asset naming standards aligned to the Processing Plant Asset Tree
         </div>
       </CardContent>
     </Card>
