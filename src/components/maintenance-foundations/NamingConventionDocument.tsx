@@ -327,9 +327,9 @@ export const NamingConventionDocument = () => {
             <div>
               <p className="font-bold text-foreground mb-1">Secondary & Tertiary Crushing</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">SEC-CFB01</span> — Cone Feed Bin (Dual Chamber)</p>
-                <p className="pl-4"><span className="text-primary">SEC-CFB01-FDR01</span> — Vibrating Feeder A → CRS02</p>
-                <p className="pl-4"><span className="text-primary">SEC-CFB01-FDR02</span> — Vibrating Feeder B → CRS03</p>
+                <p><span className="text-primary font-semibold">CFB01</span> — Cone Feed Bin (Dual Chamber)</p>
+                <p className="pl-4"><span className="text-primary">CFB01-FDR01</span> — Vibrating Feeder A → CRS02</p>
+                <p className="pl-4"><span className="text-primary">CFB01-FDR02</span> — Vibrating Feeder B → CRS03</p>
                 <p><span className="text-primary font-semibold">CRS02</span> — Secondary Cone Crusher</p>
                 <p className="pl-4"><span className="text-primary">CRS02-MTR01</span> — Crusher Motor 220kW</p>
                 <p className="pl-4"><span className="text-primary">CRS02-LUB01</span> — Lubrication System</p>
