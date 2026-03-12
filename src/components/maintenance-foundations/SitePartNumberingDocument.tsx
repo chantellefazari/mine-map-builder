@@ -73,10 +73,10 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
   const today = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "short", year: "numeric" });
 
   const headingStyle = (num: string, title: string): React.CSSProperties => ({
-    fontSize: 14, fontWeight: 700, margin: "14px 0 6px 0", borderBottom: `2px solid ${GOLD}`, paddingBottom: 3, color: DARK,
+    fontSize: 16, fontWeight: 700, margin: "18px 0 8px 0", borderBottom: `2px solid ${GOLD}`, paddingBottom: 4, color: DARK,
   });
 
-  const thStyle: React.CSSProperties = { padding: "4px 6px", textAlign: "left" as const, backgroundColor: DARK, color: "#fff", fontSize: 11 };
+  const thStyle: React.CSSProperties = { padding: "6px 10px", textAlign: "left" as const, backgroundColor: DARK, color: "#fff", fontSize: 13 };
   const thGoldStyle: React.CSSProperties = { ...thStyle, backgroundColor: GOLD, color: "#fff" };
 
   return (

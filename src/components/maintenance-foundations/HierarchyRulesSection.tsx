@@ -80,10 +80,10 @@ export const HierarchyRulesSection = () => {
   };
 
   const today = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "short", year: "numeric" });
-  const thGold: React.CSSProperties = { padding: "4px 6px", textAlign: "left", backgroundColor: GOLD, color: "#fff", fontSize: 11, fontWeight: 700 };
+  const thGold: React.CSSProperties = { padding: "6px 10px", textAlign: "left", backgroundColor: GOLD, color: "#fff", fontSize: 13, fontWeight: 700 };
   const thDark: React.CSSProperties = { ...thGold, backgroundColor: DARK };
-  const td: React.CSSProperties = { padding: "3px 6px", border: "1px solid #ddd", fontSize: 11 };
-  const heading = (text: string): React.CSSProperties => ({ fontSize: 14, fontWeight: 700, margin: "14px 0 6px 0", borderBottom: `2px solid ${GOLD}`, paddingBottom: 3, color: DARK });
+  const td: React.CSSProperties = { padding: "5px 10px", border: "1px solid #ddd", fontSize: 13 };
+  const heading = (text: string): React.CSSProperties => ({ fontSize: 16, fontWeight: 700, margin: "18px 0 8px 0", borderBottom: `2px solid ${GOLD}`, paddingBottom: 4, color: DARK });
 
   return (
     <Card className="border-border">
