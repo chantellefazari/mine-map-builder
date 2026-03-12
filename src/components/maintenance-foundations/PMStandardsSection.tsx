@@ -81,6 +81,7 @@ const inspectionDataShapes = [
   { shape: "Temperature / Pressure", desc: "Tasks with inline measurement fields for recording readings", jsonKey: "hasTemp, hasPressure", usage: "Motor inspections, bearing checks" },
 ];
 
+
 const baselinePurposes = [
   "Document the current state of all preventive maintenance activities on site",
   "Identify gaps in coverage across equipment types and disciplines",
