@@ -60,6 +60,7 @@ export const AssetNumberingSection = () => {
       const A4_H = 297;
       const MARGIN = 10;
       const CONTENT_W = A4_W - MARGIN * 2;
+      const CONTENT_H = A4_H - MARGIN * 2;
       const GAP = 3;
 
       const sections = Array.from(
@@ -68,7 +69,72 @@ export const AssetNumberingSection = () => {
 
       let currentY = MARGIN;
 
-      for (const section of sections) {
+      const addCanvasAcrossPages = (canvas: HTMLCanvasElement) => {
+        const pxPerMm = canvas.width / CONTENT_W;
+        let sourceY = 0;
+
+        while (sourceY < canvas.height) {
+          const remainingMm = A4_H - MARGIN - currentY;
+          if (remainingMm <= 0.5) {
+            pdf.addPage();
+            currentY = MARGIN;
+            continue;
+          }
+
+          const sliceHeightPx = Math.min(
+            canvas.height - sourceY,
+            Math.floor(remainingMm * pxPerMm)
+          );
+
+          if (sliceHeightPx <= 0) {
+            pdf.addPage();
+            currentY = MARGIN;
+            continue;
+          }
+
+          const sliceCanvas = document.createElement("canvas");
+          sliceCanvas.width = canvas.width;
+          sliceCanvas.height = sliceHeightPx;
+
+          const ctx = sliceCanvas.getContext("2d");
+          if (!ctx) break;
+
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+          ctx.drawImage(
+            canvas,
+            0,
+            sourceY,
+            canvas.width,
+            sliceHeightPx,
+            0,
+            0,
+            canvas.width,
+            sliceHeightPx
+          );
+
+          const sliceHeightMm = sliceHeightPx / pxPerMm;
+          pdf.addImage(
+            sliceCanvas.toDataURL("image/png"),
+            "PNG",
+            MARGIN,
+            currentY,
+            CONTENT_W,
+            sliceHeightMm
+          );
+
+          sourceY += sliceHeightPx;
+          currentY += sliceHeightMm;
+
+          if (sourceY < canvas.height) {
+            pdf.addPage();
+            currentY = MARGIN;
+          }
+        }
+      };
+
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
         const canvas = await html2canvas(section, {
           scale: 2,
           useCORS: true,
@@ -76,18 +142,28 @@ export const AssetNumberingSection = () => {
           windowWidth: 860,
         });
 
-        const imgData = canvas.toDataURL("image/png");
-        const scale = CONTENT_W / canvas.width;
-        const imgH = canvas.height * scale;
+        const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
+        const remainingMm = A4_H - MARGIN - currentY;
 
-        // If won't fit, new page
-        if (currentY + imgH > A4_H - MARGIN && currentY > MARGIN + 1) {
+        // Keep normal sections together if they can fit on one clean page.
+        if (
+          sectionHeightMm <= CONTENT_H &&
+          sectionHeightMm > remainingMm &&
+          currentY > MARGIN + 0.5
+        ) {
           pdf.addPage();
           currentY = MARGIN;
         }
 
-        pdf.addImage(imgData, "PNG", MARGIN, currentY, CONTENT_W, imgH);
-        currentY += imgH + GAP;
+        addCanvasAcrossPages(canvas);
+
+        if (i < sections.length - 1) {
+          currentY += GAP;
+          if (currentY > A4_H - MARGIN) {
+            pdf.addPage();
+            currentY = MARGIN;
+          }
+        }
       }
 
       const blob = pdf.output("blob");
