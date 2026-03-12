@@ -33,6 +33,8 @@ export interface SectionPdfOptions {
   scale?: number;
   /** Overlap in px between page slices to prevent glyph clipping (default 14) */
   sliceOverlapPx?: number;
+  /** Draw a border around the content area on each page (default false) */
+  addBorder?: boolean;
 }
 
 const DEFAULTS: Required<SectionPdfOptions> = {
@@ -43,6 +45,7 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   lineHeight: "1.4",
   scale: 1.5,
   sliceOverlapPx: 14,
+  addBorder: false,
 };
 
 /**
