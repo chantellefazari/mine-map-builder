@@ -139,10 +139,8 @@ export const AssetNumberingSection = () => {
             <p className="text-muted-foreground ml-20">└── BM01-MTR01 (inherits parent FL)</p>
             <p className="text-muted-foreground ml-24">└── Bearings, seals (inherit parent FL)</p>
           </div>
-        </div>
 
-        {/* 1. Area Codes + 2. Sub-Area Codes */}
-        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base pt-2">1. Area Codes (6 Approved)</h4>
           <h4 className="font-semibold text-foreground text-base">1. Area Codes (6 Approved)</h4>
           <Table>
             <TableHeader>
@@ -230,10 +228,8 @@ export const AssetNumberingSection = () => {
               ))}
             </TableBody>
           </Table>
-        </div>
 
-        {/* 5+6+7+8 combined */}
-        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base pt-2">5. Immutability Rules</h4>
           <h4 className="font-semibold text-foreground text-base">5. Immutability Rules</h4>
           <ul className="text-sm text-muted-foreground space-y-1.5">
             <li>• FL codes are <strong>never renamed</strong></li>
