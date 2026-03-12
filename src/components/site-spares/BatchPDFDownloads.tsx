@@ -11,7 +11,6 @@ import {
   getBatchLabel,
   getExistingBatches,
   generateBatchPDF,
-  downloadBatchPDF,
   clearAllBatchPDFs,
 } from "@/utils/generateBatchSparesPDF";
 
