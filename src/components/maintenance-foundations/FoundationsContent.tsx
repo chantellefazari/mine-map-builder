@@ -12,9 +12,9 @@ import {
   MapPin,
   Printer,
   Download,
-  
   BarChart3,
   AlertTriangle,
+  Database,
 } from "lucide-react";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
