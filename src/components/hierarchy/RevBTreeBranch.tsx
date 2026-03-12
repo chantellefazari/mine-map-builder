@@ -259,13 +259,27 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                                   const isPidMatch = pidMatchesSearch(equip.pidTags);
 
                                   const inlineSpec = equivalentComponents[0];
+                                  const normEquipName = (equip.name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+                                  const normEquipLabel = (equipNodeLabel || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+                                  
                                   const equipModelRaw = inlineSpec?.model || undefined;
-                                  const equipModelIsName = equipModelRaw && equip.name &&
-                                    equipModelRaw.toLowerCase().trim() === equip.name.toLowerCase().trim();
+                                  const normEqModel = (equipModelRaw || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+                                  const equipModelRedundant = equipModelRaw && normEqModel.length > 0 && (
+                                    normEqModel === normEquipName || normEquipName.includes(normEqModel) || normEqModel.includes(normEquipName) ||
+                                    normEquipLabel.includes(normEqModel)
+                                  );
+                                  
+                                  const equipMfrRaw = inlineSpec?.manufacturer || undefined;
+                                  const normEqMfr = (equipMfrRaw || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+                                  const equipMfrRedundant = equipMfrRaw && normEqMfr.length > 0 && (
+                                    normEqMfr === normEquipName || normEquipName.includes(normEqMfr) || normEqMfr.includes(normEquipName) ||
+                                    normEquipLabel.includes(normEqMfr)
+                                  );
+                                  
                                   const equipSpecValues = inlineSpec
                                     ? {
-                                        model: equipModelIsName ? undefined : equipModelRaw,
-                                        manufacturer: inlineSpec.manufacturer || undefined,
+                                        model: equipModelRedundant ? undefined : equipModelRaw,
+                                        manufacturer: equipMfrRedundant ? undefined : equipMfrRaw,
                                         serialNumber: inlineSpec.serialNumber,
                                         motorRef: inlineSpec.motorRef,
                                         pumpRef: inlineSpec.pumpRef,
