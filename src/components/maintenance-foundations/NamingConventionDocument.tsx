@@ -116,7 +116,6 @@ export const NamingConventionDocument = () => {
           </Table>
 
           <h4 className="font-semibold text-foreground text-base pt-3">2. Equipment Type Prefixes (Reserved)</h4>
-          <h4 className="font-semibold text-foreground text-base">2. Equipment Type Prefixes (Reserved)</h4>
           <p className="text-sm text-muted-foreground leading-relaxed">
             These prefixes are <strong>reserved</strong> across the Processing Plant. Crusher assets must not duplicate these unless the same equipment type is genuinely being used.
           </p>
