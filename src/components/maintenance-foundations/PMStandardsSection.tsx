@@ -10,20 +10,20 @@ const GOLD_BG = "#fdf8ea";
 const DARK = "#1a1a1a";
 
 const designPrinciples = [
-  { rule: "Equipment-Type First", desc: "PMs are designed for equipment categories (e.g. pumps, conveyors, generators), not individual assets. This ensures consistency and reduces duplication across the fleet." },
-  { rule: "Value-Adding Tasks Only", desc: "Every task must prevent or detect a specific failure mode. Tasks with no measurable outcome are removed during review." },
-  { rule: "Inspection Before Intrusive", desc: "Non-intrusive inspections (visual, thermal, vibration) occur more frequently than invasive work (disassembly, replacement)." },
-  { rule: "Risk-Based Frequency", desc: "Frequencies are determined by criticality rating, failure history, operating context, and OEM recommendations; never by habit or convenience." },
+  { rule: "Equipment Type First", desc: "PMs are designed for equipment categories (e.g. pumps, conveyors, generators), not individual assets. This ensures consistency and reduces duplication across the fleet." },
+  { rule: "Value Adding Tasks Only", desc: "Every task must prevent or detect a specific failure mode. Tasks with no measurable outcome are removed during review." },
+  { rule: "Inspection Before Intrusive", desc: "Non intrusive inspections (visual, thermal, vibration) occur more frequently than invasive work (disassembly, replacement)." },
+  { rule: "Risk Based Frequency", desc: "Frequencies are determined by criticality rating, failure history, operating context, and OEM recommendations; never by habit or convenience." },
   { rule: "Explicit Isolation", desc: "Every PM must clearly state isolation and LOTO requirements. No PM is approved without documented energy isolation steps." },
-  { rule: "Standardised Template", desc: "All PMs follow the TCMG standard template structure: Banner, Metadata, Safety, Inspection Table, Sign-Off. No deviations permitted." },
+  { rule: "Standardised Template", desc: "All PMs follow the TCMG standard template structure: Banner, Metadata, Safety, Inspection Table, Sign Off. No deviations permitted." },
   { rule: "Single Source of Truth", desc: "PM templates are maintained in the digital register (pm_master_list). Hard copies are reference only and must match the digital version." },
 ];
 
 const frequencyStandards = [
-  { discipline: "Mechanical", frequencies: ["Daily", "1-Week"], scope: "Visual inspections, greasing, belt tension, guard checks, leak detection, vibration monitoring", examples: "Mill Daily, Pump Weekly, Conveyor Weekly, Thickener Weekly" },
-  { discipline: "Electrical", frequencies: ["1-Week", "2-Week", "4-Week", "6-Week", "12-Week", "26-Week", "52-Week"], scope: "Thermography, MCC inspections, cable checks, RCD testing, motor inspections, switchboard audits, substation maintenance", examples: "Field MCC 1W, Motor Inspection 6W, RCD Push-Button 12W, RCD Injection 26W, Full Test Sheet 52W" },
-  { discipline: "Mobile Equipment", frequencies: ["Daily", "1-Week"], scope: "Pre-start checks, fluid levels, tyre condition, safety systems, operating hours, service tracking", examples: "Dozer Daily, Excavator Daily, Loader Weekly, Forklift Weekly, Water Truck Weekly" },
-  { discipline: "Facilities & Infrastructure", frequencies: ["4-Week", "12-Week", "26-Week", "52-Week"], scope: "Generator testing, safety shower inspections, potable water checks, emergency lighting, AC inspections", examples: "Generator Weekly, Safety Shower 4W, Emergency Light Test 12W, Generator Yearly Test 52W" },
+  { discipline: "Mechanical", frequencies: ["Daily", "1 Week"], scope: "Visual inspections, greasing, belt tension, guard checks, leak detection, vibration monitoring", examples: "Mill Daily, Pump Weekly, Conveyor Weekly, Thickener Weekly" },
+  { discipline: "Electrical", frequencies: ["1 Week", "2 Week", "4 Week", "6 Week", "12 Week", "26 Week", "52 Week"], scope: "Thermography, MCC inspections, cable checks, RCD testing, motor inspections, switchboard audits, substation maintenance", examples: "Field MCC 1W, Motor Inspection 6W, RCD Push Button 12W, RCD Injection 26W, Full Test Sheet 52W" },
+  { discipline: "Mobile Equipment", frequencies: ["Daily", "1 Week"], scope: "Pre start checks, fluid levels, tyre condition, safety systems, operating hours, service tracking", examples: "Dozer Daily, Excavator Daily, Loader Weekly, Forklift Weekly, Water Truck Weekly" },
+  { discipline: "Facilities & Infrastructure", frequencies: ["4 Week", "12 Week", "26 Week", "52 Week"], scope: "Generator testing, safety shower inspections, potable water checks, emergency lighting, AC inspections", examples: "Generator Weekly, Safety Shower 4W, Emergency Light Test 12W, Generator Yearly Test 52W" },
 ];
 
 const mandatoryFields = [
@@ -35,20 +35,20 @@ const mandatoryFields = [
   { field: "Estimated Duration", desc: "Expected time to complete, used for scheduling and resource planning" },
   { field: "Skill Level", desc: "Minimum competency required (Trades Assistant, Tradesperson, Specialist)" },
   { field: "Safety Warnings", desc: "Specific hazards identified for the task (pinch points, stored energy, chemical)" },
-  { field: "Isolation / LOTO", desc: "Energy isolation requirements with lock-out/tag-out procedures" },
-  { field: "Required PPE", desc: "Task-specific PPE beyond minimum site requirements" },
+  { field: "Isolation / LOTO", desc: "Energy isolation requirements with lock out/tag out procedures" },
+  { field: "Required PPE", desc: "Task specific PPE beyond minimum site requirements" },
   { field: "Required Tools", desc: "Specific tools and consumables needed to complete the PM" },
-  { field: "Inspection Checklist", desc: "Step-by-step tasks with Serviceable/Defective tick-off and comments column" },
-  { field: "Sign-Off Block", desc: "Performed By, Reviewed By, Approved By with date fields" },
+  { field: "Inspection Checklist", desc: "Step by step tasks with Serviceable/Defective tick off and comments column" },
+  { field: "Sign Off Block", desc: "Performed By, Reviewed By, Approved By with date fields" },
   { field: "Revision Control", desc: "Document number, revision, and effective date for version tracking" },
 ];
 
 const templateStructure = [
-  { component: "PM Banner Header", purpose: "Gold-themed header with PM title, document number, revision, and site branding" },
+  { component: "PM Banner Header", purpose: "Gold themed header with PM title, document number, revision, and site branding" },
   { component: "Metadata Grid", purpose: "Equipment type, frequency, discipline, duration, skill level, duty type, asset linkage" },
   { component: "Safety Precautions", purpose: "Mandatory safety warnings, isolation requirements, PPE, required tools, and hazard identification" },
-  { component: "Dynamic Inspection Table", purpose: "Task-by-task checklist with Serviceable/Defective checkboxes and Comments column, grouped by equipment section" },
-  { component: "Sign-Off Block", purpose: "Performed By, Reviewed By, Approved By with signature lines and date fields" },
+  { component: "Dynamic Inspection Table", purpose: "Task by task checklist with Serviceable/Defective checkboxes and Comments column, grouped by equipment section" },
+  { component: "Sign Off Block", purpose: "Performed By, Reviewed By, Approved By with signature lines and date fields" },
 ];
 
 const statusWorkflow = [
@@ -59,7 +59,7 @@ const statusWorkflow = [
 ];
 
 const constraints = [
-  "Do NOT copy-paste generic OEM manuals. All tasks must be site-specific and relevant to actual operating conditions.",
+  "Do NOT copy paste generic OEM manuals. All tasks must be site specific and relevant to actual operating conditions.",
   "Do NOT create schedules in PM design. This section defines what and how; scheduling is a separate function.",
   "Do NOT design PMs for individual assets. Templates target equipment categories and are linked to assets separately.",
   "Do NOT skip safety or isolation steps. Every PM must document energy isolation even if the task is online.",
@@ -80,6 +80,7 @@ const inspectionDataShapes = [
   { shape: "Flat Task List", desc: "Simple sequential checklist without grouping (e.g. Safety Shower Inspection)", jsonKey: "string[] or {task}[]", usage: "Simple inspections" },
   { shape: "Temperature / Pressure", desc: "Tasks with inline measurement fields for recording readings", jsonKey: "hasTemp, hasPressure", usage: "Motor inspections, bearing checks" },
 ];
+
 
 const baselinePurposes = [
   "Document the current state of all preventive maintenance activities on site",
@@ -179,7 +180,7 @@ export const PMStandardsSection = () => {
             This document defines the approved preventive maintenance (PM) design standards for Tennant Creek Mine. It governs how PMs are designed, structured, reviewed, and approved before deployment to the field or import into the CMMS. This standard applies to all disciplines: Mechanical, Electrical, and Mobile Equipment.
           </p>
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            The objective is to ensure every PM template is consistent, value-adding, safety-compliant, and traceable. PMs that do not conform to this standard will not be approved for field use or CMMS import.
+            The objective is to ensure every PM template is consistent, value adding, safety compliant, and traceable. PMs that do not conform to this standard will not be approved for field use or CMMS import.
           </p>
           <div style={{ backgroundColor: GOLD_BG, border: `1px solid ${GOLD_LIGHT}`, borderRadius: 6, padding: "10px 14px", marginBottom: 16 }}>
             <p style={{ fontSize: 13, fontWeight: 600, color: DARK, marginBottom: 4 }}>Key Distinction:</p>
@@ -191,7 +192,7 @@ export const PMStandardsSection = () => {
           {/* 2. PM Design Principles */}
           {sectionHeading("2", "PM Design Principles")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            All PM templates at Tennant Creek Mine must adhere to the following non-negotiable design principles:
+            All PM templates at Tennant Creek Mine must adhere to the following non negotiable design principles:
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
@@ -216,7 +217,7 @@ export const PMStandardsSection = () => {
           {/* 3. Standard PM Template Structure */}
           {sectionHeading("3", "Standard PM Template Structure")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            Every PM template follows a standardised five-component structure. This ensures consistency across all 88+ templates and enables automated CMMS import. The component sequence is non-negotiable and must not be reordered.
+            Every PM template follows a standardised five component structure. This ensures consistency across all 88+ templates and enables automated CMMS import. The component sequence is non negotiable and must not be reordered.
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
@@ -267,7 +268,7 @@ export const PMStandardsSection = () => {
           {/* 5. Frequency Standards */}
           {sectionHeading("5", "Frequency Standards by Discipline")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            PM frequencies are standardised across the site. Only approved frequency intervals may be used. Custom or ad-hoc frequencies are not permitted without written approval from the Maintenance Superintendent.
+            PM frequencies are standardised across the site. Only approved frequency intervals may be used. Custom or ad hoc frequencies are not permitted without written approval from the Maintenance Superintendent.
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
