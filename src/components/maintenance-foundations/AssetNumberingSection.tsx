@@ -182,7 +182,7 @@ export const AssetNumberingSection = () => {
                 Assets and components do NOT receive new FL codes. They inherit the FL code of their parent System.
               </p>
               <div className="bg-muted/30 rounded-lg p-4">
-                <div className="font-mono text-sm font-bold text-primary mb-3">TCMG-PP-GRND-GRIND-BM01</div>
+                <div className="font-mono text-sm font-bold text-primary mb-3"><div className="font-mono text-sm font-bold text-primary mb-3">TCMG-PP-COM-GRIND-BM01</div></div>
                 <p className="text-xs text-muted-foreground mb-2">All of the following inherit this FL:</p>
                 <div className="flex flex-wrap gap-1">
                   {["Ball mill motor", "Gear reducer", "Lubrication pumps", "Guards", "Sensors", "Couplings"].map((item) => (
