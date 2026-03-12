@@ -20,27 +20,12 @@ function rowToCSV(row: string[]): string {
   return row.map(escapeCSV).join(",");
 }
 
-export async function exportProcessingPlantCSV() {
-  // Fetch all rows – paginate to avoid the 1000-row default limit
-  let allRows: DBAssetRow[] = [];
-  let from = 0;
-  const pageSize = 1000;
-
-  while (true) {
-    const { data, error } = await supabase
-      .from("processing_plant_assets_rev_b")
-      .select("id, area_code, area_label, sub_area, parent_asset_label, asset_number, asset_name, pid_tags, components, functional_location, sort_order")
-      .order("sort_order", { ascending: true })
-      .range(from, from + pageSize - 1);
-
-    if (error) throw new Error(`Failed to fetch assets: ${error.message}`);
-    if (!data || data.length === 0) break;
-    allRows = allRows.concat(data as DBAssetRow[]);
-    if (data.length < pageSize) break;
-    from += pageSize;
-  }
-
-  // Build the tree structure (same logic as the UI)
+/**
+ * Generates CSV content string from live database data.
+ * Used by both the CSV download and the PDF export.
+ */
+export async function generateProcessingPlantCSVContent(): Promise<string> {
+  const allRows = await fetchAllProcessingPlantRows();
   const areas = buildAreasFromRows(allRows);
 
   const SITE = "TCMG";
