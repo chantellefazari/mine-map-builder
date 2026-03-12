@@ -41,7 +41,7 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   renderWidth: 740,
   fontSize: "13px",
   lineHeight: "1.4",
-  scale: 2,
+  scale: 1.5,
   sliceOverlapPx: 14,
 };
 
@@ -147,9 +147,10 @@ export async function exportSectionsToPdf(
       );
 
       const sliceHeightMm = sliceHeightPx / pxPerMm;
+      const imgData = sliceCanvas.toDataURL("image/jpeg", 0.85);
       pdf.addImage(
-        sliceCanvas.toDataURL("image/png"),
-        "PNG",
+        imgData,
+        "JPEG",
         MARGIN,
         currentY,
         CONTENT_W,
