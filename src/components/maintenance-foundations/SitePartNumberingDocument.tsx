@@ -117,23 +117,8 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
             </div>
           </div>
 
-          {/* Metadata row with gold labels */}
-          <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 14 }}>
-            <tbody>
-              <tr>
-                <td style={{ padding: "5px 10px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Prepared By</td>
-                <td style={{ padding: "5px 10px", border: "1px solid #ddd", width: "36%" }}>TCMG Maintenance Team</td>
-                <td style={{ padding: "5px 10px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Approved By</td>
-                <td style={{ padding: "5px 10px", border: "1px solid #ddd", width: "36%" }}>Maintenance Superintendent</td>
-              </tr>
-              <tr>
-                <td style={{ padding: "5px 10px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Status</td>
-                <td style={{ padding: "5px 10px", border: "1px solid #ddd" }}>Approved</td>
-                <td style={{ padding: "5px 10px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Effective Date</td>
-                <td style={{ padding: "5px 10px", border: "1px solid #ddd" }}>{today}</td>
-              </tr>
-            </tbody>
-          </table>
+
+
 
           {/* 1. Purpose */}
           <h2 style={headingStyle("1", "Purpose")}>1. Purpose</h2>
