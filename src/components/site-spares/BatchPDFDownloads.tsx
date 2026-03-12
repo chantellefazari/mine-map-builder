@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Download, FileText, Loader2, CheckCircle2, Trash2, RefreshCw } from "lucide-react";
+import { Download, FileText, Loader2, CheckCircle2, Trash2, RefreshCw, Server } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { downloadBlob } from "@/utils/safariDownload";
 import { toast } from "sonner";
@@ -14,6 +14,8 @@ import {
   clearAllBatchPDFs,
 } from "@/utils/generateBatchSparesPDF";
 
+const COMPLETE_PDF_PATH = "Complete_Parts_List_All.pdf";
+
 export const BatchPDFDownloads = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [existingBatches, setExistingBatches] = useState<Set<number>>(new Set());
@@ -22,6 +24,19 @@ export const BatchPDFDownloads = () => {
   const [progressMsg, setProgressMsg] = useState("");
   const [progressPct, setProgressPct] = useState(0);
 
+  // Complete PDF state
+  const [completePdfExists, setCompletePdfExists] = useState(false);
+  const [generatingComplete, setGeneratingComplete] = useState(false);
+
+  const checkCompletePdf = useCallback(async () => {
+    const { data } = await supabase.storage.from("temp-pdfs").list("", { limit: 100 });
+    if (data?.some((f) => f.name === COMPLETE_PDF_PATH)) {
+      setCompletePdfExists(true);
+    } else {
+      setCompletePdfExists(false);
+    }
+  }, []);
+
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
@@ -29,12 +44,13 @@ export const BatchPDFDownloads = () => {
       setTotalItems(count);
       const existing = await getExistingBatches(count);
       setExistingBatches(existing);
+      await checkCompletePdf();
     } catch (err) {
       console.error(err);
       toast.error("Failed to load batch info");
     }
     setLoading(false);
-  }, []);
+  }, [checkCompletePdf]);
 
   useEffect(() => {
     refresh();
@@ -50,7 +66,6 @@ export const BatchPDFDownloads = () => {
     try {
       await generateBatchPDF(batchIndex, totalItems, (msg) => {
         setProgressMsg(msg);
-        // Estimate progress from message content
         if (msg.includes("Fetching")) setProgressPct(10);
         else if (msg.includes("Downloaded")) {
           const match = msg.match(/(\d+)\/(\d+)/);
@@ -63,7 +78,6 @@ export const BatchPDFDownloads = () => {
       setProgressMsg("Done!");
       toast.success(`Batch ${batchIndex + 1} generated successfully`);
 
-      // Refresh existing batches
       const existing = await getExistingBatches(totalItems);
       setExistingBatches(existing);
     } catch (err) {
@@ -103,10 +117,38 @@ export const BatchPDFDownloads = () => {
     for (let i = 0; i < batchCount; i++) {
       if (existingBatches.has(i)) continue;
       await handleGenerate(i);
-      // Small delay between batches to let memory clear
       await new Promise((r) => setTimeout(r, 500));
     }
     toast.success("All batches generated!");
+  };
+
+  // Complete PDF handlers
+  const handleGenerateComplete = async () => {
+    setGeneratingComplete(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-spares-pdf");
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      toast.success(
+        `Complete PDF generated: ${data.totalItems} parts, ${data.imagesEmbedded} images, ${data.pages} pages`
+      );
+      setCompletePdfExists(true);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Failed to generate complete PDF");
+    } finally {
+      setGeneratingComplete(false);
+    }
+  };
+
+  const handleDownloadComplete = async () => {
+    const { data, error } = await supabase.storage.from("temp-pdfs").download(COMPLETE_PDF_PATH);
+    if (error || !data) {
+      toast.error("Failed to download complete PDF");
+      return;
+    }
+    downloadBlob(data, "Complete_Parts_List_All.pdf");
   };
 
   if (loading) {
@@ -122,13 +164,67 @@ export const BatchPDFDownloads = () => {
 
   return (
     <div className="space-y-6">
+      {/* Complete PDF Section */}
+      <div className="border border-primary/20 bg-primary/5 rounded-lg p-5">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h4 className="font-semibold text-foreground flex items-center gap-2">
+              <Server className="h-5 w-5 text-primary" />
+              Complete Parts List (Server-Generated)
+            </h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Generate a single PDF with all {totalItems} parts including images.
+              Processed on the server to avoid browser memory limits.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            {completePdfExists && (
+              <Button size="sm" variant="outline" className="gap-2" onClick={handleDownloadComplete}>
+                <Download className="h-4 w-4" />
+                Download Complete PDF
+              </Button>
+            )}
+            <Button
+              size="sm"
+              className="gap-2"
+              onClick={handleGenerateComplete}
+              disabled={generatingComplete}
+            >
+              {generatingComplete ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <FileText className="h-4 w-4" />
+              )}
+              {generatingComplete
+                ? "Generating on Server..."
+                : completePdfExists
+                ? "Regenerate"
+                : "Generate Complete PDF"}
+            </Button>
+          </div>
+        </div>
+        {generatingComplete && (
+          <div className="mt-3 bg-muted/50 rounded p-3 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin inline mr-2" />
+            This may take 30–60 seconds. The server is fetching all parts, downloading images, and
+            building the PDF...
+          </div>
+        )}
+        {completePdfExists && !generatingComplete && (
+          <div className="mt-3 flex items-center gap-2 text-sm text-green-600">
+            <CheckCircle2 className="h-4 w-4" />
+            Complete PDF is ready for download
+          </div>
+        )}
+      </div>
+
       {/* Summary Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-foreground">PDF Parts List with Images</h3>
+          <h3 className="text-lg font-semibold text-foreground">Batched PDF Parts Lists</h3>
           <p className="text-sm text-muted-foreground mt-1">
             {totalItems} total parts split into {batchCount} batches of {Math.min(100, totalItems)} items each.
-            Each PDF includes embedded thumbnail images.
+            Generated in-browser with embedded thumbnail images.
           </p>
         </div>
         <div className="flex gap-2">
@@ -189,9 +285,7 @@ export const BatchPDFDownloads = () => {
             <div
               key={i}
               className={`border rounded-lg p-4 transition-all ${
-                isGenerated
-                  ? "border-green-500/30 bg-green-500/5"
-                  : "border-border bg-card"
+                isGenerated ? "border-green-500/30 bg-green-500/5" : "border-border bg-card"
               }`}
             >
               <div className="flex items-start justify-between mb-3">
@@ -210,12 +304,7 @@ export const BatchPDFDownloads = () => {
               <div className="flex gap-2">
                 {isGenerated ? (
                   <>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="flex-1 gap-1"
-                      onClick={() => handleDownload(i)}
-                    >
+                    <Button size="sm" variant="outline" className="flex-1 gap-1" onClick={() => handleDownload(i)}>
                       <Download className="h-3.5 w-3.5" />
                       Download
                     </Button>
