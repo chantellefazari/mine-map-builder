@@ -92,22 +92,27 @@ async function main() {
   console.log(`🖼️  Downloading ${withImages.length} images (concurrency: 30)...`);
 
   const imageMap = new Map();
-  const concurrency = 30;
+  const concurrency = 10;
+  let failedCount = 0;
   for (let i = 0; i < withImages.length; i += concurrency) {
     const batch = withImages.slice(i, i + concurrency);
     const results = await Promise.all(
       batch.map(async (item) => {
         const img = await fetchImageAsBase64(item.image_urls[0]);
-        return { id: item.id, img };
+        return { id: item.id, img, desc: item.description };
       })
     );
     for (const r of results) {
-      if (r.img) imageMap.set(r.id, r.img);
+      if (r.img) {
+        imageMap.set(r.id, r.img);
+      } else {
+        failedCount++;
+      }
     }
     const done = Math.min(i + concurrency, withImages.length);
-    process.stdout.write(`\r   Downloaded ${done}/${withImages.length} images...`);
+    process.stdout.write(`\r   Downloaded ${done}/${withImages.length} images (${imageMap.size} ok, ${failedCount} failed)...`);
   }
-  console.log(`\n✅ Images embedded: ${imageMap.size}`);
+  console.log(`\n✅ Images embedded: ${imageMap.size} | Failed: ${failedCount}`);
 
   // Build PDF
   console.log("📄 Building PDF...");
