@@ -132,9 +132,12 @@ function buildComponentLabel(r: CsvRow): string {
   return isRedundantText(code, name) ? name : `${code} - ${name}`;
 }
 
-function shouldShowComponentBadge(r: CsvRow, compLabel: string): boolean {
+function shouldShowComponentBadge(r: CsvRow, compLabel: string, parentEquipName?: string): boolean {
   if (!r.compType) return false;
-  return !isRedundantText(r.compType, r.compName) && !isRedundantText(r.compType, compLabel);
+  // Suppress badge if it repeats the component name, label, or parent equipment name
+  if (isRedundantText(r.compType, r.compName) || isRedundantText(r.compType, compLabel)) return false;
+  if (parentEquipName && isRedundantText(r.compType, parentEquipName)) return false;
+  return true;
 }
 
 // ── Build spec list from a Level 7 row, suppressing redundant values ─
