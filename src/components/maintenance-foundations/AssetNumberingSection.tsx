@@ -71,6 +71,7 @@ export const AssetNumberingSection = () => {
 
       const addCanvasAcrossPages = (canvas: HTMLCanvasElement) => {
         const pxPerMm = canvas.width / CONTENT_W;
+        const SLICE_OVERLAP_PX = 20;
         let sourceY = 0;
 
         while (sourceY < canvas.height) {
@@ -123,10 +124,13 @@ export const AssetNumberingSection = () => {
             sliceHeightMm
           );
 
-          sourceY += sliceHeightPx;
+          const reachedEnd = sourceY + sliceHeightPx >= canvas.height;
+          sourceY = reachedEnd
+            ? canvas.height
+            : Math.max(0, sourceY + sliceHeightPx - SLICE_OVERLAP_PX);
           currentY += sliceHeightMm;
 
-          if (sourceY < canvas.height) {
+          if (!reachedEnd) {
             pdf.addPage();
             currentY = MARGIN;
           }
@@ -139,7 +143,13 @@ export const AssetNumberingSection = () => {
           scale: 2,
           useCORS: true,
           backgroundColor: "#ffffff",
-          windowWidth: 860,
+          windowWidth: Math.max(860, document.documentElement.clientWidth),
+          windowHeight: Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight
+          ),
+          scrollX: 0,
+          scrollY: -window.scrollY,
         });
 
         const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
