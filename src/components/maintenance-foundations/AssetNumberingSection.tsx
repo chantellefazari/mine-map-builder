@@ -71,7 +71,7 @@ export const AssetNumberingSection = () => {
 
       const addCanvasAcrossPages = (canvas: HTMLCanvasElement) => {
         const pxPerMm = canvas.width / CONTENT_W;
-        const SLICE_OVERLAP_PX = 20;
+        const SLICE_OVERLAP_PX = 8;
         let sourceY = 0;
 
         while (sourceY < canvas.height) {
