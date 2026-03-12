@@ -20,13 +20,6 @@ interface LiveAssetRow {
   level: "System" | "Comp";
 }
 
-const chunkRows = <T,>(rows: T[], chunkSize: number): T[][] => {
-  const chunks: T[][] = [];
-  for (let i = 0; i < rows.length; i += chunkSize) {
-    chunks.push(rows.slice(i, i + chunkSize));
-  }
-  return chunks;
-};
 
 export const NamingConventionDocument = () => {
   const contentRef = useRef<HTMLDivElement>(null);
