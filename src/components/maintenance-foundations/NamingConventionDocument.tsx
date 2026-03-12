@@ -11,19 +11,19 @@ import {
 } from "@/components/hierarchy/namingConventionData";
 
 const suggestedCrusherPrefixes = [
-  { prefix: "JAW", meaning: "Jaw Crusher", example: "JAW001", notes: "Primary crusher" },
-  { prefix: "CON", meaning: "Cone Crusher", example: "CON001", notes: "Secondary / tertiary crusher" },
-  { prefix: "IMP", meaning: "Impact Crusher", example: "IMP001", notes: "If applicable" },
-  { prefix: "GRZ", meaning: "Grizzly Feeder", example: "GRZ001", notes: "Scalping / feed grizzly" },
-  { prefix: "RHOP", meaning: "Reclaim Hopper", example: "RHOP001", notes: "Already in use — shared prefix OK if different area" },
-  { prefix: "FHOP", meaning: "Feed Hopper", example: "FHOP001", notes: "Already in use — shared prefix OK if different area" },
-  { prefix: "CFDR", meaning: "Crusher Feeder", example: "CFDR001", notes: "Vibrating / pan feeder" },
-  { prefix: "CSCN", meaning: "Crusher Screen", example: "CSCN001", notes: "Product / scalping screen" },
-  { prefix: "CBIN", meaning: "Crusher Bin", example: "CBIN001", notes: "ROM bin / surge bin" },
-  { prefix: "WSCL", meaning: "Weighing Scale / Weightometer", example: "WSCL001", notes: "Belt scale on conveyors" },
-  { prefix: "DST", meaning: "Dust Suppression System", example: "DST001", notes: "Spray bars / enclosures" },
-  { prefix: "MAG", meaning: "Magnetic Separator", example: "MAG001", notes: "Overband / drum magnet" },
-  { prefix: "MTD", meaning: "Metal Detector", example: "MTD001", notes: "Conveyor metal detector" },
+  { prefix: "CR", meaning: "Crusher (Jaw / Cone)", example: "CR01, CR02, CR03", notes: "CR01 Primary Jaw, CR02 Secondary Cone, CR03 Tertiary Cone" },
+  { prefix: "ROM-BIN", meaning: "ROM Bin", example: "ROM-BIN01", notes: "Steel structure with Hardox liners" },
+  { prefix: "ROM-FDR", meaning: "Primary Vibrating Feeder", example: "ROM-FDR01", notes: "Hydraulic drive feeder under ROM bin" },
+  { prefix: "PRI-MAG", meaning: "Overband Magnet", example: "PRI-MAG01", notes: "Self-cleaning overband on CR01 discharge" },
+  { prefix: "PRI-GFB", meaning: "Ground Feed Bin", example: "PRI-GFB01", notes: "CV01 discharge into screen feed system" },
+  { prefix: "SEC-CFB", meaning: "Cone Feed Bin", example: "SEC-CFB01", notes: "Dual chamber bin feeding CR02 & CR03" },
+  { prefix: "SC", meaning: "Vibrating Screen", example: "SC01", notes: "Horizontal vibrating screen (3-deck)" },
+  { prefix: "CV", meaning: "Conveyor", example: "CV01–CV15", notes: "Shared prefix with Processing Plant — different numbering range" },
+  { prefix: "SEC-CFB-FDR", meaning: "Cone Feed Vibrating Feeder", example: "SEC-CFB01-FDR01, FDR02", notes: "Feeders A & B under cone feed bin" },
+  { prefix: "CV12/CV15", meaning: "Radial Stacker", example: "CV12, CV15", notes: "Fines product radial stackers" },
+  { prefix: "MDE", meaning: "Metal Detector", example: "CV07-MDE01", notes: "Component suffix on cone feed conveyors" },
+  { prefix: "DST", meaning: "Dust Suppression", example: "DST01", notes: "Spray bars and enclosures" },
+  { prefix: "LVL", meaning: "Level Sensor", example: "ROM-BIN01-LVL01", notes: "Vega level sensors on bins" },
 ];
 
 const reservedPrefixes = equipmentPrefixes.map((e) => e.prefix);
@@ -266,61 +266,78 @@ export const NamingConventionDocument = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-xs text-muted-foreground">
-            Below shows how the naming convention would look when applied to a typical crushing circuit. Component suffixes are the same as the Processing Plant — only the parent equipment prefixes change.
+            Below shows how the naming convention applies to the current Crushing Plant layout. Component suffixes follow the same site standard as the Processing Plant.
           </p>
 
           <div className="bg-muted/50 rounded-lg p-4 font-mono text-xs space-y-3">
             <div>
-              <p className="font-bold text-foreground mb-1">Primary Jaw Crusher</p>
+              <p className="font-bold text-foreground mb-1">ROM & Primary Feed</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">JAW001</span> — Primary Jaw Crusher</p>
-                <p className="pl-4"><span className="text-primary">JAW001-MTR001</span> — Crusher Drive Motor</p>
-                <p className="pl-4"><span className="text-primary">JAW001-HYD001</span> — Hydraulic Adjustment System</p>
-                <p className="pl-4"><span className="text-primary">JAW001-CYL001</span> — CSS Adjustment Cylinder</p>
-                <p className="pl-4"><span className="text-primary">JAW001-VLV001</span> — Hydraulic Relief Valve</p>
-                <p className="pl-4"><span className="text-primary">JAW001-LCS001</span> — Local Control Station</p>
-                <p className="pl-4"><span className="text-primary">JAW001-SEN001</span> — Bearing Temperature Sensor</p>
+                <p><span className="text-primary font-semibold">ROM-BIN01</span> — ROM Bin</p>
+                <p className="pl-4"><span className="text-primary">ROM-BIN01-LVL01</span> — Vega Level Sensor</p>
+                <p className="pl-4"><span className="text-primary">ROM-BIN01-STR01</span> — Bin Structure</p>
+                <p><span className="text-primary font-semibold">ROM-FDR01</span> — Primary Vibrating Feeder</p>
+                <p className="pl-4"><span className="text-primary">ROM-FDR01-MTR01</span> — Feeder Motor</p>
+                <p className="pl-4"><span className="text-primary">ROM-FDR01-HYD01</span> — Hydraulic Motor Drive</p>
+                <p className="pl-4"><span className="text-primary">ROM-FDR01-VSD01</span> — Variable Speed Drive</p>
+                <p className="pl-4"><span className="text-primary">ROM-FDR01-EXC01</span> — Exciter Unit A</p>
               </div>
             </div>
 
             <div>
-              <p className="font-bold text-foreground mb-1">Feed System</p>
+              <p className="font-bold text-foreground mb-1">Primary Crushing</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">GRZ001</span> — Grizzly Feeder</p>
-                <p className="pl-4"><span className="text-primary">GRZ001-MTR001</span> — Feeder Drive Motor</p>
-                <p className="pl-4"><span className="text-primary">GRZ001-VSD001</span> — Variable Speed Drive</p>
-                <p><span className="text-primary font-semibold">CBIN001</span> — ROM Bin</p>
-                <p className="pl-4"><span className="text-primary">CBIN001-HLS001</span> — High Level Switch</p>
+                <p><span className="text-primary font-semibold">CR01</span> — Primary Jaw Crusher</p>
+                <p className="pl-4"><span className="text-primary">CR01-MTR01</span> — Crusher Motor 160kW</p>
+                <p className="pl-4"><span className="text-primary">CR01-GBX01</span> — Gearbox / Drive Assembly</p>
+                <p className="pl-4"><span className="text-primary">CR01-JKS01</span> — Jackshaft Assembly</p>
+                <p className="pl-4"><span className="text-primary">CR01-LUB01</span> — Lubrication System</p>
+                <p className="pl-4"><span className="text-primary">CR01-HOP01</span> — Feed Hopper</p>
+                <p><span className="text-primary font-semibold">PRI-MAG01</span> — Overband Magnet</p>
+                <p className="pl-4"><span className="text-primary">PRI-MAG01-MTR01</span> — Magnet Drive Motor</p>
+                <p className="pl-4"><span className="text-primary">PRI-MAG01-BLT01</span> — Self-Cleaning Belt</p>
               </div>
             </div>
 
             <div>
-              <p className="font-bold text-foreground mb-1">Product Conveying</p>
+              <p className="font-bold text-foreground mb-1">Conveying</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">CV01</span> — Crusher Discharge Conveyor</p>
-                <p className="pl-4"><span className="text-primary">CV01-MTR001</span> — Head Pulley Motor</p>
-                <p className="pl-4"><span className="text-primary">CV01-GBX001</span> — Head Pulley Gearbox</p>
-                <p className="pl-4"><span className="text-primary">CV01-PWS001</span> — Pull Wire Switch (LHS)</p>
-                <p className="pl-4"><span className="text-primary">CV01-PWS002</span> — Pull Wire Switch (RHS)</p>
-                <p className="pl-4"><span className="text-primary">CV01-WTM001</span> — Belt Weightometer</p>
+                <p><span className="text-primary font-semibold">CV01</span> — Forward Conveyor</p>
+                <p className="pl-4"><span className="text-primary">CV01-MTR01</span> — Head Drive Motor A</p>
+                <p className="pl-4"><span className="text-primary">CV01-GBX01</span> — Gearbox</p>
+                <p className="pl-4"><span className="text-primary">CV01-LNY01</span> — Lanyard Safety Switches</p>
+                <p className="pl-4"><span className="text-primary">CV01-SPD01</span> — Underspeed Sensor</p>
+                <p><span className="text-primary font-semibold">CV04</span> — Screen Feed Conveyor</p>
+                <p><span className="text-primary font-semibold">CV07</span> — Secondary Cone Feed Conveyor</p>
+                <p className="pl-4"><span className="text-primary">CV07-MDE01</span> — Metal Detector</p>
               </div>
             </div>
 
             <div>
               <p className="font-bold text-foreground mb-1">Screening</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">CSCN001</span> — Product Screen</p>
-                <p className="pl-4"><span className="text-primary">CSCN001-MTR001</span> — Screen Drive Motor</p>
-                <p className="pl-4"><span className="text-primary">CSCN001-EXC001</span> — Screen Exciter</p>
+                <p><span className="text-primary font-semibold">SC01</span> — Vibrating Screen (3-Deck)</p>
+                <p className="pl-4"><span className="text-primary">SC01-MTR01</span> — Screen Drive Motor 45kW</p>
+                <p className="pl-4"><span className="text-primary">SC01-GBX01</span> — Exciter / Gearbox</p>
+                <p className="pl-4"><span className="text-primary">SC01-DK01</span> — Top Deck</p>
+                <p className="pl-4"><span className="text-primary">SC01-DK02</span> — Second Deck</p>
+                <p className="pl-4"><span className="text-primary">SC01-DK03</span> — Bottom Deck (Fines)</p>
+                <p className="pl-4"><span className="text-primary">SC01-SPR01</span> — Isolation Springs</p>
               </div>
             </div>
 
             <div>
-              <p className="font-bold text-foreground mb-1">Ancillary</p>
+              <p className="font-bold text-foreground mb-1">Secondary & Tertiary Crushing</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">DST001</span> — Dust Suppression System</p>
-                <p><span className="text-primary font-semibold">MAG001</span> — Overband Magnetic Separator</p>
-                <p><span className="text-primary font-semibold">MTD001</span> — Conveyor Metal Detector</p>
+                <p><span className="text-primary font-semibold">SEC-CFB01</span> — Cone Feed Bin (Dual Chamber)</p>
+                <p className="pl-4"><span className="text-primary">SEC-CFB01-FDR01</span> — Vibrating Feeder A → CR02</p>
+                <p className="pl-4"><span className="text-primary">SEC-CFB01-FDR02</span> — Vibrating Feeder B → CR03</p>
+                <p><span className="text-primary font-semibold">CR02</span> — Secondary Cone Crusher</p>
+                <p className="pl-4"><span className="text-primary">CR02-MTR01</span> — Crusher Motor 220kW</p>
+                <p className="pl-4"><span className="text-primary">CR02-LUB01</span> — Lubrication System</p>
+                <p><span className="text-primary font-semibold">CR03</span> — Tertiary Cone Crusher</p>
+                <p className="pl-4"><span className="text-primary">CR03-MTR01</span> — Crusher Motor 220kW</p>
+                <p className="pl-4"><span className="text-primary">CR03-HYD01</span> — Hydraulic Tramp Release</p>
               </div>
             </div>
           </div>
