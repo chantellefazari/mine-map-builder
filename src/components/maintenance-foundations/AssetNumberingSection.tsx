@@ -137,17 +137,41 @@ export const AssetNumberingSection = () => {
         }
       };
 
+      const renderSectionCanvas = async (section: HTMLElement) => {
+        const sectionWidth = Math.ceil(section.getBoundingClientRect().width);
+        const wrapper = document.createElement("div");
+        wrapper.style.position = "fixed";
+        wrapper.style.left = "-100000px";
+        wrapper.style.top = "0";
+        wrapper.style.padding = "6px";
+        wrapper.style.background = "#ffffff";
+        wrapper.style.boxSizing = "content-box";
+        wrapper.style.width = `${sectionWidth}px`;
+        wrapper.style.overflow = "visible";
+
+        const clone = section.cloneNode(true) as HTMLElement;
+        clone.style.margin = "0";
+        clone.style.width = "100%";
+        clone.style.overflow = "visible";
+        wrapper.appendChild(clone);
+
+        document.body.appendChild(wrapper);
+        try {
+          return await html2canvas(wrapper, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            width: sectionWidth + 12,
+            windowWidth: sectionWidth + 12,
+          });
+        } finally {
+          document.body.removeChild(wrapper);
+        }
+      };
+
       for (let i = 0; i < sections.length; i++) {
         const section = sections[i];
-        const sectionWidth = Math.ceil(section.getBoundingClientRect().width);
-
-        const canvas = await html2canvas(section, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: "#ffffff",
-          width: sectionWidth,
-          windowWidth: sectionWidth,
-        });
+        const canvas = await renderSectionCanvas(section);
 
         const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
         const remainingMm = A4_H - MARGIN - currentY;
