@@ -159,7 +159,7 @@ export const HierarchyRulesSection = () => {
                   <th style={{ ...thGold, width: 110 }}>Name</th>
                   <th style={thGold}>Example</th>
                   <th style={thGold}>Description</th>
-                  <th style={{ ...thGold, width: 36, textAlign: "center", fontSize: 11 }}>FL</th>
+                  <th style={{ ...thGold, width: 50, textAlign: "center", fontSize: 11 }}>FL</th>
                 </tr>
               </thead>
               <tbody>
