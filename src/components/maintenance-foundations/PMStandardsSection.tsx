@@ -280,7 +280,7 @@ export const PMStandardsSection = () => {
           {/* 6. PM Status Workflow */}
           {sectionHeading("6", "PM Approval Workflow")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            Every PM follows a controlled lifecycle from creation to CMMS import. PMs may only be deployed to the field or imported into the CMMS once they reach "Approved" status.
+            Every PM follows a controlled lifecycle from creation to field issue. PMs may only be deployed to the field once they reach "Approved" status.
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
@@ -390,7 +390,7 @@ export const PMStandardsSection = () => {
           {/* 10. Baseline PM List */}
           {sectionHeading("10", "Baseline PM List (Reference)")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            The baseline PM list captures all currently defined preventive maintenance activities. This serves as the foundation for future optimisation, scheduling, and CMMS configuration. The baseline is maintained in the digital PM register and is not a static document.
+            The baseline PM list captures all currently defined preventive maintenance activities. This serves as the foundation for future optimisation and scheduling. The baseline is maintained in the master PM register.
           </p>
           <div style={{ backgroundColor: GOLD_BG, border: `1px solid ${GOLD_LIGHT}`, borderRadius: 6, padding: "12px 14px", marginBottom: 16 }}>
             <p style={{ fontSize: 13, fontWeight: 600, color: DARK, marginBottom: 6 }}>Purpose of the Baseline:</p>
@@ -424,7 +424,7 @@ export const PMStandardsSection = () => {
                 { activity: "Task relevance review", freq: "6-Monthly", resp: "Discipline Lead (Mechanical/Electrical)" },
                 { activity: "Frequency validation", freq: "Annually", resp: "Reliability Engineer or Maintenance Superintendent" },
                 { activity: "Safety & isolation audit", freq: "Annually", resp: "Site Safety Advisor and Maintenance Superintendent" },
-                { activity: "CMMS alignment check", freq: "Post-migration", resp: "CMMS Administrator and Planning Team" },
+                { activity: "Register alignment check", freq: "Post-migration", resp: "Planning Coordinator and Maintenance Superintendent" },
                 { activity: "Full PM optimisation review", freq: "Annually", resp: "Maintenance Superintendent with discipline leads" },
               ].map((r, i) => (
                 <tr key={i}>
