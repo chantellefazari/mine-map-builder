@@ -58,10 +58,10 @@ export const AssetNumberingSection = () => {
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const A4_W = 210;
       const A4_H = 297;
-      const MARGIN = 10;
+      const MARGIN = 8;
       const CONTENT_W = A4_W - MARGIN * 2;
       const CONTENT_H = A4_H - MARGIN * 2;
-      const GAP = 3;
+      const GAP = 2;
 
       const sections = Array.from(
         contentRef.current.querySelectorAll<HTMLElement>("[data-pdf-section]")
@@ -71,7 +71,7 @@ export const AssetNumberingSection = () => {
 
       const addCanvasAcrossPages = (canvas: HTMLCanvasElement) => {
         const pxPerMm = canvas.width / CONTENT_W;
-        const SLICE_OVERLAP_PX = 20;
+        const SLICE_OVERLAP_PX = 8;
         let sourceY = 0;
 
         while (sourceY < canvas.height) {
@@ -139,17 +139,14 @@ export const AssetNumberingSection = () => {
 
       for (let i = 0; i < sections.length; i++) {
         const section = sections[i];
+        const sectionWidth = Math.ceil(section.getBoundingClientRect().width);
+
         const canvas = await html2canvas(section, {
           scale: 2,
           useCORS: true,
           backgroundColor: "#ffffff",
-          windowWidth: Math.max(860, document.documentElement.clientWidth),
-          windowHeight: Math.max(
-            document.body.scrollHeight,
-            document.documentElement.scrollHeight
-          ),
-          scrollX: 0,
-          scrollY: -window.scrollY,
+          width: sectionWidth,
+          windowWidth: sectionWidth,
         });
 
         const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
