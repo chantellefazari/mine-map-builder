@@ -184,7 +184,7 @@ export const NamingConventionDocument = () => {
       <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px] font-bold">SECTION 4</Badge>
+            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 4</span>
             <CardTitle className="text-base">Instrumentation Suffixes</CardTitle>
           </div>
         </CardHeader>
