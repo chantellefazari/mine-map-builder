@@ -147,9 +147,10 @@ export async function exportSectionsToPdf(
       );
 
       const sliceHeightMm = sliceHeightPx / pxPerMm;
+      const imgData = sliceCanvas.toDataURL("image/jpeg", 0.85);
       pdf.addImage(
-        sliceCanvas.toDataURL("image/png"),
-        "PNG",
+        imgData,
+        "JPEG",
         MARGIN,
         currentY,
         CONTENT_W,
