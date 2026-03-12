@@ -307,10 +307,8 @@ export const PMStandardsSection = () => {
               <strong>Rule:</strong> Only PMs with "Approved" or "Ready for CMMS" status may be issued to field crews or imported into the CMMS. Draft and Reviewed PMs must not be used for operational maintenance.
             </p>
           </div>
-        </div>
 
-        {/* Page 4: Inspection Data + Coverage Summary */}
-        <div data-pdf-section style={{ padding: "28px 36px" }}>
+
           {/* 7. Inspection Task Data Architecture */}
           {sectionHeading("7", "Inspection Task Data Architecture")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
