@@ -217,7 +217,7 @@ export const PMStandardsSection = () => {
           {/* 3. Standard PM Template Structure */}
           {sectionHeading("3", "Standard PM Template Structure")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            Every PM template follows a standardised five-component structure. This ensures consistency across all 88+ templates and enables automated CMMS import. The component sequence is non-negotiable and must not be reordered.
+            Every PM template follows a standardised five component structure. This ensures consistency across all 88+ templates and enables automated CMMS import. The component sequence is non negotiable and must not be reordered.
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
