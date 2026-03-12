@@ -291,9 +291,9 @@ export const NamingConventionDocument = () => {
                 <p className="pl-4"><span className="text-primary">CRS01-JKS01</span> — Jackshaft Assembly</p>
                 <p className="pl-4"><span className="text-primary">CRS01-LUB01</span> — Lubrication System</p>
                 <p className="pl-4"><span className="text-primary">CRS01-HOP01</span> — Feed Hopper</p>
-                <p><span className="text-primary font-semibold">PRI-MAG01</span> — Overband Magnet</p>
-                <p className="pl-4"><span className="text-primary">PRI-MAG01-MTR01</span> — Magnet Drive Motor</p>
-                <p className="pl-4"><span className="text-primary">PRI-MAG01-BLT01</span> — Self-Cleaning Belt</p>
+                <p><span className="text-primary font-semibold">MAG01</span> — Overband Magnet</p>
+                <p className="pl-4"><span className="text-primary">MAG01-MTR01</span> — Magnet Drive Motor</p>
+                <p className="pl-4"><span className="text-primary">MAG01-BLT01</span> — Self-Cleaning Belt</p>
               </div>
             </div>
 
