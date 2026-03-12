@@ -64,14 +64,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
     if (!contentRef.current) return;
     setGenerating(true);
     try {
-      await exportSectionsToPdf(contentRef.current, "TCMG-STD-SPN-001_Site_Parts_Numbering_Standard.pdf", {
-        margin: 10,
-        renderWidth: 780,
-        fontSize: "12px",
-        lineHeight: "1.4",
-        scale: 1.5,
-        addBorder: true,
-      });
+      await exportSectionsToPdf(contentRef.current, "TCMG-STD-SPN-001_Site_Parts_Numbering_Standard.pdf", PDF_EXPORT_OPTS);
     } finally {
       setGenerating(false);
     }
