@@ -12,18 +12,16 @@ import {
 
 const suggestedCrusherPrefixes = [
   { prefix: "CRS", meaning: "Crusher (Jaw / Cone)", example: "CRS01, CRS02, CRS03", notes: "CRS01 Primary Jaw, CRS02 Secondary Cone, CRS03 Tertiary Cone" },
-  { prefix: "ROM-BIN", meaning: "ROM Bin", example: "ROM-BIN01", notes: "Steel structure with Hardox liners" },
-  { prefix: "ROM-FDR", meaning: "Primary Vibrating Feeder", example: "ROM-FDR01", notes: "Hydraulic drive feeder under ROM bin" },
-  { prefix: "PRI-MAG", meaning: "Overband Magnet", example: "PRI-MAG01", notes: "Self-cleaning overband on CRS01 discharge" },
-  { prefix: "PRI-GFB", meaning: "Ground Feed Bin", example: "PRI-GFB01", notes: "CV01 discharge into screen feed system" },
-  { prefix: "SEC-CFB", meaning: "Cone Feed Bin", example: "SEC-CFB01", notes: "Dual chamber bin feeding CRS02 & CRS03" },
+  { prefix: "RBIN", meaning: "ROM Bin", example: "RBIN01", notes: "Steel structure with Hardox liners" },
+  { prefix: "RFDR", meaning: "Primary Vibrating Feeder", example: "RFDR01", notes: "Hydraulic drive feeder under ROM bin" },
+  { prefix: "MAG", meaning: "Overband Magnet", example: "MAG01", notes: "Self-cleaning overband on CRS01 discharge" },
+  { prefix: "GFB", meaning: "Ground Feed Bin", example: "GFB01", notes: "CV01 discharge into screen feed system" },
+  { prefix: "CFB", meaning: "Cone Feed Bin", example: "CFB01", notes: "Dual chamber bin feeding CRS02 & CRS03" },
   { prefix: "SCN", meaning: "Vibrating Screen", example: "SCN01", notes: "Horizontal vibrating screen (3-deck)" },
   { prefix: "CV", meaning: "Conveyor", example: "CV01–CV15", notes: "Shared prefix with Processing Plant — different numbering range" },
-  { prefix: "SEC-CFB-FDR", meaning: "Cone Feed Vibrating Feeder", example: "SEC-CFB01-FDR01, FDR02", notes: "Feeders A & B under cone feed bin" },
-  { prefix: "CV12/CV15", meaning: "Radial Stacker", example: "CV12, CV15", notes: "Fines product radial stackers" },
   { prefix: "MDE", meaning: "Metal Detector", example: "CV07-MDE01", notes: "Component suffix on cone feed conveyors" },
   { prefix: "DST", meaning: "Dust Suppression", example: "DST01", notes: "Spray bars and enclosures" },
-  { prefix: "LVL", meaning: "Level Sensor", example: "ROM-BIN01-LVL01", notes: "Vega level sensors on bins" },
+  { prefix: "LVL", meaning: "Level Sensor", example: "RBIN01-LVL01", notes: "Vega level sensors on bins" },
 ];
 
 const reservedPrefixes = equipmentPrefixes.map((e) => e.prefix);
