@@ -116,12 +116,36 @@ function norm(s: string): string {
   return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+function normalizedTokens(s: string): string[] {
+  return (s || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((token) => {
+      if (token.length > 3 && token.endsWith("s")) return token.slice(0, -1);
+      return token;
+    })
+    .filter((token) => !["duty", "standby", "unit"].includes(token));
+}
+
+function isTokenSubset(a: string[], b: string[]): boolean {
+  if (!a.length || !b.length) return false;
+  const setB = new Set(b);
+  return a.every((t) => setB.has(t));
+}
+
 function isRedundantText(value: string, against: string): boolean {
   const nv = norm(value);
   const na = norm(against);
   if (!nv) return true;
   if (!na) return false;
-  return nv === na || na.includes(nv) || nv.includes(na);
+  if (nv === na || na.includes(nv) || nv.includes(na)) return true;
+
+  const tv = normalizedTokens(value);
+  const ta = normalizedTokens(against);
+  return isTokenSubset(tv, ta) || isTokenSubset(ta, tv);
 }
 
 function buildComponentLabel(r: CsvRow): string {
