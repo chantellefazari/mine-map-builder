@@ -208,6 +208,48 @@ export const NamingConventionDocument = () => {
           </Table>
         </div>
 
+        <Separator />
+
+        {/* 6. Suggested Crusher Prefixes */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">6. Suggested Crusher (CRU) Equipment Prefixes</h4>
+          <p className="text-xs text-muted-foreground mb-2">
+            The following prefixes are <strong>suggested</strong> for Crushing Plant equipment. They have been checked against the existing Processing Plant prefixes above to avoid collisions. The crusher contractor should adopt these or propose alternatives that do not conflict.
+          </p>
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/50">
+                <TableHead className="w-20 font-semibold">Prefix</TableHead>
+                <TableHead className="w-48 font-semibold">Equipment Type</TableHead>
+                <TableHead className="font-semibold">Suggested Example</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {[
+                { prefix: "JAW", meaning: "Jaw Crusher", example: "JAW01" },
+                { prefix: "CON", meaning: "Cone Crusher (Secondary/Tertiary)", example: "CON01, CON02" },
+                { prefix: "VF", meaning: "Vibrating Feeder", example: "VF01" },
+                { prefix: "VS", meaning: "Vibrating Screen", example: "VS01" },
+                { prefix: "ROM", meaning: "ROM Bin", example: "ROM01" },
+                { prefix: "CFB", meaning: "Cone Feed Bin", example: "CFB01" },
+                { prefix: "GFB", meaning: "Ground Feed Bin", example: "GFB01, GFB02" },
+                { prefix: "MAG", meaning: "Overband Magnet", example: "MAG01" },
+                { prefix: "STCK", meaning: "Stockpile", example: "STCK01" },
+                { prefix: "WSCN", meaning: "Wet Screen", example: "WSCN01" },
+                { prefix: "DUST", meaning: "Dust Suppression System", example: "DUST01" },
+              ].map((c) => (
+                <TableRow key={c.prefix}>
+                  <TableCell className="font-mono font-bold text-primary">{c.prefix}</TableCell>
+                  <TableCell className="font-medium text-sm">{c.meaning}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{c.example}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <p className="text-xs text-muted-foreground italic">
+            Note: Existing prefixes such as CV (Conveyor), MTR (Motor), GBX (Gearbox), VSD (VSD), and HYD (Hydraulic) should be reused identically in the crusher — they are site-wide standards.
+          </p>
+        </div>
 
         {/* Footer */}
         <div data-pdf-section className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
