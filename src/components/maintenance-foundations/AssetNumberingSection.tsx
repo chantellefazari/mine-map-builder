@@ -183,7 +183,6 @@ export const AssetNumberingSection = () => {
           </Table>
 
           <h4 className="font-semibold text-foreground text-base pt-2">3. Rules & Constraints</h4>
-          <h4 className="font-semibold text-foreground text-base">3. Rules & Constraints</h4>
           <ul className="text-sm space-y-2 text-muted-foreground">
             <li className="flex items-start gap-2">
               <Lock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
