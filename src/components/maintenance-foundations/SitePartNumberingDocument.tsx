@@ -168,9 +168,9 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
               </tr>
             </thead>
             <tbody>
-              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>SS</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Site Code - always 10 for Tennant Creek</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Enables multi-site expansion without renumbering</td></tr>
+              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>SS</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Site Code, always 10 for Tennant Creek</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Enables multi site expansion without renumbering</td></tr>
               <tr style={{ backgroundColor: GOLD_BG }}><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>CC</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Part Category Code (2 digits, e.g. 01 = Pump Component)</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Derived from PO history analysis of 2,000+ line items</td></tr>
-              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>NNN</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Sequential Identifier within that category (001 to 999)</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Auto-assigned; no manual selection required</td></tr>
+              <tr><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700 }}>NNN</td><td style={{ padding: "4px 6px", border: "1px solid #ddd" }}>Sequential Identifier within that category (001 to 999)</td><td style={{ padding: "4px 6px", border: "1px solid #ddd", fontSize: 10, color: "#555" }}>Auto assigned, no manual selection required</td></tr>
             </tbody>
           </table>
 
