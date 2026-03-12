@@ -133,7 +133,7 @@ export const PMStandardsSection = () => {
         className="bg-white text-black rounded-lg border shadow-sm overflow-auto max-h-[70vh]"
         style={{ fontFamily: "'Segoe UI', Arial, Helvetica, sans-serif" }}
       >
-        {/* Page 1: Header + Purpose + Principles */}
+        {/* Single continuous section for PDF export */}
         <div data-pdf-section style={{ padding: "28px 36px" }}>
           {/* Document Header */}
           <div style={{ borderBottom: `3px solid ${GOLD}`, paddingBottom: 12, marginBottom: 16 }}>
