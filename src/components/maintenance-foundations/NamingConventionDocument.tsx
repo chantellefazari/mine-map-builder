@@ -31,6 +31,56 @@ const chunkRows = <T,>(rows: T[], chunkSize: number): T[][] => {
 export const NamingConventionDocument = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
+  const { data: liveAreas = [] } = useRevBPlantAssets();
+
+  const liveRows = useMemo<LiveAssetRow[]>(() => {
+    const rows: LiveAssetRow[] = [];
+
+    for (const area of liveAreas) {
+      for (const subArea of area.subAreas) {
+        for (const parentAsset of subArea.parentAssets) {
+          for (const equipment of parentAsset.equipment) {
+            if (equipment.assetNumber) {
+              rows.push({
+                area: area.code,
+                id: equipment.assetNumber,
+                desc: equipment.name || parentAsset.label,
+                level: "System",
+              });
+            }
+
+            for (const component of equipment.components || []) {
+              if (!component.componentCode) continue;
+              rows.push({
+                area: "",
+                id: component.componentCode,
+                desc: component.componentName || component.componentType || "Component",
+                level: "Comp",
+              });
+            }
+          }
+        }
+      }
+    }
+
+    const seen = new Set<string>();
+    return rows.filter((row) => {
+      const key = `${row.level}:${row.id}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [liveAreas]);
+
+  const liveSystemChunks = useMemo(
+    () => chunkRows(liveRows.filter((row) => row.level === "System"), 22),
+    [liveRows]
+  );
+
+  const liveComponentChunks = useMemo(
+    () => chunkRows(liveRows.filter((row) => row.level === "Comp"), 26),
+    [liveRows]
+  );
 
   const handleDownloadPdf = async () => {
     if (!contentRef.current) return;
