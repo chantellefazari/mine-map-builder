@@ -57,11 +57,11 @@ export const AssetNumberingSection = () => {
         "TCMG-STD-FL-001_Functional_Location_Codes.pdf",
         {
           margin: 10,
-          gap: 2,
+          gap: 0,
           renderWidth: 700,
           fontSize: "14px",
           lineHeight: "1.5",
-          sliceOverlapPx: 14,
+          sliceOverlapPx: 0,
           addBorder: true,
         }
       );
