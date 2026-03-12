@@ -295,7 +295,6 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
           <div className={cn("flex gap-1", centered ? "flex-row items-start" : "flex-col")}>
             {children}
           </div>
-          </div>
         </div>
       )}
     </div>
