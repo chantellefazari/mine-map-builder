@@ -1,6 +1,5 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { Download, Loader2, CheckCircle2, Hash } from "lucide-react";
@@ -12,22 +11,22 @@ import {
   instrumentationSuffixes,
   specialPatterns,
 } from "@/components/hierarchy/namingConventionData";
+import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
 
-const suggestedCrusherPrefixes = [
-  { prefix: "CRS", meaning: "Crusher (Jaw / Cone)", example: "CRS01, CRS02, CRS03", notes: "CRS01 Primary Jaw, CRS02 Secondary Cone, CRS03 Tertiary Cone" },
-  { prefix: "RBIN", meaning: "ROM Bin", example: "RBIN01", notes: "Steel structure with Hardox liners" },
-  { prefix: "RFDR", meaning: "Primary Vibrating Feeder", example: "RFDR01", notes: "Hydraulic drive feeder under ROM bin" },
-  { prefix: "MAG", meaning: "Overband Magnet", example: "MAG01", notes: "Self-cleaning overband on CRS01 discharge" },
-  { prefix: "GFB", meaning: "Ground Feed Bin", example: "GFB01", notes: "CV01 discharge into screen feed system" },
-  { prefix: "CFB", meaning: "Cone Feed Bin", example: "CFB01", notes: "Dual chamber bin feeding CRS02 & CRS03" },
-  { prefix: "SCN", meaning: "Vibrating Screen", example: "SCN01", notes: "Horizontal vibrating screen (3-deck)" },
-  { prefix: "CV", meaning: "Conveyor", example: "CV01-CV15", notes: "Shared prefix with Processing Plant, different numbering range" },
-  { prefix: "MDE", meaning: "Metal Detector", example: "CV07-MDE01", notes: "Component suffix on cone feed conveyors" },
-  { prefix: "DST", meaning: "Dust Suppression", example: "DST01", notes: "Spray bars and enclosures" },
-  { prefix: "LVL", meaning: "Level Sensor", example: "RBIN01-LVL01", notes: "Vega level sensors on bins" },
-];
+interface LiveAssetRow {
+  area: string;
+  id: string;
+  desc: string;
+  level: "System" | "Comp";
+}
 
-const reservedPrefixes = equipmentPrefixes.map((e) => e.prefix);
+const chunkRows = <T,>(rows: T[], chunkSize: number): T[][] => {
+  const chunks: T[][] = [];
+  for (let i = 0; i < rows.length; i += chunkSize) {
+    chunks.push(rows.slice(i, i + chunkSize));
+  }
+  return chunks;
+};
 
 export const NamingConventionDocument = () => {
   const contentRef = useRef<HTMLDivElement>(null);
