@@ -267,6 +267,16 @@ export async function exportSectionsToPdf(
     }
   }
 
+  // ── Remove trailing blank page if present ──────────────────────
+  const totalPages = pdf.getNumberOfPages();
+  if (totalPages > 1) {
+    pdf.setPage(totalPages);
+    // If currentY is at the margin (nothing drawn on this page), delete it
+    if (currentY <= MARGIN + 1) {
+      pdf.deletePage(totalPages);
+    }
+  }
+
   // ── Draw borders on every page if requested ─────────────────────
   if (cfg.addBorder) {
     const pageCount = pdf.getNumberOfPages();
