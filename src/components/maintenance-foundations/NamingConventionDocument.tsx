@@ -20,13 +20,6 @@ interface LiveAssetRow {
   level: "System" | "Comp";
 }
 
-const chunkRows = <T,>(rows: T[], chunkSize: number): T[][] => {
-  const chunks: T[][] = [];
-  for (let i = 0; i < rows.length; i += chunkSize) {
-    chunks.push(rows.slice(i, i + chunkSize));
-  }
-  return chunks;
-};
 
 export const NamingConventionDocument = () => {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -72,14 +65,24 @@ export const NamingConventionDocument = () => {
     });
   }, [liveAreas]);
 
-  const liveSystemChunks = useMemo(
-    () => chunkRows(liveRows.filter((row) => row.level === "System"), 22),
+  const liveSystemRows = useMemo(
+    () => liveRows.filter((row) => row.level === "System").slice(0, 12),
     [liveRows]
   );
 
-  const liveComponentChunks = useMemo(
-    () => chunkRows(liveRows.filter((row) => row.level === "Comp"), 26),
+  const liveComponentRows = useMemo(
+    () => liveRows.filter((row) => row.level === "Comp").slice(0, 12),
     [liveRows]
+  );
+
+  const hiddenSystemCount = useMemo(
+    () => Math.max(0, liveRows.filter((row) => row.level === "System").length - liveSystemRows.length),
+    [liveRows, liveSystemRows.length]
+  );
+
+  const hiddenComponentCount = useMemo(
+    () => Math.max(0, liveRows.filter((row) => row.level === "Comp").length - liveComponentRows.length),
+    [liveRows, liveComponentRows.length]
   );
 
   const handleDownloadPdf = async () => {
@@ -277,88 +280,68 @@ export const NamingConventionDocument = () => {
         <Separator />
 
         {/* 6. Live System Codes from Processing Plant Asset Tree */}
-        {liveSystemChunks.length > 0 ? (
-          liveSystemChunks.map((chunk, chunkIndex) => (
-            <div data-pdf-section className="space-y-3" key={`systems-${chunkIndex}`}>
-              {chunkIndex === 0 ? (
-                <>
-                  <h4 className="font-semibold text-foreground text-base">6. Live System Asset Codes</h4>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    All codes below are loaded directly from the Processing Plant asset tree. No manual or generated codes are used.
-                  </p>
-                </>
-              ) : (
-                <h4 className="font-semibold text-foreground text-base">6. Live System Asset Codes, continued</h4>
-              )}
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    <TableHead className="w-20 font-semibold">Area</TableHead>
-                    <TableHead className="w-40 font-semibold">Asset ID</TableHead>
-                    <TableHead className="font-semibold">Description</TableHead>
-                    <TableHead className="w-20 font-semibold">Level</TableHead>
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">6. Live System Asset Codes (Sample)</h4>
+          <p className="text-xs text-muted-foreground mb-2">
+            Showing a concise sample pulled directly from your live Processing Plant asset tree.
+            {hiddenSystemCount > 0 ? ` (${hiddenSystemCount} additional system codes available in the tree)` : ""}
+          </p>
+          {liveSystemRows.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/50">
+                  <TableHead className="w-20 font-semibold">Area</TableHead>
+                  <TableHead className="w-40 font-semibold">Asset ID</TableHead>
+                  <TableHead className="font-semibold">Description</TableHead>
+                  <TableHead className="w-20 font-semibold">Level</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {liveSystemRows.map((row) => (
+                  <TableRow key={`${row.level}-${row.id}`}>
+                    <TableCell className="text-xs font-medium text-foreground">{row.area}</TableCell>
+                    <TableCell className="font-mono text-xs font-bold text-primary">{row.id}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{row.desc}</TableCell>
+                    <TableCell className="text-[10px] font-semibold text-foreground">{row.level}</TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {chunk.map((row) => (
-                    <TableRow key={`${row.level}-${row.id}`}>
-                      <TableCell className="text-xs font-medium text-foreground">{row.area}</TableCell>
-                      <TableCell className="font-mono text-xs font-bold text-primary">{row.id}</TableCell>
-                      <TableCell className="text-xs text-muted-foreground">{row.desc}</TableCell>
-                      <TableCell className="text-[10px] font-semibold text-foreground">{row.level}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ))
-        ) : (
-          <div data-pdf-section className="space-y-3">
-            <h4 className="font-semibold text-foreground text-base">6. Live System Asset Codes</h4>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
             <p className="text-xs text-muted-foreground">No live system asset rows were returned from the Processing Plant asset tree.</p>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* 7. Live Component Codes from Processing Plant Asset Tree */}
-        {liveComponentChunks.length > 0 ? (
-          liveComponentChunks.map((chunk, chunkIndex) => (
-            <div data-pdf-section className="space-y-3" key={`components-${chunkIndex}`}>
-              {chunkIndex === 0 ? (
-                <>
-                  <h4 className="font-semibold text-foreground text-base">7. Live Component Asset Codes</h4>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    Component codes shown here are also pulled directly from the same live Processing Plant asset tree dataset.
-                  </p>
-                </>
-              ) : (
-                <h4 className="font-semibold text-foreground text-base">7. Live Component Asset Codes, continued</h4>
-              )}
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    <TableHead className="w-32 font-semibold">Asset ID</TableHead>
-                    <TableHead className="font-semibold">Description</TableHead>
-                    <TableHead className="w-20 font-semibold">Level</TableHead>
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">7. Live Component Asset Codes (Sample)</h4>
+          <p className="text-xs text-muted-foreground mb-2">
+            Component sample is also pulled directly from the same live Processing Plant asset tree.
+            {hiddenComponentCount > 0 ? ` (${hiddenComponentCount} additional component codes available in the tree)` : ""}
+          </p>
+          {liveComponentRows.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/50">
+                  <TableHead className="w-32 font-semibold">Asset ID</TableHead>
+                  <TableHead className="font-semibold">Description</TableHead>
+                  <TableHead className="w-20 font-semibold">Level</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {liveComponentRows.map((row) => (
+                  <TableRow key={`${row.level}-${row.id}`}>
+                    <TableCell className="font-mono text-xs text-primary">{row.id}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{row.desc}</TableCell>
+                    <TableCell className="text-[10px] text-muted-foreground">{row.level}</TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {chunk.map((row) => (
-                    <TableRow key={`${row.level}-${row.id}`}>
-                      <TableCell className="font-mono text-xs text-primary">{row.id}</TableCell>
-                      <TableCell className="text-xs text-muted-foreground">{row.desc}</TableCell>
-                      <TableCell className="text-[10px] text-muted-foreground">{row.level}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ))
-        ) : (
-          <div data-pdf-section className="space-y-3">
-            <h4 className="font-semibold text-foreground text-base">7. Live Component Asset Codes</h4>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
             <p className="text-xs text-muted-foreground">No live component rows were returned from the Processing Plant asset tree.</p>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Footer */}
         <div data-pdf-section className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
