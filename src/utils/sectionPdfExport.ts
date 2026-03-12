@@ -37,7 +37,7 @@ export interface SectionPdfOptions {
 
 const DEFAULTS: Required<SectionPdfOptions> = {
   margin: 8,
-  gap: 2,
+  gap: 1,
   renderWidth: 740,
   fontSize: "13px",
   lineHeight: "1.4",
