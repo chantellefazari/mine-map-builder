@@ -84,6 +84,7 @@ export const AssetCriticalitySection = () => {
   const { data: ratings, isLoading: ratingsLoading } = useCriticalityRatings();
   const [search, setSearch] = useState("");
   const [areaFilter, setAreaFilter] = useState("all");
+  const [ratingFilter, setRatingFilter] = useState<"all" | CriticalityRating>("all");
   const [pendingChanges, setPendingChanges] = useState<Record<string, { criticality: CriticalityRating; justification: string }>>({});
 
   const saveMutation = useMutation({
