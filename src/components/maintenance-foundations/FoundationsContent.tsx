@@ -43,6 +43,7 @@ const TAB_LABELS: Record<string, string> = {
   "pm-coverage": "Current Site PM Register",
   "shutdown-pms": "Shutdown PM Requirements",
   "naming-convention": "Site Naming Convention Reference",
+  "data-mapping": "Data Mapping & Readiness",
 };
 
 export const FoundationsContent = () => {
