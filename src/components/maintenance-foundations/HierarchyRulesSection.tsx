@@ -106,16 +106,16 @@ export const HierarchyRulesSection = () => {
       </CardHeader>
       <CardContent>
         <div ref={contentRef} className="bg-white text-black rounded-lg border shadow-sm overflow-auto max-h-[70vh]" style={{ fontFamily: "'Segoe UI', Arial, Helvetica, sans-serif" }}>
-          <div data-pdf-section style={{ padding: "28px 32px" }}>
+          <div data-pdf-section style={{ padding: "28px 36px" }}>
             {/* Header */}
-            <div style={{ borderBottom: `3px solid ${GOLD}`, paddingBottom: 12, marginBottom: 14 }}>
+            <div style={{ borderBottom: `3px solid ${GOLD}`, paddingBottom: 12, marginBottom: 16 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div>
-                  <div style={{ display: "inline-block", backgroundColor: GOLD, color: "#fff", padding: "3px 12px", borderRadius: 3, fontSize: 10, fontWeight: 700, letterSpacing: 1, marginBottom: 6 }}>TENNANT CREEK MINE</div>
-                  <h1 style={{ fontSize: 20, fontWeight: 700, margin: "4px 0 0 0" }}>Asset Hierarchy & Parent Child Rules</h1>
-                  <p style={{ fontSize: 12, color: "#666", margin: "2px 0 0 0" }}>Gold Processing Plant | 7 Level Hierarchy Standard</p>
+                  <div style={{ display: "inline-block", backgroundColor: GOLD, color: "#fff", padding: "4px 14px", borderRadius: 3, fontSize: 11, fontWeight: 700, letterSpacing: 1, marginBottom: 6 }}>TENNANT CREEK MINE</div>
+                  <h1 style={{ fontSize: 22, fontWeight: 700, margin: "4px 0 0 0" }}>Asset Hierarchy & Parent Child Rules</h1>
+                  <p style={{ fontSize: 13, color: "#666", margin: "2px 0 0 0" }}>Gold Processing Plant | 7 Level Hierarchy Standard</p>
                 </div>
-                <div style={{ textAlign: "right", fontSize: 10, color: "#666", borderLeft: `3px solid ${GOLD}`, paddingLeft: 10 }}>
+                <div style={{ textAlign: "right", fontSize: 11, color: "#666", borderLeft: `3px solid ${GOLD}`, paddingLeft: 10 }}>
                   <p style={{ margin: 0, fontWeight: 700, color: DARK }}>TCMG-STD-AH-001</p>
                   <p style={{ margin: "2px 0 0 0" }}>Rev A</p>
                   <p style={{ margin: "2px 0 0 0" }}>{today}</p>
@@ -123,38 +123,35 @@ export const HierarchyRulesSection = () => {
               </div>
             </div>
 
-
-
-
             {/* Purpose */}
             <h2 style={heading("Purpose")}>1. Purpose</h2>
-            <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 4px 0" }}>
+            <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 6px 0" }}>
               This document defines the approved 7 level hierarchy structure and parent child rules used at Tennant Creek Mine for all maintenance activities, CMMS data entry, reporting, and future asset creation. This standard mirrors SAP / Maximo / D365 mature site practice, separating rules from data and protecting the integrity of the asset tree.
             </p>
-            <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 10px 0" }}>
+            <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 12px 0" }}>
               This document is descriptive and instructional only. It does not modify, move, rename, or update any existing assets or hierarchy data. It governs all future asset creation and hierarchy management.
             </p>
 
             {/* 2. Hierarchy Levels */}
             <h2 style={heading("Hierarchy")}>2. Approved Asset Hierarchy (7 Levels)</h2>
-            <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
               <thead>
                 <tr>
-                  <th style={{ ...thGold, width: 40, textAlign: "center" }}>Level</th>
-                  <th style={{ ...thGold, width: 110 }}>Name</th>
+                  <th style={{ ...thGold, width: 44, textAlign: "center" }}>Level</th>
+                  <th style={{ ...thGold, width: 120 }}>Name</th>
                   <th style={thGold}>Example</th>
                   <th style={thGold}>Description</th>
-                  <th style={{ ...thGold, width: 50, textAlign: "center", fontSize: 11 }}>FL</th>
+                  <th style={{ ...thGold, width: 50, textAlign: "center" }}>FL</th>
                 </tr>
               </thead>
               <tbody>
                 {hierarchyLevels.map((item, i) => (
                   <tr key={item.level} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
-                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, textAlign: "center", color: GOLD, fontSize: 12 }}>{item.level}</td>
-                    <td style={{ ...td, fontWeight: 600, fontSize: 12 }}>{item.name}</td>
-                    <td style={{ ...td, fontFamily: "monospace", fontSize: 11 }}>{item.example}</td>
-                    <td style={{ ...td, color: "#444", fontSize: 12 }}>{item.desc}</td>
-                    <td style={{ ...td, textAlign: "center", fontSize: 11 }}>{item.hasFL}</td>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, textAlign: "center", color: GOLD }}>{item.level}</td>
+                    <td style={{ ...td, fontWeight: 600 }}>{item.name}</td>
+                    <td style={{ ...td, fontFamily: "monospace", fontSize: 12 }}>{item.example}</td>
+                    <td style={{ ...td, color: "#444" }}>{item.desc}</td>
+                    <td style={{ ...td, textAlign: "center" }}>{item.hasFL}</td>
                   </tr>
                 ))}
               </tbody>
@@ -162,7 +159,7 @@ export const HierarchyRulesSection = () => {
 
             {/* 3. Parent Child Rules */}
             <h2 style={heading("Rules")}>3. Parent Child Rules</h2>
-            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
               <thead>
                 <tr>
                   <th style={{ ...thDark, width: 40, textAlign: "center" }}>#</th>
@@ -181,7 +178,7 @@ export const HierarchyRulesSection = () => {
 
             {/* 4. Constraints */}
             <h2 style={heading("Constraints")}>4. Constraints (Non Negotiable)</h2>
-            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
               <thead>
                 <tr>
                   <th style={{ ...thDark, width: 40, textAlign: "center" }}>#</th>
@@ -200,7 +197,7 @@ export const HierarchyRulesSection = () => {
 
             {/* 5. FL Rules */}
             <h2 style={heading("FL Rules")}>5. Functional Location (FL) Rules</h2>
-            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
               <thead>
                 <tr>
                   <th style={{ ...thDark, width: 40, textAlign: "center" }}>#</th>
@@ -224,21 +221,19 @@ export const HierarchyRulesSection = () => {
               </tbody>
             </table>
 
-
-
             {/* 6. Asset Numbering */}
             <h2 style={heading("Numbering")}>6. Asset Numbering Standard</h2>
-            <div style={{ display: "inline-block", border: `2px solid ${GOLD}`, borderRadius: 5, padding: "6px 20px", marginBottom: 8, backgroundColor: GOLD_BG }}>
-              <span style={{ fontSize: 16, fontWeight: 700, fontFamily: "monospace", letterSpacing: 2, color: DARK }}>[AREA][NN]-[TYPE][NN]</span>
+            <div style={{ display: "inline-block", border: `2px solid ${GOLD}`, borderRadius: 5, padding: "8px 24px", marginBottom: 10, backgroundColor: GOLD_BG }}>
+              <span style={{ fontSize: 18, fontWeight: 700, fontFamily: "monospace", letterSpacing: 2, color: DARK }}>[AREA][NN]-[TYPE][NN]</span>
             </div>
-            <p style={{ fontSize: 12, color: "#555", margin: "4px 0 8px 0" }}>
+            <p style={{ fontSize: 13, color: "#555", margin: "4px 0 10px 0" }}>
               Parent assets use the Area prefix with a sequential number. Equipment uses the parent number followed by an equipment type abbreviation and sequence.
             </p>
 
             <div style={{ display: "flex", gap: 16 }}>
               <div style={{ flex: 1 }}>
-                <p style={{ fontWeight: 700, fontSize: 12, marginBottom: 4 }}>Asset Number Examples</p>
-                <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginBottom: 10 }}>
+                <p style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>Asset Number Examples</p>
+                <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
                   <thead><tr><th style={thGold}>Asset Number</th><th style={thGold}>Description</th></tr></thead>
                   <tbody>
                     {assetNumberingExamples.map((ex, i) => (
@@ -251,8 +246,8 @@ export const HierarchyRulesSection = () => {
                 </table>
               </div>
               <div style={{ flex: 1 }}>
-                <p style={{ fontWeight: 700, fontSize: 12, marginBottom: 4 }}>Equipment Type Abbreviations</p>
-                <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginBottom: 10 }}>
+                <p style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>Equipment Type Abbreviations</p>
+                <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
                   <thead><tr><th style={{ ...thGold, width: 60 }}>Code</th><th style={thGold}>Meaning</th></tr></thead>
                   <tbody>
                     {equipmentAbbreviations.map((abbr, i) => (
@@ -268,7 +263,7 @@ export const HierarchyRulesSection = () => {
 
             {/* 7. Numbering Rules */}
             <h2 style={heading("Numbering Rules")}>7. Asset Numbering Rules</h2>
-            <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
               <thead>
                 <tr>
                   <th style={{ ...thDark, width: 120 }}>Rule</th>
@@ -293,7 +288,7 @@ export const HierarchyRulesSection = () => {
 
             {/* 8. Governance */}
             <h2 style={heading("Governance")}>8. Governance & Change Control</h2>
-            <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
               <thead>
                 <tr>
                   <th style={{ ...thDark, width: 40, textAlign: "center" }}>#</th>
@@ -316,7 +311,7 @@ export const HierarchyRulesSection = () => {
             </table>
 
             {/* Footer */}
-            <div style={{ borderTop: `2px solid ${GOLD}`, paddingTop: 8, marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 9.5, color: "#888" }}>
+            <div style={{ borderTop: `2px solid ${GOLD}`, paddingTop: 8, marginTop: 8, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#888" }}>
               <span>TCMG-STD-AH-001 Rev A</span>
               <span>Tennant Creek Mine | Confidential</span>
               <span>{today}</span>
