@@ -139,10 +139,8 @@ export const AssetNumberingSection = () => {
             <p className="text-muted-foreground ml-20">└── BM01-MTR01 (inherits parent FL)</p>
             <p className="text-muted-foreground ml-24">└── Bearings, seals (inherit parent FL)</p>
           </div>
-        </div>
 
-        {/* 1. Area Codes + 2. Sub-Area Codes */}
-        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base pt-2">1. Area Codes (6 Approved)</h4>
           <h4 className="font-semibold text-foreground text-base">1. Area Codes (6 Approved)</h4>
           <Table>
             <TableHeader>
