@@ -1,8 +1,13 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Hash, CheckCircle2, Target, Layers, Info, AlertTriangle, ClipboardList } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Hash, CheckCircle2, Target, Layers, Info, AlertTriangle, ClipboardList, FileText } from "lucide-react";
+import { SitePartNumberingDocument } from "./SitePartNumberingDocument";
 
 export const SitePartNumberingSection = () => {
+  const [docOpen, setDocOpen] = useState(false);
   const categoryData = [
     { code: "01", name: "Pump Component", examples: "Slurry pumps, centrifugal pumps, dosing pumps, impellers, volutes, pump casings, lantern rings, throat bushes, pump sleeves, wet end kits", container: "C04-MP / C03-ME / LD" },
     { code: "02", name: "Motor Component", examples: "Electric motors (all sizes), motor assemblies, motor couplings, motor fans, spare motors", container: "LD / C04-MP" },
