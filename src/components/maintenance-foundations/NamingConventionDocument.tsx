@@ -40,7 +40,13 @@ export const NamingConventionDocument = () => {
       const { exportSectionsToPdf } = await import("@/utils/sectionPdfExport");
       await exportSectionsToPdf(
         contentRef.current,
-        "TCMG-STD-NAM-001_Site_Naming_Convention.pdf"
+        "TCMG-STD-NAM-001_Site_Naming_Convention.pdf",
+        {
+          renderWidth: 860,
+          fontSize: "12px",
+          lineHeight: "1.35",
+          sliceOverlapPx: 14,
+        }
       );
     } catch (err) {
       console.error("PDF generation failed:", err);
