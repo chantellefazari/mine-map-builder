@@ -139,17 +139,14 @@ export const AssetNumberingSection = () => {
 
       for (let i = 0; i < sections.length; i++) {
         const section = sections[i];
+        const sectionWidth = Math.ceil(section.getBoundingClientRect().width);
+
         const canvas = await html2canvas(section, {
           scale: 2,
           useCORS: true,
           backgroundColor: "#ffffff",
-          windowWidth: Math.max(860, document.documentElement.clientWidth),
-          windowHeight: Math.max(
-            document.body.scrollHeight,
-            document.documentElement.scrollHeight
-          ),
-          scrollX: 0,
-          scrollY: -window.scrollY,
+          width: sectionWidth,
+          windowWidth: sectionWidth,
         });
 
         const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
