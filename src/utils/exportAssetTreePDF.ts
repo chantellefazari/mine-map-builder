@@ -132,9 +132,12 @@ function buildComponentLabel(r: CsvRow): string {
   return isRedundantText(code, name) ? name : `${code} - ${name}`;
 }
 
-function shouldShowComponentBadge(r: CsvRow, compLabel: string): boolean {
+function shouldShowComponentBadge(r: CsvRow, compLabel: string, parentEquipName?: string): boolean {
   if (!r.compType) return false;
-  return !isRedundantText(r.compType, r.compName) && !isRedundantText(r.compType, compLabel);
+  // Suppress badge if it repeats the component name, label, or parent equipment name
+  if (isRedundantText(r.compType, r.compName) || isRedundantText(r.compType, compLabel)) return false;
+  if (parentEquipName && isRedundantText(r.compType, parentEquipName)) return false;
+  return true;
 }
 
 // ── Build spec list from a Level 7 row, suppressing redundant values ─
@@ -174,6 +177,7 @@ function buildSpecs(r: CsvRow, compLabel: string): { key: string; value: string 
 // ── Flatten CSV rows into tree rows, deduplicating Level 7 ────────
 function flattenCsvToTree(csvRows: CsvRow[]): TreeRow[] {
   const tree: TreeRow[] = [];
+  let currentEquipName = "";
 
   for (const r of csvRows) {
     switch (r.level) {
@@ -193,6 +197,7 @@ function flattenCsvToTree(csvRows: CsvRow[]): TreeRow[] {
         tree.push({ depth: 4, label: r.system, type: "system", fl: r.systemFL || undefined });
         break;
       case 6:
+        currentEquipName = r.equipmentName;
         tree.push({
           depth: 5,
           label: `${r.assetNumber} - ${r.equipmentName}`,
@@ -208,7 +213,7 @@ function flattenCsvToTree(csvRows: CsvRow[]): TreeRow[] {
           depth: 6,
           label: compLabel,
           type: "component",
-          badge: shouldShowComponentBadge(r, compLabel) ? r.compType : undefined,
+          badge: shouldShowComponentBadge(r, compLabel, currentEquipName) ? r.compType : undefined,
           pidTags: r.compPidTags || undefined,
           specs: specs.length > 0 ? specs : undefined,
         });
