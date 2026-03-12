@@ -40,7 +40,13 @@ export const NamingConventionDocument = () => {
       const { exportSectionsToPdf } = await import("@/utils/sectionPdfExport");
       await exportSectionsToPdf(
         contentRef.current,
-        "TCMG-STD-NAM-001_Site_Naming_Convention.pdf"
+        "TCMG-STD-NAM-001_Site_Naming_Convention.pdf",
+        {
+          renderWidth: 860,
+          fontSize: "12px",
+          lineHeight: "1.35",
+          sliceOverlapPx: 14,
+        }
       );
     } catch (err) {
       console.error("PDF generation failed:", err);
@@ -79,7 +85,7 @@ export const NamingConventionDocument = () => {
       <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px] font-bold">SECTION 1</Badge>
+            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 1</span>
             <CardTitle className="text-base">Area Codes (Level 3 of Hierarchy)</CardTitle>
           </div>
         </CardHeader>
@@ -112,7 +118,7 @@ export const NamingConventionDocument = () => {
       <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px] font-bold">SECTION 2</Badge>
+            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 2</span>
             <CardTitle className="text-base">Equipment Type Prefixes — Currently In Use</CardTitle>
           </div>
         </CardHeader>
@@ -145,7 +151,7 @@ export const NamingConventionDocument = () => {
       <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px] font-bold">SECTION 3</Badge>
+            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 3</span>
             <CardTitle className="text-base">Component Suffixes (After Hyphen)</CardTitle>
           </div>
         </CardHeader>
@@ -178,7 +184,7 @@ export const NamingConventionDocument = () => {
       <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px] font-bold">SECTION 4</Badge>
+            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 4</span>
             <CardTitle className="text-base">Instrumentation Suffixes</CardTitle>
           </div>
         </CardHeader>
@@ -208,7 +214,7 @@ export const NamingConventionDocument = () => {
       <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px] font-bold">SECTION 5</Badge>
+            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 5</span>
             <CardTitle className="text-base">Special Naming Patterns</CardTitle>
           </div>
         </CardHeader>
@@ -240,7 +246,7 @@ export const NamingConventionDocument = () => {
       <Card data-pdf-section className="border-amber-500/30 bg-amber-500/5">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <Badge className="bg-amber-500/20 text-amber-700 border-amber-500/30 text-[10px] font-bold">SECTION 6</Badge>
+            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 6</span>
             <CardTitle className="text-base">Suggested Crusher Asset Prefixes</CardTitle>
           </div>
         </CardHeader>
@@ -286,7 +292,7 @@ export const NamingConventionDocument = () => {
       <Card data-pdf-section className="border-amber-500/30 bg-amber-500/5">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <Badge className="bg-amber-500/20 text-amber-700 border-amber-500/30 text-[10px] font-bold">SECTION 7</Badge>
+            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 7</span>
             <CardTitle className="text-base">Example — Crusher Asset Numbering in Practice</CardTitle>
           </div>
         </CardHeader>
