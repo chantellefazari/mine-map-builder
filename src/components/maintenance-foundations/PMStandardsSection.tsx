@@ -62,7 +62,7 @@ const constraints = [
   "Do NOT copy paste generic OEM manuals. All tasks must be site specific and relevant to actual operating conditions.",
   "Do NOT create schedules in PM design. This section defines what and how; scheduling is a separate function.",
   "Do NOT design PMs for individual assets. Templates target equipment categories and are linked to assets separately.",
-  "Do NOT skip safety or isolation steps. Every PM must document energy isolation even if the task is online.",
+  "Do NOT skip safety or isolation steps. Every PM must document energy isolation even if the task is performed on running equipment.",
   "Do NOT invent frequencies. Use the approved frequency set based on risk analysis and failure history.",
   "Do NOT duplicate tasks across PMs. Each failure mode should be addressed by one PM only.",
   "Do NOT leave fields blank. Every mandatory field must be populated before a PM can progress past Draft status.",
