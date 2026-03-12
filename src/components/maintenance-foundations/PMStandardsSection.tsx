@@ -59,7 +59,7 @@ const statusWorkflow = [
 ];
 
 const constraints = [
-  "Do NOT copy-paste generic OEM manuals. All tasks must be site-specific and relevant to actual operating conditions.",
+  "Do NOT copy paste generic OEM manuals. All tasks must be site specific and relevant to actual operating conditions.",
   "Do NOT create schedules in PM design. This section defines what and how; scheduling is a separate function.",
   "Do NOT design PMs for individual assets. Templates target equipment categories and are linked to assets separately.",
   "Do NOT skip safety or isolation steps. Every PM must document energy isolation even if the task is online.",
