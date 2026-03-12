@@ -88,7 +88,7 @@ export const NamingConventionDocument = () => {
           </p>
           <div className="text-sm text-muted-foreground space-y-1">
             <p><span className="font-mono font-bold text-foreground">Format:</span> [PREFIX][NUMBER]-[SUFFIX][NUMBER]</p>
-            <p><span className="font-mono font-bold text-foreground">Example:</span> BM001-MTR001 = Ball Mill 001 – Motor 001</p>
+            <p><span className="font-mono font-bold text-foreground">Example:</span> BM001-MTR001 = Ball Mill 001, Motor 001</p>
           </div>
         </div>
 
