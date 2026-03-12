@@ -1,6 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { jsPDF } from "npm:jspdf@2.5.2";
-import autoTable from "npm:jspdf-autotable@3.8.4";
+import { jsPDF } from "https://esm.sh/jspdf@2.5.1";
+import autoTable from "https://esm.sh/jspdf-autotable@3.8.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
