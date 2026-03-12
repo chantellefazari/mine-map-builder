@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 import { Download, Loader2, CheckCircle2, Hash } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -25,11 +24,12 @@ export const NamingConventionDocument = () => {
         contentRef.current,
         "TCMG-STD-NAM-001_Site_Naming_Convention.pdf",
         {
-          margin: 8,
-          renderWidth: 820,
-          fontSize: "12px",
-          lineHeight: "1.35",
-          sliceOverlapPx: 16,
+          margin: 6,
+          gap: 1,
+          renderWidth: 780,
+          fontSize: "10px",
+          lineHeight: "1.3",
+          sliceOverlapPx: 12,
         }
       );
     } catch (err) {
@@ -38,6 +38,19 @@ export const NamingConventionDocument = () => {
       setDownloading(false);
     }
   };
+
+  const crusherPrefixes = [
+    { prefix: "ROM", meaning: "ROM Bin", example: "ROM01" },
+    { prefix: "FDR", meaning: "Vibrating Feeder", example: "FDR01" },
+    { prefix: "CRS", meaning: "Crusher (Jaw / Cone)", example: "CRS01 (Jaw), CRS02 (Sec Cone), CRS03 (Tert Cone)" },
+    { prefix: "MAG", meaning: "Overband Magnet", example: "MAG01" },
+    { prefix: "GFB", meaning: "Ground Feed Bin", example: "GFB01" },
+    { prefix: "SCN", meaning: "Vibrating Screen", example: "SCN01" },
+    { prefix: "CV", meaning: "Conveyor (shared prefix)", example: "CV01, CV02, CV04-CV15" },
+    { prefix: "CFB", meaning: "Cone Feed Bin", example: "CFB01" },
+    { prefix: "DUST", meaning: "Dust Suppression System", example: "DUST01" },
+    { prefix: "WS", meaning: "Water Supply System", example: "WS01" },
+  ];
 
   return (
     <Card className="border-border">
@@ -66,181 +79,157 @@ export const NamingConventionDocument = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4" ref={contentRef}>
+      <CardContent className="space-y-3" ref={contentRef}>
 
-        {/* Purpose & Format */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">Purpose</h4>
-          <p className="text-sm text-muted-foreground">
+        {/* Section 1: Purpose + Area Codes combined */}
+        <div data-pdf-section className="space-y-2">
+          <h4 className="font-semibold text-foreground text-sm">Purpose</h4>
+          <p className="text-xs text-muted-foreground leading-tight">
             This document outlines the complete asset numbering logic used across the Tennant Creek Mining Group (TCMG) Processing Plant.
             It is designed to be shared with contractors and OEM suppliers to ensure consistent naming, avoid prefix collisions,
             and maintain a unified site standard across all facilities.
           </p>
-          <div className="text-sm text-muted-foreground space-y-1">
+          <div className="text-xs text-muted-foreground space-y-0.5">
             <p><span className="font-mono font-bold text-foreground">Format:</span> [PREFIX][NUMBER]-[SUFFIX][NUMBER]</p>
-            <p><span className="font-mono font-bold text-foreground">Example:</span> BM001-MTR001 = Ball Mill 001, Motor 001</p>
+            <p><span className="font-mono font-bold text-foreground">Example:</span> BM01-MTR01 = Ball Mill 01, Motor 01</p>
           </div>
-        </div>
 
-        <Separator />
-
-        {/* 1. Area Codes */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">1. Area Codes (Level 3 of Hierarchy)</h4>
-          <p className="text-xs text-muted-foreground mb-2">
-            Every asset sits under one of these six main areas. The crusher facility will need its own area code or share an existing one.
-          </p>
+          <h4 className="font-semibold text-foreground text-sm pt-2">1. Area Codes (Level 3 of Hierarchy)</h4>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold">Code</TableHead>
-                <TableHead className="w-44 font-semibold">Meaning</TableHead>
-                <TableHead className="font-semibold">Description</TableHead>
+                <TableHead className="w-16 font-semibold text-xs py-1">Code</TableHead>
+                <TableHead className="w-36 font-semibold text-xs py-1">Meaning</TableHead>
+                <TableHead className="font-semibold text-xs py-1">Description</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {areaCodes.map((a) => (
                 <TableRow key={a.code}>
-                  <TableCell className="font-mono font-bold text-primary">{a.code}</TableCell>
-                  <TableCell className="font-medium text-sm">{a.meaning}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs">{a.description}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{a.code}</TableCell>
+                  <TableCell className="font-medium text-xs py-1">{a.meaning}</TableCell>
+                  <TableCell className="text-muted-foreground text-xs py-1">{a.description}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
 
-        {/* 2. Equipment Prefixes */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">2. Equipment Type Prefixes (Reserved)</h4>
-          <p className="text-xs text-muted-foreground mb-2">
+        {/* Section 2: Equipment Prefixes */}
+        <div data-pdf-section className="space-y-2">
+          <h4 className="font-semibold text-foreground text-sm">2. Equipment Type Prefixes (Reserved)</h4>
+          <p className="text-xs text-muted-foreground leading-tight">
             These prefixes are <strong>reserved</strong> across the Processing Plant. Crusher assets must not duplicate these unless the same equipment type is genuinely being used.
           </p>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold">Prefix</TableHead>
-                <TableHead className="w-48 font-semibold">Equipment Type</TableHead>
-                <TableHead className="font-semibold">Example</TableHead>
+                <TableHead className="w-16 font-semibold text-xs py-1">Prefix</TableHead>
+                <TableHead className="w-44 font-semibold text-xs py-1">Equipment Type</TableHead>
+                <TableHead className="font-semibold text-xs py-1">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {equipmentPrefixes.map((e) => (
                 <TableRow key={e.prefix}>
-                  <TableCell className="font-mono font-bold text-primary">{e.prefix}</TableCell>
-                  <TableCell className="font-medium text-sm">{e.meaning}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{e.example}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{e.prefix}</TableCell>
+                  <TableCell className="font-medium text-xs py-1">{e.meaning}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground py-1">{e.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
 
-        {/* 3. Component Suffixes */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">3. Component Suffixes (After Hyphen)</h4>
-          <p className="text-xs text-muted-foreground mb-2">
+        {/* Section 3: Component Suffixes */}
+        <div data-pdf-section className="space-y-2">
+          <h4 className="font-semibold text-foreground text-sm">3. Component Suffixes (After Hyphen)</h4>
+          <p className="text-xs text-muted-foreground leading-tight">
             When a child component sits under a parent asset, it uses these standardised suffixes. These should be adopted identically in the crusher.
           </p>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold">Suffix</TableHead>
-                <TableHead className="w-48 font-semibold">Component Type</TableHead>
-                <TableHead className="font-semibold">Example</TableHead>
+                <TableHead className="w-16 font-semibold text-xs py-1">Suffix</TableHead>
+                <TableHead className="w-44 font-semibold text-xs py-1">Component Type</TableHead>
+                <TableHead className="font-semibold text-xs py-1">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {componentSuffixes.map((c) => (
                 <TableRow key={c.suffix}>
-                  <TableCell className="font-mono font-bold text-primary">{c.suffix}</TableCell>
-                  <TableCell className="font-medium text-sm">{c.meaning}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{c.example}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{c.suffix}</TableCell>
+                  <TableCell className="font-medium text-xs py-1">{c.meaning}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground py-1">{c.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
 
-        {/* 4. Instrumentation Suffixes */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">4. Instrumentation Suffixes</h4>
+        {/* Section 4+5: Instrumentation + Special Patterns combined */}
+        <div data-pdf-section className="space-y-2">
+          <h4 className="font-semibold text-foreground text-sm">4. Instrumentation Suffixes</h4>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold">Suffix</TableHead>
-                <TableHead className="w-48 font-semibold">Instrument Type</TableHead>
-                <TableHead className="font-semibold">Example</TableHead>
+                <TableHead className="w-16 font-semibold text-xs py-1">Suffix</TableHead>
+                <TableHead className="w-44 font-semibold text-xs py-1">Instrument Type</TableHead>
+                <TableHead className="font-semibold text-xs py-1">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {instrumentationSuffixes.map((i) => (
                 <TableRow key={i.suffix}>
-                  <TableCell className="font-mono font-bold text-primary">{i.suffix}</TableCell>
-                  <TableCell className="font-medium text-sm">{i.meaning}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{i.example}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{i.suffix}</TableCell>
+                  <TableCell className="font-medium text-xs py-1">{i.meaning}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground py-1">{i.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </div>
 
-        {/* 5. Special Patterns */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">5. Special Naming Patterns</h4>
+          <h4 className="font-semibold text-foreground text-sm pt-1">5. Special Naming Patterns</h4>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-28 font-semibold">Pattern</TableHead>
-                <TableHead className="w-56 font-semibold">Meaning</TableHead>
-                <TableHead className="font-semibold">Example</TableHead>
+                <TableHead className="w-24 font-semibold text-xs py-1">Pattern</TableHead>
+                <TableHead className="w-48 font-semibold text-xs py-1">Meaning</TableHead>
+                <TableHead className="font-semibold text-xs py-1">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {specialPatterns.map((p, idx) => (
                 <TableRow key={idx}>
-                  <TableCell className="font-mono font-bold text-primary">{p.pattern}</TableCell>
-                  <TableCell className="font-medium text-sm">{p.meaning}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{p.example}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{p.pattern}</TableCell>
+                  <TableCell className="font-medium text-xs py-1">{p.meaning}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground py-1">{p.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
 
-        <Separator />
-
-        {/* 6. Suggested Crusher Prefixes */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">6. Suggested Crusher (CRU) Equipment Prefixes</h4>
-          <p className="text-xs text-muted-foreground mb-2">
-            The following prefixes are <strong>suggested</strong> for Crushing Plant equipment. They have been checked against the existing Processing Plant prefixes above to avoid collisions. The crusher contractor should adopt these or propose alternatives that do not conflict.
+        {/* Section 6: Crusher Prefixes */}
+        <div data-pdf-section className="space-y-2">
+          <h4 className="font-semibold text-foreground text-sm">6. Suggested Crusher (CRU) Equipment Prefixes</h4>
+          <p className="text-xs text-muted-foreground leading-tight">
+            The following prefixes are <strong>suggested</strong> for Crushing Plant equipment. They have been checked against the existing Processing Plant prefixes above to avoid collisions.
           </p>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold">Prefix</TableHead>
-                <TableHead className="w-48 font-semibold">Equipment Type</TableHead>
-                <TableHead className="font-semibold">Suggested Example</TableHead>
+                <TableHead className="w-16 font-semibold text-xs py-1">Prefix</TableHead>
+                <TableHead className="w-44 font-semibold text-xs py-1">Equipment Type</TableHead>
+                <TableHead className="font-semibold text-xs py-1">Suggested Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {[
-                { prefix: "ROM", meaning: "ROM Bin", example: "ROM01" },
-                { prefix: "FDR", meaning: "Vibrating Feeder", example: "FDR01" },
-                { prefix: "CRS", meaning: "Crusher (Jaw / Cone)", example: "CRS01 (Jaw), CRS02 (Sec Cone), CRS03 (Tert Cone)" },
-                { prefix: "MAG", meaning: "Overband Magnet", example: "MAG01" },
-                { prefix: "GFB", meaning: "Ground Feed Bin", example: "GFB01" },
-                { prefix: "SCN", meaning: "Vibrating Screen", example: "SCN01" },
-                { prefix: "CV", meaning: "Conveyor (shared prefix)", example: "CV01, CV02, CV04-CV15" },
-                { prefix: "CFB", meaning: "Cone Feed Bin", example: "CFB01" },
-                { prefix: "DUST", meaning: "Dust Suppression System", example: "DUST01" },
-                { prefix: "WS", meaning: "Water Supply System", example: "WS01" },
-              ].map((c) => (
+              {crusherPrefixes.map((c) => (
                 <TableRow key={c.prefix}>
-                  <TableCell className="font-mono font-bold text-primary">{c.prefix}</TableCell>
-                  <TableCell className="font-medium text-sm">{c.meaning}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{c.example}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{c.prefix}</TableCell>
+                  <TableCell className="font-medium text-xs py-1">{c.meaning}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground py-1">{c.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -248,8 +237,8 @@ export const NamingConventionDocument = () => {
         </div>
 
         {/* Footer */}
-        <div data-pdf-section className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
-          TCMG-STD-NAM-001 Rev 1.0 | Asset naming standards aligned to the Processing Plant Asset Tree
+        <div data-pdf-section className="text-xs text-muted-foreground text-center pt-1 border-t border-border">
+          TCMG-STD-NAM-001 Rev 1.0 | Tennant Creek Mining Group - Asset Naming Standards
         </div>
       </CardContent>
     </Card>
