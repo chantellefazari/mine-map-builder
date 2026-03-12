@@ -55,7 +55,7 @@ const statusWorkflow = [
   { status: "Draft", desc: "Initial creation. Tasks and metadata being defined. Not for field use.", color: "#6b7280" },
   { status: "Reviewed", desc: "Technical review completed by discipline lead. Tasks validated against failure modes.", color: "#2563eb" },
   { status: "Approved", desc: "Approved by Maintenance Superintendent. Ready for scheduling and field deployment.", color: "#16a34a" },
-  { status: "Ready for CMMS", desc: "All metadata, asset links, and frequencies confirmed. Cleared for CMMS import.", color: GOLD },
+  { status: "Ready for Issue", desc: "All metadata, asset links, and frequencies confirmed. Cleared for field issue and scheduling.", color: GOLD },
 ];
 
 const constraints = [
