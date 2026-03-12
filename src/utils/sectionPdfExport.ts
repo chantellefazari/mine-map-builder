@@ -252,18 +252,12 @@ export async function exportSectionsToPdf(
     const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
     const remainingMm = A4_H - MARGIN - currentY;
 
-    // Force a new page if the section has the data-pdf-new-page attribute
-    const forceNewPage = section.hasAttribute("data-pdf-new-page");
-    if (forceNewPage && currentY > MARGIN + 1) {
-      pdf.addPage();
-      currentY = MARGIN;
-    }
     // Only push to a new page if the section fits on one page AND
-    // there's less than 20mm remaining (avoid large gaps)
-    else if (
+    // there's less than 2mm remaining (keep content flowing continuously)
+    if (
       sectionHeightMm <= CONTENT_H &&
       sectionHeightMm > remainingMm &&
-      remainingMm < 20
+      remainingMm < 2
     ) {
       pdf.addPage();
       currentY = MARGIN;
