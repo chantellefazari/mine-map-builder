@@ -226,7 +226,6 @@ export const AssetNumberingSection = () => {
           </Table>
 
           <h4 className="font-semibold text-foreground text-base pt-2">5. Immutability Rules</h4>
-          <h4 className="font-semibold text-foreground text-base">5. Immutability Rules</h4>
           <ul className="text-sm text-muted-foreground space-y-1.5">
             <li>• FL codes are <strong>never renamed</strong></li>
             <li>• FL codes are <strong>never reused</strong></li>
