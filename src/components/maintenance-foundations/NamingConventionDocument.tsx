@@ -11,19 +11,19 @@ import {
 } from "@/components/hierarchy/namingConventionData";
 
 const suggestedCrusherPrefixes = [
-  { prefix: "JAW", meaning: "Jaw Crusher", example: "JAW001", notes: "Primary crusher" },
-  { prefix: "CON", meaning: "Cone Crusher", example: "CON001", notes: "Secondary / tertiary crusher" },
-  { prefix: "IMP", meaning: "Impact Crusher", example: "IMP001", notes: "If applicable" },
-  { prefix: "GRZ", meaning: "Grizzly Feeder", example: "GRZ001", notes: "Scalping / feed grizzly" },
-  { prefix: "RHOP", meaning: "Reclaim Hopper", example: "RHOP001", notes: "Already in use — shared prefix OK if different area" },
-  { prefix: "FHOP", meaning: "Feed Hopper", example: "FHOP001", notes: "Already in use — shared prefix OK if different area" },
-  { prefix: "CFDR", meaning: "Crusher Feeder", example: "CFDR001", notes: "Vibrating / pan feeder" },
-  { prefix: "CSCN", meaning: "Crusher Screen", example: "CSCN001", notes: "Product / scalping screen" },
-  { prefix: "CBIN", meaning: "Crusher Bin", example: "CBIN001", notes: "ROM bin / surge bin" },
-  { prefix: "WSCL", meaning: "Weighing Scale / Weightometer", example: "WSCL001", notes: "Belt scale on conveyors" },
-  { prefix: "DST", meaning: "Dust Suppression System", example: "DST001", notes: "Spray bars / enclosures" },
-  { prefix: "MAG", meaning: "Magnetic Separator", example: "MAG001", notes: "Overband / drum magnet" },
-  { prefix: "MTD", meaning: "Metal Detector", example: "MTD001", notes: "Conveyor metal detector" },
+  { prefix: "CR", meaning: "Crusher (Jaw / Cone)", example: "CR01, CR02, CR03", notes: "CR01 Primary Jaw, CR02 Secondary Cone, CR03 Tertiary Cone" },
+  { prefix: "ROM-BIN", meaning: "ROM Bin", example: "ROM-BIN01", notes: "Steel structure with Hardox liners" },
+  { prefix: "ROM-FDR", meaning: "Primary Vibrating Feeder", example: "ROM-FDR01", notes: "Hydraulic drive feeder under ROM bin" },
+  { prefix: "PRI-MAG", meaning: "Overband Magnet", example: "PRI-MAG01", notes: "Self-cleaning overband on CR01 discharge" },
+  { prefix: "PRI-GFB", meaning: "Ground Feed Bin", example: "PRI-GFB01", notes: "CV01 discharge into screen feed system" },
+  { prefix: "SEC-CFB", meaning: "Cone Feed Bin", example: "SEC-CFB01", notes: "Dual chamber bin feeding CR02 & CR03" },
+  { prefix: "SC", meaning: "Vibrating Screen", example: "SC01", notes: "Horizontal vibrating screen (3-deck)" },
+  { prefix: "CV", meaning: "Conveyor", example: "CV01–CV15", notes: "Shared prefix with Processing Plant — different numbering range" },
+  { prefix: "SEC-CFB-FDR", meaning: "Cone Feed Vibrating Feeder", example: "SEC-CFB01-FDR01, FDR02", notes: "Feeders A & B under cone feed bin" },
+  { prefix: "CV12/CV15", meaning: "Radial Stacker", example: "CV12, CV15", notes: "Fines product radial stackers" },
+  { prefix: "MDE", meaning: "Metal Detector", example: "CV07-MDE01", notes: "Component suffix on cone feed conveyors" },
+  { prefix: "DST", meaning: "Dust Suppression", example: "DST01", notes: "Spray bars and enclosures" },
+  { prefix: "LVL", meaning: "Level Sensor", example: "ROM-BIN01-LVL01", notes: "Vega level sensors on bins" },
 ];
 
 const reservedPrefixes = equipmentPrefixes.map((e) => e.prefix);
