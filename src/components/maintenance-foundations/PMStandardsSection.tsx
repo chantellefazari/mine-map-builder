@@ -280,7 +280,7 @@ export const PMStandardsSection = () => {
           {/* 6. PM Status Workflow */}
           {sectionHeading("6", "PM Approval Workflow")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            Every PM follows a controlled lifecycle from creation to CMMS import. PMs may only be deployed to the field or imported into the CMMS once they reach "Approved" status.
+            Every PM follows a controlled lifecycle from creation to field issue. PMs may only be deployed to the field once they reach "Approved" status.
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
