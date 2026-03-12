@@ -50,6 +50,22 @@ const AssetTree = () => {
                 variant="outline"
                 onClick={async () => {
                   try {
+                    toast.loading("Generating PDF...", { id: "pdf-export" });
+                    await exportAssetTreePDF();
+                    toast.success("PDF ready", { id: "pdf-export" });
+                  } catch (e: any) {
+                    toast.error(e.message || "PDF export failed", { id: "pdf-export" });
+                  }
+                }}
+                className="gap-2"
+              >
+                <FileText className="h-4 w-4" />
+                Download PDF
+              </Button>
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  try {
                     toast.loading("Exporting CSV...", { id: "csv-export" });
                     await exportProcessingPlantCSV();
                     toast.success("CSV downloaded", { id: "csv-export" });
