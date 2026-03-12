@@ -26,9 +26,9 @@ export const PDF_COLORS = {
 // ─── Export Engine Settings (passed to exportSectionsToPdf) ──────────
 export const PDF_EXPORT_OPTS: SectionPdfOptions = {
   margin: 10,
-  renderWidth: 780,
-  fontSize: "12px",
-  lineHeight: "1.4",
+  renderWidth: 920,
+  fontSize: "13px",
+  lineHeight: "1.5",
   scale: 1.5,
   addBorder: true,
   gap: 0,
