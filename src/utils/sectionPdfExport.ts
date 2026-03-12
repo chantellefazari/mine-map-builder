@@ -35,6 +35,8 @@ export interface SectionPdfOptions {
   sliceOverlapPx?: number;
   /** Draw a border around the content area on each page (default false) */
   addBorder?: boolean;
+  /** Trailing blank page threshold in mm — pages with less content than this are removed (default 15) */
+  blankPageThreshold?: number;
 }
 
 const DEFAULTS: Required<SectionPdfOptions> = {
@@ -46,6 +48,7 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   scale: 1.5,
   sliceOverlapPx: 14,
   addBorder: false,
+  blankPageThreshold: 15,
 };
 
 /**
@@ -279,7 +282,7 @@ export async function exportSectionsToPdf(
   if (totalPages > 1) {
     pdf.setPage(totalPages);
     // If nothing meaningful was drawn on this page, delete it
-    if (currentY <= MARGIN + 15) {
+    if (currentY <= MARGIN + cfg.blankPageThreshold) {
       pdf.deletePage(totalPages);
     }
   }

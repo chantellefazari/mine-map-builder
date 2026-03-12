@@ -33,6 +33,7 @@ export const PDF_EXPORT_OPTS: SectionPdfOptions = {
   addBorder: true,
   gap: 0,
   sliceOverlapPx: 0,
+  blankPageThreshold: 15,
 };
 
 // ─── Typography Constants ────────────────────────────────────────────
