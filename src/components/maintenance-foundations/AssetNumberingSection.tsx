@@ -141,7 +141,6 @@ export const AssetNumberingSection = () => {
           </div>
 
           <h4 className="font-semibold text-foreground text-base pt-2">1. Area Codes (6 Approved)</h4>
-          <h4 className="font-semibold text-foreground text-base">1. Area Codes (6 Approved)</h4>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
@@ -184,7 +183,6 @@ export const AssetNumberingSection = () => {
           </Table>
 
           <h4 className="font-semibold text-foreground text-base pt-2">3. Rules & Constraints</h4>
-          <h4 className="font-semibold text-foreground text-base">3. Rules & Constraints</h4>
           <ul className="text-sm space-y-2 text-muted-foreground">
             <li className="flex items-start gap-2">
               <Lock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
@@ -228,7 +226,6 @@ export const AssetNumberingSection = () => {
           </Table>
 
           <h4 className="font-semibold text-foreground text-base pt-2">5. Immutability Rules</h4>
-          <h4 className="font-semibold text-foreground text-base">5. Immutability Rules</h4>
           <ul className="text-sm text-muted-foreground space-y-1.5">
             <li>• FL codes are <strong>never renamed</strong></li>
             <li>• FL codes are <strong>never reused</strong></li>
