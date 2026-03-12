@@ -187,6 +187,11 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">Site Naming Convention</span>
             <span className="sm:hidden">Naming</span>
           </TabsTrigger>
+          <TabsTrigger value="data-mapping" className="flex items-center gap-2 text-xs">
+            <Database className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Data Mapping & Readiness</span>
+            <span className="sm:hidden">Mapping</span>
+          </TabsTrigger>
         </TabsList>
         <div className="flex flex-col gap-1.5 shrink-0 mt-1">
           <Button
