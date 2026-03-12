@@ -130,7 +130,7 @@ export const AssetNumberingSection = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6" ref={contentRef}>
         {/* FL Format */}
         <div className="bg-muted/50 rounded-lg p-5 space-y-4">
           <h4 className="font-medium text-foreground">FL Code Format</h4>
