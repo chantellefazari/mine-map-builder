@@ -1,6 +1,8 @@
+import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Hash, CheckCircle2, Info, AlertTriangle, Lock, ArrowRight } from "lucide-react";
+import { Hash, CheckCircle2, Info, AlertTriangle, Lock, ArrowRight, Download, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import {
