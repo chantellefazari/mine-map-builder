@@ -278,8 +278,8 @@ export async function exportSectionsToPdf(
   const totalPages = pdf.getNumberOfPages();
   if (totalPages > 1) {
     pdf.setPage(totalPages);
-    // If currentY is at the margin (nothing drawn on this page), delete it
-    if (currentY <= MARGIN + 1) {
+    // If nothing meaningful was drawn on this page, delete it
+    if (currentY <= MARGIN + 5) {
       pdf.deletePage(totalPages);
     }
   }
