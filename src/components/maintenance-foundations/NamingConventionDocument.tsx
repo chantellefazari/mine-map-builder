@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Download, Loader2 } from "lucide-react";
+import { Download, Loader2, CheckCircle2, Hash } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   areaCodes,
   equipmentPrefixes,
@@ -40,13 +40,7 @@ export const NamingConventionDocument = () => {
       const { exportSectionsToPdf } = await import("@/utils/sectionPdfExport");
       await exportSectionsToPdf(
         contentRef.current,
-        "TCMG-STD-NAM-001_Site_Naming_Convention.pdf",
-        {
-          renderWidth: 860,
-          fontSize: "12px",
-          lineHeight: "1.35",
-          sliceOverlapPx: 14,
-        }
+        "TCMG-STD-NAM-001_Site_Naming_Convention.pdf"
       );
     } catch (err) {
       console.error("PDF generation failed:", err);
@@ -56,82 +50,88 @@ export const NamingConventionDocument = () => {
   };
 
   return (
-    <div className="space-y-6" ref={contentRef}>
-      {/* Document Header */}
-      <Card data-pdf-section className="border-primary/30 bg-primary/5">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">TCMG Site Asset Naming Convention — Reference Document</CardTitle>
+    <Card className="border-border">
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Hash className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <CardTitle className="text-xl">Site Asset Naming Convention</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                TCMG-STD-NAM-001 Rev 1.0 — Tennant Creek Gold Mine
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
             <Button onClick={handleDownloadPdf} variant="outline" size="sm" className="gap-2" disabled={downloading}>
               {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
               {downloading ? "Generating..." : "Download PDF"}
             </Button>
+            <Badge className="bg-green-500/10 text-green-600 border-green-500/30">
+              <CheckCircle2 className="w-3 h-3 mr-1" />
+              Defined & Stable
+            </Badge>
           </div>
-        </CardHeader>
-        <CardContent className="text-sm text-muted-foreground space-y-2">
-          <p>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-6" ref={contentRef}>
+
+        {/* Purpose & Format */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">Purpose</h4>
+          <p className="text-sm text-muted-foreground">
             This document outlines the complete asset numbering logic used across the Tennant Creek Mining Group (TCMG) Processing Plant.
             It is designed to be shared with contractors and OEM suppliers to ensure consistent naming, avoid prefix collisions,
             and maintain a unified site standard across all facilities.
           </p>
-          <div className="flex flex-wrap gap-4 pt-2 text-xs font-medium text-foreground">
-            <span>Format: <code className="bg-muted px-2 py-0.5 rounded font-mono">[PREFIX][NUMBER]-[SUFFIX][NUMBER]</code></span>
-            <span>Example: <code className="bg-muted px-2 py-0.5 rounded font-mono">BM001-MTR001</code> = Ball Mill 001 – Motor 001</span>
+          <div className="text-sm text-muted-foreground space-y-1">
+            <p><span className="font-mono font-bold text-foreground">Format:</span> [PREFIX][NUMBER]-[SUFFIX][NUMBER]</p>
+            <p><span className="font-mono font-bold text-foreground">Example:</span> BM001-MTR001 = Ball Mill 001 – Motor 001</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Section 1: Area Codes */}
-      <Card data-pdf-section>
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 1</span>
-            <CardTitle className="text-base">Area Codes (Level 3 of Hierarchy)</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-xs text-muted-foreground mb-3">
+        <Separator />
+
+        {/* 1. Area Codes */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">1. Area Codes (Level 3 of Hierarchy)</h4>
+          <p className="text-xs text-muted-foreground mb-2">
             Every asset sits under one of these six main areas. The crusher facility will need its own area code — or share an existing one.
           </p>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-24">Code</TableHead>
-                <TableHead className="w-48">Meaning</TableHead>
-                <TableHead>Description</TableHead>
+              <TableRow className="bg-muted/50">
+                <TableHead className="w-20 font-semibold">Code</TableHead>
+                <TableHead className="w-44 font-semibold">Meaning</TableHead>
+                <TableHead className="font-semibold">Description</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {areaCodes.map((a) => (
                 <TableRow key={a.code}>
                   <TableCell className="font-mono font-bold text-primary">{a.code}</TableCell>
-                  <TableCell className="font-medium">{a.meaning}</TableCell>
+                  <TableCell className="font-medium text-sm">{a.meaning}</TableCell>
                   <TableCell className="text-muted-foreground text-xs">{a.description}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Section 2: Equipment Prefixes — RESERVED */}
-      <Card data-pdf-section>
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 2</span>
-            <CardTitle className="text-base">Equipment Type Prefixes — Currently In Use</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-xs text-muted-foreground mb-3">
-            These prefixes are <strong>reserved</strong> across the Processing Plant. Crusher assets must not duplicate these unless the same equipment type is genuinely being used (e.g. CV for conveyors is fine to share).
+        {/* 2. Equipment Prefixes */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">2. Equipment Type Prefixes — Reserved</h4>
+          <p className="text-xs text-muted-foreground mb-2">
+            These prefixes are <strong>reserved</strong> across the Processing Plant. Crusher assets must not duplicate these unless the same equipment type is genuinely being used.
           </p>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-28">Prefix</TableHead>
-                <TableHead className="w-52">Equipment Type</TableHead>
-                <TableHead>Example</TableHead>
+              <TableRow className="bg-muted/50">
+                <TableHead className="w-20 font-semibold">Prefix</TableHead>
+                <TableHead className="w-48 font-semibold">Equipment Type</TableHead>
+                <TableHead className="font-semibold">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -139,32 +139,25 @@ export const NamingConventionDocument = () => {
                 <TableRow key={e.prefix}>
                   <TableCell className="font-mono font-bold text-primary">{e.prefix}</TableCell>
                   <TableCell className="font-medium text-sm">{e.meaning}</TableCell>
-                  <TableCell className="font-mono text-muted-foreground text-xs">{e.example}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{e.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Section 3: Component Suffixes */}
-      <Card data-pdf-section>
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 3</span>
-            <CardTitle className="text-base">Component Suffixes (After Hyphen)</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-xs text-muted-foreground mb-3">
-            When a child component sits under a parent asset, it uses these standardised suffixes. These should be adopted identically in the crusher to keep the site consistent.
+        {/* 3. Component Suffixes */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">3. Component Suffixes (After Hyphen)</h4>
+          <p className="text-xs text-muted-foreground mb-2">
+            When a child component sits under a parent asset, it uses these standardised suffixes. These should be adopted identically in the crusher.
           </p>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-24">Suffix</TableHead>
-                <TableHead className="w-52">Component Type</TableHead>
-                <TableHead>Example</TableHead>
+              <TableRow className="bg-muted/50">
+                <TableHead className="w-20 font-semibold">Suffix</TableHead>
+                <TableHead className="w-48 font-semibold">Component Type</TableHead>
+                <TableHead className="font-semibold">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -172,29 +165,22 @@ export const NamingConventionDocument = () => {
                 <TableRow key={c.suffix}>
                   <TableCell className="font-mono font-bold text-primary">{c.suffix}</TableCell>
                   <TableCell className="font-medium text-sm">{c.meaning}</TableCell>
-                  <TableCell className="font-mono text-muted-foreground text-xs">{c.example}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{c.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Section 4: Instrumentation Suffixes */}
-      <Card data-pdf-section>
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 4</span>
-            <CardTitle className="text-base">Instrumentation Suffixes</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
+        {/* 4. Instrumentation Suffixes */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">4. Instrumentation Suffixes</h4>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-24">Suffix</TableHead>
-                <TableHead className="w-52">Instrument Type</TableHead>
-                <TableHead>Example</TableHead>
+              <TableRow className="bg-muted/50">
+                <TableHead className="w-20 font-semibold">Suffix</TableHead>
+                <TableHead className="w-48 font-semibold">Instrument Type</TableHead>
+                <TableHead className="font-semibold">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -202,29 +188,22 @@ export const NamingConventionDocument = () => {
                 <TableRow key={i.suffix}>
                   <TableCell className="font-mono font-bold text-primary">{i.suffix}</TableCell>
                   <TableCell className="font-medium text-sm">{i.meaning}</TableCell>
-                  <TableCell className="font-mono text-muted-foreground text-xs">{i.example}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{i.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Section 5: Special Patterns */}
-      <Card data-pdf-section>
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 5</span>
-            <CardTitle className="text-base">Special Naming Patterns</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
+        {/* 5. Special Patterns */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">5. Special Naming Patterns</h4>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-32">Pattern</TableHead>
-                <TableHead className="w-64">Meaning</TableHead>
-                <TableHead>Example</TableHead>
+              <TableRow className="bg-muted/50">
+                <TableHead className="w-28 font-semibold">Pattern</TableHead>
+                <TableHead className="w-56 font-semibold">Meaning</TableHead>
+                <TableHead className="font-semibold">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -232,36 +211,29 @@ export const NamingConventionDocument = () => {
                 <TableRow key={idx}>
                   <TableCell className="font-mono font-bold text-primary">{p.pattern}</TableCell>
                   <TableCell className="font-medium text-sm">{p.meaning}</TableCell>
-                  <TableCell className="font-mono text-muted-foreground text-xs">{p.example}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{p.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
 
-      <Separator />
+        <Separator />
 
-      {/* Section 6: Suggested Crusher Prefixes */}
-      <Card data-pdf-section className="border-amber-500/30 bg-amber-500/5">
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 6</span>
-            <CardTitle className="text-base">Suggested Crusher Asset Prefixes</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-xs text-muted-foreground mb-3">
-            Below are <strong>suggested</strong> prefixes for the new Crushing Plant to maintain site-wide consistency and avoid collisions with existing Processing Plant prefixes. These are starting points for discussion — final codes to be agreed.
+        {/* 6. Suggested Crusher Prefixes */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">6. Suggested Crusher Asset Prefixes</h4>
+          <p className="text-xs text-muted-foreground mb-2">
+            Suggested prefixes for the new Crushing Plant to maintain site-wide consistency and avoid collisions with existing Processing Plant prefixes. Starting points for discussion — final codes to be agreed.
           </p>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-24">Prefix</TableHead>
-                <TableHead className="w-48">Equipment Type</TableHead>
-                <TableHead className="w-36">Example</TableHead>
-                <TableHead className="w-56">Notes</TableHead>
-                <TableHead className="w-20">Conflict?</TableHead>
+              <TableRow className="bg-muted/50">
+                <TableHead className="w-16 font-semibold">Prefix</TableHead>
+                <TableHead className="w-40 font-semibold">Equipment Type</TableHead>
+                <TableHead className="w-28 font-semibold">Example</TableHead>
+                <TableHead className="font-semibold">Notes</TableHead>
+                <TableHead className="w-16 font-semibold">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -271,13 +243,13 @@ export const NamingConventionDocument = () => {
                   <TableRow key={c.prefix}>
                     <TableCell className="font-mono font-bold text-primary">{c.prefix}</TableCell>
                     <TableCell className="font-medium text-sm">{c.meaning}</TableCell>
-                    <TableCell className="font-mono text-muted-foreground text-xs">{c.example}</TableCell>
+                    <TableCell className="font-mono text-xs text-muted-foreground">{c.example}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">{c.notes}</TableCell>
-                    <TableCell>
+                    <TableCell className="text-xs font-medium">
                       {hasConflict ? (
-                        <Badge variant="outline" className="text-[10px] border-amber-500 text-amber-600">Shared</Badge>
+                        <span className="text-amber-600">Shared</span>
                       ) : (
-                        <Badge variant="outline" className="text-[10px] border-emerald-500 text-emerald-600">New</Badge>
+                        <span className="text-emerald-600">New</span>
                       )}
                     </TableCell>
                   </TableRow>
@@ -285,23 +257,16 @@ export const NamingConventionDocument = () => {
               })}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Section 7: Example Crusher Asset Tree */}
-      <Card data-pdf-section className="border-amber-500/30 bg-amber-500/5">
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 7</span>
-            <CardTitle className="text-base">Example — Crusher Asset Numbering in Practice</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-xs text-muted-foreground">
+        {/* 7. Example Crusher Asset Tree */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">7. Example — Crusher Asset Numbering in Practice</h4>
+          <p className="text-xs text-muted-foreground mb-2">
             Below shows how the naming convention applies to the current Crushing Plant layout. Component suffixes follow the same site standard as the Processing Plant.
           </p>
 
-          <div className="bg-muted/50 rounded-lg p-4 font-mono text-xs space-y-3">
+          <div className="font-mono text-xs space-y-3">
             <div>
               <p className="font-bold text-foreground mb-1">ROM & Primary Feed</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
@@ -373,8 +338,13 @@ export const NamingConventionDocument = () => {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+
+        {/* Footer */}
+        <div data-pdf-section className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
+          TCMG-STD-NAM-001 Rev 1.0 — Asset naming standards aligned to the live Processing Plant Asset Tree
+        </div>
+      </CardContent>
+    </Card>
   );
 };
