@@ -287,12 +287,12 @@ export const NamingConventionDocument = () => {
             <div>
               <p className="font-bold text-foreground mb-1">Primary Crushing</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">CR01</span> — Primary Jaw Crusher</p>
-                <p className="pl-4"><span className="text-primary">CR01-MTR01</span> — Crusher Motor 160kW</p>
-                <p className="pl-4"><span className="text-primary">CR01-GBX01</span> — Gearbox / Drive Assembly</p>
-                <p className="pl-4"><span className="text-primary">CR01-JKS01</span> — Jackshaft Assembly</p>
-                <p className="pl-4"><span className="text-primary">CR01-LUB01</span> — Lubrication System</p>
-                <p className="pl-4"><span className="text-primary">CR01-HOP01</span> — Feed Hopper</p>
+                <p><span className="text-primary font-semibold">CRS01</span> — Primary Jaw Crusher</p>
+                <p className="pl-4"><span className="text-primary">CRS01-MTR01</span> — Crusher Motor 160kW</p>
+                <p className="pl-4"><span className="text-primary">CRS01-GBX01</span> — Gearbox / Drive Assembly</p>
+                <p className="pl-4"><span className="text-primary">CRS01-JKS01</span> — Jackshaft Assembly</p>
+                <p className="pl-4"><span className="text-primary">CRS01-LUB01</span> — Lubrication System</p>
+                <p className="pl-4"><span className="text-primary">CRS01-HOP01</span> — Feed Hopper</p>
                 <p><span className="text-primary font-semibold">PRI-MAG01</span> — Overband Magnet</p>
                 <p className="pl-4"><span className="text-primary">PRI-MAG01-MTR01</span> — Magnet Drive Motor</p>
                 <p className="pl-4"><span className="text-primary">PRI-MAG01-BLT01</span> — Self-Cleaning Belt</p>
