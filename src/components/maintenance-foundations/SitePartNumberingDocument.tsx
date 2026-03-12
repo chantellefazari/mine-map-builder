@@ -258,12 +258,12 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           {/* 6. Notes & Key Decisions */}
           <h2 style={headingStyle("6", "Notes")}>6. Key Design Decisions</h2>
           <ul style={{ fontSize: 11, lineHeight: 1.5, paddingLeft: 18, margin: "0 0 10px 0", color: "#333" }}>
-            <li><strong>Why numbers only?</strong> Purely numeric part numbers are faster to search, barcode-compatible, and eliminate confusion between letters (O vs 0, I vs 1).</li>
+            <li><strong>Why numbers only?</strong> Purely numeric part numbers are faster to search, barcode compatible, and eliminate confusion between letters (O vs 0, I vs 1).</li>
             <li><strong>Why not use OEM numbers?</strong> OEM numbers change between suppliers, vary in format, and cannot be used as a universal key across stores and CMMS.</li>
-            <li><strong>Why 7 digits?</strong> 7 digits gives 22 categories x 999 parts = 21,978 unique numbers per site - more than sufficient for a single processing plant.</li>
+            <li><strong>Why 7 digits?</strong> 7 digits gives 22 categories x 999 parts = 21,978 unique numbers per site. More than sufficient for a single processing plant.</li>
             <li><strong>Why site code 10?</strong> Tennant Creek is the first site. If a second site is added, it would use 20, keeping all existing numbers valid.</li>
             <li><strong>How were categories chosen?</strong> Categories were derived from analysis of 2,000+ PO line items, grouped by equipment function and aligned with the physical stores container layout.</li>
-            <li><strong>Auto-numbering:</strong> The Site Spares Catalogue module automatically assigns the next available NNN when adding a new part - no manual counting required.</li>
+            <li><strong>Auto numbering:</strong> The Site Spares Catalogue module automatically assigns the next available NNN when adding a new part. No manual counting required.</li>
           </ul>
 
           {/* 7. Notice */}
