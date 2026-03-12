@@ -268,7 +268,7 @@ export const PMStandardsSection = () => {
           {/* 5. Frequency Standards */}
           {sectionHeading("5", "Frequency Standards by Discipline")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            PM frequencies are standardised across the site. Only approved frequency intervals may be used. Custom or ad-hoc frequencies are not permitted without written approval from the Maintenance Superintendent.
+            PM frequencies are standardised across the site. Only approved frequency intervals may be used. Custom or ad hoc frequencies are not permitted without written approval from the Maintenance Superintendent.
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
