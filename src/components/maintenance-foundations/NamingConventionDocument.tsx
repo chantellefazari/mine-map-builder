@@ -205,7 +205,7 @@ export const NamingConventionDocument = () => {
       </Card>
 
       {/* Section 5: Special Patterns */}
-      <Card>
+      <Card data-pdf-section>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-[10px] font-bold">SECTION 5</Badge>
