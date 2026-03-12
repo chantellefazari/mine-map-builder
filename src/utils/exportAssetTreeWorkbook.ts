@@ -1,8 +1,7 @@
 import * as XLSX from "xlsx";
 import { writeXlsxFile } from "@/utils/safariDownload";
-import { areasData } from "@/components/hierarchy/assetData";
+import { fetchProcessingPlantAreas } from "@/utils/fetchProcessingPlantData";
 import { crushingPlantAreas } from "@/components/hierarchy/crushingPlantData";
-import { pidTagMappings } from "@/components/hierarchy/pidTagMappings";
 import { functionalLocations } from "@/components/hierarchy/functionalLocations";
 import {
   areaCodes,
@@ -12,23 +11,14 @@ import {
   specialPatterns,
 } from "@/components/hierarchy/namingConventionData";
 
-const buildPidTagLookup = () => {
-  const lookup = new Map<string, string[]>();
-  pidTagMappings.forEach((m) => {
-    const existing = lookup.get(m.assetNumber) || [];
-    existing.push(m.pidTag);
-    lookup.set(m.assetNumber, existing);
-  });
-  return lookup;
-};
+/**
+ * Exports the complete Asset Tree Workbook.
+ * Now pulls Processing Plant data from the database (single source of truth).
+ */
+export async function exportAssetTreeWorkbook() {
+  const areasData = await fetchProcessingPlantAreas();
 
-export function exportAssetTreeWorkbook() {
   const wb = XLSX.utils.book_new();
-  const pidTagsByAsset = buildPidTagLookup();
-  const getAllPidTags = (assetNumber: string, inlineTags?: string[]) => {
-    const mapped = pidTagsByAsset.get(assetNumber) || [];
-    return [...new Set([...(inlineTags || []), ...mapped])];
-  };
 
   // Sheet 1: Asset Tree Register
   const treeRows: string[][] = [
@@ -40,8 +30,8 @@ export function exportAssetTreeWorkbook() {
     area.subAreas.forEach((sub) => {
       sub.parentAssets.forEach((parent) => {
         parent.equipment.forEach((equip) => {
-          const tags = getAllPidTags(equip.assetNumber, equip.pidTags);
-          treeRows.push(["TCMG", "Processing Plant", area.code, area.label, sub.label, parent.label, equip.assetNumber, equip.name, "", "", "", "", tags.join("; ")]);
+          const tags = equip.pidTags?.join("; ") || "";
+          treeRows.push(["TCMG", "Processing Plant", area.code, area.label, sub.label, parent.label, equip.assetNumber, equip.name, "", "", "", "", tags]);
           equip.components?.forEach((comp) => {
             treeRows.push(["TCMG", "Processing Plant", area.code, area.label, sub.label, parent.label, equip.assetNumber, equip.name, comp.componentCode, comp.componentType, comp.componentName, comp.manufacturer, ""]);
           });

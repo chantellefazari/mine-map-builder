@@ -117,7 +117,11 @@ export async function generateProcessingPlantCSVContent(): Promise<string> {
     }
   }
 
-  const csvContent = csvLines.join("\n");
+  return csvLines.join("\n");
+}
+
+export async function exportProcessingPlantCSV() {
+  const csvContent = await generateProcessingPlantCSVContent();
   const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
