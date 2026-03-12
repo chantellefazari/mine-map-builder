@@ -192,7 +192,7 @@ export const PMStandardsSection = () => {
           {/* 2. PM Design Principles */}
           {sectionHeading("2", "PM Design Principles")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            All PM templates at Tennant Creek Mine must adhere to the following non-negotiable design principles:
+            All PM templates at Tennant Creek Mine must adhere to the following non negotiable design principles:
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
