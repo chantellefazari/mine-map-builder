@@ -15,6 +15,7 @@ import {
   BarChart3,
   AlertTriangle,
   Database,
+  Gauge,
 } from "lucide-react";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
