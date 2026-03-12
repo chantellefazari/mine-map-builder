@@ -162,7 +162,7 @@ export const PMStandardsSection = () => {
           {/* 1. Purpose & Scope */}
           {sectionHeading("1", "Purpose & Scope")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            This document defines the approved preventive maintenance (PM) design standards for Tennant Creek Mine. It governs how PMs are designed, structured, reviewed, and approved before deployment to the field or import into the CMMS. This standard applies to all disciplines: Mechanical, Electrical, and Mobile Equipment.
+            This document defines the approved preventive maintenance (PM) design standards for Tennant Creek Mine. It governs how PMs are designed, structured, reviewed, and approved before deployment to the field. This standard applies to all disciplines: Mechanical, Electrical, and Mobile Equipment.
           </p>
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
             The objective is to ensure every PM template is consistent, value adding, safety compliant, and traceable. PMs that do not conform to this standard will not be approved for field use or CMMS import.
