@@ -30,12 +30,37 @@ const suggestedCrusherPrefixes = [
 const reservedPrefixes = equipmentPrefixes.map((e) => e.prefix);
 
 export const NamingConventionDocument = () => {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadPdf = async () => {
+    if (!contentRef.current) return;
+    setDownloading(true);
+    try {
+      const { exportSectionsToPdf } = await import("@/utils/sectionPdfExport");
+      await exportSectionsToPdf(
+        contentRef.current,
+        "TCMG-STD-NAM-001_Site_Naming_Convention.pdf"
+      );
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" ref={contentRef}>
       {/* Document Header */}
-      <Card className="border-primary/30 bg-primary/5">
+      <Card data-pdf-section className="border-primary/30 bg-primary/5">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">TCMG Site Asset Naming Convention — Reference Document</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg">TCMG Site Asset Naming Convention — Reference Document</CardTitle>
+            <Button onClick={handleDownloadPdf} variant="outline" size="sm" className="gap-2" disabled={downloading}>
+              {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+              {downloading ? "Generating..." : "Download PDF"}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground space-y-2">
           <p>
