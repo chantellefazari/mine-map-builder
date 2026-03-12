@@ -10,12 +10,12 @@ const GOLD_BG = "#fdf8ea";
 const DARK = "#1a1a1a";
 
 const designPrinciples = [
-  { rule: "Equipment-Type First", desc: "PMs are designed for equipment categories (e.g. pumps, conveyors, generators), not individual assets. This ensures consistency and reduces duplication across the fleet." },
-  { rule: "Value-Adding Tasks Only", desc: "Every task must prevent or detect a specific failure mode. Tasks with no measurable outcome are removed during review." },
-  { rule: "Inspection Before Intrusive", desc: "Non-intrusive inspections (visual, thermal, vibration) occur more frequently than invasive work (disassembly, replacement)." },
-  { rule: "Risk-Based Frequency", desc: "Frequencies are determined by criticality rating, failure history, operating context, and OEM recommendations; never by habit or convenience." },
+  { rule: "Equipment Type First", desc: "PMs are designed for equipment categories (e.g. pumps, conveyors, generators), not individual assets. This ensures consistency and reduces duplication across the fleet." },
+  { rule: "Value Adding Tasks Only", desc: "Every task must prevent or detect a specific failure mode. Tasks with no measurable outcome are removed during review." },
+  { rule: "Inspection Before Intrusive", desc: "Non intrusive inspections (visual, thermal, vibration) occur more frequently than invasive work (disassembly, replacement)." },
+  { rule: "Risk Based Frequency", desc: "Frequencies are determined by criticality rating, failure history, operating context, and OEM recommendations; never by habit or convenience." },
   { rule: "Explicit Isolation", desc: "Every PM must clearly state isolation and LOTO requirements. No PM is approved without documented energy isolation steps." },
-  { rule: "Standardised Template", desc: "All PMs follow the TCMG standard template structure: Banner, Metadata, Safety, Inspection Table, Sign-Off. No deviations permitted." },
+  { rule: "Standardised Template", desc: "All PMs follow the TCMG standard template structure: Banner, Metadata, Safety, Inspection Table, Sign Off. No deviations permitted." },
   { rule: "Single Source of Truth", desc: "PM templates are maintained in the digital register (pm_master_list). Hard copies are reference only and must match the digital version." },
 ];
 
