@@ -195,6 +195,11 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">Data Mapping & Readiness</span>
             <span className="sm:hidden">Mapping</span>
           </TabsTrigger>
+          <TabsTrigger value="criticality" className="flex items-center gap-2 text-xs">
+            <Gauge className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Asset Criticality</span>
+            <span className="sm:hidden">Criticality</span>
+          </TabsTrigger>
         </TabsList>
         <div className="flex flex-col gap-1.5 shrink-0 mt-1">
           <Button
