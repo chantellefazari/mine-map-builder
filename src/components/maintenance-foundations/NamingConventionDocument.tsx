@@ -99,8 +99,7 @@ export const NamingConventionDocument = () => {
               <TableRow>
                 <TableHead className="w-28">Prefix</TableHead>
                 <TableHead className="w-52">Equipment Type</TableHead>
-                <TableHead className="w-44">Example</TableHead>
-                <TableHead>Category</TableHead>
+                <TableHead>Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -109,9 +108,6 @@ export const NamingConventionDocument = () => {
                   <TableCell className="font-mono font-bold text-primary">{e.prefix}</TableCell>
                   <TableCell className="font-medium text-sm">{e.meaning}</TableCell>
                   <TableCell className="font-mono text-muted-foreground text-xs">{e.example}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary" className="text-[10px]">{e.category}</Badge>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -136,8 +132,7 @@ export const NamingConventionDocument = () => {
               <TableRow>
                 <TableHead className="w-24">Suffix</TableHead>
                 <TableHead className="w-52">Component Type</TableHead>
-                <TableHead className="w-44">Example</TableHead>
-                <TableHead>Category</TableHead>
+                <TableHead>Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -146,9 +141,6 @@ export const NamingConventionDocument = () => {
                   <TableCell className="font-mono font-bold text-primary">{c.suffix}</TableCell>
                   <TableCell className="font-medium text-sm">{c.meaning}</TableCell>
                   <TableCell className="font-mono text-muted-foreground text-xs">{c.example}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary" className="text-[10px]">{c.category}</Badge>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -170,8 +162,7 @@ export const NamingConventionDocument = () => {
               <TableRow>
                 <TableHead className="w-24">Suffix</TableHead>
                 <TableHead className="w-52">Instrument Type</TableHead>
-                <TableHead className="w-44">Example</TableHead>
-                <TableHead>Category</TableHead>
+                <TableHead>Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -180,9 +171,6 @@ export const NamingConventionDocument = () => {
                   <TableCell className="font-mono font-bold text-primary">{i.suffix}</TableCell>
                   <TableCell className="font-medium text-sm">{i.meaning}</TableCell>
                   <TableCell className="font-mono text-muted-foreground text-xs">{i.example}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary" className="text-[10px]">{i.category}</Badge>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
