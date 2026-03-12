@@ -276,114 +276,89 @@ export const NamingConventionDocument = () => {
 
         <Separator />
 
-        {/* 6. Suggested Crusher Prefixes */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">6. Suggested Crusher Asset Prefixes</h4>
-          <p className="text-xs text-muted-foreground mb-2">
-            Suggested prefixes for the new Crushing Plant to maintain site-wide consistency and avoid collisions with existing Processing Plant prefixes. Starting points for discussion, final codes to be agreed.
-          </p>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-16 font-semibold">Prefix</TableHead>
-                <TableHead className="w-40 font-semibold">Equipment Type</TableHead>
-                <TableHead className="w-28 font-semibold">Example</TableHead>
-                <TableHead className="font-semibold">Notes</TableHead>
-                <TableHead className="w-16 font-semibold">Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {suggestedCrusherPrefixes.map((c) => {
-                const hasConflict = reservedPrefixes.includes(c.prefix);
-                return (
-                  <TableRow key={c.prefix}>
-                    <TableCell className="font-mono font-bold text-primary">{c.prefix}</TableCell>
-                    <TableCell className="font-medium text-sm">{c.meaning}</TableCell>
-                    <TableCell className="font-mono text-xs text-muted-foreground">{c.example}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{c.notes}</TableCell>
-                    <TableCell className="text-xs font-medium">
-                      {hasConflict ? (
-                        <span className="text-amber-600">Shared</span>
-                      ) : (
-                        <span className="text-emerald-600">New</span>
-                      )}
-                    </TableCell>
+        {/* 6. Live System Codes from Processing Plant Asset Tree */}
+        {liveSystemChunks.length > 0 ? (
+          liveSystemChunks.map((chunk, chunkIndex) => (
+            <div data-pdf-section className="space-y-3" key={`systems-${chunkIndex}`}>
+              {chunkIndex === 0 ? (
+                <>
+                  <h4 className="font-semibold text-foreground text-base">6. Live System Asset Codes</h4>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    All codes below are loaded directly from the Processing Plant asset tree. No manual or generated codes are used.
+                  </p>
+                </>
+              ) : (
+                <h4 className="font-semibold text-foreground text-base">6. Live System Asset Codes, continued</h4>
+              )}
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/50">
+                    <TableHead className="w-20 font-semibold">Area</TableHead>
+                    <TableHead className="w-40 font-semibold">Asset ID</TableHead>
+                    <TableHead className="font-semibold">Description</TableHead>
+                    <TableHead className="w-20 font-semibold">Level</TableHead>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+                </TableHeader>
+                <TableBody>
+                  {chunk.map((row) => (
+                    <TableRow key={`${row.level}-${row.id}`}>
+                      <TableCell className="text-xs font-medium text-foreground">{row.area}</TableCell>
+                      <TableCell className="font-mono text-xs font-bold text-primary">{row.id}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{row.desc}</TableCell>
+                      <TableCell className="text-[10px] font-semibold text-foreground">{row.level}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ))
+        ) : (
+          <div data-pdf-section className="space-y-3">
+            <h4 className="font-semibold text-foreground text-base">6. Live System Asset Codes</h4>
+            <p className="text-xs text-muted-foreground">No live system asset rows were returned from the Processing Plant asset tree.</p>
+          </div>
+        )}
 
-        {/* 7. Example Crusher Asset Tree */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">7. Crusher Asset Numbering Examples</h4>
-          <p className="text-xs text-muted-foreground mb-2">
-            How the naming convention applies to the Crushing Plant layout. Component suffixes follow the same site standard as the Processing Plant.
-          </p>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold">Area</TableHead>
-                <TableHead className="w-32 font-semibold">Asset ID</TableHead>
-                <TableHead className="font-semibold">Description</TableHead>
-                <TableHead className="w-20 font-semibold">Level</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[
-                { area: "ROM Feed", id: "RBIN01", desc: "ROM Bin", level: "System" },
-                { area: "", id: "RBIN01-LVL01", desc: "Vega Level Sensor", level: "Comp" },
-                { area: "", id: "RBIN01-STR01", desc: "Bin Structure", level: "Comp" },
-                { area: "", id: "RFDR01", desc: "Primary Vibrating Feeder", level: "System" },
-                { area: "", id: "RFDR01-MTR01", desc: "Feeder Motor", level: "Comp" },
-                { area: "", id: "RFDR01-HYD01", desc: "Hydraulic Motor Drive", level: "Comp" },
-                { area: "", id: "RFDR01-VSD01", desc: "Variable Speed Drive", level: "Comp" },
-                { area: "", id: "RFDR01-EXC01", desc: "Exciter Unit A", level: "Comp" },
-                { area: "Primary", id: "CRS01", desc: "Primary Jaw Crusher", level: "System" },
-                { area: "", id: "CRS01-MTR01", desc: "Crusher Motor 160kW", level: "Comp" },
-                { area: "", id: "CRS01-GBX01", desc: "Gearbox / Drive Assembly", level: "Comp" },
-                { area: "", id: "CRS01-JKS01", desc: "Jackshaft Assembly", level: "Comp" },
-                { area: "", id: "CRS01-LUB01", desc: "Lubrication System", level: "Comp" },
-                { area: "", id: "CRS01-HOP01", desc: "Feed Hopper", level: "Comp" },
-                { area: "", id: "MAG01", desc: "Overband Magnet", level: "System" },
-                { area: "", id: "MAG01-MTR01", desc: "Magnet Drive Motor", level: "Comp" },
-                { area: "", id: "MAG01-BLT01", desc: "Self-Cleaning Belt", level: "Comp" },
-                { area: "Conveying", id: "CV01", desc: "Forward Conveyor", level: "System" },
-                { area: "", id: "CV01-MTR01", desc: "Head Drive Motor A", level: "Comp" },
-                { area: "", id: "CV01-GBX01", desc: "Gearbox", level: "Comp" },
-                { area: "", id: "CV01-LNY01", desc: "Lanyard Safety Switches", level: "Comp" },
-                { area: "", id: "CV01-SPD01", desc: "Underspeed Sensor", level: "Comp" },
-                { area: "", id: "CV04", desc: "Screen Feed Conveyor", level: "System" },
-                { area: "", id: "CV07", desc: "Secondary Cone Feed Conveyor", level: "System" },
-                { area: "", id: "CV07-MDE01", desc: "Metal Detector", level: "Comp" },
-                { area: "Screening", id: "SCN01", desc: "Vibrating Screen (3-Deck)", level: "System" },
-                { area: "", id: "SCN01-MTR01", desc: "Screen Drive Motor 45kW", level: "Comp" },
-                { area: "", id: "SCN01-GBX01", desc: "Exciter / Gearbox", level: "Comp" },
-                { area: "", id: "SCN01-DK01", desc: "Top Deck", level: "Comp" },
-                { area: "", id: "SCN01-DK02", desc: "Second Deck", level: "Comp" },
-                { area: "", id: "SCN01-DK03", desc: "Bottom Deck (Fines)", level: "Comp" },
-                { area: "", id: "SCN01-SPR01", desc: "Isolation Springs", level: "Comp" },
-                { area: "Secondary", id: "CFB01", desc: "Cone Feed Bin (Dual Chamber)", level: "System" },
-                { area: "", id: "CFB01-FDR01", desc: "Vibrating Feeder A to CRS02", level: "Comp" },
-                { area: "", id: "CFB01-FDR02", desc: "Vibrating Feeder B to CRS03", level: "Comp" },
-                { area: "", id: "CRS02", desc: "Secondary Cone Crusher", level: "System" },
-                { area: "", id: "CRS02-MTR01", desc: "Crusher Motor 220kW", level: "Comp" },
-                { area: "", id: "CRS02-LUB01", desc: "Lubrication System", level: "Comp" },
-                { area: "", id: "CRS03", desc: "Tertiary Cone Crusher", level: "System" },
-                { area: "", id: "CRS03-MTR01", desc: "Crusher Motor 220kW", level: "Comp" },
-                { area: "", id: "CRS03-HYD01", desc: "Hydraulic Tramp Release", level: "Comp" },
-              ].map((row, idx) => (
-                <TableRow key={idx}>
-                  <TableCell className="text-xs font-medium text-foreground">{row.area}</TableCell>
-                  <TableCell className={`font-mono text-xs ${row.level === "System" ? "font-bold text-primary" : "text-primary pl-4"}`}>{row.id}</TableCell>
-                  <TableCell className="text-xs text-muted-foreground">{row.desc}</TableCell>
-                  <TableCell className={`text-[10px] ${row.level === "System" ? "font-semibold text-foreground" : "text-muted-foreground"}`}>{row.level}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        {/* 7. Live Component Codes from Processing Plant Asset Tree */}
+        {liveComponentChunks.length > 0 ? (
+          liveComponentChunks.map((chunk, chunkIndex) => (
+            <div data-pdf-section className="space-y-3" key={`components-${chunkIndex}`}>
+              {chunkIndex === 0 ? (
+                <>
+                  <h4 className="font-semibold text-foreground text-base">7. Live Component Asset Codes</h4>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Component codes shown here are also pulled directly from the same live Processing Plant asset tree dataset.
+                  </p>
+                </>
+              ) : (
+                <h4 className="font-semibold text-foreground text-base">7. Live Component Asset Codes, continued</h4>
+              )}
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/50">
+                    <TableHead className="w-32 font-semibold">Asset ID</TableHead>
+                    <TableHead className="font-semibold">Description</TableHead>
+                    <TableHead className="w-20 font-semibold">Level</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {chunk.map((row) => (
+                    <TableRow key={`${row.level}-${row.id}`}>
+                      <TableCell className="font-mono text-xs text-primary">{row.id}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{row.desc}</TableCell>
+                      <TableCell className="text-[10px] text-muted-foreground">{row.level}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ))
+        ) : (
+          <div data-pdf-section className="space-y-3">
+            <h4 className="font-semibold text-foreground text-base">7. Live Component Asset Codes</h4>
+            <p className="text-xs text-muted-foreground">No live component rows were returned from the Processing Plant asset tree.</p>
+          </div>
+        )}
 
         {/* Footer */}
         <div data-pdf-section className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
