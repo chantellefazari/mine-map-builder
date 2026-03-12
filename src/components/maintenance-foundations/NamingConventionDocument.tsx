@@ -24,12 +24,13 @@ export const NamingConventionDocument = () => {
         contentRef.current,
         "TCMG-STD-NAM-001_Site_Naming_Convention.pdf",
         {
-          margin: 6,
-          gap: 1,
-          renderWidth: 780,
-          fontSize: "10px",
-          lineHeight: "1.3",
-          sliceOverlapPx: 12,
+          margin: 10,
+          gap: 2,
+          renderWidth: 700,
+          fontSize: "14px",
+          lineHeight: "1.5",
+          sliceOverlapPx: 14,
+          addBorder: true,
         }
       );
     } catch (err) {

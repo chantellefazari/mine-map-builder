@@ -33,6 +33,8 @@ export interface SectionPdfOptions {
   scale?: number;
   /** Overlap in px between page slices to prevent glyph clipping (default 14) */
   sliceOverlapPx?: number;
+  /** Draw a border around the content area on each page (default false) */
+  addBorder?: boolean;
 }
 
 const DEFAULTS: Required<SectionPdfOptions> = {
@@ -43,6 +45,7 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   lineHeight: "1.4",
   scale: 1.5,
   sliceOverlapPx: 14,
+  addBorder: false,
 };
 
 /**
@@ -261,6 +264,17 @@ export async function exportSectionsToPdf(
         pdf.addPage();
         currentY = MARGIN;
       }
+    }
+  }
+
+  // ── Draw borders on every page if requested ─────────────────────
+  if (cfg.addBorder) {
+    const pageCount = pdf.getNumberOfPages();
+    for (let p = 1; p <= pageCount; p++) {
+      pdf.setPage(p);
+      pdf.setDrawColor(180, 180, 180);
+      pdf.setLineWidth(0.4);
+      pdf.rect(MARGIN - 2, MARGIN - 2, CONTENT_W + 4, A4_H - MARGIN * 2 + 4);
     }
   }
 
