@@ -292,7 +292,7 @@ export const NamingConventionDocument = () => {
       <Card data-pdf-section className="border-amber-500/30 bg-amber-500/5">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <Badge className="bg-amber-500/20 text-amber-700 border-amber-500/30 text-[10px] font-bold">SECTION 7</Badge>
+            <span className="text-[10px] font-semibold text-muted-foreground">SECTION 7</span>
             <CardTitle className="text-base">Example — Crusher Asset Numbering in Practice</CardTitle>
           </div>
         </CardHeader>
