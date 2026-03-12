@@ -224,7 +224,7 @@ export const PMStandardsSection = () => {
           {/* 4. Mandatory PM Fields */}
           {sectionHeading("4", "Mandatory PM Fields")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            All PMs must include the following fields as a minimum. No PM may progress past Draft status without all fields populated. These fields ensure traceability, safety compliance, and CMMS compatibility.
+            All PMs must include the following fields as a minimum. No PM may progress past Draft status without all fields populated. These fields ensure traceability and safety compliance.
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
