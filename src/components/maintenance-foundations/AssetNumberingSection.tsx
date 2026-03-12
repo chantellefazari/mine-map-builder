@@ -1,16 +1,10 @@
 import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Hash, CheckCircle2, Info, AlertTriangle, Lock, ArrowRight, Download, Loader2 } from "lucide-react";
+import { Hash, CheckCircle2, Info, Download, Loader2, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 
 const areaCodeTable = [
   { code: "SITE", label: "Site Infrastructure", subAreas: "INFRA" },
@@ -61,33 +55,21 @@ export const AssetNumberingSection = () => {
       const jsPDF = (await import("jspdf")).default;
       const { uploadAndShowPdf } = await import("@/utils/pdfDownloadHelper");
 
-      // Expand all accordions for capture
-      const triggers = contentRef.current.querySelectorAll<HTMLButtonElement>(
-        'button[data-state="closed"]'
-      );
-      triggers.forEach((t) => t.click());
-      await new Promise((r) => setTimeout(r, 500));
-
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const pageW = 210;
-      const pageH = 297;
-      const margin = 8;
-      const usableW = pageW - margin * 2;
-      const usableH = pageH - margin * 2;
+      const A4_W = 210;
+      const A4_H = 297;
+      const MARGIN = 10;
+      const CONTENT_W = A4_W - MARGIN * 2;
+      const GAP = 3;
 
-      // Get all top-level sections as capture chunks
-      const sections = contentRef.current.querySelectorAll<HTMLElement>(
-        ":scope > div, :scope > hr, :scope > table"
+      const sections = Array.from(
+        contentRef.current.querySelectorAll<HTMLElement>("[data-pdf-section]")
       );
 
-      // If no sections found, capture the whole thing
-      const elements = sections.length > 0 ? Array.from(sections) : [contentRef.current];
+      let currentY = MARGIN;
 
-      let currentY = margin;
-      let pageNum = 0;
-
-      for (const el of elements) {
-        const canvas = await html2canvas(el, {
+      for (const section of sections) {
+        const canvas = await html2canvas(section, {
           scale: 2,
           useCORS: true,
           backgroundColor: "#ffffff",
@@ -95,45 +77,17 @@ export const AssetNumberingSection = () => {
         });
 
         const imgData = canvas.toDataURL("image/png");
-        const imgW = usableW;
-        const imgH = (canvas.height * imgW) / canvas.width;
+        const scale = CONTENT_W / canvas.width;
+        const imgH = canvas.height * scale;
 
-        // If this section won't fit on current page, start a new page
-        if (currentY + imgH > pageH - margin && currentY > margin + 1) {
+        // If won't fit, new page
+        if (currentY + imgH > A4_H - MARGIN && currentY > MARGIN + 1) {
           pdf.addPage();
-          pageNum++;
-          currentY = margin;
+          currentY = MARGIN;
         }
 
-        // If section is taller than a full page, scale to fit across pages
-        if (imgH > usableH) {
-          // Slice the image across multiple pages
-          const totalPages = Math.ceil(imgH / usableH);
-          for (let i = 0; i < totalPages; i++) {
-            if (i > 0 || currentY > margin + 1) {
-              if (i > 0) {
-                pdf.addPage();
-                pageNum++;
-                currentY = margin;
-              }
-            }
-            // Use clipping by placing the full image offset
-            pdf.addImage(
-              imgData, "PNG",
-              margin, currentY - (i * usableH),
-              imgW, imgH
-            );
-            if (i < totalPages - 1) {
-              // White out anything below the page
-              pdf.setFillColor(255, 255, 255);
-              pdf.rect(0, pageH - margin, pageW, margin + 10, "F");
-            }
-          }
-          currentY = margin + (imgH % usableH || usableH);
-        } else {
-          pdf.addImage(imgData, "PNG", margin, currentY, imgW, imgH);
-          currentY += imgH + 2; // 2mm gap between sections
-        }
+        pdf.addImage(imgData, "PNG", MARGIN, currentY, CONTENT_W, imgH);
+        currentY += imgH + GAP;
       }
 
       const blob = pdf.output("blob");
@@ -174,67 +128,50 @@ export const AssetNumberingSection = () => {
       </CardHeader>
       <CardContent className="space-y-6" ref={contentRef}>
         {/* FL Format */}
-        <div className="bg-muted/50 rounded-lg p-5 space-y-4">
-          <h4 className="font-medium text-foreground">FL Code Format</h4>
-          <div className="inline-block bg-background border border-border rounded-lg px-4 py-3">
-            <code className="text-lg font-mono font-bold text-primary">TCMG-PP-[AREA]-[SUBAREA]-[SYSTEM]</code>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-sm">
-            {[
-              { code: "TCMG", meaning: "Tennant Creek Gold Mine" },
-              { code: "PP", meaning: "Processing Plant" },
-              { code: "AREA", meaning: "Major plant area" },
-              { code: "SUBAREA", meaning: "Functional sub-area" },
-              { code: "SYSTEM", meaning: "Parent Asset / System" },
-            ].map((item) => (
-              <div key={item.code} className="bg-background border border-border rounded-md p-2 text-center">
-                <div className="font-mono font-bold text-primary">{item.code}</div>
-                <div className="text-xs text-muted-foreground mt-1">{item.meaning}</div>
-              </div>
-            ))}
+        <div data-pdf-section className="space-y-4">
+          <h4 className="font-semibold text-foreground text-base">FL Code Format</h4>
+          <code className="text-lg font-mono font-bold text-primary block">
+            TCMG-PP-[AREA]-[SUBAREA]-[SYSTEM]
+          </code>
+          <div className="text-sm text-muted-foreground space-y-1">
+            <p><span className="font-mono font-bold text-foreground">TCMG</span> - Tennant Creek Gold Mine</p>
+            <p><span className="font-mono font-bold text-foreground">PP</span> - Processing Plant</p>
+            <p><span className="font-mono font-bold text-foreground">AREA</span> - Major plant area (6 approved codes)</p>
+            <p><span className="font-mono font-bold text-foreground">SUBAREA</span> - Functional sub-area within the area</p>
+            <p><span className="font-mono font-bold text-foreground">SYSTEM</span> - Parent Asset / System (lowest FL level)</p>
           </div>
         </div>
 
         {/* Purpose */}
-        <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-4">
-          <div className="flex items-start gap-3">
-            <Info className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-medium text-foreground mb-2">Purpose</h4>
-              <p className="text-sm text-muted-foreground mb-3">
-                FL codes define where assets physically and functionally exist within the plant. They answer: <strong>"Where in the plant does this equipment belong?"</strong>
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {["Asset hierarchy", "Maintenance planning", "Work history", "PM alignment", "D365 integration"].map((item) => (
-                  <Badge key={item} variant="secondary" className="text-xs">{item}</Badge>
-                ))}
-              </div>
-            </div>
-          </div>
+        <div data-pdf-section className="space-y-2">
+          <h4 className="font-semibold text-foreground text-base flex items-center gap-2">
+            <Info className="w-4 h-4 text-primary" />
+            Purpose
+          </h4>
+          <p className="text-sm text-muted-foreground">
+            FL codes define where assets physically and functionally exist within the plant. They answer: <strong>"Where in the plant does this equipment belong?"</strong> Used for asset hierarchy, maintenance planning, work history, PM alignment, and D365 integration.
+          </p>
         </div>
 
         {/* Hierarchy Diagram */}
-        <div className="bg-muted/30 rounded-lg p-5 space-y-4">
-          <h4 className="font-medium text-foreground">Functional Location Hierarchy</h4>
-          <div className="font-mono text-sm bg-background border border-border rounded-lg p-4 overflow-x-auto">
-            <div className="text-foreground font-bold">TCMG</div>
-            <div className="text-muted-foreground ml-4">└── PP (Processing Plant)</div>
-            <div className="text-muted-foreground ml-8">└── COM (Comminution / Process)</div>
-            <div className="text-muted-foreground ml-12">└── GRIND (Grinding)</div>
-            <div className="text-primary font-bold ml-16">└── BM01 (Primary Ball Mill) ← FL stops here</div>
-            <div className="text-muted-foreground/60 ml-20">└── BM01-MTR01 (inherits parent FL)</div>
-            <div className="text-muted-foreground/40 ml-24">└── Bearings, seals (inherit parent FL)</div>
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">Functional Location Hierarchy</h4>
+          <div className="font-mono text-sm space-y-0.5">
+            <p className="font-bold text-foreground">TCMG</p>
+            <p className="text-muted-foreground ml-4">└── PP (Processing Plant)</p>
+            <p className="text-muted-foreground ml-8">└── COM (Comminution / Process)</p>
+            <p className="text-muted-foreground ml-12">└── GRIND (Grinding)</p>
+            <p className="text-primary font-bold ml-16">└── BM01 (Primary Ball Mill) ← FL stops here</p>
+            <p className="text-muted-foreground ml-20">└── BM01-MTR01 (inherits parent FL)</p>
+            <p className="text-muted-foreground ml-24">└── Bearings, seals (inherit parent FL)</p>
           </div>
         </div>
 
         <Separator />
 
-        {/* Section 1: Area Codes */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px] font-bold">SECTION 1</Badge>
-            <h4 className="font-medium text-foreground">Area Codes (6 Approved)</h4>
-          </div>
+        {/* Area Codes */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">1. Area Codes (6 Approved)</h4>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
@@ -255,12 +192,9 @@ export const AssetNumberingSection = () => {
           </Table>
         </div>
 
-        {/* Section 2: Sub-Area Codes */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px] font-bold">SECTION 2</Badge>
-            <h4 className="font-medium text-foreground">Sub-Area Codes & Live Examples</h4>
-          </div>
+        {/* Sub-Area Codes */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">2. Sub-Area Codes & Live Examples</h4>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
@@ -285,36 +219,32 @@ export const AssetNumberingSection = () => {
 
         <Separator />
 
-        {/* Section 3: Key Rules */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px] font-bold">SECTION 3</Badge>
-            <h4 className="font-medium text-foreground">Rules & Constraints</h4>
-          </div>
-          <div className="grid gap-3 md:grid-cols-2">
-            {[
-              { rule: "FLs Stop at System Level", desc: "Assets and components do NOT receive their own FL codes", icon: Lock },
-              { rule: "Inheritance Model", desc: "Assets & components inherit the FL of their parent system", icon: ArrowRight },
-              { rule: "No Levels Skipped", desc: "Hierarchy must be followed exactly - no shortcuts", icon: CheckCircle2 },
-              { rule: "Immutable Once Assigned", desc: "FL codes are never renamed, reused, or changed", icon: Lock },
-            ].map((item, index) => (
-              <div key={index} className="flex items-start gap-2 bg-background rounded-md p-3 border border-border">
-                <item.icon className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-medium">{item.rule}</p>
-                  <p className="text-xs text-muted-foreground">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Rules & Constraints */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">3. Rules & Constraints</h4>
+          <ul className="text-sm space-y-2 text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <Lock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <span><strong className="text-foreground">FLs Stop at System Level</strong> - Assets and components do NOT receive their own FL codes</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <span><strong className="text-foreground">Inheritance Model</strong> - Assets & components inherit the FL of their parent system</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <span><strong className="text-foreground">No Levels Skipped</strong> - Hierarchy must be followed exactly - no shortcuts</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Lock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <span><strong className="text-foreground">Immutable Once Assigned</strong> - FL codes are never renamed, reused, or changed</span>
+            </li>
+          </ul>
         </div>
 
-        {/* Section 4: Inheritance Example */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px] font-bold">SECTION 4</Badge>
-            <h4 className="font-medium text-foreground">Inheritance - Live Examples</h4>
-          </div>
+        {/* Inheritance Examples */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">4. Inheritance - Live Examples</h4>
           <p className="text-sm text-muted-foreground">
             Assets and components do NOT receive new FL codes. They inherit the FL code of their parent System.
           </p>
@@ -340,114 +270,69 @@ export const AssetNumberingSection = () => {
 
         <Separator />
 
-        {/* Detailed Sections Accordion */}
-        <Accordion type="multiple" className="w-full space-y-2">
-          {/* Immutability */}
-          <AccordionItem value="immutability" className="border border-border rounded-lg px-4">
-            <AccordionTrigger className="text-sm font-medium hover:no-underline">
-              Immutability Rules
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4 pt-2">
-              <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <Lock className="w-4 h-4 text-amber-600" />
-                  <span className="font-medium text-sm">FL codes are immutable once assigned</span>
-                </div>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• FL codes are <strong>never renamed</strong></li>
-                  <li>• FL codes are <strong>never reused</strong></li>
-                  <li>• Equipment changes do <strong>not</strong> trigger FL changes</li>
-                </ul>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                If equipment is replaced: the FL stays the same, only asset/component records are updated. This preserves maintenance history, failure data, and long-term reporting integrity.
-              </p>
-            </AccordionContent>
-          </AccordionItem>
+        {/* Immutability Rules */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">5. Immutability Rules</h4>
+          <ul className="text-sm text-muted-foreground space-y-1.5">
+            <li>• FL codes are <strong>never renamed</strong></li>
+            <li>• FL codes are <strong>never reused</strong></li>
+            <li>• Equipment changes do <strong>not</strong> trigger FL changes</li>
+          </ul>
+          <p className="text-sm text-muted-foreground">
+            If equipment is replaced: the FL stays the same, only asset/component records are updated. This preserves maintenance history, failure data, and long-term reporting integrity.
+          </p>
+        </div>
 
-          {/* When New FL Can Be Created */}
-          <AccordionItem value="new-fl" className="border border-border rounded-lg px-4">
-            <AccordionTrigger className="text-sm font-medium hover:no-underline">
-              When New FLs Can Be Created
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4 pt-2">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <h5 className="font-medium text-sm text-green-600 flex items-center gap-1">
-                    <CheckCircle2 className="w-4 h-4" /> Allowed
-                  </h5>
-                  <ul className="text-xs text-muted-foreground space-y-1">
-                    <li>• A new system boundary is introduced</li>
-                    <li>• A new process line or major modification is installed</li>
-                    <li>• Approved changes to P&IDs define a new system</li>
-                  </ul>
-                </div>
-                <div className="space-y-2">
-                  <h5 className="font-medium text-sm text-red-600 flex items-center gap-1">
-                    <AlertTriangle className="w-4 h-4" /> Not Allowed
-                  </h5>
-                  <ul className="text-xs text-muted-foreground space-y-1">
-                    <li>• Component replacement</li>
-                    <li>• Equipment upgrades</li>
-                    <li>• Temporary equipment</li>
-                    <li>• Maintenance workarounds</li>
-                  </ul>
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* Governance */}
-          <AccordionItem value="governance" className="border border-border rounded-lg px-4">
-            <AccordionTrigger className="text-sm font-medium hover:no-underline">
-              Governance & Control
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4 pt-2">
-              <ul className="text-sm text-muted-foreground space-y-2">
-                <li>• Functional Location creation follows this standard</li>
-                <li>• All new FLs must align to the approved hierarchy</li>
-                <li>• Temporary or unknown systems are flagged and reviewed</li>
+        {/* When New FLs Can Be Created */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">6. When New FLs Can Be Created</h4>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <p className="font-medium text-sm text-foreground">Allowed:</p>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• A new system boundary is introduced</li>
+                <li>• A new process line or major modification is installed</li>
+                <li>• Approved changes to P&IDs define a new system</li>
               </ul>
-              <div className="bg-muted/50 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground">
-                  <strong>FL Standards take precedence over:</strong> Asset naming preferences, OEM terminology, Historical site naming habits
-                </p>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+            </div>
+            <div className="space-y-2">
+              <p className="font-medium text-sm text-foreground">Not Allowed:</p>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• Component replacement</li>
+                <li>• Equipment upgrades</li>
+                <li>• Temporary equipment</li>
+                <li>• Maintenance workarounds</li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-          {/* Relationship to Other Systems */}
-          <AccordionItem value="relationship" className="border border-border rounded-lg px-4">
-            <AccordionTrigger className="text-sm font-medium hover:no-underline">
-              Relationship to Asset & Parts Numbering
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4 pt-2">
-              <div className="grid grid-cols-3 gap-3 text-center">
-                <div className="bg-primary/10 border border-primary/30 rounded-lg p-3">
-                  <div className="font-medium text-sm text-primary">FL Codes</div>
-                  <div className="text-xs text-muted-foreground mt-1">Define <strong>WHERE</strong></div>
-                </div>
-                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
-                  <div className="font-medium text-sm text-blue-600">Asset Numbers</div>
-                  <div className="text-xs text-muted-foreground mt-1">Define <strong>WHAT</strong></div>
-                </div>
-                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
-                  <div className="font-medium text-sm text-green-600">Parts Numbers</div>
-                  <div className="text-xs text-muted-foreground mt-1">Define <strong>STOCKED</strong></div>
-                </div>
-              </div>
-              <div className="font-mono text-sm text-center text-muted-foreground">
-                FL → Asset → Component → Part
-              </div>
-              <p className="text-xs text-muted-foreground text-center">
-                All three systems are independent but linked
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        {/* Governance */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">7. Governance & Control</h4>
+          <ul className="text-sm text-muted-foreground space-y-1.5">
+            <li>• Functional Location creation follows this standard</li>
+            <li>• All new FLs must align to the approved hierarchy</li>
+            <li>• Temporary or unknown systems are flagged and reviewed</li>
+            <li>• FL Standards take precedence over asset naming preferences, OEM terminology, and historical site naming habits</li>
+          </ul>
+        </div>
+
+        {/* Relationship */}
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">8. Relationship to Asset & Parts Numbering</h4>
+          <div className="text-sm text-muted-foreground space-y-1.5">
+            <p><strong className="text-foreground">FL Codes</strong> define WHERE an asset sits in the plant</p>
+            <p><strong className="text-foreground">Asset Numbers</strong> define WHAT the equipment is</p>
+            <p><strong className="text-foreground">Parts Numbers</strong> define what is STOCKED in stores</p>
+          </div>
+          <p className="font-mono text-sm text-muted-foreground mt-2">
+            FL → Asset → Component → Part (all three systems are independent but linked)
+          </p>
+        </div>
 
         {/* Footer */}
-        <div className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
+        <div data-pdf-section className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
           TCMG-STD-FL-001 Rev 2.0 - All FL codes are database-governed and aligned to the live Processing Plant Asset Tree
         </div>
       </CardContent>
