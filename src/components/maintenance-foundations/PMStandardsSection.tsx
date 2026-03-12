@@ -304,7 +304,7 @@ export const PMStandardsSection = () => {
           </table>
           <div style={{ backgroundColor: "#f0f9ff", border: "1px solid #bfdbfe", borderRadius: 6, padding: "10px 14px", marginBottom: 16 }}>
             <p style={{ fontSize: 13, color: "#1e40af" }}>
-              <strong>Rule:</strong> Only PMs with "Approved" or "Ready for CMMS" status may be issued to field crews or imported into the CMMS. Draft and Reviewed PMs must not be used for operational maintenance.
+              <strong>Rule:</strong> Only PMs with "Approved" or "Ready for Issue" status may be issued to field crews. Draft and Reviewed PMs must not be used for operational maintenance.
             </p>
           </div>
 
