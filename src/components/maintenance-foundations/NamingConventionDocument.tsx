@@ -245,9 +245,6 @@ export const NamingConventionDocument = () => {
               ))}
             </TableBody>
           </Table>
-          <p className="text-xs text-muted-foreground italic">
-            Note: Existing component suffixes such as MTR (Motor), GBX (Gearbox), CPL (Coupling), BRG (Bearings), VSD (VSD), HYD (Hydraulic), EXC (Exciter), and GRD (Guard) should be reused identically in the crusher — they are site-wide standards.
-          </p>
         </div>
 
         {/* Footer */}
