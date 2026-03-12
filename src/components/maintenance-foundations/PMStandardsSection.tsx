@@ -16,7 +16,7 @@ const designPrinciples = [
   { rule: "Risk Based Frequency", desc: "Frequencies are determined by criticality rating, failure history, operating context, and OEM recommendations; never by habit or convenience." },
   { rule: "Explicit Isolation", desc: "Every PM must clearly state isolation and LOTO requirements. No PM is approved without documented energy isolation steps." },
   { rule: "Standardised Template", desc: "All PMs follow the TCMG standard template structure: Banner, Metadata, Safety, Inspection Table, Sign Off. No deviations permitted." },
-  { rule: "Single Source of Truth", desc: "PM templates are maintained in the digital register (pm_master_list). Hard copies are reference only and must match the digital version." },
+  { rule: "Single Source of Truth", desc: "PM templates are maintained in the master PM register. All printed copies must match the current approved revision." },
 ];
 
 const frequencyStandards = [
