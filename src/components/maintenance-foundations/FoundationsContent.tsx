@@ -260,6 +260,10 @@ export const FoundationsContent = () => {
         <TabsContent value="naming-convention">
           <NamingConventionDocument />
         </TabsContent>
+
+        <TabsContent value="data-mapping">
+          <DataMappingReadinessSection />
+        </TabsContent>
       </div>
     </Tabs>
   );
