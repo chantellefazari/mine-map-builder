@@ -114,12 +114,19 @@ export async function exportSectionsToPdf(
       }
 
       const maxEnd = sourceY + maxSliceHeightPx;
+
+      // Only snap to row breaks if there's a break near the bottom of the
+      // available space (within the last 30%). This prevents large gaps while
+      // still avoiding slicing through table rows when possible.
       let bestBreak = -1;
+      const snapZoneStart = sourceY + maxSliceHeightPx * 0.7;
       for (let i = 0; i < safeBreaks.length; i++) {
         const point = safeBreaks[i];
         if (point <= sourceY + 10) continue;
         if (point > maxEnd) break;
-        bestBreak = point;
+        if (point >= snapZoneStart) {
+          bestBreak = point;
+        }
       }
 
       const sliceEnd = bestBreak > sourceY ? bestBreak : maxEnd;
