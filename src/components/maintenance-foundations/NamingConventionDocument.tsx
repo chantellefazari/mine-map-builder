@@ -224,7 +224,7 @@ export const NamingConventionDocument = () => {
         <div data-pdf-section className="space-y-3">
           <h4 className="font-semibold text-foreground text-base">6. Suggested Crusher Asset Prefixes</h4>
           <p className="text-xs text-muted-foreground mb-2">
-            Suggested prefixes for the new Crushing Plant to maintain site-wide consistency and avoid collisions with existing Processing Plant prefixes. Starting points for discussion — final codes to be agreed.
+            Suggested prefixes for the new Crushing Plant to maintain site-wide consistency and avoid collisions with existing Processing Plant prefixes. Starting points for discussion, final codes to be agreed.
           </p>
           <Table>
             <TableHeader>
