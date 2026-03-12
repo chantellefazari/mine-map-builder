@@ -35,11 +35,11 @@ const mandatoryFields = [
   { field: "Estimated Duration", desc: "Expected time to complete, used for scheduling and resource planning" },
   { field: "Skill Level", desc: "Minimum competency required (Trades Assistant, Tradesperson, Specialist)" },
   { field: "Safety Warnings", desc: "Specific hazards identified for the task (pinch points, stored energy, chemical)" },
-  { field: "Isolation / LOTO", desc: "Energy isolation requirements with lock-out/tag-out procedures" },
-  { field: "Required PPE", desc: "Task-specific PPE beyond minimum site requirements" },
+  { field: "Isolation / LOTO", desc: "Energy isolation requirements with lock out/tag out procedures" },
+  { field: "Required PPE", desc: "Task specific PPE beyond minimum site requirements" },
   { field: "Required Tools", desc: "Specific tools and consumables needed to complete the PM" },
-  { field: "Inspection Checklist", desc: "Step-by-step tasks with Serviceable/Defective tick-off and comments column" },
-  { field: "Sign-Off Block", desc: "Performed By, Reviewed By, Approved By with date fields" },
+  { field: "Inspection Checklist", desc: "Step by step tasks with Serviceable/Defective tick off and comments column" },
+  { field: "Sign Off Block", desc: "Performed By, Reviewed By, Approved By with date fields" },
   { field: "Revision Control", desc: "Document number, revision, and effective date for version tracking" },
 ];
 
