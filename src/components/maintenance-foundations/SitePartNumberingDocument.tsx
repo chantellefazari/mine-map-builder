@@ -112,7 +112,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
                   Site Parts Numbering Standard
                 </h1>
                 <p style={{ fontSize: 12, color: "#666", margin: "2px 0 0 0" }}>
-                  Gold Processing Plant - Internal Part Number Convention
+                  Gold Processing Plant | Internal Part Number Convention
                 </p>
               </div>
               <div style={{ textAlign: "right", fontSize: 10, color: "#666", borderLeft: `3px solid ${GOLD}`, paddingLeft: 10 }}>
