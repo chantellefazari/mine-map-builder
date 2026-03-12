@@ -21,7 +21,7 @@ const suggestedCrusherPrefixes = [
   { prefix: "GFB", meaning: "Ground Feed Bin", example: "GFB01", notes: "CV01 discharge into screen feed system" },
   { prefix: "CFB", meaning: "Cone Feed Bin", example: "CFB01", notes: "Dual chamber bin feeding CRS02 & CRS03" },
   { prefix: "SCN", meaning: "Vibrating Screen", example: "SCN01", notes: "Horizontal vibrating screen (3-deck)" },
-  { prefix: "CV", meaning: "Conveyor", example: "CV01–CV15", notes: "Shared prefix with Processing Plant — different numbering range" },
+  { prefix: "CV", meaning: "Conveyor", example: "CV01-CV15", notes: "Shared prefix with Processing Plant, different numbering range" },
   { prefix: "MDE", meaning: "Metal Detector", example: "CV07-MDE01", notes: "Component suffix on cone feed conveyors" },
   { prefix: "DST", meaning: "Dust Suppression", example: "DST01", notes: "Spray bars and enclosures" },
   { prefix: "LVL", meaning: "Level Sensor", example: "RBIN01-LVL01", notes: "Vega level sensors on bins" },
@@ -60,7 +60,7 @@ export const NamingConventionDocument = () => {
             <div>
               <CardTitle className="text-xl">Site Asset Naming Convention</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                TCMG-STD-NAM-001 Rev 1.0 — Tennant Creek Gold Mine
+                TCMG-STD-NAM-001 Rev 1.0
               </p>
             </div>
           </div>
@@ -88,7 +88,7 @@ export const NamingConventionDocument = () => {
           </p>
           <div className="text-sm text-muted-foreground space-y-1">
             <p><span className="font-mono font-bold text-foreground">Format:</span> [PREFIX][NUMBER]-[SUFFIX][NUMBER]</p>
-            <p><span className="font-mono font-bold text-foreground">Example:</span> BM001-MTR001 = Ball Mill 001 – Motor 001</p>
+            <p><span className="font-mono font-bold text-foreground">Example:</span> BM001-MTR001 = Ball Mill 001, Motor 001</p>
           </div>
         </div>
 
@@ -98,7 +98,7 @@ export const NamingConventionDocument = () => {
         <div data-pdf-section className="space-y-3">
           <h4 className="font-semibold text-foreground text-base">1. Area Codes (Level 3 of Hierarchy)</h4>
           <p className="text-xs text-muted-foreground mb-2">
-            Every asset sits under one of these six main areas. The crusher facility will need its own area code — or share an existing one.
+            Every asset sits under one of these six main areas. The crusher facility will need its own area code or share an existing one.
           </p>
           <Table>
             <TableHeader>
@@ -122,7 +122,7 @@ export const NamingConventionDocument = () => {
 
         {/* 2. Equipment Prefixes */}
         <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">2. Equipment Type Prefixes — Reserved</h4>
+          <h4 className="font-semibold text-foreground text-base">2. Equipment Type Prefixes (Reserved)</h4>
           <p className="text-xs text-muted-foreground mb-2">
             These prefixes are <strong>reserved</strong> across the Processing Plant. Crusher assets must not duplicate these unless the same equipment type is genuinely being used.
           </p>
@@ -224,7 +224,7 @@ export const NamingConventionDocument = () => {
         <div data-pdf-section className="space-y-3">
           <h4 className="font-semibold text-foreground text-base">6. Suggested Crusher Asset Prefixes</h4>
           <p className="text-xs text-muted-foreground mb-2">
-            Suggested prefixes for the new Crushing Plant to maintain site-wide consistency and avoid collisions with existing Processing Plant prefixes. Starting points for discussion — final codes to be agreed.
+            Suggested prefixes for the new Crushing Plant to maintain site-wide consistency and avoid collisions with existing Processing Plant prefixes. Starting points for discussion, final codes to be agreed.
           </p>
           <Table>
             <TableHeader>
@@ -261,88 +261,77 @@ export const NamingConventionDocument = () => {
 
         {/* 7. Example Crusher Asset Tree */}
         <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">7. Example — Crusher Asset Numbering in Practice</h4>
+          <h4 className="font-semibold text-foreground text-base">7. Crusher Asset Numbering Examples</h4>
           <p className="text-xs text-muted-foreground mb-2">
-            Below shows how the naming convention applies to the current Crushing Plant layout. Component suffixes follow the same site standard as the Processing Plant.
+            How the naming convention applies to the Crushing Plant layout. Component suffixes follow the same site standard as the Processing Plant.
           </p>
-
-          <div className="font-mono text-xs space-y-3">
-            <div>
-              <p className="font-bold text-foreground mb-1">ROM & Primary Feed</p>
-              <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">RBIN01</span> — ROM Bin</p>
-                <p className="pl-4"><span className="text-primary">RBIN01-LVL01</span> — Vega Level Sensor</p>
-                <p className="pl-4"><span className="text-primary">RBIN01-STR01</span> — Bin Structure</p>
-                <p><span className="text-primary font-semibold">RFDR01</span> — Primary Vibrating Feeder</p>
-                <p className="pl-4"><span className="text-primary">RFDR01-MTR01</span> — Feeder Motor</p>
-                <p className="pl-4"><span className="text-primary">RFDR01-HYD01</span> — Hydraulic Motor Drive</p>
-                <p className="pl-4"><span className="text-primary">RFDR01-VSD01</span> — Variable Speed Drive</p>
-                <p className="pl-4"><span className="text-primary">RFDR01-EXC01</span> — Exciter Unit A</p>
-              </div>
-            </div>
-
-            <div>
-              <p className="font-bold text-foreground mb-1">Primary Crushing</p>
-              <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">CRS01</span> — Primary Jaw Crusher</p>
-                <p className="pl-4"><span className="text-primary">CRS01-MTR01</span> — Crusher Motor 160kW</p>
-                <p className="pl-4"><span className="text-primary">CRS01-GBX01</span> — Gearbox / Drive Assembly</p>
-                <p className="pl-4"><span className="text-primary">CRS01-JKS01</span> — Jackshaft Assembly</p>
-                <p className="pl-4"><span className="text-primary">CRS01-LUB01</span> — Lubrication System</p>
-                <p className="pl-4"><span className="text-primary">CRS01-HOP01</span> — Feed Hopper</p>
-                <p><span className="text-primary font-semibold">MAG01</span> — Overband Magnet</p>
-                <p className="pl-4"><span className="text-primary">MAG01-MTR01</span> — Magnet Drive Motor</p>
-                <p className="pl-4"><span className="text-primary">MAG01-BLT01</span> — Self-Cleaning Belt</p>
-              </div>
-            </div>
-
-            <div>
-              <p className="font-bold text-foreground mb-1">Conveying</p>
-              <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">CV01</span> — Forward Conveyor</p>
-                <p className="pl-4"><span className="text-primary">CV01-MTR01</span> — Head Drive Motor A</p>
-                <p className="pl-4"><span className="text-primary">CV01-GBX01</span> — Gearbox</p>
-                <p className="pl-4"><span className="text-primary">CV01-LNY01</span> — Lanyard Safety Switches</p>
-                <p className="pl-4"><span className="text-primary">CV01-SPD01</span> — Underspeed Sensor</p>
-                <p><span className="text-primary font-semibold">CV04</span> — Screen Feed Conveyor</p>
-                <p><span className="text-primary font-semibold">CV07</span> — Secondary Cone Feed Conveyor</p>
-                <p className="pl-4"><span className="text-primary">CV07-MDE01</span> — Metal Detector</p>
-              </div>
-            </div>
-
-            <div>
-              <p className="font-bold text-foreground mb-1">Screening</p>
-              <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">SCN01</span> — Vibrating Screen (3-Deck)</p>
-                <p className="pl-4"><span className="text-primary">SCN01-MTR01</span> — Screen Drive Motor 45kW</p>
-                <p className="pl-4"><span className="text-primary">SCN01-GBX01</span> — Exciter / Gearbox</p>
-                <p className="pl-4"><span className="text-primary">SCN01-DK01</span> — Top Deck</p>
-                <p className="pl-4"><span className="text-primary">SCN01-DK02</span> — Second Deck</p>
-                <p className="pl-4"><span className="text-primary">SCN01-DK03</span> — Bottom Deck (Fines)</p>
-                <p className="pl-4"><span className="text-primary">SCN01-SPR01</span> — Isolation Springs</p>
-              </div>
-            </div>
-
-            <div>
-              <p className="font-bold text-foreground mb-1">Secondary & Tertiary Crushing</p>
-              <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">CFB01</span> — Cone Feed Bin (Dual Chamber)</p>
-                <p className="pl-4"><span className="text-primary">CFB01-FDR01</span> — Vibrating Feeder A → CRS02</p>
-                <p className="pl-4"><span className="text-primary">CFB01-FDR02</span> — Vibrating Feeder B → CRS03</p>
-                <p><span className="text-primary font-semibold">CRS02</span> — Secondary Cone Crusher</p>
-                <p className="pl-4"><span className="text-primary">CRS02-MTR01</span> — Crusher Motor 220kW</p>
-                <p className="pl-4"><span className="text-primary">CRS02-LUB01</span> — Lubrication System</p>
-                <p><span className="text-primary font-semibold">CRS03</span> — Tertiary Cone Crusher</p>
-                <p className="pl-4"><span className="text-primary">CRS03-MTR01</span> — Crusher Motor 220kW</p>
-                <p className="pl-4"><span className="text-primary">CRS03-HYD01</span> — Hydraulic Tramp Release</p>
-              </div>
-            </div>
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/50">
+                <TableHead className="w-20 font-semibold">Area</TableHead>
+                <TableHead className="w-32 font-semibold">Asset ID</TableHead>
+                <TableHead className="font-semibold">Description</TableHead>
+                <TableHead className="w-20 font-semibold">Level</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {[
+                { area: "ROM Feed", id: "RBIN01", desc: "ROM Bin", level: "System" },
+                { area: "", id: "RBIN01-LVL01", desc: "Vega Level Sensor", level: "Comp" },
+                { area: "", id: "RBIN01-STR01", desc: "Bin Structure", level: "Comp" },
+                { area: "", id: "RFDR01", desc: "Primary Vibrating Feeder", level: "System" },
+                { area: "", id: "RFDR01-MTR01", desc: "Feeder Motor", level: "Comp" },
+                { area: "", id: "RFDR01-HYD01", desc: "Hydraulic Motor Drive", level: "Comp" },
+                { area: "", id: "RFDR01-VSD01", desc: "Variable Speed Drive", level: "Comp" },
+                { area: "", id: "RFDR01-EXC01", desc: "Exciter Unit A", level: "Comp" },
+                { area: "Primary", id: "CRS01", desc: "Primary Jaw Crusher", level: "System" },
+                { area: "", id: "CRS01-MTR01", desc: "Crusher Motor 160kW", level: "Comp" },
+                { area: "", id: "CRS01-GBX01", desc: "Gearbox / Drive Assembly", level: "Comp" },
+                { area: "", id: "CRS01-JKS01", desc: "Jackshaft Assembly", level: "Comp" },
+                { area: "", id: "CRS01-LUB01", desc: "Lubrication System", level: "Comp" },
+                { area: "", id: "CRS01-HOP01", desc: "Feed Hopper", level: "Comp" },
+                { area: "", id: "MAG01", desc: "Overband Magnet", level: "System" },
+                { area: "", id: "MAG01-MTR01", desc: "Magnet Drive Motor", level: "Comp" },
+                { area: "", id: "MAG01-BLT01", desc: "Self-Cleaning Belt", level: "Comp" },
+                { area: "Conveying", id: "CV01", desc: "Forward Conveyor", level: "System" },
+                { area: "", id: "CV01-MTR01", desc: "Head Drive Motor A", level: "Comp" },
+                { area: "", id: "CV01-GBX01", desc: "Gearbox", level: "Comp" },
+                { area: "", id: "CV01-LNY01", desc: "Lanyard Safety Switches", level: "Comp" },
+                { area: "", id: "CV01-SPD01", desc: "Underspeed Sensor", level: "Comp" },
+                { area: "", id: "CV04", desc: "Screen Feed Conveyor", level: "System" },
+                { area: "", id: "CV07", desc: "Secondary Cone Feed Conveyor", level: "System" },
+                { area: "", id: "CV07-MDE01", desc: "Metal Detector", level: "Comp" },
+                { area: "Screening", id: "SCN01", desc: "Vibrating Screen (3-Deck)", level: "System" },
+                { area: "", id: "SCN01-MTR01", desc: "Screen Drive Motor 45kW", level: "Comp" },
+                { area: "", id: "SCN01-GBX01", desc: "Exciter / Gearbox", level: "Comp" },
+                { area: "", id: "SCN01-DK01", desc: "Top Deck", level: "Comp" },
+                { area: "", id: "SCN01-DK02", desc: "Second Deck", level: "Comp" },
+                { area: "", id: "SCN01-DK03", desc: "Bottom Deck (Fines)", level: "Comp" },
+                { area: "", id: "SCN01-SPR01", desc: "Isolation Springs", level: "Comp" },
+                { area: "Secondary", id: "CFB01", desc: "Cone Feed Bin (Dual Chamber)", level: "System" },
+                { area: "", id: "CFB01-FDR01", desc: "Vibrating Feeder A to CRS02", level: "Comp" },
+                { area: "", id: "CFB01-FDR02", desc: "Vibrating Feeder B to CRS03", level: "Comp" },
+                { area: "", id: "CRS02", desc: "Secondary Cone Crusher", level: "System" },
+                { area: "", id: "CRS02-MTR01", desc: "Crusher Motor 220kW", level: "Comp" },
+                { area: "", id: "CRS02-LUB01", desc: "Lubrication System", level: "Comp" },
+                { area: "", id: "CRS03", desc: "Tertiary Cone Crusher", level: "System" },
+                { area: "", id: "CRS03-MTR01", desc: "Crusher Motor 220kW", level: "Comp" },
+                { area: "", id: "CRS03-HYD01", desc: "Hydraulic Tramp Release", level: "Comp" },
+              ].map((row, idx) => (
+                <TableRow key={idx}>
+                  <TableCell className="text-xs font-medium text-foreground">{row.area}</TableCell>
+                  <TableCell className={`font-mono text-xs ${row.level === "System" ? "font-bold text-primary" : "text-primary pl-4"}`}>{row.id}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground">{row.desc}</TableCell>
+                  <TableCell className={`text-[10px] ${row.level === "System" ? "font-semibold text-foreground" : "text-muted-foreground"}`}>{row.level}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
 
         {/* Footer */}
         <div data-pdf-section className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
-          TCMG-STD-NAM-001 Rev 1.0 — Asset naming standards aligned to the live Processing Plant Asset Tree
+          TCMG-STD-NAM-001 Rev 1.0 | Asset naming standards aligned to the live Processing Plant Asset Tree
         </div>
       </CardContent>
     </Card>
