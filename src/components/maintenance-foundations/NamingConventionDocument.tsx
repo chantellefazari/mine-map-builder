@@ -226,17 +226,16 @@ export const NamingConventionDocument = () => {
             </TableHeader>
             <TableBody>
               {[
-                { prefix: "ROM-BIN", meaning: "ROM Bin", example: "ROM-BIN01" },
-                { prefix: "ROM-FDR", meaning: "Primary Vibrating Feeder", example: "ROM-FDR01" },
-                { prefix: "CR", meaning: "Crusher (Jaw / Cone)", example: "CR01 (Jaw), CR02 (Sec Cone), CR03 (Tert Cone)" },
-                { prefix: "PRI-MAG", meaning: "Overband Magnet", example: "PRI-MAG01" },
-                { prefix: "PRI-GFB", meaning: "Ground Feed Bin", example: "PRI-GFB01" },
-                { prefix: "SC", meaning: "Vibrating Screen", example: "SC01" },
-                { prefix: "CV", meaning: "Conveyor (shared prefix)", example: "CV01, CV02, CV04–CV15" },
-                { prefix: "SEC-CFB", meaning: "Cone Feed Bin", example: "SEC-CFB01" },
-                { prefix: "SEC-FDR", meaning: "Cone Vibrating Feeder", example: "SEC-FDRA01, SEC-FDRB01" },
+                { prefix: "ROM", meaning: "ROM Bin", example: "ROM01" },
+                { prefix: "FDR", meaning: "Vibrating Feeder", example: "FDR01" },
+                { prefix: "CRS", meaning: "Crusher (Jaw / Cone)", example: "CRS01 (Jaw), CRS02 (Sec Cone), CRS03 (Tert Cone)" },
+                { prefix: "MAG", meaning: "Overband Magnet", example: "MAG01" },
+                { prefix: "GFB", meaning: "Ground Feed Bin", example: "GFB01" },
+                { prefix: "SCN", meaning: "Vibrating Screen", example: "SCN01" },
+                { prefix: "CV", meaning: "Conveyor (shared prefix)", example: "CV01, CV02, CV04-CV15" },
+                { prefix: "CFB", meaning: "Cone Feed Bin", example: "CFB01" },
                 { prefix: "DUST", meaning: "Dust Suppression System", example: "DUST01" },
-                { prefix: "CRU-WS", meaning: "Crusher Water Supply", example: "CRU-WS01" },
+                { prefix: "WS", meaning: "Water Supply System", example: "WS01" },
               ].map((c) => (
                 <TableRow key={c.prefix}>
                   <TableCell className="font-mono font-bold text-primary">{c.prefix}</TableCell>
