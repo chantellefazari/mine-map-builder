@@ -5,21 +5,8 @@
  * Includes all 7 hierarchy levels, functional locations, P&ID tags,
  * and component-level engineering specifications.
  */
-import { supabase } from "@/integrations/supabase/client";
+import { fetchAllProcessingPlantRows } from "@/utils/fetchProcessingPlantData";
 import { buildAreasFromRows } from "@/hooks/useProcessingPlantAssets";
-
-interface DBAssetRow {
-  id: string;
-  area_code: string;
-  area_label: string;
-  sub_area: string;
-  parent_asset_label: string;
-  asset_number: string;
-  asset_name: string;
-  pid_tags: string[] | null;
-  components: any;
-  functional_location: string | null;
-}
 
 function escapeCSV(value: string): string {
   if (!value) return "";
