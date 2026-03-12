@@ -271,14 +271,14 @@ export const NamingConventionDocument = () => {
             <div>
               <p className="font-bold text-foreground mb-1">ROM & Primary Feed</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">ROM-BIN01</span> — ROM Bin</p>
-                <p className="pl-4"><span className="text-primary">ROM-BIN01-LVL01</span> — Vega Level Sensor</p>
-                <p className="pl-4"><span className="text-primary">ROM-BIN01-STR01</span> — Bin Structure</p>
-                <p><span className="text-primary font-semibold">ROM-FDR01</span> — Primary Vibrating Feeder</p>
-                <p className="pl-4"><span className="text-primary">ROM-FDR01-MTR01</span> — Feeder Motor</p>
-                <p className="pl-4"><span className="text-primary">ROM-FDR01-HYD01</span> — Hydraulic Motor Drive</p>
-                <p className="pl-4"><span className="text-primary">ROM-FDR01-VSD01</span> — Variable Speed Drive</p>
-                <p className="pl-4"><span className="text-primary">ROM-FDR01-EXC01</span> — Exciter Unit A</p>
+                <p><span className="text-primary font-semibold">RBIN01</span> — ROM Bin</p>
+                <p className="pl-4"><span className="text-primary">RBIN01-LVL01</span> — Vega Level Sensor</p>
+                <p className="pl-4"><span className="text-primary">RBIN01-STR01</span> — Bin Structure</p>
+                <p><span className="text-primary font-semibold">RFDR01</span> — Primary Vibrating Feeder</p>
+                <p className="pl-4"><span className="text-primary">RFDR01-MTR01</span> — Feeder Motor</p>
+                <p className="pl-4"><span className="text-primary">RFDR01-HYD01</span> — Hydraulic Motor Drive</p>
+                <p className="pl-4"><span className="text-primary">RFDR01-VSD01</span> — Variable Speed Drive</p>
+                <p className="pl-4"><span className="text-primary">RFDR01-EXC01</span> — Exciter Unit A</p>
               </div>
             </div>
 
