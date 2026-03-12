@@ -331,7 +331,7 @@ export const NamingConventionDocument = () => {
 
         {/* Footer */}
         <div data-pdf-section className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
-          TCMG-STD-NAM-001 Rev 1.0 — Asset naming standards aligned to the live Processing Plant Asset Tree
+          TCMG-STD-NAM-001 Rev 1.0 | Asset naming standards aligned to the live Processing Plant Asset Tree
         </div>
       </CardContent>
     </Card>
