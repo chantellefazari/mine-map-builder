@@ -267,6 +267,17 @@ export async function exportSectionsToPdf(
     }
   }
 
+  // ── Draw borders on every page if requested ─────────────────────
+  if (cfg.addBorder) {
+    const pageCount = pdf.getNumberOfPages();
+    for (let p = 1; p <= pageCount; p++) {
+      pdf.setPage(p);
+      pdf.setDrawColor(180, 180, 180);
+      pdf.setLineWidth(0.4);
+      pdf.rect(MARGIN - 2, MARGIN - 2, CONTENT_W + 4, A4_H - MARGIN * 2 + 4);
+    }
+  }
+
   const blob = pdf.output("blob");
   await uploadAndShowPdf(blob, filename);
   return blob;
