@@ -329,7 +329,7 @@ export const PMStandardsSection = () => {
         </div>
 
         {/* Page 4: Inspection Data + Coverage Summary */}
-        <div data-pdf-section data-pdf-new-page style={{ padding: "28px 36px" }}>
+        <div data-pdf-section style={{ padding: "28px 36px" }}>
           {/* 7. Inspection Task Data Architecture */}
           {sectionHeading("7", "Inspection Task Data Architecture")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
