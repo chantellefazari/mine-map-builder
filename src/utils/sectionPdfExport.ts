@@ -279,7 +279,7 @@ export async function exportSectionsToPdf(
   if (totalPages > 1) {
     pdf.setPage(totalPages);
     // If nothing meaningful was drawn on this page, delete it
-    if (currentY <= MARGIN + 5) {
+    if (currentY <= MARGIN + 15) {
       pdf.deletePage(totalPages);
     }
   }

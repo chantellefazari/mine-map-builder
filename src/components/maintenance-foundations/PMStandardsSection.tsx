@@ -424,7 +424,7 @@ export const PMStandardsSection = () => {
                 { activity: "Task relevance review", freq: "6-Monthly", resp: "Discipline Lead (Mechanical/Electrical)" },
                 { activity: "Frequency validation", freq: "Annually", resp: "Reliability Engineer or Maintenance Superintendent" },
                 { activity: "Safety & isolation audit", freq: "Annually", resp: "Site Safety Advisor and Maintenance Superintendent" },
-                { activity: "CMMS alignment check", freq: "Post-migration", resp: "CMMS Administrator and Planning Team" },
+                { activity: "Register alignment check", freq: "Post-migration", resp: "Planning Coordinator and Maintenance Superintendent" },
                 { activity: "Full PM optimisation review", freq: "Annually", resp: "Maintenance Superintendent with discipline leads" },
               ].map((r, i) => (
                 <tr key={i}>
