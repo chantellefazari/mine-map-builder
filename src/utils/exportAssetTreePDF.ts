@@ -201,15 +201,13 @@ function flattenCsvToTree(csvRows: CsvRow[]): TreeRow[] {
         });
         break;
       case 7: {
-        const specs = buildSpecs(r);
-        const compLabel = r.compCode
-          ? `${r.compCode} - ${r.compName}`
-          : r.compName;
+        const compLabel = buildComponentLabel(r);
+        const specs = buildSpecs(r, compLabel);
         tree.push({
           depth: 6,
           label: compLabel,
           type: "component",
-          badge: r.compType || undefined,
+          badge: shouldShowComponentBadge(r, compLabel) ? r.compType : undefined,
           pidTags: r.compPidTags || undefined,
           specs: specs.length > 0 ? specs : undefined,
         });
