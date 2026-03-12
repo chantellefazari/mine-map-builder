@@ -279,8 +279,8 @@ export const AssetCriticalitySection = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-3 items-center">
-        <div className="relative max-w-xs flex-1">
+      <div className="flex gap-3 items-center flex-wrap">
+        <div className="relative max-w-xs flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search assets…" value={search} onChange={e => setSearch(e.target.value)} className="pl-10 pr-8 h-9 text-sm" />
           {search && <Button variant="ghost" size="sm" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0" onClick={() => setSearch("")}><X className="w-4 h-4" /></Button>}
@@ -292,6 +292,12 @@ export const AssetCriticalitySection = () => {
             {areas.map(a => <SelectItem key={a} value={a}>{a}</SelectItem>)}
           </SelectContent>
         </Select>
+        <div className="flex gap-1">
+          <Button variant={ratingFilter === "all" ? "default" : "outline"} size="sm" className="h-9 text-xs px-3" onClick={() => setRatingFilter("all")}>All</Button>
+          <Button variant={ratingFilter === "A" ? "default" : "outline"} size="sm" className="h-9 text-xs px-3 border-red-300 text-red-700 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950" onClick={() => setRatingFilter("A")} style={ratingFilter === "A" ? { background: "hsl(0 72% 51%)", color: "white" } : {}}>A Critical</Button>
+          <Button variant={ratingFilter === "B" ? "default" : "outline"} size="sm" className="h-9 text-xs px-3 border-amber-300 text-amber-700 hover:bg-amber-50 dark:border-amber-800 dark:text-amber-400 dark:hover:bg-amber-950" onClick={() => setRatingFilter("B")} style={ratingFilter === "B" ? { background: "hsl(38 92% 50%)", color: "white" } : {}}>B Important</Button>
+          <Button variant={ratingFilter === "C" ? "default" : "outline"} size="sm" className="h-9 text-xs px-3 border-emerald-300 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-950" onClick={() => setRatingFilter("C")} style={ratingFilter === "C" ? { background: "hsl(160 84% 39%)", color: "white" } : {}}>C General</Button>
+        </div>
       </div>
 
       {/* Table */}
