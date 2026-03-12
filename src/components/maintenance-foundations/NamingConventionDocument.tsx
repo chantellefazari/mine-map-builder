@@ -226,17 +226,17 @@ export const NamingConventionDocument = () => {
             </TableHeader>
             <TableBody>
               {[
-                { prefix: "JAW", meaning: "Jaw Crusher", example: "JAW01" },
-                { prefix: "CON", meaning: "Cone Crusher (Secondary/Tertiary)", example: "CON01, CON02" },
-                { prefix: "VF", meaning: "Vibrating Feeder", example: "VF01" },
-                { prefix: "VS", meaning: "Vibrating Screen", example: "VS01" },
-                { prefix: "ROM", meaning: "ROM Bin", example: "ROM01" },
-                { prefix: "CFB", meaning: "Cone Feed Bin", example: "CFB01" },
-                { prefix: "GFB", meaning: "Ground Feed Bin", example: "GFB01, GFB02" },
-                { prefix: "MAG", meaning: "Overband Magnet", example: "MAG01" },
-                { prefix: "STCK", meaning: "Stockpile", example: "STCK01" },
-                { prefix: "WSCN", meaning: "Wet Screen", example: "WSCN01" },
+                { prefix: "ROM-BIN", meaning: "ROM Bin", example: "ROM-BIN01" },
+                { prefix: "ROM-FDR", meaning: "Primary Vibrating Feeder", example: "ROM-FDR01" },
+                { prefix: "CR", meaning: "Crusher (Jaw / Cone)", example: "CR01 (Jaw), CR02 (Sec Cone), CR03 (Tert Cone)" },
+                { prefix: "PRI-MAG", meaning: "Overband Magnet", example: "PRI-MAG01" },
+                { prefix: "PRI-GFB", meaning: "Ground Feed Bin", example: "PRI-GFB01" },
+                { prefix: "SC", meaning: "Vibrating Screen", example: "SC01" },
+                { prefix: "CV", meaning: "Conveyor (shared prefix)", example: "CV01, CV02, CV04–CV15" },
+                { prefix: "SEC-CFB", meaning: "Cone Feed Bin", example: "SEC-CFB01" },
+                { prefix: "SEC-FDR", meaning: "Cone Vibrating Feeder", example: "SEC-FDRA01, SEC-FDRB01" },
                 { prefix: "DUST", meaning: "Dust Suppression System", example: "DUST01" },
+                { prefix: "CRU-WS", meaning: "Crusher Water Supply", example: "CRU-WS01" },
               ].map((c) => (
                 <TableRow key={c.prefix}>
                   <TableCell className="font-mono font-bold text-primary">{c.prefix}</TableCell>
@@ -247,7 +247,7 @@ export const NamingConventionDocument = () => {
             </TableBody>
           </Table>
           <p className="text-xs text-muted-foreground italic">
-            Note: Existing prefixes such as CV (Conveyor), MTR (Motor), GBX (Gearbox), VSD (VSD), and HYD (Hydraulic) should be reused identically in the crusher — they are site-wide standards.
+            Note: Existing component suffixes such as MTR (Motor), GBX (Gearbox), CPL (Coupling), BRG (Bearings), VSD (VSD), HYD (Hydraulic), EXC (Exciter), and GRD (Guard) should be reused identically in the crusher — they are site-wide standards.
           </p>
         </div>
 
