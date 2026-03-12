@@ -125,10 +125,10 @@ export const NamingConventionDocument = () => {
               {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
               {downloading ? "Generating..." : "Download PDF"}
             </Button>
-            <Badge className="bg-green-500/10 text-green-600 border-green-500/30">
-              <CheckCircle2 className="w-3 h-3 mr-1" />
-              Defined & Stable
-            </Badge>
+            <span className="inline-flex items-center gap-1 rounded border border-primary/30 bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+              <CheckCircle2 className="w-3 h-3" />
+              Defined and Stable
+            </span>
           </div>
         </div>
       </CardHeader>
