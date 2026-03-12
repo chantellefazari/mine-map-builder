@@ -273,7 +273,7 @@ export const PMStandardsSection = () => {
           </table>
           <div style={{ backgroundColor: GOLD_BG, border: `1px solid ${GOLD_LIGHT}`, borderRadius: 6, padding: "10px 14px", marginBottom: 16 }}>
             <p style={{ fontSize: 13, color: "#333" }}>
-              <strong>Important:</strong> Frequencies listed above are design standards only, not schedules. Scheduling (start dates, crew assignments, calendar alignment) is managed separately in the CMMS configuration phase.
+              <strong>Important:</strong> Frequencies listed above are design standards only, not schedules. Scheduling (start dates, crew assignments, calendar alignment) is managed separately during the scheduling phase.
             </p>
           </div>
 
