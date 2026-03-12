@@ -79,9 +79,15 @@ export const BatchPDFDownloads = () => {
     }
   };
 
-  const handleDownload = (batchIndex: number) => {
-    const url = downloadBatchPDF(batchIndex, totalItems);
-    window.open(url, "_blank");
+  const handleDownload = async (batchIndex: number) => {
+    const label = getBatchLabel(batchIndex, totalItems);
+    const storagePath = `spares-batches/Parts_List_${label}.pdf`;
+    const { data, error } = await supabase.storage.from("temp-pdfs").download(storagePath);
+    if (error || !data) {
+      toast.error("Failed to download PDF");
+      return;
+    }
+    downloadBlob(data, `Parts_List_${label}.pdf`);
   };
 
   const handleClearAll = async () => {
