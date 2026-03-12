@@ -75,14 +75,23 @@ export async function exportSectionsToPdf(
   let currentY = MARGIN;
 
   // ── Slice a single canvas across pages ──────────────────────────
-  const addCanvasAcrossPages = (canvas: HTMLCanvasElement) => {
+  const addCanvasAcrossPages = (
+    canvas: HTMLCanvasElement,
+    rowBreaksPx: number[] = []
+  ) => {
     const pxPerMm = canvas.width / CONTENT_W;
+    const safeBreaks = Array.from(new Set(rowBreaksPx))
+      .map((v) => Math.round(v))
+      .filter((v) => v > 0 && v < canvas.height)
+      .sort((a, b) => a - b);
+
     let sourceY = 0;
     let safety = 0;
-    const MAX_PAGES = 50;
+    const MAX_SLICES = 400;
 
-    while (sourceY < canvas.height && safety < MAX_PAGES) {
+    while (sourceY < canvas.height && safety < MAX_SLICES) {
       safety++;
+
       const remainingMm = A4_H - MARGIN - currentY;
       if (remainingMm <= 0.5) {
         pdf.addPage();
@@ -90,16 +99,31 @@ export async function exportSectionsToPdf(
         continue;
       }
 
-      const sliceHeightPx = Math.min(
+      const maxSliceHeightPx = Math.min(
         canvas.height - sourceY,
         Math.floor(remainingMm * pxPerMm)
       );
 
-      if (sliceHeightPx <= 0) {
+      if (maxSliceHeightPx <= 0) {
         pdf.addPage();
         currentY = MARGIN;
         continue;
       }
+
+      const maxEnd = sourceY + maxSliceHeightPx;
+      let bestBreak = -1;
+      for (let i = 0; i < safeBreaks.length; i++) {
+        const point = safeBreaks[i];
+        if (point <= sourceY + 10) continue;
+        if (point > maxEnd) break;
+        bestBreak = point;
+      }
+
+      const sliceEnd = bestBreak > sourceY ? bestBreak : maxEnd;
+      const sliceHeightPx = Math.max(
+        1,
+        Math.min(canvas.height - sourceY, Math.floor(sliceEnd - sourceY))
+      );
 
       const sliceCanvas = document.createElement("canvas");
       sliceCanvas.width = canvas.width;
@@ -112,8 +136,14 @@ export async function exportSectionsToPdf(
       ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
       ctx.drawImage(
         canvas,
-        0, sourceY, canvas.width, sliceHeightPx,
-        0, 0, canvas.width, sliceHeightPx
+        0,
+        sourceY,
+        canvas.width,
+        sliceHeightPx,
+        0,
+        0,
+        canvas.width,
+        sliceHeightPx
       );
 
       const sliceHeightMm = sliceHeightPx / pxPerMm;
@@ -126,10 +156,8 @@ export async function exportSectionsToPdf(
         sliceHeightMm
       );
 
-      const reachedEnd = sourceY + sliceHeightPx >= canvas.height;
-      sourceY = reachedEnd
-        ? canvas.height
-        : Math.max(sourceY + 1, sourceY + sliceHeightPx - cfg.sliceOverlapPx);
+      const reachedEnd = sourceY + sliceHeightPx >= canvas.height - 1;
+      sourceY = reachedEnd ? canvas.height : sourceY + sliceHeightPx;
       currentY += sliceHeightMm;
 
       if (!reachedEnd) {
@@ -140,7 +168,9 @@ export async function exportSectionsToPdf(
   };
 
   // ── Render a section via off-screen clone ───────────────────────
-  const renderSectionCanvas = async (section: HTMLElement): Promise<HTMLCanvasElement> => {
+  const renderSectionCanvas = async (
+    section: HTMLElement
+  ): Promise<{ canvas: HTMLCanvasElement; rowBreaksPx: number[] }> => {
     const sectionRenderWidth = Math.max(
       cfg.renderWidth,
       Math.ceil(section.scrollWidth) + 8
@@ -179,13 +209,25 @@ export async function exportSectionsToPdf(
 
     document.body.appendChild(wrapper);
     try {
-      return await html2canvas(wrapper, {
+      const wrapperRect = wrapper.getBoundingClientRect();
+      const rowBreaksCssPx = Array.from(
+        clone.querySelectorAll<HTMLElement>("tbody tr")
+      )
+        .map((row) => row.getBoundingClientRect().bottom - wrapperRect.top)
+        .filter((value) => Number.isFinite(value) && value > 0);
+
+      const canvas = await html2canvas(wrapper, {
         scale: cfg.scale,
         useCORS: true,
         backgroundColor: "#ffffff",
         width: sectionRenderWidth + 8,
         windowWidth: sectionRenderWidth + 8,
       });
+
+      return {
+        canvas,
+        rowBreaksPx: rowBreaksCssPx.map((value) => Math.round(value * cfg.scale)),
+      };
     } finally {
       document.body.removeChild(wrapper);
     }
@@ -194,7 +236,7 @@ export async function exportSectionsToPdf(
   // ── Main loop ───────────────────────────────────────────────────
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
-    const canvas = await renderSectionCanvas(section);
+    const { canvas, rowBreaksPx } = await renderSectionCanvas(section);
 
     const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
     const remainingMm = A4_H - MARGIN - currentY;
@@ -208,7 +250,7 @@ export async function exportSectionsToPdf(
       currentY = MARGIN;
     }
 
-    addCanvasAcrossPages(canvas);
+    addCanvasAcrossPages(canvas, rowBreaksPx);
 
     if (i < sections.length - 1) {
       currentY += GAP;
