@@ -10,7 +10,7 @@ export const areaCodes = [
 
 // Equipment Type Prefixes — real asset examples from Processing Plant
 export const equipmentPrefixes = [
-  { prefix: "APN", meaning: "Apron Feeder", example: "APN01", category: "Feed Systems" },
+  
   { prefix: "BM", meaning: "Ball Mill", example: "BM01", category: "Milling" },
   { prefix: "COMP", meaning: "Air Compressor", example: "COMP01", category: "Utilities" },
   { prefix: "CV", meaning: "Conveyor", example: "MFCV01", category: "Material Handling" },
