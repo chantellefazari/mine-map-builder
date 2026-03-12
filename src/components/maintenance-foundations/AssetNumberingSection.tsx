@@ -141,7 +141,6 @@ export const AssetNumberingSection = () => {
           </div>
 
           <h4 className="font-semibold text-foreground text-base pt-2">1. Area Codes (6 Approved)</h4>
-          <h4 className="font-semibold text-foreground text-base">1. Area Codes (6 Approved)</h4>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
