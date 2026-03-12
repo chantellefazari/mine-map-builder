@@ -94,22 +94,22 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
         className="bg-white text-black rounded-lg border shadow-sm overflow-auto max-h-[70vh]"
         style={{ fontFamily: "'Segoe UI', Arial, Helvetica, sans-serif" }}
       >
-        <div data-pdf-section style={{ padding: "28px 32px" }}>
+        <div data-pdf-section style={{ padding: "28px 36px" }}>
           {/* Header with gold accent */}
-          <div style={{ borderBottom: `3px solid ${GOLD}`, paddingBottom: 12, marginBottom: 14 }}>
+          <div style={{ borderBottom: `3px solid ${GOLD}`, paddingBottom: 12, marginBottom: 16 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div>
-                <div style={{ display: "inline-block", backgroundColor: GOLD, color: "#fff", padding: "3px 12px", borderRadius: 3, fontSize: 10, fontWeight: 700, letterSpacing: 1, marginBottom: 6 }}>
+                <div style={{ display: "inline-block", backgroundColor: GOLD, color: "#fff", padding: "4px 14px", borderRadius: 3, fontSize: 11, fontWeight: 700, letterSpacing: 1, marginBottom: 6 }}>
                   TENNANT CREEK MINE
                 </div>
-                <h1 style={{ fontSize: 20, fontWeight: 700, margin: "4px 0 0 0", letterSpacing: "-0.3px" }}>
+                <h1 style={{ fontSize: 22, fontWeight: 700, margin: "4px 0 0 0", letterSpacing: "-0.3px" }}>
                   Site Parts Numbering Standard
                 </h1>
-                <p style={{ fontSize: 12, color: "#666", margin: "2px 0 0 0" }}>
+                <p style={{ fontSize: 13, color: "#666", margin: "2px 0 0 0" }}>
                   Gold Processing Plant | Internal Part Number Convention
                 </p>
               </div>
-              <div style={{ textAlign: "right", fontSize: 10, color: "#666", borderLeft: `3px solid ${GOLD}`, paddingLeft: 10 }}>
+              <div style={{ textAlign: "right", fontSize: 11, color: "#666", borderLeft: `3px solid ${GOLD}`, paddingLeft: 10 }}>
                 <p style={{ margin: 0, fontWeight: 700, color: DARK }}>TCMG-STD-SPN-001</p>
                 <p style={{ margin: "2px 0 0 0" }}>Rev 1.0</p>
                 <p style={{ margin: "2px 0 0 0" }}>{today}</p>
