@@ -140,7 +140,7 @@ export async function exportSectionsToPdf(
   };
 
   // ── Render a section via off-screen clone ───────────────────────
-  const renderSectionCanvas = async (section: HTMLElement) => {
+  const renderSectionCanvas = async (section: HTMLElement): Promise<HTMLCanvasElement> => {
     const sectionRenderWidth = Math.max(
       cfg.renderWidth,
       Math.ceil(section.scrollWidth) + 8
@@ -179,25 +179,13 @@ export async function exportSectionsToPdf(
 
     document.body.appendChild(wrapper);
     try {
-      const wrapperRect = wrapper.getBoundingClientRect();
-      const rowBreaksCssPx = Array.from(
-        clone.querySelectorAll<HTMLElement>("tbody tr")
-      )
-        .map((row) => row.getBoundingClientRect().bottom - wrapperRect.top)
-        .filter((value) => Number.isFinite(value) && value > 0);
-
-      const canvas = await html2canvas(wrapper, {
+      return await html2canvas(wrapper, {
         scale: cfg.scale,
         useCORS: true,
         backgroundColor: "#ffffff",
         width: sectionRenderWidth + 8,
         windowWidth: sectionRenderWidth + 8,
       });
-
-      return {
-        canvas,
-        rowBreaksPx: rowBreaksCssPx.map((value) => Math.round(value * cfg.scale)),
-      };
     } finally {
       document.body.removeChild(wrapper);
     }
