@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Download, Loader2, CheckCircle2, Hash } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -10,6 +9,22 @@ import {
   instrumentationSuffixes,
   specialPatterns,
 } from "@/components/hierarchy/namingConventionData";
+import { PDF_COLORS } from "@/utils/pdfExportStandard";
+
+const { GOLD, GOLD_BG, GOLD_LIGHT, DARK } = PDF_COLORS;
+
+const crusherPrefixes = [
+  { prefix: "ROM", meaning: "ROM Bin", example: "ROM01" },
+  { prefix: "FDR", meaning: "Vibrating Feeder", example: "FDR01" },
+  { prefix: "CRS", meaning: "Crusher (Jaw / Cone)", example: "CRS01 (Jaw), CRS02 (Sec Cone), CRS03 (Tert Cone)" },
+  { prefix: "MAG", meaning: "Overband Magnet", example: "MAG01" },
+  { prefix: "GFB", meaning: "Ground Feed Bin", example: "GFB01" },
+  { prefix: "SCN", meaning: "Vibrating Screen", example: "SCN01" },
+  { prefix: "CV", meaning: "Conveyor (shared prefix)", example: "CV01, CV02, CV04 to CV15" },
+  { prefix: "CFB", meaning: "Cone Feed Bin", example: "CFB01" },
+  { prefix: "DUST", meaning: "Dust Suppression System", example: "DUST01" },
+  { prefix: "WS", meaning: "Water Supply System", example: "WS01" },
+];
 
 export const NamingConventionDocument = () => {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -33,18 +48,11 @@ export const NamingConventionDocument = () => {
     }
   };
 
-  const crusherPrefixes = [
-    { prefix: "ROM", meaning: "ROM Bin", example: "ROM01" },
-    { prefix: "FDR", meaning: "Vibrating Feeder", example: "FDR01" },
-    { prefix: "CRS", meaning: "Crusher (Jaw / Cone)", example: "CRS01 (Jaw), CRS02 (Sec Cone), CRS03 (Tert Cone)" },
-    { prefix: "MAG", meaning: "Overband Magnet", example: "MAG01" },
-    { prefix: "GFB", meaning: "Ground Feed Bin", example: "GFB01" },
-    { prefix: "SCN", meaning: "Vibrating Screen", example: "SCN01" },
-    { prefix: "CV", meaning: "Conveyor (shared prefix)", example: "CV01, CV02, CV04-CV15" },
-    { prefix: "CFB", meaning: "Cone Feed Bin", example: "CFB01" },
-    { prefix: "DUST", meaning: "Dust Suppression System", example: "DUST01" },
-    { prefix: "WS", meaning: "Water Supply System", example: "WS01" },
-  ];
+  const today = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "short", year: "numeric" });
+  const thGold: React.CSSProperties = { padding: "4px 6px", textAlign: "left", backgroundColor: GOLD, color: "#fff", fontSize: 11, fontWeight: 700 };
+  const thDark: React.CSSProperties = { ...thGold, backgroundColor: DARK };
+  const td: React.CSSProperties = { padding: "3px 6px", border: "1px solid #ddd", fontSize: 11 };
+  const heading = (text: string): React.CSSProperties => ({ fontSize: 14, fontWeight: 700, margin: "14px 0 6px 0", borderBottom: `2px solid ${GOLD}`, paddingBottom: 3, color: DARK });
 
   return (
     <Card className="border-border">
@@ -56,9 +64,7 @@ export const NamingConventionDocument = () => {
             </div>
             <div>
               <CardTitle className="text-xl">Site Asset Naming Convention</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
-                TCMG-STD-NAM-001 Rev 1.0
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">TCMG-STD-NAM-001 Rev 1.0</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -67,172 +73,203 @@ export const NamingConventionDocument = () => {
               {downloading ? "Generating..." : "Download PDF"}
             </Button>
             <span className="inline-flex items-center gap-1 rounded border border-primary/30 bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
-              <CheckCircle2 className="w-3 h-3" />
-              Defined and Stable
+              <CheckCircle2 className="w-3 h-3" /> Defined and Stable
             </span>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-5" ref={contentRef}>
+      <CardContent>
+        <div ref={contentRef} className="bg-white text-black rounded-lg border shadow-sm overflow-auto max-h-[70vh]" style={{ fontFamily: "'Segoe UI', Arial, Helvetica, sans-serif" }}>
+          <div data-pdf-section style={{ padding: "28px 32px" }}>
+            {/* Header */}
+            <div style={{ borderBottom: `3px solid ${GOLD}`, paddingBottom: 12, marginBottom: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div>
+                  <div style={{ display: "inline-block", backgroundColor: GOLD, color: "#fff", padding: "3px 12px", borderRadius: 3, fontSize: 10, fontWeight: 700, letterSpacing: 1, marginBottom: 6 }}>TENNANT CREEK MINE</div>
+                  <h1 style={{ fontSize: 20, fontWeight: 700, margin: "4px 0 0 0" }}>Site Asset Naming Convention</h1>
+                  <p style={{ fontSize: 12, color: "#666", margin: "2px 0 0 0" }}>Gold Processing Plant | Asset Naming Standard</p>
+                </div>
+                <div style={{ textAlign: "right", fontSize: 10, color: "#666", borderLeft: `3px solid ${GOLD}`, paddingLeft: 10 }}>
+                  <p style={{ margin: 0, fontWeight: 700, color: DARK }}>TCMG-STD-NAM-001</p>
+                  <p style={{ margin: "2px 0 0 0" }}>Rev 1.0</p>
+                  <p style={{ margin: "2px 0 0 0" }}>{today}</p>
+                </div>
+              </div>
+            </div>
 
-        {/* Document Title */}
-        <div data-pdf-section className="space-y-3 border-b border-border pb-4">
-          <h2 className="text-2xl font-bold text-foreground tracking-tight">Site Asset Naming Convention</h2>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span className="font-mono font-semibold">TCMG-STD-NAM-001</span>
-            <span>Rev 1.0</span>
-            <span>Tennant Creek Mining Group</span>
+            {/* Metadata */}
+            <table style={{ width: "100%", fontSize: 10.5, borderCollapse: "collapse", marginBottom: 14 }}>
+              <tbody>
+                <tr>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Prepared By</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", width: "36%" }}>TCMG Maintenance Team</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Approved By</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", width: "36%" }}>Maintenance Superintendent</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Status</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd" }}>Approved</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Effective Date</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd" }}>{today}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* 1. Purpose */}
+            <h2 style={heading("Purpose")}>1. Purpose</h2>
+            <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 4px 0" }}>
+              This document outlines the complete asset numbering logic used across the Tennant Creek Mining Group (TCMG) Processing Plant. It is designed to be shared with contractors and OEM suppliers to ensure consistent naming, avoid prefix collisions, and maintain a unified site standard across all facilities.
+            </p>
+            <div style={{ display: "inline-block", border: `2px solid ${GOLD}`, borderRadius: 5, padding: "6px 20px", marginBottom: 8, backgroundColor: GOLD_BG }}>
+              <span style={{ fontSize: 16, fontWeight: 700, fontFamily: "monospace", letterSpacing: 2, color: DARK }}>[PREFIX][NUMBER]-[SUFFIX][NUMBER]</span>
+            </div>
+            <p style={{ fontSize: 11, color: "#555", margin: "4px 0 10px 0" }}>
+              <strong>Example:</strong> <span style={{ fontFamily: "monospace" }}>BM01-MTR01</span> = Ball Mill 01, Motor 01
+            </p>
+
+            {/* 2. Area Codes */}
+            <h2 style={heading("Area Codes")}>2. Area Codes (Level 3 of Hierarchy)</h2>
+            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thGold, width: 70 }}>Code</th>
+                  <th style={{ ...thGold, width: 140 }}>Meaning</th>
+                  <th style={thGold}>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {areaCodes.map((a, i) => (
+                  <tr key={a.code} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, color: GOLD }}>{a.code}</td>
+                    <td style={{ ...td, fontWeight: 600 }}>{a.meaning}</td>
+                    <td style={{ ...td, color: "#444" }}>{a.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* 3. Equipment Prefixes */}
+            <h2 style={heading("Equipment Prefixes")}>3. Equipment Type Prefixes (Reserved)</h2>
+            <p style={{ fontSize: 11, lineHeight: 1.45, color: "#333", margin: "0 0 6px 0" }}>
+              These prefixes are <strong>reserved</strong> across the Processing Plant. Crusher assets must not duplicate these unless the same equipment type is genuinely being used.
+            </p>
+            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thGold, width: 70 }}>Prefix</th>
+                  <th style={{ ...thGold, width: 160 }}>Equipment Type</th>
+                  <th style={thGold}>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                {equipmentPrefixes.map((e, i) => (
+                  <tr key={e.prefix} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, color: GOLD }}>{e.prefix}</td>
+                    <td style={{ ...td, fontWeight: 600 }}>{e.meaning}</td>
+                    <td style={{ ...td, fontFamily: "monospace", color: "#555" }}>{e.example}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* 4. Component Suffixes */}
+            <h2 style={heading("Component Suffixes")}>4. Component Suffixes (After Hyphen)</h2>
+            <p style={{ fontSize: 11, lineHeight: 1.45, color: "#333", margin: "0 0 6px 0" }}>
+              When a child component sits under a parent asset, it uses these standardised suffixes.
+            </p>
+            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thGold, width: 70 }}>Suffix</th>
+                  <th style={{ ...thGold, width: 160 }}>Component Type</th>
+                  <th style={thGold}>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                {componentSuffixes.map((c, i) => (
+                  <tr key={c.suffix} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, color: GOLD }}>{c.suffix}</td>
+                    <td style={{ ...td, fontWeight: 600 }}>{c.meaning}</td>
+                    <td style={{ ...td, fontFamily: "monospace", color: "#555" }}>{c.example}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* 5. Instrumentation Suffixes */}
+            <h2 style={heading("Instrumentation")}>5. Instrumentation Suffixes</h2>
+            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thGold, width: 70 }}>Suffix</th>
+                  <th style={{ ...thGold, width: 160 }}>Instrument Type</th>
+                  <th style={thGold}>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                {instrumentationSuffixes.map((inst, i) => (
+                  <tr key={inst.suffix} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, color: GOLD }}>{inst.suffix}</td>
+                    <td style={{ ...td, fontWeight: 600 }}>{inst.meaning}</td>
+                    <td style={{ ...td, fontFamily: "monospace", color: "#555" }}>{inst.example}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* 6. Special Patterns */}
+            <h2 style={heading("Special Patterns")}>6. Special Naming Patterns</h2>
+            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thGold, width: 100 }}>Pattern</th>
+                  <th style={{ ...thGold, width: 180 }}>Meaning</th>
+                  <th style={thGold}>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                {specialPatterns.map((p, i) => (
+                  <tr key={i} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, color: GOLD }}>{p.pattern}</td>
+                    <td style={{ ...td, fontWeight: 600 }}>{p.meaning}</td>
+                    <td style={{ ...td, fontFamily: "monospace", color: "#555" }}>{p.example}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* 7. Crusher Prefixes */}
+            <h2 style={heading("Crusher Prefixes")}>7. Suggested Crusher (CRU) Equipment Prefixes</h2>
+            <p style={{ fontSize: 11, lineHeight: 1.45, color: "#333", margin: "0 0 6px 0" }}>
+              The following prefixes are <strong>suggested</strong> for Crushing Plant equipment. They have been checked against the existing Processing Plant prefixes above to avoid collisions.
+            </p>
+            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thGold, width: 70 }}>Prefix</th>
+                  <th style={{ ...thGold, width: 160 }}>Equipment Type</th>
+                  <th style={thGold}>Suggested Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                {crusherPrefixes.map((c, i) => (
+                  <tr key={c.prefix} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, color: GOLD }}>{c.prefix}</td>
+                    <td style={{ ...td, fontWeight: 600 }}>{c.meaning}</td>
+                    <td style={{ ...td, fontFamily: "monospace", color: "#555" }}>{c.example}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Footer */}
+            <div style={{ borderTop: `2px solid ${GOLD}`, paddingTop: 8, marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 9.5, color: "#888" }}>
+              <span>TCMG-STD-NAM-001 Rev 1.0</span>
+              <span>Tennant Creek Mine | Confidential</span>
+              <span>{today}</span>
+            </div>
           </div>
-          <h4 className="font-semibold text-foreground text-base pt-1">Purpose</h4>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            This document outlines the complete asset numbering logic used across the Tennant Creek Mining Group (TCMG) Processing Plant.
-            It is designed to be shared with contractors and OEM suppliers to ensure consistent naming, avoid prefix collisions,
-            and maintain a unified site standard across all facilities.
-          </p>
-          <div className="text-sm text-muted-foreground space-y-1">
-            <p><span className="font-mono font-bold text-foreground">Format:</span> [PREFIX][NUMBER]-[SUFFIX][NUMBER]</p>
-            <p><span className="font-mono font-bold text-foreground">Example:</span> BM01-MTR01 = Ball Mill 01, Motor 01</p>
-          </div>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">1. Area Codes (Level 3 of Hierarchy)</h4>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold text-sm py-2">Code</TableHead>
-                <TableHead className="w-40 font-semibold text-sm py-2">Meaning</TableHead>
-                <TableHead className="font-semibold text-sm py-2">Description</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {areaCodes.map((a) => (
-                <TableRow key={a.code}>
-                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{a.code}</TableCell>
-                  <TableCell className="font-medium text-sm py-2">{a.meaning}</TableCell>
-                  <TableCell className="text-muted-foreground text-sm py-2">{a.description}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          <h4 className="font-semibold text-foreground text-base pt-3">2. Equipment Type Prefixes (Reserved)</h4>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            These prefixes are <strong>reserved</strong> across the Processing Plant. Crusher assets must not duplicate these unless the same equipment type is genuinely being used.
-          </p>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold text-sm py-2">Prefix</TableHead>
-                <TableHead className="w-48 font-semibold text-sm py-2">Equipment Type</TableHead>
-                <TableHead className="font-semibold text-sm py-2">Example</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {equipmentPrefixes.map((e) => (
-                <TableRow key={e.prefix}>
-                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{e.prefix}</TableCell>
-                  <TableCell className="font-medium text-sm py-2">{e.meaning}</TableCell>
-                  <TableCell className="font-mono text-sm text-muted-foreground py-2">{e.example}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
         </div>
-
-        {/* Section 3: Component Suffixes */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">3. Component Suffixes (After Hyphen)</h4>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            When a child component sits under a parent asset, it uses these standardised suffixes. These should be adopted identically in the crusher.
-          </p>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold text-sm py-2">Suffix</TableHead>
-                <TableHead className="w-48 font-semibold text-sm py-2">Component Type</TableHead>
-                <TableHead className="font-semibold text-sm py-2">Example</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {componentSuffixes.map((c) => (
-                <TableRow key={c.suffix}>
-                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{c.suffix}</TableCell>
-                  <TableCell className="font-medium text-sm py-2">{c.meaning}</TableCell>
-                  <TableCell className="font-mono text-sm text-muted-foreground py-2">{c.example}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-
-        {/* Section 4+5: Instrumentation + Special Patterns combined */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">4. Instrumentation Suffixes</h4>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold text-sm py-2">Suffix</TableHead>
-                <TableHead className="w-48 font-semibold text-sm py-2">Instrument Type</TableHead>
-                <TableHead className="font-semibold text-sm py-2">Example</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {instrumentationSuffixes.map((i) => (
-                <TableRow key={i.suffix}>
-                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{i.suffix}</TableCell>
-                  <TableCell className="font-medium text-sm py-2">{i.meaning}</TableCell>
-                  <TableCell className="font-mono text-sm text-muted-foreground py-2">{i.example}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">5. Special Naming Patterns</h4>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-28 font-semibold text-sm py-2">Pattern</TableHead>
-                <TableHead className="w-52 font-semibold text-sm py-2">Meaning</TableHead>
-                <TableHead className="font-semibold text-sm py-2">Example</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {specialPatterns.map((p, idx) => (
-                <TableRow key={idx}>
-                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{p.pattern}</TableCell>
-                  <TableCell className="font-medium text-sm py-2">{p.meaning}</TableCell>
-                  <TableCell className="font-mono text-sm text-muted-foreground py-2">{p.example}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-
-        {/* Section 6: Crusher Prefixes */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">6. Suggested Crusher (CRU) Equipment Prefixes</h4>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            The following prefixes are <strong>suggested</strong> for Crushing Plant equipment. They have been checked against the existing Processing Plant prefixes above to avoid collisions.
-          </p>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold text-sm py-2">Prefix</TableHead>
-                <TableHead className="w-48 font-semibold text-sm py-2">Equipment Type</TableHead>
-                <TableHead className="font-semibold text-sm py-2">Suggested Example</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {crusherPrefixes.map((c) => (
-                <TableRow key={c.prefix}>
-                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{c.prefix}</TableCell>
-                  <TableCell className="font-medium text-sm py-2">{c.meaning}</TableCell>
-                  <TableCell className="font-mono text-sm text-muted-foreground py-2">{c.example}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-
       </CardContent>
     </Card>
   );
