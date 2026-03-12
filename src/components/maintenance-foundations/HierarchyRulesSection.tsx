@@ -159,7 +159,7 @@ export const HierarchyRulesSection = () => {
 
             {/* 3. Parent Child Rules */}
             <h2 style={heading("Rules")}>3. Parent Child Rules</h2>
-            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
               <thead>
                 <tr>
                   <th style={{ ...thDark, width: 40, textAlign: "center" }}>#</th>
@@ -178,7 +178,7 @@ export const HierarchyRulesSection = () => {
 
             {/* 4. Constraints */}
             <h2 style={heading("Constraints")}>4. Constraints (Non Negotiable)</h2>
-            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
               <thead>
                 <tr>
                   <th style={{ ...thDark, width: 40, textAlign: "center" }}>#</th>
@@ -197,7 +197,7 @@ export const HierarchyRulesSection = () => {
 
             {/* 5. FL Rules */}
             <h2 style={heading("FL Rules")}>5. Functional Location (FL) Rules</h2>
-            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
               <thead>
                 <tr>
                   <th style={{ ...thDark, width: 40, textAlign: "center" }}>#</th>
@@ -221,21 +221,19 @@ export const HierarchyRulesSection = () => {
               </tbody>
             </table>
 
-
-
             {/* 6. Asset Numbering */}
             <h2 style={heading("Numbering")}>6. Asset Numbering Standard</h2>
-            <div style={{ display: "inline-block", border: `2px solid ${GOLD}`, borderRadius: 5, padding: "6px 20px", marginBottom: 8, backgroundColor: GOLD_BG }}>
-              <span style={{ fontSize: 16, fontWeight: 700, fontFamily: "monospace", letterSpacing: 2, color: DARK }}>[AREA][NN]-[TYPE][NN]</span>
+            <div style={{ display: "inline-block", border: `2px solid ${GOLD}`, borderRadius: 5, padding: "8px 24px", marginBottom: 10, backgroundColor: GOLD_BG }}>
+              <span style={{ fontSize: 18, fontWeight: 700, fontFamily: "monospace", letterSpacing: 2, color: DARK }}>[AREA][NN]-[TYPE][NN]</span>
             </div>
-            <p style={{ fontSize: 12, color: "#555", margin: "4px 0 8px 0" }}>
+            <p style={{ fontSize: 13, color: "#555", margin: "4px 0 10px 0" }}>
               Parent assets use the Area prefix with a sequential number. Equipment uses the parent number followed by an equipment type abbreviation and sequence.
             </p>
 
             <div style={{ display: "flex", gap: 16 }}>
               <div style={{ flex: 1 }}>
-                <p style={{ fontWeight: 700, fontSize: 12, marginBottom: 4 }}>Asset Number Examples</p>
-                <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginBottom: 10 }}>
+                <p style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>Asset Number Examples</p>
+                <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
                   <thead><tr><th style={thGold}>Asset Number</th><th style={thGold}>Description</th></tr></thead>
                   <tbody>
                     {assetNumberingExamples.map((ex, i) => (
@@ -248,8 +246,8 @@ export const HierarchyRulesSection = () => {
                 </table>
               </div>
               <div style={{ flex: 1 }}>
-                <p style={{ fontWeight: 700, fontSize: 12, marginBottom: 4 }}>Equipment Type Abbreviations</p>
-                <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginBottom: 10 }}>
+                <p style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>Equipment Type Abbreviations</p>
+                <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
                   <thead><tr><th style={{ ...thGold, width: 60 }}>Code</th><th style={thGold}>Meaning</th></tr></thead>
                   <tbody>
                     {equipmentAbbreviations.map((abbr, i) => (
@@ -265,7 +263,7 @@ export const HierarchyRulesSection = () => {
 
             {/* 7. Numbering Rules */}
             <h2 style={heading("Numbering Rules")}>7. Asset Numbering Rules</h2>
-            <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
               <thead>
                 <tr>
                   <th style={{ ...thDark, width: 120 }}>Rule</th>
@@ -290,7 +288,7 @@ export const HierarchyRulesSection = () => {
 
             {/* 8. Governance */}
             <h2 style={heading("Governance")}>8. Governance & Change Control</h2>
-            <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
               <thead>
                 <tr>
                   <th style={{ ...thDark, width: 40, textAlign: "center" }}>#</th>
@@ -313,7 +311,7 @@ export const HierarchyRulesSection = () => {
             </table>
 
             {/* Footer */}
-            <div style={{ borderTop: `2px solid ${GOLD}`, paddingTop: 8, marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 9.5, color: "#888" }}>
+            <div style={{ borderTop: `2px solid ${GOLD}`, paddingTop: 8, marginTop: 8, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#888" }}>
               <span>TCMG-STD-AH-001 Rev A</span>
               <span>Tennant Creek Mine | Confidential</span>
               <span>{today}</span>
