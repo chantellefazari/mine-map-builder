@@ -1,10 +1,11 @@
 import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Hash, CheckCircle2, Info, Download, Loader2, Lock } from "lucide-react";
+import { Hash, CheckCircle2, Download, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
+import { PDF_COLORS } from "@/utils/pdfExportStandard";
+
+const { GOLD, GOLD_BG, GOLD_LIGHT, DARK } = PDF_COLORS;
 
 const areaCodeTable = [
   { code: "SITE", label: "Site Infrastructure", subAreas: "INFRA" },
@@ -65,6 +66,12 @@ export const AssetNumberingSection = () => {
     }
   };
 
+  const today = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "short", year: "numeric" });
+  const thGold: React.CSSProperties = { padding: "4px 6px", textAlign: "left", backgroundColor: GOLD, color: "#fff", fontSize: 11, fontWeight: 700 };
+  const thDark: React.CSSProperties = { ...thGold, backgroundColor: DARK };
+  const td: React.CSSProperties = { padding: "3px 6px", border: "1px solid #ddd", fontSize: 11 };
+  const heading = (text: string): React.CSSProperties => ({ fontSize: 14, fontWeight: 700, margin: "14px 0 6px 0", borderBottom: `2px solid ${GOLD}`, paddingBottom: 3, color: DARK });
+
   return (
     <Card className="border-border">
       <CardHeader className="pb-4">
@@ -75,9 +82,7 @@ export const AssetNumberingSection = () => {
             </div>
             <div>
               <CardTitle className="text-xl">Functional Location Codes</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
-                TCMG-STD-FL-001 Rev 2.0 - Tennant Creek Gold Mine
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">TCMG-STD-FL-001 Rev 2.0</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -86,186 +91,226 @@ export const AssetNumberingSection = () => {
               {downloading ? "Generating..." : "Download PDF"}
             </Button>
             <Badge className="bg-green-500/10 text-green-600 border-green-500/30">
-              <CheckCircle2 className="w-3 h-3 mr-1" />
-              Defined & Stable
+              <CheckCircle2 className="w-3 h-3 mr-1" /> Defined & Stable
             </Badge>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-5" ref={contentRef}>
-        {/* Document Title + FL Format + Purpose + Hierarchy */}
-        <div data-pdf-section className="space-y-3 border-b border-border pb-4">
-          <h2 className="text-2xl font-bold text-foreground tracking-tight">Functional Location Codes</h2>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span className="font-mono font-semibold">TCMG-STD-FL-001</span>
-            <span>Rev 2.0</span>
-            <span>Tennant Creek Mining Group</span>
-          </div>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">FL Code Format</h4>
-          <code className="text-lg font-mono font-bold text-primary block">
-            TCMG-PP-[AREA]-[SUBAREA]-[SYSTEM]
-          </code>
-          <div className="text-sm text-muted-foreground space-y-1">
-            <p><span className="font-mono font-bold text-foreground">TCMG</span> - Tennant Creek Gold Mine</p>
-            <p><span className="font-mono font-bold text-foreground">PP</span> - Processing Plant</p>
-            <p><span className="font-mono font-bold text-foreground">AREA</span> - Major plant area (6 approved codes)</p>
-            <p><span className="font-mono font-bold text-foreground">SUBAREA</span> - Functional sub-area within the area</p>
-            <p><span className="font-mono font-bold text-foreground">SYSTEM</span> - Parent Asset / System (lowest FL level)</p>
-          </div>
-
-          <h4 className="font-semibold text-foreground text-base pt-2 flex items-center gap-2">
-            <Info className="w-4 h-4 text-primary" />
-            Purpose
-          </h4>
-          <p className="text-sm text-muted-foreground">
-            FL codes define where assets physically and functionally exist within the plant. They answer: <strong>"Where in the plant does this equipment belong?"</strong> Used for asset hierarchy, maintenance planning, work history, PM alignment, and D365 integration.
-          </p>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">Functional Location Hierarchy</h4>
-          <div className="font-mono text-sm space-y-0.5">
-            <p className="font-bold text-foreground">TCMG</p>
-            <p className="text-muted-foreground ml-4">└── PP (Processing Plant)</p>
-            <p className="text-muted-foreground ml-8">└── COM (Comminution / Process)</p>
-            <p className="text-muted-foreground ml-12">└── GRIND (Grinding)</p>
-            <p className="text-primary font-bold ml-16">└── BM01 (Primary Ball Mill) ← FL stops here</p>
-            <p className="text-muted-foreground ml-20">└── BM01-MTR01 (inherits parent FL)</p>
-            <p className="text-muted-foreground ml-24">└── Bearings, seals (inherit parent FL)</p>
-          </div>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">1. Area Codes (6 Approved)</h4>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-20 font-semibold">Code</TableHead>
-                <TableHead className="w-48 font-semibold">Area</TableHead>
-                <TableHead className="font-semibold">Sub-Area Codes</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {areaCodeTable.map((a) => (
-                <TableRow key={a.code}>
-                  <TableCell className="font-mono font-bold text-primary">{a.code}</TableCell>
-                  <TableCell className="font-medium text-sm">{a.label}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{a.subAreas}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">2. Sub-Area Codes & Live Examples</h4>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-16 font-semibold">Area</TableHead>
-                <TableHead className="w-20 font-semibold">Code</TableHead>
-                <TableHead className="w-44 font-semibold">Sub-Area</TableHead>
-                <TableHead className="font-semibold">Example FL</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {subAreaCodeTable.map((s) => (
-                <TableRow key={s.code}>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{s.area}</TableCell>
-                  <TableCell className="font-mono font-bold text-primary">{s.code}</TableCell>
-                  <TableCell className="text-sm">{s.meaning}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{s.example}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">3. Rules & Constraints</h4>
-          <ul className="text-sm space-y-2 text-muted-foreground">
-            <li className="flex items-start gap-2">
-              <Lock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-              <span><strong className="text-foreground">FLs Stop at System Level</strong> - Assets and components do NOT receive their own FL codes</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-              <span><strong className="text-foreground">Inheritance Model</strong> - Assets & components inherit the FL of their parent system</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-              <span><strong className="text-foreground">No Levels Skipped</strong> - Hierarchy must be followed exactly - no shortcuts</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Lock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-              <span><strong className="text-foreground">Immutable Once Assigned</strong> - FL codes are never renamed, reused, or changed</span>
-            </li>
-          </ul>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">4. Inheritance - Live Examples</h4>
-          <p className="text-sm text-muted-foreground">
-            Assets and components do NOT receive new FL codes. They inherit the FL code of their parent System.
-          </p>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="font-semibold">Functional Location</TableHead>
-                <TableHead className="font-semibold">System</TableHead>
-                <TableHead className="font-semibold">Inheriting Assets</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {flExamples.map((ex) => (
-                <TableRow key={ex.fl}>
-                  <TableCell className="font-mono text-sm font-medium text-primary">{ex.fl}</TableCell>
-                  <TableCell className="text-sm">{ex.system}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{ex.children}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">5. Immutability Rules</h4>
-          <ul className="text-sm text-muted-foreground space-y-1.5">
-            <li>• FL codes are <strong>never renamed</strong></li>
-            <li>• FL codes are <strong>never reused</strong></li>
-            <li>• Equipment changes do <strong>not</strong> trigger FL changes</li>
-          </ul>
-          <p className="text-sm text-muted-foreground">
-            If equipment is replaced: the FL stays the same, only asset/component records are updated. This preserves maintenance history, failure data, and long-term reporting integrity.
-          </p>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">6. When New FLs Can Be Created</h4>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <p className="font-medium text-sm text-foreground">Allowed:</p>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• A new system boundary is introduced</li>
-                <li>• A new process line or major modification is installed</li>
-                <li>• Approved changes to P&IDs define a new system</li>
-              </ul>
+      <CardContent>
+        <div ref={contentRef} className="bg-white text-black rounded-lg border shadow-sm overflow-auto max-h-[70vh]" style={{ fontFamily: "'Segoe UI', Arial, Helvetica, sans-serif" }}>
+          <div data-pdf-section style={{ padding: "28px 32px" }}>
+            {/* Header */}
+            <div style={{ borderBottom: `3px solid ${GOLD}`, paddingBottom: 12, marginBottom: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div>
+                  <div style={{ display: "inline-block", backgroundColor: GOLD, color: "#fff", padding: "3px 12px", borderRadius: 3, fontSize: 10, fontWeight: 700, letterSpacing: 1, marginBottom: 6 }}>TENNANT CREEK MINE</div>
+                  <h1 style={{ fontSize: 20, fontWeight: 700, margin: "4px 0 0 0" }}>Functional Location Codes</h1>
+                  <p style={{ fontSize: 12, color: "#666", margin: "2px 0 0 0" }}>Gold Processing Plant | FL Code Standard</p>
+                </div>
+                <div style={{ textAlign: "right", fontSize: 10, color: "#666", borderLeft: `3px solid ${GOLD}`, paddingLeft: 10 }}>
+                  <p style={{ margin: 0, fontWeight: 700, color: DARK }}>TCMG-STD-FL-001</p>
+                  <p style={{ margin: "2px 0 0 0" }}>Rev 2.0</p>
+                  <p style={{ margin: "2px 0 0 0" }}>{today}</p>
+                </div>
+              </div>
             </div>
-            <div className="space-y-2">
-              <p className="font-medium text-sm text-foreground">Not Allowed:</p>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Component replacement</li>
-                <li>• Equipment upgrades</li>
-                <li>• Temporary equipment</li>
-                <li>• Maintenance workarounds</li>
-              </ul>
+
+            {/* Metadata */}
+            <table style={{ width: "100%", fontSize: 10.5, borderCollapse: "collapse", marginBottom: 14 }}>
+              <tbody>
+                <tr>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Prepared By</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", width: "36%" }}>TCMG Maintenance Team</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Approved By</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", width: "36%" }}>Maintenance Superintendent</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Status</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd" }}>Approved</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Effective Date</td>
+                  <td style={{ padding: "3px 6px", border: "1px solid #ddd" }}>{today}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* 1. Purpose */}
+            <h2 style={heading("Purpose")}>1. Purpose</h2>
+            <p style={{ fontSize: 11.5, lineHeight: 1.45, color: "#333", margin: "0 0 4px 0" }}>
+              FL codes define where assets physically and functionally exist within the plant. They answer: <strong>"Where in the plant does this equipment belong?"</strong> Used for asset hierarchy, maintenance planning, work history, PM alignment, and D365 integration.
+            </p>
+
+            {/* FL Format */}
+            <h2 style={heading("Format")}>2. FL Code Format</h2>
+            <div style={{ display: "inline-block", border: `2px solid ${GOLD}`, borderRadius: 5, padding: "6px 20px", marginBottom: 8, backgroundColor: GOLD_BG }}>
+              <span style={{ fontSize: 16, fontWeight: 700, fontFamily: "monospace", letterSpacing: 2, color: DARK }}>TCMG-PP-[AREA]-[SUBAREA]-[SYSTEM]</span>
+            </div>
+            <table style={{ width: "100%", fontSize: 11.5, borderCollapse: "collapse", marginBottom: 8 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thGold, width: 100 }}>Segment</th>
+                  <th style={thGold}>Meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style={{ ...td, fontFamily: "monospace", fontWeight: 700 }}>TCMG</td><td style={td}>Tennant Creek Gold Mine</td></tr>
+                <tr style={{ backgroundColor: GOLD_BG }}><td style={{ ...td, fontFamily: "monospace", fontWeight: 700 }}>PP</td><td style={td}>Processing Plant</td></tr>
+                <tr><td style={{ ...td, fontFamily: "monospace", fontWeight: 700 }}>AREA</td><td style={td}>Major plant area (6 approved codes)</td></tr>
+                <tr style={{ backgroundColor: GOLD_BG }}><td style={{ ...td, fontFamily: "monospace", fontWeight: 700 }}>SUBAREA</td><td style={td}>Functional sub area within the area</td></tr>
+                <tr><td style={{ ...td, fontFamily: "monospace", fontWeight: 700 }}>SYSTEM</td><td style={td}>Parent Asset / System (lowest FL level)</td></tr>
+              </tbody>
+            </table>
+
+            {/* Hierarchy visual */}
+            <div style={{ fontFamily: "monospace", fontSize: 11, lineHeight: 1.6, marginBottom: 12, padding: "8px 12px", backgroundColor: GOLD_BG, border: `1px solid ${GOLD}`, borderRadius: 4 }}>
+              <p style={{ margin: 0, fontWeight: 700 }}>TCMG</p>
+              <p style={{ margin: 0, paddingLeft: 16, color: "#555" }}>└── PP (Processing Plant)</p>
+              <p style={{ margin: 0, paddingLeft: 32, color: "#555" }}>└── COM (Comminution / Process)</p>
+              <p style={{ margin: 0, paddingLeft: 48, color: "#555" }}>└── GRIND (Grinding)</p>
+              <p style={{ margin: 0, paddingLeft: 64, fontWeight: 700, color: GOLD }}>└── BM01 (Primary Ball Mill) ← FL stops here</p>
+              <p style={{ margin: 0, paddingLeft: 80, color: "#888" }}>└── BM01-MTR01 (inherits parent FL)</p>
+            </div>
+
+            {/* 3. Area Codes */}
+            <h2 style={heading("Area Codes")}>3. Area Codes (6 Approved)</h2>
+            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thGold, width: 70 }}>Code</th>
+                  <th style={{ ...thGold, width: 160 }}>Area</th>
+                  <th style={thGold}>Sub Area Codes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {areaCodeTable.map((a, i) => (
+                  <tr key={a.code} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, color: GOLD }}>{a.code}</td>
+                    <td style={{ ...td, fontWeight: 600 }}>{a.label}</td>
+                    <td style={{ ...td, fontFamily: "monospace", color: "#555" }}>{a.subAreas}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* 4. Sub Area Codes */}
+            <h2 style={heading("Sub Areas")}>4. Sub Area Codes & Live Examples</h2>
+            <table style={{ width: "100%", fontSize: 10.5, borderCollapse: "collapse", marginBottom: 10 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thGold, width: 55 }}>Area</th>
+                  <th style={{ ...thGold, width: 65 }}>Code</th>
+                  <th style={{ ...thGold, width: 130 }}>Sub Area</th>
+                  <th style={thGold}>Example FL</th>
+                </tr>
+              </thead>
+              <tbody>
+                {subAreaCodeTable.map((s, i) => (
+                  <tr key={s.code} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                    <td style={{ ...td, fontFamily: "monospace", color: "#888" }}>{s.area}</td>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, color: GOLD }}>{s.code}</td>
+                    <td style={td}>{s.meaning}</td>
+                    <td style={{ ...td, fontFamily: "monospace", fontSize: 10, color: "#555" }}>{s.example}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* 5. Rules */}
+            <h2 style={heading("Rules")}>5. Rules & Constraints</h2>
+            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thDark, width: 40, textAlign: "center" }}>#</th>
+                  <th style={thDark}>Rule</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  "FLs stop at System Level. Assets and components do NOT receive their own FL codes",
+                  "Equipment and components inherit the FL of their parent system",
+                  "Hierarchy must be followed exactly. No levels skipped, no shortcuts",
+                  "FL codes are immutable once assigned. Never renamed, reused, or changed",
+                  "Each FL is unique across the entire site. No duplicates permitted",
+                  "Duty/Standby and identical grouped assets share one Parent FL",
+                ].map((rule, i) => (
+                  <tr key={i} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                    <td style={{ ...td, fontWeight: 700, textAlign: "center", color: GOLD }}>{i + 1}</td>
+                    <td style={td}>{rule}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* 6. Inheritance Examples */}
+            <h2 style={heading("Inheritance")}>6. Inheritance Examples (Live Data)</h2>
+            <p style={{ fontSize: 11, color: "#333", margin: "0 0 6px 0" }}>
+              Assets and components do NOT receive new FL codes. They inherit the FL code of their parent System.
+            </p>
+            <table style={{ width: "100%", fontSize: 10.5, borderCollapse: "collapse", marginBottom: 10 }}>
+              <thead>
+                <tr>
+                  <th style={thGold}>Functional Location</th>
+                  <th style={thGold}>System</th>
+                  <th style={thGold}>Inheriting Assets</th>
+                </tr>
+              </thead>
+              <tbody>
+                {flExamples.map((ex, i) => (
+                  <tr key={ex.fl} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 600, color: GOLD, fontSize: 10 }}>{ex.fl}</td>
+                    <td style={td}>{ex.system}</td>
+                    <td style={{ ...td, fontFamily: "monospace", fontSize: 10, color: "#555" }}>{ex.children}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* 7. When New FLs Can Be Created */}
+            <h2 style={heading("New FLs")}>7. When New FLs Can Be Created</h2>
+            <div style={{ display: "flex", gap: 16, marginBottom: 10 }}>
+              <div style={{ flex: 1, border: `1px solid ${GOLD}`, borderRadius: 4, padding: "8px 12px", backgroundColor: GOLD_BG }}>
+                <p style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: GOLD }}>Allowed</p>
+                <ul style={{ fontSize: 11, lineHeight: 1.5, paddingLeft: 16, margin: 0, color: "#333" }}>
+                  <li>A new system boundary is introduced</li>
+                  <li>A new process line or major modification is installed</li>
+                  <li>Approved changes to P&IDs define a new system</li>
+                </ul>
+              </div>
+              <div style={{ flex: 1, border: "1px solid #ddd", borderRadius: 4, padding: "8px 12px" }}>
+                <p style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: DARK }}>Not Allowed</p>
+                <ul style={{ fontSize: 11, lineHeight: 1.5, paddingLeft: 16, margin: 0, color: "#333" }}>
+                  <li>Component replacement</li>
+                  <li>Equipment upgrades</li>
+                  <li>Temporary equipment</li>
+                  <li>Maintenance workarounds</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* 8. Relationship */}
+            <h2 style={heading("Relationship")}>8. Relationship to Asset & Parts Numbering</h2>
+            <div style={{ display: "flex", gap: 16, marginBottom: 10 }}>
+              {[
+                { label: "FL Codes", desc: "Define WHERE an asset sits in the plant" },
+                { label: "Asset Numbers", desc: "Define WHAT the equipment is" },
+                { label: "Parts Numbers", desc: "Define what is STOCKED in stores" },
+              ].map((item) => (
+                <div key={item.label} style={{ flex: 1, border: `1px solid ${GOLD}`, borderRadius: 4, padding: "6px 10px", backgroundColor: GOLD_BG, textAlign: "center" }}>
+                  <p style={{ fontWeight: 700, fontSize: 12, margin: "0 0 2px 0", color: DARK }}>{item.label}</p>
+                  <p style={{ fontSize: 10, color: "#555", margin: 0 }}>{item.desc}</p>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontFamily: "monospace", fontSize: 11, color: "#555", margin: "0 0 10px 0" }}>
+              FL → Asset → Component → Part (all three systems are independent but linked)
+            </p>
+
+            {/* Footer */}
+            <div style={{ borderTop: `2px solid ${GOLD}`, paddingTop: 8, marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 9.5, color: "#888" }}>
+              <span>TCMG-STD-FL-001 Rev 2.0</span>
+              <span>Tennant Creek Mine | Confidential</span>
+              <span>{today}</span>
             </div>
           </div>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">7. Governance & Control</h4>
-          <ul className="text-sm text-muted-foreground space-y-1.5">
-            <li>• Functional Location creation follows this standard</li>
-            <li>• All new FLs must align to the approved hierarchy</li>
-            <li>• Temporary or unknown systems are flagged and reviewed</li>
-            <li>• FL Standards take precedence over asset naming preferences, OEM terminology, and historical site naming habits</li>
-          </ul>
-
-          <h4 className="font-semibold text-foreground text-base pt-2">8. Relationship to Asset & Parts Numbering</h4>
-          <div className="text-sm text-muted-foreground space-y-1.5">
-            <p><strong className="text-foreground">FL Codes</strong> define WHERE an asset sits in the plant</p>
-            <p><strong className="text-foreground">Asset Numbers</strong> define WHAT the equipment is</p>
-            <p><strong className="text-foreground">Parts Numbers</strong> define what is STOCKED in stores</p>
-          </div>
-          <p className="font-mono text-sm text-muted-foreground mt-2">
-            FL → Asset → Component → Part (all three systems are independent but linked)
-          </p>
         </div>
       </CardContent>
     </Card>
