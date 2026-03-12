@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, Loader2 } from "lucide-react";
 import { exportSectionsToPdf } from "@/utils/sectionPdfExport";
+import { PDF_EXPORT_OPTS } from "@/utils/pdfExportStandard";
 
 const GOLD = "#C8960C";
 const GOLD_LIGHT = "#f5ecd0";
@@ -63,14 +64,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
     if (!contentRef.current) return;
     setGenerating(true);
     try {
-      await exportSectionsToPdf(contentRef.current, "TCMG-STD-SPN-001_Site_Parts_Numbering_Standard.pdf", {
-        margin: 10,
-        renderWidth: 780,
-        fontSize: "12px",
-        lineHeight: "1.4",
-        scale: 1.5,
-        addBorder: true,
-      });
+      await exportSectionsToPdf(contentRef.current, "TCMG-STD-SPN-001_Site_Parts_Numbering_Standard.pdf", PDF_EXPORT_OPTS);
     } finally {
       setGenerating(false);
     }

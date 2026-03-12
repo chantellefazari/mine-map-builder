@@ -65,18 +65,11 @@ export const HierarchyRulesSection = () => {
     setDownloading(true);
     try {
       const { exportSectionsToPdf } = await import("@/utils/sectionPdfExport");
+      const { PDF_EXPORT_OPTS } = await import("@/utils/pdfExportStandard");
       await exportSectionsToPdf(
         contentRef.current,
         "TCMG-STD-AH-001_Asset_Hierarchy_Parent_Child_Rules.pdf",
-        {
-          margin: 10,
-          gap: 1,
-          renderWidth: 720,
-          fontSize: "13px",
-          lineHeight: "1.45",
-          sliceOverlapPx: 14,
-          addBorder: true,
-        }
+        PDF_EXPORT_OPTS
       );
     } catch (err) {
       console.error("PDF generation failed:", err);
