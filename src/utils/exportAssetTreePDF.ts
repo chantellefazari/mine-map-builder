@@ -111,30 +111,48 @@ function parseCsvText(text: string): CsvRow[] {
   return rows;
 }
 
-// ── Build spec list from a Level 7 row ────────────────────────────
+// ── Normalize for comparison ───────────────────────────────────────
+function norm(s: string): string {
+  return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+// ── Build spec list from a Level 7 row, suppressing redundant values ─
 function buildSpecs(r: CsvRow): { key: string; value: string }[] {
   const specs: { key: string; value: string }[] = [];
-  const add = (k: string, v: string) => { if (v) specs.push({ key: k, value: v }); };
+  const compName = norm(r.compName);
+  const compLabel = norm(r.compCode ? `${r.compCode}${r.compName}` : r.compName);
+
+  const isRedundant = (v: string) => {
+    const nv = norm(v);
+    if (!nv) return true;
+    return nv === compName || compName.includes(nv) || nv.includes(compName) ||
+           compLabel.includes(nv) || nv === compLabel;
+  };
+
+  const add = (k: string, v: string) => { if (v && !isRedundant(v)) specs.push({ key: k, value: v }); };
+  // Manufacturer and Model get redundancy checks
   add("Manufacturer", r.manufacturer);
   add("Model", r.model);
-  add("Serial No", r.serialNumber);
-  add("Oil Type", r.oilType);
-  add("Oil Volume", r.oilVolume);
-  add("Input Speed", r.inputSpeed);
-  add("Output Speed", r.outputSpeed);
-  add("Weight", r.weight);
-  add("Motor Speed", r.motorSpeed);
-  add("Protection", r.protection);
-  add("Voltage", r.voltage);
-  add("Pump Flow", r.pumpFlow);
-  add("Operating Pressure", r.operatingPressure);
-  add("Displacement", r.displacement);
-  add("Motor Ref", r.motorRef);
-  add("Pump Ref", r.pumpRef);
+  // Other specs are always real engineering data — no suppression
+  const addRaw = (k: string, v: string) => { if (v) specs.push({ key: k, value: v }); };
+  addRaw("Serial No", r.serialNumber);
+  addRaw("Oil Type", r.oilType);
+  addRaw("Oil Volume", r.oilVolume);
+  addRaw("Input Speed", r.inputSpeed);
+  addRaw("Output Speed", r.outputSpeed);
+  addRaw("Weight", r.weight);
+  addRaw("Motor Speed", r.motorSpeed);
+  addRaw("Protection", r.protection);
+  addRaw("Voltage", r.voltage);
+  addRaw("Pump Flow", r.pumpFlow);
+  addRaw("Operating Pressure", r.operatingPressure);
+  addRaw("Displacement", r.displacement);
+  addRaw("Motor Ref", r.motorRef);
+  addRaw("Pump Ref", r.pumpRef);
   return specs;
 }
 
-// ── Flatten CSV rows into tree rows ───────────────────────────────
+// ── Flatten CSV rows into tree rows, deduplicating Level 7 ────────
 function flattenCsvToTree(csvRows: CsvRow[]): TreeRow[] {
   const tree: TreeRow[] = [];
 
@@ -181,7 +199,36 @@ function flattenCsvToTree(csvRows: CsvRow[]): TreeRow[] {
       }
     }
   }
-  return tree;
+
+  // Deduplicate consecutive Level 7 components under the same parent
+  const deduped: TreeRow[] = [];
+  for (let i = 0; i < tree.length; i++) {
+    const row = tree[i];
+    if (row.type === "component" && i > 0) {
+      const normLabel = norm(row.label);
+      // Look back for a duplicate component with same normalized name under same parent
+      let isDuplicate = false;
+      for (let j = deduped.length - 1; j >= 0; j--) {
+        if (deduped[j].type !== "component") break; // hit a non-component = different parent
+        if (norm(deduped[j].label) === normLabel) {
+          isDuplicate = true;
+          // Merge any specs from the duplicate into the existing entry
+          if (row.specs && deduped[j].specs) {
+            const existingKeys = new Set(deduped[j].specs!.map(s => s.key));
+            for (const spec of row.specs) {
+              if (!existingKeys.has(spec.key)) deduped[j].specs!.push(spec);
+            }
+          } else if (row.specs && !deduped[j].specs) {
+            deduped[j].specs = row.specs;
+          }
+          break;
+        }
+      }
+      if (isDuplicate) continue;
+    }
+    deduped.push(row);
+  }
+  return deduped;
 }
 
 // ── Colours ────────────────────────────────────────────────────────
