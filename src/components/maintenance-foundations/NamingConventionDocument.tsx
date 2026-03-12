@@ -316,13 +316,13 @@ export const NamingConventionDocument = () => {
             <div>
               <p className="font-bold text-foreground mb-1">Screening</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">SC01</span> — Vibrating Screen (3-Deck)</p>
-                <p className="pl-4"><span className="text-primary">SC01-MTR01</span> — Screen Drive Motor 45kW</p>
-                <p className="pl-4"><span className="text-primary">SC01-GBX01</span> — Exciter / Gearbox</p>
-                <p className="pl-4"><span className="text-primary">SC01-DK01</span> — Top Deck</p>
-                <p className="pl-4"><span className="text-primary">SC01-DK02</span> — Second Deck</p>
-                <p className="pl-4"><span className="text-primary">SC01-DK03</span> — Bottom Deck (Fines)</p>
-                <p className="pl-4"><span className="text-primary">SC01-SPR01</span> — Isolation Springs</p>
+                <p><span className="text-primary font-semibold">SCN01</span> — Vibrating Screen (3-Deck)</p>
+                <p className="pl-4"><span className="text-primary">SCN01-MTR01</span> — Screen Drive Motor 45kW</p>
+                <p className="pl-4"><span className="text-primary">SCN01-GBX01</span> — Exciter / Gearbox</p>
+                <p className="pl-4"><span className="text-primary">SCN01-DK01</span> — Top Deck</p>
+                <p className="pl-4"><span className="text-primary">SCN01-DK02</span> — Second Deck</p>
+                <p className="pl-4"><span className="text-primary">SCN01-DK03</span> — Bottom Deck (Fines)</p>
+                <p className="pl-4"><span className="text-primary">SCN01-SPR01</span> — Isolation Springs</p>
               </div>
             </div>
 
