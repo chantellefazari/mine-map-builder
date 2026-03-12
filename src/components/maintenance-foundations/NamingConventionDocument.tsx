@@ -80,36 +80,36 @@ export const NamingConventionDocument = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-3" ref={contentRef}>
+      <CardContent className="space-y-5" ref={contentRef}>
 
         {/* Section 1: Purpose + Area Codes combined */}
-        <div data-pdf-section className="space-y-2">
-          <h4 className="font-semibold text-foreground text-sm">Purpose</h4>
-          <p className="text-xs text-muted-foreground leading-tight">
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">Purpose</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
             This document outlines the complete asset numbering logic used across the Tennant Creek Mining Group (TCMG) Processing Plant.
             It is designed to be shared with contractors and OEM suppliers to ensure consistent naming, avoid prefix collisions,
             and maintain a unified site standard across all facilities.
           </p>
-          <div className="text-xs text-muted-foreground space-y-0.5">
+          <div className="text-sm text-muted-foreground space-y-1">
             <p><span className="font-mono font-bold text-foreground">Format:</span> [PREFIX][NUMBER]-[SUFFIX][NUMBER]</p>
             <p><span className="font-mono font-bold text-foreground">Example:</span> BM01-MTR01 = Ball Mill 01, Motor 01</p>
           </div>
 
-          <h4 className="font-semibold text-foreground text-sm pt-2">1. Area Codes (Level 3 of Hierarchy)</h4>
+          <h4 className="font-semibold text-foreground text-base pt-2">1. Area Codes (Level 3 of Hierarchy)</h4>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-16 font-semibold text-xs py-1">Code</TableHead>
-                <TableHead className="w-36 font-semibold text-xs py-1">Meaning</TableHead>
-                <TableHead className="font-semibold text-xs py-1">Description</TableHead>
+                <TableHead className="w-20 font-semibold text-sm py-2">Code</TableHead>
+                <TableHead className="w-40 font-semibold text-sm py-2">Meaning</TableHead>
+                <TableHead className="font-semibold text-sm py-2">Description</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {areaCodes.map((a) => (
                 <TableRow key={a.code}>
-                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{a.code}</TableCell>
-                  <TableCell className="font-medium text-xs py-1">{a.meaning}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs py-1">{a.description}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{a.code}</TableCell>
+                  <TableCell className="font-medium text-sm py-2">{a.meaning}</TableCell>
+                  <TableCell className="text-muted-foreground text-sm py-2">{a.description}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -117,25 +117,25 @@ export const NamingConventionDocument = () => {
         </div>
 
         {/* Section 2: Equipment Prefixes */}
-        <div data-pdf-section className="space-y-2">
-          <h4 className="font-semibold text-foreground text-sm">2. Equipment Type Prefixes (Reserved)</h4>
-          <p className="text-xs text-muted-foreground leading-tight">
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">2. Equipment Type Prefixes (Reserved)</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
             These prefixes are <strong>reserved</strong> across the Processing Plant. Crusher assets must not duplicate these unless the same equipment type is genuinely being used.
           </p>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-16 font-semibold text-xs py-1">Prefix</TableHead>
-                <TableHead className="w-44 font-semibold text-xs py-1">Equipment Type</TableHead>
-                <TableHead className="font-semibold text-xs py-1">Example</TableHead>
+                <TableHead className="w-20 font-semibold text-sm py-2">Prefix</TableHead>
+                <TableHead className="w-48 font-semibold text-sm py-2">Equipment Type</TableHead>
+                <TableHead className="font-semibold text-sm py-2">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {equipmentPrefixes.map((e) => (
                 <TableRow key={e.prefix}>
-                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{e.prefix}</TableCell>
-                  <TableCell className="font-medium text-xs py-1">{e.meaning}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground py-1">{e.example}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{e.prefix}</TableCell>
+                  <TableCell className="font-medium text-sm py-2">{e.meaning}</TableCell>
+                  <TableCell className="font-mono text-sm text-muted-foreground py-2">{e.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -143,25 +143,25 @@ export const NamingConventionDocument = () => {
         </div>
 
         {/* Section 3: Component Suffixes */}
-        <div data-pdf-section className="space-y-2">
-          <h4 className="font-semibold text-foreground text-sm">3. Component Suffixes (After Hyphen)</h4>
-          <p className="text-xs text-muted-foreground leading-tight">
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">3. Component Suffixes (After Hyphen)</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
             When a child component sits under a parent asset, it uses these standardised suffixes. These should be adopted identically in the crusher.
           </p>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-16 font-semibold text-xs py-1">Suffix</TableHead>
-                <TableHead className="w-44 font-semibold text-xs py-1">Component Type</TableHead>
-                <TableHead className="font-semibold text-xs py-1">Example</TableHead>
+                <TableHead className="w-20 font-semibold text-sm py-2">Suffix</TableHead>
+                <TableHead className="w-48 font-semibold text-sm py-2">Component Type</TableHead>
+                <TableHead className="font-semibold text-sm py-2">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {componentSuffixes.map((c) => (
                 <TableRow key={c.suffix}>
-                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{c.suffix}</TableCell>
-                  <TableCell className="font-medium text-xs py-1">{c.meaning}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground py-1">{c.example}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{c.suffix}</TableCell>
+                  <TableCell className="font-medium text-sm py-2">{c.meaning}</TableCell>
+                  <TableCell className="font-mono text-sm text-muted-foreground py-2">{c.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -169,42 +169,42 @@ export const NamingConventionDocument = () => {
         </div>
 
         {/* Section 4+5: Instrumentation + Special Patterns combined */}
-        <div data-pdf-section className="space-y-2">
-          <h4 className="font-semibold text-foreground text-sm">4. Instrumentation Suffixes</h4>
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">4. Instrumentation Suffixes</h4>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-16 font-semibold text-xs py-1">Suffix</TableHead>
-                <TableHead className="w-44 font-semibold text-xs py-1">Instrument Type</TableHead>
-                <TableHead className="font-semibold text-xs py-1">Example</TableHead>
+                <TableHead className="w-20 font-semibold text-sm py-2">Suffix</TableHead>
+                <TableHead className="w-48 font-semibold text-sm py-2">Instrument Type</TableHead>
+                <TableHead className="font-semibold text-sm py-2">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {instrumentationSuffixes.map((i) => (
                 <TableRow key={i.suffix}>
-                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{i.suffix}</TableCell>
-                  <TableCell className="font-medium text-xs py-1">{i.meaning}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground py-1">{i.example}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{i.suffix}</TableCell>
+                  <TableCell className="font-medium text-sm py-2">{i.meaning}</TableCell>
+                  <TableCell className="font-mono text-sm text-muted-foreground py-2">{i.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
 
-          <h4 className="font-semibold text-foreground text-sm pt-1">5. Special Naming Patterns</h4>
+          <h4 className="font-semibold text-foreground text-base pt-2">5. Special Naming Patterns</h4>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-24 font-semibold text-xs py-1">Pattern</TableHead>
-                <TableHead className="w-48 font-semibold text-xs py-1">Meaning</TableHead>
-                <TableHead className="font-semibold text-xs py-1">Example</TableHead>
+                <TableHead className="w-28 font-semibold text-sm py-2">Pattern</TableHead>
+                <TableHead className="w-52 font-semibold text-sm py-2">Meaning</TableHead>
+                <TableHead className="font-semibold text-sm py-2">Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {specialPatterns.map((p, idx) => (
                 <TableRow key={idx}>
-                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{p.pattern}</TableCell>
-                  <TableCell className="font-medium text-xs py-1">{p.meaning}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground py-1">{p.example}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{p.pattern}</TableCell>
+                  <TableCell className="font-medium text-sm py-2">{p.meaning}</TableCell>
+                  <TableCell className="font-mono text-sm text-muted-foreground py-2">{p.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -212,25 +212,25 @@ export const NamingConventionDocument = () => {
         </div>
 
         {/* Section 6: Crusher Prefixes */}
-        <div data-pdf-section className="space-y-2">
-          <h4 className="font-semibold text-foreground text-sm">6. Suggested Crusher (CRU) Equipment Prefixes</h4>
-          <p className="text-xs text-muted-foreground leading-tight">
+        <div data-pdf-section className="space-y-3">
+          <h4 className="font-semibold text-foreground text-base">6. Suggested Crusher (CRU) Equipment Prefixes</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
             The following prefixes are <strong>suggested</strong> for Crushing Plant equipment. They have been checked against the existing Processing Plant prefixes above to avoid collisions.
           </p>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-16 font-semibold text-xs py-1">Prefix</TableHead>
-                <TableHead className="w-44 font-semibold text-xs py-1">Equipment Type</TableHead>
-                <TableHead className="font-semibold text-xs py-1">Suggested Example</TableHead>
+                <TableHead className="w-20 font-semibold text-sm py-2">Prefix</TableHead>
+                <TableHead className="w-48 font-semibold text-sm py-2">Equipment Type</TableHead>
+                <TableHead className="font-semibold text-sm py-2">Suggested Example</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {crusherPrefixes.map((c) => (
                 <TableRow key={c.prefix}>
-                  <TableCell className="font-mono font-bold text-primary text-xs py-1">{c.prefix}</TableCell>
-                  <TableCell className="font-medium text-xs py-1">{c.meaning}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground py-1">{c.example}</TableCell>
+                  <TableCell className="font-mono font-bold text-primary text-sm py-2">{c.prefix}</TableCell>
+                  <TableCell className="font-medium text-sm py-2">{c.meaning}</TableCell>
+                  <TableCell className="font-mono text-sm text-muted-foreground py-2">{c.example}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -238,7 +238,7 @@ export const NamingConventionDocument = () => {
         </div>
 
         {/* Footer */}
-        <div data-pdf-section className="text-xs text-muted-foreground text-center pt-1 border-t border-border">
+        <div data-pdf-section className="text-sm text-muted-foreground text-center pt-2 border-t border-border">
           TCMG-STD-NAM-001 Rev 1.0 | Tennant Creek Mining Group - Asset Naming Standards
         </div>
       </CardContent>
