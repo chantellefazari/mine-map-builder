@@ -82,9 +82,15 @@ export const NamingConventionDocument = () => {
       </CardHeader>
       <CardContent className="space-y-5" ref={contentRef}>
 
-        {/* Section 1: Purpose + Area Codes combined */}
-        <div data-pdf-section className="space-y-3">
-          <h4 className="font-semibold text-foreground text-base">Purpose</h4>
+        {/* Document Title */}
+        <div data-pdf-section className="space-y-3 border-b border-border pb-4">
+          <h2 className="text-2xl font-bold text-foreground tracking-tight">Site Asset Naming Convention</h2>
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <span className="font-mono font-semibold">TCMG-STD-NAM-001</span>
+            <span>Rev 1.0</span>
+            <span>Tennant Creek Mining Group</span>
+          </div>
+          <h4 className="font-semibold text-foreground text-base pt-1">Purpose</h4>
           <p className="text-sm text-muted-foreground leading-relaxed">
             This document outlines the complete asset numbering logic used across the Tennant Creek Mining Group (TCMG) Processing Plant.
             It is designed to be shared with contractors and OEM suppliers to ensure consistent naming, avoid prefix collisions,
