@@ -35,6 +35,8 @@ export interface SectionPdfOptions {
   sliceOverlapPx?: number;
   /** Draw a border around the content area on each page (default false) */
   addBorder?: boolean;
+  /** Trailing blank page threshold in mm — pages with less content than this are removed (default 15) */
+  blankPageThreshold?: number;
 }
 
 const DEFAULTS: Required<SectionPdfOptions> = {
