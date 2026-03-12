@@ -11,13 +11,13 @@ import {
 } from "@/components/hierarchy/namingConventionData";
 
 const suggestedCrusherPrefixes = [
-  { prefix: "CR", meaning: "Crusher (Jaw / Cone)", example: "CR01, CR02, CR03", notes: "CR01 Primary Jaw, CR02 Secondary Cone, CR03 Tertiary Cone" },
+  { prefix: "CRS", meaning: "Crusher (Jaw / Cone)", example: "CRS01, CRS02, CRS03", notes: "CRS01 Primary Jaw, CRS02 Secondary Cone, CRS03 Tertiary Cone" },
   { prefix: "ROM-BIN", meaning: "ROM Bin", example: "ROM-BIN01", notes: "Steel structure with Hardox liners" },
   { prefix: "ROM-FDR", meaning: "Primary Vibrating Feeder", example: "ROM-FDR01", notes: "Hydraulic drive feeder under ROM bin" },
-  { prefix: "PRI-MAG", meaning: "Overband Magnet", example: "PRI-MAG01", notes: "Self-cleaning overband on CR01 discharge" },
+  { prefix: "PRI-MAG", meaning: "Overband Magnet", example: "PRI-MAG01", notes: "Self-cleaning overband on CRS01 discharge" },
   { prefix: "PRI-GFB", meaning: "Ground Feed Bin", example: "PRI-GFB01", notes: "CV01 discharge into screen feed system" },
-  { prefix: "SEC-CFB", meaning: "Cone Feed Bin", example: "SEC-CFB01", notes: "Dual chamber bin feeding CR02 & CR03" },
-  { prefix: "SC", meaning: "Vibrating Screen", example: "SC01", notes: "Horizontal vibrating screen (3-deck)" },
+  { prefix: "SEC-CFB", meaning: "Cone Feed Bin", example: "SEC-CFB01", notes: "Dual chamber bin feeding CRS02 & CRS03" },
+  { prefix: "SCN", meaning: "Vibrating Screen", example: "SCN01", notes: "Horizontal vibrating screen (3-deck)" },
   { prefix: "CV", meaning: "Conveyor", example: "CV01–CV15", notes: "Shared prefix with Processing Plant — different numbering range" },
   { prefix: "SEC-CFB-FDR", meaning: "Cone Feed Vibrating Feeder", example: "SEC-CFB01-FDR01, FDR02", notes: "Feeders A & B under cone feed bin" },
   { prefix: "CV12/CV15", meaning: "Radial Stacker", example: "CV12, CV15", notes: "Fines product radial stackers" },
@@ -287,12 +287,12 @@ export const NamingConventionDocument = () => {
             <div>
               <p className="font-bold text-foreground mb-1">Primary Crushing</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">CR01</span> — Primary Jaw Crusher</p>
-                <p className="pl-4"><span className="text-primary">CR01-MTR01</span> — Crusher Motor 160kW</p>
-                <p className="pl-4"><span className="text-primary">CR01-GBX01</span> — Gearbox / Drive Assembly</p>
-                <p className="pl-4"><span className="text-primary">CR01-JKS01</span> — Jackshaft Assembly</p>
-                <p className="pl-4"><span className="text-primary">CR01-LUB01</span> — Lubrication System</p>
-                <p className="pl-4"><span className="text-primary">CR01-HOP01</span> — Feed Hopper</p>
+                <p><span className="text-primary font-semibold">CRS01</span> — Primary Jaw Crusher</p>
+                <p className="pl-4"><span className="text-primary">CRS01-MTR01</span> — Crusher Motor 160kW</p>
+                <p className="pl-4"><span className="text-primary">CRS01-GBX01</span> — Gearbox / Drive Assembly</p>
+                <p className="pl-4"><span className="text-primary">CRS01-JKS01</span> — Jackshaft Assembly</p>
+                <p className="pl-4"><span className="text-primary">CRS01-LUB01</span> — Lubrication System</p>
+                <p className="pl-4"><span className="text-primary">CRS01-HOP01</span> — Feed Hopper</p>
                 <p><span className="text-primary font-semibold">PRI-MAG01</span> — Overband Magnet</p>
                 <p className="pl-4"><span className="text-primary">PRI-MAG01-MTR01</span> — Magnet Drive Motor</p>
                 <p className="pl-4"><span className="text-primary">PRI-MAG01-BLT01</span> — Self-Cleaning Belt</p>
@@ -316,13 +316,13 @@ export const NamingConventionDocument = () => {
             <div>
               <p className="font-bold text-foreground mb-1">Screening</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
-                <p><span className="text-primary font-semibold">SC01</span> — Vibrating Screen (3-Deck)</p>
-                <p className="pl-4"><span className="text-primary">SC01-MTR01</span> — Screen Drive Motor 45kW</p>
-                <p className="pl-4"><span className="text-primary">SC01-GBX01</span> — Exciter / Gearbox</p>
-                <p className="pl-4"><span className="text-primary">SC01-DK01</span> — Top Deck</p>
-                <p className="pl-4"><span className="text-primary">SC01-DK02</span> — Second Deck</p>
-                <p className="pl-4"><span className="text-primary">SC01-DK03</span> — Bottom Deck (Fines)</p>
-                <p className="pl-4"><span className="text-primary">SC01-SPR01</span> — Isolation Springs</p>
+                <p><span className="text-primary font-semibold">SCN01</span> — Vibrating Screen (3-Deck)</p>
+                <p className="pl-4"><span className="text-primary">SCN01-MTR01</span> — Screen Drive Motor 45kW</p>
+                <p className="pl-4"><span className="text-primary">SCN01-GBX01</span> — Exciter / Gearbox</p>
+                <p className="pl-4"><span className="text-primary">SCN01-DK01</span> — Top Deck</p>
+                <p className="pl-4"><span className="text-primary">SCN01-DK02</span> — Second Deck</p>
+                <p className="pl-4"><span className="text-primary">SCN01-DK03</span> — Bottom Deck (Fines)</p>
+                <p className="pl-4"><span className="text-primary">SCN01-SPR01</span> — Isolation Springs</p>
               </div>
             </div>
 
@@ -330,14 +330,14 @@ export const NamingConventionDocument = () => {
               <p className="font-bold text-foreground mb-1">Secondary & Tertiary Crushing</p>
               <div className="pl-4 space-y-0.5 text-muted-foreground">
                 <p><span className="text-primary font-semibold">SEC-CFB01</span> — Cone Feed Bin (Dual Chamber)</p>
-                <p className="pl-4"><span className="text-primary">SEC-CFB01-FDR01</span> — Vibrating Feeder A → CR02</p>
-                <p className="pl-4"><span className="text-primary">SEC-CFB01-FDR02</span> — Vibrating Feeder B → CR03</p>
-                <p><span className="text-primary font-semibold">CR02</span> — Secondary Cone Crusher</p>
-                <p className="pl-4"><span className="text-primary">CR02-MTR01</span> — Crusher Motor 220kW</p>
-                <p className="pl-4"><span className="text-primary">CR02-LUB01</span> — Lubrication System</p>
-                <p><span className="text-primary font-semibold">CR03</span> — Tertiary Cone Crusher</p>
-                <p className="pl-4"><span className="text-primary">CR03-MTR01</span> — Crusher Motor 220kW</p>
-                <p className="pl-4"><span className="text-primary">CR03-HYD01</span> — Hydraulic Tramp Release</p>
+                <p className="pl-4"><span className="text-primary">SEC-CFB01-FDR01</span> — Vibrating Feeder A → CRS02</p>
+                <p className="pl-4"><span className="text-primary">SEC-CFB01-FDR02</span> — Vibrating Feeder B → CRS03</p>
+                <p><span className="text-primary font-semibold">CRS02</span> — Secondary Cone Crusher</p>
+                <p className="pl-4"><span className="text-primary">CRS02-MTR01</span> — Crusher Motor 220kW</p>
+                <p className="pl-4"><span className="text-primary">CRS02-LUB01</span> — Lubrication System</p>
+                <p><span className="text-primary font-semibold">CRS03</span> — Tertiary Cone Crusher</p>
+                <p className="pl-4"><span className="text-primary">CRS03-MTR01</span> — Crusher Motor 220kW</p>
+                <p className="pl-4"><span className="text-primary">CRS03-HYD01</span> — Hydraulic Tramp Release</p>
               </div>
             </div>
           </div>
