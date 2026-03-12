@@ -58,10 +58,10 @@ export const AssetNumberingSection = () => {
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const A4_W = 210;
       const A4_H = 297;
-      const MARGIN = 10;
+      const MARGIN = 8;
       const CONTENT_W = A4_W - MARGIN * 2;
       const CONTENT_H = A4_H - MARGIN * 2;
-      const GAP = 3;
+      const GAP = 2;
 
       const sections = Array.from(
         contentRef.current.querySelectorAll<HTMLElement>("[data-pdf-section]")
