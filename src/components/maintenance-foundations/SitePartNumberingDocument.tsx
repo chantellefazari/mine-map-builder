@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, Loader2 } from "lucide-react";
 import { exportSectionsToPdf } from "@/utils/sectionPdfExport";
+import { PDF_EXPORT_OPTS } from "@/utils/pdfExportStandard";
 
 const GOLD = "#C8960C";
 const GOLD_LIGHT = "#f5ecd0";
