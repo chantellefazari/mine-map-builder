@@ -1,11 +1,67 @@
 import React from "react";
 import { CollapsibleTreeNode } from "./CollapsibleTreeNode";
 import { TreeBranch } from "./TreeBranch";
-import { AreaType } from "./assetData";
+import { AreaType, Component } from "./assetData";
 import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
 import { Loader2 } from "lucide-react";
 
 import { FLPathSegment } from "./FLBreadcrumbContext";
+
+/**
+ * Deduplicate Level 7 components: when two entries share the same componentName
+ * and one has model === componentName (redundant) while another has a real model,
+ * merge them — keeping the real model/part number and absorbing any unique specs.
+ */
+function deduplicateComponents(comps: Component[]): Component[] {
+  if (comps.length <= 1) return comps;
+
+  const groups = new Map<string, Component[]>();
+  for (const comp of comps) {
+    const key = (comp.componentName || "").toLowerCase().trim();
+    if (!key) { groups.set(`__anon_${groups.size}`, [comp]); continue; }
+    const arr = groups.get(key) || [];
+    arr.push(comp);
+    groups.set(key, arr);
+  }
+
+  const result: Component[] = [];
+  for (const [key, group] of groups) {
+    if (group.length === 1) { result.push(group[0]); continue; }
+
+    const isRedundantModel = (c: Component) =>
+      !c.model || c.model.toLowerCase().trim() === key;
+
+    const withRealModel = group.filter((c) => !isRedundantModel(c));
+    const withRedundant = group.filter((c) => isRedundantModel(c));
+
+    if (withRealModel.length > 0 && withRedundant.length > 0) {
+      // Merge unique specs from redundant entries into real entries
+      for (const real of withRealModel) {
+        for (const red of withRedundant) {
+          if (!real.manufacturer && red.manufacturer) real.manufacturer = red.manufacturer;
+          if (!real.serialNumber && red.serialNumber) real.serialNumber = red.serialNumber;
+          if (!real.oilType && red.oilType) real.oilType = red.oilType;
+          if (!real.oilVolume && red.oilVolume) real.oilVolume = red.oilVolume;
+          if (!real.motorSpeed && red.motorSpeed) real.motorSpeed = red.motorSpeed;
+          if (!real.voltage && red.voltage) real.voltage = red.voltage;
+          if (!real.weight && red.weight) real.weight = red.weight;
+          if (!real.pumpFlow && red.pumpFlow) real.pumpFlow = red.pumpFlow;
+          if (!real.motorRef && red.motorRef) real.motorRef = red.motorRef;
+          if (!real.pumpRef && red.pumpRef) real.pumpRef = red.pumpRef;
+        }
+        result.push(real);
+      }
+    } else {
+      // All entries are same kind — keep unique ones (differ by manufacturer, serial, model)
+      const seen = new Set<string>();
+      for (const comp of group) {
+        const uk = `${comp.manufacturer || ""}_${comp.serialNumber || ""}_${comp.model || ""}`;
+        if (!seen.has(uk)) { seen.add(uk); result.push(comp); }
+      }
+    }
+  }
+  return result;
+}
 
 interface RevBTreeBranchProps {
   searchQuery?: string;
