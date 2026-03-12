@@ -123,23 +123,8 @@ export const HierarchyRulesSection = () => {
               </div>
             </div>
 
-            {/* Metadata */}
-            <table style={{ width: "100%", fontSize: 10.5, borderCollapse: "collapse", marginBottom: 14 }}>
-              <tbody>
-                <tr>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Prepared By</td>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", width: "36%" }}>TCMG Maintenance Team</td>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT, width: "14%" }}>Approved By</td>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", width: "36%" }}>Maintenance Superintendent</td>
-                </tr>
-                <tr>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Status</td>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd" }}>Controlled</td>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd", fontWeight: 600, backgroundColor: GOLD_LIGHT }}>Effective Date</td>
-                  <td style={{ padding: "3px 6px", border: "1px solid #ddd" }}>March 2026</td>
-                </tr>
-              </tbody>
-            </table>
+
+
 
             {/* Purpose */}
             <h2 style={heading("Purpose")}>1. Purpose</h2>
