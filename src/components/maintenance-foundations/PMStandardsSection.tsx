@@ -16,7 +16,7 @@ const designPrinciples = [
   { rule: "Risk Based Frequency", desc: "Frequencies are determined by criticality rating, failure history, operating context, and OEM recommendations; never by habit or convenience." },
   { rule: "Explicit Isolation", desc: "Every PM must clearly state isolation and LOTO requirements. No PM is approved without documented energy isolation steps." },
   { rule: "Standardised Template", desc: "All PMs follow the TCMG standard template structure: Banner, Metadata, Safety, Inspection Table, Sign Off. No deviations permitted." },
-  { rule: "Single Source of Truth", desc: "PM templates are maintained in the digital register (pm_master_list). Hard copies are reference only and must match the digital version." },
+  { rule: "Single Source of Truth", desc: "PM templates are maintained in the master PM register. All printed copies must match the current approved revision." },
 ];
 
 const frequencyStandards = [
@@ -55,14 +55,14 @@ const statusWorkflow = [
   { status: "Draft", desc: "Initial creation. Tasks and metadata being defined. Not for field use.", color: "#6b7280" },
   { status: "Reviewed", desc: "Technical review completed by discipline lead. Tasks validated against failure modes.", color: "#2563eb" },
   { status: "Approved", desc: "Approved by Maintenance Superintendent. Ready for scheduling and field deployment.", color: "#16a34a" },
-  { status: "Ready for CMMS", desc: "All metadata, asset links, and frequencies confirmed. Cleared for CMMS import.", color: GOLD },
+  { status: "Ready for Issue", desc: "All metadata, asset links, and frequencies confirmed. Cleared for field issue and scheduling.", color: GOLD },
 ];
 
 const constraints = [
   "Do NOT copy paste generic OEM manuals. All tasks must be site specific and relevant to actual operating conditions.",
   "Do NOT create schedules in PM design. This section defines what and how; scheduling is a separate function.",
   "Do NOT design PMs for individual assets. Templates target equipment categories and are linked to assets separately.",
-  "Do NOT skip safety or isolation steps. Every PM must document energy isolation even if the task is online.",
+  "Do NOT skip safety or isolation steps. Every PM must document energy isolation even if the task is performed on running equipment.",
   "Do NOT invent frequencies. Use the approved frequency set based on risk analysis and failure history.",
   "Do NOT duplicate tasks across PMs. Each failure mode should be addressed by one PM only.",
   "Do NOT leave fields blank. Every mandatory field must be populated before a PM can progress past Draft status.",
@@ -75,10 +75,10 @@ const coverageSummary = [
 ];
 
 const inspectionDataShapes = [
-  { shape: "Sectioned Tasks", desc: "Tasks grouped by equipment section with section headers (e.g. Mill Daily: Trunnion, Pinion, Discharge)", jsonKey: "sections[]", usage: "Most mechanical PMs" },
-  { shape: "MCC Sections", desc: "Standard tasks repeated across multiple MCC panels (e.g. Field MCC Inspections)", jsonKey: "mccSections[]", usage: "Electrical field inspections" },
-  { shape: "Flat Task List", desc: "Simple sequential checklist without grouping (e.g. Safety Shower Inspection)", jsonKey: "string[] or {task}[]", usage: "Simple inspections" },
-  { shape: "Temperature / Pressure", desc: "Tasks with inline measurement fields for recording readings", jsonKey: "hasTemp, hasPressure", usage: "Motor inspections, bearing checks" },
+  { shape: "Sectioned Tasks", desc: "Tasks grouped by equipment section with section headers (e.g. Mill Daily: Trunnion, Pinion, Discharge)", jsonKey: "Grouped sections", usage: "Most mechanical PMs" },
+  { shape: "MCC Sections", desc: "Standard tasks repeated across multiple MCC panels (e.g. Field MCC Inspections)", jsonKey: "Panel groups", usage: "Electrical field inspections" },
+  { shape: "Flat Task List", desc: "Simple sequential checklist without grouping (e.g. Safety Shower Inspection)", jsonKey: "Sequential list", usage: "Simple inspections" },
+  { shape: "Temperature / Pressure", desc: "Tasks with inline measurement fields for recording readings", jsonKey: "Measurement fields", usage: "Motor inspections, bearing checks" },
 ];
 
 
@@ -87,7 +87,7 @@ const baselinePurposes = [
   "Identify gaps in coverage across equipment types and disciplines",
   "Highlight duplication where multiple PMs address the same failure mode",
   "Support PM optimisation by comparing current vs. ideal state",
-  "Provide the foundation for CMMS migration, ensuring no PM is lost in transition",
+  "Provide the foundation for maintenance system setup, ensuring no PM is lost in transition",
   "Enable before/after comparison to measure improvement over time",
   "Track PM maturity as the site progresses through implementation phases",
 ];
@@ -146,7 +146,7 @@ export const PMStandardsSection = () => {
                   PM Template & Frequency Standards
                 </h1>
                 <p style={{ fontSize: 13, color: "#666", margin: 0 }}>
-                  Preventive Maintenance Design Standards for CMMS Readiness
+                  Preventive Maintenance Design Standards
                 </p>
               </div>
               <div style={{ textAlign: "right", fontSize: 12, color: "#666" }}>
@@ -162,10 +162,10 @@ export const PMStandardsSection = () => {
           {/* 1. Purpose & Scope */}
           {sectionHeading("1", "Purpose & Scope")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            This document defines the approved preventive maintenance (PM) design standards for Tennant Creek Mine. It governs how PMs are designed, structured, reviewed, and approved before deployment to the field or import into the CMMS. This standard applies to all disciplines: Mechanical, Electrical, and Mobile Equipment.
+            This document defines the approved preventive maintenance (PM) design standards for Tennant Creek Mine. It governs how PMs are designed, structured, reviewed, and approved before deployment to the field. This standard applies to all disciplines: Mechanical, Electrical, and Mobile Equipment.
           </p>
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            The objective is to ensure every PM template is consistent, value adding, safety compliant, and traceable. PMs that do not conform to this standard will not be approved for field use or CMMS import.
+            The objective is to ensure every PM template is consistent, value adding, safety compliant, and traceable. PMs that do not conform to this standard will not be approved for field use.
           </p>
           <div style={{ backgroundColor: GOLD_BG, border: `1px solid ${GOLD_LIGHT}`, borderRadius: 6, padding: "10px 14px", marginBottom: 16 }}>
             <p style={{ fontSize: 13, fontWeight: 600, color: DARK, marginBottom: 4 }}>Key Distinction:</p>
@@ -200,7 +200,7 @@ export const PMStandardsSection = () => {
           {/* 3. Standard PM Template Structure */}
           {sectionHeading("3", "Standard PM Template Structure")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            Every PM template follows a standardised five component structure. This ensures consistency across all 88+ templates and enables automated CMMS import. The component sequence is non negotiable and must not be reordered.
+            Every PM template follows a standardised five component structure. This ensures consistency across all 88+ templates. The component sequence is non negotiable and must not be reordered.
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
@@ -224,7 +224,7 @@ export const PMStandardsSection = () => {
           {/* 4. Mandatory PM Fields */}
           {sectionHeading("4", "Mandatory PM Fields")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            All PMs must include the following fields as a minimum. No PM may progress past Draft status without all fields populated. These fields ensure traceability, safety compliance, and CMMS compatibility.
+            All PMs must include the following fields as a minimum. No PM may progress past Draft status without all fields populated. These fields ensure traceability and safety compliance.
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
@@ -273,7 +273,7 @@ export const PMStandardsSection = () => {
           </table>
           <div style={{ backgroundColor: GOLD_BG, border: `1px solid ${GOLD_LIGHT}`, borderRadius: 6, padding: "10px 14px", marginBottom: 16 }}>
             <p style={{ fontSize: 13, color: "#333" }}>
-              <strong>Important:</strong> Frequencies listed above are design standards only, not schedules. Scheduling (start dates, crew assignments, calendar alignment) is managed separately in the CMMS configuration phase.
+              <strong>Important:</strong> Frequencies listed above are design standards only, not schedules. Scheduling (start dates, crew assignments, calendar alignment) is managed separately during the scheduling phase.
             </p>
           </div>
 
@@ -304,7 +304,7 @@ export const PMStandardsSection = () => {
           </table>
           <div style={{ backgroundColor: "#f0f9ff", border: "1px solid #bfdbfe", borderRadius: 6, padding: "10px 14px", marginBottom: 16 }}>
             <p style={{ fontSize: 13, color: "#1e40af" }}>
-              <strong>Rule:</strong> Only PMs with "Approved" or "Ready for CMMS" status may be issued to field crews or imported into the CMMS. Draft and Reviewed PMs must not be used for operational maintenance.
+              <strong>Rule:</strong> Only PMs with "Approved" or "Ready for Issue" status may be issued to field crews. Draft and Reviewed PMs must not be used for operational maintenance.
             </p>
           </div>
 
@@ -312,7 +312,7 @@ export const PMStandardsSection = () => {
           {/* 7. Inspection Task Data Architecture */}
           {sectionHeading("7", "Inspection Task Data Architecture")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            PM inspection tasks are stored as structured JSON data to support flexible rendering across different equipment types. The system supports four data shapes to accommodate varying inspection complexity:
+            PM inspection tasks are structured to support flexible presentation across different equipment types. The system supports four data layouts to accommodate varying inspection complexity:
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
