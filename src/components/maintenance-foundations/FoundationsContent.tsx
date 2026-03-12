@@ -12,9 +12,9 @@ import {
   MapPin,
   Printer,
   Download,
-  
   BarChart3,
   AlertTriangle,
+  Database,
 } from "lucide-react";
 import { HierarchyRulesSection } from "./HierarchyRulesSection";
 import { AssetNumberingSection } from "./AssetNumberingSection";
@@ -28,6 +28,7 @@ import { AssetTagRolloutPlanSection } from "./AssetTagRolloutPlanSection";
 import { PMCoverageAnalysisSection } from "./PMCoverageAnalysisSection";
 import { ShutdownPMRequirementsSection } from "./ShutdownPMRequirementsSection";
 import { NamingConventionDocument } from "./NamingConventionDocument";
+import { DataMappingReadinessSection } from "./DataMappingReadinessSection";
 
 const TAB_LABELS: Record<string, string> = {
   "hierarchy": "Asset Hierarchy & Parent-Child Rules",
@@ -42,6 +43,7 @@ const TAB_LABELS: Record<string, string> = {
   "pm-coverage": "Current Site PM Register",
   "shutdown-pms": "Shutdown PM Requirements",
   "naming-convention": "Site Naming Convention Reference",
+  "data-mapping": "Data Mapping & Readiness",
 };
 
 export const FoundationsContent = () => {
@@ -185,6 +187,11 @@ export const FoundationsContent = () => {
             <span className="hidden sm:inline">Site Naming Convention</span>
             <span className="sm:hidden">Naming</span>
           </TabsTrigger>
+          <TabsTrigger value="data-mapping" className="flex items-center gap-2 text-xs">
+            <Database className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Data Mapping & Readiness</span>
+            <span className="sm:hidden">Mapping</span>
+          </TabsTrigger>
         </TabsList>
         <div className="flex flex-col gap-1.5 shrink-0 mt-1">
           <Button
@@ -252,6 +259,10 @@ export const FoundationsContent = () => {
 
         <TabsContent value="naming-convention">
           <NamingConventionDocument />
+        </TabsContent>
+
+        <TabsContent value="data-mapping">
+          <DataMappingReadinessSection />
         </TabsContent>
       </div>
     </Tabs>
