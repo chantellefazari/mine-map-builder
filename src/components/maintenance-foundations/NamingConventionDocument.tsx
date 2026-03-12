@@ -237,7 +237,7 @@ export const NamingConventionDocument = () => {
       <Separator />
 
       {/* Section 6: Suggested Crusher Prefixes */}
-      <Card className="border-amber-500/30 bg-amber-500/5">
+      <Card data-pdf-section className="border-amber-500/30 bg-amber-500/5">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <Badge className="bg-amber-500/20 text-amber-700 border-amber-500/30 text-[10px] font-bold">SECTION 6</Badge>
