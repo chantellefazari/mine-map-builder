@@ -62,36 +62,78 @@ export const AssetNumberingSection = () => {
       const { uploadAndShowPdf } = await import("@/utils/pdfDownloadHelper");
 
       // Expand all accordions for capture
-      const accordionEl = contentRef.current;
-      const triggers = accordionEl.querySelectorAll<HTMLButtonElement>('[data-state="closed"] > button, button[data-state="closed"]');
+      const triggers = contentRef.current.querySelectorAll<HTMLButtonElement>(
+        'button[data-state="closed"]'
+      );
       triggers.forEach((t) => t.click());
-      await new Promise((r) => setTimeout(r, 400));
+      await new Promise((r) => setTimeout(r, 500));
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const pageW = 210;
       const pageH = 297;
       const margin = 8;
-      const contentW = pageW - margin * 2;
+      const usableW = pageW - margin * 2;
+      const usableH = pageH - margin * 2;
 
-      const canvas = await html2canvas(contentRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        windowWidth: 900,
-      });
+      // Get all top-level sections as capture chunks
+      const sections = contentRef.current.querySelectorAll<HTMLElement>(
+        ":scope > div, :scope > hr, :scope > table"
+      );
 
-      const imgData = canvas.toDataURL("image/png");
-      const imgW = contentW;
-      const imgH = (canvas.height * imgW) / canvas.width;
-      const sliceH = pageH - margin * 2;
-      let yOffset = 0;
-      let page = 0;
+      // If no sections found, capture the whole thing
+      const elements = sections.length > 0 ? Array.from(sections) : [contentRef.current];
 
-      while (yOffset < imgH) {
-        if (page > 0) pdf.addPage();
-        pdf.addImage(imgData, "PNG", margin, margin - yOffset, imgW, imgH);
-        yOffset += sliceH;
-        page++;
+      let currentY = margin;
+      let pageNum = 0;
+
+      for (const el of elements) {
+        const canvas = await html2canvas(el, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          windowWidth: 860,
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        const imgW = usableW;
+        const imgH = (canvas.height * imgW) / canvas.width;
+
+        // If this section won't fit on current page, start a new page
+        if (currentY + imgH > pageH - margin && currentY > margin + 1) {
+          pdf.addPage();
+          pageNum++;
+          currentY = margin;
+        }
+
+        // If section is taller than a full page, scale to fit across pages
+        if (imgH > usableH) {
+          // Slice the image across multiple pages
+          const totalPages = Math.ceil(imgH / usableH);
+          for (let i = 0; i < totalPages; i++) {
+            if (i > 0 || currentY > margin + 1) {
+              if (i > 0) {
+                pdf.addPage();
+                pageNum++;
+                currentY = margin;
+              }
+            }
+            // Use clipping by placing the full image offset
+            pdf.addImage(
+              imgData, "PNG",
+              margin, currentY - (i * usableH),
+              imgW, imgH
+            );
+            if (i < totalPages - 1) {
+              // White out anything below the page
+              pdf.setFillColor(255, 255, 255);
+              pdf.rect(0, pageH - margin, pageW, margin + 10, "F");
+            }
+          }
+          currentY = margin + (imgH % usableH || usableH);
+        } else {
+          pdf.addImage(imgData, "PNG", margin, currentY, imgW, imgH);
+          currentY += imgH + 2; // 2mm gap between sections
+        }
       }
 
       const blob = pdf.output("blob");
