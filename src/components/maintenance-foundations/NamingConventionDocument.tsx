@@ -98,7 +98,7 @@ export const NamingConventionDocument = () => {
         <div data-pdf-section className="space-y-3">
           <h4 className="font-semibold text-foreground text-base">1. Area Codes (Level 3 of Hierarchy)</h4>
           <p className="text-xs text-muted-foreground mb-2">
-            Every asset sits under one of these six main areas. The crusher facility will need its own area code — or share an existing one.
+            Every asset sits under one of these six main areas. The crusher facility will need its own area code or share an existing one.
           </p>
           <Table>
             <TableHeader>
