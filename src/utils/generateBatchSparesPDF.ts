@@ -61,7 +61,7 @@ export function getBatchCount(totalItems: number): number {
 export function getBatchLabel(batchIndex: number, totalItems: number): string {
   const start = batchIndex * BATCH_SIZE + 1;
   const end = Math.min((batchIndex + 1) * BATCH_SIZE, totalItems);
-  return `${String(start).padStart(4, "0")}–${String(end).padStart(4, "0")}`;
+  return `${String(start).padStart(4, "0")}-${String(end).padStart(4, "0")}`;
 }
 
 /** Get storage path for a batch PDF */
