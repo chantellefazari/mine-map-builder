@@ -72,14 +72,24 @@ export const NamingConventionDocument = () => {
     });
   }, [liveAreas]);
 
-  const liveSystemChunks = useMemo(
-    () => chunkRows(liveRows.filter((row) => row.level === "System"), 22),
+  const liveSystemRows = useMemo(
+    () => liveRows.filter((row) => row.level === "System").slice(0, 12),
     [liveRows]
   );
 
-  const liveComponentChunks = useMemo(
-    () => chunkRows(liveRows.filter((row) => row.level === "Comp"), 26),
+  const liveComponentRows = useMemo(
+    () => liveRows.filter((row) => row.level === "Comp").slice(0, 12),
     [liveRows]
+  );
+
+  const hiddenSystemCount = useMemo(
+    () => Math.max(0, liveRows.filter((row) => row.level === "System").length - liveSystemRows.length),
+    [liveRows, liveSystemRows.length]
+  );
+
+  const hiddenComponentCount = useMemo(
+    () => Math.max(0, liveRows.filter((row) => row.level === "Comp").length - liveComponentRows.length),
+    [liveRows, liveComponentRows.length]
   );
 
   const handleDownloadPdf = async () => {
