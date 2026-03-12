@@ -89,18 +89,18 @@ function parseCsvText(text: string): CsvRow[] {
       compCode: cols[12] || "",
       compType: cols[13] || "",
       compName: cols[14] || "",
-      manufacturer: cols[15] || "",
-      model: cols[16] || "",
+      model: cols[15] || "",
+      manufacturer: cols[16] || "",
       serialNumber: cols[17] || "",
       compPidTags: cols[18] || "",
-      oilType: cols[19] || "",
-      oilVolume: cols[20] || "",
-      inputSpeed: cols[21] || "",
-      outputSpeed: cols[22] || "",
-      weight: cols[23] || "",
-      motorSpeed: cols[24] || "",
-      protection: cols[25] || "",
-      voltage: cols[26] || "",
+      motorSpeed: cols[19] || "",
+      voltage: cols[20] || "",
+      protection: cols[21] || "",
+      oilType: cols[22] || "",
+      oilVolume: cols[23] || "",
+      inputSpeed: cols[24] || "",
+      outputSpeed: cols[25] || "",
+      weight: cols[26] || "",
       pumpFlow: cols[27] || "",
       operatingPressure: cols[28] || "",
       displacement: cols[29] || "",
@@ -138,6 +138,9 @@ function shouldShowComponentBadge(r: CsvRow, compLabel: string): boolean {
 }
 
 // ── Build spec list from a Level 7 row, suppressing redundant values ─
+// Canonical order: Model, Mfr, Serial, Motor Speed, Voltage, Protection,
+// Oil Type, Oil Volume, Input Speed, Output Speed, Weight, Pump Flow,
+// Op. Pressure, Displacement, Motor Ref, Pump Ref
 function buildSpecs(r: CsvRow, compLabel: string): { key: string; value: string }[] {
   const specs: { key: string; value: string }[] = [];
 
@@ -147,21 +150,19 @@ function buildSpecs(r: CsvRow, compLabel: string): { key: string; value: string 
     }
   };
 
-  // Manufacturer and Model get redundancy checks
-  add("Manufacturer", r.manufacturer);
   add("Model", r.model);
+  add("Manufacturer", r.manufacturer);
 
-  // Other specs are always real engineering data — no suppression
   const addRaw = (k: string, v: string) => { if (v) specs.push({ key: k, value: v }); };
   addRaw("Serial No", r.serialNumber);
+  addRaw("Motor Speed", r.motorSpeed);
+  addRaw("Voltage", r.voltage);
+  addRaw("Protection", r.protection);
   addRaw("Oil Type", r.oilType);
   addRaw("Oil Volume", r.oilVolume);
   addRaw("Input Speed", r.inputSpeed);
   addRaw("Output Speed", r.outputSpeed);
   addRaw("Weight", r.weight);
-  addRaw("Motor Speed", r.motorSpeed);
-  addRaw("Protection", r.protection);
-  addRaw("Voltage", r.voltage);
   addRaw("Pump Flow", r.pumpFlow);
   addRaw("Operating Pressure", r.operatingPressure);
   addRaw("Displacement", r.displacement);
