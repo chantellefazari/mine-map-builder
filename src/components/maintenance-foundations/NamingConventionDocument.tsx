@@ -66,7 +66,7 @@ export const NamingConventionDocument = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6" ref={contentRef}>
+      <CardContent className="space-y-4" ref={contentRef}>
 
         {/* Purpose & Format */}
         <div data-pdf-section className="space-y-3">
