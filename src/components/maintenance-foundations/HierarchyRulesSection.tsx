@@ -152,24 +152,24 @@ export const HierarchyRulesSection = () => {
 
             {/* 2. Hierarchy Levels */}
             <h2 style={heading("Hierarchy")}>2. Approved Asset Hierarchy (7 Levels)</h2>
-            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}>
+            <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginBottom: 10 }}>
               <thead>
                 <tr>
-                  <th style={{ ...thGold, width: 45, textAlign: "center" }}>Level</th>
-                  <th style={{ ...thGold, width: 120 }}>Name</th>
+                  <th style={{ ...thGold, width: 40, textAlign: "center" }}>Level</th>
+                  <th style={{ ...thGold, width: 110 }}>Name</th>
                   <th style={thGold}>Example</th>
                   <th style={thGold}>Description</th>
-                  <th style={{ ...thGold, width: 35, textAlign: "center" }}>FL</th>
+                  <th style={{ ...thGold, width: 36, textAlign: "center", fontSize: 11 }}>FL</th>
                 </tr>
               </thead>
               <tbody>
                 {hierarchyLevels.map((item, i) => (
                   <tr key={item.level} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
-                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, textAlign: "center", color: GOLD }}>{item.level}</td>
-                    <td style={{ ...td, fontWeight: 600 }}>{item.name}</td>
-                    <td style={{ ...td, fontFamily: "monospace", fontSize: 10 }}>{item.example}</td>
-                    <td style={{ ...td, color: "#444" }}>{item.desc}</td>
-                    <td style={{ ...td, textAlign: "center" }}>{item.hasFL}</td>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, textAlign: "center", color: GOLD, fontSize: 12 }}>{item.level}</td>
+                    <td style={{ ...td, fontWeight: 600, fontSize: 12 }}>{item.name}</td>
+                    <td style={{ ...td, fontFamily: "monospace", fontSize: 11 }}>{item.example}</td>
+                    <td style={{ ...td, color: "#444", fontSize: 12 }}>{item.desc}</td>
+                    <td style={{ ...td, textAlign: "center", fontSize: 11 }}>{item.hasFL}</td>
                   </tr>
                 ))}
               </tbody>
