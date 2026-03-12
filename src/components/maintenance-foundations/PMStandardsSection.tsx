@@ -312,7 +312,7 @@ export const PMStandardsSection = () => {
           {/* 7. Inspection Task Data Architecture */}
           {sectionHeading("7", "Inspection Task Data Architecture")}
           <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-            PM inspection tasks are stored as structured JSON data to support flexible rendering across different equipment types. The system supports four data shapes to accommodate varying inspection complexity:
+            PM inspection tasks are structured to support flexible presentation across different equipment types. The system supports four data layouts to accommodate varying inspection complexity:
           </p>
           <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
             <thead>
