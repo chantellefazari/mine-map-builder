@@ -146,7 +146,7 @@ export const PMStandardsSection = () => {
                   PM Template & Frequency Standards
                 </h1>
                 <p style={{ fontSize: 13, color: "#666", margin: 0 }}>
-                  Preventive Maintenance Design Standards for CMMS Readiness
+                  Preventive Maintenance Design Standards
                 </p>
               </div>
               <div style={{ textAlign: "right", fontSize: 12, color: "#666" }}>
