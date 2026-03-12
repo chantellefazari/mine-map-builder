@@ -15,6 +15,7 @@ import { exportNamingConventionCSV } from "@/utils/exportNamingConventionCSV";
 import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
 import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
 import { exportProcessingPlantCSV } from "@/utils/exportProcessingPlantCSV";
+import { exportAssetTreePDF } from "@/utils/exportAssetTreePDF";
 import { toast } from "sonner";
 import { RevBAssetTree } from "@/components/hierarchy/RevBAssetTree";
 
