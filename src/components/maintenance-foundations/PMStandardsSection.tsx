@@ -20,10 +20,10 @@ const designPrinciples = [
 ];
 
 const frequencyStandards = [
-  { discipline: "Mechanical", frequencies: ["Daily", "1-Week"], scope: "Visual inspections, greasing, belt tension, guard checks, leak detection, vibration monitoring", examples: "Mill Daily, Pump Weekly, Conveyor Weekly, Thickener Weekly" },
-  { discipline: "Electrical", frequencies: ["1-Week", "2-Week", "4-Week", "6-Week", "12-Week", "26-Week", "52-Week"], scope: "Thermography, MCC inspections, cable checks, RCD testing, motor inspections, switchboard audits, substation maintenance", examples: "Field MCC 1W, Motor Inspection 6W, RCD Push-Button 12W, RCD Injection 26W, Full Test Sheet 52W" },
-  { discipline: "Mobile Equipment", frequencies: ["Daily", "1-Week"], scope: "Pre-start checks, fluid levels, tyre condition, safety systems, operating hours, service tracking", examples: "Dozer Daily, Excavator Daily, Loader Weekly, Forklift Weekly, Water Truck Weekly" },
-  { discipline: "Facilities & Infrastructure", frequencies: ["4-Week", "12-Week", "26-Week", "52-Week"], scope: "Generator testing, safety shower inspections, potable water checks, emergency lighting, AC inspections", examples: "Generator Weekly, Safety Shower 4W, Emergency Light Test 12W, Generator Yearly Test 52W" },
+  { discipline: "Mechanical", frequencies: ["Daily", "1 Week"], scope: "Visual inspections, greasing, belt tension, guard checks, leak detection, vibration monitoring", examples: "Mill Daily, Pump Weekly, Conveyor Weekly, Thickener Weekly" },
+  { discipline: "Electrical", frequencies: ["1 Week", "2 Week", "4 Week", "6 Week", "12 Week", "26 Week", "52 Week"], scope: "Thermography, MCC inspections, cable checks, RCD testing, motor inspections, switchboard audits, substation maintenance", examples: "Field MCC 1W, Motor Inspection 6W, RCD Push Button 12W, RCD Injection 26W, Full Test Sheet 52W" },
+  { discipline: "Mobile Equipment", frequencies: ["Daily", "1 Week"], scope: "Pre start checks, fluid levels, tyre condition, safety systems, operating hours, service tracking", examples: "Dozer Daily, Excavator Daily, Loader Weekly, Forklift Weekly, Water Truck Weekly" },
+  { discipline: "Facilities & Infrastructure", frequencies: ["4 Week", "12 Week", "26 Week", "52 Week"], scope: "Generator testing, safety shower inspections, potable water checks, emergency lighting, AC inspections", examples: "Generator Weekly, Safety Shower 4W, Emergency Light Test 12W, Generator Yearly Test 52W" },
 ];
 
 const mandatoryFields = [
