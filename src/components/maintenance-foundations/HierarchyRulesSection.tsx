@@ -344,29 +344,6 @@ export const HierarchyRulesSection = () => {
               </TableBody>
             </Table>
 
-            {/* Sign-off */}
-            <div className="border-t-2 border-amber-600 pt-3 mt-4">
-              <div className="grid grid-cols-3 gap-4 text-sm">
-                <div>
-                  <p className="text-muted-foreground text-xs">Prepared by</p>
-                  <p className="font-medium mt-1">Maintenance Planner</p>
-                  <div className="border-b border-muted-foreground/30 mt-4 mb-1 w-full" />
-                  <p className="text-xs text-muted-foreground">Signature / Date</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground text-xs">Reviewed by</p>
-                  <p className="font-medium mt-1">Maintenance Superintendent</p>
-                  <div className="border-b border-muted-foreground/30 mt-4 mb-1 w-full" />
-                  <p className="text-xs text-muted-foreground">Signature / Date</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground text-xs">Approved by</p>
-                  <p className="font-medium mt-1">Site Manager</p>
-                  <div className="border-b border-muted-foreground/30 mt-4 mb-1 w-full" />
-                  <p className="text-xs text-muted-foreground">Signature / Date</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </CardContent>
