@@ -137,17 +137,21 @@ export const AssetNumberingSection = () => {
         }
       };
 
+      // Fixed render width tuned for A4 at scale 2 — tighter fit
+      const RENDER_WIDTH = 740;
+
       const renderSectionCanvas = async (section: HTMLElement) => {
-        const sectionWidth = Math.ceil(section.getBoundingClientRect().width);
         const wrapper = document.createElement("div");
         wrapper.style.position = "fixed";
         wrapper.style.left = "-100000px";
         wrapper.style.top = "0";
-        wrapper.style.padding = "6px";
+        wrapper.style.padding = "4px";
         wrapper.style.background = "#ffffff";
         wrapper.style.boxSizing = "content-box";
-        wrapper.style.width = `${sectionWidth}px`;
+        wrapper.style.width = `${RENDER_WIDTH}px`;
         wrapper.style.overflow = "visible";
+        wrapper.style.fontSize = "13px";
+        wrapper.style.lineHeight = "1.4";
 
         const clone = section.cloneNode(true) as HTMLElement;
         clone.style.margin = "0";
@@ -161,8 +165,8 @@ export const AssetNumberingSection = () => {
             scale: 2,
             useCORS: true,
             backgroundColor: "#ffffff",
-            width: sectionWidth + 12,
-            windowWidth: sectionWidth + 12,
+            width: RENDER_WIDTH + 8,
+            windowWidth: RENDER_WIDTH + 8,
           });
         } finally {
           document.body.removeChild(wrapper);
