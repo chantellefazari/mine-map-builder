@@ -158,9 +158,9 @@ function buildComponentLabel(r: CsvRow): string {
 
 function shouldShowComponentBadge(r: CsvRow, compLabel: string, parentEquipName?: string): boolean {
   if (!r.compType) return false;
-  // Suppress badge if it repeats the component name, label, or parent equipment name
+  // Standardized PDF rule: show only the unique component description on Level 7 rows
+  if (parentEquipName) return false;
   if (isRedundantText(r.compType, r.compName) || isRedundantText(r.compType, compLabel)) return false;
-  if (parentEquipName && isRedundantText(r.compType, parentEquipName)) return false;
   return true;
 }
 
