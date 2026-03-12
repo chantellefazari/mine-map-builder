@@ -127,13 +127,14 @@ export const AssetCriticalitySection = () => {
     if (!assets) return [];
     return assets.filter(a => {
       if (areaFilter !== "all" && a.area_label !== areaFilter) return false;
+      if (ratingFilter !== "all" && getRating(a.asset_number) !== ratingFilter) return false;
       if (search) {
         const s = search.toLowerCase();
         return a.asset_number.toLowerCase().includes(s) || a.asset_name.toLowerCase().includes(s);
       }
       return true;
     });
-  }, [assets, search, areaFilter]);
+  }, [assets, search, areaFilter, ratingFilter, pendingChanges, ratingsMap]);
 
   const getRating = (assetNumber: string): CriticalityRating => {
     return pendingChanges[assetNumber]?.criticality || (ratingsMap[assetNumber]?.criticality as CriticalityRating) || "C";
