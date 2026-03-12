@@ -194,13 +194,33 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
     }
   };
 
+  // Build inline spec badges for display on same row as label
+  const specBadges = hasSpecs ? Object.entries({
+    Model: componentSpecs?.model,
+    Mfr: componentSpecs?.manufacturer,
+    "P/N": componentSpecs?.serialNumber,
+    "Motor Speed": componentSpecs?.motorSpeed,
+    Voltage: componentSpecs?.voltage,
+    Protection: componentSpecs?.protection,
+    "Oil Type": componentSpecs?.oilType,
+    "Oil Volume": componentSpecs?.oilVolume,
+    "Input Speed": componentSpecs?.inputSpeed,
+    "Output Speed": componentSpecs?.outputSpeed,
+    Weight: componentSpecs?.weight,
+    "Pump Flow": componentSpecs?.pumpFlow,
+    "Op. Pressure": componentSpecs?.operatingPressure,
+    Displacement: componentSpecs?.displacement,
+    "Motor Ref": componentSpecs?.motorRef,
+    "Pump Ref": componentSpecs?.pumpRef,
+  }).filter(([, v]) => v) as [string, string][] : [];
+
   const nodeContent = (
     <div
       id={id}
       ref={nodeRef}
       onClick={handleToggle}
       className={cn(
-        "rounded-lg flex items-center gap-1.5 whitespace-nowrap select-none transition-all duration-300",
+        "rounded-lg flex items-center gap-1.5 select-none transition-all duration-300 flex-wrap",
         baseStyle,
         areaColor,
         canExpand && "cursor-pointer hover:ring-2 hover:ring-primary/30",
@@ -210,25 +230,36 @@ export const CollapsibleTreeNode: React.FC<CollapsibleTreeNodeProps> = ({
       {/* Expand/collapse icon */}
       {canExpand ? (
         isExpanded ? (
-          <ChevronDown className="w-3 h-3 opacity-70" />
+          <ChevronDown className="w-3 h-3 opacity-70 shrink-0" />
         ) : (
-          <ChevronRight className="w-3 h-3 opacity-70" />
+          <ChevronRight className="w-3 h-3 opacity-70 shrink-0" />
         )
       ) : level !== "equipment" && level !== "site" && level !== "plant" ? (
-        <Minus className="w-3 h-3 opacity-40" />
+        <Minus className="w-3 h-3 opacity-40 shrink-0" />
       ) : null}
       
       {code && (
-        <span className="font-mono text-[10px] opacity-80 bg-black/10 px-1 py-0.5 rounded">
+        <span className="font-mono text-[10px] opacity-80 bg-black/10 px-1 py-0.5 rounded shrink-0">
           {code}
         </span>
       )}
-      <span>{label}</span>
+      <span className="whitespace-nowrap">{label}</span>
       
       {/* P&ID tag indicator */}
       {hasPidTags && (
-        <Tag className="w-3 h-3 opacity-60 ml-1" />
+        <Tag className="w-3 h-3 opacity-60 ml-1 shrink-0" />
       )}
+
+      {/* Inline spec badges */}
+      {specBadges.map(([specLabel, specValue]) => (
+        <span
+          key={specLabel}
+          className="inline-flex items-center gap-1 rounded bg-muted/70 border border-border/60 px-1.5 py-0.5 text-[9px] font-mono ml-1 shrink-0 whitespace-nowrap"
+        >
+          <span className="text-muted-foreground font-semibold">{specLabel}:</span>
+          <span className="text-foreground font-medium">{specValue}</span>
+        </span>
+      ))}
       
     </div>
   );
