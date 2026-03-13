@@ -765,6 +765,19 @@ const PMDesign = () => {
                   {isSeeding ? "Seeding..." : "Seed Tasks to DB"}
                 </Button>
                 <Button
+                  onClick={handleDownloadPdf}
+                  variant="outline"
+                  className="gap-2"
+                  disabled={isDownloading}
+                >
+                  {isDownloading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {isDownloading ? "Downloading..." : "Download PDF"}
+                </Button>
+                <Button
                   onClick={handlePrint}
                   variant="outline"
                   className="gap-2"
@@ -773,7 +786,8 @@ const PMDesign = () => {
                   Print Preview
                 </Button>
               </div>
-              {renderPMDocument()}
+              <div ref={pmDocRef}>
+                <div data-pdf-section>
             </div>
           ) : (
             <div className="p-8">
