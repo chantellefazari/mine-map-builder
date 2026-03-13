@@ -470,16 +470,21 @@ export async function exportSectionsToPdf(
       const remainingRatio = Math.max(0.22, Math.min(1, remainingMmOnPage / CONTENT_H));
       const commentsPaddingPx = Math.round(2 + remainingRatio * 6);
       const commentsMinHeightPx = Math.round(24 + remainingRatio * 34);
+      const compactCommentsPaddingPx = Math.max(1, Math.round(1 + remainingRatio * 2));
+      const compactCommentsMinHeightPx = Math.round(14 + remainingRatio * 16);
 
       clone.querySelectorAll<HTMLElement>("[data-pdf-comments-wrap]").forEach((element) => {
-        element.style.paddingTop = `${commentsPaddingPx}px`;
-        element.style.paddingBottom = `${commentsPaddingPx}px`;
+        const isCompact = element.hasAttribute("data-pdf-compact-comments-wrap");
+        const padding = isCompact ? compactCommentsPaddingPx : commentsPaddingPx;
+        element.style.paddingTop = `${padding}px`;
+        element.style.paddingBottom = `${padding}px`;
       });
 
       clone.querySelectorAll<HTMLTextAreaElement>("[data-pdf-flex-comments]").forEach((element) => {
+        const isCompact = element.hasAttribute("data-pdf-compact-comments");
         element.style.height = "auto";
         element.style.maxHeight = "none";
-        element.style.minHeight = `${commentsMinHeightPx}px`;
+        element.style.minHeight = `${isCompact ? compactCommentsMinHeightPx : commentsMinHeightPx}px`;
       });
     }
 
