@@ -245,7 +245,11 @@ export async function exportSectionsToPdf(
       const reachedEnd = sourceY + sliceHeightPx >= canvas.height - 1;
       // When we break at explicit semantic boundaries (forced or row),
       // don't overlap, it causes clipped/duplicated lines at page tops.
-      const overlapPx = reachedEnd || usedForcedBreak || usedRowBreak ? 0 : cfg.sliceOverlapPx;
+      const overlapPx = reachedEnd
+        ? 0
+        : usedForcedBreak || usedRowBreak
+        ? Math.max(1, cfg.sliceOverlapPx - 1)
+        : cfg.sliceOverlapPx;
       sourceY = reachedEnd ? canvas.height : sourceY + sliceHeightPx - overlapPx;
       currentY += sliceHeightMm;
 
