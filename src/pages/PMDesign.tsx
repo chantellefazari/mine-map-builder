@@ -1,6 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
-import { FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download } from "lucide-react";
+import { FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download, Loader2 } from "lucide-react";
+import { exportSectionsToPdf } from "@/utils/sectionPdfExport";
+import { PDF_EXPORT_OPTS } from "@/utils/pdfExportStandard";
 import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { supabase } from "@/integrations/supabase/client";
 import { seedPMTasks } from "@/utils/seedPMTasks";
@@ -325,6 +327,8 @@ const PMDesign = () => {
   const [expandedDisciplines, setExpandedDisciplines] = useState<Discipline[]>(["mechanical"]);
   const [expandedFrequencies, setExpandedFrequencies] = useState<string[]>(["mechanical-daily", "mechanical-1-week"]);
   const [showPrintPreview, setShowPrintPreview] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const pmDocRef = useRef<HTMLDivElement>(null);
 
   const toggleDiscipline = (disciplineId: Discipline) => {
     setExpandedDisciplines(prev => 
@@ -355,6 +359,22 @@ const PMDesign = () => {
   const handlePrint = () => {
     setShowPrintPreview(true);
   };
+
+  const handleDownloadPdf = useCallback(async () => {
+    const container = pmDocRef.current;
+    if (!container) return;
+    setIsDownloading(true);
+    try {
+      const title = getDocumentTitle().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
+      const filename = `TCMG_${title}.pdf`;
+      await exportSectionsToPdf(container, filename, PDF_EXPORT_OPTS);
+      toast.success(`Downloaded ${filename}`);
+    } catch (err: any) {
+      toast.error("PDF download failed: " + err.message);
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [activeView]);
 
   const queryClient = useQueryClient();
   const [isSyncing, setIsSyncing] = useState(false);
@@ -745,6 +765,19 @@ const PMDesign = () => {
                   {isSeeding ? "Seeding..." : "Seed Tasks to DB"}
                 </Button>
                 <Button
+                  onClick={handleDownloadPdf}
+                  variant="outline"
+                  className="gap-2"
+                  disabled={isDownloading}
+                >
+                  {isDownloading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {isDownloading ? "Downloading..." : "Download PDF"}
+                </Button>
+                <Button
                   onClick={handlePrint}
                   variant="outline"
                   className="gap-2"
@@ -753,7 +786,11 @@ const PMDesign = () => {
                   Print Preview
                 </Button>
               </div>
-              {renderPMDocument()}
+              <div ref={pmDocRef}>
+                <div data-pdf-section>
+                  {renderPMDocument()}
+                </div>
+              </div>
             </div>
           ) : (
             <div className="p-8">
