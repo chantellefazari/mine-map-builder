@@ -74,9 +74,39 @@ export async function exportSectionsToPdf(
 
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-  const sections = Array.from(
+  const sourceSections = Array.from(
     container.querySelectorAll<HTMLElement>("[data-pdf-section]")
   );
+
+  const getLogicalSections = (roots: HTMLElement[]) => {
+    if (roots.length !== 1) return roots;
+
+    const [root] = roots;
+    const borderContainer = root.querySelector<HTMLElement>(".border-2.border-border");
+    const sectionHost = borderContainer ?? (root.firstElementChild as HTMLElement | null) ?? root;
+
+    const childBlocks = Array.from(sectionHost.children).filter(
+      (child): child is HTMLElement => child instanceof HTMLElement
+    );
+
+    const logicalBlocks = childBlocks.filter((block) => {
+      const style = window.getComputedStyle(block);
+      if (style.display === "none" || style.visibility === "hidden") return false;
+
+      const text = (block.textContent ?? "").trim();
+      const hasStructuredContent = Boolean(
+        block.querySelector("table, img, svg, canvas, input, textarea, select")
+      );
+
+      return text.length > 0 || hasStructuredContent;
+    });
+
+    // If the template has identifiable top-level blocks (header/metadata/table/signoff),
+    // paginate by these blocks to avoid section headers/sign-off being sliced.
+    return logicalBlocks.length >= 3 ? logicalBlocks : roots;
+  };
+
+  const sections = getLogicalSections(sourceSections);
 
   let currentY = MARGIN;
 
