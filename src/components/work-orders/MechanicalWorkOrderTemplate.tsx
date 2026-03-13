@@ -296,8 +296,8 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 </div>
               </div>
             </div>
-            {/* Row 2: Asset Number, Requested By, Equipment Description */}
-            <div className="grid grid-cols-4 gap-2">
+            {/* Row 2: Asset Number, Equipment Description, Isolation Required, Requested By */}
+            <div className="grid grid-cols-[1fr_2fr_auto_1fr] gap-2">
               <div className="border border-gray-300 p-2">
                 <span className="text-xs text-gray-500 block mb-1">Asset Number</span>
                 <div className="flex gap-1">
@@ -312,6 +312,16 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                     <Search className="h-3 w-3" />
                   </Button>
                 </div>
+              </div>
+              <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block mb-1">Equipment Description</span>
+                <Input
+                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                  value={form.functional_location}
+                  onChange={(e) => setForm({ ...form, functional_location: e.target.value })}
+                  onBlur={(e) => handleFieldBlur("functional_location", e.target.value)}
+                  placeholder="Enter location"
+                />
               </div>
               <div className="border border-gray-300 p-2">
                 <span className="text-xs text-gray-500 block mb-1">Isolation Required</span>
@@ -344,16 +354,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   onChange={(e) => setForm({ ...form, requested_by: e.target.value })}
                   onBlur={(e) => handleFieldBlur("requested_by", e.target.value)}
                   placeholder="Enter name"
-                />
-              </div>
-              <div className="border border-gray-300 p-2">
-                <span className="text-xs text-gray-500 block mb-1">Equipment Description</span>
-                <Input
-                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                  value={form.functional_location}
-                  onChange={(e) => setForm({ ...form, functional_location: e.target.value })}
-                  onBlur={(e) => handleFieldBlur("functional_location", e.target.value)}
-                  placeholder="Enter location"
                 />
               </div>
             </div>
