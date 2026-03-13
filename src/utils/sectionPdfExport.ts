@@ -43,6 +43,15 @@ export interface SectionPdfOptions {
   rowSnapStartRatio?: number;
   /** Max allowable whitespace ratio when snapping to row boundaries (default 0.18) */
   maxWhitespaceRatio?: number;
+  /** Logs full print container hierarchy used during rendering (default false) */
+  debugContainerTree?: boolean;
+}
+
+interface KeepTogetherRegionPx {
+  top: number;
+  bottom: number;
+  name?: string;
+  parent?: string;
 }
 
 const DEFAULTS: Required<SectionPdfOptions> = {
