@@ -596,11 +596,16 @@ export async function exportSectionsToPdf(
       logPrintContainerHierarchy(clone, section.getAttribute("data-pdf-component") || getContainerName(section));
       const wrapperRect = wrapper.getBoundingClientRect();
 
-      // Collect row/line boundaries from tables, lists, and explicit section dividers
-      const breakElements = clone.querySelectorAll<HTMLElement>(
-        "tr, li, [data-pdf-break]"
+      // Collect row/line boundaries from tables, lists, explicit section dividers,
+      // and top-level flow children to improve natural page fill in continuous documents.
+      const breakElements = Array.from(
+        clone.querySelectorAll<HTMLElement>("tr, li, [data-pdf-break]")
       );
-      const rowBreaksCssPx = Array.from(breakElements)
+      const flowBoundaryBreaks = isContinuousFlowContainer
+        ? Array.from(clone.children).filter((child): child is HTMLElement => child instanceof HTMLElement)
+        : [];
+
+      const rowBreaksCssPx = [...breakElements, ...flowBoundaryBreaks]
         .map((row) => row.getBoundingClientRect().bottom - wrapperRect.top)
         .filter((value) => Number.isFinite(value) && value > 0);
 
