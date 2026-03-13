@@ -239,20 +239,9 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
           // If the asset has its own components in the DB, it's a parent equipment — never auto-nest
           if (equip.components && equip.components.length > 0) continue;
 
-          // Don't nest under the system header — these are peer Level 6 equipment, not Level 7 components
-          if (parentKey === systemHeaderAssetNumber && !equipMap.has(parentKey)) continue;
-
-          let parentEquip = equipMap.get(parentKey);
-          if (!parentEquip) {
-            parentEquip = {
-              assetNumber: parentKey,
-              name: inferVirtualParentName(equip.name) || parentKey,
-              components: [],
-              functionalLocation: equip.functionalLocation,
-            };
-            equipMap.set(parentKey, parentEquip);
-            virtualParents.add(parentKey);
-            orderIndex.set(parentKey, orderIndex.get(equip.assetNumber) ?? 9999);
+          // Only nest if the parent equipment actually exists in the database — never create virtual parents
+          const parentEquip = equipMap.get(parentKey);
+          if (!parentEquip) continue;
           }
 
           if (!parentEquip.components) parentEquip.components = [];
