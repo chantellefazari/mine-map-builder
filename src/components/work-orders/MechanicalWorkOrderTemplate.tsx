@@ -51,6 +51,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     operations_handover_date: "",
     resources_required: "",
     labour_hours: "[]",
+    isolation_required: false,
   });
 
   // Sync form when WO data loads
