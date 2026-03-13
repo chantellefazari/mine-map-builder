@@ -351,7 +351,8 @@ export async function exportSectionsToPdf(
 
       if (bestBreak === -1 && fallbackBreak > sourceY) {
         const filledRatio = (fallbackBreak - sourceY) / maxSliceHeightPx;
-        if (filledRatio >= 0.55) {
+        const minFallbackFillRatio = 0.72;
+        if (filledRatio >= minFallbackFillRatio) {
           bestBreak = fallbackBreak;
         }
       }
