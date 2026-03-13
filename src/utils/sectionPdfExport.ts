@@ -51,6 +51,7 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   sliceOverlapPx: 2,
   addBorder: false,
   blankPageThreshold: 15,
+  sectionSelector: "[data-pdf-section]",
 };
 
 /**
