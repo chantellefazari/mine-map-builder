@@ -2272,6 +2272,7 @@ export type Database = {
           asset_id: string
           created_at: string
           date_raised: string
+          from_hazard_id: boolean
           functional_location: string
           id: string
           isolation_required: boolean
@@ -2293,6 +2294,7 @@ export type Database = {
           asset_id?: string
           created_at?: string
           date_raised?: string
+          from_hazard_id?: boolean
           functional_location?: string
           id?: string
           isolation_required?: boolean
@@ -2314,6 +2316,7 @@ export type Database = {
           asset_id?: string
           created_at?: string
           date_raised?: string
+          from_hazard_id?: boolean
           functional_location?: string
           id?: string
           isolation_required?: boolean
