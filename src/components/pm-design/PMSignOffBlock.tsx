@@ -59,7 +59,7 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
       </div>
 
       {/* Approval */}
-      <div className="border-t border-border" data-pdf-component="pm-approval-section" data-pdf-keep-together>
+      <div className="border-t border-border" data-pdf-component="pm-approval-section">
         <div className="bg-primary/10 px-3 py-1 font-bold text-sm border-b border-border flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-primary" />
           <span className="text-primary">APPROVAL</span>

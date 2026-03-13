@@ -683,9 +683,7 @@ export async function exportSectionsToPdf(
     );
 
     const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
-    const hasAdaptiveFitContent =
-      section.hasAttribute("data-pdf-adaptive-fit") ||
-      section.querySelector("[data-pdf-adaptive-fit]") !== null;
+    const hasAdaptiveFitContent = section.hasAttribute("data-pdf-adaptive-fit");
 
     // If a section fits on a single page but not in remaining space,
     // start it on a fresh page to preserve clean section flow.
