@@ -20,6 +20,7 @@ const NAV_ITEMS = [
   { title: "Asset Tree", icon: TreePine, href: "/asset-tree", tabKey: "asset-tree" },
   { title: "PM Design", icon: Wrench, href: "/pm-design", tabKey: "pm-design" },
   { title: "Work Orders", icon: ClipboardList, href: "/work-order-templates", tabKey: "work-order-templates" },
+  { title: "Work Requests", icon: FileInput, href: "/work-request-templates", tabKey: "work-order-templates" },
   { title: "Suppliers & Procurement", icon: ShoppingCart, href: "/suppliers-procurement", tabKey: "suppliers-procurement" },
   { title: "Stores & Warehouse", icon: Building2, href: "/stores-warehouse-design", tabKey: "stores-warehouse-design" },
   { title: "Site Spares", icon: Warehouse, href: "/site-spares", tabKey: "site-spares" },
