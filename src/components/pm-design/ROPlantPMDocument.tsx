@@ -11,6 +11,31 @@ export const ROPlantPMDocument = () => {
   const { pms } = usePMasterList();
   const pm = pms.find((p) => p.pmName === "RO Plant Daily Inspection");
 
+  const structuredInspectionTasks = Array.isArray(pm?.tasks)
+    ? {
+        sections: [
+          {
+            equipmentName: "WATER QUALITY & FILTRATION",
+            tasks: pm.tasks.slice(0, 3).map((task) =>
+              typeof task === "string" ? { task } : task
+            ),
+          },
+          {
+            equipmentName: "CHEMICAL DOSING & CONTROL",
+            tasks: pm.tasks.slice(3, 7).map((task) =>
+              typeof task === "string" ? { task } : task
+            ),
+          },
+          {
+            equipmentName: "CONTAINER & UTILITIES",
+            tasks: pm.tasks.slice(7).map((task) =>
+              typeof task === "string" ? { task } : task
+            ),
+          },
+        ].filter((section) => section.tasks.length > 0),
+      }
+    : pm?.tasks;
+
   return (
     <div className="bg-background">
       <div className="border-2 border-border">
@@ -32,7 +57,11 @@ export const ROPlantPMDocument = () => {
 
         <SafetyPrecautionsSection />
 
-        <DynamicInspectionTable tasksData={pm?.tasks} title="SYSTEM, ASSEMBLY AND COMPONENTS CHECK" />
+        <DynamicInspectionTable
+          tasksData={structuredInspectionTasks}
+          title="SYSTEM, ASSEMBLY AND COMPONENTS CHECK"
+          separateSections
+        />
 
         {/* Data Logging Table */}
         <div className="border-b border-border" data-pdf-section>
