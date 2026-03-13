@@ -577,6 +577,8 @@ export async function exportSectionsToPdf(
         keepTogetherRegionsPx: keepTogetherRegionsCssPx.map((region) => ({
           top: Math.round(region.top * cfg.scale),
           bottom: Math.round(region.bottom * cfg.scale),
+          name: region.name,
+          parent: region.parent,
         })),
       };
     } finally {
