@@ -1,10 +1,9 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Printer, Search, Sparkles, Loader2, SendHorizontal, ArrowRightCircle } from "lucide-react";
+import { Printer, Search, Sparkles, Loader2, SendHorizontal, ArrowRightCircle, Camera, X, ImagePlus } from "lucide-react";
 import tennantIcon from "@/assets/tennant-icon.png";
-import { WRSubTabs } from "./WRSubTabs";
 import { useWorkRequests } from "@/hooks/useWorkRequests";
 import { AssetLookupDialog } from "@/components/work-orders/AssetLookupDialog";
 import { format } from "date-fns";
@@ -22,6 +21,8 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
   const [assetLookupOpen, setAssetLookupOpen] = useState(false);
   const [isEnhancingDesc, setIsEnhancingDesc] = useState(false);
   const [isEnhancingScope, setIsEnhancingScope] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({
     asset_id: "",
@@ -33,6 +34,8 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
     requested_by: "",
     trade: "",
     status: "Open",
+    isolation_required: false,
+    photo_urls: [] as string[],
   });
 
   useEffect(() => {
@@ -47,12 +50,14 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
         requested_by: wr.requested_by || "",
         trade: wr.trade || "",
         status: wr.status || "Open",
+        isolation_required: wr.isolation_required || false,
+        photo_urls: wr.photo_urls || [],
       });
     }
   }, [wr?.id]);
 
   const saveField = useCallback(
-    async (field: string, value: string) => {
+    async (field: string, value: any) => {
       if (!wr) return;
       const { error } = await (supabase as any)
         .from("work_requests")
@@ -99,6 +104,38 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
   const handleConvertToWO = () => {
     if (!wr) return;
     convertToWO.mutate(wr.id);
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || !wr) return;
+    setIsUploading(true);
+    try {
+      const newUrls: string[] = [];
+      for (const file of Array.from(files)) {
+        const ext = file.name.split(".").pop();
+        const path = `${wr.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error: uploadErr } = await supabase.storage.from("wr-photos").upload(path, file);
+        if (uploadErr) throw uploadErr;
+        const { data: urlData } = supabase.storage.from("wr-photos").getPublicUrl(path);
+        newUrls.push(urlData.publicUrl);
+      }
+      const updated = [...form.photo_urls, ...newUrls];
+      setForm((prev) => ({ ...prev, photo_urls: updated }));
+      saveField("photo_urls", updated);
+      toast.success(`${newUrls.length} photo(s) uploaded`);
+    } catch (err: any) {
+      toast.error(`Upload failed: ${err.message}`);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemovePhoto = (index: number) => {
+    const updated = form.photo_urls.filter((_, i) => i !== index);
+    setForm((prev) => ({ ...prev, photo_urls: updated }));
+    if (wr) saveField("photo_urls", updated);
   };
 
   const priorityOptions = ["Critical", "High", "Normal", "Low"];
@@ -256,6 +293,40 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                 />
               </div>
             </div>
+
+            {/* Row 3: Isolation Required */}
+            <div className="grid grid-cols-4 gap-2">
+              <div className="border border-gray-300 p-2 col-span-2">
+                <span className="text-xs text-gray-500 block mb-1">Isolation Required</span>
+                <div className="flex gap-4">
+                  {(["Yes", "No"] as const).map((opt) => {
+                    const isSelected = opt === "Yes" ? form.isolation_required : !form.isolation_required;
+                    return (
+                      <label key={opt} className="flex items-center gap-1 cursor-pointer" onClick={() => {
+                        const val = opt === "Yes";
+                        setForm({ ...form, isolation_required: val });
+                        if (wr) saveField("isolation_required", val);
+                      }}>
+                        <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${isSelected ? "bg-primary text-primary-foreground" : ""}`}>
+                          {isSelected && "✓"}
+                        </div>
+                        <span className="text-xs">{opt}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="border border-gray-300 p-2 col-span-2">
+                <span className="text-xs text-gray-500 block mb-1">Trade</span>
+                <Input
+                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                  value={form.trade}
+                  onChange={(e) => setForm({ ...form, trade: e.target.value })}
+                  onBlur={(e) => handleFieldBlur("trade", e.target.value)}
+                  placeholder="e.g. Fitter, Electrician, Boilermaker"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Description */}
@@ -314,6 +385,65 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
             </div>
           </div>
 
+          {/* Photo Upload Section */}
+          <div className="border border-gray-300">
+            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
+              <span className="font-semibold text-gray-700 flex items-center gap-2">
+                <Camera className="h-4 w-4" />
+                PHOTOS / EVIDENCE
+              </span>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5 text-xs h-7 print:hidden"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading || !wr}
+              >
+                {isUploading ? <Loader2 className="h-3 w-3 animate-spin" /> : <ImagePlus className="h-3 w-3" />}
+                {isUploading ? "Uploading…" : "Add Photo"}
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handlePhotoUpload}
+              />
+            </div>
+            <div className="p-3">
+              {form.photo_urls.length === 0 ? (
+                <div
+                  className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-primary/50 transition-colors print:hidden"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Camera className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
+                  <p className="text-xs text-muted-foreground">Click to upload photos of the defect or issue</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-3 gap-3">
+                  {form.photo_urls.map((url, i) => (
+                    <div key={i} className="relative group">
+                      <img src={url} alt={`WR photo ${i + 1}`} className="w-full h-32 object-cover rounded border border-gray-200" />
+                      <button
+                        className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity print:hidden"
+                        onClick={() => handleRemovePhoto(i)}
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                  <div
+                    className="border-2 border-dashed border-gray-300 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:border-primary/50 transition-colors print:hidden"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <ImagePlus className="h-6 w-6 text-muted-foreground/40" />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Footer */}
           <div className="text-center text-xs text-gray-400 pt-4 border-t border-gray-200">
             <p>TCMG-WR-001 | Rev 1.0 | Tennant Creek Gold Mine</p>
@@ -334,9 +464,6 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
           }
         }}
       />
-
-      {/* Sub-tabs for WR management */}
-      <WRSubTabs woNumber={wrNumber} />
     </div>
   );
 };

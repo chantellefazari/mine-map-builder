@@ -18,6 +18,8 @@ export interface WorkRequest {
   linked_wo_id: string | null;
   approved_by: string;
   approved_at: string | null;
+  isolation_required: boolean;
+  photo_urls: string[];
   created_at: string;
   updated_at: string;
 }
@@ -92,10 +94,8 @@ export function useWorkRequests() {
     },
   });
 
-  // Convert approved WR into a Work Order
   const convertToWOMutation = useMutation({
     mutationFn: async (wrId: string) => {
-      // Get the WR
       const { data: wr, error: wrErr } = await (supabase as any)
         .from("work_requests")
         .select("*")
@@ -103,11 +103,9 @@ export function useWorkRequests() {
         .single();
       if (wrErr) throw wrErr;
 
-      // Get next WO number
       const { data: woNum, error: woNumErr } = await (supabase as any).rpc("next_wo_number");
       if (woNumErr) throw woNumErr;
 
-      // Create WO pre-filled from WR
       const { data: wo, error: woErr } = await (supabase as any)
         .from("work_orders")
         .insert({
@@ -126,7 +124,6 @@ export function useWorkRequests() {
         .single();
       if (woErr) throw woErr;
 
-      // Link WO back to WR
       await (supabase as any)
         .from("work_requests")
         .update({ linked_wo_id: wo.id, status: "Converted to WO" })
