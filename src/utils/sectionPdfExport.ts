@@ -290,29 +290,42 @@ export async function exportSectionsToPdf(
 
       const maxEnd = sourceY + maxSliceHeightPx;
 
-      // If this cut would split a keep-together block (e.g. SIGN OFF),
-      // force the break to happen BEFORE that block starts.
+      // Case 1: A keep-together block STARTS within this slice but ENDS beyond it.
+      // → Force the break to happen BEFORE that block starts.
       const conflictingRegion = safeRegions.find(
         (region) => region.top > sourceY && region.top < maxEnd && region.bottom > maxEnd
       );
 
-      if (cfg.debugContainerTree && conflictingRegion) {
-        console.info("[PDF AUDIT] Premature-break candidate detected", {
-          reason: "keep-together region overlaps current page end",
-          container: conflictingRegion.name || "[data-pdf-keep-together]",
-          parent: conflictingRegion.parent || "unknown",
-          sourceY,
-          maxEnd,
-          regionTop: conflictingRegion.top,
-          regionBottom: conflictingRegion.bottom,
-          currentY,
-        });
+      // Case 2: sourceY is already INSIDE a keep-together block that extends beyond
+      // this slice. This means the previous slice should have broken before this block,
+      // but didn't (e.g. the block was too tall for the previous page).
+      // If the block fits on a full fresh page, move to a new page so it starts cleanly.
+      const enclosingRegion = !conflictingRegion
+        ? safeRegions.find(
+            (region) =>
+              sourceY >= region.top &&
+              sourceY < region.bottom &&
+              region.bottom > maxEnd
+          )
+        : null;
+
+      const fullPagePx = Math.floor(CONTENT_H * pxPerMm);
+      const canMoveToFreshPage = currentY > MARGIN + 0.5;
+
+      // If we're inside a protected region that fits on a fresh page, jump there
+      if (enclosingRegion && canMoveToFreshPage) {
+        const regionHeight = enclosingRegion.bottom - enclosingRegion.top;
+        if (regionHeight <= fullPagePx) {
+          pdf.addPage();
+          currentY = MARGIN;
+          continue;
+        }
+        // Region is taller than a full page — we have no choice but to slice through it.
+        // Fall through to normal slicing logic below.
       }
 
       // Avoid creating tiny slices (1–12px) before protected blocks.
-      // Those micro-slices are the main cause of visual clipping at page starts.
       const MIN_PRE_BREAK_SLICE_PX = 4;
-      const canMoveToFreshPage = currentY > MARGIN + 0.5;
       if (conflictingRegion && conflictingRegion.top - sourceY < MIN_PRE_BREAK_SLICE_PX && canMoveToFreshPage) {
         pdf.addPage();
         currentY = MARGIN;
