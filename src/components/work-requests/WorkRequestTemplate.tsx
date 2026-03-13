@@ -2,22 +2,23 @@ import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Printer, Search, Sparkles, Loader2, SendHorizontal } from "lucide-react";
+import { Printer, Search, Sparkles, Loader2, SendHorizontal, ArrowRightCircle } from "lucide-react";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { WRSubTabs } from "./WRSubTabs";
-import { useWorkOrders } from "@/hooks/useWorkOrders";
+import { useWorkRequests } from "@/hooks/useWorkRequests";
 import { AssetLookupDialog } from "@/components/work-orders/AssetLookupDialog";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { Badge } from "@/components/ui/badge";
 
 interface WorkRequestTemplateProps {
-  woNumber?: string;
+  wrNumber?: string;
 }
 
-export const WorkRequestTemplate = ({ woNumber }: WorkRequestTemplateProps) => {
-  const { workOrders, update } = useWorkOrders();
-  const wo = workOrders.find((w) => w.wo_number === woNumber);
+export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
+  const { workRequests, update, convertToWO } = useWorkRequests();
+  const wr = workRequests.find((w) => w.wr_number === wrNumber);
   const [assetLookupOpen, setAssetLookupOpen] = useState(false);
   const [isEnhancingDesc, setIsEnhancingDesc] = useState(false);
   const [isEnhancingScope, setIsEnhancingScope] = useState(false);
@@ -27,65 +28,47 @@ export const WorkRequestTemplate = ({ woNumber }: WorkRequestTemplateProps) => {
     functional_location: "",
     problem_description: "",
     scope_of_works: "",
-    work_performed: "",
     priority: "Normal",
     work_type: "Breakdown",
     requested_by: "",
-    assigned_to: "",
     trade: "",
     status: "Open",
-    returned_to_service: "",
-    technician_name: "",
-    technician_sign_date: "",
-    supervisor_name: "",
-    supervisor_sign_date: "",
-    operations_handover_name: "",
-    operations_handover_date: "",
   });
 
   useEffect(() => {
-    if (wo) {
+    if (wr) {
       setForm({
-        asset_id: wo.asset_id || "",
-        functional_location: wo.functional_location || "",
-        problem_description: wo.problem_description || "",
-        scope_of_works: (wo as any).scope_of_works || "",
-        work_performed: wo.work_performed || "",
-        priority: wo.priority || "Normal",
-        work_type: wo.work_type || "Breakdown",
-        requested_by: wo.requested_by || "",
-        assigned_to: wo.assigned_to || "",
-        trade: wo.trade || "",
-        status: wo.status || "Open",
-        returned_to_service: wo.returned_to_service || "",
-        technician_name: wo.technician_name || "",
-        technician_sign_date: wo.technician_sign_date || "",
-        supervisor_name: wo.supervisor_name || "",
-        supervisor_sign_date: wo.supervisor_sign_date || "",
-        operations_handover_name: wo.operations_handover_name || "",
-        operations_handover_date: wo.operations_handover_date || "",
+        asset_id: wr.asset_id || "",
+        functional_location: wr.functional_location || "",
+        problem_description: wr.problem_description || "",
+        scope_of_works: wr.scope_of_works || "",
+        priority: wr.priority || "Normal",
+        work_type: wr.work_type || "Breakdown",
+        requested_by: wr.requested_by || "",
+        trade: wr.trade || "",
+        status: wr.status || "Open",
       });
     }
-  }, [wo?.id]);
+  }, [wr?.id]);
 
   const saveField = useCallback(
     async (field: string, value: string) => {
-      if (!wo) return;
+      if (!wr) return;
       const { error } = await (supabase as any)
-        .from("work_orders")
+        .from("work_requests")
         .update({ [field]: value })
-        .eq("id", wo.id);
+        .eq("id", wr.id);
       if (error) {
         toast.error(`Save failed: ${error.message}`);
         return;
       }
-      update.mutate({ id: wo.id, updates: {} }, { onSettled: () => {} });
+      update.mutate({ id: wr.id, updates: {} }, { onSettled: () => {} });
     },
-    [wo, update]
+    [wr, update]
   );
 
   const handleFieldBlur = (field: string, value: string) => {
-    if (wo && value !== (wo as any)[field]) {
+    if (wr && value !== (wr as any)[field]) {
       saveField(field, value);
     }
   };
@@ -104,7 +87,7 @@ export const WorkRequestTemplate = ({ woNumber }: WorkRequestTemplateProps) => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setForm((prev) => ({ ...prev, [field]: data.enhanced }));
-      if (wo) saveField(field, data.enhanced);
+      if (wr) saveField(field, data.enhanced);
       toast.success(mode === "description" ? "Description enhanced" : "Scope of works generated");
     } catch (err: any) {
       toast.error(err.message || "Failed to generate");
@@ -113,32 +96,56 @@ export const WorkRequestTemplate = ({ woNumber }: WorkRequestTemplateProps) => {
     }
   };
 
+  const handleConvertToWO = () => {
+    if (!wr) return;
+    convertToWO.mutate(wr.id);
+  };
+
   const priorityOptions = ["Critical", "High", "Normal", "Low"];
   const workTypeOptions = ["Breakdown", "Planned", "Shutdown"];
+  const isConverted = form.status === "Converted to WO";
 
   return (
     <div className="space-y-4">
       {/* Header with Print Button */}
       <div className="flex items-center justify-between print:hidden">
-        <h2 className="text-xl font-semibold text-foreground">
-          Work Request {woNumber && <span className="text-primary font-mono">({woNumber})</span>}
-        </h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-xl font-semibold text-foreground">
+            Work Request {wrNumber && <span className="text-primary font-mono">({wrNumber})</span>}
+          </h2>
+          {isConverted && (
+            <Badge className="bg-blue-100 text-blue-700 border-blue-300">Converted to WO</Badge>
+          )}
+        </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="gap-2"
-            onClick={() => {
-              if (wo) {
-                saveField("status", "Pending Approval");
-                setForm((prev) => ({ ...prev, status: "Pending Approval" }));
-                toast.success(`${woNumber} sent for approval`);
-              }
-            }}
-            disabled={!wo || form.status === "Pending Approval"}
-          >
-            <SendHorizontal className="h-4 w-4" />
-            {form.status === "Pending Approval" ? "Sent for Approval" : "Send for Approval"}
-          </Button>
+          {!isConverted && form.status !== "Pending Approval" && (
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() => {
+                if (wr) {
+                  saveField("status", "Pending Approval");
+                  setForm((prev) => ({ ...prev, status: "Pending Approval" }));
+                  toast.success(`${wrNumber} sent for approval`);
+                }
+              }}
+              disabled={!wr}
+            >
+              <SendHorizontal className="h-4 w-4" />
+              Send for Approval
+            </Button>
+          )}
+          {form.status === "Pending Approval" && !isConverted && (
+            <Button
+              variant="default"
+              className="gap-2"
+              onClick={handleConvertToWO}
+              disabled={!wr || convertToWO.isPending}
+            >
+              {convertToWO.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRightCircle className="h-4 w-4" />}
+              Approve & Convert to WO
+            </Button>
+          )}
           <Button onClick={handlePrint} className="gap-2">
             <Printer className="h-4 w-4" />
             Print
@@ -169,12 +176,12 @@ export const WorkRequestTemplate = ({ woNumber }: WorkRequestTemplateProps) => {
             <div className="grid grid-cols-4 gap-2">
               <div className="border border-gray-300 p-2">
                 <span className="text-xs text-gray-500 block">Work Request No.</span>
-                <span className="font-mono font-medium">{woNumber || "WR-______"}</span>
+                <span className="font-mono font-medium">{wrNumber || "WR-______"}</span>
               </div>
               <div className="border border-gray-300 p-2">
                 <span className="text-xs text-gray-500 block">Date Raised</span>
                 <span className="font-medium print:block">
-                  {wo?.date_raised ? format(new Date(wo.date_raised), "dd/MM/yyyy") : "____/____/________"}
+                  {wr?.date_raised ? format(new Date(wr.date_raised), "dd/MM/yyyy") : "____/____/________"}
                 </span>
               </div>
               <div className="border border-gray-300 p-2">
@@ -183,7 +190,7 @@ export const WorkRequestTemplate = ({ woNumber }: WorkRequestTemplateProps) => {
                   {priorityOptions.map((p) => (
                     <label key={p} className="flex items-center gap-1 cursor-pointer" onClick={() => {
                       setForm({ ...form, priority: p });
-                      if (wo) saveField("priority", p);
+                      if (wr) saveField("priority", p);
                     }}>
                       <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${form.priority === p ? "bg-primary text-primary-foreground" : ""}`}>
                         {form.priority === p && "✓"}
@@ -199,7 +206,7 @@ export const WorkRequestTemplate = ({ woNumber }: WorkRequestTemplateProps) => {
                   {workTypeOptions.map((t) => (
                     <label key={t} className="flex items-center gap-1 cursor-pointer" onClick={() => {
                       setForm({ ...form, work_type: t });
-                      if (wo) saveField("work_type", t);
+                      if (wr) saveField("work_type", t);
                     }}>
                       <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${form.work_type === t ? "bg-primary text-primary-foreground" : ""}`}>
                         {form.work_type === t && "✓"}
@@ -321,7 +328,7 @@ export const WorkRequestTemplate = ({ woNumber }: WorkRequestTemplateProps) => {
         onSelect={(asset) => {
           const updatedForm = { ...form, asset_id: asset.assetNumber, functional_location: asset.name };
           setForm(updatedForm);
-          if (wo) {
+          if (wr) {
             saveField("asset_id", asset.assetNumber);
             saveField("functional_location", asset.name);
           }
@@ -329,7 +336,7 @@ export const WorkRequestTemplate = ({ woNumber }: WorkRequestTemplateProps) => {
       />
 
       {/* Sub-tabs for WR management */}
-      <WRSubTabs woNumber={woNumber} />
+      <WRSubTabs woNumber={wrNumber} />
     </div>
   );
 };
