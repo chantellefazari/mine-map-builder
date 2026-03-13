@@ -173,6 +173,14 @@ export async function exportSectionsToPdf(
         Math.min(canvas.height - sourceY, Math.floor(sliceEnd - sourceY))
       );
 
+      // Prevent tiny page-bottom slices that visually cut lines/items.
+      const MIN_SLICE_HEIGHT_PX = 24;
+      if (sliceHeightPx < MIN_SLICE_HEIGHT_PX && canMoveToFreshPage) {
+        pdf.addPage();
+        currentY = MARGIN;
+        continue;
+      }
+
       const sliceCanvas = document.createElement("canvas");
       sliceCanvas.width = canvas.width;
       sliceCanvas.height = sliceHeightPx;
