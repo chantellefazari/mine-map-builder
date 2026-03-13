@@ -40,34 +40,44 @@ export const ROPlantPMDocument = () => {
             <Gauge className="w-5 h-5 text-primary" />
             DATA LOGGING
           </div>
-          <table className="w-full text-xs border-collapse">
-            <thead>
-              <tr className="bg-muted">
-                <th className="border border-border px-1 py-2 text-center font-semibold">CT4001<br/><span className="font-normal text-muted-foreground">Feed</span><br/><span className="font-normal text-muted-foreground">µs/cm</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">CT4002<br/><span className="font-normal text-muted-foreground">Permeate</span><br/><span className="font-normal text-muted-foreground">µs/cm</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">PI-01<br/><span className="font-normal text-muted-foreground">Before Media</span><br/><span className="font-normal text-muted-foreground">bar</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">PI-02<br/><span className="font-normal text-muted-foreground">After Media</span><br/><span className="font-normal text-muted-foreground">bar</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">PT2001<br/><span className="font-normal text-muted-foreground">After Cartridge</span><br/><span className="font-normal text-muted-foreground">bar</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">PT2003<br/><span className="font-normal text-muted-foreground">Before Membrane</span><br/><span className="font-normal text-muted-foreground">bar</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">PT2002<br/><span className="font-normal text-muted-foreground">After Membrane</span><br/><span className="font-normal text-muted-foreground">bar</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">P-01<br/><span className="font-normal text-muted-foreground">Freq</span><br/><span className="font-normal text-muted-foreground">HZ</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">P-02<br/><span className="font-normal text-muted-foreground">Freq</span><br/><span className="font-normal text-muted-foreground">HZ</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">FT1001<br/><span className="font-normal text-muted-foreground">Brine</span><br/><span className="font-normal text-muted-foreground">lpm</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">FT1002<br/><span className="font-normal text-muted-foreground">Recirc</span><br/><span className="font-normal text-muted-foreground">lpm</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">FT1003<br/><span className="font-normal text-muted-foreground">Permeate</span><br/><span className="font-normal text-muted-foreground">lpm</span></th>
-                <th className="border border-border px-1 py-2 text-center font-semibold">TT5001<br/><span className="font-normal text-muted-foreground">Brine</span><br/><span className="font-normal text-muted-foreground">°C</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                {Array(13).fill(null).map((_, idx) => (
-                  <td key={idx} className="border border-border px-1 py-3 text-center">
-                    <Input className="h-7 text-xs text-center border-0 bg-transparent w-full" placeholder="" />
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
+          <div className="overflow-hidden">
+            <table className="w-full border-collapse" style={{ tableLayout: "fixed" }}>
+              <thead>
+                <tr className="bg-muted text-[10px]">
+                  {[
+                    { tag: "CT4001", label: "Feed", unit: "µs/cm" },
+                    { tag: "CT4002", label: "Permeate", unit: "µs/cm" },
+                    { tag: "PI-01", label: "Bef. Media", unit: "bar" },
+                    { tag: "PI-02", label: "Aft. Media", unit: "bar" },
+                    { tag: "PT2001", label: "Aft. Cart.", unit: "bar" },
+                    { tag: "PT2003", label: "Bef. Memb.", unit: "bar" },
+                    { tag: "PT2002", label: "Aft. Memb.", unit: "bar" },
+                    { tag: "P-01", label: "Freq", unit: "HZ" },
+                    { tag: "P-02", label: "Freq", unit: "HZ" },
+                    { tag: "FT1001", label: "Brine", unit: "lpm" },
+                    { tag: "FT1002", label: "Recirc", unit: "lpm" },
+                    { tag: "FT1003", label: "Permeate", unit: "lpm" },
+                    { tag: "TT5001", label: "Brine", unit: "°C" },
+                  ].map((col) => (
+                    <th key={col.tag} className="border border-border px-0.5 py-1.5 text-center font-semibold leading-tight">
+                      {col.tag}<br />
+                      <span className="font-normal text-muted-foreground">{col.label}</span><br />
+                      <span className="font-normal text-muted-foreground">{col.unit}</span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {Array(13).fill(null).map((_, idx) => (
+                    <td key={idx} className="border border-border px-0.5 py-4 text-center">
+                      <Input className="h-6 text-[10px] text-center border-0 bg-transparent w-full p-0" placeholder="" />
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <PMSignOffBlock footerText="Tennant Creek Mining Operations – Processing Plant Inspection Form" />
