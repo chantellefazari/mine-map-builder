@@ -121,6 +121,7 @@ export const DynamicInspectionTable = ({
   tasksData,
   title = "INSPECTIONS",
   showEquipmentId = false,
+  separateSections = false,
 }: DynamicInspectionTableProps) => {
   const sections = normalizeSections(tasksData);
 
@@ -133,6 +134,58 @@ export const DynamicInspectionTable = ({
   }
 
   const hasSectionHeaders = sections.some(s => getSectionLabel(s) !== null);
+
+  // Split by logical area to preserve section flow in PDFs (used by RO Plant)
+  if (hasSectionHeaders && separateSections) {
+    return (
+      <>
+        <div className="border-b border-border" data-pdf-section>
+          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+            <ClipboardCheck className="w-5 h-5 text-primary" />
+            {title}
+          </div>
+        </div>
+
+        {sections.map((section, sIdx) => {
+          const label = getSectionLabel(section);
+          return (
+            <div
+              key={sIdx}
+              className="border-b border-border"
+              data-pdf-section
+              data-pdf-keep-together
+            >
+              {label && (
+                <div className="bg-primary/10 px-3 py-2 font-semibold text-primary border-b border-border">
+                  {label}
+                </div>
+              )}
+              <table className="w-full text-xs border-collapse">
+                <thead>
+                  <tr className="bg-muted">
+                    <th className="border border-border px-3 py-2 text-left font-semibold w-[46%]">Task</th>
+                    <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Serviceable</th>
+                    <th className="border border-border px-2 py-2 text-center font-semibold w-[10%]">Defective</th>
+                    <th className="border border-border px-3 py-2 text-left font-semibold w-[34%]">Comments</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {section.tasks.map((task, tIdx) => (
+                    <TaskRow key={`${sIdx}-${tIdx}`} task={task} />
+                  ))}
+                </tbody>
+              </table>
+              {section.tempGuidelines && (
+                <div className="px-4 py-2 text-xs bg-amber-500/10 border-t border-border text-amber-700">
+                  <span className="font-semibold">Temp Guidelines: </span>{section.tempGuidelines}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </>
+    );
+  }
 
   // Single table with all sections (matches existing layout pattern)
   if (hasSectionHeaders && sections.every(s => !showEquipmentId || !s.equipmentId)) {
