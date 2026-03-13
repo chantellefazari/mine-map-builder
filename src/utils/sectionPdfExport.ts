@@ -290,17 +290,19 @@ export async function exportSectionsToPdf(
       section.hasAttribute("data-pdf-adaptive-fit") ||
       section.querySelector("[data-pdf-adaptive-fit]") !== null;
     if (hasAdaptiveFitContent) {
-      const isTightRemainingSpace = remainingMmOnPage < CONTENT_H * 0.42;
+      const remainingRatio = Math.max(0.22, Math.min(1, remainingMmOnPage / CONTENT_H));
+      const commentsPaddingPx = Math.round(2 + remainingRatio * 6);
+      const commentsMinHeightPx = Math.round(24 + remainingRatio * 34);
 
       clone.querySelectorAll<HTMLElement>("[data-pdf-comments-wrap]").forEach((element) => {
-        element.style.paddingTop = isTightRemainingSpace ? "4px" : "8px";
-        element.style.paddingBottom = isTightRemainingSpace ? "4px" : "8px";
+        element.style.paddingTop = `${commentsPaddingPx}px`;
+        element.style.paddingBottom = `${commentsPaddingPx}px`;
       });
 
       clone.querySelectorAll<HTMLTextAreaElement>("[data-pdf-flex-comments]").forEach((element) => {
         element.style.height = "auto";
         element.style.maxHeight = "none";
-        element.style.minHeight = isTightRemainingSpace ? "42px" : "56px";
+        element.style.minHeight = `${commentsMinHeightPx}px`;
       });
     }
 
