@@ -609,17 +609,27 @@ export async function exportSectionsToPdf(
       logPrintContainerHierarchy(clone, section.getAttribute("data-pdf-component") || getContainerName(section));
       const wrapperRect = wrapper.getBoundingClientRect();
 
-      // Collect row/line boundaries from tables, lists, explicit section dividers,
-      // and top-level flow children to improve natural page fill in continuous documents.
-      const breakElements = Array.from(
-        clone.querySelectorAll<HTMLElement>("tr, li, [data-pdf-break]")
+      // Collect break anchors from structural rows and explicit semantic break markers.
+      // For semantic markers, use both top and bottom edges so page cuts can snap
+      // cleanly before or after compact div-based rows (e.g. Sign Off lines).
+      const structuralBreakElements = Array.from(
+        clone.querySelectorAll<HTMLElement>("tr, li")
+      );
+      const semanticBreakElements = Array.from(
+        clone.querySelectorAll<HTMLElement>("[data-pdf-break]")
       );
       const flowBoundaryBreaks = isContinuousFlowContainer
         ? Array.from(clone.children).filter((child): child is HTMLElement => child instanceof HTMLElement)
         : [];
 
-      const rowBreaksCssPx = [...breakElements, ...flowBoundaryBreaks]
-        .map((row) => row.getBoundingClientRect().bottom - wrapperRect.top)
+      const rowBreaksCssPx = [
+        ...structuralBreakElements.map((row) => row.getBoundingClientRect().bottom - wrapperRect.top),
+        ...semanticBreakElements.flatMap((element) => {
+          const rect = element.getBoundingClientRect();
+          return [rect.top - wrapperRect.top, rect.bottom - wrapperRect.top];
+        }),
+        ...flowBoundaryBreaks.map((row) => row.getBoundingClientRect().bottom - wrapperRect.top),
+      ]
         .filter((value) => Number.isFinite(value) && value > 0);
 
       const keepTogetherRegionsCssPx = Array.from(
