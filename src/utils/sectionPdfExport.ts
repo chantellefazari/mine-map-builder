@@ -39,6 +39,10 @@ export interface SectionPdfOptions {
   blankPageThreshold?: number;
   /** CSS selector used to find printable sections inside the container (default "[data-pdf-section]") */
   sectionSelector?: string;
+  /** Lower bound (ratio) where row snapping is allowed near page bottom (default 0.7) */
+  rowSnapStartRatio?: number;
+  /** Max allowable whitespace ratio when snapping to row boundaries (default 0.18) */
+  maxWhitespaceRatio?: number;
 }
 
 const DEFAULTS: Required<SectionPdfOptions> = {
@@ -52,6 +56,8 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   addBorder: false,
   blankPageThreshold: 15,
   sectionSelector: "[data-pdf-section]",
+  rowSnapStartRatio: 0.7,
+  maxWhitespaceRatio: 0.18,
 };
 
 /**
