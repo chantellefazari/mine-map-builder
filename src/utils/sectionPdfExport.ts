@@ -249,7 +249,8 @@ export async function exportSectionsToPdf(
 
   // ── Render a section via off-screen clone ───────────────────────
   const renderSectionCanvas = async (
-    section: HTMLElement
+    section: HTMLElement,
+    remainingMmOnPage: number
   ): Promise<{
     canvas: HTMLCanvasElement;
     rowBreaksPx: number[];
@@ -282,6 +283,24 @@ export async function exportSectionsToPdf(
     if (isContinuousFlowContainer) {
       clone.querySelectorAll<HTMLElement>("[data-pdf-section]").forEach((element) => {
         element.removeAttribute("data-pdf-section");
+      });
+    }
+
+    const hasAdaptiveFitContent =
+      section.hasAttribute("data-pdf-adaptive-fit") ||
+      section.querySelector("[data-pdf-adaptive-fit]") !== null;
+    if (hasAdaptiveFitContent) {
+      const isTightRemainingSpace = remainingMmOnPage < CONTENT_H * 0.42;
+
+      clone.querySelectorAll<HTMLElement>("[data-pdf-comments-wrap]").forEach((element) => {
+        element.style.paddingTop = isTightRemainingSpace ? "4px" : "8px";
+        element.style.paddingBottom = isTightRemainingSpace ? "4px" : "8px";
+      });
+
+      clone.querySelectorAll<HTMLTextAreaElement>("[data-pdf-flex-comments]").forEach((element) => {
+        element.style.height = "auto";
+        element.style.maxHeight = "none";
+        element.style.minHeight = isTightRemainingSpace ? "42px" : "56px";
       });
     }
 
