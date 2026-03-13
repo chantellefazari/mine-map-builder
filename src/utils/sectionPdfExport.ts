@@ -160,9 +160,9 @@ export async function exportSectionsToPdf(
         }
       }
 
-      // Only use the break if it doesn't waste more than 15% of page height.
-      // Otherwise just do a hard cut — better to clip a row slightly than
-      // leave a huge gap.
+      // Prefer row-aligned breaks, but only if they don't waste too much page height.
+      // This keeps content continuous on A4 while minimising visible cut-offs.
+      // (35% threshold tuned to avoid both severe clipping and giant bottom gaps.)
       const wastedPx = bestBreak > sourceY ? (maxEnd - bestBreak) : maxSliceHeightPx;
       const wastedRatio = wastedPx / (CONTENT_H * pxPerMm);
       const sliceEnd = (bestBreak > sourceY && wastedRatio <= 0.35) ? bestBreak : maxEnd;
