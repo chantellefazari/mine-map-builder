@@ -18,11 +18,9 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
       {/* Comments */}
       <div className="border-t border-border" data-pdf-component="pm-comments-section">
         <div className="bg-muted px-3 py-1 font-semibold text-sm border-b border-border">COMMENTS:</div>
-        <div className="px-3 py-1" data-pdf-comments-wrap data-pdf-compact-comments-wrap>
+        <div className="px-3 py-1">
           <Textarea
             className="min-h-[56px] resize-none"
-            data-pdf-flex-comments
-            data-pdf-compact-comments
             placeholder="Enter comments here..."
           />
         </div>
