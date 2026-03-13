@@ -129,8 +129,17 @@ export async function exportSectionsToPdf(
       // If this cut would split a keep-together block (e.g. SIGN OFF),
       // force the break to happen BEFORE that block starts.
       const conflictingRegion = safeRegions.find(
-        (region) => region.top > sourceY + 10 && region.top < maxEnd && region.bottom > maxEnd
+        (region) => region.top > sourceY && region.top < maxEnd && region.bottom > maxEnd
       );
+
+      // If the protected block starts almost at the top of remaining space,
+      // push it to a fresh page to avoid clipping the first rows.
+      if (conflictingRegion && conflictingRegion.top - sourceY < 12 && currentY > MARGIN + 0.5) {
+        pdf.addPage();
+        currentY = MARGIN;
+        continue;
+      }
+
       const forcedBreak = conflictingRegion?.top ?? -1;
 
       // Find the closest row break BEFORE the max cut point.
