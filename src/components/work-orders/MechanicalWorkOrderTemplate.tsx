@@ -97,6 +97,9 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
       if (["required_tooling", "resources_required", "labour_hours"].includes(field)) {
         try { dbValue = JSON.parse(value); } catch { dbValue = value; }
       }
+      if (field === "isolation_required") {
+        dbValue = value === "true";
+      }
       const { error } = await (supabase as any)
         .from("work_orders")
         .update({ [field]: dbValue })
