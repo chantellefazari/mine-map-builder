@@ -44,7 +44,7 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-1">
               <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Name:</span><Input className="h-7" /></div>
               <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Signature:</span><div className="h-7 border border-border rounded bg-muted/30"></div></div>
               <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Date:</span><Input className="h-7" type="date" /></div>
