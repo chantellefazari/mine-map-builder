@@ -152,32 +152,65 @@ export async function exportSectionsToPdf(
     const walk = (element: HTMLElement, parentName: string, depth: number) => {
       const computed = window.getComputedStyle(element);
       const name = getContainerName(element);
+      const tagName = element.tagName.toLowerCase();
 
-      rows.push({
-        name,
-        parent: parentName,
-        depth,
-        display: computed.display,
-        height: computed.height,
-        minHeight: computed.minHeight,
-        maxHeight: computed.maxHeight,
-        overflow: computed.overflow,
-        overflowX: computed.overflowX,
-        overflowY: computed.overflowY,
-        breakBefore: (computed as CSSStyleDeclaration).breakBefore || "",
-        breakAfter: (computed as CSSStyleDeclaration).breakAfter || "",
-        breakInside: (computed as CSSStyleDeclaration).breakInside || "",
-        pageBreakBefore: computed.pageBreakBefore || "",
-        pageBreakAfter: computed.pageBreakAfter || "",
-        pageBreakInside: computed.pageBreakInside || "",
-        keepTogether: element.hasAttribute("data-pdf-keep-together"),
-        adaptiveFit: element.hasAttribute("data-pdf-adaptive-fit"),
-        section: element.hasAttribute("data-pdf-section"),
-      });
+      const hasBreakRule =
+        ((computed as CSSStyleDeclaration).breakBefore || "auto") !== "auto" ||
+        ((computed as CSSStyleDeclaration).breakAfter || "auto") !== "auto" ||
+        ((computed as CSSStyleDeclaration).breakInside || "auto") !== "auto" ||
+        (computed.pageBreakBefore || "auto") !== "auto" ||
+        (computed.pageBreakAfter || "auto") !== "auto" ||
+        (computed.pageBreakInside || "auto") !== "auto";
+
+      const hasSizingConstraint =
+        (computed.height && computed.height !== "auto" && computed.height !== "0px") ||
+        (computed.minHeight && computed.minHeight !== "0px" && computed.minHeight !== "auto") ||
+        (computed.maxHeight && computed.maxHeight !== "none");
+
+      const hasOverflowConstraint =
+        [computed.overflow, computed.overflowX, computed.overflowY].some(
+          (value) => value && value !== "visible"
+        );
+
+      const structuralTag = ["table", "thead", "tbody", "tr"].includes(tagName);
+      const printContainer =
+        element.hasAttribute("data-pdf-section") ||
+        element.hasAttribute("data-pdf-keep-together") ||
+        element.hasAttribute("data-pdf-adaptive-fit") ||
+        structuralTag ||
+        hasBreakRule ||
+        hasSizingConstraint ||
+        hasOverflowConstraint;
+
+      const nextParent = printContainer ? name : parentName;
+
+      if (printContainer) {
+        rows.push({
+          name,
+          parent: parentName,
+          depth,
+          display: computed.display,
+          height: computed.height,
+          minHeight: computed.minHeight,
+          maxHeight: computed.maxHeight,
+          overflow: computed.overflow,
+          overflowX: computed.overflowX,
+          overflowY: computed.overflowY,
+          breakBefore: (computed as CSSStyleDeclaration).breakBefore || "",
+          breakAfter: (computed as CSSStyleDeclaration).breakAfter || "",
+          breakInside: (computed as CSSStyleDeclaration).breakInside || "",
+          pageBreakBefore: computed.pageBreakBefore || "",
+          pageBreakAfter: computed.pageBreakAfter || "",
+          pageBreakInside: computed.pageBreakInside || "",
+          keepTogether: element.hasAttribute("data-pdf-keep-together"),
+          adaptiveFit: element.hasAttribute("data-pdf-adaptive-fit"),
+          section: element.hasAttribute("data-pdf-section"),
+        });
+      }
 
       Array.from(element.children).forEach((child) => {
         if (child instanceof HTMLElement) {
-          walk(child, name, depth + 1);
+          walk(child, nextParent, depth + 1);
         }
       });
     };
