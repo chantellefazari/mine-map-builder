@@ -39,6 +39,10 @@ export interface SectionPdfOptions {
   blankPageThreshold?: number;
   /** CSS selector used to find printable sections inside the container (default "[data-pdf-section]") */
   sectionSelector?: string;
+  /** Lower bound (ratio) where row snapping is allowed near page bottom (default 0.7) */
+  rowSnapStartRatio?: number;
+  /** Max allowable whitespace ratio when snapping to row boundaries (default 0.18) */
+  maxWhitespaceRatio?: number;
 }
 
 const DEFAULTS: Required<SectionPdfOptions> = {
@@ -52,6 +56,8 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   addBorder: false,
   blankPageThreshold: 15,
   sectionSelector: "[data-pdf-section]",
+  rowSnapStartRatio: 0.7,
+  maxWhitespaceRatio: 0.18,
 };
 
 /**
@@ -157,7 +163,7 @@ export async function exportSectionsToPdf(
       // Find the closest row break BEFORE the max cut point.
       // Only snap in the lower part of the page, and never inside protected regions.
       let bestBreak = -1;
-      const snapZoneStart = sourceY + Math.floor(maxSliceHeightPx * 0.7);
+      const snapZoneStart = sourceY + Math.floor(maxSliceHeightPx * cfg.rowSnapStartRatio);
       const isInsideProtectedRegion = (point: number) =>
         safeRegions.some((region) => point > region.top + 1 && point < region.bottom - 1);
 
@@ -172,7 +178,7 @@ export async function exportSectionsToPdf(
       }
 
       // Ignore overly-early snap points that would create large visible gaps at page bottoms.
-      const maxWhitespacePx = Math.floor(maxSliceHeightPx * 0.18);
+      const maxWhitespacePx = Math.floor(maxSliceHeightPx * cfg.maxWhitespaceRatio);
       if (bestBreak > sourceY && maxEnd - bestBreak > maxWhitespacePx) {
         bestBreak = -1;
       }
@@ -271,6 +277,13 @@ export async function exportSectionsToPdf(
     clone.style.width = "100%";
     clone.style.maxWidth = "none";
     clone.style.overflow = "visible";
+
+    const isContinuousFlowContainer = section.hasAttribute("data-pdf-flow-container");
+    if (isContinuousFlowContainer) {
+      clone.querySelectorAll<HTMLElement>("[data-pdf-section]").forEach((element) => {
+        element.removeAttribute("data-pdf-section");
+      });
+    }
 
     // Sync live input/textarea values into the clone so html2canvas can see them
     const origInputs = section.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea");
