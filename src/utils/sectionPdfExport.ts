@@ -548,9 +548,12 @@ export async function exportSectionsToPdf(
       )
         .map((region) => {
           const rect = region.getBoundingClientRect();
+          const parent = region.parentElement instanceof HTMLElement ? region.parentElement : null;
           return {
             top: rect.top - wrapperRect.top,
             bottom: rect.bottom - wrapperRect.top,
+            name: getContainerName(region),
+            parent: parent ? getContainerName(parent) : undefined,
           };
         })
         .filter(
