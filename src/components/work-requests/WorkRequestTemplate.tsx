@@ -255,7 +255,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
               </div>
             </div>
 
-            {/* Row 2: Asset Number, Requested By, Equipment Description */}
+            {/* Row 2: Asset Number, Isolation Required, Equipment Description */}
             <div className="grid grid-cols-4 gap-2">
               <div className="border border-gray-300 p-2">
                 <span className="text-xs text-gray-500 block mb-1">Asset Number</span>
@@ -273,30 +273,6 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                 </div>
               </div>
               <div className="border border-gray-300 p-2">
-                <span className="text-xs text-gray-500 block mb-1">Requested By</span>
-                <Input
-                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                  value={form.requested_by}
-                  onChange={(e) => setForm({ ...form, requested_by: e.target.value })}
-                  onBlur={(e) => handleFieldBlur("requested_by", e.target.value)}
-                  placeholder="Enter name"
-                />
-              </div>
-              <div className="border border-gray-300 p-2 col-span-2">
-                <span className="text-xs text-gray-500 block mb-1">Equipment Description</span>
-                <Input
-                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                  value={form.functional_location}
-                  onChange={(e) => setForm({ ...form, functional_location: e.target.value })}
-                  onBlur={(e) => handleFieldBlur("functional_location", e.target.value)}
-                  placeholder="Enter location"
-                />
-              </div>
-            </div>
-
-            {/* Row 3: Isolation Required */}
-            <div className="grid grid-cols-4 gap-2">
-              <div className="border border-gray-300 p-2 col-span-2">
                 <span className="text-xs text-gray-500 block mb-1">Isolation Required</span>
                 <div className="flex gap-4">
                   {(["Yes", "No"] as const).map((opt) => {
@@ -315,6 +291,30 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                     );
                   })}
                 </div>
+              </div>
+              <div className="border border-gray-300 p-2 col-span-2">
+                <span className="text-xs text-gray-500 block mb-1">Equipment Description</span>
+                <Input
+                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                  value={form.functional_location}
+                  onChange={(e) => setForm({ ...form, functional_location: e.target.value })}
+                  onBlur={(e) => handleFieldBlur("functional_location", e.target.value)}
+                  placeholder="Enter location"
+                />
+              </div>
+            </div>
+
+            {/* Row 3: Requested By, Trade */}
+            <div className="grid grid-cols-4 gap-2">
+              <div className="border border-gray-300 p-2 col-span-2">
+                <span className="text-xs text-gray-500 block mb-1">Requested By</span>
+                <Input
+                  className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
+                  value={form.requested_by}
+                  onChange={(e) => setForm({ ...form, requested_by: e.target.value })}
+                  onBlur={(e) => handleFieldBlur("requested_by", e.target.value)}
+                  placeholder="Enter name"
+                />
               </div>
               <div className="border border-gray-300 p-2 col-span-2">
                 <span className="text-xs text-gray-500 block mb-1">Trade</span>
