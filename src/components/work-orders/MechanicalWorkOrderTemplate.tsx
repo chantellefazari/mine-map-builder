@@ -83,6 +83,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
         operations_handover_date: wo.operations_handover_date || "",
         resources_required: (wo as any).resources_required || "",
         labour_hours: labourStr,
+        isolation_required: (wo as any).isolation_required ?? false,
       });
     }
   }, [wo?.id]);
