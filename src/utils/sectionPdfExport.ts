@@ -477,9 +477,7 @@ export async function exportSectionsToPdf(
       });
     }
 
-    const hasAdaptiveFitContent =
-      section.hasAttribute("data-pdf-adaptive-fit") ||
-      section.querySelector("[data-pdf-adaptive-fit]") !== null;
+    const hasAdaptiveFitContent = section.hasAttribute("data-pdf-adaptive-fit");
     if (hasAdaptiveFitContent) {
       const remainingRatio = Math.max(0.22, Math.min(1, remainingMmOnPage / CONTENT_H));
       const commentsPaddingPx = Math.round(2 + remainingRatio * 6);
@@ -685,9 +683,7 @@ export async function exportSectionsToPdf(
     );
 
     const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
-    const hasAdaptiveFitContent =
-      section.hasAttribute("data-pdf-adaptive-fit") ||
-      section.querySelector("[data-pdf-adaptive-fit]") !== null;
+    const hasAdaptiveFitContent = section.hasAttribute("data-pdf-adaptive-fit");
 
     // If a section fits on a single page but not in remaining space,
     // start it on a fresh page to preserve clean section flow.
