@@ -78,7 +78,7 @@ export async function exportSectionsToPdf(
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
   const sections = Array.from(
-    container.querySelectorAll<HTMLElement>("[data-pdf-section]")
+    container.querySelectorAll<HTMLElement>(cfg.sectionSelector)
   );
 
   let currentY = MARGIN;
