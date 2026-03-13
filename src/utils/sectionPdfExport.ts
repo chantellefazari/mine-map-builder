@@ -249,7 +249,8 @@ export async function exportSectionsToPdf(
 
   // ── Render a section via off-screen clone ───────────────────────
   const renderSectionCanvas = async (
-    section: HTMLElement
+    section: HTMLElement,
+    remainingMmOnPage: number
   ): Promise<{
     canvas: HTMLCanvasElement;
     rowBreaksPx: number[];
@@ -282,6 +283,24 @@ export async function exportSectionsToPdf(
     if (isContinuousFlowContainer) {
       clone.querySelectorAll<HTMLElement>("[data-pdf-section]").forEach((element) => {
         element.removeAttribute("data-pdf-section");
+      });
+    }
+
+    const hasAdaptiveFitContent =
+      section.hasAttribute("data-pdf-adaptive-fit") ||
+      section.querySelector("[data-pdf-adaptive-fit]") !== null;
+    if (hasAdaptiveFitContent) {
+      const isTightRemainingSpace = remainingMmOnPage < CONTENT_H * 0.42;
+
+      clone.querySelectorAll<HTMLElement>("[data-pdf-comments-wrap]").forEach((element) => {
+        element.style.paddingTop = isTightRemainingSpace ? "4px" : "8px";
+        element.style.paddingBottom = isTightRemainingSpace ? "4px" : "8px";
+      });
+
+      clone.querySelectorAll<HTMLTextAreaElement>("[data-pdf-flex-comments]").forEach((element) => {
+        element.style.height = "auto";
+        element.style.maxHeight = "none";
+        element.style.minHeight = isTightRemainingSpace ? "42px" : "56px";
       });
     }
 
@@ -430,14 +449,22 @@ export async function exportSectionsToPdf(
   // ── Main loop ───────────────────────────────────────────────────
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
-    const { canvas, rowBreaksPx, keepTogetherRegionsPx } = await renderSectionCanvas(section);
+    const remainingMm = A4_H - MARGIN - currentY;
+    const { canvas, rowBreaksPx, keepTogetherRegionsPx } = await renderSectionCanvas(
+      section,
+      remainingMm
+    );
 
     const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
-    const remainingMm = A4_H - MARGIN - currentY;
+    const hasAdaptiveFitContent =
+      section.hasAttribute("data-pdf-adaptive-fit") ||
+      section.querySelector("[data-pdf-adaptive-fit]") !== null;
 
     // If a section fits on a single page but not in remaining space,
     // start it on a fresh page to preserve clean section flow.
-    if (sectionHeightMm <= CONTENT_H && sectionHeightMm > remainingMm) {
+    // Adaptive-fit sections (Comments/Sign Off blocks) are allowed to use
+    // remaining space first, then naturally continue to the next page if needed.
+    if (!hasAdaptiveFitContent && sectionHeightMm <= CONTENT_H && sectionHeightMm > remainingMm) {
       pdf.addPage();
       currentY = MARGIN;
     }
