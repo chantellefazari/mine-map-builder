@@ -258,6 +258,28 @@ export async function exportSectionsToPdf(
     clone.style.maxWidth = "none";
     clone.style.overflow = "visible";
 
+    // Sync live input/textarea values into the clone so html2canvas can see them
+    const origInputs = section.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea");
+    const clonedInputs = clone.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea");
+    origInputs.forEach((orig, idx) => {
+      const target = clonedInputs[idx];
+      if (!target) return;
+      const val = orig.value;
+      // Replace the input with a styled span so html2canvas renders full text
+      const span = document.createElement("span");
+      span.textContent = val;
+      span.style.cssText = window.getComputedStyle(orig).cssText;
+      span.style.display = "inline-block";
+      span.style.whiteSpace = "pre-wrap";
+      span.style.wordBreak = "break-word";
+      span.style.border = "none";
+      span.style.background = "transparent";
+      span.style.padding = orig.style.padding || "0";
+      span.style.margin = orig.style.margin || "0";
+      span.style.width = "100%";
+      target.replaceWith(span);
+    });
+
     clone.querySelectorAll<HTMLElement>("table").forEach((table) => {
       table.style.width = "100%";
       table.style.tableLayout = "fixed";
