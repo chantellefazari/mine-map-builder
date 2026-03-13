@@ -203,6 +203,8 @@ export async function exportSectionsToPdf(
       .map((region) => ({
         top: Math.max(0, Math.round(region.top)),
         bottom: Math.min(canvas.height, Math.round(region.bottom)),
+        name: region.name,
+        parent: region.parent,
       }))
       .filter((region) => region.bottom - region.top > 6)
       .sort((a, b) => a.top - b.top);
