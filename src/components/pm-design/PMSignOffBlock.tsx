@@ -12,8 +12,6 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
   return (
     <div
       data-pdf-section
-      data-pdf-adaptive-fit
-      data-pdf-keep-together
       data-pdf-component="pm-footer-block"
       className="overflow-visible"
     >

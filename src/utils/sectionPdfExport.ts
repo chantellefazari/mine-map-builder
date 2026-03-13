@@ -477,9 +477,7 @@ export async function exportSectionsToPdf(
       });
     }
 
-    const hasAdaptiveFitContent =
-      section.hasAttribute("data-pdf-adaptive-fit") ||
-      section.querySelector("[data-pdf-adaptive-fit]") !== null;
+    const hasAdaptiveFitContent = section.hasAttribute("data-pdf-adaptive-fit");
     if (hasAdaptiveFitContent) {
       const remainingRatio = Math.max(0.22, Math.min(1, remainingMmOnPage / CONTENT_H));
       const commentsPaddingPx = Math.round(2 + remainingRatio * 6);
