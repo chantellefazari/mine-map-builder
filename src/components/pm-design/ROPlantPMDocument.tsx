@@ -87,9 +87,9 @@ export const ROPlantPMDocument = () => {
             </tbody>
           </table>
         </div>
+        </div>
 
         <PMSignOffBlock footerText="Tennant Creek Mining Operations – Processing Plant Inspection Form" />
-      </div>
     </div>
   );
 };
