@@ -192,7 +192,7 @@ export async function exportSectionsToPdf(
   const addCanvasAcrossPages = (
     canvas: HTMLCanvasElement,
     rowBreaksPx: number[] = [],
-    keepTogetherRegionsPx: Array<{ top: number; bottom: number }> = []
+    keepTogetherRegionsPx: KeepTogetherRegionPx[] = []
   ) => {
     const pxPerMm = canvas.width / CONTENT_W;
     const safeBreaks = Array.from(new Set(rowBreaksPx))
