@@ -60,7 +60,6 @@ export const ROPlantPMDocument = () => {
         <DynamicInspectionTable
           tasksData={structuredInspectionTasks}
           title="SYSTEM, ASSEMBLY AND COMPONENTS CHECK"
-          separateSections
         />
 
         {/* Data Logging Table */}
