@@ -74,9 +74,39 @@ export async function exportSectionsToPdf(
 
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-  const sections = Array.from(
+  const sourceSections = Array.from(
     container.querySelectorAll<HTMLElement>("[data-pdf-section]")
   );
+
+  const getLogicalSections = (roots: HTMLElement[]) => {
+    if (roots.length !== 1) return roots;
+
+    const [root] = roots;
+    const borderContainer = root.querySelector<HTMLElement>(".border-2.border-border");
+    const sectionHost = borderContainer ?? (root.firstElementChild as HTMLElement | null) ?? root;
+
+    const childBlocks = Array.from(sectionHost.children).filter(
+      (child): child is HTMLElement => child instanceof HTMLElement
+    );
+
+    const logicalBlocks = childBlocks.filter((block) => {
+      const style = window.getComputedStyle(block);
+      if (style.display === "none" || style.visibility === "hidden") return false;
+
+      const text = (block.textContent ?? "").trim();
+      const hasStructuredContent = Boolean(
+        block.querySelector("table, img, svg, canvas, input, textarea, select")
+      );
+
+      return text.length > 0 || hasStructuredContent;
+    });
+
+    // If the template has identifiable top-level blocks (header/metadata/table/signoff),
+    // paginate by these blocks to avoid section headers/sign-off being sliced.
+    return logicalBlocks.length >= 3 ? logicalBlocks : roots;
+  };
+
+  const sections = getLogicalSections(sourceSections);
 
   let currentY = MARGIN;
 
@@ -130,12 +160,12 @@ export async function exportSectionsToPdf(
         }
       }
 
-      // Only use the break if it doesn't waste more than 15% of page height.
-      // Otherwise just do a hard cut — better to clip a row slightly than
-      // leave a huge gap.
+      // Prefer row-aligned breaks, but only if they don't waste too much page height.
+      // This keeps content continuous on A4 while minimising visible cut-offs.
+      // (35% threshold tuned to avoid both severe clipping and giant bottom gaps.)
       const wastedPx = bestBreak > sourceY ? (maxEnd - bestBreak) : maxSliceHeightPx;
       const wastedRatio = wastedPx / (CONTENT_H * pxPerMm);
-      const sliceEnd = (bestBreak > sourceY && wastedRatio <= 0.15) ? bestBreak : maxEnd;
+      const sliceEnd = (bestBreak > sourceY && wastedRatio <= 0.35) ? bestBreak : maxEnd;
 
       const sliceHeightPx = Math.max(
         1,
@@ -274,13 +304,9 @@ export async function exportSectionsToPdf(
     const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
     const remainingMm = A4_H - MARGIN - currentY;
 
-    // Only push to a new page if the section fits on one page AND
-    // there's less than 2mm remaining (keep content flowing continuously)
-    if (
-      sectionHeightMm <= CONTENT_H &&
-      sectionHeightMm > remainingMm &&
-      remainingMm < 2
-    ) {
+    // If this logical section fits on one page but not in the remaining space,
+    // move it to the next page to prevent visible cut-offs (e.g. sign-off rows).
+    if (sectionHeightMm <= CONTENT_H && sectionHeightMm > remainingMm) {
       pdf.addPage();
       currentY = MARGIN;
     }
