@@ -146,7 +146,7 @@ export async function exportSectionsToPdf(
 
       // Prioritise keep-together forced break, then row break, then hard cut fallback.
       const sliceEnd = forcedBreak > sourceY ? forcedBreak : bestBreak > sourceY ? bestBreak : maxEnd;
-
+      const usedForcedBreak = forcedBreak > sourceY && sliceEnd === forcedBreak;
 
       const sliceHeightPx = Math.max(
         1,
@@ -186,7 +186,9 @@ export async function exportSectionsToPdf(
       );
 
       const reachedEnd = sourceY + sliceHeightPx >= canvas.height - 1;
-      const overlapPx = reachedEnd ? 0 : cfg.sliceOverlapPx;
+      // IMPORTANT: when we forced a keep-together break (e.g. before SIGN OFF),
+      // do not apply overlap, otherwise next page starts inside that block.
+      const overlapPx = reachedEnd || usedForcedBreak ? 0 : cfg.sliceOverlapPx;
       sourceY = reachedEnd ? canvas.height : sourceY + sliceHeightPx - overlapPx;
       currentY += sliceHeightMm;
 
