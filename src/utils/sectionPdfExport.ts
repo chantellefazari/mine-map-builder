@@ -449,14 +449,22 @@ export async function exportSectionsToPdf(
   // ── Main loop ───────────────────────────────────────────────────
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
-    const { canvas, rowBreaksPx, keepTogetherRegionsPx } = await renderSectionCanvas(section);
+    const remainingMm = A4_H - MARGIN - currentY;
+    const { canvas, rowBreaksPx, keepTogetherRegionsPx } = await renderSectionCanvas(
+      section,
+      remainingMm
+    );
 
     const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
-    const remainingMm = A4_H - MARGIN - currentY;
+    const hasAdaptiveFitContent =
+      section.hasAttribute("data-pdf-adaptive-fit") ||
+      section.querySelector("[data-pdf-adaptive-fit]") !== null;
 
     // If a section fits on a single page but not in remaining space,
     // start it on a fresh page to preserve clean section flow.
-    if (sectionHeightMm <= CONTENT_H && sectionHeightMm > remainingMm) {
+    // Adaptive-fit sections (Comments/Sign Off blocks) are allowed to use
+    // remaining space first, then naturally continue to the next page if needed.
+    if (!hasAdaptiveFitContent && sectionHeightMm <= CONTENT_H && sectionHeightMm > remainingMm) {
       pdf.addPage();
       currentY = MARGIN;
     }
