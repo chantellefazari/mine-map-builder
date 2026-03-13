@@ -152,7 +152,7 @@ export const PMMetadataGrid = ({
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div>
           <div className="px-2 py-1.5">{derivedPlantArea || plantArea}</div>
         </div>
-        <div className="grid grid-cols-[120px_1fr]" data-pdf-keep-together data-pdf-break>
+        <div className="grid grid-cols-[120px_1fr]" data-pdf-keep-together>
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div>
           <div className="px-2 py-1.5">
             <input
