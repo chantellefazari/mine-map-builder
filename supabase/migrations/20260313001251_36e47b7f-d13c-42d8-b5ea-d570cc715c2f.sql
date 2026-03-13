@@ -1,0 +1,1 @@
+DELETE FROM processing_plant_assets_rev_b WHERE asset_number IN ('CT01-SCN02-EXA', 'CT01-SCN02-EXB');

@@ -174,8 +174,7 @@ export const useProcessingPlantAssets = useRevBPlantAssets;
 
 // Component suffix patterns (without leading dash) that indicate Level 7 sub-equipment
 const COMPONENT_TYPE_PATTERNS = [
-  "LCS", "MTR", "MCC", "VSD", "GBX", "GB", "CPL", "BRG", "SEAL",
-  "PH", "MC", "CP", "HST", "EXA", "EXB", "EXC", "NZL",
+  "LCS", "MTR", "MCC", "VSD", "CPL", "BRG", "SEAL",
 ];
 
 /**
@@ -195,15 +194,9 @@ function getComponentParent(assetNumber: string): string | null {
   return null;
 }
 
-function inferVirtualParentName(componentName: string): string {
-  return componentName
-    .replace(/\s+(LCS|Motor|MCC\s*Cell|Gearbox|Variable\s*Speed\s*Drive|VSD|Coupling|Bearing|Seal|PH\s*Probe)$/i, "")
-    .trim();
-}
-
 /**
  * Auto-nest component-suffix assets under their parent equipment.
- * If parent equipment is missing, create a virtual parent to preserve Level 6 → Level 7 structure.
+ * Only nests when the parent equipment exists in the database — never creates virtual parents.
  */
 function nestComponentsInAreas(areas: Area[]): Area[] {
   for (const area of areas) {
@@ -211,7 +204,6 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
       for (const pa of subArea.parentAssets) {
         const equipMap = new Map<string, Equipment>();
         const orderIndex = new Map<string, number>();
-        const virtualParents = new Set<string>();
         const nested = new Set<string>();
 
         pa.equipment.forEach((equip, idx) => {
@@ -240,21 +232,9 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
           // If the asset has its own components in the DB, it's a parent equipment — never auto-nest
           if (equip.components && equip.components.length > 0) continue;
 
-          // Don't nest under the system header — these are peer Level 6 equipment, not Level 7 components
-          if (parentKey === systemHeaderAssetNumber && !equipMap.has(parentKey)) continue;
-
-          let parentEquip = equipMap.get(parentKey);
-          if (!parentEquip) {
-            parentEquip = {
-              assetNumber: parentKey,
-              name: inferVirtualParentName(equip.name) || parentKey,
-              components: [],
-              functionalLocation: equip.functionalLocation,
-            };
-            equipMap.set(parentKey, parentEquip);
-            virtualParents.add(parentKey);
-            orderIndex.set(parentKey, orderIndex.get(equip.assetNumber) ?? 9999);
-          }
+          // Only nest if the parent equipment actually exists in the database — never create virtual parents
+          const parentEquip = equipMap.get(parentKey);
+          if (!parentEquip) continue;
 
           if (!parentEquip.components) parentEquip.components = [];
           const lastDash = equip.assetNumber.lastIndexOf("-");
@@ -309,12 +289,7 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
           nested.add(equip.assetNumber);
         }
 
-        const remainingOriginal = pa.equipment.filter((e) => !nested.has(e.assetNumber));
-        const virtualEquipment = [...virtualParents]
-          .map((assetNumber) => equipMap.get(assetNumber)!)
-          .filter(Boolean);
-
-        pa.equipment = [...remainingOriginal, ...virtualEquipment].sort((a, b) => {
+        pa.equipment = pa.equipment.filter((e) => !nested.has(e.assetNumber)).sort((a, b) => {
           const ia = orderIndex.get(a.assetNumber) ?? 9999;
           const ib = orderIndex.get(b.assetNumber) ?? 9999;
           if (ia !== ib) return ia - ib;
