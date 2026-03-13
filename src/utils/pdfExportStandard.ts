@@ -29,10 +29,10 @@ export const PDF_EXPORT_OPTS: SectionPdfOptions = {
   renderWidth: 920,
   fontSize: "13px",
   lineHeight: "1.5",
-  scale: 1.5,
+  scale: 2,
   addBorder: true,
   gap: 0,
-  sliceOverlapPx: 0,
+  sliceOverlapPx: 4,
   blankPageThreshold: 15,
 };
 
