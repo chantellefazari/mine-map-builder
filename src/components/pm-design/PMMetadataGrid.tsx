@@ -162,6 +162,7 @@ export const PMMetadataGrid = ({
               onFocus={() => { isFocusedRef.current = true; }}
               onBlur={() => { isFocusedRef.current = false; flushResourceSave(); }}
               placeholder="e.g. 1x Fitter (2 hrs)"
+              data-pdf-text-value
               className="w-full text-xs bg-transparent border-none outline-none p-0 m-0 leading-normal"
             />
           </div>

@@ -265,20 +265,16 @@ export async function exportSectionsToPdf(
       const target = clonedInputs[idx];
       if (!target) return;
 
-      const val = orig.value ?? "";
-      const isTextLikeInput =
-        orig instanceof HTMLTextAreaElement ||
-        (orig instanceof HTMLInputElement &&
-          ["text", "search", "email", "url", "tel", "number", "password"].includes(
-            (orig.type || "text").toLowerCase()
-          ));
+      const shouldRenderAsText = orig.hasAttribute("data-pdf-text-value");
 
-      // Replace text-like controls with a lightweight inline span that
-      // preserves the parent cell's layout (no extra block height).
-      if (isTextLikeInput) {
+      // Resource-like fields opt-in to text rendering so long values wrap in PDFs.
+      // Keep all other controls as native elements to preserve measured layout flow.
+      if (shouldRenderAsText) {
         const computed = window.getComputedStyle(orig);
         const textSpan = document.createElement("span");
         textSpan.textContent = val;
+        textSpan.style.display = "inline-block";
+        textSpan.style.width = "100%";
         textSpan.style.fontFamily = computed.fontFamily;
         textSpan.style.fontSize = computed.fontSize;
         textSpan.style.fontWeight = computed.fontWeight;
