@@ -186,6 +186,13 @@ export async function exportSectionsToPdf(
     console.groupCollapsed(`[PDF AUDIT] Print container hierarchy: ${rootLabel} (${rows.length} nodes)`);
     console.table(rows);
     console.groupEnd();
+
+    const globalWindow = window as Window & {
+      __pdfContainerAudit?: Array<{ rootLabel: string; rows: typeof rows }>;
+    };
+    globalWindow.__pdfContainerAudit = globalWindow.__pdfContainerAudit || [];
+    globalWindow.__pdfContainerAudit.push({ rootLabel, rows });
+    console.log("[PDF AUDIT JSON]", { rootLabel, rows });
   };
 
   // ── Slice a single canvas across pages ──────────────────────────
