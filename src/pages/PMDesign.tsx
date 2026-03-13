@@ -788,6 +788,9 @@ const PMDesign = () => {
               </div>
               <div ref={pmDocRef}>
                 <div data-pdf-section>
+                  {renderPMDocument()}
+                </div>
+              </div>
             </div>
           ) : (
             <div className="p-8">
