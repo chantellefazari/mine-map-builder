@@ -14,9 +14,9 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
       {/* Comments */}
       <div className="border-t border-border">
         <div className="bg-muted px-3 py-1.5 font-semibold text-sm border-b border-border">COMMENTS:</div>
-        <div className="px-3 py-2" data-pdf-comments-wrap>
+        <div className="px-3 py-1.5" data-pdf-comments-wrap>
           <Textarea
-            className="min-h-[60px] resize-none"
+            className="min-h-[56px] resize-none"
             data-pdf-flex-comments
             placeholder="Enter comments here..."
           />
@@ -27,8 +27,8 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
         {/* Sign Off */}
         <div className="border-t border-border">
           <div className="bg-muted px-3 py-1.5 font-bold text-sm border-b border-border">SIGN OFF</div>
-          <div className="px-4 py-2 space-y-2">
-            <div className="grid grid-cols-2 gap-x-8">
+          <div className="px-3 py-1.5 space-y-1.5">
+            <div className="grid grid-cols-2 gap-x-6">
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium w-52">Follow up work required:</span>
                 <div className="flex items-center gap-3">
@@ -44,7 +44,7 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-1">
               <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Name:</span><Input className="h-7" /></div>
               <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Signature:</span><div className="h-7 border border-border rounded bg-muted/30"></div></div>
               <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Date:</span><Input className="h-7" type="date" /></div>

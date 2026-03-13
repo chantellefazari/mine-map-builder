@@ -163,6 +163,7 @@ export async function exportSectionsToPdf(
       // Find the closest row break BEFORE the max cut point.
       // Only snap in the lower part of the page, and never inside protected regions.
       let bestBreak = -1;
+      let fallbackBreak = -1;
       const snapZoneStart = sourceY + Math.floor(maxSliceHeightPx * cfg.rowSnapStartRatio);
       const isInsideProtectedRegion = (point: number) =>
         safeRegions.some((region) => point > region.top + 1 && point < region.bottom - 1);
@@ -171,16 +172,24 @@ export async function exportSectionsToPdf(
         const point = safeBreaks[i];
         if (point <= sourceY + 10) break;
         if (point > maxEnd) continue;
-        if (point < snapZoneStart) continue;
         if (isInsideProtectedRegion(point)) continue;
+        if (fallbackBreak === -1) fallbackBreak = point;
+        if (point < snapZoneStart) continue;
         bestBreak = point;
         break;
       }
 
-      // Ignore overly-early snap points that would create large visible gaps at page bottoms.
+      // Prefer late row snaps, but if none exist keep row integrity with a sufficiently-filled fallback break.
       const maxWhitespacePx = Math.floor(maxSliceHeightPx * cfg.maxWhitespaceRatio);
       if (bestBreak > sourceY && maxEnd - bestBreak > maxWhitespacePx) {
         bestBreak = -1;
+      }
+
+      if (bestBreak === -1 && fallbackBreak > sourceY) {
+        const filledRatio = (fallbackBreak - sourceY) / maxSliceHeightPx;
+        if (filledRatio >= 0.55) {
+          bestBreak = fallbackBreak;
+        }
       }
 
       // Prioritise keep-together forced break, then row break, then hard cut fallback.
@@ -194,7 +203,7 @@ export async function exportSectionsToPdf(
       );
 
       // Prevent tiny page-bottom slices that visually cut lines/items.
-      const MIN_SLICE_HEIGHT_PX = 24;
+      const MIN_SLICE_HEIGHT_PX = 8;
       if (sliceHeightPx < MIN_SLICE_HEIGHT_PX && canMoveToFreshPage) {
         pdf.addPage();
         currentY = MARGIN;
@@ -236,7 +245,11 @@ export async function exportSectionsToPdf(
       const reachedEnd = sourceY + sliceHeightPx >= canvas.height - 1;
       // When we break at explicit semantic boundaries (forced or row),
       // don't overlap, it causes clipped/duplicated lines at page tops.
-      const overlapPx = reachedEnd || usedForcedBreak || usedRowBreak ? 0 : cfg.sliceOverlapPx;
+      const overlapPx = reachedEnd
+        ? 0
+        : usedForcedBreak || usedRowBreak
+        ? Math.max(1, cfg.sliceOverlapPx - 1)
+        : cfg.sliceOverlapPx;
       sourceY = reachedEnd ? canvas.height : sourceY + sliceHeightPx - overlapPx;
       currentY += sliceHeightMm;
 
@@ -290,17 +303,19 @@ export async function exportSectionsToPdf(
       section.hasAttribute("data-pdf-adaptive-fit") ||
       section.querySelector("[data-pdf-adaptive-fit]") !== null;
     if (hasAdaptiveFitContent) {
-      const isTightRemainingSpace = remainingMmOnPage < CONTENT_H * 0.42;
+      const remainingRatio = Math.max(0.22, Math.min(1, remainingMmOnPage / CONTENT_H));
+      const commentsPaddingPx = Math.round(2 + remainingRatio * 6);
+      const commentsMinHeightPx = Math.round(24 + remainingRatio * 34);
 
       clone.querySelectorAll<HTMLElement>("[data-pdf-comments-wrap]").forEach((element) => {
-        element.style.paddingTop = isTightRemainingSpace ? "4px" : "8px";
-        element.style.paddingBottom = isTightRemainingSpace ? "4px" : "8px";
+        element.style.paddingTop = `${commentsPaddingPx}px`;
+        element.style.paddingBottom = `${commentsPaddingPx}px`;
       });
 
       clone.querySelectorAll<HTMLTextAreaElement>("[data-pdf-flex-comments]").forEach((element) => {
         element.style.height = "auto";
         element.style.maxHeight = "none";
-        element.style.minHeight = isTightRemainingSpace ? "42px" : "56px";
+        element.style.minHeight = `${commentsMinHeightPx}px`;
       });
     }
 
@@ -389,6 +404,16 @@ export async function exportSectionsToPdf(
         element.style.breakAfter = "auto";
         element.style.pageBreakBefore = "auto";
         element.style.pageBreakAfter = "auto";
+      });
+
+    clone
+      .querySelectorAll<HTMLElement>(
+        "[class*='break-inside'], [style*='break-inside'], [style*='page-break-inside']"
+      )
+      .forEach((element) => {
+        if (element.hasAttribute("data-pdf-keep-together")) return;
+        element.style.breakInside = "auto";
+        element.style.pageBreakInside = "auto";
       });
 
     // Remove UI-only elements
