@@ -52,6 +52,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
         trade: wr.trade || "",
         status: wr.status || "Open",
         isolation_required: wr.isolation_required || false,
+        from_hazard_id: (wr as any).from_hazard_id || false,
         photo_urls: wr.photo_urls || [],
       });
     }
