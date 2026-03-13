@@ -326,7 +326,7 @@ export async function exportSectionsToPdf(
 
       // Collect row/line boundaries from tables, lists, and explicit section dividers
       const breakElements = clone.querySelectorAll<HTMLElement>(
-        "tr, li, [data-pdf-break], .border-b"
+        "tr, li, [data-pdf-break]"
       );
       const rowBreaksCssPx = Array.from(breakElements)
         .map((row) => row.getBoundingClientRect().bottom - wrapperRect.top)
