@@ -18,6 +18,7 @@ const StoresWarehouseDesign = lazy(() => import("./pages/StoresWarehouseDesign")
 const SiteSparesCatalogue = lazy(() => import("./pages/SiteSparesCatalogue"));
 
 const WorkOrderTemplates = lazy(() => import("./pages/WorkOrderTemplates"));
+const WorkRequestTemplates = lazy(() => import("./pages/WorkRequestTemplates"));
 const MaintenanceFoundations = lazy(() => import("./pages/MaintenanceFoundations"));
 const SupplierRegister = lazy(() => import("./pages/SupplierRegister"));
 const SuppliersProcurement = lazy(() => import("./pages/SuppliersProcurement"));
