@@ -2262,6 +2262,74 @@ export type Database = {
         }
         Relationships: []
       }
+      work_requests: {
+        Row: {
+          approved_at: string | null
+          approved_by: string
+          asset_id: string
+          created_at: string
+          date_raised: string
+          functional_location: string
+          id: string
+          linked_wo_id: string | null
+          priority: string
+          problem_description: string
+          requested_by: string
+          scope_of_works: string
+          status: string
+          trade: string
+          updated_at: string
+          work_type: string
+          wr_number: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string
+          asset_id?: string
+          created_at?: string
+          date_raised?: string
+          functional_location?: string
+          id?: string
+          linked_wo_id?: string | null
+          priority?: string
+          problem_description?: string
+          requested_by?: string
+          scope_of_works?: string
+          status?: string
+          trade?: string
+          updated_at?: string
+          work_type?: string
+          wr_number: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string
+          asset_id?: string
+          created_at?: string
+          date_raised?: string
+          functional_location?: string
+          id?: string
+          linked_wo_id?: string | null
+          priority?: string
+          problem_description?: string
+          requested_by?: string
+          scope_of_works?: string
+          status?: string
+          trade?: string
+          updated_at?: string
+          work_type?: string
+          wr_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_requests_linked_wo_id_fkey"
+            columns: ["linked_wo_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -2277,6 +2345,7 @@ export type Database = {
       next_po_number: { Args: never; Returns: string }
       next_pr_number: { Args: never; Returns: string }
       next_wo_number: { Args: never; Returns: string }
+      next_wr_number: { Args: never; Returns: string }
     }
     Enums: {
       app_role: "admin" | "user"
