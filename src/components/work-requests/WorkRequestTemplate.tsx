@@ -295,7 +295,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                 </div>
               </div>
               <div className="border border-gray-300 p-2">
-                <span className="text-xs text-gray-500 block mb-1">From Hazard ID</span>
+                <span className="text-xs text-gray-500 block mb-1">Hazard Identification</span>
                 <div className="flex gap-4">
                   {(["Yes", "No"] as const).map((opt) => {
                     const isSelected = opt === "Yes" ? form.from_hazard_id : !form.from_hazard_id;
