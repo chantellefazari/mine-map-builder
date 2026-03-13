@@ -533,6 +533,7 @@ export async function exportSectionsToPdf(
 
     document.body.appendChild(wrapper);
     try {
+      logPrintContainerHierarchy(clone, section.getAttribute("data-pdf-component") || getContainerName(section));
       const wrapperRect = wrapper.getBoundingClientRect();
 
       // Collect row/line boundaries from tables, lists, and explicit section dividers
