@@ -360,6 +360,22 @@ const PMDesign = () => {
     setShowPrintPreview(true);
   };
 
+  const handleDownloadPdf = useCallback(async () => {
+    const container = pmDocRef.current;
+    if (!container) return;
+    setIsDownloading(true);
+    try {
+      const title = getDocumentTitle().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
+      const filename = `TCMG_${title}.pdf`;
+      await exportSectionsToPdf(container, filename, PDF_EXPORT_OPTS);
+      toast.success(`Downloaded ${filename}`);
+    } catch (err: any) {
+      toast.error("PDF download failed: " + err.message);
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [activeView]);
+
   const queryClient = useQueryClient();
   const [isSyncing, setIsSyncing] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
