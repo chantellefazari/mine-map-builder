@@ -103,6 +103,91 @@ export async function exportSectionsToPdf(
 
   let currentY = MARGIN;
 
+  const getContainerName = (element: HTMLElement): string => {
+    const explicitName =
+      element.getAttribute("data-pdf-component") ||
+      element.getAttribute("data-component") ||
+      element.getAttribute("aria-label");
+    if (explicitName) return explicitName;
+
+    const tag = element.tagName.toLowerCase();
+    const id = element.id ? `#${element.id}` : "";
+    const classList = (element.className || "")
+      .toString()
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((cls) => `.${cls}`)
+      .join("");
+
+    return `${tag}${id}${classList}`;
+  };
+
+  const logPrintContainerHierarchy = (root: HTMLElement, rootLabel: string) => {
+    if (!cfg.debugContainerTree) return;
+
+    const rows: Array<{
+      name: string;
+      parent: string;
+      depth: number;
+      display: string;
+      height: string;
+      minHeight: string;
+      maxHeight: string;
+      overflow: string;
+      overflowX: string;
+      overflowY: string;
+      breakBefore: string;
+      breakAfter: string;
+      breakInside: string;
+      pageBreakBefore: string;
+      pageBreakAfter: string;
+      pageBreakInside: string;
+      keepTogether: boolean;
+      adaptiveFit: boolean;
+      section: boolean;
+    }> = [];
+
+    const walk = (element: HTMLElement, parentName: string, depth: number) => {
+      const computed = window.getComputedStyle(element);
+      const name = getContainerName(element);
+
+      rows.push({
+        name,
+        parent: parentName,
+        depth,
+        display: computed.display,
+        height: computed.height,
+        minHeight: computed.minHeight,
+        maxHeight: computed.maxHeight,
+        overflow: computed.overflow,
+        overflowX: computed.overflowX,
+        overflowY: computed.overflowY,
+        breakBefore: (computed as CSSStyleDeclaration).breakBefore || "",
+        breakAfter: (computed as CSSStyleDeclaration).breakAfter || "",
+        breakInside: (computed as CSSStyleDeclaration).breakInside || "",
+        pageBreakBefore: computed.pageBreakBefore || "",
+        pageBreakAfter: computed.pageBreakAfter || "",
+        pageBreakInside: computed.pageBreakInside || "",
+        keepTogether: element.hasAttribute("data-pdf-keep-together"),
+        adaptiveFit: element.hasAttribute("data-pdf-adaptive-fit"),
+        section: element.hasAttribute("data-pdf-section"),
+      });
+
+      Array.from(element.children).forEach((child) => {
+        if (child instanceof HTMLElement) {
+          walk(child, name, depth + 1);
+        }
+      });
+    };
+
+    walk(root, "document", 0);
+    console.groupCollapsed(`[PDF AUDIT] Print container hierarchy: ${rootLabel} (${rows.length} nodes)`);
+    console.table(rows);
+    console.groupEnd();
+  };
+
   // ── Slice a single canvas across pages ──────────────────────────
   const addCanvasAcrossPages = (
     canvas: HTMLCanvasElement,
