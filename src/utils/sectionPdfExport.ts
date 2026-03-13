@@ -273,27 +273,21 @@ export async function exportSectionsToPdf(
             (orig.type || "text").toLowerCase()
           ));
 
-      // Replace text-like controls with wrapped text blocks for reliable full-value capture
+      // Replace text-like controls with a lightweight inline span that
+      // preserves the parent cell's layout (no extra block height).
       if (isTextLikeInput) {
         const computed = window.getComputedStyle(orig);
-        const textBlock = document.createElement("div");
-        textBlock.textContent = val;
-        textBlock.style.display = "block";
-        textBlock.style.width = "100%";
-        textBlock.style.minHeight = `${Math.max(orig.getBoundingClientRect().height, 16)}px`;
-        textBlock.style.boxSizing = "border-box";
-        textBlock.style.padding = computed.padding;
-        textBlock.style.margin = computed.margin;
-        textBlock.style.fontFamily = computed.fontFamily;
-        textBlock.style.fontSize = computed.fontSize;
-        textBlock.style.fontWeight = computed.fontWeight;
-        textBlock.style.lineHeight = computed.lineHeight;
-        textBlock.style.letterSpacing = computed.letterSpacing;
-        textBlock.style.color = computed.color;
-        textBlock.style.whiteSpace = "pre-wrap";
-        textBlock.style.wordBreak = "break-word";
-        textBlock.style.overflowWrap = "anywhere";
-        target.replaceWith(textBlock);
+        const textSpan = document.createElement("span");
+        textSpan.textContent = val;
+        textSpan.style.fontFamily = computed.fontFamily;
+        textSpan.style.fontSize = computed.fontSize;
+        textSpan.style.fontWeight = computed.fontWeight;
+        textSpan.style.lineHeight = computed.lineHeight;
+        textSpan.style.color = computed.color;
+        textSpan.style.whiteSpace = "pre-wrap";
+        textSpan.style.wordBreak = "break-word";
+        textSpan.style.overflowWrap = "anywhere";
+        target.replaceWith(textSpan);
         return;
       }
 
