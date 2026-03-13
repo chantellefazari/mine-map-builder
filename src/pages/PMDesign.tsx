@@ -1,6 +1,8 @@
 import { useState, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
-import { FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download } from "lucide-react";
+import { FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download, Loader2 } from "lucide-react";
+import { exportSectionsToPdf } from "@/utils/sectionPdfExport";
+import { PDF_EXPORT_OPTS } from "@/utils/pdfExportStandard";
 import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { supabase } from "@/integrations/supabase/client";
 import { seedPMTasks } from "@/utils/seedPMTasks";
