@@ -163,7 +163,7 @@ export async function exportSectionsToPdf(
       // Find the closest row break BEFORE the max cut point.
       // Only snap in the lower part of the page, and never inside protected regions.
       let bestBreak = -1;
-      const snapZoneStart = sourceY + Math.floor(maxSliceHeightPx * 0.7);
+      const snapZoneStart = sourceY + Math.floor(maxSliceHeightPx * cfg.rowSnapStartRatio);
       const isInsideProtectedRegion = (point: number) =>
         safeRegions.some((region) => point > region.top + 1 && point < region.bottom - 1);
 
@@ -178,7 +178,7 @@ export async function exportSectionsToPdf(
       }
 
       // Ignore overly-early snap points that would create large visible gaps at page bottoms.
-      const maxWhitespacePx = Math.floor(maxSliceHeightPx * 0.18);
+      const maxWhitespacePx = Math.floor(maxSliceHeightPx * cfg.maxWhitespaceRatio);
       if (bestBreak > sourceY && maxEnd - bestBreak > maxWhitespacePx) {
         bestBreak = -1;
       }
