@@ -10,7 +10,12 @@ export const DieselFarmPMDocument = () => {
   const pm = pms.find((p) => p.pmName === "Diesel Farm Weekly Inspection");
   return (
     <div className="bg-background min-h-full">
-      <div className="border-2 border-border">
+      <div
+        className="border-2 border-border overflow-visible"
+        data-pdf-component="diesel-farm-pm-document"
+        data-pdf-section
+        data-pdf-flow-container
+      >
         <PMBannerHeader title="Tenant Creek - Diesel Farm Check" subtitle="Mechanical Running PMs - Weekly Inspection (Fitter)" />
 
         <PMMetadataGrid
