@@ -132,15 +132,20 @@ export async function exportSectionsToPdf(
         (region) => region.top > sourceY && region.top < maxEnd && region.bottom > maxEnd
       );
 
-      // If the protected block starts almost at the top of remaining space,
-      // push it to a fresh page to avoid clipping the first rows.
-      if (conflictingRegion && conflictingRegion.top - sourceY < 12 && currentY > MARGIN + 0.5) {
+      // Avoid creating tiny slices (1–12px) before protected blocks.
+      // Those micro-slices are the main cause of visual clipping at page starts.
+      const MIN_PRE_BREAK_SLICE_PX = 12;
+      const canMoveToFreshPage = currentY > MARGIN + 0.5;
+      if (conflictingRegion && conflictingRegion.top - sourceY < MIN_PRE_BREAK_SLICE_PX && canMoveToFreshPage) {
         pdf.addPage();
         currentY = MARGIN;
         continue;
       }
 
-      const forcedBreak = conflictingRegion?.top ?? -1;
+      const forcedBreak =
+        conflictingRegion && conflictingRegion.top - sourceY >= MIN_PRE_BREAK_SLICE_PX
+          ? conflictingRegion.top
+          : -1;
 
       // Find the closest row break BEFORE the max cut point.
       let bestBreak = -1;
