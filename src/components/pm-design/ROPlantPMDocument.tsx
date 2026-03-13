@@ -1,43 +1,34 @@
 import { Input } from "@/components/ui/input";
 import { Gauge } from "lucide-react";
 import { SafetyPrecautionsSection } from "./SafetyPrecautionsSection";
+import { PMBannerHeader } from "./PMBannerHeader";
 import { PMMetadataGrid } from "./PMMetadataGrid";
 import { usePMasterList } from "@/hooks/usePMData";
-import { DynamicInspectionTable } from "./DynamicInspectionTable";
-import { PMBannerHeader } from "./PMBannerHeader";
 import { PMSignOffBlock } from "./PMSignOffBlock";
+import { DynamicInspectionTable } from "./DynamicInspectionTable";
+
+const dataLoggingColumns = [
+  { tag: "CT4001", label: "Feed", unit: "µs/cm" },
+  { tag: "CT4002", label: "Permeate", unit: "µs/cm" },
+  { tag: "PI-01", label: "Bef. Media", unit: "bar" },
+  { tag: "PI-02", label: "Aft. Media", unit: "bar" },
+  { tag: "PT2001", label: "Aft. Cart.", unit: "bar" },
+  { tag: "PT2003", label: "Bef. Memb.", unit: "bar" },
+  { tag: "PT2002", label: "Aft. Memb.", unit: "bar" },
+  { tag: "P-01", label: "Freq", unit: "HZ" },
+  { tag: "P-02", label: "Freq", unit: "HZ" },
+  { tag: "FT1001", label: "Brine", unit: "lpm" },
+  { tag: "FT1002", label: "Recirc", unit: "lpm" },
+  { tag: "FT1003", label: "Permeate", unit: "lpm" },
+  { tag: "TT5001", label: "Brine", unit: "°C" },
+];
 
 export const ROPlantPMDocument = () => {
   const { pms } = usePMasterList();
   const pm = pms.find((p) => p.pmName === "RO Plant Daily Inspection");
 
-  const structuredInspectionTasks = Array.isArray(pm?.tasks)
-    ? {
-        sections: [
-          {
-            equipmentName: "WATER QUALITY & FILTRATION",
-            tasks: pm.tasks.slice(0, 3).map((task) =>
-              typeof task === "string" ? { task } : task
-            ),
-          },
-          {
-            equipmentName: "CHEMICAL DOSING & CONTROL",
-            tasks: pm.tasks.slice(3, 7).map((task) =>
-              typeof task === "string" ? { task } : task
-            ),
-          },
-          {
-            equipmentName: "CONTAINER & UTILITIES",
-            tasks: pm.tasks.slice(7).map((task) =>
-              typeof task === "string" ? { task } : task
-            ),
-          },
-        ].filter((section) => section.tasks.length > 0),
-      }
-    : pm?.tasks;
-
   return (
-    <div className="bg-background">
+    <div className="bg-background min-h-full">
       <div className="border-2 border-border">
         <PMBannerHeader
           title="Tenant Creek - RO Plant Inspection"
@@ -51,14 +42,14 @@ export const ROPlantPMDocument = () => {
           pmGroup="Mechanical"
           pmType="Inspection (Fitter)"
           frequency="Daily"
-          assetNumber={pm?.assetNumber || ""}
-          resources={pm?.resources || ""}
+          assetNumber={pm?.assetNumber}
+          resources={pm?.resources}
         />
 
         <SafetyPrecautionsSection />
 
         <DynamicInspectionTable
-          tasksData={structuredInspectionTasks}
+          tasksData={pm?.tasks}
           title="SYSTEM, ASSEMBLY AND COMPONENTS CHECK"
         />
 
@@ -68,44 +59,28 @@ export const ROPlantPMDocument = () => {
             <Gauge className="w-5 h-5 text-primary" />
             DATA LOGGING
           </div>
-          <div className="overflow-hidden">
-            <table className="w-full border-collapse" style={{ tableLayout: "fixed" }}>
-              <thead>
-                <tr className="bg-muted text-[10px]">
-                  {[
-                    { tag: "CT4001", label: "Feed", unit: "µs/cm" },
-                    { tag: "CT4002", label: "Permeate", unit: "µs/cm" },
-                    { tag: "PI-01", label: "Bef. Media", unit: "bar" },
-                    { tag: "PI-02", label: "Aft. Media", unit: "bar" },
-                    { tag: "PT2001", label: "Aft. Cart.", unit: "bar" },
-                    { tag: "PT2003", label: "Bef. Memb.", unit: "bar" },
-                    { tag: "PT2002", label: "Aft. Memb.", unit: "bar" },
-                    { tag: "P-01", label: "Freq", unit: "HZ" },
-                    { tag: "P-02", label: "Freq", unit: "HZ" },
-                    { tag: "FT1001", label: "Brine", unit: "lpm" },
-                    { tag: "FT1002", label: "Recirc", unit: "lpm" },
-                    { tag: "FT1003", label: "Permeate", unit: "lpm" },
-                    { tag: "TT5001", label: "Brine", unit: "°C" },
-                  ].map((col) => (
-                    <th key={col.tag} className="border border-border px-0.5 py-1.5 text-center font-semibold leading-tight">
-                      {col.tag}<br />
-                      <span className="font-normal text-muted-foreground">{col.label}</span><br />
-                      <span className="font-normal text-muted-foreground">{col.unit}</span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  {Array(13).fill(null).map((_, idx) => (
-                    <td key={idx} className="border border-border px-0.5 py-4 text-center">
-                      <Input className="h-6 text-[10px] text-center border-0 bg-transparent w-full p-0" placeholder="" />
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <table className="w-full border-collapse text-[10px]" style={{ tableLayout: "fixed" }}>
+            <thead>
+              <tr className="bg-muted">
+                {dataLoggingColumns.map((col) => (
+                  <th key={col.tag} className="border border-border px-0.5 py-1.5 text-center font-semibold leading-tight">
+                    {col.tag}<br />
+                    <span className="font-normal text-muted-foreground">{col.label}</span><br />
+                    <span className="font-normal text-muted-foreground">{col.unit}</span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {dataLoggingColumns.map((col) => (
+                  <td key={col.tag} className="border border-border px-0.5 py-4 text-center">
+                    <Input className="h-6 text-[10px] text-center border-0 bg-transparent w-full p-0" placeholder="" />
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <PMSignOffBlock footerText="Tennant Creek Mining Operations – Processing Plant Inspection Form" />
