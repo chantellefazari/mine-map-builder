@@ -237,6 +237,9 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
           // If the asset has its own P&ID tag, it's independent Level 6 equipment — never auto-nest
           if (equip.pidTags && equip.pidTags.length > 0) continue;
 
+          // If the asset has its own components in the DB, it's a parent equipment — never auto-nest
+          if (equip.components && equip.components.length > 0) continue;
+
           // Don't nest under the system header — these are peer Level 6 equipment, not Level 7 components
           if (parentKey === systemHeaderAssetNumber && !equipMap.has(parentKey)) continue;
 
