@@ -28,7 +28,7 @@ export const ROPlantPMDocument = () => {
   const pm = pms.find((p) => p.pmName === "RO Plant Daily Inspection");
 
   return (
-    <div className="bg-background min-h-full">
+    <div className="bg-background">
       <div
         className="border-2 border-border overflow-visible"
         data-pdf-component="ro-plant-pm-document"
