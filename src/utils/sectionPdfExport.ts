@@ -393,6 +393,16 @@ export async function exportSectionsToPdf(
         element.style.pageBreakAfter = "auto";
       });
 
+    clone
+      .querySelectorAll<HTMLElement>(
+        "[class*='break-inside'], [style*='break-inside'], [style*='page-break-inside']"
+      )
+      .forEach((element) => {
+        if (element.hasAttribute("data-pdf-keep-together")) return;
+        element.style.breakInside = "auto";
+        element.style.pageBreakInside = "auto";
+      });
+
     // Remove UI-only elements
     clone.querySelectorAll<HTMLElement>(".print-hide").forEach((el) => el.remove());
 
