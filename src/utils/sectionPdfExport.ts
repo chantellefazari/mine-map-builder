@@ -304,13 +304,9 @@ export async function exportSectionsToPdf(
     const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
     const remainingMm = A4_H - MARGIN - currentY;
 
-    // Only push to a new page if the section fits on one page AND
-    // there's less than 2mm remaining (keep content flowing continuously)
-    if (
-      sectionHeightMm <= CONTENT_H &&
-      sectionHeightMm > remainingMm &&
-      remainingMm < 2
-    ) {
+    // If this logical section fits on one page but not in the remaining space,
+    // move it to the next page to prevent visible cut-offs (e.g. sign-off rows).
+    if (sectionHeightMm <= CONTENT_H && sectionHeightMm > remainingMm) {
       pdf.addPage();
       currentY = MARGIN;
     }
