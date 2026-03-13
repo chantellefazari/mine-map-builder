@@ -242,6 +242,19 @@ export async function exportSectionsToPdf(
         (region) => region.top > sourceY && region.top < maxEnd && region.bottom > maxEnd
       );
 
+      if (cfg.debugContainerTree && conflictingRegion) {
+        console.info("[PDF AUDIT] Premature-break candidate detected", {
+          reason: "keep-together region overlaps current page end",
+          container: conflictingRegion.name || "[data-pdf-keep-together]",
+          parent: conflictingRegion.parent || "unknown",
+          sourceY,
+          maxEnd,
+          regionTop: conflictingRegion.top,
+          regionBottom: conflictingRegion.bottom,
+          currentY,
+        });
+      }
+
       // Avoid creating tiny slices (1–12px) before protected blocks.
       // Those micro-slices are the main cause of visual clipping at page starts.
       const MIN_PRE_BREAK_SLICE_PX = 12;
