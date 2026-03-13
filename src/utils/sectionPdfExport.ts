@@ -257,7 +257,7 @@ export async function exportSectionsToPdf(
 
       // Avoid creating tiny slices (1–12px) before protected blocks.
       // Those micro-slices are the main cause of visual clipping at page starts.
-      const MIN_PRE_BREAK_SLICE_PX = 12;
+      const MIN_PRE_BREAK_SLICE_PX = 4;
       const canMoveToFreshPage = currentY > MARGIN + 0.5;
       if (conflictingRegion && conflictingRegion.top - sourceY < MIN_PRE_BREAK_SLICE_PX && canMoveToFreshPage) {
         pdf.addPage();
