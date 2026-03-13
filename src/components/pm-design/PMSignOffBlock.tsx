@@ -18,7 +18,7 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
       </div>
 
       {/* Sign Off */}
-      <div className="border-t border-border">
+      <div className="border-t border-border" data-pdf-keep-together>
         <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">SIGN OFF</div>
         <div className="px-4 py-3 space-y-3">
           <div className="grid grid-cols-2 gap-x-8">

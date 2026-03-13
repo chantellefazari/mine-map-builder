@@ -83,13 +83,21 @@ export async function exportSectionsToPdf(
   // ── Slice a single canvas across pages ──────────────────────────
   const addCanvasAcrossPages = (
     canvas: HTMLCanvasElement,
-    rowBreaksPx: number[] = []
+    rowBreaksPx: number[] = [],
+    keepTogetherRegionsPx: Array<{ top: number; bottom: number }> = []
   ) => {
     const pxPerMm = canvas.width / CONTENT_W;
     const safeBreaks = Array.from(new Set(rowBreaksPx))
       .map((v) => Math.round(v))
       .filter((v) => v > 0 && v < canvas.height)
       .sort((a, b) => a - b);
+    const safeRegions = keepTogetherRegionsPx
+      .map((region) => ({
+        top: Math.max(0, Math.round(region.top)),
+        bottom: Math.min(canvas.height, Math.round(region.bottom)),
+      }))
+      .filter((region) => region.bottom - region.top > 6)
+      .sort((a, b) => a.top - b.top);
 
     let sourceY = 0;
     let safety = 0;
@@ -118,8 +126,14 @@ export async function exportSectionsToPdf(
 
       const maxEnd = sourceY + maxSliceHeightPx;
 
+      // If this cut would split a keep-together block (e.g. SIGN OFF),
+      // force the break to happen BEFORE that block starts.
+      const conflictingRegion = safeRegions.find(
+        (region) => region.top > sourceY + 10 && region.top < maxEnd && region.bottom > maxEnd
+      );
+      const forcedBreak = conflictingRegion?.top ?? -1;
+
       // Find the closest row break BEFORE the max cut point.
-      // Always prefer a row break over a hard cut to avoid slicing rows.
       let bestBreak = -1;
       for (let i = safeBreaks.length - 1; i >= 0; i--) {
         const point = safeBreaks[i];
@@ -130,10 +144,9 @@ export async function exportSectionsToPdf(
         }
       }
 
-      // Use the row break if we found one (always — never hard-cut through a row).
-      // Only fall back to hard cut if there are literally no breaks in range
-      // (i.e. a single element taller than a full page).
-      const sliceEnd = bestBreak > sourceY ? bestBreak : maxEnd;
+      // Prioritise keep-together forced break, then row break, then hard cut fallback.
+      const sliceEnd = forcedBreak > sourceY ? forcedBreak : bestBreak > sourceY ? bestBreak : maxEnd;
+
 
       const sliceHeightPx = Math.max(
         1,
