@@ -31,7 +31,7 @@ export interface SectionPdfOptions {
   lineHeight?: string;
   /** html2canvas scale factor (default 2) */
   scale?: number;
-  /** Overlap in px between page slices to prevent glyph clipping (default 14) */
+  /** Overlap in px between page slices to prevent glyph clipping (default 2) */
   sliceOverlapPx?: number;
   /** Draw a border around the content area on each page (default false) */
   addBorder?: boolean;
@@ -74,39 +74,9 @@ export async function exportSectionsToPdf(
 
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-  const sourceSections = Array.from(
+  const sections = Array.from(
     container.querySelectorAll<HTMLElement>("[data-pdf-section]")
   );
-
-  const getLogicalSections = (roots: HTMLElement[]) => {
-    if (roots.length !== 1) return roots;
-
-    const [root] = roots;
-    const borderContainer = root.querySelector<HTMLElement>(".border-2.border-border");
-    const sectionHost = borderContainer ?? (root.firstElementChild as HTMLElement | null) ?? root;
-
-    const childBlocks = Array.from(sectionHost.children).filter(
-      (child): child is HTMLElement => child instanceof HTMLElement
-    );
-
-    const logicalBlocks = childBlocks.filter((block) => {
-      const style = window.getComputedStyle(block);
-      if (style.display === "none" || style.visibility === "hidden") return false;
-
-      const text = (block.textContent ?? "").trim();
-      const hasStructuredContent = Boolean(
-        block.querySelector("table, img, svg, canvas, input, textarea, select")
-      );
-
-      return text.length > 0 || hasStructuredContent;
-    });
-
-    // If the template has identifiable top-level blocks (header/metadata/table/signoff),
-    // paginate by these blocks to avoid section headers/sign-off being sliced.
-    return logicalBlocks.length >= 3 ? logicalBlocks : roots;
-  };
-
-  const sections = getLogicalSections(sourceSections);
 
   let currentY = MARGIN;
 
@@ -148,24 +118,22 @@ export async function exportSectionsToPdf(
 
       const maxEnd = sourceY + maxSliceHeightPx;
 
-      // Find the CLOSEST row break to the max cut point that is BEFORE it.
-      // This minimises wasted space while still avoiding cutting through rows.
+      // Find the closest row break BEFORE the max cut point.
+      // Always prefer a row break over a hard cut to avoid slicing rows.
       let bestBreak = -1;
       for (let i = safeBreaks.length - 1; i >= 0; i--) {
         const point = safeBreaks[i];
-        if (point <= sourceY + 10) break; // too close to start
+        if (point <= sourceY + 10) break;
         if (point <= maxEnd) {
           bestBreak = point;
-          break; // take the first (closest to maxEnd) break
+          break;
         }
       }
 
-      // Prefer row-aligned breaks, but only if they don't waste too much page height.
-      // This keeps content continuous on A4 while minimising visible cut-offs.
-      // (35% threshold tuned to avoid both severe clipping and giant bottom gaps.)
-      const wastedPx = bestBreak > sourceY ? (maxEnd - bestBreak) : maxSliceHeightPx;
-      const wastedRatio = wastedPx / (CONTENT_H * pxPerMm);
-      const sliceEnd = (bestBreak > sourceY && wastedRatio <= 0.35) ? bestBreak : maxEnd;
+      // Use the row break if we found one (always — never hard-cut through a row).
+      // Only fall back to hard cut if there are literally no breaks in range
+      // (i.e. a single element taller than a full page).
+      const sliceEnd = bestBreak > sourceY ? bestBreak : maxEnd;
 
       const sliceHeightPx = Math.max(
         1,
@@ -205,7 +173,6 @@ export async function exportSectionsToPdf(
       );
 
       const reachedEnd = sourceY + sliceHeightPx >= canvas.height - 1;
-      // Advance with a tiny overlap to prevent glyph clipping at boundaries
       const overlapPx = reachedEnd ? 0 : cfg.sliceOverlapPx;
       sourceY = reachedEnd ? canvas.height : sourceY + sliceHeightPx - overlapPx;
       currentY += sliceHeightMm;
@@ -244,26 +211,19 @@ export async function exportSectionsToPdf(
     clone.style.maxWidth = "none";
     clone.style.overflow = "visible";
 
-    // Ensure all tables render at full width
     clone.querySelectorAll<HTMLElement>("table").forEach((table) => {
       table.style.width = "100%";
       table.style.tableLayout = "fixed";
     });
 
-    // Prevent text clipping in cells
     clone.querySelectorAll<HTMLElement>("th, td").forEach((cell) => {
       cell.style.whiteSpace = "normal";
       cell.style.wordBreak = "break-word";
       cell.style.overflowWrap = "anywhere";
     });
 
-    // Remove any UI-only elements from the clone
+    // Remove UI-only elements
     clone.querySelectorAll<HTMLElement>(".print-hide").forEach((el) => el.remove());
-
-    // Expand all collapsed/scrollable areas
-    clone.querySelectorAll<HTMLElement>("[data-state='closed']").forEach((el) => {
-      el.setAttribute("data-state", "open");
-    });
 
     wrapper.appendChild(clone);
 
@@ -271,7 +231,7 @@ export async function exportSectionsToPdf(
     try {
       const wrapperRect = wrapper.getBoundingClientRect();
 
-      // Collect ALL row boundaries — tbody tr, thead tr, and section dividers
+      // Collect row boundaries from ALL tr elements and section dividers
       const breakElements = clone.querySelectorAll<HTMLElement>(
         "tr, [data-pdf-break], .border-b"
       );
@@ -304,9 +264,13 @@ export async function exportSectionsToPdf(
     const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
     const remainingMm = A4_H - MARGIN - currentY;
 
-    // If this logical section fits on one page but not in the remaining space,
-    // move it to the next page to prevent visible cut-offs (e.g. sign-off rows).
-    if (sectionHeightMm <= CONTENT_H && sectionHeightMm > remainingMm) {
+    // Only push to a new page if the section fits on one page AND
+    // there's less than 2mm remaining
+    if (
+      sectionHeightMm <= CONTENT_H &&
+      sectionHeightMm > remainingMm &&
+      remainingMm < 2
+    ) {
       pdf.addPage();
       currentY = MARGIN;
     }
@@ -326,7 +290,6 @@ export async function exportSectionsToPdf(
   const totalPages = pdf.getNumberOfPages();
   if (totalPages > 1) {
     pdf.setPage(totalPages);
-    // If nothing meaningful was drawn on this page, delete it
     if (currentY <= MARGIN + cfg.blankPageThreshold) {
       pdf.deletePage(totalPages);
     }
