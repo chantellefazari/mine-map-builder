@@ -67,6 +67,7 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   sectionSelector: "[data-pdf-section]",
   rowSnapStartRatio: 0.7,
   maxWhitespaceRatio: 0.18,
+  debugContainerTree: false,
 };
 
 /**
