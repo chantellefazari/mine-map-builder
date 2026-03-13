@@ -19,6 +19,7 @@ export interface WorkRequest {
   approved_by: string;
   approved_at: string | null;
   isolation_required: boolean;
+  from_hazard_id: boolean;
   photo_urls: string[];
   created_at: string;
   updated_at: string;

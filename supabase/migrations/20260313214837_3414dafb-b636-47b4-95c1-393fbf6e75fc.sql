@@ -1,0 +1,1 @@
+ALTER TABLE public.work_requests ADD COLUMN from_hazard_id boolean NOT NULL DEFAULT false;
