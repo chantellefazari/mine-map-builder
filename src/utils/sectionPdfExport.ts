@@ -173,6 +173,14 @@ export async function exportSectionsToPdf(
         Math.min(canvas.height - sourceY, Math.floor(sliceEnd - sourceY))
       );
 
+      // Prevent tiny page-bottom slices that visually cut lines/items.
+      const MIN_SLICE_HEIGHT_PX = 24;
+      if (sliceHeightPx < MIN_SLICE_HEIGHT_PX && canMoveToFreshPage) {
+        pdf.addPage();
+        currentY = MARGIN;
+        continue;
+      }
+
       const sliceCanvas = document.createElement("canvas");
       sliceCanvas.width = canvas.width;
       sliceCanvas.height = sliceHeightPx;
@@ -270,9 +278,9 @@ export async function exportSectionsToPdf(
     try {
       const wrapperRect = wrapper.getBoundingClientRect();
 
-      // Collect row boundaries from ALL tr elements and section dividers
+      // Collect row/line boundaries from tables, lists, and explicit section dividers
       const breakElements = clone.querySelectorAll<HTMLElement>(
-        "tr, [data-pdf-break], .border-b"
+        "tr, li, [data-pdf-break], .border-b"
       );
       const rowBreaksCssPx = Array.from(breakElements)
         .map((row) => row.getBoundingClientRect().bottom - wrapperRect.top)
