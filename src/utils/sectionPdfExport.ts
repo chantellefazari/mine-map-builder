@@ -256,6 +256,23 @@ export async function exportSectionsToPdf(
         .map((row) => row.getBoundingClientRect().bottom - wrapperRect.top)
         .filter((value) => Number.isFinite(value) && value > 0);
 
+      const keepTogetherRegionsCssPx = Array.from(
+        clone.querySelectorAll<HTMLElement>("[data-pdf-keep-together]")
+      )
+        .map((region) => {
+          const rect = region.getBoundingClientRect();
+          return {
+            top: rect.top - wrapperRect.top,
+            bottom: rect.bottom - wrapperRect.top,
+          };
+        })
+        .filter(
+          (region) =>
+            Number.isFinite(region.top) &&
+            Number.isFinite(region.bottom) &&
+            region.bottom - region.top > 6
+        );
+
       const canvas = await html2canvas(wrapper, {
         scale: cfg.scale,
         useCORS: true,
@@ -267,6 +284,10 @@ export async function exportSectionsToPdf(
       return {
         canvas,
         rowBreaksPx: rowBreaksCssPx.map((value) => Math.round(value * cfg.scale)),
+        keepTogetherRegionsPx: keepTogetherRegionsCssPx.map((region) => ({
+          top: Math.round(region.top * cfg.scale),
+          bottom: Math.round(region.bottom * cfg.scale),
+        })),
       };
     } finally {
       document.body.removeChild(wrapper);
