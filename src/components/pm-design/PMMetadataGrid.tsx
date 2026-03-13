@@ -124,7 +124,7 @@ export const PMMetadataGrid = ({
   }, [flushResourceSave]);
 
   return (
-    <div className="grid grid-cols-2 border-b border-border text-xs overflow-visible" data-pdf-section data-pdf-keep-together>
+    <div className="grid grid-cols-2 border-b border-border text-xs overflow-visible" data-pdf-section>
       <div className="border-r border-border overflow-visible">
         <div className="grid grid-cols-[120px_1fr] border-b border-border">
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div>
@@ -152,7 +152,7 @@ export const PMMetadataGrid = ({
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div>
           <div className="px-2 py-1.5">{derivedPlantArea || plantArea}</div>
         </div>
-        <div className="grid grid-cols-[120px_1fr]" data-pdf-keep-together>
+        <div className="grid grid-cols-[120px_1fr]">
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div>
           <div className="px-2 py-1.5">
             <input

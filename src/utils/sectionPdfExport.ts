@@ -164,6 +164,12 @@ export async function exportSectionsToPdf(
         break;
       }
 
+      // Ignore overly-early snap points that would create large visible gaps at page bottoms.
+      const maxWhitespacePx = Math.floor(maxSliceHeightPx * 0.18);
+      if (bestBreak > sourceY && maxEnd - bestBreak > maxWhitespacePx) {
+        bestBreak = -1;
+      }
+
       // Prioritise keep-together forced break, then row break, then hard cut fallback.
       const sliceEnd = forcedBreak > sourceY ? forcedBreak : bestBreak > sourceY ? bestBreak : maxEnd;
       const usedForcedBreak = forcedBreak > sourceY && sliceEnd === forcedBreak;
@@ -315,6 +321,37 @@ export async function exportSectionsToPdf(
       cell.style.overflowWrap = "anywhere";
     });
 
+    // Force natural print flow in the export clone: no clipping, no viewport-sized wrappers,
+    // and no explicit break-before/after rules that can inject blank pages.
+    clone
+      .querySelectorAll<HTMLElement>(
+        "[class*='overflow-hidden'], [style*='overflow:hidden'], [style*='overflow: hidden']"
+      )
+      .forEach((element) => {
+        element.style.overflow = "visible";
+      });
+
+    clone
+      .querySelectorAll<HTMLElement>(
+        "[class*='h-screen'], [class*='min-h-screen'], [class*='max-h-screen']"
+      )
+      .forEach((element) => {
+        element.style.height = "auto";
+        element.style.minHeight = "0";
+        element.style.maxHeight = "none";
+      });
+
+    clone
+      .querySelectorAll<HTMLElement>(
+        "[class*='break-before'], [class*='break-after'], [style*='break-before'], [style*='break-after'], [style*='page-break-before'], [style*='page-break-after']"
+      )
+      .forEach((element) => {
+        element.style.breakBefore = "auto";
+        element.style.breakAfter = "auto";
+        element.style.pageBreakBefore = "auto";
+        element.style.pageBreakAfter = "auto";
+      });
+
     // Remove UI-only elements
     clone.querySelectorAll<HTMLElement>(".print-hide").forEach((el) => el.remove());
 
@@ -326,7 +363,7 @@ export async function exportSectionsToPdf(
 
       // Collect row/line boundaries from tables, lists, and explicit section dividers
       const breakElements = clone.querySelectorAll<HTMLElement>(
-        "tr, li, [data-pdf-break], .border-b"
+        "tr, li, [data-pdf-break]"
       );
       const rowBreaksCssPx = Array.from(breakElements)
         .map((row) => row.getBoundingClientRect().bottom - wrapperRect.top)
