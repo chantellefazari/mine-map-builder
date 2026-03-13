@@ -37,6 +37,8 @@ export interface SectionPdfOptions {
   addBorder?: boolean;
   /** Trailing blank page threshold in mm — pages with less content than this are removed (default 15) */
   blankPageThreshold?: number;
+  /** CSS selector used to find printable sections inside the container (default "[data-pdf-section]") */
+  sectionSelector?: string;
 }
 
 const DEFAULTS: Required<SectionPdfOptions> = {
