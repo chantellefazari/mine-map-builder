@@ -676,6 +676,12 @@ export async function exportSectionsToPdf(
   // ── Main loop ───────────────────────────────────────────────────
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
+    const startsOnNewPage = section.hasAttribute("data-pdf-start-new-page");
+    if (startsOnNewPage && currentY > MARGIN) {
+      pdf.addPage();
+      currentY = MARGIN;
+    }
+
     const remainingMm = A4_H - MARGIN - currentY;
     const { canvas, rowBreaksPx, keepTogetherRegionsPx } = await renderSectionCanvas(
       section,

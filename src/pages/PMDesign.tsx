@@ -369,7 +369,10 @@ const PMDesign = () => {
       const filename = `TCMG_${title}.pdf`;
       const exportOpts =
         activeView === "ro-plant-daily"
-          ? { ...PDF_EXPORT_OPTS, sectionSelector: "[data-pdf-flow-container]" }
+          ? {
+              ...PDF_EXPORT_OPTS,
+              sectionSelector: "[data-pdf-flow-container], [data-pdf-component='pm-footer-block']",
+            }
           : PDF_EXPORT_OPTS;
       await exportSectionsToPdf(container, filename, exportOpts);
       toast.success(`Downloaded ${filename}`);
