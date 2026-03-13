@@ -377,7 +377,7 @@ export async function exportSectionsToPdf(
   ): Promise<{
     canvas: HTMLCanvasElement;
     rowBreaksPx: number[];
-    keepTogetherRegionsPx: Array<{ top: number; bottom: number }>;
+    keepTogetherRegionsPx: KeepTogetherRegionPx[];
   }> => {
     const sectionRenderWidth = Math.max(
       cfg.renderWidth,
