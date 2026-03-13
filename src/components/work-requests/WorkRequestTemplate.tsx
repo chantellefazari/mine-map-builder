@@ -339,13 +339,13 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                 />
               </div>
               <div className="border border-gray-300 p-2 col-span-2">
-                <span className="text-xs text-gray-500 block mb-1">Trade</span>
+                <span className="text-xs text-gray-500 block mb-1">Requested By</span>
                 <Input
                   className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                  value={form.trade}
-                  onChange={(e) => setForm({ ...form, trade: e.target.value })}
-                  onBlur={(e) => handleFieldBlur("trade", e.target.value)}
-                  placeholder="e.g. Fitter, Electrician, Boilermaker"
+                  value={form.requested_by}
+                  onChange={(e) => setForm({ ...form, requested_by: e.target.value })}
+                  onBlur={(e) => handleFieldBlur("requested_by", e.target.value)}
+                  placeholder="Enter name"
                 />
               </div>
             </div>
