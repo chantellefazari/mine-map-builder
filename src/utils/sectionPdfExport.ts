@@ -278,6 +278,13 @@ export async function exportSectionsToPdf(
     clone.style.maxWidth = "none";
     clone.style.overflow = "visible";
 
+    const isContinuousFlowContainer = section.hasAttribute("data-pdf-flow-container");
+    if (isContinuousFlowContainer) {
+      clone.querySelectorAll<HTMLElement>("[data-pdf-section]").forEach((element) => {
+        element.removeAttribute("data-pdf-section");
+      });
+    }
+
     // Sync live input/textarea values into the clone so html2canvas can see them
     const origInputs = section.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea");
     const clonedInputs = clone.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea");
