@@ -265,18 +265,16 @@ export async function exportSectionsToPdf(
       const target = clonedInputs[idx];
       if (!target) return;
       const val = orig.value;
-      // Replace the input with a styled span so html2canvas renders full text
+      const computed = window.getComputedStyle(orig);
       const span = document.createElement("span");
       span.textContent = val;
-      span.style.cssText = window.getComputedStyle(orig).cssText;
-      span.style.display = "inline-block";
+      span.style.fontSize = computed.fontSize;
+      span.style.fontFamily = computed.fontFamily;
+      span.style.color = computed.color;
+      span.style.lineHeight = computed.lineHeight;
+      span.style.display = "inline";
       span.style.whiteSpace = "pre-wrap";
       span.style.wordBreak = "break-word";
-      span.style.border = "none";
-      span.style.background = "transparent";
-      span.style.padding = orig.style.padding || "0";
-      span.style.margin = orig.style.margin || "0";
-      span.style.width = "100%";
       target.replaceWith(span);
     });
 
