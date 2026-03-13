@@ -779,20 +779,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                             onBlur={saveLabour}
                           />
                         </td>
-                        <td className="p-1 border-r border-gray-300 text-center">
-                          <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                            value={row.start_time}
-                            onChange={(e) => updateLabourRow(idx, "start_time", e.target.value)}
-                            onBlur={saveLabour}
-                          />
-                        </td>
-                        <td className="p-1 border-r border-gray-300 text-center">
-                          <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                            value={row.end_time}
-                            onChange={(e) => updateLabourRow(idx, "end_time", e.target.value)}
-                            onBlur={saveLabour}
-                          />
-                        </td>
                         <td className="p-1 text-center">
                           <Input className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto text-center"
                             value={row.total_hrs}
