@@ -2,7 +2,7 @@ import { Shield, AlertTriangle, Lock, FileText, HardHat } from "lucide-react";
 
 export const SafetyPrecautionsSection = () => {
   return (
-    <div className="border-b border-border">
+    <div className="border-b border-border" data-pdf-section>
       <div className="bg-destructive/10 px-4 py-2 font-semibold text-sm border-b border-border flex items-center gap-2">
         <Shield className="w-5 h-5 text-destructive" />
         <span className="text-destructive font-bold">SAFETY PRECAUTIONS</span>

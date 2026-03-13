@@ -787,9 +787,7 @@ const PMDesign = () => {
                 </Button>
               </div>
               <div ref={pmDocRef}>
-                <div data-pdf-section>
-                  {renderPMDocument()}
-                </div>
+                {renderPMDocument()}
               </div>
             </div>
           ) : (
