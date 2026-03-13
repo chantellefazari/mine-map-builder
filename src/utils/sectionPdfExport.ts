@@ -46,7 +46,7 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   fontSize: "13px",
   lineHeight: "1.4",
   scale: 1.5,
-  sliceOverlapPx: 14,
+  sliceOverlapPx: 2,
   addBorder: false,
   blankPageThreshold: 15,
 };
@@ -118,21 +118,25 @@ export async function exportSectionsToPdf(
 
       const maxEnd = sourceY + maxSliceHeightPx;
 
-      // Only snap to row breaks if there's a break near the bottom of the
-      // available space (within the last 30%). This prevents large gaps while
-      // still avoiding slicing through table rows when possible.
+      // Find the CLOSEST row break to the max cut point that is BEFORE it.
+      // This minimises wasted space while still avoiding cutting through rows.
       let bestBreak = -1;
-      const snapZoneStart = sourceY + maxSliceHeightPx * 0.7;
-      for (let i = 0; i < safeBreaks.length; i++) {
+      for (let i = safeBreaks.length - 1; i >= 0; i--) {
         const point = safeBreaks[i];
-        if (point <= sourceY + 10) continue;
-        if (point > maxEnd) break;
-        if (point >= snapZoneStart) {
+        if (point <= sourceY + 10) break; // too close to start
+        if (point <= maxEnd) {
           bestBreak = point;
+          break; // take the first (closest to maxEnd) break
         }
       }
 
-      const sliceEnd = bestBreak > sourceY ? bestBreak : maxEnd;
+      // Only use the break if it doesn't waste more than 15% of page height.
+      // Otherwise just do a hard cut — better to clip a row slightly than
+      // leave a huge gap.
+      const wastedPx = bestBreak > sourceY ? (maxEnd - bestBreak) : maxSliceHeightPx;
+      const wastedRatio = wastedPx / (CONTENT_H * pxPerMm);
+      const sliceEnd = (bestBreak > sourceY && wastedRatio <= 0.15) ? bestBreak : maxEnd;
+
       const sliceHeightPx = Math.max(
         1,
         Math.min(canvas.height - sourceY, Math.floor(sliceEnd - sourceY))
@@ -160,7 +164,7 @@ export async function exportSectionsToPdf(
       );
 
       const sliceHeightMm = sliceHeightPx / pxPerMm;
-      const imgData = sliceCanvas.toDataURL("image/jpeg", 0.85);
+      const imgData = sliceCanvas.toDataURL("image/jpeg", 0.92);
       pdf.addImage(
         imgData,
         "JPEG",
@@ -171,7 +175,9 @@ export async function exportSectionsToPdf(
       );
 
       const reachedEnd = sourceY + sliceHeightPx >= canvas.height - 1;
-      sourceY = reachedEnd ? canvas.height : sourceY + sliceHeightPx;
+      // Advance with a tiny overlap to prevent glyph clipping at boundaries
+      const overlapPx = reachedEnd ? 0 : cfg.sliceOverlapPx;
+      sourceY = reachedEnd ? canvas.height : sourceY + sliceHeightPx - overlapPx;
       currentY += sliceHeightMm;
 
       if (!reachedEnd) {
@@ -208,15 +214,25 @@ export async function exportSectionsToPdf(
     clone.style.maxWidth = "none";
     clone.style.overflow = "visible";
 
+    // Ensure all tables render at full width
     clone.querySelectorAll<HTMLElement>("table").forEach((table) => {
       table.style.width = "100%";
       table.style.tableLayout = "fixed";
     });
 
+    // Prevent text clipping in cells
     clone.querySelectorAll<HTMLElement>("th, td").forEach((cell) => {
       cell.style.whiteSpace = "normal";
       cell.style.wordBreak = "break-word";
       cell.style.overflowWrap = "anywhere";
+    });
+
+    // Remove any UI-only elements from the clone
+    clone.querySelectorAll<HTMLElement>(".print-hide").forEach((el) => el.remove());
+
+    // Expand all collapsed/scrollable areas
+    clone.querySelectorAll<HTMLElement>("[data-state='closed']").forEach((el) => {
+      el.setAttribute("data-state", "open");
     });
 
     wrapper.appendChild(clone);
@@ -224,9 +240,12 @@ export async function exportSectionsToPdf(
     document.body.appendChild(wrapper);
     try {
       const wrapperRect = wrapper.getBoundingClientRect();
-      const rowBreaksCssPx = Array.from(
-        clone.querySelectorAll<HTMLElement>("tbody tr")
-      )
+
+      // Collect ALL row boundaries — tbody tr, thead tr, and section dividers
+      const breakElements = clone.querySelectorAll<HTMLElement>(
+        "tr, [data-pdf-break], .border-b"
+      );
+      const rowBreaksCssPx = Array.from(breakElements)
         .map((row) => row.getBoundingClientRect().bottom - wrapperRect.top)
         .filter((value) => Number.isFinite(value) && value > 0);
 
