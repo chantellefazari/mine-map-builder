@@ -164,6 +164,12 @@ export async function exportSectionsToPdf(
         break;
       }
 
+      // Ignore overly-early snap points that would create large visible gaps at page bottoms.
+      const maxWhitespacePx = Math.floor(maxSliceHeightPx * 0.18);
+      if (bestBreak > sourceY && maxEnd - bestBreak > maxWhitespacePx) {
+        bestBreak = -1;
+      }
+
       // Prioritise keep-together forced break, then row break, then hard cut fallback.
       const sliceEnd = forcedBreak > sourceY ? forcedBreak : bestBreak > sourceY ? bestBreak : maxEnd;
       const usedForcedBreak = forcedBreak > sourceY && sliceEnd === forcedBreak;
