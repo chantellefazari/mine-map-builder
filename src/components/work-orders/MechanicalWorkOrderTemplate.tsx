@@ -737,7 +737,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   if (expectedRows.length === 0) {
                     return (
                       <tr className="border-b border-gray-300">
-                        <td colSpan={6} className="p-3 text-center text-gray-400 italic">
+                        <td colSpan={4} className="p-3 text-center text-gray-400 italic">
                           Add resources above to generate labour rows
                         </td>
                       </tr>
