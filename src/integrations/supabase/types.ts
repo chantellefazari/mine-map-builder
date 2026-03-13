@@ -2271,7 +2271,9 @@ export type Database = {
           date_raised: string
           functional_location: string
           id: string
+          isolation_required: boolean
           linked_wo_id: string | null
+          photo_urls: string[]
           priority: string
           problem_description: string
           requested_by: string
@@ -2290,7 +2292,9 @@ export type Database = {
           date_raised?: string
           functional_location?: string
           id?: string
+          isolation_required?: boolean
           linked_wo_id?: string | null
+          photo_urls?: string[]
           priority?: string
           problem_description?: string
           requested_by?: string
@@ -2309,7 +2313,9 @@ export type Database = {
           date_raised?: string
           functional_location?: string
           id?: string
+          isolation_required?: boolean
           linked_wo_id?: string | null
+          photo_urls?: string[]
           priority?: string
           problem_description?: string
           requested_by?: string
