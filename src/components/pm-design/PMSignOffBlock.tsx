@@ -52,9 +52,9 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
 
         {/* Approval */}
         <div className="border-t border-border">
-          <div className="bg-green-500/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-green-600" />
-            <span className="text-green-700">APPROVAL</span>
+          <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-primary" />
+            <span className="text-primary">APPROVAL</span>
           </div>
           <table className="w-full text-sm border-collapse">
             <thead><tr className="bg-muted border-b border-border"><th className="px-4 py-2 text-left font-semibold w-[20%]">Role</th><th className="px-4 py-2 text-left font-semibold w-[25%]">Name</th><th className="px-4 py-2 text-left font-semibold w-[25%]">Sign</th><th className="px-4 py-2 text-left font-semibold w-[30%]">Date</th></tr></thead>
