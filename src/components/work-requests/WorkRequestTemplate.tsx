@@ -35,6 +35,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
     trade: "",
     status: "Open",
     isolation_required: false,
+    from_hazard_id: false,
     photo_urls: [] as string[],
   });
 
