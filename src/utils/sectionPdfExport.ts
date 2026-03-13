@@ -265,17 +265,19 @@ export async function exportSectionsToPdf(
       const target = clonedInputs[idx];
       if (!target) return;
       const val = orig.value;
-      const computed = window.getComputedStyle(orig);
-      const span = document.createElement("span");
-      span.textContent = val;
-      span.style.fontSize = computed.fontSize;
-      span.style.fontFamily = computed.fontFamily;
-      span.style.color = computed.color;
-      span.style.lineHeight = computed.lineHeight;
-      span.style.display = "inline";
-      span.style.whiteSpace = "pre-wrap";
-      span.style.wordBreak = "break-word";
-      target.replaceWith(span);
+      // Set attribute so html2canvas sees it, and keep DOM structure intact
+      target.setAttribute("value", val);
+      target.value = val;
+      // For textareas, set textContent as well
+      if (target.tagName === "TEXTAREA") {
+        target.textContent = val;
+      }
+      // Ensure text is visible and not clipped
+      target.style.overflow = "visible";
+      target.style.textOverflow = "unset";
+      target.style.whiteSpace = "pre-wrap";
+      target.style.height = "auto";
+      target.style.minHeight = "0";
     });
 
     clone.querySelectorAll<HTMLElement>("table").forEach((table) => {
