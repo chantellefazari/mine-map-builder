@@ -367,15 +367,7 @@ const PMDesign = () => {
     try {
       const title = getDocumentTitle().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
       const filename = `TCMG_${title}.pdf`;
-      const exportOpts =
-        activeView === "ro-plant-daily"
-          ? {
-              ...PDF_EXPORT_OPTS,
-              sectionSelector: "[data-pdf-flow-container]",
-              rowSnapStartRatio: 0.9,
-              maxWhitespaceRatio: 0.08,
-            }
-          : PDF_EXPORT_OPTS;
+      const exportOpts = PDF_EXPORT_OPTS;
       await exportSectionsToPdf(container, filename, exportOpts);
       toast.success(`Downloaded ${filename}`);
     } catch (err: any) {
