@@ -203,7 +203,7 @@ export async function exportSectionsToPdf(
       );
 
       // Prevent tiny page-bottom slices that visually cut lines/items.
-      const MIN_SLICE_HEIGHT_PX = 24;
+      const MIN_SLICE_HEIGHT_PX = 8;
       if (sliceHeightPx < MIN_SLICE_HEIGHT_PX && canMoveToFreshPage) {
         pdf.addPage();
         currentY = MARGIN;
