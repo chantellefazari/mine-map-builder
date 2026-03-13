@@ -194,15 +194,9 @@ function getComponentParent(assetNumber: string): string | null {
   return null;
 }
 
-function inferVirtualParentName(componentName: string): string {
-  return componentName
-    .replace(/\s+(LCS|Motor|MCC\s*Cell|Gearbox|Variable\s*Speed\s*Drive|VSD|Coupling|Bearing|Seal|PH\s*Probe)$/i, "")
-    .trim();
-}
-
 /**
  * Auto-nest component-suffix assets under their parent equipment.
- * If parent equipment is missing, create a virtual parent to preserve Level 6 → Level 7 structure.
+ * Only nests when the parent equipment exists in the database — never creates virtual parents.
  */
 function nestComponentsInAreas(areas: Area[]): Area[] {
   for (const area of areas) {
@@ -210,7 +204,6 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
       for (const pa of subArea.parentAssets) {
         const equipMap = new Map<string, Equipment>();
         const orderIndex = new Map<string, number>();
-        const virtualParents = new Set<string>();
         const nested = new Set<string>();
 
         pa.equipment.forEach((equip, idx) => {
