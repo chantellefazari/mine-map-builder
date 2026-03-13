@@ -68,9 +68,10 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
           </table>
         </div>
 
-        <div className="bg-muted/30 px-4 py-1.5 text-xs text-muted-foreground text-center">
-          {footerText}
-        </div>
+      </div>
+
+      <div className="bg-muted/30 px-4 py-1.5 text-xs text-muted-foreground text-center" data-pdf-component="pm-form-footer">
+        {footerText}
       </div>
     </div>
   );
