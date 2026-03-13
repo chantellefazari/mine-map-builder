@@ -200,7 +200,11 @@ export async function exportSectionsToPdf(
   // ── Render a section via off-screen clone ───────────────────────
   const renderSectionCanvas = async (
     section: HTMLElement
-  ): Promise<{ canvas: HTMLCanvasElement; rowBreaksPx: number[] }> => {
+  ): Promise<{
+    canvas: HTMLCanvasElement;
+    rowBreaksPx: number[];
+    keepTogetherRegionsPx: Array<{ top: number; bottom: number }>;
+  }> => {
     const sectionRenderWidth = Math.max(
       cfg.renderWidth,
       Math.ceil(section.scrollWidth) + 8
