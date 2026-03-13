@@ -29,7 +29,7 @@ export const ROPlantPMDocument = () => {
 
   return (
     <div className="bg-background min-h-full">
-      <div className="border-2 border-border">
+      <div className="border-2 border-border" data-pdf-flow-container>
         <PMBannerHeader
           title="Tenant Creek - RO Plant Inspection"
           subtitle="Mechanical Running PMs - Daily RO Plant Inspection (Fitter)"
