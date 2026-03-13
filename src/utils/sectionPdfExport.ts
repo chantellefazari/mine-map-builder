@@ -321,6 +321,37 @@ export async function exportSectionsToPdf(
       cell.style.overflowWrap = "anywhere";
     });
 
+    // Force natural print flow in the export clone: no clipping, no viewport-sized wrappers,
+    // and no explicit break-before/after rules that can inject blank pages.
+    clone
+      .querySelectorAll<HTMLElement>(
+        "[class*='overflow-hidden'], [style*='overflow:hidden'], [style*='overflow: hidden']"
+      )
+      .forEach((element) => {
+        element.style.overflow = "visible";
+      });
+
+    clone
+      .querySelectorAll<HTMLElement>(
+        "[class*='h-screen'], [class*='min-h-screen'], [class*='max-h-screen']"
+      )
+      .forEach((element) => {
+        element.style.height = "auto";
+        element.style.minHeight = "0";
+        element.style.maxHeight = "none";
+      });
+
+    clone
+      .querySelectorAll<HTMLElement>(
+        "[class*='break-before'], [class*='break-after'], [style*='break-before'], [style*='break-after'], [style*='page-break-before'], [style*='page-break-after']"
+      )
+      .forEach((element) => {
+        element.style.breakBefore = "auto";
+        element.style.breakAfter = "auto";
+        element.style.pageBreakBefore = "auto";
+        element.style.pageBreakAfter = "auto";
+      });
+
     // Remove UI-only elements
     clone.querySelectorAll<HTMLElement>(".print-hide").forEach((el) => el.remove());
 
