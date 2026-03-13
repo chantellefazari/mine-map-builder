@@ -39,6 +39,8 @@ interface DynamicInspectionTableProps {
   title?: string;
   /** Whether to show equipmentId alongside equipmentName in section headers */
   showEquipmentId?: boolean;
+  /** Render each logical section as its own PDF section to keep area flow intact */
+  separateSections?: boolean;
 }
 
 function normalizeTaskItem(item: any): TaskItem {
