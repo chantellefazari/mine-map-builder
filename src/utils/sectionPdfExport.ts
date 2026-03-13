@@ -165,7 +165,7 @@ export async function exportSectionsToPdf(
       // leave a huge gap.
       const wastedPx = bestBreak > sourceY ? (maxEnd - bestBreak) : maxSliceHeightPx;
       const wastedRatio = wastedPx / (CONTENT_H * pxPerMm);
-      const sliceEnd = (bestBreak > sourceY && wastedRatio <= 0.15) ? bestBreak : maxEnd;
+      const sliceEnd = (bestBreak > sourceY && wastedRatio <= 0.35) ? bestBreak : maxEnd;
 
       const sliceHeightPx = Math.max(
         1,
