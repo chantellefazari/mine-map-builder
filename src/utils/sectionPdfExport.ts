@@ -265,6 +265,7 @@ export async function exportSectionsToPdf(
       const target = clonedInputs[idx];
       if (!target) return;
 
+      const val = orig.value ?? "";
       const shouldRenderAsText = orig.hasAttribute("data-pdf-text-value");
 
       // Resource-like fields opt-in to text rendering so long values wrap in PDFs.
@@ -290,6 +291,9 @@ export async function exportSectionsToPdf(
       // Preserve non-text inputs as-is and sync key state
       target.setAttribute("value", val);
       target.value = val;
+      if (target.tagName === "TEXTAREA") {
+        target.textContent = val;
+      }
       if (
         orig instanceof HTMLInputElement &&
         target instanceof HTMLInputElement &&
