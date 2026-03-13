@@ -242,7 +242,6 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
           // Only nest if the parent equipment actually exists in the database — never create virtual parents
           const parentEquip = equipMap.get(parentKey);
           if (!parentEquip) continue;
-          }
 
           if (!parentEquip.components) parentEquip.components = [];
           const lastDash = equip.assetNumber.lastIndexOf("-");
@@ -297,12 +296,7 @@ function nestComponentsInAreas(areas: Area[]): Area[] {
           nested.add(equip.assetNumber);
         }
 
-        const remainingOriginal = pa.equipment.filter((e) => !nested.has(e.assetNumber));
-        const virtualEquipment = [...virtualParents]
-          .map((assetNumber) => equipMap.get(assetNumber)!)
-          .filter(Boolean);
-
-        pa.equipment = [...remainingOriginal, ...virtualEquipment].sort((a, b) => {
+        pa.equipment = pa.equipment.filter((e) => !nested.has(e.assetNumber)).sort((a, b) => {
           const ia = orderIndex.get(a.assetNumber) ?? 9999;
           const ib = orderIndex.get(b.assetNumber) ?? 9999;
           if (ia !== ib) return ia - ib;
