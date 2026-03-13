@@ -717,8 +717,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   <th className="text-left p-2 border-r border-gray-300">Technician Name</th>
                   <th className="text-center p-2 border-r border-gray-300 w-24">Work Centre</th>
                   <th className="text-center p-2 border-r border-gray-300 w-24">Date</th>
-                  <th className="text-center p-2 border-r border-gray-300 w-20">Start Time</th>
-                  <th className="text-center p-2 border-r border-gray-300 w-20">End Time</th>
                   <th className="text-center p-2 w-20">Total Hrs</th>
                 </tr>
               </thead>
