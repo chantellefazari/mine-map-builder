@@ -9,7 +9,7 @@ interface PMBannerHeaderProps {
 
 export const PMBannerHeader = ({ title, subtitle }: PMBannerHeaderProps) => {
   return (
-    <div className="relative">
+    <div className="relative" data-pdf-section>
       <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
       <div className="absolute bottom-0 left-4 h-[60%] flex items-center">
         <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
