@@ -294,7 +294,27 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                   })}
                 </div>
               </div>
-              <div className="border border-gray-300 p-2 col-span-2">
+              <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block mb-1">From Hazard ID</span>
+                <div className="flex gap-4">
+                  {(["Yes", "No"] as const).map((opt) => {
+                    const isSelected = opt === "Yes" ? form.from_hazard_id : !form.from_hazard_id;
+                    return (
+                      <label key={opt} className="flex items-center gap-1 cursor-pointer" onClick={() => {
+                        const val = opt === "Yes";
+                        setForm({ ...form, from_hazard_id: val });
+                        if (wr) saveField("from_hazard_id", val);
+                      }}>
+                        <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${isSelected ? "bg-primary text-primary-foreground" : ""}`}>
+                          {isSelected && "✓"}
+                        </div>
+                        <span className="text-xs">{opt}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="border border-gray-300 p-2">
                 <span className="text-xs text-gray-500 block mb-1">Requested By</span>
                 <Input
                   className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
