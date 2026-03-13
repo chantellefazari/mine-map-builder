@@ -357,6 +357,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 />
               </div>
             </div>
+          </div>
 
           {/* Description */}
           <div className="border border-gray-300">
