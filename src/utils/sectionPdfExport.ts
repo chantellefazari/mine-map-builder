@@ -83,13 +83,21 @@ export async function exportSectionsToPdf(
   // ── Slice a single canvas across pages ──────────────────────────
   const addCanvasAcrossPages = (
     canvas: HTMLCanvasElement,
-    rowBreaksPx: number[] = []
+    rowBreaksPx: number[] = [],
+    keepTogetherRegionsPx: Array<{ top: number; bottom: number }> = []
   ) => {
     const pxPerMm = canvas.width / CONTENT_W;
     const safeBreaks = Array.from(new Set(rowBreaksPx))
       .map((v) => Math.round(v))
       .filter((v) => v > 0 && v < canvas.height)
       .sort((a, b) => a - b);
+    const safeRegions = keepTogetherRegionsPx
+      .map((region) => ({
+        top: Math.max(0, Math.round(region.top)),
+        bottom: Math.min(canvas.height, Math.round(region.bottom)),
+      }))
+      .filter((region) => region.bottom - region.top > 6)
+      .sort((a, b) => a.top - b.top);
 
     let sourceY = 0;
     let safety = 0;
@@ -118,8 +126,14 @@ export async function exportSectionsToPdf(
 
       const maxEnd = sourceY + maxSliceHeightPx;
 
+      // If this cut would split a keep-together block (e.g. SIGN OFF),
+      // force the break to happen BEFORE that block starts.
+      const conflictingRegion = safeRegions.find(
+        (region) => region.top > sourceY + 10 && region.top < maxEnd && region.bottom > maxEnd
+      );
+      const forcedBreak = conflictingRegion?.top ?? -1;
+
       // Find the closest row break BEFORE the max cut point.
-      // Always prefer a row break over a hard cut to avoid slicing rows.
       let bestBreak = -1;
       for (let i = safeBreaks.length - 1; i >= 0; i--) {
         const point = safeBreaks[i];
@@ -130,10 +144,9 @@ export async function exportSectionsToPdf(
         }
       }
 
-      // Use the row break if we found one (always — never hard-cut through a row).
-      // Only fall back to hard cut if there are literally no breaks in range
-      // (i.e. a single element taller than a full page).
-      const sliceEnd = bestBreak > sourceY ? bestBreak : maxEnd;
+      // Prioritise keep-together forced break, then row break, then hard cut fallback.
+      const sliceEnd = forcedBreak > sourceY ? forcedBreak : bestBreak > sourceY ? bestBreak : maxEnd;
+
 
       const sliceHeightPx = Math.max(
         1,
@@ -187,7 +200,11 @@ export async function exportSectionsToPdf(
   // ── Render a section via off-screen clone ───────────────────────
   const renderSectionCanvas = async (
     section: HTMLElement
-  ): Promise<{ canvas: HTMLCanvasElement; rowBreaksPx: number[] }> => {
+  ): Promise<{
+    canvas: HTMLCanvasElement;
+    rowBreaksPx: number[];
+    keepTogetherRegionsPx: Array<{ top: number; bottom: number }>;
+  }> => {
     const sectionRenderWidth = Math.max(
       cfg.renderWidth,
       Math.ceil(section.scrollWidth) + 8
@@ -239,6 +256,23 @@ export async function exportSectionsToPdf(
         .map((row) => row.getBoundingClientRect().bottom - wrapperRect.top)
         .filter((value) => Number.isFinite(value) && value > 0);
 
+      const keepTogetherRegionsCssPx = Array.from(
+        clone.querySelectorAll<HTMLElement>("[data-pdf-keep-together]")
+      )
+        .map((region) => {
+          const rect = region.getBoundingClientRect();
+          return {
+            top: rect.top - wrapperRect.top,
+            bottom: rect.bottom - wrapperRect.top,
+          };
+        })
+        .filter(
+          (region) =>
+            Number.isFinite(region.top) &&
+            Number.isFinite(region.bottom) &&
+            region.bottom - region.top > 6
+        );
+
       const canvas = await html2canvas(wrapper, {
         scale: cfg.scale,
         useCORS: true,
@@ -250,6 +284,10 @@ export async function exportSectionsToPdf(
       return {
         canvas,
         rowBreaksPx: rowBreaksCssPx.map((value) => Math.round(value * cfg.scale)),
+        keepTogetherRegionsPx: keepTogetherRegionsCssPx.map((region) => ({
+          top: Math.round(region.top * cfg.scale),
+          bottom: Math.round(region.bottom * cfg.scale),
+        })),
       };
     } finally {
       document.body.removeChild(wrapper);
@@ -259,7 +297,7 @@ export async function exportSectionsToPdf(
   // ── Main loop ───────────────────────────────────────────────────
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
-    const { canvas, rowBreaksPx } = await renderSectionCanvas(section);
+    const { canvas, rowBreaksPx, keepTogetherRegionsPx } = await renderSectionCanvas(section);
 
     const sectionHeightMm = canvas.height / (canvas.width / CONTENT_W);
     const remainingMm = A4_H - MARGIN - currentY;
@@ -275,7 +313,7 @@ export async function exportSectionsToPdf(
       currentY = MARGIN;
     }
 
-    addCanvasAcrossPages(canvas, rowBreaksPx);
+    addCanvasAcrossPages(canvas, rowBreaksPx, keepTogetherRegionsPx);
 
     if (i < sections.length - 1) {
       currentY += GAP;
