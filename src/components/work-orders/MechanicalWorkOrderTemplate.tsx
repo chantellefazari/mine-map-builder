@@ -198,7 +198,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
       setIsGeneratingParts(false);
     }
   };
-
+          </div>
 
   const priorityOptions = ["Critical", "High", "Normal", "Low"];
   const workTypeOptions = ["Breakdown", "Planned", "Shutdown"];
