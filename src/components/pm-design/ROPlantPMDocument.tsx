@@ -29,7 +29,7 @@ export const ROPlantPMDocument = () => {
 
   return (
     <div className="bg-background min-h-full">
-      <div className="border-2 border-border overflow-visible">
+      <div className="border-2 border-border overflow-visible" data-pdf-component="ro-plant-pm-document">
         <PMBannerHeader
           title="Tenant Creek - RO Plant Inspection"
           subtitle="Mechanical Running PMs - Daily RO Plant Inspection (Fitter)"
@@ -54,7 +54,7 @@ export const ROPlantPMDocument = () => {
         />
 
         {/* Data Logging Table */}
-        <div className="border-b border-border" data-pdf-section>
+        <div className="border-b border-border" data-pdf-section data-pdf-component="ro-data-logging-section">
           <div className="bg-primary/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
             <Gauge className="w-5 h-5 text-primary" />
             DATA LOGGING

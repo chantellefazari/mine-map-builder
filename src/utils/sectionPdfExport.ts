@@ -43,6 +43,15 @@ export interface SectionPdfOptions {
   rowSnapStartRatio?: number;
   /** Max allowable whitespace ratio when snapping to row boundaries (default 0.18) */
   maxWhitespaceRatio?: number;
+  /** Logs full print container hierarchy used during rendering (default false) */
+  debugContainerTree?: boolean;
+}
+
+interface KeepTogetherRegionPx {
+  top: number;
+  bottom: number;
+  name?: string;
+  parent?: string;
 }
 
 const DEFAULTS: Required<SectionPdfOptions> = {
@@ -58,6 +67,7 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   sectionSelector: "[data-pdf-section]",
   rowSnapStartRatio: 0.7,
   maxWhitespaceRatio: 0.18,
+  debugContainerTree: false,
 };
 
 /**
@@ -93,11 +103,136 @@ export async function exportSectionsToPdf(
 
   let currentY = MARGIN;
 
+  const getContainerName = (element: HTMLElement): string => {
+    const explicitName =
+      element.getAttribute("data-pdf-component") ||
+      element.getAttribute("data-component") ||
+      element.getAttribute("aria-label");
+    if (explicitName) return explicitName;
+
+    const tag = element.tagName.toLowerCase();
+    const id = element.id ? `#${element.id}` : "";
+    const classList = (element.className || "")
+      .toString()
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((cls) => `.${cls}`)
+      .join("");
+
+    return `${tag}${id}${classList}`;
+  };
+
+  const logPrintContainerHierarchy = (root: HTMLElement, rootLabel: string) => {
+    if (!cfg.debugContainerTree) return;
+
+    const rows: Array<{
+      name: string;
+      parent: string;
+      depth: number;
+      display: string;
+      height: string;
+      minHeight: string;
+      maxHeight: string;
+      overflow: string;
+      overflowX: string;
+      overflowY: string;
+      breakBefore: string;
+      breakAfter: string;
+      breakInside: string;
+      pageBreakBefore: string;
+      pageBreakAfter: string;
+      pageBreakInside: string;
+      keepTogether: boolean;
+      adaptiveFit: boolean;
+      section: boolean;
+    }> = [];
+
+    const walk = (element: HTMLElement, parentName: string, depth: number) => {
+      const computed = window.getComputedStyle(element);
+      const name = getContainerName(element);
+      const tagName = element.tagName.toLowerCase();
+
+      const hasBreakRule =
+        ((computed as CSSStyleDeclaration).breakBefore || "auto") !== "auto" ||
+        ((computed as CSSStyleDeclaration).breakAfter || "auto") !== "auto" ||
+        ((computed as CSSStyleDeclaration).breakInside || "auto") !== "auto" ||
+        (computed.pageBreakBefore || "auto") !== "auto" ||
+        (computed.pageBreakAfter || "auto") !== "auto" ||
+        (computed.pageBreakInside || "auto") !== "auto";
+
+      const hasSizingConstraint =
+        (computed.height && computed.height !== "auto" && computed.height !== "0px") ||
+        (computed.minHeight && computed.minHeight !== "0px" && computed.minHeight !== "auto") ||
+        (computed.maxHeight && computed.maxHeight !== "none");
+
+      const hasOverflowConstraint =
+        [computed.overflow, computed.overflowX, computed.overflowY].some(
+          (value) => value && value !== "visible"
+        );
+
+      const structuralTag = ["table", "thead", "tbody", "tr"].includes(tagName);
+      const printContainer =
+        element.hasAttribute("data-pdf-section") ||
+        element.hasAttribute("data-pdf-keep-together") ||
+        element.hasAttribute("data-pdf-adaptive-fit") ||
+        structuralTag ||
+        hasBreakRule ||
+        hasSizingConstraint ||
+        hasOverflowConstraint;
+
+      const nextParent = printContainer ? name : parentName;
+
+      if (printContainer) {
+        rows.push({
+          name,
+          parent: parentName,
+          depth,
+          display: computed.display,
+          height: computed.height,
+          minHeight: computed.minHeight,
+          maxHeight: computed.maxHeight,
+          overflow: computed.overflow,
+          overflowX: computed.overflowX,
+          overflowY: computed.overflowY,
+          breakBefore: (computed as CSSStyleDeclaration).breakBefore || "",
+          breakAfter: (computed as CSSStyleDeclaration).breakAfter || "",
+          breakInside: (computed as CSSStyleDeclaration).breakInside || "",
+          pageBreakBefore: computed.pageBreakBefore || "",
+          pageBreakAfter: computed.pageBreakAfter || "",
+          pageBreakInside: computed.pageBreakInside || "",
+          keepTogether: element.hasAttribute("data-pdf-keep-together"),
+          adaptiveFit: element.hasAttribute("data-pdf-adaptive-fit"),
+          section: element.hasAttribute("data-pdf-section"),
+        });
+      }
+
+      Array.from(element.children).forEach((child) => {
+        if (child instanceof HTMLElement) {
+          walk(child, nextParent, depth + 1);
+        }
+      });
+    };
+
+    walk(root, "document", 0);
+    console.groupCollapsed(`[PDF AUDIT] Print container hierarchy: ${rootLabel} (${rows.length} nodes)`);
+    console.table(rows);
+    console.groupEnd();
+
+    const globalWindow = window as Window & {
+      __pdfContainerAudit?: Array<{ rootLabel: string; rows: typeof rows }>;
+    };
+    globalWindow.__pdfContainerAudit = globalWindow.__pdfContainerAudit || [];
+    globalWindow.__pdfContainerAudit.push({ rootLabel, rows });
+    console.log("[PDF AUDIT JSON]", { rootLabel, rows });
+  };
+
   // ── Slice a single canvas across pages ──────────────────────────
   const addCanvasAcrossPages = (
     canvas: HTMLCanvasElement,
     rowBreaksPx: number[] = [],
-    keepTogetherRegionsPx: Array<{ top: number; bottom: number }> = []
+    keepTogetherRegionsPx: KeepTogetherRegionPx[] = []
   ) => {
     const pxPerMm = canvas.width / CONTENT_W;
     const safeBreaks = Array.from(new Set(rowBreaksPx))
@@ -108,6 +243,8 @@ export async function exportSectionsToPdf(
       .map((region) => ({
         top: Math.max(0, Math.round(region.top)),
         bottom: Math.min(canvas.height, Math.round(region.bottom)),
+        name: region.name,
+        parent: region.parent,
       }))
       .filter((region) => region.bottom - region.top > 6)
       .sort((a, b) => a.top - b.top);
@@ -145,9 +282,22 @@ export async function exportSectionsToPdf(
         (region) => region.top > sourceY && region.top < maxEnd && region.bottom > maxEnd
       );
 
+      if (cfg.debugContainerTree && conflictingRegion) {
+        console.info("[PDF AUDIT] Premature-break candidate detected", {
+          reason: "keep-together region overlaps current page end",
+          container: conflictingRegion.name || "[data-pdf-keep-together]",
+          parent: conflictingRegion.parent || "unknown",
+          sourceY,
+          maxEnd,
+          regionTop: conflictingRegion.top,
+          regionBottom: conflictingRegion.bottom,
+          currentY,
+        });
+      }
+
       // Avoid creating tiny slices (1–12px) before protected blocks.
       // Those micro-slices are the main cause of visual clipping at page starts.
-      const MIN_PRE_BREAK_SLICE_PX = 12;
+      const MIN_PRE_BREAK_SLICE_PX = 4;
       const canMoveToFreshPage = currentY > MARGIN + 0.5;
       if (conflictingRegion && conflictingRegion.top - sourceY < MIN_PRE_BREAK_SLICE_PX && canMoveToFreshPage) {
         pdf.addPage();
@@ -267,7 +417,7 @@ export async function exportSectionsToPdf(
   ): Promise<{
     canvas: HTMLCanvasElement;
     rowBreaksPx: number[];
-    keepTogetherRegionsPx: Array<{ top: number; bottom: number }>;
+    keepTogetherRegionsPx: KeepTogetherRegionPx[];
   }> => {
     const sectionRenderWidth = Math.max(
       cfg.renderWidth,
@@ -423,6 +573,7 @@ export async function exportSectionsToPdf(
 
     document.body.appendChild(wrapper);
     try {
+      logPrintContainerHierarchy(clone, section.getAttribute("data-pdf-component") || getContainerName(section));
       const wrapperRect = wrapper.getBoundingClientRect();
 
       // Collect row/line boundaries from tables, lists, and explicit section dividers
@@ -438,9 +589,12 @@ export async function exportSectionsToPdf(
       )
         .map((region) => {
           const rect = region.getBoundingClientRect();
+          const parent = region.parentElement instanceof HTMLElement ? region.parentElement : null;
           return {
             top: rect.top - wrapperRect.top,
             bottom: rect.bottom - wrapperRect.top,
+            name: getContainerName(region),
+            parent: parent ? getContainerName(parent) : undefined,
           };
         })
         .filter(
@@ -464,6 +618,8 @@ export async function exportSectionsToPdf(
         keepTogetherRegionsPx: keepTogetherRegionsCssPx.map((region) => ({
           top: Math.round(region.top * cfg.scale),
           bottom: Math.round(region.bottom * cfg.scale),
+          name: region.name,
+          parent: region.parent,
         })),
       };
     } finally {

@@ -10,9 +10,9 @@ interface PMSignOffBlockProps {
 
 export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â€“ Inspection Form", showElecCertNo = false }: PMSignOffBlockProps) => {
   return (
-    <div data-pdf-section data-pdf-adaptive-fit>
+    <div data-pdf-section data-pdf-adaptive-fit data-pdf-component="pm-signoff-block">
       {/* Comments */}
-      <div className="border-t border-border">
+      <div className="border-t border-border" data-pdf-component="pm-comments-section">
         <div className="bg-muted px-3 py-1.5 font-semibold text-sm border-b border-border">COMMENTS:</div>
         <div className="px-3 py-1.5" data-pdf-comments-wrap>
           <Textarea
@@ -23,7 +23,7 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
         </div>
       </div>
 
-      <div data-pdf-keep-together>
+      <div data-pdf-keep-together data-pdf-component="pm-signoff-approval-group">
         {/* Sign Off */}
         <div className="border-t border-border">
           <div className="bg-muted px-3 py-1.5 font-bold text-sm border-b border-border">SIGN OFF</div>
@@ -68,9 +68,10 @@ export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations â
           </table>
         </div>
 
-        <div className="bg-muted/30 px-4 py-1.5 text-xs text-muted-foreground text-center">
-          {footerText}
-        </div>
+      </div>
+
+      <div className="bg-muted/30 px-4 py-1.5 text-xs text-muted-foreground text-center" data-pdf-component="pm-form-footer">
+        {footerText}
       </div>
     </div>
   );
