@@ -717,8 +717,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   <th className="text-left p-2 border-r border-gray-300">Technician Name</th>
                   <th className="text-center p-2 border-r border-gray-300 w-24">Work Centre</th>
                   <th className="text-center p-2 border-r border-gray-300 w-24">Date</th>
-                  <th className="text-center p-2 border-r border-gray-300 w-20">Start Time</th>
-                  <th className="text-center p-2 border-r border-gray-300 w-20">End Time</th>
                   <th className="text-center p-2 w-20">Total Hrs</th>
                 </tr>
               </thead>
@@ -739,7 +737,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   if (expectedRows.length === 0) {
                     return (
                       <tr className="border-b border-gray-300">
-                        <td colSpan={6} className="p-3 text-center text-gray-400 italic">
+                        <td colSpan={4} className="p-3 text-center text-gray-400 italic">
                           Add resources above to generate labour rows
                         </td>
                       </tr>
@@ -778,20 +776,6 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                           <Input type="date" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
                             value={row.date}
                             onChange={(e) => updateLabourRow(idx, "date", e.target.value)}
-                            onBlur={saveLabour}
-                          />
-                        </td>
-                        <td className="p-1 border-r border-gray-300 text-center">
-                          <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                            value={row.start_time}
-                            onChange={(e) => updateLabourRow(idx, "start_time", e.target.value)}
-                            onBlur={saveLabour}
-                          />
-                        </td>
-                        <td className="p-1 border-r border-gray-300 text-center">
-                          <Input type="time" className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
-                            value={row.end_time}
-                            onChange={(e) => updateLabourRow(idx, "end_time", e.target.value)}
                             onBlur={saveLabour}
                           />
                         </td>
