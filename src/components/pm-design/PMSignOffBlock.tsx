@@ -6,13 +6,19 @@ import { CheckCircle2 } from "lucide-react";
 interface PMSignOffBlockProps {
   footerText?: string;
   showElecCertNo?: boolean;
+  startOnNewPage?: boolean;
 }
 
-export const PMSignOffBlock = ({ footerText = "Tennant Creek Mining Operations – Inspection Form", showElecCertNo = false }: PMSignOffBlockProps) => {
+export const PMSignOffBlock = ({
+  footerText = "Tennant Creek Mining Operations – Inspection Form",
+  showElecCertNo = false,
+  startOnNewPage = false,
+}: PMSignOffBlockProps) => {
   return (
     <div
       data-pdf-section
       data-pdf-component="pm-footer-block"
+      data-pdf-start-new-page={startOnNewPage || undefined}
       className="overflow-visible"
     >
       {/* Comments */}
