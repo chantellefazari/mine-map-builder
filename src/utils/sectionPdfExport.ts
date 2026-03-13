@@ -264,20 +264,49 @@ export async function exportSectionsToPdf(
     origInputs.forEach((orig, idx) => {
       const target = clonedInputs[idx];
       if (!target) return;
-      const val = orig.value;
-      // Set attribute so html2canvas sees it, and keep DOM structure intact
+
+      const val = orig.value ?? "";
+      const isTextLikeInput =
+        orig instanceof HTMLTextAreaElement ||
+        (orig instanceof HTMLInputElement &&
+          ["text", "search", "email", "url", "tel", "number", "password"].includes(
+            (orig.type || "text").toLowerCase()
+          ));
+
+      // Replace text-like controls with wrapped text blocks for reliable full-value capture
+      if (isTextLikeInput) {
+        const computed = window.getComputedStyle(orig);
+        const textBlock = document.createElement("div");
+        textBlock.textContent = val;
+        textBlock.style.display = "block";
+        textBlock.style.width = "100%";
+        textBlock.style.minHeight = `${Math.max(orig.getBoundingClientRect().height, 16)}px`;
+        textBlock.style.boxSizing = "border-box";
+        textBlock.style.padding = computed.padding;
+        textBlock.style.margin = computed.margin;
+        textBlock.style.fontFamily = computed.fontFamily;
+        textBlock.style.fontSize = computed.fontSize;
+        textBlock.style.fontWeight = computed.fontWeight;
+        textBlock.style.lineHeight = computed.lineHeight;
+        textBlock.style.letterSpacing = computed.letterSpacing;
+        textBlock.style.color = computed.color;
+        textBlock.style.whiteSpace = "pre-wrap";
+        textBlock.style.wordBreak = "break-word";
+        textBlock.style.overflowWrap = "anywhere";
+        target.replaceWith(textBlock);
+        return;
+      }
+
+      // Preserve non-text inputs as-is and sync key state
       target.setAttribute("value", val);
       target.value = val;
-      // For textareas, set textContent as well
-      if (target.tagName === "TEXTAREA") {
-        target.textContent = val;
+      if (
+        orig instanceof HTMLInputElement &&
+        target instanceof HTMLInputElement &&
+        ["checkbox", "radio"].includes((orig.type || "").toLowerCase())
+      ) {
+        target.checked = orig.checked;
       }
-      // Ensure text is visible and not clipped
-      target.style.overflow = "visible";
-      target.style.textOverflow = "unset";
-      target.style.whiteSpace = "pre-wrap";
-      target.style.height = "auto";
-      target.style.minHeight = "0";
     });
 
     clone.querySelectorAll<HTMLElement>("table").forEach((table) => {
