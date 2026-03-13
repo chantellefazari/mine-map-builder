@@ -51,6 +51,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     operations_handover_date: "",
     resources_required: "",
     labour_hours: "[]",
+    isolation_required: false,
   });
 
   // Sync form when WO data loads
@@ -82,6 +83,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
         operations_handover_date: wo.operations_handover_date || "",
         resources_required: (wo as any).resources_required || "",
         labour_hours: labourStr,
+        isolation_required: (wo as any).isolation_required ?? false,
       });
     }
   }, [wo?.id]);
@@ -94,6 +96,9 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
       let dbValue: any = value;
       if (["required_tooling", "resources_required", "labour_hours"].includes(field)) {
         try { dbValue = JSON.parse(value); } catch { dbValue = value; }
+      }
+      if (field === "isolation_required") {
+        dbValue = value === "true";
       }
       const { error } = await (supabase as any)
         .from("work_orders")
@@ -310,6 +315,29 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                 </div>
               </div>
               <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block mb-1">Isolation Required</span>
+                <div className="flex items-center gap-4 mt-1">
+                  <label className="flex items-center gap-1 cursor-pointer" onClick={() => {
+                    setForm({ ...form, isolation_required: true });
+                    if (wo) saveField("isolation_required", "true");
+                  }}>
+                    <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${form.isolation_required === true ? "bg-primary text-primary-foreground" : ""}`}>
+                      {form.isolation_required === true && "✓"}
+                    </div>
+                    <span className="text-xs">Yes</span>
+                  </label>
+                  <label className="flex items-center gap-1 cursor-pointer" onClick={() => {
+                    setForm({ ...form, isolation_required: false });
+                    if (wo) saveField("isolation_required", "false");
+                  }}>
+                    <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${form.isolation_required === false ? "bg-primary text-primary-foreground" : ""}`}>
+                      {form.isolation_required === false && "✓"}
+                    </div>
+                    <span className="text-xs">No</span>
+                  </label>
+                </div>
+              </div>
+              <div className="border border-gray-300 p-2">
                 <span className="text-xs text-gray-500 block mb-1">Requested By</span>
                 <Input
                   className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"
@@ -319,7 +347,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   placeholder="Enter name"
                 />
               </div>
-              <div className="border border-gray-300 p-2 col-span-2">
+              <div className="border border-gray-300 p-2">
                 <span className="text-xs text-gray-500 block mb-1">Equipment Description</span>
                 <Input
                   className="h-7 text-xs border-dashed print:border-none print:p-0 print:h-auto"

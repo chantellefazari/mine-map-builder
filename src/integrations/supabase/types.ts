@@ -2178,6 +2178,7 @@ export type Database = {
           date_raised: string | null
           functional_location: string | null
           id: string
+          isolation_required: boolean
           labour_hours: Json
           operations_handover_date: string
           operations_handover_name: string
@@ -2208,6 +2209,7 @@ export type Database = {
           date_raised?: string | null
           functional_location?: string | null
           id?: string
+          isolation_required?: boolean
           labour_hours?: Json
           operations_handover_date?: string
           operations_handover_name?: string
@@ -2238,6 +2240,7 @@ export type Database = {
           date_raised?: string | null
           functional_location?: string | null
           id?: string
+          isolation_required?: boolean
           labour_hours?: Json
           operations_handover_date?: string
           operations_handover_name?: string
