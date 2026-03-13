@@ -163,6 +163,7 @@ export async function exportSectionsToPdf(
       // Find the closest row break BEFORE the max cut point.
       // Only snap in the lower part of the page, and never inside protected regions.
       let bestBreak = -1;
+      let fallbackBreak = -1;
       const snapZoneStart = sourceY + Math.floor(maxSliceHeightPx * cfg.rowSnapStartRatio);
       const isInsideProtectedRegion = (point: number) =>
         safeRegions.some((region) => point > region.top + 1 && point < region.bottom - 1);
@@ -171,16 +172,24 @@ export async function exportSectionsToPdf(
         const point = safeBreaks[i];
         if (point <= sourceY + 10) break;
         if (point > maxEnd) continue;
-        if (point < snapZoneStart) continue;
         if (isInsideProtectedRegion(point)) continue;
+        if (fallbackBreak === -1) fallbackBreak = point;
+        if (point < snapZoneStart) continue;
         bestBreak = point;
         break;
       }
 
-      // Ignore overly-early snap points that would create large visible gaps at page bottoms.
+      // Prefer late row snaps, but if none exist keep row integrity with a sufficiently-filled fallback break.
       const maxWhitespacePx = Math.floor(maxSliceHeightPx * cfg.maxWhitespaceRatio);
       if (bestBreak > sourceY && maxEnd - bestBreak > maxWhitespacePx) {
         bestBreak = -1;
+      }
+
+      if (bestBreak === -1 && fallbackBreak > sourceY) {
+        const filledRatio = (fallbackBreak - sourceY) / maxSliceHeightPx;
+        if (filledRatio >= 0.55) {
+          bestBreak = fallbackBreak;
+        }
       }
 
       // Prioritise keep-together forced break, then row break, then hard cut fallback.
