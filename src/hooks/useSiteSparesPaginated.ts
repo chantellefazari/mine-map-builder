@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { SiteSpareItem } from "@/hooks/useSiteSpares";
+import { classifyCriticality, type CriticalityLevel } from "@/utils/criticalityClassification";
 
 /**
  * Legacy → TCMG Category Normalization Map
@@ -136,7 +137,7 @@ export interface PaginationFilters {
   warehouseArea: string;
   status: string;
   supplier: string;
-  criticality: string; // client-side only (derived from description)
+  criticality: string; // HIGH/MEDIUM/LOW across full filtered dataset
   quickFilter: "all" | "lowStock" | "critical";
 }
 
@@ -170,12 +171,16 @@ export const useSiteSparesPaginated = () => {
 
   // Fetch stats (lightweight — no row data)
   const fetchStats = useCallback(async () => {
-    const [totalRes, lowStockRes, withPhotosRes] = await Promise.all([
+    const [totalRes, lowStockRes, criticalRes, withPhotosRes] = await Promise.all([
       supabase.from("site_spares").select("*", { count: "exact", head: true }),
       supabase
         .from("site_spares")
         .select("*", { count: "exact", head: true })
         .in("status", ["Low Stock", "Out of Stock"]),
+      supabase
+        .from("site_spares")
+        .select("*", { count: "exact", head: true })
+        .eq("is_critical", true),
       supabase
         .from("site_spares")
         .select("*", { count: "exact", head: true })
@@ -185,9 +190,49 @@ export const useSiteSparesPaginated = () => {
     setStats({
       totalItems: totalRes.count ?? 0,
       lowStockCount: lowStockRes.count ?? 0,
-      criticalCount: 0, // computed client-side via keyword engine
+      criticalCount: criticalRes.count ?? 0,
       withPhotosCount: withPhotosRes.count ?? 0,
     });
+  }, []);
+
+  const applyServerFilters = useCallback((query: any, filters: PaginationFilters) => {
+    let next = query;
+
+    if (filters.searchQuery.trim()) {
+      const term = `%${filters.searchQuery.trim()}%`;
+      next = next.or(
+        `description.ilike.${term},part_number.ilike.${term},oem_part_number.ilike.${term},bin_location.ilike.${term},manufacturer.ilike.${term}`
+      );
+    }
+
+    if (filters.category !== "all") {
+      const rawCats = getRawCategoriesFor(filters.category);
+      next = next.in("category", rawCats);
+    }
+
+    if (filters.warehouseArea !== "all") {
+      next = next.eq("warehouse_area", filters.warehouseArea);
+    }
+
+    if (filters.status !== "all") {
+      if (filters.status === "Low Stock") {
+        next = next.in("status", ["Low Stock", "Out of Stock"]);
+      } else {
+        next = next.eq("status", filters.status);
+      }
+    }
+
+    if (filters.supplier !== "all") {
+      next = next.eq("preferred_supplier", filters.supplier);
+    }
+
+    if (filters.quickFilter === "lowStock") {
+      next = next.in("status", ["Low Stock", "Out of Stock"]);
+    } else if (filters.quickFilter === "critical") {
+      next = next.eq("is_critical", true);
+    }
+
+    return next;
   }, []);
 
   // Fetch a page of filtered data
@@ -195,50 +240,71 @@ export const useSiteSparesPaginated = () => {
     async (filters: PaginationFilters, pageNum: number) => {
       setLoading(true);
 
+      const from = pageNum * pageSize;
+      const to = from + pageSize - 1;
+
+      // For HIGH/MEDIUM/LOW filtering, we must classify across the full filtered dataset,
+      // not just the current server page.
+      if (filters.criticality !== "all") {
+        const batchSize = 1000;
+        let offset = 0;
+        const allRows: SiteSpareItem[] = [];
+
+        while (true) {
+          let batchQuery = supabase
+            .from("site_spares")
+            .select("*")
+            .order("created_at", { ascending: true })
+            .order("id", { ascending: true });
+
+          batchQuery = applyServerFilters(batchQuery, filters);
+          batchQuery = batchQuery.range(offset, offset + batchSize - 1);
+
+          const { data, error } = await batchQuery;
+
+          if (error) {
+            console.error("Error fetching spares page:", error);
+            toast({
+              title: "Error",
+              description: "Failed to load inventory data.",
+              variant: "destructive",
+            });
+            setLoading(false);
+            return;
+          }
+
+          if (!data || data.length === 0) break;
+
+          const normalizedBatch = data.map((row: any) => ({
+            ...row,
+            category: normalizeCategory(row.category),
+            image_urls: (row.image_urls ?? []) as string[],
+          })) as SiteSpareItem[];
+
+          allRows.push(...normalizedBatch);
+
+          if (data.length < batchSize) break;
+          offset += batchSize;
+        }
+
+        const level = filters.criticality as CriticalityLevel;
+        const criticalityFiltered = allRows.filter(
+          (row) => classifyCriticality(row.description) === level
+        );
+
+        setTotalFiltered(criticalityFiltered.length);
+        setSpares(criticalityFiltered.slice(from, to + 1));
+        setLoading(false);
+        return;
+      }
+
       let query = supabase
         .from("site_spares")
         .select("*", { count: "exact" })
         .order("created_at", { ascending: true })
         .order("id", { ascending: true });
 
-      // Server-side filters
-      if (filters.searchQuery.trim()) {
-        const term = `%${filters.searchQuery.trim()}%`;
-        query = query.or(
-          `description.ilike.${term},part_number.ilike.${term},oem_part_number.ilike.${term},bin_location.ilike.${term},manufacturer.ilike.${term}`
-        );
-      }
-
-      if (filters.category !== "all") {
-        const rawCats = getRawCategoriesFor(filters.category);
-        query = query.in("category", rawCats);
-      }
-
-      if (filters.warehouseArea !== "all") {
-        query = query.eq("warehouse_area", filters.warehouseArea);
-      }
-
-      if (filters.status !== "all") {
-        if (filters.status === "Low Stock") {
-          query = query.in("status", ["Low Stock", "Out of Stock"]);
-        } else {
-          query = query.eq("status", filters.status);
-        }
-      }
-
-      if (filters.supplier !== "all") {
-        query = query.eq("preferred_supplier", filters.supplier);
-      }
-
-      if (filters.quickFilter === "lowStock") {
-        query = query.in("status", ["Low Stock", "Out of Stock"]);
-      } else if (filters.quickFilter === "critical") {
-        query = query.eq("is_critical", true);
-      }
-
-      // Pagination
-      const from = pageNum * pageSize;
-      const to = from + pageSize - 1;
+      query = applyServerFilters(query, filters);
       query = query.range(from, to);
 
       const { data, error, count } = await query;
@@ -264,7 +330,7 @@ export const useSiteSparesPaginated = () => {
       setTotalFiltered(count ?? 0);
       setLoading(false);
     },
-    [pageSize, toast]
+    [applyServerFilters, pageSize, toast]
   );
 
   // Update a spare (optimistic local update)

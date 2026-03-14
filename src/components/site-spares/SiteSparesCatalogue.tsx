@@ -359,7 +359,7 @@ export const SiteSparesCatalogue = () => {
     }
   };
 
-  // Client-side criticality filter (derived from description, not a DB column)
+  // Display page already server-filtered; criticality filter is additionally validated by classifier
   const displaySpares = useMemo(() => {
     if (filterCriticality === "all") return paginated.spares;
     return paginated.spares.filter((spare) => {
@@ -425,8 +425,8 @@ export const SiteSparesCatalogue = () => {
             <Package className="h-5 w-5 text-primary" />
             <span className="text-sm text-primary">Critical Items</span>
           </div>
-          <p className="text-2xl font-bold mt-1 text-primary">—</p>
-          <p className="text-xs text-muted-foreground">Use filter to view</p>
+          <p className="text-2xl font-bold mt-1 text-primary">{paginated.stats.criticalCount}</p>
+          <p className="text-xs text-muted-foreground">flagged HIGH</p>
         </div>
         <div className="rounded-lg p-4 bg-muted/50">
           <div className="flex items-center gap-2">
