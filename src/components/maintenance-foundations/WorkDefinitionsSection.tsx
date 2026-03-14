@@ -348,7 +348,7 @@ export const WorkDefinitionsSection = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
-                    <span>Clear scope — we know what we're doing</span>
+                    <span>Clear scope, we know what we're doing</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
