@@ -256,6 +256,14 @@ const PMPrint = () => {
         }
 
         @media print {
+          html, body {
+            width: 210mm;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
           .pm-print-page {
             background: white;
           }
@@ -263,11 +271,13 @@ const PMPrint = () => {
             display: none !important;
           }
           .pm-print-content {
-            max-width: none;
+            max-width: 100%;
+            width: 100%;
             margin: 0;
-            padding: 10mm;
-            border: 1px solid #000;
+            padding: 0;
+            border: none;
             box-shadow: none;
+            box-sizing: border-box;
           }
 
           * {
@@ -276,10 +286,11 @@ const PMPrint = () => {
           }
 
           @page {
-            margin: 15mm;
             size: A4 portrait;
+            margin: 12mm;
           }
 
+          /* Tables: natural flow across pages */
           table {
             page-break-inside: auto;
             border-collapse: collapse !important;
@@ -291,15 +302,32 @@ const PMPrint = () => {
           th, td {
             padding: 3px 6px !important;
           }
+
+          /* Rows should not split */
           tr {
             break-inside: avoid;
             page-break-inside: avoid;
+            page-break-after: auto;
           }
+
+          /* Repeat table headers on every page */
           thead {
             display: table-header-group;
           }
           tfoot {
             display: table-footer-group;
+          }
+
+          /* Keep sign-off / approval blocks together */
+          [data-pdf-keep-together],
+          .no-split {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+
+          /* Keep the outer PM border container flowing naturally */
+          .pm-print-content .border-2 {
+            border: 1px solid #000 !important;
           }
         }
       `}</style>
