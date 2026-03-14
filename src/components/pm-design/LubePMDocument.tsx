@@ -38,14 +38,17 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
 
           <table className="w-full text-xs border-collapse" style={{ tableLayout: "fixed" }}>
             <colgroup>
-              <col style={{ width: "8%" }} />
-              <col style={{ width: `${22}%` }} />
-              {Array.from({ length: maxPoints }).flatMap((_, i) => [
-                <col key={`loc-${i}`} style={{ width: `${70 / maxPoints / 4}%` }} />,
-                <col key={`type-${i}`} style={{ width: `${70 / maxPoints / 4}%` }} />,
-                <col key={`qty-${i}`} style={{ width: `${70 / maxPoints / 4}%` }} />,
-                <col key={`chk-${i}`} style={{ width: `${70 / maxPoints / 4}%` }} />,
-              ])}
+              <col style={{ width: "10%" }} />
+              <col style={{ width: `${30 - (maxPoints > 2 ? 5 : 0)}%` }} />
+              {Array.from({ length: maxPoints }).flatMap((_, i) => {
+                const groupPct = (60 + (maxPoints > 2 ? 5 : 0)) / maxPoints;
+                return [
+                  <col key={`loc-${i}`} style={{ width: `${groupPct * 0.35}%` }} />,
+                  <col key={`type-${i}`} style={{ width: `${groupPct * 0.25}%` }} />,
+                  <col key={`qty-${i}`} style={{ width: `${groupPct * 0.28}%` }} />,
+                  <col key={`chk-${i}`} style={{ width: `${groupPct * 0.12}%` }} />,
+                ];
+              })}
             </colgroup>
             <thead>
               {/* Group header row */}
@@ -75,7 +78,7 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
                   className={`border-b border-border ${idx % 2 === 0 ? "" : "bg-muted/30"}`}
                   data-pdf-break
                 >
-                  <td className="px-1 py-1 font-mono font-medium border-r border-border align-top">
+                  <td className="px-1 py-1 font-mono font-medium border-r border-border align-top" style={{ wordBreak: "break-all" }}>
                     {item.plantId}
                   </td>
                   <td className="px-1 py-1 border-r border-border align-top">
@@ -92,9 +95,9 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
                       ];
                     }
                     return [
-                      <td key={`loc-${lpIdx}`} className="px-1 py-1 border-r border-border align-top">{lp.location}</td>,
-                      <td key={`type-${lpIdx}`} className="px-1 py-1 border-r border-border align-top font-medium">{lp.type}</td>,
-                      <td key={`qty-${lpIdx}`} className="px-1 py-1 border-r border-border align-top text-center">
+                      <td key={`loc-${lpIdx}`} className="px-1 py-1 border-r border-border align-top" style={{ wordBreak: "break-word" }}>{lp.location}</td>,
+                      <td key={`type-${lpIdx}`} className="px-1 py-1 border-r border-border align-top font-medium" style={{ wordBreak: "break-word" }}>{lp.type}</td>,
+                      <td key={`qty-${lpIdx}`} className="px-1 py-1 border-r border-border align-top text-center" style={{ wordBreak: "break-word" }}>
                         {lp.quantity}{lp.uom ? ` ${lp.uom}` : ""}
                       </td>,
                       <td key={`chk-${lpIdx}`} className="px-1 py-1 border-r border-border align-top text-center">
