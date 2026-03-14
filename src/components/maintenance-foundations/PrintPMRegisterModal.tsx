@@ -208,6 +208,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
         }
         .stat:last-child { border-right: none; }
         .stat-value { display: block; font-size: 16px; font-weight: 800; color: #1a1a1a; }
+        .stat-value.stat-lube { color: #0d9488; }
         .stat-label { display: block; font-size: 7px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .section-title {
