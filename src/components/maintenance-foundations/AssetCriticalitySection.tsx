@@ -509,7 +509,7 @@ export const AssetCriticalitySection = () => {
               <TableHead className="text-xs">Asset Name</TableHead>
               <TableHead className="w-[130px] text-xs">Rating</TableHead>
               <TableHead className="text-xs">Justification / Notes</TableHead>
-              <TableHead className="w-[40px] text-xs"></TableHead>
+              
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -544,9 +544,6 @@ export const AssetCriticalitySection = () => {
                       placeholder="Optional justification…"
                       className="h-7 text-xs"
                     />
-                  </TableCell>
-                  <TableCell className="py-1.5 text-center">
-                    {isSaved && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
                   </TableCell>
                 </TableRow>
               );
