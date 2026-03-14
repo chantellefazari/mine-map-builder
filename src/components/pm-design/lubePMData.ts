@@ -170,8 +170,8 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequencyGroup: "12-week",
     items: [
       {
-        plantId: "12-TM-001",
-        plantItem: "Powerpack, Rake Lift, hydraulic; Thickener",
+        plantId: "THK01",
+        plantItem: "Powerpack, Rake Lift, hydraulic; Tails Thickener",
         lubePoints: [
           { location: "Powerpack", type: "VG 68", quantity: "85% of Capacity", uom: "" },
           { location: "Rake Lift", type: "GP Grease", quantity: "0.5", uom: "l" },
