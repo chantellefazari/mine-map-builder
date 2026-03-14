@@ -218,7 +218,7 @@ export const PMBaseMasterTemplate = () => {
             </div>
           </div>
           {/* Approval */}
-          <div className="border-t border-border">
+          <div className="border-t border-border" data-pdf-component="pm-approval-section" data-pdf-keep-together data-pdf-break>
             <div className="bg-green-500/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-green-600" />
               <span className="text-green-700">APPROVAL</span>
