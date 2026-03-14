@@ -258,7 +258,11 @@ const PMPrint = () => {
 
           table {
             page-break-inside: auto;
-            border-collapse: collapse;
+            border-collapse: collapse !important;
+            width: 100%;
+          }
+          table, th, td {
+            border: 1px solid #000 !important;
           }
           tr {
             break-inside: avoid;
