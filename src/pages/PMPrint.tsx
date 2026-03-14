@@ -255,6 +255,26 @@ const PMPrint = () => {
           border: 1px solid #000;
         }
 
+        /* Lube PM template — constrain table to container */
+        .pm-print-content .lube-pm-template {
+          max-width: 100%;
+          overflow: hidden;
+          box-sizing: border-box;
+        }
+        .pm-print-content .lube-pm-template table {
+          table-layout: fixed !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          border-collapse: collapse !important;
+          box-sizing: border-box;
+        }
+        .pm-print-content .lube-pm-template th,
+        .pm-print-content .lube-pm-template td {
+          overflow-wrap: break-word;
+          word-wrap: break-word;
+          overflow: hidden;
+        }
+
         @media print {
           html, body {
             width: 210mm;
