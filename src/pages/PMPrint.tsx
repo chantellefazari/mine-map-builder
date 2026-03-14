@@ -229,8 +229,30 @@ const PMPrint = () => {
         .pm-print-content {
           max-width: 210mm;
           margin: 32px auto;
+          padding: 10mm;
           background: white;
+          border: 1px solid #000;
           box-shadow: 0 4px 24px -6px rgba(0,0,0,0.12);
+          box-sizing: border-box;
+        }
+
+        /* Ensure all tables have clear grid borders on screen */
+        .pm-print-content table {
+          border-collapse: collapse !important;
+          width: 100%;
+        }
+        .pm-print-content table th,
+        .pm-print-content table td {
+          border: 1px solid #000 !important;
+          padding: 3px 6px;
+        }
+
+        /* Grid-based metadata cells — add visible borders */
+        .pm-print-content .grid.grid-cols-2 > div {
+          border: 1px solid #000;
+        }
+        .pm-print-content .grid.grid-cols-\\[120px_1fr\\] > div {
+          border: 1px solid #000;
         }
 
         @media print {
@@ -243,6 +265,8 @@ const PMPrint = () => {
           .pm-print-content {
             max-width: none;
             margin: 0;
+            padding: 10mm;
+            border: 1px solid #000;
             box-shadow: none;
           }
 
@@ -252,7 +276,7 @@ const PMPrint = () => {
           }
 
           @page {
-            margin: 8mm;
+            margin: 15mm;
             size: A4 portrait;
           }
 
@@ -263,6 +287,9 @@ const PMPrint = () => {
           }
           table, th, td {
             border: 1px solid #000 !important;
+          }
+          th, td {
+            padding: 3px 6px !important;
           }
           tr {
             break-inside: avoid;
