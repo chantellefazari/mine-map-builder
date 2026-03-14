@@ -373,7 +373,12 @@ const PMDesign = () => {
               ...PDF_EXPORT_OPTS,
               sectionSelector: "[data-pdf-flow-container], [data-pdf-component='pm-footer-block']",
             }
-          : PDF_EXPORT_OPTS;
+          : {
+              ...PDF_EXPORT_OPTS,
+              // Capture every top-level PM block (header/metadata/safety/task tables/custom sections/footer)
+              // so templates without explicit data-pdf-section markers don't lose content.
+              sectionSelector: ".border-2.border-border > *",
+            };
       await exportSectionsToPdf(container, filename, exportOpts);
       toast.success(`Downloaded ${filename}`);
     } catch (err: any) {
