@@ -5,208 +5,193 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
 
 @layer base {
-  body {
-    @apply font-sans;
+  :root {
+    /* Core palette - Black and Gold Mining Theme */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 5%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 5%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 5%;
+
+    /* Gold accent for mining theme */
+    --primary: 45 93% 47%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 45 30% 90%;
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 45 20% 94%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 45 40% 95%;
+    --accent-foreground: 0 0% 10%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 0%;
+    
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 0 0% 0%;
+    --input: 0 0% 80%;
+    --ring: 45 93% 47%;
+
+    --radius: 0.5rem;
+
+    /* Hierarchy Level Colors - Vibrant Professional Mining theme */
+    --level-site: 0 0% 12%;
+    --level-plant: 45 85% 45%;
+    --level-area-site: 210 65% 50%;
+    --level-area-util: 170 60% 42%;
+    --level-area-com: 35 80% 50%;
+    --level-area-rec: 45 90% 48%;
+    --level-area-tail: 350 65% 55%;
+    --level-area-sup: 270 50% 55%;
+    
+    /* CRU Crushing Plant area colours */
+    --level-area-cru-rom: 28 85% 52%;
+    --level-area-cru-pri: 12 75% 50%;
+    --level-area-cru-scn: 48 88% 48%;
+    --level-area-cru-sec: 0 68% 52%;
+    --level-area-cru-stk: 85 55% 42%;
+    --level-area-cru-ctl: 210 65% 50%;
+    --level-area-cru-dus: 175 55% 40%;
+    
+    /* Sub-levels */
+    --level-subarea: 45 30% 90%;
+    --level-subarea-foreground: 0 0% 15%;
+    --level-parent-asset: 45 25% 85%;
+    --level-parent-asset-foreground: 0 0% 10%;
+    --level-system: 45 25% 85%;
+    --level-system-foreground: 0 0% 10%;
+    --level-equipment: 45 20% 92%;
+    --level-equipment-foreground: 0 0% 15%;
+    
+    /* Component level */
+    --level-component: 45 15% 95%;
+    --level-component-foreground: 0 0% 20%;
+    --level-component-border: 45 20% 80%;
+
+    /* Connector lines */
+    --connector: 0 0% 70%;
+    --connector-active: 45 93% 47%;
+
+    /* Search highlight */
+    --search-highlight: 45 96% 53%;
+    --search-highlight-glow: 45 96% 53%;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
+    --shadow-gold: 0 4px 14px -3px hsl(45 93% 47% / 0.25);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 45 93% 47%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 45 30% 95%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 85%;
+    --sidebar-ring: 45 93% 47%;
+  }
+
+  .dark {
+    --background: 0 0% 8%;
+    --foreground: 45 20% 95%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 45 20% 95%;
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 45 20% 95%;
+
+    --primary: 45 93% 47%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 45 20% 90%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 45 10% 55%;
+
+    --accent: 0 0% 18%;
+    --accent-foreground: 45 20% 95%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 38 92% 40%;
+    --warning-foreground: 0 0% 0%;
+    
+    --success: 142 71% 35%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 45 30% 25%;
+    --input: 0 0% 20%;
+    --ring: 45 93% 47%;
+
+    --connector: 0 0% 30%;
+
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 45 20% 90%;
+    --sidebar-primary: 45 93% 47%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 45 20% 95%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 45 93% 47%;
   }
 }
 
-/* scrollbar-hide */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
 }
 
-/* For IE, Edge and Firefox */
-.scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+@layer components {
+  .hierarchy-node {
+    @apply relative transition-all duration-200;
+  }
+
+  .hierarchy-connector {
+    @apply absolute bg-connector;
+  }
+
+  .hierarchy-connector-vertical {
+    @apply w-px;
+  }
+
+  .hierarchy-connector-horizontal {
+    @apply h-px;
+  }
 }
 
-/* === Radix UI === */
-/* Tooltip */
-.TooltipContent {
-  border-radius: 4px;
-  padding: 10px 15px;
-  font-size: 15px;
-  line-height: 1;
-  color: var(--mauve-12);
-  background-color: white;
-  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
-  user-select: none;
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 }
 
-.TooltipArrow {
-  fill: white;
-}
-
-/* Checkbox */
-.CheckboxRoot {
-  all: unset;
-  width: 20px;
-  height: 20px;
-  background-color: white;
-  border: 1px solid var(--gray-400);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-.CheckboxRoot:hover {
-  background-color: var(--gray-100);
-}
-.CheckboxRoot:focus {
-  box-shadow: 0 0 0 2px black;
-}
-.CheckboxIndicator {
-  color: green;
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-/* RadioGroup */
-.RadioGroupRoot {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.RadioGroupItem {
-  all: unset;
-  background-color: white;
-  width: 20px;
-  height: 20px;
-  border-radius: 100%;
-  box-shadow: 0 0 0 2px var(--gray-400);
-  cursor: pointer;
-}
-.RadioGroupItem:hover {
-  background-color: var(--gray-100);
-}
-.RadioGroupItem:focus {
-  box-shadow: 0 0 0 2px black;
-}
-.RadioGroupItem[data-state='checked'] {
-  box-shadow: 0 0 0 2px black;
-  background-color: black;
-}
-.RadioGroupIndicator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-.RadioGroupIndicator::after {
-  content: '';
-  display: block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: white;
-}
-
-/* Switch */
-.SwitchRoot {
-  all: unset;
-  width: 42px;
-  height: 25px;
-  background-color: var(--gray-500);
-  border-radius: 9999px;
-  position: relative;
-  cursor: pointer;
-}
-.SwitchRoot:focus {
-  box-shadow: 0 0 0 2px black;
-}
-.SwitchRoot[data-state='checked'] {
-  background-color: black;
-}
-.SwitchThumb {
-  display: block;
-  width: 21px;
-  height: 21px;
-  background-color: white;
-  border-radius: 9999px;
-  transition: transform 100ms;
-  transform: translateX(2px);
-  will-change: transform;
-}
-.SwitchThumb[data-state='checked'] {
-  transform: translateX(19px);
-}
-
-/* ScrollArea */
-[data-radix-scroll-area='root'] {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-}
-
-[data-radix-scroll-area-viewport='true'] {
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-}
-
-[data-radix-scroll-area-scrollbar='vertical'] {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 11px;
-  bottom: 0;
-  transition: opacity 100ms ease-in;
-  z-index: 10;
-}
-[data-radix-scroll-area-scrollbar='horizontal'] {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 11px;
-  right: 0;
-  transition: opacity 100ms ease-in;
-  z-index: 10;
-}
-[data-radix-scroll-area-scrollbar='vertical'][data-state='dragging'],
-[data-radix-scroll-area-scrollbar='vertical']:hover {
-  opacity: 1;
-}
-[data-radix-scroll-area-scrollbar='horizontal'][data-state='dragging'],
-[data-radix-scroll-area-scrollbar='horizontal']:hover {
-  opacity: 1;
-}
-
-[data-radix-scroll-area-thumb='true'] {
-  background-color: var(--gray-700);
-  border-radius: 9999px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-[data-radix-scroll-area-thumb='true']:hover {
-  background-color: var(--gray-800);
-}
-[data-radix-scroll-area-thumb='true']::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-  min-width: 44px;
-  min-height: 44px;
-}
-
-[data-radix-scroll-area-corner='true'] {
-  background-color: black;
-}
-
-/* Print Styles */
+/* Print Styles — isolated to print mode only */
 @media print {
-  /* Force exact color reproduction — keep all backgrounds, borders, colours */
+  /* Force exact color reproduction */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -225,7 +210,6 @@
 
   body {
     background: white !important;
-    zoom: 100%;
   }
 
   /* Ensure the document takes full width */
@@ -252,7 +236,12 @@
     display: none !important;
   }
 
-  /* Table pagination — keep layout intact */
+  /* Prevent content from being cut off */
+  * {
+    overflow: visible !important;
+  }
+
+  /* Table pagination */
   table {
     page-break-inside: auto;
     border-collapse: collapse;
@@ -275,6 +264,18 @@
   .border.border-gray-300 {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+
+  /* Ensure sign-off section stays together */
+  .bg-green-100 {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Keep section headers with their content */
+  .bg-gray-100 {
+    break-after: avoid;
+    page-break-after: avoid;
   }
 
   /* Ensure textarea content is fully visible */
