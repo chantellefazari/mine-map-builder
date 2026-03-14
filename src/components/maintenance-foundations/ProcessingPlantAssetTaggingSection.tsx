@@ -471,7 +471,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
               <p className="text-xs text-muted-foreground">Portable label printer or laser engraver for on-demand production at site.</p>
               <Separator />
               <div className="space-y-1">
-                <RuleRow>On-demand — no lead time</RuleRow>
+                <RuleRow>On-demand, no lead time</RuleRow>
                 <RuleRow>Lower long-term cost per tag</RuleRow>
                 <RuleRow>Simplified format reduces operator skill requirement</RuleRow>
                 <RuleRow>Capital purchase and training required</RuleRow>
