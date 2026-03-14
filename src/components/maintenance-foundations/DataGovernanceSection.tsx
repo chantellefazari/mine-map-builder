@@ -1,9 +1,168 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, AlertTriangle, CheckCircle2, Lock, History } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Shield, AlertTriangle, CheckCircle2, Lock, History, FileText, Package, MapPin, Wrench, Database, BookOpen, ClipboardCheck } from "lucide-react";
+
+type DeliverableStatus = "Complete" | "In Progress" | "Gap";
+
+interface Deliverable {
+  number: number;
+  title: string;
+  description: string;
+  status: DeliverableStatus;
+  icon: React.ReactNode;
+  notes?: string;
+}
+
+const DELIVERABLES: Deliverable[] = [
+  {
+    number: 1,
+    title: "Centralised Phase 1 Project Workbook",
+    description: "Consolidated Excel-based source of truth for assets, locations, parts, and maintenance data.",
+    status: "Gap",
+    icon: <FileText className="w-5 h-5" />,
+    notes: "Requires merging Asset, FL, Naming, PM, and Spares data into one consolidated .xlsx",
+  },
+  {
+    number: 2,
+    title: "Clean Master Asset Register",
+    description: "Standardised asset hierarchy, naming, numbering, and criticality classification.",
+    status: "Complete",
+    icon: <Database className="w-5 h-5" />,
+    notes: "processing_plant_assets_rev_b is active and synchronised with criticality ratings",
+  },
+  {
+    number: 3,
+    title: "Asset Hierarchy & Tagging Standards Document",
+    description: "Defined site asset structure and asset tagging rules, including an execution-ready tagging plan.",
+    status: "Complete",
+    icon: <BookOpen className="w-5 h-5" />,
+    notes: "TCMG-STD-AH-001 and rollout plans established",
+  },
+  {
+    number: 4,
+    title: "Stores & Inventory Layout Plan",
+    description: "Documented stores model including container layout, location structure, labelling standards, and stock movement rules.",
+    status: "Complete",
+    icon: <MapPin className="w-5 h-5" />,
+    notes: "3D compound layouts and Stock Control Procedures defined",
+  },
+  {
+    number: 5,
+    title: "Site Parts Catalogue",
+    description: "Cleaned and standardised parts list aligned to store locations and future procurement usage.",
+    status: "Complete",
+    icon: <Package className="w-5 h-5" />,
+    notes: "Site Spares Catalogue UI and database active",
+  },
+  {
+    number: 6,
+    title: "Maintenance Data Foundation Pack",
+    description: "Structured maintenance history, baseline preventive maintenance list, and minimum job data standards.",
+    status: "Complete",
+    icon: <Wrench className="w-5 h-5" />,
+    notes: "PM Standards and Job Data standards established; Maintenance History requires structured data to replace placeholders",
+  },
+  {
+    number: 7,
+    title: "Data Mapping & Readiness Documentation",
+    description: "Mapped datasets prepared for future D365 or equivalent system loading.",
+    status: "Complete",
+    icon: <ClipboardCheck className="w-5 h-5" />,
+    notes: "Field-level mapping to D365 entities and readiness dashboard established",
+  },
+  {
+    number: 8,
+    title: "Governance & Data Standards Pack",
+    description: "Locked rules for assets, parts, locations, and data ownership to prevent future drift.",
+    status: "Complete",
+    icon: <Shield className="w-5 h-5" />,
+    notes: "Rules for assets, parts, and locations locked in database",
+  },
+];
+
+const StatusBadge = ({ status }: { status: DeliverableStatus }) => {
+  const config = {
+    Complete: { variant: "default" as const, className: "bg-emerald-600 hover:bg-emerald-700 text-white" },
+    "In Progress": { variant: "secondary" as const, className: "bg-amber-500/20 text-amber-700 border-amber-500/30" },
+    Gap: { variant: "destructive" as const, className: "" },
+  };
+  const c = config[status];
+  return (
+    <Badge variant={c.variant} className={`gap-1 text-[10px] ${c.className}`}>
+      {status === "Complete" && <CheckCircle2 className="w-3 h-3" />}
+      {status === "In Progress" && <AlertTriangle className="w-3 h-3" />}
+      {status === "Gap" && <AlertTriangle className="w-3 h-3" />}
+      {status}
+    </Badge>
+  );
+};
 
 export const DataGovernanceSection = () => {
+  const complete = DELIVERABLES.filter((d) => d.status === "Complete").length;
+  const total = DELIVERABLES.length;
+
   return (
     <div className="space-y-6">
+      {/* TCMG Site Deliverables Tracker */}
+      <Card className="border-t-4 border-t-primary">
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-[10px] text-muted-foreground font-medium tracking-wide uppercase">
+                TCMG Phase 1 Deliverables Tracker
+              </p>
+              <CardTitle className="text-xl mt-1">Site Deliverables</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                8 core deliverables required for Phase 1 completion and future CMMS migration
+              </p>
+            </div>
+            <Badge variant="outline" className="text-xs shrink-0 gap-1">
+              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+              {complete}/{total} Complete
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {DELIVERABLES.map((d) => (
+              <div
+                key={d.number}
+                className={`flex items-start gap-3 rounded-lg border p-3 ${
+                  d.status === "Complete"
+                    ? "border-emerald-500/20 bg-emerald-500/5"
+                    : d.status === "Gap"
+                    ? "border-destructive/20 bg-destructive/5"
+                    : "border-amber-500/20 bg-amber-500/5"
+                }`}
+              >
+                <div
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                    d.status === "Complete"
+                      ? "bg-emerald-500/20 text-emerald-600"
+                      : d.status === "Gap"
+                      ? "bg-destructive/20 text-destructive"
+                      : "bg-amber-500/20 text-amber-600"
+                  }`}
+                >
+                  {d.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-bold text-muted-foreground">{d.number}.</span>
+                    <span className="text-sm font-medium">{d.title}</span>
+                    <StatusBadge status={d.status} />
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">{d.description}</p>
+                  {d.notes && (
+                    <p className="text-[10px] text-muted-foreground/70 mt-1 italic">{d.notes}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Data Governance Card */}
       <Card className="border-border">
         <CardHeader className="pb-4">
@@ -79,9 +238,9 @@ export const DataGovernanceSection = () => {
 
           {/* Locked Data */}
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-4">
+            <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-lg p-4">
               <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                 Locked (Read-Only)
               </h4>
               <ul className="text-sm space-y-1 text-muted-foreground">
@@ -148,7 +307,7 @@ export const DataGovernanceSection = () => {
           <div className="grid gap-4 md:grid-cols-3">
             <div className="bg-muted/50 rounded-lg p-4 border border-border">
               <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-red-500/20 text-red-600 text-xs font-bold flex items-center justify-center">1</span>
+                <span className="w-6 h-6 rounded-full bg-destructive/20 text-destructive text-xs font-bold flex items-center justify-center">1</span>
                 Clean
               </h4>
               <ul className="text-sm text-muted-foreground space-y-1">
@@ -176,7 +335,7 @@ export const DataGovernanceSection = () => {
 
             <div className="bg-muted/50 rounded-lg p-4 border border-border">
               <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-green-500/20 text-green-600 text-xs font-bold flex items-center justify-center">3</span>
+                <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-600 text-xs font-bold flex items-center justify-center">3</span>
                 Use
               </h4>
               <ul className="text-sm text-muted-foreground space-y-1">
