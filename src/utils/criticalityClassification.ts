@@ -112,19 +112,24 @@ const HIGH_KEYWORDS = [
   "motor", "electric motor", "drive motor", "mill motor", "conveyor motor",
   "motor assembly", "main motor", "pump motor", "fan motor", "agitator motor", 
   "feeder motor", "ac motor", "dc motor", "induction motor",
+  "gear motor", "vibrator motor", "hydraulic motor",
   
   // ---- Gearboxes / Gear Reducers ----
   "gearbox", "gear box", "gear reducer", "speed reducer", "reduction gearbox",
   "drive gearbox", "helical gearbox", "planetary gearbox", "worm gearbox",
-  "bevel gearbox", "right angle gearbox",
+  "bevel gearbox", "right angle gearbox", "mixer gearbox",
   "sew-eurodrive", "sew eurodrive", "nord", "flender", "hansen", // Major brands
   
-  // ---- Major Pumps (CIP, tailings, process water) ----
+  // ---- Pumps (complete assemblies — ALL pump units are production critical) ----
+  "pump", "pumpset", "pump set",
   "slurry pump", "tailings pump", "process pump", "transfer pump", "feed pump",
   "cip pump", "thickener pump", "reagent pump", "water pump assembly",
   "centrifugal pump", "positive displacement", "diaphragm pump", "peristaltic pump",
   "submersible pump", "borehole pump", "booster pump", "main pump",
-  "warman", "metso", "weir", "krebs", // Major pump brands
+  "dosing pump", "aodd pump", "multistage pump", "vertical pump",
+  "drainage pump", "diesel pump", "triple pump",
+  "warman", "metso", "weir", "krebs", "grundfos", "lowara", "keto", "wilden",
+  "ebara", "matec",
   
   // ---- Ball Mill / Mill Components ----
   "pinion", "girth gear", "ball mill", "mill liner set", "mill drive",
@@ -151,9 +156,21 @@ const HIGH_KEYWORDS = [
   "cyclone", "hydrocyclone",
   "compressor", "air compressor", "screw compressor",
   "blower", "lobe blower", "roots blower",
+  "concentrator", "knelson",
+  
+  // ---- OEM Assemblies / Major Drive Units ----
+  "hydraulic drive", "kiln drive", "powder feed drive", "mill feed",
+  "mixer", "mixing",
+  
+  // ---- Hoses (critical process hoses — site-specific HIGH) ----
+  "hose", "tubing", "flexible hose", "hydraulic hose", "air hose", "nylon tubing",
+  "drag hose", "tpr hose", "pvc hose", "rubber hose", "suction hose", 
+  "discharge hose", "layflat hose", "fuel hose", "coolant hose",
+  "mining hose", "bellows hose",
   
   // ---- Electrical Critical (major switchgear) ----
   "transformer", "power transformer", "distribution transformer",
+  "control transformer",
   "switchgear", "main breaker", "acb", "air circuit breaker",
   "mcc panel", "mcc bucket", "motor control center",
   "generator", "alternator", "genset",
