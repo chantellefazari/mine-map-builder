@@ -163,7 +163,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
           <div className="grid sm:grid-cols-2 gap-2">
             {[
               "Rapid visual identification from Asset ID alone",
-              "Asset ID matches the existing asset tree exactly — no new numbering",
+              "Asset ID matches the existing asset tree exactly, no new numbering",
               "No functional location codes, area codes, or system strings on the tag",
               "Eliminates cluttered, hard-to-read tag formats",
               "Simple enough to produce internally or order externally on demand",
