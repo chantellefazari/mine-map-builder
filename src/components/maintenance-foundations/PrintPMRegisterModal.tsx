@@ -148,6 +148,8 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
 
 
 
+      const discLabel = (d: string) => (d === "Ops" || d === "Inspection") ? "Mobile Equipment" : d;
+
       // Sections 3+: Each discipline group
       for (const [disc, items] of grouped.entries()) {
         // Split large groups into chunks of 25 rows to avoid page overflow
@@ -157,7 +159,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
           const isFirst = c === 0;
           sections.push(`
             <div data-pdf-section>
-              <div class="area-header">${disc} | ${items.length} PMs${!isFirst ? ` (continued)` : ''}</div>
+              <div class="area-header">${discLabel(disc)} | ${items.length} PMs${!isFirst ? ` (continued)` : ''}</div>
               ${renderTable(chunk)}
             </div>
           `);
