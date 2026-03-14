@@ -110,7 +110,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
             <div class="stat"><span class="stat-value">${pms.length}</span><span class="stat-label">Total PMs</span></div>
             <div class="stat"><span class="stat-value">${mechCount}</span><span class="stat-label">Mechanical</span></div>
             <div class="stat"><span class="stat-value">${elecCount}</span><span class="stat-label">Electrical</span></div>
-            <div class="stat"><span class="stat-value stat-lube">${lubeCount}</span><span class="stat-label">Lube</span></div>
+            <div class="stat"><span class="stat-value">${lubeCount}</span><span class="stat-label">Lube</span></div>
             <div class="stat"><span class="stat-value">${opsCount}</span><span class="stat-label">Mobile Equipment</span></div>
             <div class="stat"><span class="stat-value">${freqMap.size}</span><span class="stat-label">Frequencies</span></div>
           </div>
@@ -208,7 +208,6 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
         }
         .stat:last-child { border-right: none; }
         .stat-value { display: block; font-size: 16px; font-weight: 800; color: #1a1a1a; }
-        .stat-value.stat-lube { color: #0d9488; }
         .stat-label { display: block; font-size: 7px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .section-title {
