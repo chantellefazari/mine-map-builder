@@ -23,7 +23,7 @@ const MaintenanceFoundations = () => {
                 Maintenance Process Foundations
               </h1>
               <p className="text-muted-foreground text-sm">
-                Definitions, standards, and structures for maintenance work — not system configuration
+                Definitions, standards, and structures for maintenance work, not system configuration
               </p>
             </div>
             <Button
