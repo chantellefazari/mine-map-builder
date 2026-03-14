@@ -120,7 +120,7 @@ export const WorkDefinitionsSection = () => {
               <Zap className="w-8 h-8 text-destructive mx-auto mb-2" />
               <h4 className="font-semibold text-foreground">Reactive Maintenance</h4>
               <p className="text-xs text-muted-foreground mt-1">Responding to failures after they occur</p>
-              <p className="text-xs text-muted-foreground mt-2">"Something broke — we need to fix it"</p>
+              <p className="text-xs text-muted-foreground mt-2">"Something broke, we need to fix it"</p>
             </div>
             <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-4 text-center">
               <Shield className="w-8 h-8 text-green-600 mx-auto mb-2" />
