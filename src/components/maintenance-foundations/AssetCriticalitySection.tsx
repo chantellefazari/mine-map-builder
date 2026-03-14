@@ -285,8 +285,12 @@ export const AssetCriticalitySection = () => {
           <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-xs">C: {summary.C}</Badge>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={handleDownloadPDF} disabled={downloading} className="gap-2">
+            {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+            {downloading ? "Generating..." : "Download PDF"}
+          </Button>
           <Button variant="outline" size="sm" onClick={handlePrint} className="gap-2">
-            <Printer className="w-3.5 h-3.5" /> Print / PDF
+            <Printer className="w-3.5 h-3.5" /> Print
           </Button>
           <Button size="sm" onClick={handleSaveAll} disabled={pendingCount === 0 || saveMutation.isPending} className="gap-2">
             {saveMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
