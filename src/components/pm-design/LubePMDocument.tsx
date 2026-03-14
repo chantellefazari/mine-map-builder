@@ -39,7 +39,7 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
 
         <PMMetadataGrid
           projectSite="Tennant Creek"
-          plantArea="Processing Plant"
+          plantArea={template.plantArea}
           pmGroup="Lubrication"
           pmType="Lubrication Service"
           frequency={template.frequency}

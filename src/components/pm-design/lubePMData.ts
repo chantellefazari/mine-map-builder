@@ -18,6 +18,7 @@ export interface LubePMTemplate {
   subtitle: string;
   frequency: string;
   frequencyGroup: string; // sidebar key
+  plantArea: string;
   items: LubePMItem[];
 }
 
@@ -30,6 +31,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "Monthly Lubrication PM",
     frequency: "Monthly",
     frequencyGroup: "4-week",
+    plantArea: "Grinding",
     items: [
       {
         plantId: "BM01",
@@ -66,6 +68,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "3 Monthly Lubrication PM",
     frequency: "3 Monthly",
     frequencyGroup: "12-week",
+    plantArea: "Ore Handling",
     items: [
       {
         plantId: "RCFD01",
@@ -100,6 +103,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "3 Monthly Lubrication PM",
     frequency: "3 Monthly",
     frequencyGroup: "12-week",
+    plantArea: "Leaching (CIP)",
     items: [
       { plantId: "LCH01-TK01-AGT01", plantItem: "Gearbox, Agitator; Leach Tank #1", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
       { plantId: "LCH01-TK02-AGT01", plantItem: "Gearbox, Agitator; Leach Tank #2", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
@@ -119,6 +123,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "3 Monthly Lubrication PM",
     frequency: "3 Monthly",
     frequencyGroup: "12-week",
+    plantArea: "Processing Plant",
     items: [
       { plantId: "CFP01-PA01", plantItem: "Bearing Assembly; Cyclone Feed Pump (Duty)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
       { plantId: "CFP01-PB01", plantItem: "Bearing Assembly; Cyclone Feed Pump (Standby)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
@@ -149,6 +154,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "3 Monthly Lubrication PM",
     frequency: "3 Monthly",
     frequencyGroup: "12-week",
+    plantArea: "Leaching (CIP)",
     items: [
       {
         plantId: "ADS01-CRN01",
@@ -168,6 +174,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "3 Monthly Lubrication PM",
     frequency: "3 Monthly",
     frequencyGroup: "12-week",
+    plantArea: "Thickening",
     items: [
       {
         plantId: "THK01",
@@ -189,6 +196,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "6 Monthly Lubrication PM",
     frequency: "6 Monthly",
     frequencyGroup: "26-week",
+    plantArea: "Utilities & Power",
     items: [
       { plantId: "COMP01-HPAC01", plantItem: "Oil Reservoir; HP Air Compressor 1", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
       { plantId: "COMP01-HPAC02", plantItem: "Oil Reservoir; HP Air Compressor 2", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
@@ -204,6 +212,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "12 Monthly Lubrication PM",
     frequency: "12 Monthly",
     frequencyGroup: "52-week",
+    plantArea: "Grinding",
     items: [
       {
         plantId: "MLA01-SILO01-RVL01",
@@ -222,6 +231,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "12 Monthly Lubrication PM",
     frequency: "12 Monthly",
     frequencyGroup: "52-week",
+    plantArea: "Processing Plant",
     items: [
       {
         plantId: "CN01-MR01",
