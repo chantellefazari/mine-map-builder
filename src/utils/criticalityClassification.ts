@@ -69,9 +69,6 @@ const LOW_KEYWORDS = [
   "consumable", "disposable", "cleaning", "rag", "degreaser", "solvent",
   "tape", "adhesive", "sealant", "silicone", "loctite", "threadlocker",
   
-  // ---- Belts (transmission belts are consumables) ----
-  "vee belt", "v-belt", "v belt", "transmission belt", "drive belt", 
-  "timing belt", "ribbed belt", "multi-rib",
   
   // ---- Pipe Materials (not fittings) ----
   "hdpe pipe", "pvc pipe", "poly pipe", "copper pipe", "steel pipe length",
