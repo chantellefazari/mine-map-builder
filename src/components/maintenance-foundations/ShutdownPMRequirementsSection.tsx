@@ -118,7 +118,7 @@ export const ShutdownPMRequirementsSection = () => {
           <div>
             <div className="text-[10px] uppercase tracking-widest opacity-60 mb-1">TCMG-SD-PM-REQ-001 Rev 1.0</div>
             <h2 className="text-xl font-bold tracking-tight">Shutdown PM Requirements</h2>
-            <p className="text-sm opacity-70 mt-0.5">Required Offline Inspections — Processing Plant</p>
+            <p className="text-sm opacity-70 mt-0.5">Required Offline Inspections | Processing Plant</p>
           </div>
           <Button onClick={() => setPrintOpen(true)} variant="secondary" className="gap-2 shrink-0">
             <FileDown className="w-4 h-4" />
