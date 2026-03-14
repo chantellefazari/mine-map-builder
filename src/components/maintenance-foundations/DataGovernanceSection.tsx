@@ -1,161 +1,246 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, AlertTriangle, CheckCircle2, Lock, History, FileText, Package, MapPin, Wrench, Database, BookOpen, ClipboardCheck } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Shield,
+  AlertTriangle,
+  CheckCircle2,
+  Lock,
+  History,
+  FileText,
+  Database,
+  Layers,
+  MapPin,
+  Package,
+  Wrench,
+  Tag,
+  BookOpen,
+} from "lucide-react";
 
-type DeliverableStatus = "Complete" | "In Progress" | "Gap";
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  Deliverable 8 — Governance & Data Standards Pack                          */
+/*  TCMG-STD-GOV-001 · Professional document for site manager presentation   */
+/* ─────────────────────────────────────────────────────────────────────────── */
 
-interface Deliverable {
-  number: number;
-  title: string;
-  description: string;
-  status: DeliverableStatus;
-  icon: React.ReactNode;
-  notes?: string;
+// ── Locked Standards Registry ────────────────────────────────────────────────
+interface LockedStandard {
+  area: string;
+  standard: string;
+  reference: string;
+  owner: string;
+  status: "Locked" | "Controlled" | "Draft";
 }
 
-const DELIVERABLES: Deliverable[] = [
-  {
-    number: 1,
-    title: "Centralised Phase 1 Project Workbook",
-    description: "Consolidated Excel-based source of truth for assets, locations, parts, and maintenance data.",
-    status: "Gap",
-    icon: <FileText className="w-5 h-5" />,
-    notes: "Requires merging Asset, FL, Naming, PM, and Spares data into one consolidated .xlsx",
-  },
-  {
-    number: 2,
-    title: "Clean Master Asset Register",
-    description: "Standardised asset hierarchy, naming, numbering, and criticality classification.",
-    status: "Complete",
-    icon: <Database className="w-5 h-5" />,
-    notes: "processing_plant_assets_rev_b is active and synchronised with criticality ratings",
-  },
-  {
-    number: 3,
-    title: "Asset Hierarchy & Tagging Standards Document",
-    description: "Defined site asset structure and asset tagging rules, including an execution-ready tagging plan.",
-    status: "Complete",
-    icon: <BookOpen className="w-5 h-5" />,
-    notes: "TCMG-STD-AH-001 and rollout plans established",
-  },
-  {
-    number: 4,
-    title: "Stores & Inventory Layout Plan",
-    description: "Documented stores model including container layout, location structure, labelling standards, and stock movement rules.",
-    status: "Complete",
-    icon: <MapPin className="w-5 h-5" />,
-    notes: "3D compound layouts and Stock Control Procedures defined",
-  },
-  {
-    number: 5,
-    title: "Site Parts Catalogue",
-    description: "Cleaned and standardised parts list aligned to store locations and future procurement usage.",
-    status: "Complete",
-    icon: <Package className="w-5 h-5" />,
-    notes: "Site Spares Catalogue UI and database active",
-  },
-  {
-    number: 6,
-    title: "Maintenance Data Foundation Pack",
-    description: "Structured maintenance history, baseline preventive maintenance list, and minimum job data standards.",
-    status: "Complete",
-    icon: <Wrench className="w-5 h-5" />,
-    notes: "PM Standards and Job Data standards established; Maintenance History requires structured data to replace placeholders",
-  },
-  {
-    number: 7,
-    title: "Data Mapping & Readiness Documentation",
-    description: "Mapped datasets prepared for future D365 or equivalent system loading.",
-    status: "Complete",
-    icon: <ClipboardCheck className="w-5 h-5" />,
-    notes: "Field-level mapping to D365 entities and readiness dashboard established",
-  },
-  {
-    number: 8,
-    title: "Governance & Data Standards Pack",
-    description: "Locked rules for assets, parts, locations, and data ownership to prevent future drift.",
-    status: "Complete",
-    icon: <Shield className="w-5 h-5" />,
-    notes: "Rules for assets, parts, and locations locked in database",
-  },
+const LOCKED_STANDARDS: LockedStandard[] = [
+  { area: "Asset Hierarchy", standard: "7-level hierarchy structure (Site → Facility → Main Area → Sub-Area → Parent Asset → Equipment → Component)", reference: "TCMG-STD-AH-001", owner: "Maintenance Engineering", status: "Locked" },
+  { area: "Area Codes", standard: "6 approved Main Area codes: SITE, UTL, COM, REC, TAIL, SUP", reference: "TCMG-STD-AH-001", owner: "Maintenance Engineering", status: "Locked" },
+  { area: "Functional Locations", standard: "FL code format: TCMG-PP-AREA-SUBAREA-SYSTEM (5 segments)", reference: "TCMG-STD-FL-001", owner: "Maintenance Engineering", status: "Locked" },
+  { area: "Asset Numbering", standard: "Area-Prefix First format with sequential numbering per sub-area", reference: "TCMG-STD-FL-001", owner: "Maintenance Engineering", status: "Locked" },
+  { area: "Asset Naming", standard: "Standardised naming convention with equipment type prefixes and component suffixes (MTR, GBX, VSD, SWT, TX)", reference: "TCMG-STD-NAM-001", owner: "Maintenance Engineering", status: "Locked" },
+  { area: "P&ID Register", standard: "14-page verified P&ID set (PI-001 to PI-014) as sole source of truth for tag assignments", reference: "P&ID Drawing Set", owner: "Engineering", status: "Locked" },
+  { area: "Parts Numbering", standard: "7-digit numeric SSCCNNN format (Site Code 10, Category Codes CC, Sequential NNN)", reference: "TCMG-STD-SPN-001", owner: "Stores / Procurement", status: "Locked" },
+  { area: "Asset Tagging", standard: "TYPE A (Major Asset) and TYPE B (Equipment Position) tag standards with Gravotech LS100 production", reference: "TCMG-STD-TAG-002", owner: "Maintenance Engineering", status: "Locked" },
+  { area: "PM Templates", standard: "88 approved PM templates across 3 disciplines (Mechanical, Electrical, Instrument)", reference: "PM Master List", owner: "Maintenance Planning", status: "Locked" },
+  { area: "Electrical Identifiers", standard: "Generator series 17-GN-xxx, MCC series 18-MCC-xxx", reference: "TCMG-STD-FL-001", owner: "Electrical Engineering", status: "Locked" },
+  { area: "Store Locations", standard: "Container coding C01-C05 with Zone-Position format (e.g. C01-EL-A1), Laydown Yard LD-A to LD-F", reference: "Store Layout Plan", owner: "Stores", status: "Locked" },
+  { area: "Stock Control", standard: "9-section governance framework: receiving, issuing, nightshift rules, weekly revision cycle (Y26-WXX)", reference: "Stock Control Procedure", owner: "Stores", status: "Locked" },
+  { area: "Work Order Numbering", standard: "WO-XXXXXX sequential format with mandatory work type classification", reference: "TCMG-STD-WO-001", owner: "Maintenance Planning", status: "Locked" },
+  { area: "Data Mapping", standard: "Field-level mapping to Microsoft Dynamics 365 Asset Management entities", reference: "TCMG-STD-DM-001", owner: "Project Engineering", status: "Controlled" },
 ];
 
-const StatusBadge = ({ status }: { status: DeliverableStatus }) => {
-  const config = {
-    Complete: { variant: "default" as const, className: "bg-emerald-600 hover:bg-emerald-700 text-white" },
-    "In Progress": { variant: "secondary" as const, className: "bg-amber-500/20 text-amber-700 border-amber-500/30" },
-    Gap: { variant: "destructive" as const, className: "" },
-  };
-  const c = config[status];
-  return (
-    <Badge variant={c.variant} className={`gap-1 text-[10px] ${c.className}`}>
-      {status === "Complete" && <CheckCircle2 className="w-3 h-3" />}
-      {status === "In Progress" && <AlertTriangle className="w-3 h-3" />}
-      {status === "Gap" && <AlertTriangle className="w-3 h-3" />}
-      {status}
-    </Badge>
-  );
-};
+// ── Data Ownership Matrix ────────────────────────────────────────────────────
+interface OwnershipRow {
+  dataSet: string;
+  sourceTable: string;
+  owner: string;
+  approver: string;
+  changeFrequency: string;
+}
+
+const OWNERSHIP_MATRIX: OwnershipRow[] = [
+  { dataSet: "Asset Register", sourceTable: "processing_plant_assets_rev_b", owner: "Maintenance Engineer", approver: "Site Manager", changeFrequency: "Per engineering change" },
+  { dataSet: "Functional Locations", sourceTable: "processing_functional_locations", owner: "Maintenance Engineer", approver: "Site Manager", changeFrequency: "Per engineering change" },
+  { dataSet: "PM Templates", sourceTable: "pm_master_list", owner: "Maintenance Planner", approver: "Maintenance Superintendent", changeFrequency: "Per PM review cycle" },
+  { dataSet: "Spare Parts Catalogue", sourceTable: "site_spares", owner: "Stores Coordinator", approver: "Maintenance Superintendent", changeFrequency: "As parts are added/obsoleted" },
+  { dataSet: "Supplier Register", sourceTable: "practice_suppliers", owner: "Procurement Officer", approver: "Site Manager", changeFrequency: "Per vendor onboarding/review" },
+  { dataSet: "Naming Conventions", sourceTable: "processing_naming_conventions", owner: "Maintenance Engineer", approver: "Site Manager", changeFrequency: "Per standard revision" },
+  { dataSet: "P&ID Tag Register", sourceTable: "processing_pid_tags", owner: "Engineering", approver: "Maintenance Engineer", changeFrequency: "Per P&ID revision only" },
+  { dataSet: "Asset Criticality", sourceTable: "asset_criticality_ratings", owner: "Reliability Engineer", approver: "Maintenance Superintendent", changeFrequency: "Annual review" },
+  { dataSet: "Work Orders", sourceTable: "work_orders", owner: "Maintenance Planner", approver: "Supervisor", changeFrequency: "Ongoing operational" },
+  { dataSet: "Purchase Requests", sourceTable: "purchase_requests", owner: "Requester", approver: "Approver (tiered)", changeFrequency: "Ongoing operational" },
+];
+
+// ── Data Integrity Rules ─────────────────────────────────────────────────────
+const INTEGRITY_RULES = [
+  { rule: "No Fabrication", desc: "P&ID tags, asset numbers, FL codes, and part numbers are never invented, assumed, or synthesised. If data is unknown, it is marked 'TBC'." },
+  { rule: "Verified Sources Only", desc: "All equipment data must originate from verified P&IDs (PI-001 to PI-014), OEM manuals, or physical walkdown records." },
+  { rule: "Immutable Identifiers", desc: "Once assigned, asset numbers, FL codes, and site part numbers are never reused, changed, or retired to a different item." },
+  { rule: "One Part = One Number", desc: "Each physical spare part receives exactly one SSCCNNN identifier with leading zeros (001, 002). No aliases or duplicates permitted." },
+  { rule: "Hierarchy Compliance", desc: "No level skipping in the 7-level hierarchy. Electrical equipment sits under the equipment it powers. Components inherit parent FL codes." },
+  { rule: "Tag Source of Truth", desc: "P&ID tags are exclusively sourced from the verified extraction register. Untagged assets remain untagged until verified evidence is obtained." },
+];
+
+// ── Editable (Controlled) Data ───────────────────────────────────────────────
+const EDITABLE_DATA = [
+  "Component OEM details and engineering specifications",
+  "Spare parts criticality classification (Critical / Insurance / Non-Critical)",
+  "Draft PM templates (before approval and locking)",
+  "Stock levels, min/max quantities, and supplier linkages",
+  "PM-to-Asset linking (staging table — requires commit approval)",
+  "Asset tag rollout installation status and dates",
+  "Unit pricing, lead times, and reorder points (partial data)",
+  "Work order descriptions and labour hour estimates",
+];
 
 export const DataGovernanceSection = () => {
-  const complete = DELIVERABLES.filter((d) => d.status === "Complete").length;
-  const total = DELIVERABLES.length;
-
   return (
     <div className="space-y-6">
-      {/* TCMG Site Deliverables Tracker */}
+      {/* Document Header */}
       <Card className="border-t-4 border-t-primary">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-[10px] text-muted-foreground font-medium tracking-wide uppercase">
-                TCMG Phase 1 Deliverables Tracker
+                TCMG-STD-GOV-001 · Rev 2.0
               </p>
-              <CardTitle className="text-xl mt-1">Site Deliverables</CardTitle>
+              <CardTitle className="text-xl mt-1">Governance & Data Standards Pack</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                8 core deliverables required for Phase 1 completion and future CMMS migration
+                Locked rules for assets, parts, locations, maintenance data, and data ownership to prevent future drift
               </p>
             </div>
-            <Badge variant="outline" className="text-xs shrink-0 gap-1">
-              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-              {complete}/{total} Complete
+            <Badge variant="outline" className="text-xs shrink-0">
+              Deliverable 8
             </Badge>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            {DELIVERABLES.map((d) => (
-              <div
-                key={d.number}
-                className={`flex items-start gap-3 rounded-lg border p-3 ${
-                  d.status === "Complete"
-                    ? "border-emerald-500/20 bg-emerald-500/5"
-                    : d.status === "Gap"
-                    ? "border-destructive/20 bg-destructive/5"
-                    : "border-amber-500/20 bg-amber-500/5"
-                }`}
-              >
-                <div
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                    d.status === "Complete"
-                      ? "bg-emerald-500/20 text-emerald-600"
-                      : d.status === "Gap"
-                      ? "bg-destructive/20 text-destructive"
-                      : "bg-amber-500/20 text-amber-600"
-                  }`}
-                >
-                  {d.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-bold text-muted-foreground">{d.number}.</span>
-                    <span className="text-sm font-medium">{d.title}</span>
-                    <StatusBadge status={d.status} />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">{d.description}</p>
-                  {d.notes && (
-                    <p className="text-[10px] text-muted-foreground/70 mt-1 italic">{d.notes}</p>
-                  )}
+          <div className="bg-muted/50 rounded-lg p-4 text-sm text-muted-foreground space-y-2">
+            <p>
+              This document defines the governance framework that protects all maintenance data established during the Phase 1 foundation build.
+              It identifies every locked standard, assigns data ownership, enforces change control rules, and establishes the audit trail
+              requirements for ongoing compliance and future CMMS migration.
+            </p>
+            <p>
+              All standards referenced in this pack are enforced through database-level constraints, automated validation triggers,
+              and role-based access controls. No standard listed as "Locked" can be modified without formal engineering change approval.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Section 1: Locked Standards Registry */}
+      <Card className="border-border">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+              <Lock className="w-5 h-5 text-emerald-600" />
+            </div>
+            <div>
+              <CardTitle className="text-lg">1. Locked Standards Registry</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                All standards below are finalised and read-only — {LOCKED_STANDARDS.filter(s => s.status === "Locked").length} locked, {LOCKED_STANDARDS.filter(s => s.status === "Controlled").length} controlled
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-[10px] font-semibold w-[15%]">Area</TableHead>
+                <TableHead className="text-[10px] font-semibold w-[40%]">Standard</TableHead>
+                <TableHead className="text-[10px] font-semibold w-[18%]">Reference Doc</TableHead>
+                <TableHead className="text-[10px] font-semibold w-[17%]">Owner</TableHead>
+                <TableHead className="text-[10px] font-semibold w-[10%] text-center">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {LOCKED_STANDARDS.map((row, i) => (
+                <TableRow key={i}>
+                  <TableCell className="text-[10px] font-medium">{row.area}</TableCell>
+                  <TableCell className="text-[10px]">{row.standard}</TableCell>
+                  <TableCell className="text-[10px] font-mono text-muted-foreground">{row.reference}</TableCell>
+                  <TableCell className="text-[10px]">{row.owner}</TableCell>
+                  <TableCell className="text-center">
+                    <Badge
+                      variant={row.status === "Locked" ? "default" : "secondary"}
+                      className={`text-[9px] gap-1 ${row.status === "Locked" ? "bg-emerald-600 hover:bg-emerald-700 text-white" : ""}`}
+                    >
+                      {row.status === "Locked" && <Lock className="w-3 h-3" />}
+                      {row.status}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Section 2: Data Ownership Matrix */}
+      <Card className="border-border">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+              <Layers className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <CardTitle className="text-lg">2. Data Ownership & Accountability</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Every dataset has a defined owner, approver, and change frequency
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-[10px] font-semibold w-[18%]">Dataset</TableHead>
+                <TableHead className="text-[10px] font-semibold w-[22%]">Source Table</TableHead>
+                <TableHead className="text-[10px] font-semibold w-[18%]">Data Owner</TableHead>
+                <TableHead className="text-[10px] font-semibold w-[18%]">Approver</TableHead>
+                <TableHead className="text-[10px] font-semibold w-[24%]">Change Frequency</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {OWNERSHIP_MATRIX.map((row, i) => (
+                <TableRow key={i}>
+                  <TableCell className="text-[10px] font-medium">{row.dataSet}</TableCell>
+                  <TableCell className="text-[10px] font-mono text-muted-foreground">{row.sourceTable}</TableCell>
+                  <TableCell className="text-[10px]">{row.owner}</TableCell>
+                  <TableCell className="text-[10px]">{row.approver}</TableCell>
+                  <TableCell className="text-[10px]">{row.changeFrequency}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Section 3: Data Integrity Rules */}
+      <Card className="border-border">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center">
+              <Shield className="w-5 h-5 text-rose-600" />
+            </div>
+            <div>
+              <CardTitle className="text-lg">3. Data Integrity Rules</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Non-negotiable rules that apply to all maintenance data across the site
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 md:grid-cols-2">
+            {INTEGRITY_RULES.map((item, index) => (
+              <div key={index} className="flex items-start gap-2 bg-muted/50 rounded-md p-3 border border-border">
+                <Lock className="w-4 h-4 text-rose-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium">{item.rule}</p>
+                  <p className="text-xs text-muted-foreground">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -163,94 +248,63 @@ export const DataGovernanceSection = () => {
         </CardContent>
       </Card>
 
-      {/* Data Governance Card */}
+      {/* Section 4: Change Control Process */}
       <Card className="border-border">
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-rose-600" />
+            <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+              <FileText className="w-5 h-5 text-amber-600" />
             </div>
             <div>
-              <CardTitle className="text-xl">Maintenance Data Governance & Change Control</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
-                Rules for data integrity, approvals, and change management
+              <CardTitle className="text-lg">4. Change Control Process</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                All modifications to locked or controlled data must follow this 3-step workflow
               </p>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Data Integrity Rules */}
-          <div className="bg-muted/50 rounded-lg p-5 space-y-4">
-            <h4 className="font-medium text-foreground">Data Integrity Rules</h4>
-            <div className="grid gap-3 md:grid-cols-2">
-              {[
-                { rule: "No Invention", desc: "Do NOT invent, assume, or estimate OEM details — mark as 'TBC' if unknown" },
-                { rule: "Document Source Only", desc: "Only use information from verified P&IDs, OEM manuals, or walkdown records" },
-                { rule: "6 Approved Area Codes Only", desc: "SITE, UTL, COM, REC, TAIL, SUP — no other area codes permitted" },
-                { rule: "P&ID Verification", desc: "All equipment mappings sourced from the 14-page P&ID set (PI-001 to PI-014)" },
-                { rule: "Immutable Identifiers", desc: "Asset numbers, FL codes, and part numbers are never reused or changed once assigned" },
-                { rule: "No Fabrication", desc: "P&ID tags, asset numbers, and FL codes are never invented or synthesised" },
-              ].map((item, index) => (
-                <div key={index} className="flex items-start gap-2 bg-background rounded-md p-3 border border-border">
-                  <Lock className="w-4 h-4 text-rose-600 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium">{item.rule}</p>
-                    <p className="text-xs text-muted-foreground">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="bg-muted/50 rounded-lg p-4 border border-border text-center">
+              <div className="w-10 h-10 rounded-full bg-amber-500/20 text-amber-600 text-lg font-bold flex items-center justify-center mx-auto mb-2">1</div>
+              <h5 className="font-medium text-sm">Request</h5>
+              <p className="text-xs text-muted-foreground mt-1">
+                Document the proposed change with justification, affected datasets, and impact assessment
+              </p>
+            </div>
+            <div className="bg-muted/50 rounded-lg p-4 border border-border text-center">
+              <div className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-600 text-lg font-bold flex items-center justify-center mx-auto mb-2">2</div>
+              <h5 className="font-medium text-sm">Review & Approve</h5>
+              <p className="text-xs text-muted-foreground mt-1">
+                Data owner and approver review impact on hierarchy, PMs, spares, and downstream systems
+              </p>
+            </div>
+            <div className="bg-muted/50 rounded-lg p-4 border border-border text-center">
+              <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-600 text-lg font-bold flex items-center justify-center mx-auto mb-2">3</div>
+              <h5 className="font-medium text-sm">Implement & Audit</h5>
+              <p className="text-xs text-muted-foreground mt-1">
+                Execute change, update all affected registers, and verify audit log entry is captured
+              </p>
             </div>
           </div>
 
-          {/* Change Control Process */}
-          <div className="bg-muted/50 rounded-lg p-5 space-y-4">
-            <h4 className="font-medium text-foreground">Change Control Process</h4>
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="bg-background rounded-lg p-4 border border-border text-center">
-                <div className="w-10 h-10 rounded-full bg-amber-500/20 text-amber-600 text-lg font-bold flex items-center justify-center mx-auto mb-2">
-                  1
-                </div>
-                <h5 className="font-medium text-sm">Request</h5>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Document the proposed change with justification
-                </p>
-              </div>
-              <div className="bg-background rounded-lg p-4 border border-border text-center">
-                <div className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-600 text-lg font-bold flex items-center justify-center mx-auto mb-2">
-                  2
-                </div>
-                <h5 className="font-medium text-sm">Review</h5>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Engineering/Supervisor reviews impact and approves
-                </p>
-              </div>
-              <div className="bg-background rounded-lg p-4 border border-border text-center">
-                <div className="w-10 h-10 rounded-full bg-green-500/20 text-green-600 text-lg font-bold flex items-center justify-center mx-auto mb-2">
-                  3
-                </div>
-                <h5 className="font-medium text-sm">Implement</h5>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Execute change and update all affected registers
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Locked Data */}
+          {/* What requires change control */}
           <div className="grid gap-4 md:grid-cols-2">
             <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-lg p-4">
               <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                Locked (Read-Only)
+                <Lock className="h-4 w-4 text-emerald-600" />
+                Locked (Read-Only) — Requires Engineering Change
               </h4>
-              <ul className="text-sm space-y-1 text-muted-foreground">
-                <li>• Asset Hierarchy structure (7-level model)</li>
-                <li>• 6 Approved Main Area codes (SITE, UTL, COM, REC, TAIL, SUP)</li>
-                <li>• Functional Location codes (TCMG-PP-AREA-SUBAREA-SYSTEM)</li>
-                <li>• Assigned Asset Numbers (Area-Prefix First format)</li>
-                <li>• P&ID extraction register (14-page verified set)</li>
-                <li>• Approved PM Templates (88 templates across 3 disciplines)</li>
-                <li>• Electrical asset identifiers (17-GN-xxx, 18-MCC-xxx series)</li>
+              <ul className="text-sm space-y-1.5 text-muted-foreground">
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Asset Hierarchy structure (7-level model)</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> 6 Approved Main Area codes and FL code format</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Assigned asset numbers and naming conventions</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> P&ID extraction register (14-page verified set)</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> 88 approved PM templates across 3 disciplines</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Electrical identifier series (17-GN-xxx, 18-MCC-xxx)</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Site part numbering format (SSCCNNN)</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Store location coding (C01-C05, LD-A to LD-F)</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Stock control procedure and receiving/issuing rules</li>
               </ul>
             </div>
 
@@ -259,93 +313,149 @@ export const DataGovernanceSection = () => {
                 <AlertTriangle className="h-4 w-4 text-amber-600" />
                 Editable (With Approval)
               </h4>
-              <ul className="text-sm space-y-1 text-muted-foreground">
-                <li>• Component OEM details and specifications</li>
-                <li>• Spare parts criticality classification</li>
-                <li>• Draft PM Templates (before approval)</li>
-                <li>• Stock levels, min/max, and supplier linkages</li>
-                <li>• PM-to-Asset linking (staging table only)</li>
-                <li>• Asset tag rollout installation status</li>
+              <ul className="text-sm space-y-1.5 text-muted-foreground">
+                {EDITABLE_DATA.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
               </ul>
             </div>
-          </div>
-
-          {/* Audit Trail Note */}
-          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-            <h4 className="font-medium text-foreground mb-2">Audit Trail</h4>
-            <p className="text-sm text-muted-foreground">
-              All changes to critical data (hierarchy, FLs, approved PMs, asset numbers) are logged automatically 
-              with timestamp, user, before/after values, and justification. The audit log (audit_log table) ensures 
-              traceability for compliance and future CMMS migration. Key tables tracked include processing plant 
-              assets, PM templates, work orders, and purchase requests.
-            </p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Maintenance History Structure Card */}
+      {/* Section 5: Audit Trail */}
       <Card className="border-border">
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Database className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <CardTitle className="text-lg">5. Audit Trail & Traceability</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                100% traceability for all modifications to governed data
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+            <p className="text-sm text-muted-foreground">
+              All changes to critical data are logged automatically via the <span className="font-mono text-xs bg-muted px-1 py-0.5 rounded">audit_log</span> table.
+              Each entry captures the timestamp, user, table name, operation type, and full before/after values.
+              This ensures compliance traceability and supports future CMMS migration validation.
+            </p>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              { label: "Tables Tracked", items: ["Processing plant assets", "PM master list", "Work orders", "Purchase requests", "Asset criticality ratings"] },
+              { label: "Captured Fields", items: ["Timestamp (UTC)", "Changed by (user ID)", "Operation (INSERT/UPDATE/DELETE)", "Record ID", "Before/after JSON"] },
+              { label: "Retention", items: ["All audit records retained indefinitely", "No purge policy", "Available for export"] },
+              { label: "Access", items: ["Read-only for all users", "Admin-only for exports", "Automated — no manual entry"] },
+            ].map((col, i) => (
+              <div key={i} className="bg-muted/50 rounded-lg p-3 border border-border">
+                <h5 className="text-xs font-semibold mb-2">{col.label}</h5>
+                <ul className="text-[10px] text-muted-foreground space-y-1">
+                  {col.items.map((item, j) => (
+                    <li key={j}>• {item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Section 6: Standards Summary by Domain */}
+      <Card className="border-border">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
+              <BookOpen className="w-5 h-5 text-violet-600" />
+            </div>
+            <div>
+              <CardTitle className="text-lg">6. Standards Summary by Domain</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Quick reference of all governance documents established during Phase 1
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              { icon: <Layers className="w-5 h-5" />, title: "Asset Hierarchy", ref: "TCMG-STD-AH-001", items: ["7-level structure", "6 area codes", "Parent-child rules", "No level skipping"] },
+              { icon: <MapPin className="w-5 h-5" />, title: "Functional Locations", ref: "TCMG-STD-FL-001", items: ["5-segment FL codes", "Area + Sub-area coding", "System-level grouping", "Database-governed"] },
+              { icon: <Tag className="w-5 h-5" />, title: "Naming Conventions", ref: "TCMG-STD-NAM-001", items: ["Equipment type prefixes", "Component suffixes", "Instrumentation codes", "Database-driven"] },
+              { icon: <Package className="w-5 h-5" />, title: "Parts Numbering", ref: "TCMG-STD-SPN-001", items: ["SSCCNNN format", "Barcode compatible", "One part = one number", "Leading zeros enforced"] },
+              { icon: <Wrench className="w-5 h-5" />, title: "PM Standards", ref: "PM Master List", items: ["88 approved templates", "3 disciplines", "Task-level checklists", "Frequency governance"] },
+              { icon: <Database className="w-5 h-5" />, title: "Data Mapping", ref: "TCMG-STD-DM-001", items: ["D365 field mapping", "ETL transformation rules", "Readiness scoring", "6 entity categories"] },
+            ].map((domain, i) => (
+              <div key={i} className="bg-muted/50 rounded-lg p-4 border border-border">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="text-primary">{domain.icon}</div>
+                  <div>
+                    <h5 className="text-sm font-medium">{domain.title}</h5>
+                    <p className="text-[10px] font-mono text-muted-foreground">{domain.ref}</p>
+                  </div>
+                </div>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  {domain.items.map((item, j) => (
+                    <li key={j} className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-600 flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Section 7: Maintenance History Structure */}
+      <Card className="border-border">
+        <CardHeader className="pb-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
               <History className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <CardTitle className="text-xl">Maintenance History Structure</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
-                How maintenance history should be cleaned, structured, and used
+              <CardTitle className="text-lg">7. Maintenance History Standards</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                How maintenance history should be cleaned, structured, and used for reliability improvement
               </p>
             </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Quality maintenance history is critical for failure analysis, reliability improvement, and CMMS migration. 
+            Quality maintenance history is critical for failure analysis, reliability improvement, and CMMS migration.
             History must be cleaned and structured before it can be used effectively.
           </p>
 
           <div className="grid gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 rounded-lg p-4 border border-border">
-              <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-destructive/20 text-destructive text-xs font-bold flex items-center justify-center">1</span>
-                Clean
-              </h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Remove duplicates</li>
-                <li>• Standardise descriptions</li>
-                <li>• Correct asset linkages</li>
-                <li>• Fill missing fields</li>
-                <li>• Validate dates/times</li>
-              </ul>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4 border border-border">
-              <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-600 text-xs font-bold flex items-center justify-center">2</span>
-                Structure
-              </h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Link to asset hierarchy</li>
-                <li>• Categorise by work type</li>
-                <li>• Tag failure modes</li>
-                <li>• Associate parts used</li>
-                <li>• Record labour hours</li>
-              </ul>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4 border border-border">
-              <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-600 text-xs font-bold flex items-center justify-center">3</span>
-                Use
-              </h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Analyse failure patterns</li>
-                <li>• Justify PM frequencies</li>
-                <li>• Identify bad actors</li>
-                <li>• Support defect elimination</li>
-                <li>• Inform spare stocking</li>
-              </ul>
-            </div>
+            {[
+              { step: "1", label: "Clean", color: "bg-destructive/20 text-destructive", items: ["Remove duplicates", "Standardise descriptions", "Correct asset linkages", "Fill missing fields", "Validate dates/times"] },
+              { step: "2", label: "Structure", color: "bg-amber-500/20 text-amber-600", items: ["Link to asset hierarchy", "Categorise by work type", "Tag failure modes", "Associate parts used", "Record labour hours"] },
+              { step: "3", label: "Use", color: "bg-emerald-500/20 text-emerald-600", items: ["Analyse failure patterns", "Justify PM frequencies", "Identify bad actors", "Support defect elimination", "Inform spare stocking"] },
+            ].map((phase, i) => (
+              <div key={i} className="bg-muted/50 rounded-lg p-4 border border-border">
+                <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                  <span className={`w-6 h-6 rounded-full ${phase.color} text-xs font-bold flex items-center justify-center`}>{phase.step}</span>
+                  {phase.label}
+                </h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  {phase.items.map((item, j) => (
+                    <li key={j}>• {item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
