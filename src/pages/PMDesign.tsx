@@ -90,6 +90,8 @@ import { FilterPressCompressorOfflinePMDocument } from "@/components/pm-design/F
 import { FilterPressDailyOnlinePMDocument } from "@/components/pm-design/FilterPressDailyOnlinePMDocument";
 import { BeltCalibrationPMDocument } from "@/components/pm-design/BeltCalibrationPMDocument";
 import { WeldersVRDTestPMDocument } from "@/components/pm-design/WeldersVRDTestPMDocument";
+import { LubePMDocument } from "@/components/pm-design/LubePMDocument";
+import { lubePMTemplates } from "@/components/pm-design/lubePMData";
 
 import { MotorInspectionsSheetsDocument } from "@/components/pm-design/MotorInspectionsSheetsDocument";
 import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
