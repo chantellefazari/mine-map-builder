@@ -332,7 +332,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
             <p className="font-semibold text-foreground text-xs uppercase tracking-widest mb-2">Mockup Notes</p>
             <p>• White/silver background with bold black text, high contrast for dusty mining conditions</p>
             <p>• Asset ID rendered at minimum 20mm text height — readable at arm's length</p>
-            <p>• Hole punch shown on one end — used for ring or cable-tie hanging attachment</p>
+            <p>• Hole punch shown on one end, used for ring or cable-tie hanging attachment</p>
             <p>• No QR code, no functional location, no area code — Asset ID and description only</p>
             <p>• Actual tags: laser engraved or printed industrial label with UV/oil/dust-resistant coating</p>
           </div>
