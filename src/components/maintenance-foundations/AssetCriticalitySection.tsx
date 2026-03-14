@@ -509,7 +509,7 @@ export const AssetCriticalitySection = () => {
               <TableHead className="text-xs">Asset Name</TableHead>
               <TableHead className="w-[130px] text-xs">Rating</TableHead>
               <TableHead className="text-xs">Justification / Notes</TableHead>
-              <TableHead className="w-[40px] text-xs"></TableHead>
+              
             </TableRow>
           </TableHeader>
           <TableBody>
