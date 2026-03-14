@@ -22,7 +22,7 @@ export const PMSignOffBlock = ({
       className="overflow-visible"
     >
       {/* Comments */}
-      <div className="border-t border-border" data-pdf-component="pm-comments-section">
+      <div className="border-t border-border" data-pdf-component="pm-comments-section" data-pdf-keep-together>
         <div className="bg-muted px-3 py-1 font-semibold text-sm border-b border-border">COMMENTS:</div>
         <div className="px-3 py-1">
           <Textarea
