@@ -243,16 +243,19 @@ const PMPrint = () => {
         }
         .pm-print-content table th,
         .pm-print-content table td {
-          border: 1px solid #000 !important;
+          border: 2px solid #000 !important;
           padding: 3px 6px;
+        }
+        .pm-print-content tr {
+          border: none !important;
         }
 
         /* Grid-based metadata cells — add visible borders */
         .pm-print-content .grid.grid-cols-2 > div {
-          border: 1px solid #000;
+          border: 2px solid #000;
         }
         .pm-print-content .grid.grid-cols-\\[120px_1fr\\] > div {
-          border: 1px solid #000;
+          border: 2px solid #000;
         }
 
         /* Lube PM template — constrain table to container */
@@ -317,7 +320,10 @@ const PMPrint = () => {
             width: 100%;
           }
           table, th, td {
-            border: 1px solid #000 !important;
+            border: 2px solid #000 !important;
+          }
+          tr {
+            border: none !important;
           }
           th, td {
             padding: 3px 6px !important;
@@ -347,7 +353,7 @@ const PMPrint = () => {
 
           /* Keep the outer PM border container flowing naturally */
           .pm-print-content .border-2 {
-            border: 1px solid #000 !important;
+            border: 2px solid #000 !important;
           }
         }
       `}</style>
