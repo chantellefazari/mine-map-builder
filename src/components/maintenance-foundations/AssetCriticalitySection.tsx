@@ -43,20 +43,21 @@ function useParentAssets() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("processing_plant_assets_rev_b")
-        .select("asset_number, asset_name, area_label, sub_area, parent_asset_label")
+        .select("asset_number, asset_name, area_label, sub_area, parent_asset_label, sort_order")
         .order("sort_order", { ascending: true });
       if (error) throw error;
-      // Parent assets = those whose asset_number appears as a parent_asset_label for other rows
-      // OR level 5/6 assets (systems and major equipment)
-      const parentLabels = new Set(data.map(d => d.parent_asset_label));
-      const parents: ParentAsset[] = data
-        .filter(d => parentLabels.has(d.asset_name) || !data.some(c => c.asset_name === d.parent_asset_label && c.asset_number !== d.asset_number))
-        .reduce((acc, d) => {
-          if (!acc.find(a => a.asset_number === d.asset_number)) {
-            acc.push({ asset_number: d.asset_number, asset_name: d.asset_name, area_label: d.area_label, sub_area: d.sub_area });
-          }
-          return acc;
-        }, [] as ParentAsset[]);
+      // Build set of asset_names that are referenced as parent_asset_label by other rows
+      const parentNames = new Set(data.map(d => d.parent_asset_label));
+      // Parent assets = Level 5/6: those whose asset_name is used as parent_asset_label by at least one other row
+      const seen = new Set<string>();
+      const parents: ParentAsset[] = [];
+      for (const d of data) {
+        if (seen.has(d.asset_number)) continue;
+        if (parentNames.has(d.asset_name)) {
+          seen.add(d.asset_number);
+          parents.push({ asset_number: d.asset_number, asset_name: d.asset_name, area_label: d.area_label, sub_area: d.sub_area });
+        }
+      }
       return parents;
     },
     staleTime: 5 * 60 * 1000,
