@@ -37,6 +37,123 @@ const RATING_CONFIG: Record<CriticalityRating, { label: string; color: string; d
   C: { label: "C — General", color: "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800", description: "Failure has minimal or no production impact" },
 };
 
+/** Auto-classify asset criticality based on name/area keywords when no saved rating exists */
+const autoClassifyCriticality = (assetName: string, areaLabel: string, subArea: string): CriticalityRating => {
+  const n = assetName.toLowerCase();
+  const a = areaLabel.toLowerCase();
+  const s = subArea.toLowerCase();
+
+  // ── A — Critical: Immediate shutdown / safety / gold production ──
+  const A_PATTERNS = [
+    // Mills & grinding
+    /ball mill/i, /sag mill/i, /mill drive/i, /mill motor/i, /primary mill/i,
+    // Crushers
+    /jaw crusher/i, /cone crusher/i, /impact crusher/i, /crusher/i,
+    // Gold Room / Elution / Electrowinning
+    /gold room/i, /electrowinning/i, /electro.?win/i, /elution/i, /smelt/i, /furnace/i, /carbon strip/i,
+    // CIP / CIL tanks & critical process
+    /cip tank/i, /cil tank/i, /leach tank/i, /adsorption/i, /carbon column/i,
+    // Thickener
+    /thickener/i, /thickener drive/i, /thickener rake/i,
+    // Filter Press
+    /filter press/i,
+    // Main transformers / generators / power
+    /transformer/i, /generator/i, /genset/i, /main switchboard/i, /mcc\b/i,
+    /power station/i, /power supply/i, /ups\b/i,
+    // Compressors (plant air)
+    /compressor/i, /air receiver/i,
+    // TSF / tailings
+    /tailings/i, /tsf/i, /tailing/i,
+    // Primary conveyors
+    /primary conveyor/i, /feed conveyor/i, /rom bin/i,
+    // Water supply critical
+    /bore pump/i, /borehole/i, /raw water pump/i, /process water tank/i,
+    // Safety critical
+    /fire pump/i, /emergency/i, /safety shower/i,
+    // PLC / SCADA
+    /plc/i, /scada/i, /dcs/i, /control system/i,
+  ];
+
+  // ── B — Important: Production impact within 24h ──
+  const B_PATTERNS = [
+    // Conveyors (general)
+    /conveyor/i, /belt feeder/i, /apron feeder/i,
+    // Screens
+    /screen/i, /vibrating screen/i, /trash screen/i, /carbon screen/i,
+    // Pumps (process)
+    /pump/i, /slurry pump/i, /transfer pump/i, /reagent pump/i, /dosing pump/i,
+    /water pump/i, /return pump/i, /reclaim pump/i, /sump pump/i,
+    // Agitators
+    /agitator/i, /mixer/i,
+    // Reagent systems
+    /reagent/i, /lime/i, /cyanide/i, /caustic/i, /acid/i,
+    // Ventilation / fans
+    /fan\b/i, /blower/i, /ventilat/i, /exhaust/i,
+    // Water systems
+    /water tank/i, /water system/i, /ro plant/i, /reverse osmosis/i, /potable/i,
+    /water treatment/i, /sewage/i,
+    // Hoists / cranes
+    /crane/i, /hoist/i, /overhead crane/i, /jib crane/i,
+    // VSD / drives
+    /vsd/i, /vfd/i, /variable speed/i, /soft starter/i, /inverter/i,
+    // Switchboards / distribution
+    /switchboard/i, /distribution board/i, /db\b/i, /sub.?station/i,
+    // Cyclones
+    /cyclone/i, /hydrocyclone/i,
+    // Dewatering
+    /dewater/i, /centrifuge/i, /decanter/i,
+    // Valves (process critical)
+    /pinch valve/i, /knife gate/i, /actuated valve/i, /control valve/i,
+    // Lighting towers (for night shift)
+    /lighting tower/i, /light tower/i,
+    // Fuel systems
+    /fuel/i, /diesel/i, /fuel farm/i, /fuel tank/i,
+    // Sampling
+    /sampler/i, /sampling/i,
+    // Mobile equipment (key units)
+    /excavator/i, /loader/i, /dozer/i, /grader/i, /water truck/i, /service truck/i,
+    /telehandler/i, /forklift/i, /moxy/i, /dump truck/i,
+    // Instrumentation
+    /transmitter/i, /flow meter/i, /level sensor/i, /ph probe/i,
+    // Cooling / heating
+    /heat exchanger/i, /cooler/i, /heater/i,
+    // Lubrication systems
+    /lube system/i, /lubrication/i, /oil system/i, /grease system/i,
+  ];
+
+  // Check A first
+  for (const pat of A_PATTERNS) {
+    if (pat.test(n) || pat.test(s)) return "A";
+  }
+  // Gold Room area is always A
+  if (a.includes("gold") || s.includes("gold room")) return "A";
+  // Elution area
+  if (a.includes("elution") || s.includes("elution")) return "A";
+  // CIP area parents
+  if (a.includes("cip") || s.includes("cip")) return "A";
+  // Crushing area parents
+  if (a.includes("crushing")) return "A";
+  // Grinding area parents  
+  if (a.includes("grinding") || a.includes("milling")) return "A";
+
+  // Check B
+  for (const pat of B_PATTERNS) {
+    if (pat.test(n) || pat.test(s)) return "B";
+  }
+  // Power & Utilities area → B minimum
+  if (a.includes("power") || a.includes("utilit") || a.includes("electrical")) return "B";
+  // Reagents area
+  if (a.includes("reagent")) return "B";
+  // Water services
+  if (a.includes("water")) return "B";
+
+  return "C";
+};
+  A: { label: "A — Critical", color: "bg-red-100 text-red-800 border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-800", description: "Failure causes immediate plant shutdown or safety risk" },
+  B: { label: "B — Important", color: "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800", description: "Failure causes significant production impact within 24h" },
+  C: { label: "C — General", color: "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800", description: "Failure has minimal or no production impact" },
+};
+
 function useParentAssets() {
   return useQuery({
     queryKey: ["criticality-parent-assets"],
