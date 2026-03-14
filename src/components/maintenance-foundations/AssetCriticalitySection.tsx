@@ -108,7 +108,7 @@ const autoClassifyCriticality = (assetName: string, areaLabel: string, subArea: 
   for (const pat of B_PATTERNS) {
     if (pat.test(n) || pat.test(s)) return "B";
   }
-  // Area-based B fallbacks (not A — sub-components within these areas aren't all critical)
+  // Area-based B fallbacks
   if (a.includes("gold") || s.includes("gold room")) return "B";
   if (a.includes("elution") || s.includes("elution")) return "B";
   if (a.includes("crushing") || a.includes("grinding") || a.includes("milling")) return "B";
