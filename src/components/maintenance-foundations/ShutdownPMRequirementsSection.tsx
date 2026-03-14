@@ -232,7 +232,7 @@ export const ShutdownPMRequirementsSection = () => {
                       <div className="flex items-center gap-2 px-5 py-2 bg-amber-50/60 dark:bg-amber-950/30 border-b border-border border-l-[3px] border-l-amber-500">
                         <Zap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                         <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">Electrical</span>
-                        <span className="text-[10px] text-amber-600/70 dark:text-amber-400/70">— {area.electrical.length} items — {area.electrical.reduce((s, pm) => s + pm.estimated_hours, 0)}h est.</span>
+                        <span className="text-[10px] text-amber-600/70 dark:text-amber-400/70">| {area.electrical.length} items | {area.electrical.reduce((s, pm) => s + pm.estimated_hours, 0)}h est.</span>
                       </div>
                       <PMTable items={area.electrical} checkExists={checkExists} />
                     </div>
