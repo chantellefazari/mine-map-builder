@@ -18,6 +18,7 @@ export interface LubePMTemplate {
   subtitle: string;
   frequency: string;
   frequencyGroup: string; // sidebar key
+  plantArea: string;
   items: LubePMItem[];
 }
 
