@@ -754,8 +754,12 @@ const PMDesign = () => {
         return <BeltCalibrationPMDocument />;
       case "welders-vrd-test-12-weekly":
         return <WeldersVRDTestPMDocument />;
-      default:
+      default: {
+        if (activeView.startsWith("lube-")) {
+          return <LubePMDocument templateId={activeView} />;
+        }
         return null;
+      }
     }
   };
 
