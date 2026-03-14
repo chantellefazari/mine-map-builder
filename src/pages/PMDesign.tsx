@@ -783,58 +783,6 @@ const PMDesign = () => {
         <main className="flex-1 overflow-auto">
           {isPMDocument ? (
             <div className="p-6 overflow-auto">
-              {/* Print & Export toolbar */}
-              <div className="flex flex-wrap items-center gap-2 mb-4 pb-4 border-b border-border">
-                <Button
-                  onClick={handlePrint}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                >
-                  <Printer className="w-4 h-4" />
-                  Print Preview
-                </Button>
-                <Button
-                  onClick={handleDownloadPdf}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  disabled={isDownloading}
-                >
-                  {isDownloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                  {isDownloading ? "Downloading..." : "Download PDF"}
-                </Button>
-                <Button
-                  onClick={() => exportPMWorkbook()}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                >
-                  <Download className="w-4 h-4" />
-                  Download Workbook
-                </Button>
-                <Button
-                  onClick={handleSyncPMs}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  disabled={isSyncing}
-                >
-                  <Database className={`w-4 h-4 ${isSyncing ? "animate-spin" : ""}`} />
-                  {isSyncing ? "Syncing..." : "Sync All PMs"}
-                </Button>
-                <Button
-                  onClick={handleSeedTasks}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  disabled={isSeeding}
-                >
-                  <ClipboardCheck className={`w-4 h-4 ${isSeeding ? "animate-spin" : ""}`} />
-                  {isSeeding ? "Seeding..." : "Seed Tasks to DB"}
-                </Button>
-              </div>
-
               <div ref={pmDocRef}>
                 {renderPMDocument()}
               </div>
