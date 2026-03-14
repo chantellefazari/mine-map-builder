@@ -424,7 +424,7 @@ export const WorkDefinitionsSection = () => {
               </p>
               <ul className="text-xs text-muted-foreground space-y-1">
                 <li><strong>Planned:</strong> We found a problem during a PM and scheduled a fix for later</li>
-                <li><strong>Unplanned:</strong> Same as breakdown — needs fixing now</li>
+                <li><strong>Unplanned:</strong> Same as breakdown, needs fixing now</li>
               </ul>
             </div>
 
