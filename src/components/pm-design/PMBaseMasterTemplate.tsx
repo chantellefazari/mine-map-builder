@@ -156,7 +156,7 @@ export const PMBaseMasterTemplate = () => {
           </table>
 
           {/* Comments */}
-          <div className="border-t border-border">
+          <div className="border-t border-border" data-pdf-component="pm-comments-section" data-pdf-keep-together data-pdf-break>
             <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">COMMENTS:</div>
             <div className="p-3">
               <Textarea className="min-h-[80px] resize-none" placeholder="Enter comments here..." />
