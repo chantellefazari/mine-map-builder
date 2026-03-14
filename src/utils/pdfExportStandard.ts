@@ -34,8 +34,8 @@ export const PDF_EXPORT_OPTS: SectionPdfOptions = {
   gap: 0,
   sliceOverlapPx: 4,
   blankPageThreshold: 15,
-  rowSnapStartRatio: 0.9,
-  maxWhitespaceRatio: 0.08,
+  rowSnapStartRatio: 0.5,
+  maxWhitespaceRatio: 0.35,
 };
 
 // ─── Typography Constants ────────────────────────────────────────────
