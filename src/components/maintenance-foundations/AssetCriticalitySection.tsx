@@ -54,7 +54,7 @@ const autoClassifyCriticality = (assetName: string, areaLabel: string, subArea: 
     /air compressor/i, /plant air/i,
   ];
 
-  // ── B — Important: Significant production impact but may have standby or short-term workaround ──
+  // B: Significant production impact but workarounds possible
   const B_PATTERNS = [
     // Secondary/cone crushers
     /cone crusher/i, /secondary crusher/i,
