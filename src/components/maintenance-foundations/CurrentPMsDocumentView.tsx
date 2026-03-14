@@ -83,12 +83,14 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
   const discIcon = (disc: string) => {
     if (disc === "Mechanical") return <Wrench className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />;
     if (disc === "Electrical") return <Zap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />;
+    if (disc === "Lube") return <Droplets className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />;
     return <Eye className="w-3.5 h-3.5 text-muted-foreground" />;
   };
 
   const discBannerClass = (disc: string) => {
     if (disc === "Mechanical") return "bg-blue-50/60 dark:bg-blue-950/30 border-l-[3px] border-l-blue-500";
     if (disc === "Electrical") return "bg-amber-50/60 dark:bg-amber-950/30 border-l-[3px] border-l-amber-500";
+    if (disc === "Lube") return "bg-teal-50/60 dark:bg-teal-950/30 border-l-[3px] border-l-teal-500";
     return "bg-muted/30 border-l-[3px] border-l-muted-foreground";
   };
 
