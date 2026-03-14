@@ -52,6 +52,7 @@ const autoClassifyCriticality = (assetName: string, areaLabel: string, subArea: 
     /electrowinning/i, /electro.?win/i, /elution column/i, /elution heater/i,
     /main transformer/i, /power station/i, /main switchboard/i,
     /air compressor/i, /plant air/i,
+    /\bplc\b/i,
   ];
 
   // B: Significant production impact but workarounds possible
