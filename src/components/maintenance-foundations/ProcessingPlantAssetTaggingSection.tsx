@@ -330,7 +330,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           <div className="bg-muted/40 rounded-lg p-4 text-xs text-muted-foreground space-y-1 mt-2">
             <p className="font-semibold text-foreground text-xs uppercase tracking-widest mb-2">Mockup Notes</p>
-            <p>• White/silver background with bold black text — high contrast for dusty mining conditions</p>
+            <p>• White/silver background with bold black text, high contrast for dusty mining conditions</p>
             <p>• Asset ID rendered at minimum 20mm text height — readable at arm's length</p>
             <p>• Hole punch shown on one end — used for ring or cable-tie hanging attachment</p>
             <p>• No QR code, no functional location, no area code — Asset ID and description only</p>
