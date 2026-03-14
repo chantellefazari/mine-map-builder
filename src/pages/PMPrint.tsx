@@ -320,7 +320,10 @@ const PMPrint = () => {
             width: 100%;
           }
           table, th, td {
-            border: 1px solid #000 !important;
+            border: 2px solid #000 !important;
+          }
+          tr {
+            border: none !important;
           }
           th, td {
             padding: 3px 6px !important;
