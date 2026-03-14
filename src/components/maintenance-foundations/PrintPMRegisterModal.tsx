@@ -97,7 +97,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
             <div class="banner-left">
               <div class="site-name">TENNANT CREEK MINING GROUP</div>
               <div class="doc-title">Current Site PM Register</div>
-              <div class="doc-subtitle">Existing Preventive Maintenance Tasks — Processing Plant</div>
+              <div class="doc-subtitle">Existing Preventive Maintenance Tasks | Processing Plant</div>
             </div>
             <div class="banner-right">
               <div class="meta-item"><span class="meta-label">Document</span><span class="meta-value">TCMG-PM-REG-001</span></div>
