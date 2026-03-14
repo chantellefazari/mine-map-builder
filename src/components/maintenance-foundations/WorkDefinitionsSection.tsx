@@ -92,7 +92,7 @@ export const WorkDefinitionsSection = () => {
               <Layers className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-medium">Asset Hierarchy</p>
-                <p className="text-xs text-muted-foreground">Work is always linked to an asset — the hierarchy tells us exactly what equipment we're working on</p>
+                <p className="text-xs text-muted-foreground">Work is always linked to an asset. The hierarchy tells us exactly what equipment we're working on</p>
               </div>
             </div>
             <div className="flex items-start gap-3 bg-background rounded-md p-3 border border-border">
