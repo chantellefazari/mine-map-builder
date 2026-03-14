@@ -175,7 +175,7 @@ const PMPrint = () => {
     document.title = `PM Print — ${id}`;
   }, [id]);
 
-  const document = id ? renderPM(id) : null;
+  const pmDocument = id ? renderPM(id) : null;
 
   if (!document) {
     return (
