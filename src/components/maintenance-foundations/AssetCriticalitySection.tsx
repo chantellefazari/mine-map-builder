@@ -545,9 +545,6 @@ export const AssetCriticalitySection = () => {
                       className="h-7 text-xs"
                     />
                   </TableCell>
-                  <TableCell className="py-1.5 text-center">
-                    {isSaved && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
-                  </TableCell>
                 </TableRow>
               );
             })}
