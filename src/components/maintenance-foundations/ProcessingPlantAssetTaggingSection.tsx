@@ -157,7 +157,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
             This standard defines a simple, durable physical tagging system for Processing Plant assets.
-            The physical tag carries only the Asset ID — nothing else. All hierarchy, functional location
+            The physical tag carries only the Asset ID, nothing else. All hierarchy, functional location
             codes, area structures, and system data are stored in Minesite AI, not on the tag.
           </p>
           <div className="grid sm:grid-cols-2 gap-2">
