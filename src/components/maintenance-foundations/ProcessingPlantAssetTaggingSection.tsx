@@ -133,7 +133,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
               <div className="flex items-center gap-2 mb-2">
                 <Badge variant="outline" className="text-xs font-mono border-primary/40 text-primary">TCMG-STD-TAG-002</Badge>
                 <Badge className="text-xs bg-primary text-primary-foreground">Processing Plant Only</Badge>
-                <Badge variant="secondary" className="text-xs">Simplified Format — Rev 1.0</Badge>
+                <Badge variant="secondary" className="text-xs">Simplified Format | Rev 1.0</Badge>
               </div>
               <h2 className="text-xl font-bold text-foreground tracking-tight uppercase">
                 Processing Plant — Asset Tagging Standard
