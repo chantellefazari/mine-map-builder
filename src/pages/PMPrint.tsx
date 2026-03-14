@@ -207,7 +207,7 @@ const PMPrint = () => {
 
       {/* PM document — this is the only thing that prints */}
       <div className="pm-print-content">
-        {document}
+        {pmDocument}
       </div>
 
       <style>{`
