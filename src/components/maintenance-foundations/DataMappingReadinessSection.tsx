@@ -44,7 +44,7 @@ const ASSET_MAPPINGS: MappingRow[] = [
   { sourceTable: "processing_plant_assets_rev_b", sourceField: "parent_asset_label", targetEntity: "Asset", targetField: "Parent Asset Reference", transformation: "Lookup parent asset_number", status: "Ready" },
   { sourceTable: "processing_plant_assets_rev_b", sourceField: "pid_tags[]", targetEntity: "Asset", targetField: "P&ID Tag Reference", transformation: "Array → semicolon-delimited string", status: "Ready" },
   { sourceTable: "processing_plant_assets_rev_b", sourceField: "components (JSONB)", targetEntity: "Asset", targetField: "Sub-Component BOM", transformation: "Flatten JSONB → child asset rows", status: "Partial" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "—", targetEntity: "Asset", targetField: "Criticality Rating", transformation: "Requires classification rule engine", status: "Not Started" },
+  { sourceTable: "asset_criticality_ratings", sourceField: "criticality", targetEntity: "Asset", targetField: "Criticality Rating", transformation: "Direct - A/B/C rating from assessment register", status: "Ready" },
   { sourceTable: "processing_plant_assets_rev_b", sourceField: "sort_order", targetEntity: "Asset", targetField: "Display Sequence", transformation: "Direct integer mapping", status: "Ready" },
 ];
 
