@@ -85,6 +85,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
   title = "Print Preview",
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handlePrint = () => {
     const printContent = printRef.current;
@@ -112,12 +113,35 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
     }, 500);
   };
 
+  const handleSavePdf = async () => {
+    const container = printRef.current;
+    if (!container) return;
+    setIsSaving(true);
+    try {
+      const { exportSectionsToPdf } = await import("@/utils/sectionPdfExport");
+      const { PDF_EXPORT_OPTS } = await import("@/utils/pdfExportStandard");
+      const filename = `${title.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_")}.pdf`;
+      await exportSectionsToPdf(container, filename, {
+        ...PDF_EXPORT_OPTS,
+        sectionSelector: ".border-2.border-border",
+      });
+    } catch (err: any) {
+      console.error("PDF save failed:", err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[95vw] w-full max-h-[95vh] h-full p-0 gap-0" aria-describedby={undefined}>
         <div className="p-4 border-b border-border flex items-center justify-between">
           <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
           <div className="flex items-center gap-3">
+            <Button onClick={handleSavePdf} variant="outline" className="gap-2" disabled={isSaving}>
+              {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              {isSaving ? "Saving..." : "Save PDF"}
+            </Button>
             <Button onClick={handlePrint} className="gap-2">
               <Printer className="w-4 h-4" />
               Print
