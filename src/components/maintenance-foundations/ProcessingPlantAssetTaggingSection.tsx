@@ -294,7 +294,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           {/* Standard size examples — flat surface large equipment */}
           <div className="space-y-2">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Flat Surface — 100mm × 50mm Plate (Standard)</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Flat Surface | 100mm × 50mm Plate (Standard)</p>
             <p className="text-xs text-muted-foreground">e.g. Ball Mill, Cyanide Tank, Electrowinning Cell</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
               <SimplifiedTagMockup assetId="BM01" description="Primary Ball Mill" size="standard" holePosition="none" />
