@@ -424,7 +424,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
                   ["Conveyors",  "Drive side near motor, 1.0 to 1.5 m above ground. Not on belt guards"],
                   ["Screens",    "Structural frame near drive side, eye level where accessible"],
                   ["Tanks",      "Near manway or ladder access point, eye level where possible"],
-                  ["Electrical panels", "Front exterior door — eye level"],
+                  ["Electrical panels", "Front exterior door, eye level"],
                   ["Gearboxes",  "Oil filler or inspection side — avoid hot surfaces"],
                   ["Crushers",   "Main frame structural section — non-wear, non-impact area"],
                 ].map(([type, placement]) => (
