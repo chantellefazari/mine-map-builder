@@ -103,6 +103,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "3 Monthly Lubrication PM",
     frequency: "3 Monthly",
     frequencyGroup: "12-week",
+    plantArea: "Leaching (CIP)",
     items: [
       { plantId: "LCH01-TK01-AGT01", plantItem: "Gearbox, Agitator; Leach Tank #1", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
       { plantId: "LCH01-TK02-AGT01", plantItem: "Gearbox, Agitator; Leach Tank #2", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
