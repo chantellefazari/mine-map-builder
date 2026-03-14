@@ -435,7 +435,7 @@ export const WorkDefinitionsSection = () => {
                 Modification / Project Work
               </h4>
               <p className="text-sm text-muted-foreground">
-                Changing or upgrading equipment — not maintenance. We're improving something, not restoring it. 
+                Changing or upgrading equipment, not maintenance. We're improving something, not restoring it. 
                 This should be tracked separately from maintenance work.
               </p>
             </div>
