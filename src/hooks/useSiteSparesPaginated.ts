@@ -137,7 +137,7 @@ export interface PaginationFilters {
   warehouseArea: string;
   status: string;
   supplier: string;
-  criticality: string; // client-side only (derived from description)
+  criticality: string; // HIGH/MEDIUM/LOW across full filtered dataset
   quickFilter: "all" | "lowStock" | "critical";
 }
 
