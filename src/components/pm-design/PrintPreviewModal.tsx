@@ -168,6 +168,10 @@ ${printContent.innerHTML}
         <div className="p-4 border-b border-border flex items-center justify-between">
           <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
           <div className="flex items-center gap-3">
+            <Button onClick={handleExportHtml} variant="outline" className="gap-2">
+              <FileCode className="w-4 h-4" />
+              Save HTML
+            </Button>
             <Button onClick={handleSavePdf} variant="outline" className="gap-2" disabled={isSaving}>
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
               {isSaving ? "Saving..." : "Save PDF"}
