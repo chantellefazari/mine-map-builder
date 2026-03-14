@@ -43,109 +43,86 @@ const autoClassifyCriticality = (assetName: string, areaLabel: string, subArea: 
   const a = areaLabel.toLowerCase();
   const s = subArea.toLowerCase();
 
-  // ── A — Critical: Immediate shutdown / safety / gold production ──
+  // ── A — Critical: Only the key bottleneck equipment that stops the whole plant ──
   const A_PATTERNS = [
-    // Mills & grinding
-    /ball mill/i, /sag mill/i, /mill drive/i, /mill motor/i, /primary mill/i,
-    // Crushers
-    /jaw crusher/i, /cone crusher/i, /impact crusher/i, /crusher/i,
-    // Gold Room / Elution / Electrowinning
-    /gold room/i, /electrowinning/i, /electro.?win/i, /elution/i, /smelt/i, /furnace/i, /carbon strip/i,
-    // CIP / CIL tanks & critical process
-    /cip tank/i, /cil tank/i, /leach tank/i, /adsorption/i, /carbon column/i,
-    // Thickener
-    /thickener/i, /thickener drive/i, /thickener rake/i,
-    // Filter Press
+    // Primary grinding circuit (single point of failure)
+    /ball mill/i, /sag mill/i, /primary mill/i,
+    // Primary crusher (single unit)
+    /jaw crusher/i, /primary crusher/i,
+    // Thickener (single unit, no bypass)
+    /\bthickener\b/i,
+    // Filter press (gold recovery path)
     /filter press/i,
-    // Main transformers / generators / power
-    /transformer/i, /generator/i, /genset/i, /main switchboard/i, /mcc\b/i,
-    /power station/i, /power supply/i, /ups\b/i,
-    // Compressors (plant air)
-    /compressor/i, /air receiver/i,
-    // TSF / tailings
-    /tailings/i, /tsf/i, /tailing/i,
-    // Primary conveyors
-    /primary conveyor/i, /feed conveyor/i, /rom bin/i,
-    // Water supply critical
-    /bore pump/i, /borehole/i, /raw water pump/i, /process water tank/i,
-    // Safety critical
-    /fire pump/i, /emergency/i, /safety shower/i,
-    // PLC / SCADA
-    /plc/i, /scada/i, /dcs/i, /control system/i,
+    // Electrowinning / elution (gold production)
+    /electrowinning/i, /electro.?win/i, /elution column/i, /elution heater/i,
+    // Main power (total plant blackout)
+    /main transformer/i, /power station/i, /main switchboard/i,
+    // Plant air (single compressor stops everything)
+    /air compressor/i, /plant air/i,
+    // PLC / SCADA (total control loss)
+    /\bplc\b/i, /\bscada\b/i,
   ];
 
-  // ── B — Important: Production impact within 24h ──
+  // ── B — Important: Significant production impact but may have standby or short-term workaround ──
   const B_PATTERNS = [
-    // Conveyors (general)
-    /conveyor/i, /belt feeder/i, /apron feeder/i,
+    // Secondary/cone crushers
+    /cone crusher/i, /secondary crusher/i,
+    // Conveyors (process feed)
+    /conveyor/i, /feeder/i, /rom bin/i,
     // Screens
-    /screen/i, /vibrating screen/i, /trash screen/i, /carbon screen/i,
-    // Pumps (process)
-    /pump/i, /slurry pump/i, /transfer pump/i, /reagent pump/i, /dosing pump/i,
-    /water pump/i, /return pump/i, /reclaim pump/i, /sump pump/i,
+    /screen/i,
+    // CIP/CIL/leach tanks
+    /cip tank/i, /cil tank/i, /leach tank/i, /adsorption/i, /carbon/i,
+    // Pumps (process-critical, not utility)
+    /slurry pump/i, /tailings pump/i, /transfer pump/i, /feed pump/i,
+    /thickener underflow/i, /reclaim pump/i, /cip pump/i,
     // Agitators
-    /agitator/i, /mixer/i,
-    // Reagent systems
-    /reagent/i, /lime/i, /cyanide/i, /caustic/i, /acid/i,
-    // Ventilation / fans
-    /fan\b/i, /blower/i, /ventilat/i, /exhaust/i,
-    // Water systems
-    /water tank/i, /water system/i, /ro plant/i, /reverse osmosis/i, /potable/i,
-    /water treatment/i, /sewage/i,
-    // Hoists / cranes
-    /crane/i, /hoist/i, /overhead crane/i, /jib crane/i,
-    // VSD / drives
-    /vsd/i, /vfd/i, /variable speed/i, /soft starter/i, /inverter/i,
-    // Switchboards / distribution
-    /switchboard/i, /distribution board/i, /db\b/i, /sub.?station/i,
+    /agitator/i,
     // Cyclones
     /cyclone/i, /hydrocyclone/i,
-    // Dewatering
-    /dewater/i, /centrifuge/i, /decanter/i,
-    // Valves (process critical)
-    /pinch valve/i, /knife gate/i, /actuated valve/i, /control valve/i,
-    // Lighting towers (for night shift)
-    /lighting tower/i, /light tower/i,
-    // Fuel systems
-    /fuel/i, /diesel/i, /fuel farm/i, /fuel tank/i,
-    // Sampling
-    /sampler/i, /sampling/i,
-    // Mobile equipment (key units)
-    /excavator/i, /loader/i, /dozer/i, /grader/i, /water truck/i, /service truck/i,
-    /telehandler/i, /forklift/i, /moxy/i, /dump truck/i,
-    // Instrumentation
-    /transmitter/i, /flow meter/i, /level sensor/i, /ph probe/i,
-    // Cooling / heating
-    /heat exchanger/i, /cooler/i, /heater/i,
-    // Lubrication systems
-    /lube system/i, /lubrication/i, /oil system/i, /grease system/i,
+    // Generators (backup power)
+    /generator/i, /genset/i,
+    // Reagent dosing (cyanide, lime, caustic)
+    /reagent/i, /cyanide/i, /lime/i, /caustic/i,
+    // Gold room ancillaries
+    /furnace/i, /smelt/i, /carbon strip/i, /gold room/i,
+    // Thickener sub-components
+    /thickener drive/i, /thickener rake/i,
+    // MCC panels (individual motor loss)
+    /\bmcc\b/i,
+    // Compressor ancillaries
+    /air receiver/i, /compressor/i,
+    // TSF / tailings
+    /tailings/i, /tsf\b/i,
+    // VSD / drives on critical equipment
+    /\bvsd\b/i, /\bvfd\b/i, /soft starter/i,
+    // Switchboards / substations
+    /switchboard/i, /sub.?station/i, /transformer/i,
+    // Water supply (process water)
+    /bore pump/i, /process water/i, /raw water pump/i,
+    // Crane (maintenance access)
+    /crane/i, /hoist/i,
+    // Safety systems
+    /fire pump/i, /emergency/i, /safety shower/i,
+    // Key mobile equipment
+    /excavator/i, /loader/i, /dozer/i, /water truck/i,
   ];
 
-  // Check A first
+  // Check A first — only true single-point-of-failure bottlenecks
   for (const pat of A_PATTERNS) {
-    if (pat.test(n) || pat.test(s)) return "A";
+    if (pat.test(n)) return "A";
   }
-  // Gold Room area is always A
-  if (a.includes("gold") || s.includes("gold room")) return "A";
-  // Elution area
-  if (a.includes("elution") || s.includes("elution")) return "A";
-  // CIP area parents
-  if (a.includes("cip") || s.includes("cip")) return "A";
-  // Crushing area parents
-  if (a.includes("crushing")) return "A";
-  // Grinding area parents  
-  if (a.includes("grinding") || a.includes("milling")) return "A";
 
   // Check B
   for (const pat of B_PATTERNS) {
     if (pat.test(n) || pat.test(s)) return "B";
   }
-  // Power & Utilities area → B minimum
+  // Area-based B fallbacks (not A — sub-components within these areas aren't all critical)
+  if (a.includes("gold") || s.includes("gold room")) return "B";
+  if (a.includes("elution") || s.includes("elution")) return "B";
+  if (a.includes("crushing") || a.includes("grinding") || a.includes("milling")) return "B";
+  if (a.includes("cip") || s.includes("cip")) return "B";
   if (a.includes("power") || a.includes("utilit") || a.includes("electrical")) return "B";
-  // Reagents area
-  if (a.includes("reagent")) return "B";
-  // Water services
-  if (a.includes("water")) return "B";
 
   return "C";
 };
