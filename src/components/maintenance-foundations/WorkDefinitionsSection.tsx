@@ -196,7 +196,7 @@ export const WorkDefinitionsSection = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Usually urgent — needs attention now</span>
+                    <span>Usually urgent, needs attention now</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
