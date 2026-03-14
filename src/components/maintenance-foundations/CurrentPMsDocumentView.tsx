@@ -7,7 +7,7 @@ import {
 import {
   Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronRight, Wrench, Zap, Eye, FileDown } from "lucide-react";
+import { ChevronDown, ChevronRight, Wrench, Zap, Eye, FileDown, Droplets } from "lucide-react";
 import { useState } from "react";
 import type { PMData } from "@/components/pm-design/PMFrequencySection";
 
