@@ -10,6 +10,7 @@ import {
 interface PrintPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSavePdf?: () => Promise<void>;
   children: React.ReactNode;
   title?: string;
 }
