@@ -386,7 +386,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
       {/* ── 6. Placement Rules ── */}
       <Card>
         <CardHeader className="pb-2">
-          <SectionHeading icon={MapPin} number="6" title="Placement Rules — Processing Plant" />
+          <SectionHeading icon={MapPin} number="6" title="Placement Rules | Processing Plant" />
         </CardHeader>
         <CardContent className="space-y-4">
 
