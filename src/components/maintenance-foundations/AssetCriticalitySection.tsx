@@ -531,9 +531,9 @@ export const AssetCriticalitySection = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="A" className="text-xs font-semibold text-red-700">A — Critical</SelectItem>
-                        <SelectItem value="B" className="text-xs font-semibold text-amber-700">B — Important</SelectItem>
-                        <SelectItem value="C" className="text-xs font-semibold text-emerald-700">C — General</SelectItem>
+                        <SelectItem value="A" className="text-xs font-semibold text-red-700">A | Critical</SelectItem>
+                        <SelectItem value="B" className="text-xs font-semibold text-amber-700">B | Important</SelectItem>
+                        <SelectItem value="C" className="text-xs font-semibold text-emerald-700">C | General</SelectItem>
                       </SelectContent>
                     </Select>
                   </TableCell>
