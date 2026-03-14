@@ -37,13 +37,8 @@ const LOW_KEYWORDS = [
   "camlock", "victaulic", "grooved fitting", "barb fitting", "hose barb",
   "quick connect", "push fit", "ferrule", "olive",
   
-  // ---- Hoses (not assemblies) ----
-  "hose", "tubing", "flexible hose", "hydraulic hose", "air hose", "nylon tubing",
-  "drag hose", "tpr hose", "pvc hose", "rubber hose", "suction hose", 
-  "discharge hose", "layflat hose", "garden hose", "fuel hose", "coolant hose",
-  
   // ---- Filters (consumable) ----
-  "filter", "filter element", "filter cartridge", "strainer element", 
+  "filter element", "filter cartridge", "strainer element", 
   "air filter", "oil filter", "fuel filter", "hydraulic filter", "bag filter",
   "filter sock", "filter bag", "breather", "breather cap",
   
@@ -99,12 +94,34 @@ const LOW_KEYWORDS = [
 
   // ---- Coupling parts (not drive couplings — just adaptor/fitting) ----
   "motor coupling", "coupling insert", "coupling element",
+  "muff coupling",
 
   // ---- Liner singles (wear consumables, not crusher assemblies) ----
   "crusher liner", "crusher wear",
 
   // ---- Circuit breaker accessories (not main switchgear) ----
   "motor circuit breaker", "motor protection", "motor protector",
+
+  // ---- Pump PARTS (not complete pump assemblies — keeps them from hitting generic "pump" HIGH) ----
+  "pump sleeve", "pump shaft sleeve", "pump clamp", "pump tubing",
+  "pump parts", "pump rebuild kit", "pump repair kit", "pump kit",
+  "pump casing", "pump component",
+  "impeller", "volute", "wear ring", "throat bush",
+  "suction liner", "frame plate", "stuffing box", "lantern ring",
+  "pump shaft", "flinger", "cotter",
+  "pipe float", "flexibore", "pump drive coupling",
+  
+  // ---- Motor PARTS (not complete motors) ----
+  "motor hub", "motor starter",
+
+  // ---- Filter PARTS (not filter press assemblies) ----
+  "filter element", "filter cartridge", "filter sock", "filter bag",
+
+  // ---- Fan parts (not complete fan/blower assemblies) ----
+  "fan part", "fan blade",
+
+  // ---- Rubber cord / packing (consumable, not hose) ----
+  "rubber cord", "solid rubber cord",
 ];
 
 // ============================================================================
@@ -117,19 +134,24 @@ const HIGH_KEYWORDS = [
   "motor", "electric motor", "drive motor", "mill motor", "conveyor motor",
   "motor assembly", "main motor", "pump motor", "fan motor", "agitator motor", 
   "feeder motor", "ac motor", "dc motor", "induction motor",
+  "gear motor", "vibrator motor", "hydraulic motor",
   
   // ---- Gearboxes / Gear Reducers ----
   "gearbox", "gear box", "gear reducer", "speed reducer", "reduction gearbox",
   "drive gearbox", "helical gearbox", "planetary gearbox", "worm gearbox",
-  "bevel gearbox", "right angle gearbox",
+  "bevel gearbox", "right angle gearbox", "mixer gearbox",
   "sew-eurodrive", "sew eurodrive", "nord", "flender", "hansen", // Major brands
   
-  // ---- Major Pumps (CIP, tailings, process water) ----
+  // ---- Pumps (complete assemblies — ALL pump units are production critical) ----
+  "pump", "pumpset", "pump set",
   "slurry pump", "tailings pump", "process pump", "transfer pump", "feed pump",
   "cip pump", "thickener pump", "reagent pump", "water pump assembly",
   "centrifugal pump", "positive displacement", "diaphragm pump", "peristaltic pump",
   "submersible pump", "borehole pump", "booster pump", "main pump",
-  "warman", "metso", "weir", "krebs", // Major pump brands
+  "dosing pump", "aodd pump", "multistage pump", "vertical pump",
+  "drainage pump", "diesel pump", "triple pump",
+  "warman", "metso", "weir", "krebs", "grundfos", "lowara", "keto", "wilden",
+  "ebara", "matec",
   
   // ---- Ball Mill / Mill Components ----
   "pinion", "girth gear", "ball mill", "mill liner set", "mill drive",
@@ -156,9 +178,21 @@ const HIGH_KEYWORDS = [
   "cyclone", "hydrocyclone",
   "compressor", "air compressor", "screw compressor",
   "blower", "lobe blower", "roots blower",
+  "concentrator", "knelson",
+  
+  // ---- OEM Assemblies / Major Drive Units ----
+  "hydraulic drive", "kiln drive", "powder feed drive", "mill feed",
+  "mixer", "mixing",
+  
+  // ---- Hoses (critical process hoses — site-specific HIGH) ----
+  "hose", "tubing", "flexible hose", "hydraulic hose", "air hose", "nylon tubing",
+  "drag hose", "tpr hose", "pvc hose", "rubber hose", "suction hose", 
+  "discharge hose", "layflat hose", "fuel hose", "coolant hose",
+  "mining hose", "bellows hose",
   
   // ---- Electrical Critical (major switchgear) ----
   "transformer", "power transformer", "distribution transformer",
+  "control transformer",
   "switchgear", "main breaker", "acb", "air circuit breaker",
   "mcc panel", "mcc bucket", "motor control center",
   "generator", "alternator", "genset",
@@ -198,7 +232,7 @@ const MEDIUM_KEYWORDS = [
   "control valve", "modulating valve", "solenoid valve", "pneumatic valve",
   "safety valve", "pressure safety", "actuated valve",
   "diaphragm valve", "plug valve", "needle valve",
-  "poly ball valve", "hansen",
+  "poly ball valve",
   "clarkson", "isogate", "orbinox", // Major valve brands
   
   // ---- Instrumentation (pressure, flow, level) ----
@@ -240,10 +274,8 @@ const MEDIUM_KEYWORDS = [
   "linear actuator", "rotary actuator", "cylinder kit",
   "piston", "cylinder rod", "cylinder seal kit",
   
-  // ---- Pump Parts (not whole pumps) ----
-  "impeller", "pump casing", "volute", "wear ring", "throat bush",
-  "pump shaft", "pump sleeve", "suction liner", "frame plate",
-  "stuffing box", "lantern ring",
+  // ---- Pump Parts (moved to LOW to prevent generic "pump" HIGH match) ----
+  // (Now handled in LOW_KEYWORDS section)
   
   // ---- Electrical Components (contactors/relays) ----
   "contactor", "motor contactor", "auxiliary contactor",
