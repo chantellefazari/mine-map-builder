@@ -86,6 +86,8 @@ export const AssetCriticalitySection = () => {
   const [areaFilter, setAreaFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState<"all" | CriticalityRating>("all");
   const [pendingChanges, setPendingChanges] = useState<Record<string, { criticality: CriticalityRating; justification: string }>>({});
+  const pdfRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
 
   const saveMutation = useMutation({
     mutationFn: async (changes: { asset_number: string; asset_name: string; area_label: string; sub_area: string; criticality: CriticalityRating; justification: string }[]) => {
