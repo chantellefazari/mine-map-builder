@@ -370,7 +370,18 @@ export async function exportSectionsToPdf(
         }
       }
 
-      // Prioritise keep-together forced break, then row break, then hard cut fallback.
+      const hasSafeBreak = forcedBreak > sourceY || bestBreak > sourceY;
+      const isMidPage = currentY > MARGIN + 0.5;
+
+      // Never cut through data at the bottom of a partially-used page.
+      // If no safe break exists, continue on a fresh page and retry.
+      if (!hasSafeBreak && isMidPage) {
+        pdf.addPage();
+        currentY = MARGIN;
+        continue;
+      }
+
+      // Prioritise keep-together forced break, then row break, then hard cut fallback (fresh page only).
       const sliceEnd = forcedBreak > sourceY ? forcedBreak : bestBreak > sourceY ? bestBreak : maxEnd;
       const usedForcedBreak = forcedBreak > sourceY && sliceEnd === forcedBreak;
       const usedRowBreak = bestBreak > sourceY && sliceEnd === bestBreak;
