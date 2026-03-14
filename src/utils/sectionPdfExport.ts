@@ -627,6 +627,9 @@ export async function exportSectionsToPdf(
       const semanticBreakElements = Array.from(
         clone.querySelectorAll<HTMLElement>("[data-pdf-break]")
       );
+      const utilityBoundaryElements = Array.from(
+        clone.querySelectorAll<HTMLElement>("[class*='border-b'], [class*='divide-y'] > *")
+      );
       const flowBoundaryBreaks = isContinuousFlowContainer
         ? Array.from(clone.children).filter((child): child is HTMLElement => child instanceof HTMLElement)
         : [];
@@ -636,6 +639,12 @@ export async function exportSectionsToPdf(
         ...semanticBreakElements.flatMap((element) => {
           const rect = element.getBoundingClientRect();
           return [rect.top - wrapperRect.top, rect.bottom - wrapperRect.top];
+        }),
+        ...utilityBoundaryElements.flatMap((element) => {
+          const rect = element.getBoundingClientRect();
+          const height = rect.height;
+          if (!Number.isFinite(height) || height < 8 || height > 220) return [];
+          return [rect.bottom - wrapperRect.top];
         }),
         ...flowBoundaryBreaks.map((row) => row.getBoundingClientRect().bottom - wrapperRect.top),
       ]
