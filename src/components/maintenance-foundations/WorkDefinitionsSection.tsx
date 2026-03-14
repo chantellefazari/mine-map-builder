@@ -286,7 +286,7 @@ export const WorkDefinitionsSection = () => {
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <h5 className="font-medium text-sm text-foreground">Preventive Maintenance (PM)</h5>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Tasks done at <strong>fixed intervals</strong> — every week, every month, every 500 hours. 
+                    Tasks done at <strong>fixed intervals</strong>: every week, every month, every 500 hours. 
                     We do them regardless of whether the equipment looks like it needs it. 
                     This is what our <strong>PM Design</strong> section builds.
                   </p>
