@@ -15,9 +15,6 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
 
   const maxPoints = Math.max(...template.items.map((i) => i.lubePoints.length));
 
-  // Column widths: Plant ID ~9%, Plant Item ~21%, each lube point group gets remaining space equally
-  const lubeGroupWidth = maxPoints > 0 ? Math.floor(70 / maxPoints) : 70;
-
   return (
     <div className="bg-background min-h-full" style={{ width: "210mm", minHeight: "297mm", margin: "0 auto" }}>
       <div className="border-2 border-border">
@@ -39,33 +36,36 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
             <span className="text-sm font-bold text-primary-foreground">LUBRICATION SCHEDULE</span>
           </div>
 
-          <table className="w-full text-xs border-collapse" style={{ tableLayout: "fixed" }}>
+          <table className="w-full border-collapse" style={{ tableLayout: "fixed", fontSize: "9px" }}>
             <colgroup>
-              <col style={{ width: "9%" }} />
-              <col style={{ width: `${91 - lubeGroupWidth * maxPoints}%` }} />
-              {Array.from({ length: maxPoints }).map((_, i) => (
-                <col key={`col-${i}`} style={{ width: `${lubeGroupWidth}%` }} />
-              ))}
+              <col style={{ width: "8%" }} />
+              <col style={{ width: `${22}%` }} />
+              {Array.from({ length: maxPoints }).flatMap((_, i) => [
+                <col key={`loc-${i}`} style={{ width: `${70 / maxPoints / 4}%` }} />,
+                <col key={`type-${i}`} style={{ width: `${70 / maxPoints / 4}%` }} />,
+                <col key={`qty-${i}`} style={{ width: `${70 / maxPoints / 4}%` }} />,
+                <col key={`chk-${i}`} style={{ width: `${70 / maxPoints / 4}%` }} />,
+              ])}
             </colgroup>
             <thead>
+              {/* Group header row */}
               <tr className="bg-muted border-b border-border">
-                <th className="px-1.5 py-1 text-left font-semibold border-r border-border">Plant ID</th>
-                <th className="px-1.5 py-1 text-left font-semibold border-r border-border">Plant Item</th>
+                <th rowSpan={2} className="px-1 py-1 text-left font-semibold border-r border-border align-bottom">Plant ID</th>
+                <th rowSpan={2} className="px-1 py-1 text-left font-semibold border-r border-border align-bottom">Plant Item</th>
                 {Array.from({ length: maxPoints }).map((_, i) => (
-                  <th key={`lp-header-${i}`} className="border-r border-border p-0">
-                    <div className="bg-muted text-center text-[9px]">
-                      <div className="px-1 py-0.5 font-semibold border-b border-border">
-                        Lube Point {maxPoints > 1 ? i + 1 : ""}
-                      </div>
-                      <div className="grid grid-cols-4 divide-x divide-border">
-                        <div className="px-0.5 py-0.5 font-semibold">Loc</div>
-                        <div className="px-0.5 py-0.5 font-semibold">Type</div>
-                        <div className="px-0.5 py-0.5 font-semibold">Qty</div>
-                        <div className="px-0.5 py-0.5 font-semibold">✓</div>
-                      </div>
-                    </div>
+                  <th key={`grp-${i}`} colSpan={4} className="px-1 py-0.5 text-center font-semibold border-r border-border border-b border-border">
+                    {maxPoints > 1 ? `Lube Point ${i + 1}` : "Lube Point"}
                   </th>
                 ))}
+              </tr>
+              {/* Sub-header row */}
+              <tr className="bg-muted border-b border-border">
+                {Array.from({ length: maxPoints }).flatMap((_, i) => [
+                  <th key={`h-loc-${i}`} className="px-1 py-0.5 text-left font-semibold border-r border-border">Location</th>,
+                  <th key={`h-type-${i}`} className="px-1 py-0.5 text-left font-semibold border-r border-border">Type</th>,
+                  <th key={`h-qty-${i}`} className="px-1 py-0.5 text-center font-semibold border-r border-border">Qty</th>,
+                  <th key={`h-chk-${i}`} className="px-1 py-0.5 text-center font-semibold border-r border-border">✓</th>,
+                ])}
               </tr>
             </thead>
             <tbody>
@@ -75,41 +75,32 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
                   className={`border-b border-border ${idx % 2 === 0 ? "" : "bg-muted/30"}`}
                   data-pdf-break
                 >
-                  <td className="px-1.5 py-1 font-mono font-medium border-r border-border align-top text-[9px]">
+                  <td className="px-1 py-1 font-mono font-medium border-r border-border align-top">
                     {item.plantId}
                   </td>
-                  <td className="px-1.5 py-1 border-r border-border align-top text-[9px]">
+                  <td className="px-1 py-1 border-r border-border align-top">
                     {item.plantItem}
                   </td>
-                  {Array.from({ length: maxPoints }).map((_, lpIdx) => {
+                  {Array.from({ length: maxPoints }).flatMap((_, lpIdx) => {
                     const lp = item.lubePoints[lpIdx];
                     if (!lp) {
-                      return (
-                        <td key={`empty-${lpIdx}`} className="border-r border-border p-0">
-                          <div className="grid grid-cols-4 divide-x divide-border text-center text-[9px]">
-                            <div className="px-0.5 py-1"></div>
-                            <div className="px-0.5 py-1"></div>
-                            <div className="px-0.5 py-1"></div>
-                            <div className="px-0.5 py-1"></div>
-                          </div>
-                        </td>
-                      );
+                      return [
+                        <td key={`e-loc-${lpIdx}`} className="px-1 py-1 border-r border-border"></td>,
+                        <td key={`e-type-${lpIdx}`} className="px-1 py-1 border-r border-border"></td>,
+                        <td key={`e-qty-${lpIdx}`} className="px-1 py-1 border-r border-border"></td>,
+                        <td key={`e-chk-${lpIdx}`} className="px-1 py-1 border-r border-border"></td>,
+                      ];
                     }
-                    return (
-                      <td key={`lp-${lpIdx}`} className="border-r border-border p-0">
-                        <div className="grid grid-cols-4 divide-x divide-border text-center text-[9px]">
-                          <div className="px-0.5 py-1 text-left truncate">{lp.location}</div>
-                          <div className="px-0.5 py-1 font-medium truncate">{lp.type}</div>
-                          <div className="px-0.5 py-1 truncate">
-                            {lp.quantity}
-                            {lp.uom ? ` ${lp.uom}` : ""}
-                          </div>
-                          <div className="px-0.5 py-1 flex items-center justify-center">
-                            <Checkbox className="h-3 w-3" />
-                          </div>
-                        </div>
-                      </td>
-                    );
+                    return [
+                      <td key={`loc-${lpIdx}`} className="px-1 py-1 border-r border-border align-top">{lp.location}</td>,
+                      <td key={`type-${lpIdx}`} className="px-1 py-1 border-r border-border align-top font-medium">{lp.type}</td>,
+                      <td key={`qty-${lpIdx}`} className="px-1 py-1 border-r border-border align-top text-center">
+                        {lp.quantity}{lp.uom ? ` ${lp.uom}` : ""}
+                      </td>,
+                      <td key={`chk-${lpIdx}`} className="px-1 py-1 border-r border-border align-top text-center">
+                        <Checkbox className="h-3 w-3" />
+                      </td>,
+                    ];
                   })}
                 </tr>
               ))}
