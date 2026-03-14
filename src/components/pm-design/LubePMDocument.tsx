@@ -43,9 +43,9 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
               {Array.from({ length: maxPoints }).flatMap((_, i) => {
                 const groupPct = (60 + (maxPoints > 2 ? 5 : 0)) / maxPoints;
                 return [
-                  <col key={`loc-${i}`} style={{ width: `${groupPct * 0.35}%` }} />,
-                  <col key={`type-${i}`} style={{ width: `${groupPct * 0.25}%` }} />,
-                  <col key={`qty-${i}`} style={{ width: `${groupPct * 0.28}%` }} />,
+                  <col key={`loc-${i}`} style={{ width: `${groupPct * 0.28}%` }} />,
+                  <col key={`type-${i}`} style={{ width: `${groupPct * 0.18}%` }} />,
+                  <col key={`qty-${i}`} style={{ width: `${groupPct * 0.42}%` }} />,
                   <col key={`chk-${i}`} style={{ width: `${groupPct * 0.12}%` }} />,
                 ];
               })}
