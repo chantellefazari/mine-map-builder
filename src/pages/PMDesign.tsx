@@ -315,6 +315,29 @@ const disciplines = [
       },
     }
   },
+  {
+    id: "lube" as Discipline,
+    label: "Lube PMs",
+    icon: RefreshCw,
+    frequencies: {
+      "4-week": {
+        pms: lubePMTemplates.filter((t) => t.frequencyGroup === "4-week").map((t) => ({ id: t.id, name: t.name })),
+        subgroups: [],
+      },
+      "12-week": {
+        pms: lubePMTemplates.filter((t) => t.frequencyGroup === "12-week").map((t) => ({ id: t.id, name: t.name })),
+        subgroups: [],
+      },
+      "26-week": {
+        pms: lubePMTemplates.filter((t) => t.frequencyGroup === "26-week").map((t) => ({ id: t.id, name: t.name })),
+        subgroups: [],
+      },
+      "52-week": {
+        pms: lubePMTemplates.filter((t) => t.frequencyGroup === "52-week").map((t) => ({ id: t.id, name: t.name })),
+        subgroups: [],
+      },
+    },
+  },
 ];
 
 // Helper to calculate PM count for a frequency
