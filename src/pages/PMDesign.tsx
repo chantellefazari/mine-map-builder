@@ -564,7 +564,11 @@ const PMDesign = () => {
       case "rcd-3m-testing-crusher-fuel-farm": return "Crusher Fuel Farm Generator RCD Test (12 Week)";
       case "belt-calibration-bc100-monthly": return "Weightometer Calibration (4 Week)";
       case "ac-inspection-4-weekly": return "AC Inspection & Filter Clean (4 Week)";
-      default: return "PM Document";
+      default: {
+        const lubeTemplate = lubePMTemplates.find((t) => t.id === activeView);
+        if (lubeTemplate) return lubeTemplate.title;
+        return "PM Document";
+      }
     }
   };
 
