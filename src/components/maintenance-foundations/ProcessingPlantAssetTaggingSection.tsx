@@ -398,7 +398,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
               <RuleRow>Tag must be visible during normal operation without removing guards</RuleRow>
               <RuleRow>Do not mount on removable guards or covers</RuleRow>
               <RuleRow>Do not mount on vibration-critical points</RuleRow>
-              <RuleRow>Do not mount on hot surfaces — tag must remain legible</RuleRow>
+              <RuleRow>Do not mount on hot surfaces. Tag must remain legible</RuleRow>
             </div>
             <div className="mt-2">
               <WarningRow>Must NOT be mounted on removable guards or covers — tag must remain with the asset permanently</WarningRow>
