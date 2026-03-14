@@ -10,6 +10,7 @@ import {
 interface PrintPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSavePdf?: () => Promise<void>;
   children: React.ReactNode;
   title?: string;
 }
@@ -81,6 +82,7 @@ const printStyles = `
 export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
   isOpen,
   onClose,
+  onSavePdf,
   children,
   title = "Print Preview",
 }) => {
@@ -114,17 +116,10 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
   };
 
   const handleSavePdf = async () => {
-    const container = printRef.current;
-    if (!container) return;
+    if (!onSavePdf) return;
     setIsSaving(true);
     try {
-      const { exportSectionsToPdf } = await import("@/utils/sectionPdfExport");
-      const { PDF_EXPORT_OPTS } = await import("@/utils/pdfExportStandard");
-      const filename = `${title.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_")}.pdf`;
-      await exportSectionsToPdf(container, filename, {
-        ...PDF_EXPORT_OPTS,
-        sectionSelector: ".border-2.border-border",
-      });
+      await onSavePdf();
     } catch (err: any) {
       console.error("PDF save failed:", err);
     } finally {
