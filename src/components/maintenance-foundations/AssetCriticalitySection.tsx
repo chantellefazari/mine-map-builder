@@ -292,7 +292,7 @@ export const AssetCriticalitySection = () => {
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
     printWindow.document.write(`<!DOCTYPE html><html><head>
-      <title>Asset Criticality Assessment — TCMG</title>
+      <title>Asset Criticality Assessment | TCMG</title>
       <style>
         @page { size: A4 landscape; margin: 12mm; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
