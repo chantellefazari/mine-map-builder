@@ -353,7 +353,7 @@ const PMPrint = () => {
 
           /* Keep the outer PM border container flowing naturally */
           .pm-print-content .border-2 {
-            border: 1px solid #000 !important;
+            border: 2px solid #000 !important;
           }
         }
       `}</style>
