@@ -150,7 +150,7 @@ export const WorkDefinitionsSection = () => {
               <p className="text-sm text-muted-foreground">
                 Breakdown work is <strong>unplanned maintenance</strong> performed when equipment fails 
                 or is about to fail. The equipment has stopped working, is working incorrectly, or poses an 
-                immediate safety risk if not addressed. This is reactive — we are responding to a problem 
+                immediate safety risk if not addressed. This is reactive: we are responding to a problem 
                 that has already happened.
               </p>
             </div>
