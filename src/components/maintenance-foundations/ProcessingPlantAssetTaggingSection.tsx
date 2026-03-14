@@ -241,10 +241,10 @@ export const ProcessingPlantAssetTaggingSection = () => {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Material & Marking</p>
             <div className="grid sm:grid-cols-2 gap-2">
               <RuleRow label="Material">Laser-engraved industrial label or printed industrial label</RuleRow>
-              <RuleRow label="Background">White or silver — high contrast for readability</RuleRow>
-              <RuleRow label="Font">Bold black sans-serif — minimum 20 mm text height for Asset ID</RuleRow>
+              <RuleRow label="Background">White or silver, high contrast for readability</RuleRow>
+              <RuleRow label="Font">Bold black sans-serif, minimum 20 mm text height for Asset ID</RuleRow>
               <RuleRow label="Finish">Oil-resistant, dust-resistant, UV-resistant coating</RuleRow>
-              <RuleRow label="Backing">Industrial adhesive backing — permanent mounting</RuleRow>
+              <RuleRow label="Backing">Industrial adhesive backing, permanent mounting</RuleRow>
               <RuleRow label="Optional">Single hole punch on one end for ring or cable-tie attachment</RuleRow>
             </div>
           </div>
