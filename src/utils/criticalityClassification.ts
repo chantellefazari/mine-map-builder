@@ -69,19 +69,18 @@ const LOW_KEYWORDS = [
   "consumable", "disposable", "cleaning", "rag", "degreaser", "solvent",
   "tape", "adhesive", "sealant", "silicone", "loctite", "threadlocker",
   
-  // ---- Belts (transmission belts are consumables) ----
-  "vee belt", "v-belt", "v belt", "transmission belt", "drive belt", 
-  "timing belt", "ribbed belt", "multi-rib",
   
   // ---- Pipe Materials (not fittings) ----
   "hdpe pipe", "pvc pipe", "poly pipe", "copper pipe", "steel pipe length",
   
   // ---- Packing & Gaskets (single items, not kits) ----
   "gland packing", "packing ring", "rope packing", "single gasket",
-  "flange gasket", "sheet gasket",
+  "flange gasket", "sheet gasket", "gasket", "o-ring", "joint ring",
+  "piston ring",
   
   // ---- Skirting / Rubber (wear consumables) ----
   "skirting rubber", "rubber sheet", "mud flap", "dust seal strip",
+  "skirting", "scraper",
   
   // ---- Small Components ----
   "wedge", "scraper blade", "wiper", "squeegee",
@@ -94,10 +93,11 @@ const LOW_KEYWORDS = [
 
   // ---- Coupling parts (not drive couplings — just adaptor/fitting) ----
   "motor coupling", "coupling insert", "coupling element",
-  "muff coupling",
+  "muff coupling", "hosetail", "hose coupling", "hose end",
 
   // ---- Liner singles (wear consumables, not crusher assemblies) ----
-  "crusher liner", "crusher wear",
+  "crusher liner", "crusher wear", "polyurethane liner", "pu liner",
+  "cover liner", "cover plate liner",
 
   // ---- Circuit breaker accessories (not main switchgear) ----
   "motor circuit breaker", "motor protection", "motor protector",
@@ -110,18 +110,34 @@ const LOW_KEYWORDS = [
   "suction liner", "frame plate", "stuffing box", "lantern ring",
   "pump shaft", "flinger", "cotter",
   "pipe float", "flexibore", "pump drive coupling",
+  "wear part", "kit wear", "rotating element kit",
+  "lantern restrictor", "shaft sleeve",
   
   // ---- Motor PARTS (not complete motors) ----
   "motor hub", "motor starter",
 
   // ---- Filter PARTS (not filter press assemblies) ----
   "filter element", "filter cartridge", "filter sock", "filter bag",
+  "suction filter", "filter press plates",
 
   // ---- Fan parts (not complete fan/blower assemblies) ----
   "fan part", "fan blade",
 
+  // ---- Bearing parts (MEDIUM, not HIGH) ----
+  "bearing kit", "pillow block",
+
+  // ---- Conveyor parts (MEDIUM, not HIGH) ----
+  "conveyor roller", "guide roller", "conveyor belt",
+
   // ---- Rubber cord / packing (consumable, not hose) ----
   "rubber cord", "solid rubber cord",
+
+  // ---- Nylon tubing (fitting, not process hose) ----
+  "nylon tubing", "pvc tubing", "pvc flexing",
+
+  // ---- Vee belts / transmission belts (consumables) ----
+  "vee belt", "v-belt", "v belt", "transmission belt", "drive belt",
+  "timing belt", "ribbed belt", "multi-rib",
 ];
 
 // ============================================================================
