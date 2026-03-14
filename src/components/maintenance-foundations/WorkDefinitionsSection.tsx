@@ -270,7 +270,7 @@ export const WorkDefinitionsSection = () => {
               <p className="text-sm text-muted-foreground">
                 Planned maintenance is <strong>scheduled work</strong> designed to prevent equipment failure 
                 and keep things running properly. We know this work is coming, we prepare the resources 
-                (parts, tools, people), and we do it at a time that minimises disruption. This is proactive — 
+                (parts, tools, people), and we do it at a time that minimises disruption. This is proactive: 
                 we are preventing problems before they happen.
               </p>
             </div>
