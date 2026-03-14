@@ -274,10 +274,8 @@ const MEDIUM_KEYWORDS = [
   "linear actuator", "rotary actuator", "cylinder kit",
   "piston", "cylinder rod", "cylinder seal kit",
   
-  // ---- Pump Parts (not whole pumps) ----
-  "impeller", "pump casing", "volute", "wear ring", "throat bush",
-  "pump shaft", "pump sleeve", "suction liner", "frame plate",
-  "stuffing box", "lantern ring",
+  // ---- Pump Parts (moved to LOW to prevent generic "pump" HIGH match) ----
+  // (Now handled in LOW_KEYWORDS section)
   
   // ---- Electrical Components (contactors/relays) ----
   "contactor", "motor contactor", "auxiliary contactor",
