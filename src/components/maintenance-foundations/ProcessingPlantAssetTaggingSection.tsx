@@ -492,7 +492,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
             The physical tag is for rapid visual identification only."
           </div>
           <p className="text-sm text-muted-foreground">
-            The physical tag is a field identification tool — not a data carrier. Scanning, searching, or
+            The physical tag is a field identification tool, not a data carrier. Scanning, searching, or
             querying asset data is performed in Minesite AI using the Asset ID. The tag simply confirms
             which physical asset you are standing in front of.
           </p>
