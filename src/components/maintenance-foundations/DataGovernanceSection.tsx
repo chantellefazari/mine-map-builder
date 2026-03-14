@@ -1,6 +1,9 @@
+import React, { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Download, Loader2 } from "lucide-react";
 import {
   Shield,
   AlertTriangle,
@@ -20,12 +23,16 @@ import {
 /* Deliverable 8: Governance & Data Standards Pack                            */
 /* TCMG-STD-GOV-001 Rev 2.0                                                  */
 
+const GOLD = "#C8960C";
+const GOLD_BG = "#fdf8ea";
+const DARK = "#1a1a1a";
+
 interface LockedStandard {
   area: string;
   standard: string;
   reference: string;
   owner: string;
-  status: "Locked" | "Controlled" | "Draft";
+  status: "Locked" | "Controlled";
 }
 
 const LOCKED_STANDARDS: LockedStandard[] = [
@@ -86,7 +93,347 @@ const EDITABLE_DATA = [
   "Work order descriptions and labour hour estimates",
 ];
 
+const RESPONSIBILITY_MAP = [
+  { role: "Engineering", items: ["P&ID drawing updates and tag assignments", "Asset naming conventions and numbering rules", "Hierarchy structure changes (adding or removing levels)", "Functional location codes and area code definitions", "Electrical identifier series (generators, MCCs)", "Data mapping for future CMMS migration"] },
+  { role: "Maintenance Supervisors", items: ["PM template content, frequencies, and task lists", "Work order creation, classification, and closure", "Asset criticality ratings and justifications", "Asset tag rollout installation and verification", "Component OEM details and specification updates", "Labour hour estimates and resource allocation"] },
+  { role: "Stores Coordinator", items: ["Part number allocation using the SSCCNNN format", "Store location coding and bin assignments", "Stock control procedure compliance", "Receiving, issuing, and nightshift withdrawal rules", "Stock levels, min/max quantities, and reorder points"] },
+  { role: "Procurement Officer", items: ["Supplier register and vendor onboarding", "Purchase request processing and approvals", "Unit pricing, lead times, and supplier linkages", "Quote management and supplier evaluation"] },
+];
+
+const LOCKED_ITEMS = [
+  "Asset Hierarchy structure (7 level model)",
+  "6 Approved Main Area codes and FL code format",
+  "Assigned asset numbers and naming conventions",
+  "P&ID extraction register (14 page verified set)",
+  "88 approved PM templates across 3 disciplines",
+  "Electrical identifier series (17-GN-xxx, 18-MCC-xxx)",
+  "Site part numbering format (SSCCNNN)",
+  "Store location coding (C01 to C05, LD-A to LD-F)",
+  "Stock control procedure and receiving/issuing rules",
+];
+
+const HISTORY_PHASES = [
+  { step: "1", label: "Clean", items: ["Remove duplicates", "Standardise descriptions", "Correct asset linkages", "Fill missing fields", "Validate dates and times"] },
+  { step: "2", label: "Structure", items: ["Link to asset hierarchy", "Categorise by work type", "Tag failure modes", "Associate parts used", "Record labour hours"] },
+  { step: "3", label: "Use", items: ["Analyse failure patterns", "Justify PM frequencies", "Identify bad actors", "Support defect elimination", "Inform spare stocking"] },
+];
+
+const DOMAIN_SUMMARY = [
+  { title: "Asset Hierarchy", ref: "TCMG-STD-AH-001", items: ["7 level structure", "6 area codes", "Parent child rules", "No level skipping"] },
+  { title: "Functional Locations", ref: "TCMG-STD-FL-001", items: ["5 segment FL codes", "Area and Sub Area coding", "System level grouping", "Verified against registers"] },
+  { title: "Naming Conventions", ref: "TCMG-STD-NAM-001", items: ["Equipment type prefixes", "Component suffixes", "Mobile equipment codes", "Aligned to registers"] },
+  { title: "Parts Numbering", ref: "TCMG-STD-SPN-001", items: ["SSCCNNN format", "Barcode compatible", "One part, one number", "Leading zeros enforced"] },
+  { title: "PM Standards", ref: "PM Master List", items: ["88 approved templates", "3 disciplines", "Task level checklists", "Frequency governance"] },
+  { title: "Data Mapping", ref: "TCMG-STD-DM-001", items: ["D365 field mapping", "Transformation rules", "Readiness scoring", "6 entity categories"] },
+];
+
+/* ── PDF Document (gold themed A4 layout) ───────────────────────────────── */
+
+const GovernanceDocument: React.FC = () => {
+  const today = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "short", year: "numeric" });
+
+  const thStyle: React.CSSProperties = { padding: "6px 10px", textAlign: "left", backgroundColor: GOLD, color: "#fff", fontSize: 12, fontWeight: 700 };
+  const cellStyle = (alt: boolean): React.CSSProperties => ({ padding: "5px 10px", fontSize: 12, borderBottom: "1px solid #e5e0d0", background: alt ? GOLD_BG : "transparent" });
+
+  const sectionHeading = (text: string): React.CSSProperties => ({
+    fontSize: 16, fontWeight: 700, margin: "18px 0 8px 0", borderBottom: `2px solid ${GOLD}`, paddingBottom: 4, color: DARK,
+  });
+
+  return (
+    <div style={{ fontFamily: "Arial, Helvetica, sans-serif", color: DARK, lineHeight: 1.5, fontSize: 13 }}>
+      {/* Banner */}
+      <div data-pdf-section style={{ background: GOLD, color: "#fff", padding: "18px 28px", borderRadius: 6, marginBottom: 16 }}>
+        <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 }}>
+          TENNANT CREEK MINE
+        </div>
+        <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.5 }}>Governance & Data Standards Pack</div>
+        <div style={{ fontSize: 11, marginTop: 4, opacity: 0.9 }}>
+          TCMG-STD-GOV-001 | Rev 2.0 | Deliverable 8 | {today}
+        </div>
+      </div>
+
+      {/* Purpose */}
+      <div data-pdf-section>
+        <p style={{ fontSize: 13, marginBottom: 10 }}>
+          This document defines the governance framework that protects all maintenance data established during the Phase 1 foundation build.
+          It identifies every locked standard, assigns data ownership, enforces change control rules, and establishes the audit trail
+          requirements for ongoing compliance and future CMMS migration.
+        </p>
+        <p style={{ fontSize: 13, marginBottom: 16 }}>
+          All standards referenced in this pack are enforced through validated registers and controlled documents.
+          No standard listed as Locked can be modified without a formal change request submitted to the relevant data owner and approved
+          by the designated approver listed in Section 2.
+        </p>
+      </div>
+
+      {/* Section 1: Locked Standards Registry */}
+      <div data-pdf-section>
+        <div style={sectionHeading("x")}>1. Locked Standards Registry</div>
+        <p style={{ fontSize: 12, marginBottom: 8 }}>
+          All standards below are finalised and read only. {LOCKED_STANDARDS.filter(s => s.status === "Locked").length} locked, {LOCKED_STANDARDS.filter(s => s.status === "Controlled").length} controlled.
+        </p>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 12 }}>
+          <thead>
+            <tr>
+              <th style={{ ...thStyle, width: "14%" }}>Area</th>
+              <th style={{ ...thStyle, width: "38%" }}>Standard</th>
+              <th style={{ ...thStyle, width: "18%" }}>Reference Doc</th>
+              <th style={{ ...thStyle, width: "18%" }}>Owner</th>
+              <th style={{ ...thStyle, width: "12%", textAlign: "center" }}>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {LOCKED_STANDARDS.map((row, i) => (
+              <tr key={i}>
+                <td style={{ ...cellStyle(i % 2 === 1), fontWeight: 600 }}>{row.area}</td>
+                <td style={cellStyle(i % 2 === 1)}>{row.standard}</td>
+                <td style={{ ...cellStyle(i % 2 === 1), fontFamily: "monospace", fontSize: 11 }}>{row.reference}</td>
+                <td style={cellStyle(i % 2 === 1)}>{row.owner}</td>
+                <td style={{ ...cellStyle(i % 2 === 1), textAlign: "center", fontWeight: 600, color: row.status === "Locked" ? "#16a34a" : GOLD }}>{row.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Section 2: Data Ownership & Accountability */}
+      <div data-pdf-section>
+        <div style={sectionHeading("x")}>2. Data Ownership & Accountability</div>
+        <p style={{ fontSize: 12, marginBottom: 8 }}>Every dataset has a defined owner, approver, and expected change frequency.</p>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 12 }}>
+          <thead>
+            <tr>
+              <th style={{ ...thStyle, width: "14%" }}>Dataset</th>
+              <th style={{ ...thStyle, width: "28%" }}>Description</th>
+              <th style={{ ...thStyle, width: "16%" }}>Data Owner</th>
+              <th style={{ ...thStyle, width: "16%" }}>Approver</th>
+              <th style={{ ...thStyle, width: "26%" }}>Change Frequency</th>
+            </tr>
+          </thead>
+          <tbody>
+            {OWNERSHIP_MATRIX.map((row, i) => (
+              <tr key={i}>
+                <td style={{ ...cellStyle(i % 2 === 1), fontWeight: 600 }}>{row.dataSet}</td>
+                <td style={cellStyle(i % 2 === 1)}>{row.description}</td>
+                <td style={cellStyle(i % 2 === 1)}>{row.owner}</td>
+                <td style={cellStyle(i % 2 === 1)}>{row.approver}</td>
+                <td style={cellStyle(i % 2 === 1)}>{row.changeFrequency}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Section 3: Data Integrity Rules */}
+      <div data-pdf-section>
+        <div style={sectionHeading("x")}>3. Data Integrity Rules</div>
+        <p style={{ fontSize: 12, marginBottom: 8 }}>Non negotiable rules that apply to all maintenance data across the site.</p>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 12 }}>
+          <thead>
+            <tr>
+              <th style={{ ...thStyle, width: "22%" }}>Rule</th>
+              <th style={{ ...thStyle, width: "78%" }}>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {INTEGRITY_RULES.map((item, i) => (
+              <tr key={i}>
+                <td style={{ ...cellStyle(i % 2 === 1), fontWeight: 600 }}>{item.rule}</td>
+                <td style={cellStyle(i % 2 === 1)}>{item.desc}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Section 4: Change Control Process */}
+      <div data-pdf-section>
+        <div style={sectionHeading("x")}>4. Change Control Process</div>
+        <p style={{ fontSize: 12, marginBottom: 8 }}>All modifications to locked or controlled data must follow this 3 step workflow.</p>
+
+        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 14 }}>
+          <thead>
+            <tr>
+              <th style={{ ...thStyle, width: "8%", textAlign: "center" }}>Step</th>
+              <th style={{ ...thStyle, width: "18%" }}>Action</th>
+              <th style={{ ...thStyle, width: "74%" }}>Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ ...cellStyle(false), textAlign: "center", fontWeight: 700 }}>1</td>
+              <td style={{ ...cellStyle(false), fontWeight: 600 }}>Request</td>
+              <td style={cellStyle(false)}>The person requesting the change documents what needs to change, why it is needed, and which datasets or registers will be affected.</td>
+            </tr>
+            <tr>
+              <td style={{ ...cellStyle(true), textAlign: "center", fontWeight: 700 }}>2</td>
+              <td style={{ ...cellStyle(true), fontWeight: 600 }}>Review & Approve</td>
+              <td style={cellStyle(true)}>The data owner and approver review the impact on the hierarchy, PMs, spares, and any downstream registers before signing off.</td>
+            </tr>
+            <tr>
+              <td style={{ ...cellStyle(false), textAlign: "center", fontWeight: 700 }}>3</td>
+              <td style={{ ...cellStyle(false), fontWeight: 600 }}>Implement & Record</td>
+              <td style={cellStyle(false)}>The change is executed, all affected registers are updated, and the modification is recorded with a date and the name of who made the change.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {/* Section 4b: Who is Responsible */}
+      <div data-pdf-section>
+        <div style={sectionHeading("x")}>4.1 Responsibility Matrix</div>
+        <p style={{ fontSize: 12, marginBottom: 8 }}>The table below defines which role is responsible for each type of data change on site.</p>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 14 }}>
+          <thead>
+            <tr>
+              <th style={{ ...thStyle, width: "22%" }}>Role</th>
+              <th style={{ ...thStyle, width: "78%" }}>Responsibilities</th>
+            </tr>
+          </thead>
+          <tbody>
+            {RESPONSIBILITY_MAP.map((r, i) => (
+              <tr key={i}>
+                <td style={{ ...cellStyle(i % 2 === 1), fontWeight: 600, verticalAlign: "top" }}>{r.role}</td>
+                <td style={cellStyle(i % 2 === 1)}>
+                  {r.items.map((item, j) => (
+                    <div key={j} style={{ marginBottom: j < r.items.length - 1 ? 2 : 0 }}>• {item}</div>
+                  ))}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Section 4c: Locked vs Editable */}
+      <div data-pdf-section>
+        <div style={sectionHeading("x")}>4.2 Locked vs Editable Data</div>
+        <div style={{ display: "flex", gap: 16, marginBottom: 14 }}>
+          <div style={{ flex: 1, border: "1px solid #d4edda", borderRadius: 6, padding: 14, background: "#f0fdf4" }}>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8, color: "#16a34a" }}>Locked (Read Only)</div>
+            <p style={{ fontSize: 11, marginBottom: 6, color: "#555" }}>Cannot be changed without a formal change request submitted to Engineering or the Site Manager.</p>
+            {LOCKED_ITEMS.map((item, i) => (
+              <div key={i} style={{ fontSize: 12, marginBottom: 2 }}>✓ {item}</div>
+            ))}
+          </div>
+          <div style={{ flex: 1, border: "1px solid #fde68a", borderRadius: 6, padding: 14, background: "#fffbeb" }}>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8, color: "#d97706" }}>Editable (With Approval)</div>
+            <p style={{ fontSize: 11, marginBottom: 6, color: "#555" }}>Can be updated by the data owner but requires sign off from the designated approver before changes are finalised.</p>
+            {EDITABLE_DATA.map((item, i) => (
+              <div key={i} style={{ fontSize: 12, marginBottom: 2 }}>△ {item}</div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Section 5: Audit Trail */}
+      <div data-pdf-section>
+        <div style={sectionHeading("x")}>5. Audit Trail & Traceability</div>
+        <p style={{ fontSize: 12, marginBottom: 8 }}>
+          All changes to critical data are recorded in a change log. Each entry captures the date, the person who made the change,
+          what was changed, and the before and after values. This ensures compliance traceability and supports future CMMS migration validation.
+          Until a digital system is in place, changes should be recorded on the printed Change Log sheet maintained by the Maintenance Supervisor.
+        </p>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 12 }}>
+          <thead>
+            <tr>
+              <th style={thStyle}>What Gets Tracked</th>
+              <th style={thStyle}>What Gets Captured</th>
+              <th style={thStyle}>Retention</th>
+              <th style={thStyle}>Access</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ ...cellStyle(false), verticalAlign: "top" }}>
+                {"Asset register changes\nPM template modifications\nWork order updates\nPurchase request approvals\nCriticality rating changes".split("\n").map((t, i) => <div key={i}>• {t}</div>)}
+              </td>
+              <td style={{ ...cellStyle(false), verticalAlign: "top" }}>
+                {"Date and time\nWho made the change\nWhat was changed\nPrevious value\nNew value".split("\n").map((t, i) => <div key={i}>• {t}</div>)}
+              </td>
+              <td style={{ ...cellStyle(false), verticalAlign: "top" }}>
+                {"All records retained indefinitely\nNo purge policy applies\nAvailable for export and review".split("\n").map((t, i) => <div key={i}>• {t}</div>)}
+              </td>
+              <td style={{ ...cellStyle(false), verticalAlign: "top" }}>
+                {"Read only for all site personnel\nMaintenance Superintendent can export\nNo manual editing of the log".split("\n").map((t, i) => <div key={i}>• {t}</div>)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {/* Section 6: Standards Summary */}
+      <div data-pdf-section>
+        <div style={sectionHeading("x")}>6. Standards Summary by Domain</div>
+        <p style={{ fontSize: 12, marginBottom: 8 }}>Quick reference of all governance documents established during Phase 1.</p>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 12 }}>
+          <thead>
+            <tr>
+              <th style={{ ...thStyle, width: "22%" }}>Domain</th>
+              <th style={{ ...thStyle, width: "22%" }}>Reference</th>
+              <th style={{ ...thStyle, width: "56%" }}>Key Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            {DOMAIN_SUMMARY.map((d, i) => (
+              <tr key={i}>
+                <td style={{ ...cellStyle(i % 2 === 1), fontWeight: 600 }}>{d.title}</td>
+                <td style={{ ...cellStyle(i % 2 === 1), fontFamily: "monospace", fontSize: 11 }}>{d.ref}</td>
+                <td style={cellStyle(i % 2 === 1)}>{d.items.join(" · ")}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Section 7: Maintenance History Standards */}
+      <div data-pdf-section>
+        <div style={sectionHeading("x")}>7. Maintenance History Standards</div>
+        <p style={{ fontSize: 12, marginBottom: 8 }}>
+          Quality maintenance history is critical for failure analysis, reliability improvement, and CMMS migration.
+          History must be cleaned and structured before it can be used effectively.
+        </p>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 12 }}>
+          <thead>
+            <tr>
+              <th style={{ ...thStyle, width: "8%", textAlign: "center" }}>Step</th>
+              <th style={{ ...thStyle, width: "14%" }}>Phase</th>
+              <th style={{ ...thStyle, width: "78%" }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {HISTORY_PHASES.map((p, i) => (
+              <tr key={i}>
+                <td style={{ ...cellStyle(i % 2 === 1), textAlign: "center", fontWeight: 700 }}>{p.step}</td>
+                <td style={{ ...cellStyle(i % 2 === 1), fontWeight: 600 }}>{p.label}</td>
+                <td style={cellStyle(i % 2 === 1)}>{p.items.join(" · ")}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+/* ── Main UI Section ──────────────────────────────────────────────────────── */
+
 export const DataGovernanceSection = () => {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [generating, setGenerating] = useState(false);
+
+  const handleDownload = async () => {
+    if (!contentRef.current) return;
+    setGenerating(true);
+    try {
+      const { exportSectionsToPdf } = await import("@/utils/sectionPdfExport");
+      const { PDF_EXPORT_OPTS } = await import("@/utils/pdfExportStandard");
+      await exportSectionsToPdf(contentRef.current, "TCMG-STD-GOV-001_Governance_Data_Standards_Pack.pdf", PDF_EXPORT_OPTS);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Document Header */}
@@ -102,9 +449,13 @@ export const DataGovernanceSection = () => {
                 Locked rules for assets, parts, locations, maintenance data, and data ownership to prevent future drift
               </p>
             </div>
-            <Badge variant="outline" className="text-xs shrink-0">
-              Deliverable 8
-            </Badge>
+            <div className="flex items-center gap-2 shrink-0">
+              <Badge variant="outline" className="text-xs">Deliverable 8</Badge>
+              <Button onClick={handleDownload} disabled={generating} className="gap-2">
+                {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                {generating ? "Generating..." : "Download PDF"}
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -122,6 +473,11 @@ export const DataGovernanceSection = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Hidden PDF Document */}
+      <div ref={contentRef} style={{ position: "absolute", left: "-9999px", top: 0, width: 900 }}>
+        <GovernanceDocument />
+      </div>
 
       {/* Section 1: Locked Standards Registry */}
       <Card className="border-border">
@@ -287,47 +643,16 @@ export const DataGovernanceSection = () => {
           <div className="bg-muted/50 rounded-lg p-4 border border-border">
             <h4 className="font-medium text-sm mb-3">Who is Responsible for What</h4>
             <div className="grid gap-3 md:grid-cols-2">
-              <div>
-                <p className="text-xs font-semibold text-foreground mb-1.5">Engineering</p>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• P&ID drawing updates and tag assignments</li>
-                  <li>• Asset naming conventions and numbering rules</li>
-                  <li>• Hierarchy structure changes (adding or removing levels)</li>
-                  <li>• Functional location codes and area code definitions</li>
-                  <li>• Electrical identifier series (generators, MCCs)</li>
-                  <li>• Data mapping for future CMMS migration</li>
-                </ul>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-foreground mb-1.5">Maintenance Supervisors</p>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• PM template content, frequencies, and task lists</li>
-                  <li>• Work order creation, classification, and closure</li>
-                  <li>• Asset criticality ratings and justifications</li>
-                  <li>• Asset tag rollout installation and verification</li>
-                  <li>• Component OEM details and specification updates</li>
-                  <li>• Labour hour estimates and resource allocation</li>
-                </ul>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-foreground mb-1.5">Stores Coordinator</p>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• Part number allocation using the SSCCNNN format</li>
-                  <li>• Store location coding and bin assignments</li>
-                  <li>• Stock control procedure compliance</li>
-                  <li>• Receiving, issuing, and nightshift withdrawal rules</li>
-                  <li>• Stock levels, min/max quantities, and reorder points</li>
-                </ul>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-foreground mb-1.5">Procurement Officer</p>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• Supplier register and vendor onboarding</li>
-                  <li>• Purchase request processing and approvals</li>
-                  <li>• Unit pricing, lead times, and supplier linkages</li>
-                  <li>• Quote management and supplier evaluation</li>
-                </ul>
-              </div>
+              {RESPONSIBILITY_MAP.map((r, i) => (
+                <div key={i}>
+                  <p className="text-xs font-semibold text-foreground mb-1.5">{r.role}</p>
+                  <ul className="text-xs text-muted-foreground space-y-1">
+                    {r.items.map((item, j) => (
+                      <li key={j}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -342,15 +667,12 @@ export const DataGovernanceSection = () => {
                 These items cannot be changed without a formal change request submitted to Engineering or the Site Manager.
               </p>
               <ul className="text-sm space-y-1.5 text-muted-foreground">
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Asset Hierarchy structure (7 level model)</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> 6 Approved Main Area codes and FL code format</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Assigned asset numbers and naming conventions</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> P&ID extraction register (14 page verified set)</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> 88 approved PM templates across 3 disciplines</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Electrical identifier series (17-GN-xxx, 18-MCC-xxx)</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Site part numbering format (SSCCNNN)</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Store location coding (C01 to C05, LD-A to LD-F)</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> Stock control procedure and receiving/issuing rules</li>
+                {LOCKED_ITEMS.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -436,32 +758,28 @@ export const DataGovernanceSection = () => {
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { icon: <Layers className="w-5 h-5" />, title: "Asset Hierarchy", ref: "TCMG-STD-AH-001", items: ["7 level structure", "6 area codes", "Parent child rules", "No level skipping"] },
-              { icon: <MapPin className="w-5 h-5" />, title: "Functional Locations", ref: "TCMG-STD-FL-001", items: ["5 segment FL codes", "Area and Sub Area coding", "System level grouping", "Verified against registers"] },
-              { icon: <Tag className="w-5 h-5" />, title: "Naming Conventions", ref: "TCMG-STD-NAM-001", items: ["Equipment type prefixes", "Component suffixes", "Mobile equipment codes", "Aligned to registers"] },
-              { icon: <Package className="w-5 h-5" />, title: "Parts Numbering", ref: "TCMG-STD-SPN-001", items: ["SSCCNNN format", "Barcode compatible", "One part, one number", "Leading zeros enforced"] },
-              { icon: <Wrench className="w-5 h-5" />, title: "PM Standards", ref: "PM Master List", items: ["88 approved templates", "3 disciplines", "Task level checklists", "Frequency governance"] },
-              { icon: <Database className="w-5 h-5" />, title: "Data Mapping", ref: "TCMG-STD-DM-001", items: ["D365 field mapping", "Transformation rules", "Readiness scoring", "6 entity categories"] },
-            ].map((domain, i) => (
-              <div key={i} className="bg-muted/50 rounded-lg p-4 border border-border">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="text-primary">{domain.icon}</div>
-                  <div>
-                    <h5 className="text-sm font-medium">{domain.title}</h5>
-                    <p className="text-[10px] font-mono text-muted-foreground">{domain.ref}</p>
+            {DOMAIN_SUMMARY.map((domain, i) => {
+              const icons = [<Layers className="w-5 h-5" />, <MapPin className="w-5 h-5" />, <Tag className="w-5 h-5" />, <Package className="w-5 h-5" />, <Wrench className="w-5 h-5" />, <Database className="w-5 h-5" />];
+              return (
+                <div key={i} className="bg-muted/50 rounded-lg p-4 border border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="text-primary">{icons[i]}</div>
+                    <div>
+                      <h5 className="text-sm font-medium">{domain.title}</h5>
+                      <p className="text-[10px] font-mono text-muted-foreground">{domain.ref}</p>
+                    </div>
                   </div>
+                  <ul className="text-xs text-muted-foreground space-y-1">
+                    {domain.items.map((item, j) => (
+                      <li key={j} className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600 flex-shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  {domain.items.map((item, j) => (
-                    <li key={j} className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-600 flex-shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </CardContent>
       </Card>
@@ -488,23 +806,22 @@ export const DataGovernanceSection = () => {
           </p>
 
           <div className="grid gap-4 md:grid-cols-3">
-            {[
-              { step: "1", label: "Clean", color: "bg-destructive/20 text-destructive", items: ["Remove duplicates", "Standardise descriptions", "Correct asset linkages", "Fill missing fields", "Validate dates and times"] },
-              { step: "2", label: "Structure", color: "bg-amber-500/20 text-amber-600", items: ["Link to asset hierarchy", "Categorise by work type", "Tag failure modes", "Associate parts used", "Record labour hours"] },
-              { step: "3", label: "Use", color: "bg-emerald-500/20 text-emerald-600", items: ["Analyse failure patterns", "Justify PM frequencies", "Identify bad actors", "Support defect elimination", "Inform spare stocking"] },
-            ].map((phase, i) => (
-              <div key={i} className="bg-muted/50 rounded-lg p-4 border border-border">
-                <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                  <span className={`w-6 h-6 rounded-full ${phase.color} text-xs font-bold flex items-center justify-center`}>{phase.step}</span>
-                  {phase.label}
-                </h4>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  {phase.items.map((item, j) => (
-                    <li key={j}>• {item}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            {HISTORY_PHASES.map((phase, i) => {
+              const colors = ["bg-destructive/20 text-destructive", "bg-amber-500/20 text-amber-600", "bg-emerald-500/20 text-emerald-600"];
+              return (
+                <div key={i} className="bg-muted/50 rounded-lg p-4 border border-border">
+                  <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                    <span className={`w-6 h-6 rounded-full ${colors[i]} text-xs font-bold flex items-center justify-center`}>{phase.step}</span>
+                    {phase.label}
+                  </h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    {phase.items.map((item, j) => (
+                      <li key={j}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
           </div>
         </CardContent>
       </Card>
