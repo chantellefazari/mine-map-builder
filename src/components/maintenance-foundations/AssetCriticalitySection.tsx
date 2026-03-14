@@ -99,7 +99,7 @@ const autoClassifyCriticality = (assetName: string, areaLabel: string, subArea: 
     /excavator/i, /loader/i, /dozer/i, /water truck/i,
   ];
 
-  // Check A first — only true single-point-of-failure bottlenecks
+  // Check A first
   for (const pat of A_PATTERNS) {
     if (pat.test(n)) return "A";
   }
