@@ -13,6 +13,7 @@ const Login = lazy(() => import("./pages/Login"));
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 const AssetTree = lazy(() => import("./pages/AssetTree"));
 const PMDesign = lazy(() => import("./pages/PMDesign"));
+const PMPrint = lazy(() => import("./pages/PMPrint"));
 const StoresWarehouseDesign = lazy(() => import("./pages/StoresWarehouseDesign"));
 
 const SiteSparesCatalogue = lazy(() => import("./pages/SiteSparesCatalogue"));
