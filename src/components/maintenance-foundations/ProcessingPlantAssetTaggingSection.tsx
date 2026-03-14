@@ -221,8 +221,8 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Format Rules</p>
-            <RuleRow label="Asset ID source">Use the Asset ID already assigned in the asset tree — do not create new numbers</RuleRow>
-            <RuleRow label="No extra data">Functional location, area code, system strings — none of these appear on the physical tag</RuleRow>
+            <RuleRow label="Asset ID source">Use the Asset ID already assigned in the asset tree. Do not create new numbers</RuleRow>
+            <RuleRow label="No extra data">Functional location, area code, system strings: none of these appear on the physical tag</RuleRow>
             <RuleRow label="Two lines only">Line 1 = Asset ID (large bold) · Line 2 = Short equipment description (smaller)</RuleRow>
             <RuleRow label="Exact match">Asset ID on tag must match Minesite AI system record exactly</RuleRow>
             <RuleRow label="All hierarchy in system">All hierarchy, FL codes, and area structure remain in Minesite AI only</RuleRow>
