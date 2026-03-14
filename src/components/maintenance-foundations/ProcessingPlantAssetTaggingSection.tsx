@@ -391,7 +391,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
         <CardContent className="space-y-4">
 
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">General Placement Rules — All Equipment</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">General Placement Rules | All Equipment</p>
             <div className="grid sm:grid-cols-2 gap-1">
               <RuleRow>Mount at eye level where possible</RuleRow>
               <RuleRow>Mount on non-wear surfaces only</RuleRow>
