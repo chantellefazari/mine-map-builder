@@ -13,6 +13,7 @@ const Login = lazy(() => import("./pages/Login"));
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 const AssetTree = lazy(() => import("./pages/AssetTree"));
 const PMDesign = lazy(() => import("./pages/PMDesign"));
+const PMPrint = lazy(() => import("./pages/PMPrint"));
 const StoresWarehouseDesign = lazy(() => import("./pages/StoresWarehouseDesign"));
 
 const SiteSparesCatalogue = lazy(() => import("./pages/SiteSparesCatalogue"));
@@ -68,6 +69,7 @@ const App = () => {
                 {/* Tab-protected routes */}
                 <Route path="/asset-tree" element={<ProtectedRoute tabKey="asset-tree"><AssetTree /></ProtectedRoute>} />
                 <Route path="/pm-design" element={<ProtectedRoute tabKey="pm-design"><PMDesign /></ProtectedRoute>} />
+                <Route path="/pm-print/:id" element={<ProtectedRoute tabKey="pm-design"><PMPrint /></ProtectedRoute>} />
                 
                 <Route path="/site-spares" element={<ProtectedRoute tabKey="site-spares"><SiteSparesCatalogue /></ProtectedRoute>} />
                 

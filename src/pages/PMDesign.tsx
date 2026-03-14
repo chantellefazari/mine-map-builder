@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download, Loader2 } from "lucide-react";
 import { exportSectionsToPdf } from "@/utils/sectionPdfExport";
 import { PDF_EXPORT_OPTS } from "@/utils/pdfExportStandard";
@@ -95,7 +95,7 @@ import { LubePMDocument } from "@/components/pm-design/LubePMDocument";
 import { lubePMTemplates } from "@/components/pm-design/lubePMData";
 
 import { MotorInspectionsSheetsDocument } from "@/components/pm-design/MotorInspectionsSheetsDocument";
-import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
+
 import { Button } from "@/components/ui/button";
 
 type Discipline = "mechanical" | "electrical" | "mobile-equipment" | "lube";
@@ -352,7 +352,7 @@ const PMDesign = () => {
   const [activeView, setActiveView] = useState<ViewType>("filter-press-daily-offline");
   const [expandedDisciplines, setExpandedDisciplines] = useState<Discipline[]>(["mechanical"]);
   const [expandedFrequencies, setExpandedFrequencies] = useState<string[]>(["mechanical-daily", "mechanical-1-week"]);
-  const [showPrintPreview, setShowPrintPreview] = useState(false);
+  
   const [isDownloading, setIsDownloading] = useState(false);
   const pmDocRef = useRef<HTMLDivElement>(null);
 
@@ -382,8 +382,10 @@ const PMDesign = () => {
     return { discipline: disc?.label, frequency: freq?.label };
   };
 
+  const navigate = useNavigate();
+
   const handlePrint = () => {
-    setShowPrintPreview(true);
+    navigate(`/pm-print/${activeView}`);
   };
 
   const handleDownloadPdf = useCallback(async () => {
@@ -828,15 +830,6 @@ const PMDesign = () => {
           )}
         </main>
 
-        {/* Print Preview Modal */}
-        <PrintPreviewModal
-          isOpen={showPrintPreview}
-          onClose={() => setShowPrintPreview(false)}
-          onSavePdf={handleDownloadPdf}
-          title={getDocumentTitle()}
-        >
-          {renderPMDocument()}
-        </PrintPreviewModal>
       </div>
     </SidebarProvider>
   );
