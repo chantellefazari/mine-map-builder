@@ -7,7 +7,7 @@ import {
 import {
   Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronRight, Wrench, Zap, Eye, FileDown } from "lucide-react";
+import { ChevronDown, ChevronRight, Wrench, Zap, Eye, FileDown, Droplets } from "lucide-react";
 import { useState } from "react";
 import type { PMData } from "@/components/pm-design/PMFrequencySection";
 
@@ -43,6 +43,7 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
   const mechCount = currentPMs.filter(p => p.discipline === "Mechanical").length;
   const elecCount = currentPMs.filter(p => p.discipline === "Electrical").length;
   const opsCount = currentPMs.filter(p => p.discipline === "Ops" || (p.discipline as string) === "Inspection").length;
+  const lubeCount = currentPMs.filter(p => (p.discipline as string) === "Lube").length;
 
   // Group by discipline
   const grouped = useMemo(() => {
@@ -82,12 +83,14 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
   const discIcon = (disc: string) => {
     if (disc === "Mechanical") return <Wrench className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />;
     if (disc === "Electrical") return <Zap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />;
+    if (disc === "Lube") return <Droplets className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />;
     return <Eye className="w-3.5 h-3.5 text-muted-foreground" />;
   };
 
   const discBannerClass = (disc: string) => {
     if (disc === "Mechanical") return "bg-blue-50/60 dark:bg-blue-950/30 border-l-[3px] border-l-blue-500";
     if (disc === "Electrical") return "bg-amber-50/60 dark:bg-amber-950/30 border-l-[3px] border-l-amber-500";
+    if (disc === "Lube") return "bg-teal-50/60 dark:bg-teal-950/30 border-l-[3px] border-l-teal-500";
     return "bg-muted/30 border-l-[3px] border-l-muted-foreground";
   };
 
@@ -113,7 +116,7 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
         </div>
 
         {/* Summary stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 divide-x divide-border border-b border-border">
+        <div className="grid grid-cols-3 sm:grid-cols-6 divide-x divide-border border-b border-border">
           <div className="p-4 text-center">
             <div className="text-2xl font-extrabold">{currentPMs.length}</div>
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Total PMs</div>
@@ -125,6 +128,10 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
           <div className="p-4 text-center">
             <div className="text-2xl font-extrabold text-amber-600 dark:text-amber-400">{elecCount}</div>
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Electrical</div>
+          </div>
+          <div className="p-4 text-center">
+            <div className="text-2xl font-extrabold text-teal-600 dark:text-teal-400">{lubeCount}</div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Lube</div>
           </div>
           <div className="p-4 text-center">
             <div className="text-2xl font-extrabold text-muted-foreground">{opsCount}</div>
