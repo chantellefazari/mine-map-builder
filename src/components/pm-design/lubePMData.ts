@@ -224,8 +224,8 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequencyGroup: "52-week",
     items: [
       {
-        plantId: "06-MR-101",
-        plantItem: "Gearbox, Hoist, Trolly; Monorail",
+        plantId: "CN01-MR01",
+        plantItem: "Gearbox, Hoist, Trolly; Cyanide Monorail",
         lubePoints: [
           { location: "Gearbox", type: "VG150", quantity: "To Capacity", uom: "" },
           { location: "Hoist", type: "EP2", quantity: "To Capacity", uom: "" },
@@ -233,8 +233,8 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "08-MR-001",
-        plantItem: "Gearbox, Hoist, Trolly; Monorail",
+        plantId: "EW01-MNR01",
+        plantItem: "Gearbox, Hoist, Trolly; Electrowinning Monorail",
         lubePoints: [
           { location: "Gearbox", type: "VG150", quantity: "To Capacity", uom: "" },
           { location: "Hoist", type: "EP2", quantity: "To Capacity", uom: "" },
@@ -242,8 +242,8 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "12-MR-001",
-        plantItem: "Gearbox, Hoist, Trolly; Monorail",
+        plantId: "THKA01-MRL01",
+        plantItem: "Gearbox, Hoist, Trolly; Thickener Monorail",
         lubePoints: [
           { location: "Gearbox", type: "VG150", quantity: "To Capacity", uom: "" },
           { location: "Hoist", type: "EP2", quantity: "To Capacity", uom: "" },
