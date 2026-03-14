@@ -43,6 +43,7 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
           pmGroup="Lubrication"
           pmType="Lubrication Service"
           frequency={template.frequency}
+          hideAssetNumber
         />
 
         <SafetyPrecautionsSection />
