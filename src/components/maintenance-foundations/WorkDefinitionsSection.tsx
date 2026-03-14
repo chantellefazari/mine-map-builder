@@ -85,7 +85,7 @@ export const WorkDefinitionsSection = () => {
               <Calendar className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-medium">PM Design</p>
-                <p className="text-xs text-muted-foreground">All PMs are "Planned Maintenance" — they are scheduled tasks designed to prevent breakdowns</p>
+                <p className="text-xs text-muted-foreground">All PMs are "Planned Maintenance". They are scheduled tasks designed to prevent breakdowns</p>
               </div>
             </div>
             <div className="flex items-start gap-3 bg-background rounded-md p-3 border border-border">
