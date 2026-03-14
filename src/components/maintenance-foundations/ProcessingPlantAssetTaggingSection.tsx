@@ -535,7 +535,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
       {/* Footer */}
       <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4">
-        <span>TCMG-STD-TAG-002 · Processing Plant Asset Tagging Standard — Simplified Format · Rev 1.0</span>
+        <span>TCMG-STD-TAG-002 · Processing Plant Asset Tagging Standard | Simplified Format · Rev 1.0</span>
         <span>Crushing Plant excluded · Internal use only</span>
       </div>
     </div>
