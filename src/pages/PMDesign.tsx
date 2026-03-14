@@ -783,6 +783,12 @@ const PMDesign = () => {
         <main className="flex-1 overflow-auto">
           {isPMDocument ? (
             <div className="p-6 overflow-auto">
+              <div className="flex justify-end mb-4">
+                <Button onClick={handlePrint} variant="outline" size="sm" className="gap-2">
+                  <Printer className="w-4 h-4" />
+                  Print
+                </Button>
+              </div>
               <div ref={pmDocRef}>
                 {renderPMDocument()}
               </div>
