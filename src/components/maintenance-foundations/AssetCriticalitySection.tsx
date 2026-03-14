@@ -324,9 +324,9 @@ export const AssetCriticalitySection = () => {
       </div>
       <table><thead><tr><th>Area</th><th>Sub-Area</th><th>Asset #</th><th>Asset Name</th><th style="width:40px">Rating</th><th>Justification</th></tr></thead>
       <tbody>${rows}</tbody></table>
-      <table class="legend"><tr><td class="rating-A">A</td><td>Critical — Failure causes immediate plant shutdown or safety risk</td></tr>
-      <tr><td class="rating-B">B</td><td>Important — Failure causes significant production impact within 24h</td></tr>
-      <tr><td class="rating-C">C</td><td>General — Failure has minimal or no production impact</td></tr></table>
+      <table class="legend"><tr><td class="rating-A">A</td><td>Critical: Failure causes immediate plant shutdown or safety risk</td></tr>
+      <tr><td class="rating-B">B</td><td>Important: Failure causes significant production impact within 24h</td></tr>
+      <tr><td class="rating-C">C</td><td>General: Failure has minimal or no production impact</td></tr></table>
     </body></html>`);
     printWindow.document.close();
     printWindow.focus();
