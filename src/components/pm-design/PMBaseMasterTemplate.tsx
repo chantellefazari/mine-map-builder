@@ -156,7 +156,7 @@ export const PMBaseMasterTemplate = () => {
           </table>
 
           {/* Comments */}
-          <div className="border-t border-border">
+          <div className="border-t border-border" data-pdf-component="pm-comments-section" data-pdf-keep-together data-pdf-break>
             <div className="bg-muted px-4 py-2 font-semibold text-sm border-b border-border">COMMENTS:</div>
             <div className="p-3">
               <Textarea className="min-h-[80px] resize-none" placeholder="Enter comments here..." />
@@ -164,11 +164,11 @@ export const PMBaseMasterTemplate = () => {
           </div>
 
           {/* Sign Off */}
-          <div className="border-t border-border">
+          <div className="border-t border-border" data-pdf-component="pm-signoff-section" data-pdf-keep-together data-pdf-break>
             <div className="bg-muted px-4 py-2 font-bold text-sm border-b border-border">SIGN OFF</div>
             <div className="px-4 py-3 space-y-3">
               {/* Checkbox rows side by side */}
-              <div className="grid grid-cols-2 gap-x-8">
+              <div className="grid grid-cols-2 gap-x-8" data-pdf-break data-pdf-keep-together>
                 <div className="flex items-center gap-4">
                   <span className="text-sm font-medium w-52">Follow up work required:</span>
                   <div className="flex items-center gap-3">
@@ -197,7 +197,7 @@ export const PMBaseMasterTemplate = () => {
                 </div>
               </div>
               {/* Input fields underneath */}
-              <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+              <div className="grid grid-cols-2 gap-x-8 gap-y-2" data-pdf-break data-pdf-keep-together>
                 <div className="grid grid-cols-[100px_1fr] items-center">
                   <span className="text-sm font-medium">Name:</span>
                   <Input className="h-7" />
@@ -218,7 +218,7 @@ export const PMBaseMasterTemplate = () => {
             </div>
           </div>
           {/* Approval */}
-          <div className="border-t border-border">
+          <div className="border-t border-border" data-pdf-component="pm-approval-section" data-pdf-keep-together data-pdf-break>
             <div className="bg-green-500/10 px-4 py-2 font-bold text-sm border-b border-border flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-green-600" />
               <span className="text-green-700">APPROVAL</span>
