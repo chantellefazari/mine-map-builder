@@ -401,7 +401,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
               <RuleRow>Do not mount on hot surfaces. Tag must remain legible</RuleRow>
             </div>
             <div className="mt-2">
-              <WarningRow>Must NOT be mounted on removable guards or covers — tag must remain with the asset permanently</WarningRow>
+              <WarningRow>Must NOT be mounted on removable guards or covers. Tag must remain with the asset permanently</WarningRow>
               <WarningRow>Must NOT be positioned where abrasion, heat, or chemical spray will degrade the tag over time</WarningRow>
             </div>
           </div>
