@@ -190,9 +190,9 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequency: "6 Monthly",
     frequencyGroup: "26-week",
     items: [
-      { plantId: "05-CP-132", plantItem: "Oil Reservoir; Compressor", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
-      { plantId: "05-CP-133", plantItem: "Oil Reservoir; Compressor", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
-      { plantId: "13-CP-100", plantItem: "Oil Reservoir; Compressor", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
+      { plantId: "COMP01-HPAC01", plantItem: "Oil Reservoir; HP Air Compressor 1", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
+      { plantId: "COMP01-HPAC02", plantItem: "Oil Reservoir; HP Air Compressor 2", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
+      { plantId: "FPAR01-CMP02", plantItem: "Oil Reservoir; Filter Area HP Air Compressor", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
     ],
   },
 
