@@ -422,7 +422,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
                   ["Motors",     "Mount on frame side, non-drive end. Avoid cooling fins"],
                   ["Pumps",      "Mount on base frame, discharge side. Not on removable guards"],
                   ["Conveyors",  "Drive side near motor, 1.0 to 1.5 m above ground. Not on belt guards"],
-                  ["Screens",    "Structural frame near drive side — eye level where accessible"],
+                  ["Screens",    "Structural frame near drive side, eye level where accessible"],
                   ["Tanks",      "Near manway or ladder access point — eye level where possible"],
                   ["Electrical panels", "Front exterior door — eye level"],
                   ["Gearboxes",  "Oil filler or inspection side — avoid hot surfaces"],
