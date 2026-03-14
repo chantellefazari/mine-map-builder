@@ -141,19 +141,18 @@ const GovernanceDocument: React.FC = () => {
 
   return (
     <div style={{ fontFamily: "Arial, Helvetica, sans-serif", color: DARK, lineHeight: 1.5, fontSize: 13 }}>
-      {/* Banner */}
-      <div data-pdf-section style={{ background: GOLD, color: "#fff", padding: "18px 28px", borderRadius: 6, marginBottom: 16 }}>
-        <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 }}>
-          TENNANT CREEK MINE
-        </div>
-        <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.5 }}>Governance & Data Standards Pack</div>
-        <div style={{ fontSize: 11, marginTop: 4, opacity: 0.9 }}>
-          TCMG-STD-GOV-001 | Rev 2.0 | Deliverable 8 | {today}
-        </div>
-      </div>
-
-      {/* Purpose */}
+      {/* Page 1: Banner + Purpose + Section 1 */}
       <div data-pdf-section>
+        <div style={{ background: GOLD, color: "#fff", padding: "18px 28px", borderRadius: 6, marginBottom: 16 }}>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 }}>
+            TENNANT CREEK MINE
+          </div>
+          <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.5 }}>Governance & Data Standards Pack</div>
+          <div style={{ fontSize: 11, marginTop: 4, opacity: 0.9 }}>
+            TCMG-STD-GOV-001 | Rev 2.0 | Deliverable 8 | {today}
+          </div>
+        </div>
+
         <p style={{ fontSize: 13, marginBottom: 10 }}>
           This document defines the governance framework that protects all maintenance data established during the Phase 1 foundation build.
           It identifies every locked standard, assigns data ownership, enforces change control rules, and establishes the audit trail
@@ -164,10 +163,7 @@ const GovernanceDocument: React.FC = () => {
           No standard listed as Locked can be modified without a formal change request submitted to the relevant data owner and approved
           by the designated approver listed in Section 2.
         </p>
-      </div>
 
-      {/* Section 1: Locked Standards Registry */}
-      <div data-pdf-section>
         <div style={sectionHeading("x")}>1. Locked Standards Registry</div>
         <p style={{ fontSize: 12, marginBottom: 8 }}>
           All standards below are finalised and read only. {LOCKED_STANDARDS.filter(s => s.status === "Locked").length} locked, {LOCKED_STANDARDS.filter(s => s.status === "Controlled").length} controlled.
@@ -196,7 +192,7 @@ const GovernanceDocument: React.FC = () => {
         </table>
       </div>
 
-      {/* Section 2: Data Ownership & Accountability */}
+      {/* Section 2 + 3 together */}
       <div data-pdf-section>
         <div style={sectionHeading("x")}>2. Data Ownership & Accountability</div>
         <p style={{ fontSize: 12, marginBottom: 8 }}>Every dataset has a defined owner, approver, and expected change frequency.</p>
@@ -222,10 +218,7 @@ const GovernanceDocument: React.FC = () => {
             ))}
           </tbody>
         </table>
-      </div>
 
-      {/* Section 3: Data Integrity Rules */}
-      <div data-pdf-section>
         <div style={sectionHeading("x")}>3. Data Integrity Rules</div>
         <p style={{ fontSize: 12, marginBottom: 8 }}>Non negotiable rules that apply to all maintenance data across the site.</p>
         <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 12 }}>
@@ -246,7 +239,7 @@ const GovernanceDocument: React.FC = () => {
         </table>
       </div>
 
-      {/* Section 4: Change Control Process */}
+      {/* Section 4 all together: Change Control + Responsibility + Locked vs Editable */}
       <div data-pdf-section>
         <div style={sectionHeading("x")}>4. Change Control Process</div>
         <p style={{ fontSize: 12, marginBottom: 8 }}>All modifications to locked or controlled data must follow this 3 step workflow.</p>
@@ -277,11 +270,8 @@ const GovernanceDocument: React.FC = () => {
             </tr>
           </tbody>
         </table>
-      </div>
 
-      {/* Section 4b: Who is Responsible */}
-      <div data-pdf-section>
-        <div style={sectionHeading("x")}>4.1 Responsibility Matrix</div>
+        <div style={{ ...sectionHeading("x"), fontSize: 14 }}>4.1 Responsibility Matrix</div>
         <p style={{ fontSize: 12, marginBottom: 8 }}>The table below defines which role is responsible for each type of data change on site.</p>
         <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 14 }}>
           <thead>
@@ -303,11 +293,8 @@ const GovernanceDocument: React.FC = () => {
             ))}
           </tbody>
         </table>
-      </div>
 
-      {/* Section 4c: Locked vs Editable */}
-      <div data-pdf-section>
-        <div style={sectionHeading("x")}>4.2 Locked vs Editable Data</div>
+        <div style={{ ...sectionHeading("x"), fontSize: 14 }}>4.2 Locked vs Editable Data</div>
         <div style={{ display: "flex", gap: 16, marginBottom: 14 }}>
           <div style={{ flex: 1, border: "1px solid #d4edda", borderRadius: 6, padding: 14, background: "#f0fdf4" }}>
             <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8, color: "#16a34a" }}>Locked (Read Only)</div>
@@ -326,7 +313,7 @@ const GovernanceDocument: React.FC = () => {
         </div>
       </div>
 
-      {/* Section 5: Audit Trail */}
+      {/* Sections 5 + 6 + 7 together */}
       <div data-pdf-section>
         <div style={sectionHeading("x")}>5. Audit Trail & Traceability</div>
         <p style={{ fontSize: 12, marginBottom: 8 }}>
@@ -360,10 +347,7 @@ const GovernanceDocument: React.FC = () => {
             </tr>
           </tbody>
         </table>
-      </div>
 
-      {/* Section 6: Standards Summary */}
-      <div data-pdf-section>
         <div style={sectionHeading("x")}>6. Standards Summary by Domain</div>
         <p style={{ fontSize: 12, marginBottom: 8 }}>Quick reference of all governance documents established during Phase 1.</p>
         <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 12 }}>
@@ -384,10 +368,7 @@ const GovernanceDocument: React.FC = () => {
             ))}
           </tbody>
         </table>
-      </div>
 
-      {/* Section 7: Maintenance History Standards */}
-      <div data-pdf-section>
         <div style={sectionHeading("x")}>7. Maintenance History Standards</div>
         <p style={{ fontSize: 12, marginBottom: 8 }}>
           Quality maintenance history is critical for failure analysis, reliability improvement, and CMMS migration.
