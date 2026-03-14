@@ -212,6 +212,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "12 Monthly Lubrication PM",
     frequency: "12 Monthly",
     frequencyGroup: "52-week",
+    plantArea: "Grinding",
     items: [
       {
         plantId: "MLA01-SILO01-RVL01",
