@@ -315,7 +315,7 @@ export const AssetCriticalitySection = () => {
     </head><body>
       <div class="doc-header">
         <h1>Asset Criticality Assessment</h1>
-        <p>Tennant Mines Gold — Processing Plant | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
+        <p>Tennant Mines Gold | Processing Plant | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
       </div>
       <div class="summary">
         <div class="summary-card"><div class="count" style="color:#991b1b">${smry.A}</div><div>Critical (A)</div></div>
