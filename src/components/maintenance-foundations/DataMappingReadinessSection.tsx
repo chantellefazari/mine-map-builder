@@ -79,7 +79,7 @@ const SPARES_MAPPINGS: MappingRow[] = [
   { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "min_qty / max_qty", targetEntity: "Inventory Item", targetField: "Reorder Point / Max Stock", transformation: "Direct numeric values", status: "Partial" },
   { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "associated_asset", targetEntity: "Inventory Item", targetField: "Linked Asset Reference", transformation: "Cross-reference asset register", status: "Partial" },
   { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "supplier", targetEntity: "Inventory Item", targetField: "Default Vendor", transformation: "Lookup supplier register", status: "Ready" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "unit_price", targetEntity: "Inventory Item", targetField: "Standard Cost", transformation: "Direct — AUD value", status: "Ready" },
+  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "unit_price", targetEntity: "Inventory Item", targetField: "Standard Cost", transformation: "Direct — AUD value", status: "Partial" },
   { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "lead_time_days", targetEntity: "Inventory Item", targetField: "Lead Time (Days)", transformation: "Direct integer", status: "Partial" },
 ];
 
