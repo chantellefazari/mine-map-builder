@@ -136,7 +136,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
                 <Badge variant="secondary" className="text-xs">Simplified Format | Rev 1.0</Badge>
               </div>
               <h2 className="text-xl font-bold text-foreground tracking-tight uppercase">
-                Processing Plant — Asset Tagging Standard
+                Processing Plant | Asset Tagging Standard
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
                 Simplified ID Format · Asset ID Only · No QR · No Functional Location on Tag
