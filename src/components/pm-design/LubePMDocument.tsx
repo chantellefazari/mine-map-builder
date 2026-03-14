@@ -36,7 +36,7 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
             <span className="text-sm font-bold text-primary-foreground">LUBRICATION SCHEDULE</span>
           </div>
 
-          <table className="w-full border-collapse" style={{ tableLayout: "fixed", fontSize: "9px" }}>
+          <table className="w-full text-xs border-collapse" style={{ tableLayout: "fixed" }}>
             <colgroup>
               <col style={{ width: "8%" }} />
               <col style={{ width: `${22}%` }} />
