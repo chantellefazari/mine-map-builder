@@ -32,9 +32,9 @@ interface ParentAsset {
 }
 
 const RATING_CONFIG: Record<CriticalityRating, { label: string; color: string; description: string }> = {
-  A: { label: "A — Critical", color: "bg-red-100 text-red-800 border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-800", description: "Failure causes immediate plant shutdown or safety risk" },
-  B: { label: "B — Important", color: "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800", description: "Failure causes significant production impact within 24h" },
-  C: { label: "C — General", color: "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800", description: "Failure has minimal or no production impact" },
+  A: { label: "A | Critical", color: "bg-red-100 text-red-800 border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-800", description: "Failure causes immediate plant shutdown or safety risk" },
+  B: { label: "B | Important", color: "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800", description: "Failure causes significant production impact within 24h" },
+  C: { label: "C | General", color: "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800", description: "Failure has minimal or no production impact" },
 };
 
 /** Auto-classify asset criticality based on name/area keywords when no saved rating exists */
@@ -292,7 +292,7 @@ export const AssetCriticalitySection = () => {
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
     printWindow.document.write(`<!DOCTYPE html><html><head>
-      <title>Asset Criticality Assessment — TCMG</title>
+      <title>Asset Criticality Assessment | TCMG</title>
       <style>
         @page { size: A4 landscape; margin: 12mm; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -315,7 +315,7 @@ export const AssetCriticalitySection = () => {
     </head><body>
       <div class="doc-header">
         <h1>Asset Criticality Assessment</h1>
-        <p>Tennant Mines Gold — Processing Plant | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
+        <p>Tennant Mines Gold | Processing Plant | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
       </div>
       <div class="summary">
         <div class="summary-card"><div class="count" style="color:#991b1b">${smry.A}</div><div>Critical (A)</div></div>
@@ -324,9 +324,9 @@ export const AssetCriticalitySection = () => {
       </div>
       <table><thead><tr><th>Area</th><th>Sub-Area</th><th>Asset #</th><th>Asset Name</th><th style="width:40px">Rating</th><th>Justification</th></tr></thead>
       <tbody>${rows}</tbody></table>
-      <table class="legend"><tr><td class="rating-A">A</td><td>Critical — Failure causes immediate plant shutdown or safety risk</td></tr>
-      <tr><td class="rating-B">B</td><td>Important — Failure causes significant production impact within 24h</td></tr>
-      <tr><td class="rating-C">C</td><td>General — Failure has minimal or no production impact</td></tr></table>
+      <table class="legend"><tr><td class="rating-A">A</td><td>Critical: Failure causes immediate plant shutdown or safety risk</td></tr>
+      <tr><td class="rating-B">B</td><td>Important: Failure causes significant production impact within 24h</td></tr>
+      <tr><td class="rating-C">C</td><td>General: Failure has minimal or no production impact</td></tr></table>
     </body></html>`);
     printWindow.document.close();
     printWindow.focus();
@@ -531,9 +531,9 @@ export const AssetCriticalitySection = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="A" className="text-xs font-semibold text-red-700">A — Critical</SelectItem>
-                        <SelectItem value="B" className="text-xs font-semibold text-amber-700">B — Important</SelectItem>
-                        <SelectItem value="C" className="text-xs font-semibold text-emerald-700">C — General</SelectItem>
+                        <SelectItem value="A" className="text-xs font-semibold text-red-700">A | Critical</SelectItem>
+                        <SelectItem value="B" className="text-xs font-semibold text-amber-700">B | Important</SelectItem>
+                        <SelectItem value="C" className="text-xs font-semibold text-emerald-700">C | General</SelectItem>
                       </SelectContent>
                     </Select>
                   </TableCell>
