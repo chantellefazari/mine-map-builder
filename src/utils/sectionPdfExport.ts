@@ -364,7 +364,7 @@ export async function exportSectionsToPdf(
 
       if (bestBreak === -1 && fallbackBreak > sourceY) {
         const filledRatio = (fallbackBreak - sourceY) / maxSliceHeightPx;
-        const minFallbackFillRatio = 0.35;
+        const minFallbackFillRatio = 0.6;
         if (filledRatio >= minFallbackFillRatio) {
           bestBreak = fallbackBreak;
         }
@@ -437,7 +437,7 @@ export async function exportSectionsToPdf(
       const overlapPx = reachedEnd
         ? 0
         : usedForcedBreak || usedRowBreak
-        ? Math.max(1, cfg.sliceOverlapPx - 1)
+        ? 0
         : cfg.sliceOverlapPx;
       sourceY = reachedEnd ? canvas.height : sourceY + sliceHeightPx - overlapPx;
       currentY += sliceHeightMm;
