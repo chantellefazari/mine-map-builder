@@ -155,7 +155,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
           const isFirst = c === 0;
           sections.push(`
             <div data-pdf-section>
-              <div class="area-header">${disc} — ${items.length} PMs${!isFirst ? ` (continued)` : ''}</div>
+              <div class="area-header">${disc} | ${items.length} PMs${!isFirst ? ` (continued)` : ''}</div>
               ${renderTable(chunk)}
             </div>
           `);
