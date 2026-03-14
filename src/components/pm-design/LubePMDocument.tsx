@@ -1,5 +1,6 @@
 import { PMBannerHeader } from "./PMBannerHeader";
 import { PMSignOffBlock } from "./PMSignOffBlock";
+import { PMMetadataGrid } from "./PMMetadataGrid";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getLubePMTemplate } from "./lubePMData";
 
@@ -15,33 +16,17 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
   const maxPoints = Math.max(...template.items.map((i) => i.lubePoints.length));
 
   return (
-    <div className="bg-background min-h-full">
+    <div className="bg-background min-h-full" style={{ width: "210mm", minHeight: "297mm", margin: "0 auto" }}>
       <div className="border-2 border-border">
         <PMBannerHeader title={template.title} subtitle={template.subtitle} />
 
-        {/* Metadata Grid */}
-        <div className="grid grid-cols-2 border-b border-border text-xs" data-pdf-section>
-          <div className="border-r border-border">
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Project / Site:</div>
-              <div className="px-2 py-1.5">Tennant Creek</div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">PM Group:</div>
-              <div className="px-2 py-1.5">Lubrication</div>
-            </div>
-          </div>
-          <div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div>
-              <div className="px-2 py-1.5 font-medium">{template.frequency}</div>
-            </div>
-            <div className="grid grid-cols-[120px_1fr] border-b border-border">
-              <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
-              <div className="px-2 py-1.5"></div>
-            </div>
-          </div>
-        </div>
+        <PMMetadataGrid
+          projectSite="Tennant Creek"
+          plantArea="Processing Plant"
+          pmGroup="Lubrication"
+          pmType="Lubrication Service"
+          frequency={template.frequency}
+        />
 
         {/* Safety note */}
         <div className="border-b border-border px-3 py-1.5 text-xs bg-amber-50 dark:bg-amber-950/20" data-pdf-section>
