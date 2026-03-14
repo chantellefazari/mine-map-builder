@@ -391,6 +391,10 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
               <span className="font-medium">{pms.filter(p => p.discipline === "Electrical").length}</span>
             </div>
             <div className="flex justify-between">
+              <span className="text-muted-foreground">Lube:</span>
+              <span className="font-medium">{pms.filter(p => p.discipline === "Lube").length}</span>
+            </div>
+            <div className="flex justify-between">
               <span className="text-muted-foreground">Format:</span>
               <span className="font-medium">A4 Portrait</span>
             </div>
