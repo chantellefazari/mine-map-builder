@@ -26,7 +26,11 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
 
   const formatQty = (quantity: string, uom: string) => {
     const normalized = isDenseLayout
-      ? quantity.replace("To Tank Capacity", "To Cap.").replace("To Capacity", "To Cap.")
+      ? quantity
+          .replace("To Tank Capacity", "To Cap.")
+          .replace("To Capacity", "To Cap.")
+          .replace("of Capacity", "of Cap.")
+          .replace("of gauge", "of ga.")
       : quantity;
 
     return `${normalized}${uom ? ` ${uom}` : ""}`;
