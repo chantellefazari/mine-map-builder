@@ -875,6 +875,7 @@ const PMDesign = () => {
         <PrintPreviewModal
           isOpen={showPrintPreview}
           onClose={() => setShowPrintPreview(false)}
+          onSavePdf={handleDownloadPdf}
           title={getDocumentTitle()}
         >
           {renderPMDocument()}
