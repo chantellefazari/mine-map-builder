@@ -196,6 +196,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "6 Monthly Lubrication PM",
     frequency: "6 Monthly",
     frequencyGroup: "26-week",
+    plantArea: "Utilities & Power",
     items: [
       { plantId: "COMP01-HPAC01", plantItem: "Oil Reservoir; HP Air Compressor 1", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
       { plantId: "COMP01-HPAC02", plantItem: "Oil Reservoir; HP Air Compressor 2", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
