@@ -394,7 +394,7 @@ export const WorkDefinitionsSection = () => {
                 In Our System
               </h4>
               <p className="text-sm text-muted-foreground">
-                Our <strong>PM Design</strong> section defines all the preventive maintenance tasks — what to check, 
+                Our <strong>PM Design</strong> section defines all the preventive maintenance tasks: what to check, 
                 how often, what tools are needed. When these PMs are due, we raise a <strong>Work Order</strong> with 
                 Work Type = "Planned". The PM templates in our system give clear step-by-step instructions so 
                 anyone can complete the task correctly.
