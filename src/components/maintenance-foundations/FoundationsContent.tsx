@@ -82,7 +82,7 @@ export const FoundationsContent = () => {
       </head><body>
         <div class="doc-header">
           <h1>${TAB_LABELS[activeTab]}</h1>
-          <p>Tennant Mines Gold — Maintenance Process Foundations | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
+          <p>Tennant Mines Gold | Maintenance Process Foundations | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
         </div>
         ${el.innerHTML}
       </body></html>
