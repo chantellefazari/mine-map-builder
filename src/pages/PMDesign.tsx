@@ -382,8 +382,10 @@ const PMDesign = () => {
     return { discipline: disc?.label, frequency: freq?.label };
   };
 
+  const navigate = useNavigate();
+
   const handlePrint = () => {
-    setShowPrintPreview(true);
+    navigate(`/pm-print/${activeView}`);
   };
 
   const handleDownloadPdf = useCallback(async () => {
