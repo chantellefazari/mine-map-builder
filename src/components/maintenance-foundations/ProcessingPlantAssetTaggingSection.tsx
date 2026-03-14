@@ -425,8 +425,8 @@ export const ProcessingPlantAssetTaggingSection = () => {
                   ["Screens",    "Structural frame near drive side, eye level where accessible"],
                   ["Tanks",      "Near manway or ladder access point, eye level where possible"],
                   ["Electrical panels", "Front exterior door, eye level"],
-                  ["Gearboxes",  "Oil filler or inspection side — avoid hot surfaces"],
-                  ["Crushers",   "Main frame structural section — non-wear, non-impact area"],
+                  ["Gearboxes",  "Oil filler or inspection side. Avoid hot surfaces"],
+                  ["Crushers",   "Main frame structural section, non-wear, non-impact area"],
                 ].map(([type, placement]) => (
                   <tr key={type} className="hover:bg-muted/30">
                     <td className="px-3 py-2 text-sm font-semibold text-foreground">{type}</td>
