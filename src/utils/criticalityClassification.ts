@@ -94,12 +94,34 @@ const LOW_KEYWORDS = [
 
   // ---- Coupling parts (not drive couplings — just adaptor/fitting) ----
   "motor coupling", "coupling insert", "coupling element",
+  "muff coupling",
 
   // ---- Liner singles (wear consumables, not crusher assemblies) ----
   "crusher liner", "crusher wear",
 
   // ---- Circuit breaker accessories (not main switchgear) ----
   "motor circuit breaker", "motor protection", "motor protector",
+
+  // ---- Pump PARTS (not complete pump assemblies — keeps them from hitting generic "pump" HIGH) ----
+  "pump sleeve", "pump shaft sleeve", "pump clamp", "pump tubing",
+  "pump parts", "pump rebuild kit", "pump repair kit", "pump kit",
+  "pump casing", "pump component",
+  "impeller", "volute", "wear ring", "throat bush",
+  "suction liner", "frame plate", "stuffing box", "lantern ring",
+  "pump shaft", "flinger", "cotter",
+  "pipe float", "flexibore", "pump drive coupling",
+  
+  // ---- Motor PARTS (not complete motors) ----
+  "motor hub", "motor starter",
+
+  // ---- Filter PARTS (not filter press assemblies) ----
+  "filter element", "filter cartridge", "filter sock", "filter bag",
+
+  // ---- Fan parts (not complete fan/blower assemblies) ----
+  "fan part", "fan blade",
+
+  // ---- Rubber cord / packing (consumable, not hose) ----
+  "rubber cord", "solid rubber cord",
 ];
 
 // ============================================================================
