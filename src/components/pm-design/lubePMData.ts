@@ -206,7 +206,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequencyGroup: "52-week",
     items: [
       {
-        plantId: "04-FE-102",
+        plantId: "MLA01-SILO01-RVL01",
         plantItem: "Gearbox, Rotary Valve; Lime Silo",
         lubePoints: [
           { location: "Gearbox", type: "EP2", quantity: "2", uom: "g" },
