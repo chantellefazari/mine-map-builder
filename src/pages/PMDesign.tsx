@@ -375,9 +375,9 @@ const PMDesign = () => {
             }
           : {
               ...PDF_EXPORT_OPTS,
-              // Capture every top-level PM block (header/metadata/safety/task tables/custom sections/footer)
-              // so templates without explicit data-pdf-section markers don't lose content.
-              sectionSelector: ".border-2.border-border > *",
+              // Capture the entire PM document as ONE canvas so content flows
+              // continuously across pages with row-snapping (no big gaps).
+              sectionSelector: ".border-2.border-border",
             };
       await exportSectionsToPdf(container, filename, exportOpts);
       toast.success(`Downloaded ${filename}`);
