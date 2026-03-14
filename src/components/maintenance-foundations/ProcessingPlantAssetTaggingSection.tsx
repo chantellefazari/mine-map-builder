@@ -284,7 +284,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
       {/* ── 4. Visual Tag Mockups ── */}
       <Card>
         <CardHeader className="pb-2">
-          <SectionHeading icon={Tag} number="4" title="Visual Tag Examples — Rendered Mockups" />
+          <SectionHeading icon={Tag} number="4" title="Visual Tag Examples | Rendered Mockups" />
         </CardHeader>
         <CardContent className="space-y-6">
           <p className="text-sm text-muted-foreground">
