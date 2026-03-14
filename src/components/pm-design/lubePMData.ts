@@ -123,6 +123,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "3 Monthly Lubrication PM",
     frequency: "3 Monthly",
     frequencyGroup: "12-week",
+    plantArea: "Processing Plant",
     items: [
       { plantId: "CFP01-PA01", plantItem: "Bearing Assembly; Cyclone Feed Pump (Duty)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
       { plantId: "CFP01-PB01", plantItem: "Bearing Assembly; Cyclone Feed Pump (Standby)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
