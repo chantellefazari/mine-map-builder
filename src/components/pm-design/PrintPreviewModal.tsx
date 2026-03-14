@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { X, Printer, Download, Loader2 } from "lucide-react";
+import { X, Printer, Download, Loader2, FileCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
