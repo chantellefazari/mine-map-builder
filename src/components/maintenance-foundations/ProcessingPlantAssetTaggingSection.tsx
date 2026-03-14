@@ -376,7 +376,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
               <p className="text-xs text-muted-foreground font-mono font-bold">100mm × 50mm + Hole Punch</p>
               <Separator />
               <RuleRow>Pumps, motors, hanging equipment</RuleRow>
-              <RuleRow>Single hole punch — ring or cable-tie</RuleRow>
+              <RuleRow>Single hole punch, ring or cable-tie</RuleRow>
               <RuleRow>Tag hangs from frame or stud</RuleRow>
             </div>
           </div>
