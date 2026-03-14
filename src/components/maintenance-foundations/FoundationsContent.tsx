@@ -60,7 +60,7 @@ export const FoundationsContent = () => {
     if (!printWindow) return;
     printWindow.document.write(`
       <!DOCTYPE html><html><head>
-        <title>${TAB_LABELS[activeTab]} — TCMG</title>
+        <title>${TAB_LABELS[activeTab]} | TCMG</title>
         <style>
           @page { size: A4 portrait; margin: 15mm; }
           * { box-sizing: border-box; margin: 0; padding: 0; }
