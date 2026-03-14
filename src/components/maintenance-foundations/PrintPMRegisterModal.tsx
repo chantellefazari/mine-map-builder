@@ -82,7 +82,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
             <td><span class="freq-badge freq-${pm.frequency.toLowerCase().replace(/\s+/g, '-')}">${pm.frequency}</span></td>
             <td class="equip-type">${pm.equipmentType}</td>
             <td style="text-align:center"><span class="duty-badge duty-${(pm.dutyType || 'Online').toLowerCase()}">${pm.dutyType || "Online"}</span></td>
-            <td style="text-align:center; font-weight:500">${pm.estimatedDuration || "—"}</td>
+            <td style="text-align:center; font-weight:500">${pm.estimatedDuration || "-"}</td>
             <td><span class="status-badge status-${pm.status.toLowerCase()}">${pm.status}</span></td>
           </tr>`).join("")}</tbody>
         </table>`;
