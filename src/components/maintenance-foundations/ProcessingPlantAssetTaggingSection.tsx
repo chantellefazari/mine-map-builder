@@ -133,10 +133,10 @@ export const ProcessingPlantAssetTaggingSection = () => {
               <div className="flex items-center gap-2 mb-2">
                 <Badge variant="outline" className="text-xs font-mono border-primary/40 text-primary">TCMG-STD-TAG-002</Badge>
                 <Badge className="text-xs bg-primary text-primary-foreground">Processing Plant Only</Badge>
-                <Badge variant="secondary" className="text-xs">Simplified Format — Rev 1.0</Badge>
+                <Badge variant="secondary" className="text-xs">Simplified Format | Rev 1.0</Badge>
               </div>
               <h2 className="text-xl font-bold text-foreground tracking-tight uppercase">
-                Processing Plant — Asset Tagging Standard
+                Processing Plant | Asset Tagging Standard
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
                 Simplified ID Format · Asset ID Only · No QR · No Functional Location on Tag
@@ -157,13 +157,13 @@ export const ProcessingPlantAssetTaggingSection = () => {
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
             This standard defines a simple, durable physical tagging system for Processing Plant assets.
-            The physical tag carries only the Asset ID — nothing else. All hierarchy, functional location
+            The physical tag carries only the Asset ID, nothing else. All hierarchy, functional location
             codes, area structures, and system data are stored in Minesite AI, not on the tag.
           </p>
           <div className="grid sm:grid-cols-2 gap-2">
             {[
               "Rapid visual identification from Asset ID alone",
-              "Asset ID matches the existing asset tree exactly — no new numbering",
+              "Asset ID matches the existing asset tree exactly, no new numbering",
               "No functional location codes, area codes, or system strings on the tag",
               "Eliminates cluttered, hard-to-read tag formats",
               "Simple enough to produce internally or order externally on demand",
@@ -178,7 +178,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
       {/* ── 2. Tag Format ── */}
       <Card>
         <CardHeader className="pb-2">
-          <SectionHeading icon={Tag} number="2" title="Tag Format — Asset ID Only" />
+          <SectionHeading icon={Tag} number="2" title="Tag Format | Asset ID Only" />
         </CardHeader>
         <CardContent className="space-y-5">
           <p className="text-sm text-muted-foreground">
@@ -197,7 +197,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           {/* Example asset IDs — all sourced directly from Processing Plant asset tree */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Format Examples — Processing Plant Asset Tree</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Format Examples | Processing Plant Asset Tree</p>
             <div className="grid sm:grid-cols-2 gap-2">
               {[
                 { id: "BM01",    desc: "Primary Ball Mill" },
@@ -221,8 +221,8 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Format Rules</p>
-            <RuleRow label="Asset ID source">Use the Asset ID already assigned in the asset tree — do not create new numbers</RuleRow>
-            <RuleRow label="No extra data">Functional location, area code, system strings — none of these appear on the physical tag</RuleRow>
+            <RuleRow label="Asset ID source">Use the Asset ID already assigned in the asset tree. Do not create new numbers</RuleRow>
+            <RuleRow label="No extra data">Functional location, area code, system strings: none of these appear on the physical tag</RuleRow>
             <RuleRow label="Two lines only">Line 1 = Asset ID (large bold) · Line 2 = Short equipment description (smaller)</RuleRow>
             <RuleRow label="Exact match">Asset ID on tag must match Minesite AI system record exactly</RuleRow>
             <RuleRow label="All hierarchy in system">All hierarchy, FL codes, and area structure remain in Minesite AI only</RuleRow>
@@ -241,10 +241,10 @@ export const ProcessingPlantAssetTaggingSection = () => {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Material & Marking</p>
             <div className="grid sm:grid-cols-2 gap-2">
               <RuleRow label="Material">Laser-engraved industrial label or printed industrial label</RuleRow>
-              <RuleRow label="Background">White or silver — high contrast for readability</RuleRow>
-              <RuleRow label="Font">Bold black sans-serif — minimum 20 mm text height for Asset ID</RuleRow>
+              <RuleRow label="Background">White or silver, high contrast for readability</RuleRow>
+              <RuleRow label="Font">Bold black sans-serif, minimum 20 mm text height for Asset ID</RuleRow>
               <RuleRow label="Finish">Oil-resistant, dust-resistant, UV-resistant coating</RuleRow>
-              <RuleRow label="Backing">Industrial adhesive backing — permanent mounting</RuleRow>
+              <RuleRow label="Backing">Industrial adhesive backing, permanent mounting</RuleRow>
               <RuleRow label="Optional">Single hole punch on one end for ring or cable-tie attachment</RuleRow>
             </div>
           </div>
@@ -284,7 +284,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
       {/* ── 4. Visual Tag Mockups ── */}
       <Card>
         <CardHeader className="pb-2">
-          <SectionHeading icon={Tag} number="4" title="Visual Tag Examples — Rendered Mockups" />
+          <SectionHeading icon={Tag} number="4" title="Visual Tag Examples | Rendered Mockups" />
         </CardHeader>
         <CardContent className="space-y-6">
           <p className="text-sm text-muted-foreground">
@@ -294,7 +294,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           {/* Standard size examples — flat surface large equipment */}
           <div className="space-y-2">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Flat Surface — 100mm × 50mm Plate (Standard)</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Flat Surface | 100mm × 50mm Plate (Standard)</p>
             <p className="text-xs text-muted-foreground">e.g. Ball Mill, Cyanide Tank, Electrowinning Cell</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
               <SimplifiedTagMockup assetId="BM01" description="Primary Ball Mill" size="standard" holePosition="none" />
@@ -330,10 +330,10 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           <div className="bg-muted/40 rounded-lg p-4 text-xs text-muted-foreground space-y-1 mt-2">
             <p className="font-semibold text-foreground text-xs uppercase tracking-widest mb-2">Mockup Notes</p>
-            <p>• White/silver background with bold black text — high contrast for dusty mining conditions</p>
-            <p>• Asset ID rendered at minimum 20mm text height — readable at arm's length</p>
-            <p>• Hole punch shown on one end — used for ring or cable-tie hanging attachment</p>
-            <p>• No QR code, no functional location, no area code — Asset ID and description only</p>
+            <p>• White/silver background with bold black text, high contrast for dusty mining conditions</p>
+            <p>• Asset ID rendered at minimum 20mm text height, readable at arm's length</p>
+            <p>• Hole punch shown on one end, used for ring or cable-tie hanging attachment</p>
+            <p>• No QR code, no functional location, no area code. Asset ID and description only</p>
             <p>• Actual tags: laser engraved or printed industrial label with UV/oil/dust-resistant coating</p>
           </div>
         </CardContent>
@@ -376,7 +376,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
               <p className="text-xs text-muted-foreground font-mono font-bold">100mm × 50mm + Hole Punch</p>
               <Separator />
               <RuleRow>Pumps, motors, hanging equipment</RuleRow>
-              <RuleRow>Single hole punch — ring or cable-tie</RuleRow>
+              <RuleRow>Single hole punch, ring or cable-tie</RuleRow>
               <RuleRow>Tag hangs from frame or stud</RuleRow>
             </div>
           </div>
@@ -386,22 +386,22 @@ export const ProcessingPlantAssetTaggingSection = () => {
       {/* ── 6. Placement Rules ── */}
       <Card>
         <CardHeader className="pb-2">
-          <SectionHeading icon={MapPin} number="6" title="Placement Rules — Processing Plant" />
+          <SectionHeading icon={MapPin} number="6" title="Placement Rules | Processing Plant" />
         </CardHeader>
         <CardContent className="space-y-4">
 
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">General Placement Rules — All Equipment</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">General Placement Rules | All Equipment</p>
             <div className="grid sm:grid-cols-2 gap-1">
               <RuleRow>Mount at eye level where possible</RuleRow>
               <RuleRow>Mount on non-wear surfaces only</RuleRow>
               <RuleRow>Tag must be visible during normal operation without removing guards</RuleRow>
               <RuleRow>Do not mount on removable guards or covers</RuleRow>
               <RuleRow>Do not mount on vibration-critical points</RuleRow>
-              <RuleRow>Do not mount on hot surfaces — tag must remain legible</RuleRow>
+              <RuleRow>Do not mount on hot surfaces. Tag must remain legible</RuleRow>
             </div>
             <div className="mt-2">
-              <WarningRow>Must NOT be mounted on removable guards or covers — tag must remain with the asset permanently</WarningRow>
+              <WarningRow>Must NOT be mounted on removable guards or covers. Tag must remain with the asset permanently</WarningRow>
               <WarningRow>Must NOT be positioned where abrasion, heat, or chemical spray will degrade the tag over time</WarningRow>
             </div>
           </div>
@@ -419,14 +419,14 @@ export const ProcessingPlantAssetTaggingSection = () => {
               </thead>
               <tbody className="divide-y divide-border">
                 {[
-                  ["Motors",     "Mount on frame side — non-drive end — avoid cooling fins"],
-                  ["Pumps",      "Mount on base frame — discharge side — not on removable guards"],
-                  ["Conveyors",  "Drive side near motor — 1.0–1.5 m above ground — not on belt guards"],
-                  ["Screens",    "Structural frame near drive side — eye level where accessible"],
-                  ["Tanks",      "Near manway or ladder access point — eye level where possible"],
-                  ["Electrical panels", "Front exterior door — eye level"],
-                  ["Gearboxes",  "Oil filler or inspection side — avoid hot surfaces"],
-                  ["Crushers",   "Main frame structural section — non-wear, non-impact area"],
+                  ["Motors",     "Mount on frame side, non-drive end. Avoid cooling fins"],
+                  ["Pumps",      "Mount on base frame, discharge side. Not on removable guards"],
+                  ["Conveyors",  "Drive side near motor, 1.0 to 1.5 m above ground. Not on belt guards"],
+                  ["Screens",    "Structural frame near drive side, eye level where accessible"],
+                  ["Tanks",      "Near manway or ladder access point, eye level where possible"],
+                  ["Electrical panels", "Front exterior door, eye level"],
+                  ["Gearboxes",  "Oil filler or inspection side. Avoid hot surfaces"],
+                  ["Crushers",   "Main frame structural section, non-wear, non-impact area"],
                 ].map(([type, placement]) => (
                   <tr key={type} className="hover:bg-muted/30">
                     <td className="px-3 py-2 text-sm font-semibold text-foreground">{type}</td>
@@ -471,7 +471,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
               <p className="text-xs text-muted-foreground">Portable label printer or laser engraver for on-demand production at site.</p>
               <Separator />
               <div className="space-y-1">
-                <RuleRow>On-demand — no lead time</RuleRow>
+                <RuleRow>On-demand, no lead time</RuleRow>
                 <RuleRow>Lower long-term cost per tag</RuleRow>
                 <RuleRow>Simplified format reduces operator skill requirement</RuleRow>
                 <RuleRow>Capital purchase and training required</RuleRow>
@@ -492,7 +492,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
             The physical tag is for rapid visual identification only."
           </div>
           <p className="text-sm text-muted-foreground">
-            The physical tag is a field identification tool — not a data carrier. Scanning, searching, or
+            The physical tag is a field identification tool, not a data carrier. Scanning, searching, or
             querying asset data is performed in Minesite AI using the Asset ID. The tag simply confirms
             which physical asset you are standing in front of.
           </p>
@@ -535,7 +535,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
       {/* Footer */}
       <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4">
-        <span>TCMG-STD-TAG-002 · Processing Plant Asset Tagging Standard — Simplified Format · Rev 1.0</span>
+        <span>TCMG-STD-TAG-002 · Processing Plant Asset Tagging Standard | Simplified Format · Rev 1.0</span>
         <span>Crushing Plant excluded · Internal use only</span>
       </div>
     </div>

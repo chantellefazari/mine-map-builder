@@ -78,21 +78,21 @@ export const WorkDefinitionsSection = () => {
               <FileText className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-medium">Work Order Templates</p>
-                <p className="text-xs text-muted-foreground">Every work order is classified as Breakdown, Planned, or Shutdown — these definitions tell us which to use</p>
+                <p className="text-xs text-muted-foreground">Every work order is classified as Breakdown, Planned, or Shutdown. These definitions tell us which to use</p>
               </div>
             </div>
             <div className="flex items-start gap-3 bg-background rounded-md p-3 border border-border">
               <Calendar className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-medium">PM Design</p>
-                <p className="text-xs text-muted-foreground">All PMs are "Planned Maintenance" — they are scheduled tasks designed to prevent breakdowns</p>
+                <p className="text-xs text-muted-foreground">All PMs are "Planned Maintenance". They are scheduled tasks designed to prevent breakdowns</p>
               </div>
             </div>
             <div className="flex items-start gap-3 bg-background rounded-md p-3 border border-border">
               <Layers className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-medium">Asset Hierarchy</p>
-                <p className="text-xs text-muted-foreground">Work is always linked to an asset — the hierarchy tells us exactly what equipment we're working on</p>
+                <p className="text-xs text-muted-foreground">Work is always linked to an asset. The hierarchy tells us exactly what equipment we're working on</p>
               </div>
             </div>
             <div className="flex items-start gap-3 bg-background rounded-md p-3 border border-border">
@@ -120,7 +120,7 @@ export const WorkDefinitionsSection = () => {
               <Zap className="w-8 h-8 text-destructive mx-auto mb-2" />
               <h4 className="font-semibold text-foreground">Reactive Maintenance</h4>
               <p className="text-xs text-muted-foreground mt-1">Responding to failures after they occur</p>
-              <p className="text-xs text-muted-foreground mt-2">"Something broke — we need to fix it"</p>
+              <p className="text-xs text-muted-foreground mt-2">"Something broke, we need to fix it"</p>
             </div>
             <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-4 text-center">
               <Shield className="w-8 h-8 text-green-600 mx-auto mb-2" />
@@ -150,7 +150,7 @@ export const WorkDefinitionsSection = () => {
               <p className="text-sm text-muted-foreground">
                 Breakdown work is <strong>unplanned maintenance</strong> performed when equipment fails 
                 or is about to fail. The equipment has stopped working, is working incorrectly, or poses an 
-                immediate safety risk if not addressed. This is reactive — we are responding to a problem 
+                immediate safety risk if not addressed. This is reactive: we are responding to a problem 
                 that has already happened.
               </p>
             </div>
@@ -188,7 +188,7 @@ export const WorkDefinitionsSection = () => {
                 <ul className="text-sm space-y-1.5">
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Unscheduled — we didn't plan for this</span>
+                    <span>Unscheduled, we didn't plan for this</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
@@ -196,7 +196,7 @@ export const WorkDefinitionsSection = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Usually urgent — needs attention now</span>
+                    <span>Usually urgent, needs attention now</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
@@ -270,7 +270,7 @@ export const WorkDefinitionsSection = () => {
               <p className="text-sm text-muted-foreground">
                 Planned maintenance is <strong>scheduled work</strong> designed to prevent equipment failure 
                 and keep things running properly. We know this work is coming, we prepare the resources 
-                (parts, tools, people), and we do it at a time that minimises disruption. This is proactive — 
+                (parts, tools, people), and we do it at a time that minimises disruption. This is proactive: 
                 we are preventing problems before they happen.
               </p>
             </div>
@@ -286,7 +286,7 @@ export const WorkDefinitionsSection = () => {
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <h5 className="font-medium text-sm text-foreground">Preventive Maintenance (PM)</h5>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Tasks done at <strong>fixed intervals</strong> — every week, every month, every 500 hours. 
+                    Tasks done at <strong>fixed intervals</strong>: every week, every month, every 500 hours. 
                     We do them regardless of whether the equipment looks like it needs it. 
                     This is what our <strong>PM Design</strong> section builds.
                   </p>
@@ -348,7 +348,7 @@ export const WorkDefinitionsSection = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
-                    <span>Clear scope — we know what we're doing</span>
+                    <span>Clear scope, we know what we're doing</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">•</span>
@@ -394,7 +394,7 @@ export const WorkDefinitionsSection = () => {
                 In Our System
               </h4>
               <p className="text-sm text-muted-foreground">
-                Our <strong>PM Design</strong> section defines all the preventive maintenance tasks — what to check, 
+                Our <strong>PM Design</strong> section defines all the preventive maintenance tasks: what to check, 
                 how often, what tools are needed. When these PMs are due, we raise a <strong>Work Order</strong> with 
                 Work Type = "Planned". The PM templates in our system give clear step-by-step instructions so 
                 anyone can complete the task correctly.
@@ -424,7 +424,7 @@ export const WorkDefinitionsSection = () => {
               </p>
               <ul className="text-xs text-muted-foreground space-y-1">
                 <li><strong>Planned:</strong> We found a problem during a PM and scheduled a fix for later</li>
-                <li><strong>Unplanned:</strong> Same as breakdown — needs fixing now</li>
+                <li><strong>Unplanned:</strong> Same as breakdown, needs fixing now</li>
               </ul>
             </div>
 
@@ -435,7 +435,7 @@ export const WorkDefinitionsSection = () => {
                 Modification / Project Work
               </h4>
               <p className="text-sm text-muted-foreground">
-                Changing or upgrading equipment — not maintenance. We're improving something, not restoring it. 
+                Changing or upgrading equipment, not maintenance. We're improving something, not restoring it. 
                 This should be tracked separately from maintenance work.
               </p>
             </div>

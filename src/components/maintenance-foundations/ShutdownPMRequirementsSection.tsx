@@ -118,7 +118,7 @@ export const ShutdownPMRequirementsSection = () => {
           <div>
             <div className="text-[10px] uppercase tracking-widest opacity-60 mb-1">TCMG-SD-PM-REQ-001 Rev 1.0</div>
             <h2 className="text-xl font-bold tracking-tight">Shutdown PM Requirements</h2>
-            <p className="text-sm opacity-70 mt-0.5">Required Offline Inspections — Processing Plant</p>
+            <p className="text-sm opacity-70 mt-0.5">Required Offline Inspections | Processing Plant</p>
           </div>
           <Button onClick={() => setPrintOpen(true)} variant="secondary" className="gap-2 shrink-0">
             <FileDown className="w-4 h-4" />
@@ -220,7 +220,7 @@ export const ShutdownPMRequirementsSection = () => {
                       <div className="flex items-center gap-2 px-5 py-2 bg-blue-50/60 dark:bg-blue-950/30 border-b border-border border-l-[3px] border-l-blue-500">
                         <Wrench className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                         <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300">Mechanical</span>
-                        <span className="text-[10px] text-blue-600/70 dark:text-blue-400/70">— {area.mechanical.length} items — {area.mechanical.reduce((s, pm) => s + pm.estimated_hours, 0)}h est.</span>
+                        <span className="text-[10px] text-blue-600/70 dark:text-blue-400/70">| {area.mechanical.length} items | {area.mechanical.reduce((s, pm) => s + pm.estimated_hours, 0)}h est.</span>
                       </div>
                       <PMTable items={area.mechanical} checkExists={checkExists} />
                     </div>
@@ -232,7 +232,7 @@ export const ShutdownPMRequirementsSection = () => {
                       <div className="flex items-center gap-2 px-5 py-2 bg-amber-50/60 dark:bg-amber-950/30 border-b border-border border-l-[3px] border-l-amber-500">
                         <Zap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                         <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">Electrical</span>
-                        <span className="text-[10px] text-amber-600/70 dark:text-amber-400/70">— {area.electrical.length} items — {area.electrical.reduce((s, pm) => s + pm.estimated_hours, 0)}h est.</span>
+                        <span className="text-[10px] text-amber-600/70 dark:text-amber-400/70">| {area.electrical.length} items | {area.electrical.reduce((s, pm) => s + pm.estimated_hours, 0)}h est.</span>
                       </div>
                       <PMTable items={area.electrical} checkExists={checkExists} />
                     </div>
@@ -284,8 +284,8 @@ const PMTable = ({ items, checkExists }: { items: ShutdownPMRow[]; checkExists: 
               </span>
             </TableCell>
             <TableCell className="text-[11px] text-center font-mono font-semibold">{pm.estimated_hours}</TableCell>
-            <TableCell className="text-[10px] text-muted-foreground">{pm.tc_asset_match || "—"}</TableCell>
-            <TableCell className="text-[10px] font-mono text-blue-600 dark:text-blue-400">{pm.tc_pid_tag || "—"}</TableCell>
+            <TableCell className="text-[10px] text-muted-foreground">{pm.tc_asset_match || "-"}</TableCell>
+            <TableCell className="text-[10px] font-mono text-blue-600 dark:text-blue-400">{pm.tc_pid_tag || "-"}</TableCell>
           </TableRow>
         );
       })}

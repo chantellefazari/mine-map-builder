@@ -82,7 +82,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
             <td><span class="freq-badge freq-${pm.frequency.toLowerCase().replace(/\s+/g, '-')}">${pm.frequency}</span></td>
             <td class="equip-type">${pm.equipmentType}</td>
             <td style="text-align:center"><span class="duty-badge duty-${(pm.dutyType || 'Online').toLowerCase()}">${pm.dutyType || "Online"}</span></td>
-            <td style="text-align:center; font-weight:500">${pm.estimatedDuration || "—"}</td>
+            <td style="text-align:center; font-weight:500">${pm.estimatedDuration || "-"}</td>
             <td><span class="status-badge status-${pm.status.toLowerCase()}">${pm.status}</span></td>
           </tr>`).join("")}</tbody>
         </table>`;
@@ -97,7 +97,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
             <div class="banner-left">
               <div class="site-name">TENNANT CREEK MINING GROUP</div>
               <div class="doc-title">Current Site PM Register</div>
-              <div class="doc-subtitle">Existing Preventive Maintenance Tasks — Processing Plant</div>
+              <div class="doc-subtitle">Existing Preventive Maintenance Tasks | Processing Plant</div>
             </div>
             <div class="banner-right">
               <div class="meta-item"><span class="meta-label">Document</span><span class="meta-value">TCMG-PM-REG-001</span></div>
@@ -155,7 +155,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
           const isFirst = c === 0;
           sections.push(`
             <div data-pdf-section>
-              <div class="area-header">${disc} — ${items.length} PMs${!isFirst ? ` (continued)` : ''}</div>
+              <div class="area-header">${disc} | ${items.length} PMs${!isFirst ? ` (continued)` : ''}</div>
               ${renderTable(chunk)}
             </div>
           `);
@@ -167,7 +167,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
         <div data-pdf-section>
           <div class="doc-footer">
             <span>TCMG-PM-REG-001 Rev 1.0</span>
-            <span>Tennant Creek Mining Group — Confidential</span>
+            <span>Tennant Creek Mining Group | Confidential</span>
             <span>${today}</span>
           </div>
         </div>
