@@ -260,7 +260,12 @@ export const AssetCriticalitySection = () => {
   }, [assets, search, areaFilter, ratingFilter, pendingChanges, ratingsMap]);
 
   const getRating = (assetNumber: string): CriticalityRating => {
-    return pendingChanges[assetNumber]?.criticality || (ratingsMap[assetNumber]?.criticality as CriticalityRating) || "C";
+    if (pendingChanges[assetNumber]?.criticality) return pendingChanges[assetNumber].criticality;
+    if (ratingsMap[assetNumber]?.criticality) return ratingsMap[assetNumber].criticality as CriticalityRating;
+    // Auto-classify based on asset name/area when no saved rating exists
+    const asset = assets?.find(a => a.asset_number === assetNumber);
+    if (asset) return autoClassifyCriticality(asset.asset_name, asset.area_label, asset.sub_area);
+    return "C";
   };
 
   const getJustification = (assetNumber: string): string => {
