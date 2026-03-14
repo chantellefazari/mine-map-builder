@@ -359,7 +359,7 @@ export const SiteSparesCatalogue = () => {
     }
   };
 
-  // Client-side criticality filter (derived from description, not a DB column)
+  // Display page already server-filtered; criticality filter is additionally validated by classifier
   const displaySpares = useMemo(() => {
     if (filterCriticality === "all") return paginated.spares;
     return paginated.spares.filter((spare) => {
