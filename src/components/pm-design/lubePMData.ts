@@ -154,6 +154,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     subtitle: "3 Monthly Lubrication PM",
     frequency: "3 Monthly",
     frequencyGroup: "12-week",
+    plantArea: "Leaching (CIP)",
     items: [
       {
         plantId: "ADS01-CRN01",
