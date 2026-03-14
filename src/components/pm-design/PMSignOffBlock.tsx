@@ -22,7 +22,7 @@ export const PMSignOffBlock = ({
       className="overflow-visible"
     >
       {/* Comments */}
-      <div className="border-t border-border" data-pdf-component="pm-comments-section">
+      <div className="border-t border-border" data-pdf-component="pm-comments-section" data-pdf-keep-together>
         <div className="bg-muted px-3 py-1 font-semibold text-sm border-b border-border">COMMENTS:</div>
         <div className="px-3 py-1">
           <Textarea
@@ -33,7 +33,7 @@ export const PMSignOffBlock = ({
       </div>
 
       {/* Sign Off */}
-      <div className="border-t border-border" data-pdf-component="pm-signoff-section">
+      <div className="border-t border-border" data-pdf-component="pm-signoff-section" data-pdf-keep-together>
         <div className="bg-muted px-3 py-1 font-bold text-sm border-b border-border">SIGN OFF</div>
         <div className="px-3 py-1 space-y-1">
           <div className="grid grid-cols-2 gap-x-4" data-pdf-break data-pdf-keep-together>
@@ -65,7 +65,7 @@ export const PMSignOffBlock = ({
       </div>
 
       {/* Approval */}
-      <div className="border-t border-border" data-pdf-component="pm-approval-section">
+      <div className="border-t border-border" data-pdf-component="pm-approval-section" data-pdf-keep-together>
         <div className="bg-primary/10 px-3 py-1 font-bold text-sm border-b border-border flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-primary" />
           <span className="text-primary">APPROVAL</span>
