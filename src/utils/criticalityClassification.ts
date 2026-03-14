@@ -232,7 +232,7 @@ const MEDIUM_KEYWORDS = [
   "control valve", "modulating valve", "solenoid valve", "pneumatic valve",
   "safety valve", "pressure safety", "actuated valve",
   "diaphragm valve", "plug valve", "needle valve",
-  "poly ball valve", "hansen",
+  "poly ball valve",
   "clarkson", "isogate", "orbinox", // Major valve brands
   
   // ---- Instrumentation (pressure, flow, level) ----
