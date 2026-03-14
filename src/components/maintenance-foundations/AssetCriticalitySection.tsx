@@ -217,7 +217,13 @@ export const AssetCriticalitySection = () => {
 
   const filteredAssets = useMemo(() => {
     if (!assets) return [];
-    return assets.filter(a => {
+    // Group by area_label first, then preserve sort_order within each area
+    const sorted = [...assets].sort((a, b) => {
+      const areaCompare = a.area_label.localeCompare(b.area_label);
+      if (areaCompare !== 0) return areaCompare;
+      return 0; // preserve original sort_order within same area
+    });
+    return sorted.filter(a => {
       if (areaFilter !== "all" && a.area_label !== areaFilter) return false;
       if (ratingFilter !== "all" && getRating(a.asset_number) !== ratingFilter) return false;
       if (search) {
