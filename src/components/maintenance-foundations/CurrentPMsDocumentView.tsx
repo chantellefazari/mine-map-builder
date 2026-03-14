@@ -116,7 +116,7 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
         </div>
 
         {/* Summary stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 divide-x divide-border border-b border-border">
+        <div className="grid grid-cols-3 sm:grid-cols-6 divide-x divide-border border-b border-border">
           <div className="p-4 text-center">
             <div className="text-2xl font-extrabold">{currentPMs.length}</div>
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Total PMs</div>
@@ -128,6 +128,10 @@ export const CurrentPMsDocumentView = ({ currentPMs, isLoading, onExportPdf }: P
           <div className="p-4 text-center">
             <div className="text-2xl font-extrabold text-amber-600 dark:text-amber-400">{elecCount}</div>
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Electrical</div>
+          </div>
+          <div className="p-4 text-center">
+            <div className="text-2xl font-extrabold text-teal-600 dark:text-teal-400">{lubeCount}</div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">Lube</div>
           </div>
           <div className="p-4 text-center">
             <div className="text-2xl font-extrabold text-muted-foreground">{opsCount}</div>
