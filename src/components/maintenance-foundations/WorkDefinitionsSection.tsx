@@ -188,7 +188,7 @@ export const WorkDefinitionsSection = () => {
                 <ul className="text-sm space-y-1.5">
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
-                    <span>Unscheduled — we didn't plan for this</span>
+                    <span>Unscheduled, we didn't plan for this</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-destructive font-bold">•</span>
