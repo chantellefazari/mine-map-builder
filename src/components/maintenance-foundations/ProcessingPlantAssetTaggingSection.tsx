@@ -197,7 +197,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           {/* Example asset IDs — all sourced directly from Processing Plant asset tree */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Format Examples — Processing Plant Asset Tree</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Format Examples | Processing Plant Asset Tree</p>
             <div className="grid sm:grid-cols-2 gap-2">
               {[
                 { id: "BM01",    desc: "Primary Ball Mill" },
