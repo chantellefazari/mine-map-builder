@@ -37,13 +37,8 @@ const LOW_KEYWORDS = [
   "camlock", "victaulic", "grooved fitting", "barb fitting", "hose barb",
   "quick connect", "push fit", "ferrule", "olive",
   
-  // ---- Hoses (not assemblies) ----
-  "hose", "tubing", "flexible hose", "hydraulic hose", "air hose", "nylon tubing",
-  "drag hose", "tpr hose", "pvc hose", "rubber hose", "suction hose", 
-  "discharge hose", "layflat hose", "garden hose", "fuel hose", "coolant hose",
-  
   // ---- Filters (consumable) ----
-  "filter", "filter element", "filter cartridge", "strainer element", 
+  "filter element", "filter cartridge", "strainer element", 
   "air filter", "oil filter", "fuel filter", "hydraulic filter", "bag filter",
   "filter sock", "filter bag", "breather", "breather cap",
   
