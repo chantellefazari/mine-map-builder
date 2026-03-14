@@ -82,6 +82,7 @@ const printStyles = `
 export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
   isOpen,
   onClose,
+  onSavePdf,
   children,
   title = "Print Preview",
 }) => {
