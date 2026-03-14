@@ -151,8 +151,8 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequencyGroup: "12-week",
     items: [
       {
-        plantId: "05-HT-001",
-        plantItem: "Gearbox, Hoist, Trolly; Gantry Crane",
+        plantId: "ADS01-CRN01",
+        plantItem: "Gearbox, Hoist, Trolly; CIP Area Gantry Crane",
         lubePoints: [
           { location: "Gearbox", type: "VG150", quantity: "To Capacity", uom: "" },
           { location: "Hoist", type: "EP2", quantity: "To Capacity", uom: "" },
