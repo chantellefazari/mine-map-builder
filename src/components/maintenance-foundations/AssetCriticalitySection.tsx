@@ -149,10 +149,6 @@ const autoClassifyCriticality = (assetName: string, areaLabel: string, subArea: 
 
   return "C";
 };
-  A: { label: "A — Critical", color: "bg-red-100 text-red-800 border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-800", description: "Failure causes immediate plant shutdown or safety risk" },
-  B: { label: "B — Important", color: "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800", description: "Failure causes significant production impact within 24h" },
-  C: { label: "C — General", color: "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800", description: "Failure has minimal or no production impact" },
-};
 
 function useParentAssets() {
   return useQuery({
