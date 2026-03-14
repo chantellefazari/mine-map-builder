@@ -167,7 +167,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
         <div data-pdf-section>
           <div class="doc-footer">
             <span>TCMG-PM-REG-001 Rev 1.0</span>
-            <span>Tennant Creek Mining Group — Confidential</span>
+            <span>Tennant Creek Mining Group | Confidential</span>
             <span>${today}</span>
           </div>
         </div>

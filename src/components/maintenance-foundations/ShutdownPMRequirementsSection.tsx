@@ -284,8 +284,8 @@ const PMTable = ({ items, checkExists }: { items: ShutdownPMRow[]; checkExists: 
               </span>
             </TableCell>
             <TableCell className="text-[11px] text-center font-mono font-semibold">{pm.estimated_hours}</TableCell>
-            <TableCell className="text-[10px] text-muted-foreground">{pm.tc_asset_match || "—"}</TableCell>
-            <TableCell className="text-[10px] font-mono text-blue-600 dark:text-blue-400">{pm.tc_pid_tag || "—"}</TableCell>
+            <TableCell className="text-[10px] text-muted-foreground">{pm.tc_asset_match || "-"}</TableCell>
+            <TableCell className="text-[10px] font-mono text-blue-600 dark:text-blue-400">{pm.tc_pid_tag || "-"}</TableCell>
           </TableRow>
         );
       })}
