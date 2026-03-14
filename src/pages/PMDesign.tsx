@@ -1000,7 +1000,8 @@ const PMSidebarContent = ({
                           <DisciplineIcon className={cn(
                             "w-4 h-4",
                             discipline.id === "mechanical" ? "text-orange-500" : 
-                            discipline.id === "electrical" ? "text-blue-500" : "text-green-500"
+                            discipline.id === "electrical" ? "text-blue-500" : 
+                            discipline.id === "lube" ? "text-amber-500" : "text-green-500"
                           )} />
                           {!isCollapsed && <span className="font-semibold">{discipline.label}</span>}
                         </div>
