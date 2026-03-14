@@ -437,7 +437,7 @@ export async function exportSectionsToPdf(
       const overlapPx = reachedEnd
         ? 0
         : usedForcedBreak || usedRowBreak
-        ? Math.max(1, cfg.sliceOverlapPx - 1)
+        ? 0
         : cfg.sliceOverlapPx;
       sourceY = reachedEnd ? canvas.height : sourceY + sliceHeightPx - overlapPx;
       currentY += sliceHeightMm;
