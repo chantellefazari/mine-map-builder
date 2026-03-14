@@ -183,8 +183,8 @@ export const AssetCriticalitySection = () => {
       return `<tr><td>${a.area_label}</td><td>${a.sub_area}</td><td>${a.asset_number}</td><td>${a.asset_name}</td><td class="rating-${r}">${r}</td><td>${j}</td></tr>`;
     }).join("");
 
-    const summary = { A: 0, B: 0, C: 0 };
-    allAssets.forEach(a => { summary[getRating(a.asset_number)]++; });
+    const smry = { A: 0, B: 0, C: 0 };
+    allAssets.forEach(a => { smry[getRating(a.asset_number)]++; });
 
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
@@ -215,9 +215,9 @@ export const AssetCriticalitySection = () => {
         <p>Tennant Mines Gold — Processing Plant | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
       </div>
       <div class="summary">
-        <div class="summary-card"><div class="count" style="color:#991b1b">${summary.A}</div><div>Critical (A)</div></div>
-        <div class="summary-card"><div class="count" style="color:#92400e">${summary.B}</div><div>Important (B)</div></div>
-        <div class="summary-card"><div class="count" style="color:#065f46">${summary.C}</div><div>General (C)</div></div>
+        <div class="summary-card"><div class="count" style="color:#991b1b">${smry.A}</div><div>Critical (A)</div></div>
+        <div class="summary-card"><div class="count" style="color:#92400e">${smry.B}</div><div>Important (B)</div></div>
+        <div class="summary-card"><div class="count" style="color:#065f46">${smry.C}</div><div>General (C)</div></div>
       </div>
       <table><thead><tr><th>Area</th><th>Sub-Area</th><th>Asset #</th><th>Asset Name</th><th style="width:40px">Rating</th><th>Justification</th></tr></thead>
       <tbody>${rows}</tbody></table>
@@ -228,6 +228,21 @@ export const AssetCriticalitySection = () => {
     printWindow.document.close();
     printWindow.focus();
     setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!pdfRef.current) return;
+    setDownloading(true);
+    try {
+      const { exportSectionsToPdf } = await import("@/utils/sectionPdfExport");
+      const { PDF_EXPORT_OPTS } = await import("@/utils/pdfExportStandard");
+      await exportSectionsToPdf(pdfRef.current, "TCMG_Asset_Criticality_Assessment.pdf", {
+        ...PDF_EXPORT_OPTS,
+        renderWidth: 1200,
+      });
+    } finally {
+      setDownloading(false);
+    }
   };
 
   if (assetsLoading || ratingsLoading) {
