@@ -215,12 +215,22 @@ export const AssetCriticalitySection = () => {
     return Array.from(set).sort();
   }, [assets]);
 
+  // Area ordering: SITE → UTL → COM → REC → TAIL → SUP (matches hierarchy flow)
+  const AREA_ORDER: Record<string, number> = {
+    "Site Infrastructure": 1,
+    "Utilities & Power": 2,
+    "Comminution / Process": 3,
+    "Gold Recovery": 4,
+    "Tailings": 5,
+    "Support Services": 6,
+  };
+
   const filteredAssets = useMemo(() => {
     if (!assets) return [];
-    // Group by area_label first, then preserve sort_order within each area
     const sorted = [...assets].sort((a, b) => {
-      const areaCompare = a.area_label.localeCompare(b.area_label);
-      if (areaCompare !== 0) return areaCompare;
+      const aOrder = AREA_ORDER[a.area_label] ?? 99;
+      const bOrder = AREA_ORDER[b.area_label] ?? 99;
+      if (aOrder !== bOrder) return aOrder - bOrder;
       return 0; // preserve original sort_order within same area
     });
     return sorted.filter(a => {
