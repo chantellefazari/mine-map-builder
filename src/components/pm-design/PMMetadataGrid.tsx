@@ -156,7 +156,7 @@ export const PMMetadataGrid = ({
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Plant Area:</div>
           <div className="px-2 py-1.5">{derivedPlantArea || plantArea}</div>
         </div>
-        <div className="grid grid-cols-[120px_1fr]">
+        <div className="grid grid-cols-[120px_1fr] border-b border-border">
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Resource/s:</div>
           <div className="px-2 py-1.5">
             <input
@@ -171,6 +171,12 @@ export const PMMetadataGrid = ({
             />
           </div>
         </div>
+        {hideAssetNumber && (
+          <div className="grid grid-cols-[120px_1fr]">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
+            <div className="px-2 py-1.5"></div>
+          </div>
+        )}
       </div>
       <div>
         <div className="grid grid-cols-[120px_1fr] border-b border-border">
@@ -185,10 +191,12 @@ export const PMMetadataGrid = ({
           <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Frequency:</div>
           <div className="px-2 py-1.5 font-medium">{frequency}</div>
         </div>
-        <div className="grid grid-cols-[120px_1fr]">
-          <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
-          <div className="px-2 py-1.5"></div>
-        </div>
+        {!hideAssetNumber && (
+          <div className="grid grid-cols-[120px_1fr]">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
+            <div className="px-2 py-1.5"></div>
+          </div>
+        )}
       </div>
     </div>
   );
