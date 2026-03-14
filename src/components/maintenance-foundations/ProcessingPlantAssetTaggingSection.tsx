@@ -178,7 +178,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
       {/* ── 2. Tag Format ── */}
       <Card>
         <CardHeader className="pb-2">
-          <SectionHeading icon={Tag} number="2" title="Tag Format — Asset ID Only" />
+          <SectionHeading icon={Tag} number="2" title="Tag Format | Asset ID Only" />
         </CardHeader>
         <CardContent className="space-y-5">
           <p className="text-sm text-muted-foreground">
