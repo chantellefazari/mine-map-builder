@@ -32,7 +32,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequencyGroup: "4-week",
     items: [
       {
-        plantId: "04-ML-100",
+        plantId: "BM01",
         plantItem: "Tank; Motor Lube Oil; Ball Mill",
         lubePoints: [
           { location: "Tank", type: "VG460", quantity: "To Tank Capacity", uom: "" },
@@ -40,7 +40,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "04-ML-100",
+        plantId: "BM01",
         plantItem: "Tank; G/B-Pin; Ball Mill",
         lubePoints: [
           { location: "Gearbox", type: "VG320", quantity: "190", uom: "l" },
@@ -49,7 +49,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "04-ML-100",
+        plantId: "BM01",
         plantItem: "Tank; Trunnion Oil; Ball Mill",
         lubePoints: [
           { location: "Trunnion", type: "VG460", quantity: "To Tank Capacity", uom: "" },
@@ -68,7 +68,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequencyGroup: "12-week",
     items: [
       {
-        plantId: "04-FE-100",
+        plantId: "RCFD01",
         plantItem: "Gearbox, Pully; Conveyor",
         lubePoints: [
           { location: "Gearbox", type: "CLP 220", quantity: "1.2", uom: "l" },
@@ -76,7 +76,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "04-FE-101",
+        plantId: "TRCV01",
         plantItem: "Gearbox, Pully; Conveyor",
         lubePoints: [
           { location: "Gearbox", type: "CLP 220", quantity: "2.1", uom: "l" },
@@ -84,7 +84,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "04-BC-100",
+        plantId: "MFCV01",
         plantItem: "Gearbox, Pully; Conveyor",
         lubePoints: [
           { location: "Gearbox", type: "CLP 220", quantity: "3", uom: "l" },
@@ -101,15 +101,15 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequency: "3 Monthly",
     frequencyGroup: "12-week",
     items: [
-      { plantId: "05-AG-001", plantItem: "Gearbox, Agitator; CIP Tank #1", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
-      { plantId: "05-AG-002", plantItem: "Gearbox, Agitator; CIP Tank #2", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
-      { plantId: "05-AG-003", plantItem: "Gearbox, Agitator; CIL Tank #1", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
-      { plantId: "05-AG-004", plantItem: "Gearbox, Agitator; CIL Tank #2", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
-      { plantId: "05-AG-005", plantItem: "Gearbox, Agitator; CIL Tank #3", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
-      { plantId: "05-AG-006", plantItem: "Gearbox, Agitator; CIL Tank #4", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
-      { plantId: "05-AG-007", plantItem: "Gearbox, Agitator; CIL Tank #5", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
-      { plantId: "05-AG-008", plantItem: "Gearbox, Agitator; CIL Tank #6", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
-      { plantId: "06-AG-001", plantItem: "Gearbox, Agitator; Cyanide Mixing", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "4.4", uom: "l" }] },
+      { plantId: "LCH01-TK01-AGT01", plantItem: "Gearbox, Agitator; Leach Tank #1", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
+      { plantId: "LCH01-TK02-AGT01", plantItem: "Gearbox, Agitator; Leach Tank #2", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
+      { plantId: "CIP01-TK03-AGT01", plantItem: "Gearbox, Agitator; CIP Tank #1", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
+      { plantId: "CIP01-TK04-AGT01", plantItem: "Gearbox, Agitator; CIP Tank #2", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
+      { plantId: "CIP01-TK05-AGT01", plantItem: "Gearbox, Agitator; CIP Tank #3", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
+      { plantId: "CIP01-TK06-AGT01", plantItem: "Gearbox, Agitator; CIP Tank #4", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
+      { plantId: "CIP01-TK07-AGT01", plantItem: "Gearbox, Agitator; CIP Tank #5", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
+      { plantId: "CIP01-TK08-AGT01", plantItem: "Gearbox, Agitator; CIP Tank #6", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "8.8", uom: "l" }] },
+      { plantId: "CN01-MXT01-AGT01", plantItem: "Gearbox, Agitator; Cyanide Mixing", lubePoints: [{ location: "Gearbox", type: "CLP 220", quantity: "4.4", uom: "l" }] },
     ],
   },
   {
@@ -120,26 +120,26 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequency: "3 Monthly",
     frequencyGroup: "12-week",
     items: [
-      { plantId: "04-PU-102A", plantItem: "Bearing Assembly; Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
-      { plantId: "04-PU-102B", plantItem: "Gearbox, Pump; Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
-      { plantId: "04-PU-120", plantItem: "Gearbox, Pump; Sump Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "2", uom: "g" }] },
-      { plantId: "05-PU-003", plantItem: "Gearbox, Pump; Sump Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "2", uom: "g" }] },
-      { plantId: "05-PU-108A", plantItem: "Bearing Assembly; Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
-      { plantId: "05-PU-108B", plantItem: "Bearing Assembly; Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
-      { plantId: "06-PU-001", plantItem: "Bearing, Pump; Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "To Capacity", uom: "" }] },
-      { plantId: "06-PU-002", plantItem: "Bearing, Pump; Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "To Capacity", uom: "" }] },
-      { plantId: "06-PU-003", plantItem: "Bearing, Pump; Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "To Capacity", uom: "" }] },
-      { plantId: "05-PU-004", plantItem: "Gearbox, Pump; Sump Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "2", uom: "g" }] },
-      { plantId: "06-PU-004", plantItem: "Gearbox, Pump; Sump Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "2", uom: "g" }] },
-      { plantId: "08-PU-001", plantItem: "Bearing, Pump; Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "To Capacity", uom: "" }] },
-      { plantId: "08-PU-006", plantItem: "Bearing, Pump; Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "To Capacity", uom: "" }] },
-      { plantId: "08-PU-007", plantItem: "Bearing Assembly; Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
-      { plantId: "11-PU-130A", plantItem: "Bearing Assembly; Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
-      { plantId: "11-PU-130B", plantItem: "Bearing Assembly; Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
-      { plantId: "12-PU-200A", plantItem: "Bearing Assembly; Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
-      { plantId: "12-PU-200B", plantItem: "Bearing Assembly; Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
-      { plantId: "13-PU-101", plantItem: "Bearing Assembly; Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
-      { plantId: "13-PU-102", plantItem: "Bearing Assembly; Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
+      { plantId: "CFP01-PA01", plantItem: "Bearing Assembly; Cyclone Feed Pump (Duty)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
+      { plantId: "CFP01-PB01", plantItem: "Bearing Assembly; Cyclone Feed Pump (Standby)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
+      { plantId: "MLA01-PMP01", plantItem: "Gearbox, Pump; Grinding Area Sump Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "2", uom: "g" }] },
+      { plantId: "LCA01-PMP01", plantItem: "Gearbox, Pump; CIP Area Sump Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "2", uom: "g" }] },
+      { plantId: "ADS01-PMP03", plantItem: "Bearing Assembly; CIP Tailings Pump (Duty)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
+      { plantId: "ADS01-PMP02", plantItem: "Bearing Assembly; CIP Tailings Pump (Standby)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
+      { plantId: "CN01-PMP01", plantItem: "Bearing, Pump; Cyanide Solution Transfer Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "To Capacity", uom: "" }] },
+      { plantId: "CN01-DPA01", plantItem: "Bearing, Pump; Cyanide Dosing Pump (Duty)", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "To Capacity", uom: "" }] },
+      { plantId: "CN01-DPB01", plantItem: "Bearing, Pump; Cyanide Dosing Pump (Standby)", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "To Capacity", uom: "" }] },
+      { plantId: "ADS01-PMP01", plantItem: "Gearbox, Pump; CIP Area Tails Sump Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "2", uom: "g" }] },
+      { plantId: "CN01-SMP01", plantItem: "Gearbox, Pump; Cyanide Area Sump Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "2", uom: "g" }] },
+      { plantId: "EW01-PMP02", plantItem: "Bearing, Pump; Eluate Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "To Capacity", uom: "" }] },
+      { plantId: "CREG01-PMP01", plantItem: "Bearing, Pump; Carbon Transfer Pump", lubePoints: [{ location: "Bearing", type: "EP2", quantity: "To Capacity", uom: "" }] },
+      { plantId: "CREG01-SMP01", plantItem: "Bearing Assembly; Regen Area Sump Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
+      { plantId: "PCW01-PA01", plantItem: "Bearing Assembly; Process Water Pump (Duty)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
+      { plantId: "PCW01-PB01", plantItem: "Bearing Assembly; Process Water Pump (Standby)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
+      { plantId: "TUFP01-PMP01", plantItem: "Bearing Assembly; Thickener U/F Pump (Duty)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
+      { plantId: "TUFP01-PMP02", plantItem: "Bearing Assembly; Thickener U/F Pump (Standby)", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
+      { plantId: "FP01-PMP01", plantItem: "Bearing Assembly; Filter 1 Feed Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
+      { plantId: "FP02-PMP01", plantItem: "Bearing Assembly; Filter 2 Feed Pump", lubePoints: [{ location: "Bearing", type: "VG 100", quantity: "To Capacity", uom: "" }] },
     ],
   },
   {
@@ -151,8 +151,8 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequencyGroup: "12-week",
     items: [
       {
-        plantId: "05-HT-001",
-        plantItem: "Gearbox, Hoist, Trolly; Gantry Crane",
+        plantId: "ADS01-CRN01",
+        plantItem: "Gearbox, Hoist, Trolly; CIP Area Gantry Crane",
         lubePoints: [
           { location: "Gearbox", type: "VG150", quantity: "To Capacity", uom: "" },
           { location: "Hoist", type: "EP2", quantity: "To Capacity", uom: "" },
@@ -170,8 +170,8 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequencyGroup: "12-week",
     items: [
       {
-        plantId: "12-TM-001",
-        plantItem: "Powerpack, Rake Lift, hydraulic; Thickener",
+        plantId: "THK01",
+        plantItem: "Powerpack, Rake Lift, hydraulic; Tails Thickener",
         lubePoints: [
           { location: "Powerpack", type: "VG 68", quantity: "85% of Capacity", uom: "" },
           { location: "Rake Lift", type: "GP Grease", quantity: "0.5", uom: "l" },
@@ -190,9 +190,9 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequency: "6 Monthly",
     frequencyGroup: "26-week",
     items: [
-      { plantId: "05-CP-132", plantItem: "Oil Reservoir; Compressor", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
-      { plantId: "05-CP-133", plantItem: "Oil Reservoir; Compressor", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
-      { plantId: "13-CP-100", plantItem: "Oil Reservoir; Compressor", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
+      { plantId: "COMP01-HPAC01", plantItem: "Oil Reservoir; HP Air Compressor 1", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
+      { plantId: "COMP01-HPAC02", plantItem: "Oil Reservoir; HP Air Compressor 2", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
+      { plantId: "FPAR01-CMP02", plantItem: "Oil Reservoir; Filter Area HP Air Compressor", lubePoints: [{ location: "Reservoir", type: "Roto-Xtend Duty Fluid", quantity: "14.7", uom: "l" }] },
     ],
   },
 
@@ -206,7 +206,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequencyGroup: "52-week",
     items: [
       {
-        plantId: "04-FE-102",
+        plantId: "MLA01-SILO01-RVL01",
         plantItem: "Gearbox, Rotary Valve; Lime Silo",
         lubePoints: [
           { location: "Gearbox", type: "EP2", quantity: "2", uom: "g" },
@@ -224,8 +224,8 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequencyGroup: "52-week",
     items: [
       {
-        plantId: "06-MR-101",
-        plantItem: "Gearbox, Hoist, Trolly; Monorail",
+        plantId: "CN01-MR01",
+        plantItem: "Gearbox, Hoist, Trolly; Cyanide Monorail",
         lubePoints: [
           { location: "Gearbox", type: "VG150", quantity: "To Capacity", uom: "" },
           { location: "Hoist", type: "EP2", quantity: "To Capacity", uom: "" },
@@ -233,8 +233,8 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "08-MR-001",
-        plantItem: "Gearbox, Hoist, Trolly; Monorail",
+        plantId: "EW01-MNR01",
+        plantItem: "Gearbox, Hoist, Trolly; Electrowinning Monorail",
         lubePoints: [
           { location: "Gearbox", type: "VG150", quantity: "To Capacity", uom: "" },
           { location: "Hoist", type: "EP2", quantity: "To Capacity", uom: "" },
@@ -242,8 +242,8 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "12-MR-001",
-        plantItem: "Gearbox, Hoist, Trolly; Monorail",
+        plantId: "THKA01-MRL01",
+        plantItem: "Gearbox, Hoist, Trolly; Thickener Monorail",
         lubePoints: [
           { location: "Gearbox", type: "VG150", quantity: "To Capacity", uom: "" },
           { location: "Hoist", type: "EP2", quantity: "To Capacity", uom: "" },
