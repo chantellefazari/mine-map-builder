@@ -15,6 +15,7 @@ interface PMMetadataGridProps {
   frequency: string;
   assetNumber?: string;
   resources?: string;
+  hideAssetNumber?: boolean;
 }
 
 export const PMMetadataGrid = ({
