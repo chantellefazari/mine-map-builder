@@ -276,6 +276,80 @@ export const AssetCriticalitySection = () => {
         </CardContent>
       </Card>
 
+      {/* Hidden PDF Document */}
+      <div ref={pdfRef} style={{ position: "absolute", left: "-9999px", top: 0, width: 1200 }}>
+        <div style={{ fontFamily: "Arial, Helvetica, sans-serif", color: "#1a1a1a", lineHeight: 1.5, fontSize: 13 }}>
+          <div data-pdf-section>
+            <div style={{ background: "#C8960C", color: "#fff", padding: "18px 28px", borderRadius: 6, marginBottom: 16 }}>
+              <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 }}>TENNANT CREEK MINE</div>
+              <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.5 }}>Asset Criticality Assessment</div>
+              <div style={{ fontSize: 11, marginTop: 4, opacity: 0.9 }}>
+                Processing Plant | {new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: 16, marginBottom: 16 }}>
+              <div style={{ border: "1px solid #fee2e2", borderRadius: 6, padding: "10px 20px", textAlign: "center", background: "#fef2f2" }}>
+                <div style={{ fontSize: 24, fontWeight: 700, color: "#991b1b" }}>{summary.A}</div>
+                <div style={{ fontSize: 11 }}>Critical (A)</div>
+              </div>
+              <div style={{ border: "1px solid #fef3c7", borderRadius: 6, padding: "10px 20px", textAlign: "center", background: "#fffbeb" }}>
+                <div style={{ fontSize: 24, fontWeight: 700, color: "#92400e" }}>{summary.B}</div>
+                <div style={{ fontSize: 11 }}>Important (B)</div>
+              </div>
+              <div style={{ border: "1px solid #d1fae5", borderRadius: 6, padding: "10px 20px", textAlign: "center", background: "#f0fdf4" }}>
+                <div style={{ fontSize: 24, fontWeight: 700, color: "#065f46" }}>{summary.C}</div>
+                <div style={{ fontSize: 11 }}>General (C)</div>
+              </div>
+              <div style={{ border: "1px solid #e5e7eb", borderRadius: 6, padding: "10px 20px", textAlign: "center" }}>
+                <div style={{ fontSize: 24, fontWeight: 700 }}>{assets?.length || 0}</div>
+                <div style={{ fontSize: 11 }}>Total Assets</div>
+              </div>
+            </div>
+
+            <div style={{ fontSize: 12, marginBottom: 12 }}>
+              Criticality ratings are assigned using a 3 tier A/B/C scale. A (Critical) indicates failure causes immediate plant shutdown or safety risk.
+              B (Important) indicates significant production impact within 24 hours. C (General) indicates minimal or no production impact.
+            </div>
+
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  <th style={{ padding: "6px 10px", textAlign: "left", backgroundColor: "#C8960C", color: "#fff", fontSize: 11, fontWeight: 700 }}>Area</th>
+                  <th style={{ padding: "6px 10px", textAlign: "left", backgroundColor: "#C8960C", color: "#fff", fontSize: 11, fontWeight: 700 }}>Sub Area</th>
+                  <th style={{ padding: "6px 10px", textAlign: "left", backgroundColor: "#C8960C", color: "#fff", fontSize: 11, fontWeight: 700 }}>Asset #</th>
+                  <th style={{ padding: "6px 10px", textAlign: "left", backgroundColor: "#C8960C", color: "#fff", fontSize: 11, fontWeight: 700 }}>Asset Name</th>
+                  <th style={{ padding: "6px 10px", textAlign: "center", backgroundColor: "#C8960C", color: "#fff", fontSize: 11, fontWeight: 700, width: 50 }}>Rating</th>
+                  <th style={{ padding: "6px 10px", textAlign: "left", backgroundColor: "#C8960C", color: "#fff", fontSize: 11, fontWeight: 700 }}>Justification</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(assets || []).map((a, i) => {
+                  const r = getRating(a.asset_number);
+                  const j = getJustification(a.asset_number);
+                  const ratingColors: Record<string, { bg: string; color: string }> = {
+                    A: { bg: "#fee2e2", color: "#991b1b" },
+                    B: { bg: "#fef3c7", color: "#92400e" },
+                    C: { bg: "#d1fae5", color: "#065f46" },
+                  };
+                  const cellStyle = { padding: "4px 10px", fontSize: 11, borderBottom: "1px solid #e5e0d0", background: i % 2 === 1 ? "#fdf8ea" : "transparent" };
+                  return (
+                    <tr key={a.asset_number}>
+                      <td style={cellStyle}>{a.area_label}</td>
+                      <td style={cellStyle}>{a.sub_area}</td>
+                      <td style={{ ...cellStyle, fontFamily: "monospace", fontSize: 10 }}>{a.asset_number}</td>
+                      <td style={cellStyle}>{a.asset_name}</td>
+                      <td style={{ ...cellStyle, textAlign: "center", fontWeight: 700, background: ratingColors[r].bg, color: ratingColors[r].color }}>{r}</td>
+                      <td style={cellStyle}>{j}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       {/* Summary + Actions */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex gap-3">
