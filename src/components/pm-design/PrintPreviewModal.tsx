@@ -115,6 +115,41 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
     }, 500);
   };
 
+  const handleExportHtml = () => {
+    const printContent = printRef.current;
+    if (!printContent) return;
+
+    const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    ${printStyles}
+    html, body { margin: 0; padding: 0; }
+    body { padding: 8mm; }
+    @media print {
+      body { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+${printContent.innerHTML}
+</body>
+</html>`;
+
+    const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${title.replace(/[^a-zA-Z0-9_-]/g, "_")}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handleSavePdf = async () => {
     if (!onSavePdf) return;
     setIsSaving(true);
