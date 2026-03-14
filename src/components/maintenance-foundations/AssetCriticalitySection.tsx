@@ -41,22 +41,29 @@ function useParentAssets() {
   return useQuery({
     queryKey: ["criticality-parent-assets"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("processing_plant_assets_rev_b")
-        .select("asset_number, asset_name, area_label, sub_area, parent_asset_label, sort_order")
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      // Build set of asset_names that are referenced as parent_asset_label by other rows
-      const parentNames = new Set(data.map(d => d.parent_asset_label));
-      // Parent assets = Level 5/6: those whose asset_name is used as parent_asset_label by at least one other row
+      // Fetch all assets in tree flow order (sort_order follows physical material flow)
+      let allRows: any[] = [];
+      let from = 0;
+      const pageSize = 1000;
+      while (true) {
+        const { data, error } = await supabase
+          .from("processing_plant_assets_rev_b")
+          .select("asset_number, asset_name, area_label, sub_area, sort_order")
+          .order("sort_order", { ascending: true })
+          .range(from, from + pageSize - 1);
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        allRows = allRows.concat(data);
+        if (data.length < pageSize) break;
+        from += pageSize;
+      }
+      // Deduplicate by asset_number, preserving sort_order sequence
       const seen = new Set<string>();
       const parents: ParentAsset[] = [];
-      for (const d of data) {
+      for (const d of allRows) {
         if (seen.has(d.asset_number)) continue;
-        if (parentNames.has(d.asset_name)) {
-          seen.add(d.asset_number);
-          parents.push({ asset_number: d.asset_number, asset_name: d.asset_name, area_label: d.area_label, sub_area: d.sub_area });
-        }
+        seen.add(d.asset_number);
+        parents.push({ asset_number: d.asset_number, asset_name: d.asset_name, area_label: d.area_label, sub_area: d.sub_area });
       }
       return parents;
     },
