@@ -40,6 +40,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
       const mechCount = pms.filter(p => p.discipline === "Mechanical").length;
       const elecCount = pms.filter(p => p.discipline === "Electrical").length;
       const opsCount = pms.filter(p => p.discipline === "Ops" || p.discipline === "Inspection").length;
+      const lubeCount = pms.filter(p => p.discipline === "Lube").length;
 
       // Frequency sort order
       const FREQ_ORDER: Record<string, number> = {
