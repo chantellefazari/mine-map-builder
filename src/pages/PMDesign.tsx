@@ -352,7 +352,7 @@ const PMDesign = () => {
   const [activeView, setActiveView] = useState<ViewType>("filter-press-daily-offline");
   const [expandedDisciplines, setExpandedDisciplines] = useState<Discipline[]>(["mechanical"]);
   const [expandedFrequencies, setExpandedFrequencies] = useState<string[]>(["mechanical-daily", "mechanical-1-week"]);
-  const [showPrintPreview, setShowPrintPreview] = useState(false);
+  
   const [isDownloading, setIsDownloading] = useState(false);
   const pmDocRef = useRef<HTMLDivElement>(null);
 
