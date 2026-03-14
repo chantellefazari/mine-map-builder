@@ -27,6 +27,7 @@ export const PMMetadataGrid = ({
   frequency,
   assetNumber: initialAssetNumber = "",
   resources: initialResources = "",
+  hideAssetNumber = false,
 }: PMMetadataGridProps) => {
   const queryClient = useQueryClient();
   const [resources, setResources] = useState(initialResources);
