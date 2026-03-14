@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { Link } from "react-router-dom";
 import { FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download, Loader2 } from "lucide-react";
 import { exportSectionsToPdf } from "@/utils/sectionPdfExport";
@@ -783,90 +783,61 @@ const PMDesign = () => {
         <main className="flex-1 overflow-auto">
           {isPMDocument ? (
             <div className="p-6 overflow-auto">
-              <Tabs defaultValue="document" className="w-full">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="document" className="gap-2">
-                    <FileText className="w-4 h-4" />
-                    Document
-                  </TabsTrigger>
-                  <TabsTrigger value="print" className="gap-2">
-                    <Printer className="w-4 h-4" />
-                    Print & Export
-                  </TabsTrigger>
-                </TabsList>
+              {/* Print & Export toolbar */}
+              <div className="flex flex-wrap items-center gap-2 mb-4 pb-4 border-b border-border">
+                <Button
+                  onClick={handlePrint}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Printer className="w-4 h-4" />
+                  Print Preview
+                </Button>
+                <Button
+                  onClick={handleDownloadPdf}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  disabled={isDownloading}
+                >
+                  {isDownloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                  {isDownloading ? "Downloading..." : "Download PDF"}
+                </Button>
+                <Button
+                  onClick={() => exportPMWorkbook()}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Workbook
+                </Button>
+                <Button
+                  onClick={handleSyncPMs}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  disabled={isSyncing}
+                >
+                  <Database className={`w-4 h-4 ${isSyncing ? "animate-spin" : ""}`} />
+                  {isSyncing ? "Syncing..." : "Sync All PMs"}
+                </Button>
+                <Button
+                  onClick={handleSeedTasks}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  disabled={isSeeding}
+                >
+                  <ClipboardCheck className={`w-4 h-4 ${isSeeding ? "animate-spin" : ""}`} />
+                  {isSeeding ? "Seeding..." : "Seed Tasks to DB"}
+                </Button>
+              </div>
 
-                <TabsContent value="document">
-                  <div ref={pmDocRef}>
-                    {renderPMDocument()}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="print">
-                  <div className="max-w-2xl space-y-6">
-                    <h3 className="text-lg font-semibold text-foreground">Print & Export Options</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <Button
-                        onClick={handlePrint}
-                        variant="outline"
-                        className="gap-2 justify-start h-auto py-3"
-                      >
-                        <Printer className="w-4 h-4" />
-                        <div className="text-left">
-                          <div className="font-medium">Print Preview</div>
-                          <div className="text-xs text-muted-foreground">Preview and print the document</div>
-                        </div>
-                      </Button>
-                      <Button
-                        onClick={handleDownloadPdf}
-                        variant="outline"
-                        className="gap-2 justify-start h-auto py-3"
-                        disabled={isDownloading}
-                      >
-                        {isDownloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                        <div className="text-left">
-                          <div className="font-medium">{isDownloading ? "Downloading..." : "Download PDF"}</div>
-                          <div className="text-xs text-muted-foreground">Save as A4 PDF document</div>
-                        </div>
-                      </Button>
-                      <Button
-                        onClick={() => exportPMWorkbook()}
-                        variant="outline"
-                        className="gap-2 justify-start h-auto py-3"
-                      >
-                        <Download className="w-4 h-4" />
-                        <div className="text-left">
-                          <div className="font-medium">Download Workbook</div>
-                          <div className="text-xs text-muted-foreground">Export PM data as spreadsheet</div>
-                        </div>
-                      </Button>
-                      <Button
-                        onClick={handleSyncPMs}
-                        variant="outline"
-                        className="gap-2 justify-start h-auto py-3"
-                        disabled={isSyncing}
-                      >
-                        <Database className={`w-4 h-4 ${isSyncing ? "animate-spin" : ""}`} />
-                        <div className="text-left">
-                          <div className="font-medium">{isSyncing ? "Syncing..." : "Sync All PMs"}</div>
-                          <div className="text-xs text-muted-foreground">Sync PM templates to database</div>
-                        </div>
-                      </Button>
-                      <Button
-                        onClick={handleSeedTasks}
-                        variant="outline"
-                        className="gap-2 justify-start h-auto py-3"
-                        disabled={isSeeding}
-                      >
-                        <ClipboardCheck className={`w-4 h-4 ${isSeeding ? "animate-spin" : ""}`} />
-                        <div className="text-left">
-                          <div className="font-medium">{isSeeding ? "Seeding..." : "Seed Tasks to DB"}</div>
-                          <div className="text-xs text-muted-foreground">Populate task records from templates</div>
-                        </div>
-                      </Button>
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
+              <div ref={pmDocRef}>
+                {renderPMDocument()}
+              </div>
             </div>
           ) : (
             <div className="p-8">
