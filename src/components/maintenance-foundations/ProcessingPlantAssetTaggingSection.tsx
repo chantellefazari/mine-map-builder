@@ -420,7 +420,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
               <tbody className="divide-y divide-border">
                 {[
                   ["Motors",     "Mount on frame side, non-drive end. Avoid cooling fins"],
-                  ["Pumps",      "Mount on base frame — discharge side — not on removable guards"],
+                  ["Pumps",      "Mount on base frame, discharge side. Not on removable guards"],
                   ["Conveyors",  "Drive side near motor — 1.0–1.5 m above ground — not on belt guards"],
                   ["Screens",    "Structural frame near drive side — eye level where accessible"],
                   ["Tanks",      "Near manway or ladder access point — eye level where possible"],
