@@ -60,7 +60,7 @@ export const FoundationsContent = () => {
     if (!printWindow) return;
     printWindow.document.write(`
       <!DOCTYPE html><html><head>
-        <title>${TAB_LABELS[activeTab]} — TCMG</title>
+        <title>${TAB_LABELS[activeTab]} | TCMG</title>
         <style>
           @page { size: A4 portrait; margin: 15mm; }
           * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -82,7 +82,7 @@ export const FoundationsContent = () => {
       </head><body>
         <div class="doc-header">
           <h1>${TAB_LABELS[activeTab]}</h1>
-          <p>Tennant Mines Gold — Maintenance Process Foundations | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
+          <p>Tennant Mines Gold | Maintenance Process Foundations | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
         </div>
         ${el.innerHTML}
       </body></html>
@@ -99,7 +99,7 @@ export const FoundationsContent = () => {
     if (!printWindow) return;
     printWindow.document.write(`
       <!DOCTYPE html><html><head>
-        <title>${TAB_LABELS[activeTab]} — TCMG (Save as PDF)</title>
+        <title>${TAB_LABELS[activeTab]} | TCMG (Save as PDF)</title>
         <style>
           @page { size: A4 portrait; margin: 15mm; }
           * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -121,7 +121,7 @@ export const FoundationsContent = () => {
       </head><body>
         <div class="doc-header">
           <h1>${TAB_LABELS[activeTab]}</h1>
-          <p>Tennant Mines Gold — Maintenance Process Foundations | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
+          <p>Tennant Mines Gold | Maintenance Process Foundations | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
         </div>
         ${el.innerHTML}
       </body></html>

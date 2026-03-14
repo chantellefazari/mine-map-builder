@@ -43,27 +43,18 @@ const autoClassifyCriticality = (assetName: string, areaLabel: string, subArea: 
   const a = areaLabel.toLowerCase();
   const s = subArea.toLowerCase();
 
-  // ── A — Critical: Only the key bottleneck equipment that stops the whole plant ──
+  // A: Plant-stopping bottleneck, single point of failure
   const A_PATTERNS = [
-    // Primary grinding circuit (single point of failure)
     /ball mill/i, /sag mill/i, /primary mill/i,
-    // Primary crusher (single unit)
     /jaw crusher/i, /primary crusher/i,
-    // Thickener (single unit, no bypass)
     /\bthickener\b/i,
-    // Filter press (gold recovery path)
     /filter press/i,
-    // Electrowinning / elution (gold production)
     /electrowinning/i, /electro.?win/i, /elution column/i, /elution heater/i,
-    // Main power (total plant blackout)
     /main transformer/i, /power station/i, /main switchboard/i,
-    // Plant air (single compressor stops everything)
     /air compressor/i, /plant air/i,
-    // PLC / SCADA (total control loss)
-    /\bplc\b/i, /\bscada\b/i,
   ];
 
-  // ── B — Important: Significant production impact but may have standby or short-term workaround ──
+  // B: Significant production impact but workarounds possible
   const B_PATTERNS = [
     // Secondary/cone crushers
     /cone crusher/i, /secondary crusher/i,
@@ -108,7 +99,7 @@ const autoClassifyCriticality = (assetName: string, areaLabel: string, subArea: 
     /excavator/i, /loader/i, /dozer/i, /water truck/i,
   ];
 
-  // Check A first — only true single-point-of-failure bottlenecks
+  // Check A first
   for (const pat of A_PATTERNS) {
     if (pat.test(n)) return "A";
   }
@@ -117,7 +108,7 @@ const autoClassifyCriticality = (assetName: string, areaLabel: string, subArea: 
   for (const pat of B_PATTERNS) {
     if (pat.test(n) || pat.test(s)) return "B";
   }
-  // Area-based B fallbacks (not A — sub-components within these areas aren't all critical)
+  // Area-based B fallbacks
   if (a.includes("gold") || s.includes("gold room")) return "B";
   if (a.includes("elution") || s.includes("elution")) return "B";
   if (a.includes("crushing") || a.includes("grinding") || a.includes("milling")) return "B";
