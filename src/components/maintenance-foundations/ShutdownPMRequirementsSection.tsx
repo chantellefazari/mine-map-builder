@@ -220,7 +220,7 @@ export const ShutdownPMRequirementsSection = () => {
                       <div className="flex items-center gap-2 px-5 py-2 bg-blue-50/60 dark:bg-blue-950/30 border-b border-border border-l-[3px] border-l-blue-500">
                         <Wrench className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                         <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300">Mechanical</span>
-                        <span className="text-[10px] text-blue-600/70 dark:text-blue-400/70">— {area.mechanical.length} items — {area.mechanical.reduce((s, pm) => s + pm.estimated_hours, 0)}h est.</span>
+                        <span className="text-[10px] text-blue-600/70 dark:text-blue-400/70">| {area.mechanical.length} items | {area.mechanical.reduce((s, pm) => s + pm.estimated_hours, 0)}h est.</span>
                       </div>
                       <PMTable items={area.mechanical} checkExists={checkExists} />
                     </div>
