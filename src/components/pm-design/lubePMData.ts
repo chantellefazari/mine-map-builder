@@ -68,7 +68,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     frequencyGroup: "12-week",
     items: [
       {
-        plantId: "04-FE-100",
+        plantId: "RCFD01",
         plantItem: "Gearbox, Pully; Conveyor",
         lubePoints: [
           { location: "Gearbox", type: "CLP 220", quantity: "1.2", uom: "l" },
@@ -76,7 +76,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "04-FE-101",
+        plantId: "TRCV01",
         plantItem: "Gearbox, Pully; Conveyor",
         lubePoints: [
           { location: "Gearbox", type: "CLP 220", quantity: "2.1", uom: "l" },
@@ -84,7 +84,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "04-BC-100",
+        plantId: "MFCV01",
         plantItem: "Gearbox, Pully; Conveyor",
         lubePoints: [
           { location: "Gearbox", type: "CLP 220", quantity: "3", uom: "l" },
