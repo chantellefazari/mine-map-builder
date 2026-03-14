@@ -37,7 +37,7 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
   };
 
   return (
-    <div className="bg-background min-h-full" style={{ width: "210mm", minHeight: "297mm", margin: "0 auto" }}>
+    <div className="bg-background min-h-full lube-pm-template" style={{ maxWidth: "100%", boxSizing: "border-box" }}>
       <div className="border-2 border-border">
         <PMBannerHeader title={template.title} subtitle={template.subtitle} />
 
