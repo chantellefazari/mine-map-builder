@@ -46,9 +46,9 @@ export const CableTestSheetPMDocument = () => {
             </thead>
             <tbody>
               <tr>
-                <td className="border border-border px-3 py-4"></td>
-                <td className="border border-border px-3 py-4"></td>
-                <td className="border border-border px-3 py-4"></td>
+                <td className="border border-border px-3 py-6"></td>
+                <td className="border border-border px-3 py-6"></td>
+                <td className="border border-border px-3 py-6"></td>
               </tr>
             </tbody>
           </table>
@@ -74,7 +74,7 @@ export const CableTestSheetPMDocument = () => {
               <tbody>
                 <tr>
                   {testColumns.map((col) => (
-                    <td key={col} className="border border-border px-2 py-4"></td>
+                    <td key={col} className="border border-border px-2 py-6"></td>
                   ))}
                 </tr>
               </tbody>
@@ -88,11 +88,11 @@ export const CableTestSheetPMDocument = () => {
             <tbody>
               <tr>
                 <td className="border border-border px-3 py-2 font-semibold">N-E Fault Loop Impedance (OHMS)</td>
-                <td className="border border-border px-3 py-4"></td>
+                <td className="border border-border px-3 py-6"></td>
                 <td className="border border-border px-3 py-2 font-semibold">Continuity Earth (Ω)</td>
-                <td className="border border-border px-3 py-4"></td>
+                <td className="border border-border px-3 py-6"></td>
                 <td className="border border-border px-3 py-2 font-semibold">SWA (Ω)</td>
-                <td className="border border-border px-3 py-4"></td>
+                <td className="border border-border px-3 py-6"></td>
               </tr>
             </tbody>
           </table>
