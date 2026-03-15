@@ -237,7 +237,7 @@ export const PMBaseMasterTemplate = () => {
                   <td className="px-4 py-2 font-medium">Supervisor</td>
                   <td className="px-4 py-2"><Input className="h-7 text-xs" /></td>
                   <td className="px-4 py-2"><div className="h-7 border border-border rounded bg-muted/30"></div></td>
-                  <td className="px-4 py-2"><Input className="h-7 text-xs" type="date" /></td>
+                  <td className="px-4 py-2"><Input className="h-7 text-xs" /></td>
                 </tr>
               </tbody>
             </table>
