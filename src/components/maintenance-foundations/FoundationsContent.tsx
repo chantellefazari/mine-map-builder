@@ -177,11 +177,12 @@ export const FoundationsContent = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={handlePrintTab}
+            onClick={handleSavePdf}
+            disabled={saving}
             className="gap-2 w-full justify-start"
           >
-            <Printer className="w-3.5 h-3.5" />
-            Print Tab
+            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Printer className="w-3.5 h-3.5" />}
+            {saving ? "Saving…" : "Save PDF"}
           </Button>
         </div>
       </div>
