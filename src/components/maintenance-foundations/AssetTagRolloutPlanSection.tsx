@@ -476,51 +476,129 @@ export const AssetTagRolloutPlanSection = () => {
     setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
   };
 
-  const printPdfBlob = async (blob: Blob) => {
-    // Convert blob to base64 data URI for the iframe src
-    const reader = new FileReader();
-    const dataUrl = await new Promise<string>((resolve) => {
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.readAsDataURL(blob);
-    });
+  const escapeHtml = (value: string | number | null | undefined) =>
+    String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
 
-    const printWindow = window.open("", "_blank", "width=900,height=700");
-    if (!printWindow) {
-      console.error("Popup blocked");
+  const printAttachmentTable = (
+    title: string,
+    subtitle: string,
+    headers: string[],
+    rows: Array<Array<string | number>>,
+    orientation: "portrait" | "landscape" = "landscape"
+  ) => {
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "fixed";
+    iframe.style.right = "0";
+    iframe.style.bottom = "0";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "0";
+    iframe.setAttribute("aria-hidden", "true");
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (!doc) {
+      document.body.removeChild(iframe);
       return;
     }
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html><head><title>Print</title>
-      <style>
-        body { margin: 0; padding: 0; }
-        embed { width: 100%; height: 100vh; }
-        @media print { body { margin: 0; } }
-      </style>
-      </head><body>
-        <embed src="${dataUrl}" type="application/pdf" width="100%" height="100%" />
-      </body></html>
+
+    const headHtml = headers.map((h) => `<th>${escapeHtml(h)}</th>`).join("");
+    const bodyHtml = rows
+      .map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`)
+      .join("");
+
+    doc.open();
+    doc.write(`
+      <!doctype html>
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>${escapeHtml(title)}</title>
+          <style>
+            @page { size: A4 ${orientation}; margin: 10mm; }
+            * { box-sizing: border-box; }
+            body { margin: 0; font-family: Arial, sans-serif; color: #111; }
+            h1 { margin: 0 0 4px; font-size: 16px; }
+            p { margin: 0 0 10px; font-size: 11px; color: #444; }
+            table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+            th, td { border: 1px solid #222; padding: 4px; font-size: 9px; vertical-align: top; word-break: break-word; }
+            th { background: #f3f4f6; font-weight: 700; }
+            tr:nth-child(even) td { background: #fafafa; }
+            @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+          </style>
+        </head>
+        <body>
+          <h1>${escapeHtml(title)}</h1>
+          <p>${escapeHtml(subtitle)}</p>
+          <table>
+            <thead><tr>${headHtml}</tr></thead>
+            <tbody>${bodyHtml}</tbody>
+          </table>
+        </body>
+      </html>
     `);
-    printWindow.document.close();
-    printWindow.onload = () => {
-      setTimeout(() => {
-        printWindow.print();
-      }, 500);
+    doc.close();
+
+    const cleanup = () => {
+      if (document.body.contains(iframe)) document.body.removeChild(iframe);
+    };
+
+    iframe.onload = () => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      iframe.contentWindow?.addEventListener("afterprint", cleanup, { once: true });
+      setTimeout(cleanup, 120000);
     };
   };
 
   const handleDownloadRegister = async () => {
-    try {
-      const blob = await generateAssetRegisterPDF(taggedAssets);
-      printPdfBlob(blob);
-    } catch (err) { console.error("Asset Register PDF error:", err); }
+    const rows = taggedAssets.map((a: any, i: number) => [
+      i + 1,
+      a.asset_number,
+      a.asset_name,
+      a.parent_asset_label,
+      Array.isArray(a.pid_tags) ? a.pid_tags.join("; ") : "",
+      a.area_label,
+      a.sub_area,
+      a.functional_location || "",
+    ]);
+
+    printAttachmentTable(
+      "Attachment A — P&ID Tagged Asset Register",
+      `${taggedAssets.length} assets with linked P&ID references`,
+      ["#", "Asset Number", "Asset Name", "Parent System", "P&ID Tag", "Area", "Sub-Area", "Location (FL)"],
+      rows,
+      "landscape"
+    );
   };
 
   const handleDownloadProductionList = async () => {
-    try {
-      const blob = await generateProductionListPDF(productionTags);
-      printPdfBlob(blob);
-    } catch (err) { console.error("Production List PDF error:", err); }
+    const rows = productionTags.map((t, i) => [
+      i + 1,
+      t.assetNumber,
+      t.assetName,
+      t.pidTag,
+      `Type ${t.tagType}`,
+      t.tagSize,
+      t.mountingLocation,
+      t.mountingMethod,
+      t.parentSystem,
+      t.functionalLocation || `${t.areaLabel} > ${t.subArea}`,
+      t.tagInstalled ? "Yes" : "No",
+    ]);
+
+    printAttachmentTable(
+      "Attachment B — Asset Tag Production List",
+      `${productionTags.length} tags total | Type A: ${typeACnt} | Type B: ${typeBCnt}`,
+      ["#", "Asset No.", "Asset Name", "P&ID Tag", "Type", "Tag Size", "Mounting Location", "Mounting Method", "Parent System", "Location", "Installed"],
+      rows,
+      "landscape"
+    );
   };
 
   return (
