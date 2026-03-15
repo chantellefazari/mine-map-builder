@@ -197,6 +197,12 @@ export const PMMetadataGrid = ({
             <div className="px-2 py-1.5"></div>
           </div>
         )}
+        {hideAssetNumber && (
+          <div className="grid grid-cols-[120px_1fr]">
+            <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Required Tools:</div>
+            <div className="px-2 py-1.5"></div>
+          </div>
+        )}
       </div>
     </div>
   );
