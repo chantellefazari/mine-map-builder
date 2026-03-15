@@ -86,20 +86,21 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Download PDF directly via anchor click (bypasses popup blockers) */
+/** Open PDF in new tab for viewing/saving, with download fallback */
 function triggerPdfDownload(pdf: jsPDF, filename: string, _title?: string) {
   const blob = pdf.output("blob");
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.style.display = "none";
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => {
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, 200);
+  const blobUrl = URL.createObjectURL(blob);
+
+  // Try opening in a new tab first
+  const win = window.open(blobUrl, "_blank");
+  if (win) {
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 120000);
+    return;
+  }
+
+  // Fallback: use jsPDF built-in save
+  pdf.save(filename);
+  URL.revokeObjectURL(blobUrl);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
