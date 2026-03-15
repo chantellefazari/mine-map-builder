@@ -36,15 +36,15 @@ const StatusBadge = ({ status }: { status: ReadinessStatus }) => {
 };
 
 const ASSET_MAPPINGS: MappingRow[] = [
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "asset_number", targetEntity: "Asset", targetField: "Asset ID / Number", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "asset_name", targetEntity: "Asset", targetField: "Asset Name / Description", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "functional_location", targetEntity: "Asset", targetField: "Functional Location", transformation: "Direct — TCMG-PP-XXX format", status: "Ready" },
+  { sourceTable: "processing_plant_assets_rev_b", sourceField: "asset_number", targetEntity: "Asset", targetField: "Asset ID / Number", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "processing_plant_assets_rev_b", sourceField: "asset_name", targetEntity: "Asset", targetField: "Asset Name / Description", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "processing_plant_assets_rev_b", sourceField: "functional_location", targetEntity: "Asset", targetField: "Functional Location", transformation: "Direct: TCMG-PP-XXX format", status: "Ready" },
   { sourceTable: "processing_plant_assets_rev_b", sourceField: "area_label", targetEntity: "Asset", targetField: "Asset Group / Area", transformation: "Map to D365 Asset Group", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "sub_area", targetEntity: "Asset", targetField: "Sub-Area / Location", transformation: "Direct — no change", status: "Ready" },
+  { sourceTable: "processing_plant_assets_rev_b", sourceField: "sub_area", targetEntity: "Asset", targetField: "Sub-Area / Location", transformation: "Direct: no change", status: "Ready" },
   { sourceTable: "processing_plant_assets_rev_b", sourceField: "parent_asset_label", targetEntity: "Asset", targetField: "Parent Asset Reference", transformation: "Lookup parent asset_number", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "pid_tags[]", targetEntity: "Asset", targetField: "P&ID Tag Reference", transformation: "Array → semicolon-delimited string", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "components (JSONB)", targetEntity: "Asset", targetField: "Sub-Component BOM", transformation: "Flatten JSONB → child asset rows", status: "Partial" },
-  { sourceTable: "asset_criticality_ratings", sourceField: "criticality", targetEntity: "Asset", targetField: "Criticality Rating", transformation: "Direct - A/B/C rating from assessment register", status: "Ready" },
+  { sourceTable: "processing_plant_assets_rev_b", sourceField: "pid_tags[]", targetEntity: "Asset", targetField: "P&ID Tag Reference", transformation: "Array to semicolon-delimited string", status: "Ready" },
+  { sourceTable: "processing_plant_assets_rev_b", sourceField: "components (JSONB)", targetEntity: "Asset", targetField: "Sub-Component BOM", transformation: "Flatten JSONB to child asset rows (15% populated)", status: "Partial" },
+  { sourceTable: "asset_criticality_ratings", sourceField: "criticality", targetEntity: "Asset", targetField: "Criticality Rating", transformation: "Direct: A/B/C rating from assessment register (117 assessed)", status: "Ready" },
   { sourceTable: "processing_plant_assets_rev_b", sourceField: "sort_order", targetEntity: "Asset", targetField: "Display Sequence", transformation: "Direct integer mapping", status: "Ready" },
 ];
 
