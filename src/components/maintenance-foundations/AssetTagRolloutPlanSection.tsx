@@ -476,19 +476,19 @@ export const AssetTagRolloutPlanSection = () => {
     setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
   };
 
-  const openPdfInNewTab = (blob: Blob, filename: string) => {
+  const printPdfBlob = (blob: Blob) => {
     const url = URL.createObjectURL(blob);
-    const win = window.open(url, "_blank");
-    if (!win) {
-      // Popup blocked — fall back to direct download
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-    setTimeout(() => URL.revokeObjectURL(url), 120000);
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = url;
+    document.body.appendChild(iframe);
+    iframe.onload = () => {
+      iframe.contentWindow?.print();
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+        URL.revokeObjectURL(url);
+      }, 60000);
+    };
   };
 
   const handleDownloadRegister = async () => {
