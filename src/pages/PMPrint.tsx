@@ -326,7 +326,7 @@ const PMPrint = () => {
             border: none !important;
           }
           th, td {
-            padding: 3px 6px !important;
+            vertical-align: top;
           }
 
           /* Rows should not split */
