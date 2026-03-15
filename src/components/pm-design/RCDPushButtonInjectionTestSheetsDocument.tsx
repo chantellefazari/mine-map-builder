@@ -173,7 +173,7 @@ const RCDPushButtonInjectionTestSheet = ({ location }: { location: RCDLocation }
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-xs border-collapse min-w-[900px]">
+            <table className="w-full text-xs border-collapse" style={{ tableLayout: "fixed" }}>
               <thead>
                 <tr className="bg-muted">
                   <th className="border border-border px-2 py-2 text-center font-semibold w-[6%]">Circuit #</th>
