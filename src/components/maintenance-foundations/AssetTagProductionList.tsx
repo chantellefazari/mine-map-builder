@@ -341,7 +341,7 @@ export const AssetTagProductionList = () => {
                 <span className="text-xs font-bold text-foreground uppercase tracking-wide">Type B – Position Tags</span>
               </div>
               <p className="text-[11px] text-muted-foreground mb-2">
-                Smaller tag, single hole. 70mm × 25mm × 1.5mm. Bolt or cable tie to nearby structure.
+                Smaller tag, single hole. 70mm × 25mm × 1.5mm. Bolt or stainless steel ring to nearby structure.
               </p>
               <span className="text-2xl font-bold text-amber-600">{totals.typeB}</span>
               <span className="text-xs text-muted-foreground ml-1">tags</span>

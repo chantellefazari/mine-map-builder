@@ -152,7 +152,7 @@ export const AssetTagRolloutPlanSection = () => {
         tagType,
         tagSize: tagType === "A" ? "100mm x 50mm x 1.5mm" : "70mm x 25mm x 1.5mm",
         mountingLocation: mountLoc(tagType, a.asset_name),
-        mountingMethod: tagType === "A" ? "Adhesive plate or rivet to fixed surface" : "Bolt or cable tie to nearby structure",
+        mountingMethod: tagType === "A" ? "Adhesive plate or rivet to fixed surface" : "Bolt or stainless steel ring to nearby structure",
         areaLabel: a.area_label,
         subArea: a.sub_area,
         functionalLocation: a.functional_location || "",
