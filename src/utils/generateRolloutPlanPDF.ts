@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
+
 
 // Pre-load the Gravotech LS100 image as base64 for PDF embedding
 let gravoImageBase64: string | null = null;
