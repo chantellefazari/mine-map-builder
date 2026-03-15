@@ -477,14 +477,32 @@ export const AssetTagRolloutPlanSection = () => {
     setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
   };
 
+  const [pdfModalUrl, setPdfModalUrl] = useState<string | null>(null);
+  const [pdfModalTitle, setPdfModalTitle] = useState("");
+
+  const openPdfModal = useCallback((blob: Blob, title: string) => {
+    const url = URL.createObjectURL(blob);
+    setPdfModalUrl(url);
+    setPdfModalTitle(title);
+  }, []);
+
+  const closePdfModal = useCallback(() => {
+    if (pdfModalUrl) URL.revokeObjectURL(pdfModalUrl);
+    setPdfModalUrl(null);
+  }, [pdfModalUrl]);
+
   const handleDownloadRegister = async () => {
-    try { await generateAssetRegisterPDF(taggedAssets); }
-    catch (err) { console.error("Asset Register PDF error:", err); }
+    try {
+      const blob = await generateAssetRegisterPDF(taggedAssets);
+      openPdfModal(blob, "Attachment A — P&ID Tagged Asset Register");
+    } catch (err) { console.error("Asset Register PDF error:", err); }
   };
 
   const handleDownloadProductionList = async () => {
-    try { await generateProductionListPDF(productionTags); }
-    catch (err) { console.error("Production List PDF error:", err); }
+    try {
+      const blob = await generateProductionListPDF(productionTags);
+      openPdfModal(blob, "Attachment B — Asset Tag Production List");
+    } catch (err) { console.error("Production List PDF error:", err); }
   };
 
   return (
