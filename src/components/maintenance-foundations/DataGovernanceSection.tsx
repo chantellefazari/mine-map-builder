@@ -96,7 +96,7 @@ const EDITABLE_DATA = [
 const RESPONSIBILITY_MAP = [
   { role: "Engineering", items: ["P&ID drawing updates and tag assignments", "Asset naming conventions and numbering rules", "Hierarchy structure changes (adding or removing levels)", "Functional location codes and area code definitions", "Electrical identifier series (generators, MCCs)", "Data mapping for future CMMS migration"] },
   { role: "Maintenance Supervisors", items: ["PM template content, frequencies, and task lists", "Work order creation, classification, and closure", "Asset criticality ratings and justifications", "Asset tag rollout installation and verification", "Component OEM details and specification updates", "Labour hour estimates and resource allocation"] },
-  { role: "Stores Coordinator", items: ["Part number allocation using the SSCCNNN format", "Store location coding and bin assignments", "Stock control procedure compliance", "Receiving, issuing, and nightshift withdrawal rules", "Stock levels, min/max quantities, and reorder points"] },
+  { role: "Stores", items: ["Part number allocation using the SSCCNNN format", "Store location coding and bin assignments", "Stock control procedure compliance", "Receiving, issuing, and nightshift withdrawal rules", "Stock levels, min/max quantities, and reorder points"] },
   { role: "Procurement Officer", items: ["Supplier register and vendor onboarding", "Purchase request processing and approvals", "Unit pricing, lead times, and supplier linkages", "Quote management and supplier evaluation"] },
 ];
 
