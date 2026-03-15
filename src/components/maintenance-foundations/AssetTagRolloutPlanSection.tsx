@@ -88,7 +88,7 @@ export const AssetTagRolloutPlanSection = () => {
       while (true) {
         const { data, error } = await supabase
           .from("processing_plant_assets_rev_b")
-          .select("asset_name, asset_number, parent_asset_label, pid_tags, area_label, sub_area, functional_location")
+          .select("asset_name, asset_number, parent_asset_label, pid_tags, area_label, area_code, sub_area, functional_location, sort_order")
           .not("pid_tags", "is", null)
           .not("pid_tags", "eq", "{}")
           .order("sort_order", { ascending: true })
@@ -100,6 +100,16 @@ export const AssetTagRolloutPlanSection = () => {
         if (data.length < batchSize) break;
         from += batchSize;
       }
+
+      // Sort by canonical area order: SITE → UTL → COM → REC → TAIL → SUP, then by sort_order within each area
+      const AREA_ORDER: Record<string, number> = { SITE: 0, UTL: 1, COM: 2, REC: 3, TAIL: 4, SUP: 5 };
+      allRows.sort((a: any, b: any) => {
+        const areaA = AREA_ORDER[a.area_code] ?? 99;
+        const areaB = AREA_ORDER[b.area_code] ?? 99;
+        if (areaA !== areaB) return areaA - areaB;
+        return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+      });
+
       return allRows;
     },
     staleTime: 5 * 60 * 1000,
