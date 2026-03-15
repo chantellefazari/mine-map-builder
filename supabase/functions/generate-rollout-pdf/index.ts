@@ -135,7 +135,7 @@ function buildRolloutPdf(taggedAssetCount: number, productionTagCount: number, t
     body: [
       ["Plate Style", "Flat plate, no hole", "Smaller tag, single hole"],
       ["Size", "100mm x 50mm x 1.5mm", "70mm x 25mm x 1.5mm"],
-      ["Mounting", "Adhesive or rivet to asset shell/frame", "Bolt or cable tie to nearby structure"],
+      ["Mounting", "Adhesive or rivet to asset shell/frame", "Bolt or stainless steel ring to nearby structure"],
       ["Examples", "Tanks, Conveyors, Crushers, Mills, Thickeners, Hoppers, Chutes, Cyclones, Filter Presses", "Pumps, Valves, Motors, Instruments, Agitators, Compressors, Screens, Generators"],
     ],
   });

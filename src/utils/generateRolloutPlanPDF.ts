@@ -256,7 +256,7 @@ export async function generateRolloutPlanPDF(
     head: [["", "Type A — Major Asset Plates", "Type B — Equipment Position Tags"]],
     body: [
       ["Plate Style", "Flat plate, no hole", "Smaller tag, single hole"],
-      ["Mounting", "Adhesive or rivet to asset shell/frame", "Bolt or cable tie to nearby structure"],
+      ["Mounting", "Adhesive or rivet to asset shell/frame", "Bolt or stainless steel ring to nearby structure"],
       ["Examples", "Tanks, Conveyors, Crushers, Mills, Thickeners, Hoppers, Chutes, Cyclones, Filter Presses", "Pumps, Valves, Motors, Instruments, Agitators, Compressors, Screens, Generators"],
     ],
   });

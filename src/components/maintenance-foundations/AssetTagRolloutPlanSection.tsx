@@ -152,7 +152,7 @@ export const AssetTagRolloutPlanSection = () => {
         tagType,
         tagSize: tagType === "A" ? "100mm x 50mm x 1.5mm" : "70mm x 25mm x 1.5mm",
         mountingLocation: mountLoc(tagType, a.asset_name),
-        mountingMethod: tagType === "A" ? "Adhesive plate or rivet to fixed surface" : "Bolt or cable tie to nearby structure",
+        mountingMethod: tagType === "A" ? "Adhesive plate or rivet to fixed surface" : "Bolt or stainless steel ring to nearby structure",
         areaLabel: a.area_label,
         subArea: a.sub_area,
         functionalLocation: a.functional_location || "",
@@ -544,7 +544,7 @@ export const AssetTagRolloutPlanSection = () => {
           <p class="subtitle">${escapeHtml(subtitle)}</p>
           ${rowClasses ? `<div class="legend">
             <span><span class="legend-swatch" style="background:#dbeafe;"></span><strong>Type A</strong> — Major Asset Plate (100×50×1.5mm, adhesive/rivet to fixed structure)</span>
-            <span><span class="legend-swatch" style="background:#fef3c7;"></span><strong>Type B</strong> — Position Tag (70×25×1.5mm, bolt/cable tie to nearby structure)</span>
+            <span><span class="legend-swatch" style="background:#fef3c7;"></span><strong>Type B</strong> — Position Tag (70×25×1.5mm, bolt/SS ring to nearby structure)</span>
           </div>` : ""}
           <table>
             <thead><tr>${headHtml}</tr></thead>
