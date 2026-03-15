@@ -650,7 +650,7 @@ export const AssetTagRolloutPlanSection = () => {
               disabled={taggedAssets.length === 0}
             >
               <FileText className="w-3.5 h-3.5" />
-              Attachment A - Asset Register PDF
+              Attachment A - Asset Register (Print / Save PDF)
             </Button>
             <Button
               variant="outline"
@@ -660,7 +660,7 @@ export const AssetTagRolloutPlanSection = () => {
               disabled={productionTags.length === 0}
             >
               <FileText className="w-3.5 h-3.5" />
-              Attachment B - Production List PDF
+              Attachment B - Production List (Print / Save PDF)
             </Button>
           </div>
         </CardContent>
