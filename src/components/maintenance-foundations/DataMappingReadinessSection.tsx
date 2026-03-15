@@ -238,20 +238,28 @@ export const DataMappingReadinessSection = () => {
         </CardHeader>
         <CardContent className="text-xs space-y-2">
           <div className="flex gap-2 items-start">
-            <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
-            <p><strong>Asset Criticality Rating:</strong> Classification engine not yet implemented. Requires ABC criticality scoring based on production impact, cost, and lead time.</p>
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
+            <p><strong>Asset Criticality Rating:</strong> Classification engine implemented, 117 assets assessed with A/B/C ratings based on production impact.</p>
+          </div>
+          <div className="flex gap-2 items-start">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
+            <p><strong>PM Task Checklists:</strong> 82 of 97 PM templates now have structured JSONB task data populated and validated.</p>
+          </div>
+          <div className="flex gap-2 items-start">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
+            <p><strong>Vendor Group Mapping:</strong> Supplier type and payment terms now 100% populated across all registered vendors.</p>
           </div>
           <div className="flex gap-2 items-start">
             <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-            <p><strong>JSONB Flattening:</strong> Components, PM tasks, and labour hours stored as JSONB need ETL scripts to produce flat import files for D365.</p>
+            <p><strong>JSONB Flattening:</strong> Asset components and WO labour hours stored as JSONB need ETL scripts to produce flat import files for D365.</p>
           </div>
           <div className="flex gap-2 items-start">
             <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-            <p><strong>Duration Parsing:</strong> PM estimated_duration stored as text (e.g. "2-3 hrs") needs standardisation to numeric hours.</p>
+            <p><strong>Duration Parsing:</strong> PM estimated_duration stored as text (e.g. "2-3 hrs") needs standardisation to numeric hours. Only 10 of 97 templates populated.</p>
           </div>
           <div className="flex gap-2 items-start">
             <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-            <p><strong>Vendor Group Mapping:</strong> Supplier type and payment terms require a formal mapping table to D365 vendor group codes.</p>
+            <p><strong>Inventory Data Enrichment:</strong> Bin locations (0%), lead times (0%), unit costs (2%), min/max stock levels (1%), and asset linkages (1%) require population across 2,184 spare parts.</p>
           </div>
         </CardContent>
       </Card>
