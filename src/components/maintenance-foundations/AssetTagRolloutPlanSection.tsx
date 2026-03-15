@@ -31,7 +31,6 @@ import { jsPDF } from "jspdf";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { ProductionTag } from "./AssetTagProductionList";
-import type { ProductionTag } from "./AssetTagProductionList";
 
 const SectionHeading = ({
   icon: Icon,
