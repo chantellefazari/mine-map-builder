@@ -42,6 +42,10 @@ const StoresWarehouseDesign = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => setShowPrintAllModal(true)} className="gap-2">
+                <Printer className="w-4 h-4" />
+                <span className="hidden sm:inline">Print All Tabs</span>
+              </Button>
               <Button variant="outline" size="sm" onClick={() => setShowPrintModal(true)} className="gap-2">
                 <Printer className="w-4 h-4" />
                 <span className="hidden sm:inline">Print Plan</span>
