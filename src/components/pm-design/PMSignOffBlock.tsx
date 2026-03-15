@@ -55,7 +55,7 @@ export const PMSignOffBlock = ({
           <div className="grid grid-cols-2 gap-x-4 gap-y-1" data-pdf-break data-pdf-keep-together>
             <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Name:</span><Input className="h-7" /></div>
             <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Signature:</span><div className="h-7 border border-border rounded bg-muted/30"></div></div>
-            <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Date:</span><Input className="h-7" type="date" /></div>
+            <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Date:</span><Input className="h-7" /></div>
             <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">PM Duration:</span><Input className="h-7" /></div>
             {showElecCertNo && (
               <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Elec. Cert No:</span><Input className="h-7" /></div>
@@ -72,7 +72,7 @@ export const PMSignOffBlock = ({
         </div>
         <table className="w-full text-sm border-collapse">
           <thead><tr className="bg-muted border-b border-border"><th className="px-4 py-1 text-left font-semibold w-[20%]">Role</th><th className="px-4 py-1 text-left font-semibold w-[25%]">Name</th><th className="px-4 py-1 text-left font-semibold w-[25%]">Sign</th><th className="px-4 py-1 text-left font-semibold w-[30%]">Date</th></tr></thead>
-          <tbody><tr className="border-b border-border"><td className="px-4 py-1 font-medium">Supervisor</td><td className="px-4 py-1"><Input className="h-7 text-xs" /></td><td className="px-4 py-1"><div className="h-7 border border-border rounded bg-muted/30"></div></td><td className="px-4 py-1"><Input className="h-7 text-xs" type="date" /></td></tr></tbody>
+          <tbody><tr className="border-b border-border"><td className="px-4 py-1 font-medium">Supervisor</td><td className="px-4 py-1"><Input className="h-7 text-xs" /></td><td className="px-4 py-1"><div className="h-7 border border-border rounded bg-muted/30"></div></td><td className="px-4 py-1"><Input className="h-7 text-xs" /></td></tr></tbody>
         </table>
       </div>
 

@@ -108,7 +108,7 @@ const MotorSection = ({ title, motorNumber, stationaryChecks }: MotorSectionProp
       </div>
       <div className="grid grid-cols-[60px_1fr]">
         <div className="bg-muted px-2 py-1.5 font-semibold border-r border-border">Date:</div>
-        <div className="px-2 py-1.5"><Input className="h-6 text-xs" type="date" /></div>
+        <div className="px-2 py-1.5"><Input className="h-6 text-xs" /></div>
       </div>
     </div>
   </div>
