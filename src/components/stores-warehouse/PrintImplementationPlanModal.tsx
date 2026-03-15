@@ -191,181 +191,46 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
   }, [isOpen, buildPages]);
 
   const handlePrint = () => {
-    const pagesHtml = pages
-      .map(
-        (html, i) =>
-          `<div class="print-page" ${i > 0 ? 'style="page-break-before: always;"' : ""}>${html}</div>`
-      )
-      .join("\n");
-
-    const fullHtml = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Stores & Warehouse Implementation Plan, TCMG</title>
-          <style>
-            @page {
-              size: A4 portrait;
-              margin: 15mm;
-            }
-
-            * {
-              box-sizing: border-box;
-              margin: 0;
-              padding: 0;
-            }
-
-            body {
-              font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-              font-size: 8px;
-              line-height: 1.3;
-              color: #111;
-              background: white;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-
-            .doc-cover {
-              text-align: center;
-              padding: 20mm 0 10mm;
-              border-bottom: 3px solid #d4a017;
-              margin-bottom: 10mm;
-              page-break-after: always;
-            }
-            .doc-cover h1 {
-              font-size: 22px;
-              font-weight: 700;
-              letter-spacing: -0.5px;
-              color: #111;
-            }
-            .doc-cover p {
-              font-size: 12px;
-              color: #555;
-              margin-top: 4px;
-            }
-
-            .print-page { }
-
-            [class*="rounded-lg"] {
-              border: 1px solid #ddd;
-              border-radius: 6px;
-              padding: 10px 12px;
-              margin-bottom: 8px;
-            }
-
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-bottom: 8px;
-              font-size: 9px;
-            }
-            th, td {
-              border: 1px solid #ccc;
-              padding: 4px 6px;
-              text-align: left;
-              font-size: 9px;
-            }
-            th {
-              background-color: #f5f0e0;
-              font-weight: 600;
-            }
-            tr:nth-child(even) td {
-              background-color: #fafafa;
-            }
-
-            [class*="badge"] {
-              border: 1px solid #ccc;
-              border-radius: 4px;
-              padding: 1px 6px;
-              font-size: 8px;
-              display: inline-block;
-            }
-
-            [class*="muted"] { color: #666; }
-
-            button, input, select { display: none !important; }
-
-            svg { display: inline-block; width: 16px; height: 16px; }
-
-            h2, h3, h4 { margin-bottom: 2px; font-weight: 600; }
-            h2 { font-size: 11px; }
-            h3 { font-size: 9.5px; }
-            h4 { font-size: 9px; }
-
-            ul, ol { padding-left: 14px; margin-bottom: 2px; }
-            li { margin-bottom: 1px; font-size: 8px; }
-            p { margin-bottom: 2px; font-size: 8px; }
-
-            ol { list-style-type: decimal; }
-            ol li { padding-left: 2px; }
-
-            .separator, hr {
-              border: none;
-              border-top: 1px solid #ddd;
-              margin: 6px 0;
-            }
-
-            [class*="border-dashed"] {
-              border: 2px dashed #ccc;
-              padding: 12px;
-              text-align: center;
-              margin: 8px 0;
-              border-radius: 6px;
-            }
-
-            table, [class*="rounded-lg"] {
-              page-break-inside: avoid;
-            }
-
-            h2, h3, h4 {
-              page-break-after: avoid;
-            }
-
-            img {
-              max-width: 55%;
-              max-height: 160px;
-              height: auto;
-              display: block;
-              object-fit: contain;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="doc-cover">
-            <h1>Stores & Warehouse Implementation Plan</h1>
-            <p>Tennant Creek Mines Gold | TCMG-PLAN-STORES-001 | 23rd February 2026</p>
-          </div>
-          ${pagesHtml}
-        </body>
-      </html>
+    // Inject print-only styles that hide everything except our print content
+    const styleId = "stores-print-styles";
+    let style = document.getElementById(styleId) as HTMLStyleElement | null;
+    if (!style) {
+      style = document.createElement("style");
+      style.id = styleId;
+      document.head.appendChild(style);
+    }
+    style.textContent = `
+      @media print {
+        body > *:not([data-stores-print-root]) { display: none !important; }
+        [data-stores-print-root] { display: block !important; position: fixed; top: 0; left: 0; width: 100%; z-index: 999999; }
+        @page { size: A4 portrait; margin: 15mm; }
+      }
     `;
 
-    // Use a hidden iframe instead of window.open to avoid popup blockers
-    const existingFrame = document.getElementById("print-iframe-stores");
-    if (existingFrame) existingFrame.remove();
+    // Create a temporary print container
+    const printRoot = document.createElement("div");
+    printRoot.setAttribute("data-stores-print-root", "true");
+    printRoot.innerHTML = `
+      <div style="text-align:center;padding:20mm 0 10mm;border-bottom:3px solid #d4a017;margin-bottom:10mm;page-break-after:always;">
+        <h1 style="font-size:22px;font-weight:700;color:#111;">Stores & Warehouse Implementation Plan</h1>
+        <p style="font-size:12px;color:#555;margin-top:4px;">Tennant Creek Mines Gold | TCMG-PLAN-STORES-001 | 23rd February 2026</p>
+      </div>
+      ${pages.map((html, i) =>
+        `<div ${i > 0 ? 'style="page-break-before:always;"' : ""}>${html}</div>`
+      ).join("\n")}
+    `;
+    printRoot.style.cssText = "display:none;font-family:Inter,-apple-system,sans-serif;font-size:8px;line-height:1.3;color:#111;background:white;";
+    document.body.appendChild(printRoot);
 
-    const iframe = document.createElement("iframe");
-    iframe.id = "print-iframe-stores";
-    iframe.style.position = "fixed";
-    iframe.style.left = "-9999px";
-    iframe.style.top = "0";
-    iframe.style.width = "210mm";
-    iframe.style.height = "297mm";
-    iframe.style.border = "none";
-    document.body.appendChild(iframe);
-
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-    if (!iframeDoc) return;
-
-    iframeDoc.open();
-    iframeDoc.write(fullHtml);
-    iframeDoc.close();
-
+    // Show for print, trigger, then clean up
+    printRoot.style.display = "block";
     setTimeout(() => {
-      iframe.contentWindow?.focus();
-      iframe.contentWindow?.print();
-      setTimeout(() => iframe.remove(), 2000);
-    }, 600);
+      window.print();
+      setTimeout(() => {
+        printRoot.remove();
+        if (style) style.textContent = "";
+      }, 1000);
+    }, 100);
   };
 
   const [downloading, setDownloading] = useState(false);
