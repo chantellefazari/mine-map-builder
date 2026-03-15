@@ -1,7 +1,11 @@
 import { useState, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
+import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import { 
   Hash,
   GitBranch,
