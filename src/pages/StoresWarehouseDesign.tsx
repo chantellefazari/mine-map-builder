@@ -18,6 +18,7 @@ import { exportStoresWorkbook } from "@/utils/exportStoresWorkbook";
 
 const StoresWarehouseDesign = () => {
   const [showPrintModal, setShowPrintModal] = useState(false);
+  const [showPrintAllModal, setShowPrintAllModal] = useState(false);
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
