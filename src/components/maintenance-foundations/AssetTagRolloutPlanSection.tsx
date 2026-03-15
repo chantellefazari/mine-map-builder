@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import gravotechLs100 from "@/assets/gravotech-ls100-engraver.png";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +31,7 @@ import { jsPDF } from "jspdf";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { generateAssetRegisterPDF, generateProductionListPDF } from "@/utils/generateRolloutPlanPDF";
+import { PdfViewerModal } from "@/components/shared/PdfViewerModal";
 import type { ProductionTag } from "./AssetTagProductionList";
 
 const SectionHeading = ({
@@ -476,14 +477,32 @@ export const AssetTagRolloutPlanSection = () => {
     setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
   };
 
+  const [pdfModalUrl, setPdfModalUrl] = useState<string | null>(null);
+  const [pdfModalTitle, setPdfModalTitle] = useState("");
+
+  const openPdfModal = useCallback((blob: Blob, title: string) => {
+    const url = URL.createObjectURL(blob);
+    setPdfModalUrl(url);
+    setPdfModalTitle(title);
+  }, []);
+
+  const closePdfModal = useCallback(() => {
+    if (pdfModalUrl) URL.revokeObjectURL(pdfModalUrl);
+    setPdfModalUrl(null);
+  }, [pdfModalUrl]);
+
   const handleDownloadRegister = async () => {
-    try { await generateAssetRegisterPDF(taggedAssets); }
-    catch (err) { console.error("Asset Register PDF error:", err); }
+    try {
+      const blob = await generateAssetRegisterPDF(taggedAssets);
+      openPdfModal(blob, "Attachment A — P&ID Tagged Asset Register");
+    } catch (err) { console.error("Asset Register PDF error:", err); }
   };
 
   const handleDownloadProductionList = async () => {
-    try { await generateProductionListPDF(productionTags); }
-    catch (err) { console.error("Production List PDF error:", err); }
+    try {
+      const blob = await generateProductionListPDF(productionTags);
+      openPdfModal(blob, "Attachment B — Asset Tag Production List");
+    } catch (err) { console.error("Production List PDF error:", err); }
   };
 
   return (
@@ -1178,6 +1197,13 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
 
+      {/* PDF Viewer Modal for Attachments */}
+      <PdfViewerModal
+        isOpen={!!pdfModalUrl}
+        onClose={closePdfModal}
+        pdfUrl={pdfModalUrl || ""}
+        title={pdfModalTitle}
+      />
     </div>
   );
 };

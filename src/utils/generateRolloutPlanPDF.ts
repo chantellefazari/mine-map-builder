@@ -86,21 +86,9 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Open PDF in new tab for viewing/saving, with download fallback */
-function triggerPdfDownload(pdf: jsPDF, filename: string, _title?: string) {
-  const blob = pdf.output("blob");
-  const blobUrl = URL.createObjectURL(blob);
-
-  // Try opening in a new tab first
-  const win = window.open(blobUrl, "_blank");
-  if (win) {
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 120000);
-    return;
-  }
-
-  // Fallback: use jsPDF built-in save
-  pdf.save(filename);
-  URL.revokeObjectURL(blobUrl);
+/** Return PDF as a Blob for flexible display/download */
+function getPdfBlob(pdf: jsPDF): Blob {
+  return pdf.output("blob");
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
@@ -563,7 +551,7 @@ export async function generateRolloutPlanPDF(
   pdf.text(scopeText, CONTENT_LEFT + 4, y + 5);
 
   addPageNumbers(pdf, "TCMG Asset Tag Rollout Plan");
-  await triggerPdfDownload(pdf, "TCMG_Asset_Tag_Rollout_Plan.pdf");
+  return getPdfBlob(pdf);
 }
 
 // ════════════════════════════════════════════════
@@ -606,7 +594,7 @@ export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
   });
 
   addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register — Attachment A");
-  await triggerPdfDownload(pdf, "TCMG_PID_Tagged_Asset_Register.pdf");
+  return getPdfBlob(pdf);
 }
 
 // ════════════════════════════════════════════════
@@ -670,5 +658,5 @@ export async function generateProductionListPDF(productionTags: ProductionTag[])
   pdf.text("Scope: Processing Plant ONLY — Crushing Plant excluded until P&IDs are finalised.", 16, y + 13);
 
   addPageNumbers(pdf, "TCMG Asset Tag Production List — Attachment B");
-  await triggerPdfDownload(pdf, "TCMG_Asset_Tag_Production_List.pdf");
+  return getPdfBlob(pdf);
 }
