@@ -55,7 +55,7 @@ export const PMSignOffBlock = ({
           <div className="grid grid-cols-2 gap-x-4 gap-y-1" data-pdf-break data-pdf-keep-together>
             <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Name:</span><Input className="h-7" /></div>
             <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Signature:</span><div className="h-7 border border-border rounded bg-muted/30"></div></div>
-            <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Date:</span><Input className="h-7" type="date" /></div>
+            <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Date:</span><Input className="h-7" /></div>
             <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">PM Duration:</span><Input className="h-7" /></div>
             {showElecCertNo && (
               <div className="grid grid-cols-[100px_1fr] items-center"><span className="text-sm font-medium">Elec. Cert No:</span><Input className="h-7" /></div>
