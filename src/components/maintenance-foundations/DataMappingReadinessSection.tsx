@@ -6,10 +6,8 @@ import { CheckCircle2, AlertCircle, Clock } from "lucide-react";
 type ReadinessStatus = "Ready" | "Partial" | "Not Started";
 
 interface MappingRow {
+  field: string;
   sourceDocument: string;
-  sourceField: string;
-  targetEntity: string;
-  targetField: string;
   transformation: string;
   status: ReadinessStatus;
 }
@@ -36,73 +34,73 @@ const StatusBadge = ({ status }: { status: ReadinessStatus }) => {
 };
 
 const ASSET_MAPPINGS: MappingRow[] = [
-  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Asset Number", targetEntity: "Asset", targetField: "Asset ID / Number", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Asset Name", targetEntity: "Asset", targetField: "Asset Name / Description", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Functional Location Codes", sourceField: "Functional Location", targetEntity: "Asset", targetField: "Functional Location", transformation: "Direct: TCMG-PP-XXX format", status: "Ready" },
-  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Area", targetEntity: "Asset", targetField: "Asset Group / Area", transformation: "Map to target system Asset Group", status: "Ready" },
-  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Sub-Area", targetEntity: "Asset", targetField: "Sub-Area / Location", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Parent Asset", targetEntity: "Asset", targetField: "Parent Asset Reference", transformation: "Lookup parent asset number from hierarchy", status: "Ready" },
-  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "P&ID Tags", targetEntity: "Asset", targetField: "P&ID Tag Reference", transformation: "Semicolon-delimited string of linked tags", status: "Ready" },
-  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Level 7 Components", targetEntity: "Asset", targetField: "Sub-Component BOM", transformation: "Flatten to child asset rows (15% populated)", status: "Partial" },
-  { sourceDocument: "Asset Criticality Register", sourceField: "Criticality Rating", targetEntity: "Asset", targetField: "Criticality Rating", transformation: "Direct: A/B/C rating (117 assets assessed)", status: "Ready" },
-  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Sort Order", targetEntity: "Asset", targetField: "Display Sequence", transformation: "Direct integer mapping", status: "Ready" },
+  { field: "Asset Number / ID", sourceDocument: "Asset Register (Asset Tree)", transformation: "Direct: no change", status: "Ready" },
+  { field: "Asset Name / Description", sourceDocument: "Asset Register (Asset Tree)", transformation: "Direct: no change", status: "Ready" },
+  { field: "Functional Location", sourceDocument: "Functional Location Codes", transformation: "Direct: TCMG-PP-XXX format", status: "Ready" },
+  { field: "Asset Group / Area", sourceDocument: "Asset Register (Asset Tree)", transformation: "Map to target system Asset Group", status: "Ready" },
+  { field: "Sub-Area / Location", sourceDocument: "Asset Register (Asset Tree)", transformation: "Direct: no change", status: "Ready" },
+  { field: "Parent Asset Reference", sourceDocument: "Asset Register (Asset Tree)", transformation: "Lookup parent asset number from hierarchy", status: "Ready" },
+  { field: "P&ID Tag Reference", sourceDocument: "Asset Register (Asset Tree)", transformation: "Semicolon-delimited string of linked tags", status: "Ready" },
+  { field: "Sub-Component BOM", sourceDocument: "Asset Register (Asset Tree)", transformation: "Flatten Level 7 to child asset rows (15% populated)", status: "Partial" },
+  { field: "Criticality Rating", sourceDocument: "Asset Criticality Register", transformation: "Direct: A/B/C rating (117 assets assessed)", status: "Ready" },
+  { field: "Display Sequence", sourceDocument: "Asset Register (Asset Tree)", transformation: "Direct integer mapping", status: "Ready" },
 ];
 
 const FL_MAPPINGS: MappingRow[] = [
-  { sourceDocument: "Functional Location Codes", sourceField: "FL Code", targetEntity: "Functional Location", targetField: "Location ID", transformation: "Direct: TCMG-PP-XXX-XXX-XXX", status: "Ready" },
-  { sourceDocument: "Functional Location Codes", sourceField: "Area Name", targetEntity: "Functional Location", targetField: "Area Name", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Functional Location Codes", sourceField: "Area Code", targetEntity: "Functional Location", targetField: "Area Code", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Functional Location Codes", sourceField: "Sub-Area Name", targetEntity: "Functional Location", targetField: "Sub-Area Name", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Functional Location Codes", sourceField: "Sub-Area Code", targetEntity: "Functional Location", targetField: "Sub-Area Code", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Functional Location Codes", sourceField: "System Description", targetEntity: "Functional Location", targetField: "System Description", transformation: "Direct: no change", status: "Ready" },
+  { field: "Location ID", sourceDocument: "Functional Location Codes", transformation: "Direct: TCMG-PP-XXX-XXX-XXX", status: "Ready" },
+  { field: "Area Name", sourceDocument: "Functional Location Codes", transformation: "Direct: no change", status: "Ready" },
+  { field: "Area Code", sourceDocument: "Functional Location Codes", transformation: "Direct: no change", status: "Ready" },
+  { field: "Sub-Area Name", sourceDocument: "Functional Location Codes", transformation: "Direct: no change", status: "Ready" },
+  { field: "Sub-Area Code", sourceDocument: "Functional Location Codes", transformation: "Direct: no change", status: "Ready" },
+  { field: "System Description", sourceDocument: "Functional Location Codes", transformation: "Direct: no change", status: "Ready" },
 ];
 
 const PM_MAPPINGS: MappingRow[] = [
-  { sourceDocument: "PM Templates Pack", sourceField: "PM Title", targetEntity: "PM Work Order", targetField: "PM Title / Description", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "PM Templates Pack", sourceField: "Frequency", targetEntity: "PM Work Order", targetField: "Frequency / Recurrence", transformation: "Map to target system recurrence pattern", status: "Ready" },
-  { sourceDocument: "PM Templates Pack", sourceField: "Discipline", targetEntity: "PM Work Order", targetField: "Trade / Discipline", transformation: "Direct: Mechanical, Electrical, Instrument", status: "Ready" },
-  { sourceDocument: "PM Templates Pack", sourceField: "Linked Asset Number", targetEntity: "PM Work Order", targetField: "Linked Asset ID", transformation: "Cross-reference to Asset Register", status: "Ready" },
-  { sourceDocument: "PM Templates Pack", sourceField: "Estimated Duration", targetEntity: "PM Work Order", targetField: "Planned Duration", transformation: "Parse text to numeric hours", status: "Partial" },
-  { sourceDocument: "PM Templates Pack", sourceField: "Task Checklist", targetEntity: "PM Work Order", targetField: "Task Checklist Lines", transformation: "Structured checklist items (85% populated)", status: "Ready" },
-  { sourceDocument: "PM Templates Pack", sourceField: "Required PPE", targetEntity: "PM Work Order", targetField: "Safety Requirements", transformation: "Checklist items per template", status: "Ready" },
-  { sourceDocument: "PM Templates Pack", sourceField: "Required Tools", targetEntity: "PM Work Order", targetField: "Required Tools", transformation: "Resource list per template", status: "Ready" },
-  { sourceDocument: "PM Templates Pack", sourceField: "Skill Level", targetEntity: "PM Work Order", targetField: "Skill / Competency Required", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "PM Templates Pack", sourceField: "Template Status", targetEntity: "PM Work Order", targetField: "Template Status", transformation: "Map Draft/Active/Locked to target status", status: "Ready" },
+  { field: "PM Title / Description", sourceDocument: "PM Templates Pack", transformation: "Direct: no change", status: "Ready" },
+  { field: "Frequency / Recurrence", sourceDocument: "PM Templates Pack", transformation: "Map to target system recurrence pattern", status: "Ready" },
+  { field: "Trade / Discipline", sourceDocument: "PM Templates Pack", transformation: "Direct: Mechanical, Electrical, Instrument", status: "Ready" },
+  { field: "Linked Asset ID", sourceDocument: "PM Templates Pack", transformation: "Cross-reference to Asset Register", status: "Ready" },
+  { field: "Planned Duration", sourceDocument: "PM Templates Pack", transformation: "Parse text to numeric hours", status: "Partial" },
+  { field: "Task Checklist Lines", sourceDocument: "PM Templates Pack", transformation: "Structured checklist items (85% populated)", status: "Ready" },
+  { field: "Safety Requirements (PPE)", sourceDocument: "PM Templates Pack", transformation: "Checklist items per template", status: "Ready" },
+  { field: "Required Tools", sourceDocument: "PM Templates Pack", transformation: "Resource list per template", status: "Ready" },
+  { field: "Skill / Competency Required", sourceDocument: "PM Templates Pack", transformation: "Direct: no change", status: "Ready" },
+  { field: "Template Status", sourceDocument: "PM Templates Pack", transformation: "Map Draft/Active/Locked to target status", status: "Ready" },
 ];
 
 const SPARES_MAPPINGS: MappingRow[] = [
-  { sourceDocument: "Site Parts Catalogue", sourceField: "Site Part Number", targetEntity: "Inventory Item", targetField: "Item Number", transformation: "Direct: TCMG-XXXX format", status: "Ready" },
-  { sourceDocument: "Site Parts Catalogue", sourceField: "Part Name", targetEntity: "Inventory Item", targetField: "Item Description", transformation: "Direct: cleaned description", status: "Ready" },
-  { sourceDocument: "Site Parts Catalogue", sourceField: "Category", targetEntity: "Inventory Item", targetField: "Item Group / Category", transformation: "Map to target system Item Group", status: "Ready" },
-  { sourceDocument: "Site Parts Catalogue", sourceField: "Criticality", targetEntity: "Inventory Item", targetField: "Criticality Class", transformation: "Direct: Critical, Insurance, Non-Critical", status: "Ready" },
-  { sourceDocument: "Site Parts Catalogue", sourceField: "Bin Location", targetEntity: "Inventory Item", targetField: "Default Warehouse Location", transformation: "Direct: C01-EL-A1 format (pending population)", status: "Partial" },
-  { sourceDocument: "Site Parts Catalogue", sourceField: "Min Qty / Max Qty", targetEntity: "Inventory Item", targetField: "Reorder Point / Max Stock", transformation: "Direct numeric values (13/2184 populated)", status: "Partial" },
-  { sourceDocument: "Site Parts Catalogue", sourceField: "Associated Asset", targetEntity: "Inventory Item", targetField: "Linked Asset Reference", transformation: "Cross-reference Asset Register (31/2184 linked)", status: "Partial" },
-  { sourceDocument: "Supplier Register", sourceField: "Supplier Name", targetEntity: "Inventory Item", targetField: "Default Vendor", transformation: "Lookup from Supplier Register (505/2184 populated)", status: "Partial" },
-  { sourceDocument: "Site Parts Catalogue", sourceField: "Unit Price", targetEntity: "Inventory Item", targetField: "Standard Cost", transformation: "Direct: AUD value (36/2184 populated)", status: "Partial" },
-  { sourceDocument: "Site Parts Catalogue", sourceField: "Lead Time (Days)", targetEntity: "Inventory Item", targetField: "Lead Time (Days)", transformation: "Direct integer (not yet captured)", status: "Not Started" },
+  { field: "Item Number", sourceDocument: "Site Parts Catalogue", transformation: "Direct: TCMG-XXXX format", status: "Ready" },
+  { field: "Item Description", sourceDocument: "Site Parts Catalogue", transformation: "Direct: cleaned description", status: "Ready" },
+  { field: "Item Group / Category", sourceDocument: "Site Parts Catalogue", transformation: "Map to target system Item Group", status: "Ready" },
+  { field: "Criticality Class", sourceDocument: "Site Parts Catalogue", transformation: "Direct: Critical, Insurance, Non-Critical", status: "Ready" },
+  { field: "Default Warehouse Location", sourceDocument: "Site Parts Catalogue", transformation: "Direct: C01-EL-A1 format (pending population)", status: "Partial" },
+  { field: "Reorder Point / Max Stock", sourceDocument: "Site Parts Catalogue", transformation: "Direct numeric values (13/2184 populated)", status: "Partial" },
+  { field: "Linked Asset Reference", sourceDocument: "Site Parts Catalogue", transformation: "Cross-reference Asset Register (31/2184 linked)", status: "Partial" },
+  { field: "Default Vendor", sourceDocument: "Supplier Register", transformation: "Lookup from Supplier Register (505/2184 populated)", status: "Partial" },
+  { field: "Standard Cost (AUD)", sourceDocument: "Site Parts Catalogue", transformation: "Direct: AUD value (36/2184 populated)", status: "Partial" },
+  { field: "Lead Time (Days)", sourceDocument: "Site Parts Catalogue", transformation: "Direct integer (not yet captured)", status: "Not Started" },
 ];
 
 const SUPPLIER_MAPPINGS: MappingRow[] = [
-  { sourceDocument: "Supplier Register", sourceField: "Vendor Code", targetEntity: "Vendor", targetField: "Vendor Code", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Supplier Register", sourceField: "Vendor Name", targetEntity: "Vendor", targetField: "Vendor Name", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Supplier Register", sourceField: "ABN", targetEntity: "Vendor", targetField: "ABN / Tax ID", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Supplier Register", sourceField: "Email", targetEntity: "Vendor", targetField: "Primary Email", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Supplier Register", sourceField: "Contact Name", targetEntity: "Vendor", targetField: "Primary Contact Name", transformation: "Direct: no change", status: "Ready" },
-  { sourceDocument: "Supplier Register", sourceField: "Payment Terms", targetEntity: "Vendor", targetField: "Payment Terms", transformation: "Map to target system payment terms code (100% populated)", status: "Ready" },
-  { sourceDocument: "Supplier Register", sourceField: "Supplier Type", targetEntity: "Vendor", targetField: "Vendor Group", transformation: "Map to target system vendor group (100% populated)", status: "Ready" },
-  { sourceDocument: "Supplier Register", sourceField: "Preferred Supplier", targetEntity: "Vendor", targetField: "Preferred Vendor Flag", transformation: "Boolean to Yes/No", status: "Ready" },
+  { field: "Vendor Code", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
+  { field: "Vendor Name", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
+  { field: "ABN / Tax ID", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
+  { field: "Primary Email", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
+  { field: "Primary Contact Name", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
+  { field: "Payment Terms", sourceDocument: "Supplier Register", transformation: "Map to target system payment terms code (100%)", status: "Ready" },
+  { field: "Vendor Group", sourceDocument: "Supplier Register", transformation: "Map to target system vendor group (100%)", status: "Ready" },
+  { field: "Preferred Vendor Flag", sourceDocument: "Supplier Register", transformation: "Boolean to Yes/No", status: "Ready" },
 ];
 
 const WO_MAPPINGS: MappingRow[] = [
-  { sourceDocument: "Work Order Register", sourceField: "WO Number", targetEntity: "Work Order", targetField: "Work Order Number", transformation: "Direct: WO-XXXXXX format", status: "Ready" },
-  { sourceDocument: "Work Order Register", sourceField: "Status", targetEntity: "Work Order", targetField: "WO Status", transformation: "Map Open/In Progress/Complete to target system", status: "Ready" },
-  { sourceDocument: "Work Order Register", sourceField: "Priority", targetEntity: "Work Order", targetField: "Priority Level", transformation: "Direct: Normal, High, Critical", status: "Ready" },
-  { sourceDocument: "Work Order Register", sourceField: "Work Type", targetEntity: "Work Order", targetField: "Work Order Type", transformation: "Map Breakdown/PM/Project to target type", status: "Ready" },
-  { sourceDocument: "Work Order Register", sourceField: "Asset Reference", targetEntity: "Work Order", targetField: "Asset Reference", transformation: "Cross-reference to Asset Register", status: "Ready" },
-  { sourceDocument: "Functional Location Codes", sourceField: "Functional Location", targetEntity: "Work Order", targetField: "Functional Location", transformation: "Direct: TCMG-PP-XXX format", status: "Ready" },
-  { sourceDocument: "Work Order Register", sourceField: "Problem Description", targetEntity: "Work Order", targetField: "Problem Description", transformation: "Direct: free text", status: "Ready" },
-  { sourceDocument: "Work Order Register", sourceField: "Labour Hours", targetEntity: "Work Order", targetField: "Labour Journal Lines", transformation: "Structured entries per work order (0/7 populated)", status: "Partial" },
+  { field: "Work Order Number", sourceDocument: "Work Order Register", transformation: "Direct: WO-XXXXXX format", status: "Ready" },
+  { field: "WO Status", sourceDocument: "Work Order Register", transformation: "Map Open/In Progress/Complete to target system", status: "Ready" },
+  { field: "Priority Level", sourceDocument: "Work Order Register", transformation: "Direct: Normal, High, Critical", status: "Ready" },
+  { field: "Work Order Type", sourceDocument: "Work Order Register", transformation: "Map Breakdown/PM/Project to target type", status: "Ready" },
+  { field: "Asset Reference", sourceDocument: "Work Order Register", transformation: "Cross-reference to Asset Register", status: "Ready" },
+  { field: "Functional Location", sourceDocument: "Functional Location Codes", transformation: "Direct: TCMG-PP-XXX format", status: "Ready" },
+  { field: "Problem Description", sourceDocument: "Work Order Register", transformation: "Direct: free text", status: "Ready" },
+  { field: "Labour Journal Lines", sourceDocument: "Work Order Register", transformation: "Structured entries per work order (0/7 populated)", status: "Partial" },
 ];
 
 const ALL_SECTIONS = [
@@ -118,19 +116,17 @@ const MappingTable = ({ rows }: { rows: MappingRow[] }) => (
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead className="text-[10px] font-semibold w-[18%]">Source Document</TableHead>
-        <TableHead className="text-[10px] font-semibold w-[15%]">Source Field</TableHead>
-        <TableHead className="text-[10px] font-semibold w-[18%]">Target Field</TableHead>
-        <TableHead className="text-[10px] font-semibold w-[28%]">Transformation Rule</TableHead>
+        <TableHead className="text-[10px] font-semibold w-[25%]">Field</TableHead>
+        <TableHead className="text-[10px] font-semibold w-[22%]">Source Document</TableHead>
+        <TableHead className="text-[10px] font-semibold w-[35%]">Transformation / Notes</TableHead>
         <TableHead className="text-[10px] font-semibold w-[10%] text-center">Status</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
       {rows.map((row, i) => (
         <TableRow key={i}>
+          <TableCell className="text-[10px] font-medium">{row.field}</TableCell>
           <TableCell className="text-[10px] text-muted-foreground">{row.sourceDocument}</TableCell>
-          <TableCell className="text-[10px] font-medium">{row.sourceField}</TableCell>
-          <TableCell className="text-[10px] font-medium">{row.targetField}</TableCell>
           <TableCell className="text-[10px]">{row.transformation}</TableCell>
           <TableCell className="text-center"><StatusBadge status={row.status} /></TableCell>
         </TableRow>
@@ -165,7 +161,6 @@ export const DataMappingReadinessSection = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {/* Readiness Summary */}
           <div className="grid grid-cols-4 gap-3">
             <div className="rounded-lg border bg-card p-3 text-center">
               <p className="text-2xl font-bold text-primary">{allRows.length}</p>
