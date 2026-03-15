@@ -49,12 +49,12 @@ const ASSET_MAPPINGS: MappingRow[] = [
 ];
 
 const FL_MAPPINGS: MappingRow[] = [
-  { sourceTable: "processing_functional_locations", sourceField: "fl_code", targetEntity: "Functional Location", targetField: "Location ID", transformation: "Direct — TCMG-PP-XXX-XXX-XXX", status: "Ready" },
-  { sourceTable: "processing_functional_locations", sourceField: "area", targetEntity: "Functional Location", targetField: "Area Name", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "processing_functional_locations", sourceField: "area_code", targetEntity: "Functional Location", targetField: "Area Code", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "processing_functional_locations", sourceField: "sub_area", targetEntity: "Functional Location", targetField: "Sub-Area Name", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "processing_functional_locations", sourceField: "sub_area_code", targetEntity: "Functional Location", targetField: "Sub-Area Code", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "processing_functional_locations", sourceField: "system_name", targetEntity: "Functional Location", targetField: "System Description", transformation: "Direct — no change", status: "Ready" },
+  { sourceTable: "processing_functional_locations", sourceField: "fl_code", targetEntity: "Functional Location", targetField: "Location ID", transformation: "Direct: TCMG-PP-XXX-XXX-XXX", status: "Ready" },
+  { sourceTable: "processing_functional_locations", sourceField: "area", targetEntity: "Functional Location", targetField: "Area Name", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "processing_functional_locations", sourceField: "area_code", targetEntity: "Functional Location", targetField: "Area Code", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "processing_functional_locations", sourceField: "sub_area", targetEntity: "Functional Location", targetField: "Sub-Area Name", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "processing_functional_locations", sourceField: "sub_area_code", targetEntity: "Functional Location", targetField: "Sub-Area Code", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "processing_functional_locations", sourceField: "system_name", targetEntity: "Functional Location", targetField: "System Description", transformation: "Direct: no change", status: "Ready" },
 ];
 
 const PM_MAPPINGS: MappingRow[] = [
