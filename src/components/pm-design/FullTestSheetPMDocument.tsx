@@ -36,7 +36,7 @@ export const FullTestSheetPMDocument = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-[9px] border-collapse min-w-[1200px]">
+            <table className="w-full text-[9px] border-collapse" style={{ tableLayout: "fixed" }}>
               <thead>
                 <tr className="bg-muted">
                   <th className="border border-border px-1 py-2 text-center font-semibold w-[8%]">Test Point/<br/>Circuit No.</th>
