@@ -52,83 +52,10 @@ const TAB_LABELS: Record<string, string> = {
 export const FoundationsContent = () => {
   const [activeTab, setActiveTab] = useState("hierarchy");
   const contentRef = useRef<HTMLDivElement>(null);
+  const [printOpen, setPrintOpen] = useState(false);
 
   const handlePrintTab = () => {
-    const el = contentRef.current;
-    if (!el) return;
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) return;
-    printWindow.document.write(`
-      <!DOCTYPE html><html><head>
-        <title>${TAB_LABELS[activeTab]} | TCMG</title>
-        <style>
-          @page { size: A4 portrait; margin: 15mm; }
-          * { box-sizing: border-box; margin: 0; padding: 0; }
-          body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 11px; line-height: 1.5; color: #111; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          .doc-header { border-bottom: 3px solid #d4a017; margin-bottom: 8mm; padding-bottom: 4mm; }
-          .doc-header h1 { font-size: 16px; font-weight: 700; }
-          .doc-header p { font-size: 10px; color: #666; margin-top: 2px; }
-          table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-          th, td { border: 1px solid #ccc; padding: 5px 8px; text-align: left; font-size: 10px; }
-          th { background-color: #f5f0e0; font-weight: 600; }
-          button, input, select { display: none !important; }
-          svg { display: block; }
-          h2, h3, h4 { margin-bottom: 4px; font-weight: 600; }
-          ul, ol { padding-left: 16px; margin-bottom: 6px; }
-          li, p { margin-bottom: 2px; font-size: 10px; }
-          .separator, hr { border: none; border-top: 1px solid #ddd; margin: 6px 0; }
-          [class*="rounded"], .card { border: 1px solid #ddd; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; }
-        </style>
-      </head><body>
-        <div class="doc-header">
-          <h1>${TAB_LABELS[activeTab]}</h1>
-          <p>Tennant Mines Gold | Maintenance Process Foundations | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
-        </div>
-        ${el.innerHTML}
-      </body></html>
-    `);
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
-  };
-
-  const handleExportPDF = () => {
-    const el = contentRef.current;
-    if (!el) return;
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) return;
-    printWindow.document.write(`
-      <!DOCTYPE html><html><head>
-        <title>${TAB_LABELS[activeTab]} | TCMG (Save as PDF)</title>
-        <style>
-          @page { size: A4 portrait; margin: 15mm; }
-          * { box-sizing: border-box; margin: 0; padding: 0; }
-          body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 11px; line-height: 1.5; color: #111; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          .doc-header { border-bottom: 3px solid #d4a017; margin-bottom: 8mm; padding-bottom: 4mm; }
-          .doc-header h1 { font-size: 16px; font-weight: 700; }
-          .doc-header p { font-size: 10px; color: #666; margin-top: 2px; }
-          table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-          th, td { border: 1px solid #ccc; padding: 5px 8px; text-align: left; font-size: 10px; }
-          th { background-color: #f5f0e0; font-weight: 600; }
-          button, input, select { display: none !important; }
-          svg { display: block; }
-          h2, h3, h4 { margin-bottom: 4px; font-weight: 600; }
-          ul, ol { padding-left: 16px; margin-bottom: 6px; }
-          li, p { margin-bottom: 2px; font-size: 10px; }
-          .separator, hr { border: none; border-top: 1px solid #ddd; margin: 6px 0; }
-          [class*="rounded"], .card { border: 1px solid #ddd; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; }
-        </style>
-      </head><body>
-        <div class="doc-header">
-          <h1>${TAB_LABELS[activeTab]}</h1>
-          <p>Tennant Mines Gold | Maintenance Process Foundations | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
-        </div>
-        ${el.innerHTML}
-      </body></html>
-    `);
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
+    setPrintOpen(true);
   };
 
   return (
