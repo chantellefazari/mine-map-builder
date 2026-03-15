@@ -6,7 +6,7 @@ import { CheckCircle2, AlertCircle, Clock } from "lucide-react";
 type ReadinessStatus = "Ready" | "Partial" | "Not Started";
 
 interface MappingRow {
-  sourceTable: string;
+  sourceDocument: string;
   sourceField: string;
   targetEntity: string;
   targetField: string;
@@ -36,91 +36,91 @@ const StatusBadge = ({ status }: { status: ReadinessStatus }) => {
 };
 
 const ASSET_MAPPINGS: MappingRow[] = [
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "asset_number", targetEntity: "Asset", targetField: "Asset ID / Number", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "asset_name", targetEntity: "Asset", targetField: "Asset Name / Description", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "functional_location", targetEntity: "Asset", targetField: "Functional Location", transformation: "Direct: TCMG-PP-XXX format", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "area_label", targetEntity: "Asset", targetField: "Asset Group / Area", transformation: "Map to D365 Asset Group", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "sub_area", targetEntity: "Asset", targetField: "Sub-Area / Location", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "parent_asset_label", targetEntity: "Asset", targetField: "Parent Asset Reference", transformation: "Lookup parent asset_number", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "pid_tags[]", targetEntity: "Asset", targetField: "P&ID Tag Reference", transformation: "Array to semicolon-delimited string", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "components (JSONB)", targetEntity: "Asset", targetField: "Sub-Component BOM", transformation: "Flatten JSONB to child asset rows (15% populated)", status: "Partial" },
-  { sourceTable: "asset_criticality_ratings", sourceField: "criticality", targetEntity: "Asset", targetField: "Criticality Rating", transformation: "Direct: A/B/C rating from assessment register (117 assessed)", status: "Ready" },
-  { sourceTable: "processing_plant_assets_rev_b", sourceField: "sort_order", targetEntity: "Asset", targetField: "Display Sequence", transformation: "Direct integer mapping", status: "Ready" },
+  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Asset Number", targetEntity: "Asset", targetField: "Asset ID / Number", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Asset Name", targetEntity: "Asset", targetField: "Asset Name / Description", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Functional Location Codes", sourceField: "Functional Location", targetEntity: "Asset", targetField: "Functional Location", transformation: "Direct: TCMG-PP-XXX format", status: "Ready" },
+  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Area", targetEntity: "Asset", targetField: "Asset Group / Area", transformation: "Map to target system Asset Group", status: "Ready" },
+  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Sub-Area", targetEntity: "Asset", targetField: "Sub-Area / Location", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Parent Asset", targetEntity: "Asset", targetField: "Parent Asset Reference", transformation: "Lookup parent asset number from hierarchy", status: "Ready" },
+  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "P&ID Tags", targetEntity: "Asset", targetField: "P&ID Tag Reference", transformation: "Semicolon-delimited string of linked tags", status: "Ready" },
+  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Level 7 Components", targetEntity: "Asset", targetField: "Sub-Component BOM", transformation: "Flatten to child asset rows (15% populated)", status: "Partial" },
+  { sourceDocument: "Asset Criticality Register", sourceField: "Criticality Rating", targetEntity: "Asset", targetField: "Criticality Rating", transformation: "Direct: A/B/C rating (117 assets assessed)", status: "Ready" },
+  { sourceDocument: "Asset Register (Asset Tree)", sourceField: "Sort Order", targetEntity: "Asset", targetField: "Display Sequence", transformation: "Direct integer mapping", status: "Ready" },
 ];
 
 const FL_MAPPINGS: MappingRow[] = [
-  { sourceTable: "processing_functional_locations", sourceField: "fl_code", targetEntity: "Functional Location", targetField: "Location ID", transformation: "Direct: TCMG-PP-XXX-XXX-XXX", status: "Ready" },
-  { sourceTable: "processing_functional_locations", sourceField: "area", targetEntity: "Functional Location", targetField: "Area Name", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "processing_functional_locations", sourceField: "area_code", targetEntity: "Functional Location", targetField: "Area Code", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "processing_functional_locations", sourceField: "sub_area", targetEntity: "Functional Location", targetField: "Sub-Area Name", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "processing_functional_locations", sourceField: "sub_area_code", targetEntity: "Functional Location", targetField: "Sub-Area Code", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "processing_functional_locations", sourceField: "system_name", targetEntity: "Functional Location", targetField: "System Description", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Functional Location Codes", sourceField: "FL Code", targetEntity: "Functional Location", targetField: "Location ID", transformation: "Direct: TCMG-PP-XXX-XXX-XXX", status: "Ready" },
+  { sourceDocument: "Functional Location Codes", sourceField: "Area Name", targetEntity: "Functional Location", targetField: "Area Name", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Functional Location Codes", sourceField: "Area Code", targetEntity: "Functional Location", targetField: "Area Code", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Functional Location Codes", sourceField: "Sub-Area Name", targetEntity: "Functional Location", targetField: "Sub-Area Name", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Functional Location Codes", sourceField: "Sub-Area Code", targetEntity: "Functional Location", targetField: "Sub-Area Code", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Functional Location Codes", sourceField: "System Description", targetEntity: "Functional Location", targetField: "System Description", transformation: "Direct: no change", status: "Ready" },
 ];
 
 const PM_MAPPINGS: MappingRow[] = [
-  { sourceTable: "pm_master_list", sourceField: "pm_name", targetEntity: "PM Work Order", targetField: "PM Title / Description", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "frequency", targetEntity: "PM Work Order", targetField: "Frequency / Recurrence", transformation: "Map to D365 recurrence pattern", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "discipline", targetEntity: "PM Work Order", targetField: "Trade / Discipline", transformation: "Direct: Mechanical / Electrical / Instrument", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "asset_number", targetEntity: "PM Work Order", targetField: "Linked Asset ID", transformation: "FK lookup to asset register", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "estimated_duration", targetEntity: "PM Work Order", targetField: "Planned Duration", transformation: "Parse text to numeric hours", status: "Partial" },
-  { sourceTable: "pm_master_list", sourceField: "tasks (JSONB)", targetEntity: "PM Work Order", targetField: "Task Checklist Lines", transformation: "Flatten JSONB to line items (85% populated)", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "required_ppe[]", targetEntity: "PM Work Order", targetField: "Safety Requirements", transformation: "Array to checklist items", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "required_tools[]", targetEntity: "PM Work Order", targetField: "Required Tools", transformation: "Array to resource list", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "skill_level", targetEntity: "PM Work Order", targetField: "Skill / Competency Required", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "status", targetEntity: "PM Work Order", targetField: "Template Status", transformation: "Map Draft/Active/Locked to D365 status", status: "Ready" },
+  { sourceDocument: "PM Templates Pack", sourceField: "PM Title", targetEntity: "PM Work Order", targetField: "PM Title / Description", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "PM Templates Pack", sourceField: "Frequency", targetEntity: "PM Work Order", targetField: "Frequency / Recurrence", transformation: "Map to target system recurrence pattern", status: "Ready" },
+  { sourceDocument: "PM Templates Pack", sourceField: "Discipline", targetEntity: "PM Work Order", targetField: "Trade / Discipline", transformation: "Direct: Mechanical, Electrical, Instrument", status: "Ready" },
+  { sourceDocument: "PM Templates Pack", sourceField: "Linked Asset Number", targetEntity: "PM Work Order", targetField: "Linked Asset ID", transformation: "Cross-reference to Asset Register", status: "Ready" },
+  { sourceDocument: "PM Templates Pack", sourceField: "Estimated Duration", targetEntity: "PM Work Order", targetField: "Planned Duration", transformation: "Parse text to numeric hours", status: "Partial" },
+  { sourceDocument: "PM Templates Pack", sourceField: "Task Checklist", targetEntity: "PM Work Order", targetField: "Task Checklist Lines", transformation: "Structured checklist items (85% populated)", status: "Ready" },
+  { sourceDocument: "PM Templates Pack", sourceField: "Required PPE", targetEntity: "PM Work Order", targetField: "Safety Requirements", transformation: "Checklist items per template", status: "Ready" },
+  { sourceDocument: "PM Templates Pack", sourceField: "Required Tools", targetEntity: "PM Work Order", targetField: "Required Tools", transformation: "Resource list per template", status: "Ready" },
+  { sourceDocument: "PM Templates Pack", sourceField: "Skill Level", targetEntity: "PM Work Order", targetField: "Skill / Competency Required", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "PM Templates Pack", sourceField: "Template Status", targetEntity: "PM Work Order", targetField: "Template Status", transformation: "Map Draft/Active/Locked to target status", status: "Ready" },
 ];
 
 const SPARES_MAPPINGS: MappingRow[] = [
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "site_part_number", targetEntity: "Inventory Item", targetField: "Item Number", transformation: "Direct: TCMG-XXXX format", status: "Ready" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "part_name", targetEntity: "Inventory Item", targetField: "Item Description", transformation: "Direct: cleaned description", status: "Ready" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "category", targetEntity: "Inventory Item", targetField: "Item Group / Category", transformation: "Map to D365 Item Group", status: "Ready" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "criticality", targetEntity: "Inventory Item", targetField: "Criticality Class", transformation: "Direct: Critical / Insurance / Non-Critical", status: "Ready" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "bin_location", targetEntity: "Inventory Item", targetField: "Default Warehouse Location", transformation: "Direct: C01-EL-A1 format (pending population)", status: "Partial" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "min_qty / max_qty", targetEntity: "Inventory Item", targetField: "Reorder Point / Max Stock", transformation: "Direct numeric values (13/2184 populated)", status: "Partial" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "associated_asset", targetEntity: "Inventory Item", targetField: "Linked Asset Reference", transformation: "Cross-reference asset register (31/2184 linked)", status: "Partial" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "supplier", targetEntity: "Inventory Item", targetField: "Default Vendor", transformation: "Lookup supplier register (505/2184 populated)", status: "Partial" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "unit_price", targetEntity: "Inventory Item", targetField: "Standard Cost", transformation: "Direct: AUD value (36/2184 populated)", status: "Partial" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "lead_time_days", targetEntity: "Inventory Item", targetField: "Lead Time (Days)", transformation: "Direct integer (not yet captured)", status: "Not Started" },
+  { sourceDocument: "Site Parts Catalogue", sourceField: "Site Part Number", targetEntity: "Inventory Item", targetField: "Item Number", transformation: "Direct: TCMG-XXXX format", status: "Ready" },
+  { sourceDocument: "Site Parts Catalogue", sourceField: "Part Name", targetEntity: "Inventory Item", targetField: "Item Description", transformation: "Direct: cleaned description", status: "Ready" },
+  { sourceDocument: "Site Parts Catalogue", sourceField: "Category", targetEntity: "Inventory Item", targetField: "Item Group / Category", transformation: "Map to target system Item Group", status: "Ready" },
+  { sourceDocument: "Site Parts Catalogue", sourceField: "Criticality", targetEntity: "Inventory Item", targetField: "Criticality Class", transformation: "Direct: Critical, Insurance, Non-Critical", status: "Ready" },
+  { sourceDocument: "Site Parts Catalogue", sourceField: "Bin Location", targetEntity: "Inventory Item", targetField: "Default Warehouse Location", transformation: "Direct: C01-EL-A1 format (pending population)", status: "Partial" },
+  { sourceDocument: "Site Parts Catalogue", sourceField: "Min Qty / Max Qty", targetEntity: "Inventory Item", targetField: "Reorder Point / Max Stock", transformation: "Direct numeric values (13/2184 populated)", status: "Partial" },
+  { sourceDocument: "Site Parts Catalogue", sourceField: "Associated Asset", targetEntity: "Inventory Item", targetField: "Linked Asset Reference", transformation: "Cross-reference Asset Register (31/2184 linked)", status: "Partial" },
+  { sourceDocument: "Supplier Register", sourceField: "Supplier Name", targetEntity: "Inventory Item", targetField: "Default Vendor", transformation: "Lookup from Supplier Register (505/2184 populated)", status: "Partial" },
+  { sourceDocument: "Site Parts Catalogue", sourceField: "Unit Price", targetEntity: "Inventory Item", targetField: "Standard Cost", transformation: "Direct: AUD value (36/2184 populated)", status: "Partial" },
+  { sourceDocument: "Site Parts Catalogue", sourceField: "Lead Time (Days)", targetEntity: "Inventory Item", targetField: "Lead Time (Days)", transformation: "Direct integer (not yet captured)", status: "Not Started" },
 ];
 
 const SUPPLIER_MAPPINGS: MappingRow[] = [
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "code", targetEntity: "Vendor", targetField: "Vendor Code", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "name", targetEntity: "Vendor", targetField: "Vendor Name", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "abn", targetEntity: "Vendor", targetField: "ABN / Tax ID", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "email", targetEntity: "Vendor", targetField: "Primary Email", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "contact", targetEntity: "Vendor", targetField: "Primary Contact Name", transformation: "Direct: no change", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "payment_terms", targetEntity: "Vendor", targetField: "Payment Terms", transformation: "Map to D365 payment terms code (100% populated)", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "type", targetEntity: "Vendor", targetField: "Vendor Group", transformation: "Map to D365 vendor group (100% populated)", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "is_preferred", targetEntity: "Vendor", targetField: "Preferred Vendor Flag", transformation: "Boolean to Yes/No", status: "Ready" },
+  { sourceDocument: "Supplier Register", sourceField: "Vendor Code", targetEntity: "Vendor", targetField: "Vendor Code", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Supplier Register", sourceField: "Vendor Name", targetEntity: "Vendor", targetField: "Vendor Name", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Supplier Register", sourceField: "ABN", targetEntity: "Vendor", targetField: "ABN / Tax ID", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Supplier Register", sourceField: "Email", targetEntity: "Vendor", targetField: "Primary Email", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Supplier Register", sourceField: "Contact Name", targetEntity: "Vendor", targetField: "Primary Contact Name", transformation: "Direct: no change", status: "Ready" },
+  { sourceDocument: "Supplier Register", sourceField: "Payment Terms", targetEntity: "Vendor", targetField: "Payment Terms", transformation: "Map to target system payment terms code (100% populated)", status: "Ready" },
+  { sourceDocument: "Supplier Register", sourceField: "Supplier Type", targetEntity: "Vendor", targetField: "Vendor Group", transformation: "Map to target system vendor group (100% populated)", status: "Ready" },
+  { sourceDocument: "Supplier Register", sourceField: "Preferred Supplier", targetEntity: "Vendor", targetField: "Preferred Vendor Flag", transformation: "Boolean to Yes/No", status: "Ready" },
 ];
 
 const WO_MAPPINGS: MappingRow[] = [
-  { sourceTable: "work_orders", sourceField: "wo_number", targetEntity: "Work Order", targetField: "Work Order Number", transformation: "Direct: WO-XXXXXX format", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "status", targetEntity: "Work Order", targetField: "WO Status", transformation: "Map Open/In Progress/Complete to D365", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "priority", targetEntity: "Work Order", targetField: "Priority Level", transformation: "Direct: Normal / High / Critical", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "work_type", targetEntity: "Work Order", targetField: "Work Order Type", transformation: "Map Breakdown/PM/Project to D365 type", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "asset_id", targetEntity: "Work Order", targetField: "Asset Reference", transformation: "FK lookup to asset register", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "functional_location", targetEntity: "Work Order", targetField: "Functional Location", transformation: "Direct: TCMG-PP-XXX format", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "problem_description", targetEntity: "Work Order", targetField: "Problem Description", transformation: "Direct: free text", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "labour_hours (JSONB)", targetEntity: "Work Order", targetField: "Labour Journal Lines", transformation: "Flatten JSONB to journal entries (0/7 populated)", status: "Partial" },
+  { sourceDocument: "Work Order Register", sourceField: "WO Number", targetEntity: "Work Order", targetField: "Work Order Number", transformation: "Direct: WO-XXXXXX format", status: "Ready" },
+  { sourceDocument: "Work Order Register", sourceField: "Status", targetEntity: "Work Order", targetField: "WO Status", transformation: "Map Open/In Progress/Complete to target system", status: "Ready" },
+  { sourceDocument: "Work Order Register", sourceField: "Priority", targetEntity: "Work Order", targetField: "Priority Level", transformation: "Direct: Normal, High, Critical", status: "Ready" },
+  { sourceDocument: "Work Order Register", sourceField: "Work Type", targetEntity: "Work Order", targetField: "Work Order Type", transformation: "Map Breakdown/PM/Project to target type", status: "Ready" },
+  { sourceDocument: "Work Order Register", sourceField: "Asset Reference", targetEntity: "Work Order", targetField: "Asset Reference", transformation: "Cross-reference to Asset Register", status: "Ready" },
+  { sourceDocument: "Functional Location Codes", sourceField: "Functional Location", targetEntity: "Work Order", targetField: "Functional Location", transformation: "Direct: TCMG-PP-XXX format", status: "Ready" },
+  { sourceDocument: "Work Order Register", sourceField: "Problem Description", targetEntity: "Work Order", targetField: "Problem Description", transformation: "Direct: free text", status: "Ready" },
+  { sourceDocument: "Work Order Register", sourceField: "Labour Hours", targetEntity: "Work Order", targetField: "Labour Journal Lines", transformation: "Structured entries per work order (0/7 populated)", status: "Partial" },
 ];
 
 const ALL_SECTIONS = [
-  { title: "1. Asset Register", entity: "Assets → D365 Asset Management", data: ASSET_MAPPINGS },
-  { title: "2. Functional Locations", entity: "FL Codes → D365 Functional Locations", data: FL_MAPPINGS },
-  { title: "3. Preventive Maintenance", entity: "PM Templates → D365 PM Work Orders", data: PM_MAPPINGS },
-  { title: "4. Spare Parts & Inventory", entity: "Spares Catalogue → D365 Inventory Items", data: SPARES_MAPPINGS },
-  { title: "5. Supplier Register", entity: "Suppliers → D365 Vendor Master", data: SUPPLIER_MAPPINGS },
-  { title: "6. Work Orders", entity: "Work Orders → D365 Work Orders", data: WO_MAPPINGS },
+  { title: "1. Asset Register", entity: "Asset Tree → Target System Asset Management", data: ASSET_MAPPINGS },
+  { title: "2. Functional Locations", entity: "FL Codes Document → Target System Functional Locations", data: FL_MAPPINGS },
+  { title: "3. Preventive Maintenance", entity: "PM Templates Pack → Target System PM Work Orders", data: PM_MAPPINGS },
+  { title: "4. Spare Parts & Inventory", entity: "Site Parts Catalogue → Target System Inventory Items", data: SPARES_MAPPINGS },
+  { title: "5. Supplier Register", entity: "Supplier Register → Target System Vendor Master", data: SUPPLIER_MAPPINGS },
+  { title: "6. Work Orders", entity: "Work Order Register → Target System Work Orders", data: WO_MAPPINGS },
 ];
 
 const MappingTable = ({ rows }: { rows: MappingRow[] }) => (
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead className="text-[10px] font-semibold w-[18%]">Source Table</TableHead>
+        <TableHead className="text-[10px] font-semibold w-[18%]">Source Document</TableHead>
         <TableHead className="text-[10px] font-semibold w-[15%]">Source Field</TableHead>
-        <TableHead className="text-[10px] font-semibold w-[18%]">Target Field (D365)</TableHead>
+        <TableHead className="text-[10px] font-semibold w-[18%]">Target Field</TableHead>
         <TableHead className="text-[10px] font-semibold w-[28%]">Transformation Rule</TableHead>
         <TableHead className="text-[10px] font-semibold w-[10%] text-center">Status</TableHead>
       </TableRow>
@@ -128,8 +128,8 @@ const MappingTable = ({ rows }: { rows: MappingRow[] }) => (
     <TableBody>
       {rows.map((row, i) => (
         <TableRow key={i}>
-          <TableCell className="text-[10px] font-mono text-muted-foreground">{row.sourceTable}</TableCell>
-          <TableCell className="text-[10px] font-mono">{row.sourceField}</TableCell>
+          <TableCell className="text-[10px] text-muted-foreground">{row.sourceDocument}</TableCell>
+          <TableCell className="text-[10px] font-medium">{row.sourceField}</TableCell>
           <TableCell className="text-[10px] font-medium">{row.targetField}</TableCell>
           <TableCell className="text-[10px]">{row.transformation}</TableCell>
           <TableCell className="text-center"><StatusBadge status={row.status} /></TableCell>
@@ -156,7 +156,7 @@ export const DataMappingReadinessSection = () => {
               <p className="text-[10px] text-muted-foreground font-medium tracking-wide uppercase">TCMG-STD-DM-001 · Rev 1.0</p>
               <CardTitle className="text-xl mt-1">Data Mapping & Readiness Documentation</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                Field-level mapping from TCMG source datasets to D365 Asset Management target entities
+                Field-level mapping from TCMG source documents to target system (D365 or equivalent) entities
               </p>
             </div>
             <Badge variant="outline" className="text-xs shrink-0">
@@ -202,11 +202,11 @@ export const DataMappingReadinessSection = () => {
           <CardTitle className="text-sm">Scope & Assumptions</CardTitle>
         </CardHeader>
         <CardContent className="text-xs text-muted-foreground space-y-1.5">
-          <p>• <strong>Source System:</strong> TCMG Maintenance Platform (PostgreSQL / Lovable Cloud) — all tables listed in this document are the live source of truth.</p>
-          <p>• <strong>Target System:</strong> Microsoft Dynamics 365 Field Service / Asset Management. Field names reference standard D365 entity schemas.</p>
-          <p>• <strong>Transformation Rules:</strong> "Direct" means the field value transfers without modification. All other rules describe required ETL logic.</p>
-          <p>• <strong>JSONB Fields:</strong> Several source fields store structured data as JSONB. These require flattening into D365-compatible line-item or child-record formats.</p>
-          <p>• <strong>Readiness Status:</strong> "Ready" = field populated and validated. "Partial" = data exists but needs transformation or enrichment. "Not Started" = field not yet captured.</p>
+          <p>• <strong>Source Documents:</strong> All data originates from the TCMG Maintenance Foundation Pack, delivered as PDF documents. Each mapping row references the specific document containing the source data.</p>
+          <p>• <strong>Target System:</strong> Microsoft Dynamics 365 Field Service / Asset Management, or any equivalent CMMS. Field names reference standard entity schemas.</p>
+          <p>• <strong>Transformation Rules:</strong> "Direct" means the field value transfers without modification. All other rules describe required data entry or conversion logic.</p>
+          <p>• <strong>Readiness Status:</strong> "Ready" = field populated, validated, and available in the source document. "Partial" = data exists but requires enrichment or completion. "Not Started" = field not yet captured in any deliverable.</p>
+          <p>• <strong>Source Document Index:</strong> Asset Register (Asset Tree), Functional Location Codes, PM Templates Pack, Site Parts Catalogue, Supplier Register, Work Order Register, Asset Criticality Register, Naming Convention Standard.</p>
         </CardContent>
       </Card>
 
@@ -243,7 +243,7 @@ export const DataMappingReadinessSection = () => {
           </div>
           <div className="flex gap-2 items-start">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
-            <p><strong>PM Task Checklists:</strong> 82 of 97 PM templates now have structured JSONB task data populated and validated.</p>
+            <p><strong>PM Task Checklists:</strong> 82 of 97 PM templates now have structured task data populated and validated.</p>
           </div>
           <div className="flex gap-2 items-start">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
@@ -251,11 +251,11 @@ export const DataMappingReadinessSection = () => {
           </div>
           <div className="flex gap-2 items-start">
             <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-            <p><strong>JSONB Flattening:</strong> Asset components and WO labour hours stored as JSONB need ETL scripts to produce flat import files for D365.</p>
+            <p><strong>Component Flattening:</strong> Level 7 components documented in the Asset Tree need to be extracted into individual child asset rows for import into the target system.</p>
           </div>
           <div className="flex gap-2 items-start">
             <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-            <p><strong>Duration Parsing:</strong> PM estimated_duration stored as text (e.g. "2-3 hrs") needs standardisation to numeric hours. Only 10 of 97 templates populated.</p>
+            <p><strong>Duration Standardisation:</strong> PM estimated duration stored as text (e.g. "2-3 hrs") needs conversion to numeric hours. Only 10 of 97 templates populated.</p>
           </div>
           <div className="flex gap-2 items-start">
             <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
