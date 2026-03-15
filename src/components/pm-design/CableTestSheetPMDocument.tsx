@@ -63,7 +63,7 @@ export const CableTestSheetPMDocument = () => {
             INSULATION RESISTANCE (MEGA OHMS)
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-xs border-collapse">
+            <table className="w-full text-xs border-collapse" style={{ tableLayout: "fixed" }}>
               <thead>
                 <tr className="bg-muted">
                   {testColumns.map((col) => (
@@ -84,15 +84,15 @@ export const CableTestSheetPMDocument = () => {
 
         {/* Additional Test Results */}
         <div className="border-b border-border">
-          <table className="w-full text-xs border-collapse">
+          <table className="w-full text-xs border-collapse" style={{ tableLayout: "fixed" }}>
             <tbody>
               <tr>
-                <td className="border border-border px-3 py-2 font-semibold w-[30%]">N-E Fault Loop Impedance (OHMS)</td>
-                <td className="border border-border px-3 py-4 w-[20%]"></td>
-                <td className="border border-border px-3 py-2 font-semibold w-[15%]">Continuity Earth (Ω)</td>
-                <td className="border border-border px-3 py-4 w-[15%]"></td>
-                <td className="border border-border px-3 py-2 font-semibold w-[10%]">SWA (Ω)</td>
-                <td className="border border-border px-3 py-4 w-[10%]"></td>
+                <td className="border border-border px-3 py-2 font-semibold">N-E Fault Loop Impedance (OHMS)</td>
+                <td className="border border-border px-3 py-4"></td>
+                <td className="border border-border px-3 py-2 font-semibold">Continuity Earth (Ω)</td>
+                <td className="border border-border px-3 py-4"></td>
+                <td className="border border-border px-3 py-2 font-semibold">SWA (Ω)</td>
+                <td className="border border-border px-3 py-4"></td>
               </tr>
             </tbody>
           </table>
