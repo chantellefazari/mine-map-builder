@@ -162,7 +162,7 @@ export const DataMappingReadinessSection = () => {
         onClose={() => setPrintOpen(false)}
         title="TCMG - Data Mapping & Readiness"
       >
-        <DataMappingContent allRows={allRows} ready={ready} partial={partial} notStarted={notStarted} pct={pct} />
+        <DataMappingPrintContent />
       </PrintPreviewModal>
 
       {/* Document Header */}
