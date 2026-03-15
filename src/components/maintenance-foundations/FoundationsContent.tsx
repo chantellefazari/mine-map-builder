@@ -1,7 +1,11 @@
 import { useState, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
+import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import { 
   Hash,
   GitBranch,
@@ -52,10 +56,51 @@ const TAB_LABELS: Record<string, string> = {
 export const FoundationsContent = () => {
   const [activeTab, setActiveTab] = useState("hierarchy");
   const contentRef = useRef<HTMLDivElement>(null);
-  const [printOpen, setPrintOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const handlePrintTab = () => {
-    setPrintOpen(true);
+  const handleSavePdf = async () => {
+    const el = contentRef.current;
+    if (!el) return;
+    setSaving(true);
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const A4_W = 210;
+      const A4_H = 297;
+      const MARGIN = 8;
+      const contentW = A4_W - MARGIN * 2;
+      const imgRatio = canvas.height / canvas.width;
+      const totalImgH = contentW * imgRatio;
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+      let heightLeft = totalImgH;
+      let position = MARGIN;
+
+      pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
+      heightLeft -= (A4_H - MARGIN * 2);
+
+      while (heightLeft > 0) {
+        pdf.addPage();
+        position = MARGIN - (totalImgH - heightLeft);
+        pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
+        heightLeft -= (A4_H - MARGIN * 2);
+      }
+
+      const label = TAB_LABELS[activeTab] || "Maintenance Foundations";
+      const filename = `TCMG-${label.replace(/[^a-zA-Z0-9]/g, "-")}.pdf`;
+      const blob = pdf.output("blob");
+      await uploadAndShowPdf(blob, filename, label);
+      toast.success("PDF saved successfully");
+    } catch (err) {
+      console.error("PDF save error:", err);
+      toast.error("Failed to save PDF");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -132,11 +177,12 @@ export const FoundationsContent = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={handlePrintTab}
+            onClick={handleSavePdf}
+            disabled={saving}
             className="gap-2 w-full justify-start"
           >
-            <Printer className="w-3.5 h-3.5" />
-            Print Tab
+            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Printer className="w-3.5 h-3.5" />}
+            {saving ? "Saving…" : "Save PDF"}
           </Button>
         </div>
       </div>
@@ -196,25 +242,6 @@ export const FoundationsContent = () => {
         </TabsContent>
       </div>
 
-      <PrintPreviewModal
-        isOpen={printOpen}
-        onClose={() => setPrintOpen(false)}
-        title={TAB_LABELS[activeTab] || "Print Preview"}
-      >
-        {activeTab === "hierarchy" && <HierarchyRulesSection />}
-        {activeTab === "functional-locations" && <AssetNumberingSection />}
-        {activeTab === "part-numbering" && <SitePartNumberingSection />}
-        {activeTab === "wo-numbering" && <JobNumberingSection />}
-        {activeTab === "pm-standards" && <PMStandardsSection />}
-        {activeTab === "spares" && <SparesStrategySection />}
-        {activeTab === "governance" && <DataGovernanceSection />}
-        {activeTab === "tag-rollout" && <AssetTagRolloutPlanSection />}
-        {activeTab === "pm-coverage" && <PMCoverageAnalysisSection />}
-        {activeTab === "shutdown-pms" && <ShutdownPMRequirementsSection />}
-        {activeTab === "naming-convention" && <NamingConventionDocument />}
-        {activeTab === "data-mapping" && <DataMappingReadinessSection />}
-        {activeTab === "criticality" && <AssetCriticalitySection />}
-      </PrintPreviewModal>
     </Tabs>
   );
 };
