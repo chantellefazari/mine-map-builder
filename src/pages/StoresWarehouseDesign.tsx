@@ -12,11 +12,13 @@ import { DesignInputsSection } from "@/components/stores-warehouse/DesignInputsS
 import { StoreVisualisation } from "@/components/stores-warehouse/StoreVisualisation";
 import { CapacityAnalysis } from "@/components/stores-warehouse/CapacityAnalysis";
 import { StockControlProcedure } from "@/components/stores-warehouse/StockControlProcedure";
+import { PrintAllStoresModal } from "@/components/stores-warehouse/PrintAllStoresModal";
 import { PrintImplementationPlanModal } from "@/components/stores-warehouse/PrintImplementationPlanModal";
 import { exportStoresWorkbook } from "@/utils/exportStoresWorkbook";
 
 const StoresWarehouseDesign = () => {
   const [showPrintModal, setShowPrintModal] = useState(false);
+  const [showPrintAllModal, setShowPrintAllModal] = useState(false);
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -40,6 +42,10 @@ const StoresWarehouseDesign = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => setShowPrintAllModal(true)} className="gap-2">
+                <Printer className="w-4 h-4" />
+                <span className="hidden sm:inline">Print All Tabs</span>
+              </Button>
               <Button variant="outline" size="sm" onClick={() => setShowPrintModal(true)} className="gap-2">
                 <Printer className="w-4 h-4" />
                 <span className="hidden sm:inline">Print Plan</span>
@@ -157,6 +163,7 @@ const StoresWarehouseDesign = () => {
         </Tabs>
       </main>
       <PrintImplementationPlanModal isOpen={showPrintModal} onClose={() => setShowPrintModal(false)} />
+      <PrintAllStoresModal isOpen={showPrintAllModal} onClose={() => setShowPrintAllModal(false)} />
     </div>
   );
 };
