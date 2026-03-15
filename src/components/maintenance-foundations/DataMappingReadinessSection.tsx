@@ -1,10 +1,13 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle2, AlertCircle, Clock, Printer } from "lucide-react";
-import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
+import { CheckCircle2, AlertCircle, Clock, Printer, Download, X, Loader2 } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
+import { toast } from "sonner";
 
 type ReadinessStatus = "Ready" | "Partial" | "Not Started";
 
