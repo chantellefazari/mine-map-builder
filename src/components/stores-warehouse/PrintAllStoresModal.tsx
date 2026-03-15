@@ -120,13 +120,7 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
 
     const printRoot = document.createElement("div");
     printRoot.setAttribute("data-stores-all-print-root", "true");
-    printRoot.innerHTML = `
-      <div style="text-align:center;padding:20mm 0 10mm;border-bottom:3px solid hsl(45 71% 47%);margin-bottom:10mm;">
-        <h1 style="font-size:22px;font-weight:700;color:hsl(0 0% 7%);">Stores & Warehouse Design</h1>
-        <p style="font-size:12px;color:hsl(0 0% 35%);margin-top:4px;">Tennant Creek Mines Gold | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
-      </div>
-      ${printContent.innerHTML}
-    `;
+    printRoot.innerHTML = printContent.innerHTML;
     printRoot.style.cssText = "display:block;font-family:Inter,-apple-system,sans-serif;font-size:11px;line-height:1.5;color:hsl(0 0% 7%);background:hsl(0 0% 100%);-webkit-print-color-adjust:exact;print-color-adjust:exact;";
     document.body.appendChild(printRoot);
 
