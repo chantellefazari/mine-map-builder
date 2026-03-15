@@ -58,16 +58,16 @@ const FL_MAPPINGS: MappingRow[] = [
 ];
 
 const PM_MAPPINGS: MappingRow[] = [
-  { sourceTable: "pm_master_list", sourceField: "pm_name", targetEntity: "PM Work Order", targetField: "PM Title / Description", transformation: "Direct — no change", status: "Ready" },
+  { sourceTable: "pm_master_list", sourceField: "pm_name", targetEntity: "PM Work Order", targetField: "PM Title / Description", transformation: "Direct: no change", status: "Ready" },
   { sourceTable: "pm_master_list", sourceField: "frequency", targetEntity: "PM Work Order", targetField: "Frequency / Recurrence", transformation: "Map to D365 recurrence pattern", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "discipline", targetEntity: "PM Work Order", targetField: "Trade / Discipline", transformation: "Direct — Mechanical / Electrical / Instrument", status: "Ready" },
+  { sourceTable: "pm_master_list", sourceField: "discipline", targetEntity: "PM Work Order", targetField: "Trade / Discipline", transformation: "Direct: Mechanical / Electrical / Instrument", status: "Ready" },
   { sourceTable: "pm_master_list", sourceField: "asset_number", targetEntity: "PM Work Order", targetField: "Linked Asset ID", transformation: "FK lookup to asset register", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "estimated_duration", targetEntity: "PM Work Order", targetField: "Planned Duration", transformation: "Parse text → numeric hours", status: "Partial" },
-  { sourceTable: "pm_master_list", sourceField: "tasks (JSONB)", targetEntity: "PM Work Order", targetField: "Task Checklist Lines", transformation: "Flatten JSONB → line items", status: "Partial" },
-  { sourceTable: "pm_master_list", sourceField: "required_ppe[]", targetEntity: "PM Work Order", targetField: "Safety Requirements", transformation: "Array → checklist items", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "required_tools[]", targetEntity: "PM Work Order", targetField: "Required Tools", transformation: "Array → resource list", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "skill_level", targetEntity: "PM Work Order", targetField: "Skill / Competency Required", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "pm_master_list", sourceField: "status", targetEntity: "PM Work Order", targetField: "Template Status", transformation: "Map Draft/Active/Locked → D365 status", status: "Ready" },
+  { sourceTable: "pm_master_list", sourceField: "estimated_duration", targetEntity: "PM Work Order", targetField: "Planned Duration", transformation: "Parse text to numeric hours", status: "Partial" },
+  { sourceTable: "pm_master_list", sourceField: "tasks (JSONB)", targetEntity: "PM Work Order", targetField: "Task Checklist Lines", transformation: "Flatten JSONB to line items (85% populated)", status: "Ready" },
+  { sourceTable: "pm_master_list", sourceField: "required_ppe[]", targetEntity: "PM Work Order", targetField: "Safety Requirements", transformation: "Array to checklist items", status: "Ready" },
+  { sourceTable: "pm_master_list", sourceField: "required_tools[]", targetEntity: "PM Work Order", targetField: "Required Tools", transformation: "Array to resource list", status: "Ready" },
+  { sourceTable: "pm_master_list", sourceField: "skill_level", targetEntity: "PM Work Order", targetField: "Skill / Competency Required", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "pm_master_list", sourceField: "status", targetEntity: "PM Work Order", targetField: "Template Status", transformation: "Map Draft/Active/Locked to D365 status", status: "Ready" },
 ];
 
 const SPARES_MAPPINGS: MappingRow[] = [
