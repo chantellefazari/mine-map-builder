@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -84,104 +85,64 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
     const printContent = printRef.current;
     if (!printContent) return;
 
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) {
-      // Fallback: use iframe if popup blocked
-      const iframe = document.createElement("iframe");
-      iframe.style.position = "fixed";
-      iframe.style.left = "-9999px";
-      document.body.appendChild(iframe);
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-      if (!iframeDoc) return;
-      iframeDoc.open();
-      iframeDoc.write(buildPrintHtml(printContent.innerHTML));
-      iframeDoc.close();
-      setTimeout(() => {
-        iframe.contentWindow?.focus();
-        iframe.contentWindow?.print();
-        setTimeout(() => iframe.remove(), 2000);
-      }, 600);
-      return;
+    const styleId = "stores-all-print-styles";
+    let style = document.getElementById(styleId) as HTMLStyleElement | null;
+    if (!style) {
+      style = document.createElement("style");
+      style.id = styleId;
+      document.head.appendChild(style);
     }
 
-    printWindow.document.write(buildPrintHtml(printContent.innerHTML));
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 600);
-  };
+    style.textContent = `
+      @media print {
+        body * { visibility: hidden !important; }
+        [data-stores-all-print-root],
+        [data-stores-all-print-root] * { visibility: visible !important; }
 
-  const buildPrintHtml = (contentHtml: string) => `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Stores & Warehouse Design — TCMG</title>
-        <style>
-          @page {
-            size: A4 portrait;
-            margin: 15mm;
-          }
-          * { box-sizing: border-box; margin: 0; padding: 0; }
-          body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 11px;
-            line-height: 1.5;
-            color: #111;
-            background: white;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-          .doc-cover {
-            text-align: center;
-            padding: 20mm 0 10mm;
-            border-bottom: 3px solid #d4a017;
-            margin-bottom: 10mm;
-          }
-          .doc-cover h1 { font-size: 22px; font-weight: 700; color: #111; }
-          .doc-cover p { font-size: 12px; color: #555; margin-top: 4px; }
-          .section-break { page-break-before: always; padding-top: 6mm; }
-          .section-title {
-            font-size: 15px; font-weight: 700; color: #111;
-            border-left: 4px solid #d4a017; padding-left: 10px; margin-bottom: 8mm;
-          }
-          .card, [class*="rounded"] {
-            border: 1px solid #ddd; border-radius: 6px;
-            padding: 10px 12px; margin-bottom: 8px;
-          }
-          table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-          th, td { border: 1px solid #ccc; padding: 5px 8px; text-align: left; font-size: 10px; }
-          th { background-color: #f5f0e0; font-weight: 600; }
-          tr:nth-child(even) td { background-color: #fafafa; }
-          .badge, [class*="badge"] {
-            border: 1px solid #ccc; border-radius: 4px;
-            padding: 1px 6px; font-size: 9px; display: inline-block;
-          }
-          .text-muted, [class*="muted"] { color: #666; }
-          button, input, select { display: none !important; }
-          svg { display: block; }
-          [style*="background"] {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            color-adjust: exact !important;
-          }
-          h2, h3, h4 { margin-bottom: 4px; font-weight: 600; }
-          ul, ol { padding-left: 16px; margin-bottom: 6px; }
-          li { margin-bottom: 2px; font-size: 10px; }
-          p { margin-bottom: 4px; font-size: 10px; }
-          .separator, hr { border: none; border-top: 1px solid #ddd; margin: 6px 0; }
-        </style>
-      </head>
-      <body>
-        <div class="doc-cover">
-          <h1>Stores & Warehouse Design</h1>
-          <p>Tennant Creek Mines Gold — Proposal Document | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
-        </div>
-        ${contentHtml}
-      </body>
-    </html>
-  `;
+        [data-stores-all-print-root] {
+          display: block !important;
+          position: fixed;
+          inset: 0;
+          width: 100%;
+          z-index: 999999;
+          overflow: visible;
+          background: hsl(0 0% 100%);
+        }
+
+        @page { size: A4 portrait; margin: 15mm; }
+
+        [data-stores-all-print-root] .stores-print-section {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+      }
+    `;
+
+    const printRoot = document.createElement("div");
+    printRoot.setAttribute("data-stores-all-print-root", "true");
+    printRoot.innerHTML = `
+      <div style="text-align:center;padding:20mm 0 10mm;border-bottom:3px solid hsl(45 71% 47%);margin-bottom:10mm;">
+        <h1 style="font-size:22px;font-weight:700;color:hsl(0 0% 7%);">Stores & Warehouse Design</h1>
+        <p style="font-size:12px;color:hsl(0 0% 35%);margin-top:4px;">Tennant Creek Mines Gold | ${new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
+      </div>
+      ${printContent.innerHTML}
+    `;
+    printRoot.style.cssText = "display:block;font-family:Inter,-apple-system,sans-serif;font-size:11px;line-height:1.5;color:hsl(0 0% 7%);background:hsl(0 0% 100%);-webkit-print-color-adjust:exact;print-color-adjust:exact;";
+    document.body.appendChild(printRoot);
+
+    const cleanup = () => {
+      printRoot.remove();
+      if (style) style.textContent = "";
+      window.removeEventListener("afterprint", cleanup);
+    };
+
+    window.addEventListener("afterprint", cleanup, { once: true });
+
+    setTimeout(() => {
+      window.print();
+      setTimeout(cleanup, 1200);
+    }, 100);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -192,6 +153,9 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
             <DialogTitle className="text-lg font-semibold">
               Print — Stores & Warehouse Design
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              Print or save the full Stores and Warehouse design document as PDF.
+            </DialogDescription>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={handleDownloadPDF} className="gap-2" disabled={downloading}>
@@ -215,7 +179,7 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
             style={{ maxWidth: "210mm", padding: "12mm" }}
           >
             {SECTIONS.map(({ title, Component }, i) => (
-              <div key={title} className={i > 0 ? "mt-10 pt-8 border-t-2 border-primary/30" : ""}>
+              <div key={title} className={`stores-print-section ${i > 0 ? "mt-10 pt-8 border-t-2 border-primary/30" : ""}`}>
                 <p className="text-xs font-bold uppercase tracking-widest text-primary mb-4 border-l-4 border-primary pl-3">
                   {title}
                 </p>
