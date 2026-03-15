@@ -100,6 +100,16 @@ export const AssetTagRolloutPlanSection = () => {
         if (data.length < batchSize) break;
         from += batchSize;
       }
+
+      // Sort by canonical area order: SITE → UTL → COM → REC → TAIL → SUP, then by sort_order within each area
+      const AREA_ORDER: Record<string, number> = { SITE: 0, UTL: 1, COM: 2, REC: 3, TAIL: 4, SUP: 5 };
+      allRows.sort((a: any, b: any) => {
+        const areaA = AREA_ORDER[a.area_code] ?? 99;
+        const areaB = AREA_ORDER[b.area_code] ?? 99;
+        if (areaA !== areaB) return areaA - areaB;
+        return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+      });
+
       return allRows;
     },
     staleTime: 5 * 60 * 1000,
