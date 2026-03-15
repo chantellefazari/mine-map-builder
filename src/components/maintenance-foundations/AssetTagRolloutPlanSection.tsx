@@ -477,31 +477,32 @@ export const AssetTagRolloutPlanSection = () => {
     setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
   };
 
-  const [pdfModalUrl, setPdfModalUrl] = useState<string | null>(null);
-  const [pdfModalTitle, setPdfModalTitle] = useState("");
-
-  const openPdfModal = useCallback((blob: Blob, title: string) => {
+  const openPdfInNewTab = (blob: Blob, filename: string) => {
     const url = URL.createObjectURL(blob);
-    setPdfModalUrl(url);
-    setPdfModalTitle(title);
-  }, []);
-
-  const closePdfModal = useCallback(() => {
-    if (pdfModalUrl) URL.revokeObjectURL(pdfModalUrl);
-    setPdfModalUrl(null);
-  }, [pdfModalUrl]);
+    const win = window.open(url, "_blank");
+    if (!win) {
+      // Popup blocked — fall back to direct download
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+    setTimeout(() => URL.revokeObjectURL(url), 120000);
+  };
 
   const handleDownloadRegister = async () => {
     try {
       const blob = await generateAssetRegisterPDF(taggedAssets);
-      openPdfModal(blob, "Attachment A — P&ID Tagged Asset Register");
+      openPdfInNewTab(blob, "TCMG_PID_Tagged_Asset_Register.pdf");
     } catch (err) { console.error("Asset Register PDF error:", err); }
   };
 
   const handleDownloadProductionList = async () => {
     try {
       const blob = await generateProductionListPDF(productionTags);
-      openPdfModal(blob, "Attachment B — Asset Tag Production List");
+      openPdfInNewTab(blob, "TCMG_Asset_Tag_Production_List.pdf");
     } catch (err) { console.error("Production List PDF error:", err); }
   };
 
