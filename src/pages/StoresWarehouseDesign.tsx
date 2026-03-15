@@ -13,7 +13,6 @@ import { StoreVisualisation } from "@/components/stores-warehouse/StoreVisualisa
 import { CapacityAnalysis } from "@/components/stores-warehouse/CapacityAnalysis";
 import { StockControlProcedure } from "@/components/stores-warehouse/StockControlProcedure";
 import { PrintAllStoresModal } from "@/components/stores-warehouse/PrintAllStoresModal";
-import { PrintImplementationPlanModal } from "@/components/stores-warehouse/PrintImplementationPlanModal";
 import { exportStoresWorkbook } from "@/utils/exportStoresWorkbook";
 
 const StoresWarehouseDesign = () => {
