@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 import { 
   Hash,
   GitBranch,
@@ -11,7 +12,6 @@ import {
   ListOrdered,
   MapPin,
   Printer,
-  Download,
   BarChart3,
   AlertTriangle,
   Database,
