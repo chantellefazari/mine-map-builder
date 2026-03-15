@@ -50,7 +50,7 @@ export const LubePMDocument = ({ templateId }: LubePMDocumentProps) => {
             </colgroup>
             <thead>
               <tr className="bg-muted">
-                <th className="px-2 py-1.5 text-left font-semibold">Plant ID</th>
+                <th className="px-2 py-1.5 text-left font-semibold">Asset Number</th>
                 <th className="px-2 py-1.5 text-left font-semibold">Plant Item</th>
                 <th className="px-2 py-1.5 text-center font-semibold">Pt #</th>
                 <th className="px-2 py-1.5 text-left font-semibold">Location</th>
