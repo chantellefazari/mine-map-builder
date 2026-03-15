@@ -3,11 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle2, AlertCircle, Clock, Printer, Loader2 } from "lucide-react";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
-import { toast } from "sonner";
+import { CheckCircle2, AlertCircle, Clock, Printer } from "lucide-react";
+import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
 
 type ReadinessStatus = "Ready" | "Partial" | "Not Started";
 
