@@ -494,7 +494,7 @@ export const AssetTagRolloutPlanSection = () => {
   const handleDownloadRegister = async () => {
     try {
       const blob = await generateAssetRegisterPDF(taggedAssets);
-      openPdfInNewTab(blob, "TCMG_PID_Tagged_Asset_Register.pdf");
+      printPdfBlob(blob);
     } catch (err) { console.error("Asset Register PDF error:", err); }
   };
 
