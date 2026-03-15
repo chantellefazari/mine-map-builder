@@ -493,11 +493,15 @@ export const AssetTagRolloutPlanSection = () => {
     subtitle: string,
     headers: string[],
     rows: Array<Array<string | number>>,
-    orientation: "portrait" | "landscape" = "landscape"
+    orientation: "portrait" | "landscape" = "landscape",
+    rowClasses?: string[]
   ) => {
     const headHtml = headers.map((h) => `<th>${escapeHtml(h)}</th>`).join("");
     const bodyHtml = rows
-      .map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`)
+      .map((row, i) => {
+        const cls = rowClasses?.[i] ? ` class="${rowClasses[i]}"` : "";
+        return `<tr${cls}>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`;
+      })
       .join("");
 
     const printWindow = window.open("", "_blank");
@@ -522,7 +526,13 @@ export const AssetTagRolloutPlanSection = () => {
             th, td { border: 1px solid #333; padding: 4px 5px; font-size: 9px; vertical-align: top; word-break: break-word; }
             th { background: #f0ece0; font-weight: 700; }
             tr:nth-child(even) td { background: #fafafa; }
+            tr.type-a td { background: #dbeafe; }
+            tr.type-a:nth-child(even) td { background: #c7d9f2; }
+            tr.type-b td { background: #fef3c7; }
+            tr.type-b:nth-child(even) td { background: #fde8a0; }
             .gold-bar { height: 3px; background: #d4a017; margin-bottom: 8px; }
+            .legend { display: flex; gap: 24px; margin-bottom: 10px; font-size: 10px; }
+            .legend-swatch { display: inline-block; width: 14px; height: 14px; border: 1px solid #333; vertical-align: middle; margin-right: 5px; }
             @media print {
               body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             }
@@ -532,6 +542,10 @@ export const AssetTagRolloutPlanSection = () => {
           <div class="gold-bar"></div>
           <h1>${escapeHtml(title)}</h1>
           <p class="subtitle">${escapeHtml(subtitle)}</p>
+          ${rowClasses ? `<div class="legend">
+            <span><span class="legend-swatch" style="background:#dbeafe;"></span><strong>Type A</strong> — Major Asset Plate (100×50×1.5mm, adhesive/rivet to fixed structure)</span>
+            <span><span class="legend-swatch" style="background:#fef3c7;"></span><strong>Type B</strong> — Position Tag (70×25×1.5mm, bolt/cable tie to nearby structure)</span>
+          </div>` : ""}
           <table>
             <thead><tr>${headHtml}</tr></thead>
             <tbody>${bodyHtml}</tbody>
@@ -582,12 +596,15 @@ export const AssetTagRolloutPlanSection = () => {
       t.tagInstalled ? "Yes" : "No",
     ]);
 
+    const rowClasses = productionTags.map((t) => t.tagType === "A" ? "type-a" : "type-b");
+
     printAttachmentTable(
       "Attachment B — Asset Tag Production List",
       `${productionTags.length} tags total | Type A: ${typeACnt} | Type B: ${typeBCnt}`,
       ["#", "Asset No.", "Asset Name", "P&ID Tag", "Type", "Tag Size", "Mounting Location", "Mounting Method", "Parent System", "Location", "Installed"],
       rows,
-      "landscape"
+      "landscape",
+      rowClasses
     );
   };
 
