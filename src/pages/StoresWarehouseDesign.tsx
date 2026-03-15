@@ -163,6 +163,7 @@ const StoresWarehouseDesign = () => {
         </Tabs>
       </main>
       <PrintImplementationPlanModal isOpen={showPrintModal} onClose={() => setShowPrintModal(false)} />
+      <PrintAllStoresModal isOpen={showPrintAllModal} onClose={() => setShowPrintAllModal(false)} />
     </div>
   );
 };
