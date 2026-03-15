@@ -476,12 +476,7 @@ export const AssetTagRolloutPlanSection = () => {
   };
 
   const escapeHtml = (value: string | number | null | undefined) =>
-    String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
+    String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   const printAttachmentTable = (
     title: string,
@@ -490,29 +485,18 @@ export const AssetTagRolloutPlanSection = () => {
     rows: Array<Array<string | number>>,
     orientation: "portrait" | "landscape" = "landscape"
   ) => {
-    const iframe = document.createElement("iframe");
-    iframe.style.position = "fixed";
-    iframe.style.right = "0";
-    iframe.style.bottom = "0";
-    iframe.style.width = "0";
-    iframe.style.height = "0";
-    iframe.style.border = "0";
-    iframe.setAttribute("aria-hidden", "true");
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow?.document;
-    if (!doc) {
-      document.body.removeChild(iframe);
-      return;
-    }
-
     const headHtml = headers.map((h) => `<th>${escapeHtml(h)}</th>`).join("");
     const bodyHtml = rows
       .map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`)
       .join("");
 
-    doc.open();
-    doc.write(`
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      alert("Popup blocked — please allow popups for this site and try again.");
+      return;
+    }
+
+    printWindow.document.write(`
       <!doctype html>
       <html>
         <head>
@@ -521,19 +505,23 @@ export const AssetTagRolloutPlanSection = () => {
           <style>
             @page { size: A4 ${orientation}; margin: 10mm; }
             * { box-sizing: border-box; }
-            body { margin: 0; font-family: Arial, sans-serif; color: #111; }
+            body { margin: 0; padding: 12px; font-family: Arial, Helvetica, sans-serif; color: #111; }
             h1 { margin: 0 0 4px; font-size: 16px; }
-            p { margin: 0 0 10px; font-size: 11px; color: #444; }
+            .subtitle { margin: 0 0 12px; font-size: 11px; color: #555; }
             table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-            th, td { border: 1px solid #222; padding: 4px; font-size: 9px; vertical-align: top; word-break: break-word; }
-            th { background: #f3f4f6; font-weight: 700; }
+            th, td { border: 1px solid #333; padding: 4px 5px; font-size: 9px; vertical-align: top; word-break: break-word; }
+            th { background: #f0ece0; font-weight: 700; }
             tr:nth-child(even) td { background: #fafafa; }
-            @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+            .gold-bar { height: 3px; background: #d4a017; margin-bottom: 8px; }
+            @media print {
+              body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            }
           </style>
         </head>
         <body>
+          <div class="gold-bar"></div>
           <h1>${escapeHtml(title)}</h1>
-          <p>${escapeHtml(subtitle)}</p>
+          <p class="subtitle">${escapeHtml(subtitle)}</p>
           <table>
             <thead><tr>${headHtml}</tr></thead>
             <tbody>${bodyHtml}</tbody>
@@ -541,18 +529,11 @@ export const AssetTagRolloutPlanSection = () => {
         </body>
       </html>
     `);
-    doc.close();
-
-    const cleanup = () => {
-      if (document.body.contains(iframe)) document.body.removeChild(iframe);
-    };
-
-    iframe.onload = () => {
-      iframe.contentWindow?.focus();
-      iframe.contentWindow?.print();
-      iframe.contentWindow?.addEventListener("afterprint", cleanup, { once: true });
-      setTimeout(cleanup, 120000);
-    };
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+    }, 400);
   };
 
   const handleDownloadRegister = async () => {
