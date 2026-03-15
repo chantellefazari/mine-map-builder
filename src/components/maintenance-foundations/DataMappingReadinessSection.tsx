@@ -147,9 +147,63 @@ export const DataMappingReadinessSection = () => {
   const partial = allRows.filter(r => r.status === "Partial").length;
   const notStarted = allRows.filter(r => r.status === "Not Started").length;
   const pct = Math.round((ready / allRows.length) * 100);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [saving, setSaving] = useState(false);
+
+  const handleSavePdf = async () => {
+    const el = sectionRef.current;
+    if (!el) return;
+    setSaving(true);
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const A4_W = 210;
+      const A4_H = 297;
+      const MARGIN = 8;
+      const contentW = A4_W - MARGIN * 2;
+      const imgRatio = canvas.height / canvas.width;
+      const totalImgH = contentW * imgRatio;
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+      let heightLeft = totalImgH;
+      let position = MARGIN;
+
+      pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
+      heightLeft -= (A4_H - MARGIN * 2);
+
+      while (heightLeft > 0) {
+        pdf.addPage();
+        position = MARGIN - (totalImgH - heightLeft);
+        pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
+        heightLeft -= (A4_H - MARGIN * 2);
+      }
+
+      const blob = pdf.output("blob");
+      await uploadAndShowPdf(blob, "TCMG-Data-Mapping-Readiness.pdf", "Data Mapping & Readiness");
+      toast.success("PDF saved successfully");
+    } catch (err) {
+      console.error("PDF save error:", err);
+      toast.error("Failed to save PDF");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
-    <div className="space-y-6" data-pdf-section>
+    <div className="space-y-6" data-pdf-section ref={sectionRef}>
+      {/* Section title bar with Save PDF */}
+      <div className="flex items-center justify-between print-hide">
+        <h2 className="text-lg font-semibold">Data Mapping & Readiness</h2>
+        <Button variant="outline" size="sm" onClick={handleSavePdf} disabled={saving} className="gap-2">
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
+          {saving ? "Saving…" : "Print"}
+        </Button>
+      </div>
+
       {/* Document Header */}
       <Card className="border-t-4 border-t-primary">
         <CardHeader className="pb-3">
