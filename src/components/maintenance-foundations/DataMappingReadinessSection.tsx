@@ -95,14 +95,14 @@ const SUPPLIER_MAPPINGS: MappingRow[] = [
 ];
 
 const WO_MAPPINGS: MappingRow[] = [
-  { sourceTable: "work_orders", sourceField: "wo_number", targetEntity: "Work Order", targetField: "Work Order Number", transformation: "Direct — WO-XXXXXX format", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "status", targetEntity: "Work Order", targetField: "WO Status", transformation: "Map Open/In Progress/Complete → D365", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "priority", targetEntity: "Work Order", targetField: "Priority Level", transformation: "Direct — Normal / High / Critical", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "work_type", targetEntity: "Work Order", targetField: "Work Order Type", transformation: "Map Breakdown/PM/Project → D365 type", status: "Ready" },
+  { sourceTable: "work_orders", sourceField: "wo_number", targetEntity: "Work Order", targetField: "Work Order Number", transformation: "Direct: WO-XXXXXX format", status: "Ready" },
+  { sourceTable: "work_orders", sourceField: "status", targetEntity: "Work Order", targetField: "WO Status", transformation: "Map Open/In Progress/Complete to D365", status: "Ready" },
+  { sourceTable: "work_orders", sourceField: "priority", targetEntity: "Work Order", targetField: "Priority Level", transformation: "Direct: Normal / High / Critical", status: "Ready" },
+  { sourceTable: "work_orders", sourceField: "work_type", targetEntity: "Work Order", targetField: "Work Order Type", transformation: "Map Breakdown/PM/Project to D365 type", status: "Ready" },
   { sourceTable: "work_orders", sourceField: "asset_id", targetEntity: "Work Order", targetField: "Asset Reference", transformation: "FK lookup to asset register", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "functional_location", targetEntity: "Work Order", targetField: "Functional Location", transformation: "Direct — TCMG-PP-XXX format", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "problem_description", targetEntity: "Work Order", targetField: "Problem Description", transformation: "Direct — free text", status: "Ready" },
-  { sourceTable: "work_orders", sourceField: "labour_hours (JSONB)", targetEntity: "Work Order", targetField: "Labour Journal Lines", transformation: "Flatten JSONB → journal entries", status: "Partial" },
+  { sourceTable: "work_orders", sourceField: "functional_location", targetEntity: "Work Order", targetField: "Functional Location", transformation: "Direct: TCMG-PP-XXX format", status: "Ready" },
+  { sourceTable: "work_orders", sourceField: "problem_description", targetEntity: "Work Order", targetField: "Problem Description", transformation: "Direct: free text", status: "Ready" },
+  { sourceTable: "work_orders", sourceField: "labour_hours (JSONB)", targetEntity: "Work Order", targetField: "Labour Journal Lines", transformation: "Flatten JSONB to journal entries (0/7 populated)", status: "Partial" },
 ];
 
 const ALL_SECTIONS = [
