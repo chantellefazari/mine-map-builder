@@ -30,7 +30,7 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { generateAssetRegisterPDF, generateProductionListPDF } from "@/utils/generateRolloutPlanPDF";
+import type { ProductionTag } from "./AssetTagProductionList";
 import type { ProductionTag } from "./AssetTagProductionList";
 
 const SectionHeading = ({
