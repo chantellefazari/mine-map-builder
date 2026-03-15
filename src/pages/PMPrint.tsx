@@ -244,7 +244,7 @@ const PMPrint = () => {
         .pm-print-content table th,
         .pm-print-content table td {
           border: 2px solid #000 !important;
-          padding: 3px 6px;
+          vertical-align: top;
         }
         .pm-print-content tr {
           border: none !important;
@@ -326,7 +326,7 @@ const PMPrint = () => {
             border: none !important;
           }
           th, td {
-            padding: 3px 6px !important;
+            vertical-align: top;
           }
 
           /* Rows should not split */
