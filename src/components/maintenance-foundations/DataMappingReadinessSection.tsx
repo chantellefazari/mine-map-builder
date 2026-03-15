@@ -1,10 +1,13 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle2, AlertCircle, Clock, Printer } from "lucide-react";
-import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
+import { CheckCircle2, AlertCircle, Clock, Printer, Download, X, Loader2 } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
+import { toast } from "sonner";
 
 type ReadinessStatus = "Ready" | "Partial" | "Not Started";
 
@@ -285,30 +288,118 @@ export const DataMappingReadinessSection = () => {
   const partial = allRows.filter(r => r.status === "Partial").length;
   const notStarted = allRows.filter(r => r.status === "Not Started").length;
   const pct = Math.round((ready / allRows.length) * 100);
-  const [printOpen, setPrintOpen] = useState(false);
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [capturing, setCapturing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const handleOpenPreview = useCallback(async () => {
+    const el = contentRef.current;
+    if (!el) return;
+    setCapturing(true);
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+      canvasRef.current = canvas;
+      setPreviewImage(canvas.toDataURL("image/png"));
+      setPreviewOpen(true);
+    } catch (err) {
+      console.error("Capture error:", err);
+      toast.error("Failed to capture content");
+    } finally {
+      setCapturing(false);
+    }
+  }, []);
+
+  const handleSavePdf = useCallback(async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    setSaving(true);
+    try {
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const A4_W = 210;
+      const A4_H = 297;
+      const MARGIN = 8;
+      const contentW = A4_W - MARGIN * 2;
+      const imgRatio = canvas.height / canvas.width;
+      const totalImgH = contentW * imgRatio;
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+
+      let heightLeft = totalImgH;
+      let position = MARGIN;
+
+      pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
+      heightLeft -= (A4_H - MARGIN * 2);
+
+      while (heightLeft > 0) {
+        pdf.addPage();
+        position = MARGIN - (totalImgH - heightLeft);
+        pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
+        heightLeft -= (A4_H - MARGIN * 2);
+      }
+
+      pdf.save("TCMG-Data-Mapping-Readiness.pdf");
+      toast.success("PDF downloaded");
+    } catch (err) {
+      console.error("PDF error:", err);
+      toast.error("Failed to save PDF");
+    } finally {
+      setSaving(false);
+    }
+  }, []);
 
   return (
     <div className="space-y-6" data-pdf-section>
-      {/* Section title bar with Print */}
+      {/* Section title bar */}
       <div className="flex items-center justify-between print-hide">
         <h2 className="text-lg font-semibold">Data Mapping & Readiness</h2>
-        <Button variant="outline" size="sm" onClick={() => setPrintOpen(true)} className="gap-2">
-          <Printer className="w-4 h-4" />
-          Print
+        <Button variant="outline" size="sm" onClick={handleOpenPreview} disabled={capturing} className="gap-2">
+          {capturing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
+          {capturing ? "Capturing…" : "Print"}
         </Button>
       </div>
 
-      <PrintPreviewModal
-        isOpen={printOpen}
-        onClose={() => setPrintOpen(false)}
-        title="TCMG - Data Mapping & Readiness"
-      >
+      {/* Print Preview Modal */}
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-[95vw] w-full max-h-[95vh] h-full p-0 gap-0" aria-describedby={undefined}>
+          <div className="p-4 border-b border-border flex items-center justify-between">
+            <DialogTitle className="text-lg font-semibold">Print Preview — Data Mapping & Readiness</DialogTitle>
+            <div className="flex items-center gap-3">
+              <Button onClick={handleSavePdf} disabled={saving} className="gap-2">
+                <Download className="w-4 h-4" />
+                {saving ? "Saving…" : "Save as PDF"}
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => setPreviewOpen(false)}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+          <div className="flex-1 overflow-auto bg-muted/50 p-8 flex justify-center">
+            {previewImage && (
+              <img
+                src={previewImage}
+                alt="Print preview"
+                className="shadow-xl bg-white"
+                style={{ maxWidth: "900px", width: "100%", height: "auto" }}
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Actual content */}
+      <div ref={contentRef}>
         <div className="space-y-6">
           <DataMappingBody allRows={allRows} ready={ready} partial={partial} notStarted={notStarted} pct={pct} />
         </div>
-      </PrintPreviewModal>
-
-      <DataMappingBody allRows={allRows} ready={ready} partial={partial} notStarted={notStarted} pct={pct} />
+      </div>
     </div>
   );
 };
