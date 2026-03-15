@@ -476,18 +476,36 @@ export const AssetTagRolloutPlanSection = () => {
     setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
   };
 
-  const printPdfBlob = (blob: Blob) => {
-    const url = URL.createObjectURL(blob);
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = url;
-    document.body.appendChild(iframe);
-    iframe.onload = () => {
-      iframe.contentWindow?.print();
+  const printPdfBlob = async (blob: Blob) => {
+    // Convert blob to base64 data URI for the iframe src
+    const reader = new FileReader();
+    const dataUrl = await new Promise<string>((resolve) => {
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(blob);
+    });
+
+    const printWindow = window.open("", "_blank", "width=900,height=700");
+    if (!printWindow) {
+      console.error("Popup blocked");
+      return;
+    }
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html><head><title>Print</title>
+      <style>
+        body { margin: 0; padding: 0; }
+        embed { width: 100%; height: 100vh; }
+        @media print { body { margin: 0; } }
+      </style>
+      </head><body>
+        <embed src="${dataUrl}" type="application/pdf" width="100%" height="100%" />
+      </body></html>
+    `);
+    printWindow.document.close();
+    printWindow.onload = () => {
       setTimeout(() => {
-        document.body.removeChild(iframe);
-        URL.revokeObjectURL(url);
-      }, 60000);
+        printWindow.print();
+      }, 500);
     };
   };
 
