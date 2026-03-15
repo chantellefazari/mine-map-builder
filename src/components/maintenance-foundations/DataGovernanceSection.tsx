@@ -42,7 +42,7 @@ const LOCKED_STANDARDS: LockedStandard[] = [
   { area: "Asset Numbering", standard: "Area Prefix First format with sequential numbering per sub area", reference: "TCMG-STD-FL-001", owner: "Engineering", status: "Locked" },
   { area: "Asset Naming", standard: "Standardised naming convention with equipment type prefixes and component suffixes (MTR, GBX, VSD, SWT, TX)", reference: "TCMG-STD-NAM-001", owner: "Engineering", status: "Locked" },
   { area: "P&ID Register", standard: "14 page verified P&ID set (PI-001 to PI-014) as sole source of truth for tag assignments", reference: "P&ID Drawing Set", owner: "Engineering", status: "Locked" },
-  { area: "Parts Numbering", standard: "7 digit numeric SSCCNNN format (Site Code 10, Category Codes CC, Sequential NNN)", reference: "TCMG-STD-SPN-001", owner: "Stores Coordinator", status: "Locked" },
+  { area: "Parts Numbering", standard: "7 digit numeric SSCCNNN format (Site Code 10, Category Codes CC, Sequential NNN)", reference: "TCMG-STD-SPN-001", owner: "Stores", status: "Locked" },
   { area: "Asset Tagging", standard: "TYPE A (Major Asset) and TYPE B (Equipment Position) tag standards with Gravotech LS100 production", reference: "TCMG-STD-TAG-002", owner: "Maintenance Supervisor", status: "Locked" },
   { area: "PM Templates", standard: "88 approved PM templates across 3 disciplines (Mechanical, Electrical, Mobile Equipment)", reference: "PM Master List", owner: "Maintenance Supervisor", status: "Locked" },
   { area: "Electrical Identifiers", standard: "Generator series 17-GN-xxx, MCC series 18-MCC-xxx", reference: "TCMG-STD-FL-001", owner: "Engineering", status: "Locked" },
