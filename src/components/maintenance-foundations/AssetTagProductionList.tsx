@@ -108,7 +108,7 @@ function inferMountingLocation(tagType: "A" | "B", assetName: string): string {
 function inferMountingMethod(tagType: "A" | "B"): string {
   return tagType === "A"
     ? "Adhesive plate or rivet to fixed surface"
-    : "Bolt or cable tie to nearby structure";
+    : "Bolt or stainless steel ring to nearby structure";
 }
 
 function buildProductionList(assets: TaggedAsset[]): ProductionTag[] {
