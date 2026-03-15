@@ -84,14 +84,14 @@ const SPARES_MAPPINGS: MappingRow[] = [
 ];
 
 const SUPPLIER_MAPPINGS: MappingRow[] = [
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "code", targetEntity: "Vendor", targetField: "Vendor Code", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "name", targetEntity: "Vendor", targetField: "Vendor Name", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "abn", targetEntity: "Vendor", targetField: "ABN / Tax ID", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "email", targetEntity: "Vendor", targetField: "Primary Email", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "contact", targetEntity: "Vendor", targetField: "Primary Contact Name", transformation: "Direct — no change", status: "Ready" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "payment_terms", targetEntity: "Vendor", targetField: "Payment Terms", transformation: "Map to D365 payment terms code", status: "Partial" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "type", targetEntity: "Vendor", targetField: "Vendor Group", transformation: "Map to D365 vendor group", status: "Partial" },
-  { sourceTable: "suppliers / practice_suppliers", sourceField: "is_preferred", targetEntity: "Vendor", targetField: "Preferred Vendor Flag", transformation: "Boolean → Yes/No", status: "Ready" },
+  { sourceTable: "suppliers / practice_suppliers", sourceField: "code", targetEntity: "Vendor", targetField: "Vendor Code", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "suppliers / practice_suppliers", sourceField: "name", targetEntity: "Vendor", targetField: "Vendor Name", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "suppliers / practice_suppliers", sourceField: "abn", targetEntity: "Vendor", targetField: "ABN / Tax ID", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "suppliers / practice_suppliers", sourceField: "email", targetEntity: "Vendor", targetField: "Primary Email", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "suppliers / practice_suppliers", sourceField: "contact", targetEntity: "Vendor", targetField: "Primary Contact Name", transformation: "Direct: no change", status: "Ready" },
+  { sourceTable: "suppliers / practice_suppliers", sourceField: "payment_terms", targetEntity: "Vendor", targetField: "Payment Terms", transformation: "Map to D365 payment terms code (100% populated)", status: "Ready" },
+  { sourceTable: "suppliers / practice_suppliers", sourceField: "type", targetEntity: "Vendor", targetField: "Vendor Group", transformation: "Map to D365 vendor group (100% populated)", status: "Ready" },
+  { sourceTable: "suppliers / practice_suppliers", sourceField: "is_preferred", targetEntity: "Vendor", targetField: "Preferred Vendor Flag", transformation: "Boolean to Yes/No", status: "Ready" },
 ];
 
 const WO_MAPPINGS: MappingRow[] = [
