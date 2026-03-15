@@ -191,17 +191,37 @@ export const DataMappingReadinessSection = () => {
         </CardContent>
       </Card>
 
-      {/* Scope & Assumptions */}
+      {/* Purpose & How to Use */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Scope & Assumptions</CardTitle>
+          <CardTitle className="text-sm">Purpose</CardTitle>
         </CardHeader>
         <CardContent className="text-xs text-muted-foreground space-y-1.5">
-          <p>• <strong>Source Documents:</strong> All data originates from the TCMG Maintenance Foundation Pack, delivered as PDF documents. Each mapping row references the specific document containing the source data.</p>
-          <p>• <strong>Target System:</strong> Microsoft Dynamics 365 Field Service / Asset Management, or any equivalent CMMS. Field names reference standard entity schemas.</p>
-          <p>• <strong>Transformation Rules:</strong> "Direct" means the field value transfers without modification. All other rules describe required data entry or conversion logic.</p>
-          <p>• <strong>Readiness Status:</strong> "Ready" = field populated, validated, and available in the source document. "Partial" = data exists but requires enrichment or completion. "Not Started" = field not yet captured in any deliverable.</p>
-          <p>• <strong>Source Document Index:</strong> Asset Register (Asset Tree), Functional Location Codes, PM Templates Pack, Site Parts Catalogue, Supplier Register, Work Order Register, Asset Criticality Register, Naming Convention Standard.</p>
+          <p>This document provides a complete field-level mapping of all maintenance data prepared during the TCMG Phase 1 foundation works. It is intended to support the configuration and data migration into D365 Asset Management, or any equivalent CMMS selected by the site.</p>
+          <p>Each section below identifies the data fields available, the TCMG source document they originate from, any transformation or formatting required, and the current readiness status.</p>
+        </CardContent>
+      </Card>
+
+      {/* Legend */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Readiness Legend</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="flex items-center gap-2">
+              <StatusBadge status="Ready" />
+              <span className="text-[10px] text-muted-foreground">Field validated and available for import</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <StatusBadge status="Partial" />
+              <span className="text-[10px] text-muted-foreground">Data exists, requires enrichment or completion</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <StatusBadge status="Not Started" />
+              <span className="text-[10px] text-muted-foreground">Field not yet captured, requires future work</span>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
