@@ -1197,6 +1197,13 @@ export const AssetTagRolloutPlanSection = () => {
       </Card>
 
 
+      {/* PDF Viewer Modal for Attachments */}
+      <PdfViewerModal
+        isOpen={!!pdfModalUrl}
+        onClose={closePdfModal}
+        pdfUrl={pdfModalUrl || ""}
+        title={pdfModalTitle}
+      />
     </div>
   );
 };
