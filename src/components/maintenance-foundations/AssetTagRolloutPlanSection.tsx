@@ -501,7 +501,7 @@ export const AssetTagRolloutPlanSection = () => {
   const handleDownloadProductionList = async () => {
     try {
       const blob = await generateProductionListPDF(productionTags);
-      openPdfInNewTab(blob, "TCMG_Asset_Tag_Production_List.pdf");
+      printPdfBlob(blob);
     } catch (err) { console.error("Production List PDF error:", err); }
   };
 
