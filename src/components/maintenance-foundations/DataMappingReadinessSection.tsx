@@ -71,16 +71,16 @@ const PM_MAPPINGS: MappingRow[] = [
 ];
 
 const SPARES_MAPPINGS: MappingRow[] = [
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "site_part_number", targetEntity: "Inventory Item", targetField: "Item Number", transformation: "Direct — TCMG-XXXX format", status: "Ready" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "part_name", targetEntity: "Inventory Item", targetField: "Item Description", transformation: "Direct — cleaned description", status: "Ready" },
+  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "site_part_number", targetEntity: "Inventory Item", targetField: "Item Number", transformation: "Direct: TCMG-XXXX format", status: "Ready" },
+  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "part_name", targetEntity: "Inventory Item", targetField: "Item Description", transformation: "Direct: cleaned description", status: "Ready" },
   { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "category", targetEntity: "Inventory Item", targetField: "Item Group / Category", transformation: "Map to D365 Item Group", status: "Ready" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "criticality", targetEntity: "Inventory Item", targetField: "Criticality Class", transformation: "Direct — Critical / Insurance / Non-Critical", status: "Ready" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "bin_location", targetEntity: "Inventory Item", targetField: "Default Warehouse Location", transformation: "Direct — C01-EL-A1 format", status: "Ready" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "min_qty / max_qty", targetEntity: "Inventory Item", targetField: "Reorder Point / Max Stock", transformation: "Direct numeric values", status: "Partial" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "associated_asset", targetEntity: "Inventory Item", targetField: "Linked Asset Reference", transformation: "Cross-reference asset register", status: "Partial" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "supplier", targetEntity: "Inventory Item", targetField: "Default Vendor", transformation: "Lookup supplier register", status: "Ready" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "unit_price", targetEntity: "Inventory Item", targetField: "Standard Cost", transformation: "Direct — AUD value", status: "Partial" },
-  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "lead_time_days", targetEntity: "Inventory Item", targetField: "Lead Time (Days)", transformation: "Direct integer", status: "Partial" },
+  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "criticality", targetEntity: "Inventory Item", targetField: "Criticality Class", transformation: "Direct: Critical / Insurance / Non-Critical", status: "Ready" },
+  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "bin_location", targetEntity: "Inventory Item", targetField: "Default Warehouse Location", transformation: "Direct: C01-EL-A1 format (pending population)", status: "Partial" },
+  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "min_qty / max_qty", targetEntity: "Inventory Item", targetField: "Reorder Point / Max Stock", transformation: "Direct numeric values (13/2184 populated)", status: "Partial" },
+  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "associated_asset", targetEntity: "Inventory Item", targetField: "Linked Asset Reference", transformation: "Cross-reference asset register (31/2184 linked)", status: "Partial" },
+  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "supplier", targetEntity: "Inventory Item", targetField: "Default Vendor", transformation: "Lookup supplier register (505/2184 populated)", status: "Partial" },
+  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "unit_price", targetEntity: "Inventory Item", targetField: "Standard Cost", transformation: "Direct: AUD value (36/2184 populated)", status: "Partial" },
+  { sourceTable: "site_spares / visual_parts_catalogue", sourceField: "lead_time_days", targetEntity: "Inventory Item", targetField: "Lead Time (Days)", transformation: "Direct integer (not yet captured)", status: "Not Started" },
 ];
 
 const SUPPLIER_MAPPINGS: MappingRow[] = [
