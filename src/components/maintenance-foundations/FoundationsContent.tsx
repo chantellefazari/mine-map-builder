@@ -138,15 +138,6 @@ export const FoundationsContent = () => {
             <Printer className="w-3.5 h-3.5" />
             Print Tab
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleExportPDF}
-            className="gap-2 w-full justify-start"
-          >
-            <Download className="w-3.5 h-3.5" />
-            Save as PDF
-          </Button>
         </div>
       </div>
 
