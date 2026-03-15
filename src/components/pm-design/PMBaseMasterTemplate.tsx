@@ -208,7 +208,7 @@ export const PMBaseMasterTemplate = () => {
                 </div>
                 <div className="grid grid-cols-[100px_1fr] items-center">
                   <span className="text-sm font-medium">Date:</span>
-                  <Input className="h-7" type="date" />
+                  <Input className="h-7" />
                 </div>
                 <div className="grid grid-cols-[100px_1fr] items-center">
                   <span className="text-sm font-medium">PM Duration:</span>
