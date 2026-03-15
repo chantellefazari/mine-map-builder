@@ -245,6 +245,13 @@
   table {
     page-break-inside: auto;
     border-collapse: collapse;
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  td, th {
+    min-height: 1.5em !important;
+    box-sizing: border-box !important;
   }
 
   tr {
