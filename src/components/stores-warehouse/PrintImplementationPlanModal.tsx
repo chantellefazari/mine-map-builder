@@ -191,9 +191,6 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
   }, [isOpen, buildPages]);
 
   const handlePrint = () => {
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) return;
-
     const pagesHtml = pages
       .map(
         (html, i) =>
@@ -201,7 +198,7 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
       )
       .join("\n");
 
-    printWindow.document.write(`
+    const fullHtml = `
       <!DOCTYPE html>
       <html>
         <head>
@@ -341,13 +338,33 @@ export const PrintImplementationPlanModal: React.FC<PrintImplementationPlanModal
           ${pagesHtml}
         </body>
       </html>
-    `);
+    `;
 
-    printWindow.document.close();
-    printWindow.focus();
+    // Use a hidden iframe instead of window.open to avoid popup blockers
+    const existingFrame = document.getElementById("print-iframe-stores");
+    if (existingFrame) existingFrame.remove();
+
+    const iframe = document.createElement("iframe");
+    iframe.id = "print-iframe-stores";
+    iframe.style.position = "fixed";
+    iframe.style.left = "-9999px";
+    iframe.style.top = "0";
+    iframe.style.width = "210mm";
+    iframe.style.height = "297mm";
+    iframe.style.border = "none";
+    document.body.appendChild(iframe);
+
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!iframeDoc) return;
+
+    iframeDoc.open();
+    iframeDoc.write(fullHtml);
+    iframeDoc.close();
+
     setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      setTimeout(() => iframe.remove(), 2000);
     }, 600);
   };
 
