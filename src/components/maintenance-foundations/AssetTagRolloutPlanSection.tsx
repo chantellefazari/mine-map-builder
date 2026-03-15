@@ -596,12 +596,15 @@ export const AssetTagRolloutPlanSection = () => {
       t.tagInstalled ? "Yes" : "No",
     ]);
 
+    const rowClasses = productionTags.map((t) => t.tagType === "A" ? "type-a" : "type-b");
+
     printAttachmentTable(
       "Attachment B — Asset Tag Production List",
       `${productionTags.length} tags total | Type A: ${typeACnt} | Type B: ${typeBCnt}`,
       ["#", "Asset No.", "Asset Name", "P&ID Tag", "Type", "Tag Size", "Mounting Location", "Mounting Method", "Parent System", "Location", "Installed"],
       rows,
-      "landscape"
+      "landscape",
+      rowClasses
     );
   };
 
