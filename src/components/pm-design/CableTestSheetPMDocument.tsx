@@ -74,7 +74,7 @@ export const CableTestSheetPMDocument = () => {
               <tbody>
                 <tr>
                   {testColumns.map((col) => (
-                    <td key={col} className="border border-border px-2 py-4"></td>
+                    <td key={col} className="border border-border px-2 py-6"></td>
                   ))}
                 </tr>
               </tbody>
