@@ -63,7 +63,7 @@ export const CableTestSheetPMDocument = () => {
             INSULATION RESISTANCE (MEGA OHMS)
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-xs border-collapse">
+            <table className="w-full text-xs border-collapse" style={{ tableLayout: "fixed" }}>
               <thead>
                 <tr className="bg-muted">
                   {testColumns.map((col) => (
