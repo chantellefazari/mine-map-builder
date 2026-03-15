@@ -88,7 +88,7 @@ export const AssetTagRolloutPlanSection = () => {
       while (true) {
         const { data, error } = await supabase
           .from("processing_plant_assets_rev_b")
-          .select("asset_name, asset_number, parent_asset_label, pid_tags, area_label, sub_area, functional_location")
+          .select("asset_name, asset_number, parent_asset_label, pid_tags, area_label, area_code, sub_area, functional_location, sort_order")
           .not("pid_tags", "is", null)
           .not("pid_tags", "eq", "{}")
           .order("sort_order", { ascending: true })
