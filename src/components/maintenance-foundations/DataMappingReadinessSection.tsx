@@ -138,6 +138,147 @@ const MappingTable = ({ rows }: { rows: MappingRow[] }) => (
   </Table>
 );
 
+const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
+  allRows: MappingRow[]; ready: number; partial: number; notStarted: number; pct: number;
+}) => (
+  <>
+    {/* Document Header */}
+    <Card className="border-t-4 border-t-primary">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-[10px] text-muted-foreground font-medium tracking-wide uppercase">TCMG-STD-DM-001 · Rev 1.0</p>
+            <CardTitle className="text-xl mt-1">Data Mapping & Readiness Documentation</CardTitle>
+            <p className="text-sm text-muted-foreground mt-1">
+              Field-level mapping from TCMG source documents to target system (D365 or equivalent) entities
+            </p>
+          </div>
+          <Badge variant="outline" className="text-xs shrink-0">
+            Phase 1 Deliverable
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-4 gap-3">
+          <div className="rounded-lg border bg-card p-3 text-center">
+            <p className="text-2xl font-bold text-primary">{allRows.length}</p>
+            <p className="text-[10px] text-muted-foreground">Total Fields</p>
+          </div>
+          <div className="rounded-lg border bg-emerald-50 dark:bg-emerald-950/20 p-3 text-center">
+            <p className="text-2xl font-bold text-emerald-600">{ready}</p>
+            <p className="text-[10px] text-muted-foreground">Ready</p>
+          </div>
+          <div className="rounded-lg border bg-amber-50 dark:bg-amber-950/20 p-3 text-center">
+            <p className="text-2xl font-bold text-amber-500">{partial}</p>
+            <p className="text-[10px] text-muted-foreground">Partial</p>
+          </div>
+          <div className="rounded-lg border bg-red-50 dark:bg-red-950/20 p-3 text-center">
+            <p className="text-2xl font-bold text-destructive">{notStarted}</p>
+            <p className="text-[10px] text-muted-foreground">Not Started</p>
+          </div>
+        </div>
+        <div className="mt-3">
+          <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+            <span>Overall Readiness</span>
+            <span className="font-semibold">{pct}%</span>
+          </div>
+          <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
+            <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+
+    {/* Purpose */}
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm">Purpose</CardTitle>
+      </CardHeader>
+      <CardContent className="text-xs text-muted-foreground space-y-1.5">
+        <p>This document provides a complete field-level mapping of all maintenance data prepared during the TCMG Phase 1 foundation works. It is intended to support the configuration and data migration into D365 Asset Management, or any equivalent CMMS selected by the site.</p>
+        <p>Each section below identifies the data fields available, the TCMG source document they originate from, any transformation or formatting required, and the current readiness status.</p>
+      </CardContent>
+    </Card>
+
+    {/* Legend */}
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm">Readiness Legend</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="flex items-center gap-2">
+            <StatusBadge status="Ready" />
+            <span className="text-[10px] text-muted-foreground">Field validated and available for import</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <StatusBadge status="Partial" />
+            <span className="text-[10px] text-muted-foreground">Data exists, requires enrichment or completion</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <StatusBadge status="Not Started" />
+            <span className="text-[10px] text-muted-foreground">Field not yet captured, requires future work</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+
+    {/* Mapping Tables */}
+    {ALL_SECTIONS.map((section) => {
+      const sReady = section.data.filter(r => r.status === "Ready").length;
+      return (
+        <Card key={section.title}>
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm">{section.title}</CardTitle>
+              <Badge variant="outline" className="text-[10px]">
+                {sReady}/{section.data.length} Ready
+              </Badge>
+            </div>
+            <p className="text-[10px] text-muted-foreground">{section.entity}</p>
+          </CardHeader>
+          <CardContent className="p-0">
+            <MappingTable rows={section.data} />
+          </CardContent>
+        </Card>
+      );
+    })}
+
+    {/* Outstanding Actions */}
+    <Card className="border-amber-300 dark:border-amber-700">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm">Outstanding Actions for Full Readiness</CardTitle>
+      </CardHeader>
+      <CardContent className="text-xs space-y-2">
+        <div className="flex gap-2 items-start">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
+          <p><strong>Asset Criticality Rating:</strong> Classification engine implemented, 117 assets assessed with A/B/C ratings based on production impact.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
+          <p><strong>PM Task Checklists:</strong> 82 of 97 PM templates now have structured task data populated and validated.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
+          <p><strong>Vendor Group Mapping:</strong> Supplier type and payment terms now 100% populated across all registered vendors.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+          <p><strong>Component Flattening:</strong> Level 7 components documented in the Asset Tree need to be extracted into individual child asset rows for import into the target system.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+          <p><strong>Duration Standardisation:</strong> PM estimated duration stored as text (e.g. "2-3 hrs") needs conversion to numeric hours. Only 10 of 97 templates populated.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+          <p><strong>Inventory Data Enrichment:</strong> Bin locations (0%), lead times (0%), unit costs (2%), min/max stock levels (1%), and asset linkages (1%) require population across 2,184 spare parts.</p>
+        </div>
+      </CardContent>
+    </Card>
+  </>
+);
+
 export const DataMappingReadinessSection = () => {
   const allRows = ALL_SECTIONS.flatMap(s => s.data);
   const ready = allRows.filter(r => r.status === "Ready").length;
@@ -162,143 +303,12 @@ export const DataMappingReadinessSection = () => {
         onClose={() => setPrintOpen(false)}
         title="TCMG - Data Mapping & Readiness"
       >
-        <DataMappingPrintContent />
+        <div className="space-y-6">
+          <DataMappingBody allRows={allRows} ready={ready} partial={partial} notStarted={notStarted} pct={pct} />
+        </div>
       </PrintPreviewModal>
 
-      {/* Document Header */}
-      <Card className="border-t-4 border-t-primary">
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-[10px] text-muted-foreground font-medium tracking-wide uppercase">TCMG-STD-DM-001 · Rev 1.0</p>
-              <CardTitle className="text-xl mt-1">Data Mapping & Readiness Documentation</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
-                Field-level mapping from TCMG source documents to target system (D365 or equivalent) entities
-              </p>
-            </div>
-            <Badge variant="outline" className="text-xs shrink-0">
-              Phase 1 Deliverable
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-4 gap-3">
-            <div className="rounded-lg border bg-card p-3 text-center">
-              <p className="text-2xl font-bold text-primary">{allRows.length}</p>
-              <p className="text-[10px] text-muted-foreground">Total Fields</p>
-            </div>
-            <div className="rounded-lg border bg-emerald-50 dark:bg-emerald-950/20 p-3 text-center">
-              <p className="text-2xl font-bold text-emerald-600">{ready}</p>
-              <p className="text-[10px] text-muted-foreground">Ready</p>
-            </div>
-            <div className="rounded-lg border bg-amber-50 dark:bg-amber-950/20 p-3 text-center">
-              <p className="text-2xl font-bold text-amber-500">{partial}</p>
-              <p className="text-[10px] text-muted-foreground">Partial</p>
-            </div>
-            <div className="rounded-lg border bg-red-50 dark:bg-red-950/20 p-3 text-center">
-              <p className="text-2xl font-bold text-destructive">{notStarted}</p>
-              <p className="text-[10px] text-muted-foreground">Not Started</p>
-            </div>
-          </div>
-          <div className="mt-3">
-            <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-              <span>Overall Readiness</span>
-              <span className="font-semibold">{pct}%</span>
-            </div>
-            <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Purpose & How to Use */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Purpose</CardTitle>
-        </CardHeader>
-        <CardContent className="text-xs text-muted-foreground space-y-1.5">
-          <p>This document provides a complete field-level mapping of all maintenance data prepared during the TCMG Phase 1 foundation works. It is intended to support the configuration and data migration into D365 Asset Management, or any equivalent CMMS selected by the site.</p>
-          <p>Each section below identifies the data fields available, the TCMG source document they originate from, any transformation or formatting required, and the current readiness status.</p>
-        </CardContent>
-      </Card>
-
-      {/* Legend */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Readiness Legend</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="flex items-center gap-2">
-              <StatusBadge status="Ready" />
-              <span className="text-[10px] text-muted-foreground">Field validated and available for import</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <StatusBadge status="Partial" />
-              <span className="text-[10px] text-muted-foreground">Data exists, requires enrichment or completion</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <StatusBadge status="Not Started" />
-              <span className="text-[10px] text-muted-foreground">Field not yet captured, requires future work</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Mapping Tables */}
-      {ALL_SECTIONS.map((section) => {
-        const sReady = section.data.filter(r => r.status === "Ready").length;
-        return (
-          <Card key={section.title}>
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm">{section.title}</CardTitle>
-                <Badge variant="outline" className="text-[10px]">
-                  {sReady}/{section.data.length} Ready
-                </Badge>
-              </div>
-              <p className="text-[10px] text-muted-foreground">{section.entity}</p>
-            </CardHeader>
-            <CardContent className="p-0">
-              <MappingTable rows={section.data} />
-            </CardContent>
-          </Card>
-        );
-      })}
-
-      {/* Outstanding Actions */}
-      <Card className="border-amber-300 dark:border-amber-700">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Outstanding Actions for Full Readiness</CardTitle>
-        </CardHeader>
-        <CardContent className="text-xs space-y-2">
-          <div className="flex gap-2 items-start">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
-            <p><strong>Asset Criticality Rating:</strong> Classification engine implemented, 117 assets assessed with A/B/C ratings based on production impact.</p>
-          </div>
-          <div className="flex gap-2 items-start">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
-            <p><strong>PM Task Checklists:</strong> 82 of 97 PM templates now have structured task data populated and validated.</p>
-          </div>
-          <div className="flex gap-2 items-start">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
-            <p><strong>Vendor Group Mapping:</strong> Supplier type and payment terms now 100% populated across all registered vendors.</p>
-          </div>
-          <div className="flex gap-2 items-start">
-            <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-            <p><strong>Component Flattening:</strong> Level 7 components documented in the Asset Tree need to be extracted into individual child asset rows for import into the target system.</p>
-          </div>
-          <div className="flex gap-2 items-start">
-            <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-            <p><strong>Duration Standardisation:</strong> PM estimated duration stored as text (e.g. "2-3 hrs") needs conversion to numeric hours. Only 10 of 97 templates populated.</p>
-          </div>
-          <div className="flex gap-2 items-start">
-            <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-            <p><strong>Inventory Data Enrichment:</strong> Bin locations (0%), lead times (0%), unit costs (2%), min/max stock levels (1%), and asset linkages (1%) require population across 2,184 spare parts.</p>
-          </div>
-        </CardContent>
-      </Card>
+      <DataMappingBody allRows={allRows} ready={ready} partial={partial} notStarted={notStarted} pct={pct} />
     </div>
   );
 };
