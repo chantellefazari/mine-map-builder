@@ -46,9 +46,9 @@ export const CableTestSheetPMDocument = () => {
             </thead>
             <tbody>
               <tr>
-                <td className="border border-border px-3 py-4"></td>
-                <td className="border border-border px-3 py-4"></td>
-                <td className="border border-border px-3 py-4"></td>
+                <td className="border border-border px-3 py-6"></td>
+                <td className="border border-border px-3 py-6"></td>
+                <td className="border border-border px-3 py-6"></td>
               </tr>
             </tbody>
           </table>
