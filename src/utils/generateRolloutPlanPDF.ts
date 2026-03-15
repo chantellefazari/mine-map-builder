@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
+
 
 // Pre-load the Gravotech LS100 image as base64 for PDF embedding
 let gravoImageBase64: string | null = null;
@@ -86,10 +86,20 @@ function ensureSpace(pdf: jsPDF, y: number, needed: number): number {
   return y;
 }
 
-/** Upload PDF to storage and show in inline viewer modal */
-async function triggerPdfDownload(pdf: jsPDF, filename: string, title?: string) {
+/** Download PDF directly via anchor click (bypasses popup blockers) */
+function triggerPdfDownload(pdf: jsPDF, filename: string, _title?: string) {
   const blob = pdf.output("blob");
-  await uploadAndShowPdf(blob, filename, title || filename.replace(/_/g, " ").replace(".pdf", ""));
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 200);
 }
 
 function addDocHeader(pdf: jsPDF, title: string, subtitle: string) {
