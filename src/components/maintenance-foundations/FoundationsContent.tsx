@@ -242,25 +242,6 @@ export const FoundationsContent = () => {
         </TabsContent>
       </div>
 
-      <PrintPreviewModal
-        isOpen={printOpen}
-        onClose={() => setPrintOpen(false)}
-        title={TAB_LABELS[activeTab] || "Print Preview"}
-      >
-        {activeTab === "hierarchy" && <HierarchyRulesSection />}
-        {activeTab === "functional-locations" && <AssetNumberingSection />}
-        {activeTab === "part-numbering" && <SitePartNumberingSection />}
-        {activeTab === "wo-numbering" && <JobNumberingSection />}
-        {activeTab === "pm-standards" && <PMStandardsSection />}
-        {activeTab === "spares" && <SparesStrategySection />}
-        {activeTab === "governance" && <DataGovernanceSection />}
-        {activeTab === "tag-rollout" && <AssetTagRolloutPlanSection />}
-        {activeTab === "pm-coverage" && <PMCoverageAnalysisSection />}
-        {activeTab === "shutdown-pms" && <ShutdownPMRequirementsSection />}
-        {activeTab === "naming-convention" && <NamingConventionDocument />}
-        {activeTab === "data-mapping" && <DataMappingReadinessSection />}
-        {activeTab === "criticality" && <AssetCriticalitySection />}
-      </PrintPreviewModal>
     </Tabs>
   );
 };
