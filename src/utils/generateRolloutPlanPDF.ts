@@ -551,7 +551,7 @@ export async function generateRolloutPlanPDF(
   pdf.text(scopeText, CONTENT_LEFT + 4, y + 5);
 
   addPageNumbers(pdf, "TCMG Asset Tag Rollout Plan");
-  await triggerPdfDownload(pdf, "TCMG_Asset_Tag_Rollout_Plan.pdf");
+  return getPdfBlob(pdf);
 }
 
 // ════════════════════════════════════════════════
