@@ -56,10 +56,51 @@ const TAB_LABELS: Record<string, string> = {
 export const FoundationsContent = () => {
   const [activeTab, setActiveTab] = useState("hierarchy");
   const contentRef = useRef<HTMLDivElement>(null);
-  const [printOpen, setPrintOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const handlePrintTab = () => {
-    setPrintOpen(true);
+  const handleSavePdf = async () => {
+    const el = contentRef.current;
+    if (!el) return;
+    setSaving(true);
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const A4_W = 210;
+      const A4_H = 297;
+      const MARGIN = 8;
+      const contentW = A4_W - MARGIN * 2;
+      const imgRatio = canvas.height / canvas.width;
+      const totalImgH = contentW * imgRatio;
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+      let heightLeft = totalImgH;
+      let position = MARGIN;
+
+      pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
+      heightLeft -= (A4_H - MARGIN * 2);
+
+      while (heightLeft > 0) {
+        pdf.addPage();
+        position = MARGIN - (totalImgH - heightLeft);
+        pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
+        heightLeft -= (A4_H - MARGIN * 2);
+      }
+
+      const label = TAB_LABELS[activeTab] || "Maintenance Foundations";
+      const filename = `TCMG-${label.replace(/[^a-zA-Z0-9]/g, "-")}.pdf`;
+      const blob = pdf.output("blob");
+      await uploadAndShowPdf(blob, filename, label);
+      toast.success("PDF saved successfully");
+    } catch (err) {
+      console.error("PDF save error:", err);
+      toast.error("Failed to save PDF");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
