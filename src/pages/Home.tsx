@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield, PackageSearch, FileInput } from "lucide-react";
+import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield, PackageSearch, FileInput, Box } from "lucide-react";
 import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -85,6 +85,14 @@ const ALL_SECTIONS = [
     icon: FileInput,
     href: "/purchase-requests",
     tabKey: "purchase-requests",
+  },
+  {
+    title: "3D Concepts",
+    subtitle: "Visual Site Layouts",
+    description: "Quick 3D concept designs for site layout ideas — containers, shade structures, and more.",
+    icon: Box,
+    href: "/3d-concepts",
+    tabKey: "3d-concepts",
   },
 ];
 

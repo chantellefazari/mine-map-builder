@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import {
   TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen,
   ShoppingCart, Building2, CalendarClock, PackageSearch, FileInput,
-  Home, ChevronDown,
+  Home, ChevronDown, Box,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -27,6 +27,7 @@ const NAV_ITEMS = [
   { title: "Planning & Revision", icon: CalendarClock, href: "/planning-revision", tabKey: "planning-revision" },
   { title: "PO Register", icon: PackageSearch, href: "/po-tracker", tabKey: "po-tracker" },
   { title: "Purchase Requests", icon: FileInput, href: "/purchase-requests", tabKey: "purchase-requests" },
+  { title: "3D Concepts", icon: Box, href: "/3d-concepts", tabKey: "3d-concepts" },
 ];
 
 export const PageNavDropdown = () => {

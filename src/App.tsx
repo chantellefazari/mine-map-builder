@@ -29,6 +29,7 @@ const POTracker = lazy(() => import("./pages/POTracker"));
 const PurchaseRequests = lazy(() => import("./pages/PurchaseRequests"));
 const SupplierPortal = lazy(() => import("./pages/SupplierPortal"));
 const TrackShipment = lazy(() => import("./pages/TrackShipment"));
+const ThreeDeeConcepts = lazy(() => import("./pages/ThreeDeeConcepts"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -83,6 +84,7 @@ const App = () => {
                 <Route path="/planning-revision" element={<ProtectedRoute tabKey="planning-revision"><PlanningRevisionControl /></ProtectedRoute>} />
                 <Route path="/po-tracker" element={<ProtectedRoute tabKey="po-tracker"><POTracker /></ProtectedRoute>} />
                 <Route path="/purchase-requests" element={<ProtectedRoute tabKey="purchase-requests"><PurchaseRequests /></ProtectedRoute>} />
+                <Route path="/3d-concepts" element={<ProtectedRoute tabKey="3d-concepts"><ThreeDeeConcepts /></ProtectedRoute>} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
