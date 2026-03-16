@@ -12,16 +12,28 @@
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
+  const inIframe = window.self !== window.top;
+
   a.href = url;
   a.download = filename;
+  if (inIframe) {
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+  }
   a.style.display = "none";
   document.body.appendChild(a);
-  a.click();
-  // Small delay before cleanup so Safari has time to start the download
+
+  try {
+    a.click();
+  } catch {
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  // Keep URL alive longer so iframe/sandboxed contexts can complete the handoff.
   setTimeout(() => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }, 200);
+  }, 4000);
 }
 
 /** Safari-safe replacement for XLSX.writeFile(). Pass the dynamically-imported XLSX module. */
