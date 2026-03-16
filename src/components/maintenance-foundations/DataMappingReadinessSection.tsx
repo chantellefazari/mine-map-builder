@@ -205,7 +205,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
     </Card>
 
     {/* Legend */}
-    <Card data-pdf-section>
+    <Card className="border border-border rounded-md shadow-none" data-pdf-section>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">Readiness Legend</CardTitle>
       </CardHeader>
