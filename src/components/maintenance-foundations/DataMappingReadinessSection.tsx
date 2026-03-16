@@ -421,7 +421,11 @@ export const DataMappingReadinessSection = () => {
           <div className="p-4 border-b border-border flex items-center justify-between">
             <DialogTitle className="text-lg font-semibold">Print Preview — Data Mapping & Readiness</DialogTitle>
             <div className="flex items-center gap-3">
-              <Button onClick={handleSavePdf} disabled={saving} className="gap-2">
+              <Button variant="outline" onClick={handlePrintPreview} disabled={!previewImage} className="gap-2">
+                <Printer className="w-4 h-4" />
+                Print
+              </Button>
+              <Button onClick={handleSavePdf} disabled={saving || !previewImage} className="gap-2">
                 <Download className="w-4 h-4" />
                 {saving ? "Saving…" : "Save as PDF"}
               </Button>
