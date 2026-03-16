@@ -108,7 +108,7 @@ function addStockingScope(wb: any) {
 }
 
 // ── Sheet 3 — Location Coding ───────────────────────────────────────────────
-function addLocationCoding(wb: XLSX.WorkBook) {
+function addLocationCoding(wb: any) {
   const rows: string[][] = [];
 
   // Code format
