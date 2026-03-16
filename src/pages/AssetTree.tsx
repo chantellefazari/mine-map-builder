@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FLBreadcrumbProvider } from "@/components/hierarchy/FLBreadcrumbContext";
 import { FLBreadcrumbBar } from "@/components/hierarchy/FLBreadcrumbBar";
 import { PageNavDropdown } from "@/components/PageNavDropdown";
@@ -16,11 +16,16 @@ import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
 import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
 import { exportProcessingPlantCSV } from "@/utils/exportProcessingPlantCSV";
 import { exportAssetTreePDF } from "@/utils/exportAssetTreePDF";
+import { loadXLSX } from "@/utils/safariDownload";
 import { toast } from "sonner";
 import { RevBAssetTree } from "@/components/hierarchy/RevBAssetTree";
 
 const AssetTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    void loadXLSX().catch(() => undefined);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
