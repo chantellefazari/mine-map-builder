@@ -222,11 +222,12 @@ export const AssetTagProductionList = () => {
     return rows;
   };
 
-  const handleExportXLSX = () => {
+  const handleExportXLSX = async () => {
+    const XLSX = await loadXLSX();
     const ws = XLSX.utils.json_to_sheet(buildExportRows());
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Tag Production List");
-    writeXlsxFile(wb, "Asset_Tag_Production_List_Tennant_Creek.xlsx");
+    writeXlsxFile(wb, "Asset_Tag_Production_List_Tennant_Creek.xlsx", XLSX);
     toast.success("XLSX exported successfully");
   };
 
