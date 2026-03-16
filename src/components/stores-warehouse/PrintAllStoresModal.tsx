@@ -429,27 +429,35 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
               position: "fixed",
               left: "-12000px",
               top: 0,
-              width: "794px",
+              width: "1100px",
               background: "white",
-              padding: "20px",
+              padding: "16px",
               zIndex: -1,
               pointerEvents: "none",
-              fontSize: "8px",
-              lineHeight: "1.25",
+              fontSize: "7px",
+              lineHeight: "1.15",
+              letterSpacing: "-0.01em",
             }}
-            className="stores-pdf-compact"
           >
             {SECTION_COMPONENTS.map((Component, i) => (
               <div
                 key={SECTION_TITLES[i]}
                 data-pdf-section
                 data-stores-pdf-root-section
-                className={`stores-print-section ${i > 0 ? "mt-4 pt-3 border-t-2 border-primary/30" : ""}`}
+                style={{
+                  fontSize: "7px",
+                  lineHeight: "1.15",
+                  marginTop: i > 0 ? "6px" : "0",
+                  paddingTop: i > 0 ? "4px" : "0",
+                  borderTop: i > 0 ? "2px solid rgba(200,150,12,0.3)" : "none",
+                }}
               >
-                <p className="text-xs font-bold uppercase tracking-widest text-primary mb-4 border-l-4 border-primary pl-3">
+                <p style={{ fontSize: "8px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px", borderLeft: "3px solid #C8960C", paddingLeft: "6px", color: "#C8960C" }}>
                   {SECTION_TITLES[i]}
                 </p>
-                <Component />
+                <div style={{ fontSize: "7px", lineHeight: "1.15" }}>
+                  <Component />
+                </div>
               </div>
             ))}
           </div>
