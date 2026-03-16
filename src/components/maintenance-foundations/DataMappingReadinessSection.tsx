@@ -231,7 +231,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
     {ALL_SECTIONS.map((section) => {
       const sReady = section.data.filter(r => r.status === "Ready").length;
       return (
-        <Card key={section.title} data-pdf-section>
+        <Card key={section.title} className="border border-border rounded-md shadow-none overflow-hidden" data-pdf-section>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm">{section.title}</CardTitle>
