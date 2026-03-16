@@ -86,11 +86,13 @@ const AssetTree = () => {
               <Button
                 variant="outline"
                 onClick={async () => {
+                  primeDownloadGesture();
                   try {
                     toast.loading("Exporting workbook...", { id: "hierarchy-wb" });
                     await exportHierarchyWorkbook();
                     toast.success("Workbook downloaded", { id: "hierarchy-wb" });
                   } catch (e: any) {
+                    cancelPrimedDownloadGesture();
                     toast.error(e.message || "Export failed", { id: "hierarchy-wb" });
                   }
                 }}
@@ -101,11 +103,13 @@ const AssetTree = () => {
               </Button>
               <Button
                 onClick={async () => {
+                  primeDownloadGesture();
                   try {
                     toast.loading("Exporting workbook...", { id: "asset-wb" });
                     await exportAssetTreeWorkbook();
                     toast.success("Workbook downloaded", { id: "asset-wb" });
                   } catch (e: any) {
+                    cancelPrimedDownloadGesture();
                     toast.error(e.message || "Export failed", { id: "asset-wb" });
                   }
                 }}
