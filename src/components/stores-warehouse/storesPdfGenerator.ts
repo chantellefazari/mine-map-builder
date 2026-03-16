@@ -39,7 +39,7 @@ const getCachedCanvas = (node: HTMLElement, cache: CanvasCache) => {
     useCORS: true,
     backgroundColor: "#ffffff",
     logging: false,
-    windowWidth: 1100,
+    windowWidth: 1800,
   });
 
   cache.set(node, canvasPromise);
