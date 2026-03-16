@@ -1,4 +1,6 @@
 import { writeXlsxFile, loadXLSX } from "@/utils/safariDownload";
+
+let XLSX: any;
 import {
   CONTAINER_DISCIPLINE_MAP,
   VALID_BAYS,
