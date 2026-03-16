@@ -16,7 +16,7 @@ import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
 import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
 import { exportProcessingPlantCSV } from "@/utils/exportProcessingPlantCSV";
 import { exportAssetTreePDF } from "@/utils/exportAssetTreePDF";
-import { loadXLSX } from "@/utils/safariDownload";
+import { cancelPrimedDownloadGesture, loadXLSX, primeDownloadGesture } from "@/utils/safariDownload";
 import { toast } from "sonner";
 import { RevBAssetTree } from "@/components/hierarchy/RevBAssetTree";
 
@@ -86,11 +86,13 @@ const AssetTree = () => {
               <Button
                 variant="outline"
                 onClick={async () => {
+                  primeDownloadGesture();
                   try {
                     toast.loading("Exporting workbook...", { id: "hierarchy-wb" });
                     await exportHierarchyWorkbook();
                     toast.success("Workbook downloaded", { id: "hierarchy-wb" });
                   } catch (e: any) {
+                    cancelPrimedDownloadGesture();
                     toast.error(e.message || "Export failed", { id: "hierarchy-wb" });
                   }
                 }}
@@ -101,11 +103,13 @@ const AssetTree = () => {
               </Button>
               <Button
                 onClick={async () => {
+                  primeDownloadGesture();
                   try {
                     toast.loading("Exporting workbook...", { id: "asset-wb" });
                     await exportAssetTreeWorkbook();
                     toast.success("Workbook downloaded", { id: "asset-wb" });
                   } catch (e: any) {
+                    cancelPrimedDownloadGesture();
                     toast.error(e.message || "Export failed", { id: "asset-wb" });
                   }
                 }}

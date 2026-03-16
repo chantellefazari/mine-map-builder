@@ -8,11 +8,60 @@
  * then cleans up — which is the most reliable cross-browser approach.
  */
 
+let primedDownloadWindow: Window | null = null;
+
+/** Prime a browser-allowed window during a direct user gesture for async downloads. */
+export function primeDownloadGesture() {
+  try {
+    if (primedDownloadWindow && !primedDownloadWindow.closed) return;
+    primedDownloadWindow = window.open("", "_blank");
+    if (primedDownloadWindow) {
+      primedDownloadWindow.document.title = "Preparing download...";
+      primedDownloadWindow.document.body.innerHTML = "Preparing download...";
+    }
+  } catch {
+    primedDownloadWindow = null;
+  }
+}
+
+/** Close any primed window if the async export fails. */
+export function cancelPrimedDownloadGesture() {
+  if (primedDownloadWindow && !primedDownloadWindow.closed) {
+    primedDownloadWindow.close();
+  }
+  primedDownloadWindow = null;
+}
+
 /** Download any Blob as a file */
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
+  const primedWindow = primedDownloadWindow && !primedDownloadWindow.closed ? primedDownloadWindow : null;
+  primedDownloadWindow = null;
+
+  if (primedWindow) {
+    try {
+      const safeFilename = filename.replace(/"/g, "&quot;");
+      primedWindow.document.open();
+      primedWindow.document.write(`<!doctype html><html><body><a id="dl" href="${url}" download="${safeFilename}">Download</a><script>document.getElementById("dl")?.click();setTimeout(() => window.close(), 300);</script></body></html>`);
+      primedWindow.document.close();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      return;
+    } catch {
+      try {
+        primedWindow.close();
+      } catch {
+        // noop
+      }
+    }
+  }
+
   const a = document.createElement("a");
-  const inIframe = window.self !== window.top;
+  let inIframe = false;
+  try {
+    inIframe = window.self !== window.top;
+  } catch {
+    inIframe = true;
+  }
 
   a.href = url;
   a.download = filename;
