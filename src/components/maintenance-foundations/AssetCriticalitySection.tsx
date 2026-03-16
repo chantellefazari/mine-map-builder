@@ -444,7 +444,7 @@ export const AssetCriticalitySection = () => {
                 </tr>
               </thead>
               <tbody>
-                {(assets || []).map((a, i) => {
+                {orderedAssets.map((a, i) => {
                   const r = getRating(a.asset_number);
                   const j = getJustification(a.asset_number);
                   const ratingColors: Record<string, { bg: string; color: string }> = {
