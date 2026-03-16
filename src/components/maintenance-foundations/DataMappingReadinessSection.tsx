@@ -119,34 +119,35 @@ const ALL_SECTIONS = [
 ];
 
 const MappingTable = ({ rows }: { rows: MappingRow[] }) => (
-  <Table>
-    <TableHeader>
-      <TableRow>
-        <TableHead className="text-[10px] font-semibold w-[25%]">Field</TableHead>
-        <TableHead className="text-[10px] font-semibold w-[22%]">Source Document</TableHead>
-        <TableHead className="text-[10px] font-semibold w-[35%]">Transformation / Notes</TableHead>
-        <TableHead className="text-[10px] font-semibold w-[10%] text-center">Status</TableHead>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
-      {rows.map((row, i) => (
-        <TableRow key={i}>
-          <TableCell className="text-[10px] font-medium">{row.field}</TableCell>
-          <TableCell className="text-[10px] text-muted-foreground">{row.sourceDocument}</TableCell>
-          <TableCell className="text-[10px]">{row.transformation}</TableCell>
-          <TableCell className="text-center"><StatusBadge status={row.status} /></TableCell>
+  <div className="border-t border-border">
+    <Table className="[&_tr]:border-b [&_tr]:border-border [&_tr:last-child]:border-b-0">
+      <TableHeader>
+        <TableRow className="bg-muted/50 hover:bg-muted/50">
+          <TableHead className="text-[10px] font-semibold w-[25%] py-2 h-auto">Field</TableHead>
+          <TableHead className="text-[10px] font-semibold w-[22%] py-2 h-auto">Source Document</TableHead>
+          <TableHead className="text-[10px] font-semibold w-[35%] py-2 h-auto">Transformation / Notes</TableHead>
+          <TableHead className="text-[10px] font-semibold w-[10%] text-center py-2 h-auto">Status</TableHead>
         </TableRow>
-      ))}
-    </TableBody>
-  </Table>
+      </TableHeader>
+      <TableBody>
+        {rows.map((row, i) => (
+          <TableRow key={i} className={i % 2 === 0 ? "bg-background" : "bg-muted/30"}>
+            <TableCell className="text-[10px] font-medium py-1.5">{row.field}</TableCell>
+            <TableCell className="text-[10px] text-muted-foreground py-1.5">{row.sourceDocument}</TableCell>
+            <TableCell className="text-[10px] py-1.5">{row.transformation}</TableCell>
+            <TableCell className="text-center py-1.5"><StatusBadge status={row.status} /></TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </div>
 );
-
 const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
   allRows: MappingRow[]; ready: number; partial: number; notStarted: number; pct: number;
 }) => (
   <>
     {/* Document Header */}
-    <Card className="border-t-4 border-t-primary" data-pdf-section>
+    <Card className="border border-border rounded-md shadow-none border-t-4 border-t-primary" data-pdf-section>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div>
@@ -163,19 +164,19 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-4 gap-3">
-          <div className="rounded-lg border bg-card p-3 text-center">
+          <div className="rounded border border-border bg-card p-3 text-center">
             <p className="text-2xl font-bold text-primary">{allRows.length}</p>
             <p className="text-[10px] text-muted-foreground">Total Fields</p>
           </div>
-          <div className="rounded-lg border bg-emerald-50 dark:bg-emerald-950/20 p-3 text-center">
+          <div className="rounded border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/20 p-3 text-center">
             <p className="text-2xl font-bold text-emerald-600">{ready}</p>
             <p className="text-[10px] text-muted-foreground">Ready</p>
           </div>
-          <div className="rounded-lg border bg-amber-50 dark:bg-amber-950/20 p-3 text-center">
+          <div className="rounded border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/20 p-3 text-center">
             <p className="text-2xl font-bold text-amber-500">{partial}</p>
             <p className="text-[10px] text-muted-foreground">Partial</p>
           </div>
-          <div className="rounded-lg border bg-red-50 dark:bg-red-950/20 p-3 text-center">
+          <div className="rounded border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-3 text-center">
             <p className="text-2xl font-bold text-destructive">{notStarted}</p>
             <p className="text-[10px] text-muted-foreground">Not Started</p>
           </div>
@@ -193,7 +194,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
     </Card>
 
     {/* Purpose */}
-    <Card data-pdf-section>
+    <Card className="border border-border rounded-md shadow-none" data-pdf-section>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">Purpose</CardTitle>
       </CardHeader>
@@ -204,7 +205,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
     </Card>
 
     {/* Legend */}
-    <Card data-pdf-section>
+    <Card className="border border-border rounded-md shadow-none" data-pdf-section>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">Readiness Legend</CardTitle>
       </CardHeader>
@@ -230,7 +231,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
     {ALL_SECTIONS.map((section) => {
       const sReady = section.data.filter(r => r.status === "Ready").length;
       return (
-        <Card key={section.title} data-pdf-section>
+        <Card key={section.title} className="border border-border rounded-md shadow-none overflow-hidden" data-pdf-section>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm">{section.title}</CardTitle>
@@ -248,7 +249,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
     })}
 
     {/* Outstanding Actions */}
-    <Card className="border-amber-300 dark:border-amber-700" data-pdf-section>
+    <Card className="border border-amber-300 dark:border-amber-700 rounded-md shadow-none" data-pdf-section>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">Outstanding Actions for Full Readiness</CardTitle>
       </CardHeader>
