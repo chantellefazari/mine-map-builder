@@ -378,7 +378,7 @@ export const AssetCriticalitySection = () => {
     return <div className="flex items-center justify-center py-12"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /><span className="ml-2 text-sm text-muted-foreground">Loading assets…</span></div>;
   }
 
-  const pendingCount = Object.keys(pendingChanges).length;
+  const savingCount = savingAssets.size;
   const summary = { A: 0, B: 0, C: 0 };
   assets?.forEach(a => { summary[getRating(a.asset_number)]++; });
 
