@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield, PackageSearch, FileInput } from "lucide-react";
+import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield, PackageSearch, FileInput, Box } from "lucide-react";
 import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
