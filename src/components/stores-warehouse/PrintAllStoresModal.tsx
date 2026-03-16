@@ -425,18 +425,19 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
           <div
             ref={printRef}
             aria-hidden
+            className="stores-pdf-ultra-compact"
             style={{
               position: "fixed",
               left: "-12000px",
               top: 0,
-              width: "1100px",
+              width: "1800px",
               background: "white",
-              padding: "16px",
+              padding: "8px",
               zIndex: -1,
               pointerEvents: "none",
-              fontSize: "7px",
-              lineHeight: "1.15",
-              letterSpacing: "-0.01em",
+              fontSize: "5.5px",
+              lineHeight: "1.1",
+              letterSpacing: "-0.02em",
             }}
           >
             {SECTION_COMPONENTS.map((Component, i) => (
@@ -445,17 +446,17 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
                 data-pdf-section
                 data-stores-pdf-root-section
                 style={{
-                  fontSize: "7px",
-                  lineHeight: "1.15",
-                  marginTop: i > 0 ? "6px" : "0",
-                  paddingTop: i > 0 ? "4px" : "0",
-                  borderTop: i > 0 ? "2px solid rgba(200,150,12,0.3)" : "none",
+                  fontSize: "5.5px",
+                  lineHeight: "1.1",
+                  marginTop: i > 0 ? "3px" : "0",
+                  paddingTop: i > 0 ? "2px" : "0",
+                  borderTop: i > 0 ? "1px solid rgba(200,150,12,0.3)" : "none",
                 }}
               >
-                <p style={{ fontSize: "8px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px", borderLeft: "3px solid #C8960C", paddingLeft: "6px", color: "#C8960C" }}>
+                <p style={{ fontSize: "6px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", marginBottom: "1px", borderLeft: "2px solid #C8960C", paddingLeft: "4px", color: "#C8960C" }}>
                   {SECTION_TITLES[i]}
                 </p>
-                <div style={{ fontSize: "7px", lineHeight: "1.15" }}>
+                <div style={{ fontSize: "5.5px", lineHeight: "1.1" }}>
                   <Component />
                 </div>
               </div>
