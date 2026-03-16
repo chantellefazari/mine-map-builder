@@ -296,7 +296,7 @@ export const AssetCriticalitySection = () => {
   };
 
   const handlePrint = () => {
-    const allAssets = assets || [];
+    const allAssets = orderedAssets;
     const rows = allAssets.map(a => {
       const r = getRating(a.asset_number);
       const j = getJustification(a.asset_number);
