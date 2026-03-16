@@ -294,21 +294,36 @@ export const DataMappingReadinessSection = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [capturing, setCapturing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const sectionCanvasesRef = useRef<HTMLCanvasElement[]>([]);
 
   const handleOpenPreview = useCallback(async () => {
     const el = contentRef.current;
     if (!el) return;
     setCapturing(true);
     try {
+      // Full image for preview display
       const canvas = await html2canvas(el, {
         scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff",
         logging: false,
       });
-      canvasRef.current = canvas;
       setPreviewImage(canvas.toDataURL("image/png"));
+
+      // Section-based captures for PDF (no page cuts)
+      const sections = Array.from(el.querySelectorAll("[data-pdf-section]")) as HTMLElement[];
+      const canvases: HTMLCanvasElement[] = [];
+      for (const section of sections) {
+        const c = await html2canvas(section, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+        });
+        canvases.push(c);
+      }
+      sectionCanvasesRef.current = canvases;
+
       setPreviewOpen(true);
     } catch (err) {
       console.error("Capture error:", err);
@@ -319,10 +334,7 @@ export const DataMappingReadinessSection = () => {
   }, []);
 
   const handlePrintPreview = useCallback(() => {
-    if (!previewImage) {
-      toast.error("Open print preview first");
-      return;
-    }
+    if (!previewImage) return;
 
     const printWindow = window.open("", "_blank");
     if (!printWindow) {
@@ -330,37 +342,38 @@ export const DataMappingReadinessSection = () => {
       return;
     }
 
+    // Build section images for print so browser handles page breaks per-section
+    const sectionImgs = sectionCanvasesRef.current
+      .map(c => `<img src="${c.toDataURL("image/png")}" style="width:100%;height:auto;display:block;margin-bottom:4mm;" />`)
+      .join("\n");
+
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Print Preview | Data Mapping & Readiness</title>
+          <title>Data Mapping & Readiness</title>
           <style>
             @page { size: A4 portrait; margin: 8mm; }
             html, body { margin: 0; padding: 0; background: white; }
-            body { display: flex; justify-content: center; }
-            img { width: 100%; max-width: 210mm; height: auto; }
+            img { page-break-inside: avoid; break-inside: avoid; }
           </style>
         </head>
-        <body>
-          <img src="${previewImage}" alt="Print preview" />
-        </body>
+        <body>${sectionImgs}</body>
       </html>
     `);
     printWindow.document.close();
     printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-    }, 250);
+    setTimeout(() => { printWindow.print(); }, 400);
   }, [previewImage]);
 
   const handleSavePdf = useCallback(async () => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
+    const canvases = sectionCanvasesRef.current;
+    if (!canvases.length) {
       toast.error("Open print preview first");
       return;
     }
 
+    // Open window before async work so popup blocker doesn't kill it
     const pdfWindow = window.open("", "_blank");
     if (!pdfWindow) {
       toast.error("Allow pop-ups to open PDF preview");
@@ -373,22 +386,34 @@ export const DataMappingReadinessSection = () => {
       const A4_W = 210;
       const A4_H = 297;
       const MARGIN = 8;
-      const contentW = A4_W - MARGIN * 2;
-      const imgRatio = canvas.height / canvas.width;
-      const totalImgH = contentW * imgRatio;
-      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+      const CONTENT_W = A4_W - MARGIN * 2;
+      const CONTENT_H = A4_H - MARGIN * 2;
+      const GAP = 3;
 
-      let heightLeft = totalImgH;
-      let position = MARGIN;
+      let curY = MARGIN;
 
-      pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
-      heightLeft -= A4_H - MARGIN * 2;
+      for (let i = 0; i < canvases.length; i++) {
+        const canvas = canvases[i];
+        const scale = CONTENT_W / canvas.width;
+        const sectionH = canvas.height * scale;
+        const imgData = canvas.toDataURL("image/jpeg", 0.92);
 
-      while (heightLeft > 0) {
-        pdf.addPage();
-        position = MARGIN - (totalImgH - heightLeft);
-        pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
-        heightLeft -= A4_H - MARGIN * 2;
+        // If section won't fit and we're not at top, start new page
+        if (sectionH > (A4_H - curY - MARGIN) && curY > MARGIN) {
+          pdf.addPage();
+          curY = MARGIN;
+        }
+
+        pdf.addImage(imgData, "JPEG", MARGIN, curY, CONTENT_W, sectionH);
+        curY += sectionH + GAP;
+
+        // If cursor past page, reset for next section
+        if (curY > MARGIN + CONTENT_H) {
+          if (i < canvases.length - 1) {
+            pdf.addPage();
+            curY = MARGIN;
+          }
+        }
       }
 
       const blobUrl = URL.createObjectURL(pdf.output("blob"));
