@@ -211,11 +211,6 @@ export const AssetCriticalitySection = () => {
     return map;
   }, [ratings]);
 
-  const areas = useMemo(() => {
-    const set = new Set(assets?.map(a => a.area_label) || []);
-    return Array.from(set).sort();
-  }, [assets]);
-
   // Area ordering: SITE → UTL → COM → REC → TAIL → SUP (matches hierarchy flow)
   const AREA_ORDER: Record<string, number> = {
     "Site Infrastructure": 1,
@@ -226,15 +221,28 @@ export const AssetCriticalitySection = () => {
     "Support Services": 6,
   };
 
-  const filteredAssets = useMemo(() => {
+  const getAreaOrder = (areaLabel: string) => AREA_ORDER[areaLabel?.trim()] ?? 99;
+
+  const orderedAssets = useMemo(() => {
     if (!assets) return [];
-    const sorted = [...assets].sort((a, b) => {
-      const aOrder = AREA_ORDER[a.area_label] ?? 99;
-      const bOrder = AREA_ORDER[b.area_label] ?? 99;
-      if (aOrder !== bOrder) return aOrder - bOrder;
-      return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+    return [...assets].sort((a, b) => {
+      const areaDiff = getAreaOrder(a.area_label) - getAreaOrder(b.area_label);
+      if (areaDiff !== 0) return areaDiff;
+
+      const sortDiff = (a.sort_order ?? Number.MAX_SAFE_INTEGER) - (b.sort_order ?? Number.MAX_SAFE_INTEGER);
+      if (sortDiff !== 0) return sortDiff;
+
+      return a.asset_number.localeCompare(b.asset_number);
     });
-    return sorted.filter(a => {
+  }, [assets]);
+
+  const areas = useMemo(() => {
+    const set = new Set(orderedAssets.map(a => a.area_label));
+    return Array.from(set);
+  }, [orderedAssets]);
+
+  const filteredAssets = useMemo(() => {
+    return orderedAssets.filter(a => {
       if (areaFilter !== "all" && a.area_label !== areaFilter) return false;
       if (ratingFilter !== "all" && getRating(a.asset_number) !== ratingFilter) return false;
       if (search) {
@@ -243,7 +251,7 @@ export const AssetCriticalitySection = () => {
       }
       return true;
     });
-  }, [assets, search, areaFilter, ratingFilter, pendingChanges, ratingsMap]);
+  }, [orderedAssets, search, areaFilter, ratingFilter, pendingChanges, ratingsMap]);
 
   const getRating = (assetNumber: string): CriticalityRating => {
     if (pendingChanges[assetNumber]?.criticality) return pendingChanges[assetNumber].criticality;
