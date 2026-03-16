@@ -564,13 +564,14 @@ export const AssetCriticalitySection = () => {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell className="py-1.5">
-                    <Input
-                      value={justification}
-                      onChange={e => handleJustificationChange(asset, e.target.value)}
-                      placeholder="Optional justification…"
-                      className="h-7 text-xs"
+                  <TableCell className="py-1.5 flex items-center gap-1.5">
+                    <JustificationInput
+                      key={asset.asset_number}
+                      initialValue={justification}
+                      onChange={(val) => handleJustificationChange(asset, val)}
                     />
+                    {isSaving && <Loader2 className="w-3 h-3 animate-spin text-muted-foreground shrink-0" />}
+                    {justSaved && !isSaving && <Check className="w-3 h-3 text-emerald-600 shrink-0" />}
                   </TableCell>
                 </TableRow>
               );
