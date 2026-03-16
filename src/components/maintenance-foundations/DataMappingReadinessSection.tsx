@@ -146,7 +146,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
 }) => (
   <>
     {/* Document Header */}
-    <Card className="border-t-4 border-t-primary">
+    <Card className="border-t-4 border-t-primary" data-pdf-section>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div>
@@ -193,7 +193,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
     </Card>
 
     {/* Purpose */}
-    <Card>
+    <Card data-pdf-section>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">Purpose</CardTitle>
       </CardHeader>
@@ -204,7 +204,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
     </Card>
 
     {/* Legend */}
-    <Card>
+    <Card data-pdf-section>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">Readiness Legend</CardTitle>
       </CardHeader>
@@ -230,7 +230,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
     {ALL_SECTIONS.map((section) => {
       const sReady = section.data.filter(r => r.status === "Ready").length;
       return (
-        <Card key={section.title}>
+        <Card key={section.title} data-pdf-section>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm">{section.title}</CardTitle>
@@ -248,7 +248,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
     })}
 
     {/* Outstanding Actions */}
-    <Card className="border-amber-300 dark:border-amber-700">
+    <Card className="border-amber-300 dark:border-amber-700" data-pdf-section>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">Outstanding Actions for Full Readiness</CardTitle>
       </CardHeader>
