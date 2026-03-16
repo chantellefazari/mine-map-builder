@@ -162,6 +162,7 @@ const templateRegistry: PMTemplateDefinition[] = [
 
 export const exportPMWorkbook = async () => {
   try {
+    const XLSX = await loadXLSX();
     toast.info("Generating PM Workbook...");
 
     // 1. Fetch all PM data from database
