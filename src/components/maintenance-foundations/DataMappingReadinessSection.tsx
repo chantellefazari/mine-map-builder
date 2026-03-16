@@ -147,7 +147,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
 }) => (
   <>
     {/* Document Header */}
-    <Card className="border-t-4 border-t-primary" data-pdf-section>
+    <Card className="border border-border rounded-md shadow-none border-t-4 border-t-primary" data-pdf-section>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div>
