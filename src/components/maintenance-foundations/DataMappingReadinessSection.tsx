@@ -164,19 +164,19 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-4 gap-3">
-          <div className="rounded-lg border bg-card p-3 text-center">
+          <div className="rounded border border-border bg-card p-3 text-center">
             <p className="text-2xl font-bold text-primary">{allRows.length}</p>
             <p className="text-[10px] text-muted-foreground">Total Fields</p>
           </div>
-          <div className="rounded-lg border bg-emerald-50 dark:bg-emerald-950/20 p-3 text-center">
+          <div className="rounded border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/20 p-3 text-center">
             <p className="text-2xl font-bold text-emerald-600">{ready}</p>
             <p className="text-[10px] text-muted-foreground">Ready</p>
           </div>
-          <div className="rounded-lg border bg-amber-50 dark:bg-amber-950/20 p-3 text-center">
+          <div className="rounded border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/20 p-3 text-center">
             <p className="text-2xl font-bold text-amber-500">{partial}</p>
             <p className="text-[10px] text-muted-foreground">Partial</p>
           </div>
-          <div className="rounded-lg border bg-red-50 dark:bg-red-950/20 p-3 text-center">
+          <div className="rounded border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-3 text-center">
             <p className="text-2xl font-bold text-destructive">{notStarted}</p>
             <p className="text-[10px] text-muted-foreground">Not Started</p>
           </div>
