@@ -90,11 +90,11 @@ const SPARES_MAPPINGS: MappingRow[] = [
 const SUPPLIER_MAPPINGS: MappingRow[] = [
   { field: "Vendor Code", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
   { field: "Vendor Name", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
-  { field: "ABN / Tax ID", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
-  { field: "Primary Email", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
+  { field: "ABN / Tax ID", sourceDocument: "Supplier Register", transformation: "Requires collection from vendors (0% populated)", status: "Not Started" },
+  { field: "Primary Email", sourceDocument: "Supplier Register", transformation: "Direct: no change (95% populated)", status: "Partial" },
   { field: "Primary Contact Name", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
-  { field: "Payment Terms", sourceDocument: "Supplier Register", transformation: "Map to target system payment terms code (100%)", status: "Ready" },
-  { field: "Vendor Group", sourceDocument: "Supplier Register", transformation: "Map to target system vendor group (100%)", status: "Ready" },
+  { field: "Payment Terms", sourceDocument: "Supplier Register", transformation: "Requires collection from vendors (0% populated)", status: "Not Started" },
+  { field: "Vendor Group / Type", sourceDocument: "Supplier Register", transformation: "Map supplier type to target system vendor group (100%)", status: "Ready" },
   { field: "Preferred Vendor Flag", sourceDocument: "Supplier Register", transformation: "Boolean to Yes/No", status: "Ready" },
 ];
 
