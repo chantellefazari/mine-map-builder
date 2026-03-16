@@ -231,7 +231,8 @@ export const AssetTagProductionList = () => {
     toast.success("XLSX exported successfully");
   };
 
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
+    const XLSX = await loadXLSX();
     const ws = XLSX.utils.json_to_sheet(buildExportRows());
     const csv = XLSX.utils.sheet_to_csv(ws);
     downloadCsv(csv, "Asset_Tag_Production_List_Tennant_Creek.csv");
