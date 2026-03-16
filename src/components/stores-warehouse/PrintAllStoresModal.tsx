@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { X, Printer, FileText, Download } from "lucide-react";
+import { X, Printer, FileText, Download, Loader2 } from "lucide-react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
@@ -34,6 +34,11 @@ const SECTIONS = [
   { title: "7. Stock Control Procedure", Component: StockControlProcedure },
 ];
 
+const A4_WIDTH_MM = 210;
+const A4_HEIGHT_MM = 297;
+const MARGIN_MM = 12;
+const CONTENT_WIDTH_MM = A4_WIDTH_MM - MARGIN_MM * 2;
+
 export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
   isOpen,
   onClose,
@@ -45,31 +50,95 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
     const el = printRef.current;
     if (!el) return;
     setDownloading(true);
+
     try {
-      const canvas = await html2canvas(el, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-      });
-
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const A4_W = 210;
-      const A4_H = 297;
-      const imgData = canvas.toDataURL("image/jpeg", 0.9);
-      const imgRatio = canvas.height / canvas.width;
-      const totalImgH = A4_W * imgRatio;
-      let heightLeft = totalImgH;
-      let position = 0;
+      let currentY = MARGIN_MM;
+      const SECTION_GAP_MM = 6;
 
-      pdf.addImage(imgData, "JPEG", 0, position, A4_W, totalImgH);
-      heightLeft -= A4_H;
+      const sections = Array.from(
+        el.querySelectorAll("[data-pdf-section]")
+      ) as HTMLElement[];
 
-      while (heightLeft > 0) {
-        position -= A4_H;
-        pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, position, A4_W, totalImgH);
-        heightLeft -= A4_H;
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+
+        const canvas = await html2canvas(section, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+          windowWidth: 794, // fixed A4-ish width for consistent rendering
+        });
+
+        const scaleFactor = CONTENT_WIDTH_MM / (canvas.width / 2);
+        const sectionHeightMM = (canvas.height / 2) * scaleFactor;
+        const imgData = canvas.toDataURL("image/jpeg", 0.92);
+
+        // If section is taller than a full page, tile it across pages
+        if (sectionHeightMM > A4_HEIGHT_MM - MARGIN_MM * 2) {
+          // Need to slice this section across pages
+          const pageContentHeight = A4_HEIGHT_MM - MARGIN_MM * 2;
+          const totalHeightPx = canvas.height;
+          const pxPerMM = (canvas.width / 2) / CONTENT_WIDTH_MM;
+          let srcYPx = 0;
+
+          while (srcYPx < totalHeightPx) {
+            if (currentY > MARGIN_MM) {
+              // Check remaining space
+              const remainingMM = A4_HEIGHT_MM - MARGIN_MM - currentY;
+              if (remainingMM < 20) {
+                pdf.addPage();
+                currentY = MARGIN_MM;
+              }
+            }
+
+            const availableHeightMM = A4_HEIGHT_MM - MARGIN_MM - currentY;
+            const sliceHeightPx = Math.min(
+              availableHeightMM * pxPerMM * 2,
+              totalHeightPx - srcYPx
+            );
+            const sliceHeightMM = (sliceHeightPx / 2) * scaleFactor;
+
+            // Create a sub-canvas for this slice
+            const sliceCanvas = document.createElement("canvas");
+            sliceCanvas.width = canvas.width;
+            sliceCanvas.height = Math.ceil(sliceHeightPx);
+            const ctx = sliceCanvas.getContext("2d");
+            if (ctx) {
+              ctx.fillStyle = "#ffffff";
+              ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+              ctx.drawImage(
+                canvas,
+                0, srcYPx,
+                canvas.width, sliceHeightPx,
+                0, 0,
+                canvas.width, sliceHeightPx
+              );
+            }
+
+            const sliceData = sliceCanvas.toDataURL("image/jpeg", 0.92);
+            pdf.addImage(sliceData, "JPEG", MARGIN_MM, currentY, CONTENT_WIDTH_MM, sliceHeightMM);
+
+            srcYPx += sliceHeightPx;
+            if (srcYPx < totalHeightPx) {
+              pdf.addPage();
+              currentY = MARGIN_MM;
+            } else {
+              currentY += sliceHeightMM + SECTION_GAP_MM;
+            }
+          }
+        } else {
+          // Section fits on one page — check if it fits remaining space
+          const remainingSpace = A4_HEIGHT_MM - MARGIN_MM - currentY;
+          if (sectionHeightMM > remainingSpace && currentY > MARGIN_MM) {
+            pdf.addPage();
+            currentY = MARGIN_MM;
+          }
+
+          pdf.addImage(imgData, "JPEG", MARGIN_MM, currentY, CONTENT_WIDTH_MM, sectionHeightMM);
+          currentY += sectionHeightMM + SECTION_GAP_MM;
+        }
       }
 
       const blob = pdf.output("blob");
@@ -85,57 +154,79 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
     const printContent = printRef.current;
     if (!printContent) return;
 
-    const styleId = "stores-all-print-styles";
-    let style = document.getElementById(styleId) as HTMLStyleElement | null;
-    if (!style) {
-      style = document.createElement("style");
-      style.id = styleId;
-      document.head.appendChild(style);
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    printWindow.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <title>Stores & Warehouse Design</title>
+  <style>
+    @page { size: A4 portrait; margin: 12mm; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 11px; line-height: 1.5; color: #1a1a1a;
+      background: white; width: 100%;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
     }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    tr { page-break-inside: avoid; break-inside: avoid; }
+    thead { display: table-header-group; }
+    th, td { border: 1px solid #d1d5db; padding: 4px 6px; text-align: left; font-size: 9px; word-wrap: break-word; overflow-wrap: break-word; }
+    th { background-color: #f5f5f5; font-weight: 600; }
+    img { max-width: 100%; height: auto; }
+    .stores-print-section { break-inside: avoid; page-break-inside: avoid; margin-bottom: 16px; }
+    .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #C8960C; margin-bottom: 8px; padding-left: 8px; border-left: 3px solid #C8960C; }
+    .border-primary\\/30 { border-color: rgba(200, 150, 12, 0.3); }
+    .bg-primary\\/10, [class*="bg-primary/10"] { background-color: rgba(200, 150, 12, 0.1) !important; }
+    .bg-primary, [class*="bg-primary"] { background-color: #C8960C !important; }
+    .text-primary, [class*="text-primary"] { color: #C8960C !important; }
+    .bg-muted, [class*="bg-muted"] { background-color: #f5f5f5 !important; }
+    .text-muted-foreground { color: #6b7280 !important; }
+    h1, h2, h3, h4 { color: #1a1a1a; }
+    .text-sm { font-size: 9px; }
+    .text-xs { font-size: 8px; }
+    .text-lg { font-size: 12px; }
+    .text-base { font-size: 10px; }
+    .font-bold { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+    .font-medium { font-weight: 500; }
+    .p-4 { padding: 8px; }
+    .p-3 { padding: 6px; }
+    .px-4 { padding-left: 8px; padding-right: 8px; }
+    .py-2 { padding-top: 4px; padding-bottom: 4px; }
+    .mb-4 { margin-bottom: 8px; }
+    .mb-2 { margin-bottom: 4px; }
+    .mt-2 { margin-top: 4px; }
+    .gap-2 { gap: 4px; }
+    .gap-4 { gap: 8px; }
+    .grid { display: grid; }
+    .flex { display: flex; }
+    .space-y-4 > * + * { margin-top: 8px; }
+    .space-y-3 > * + * { margin-top: 6px; }
+    .space-y-2 > * + * { margin-top: 4px; }
+    .rounded-lg { border-radius: 6px; }
+    .border { border: 1px solid #e5e7eb; }
+    .border-b { border-bottom: 1px solid #e5e7eb; }
+    .border-t { border-top: 1px solid #e5e7eb; }
+    .border-t-2 { border-top: 2px solid #e5e7eb; }
+    .overflow-hidden { overflow: hidden; }
+    div, td, th { max-width: 100%; }
+    .print-hide { display: none !important; }
+  </style>
+</head>
+<body>
+${printContent.innerHTML}
+</body>
+</html>`);
 
-    style.textContent = `
-      @media print {
-        body * { visibility: hidden !important; }
-        [data-stores-all-print-root],
-        [data-stores-all-print-root] * { visibility: visible !important; }
-
-        [data-stores-all-print-root] {
-          display: block !important;
-          position: fixed;
-          inset: 0;
-          width: 100%;
-          z-index: 999999;
-          overflow: visible;
-          background: hsl(0 0% 100%);
-        }
-
-        @page { size: A4 portrait; margin: 15mm; }
-
-        [data-stores-all-print-root] .stores-print-section {
-          break-inside: avoid;
-          page-break-inside: avoid;
-        }
-      }
-    `;
-
-    const printRoot = document.createElement("div");
-    printRoot.setAttribute("data-stores-all-print-root", "true");
-    printRoot.innerHTML = printContent.innerHTML;
-    printRoot.style.cssText = "display:block;font-family:Inter,-apple-system,sans-serif;font-size:11px;line-height:1.5;color:hsl(0 0% 7%);background:hsl(0 0% 100%);-webkit-print-color-adjust:exact;print-color-adjust:exact;";
-    document.body.appendChild(printRoot);
-
-    const cleanup = () => {
-      printRoot.remove();
-      if (style) style.textContent = "";
-      window.removeEventListener("afterprint", cleanup);
-    };
-
-    window.addEventListener("afterprint", cleanup, { once: true });
-
+    printWindow.document.close();
+    printWindow.focus();
     setTimeout(() => {
-      window.print();
-      setTimeout(cleanup, 1200);
-    }, 100);
+      printWindow.print();
+      printWindow.close();
+    }, 600);
   };
 
   return (
@@ -153,8 +244,8 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={handleDownloadPDF} className="gap-2" disabled={downloading}>
-              <Download className="w-4 h-4" />
-              {downloading ? "Downloading…" : "Download PDF"}
+              {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              {downloading ? "Generating…" : "Download PDF"}
             </Button>
             <Button onClick={handlePrint} className="gap-2">
               <Printer className="w-4 h-4" />
@@ -170,10 +261,14 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
           <div
             ref={printRef}
             className="bg-white mx-auto shadow-xl rounded-lg"
-            style={{ maxWidth: "210mm", padding: "12mm" }}
+            style={{ maxWidth: "794px", padding: "30px" }}
           >
             {SECTIONS.map(({ title, Component }, i) => (
-              <div key={title} className={`stores-print-section ${i > 0 ? "mt-10 pt-8 border-t-2 border-primary/30" : ""}`}>
+              <div
+                key={title}
+                data-pdf-section
+                className={`stores-print-section ${i > 0 ? "mt-10 pt-8 border-t-2 border-primary/30" : ""}`}
+              >
                 <p className="text-xs font-bold uppercase tracking-widest text-primary mb-4 border-l-4 border-primary pl-3">
                   {title}
                 </p>
