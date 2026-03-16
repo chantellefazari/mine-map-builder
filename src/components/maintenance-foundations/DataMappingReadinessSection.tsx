@@ -8,7 +8,6 @@ import { CheckCircle2, AlertCircle, Clock, Printer, Download, X, Loader2 } from 
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
-import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
 
 type ReadinessStatus = "Ready" | "Partial" | "Not Started";
 
@@ -319,10 +318,52 @@ export const DataMappingReadinessSection = () => {
     }
   }, []);
 
+  const handlePrintPreview = useCallback(() => {
+    if (!previewImage) {
+      toast.error("Open print preview first");
+      return;
+    }
+
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      toast.error("Allow pop-ups to open print dialog");
+      return;
+    }
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Print Preview | Data Mapping & Readiness</title>
+          <style>
+            @page { size: A4 portrait; margin: 8mm; }
+            html, body { margin: 0; padding: 0; background: white; }
+            body { display: flex; justify-content: center; }
+            img { width: 100%; max-width: 210mm; height: auto; }
+          </style>
+        </head>
+        <body>
+          <img src="${previewImage}" alt="Print preview" />
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+    }, 250);
+  }, [previewImage]);
+
   const handleSavePdf = useCallback(async () => {
     const canvas = canvasRef.current;
     if (!canvas) {
       toast.error("Open print preview first");
+      return;
+    }
+
+    const pdfWindow = window.open("", "_blank");
+    if (!pdfWindow) {
+      toast.error("Allow pop-ups to open PDF preview");
       return;
     }
 
@@ -350,11 +391,13 @@ export const DataMappingReadinessSection = () => {
         heightLeft -= A4_H - MARGIN * 2;
       }
 
-      const blob = pdf.output("blob");
-      await uploadAndShowPdf(blob, "TCMG-Data-Mapping-Readiness.pdf", "Data Mapping & Readiness");
-      toast.success("PDF opened");
+      const blobUrl = URL.createObjectURL(pdf.output("blob"));
+      pdfWindow.location.href = blobUrl;
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+      toast.success("PDF opened in new tab");
     } catch (err) {
       console.error("PDF error:", err);
+      pdfWindow.close();
       toast.error("Failed to save PDF");
     } finally {
       setSaving(false);
@@ -378,7 +421,11 @@ export const DataMappingReadinessSection = () => {
           <div className="p-4 border-b border-border flex items-center justify-between">
             <DialogTitle className="text-lg font-semibold">Print Preview — Data Mapping & Readiness</DialogTitle>
             <div className="flex items-center gap-3">
-              <Button onClick={handleSavePdf} disabled={saving} className="gap-2">
+              <Button variant="outline" onClick={handlePrintPreview} disabled={!previewImage} className="gap-2">
+                <Printer className="w-4 h-4" />
+                Print
+              </Button>
+              <Button onClick={handleSavePdf} disabled={saving || !previewImage} className="gap-2">
                 <Download className="w-4 h-4" />
                 {saving ? "Saving…" : "Save as PDF"}
               </Button>
