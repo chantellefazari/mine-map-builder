@@ -169,6 +169,19 @@ function useCriticalityRatings() {
   });
 }
 
+/** Small controlled input that keeps local state for typing and fires onChange on each keystroke */
+const JustificationInput = ({ initialValue, onChange }: { initialValue: string; onChange: (v: string) => void }) => {
+  const [value, setValue] = useState(initialValue);
+  return (
+    <Input
+      value={value}
+      onChange={e => { setValue(e.target.value); onChange(e.target.value); }}
+      placeholder="Optional justification…"
+      className="h-7 text-xs flex-1"
+    />
+  );
+};
+
 export const AssetCriticalitySection = () => {
   const queryClient = useQueryClient();
   const { data: assets, isLoading: assetsLoading } = useParentAssets();
