@@ -374,7 +374,7 @@ export const DataMappingReadinessSection = () => {
 
       {/* Print Preview Modal */}
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-[95vw] w-full max-h-[95vh] h-full p-0 gap-0" aria-describedby={undefined}>
+        <DialogContent className="max-w-[95vw] w-full max-h-[95vh] h-full p-0 gap-0 [&>button]:hidden" aria-describedby={undefined}>
           <div className="p-4 border-b border-border flex items-center justify-between">
             <DialogTitle className="text-lg font-semibold">Print Preview — Data Mapping & Readiness</DialogTitle>
             <div className="flex items-center gap-3">
