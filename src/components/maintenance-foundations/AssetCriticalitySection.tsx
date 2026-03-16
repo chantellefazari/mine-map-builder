@@ -146,7 +146,7 @@ function useParentAssets() {
       for (const d of allRows) {
         if (seen.has(d.asset_number)) continue;
         seen.add(d.asset_number);
-        parents.push({ asset_number: d.asset_number, asset_name: d.asset_name, area_label: d.area_label, sub_area: d.sub_area });
+        parents.push({ asset_number: d.asset_number, asset_name: d.asset_name, area_label: d.area_label, sub_area: d.sub_area, sort_order: d.sort_order ?? 0 });
       }
       return parents;
     },
