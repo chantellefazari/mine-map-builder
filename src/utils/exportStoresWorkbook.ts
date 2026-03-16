@@ -186,7 +186,7 @@ function addLocationCoding(wb: any) {
 }
 
 // ── Sheet 4 — Design Inputs ────────────────────────────────────────────────
-function addDesignInputs(wb: XLSX.WorkBook) {
+function addDesignInputs(wb: any) {
   const rows: string[][] = [
     ["Zone", "Container Type", "Contents", "Environment", "Access Frequency", "Growth Allowance"],
     ["C01-EL", "20ft Modified Container", "Electrical components, PLCs, VSDs, sensors", "Dust-controlled, positive airflow, climate-stable", "Daily", "20%"],
