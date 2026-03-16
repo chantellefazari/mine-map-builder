@@ -29,6 +29,7 @@ const POTracker = lazy(() => import("./pages/POTracker"));
 const PurchaseRequests = lazy(() => import("./pages/PurchaseRequests"));
 const SupplierPortal = lazy(() => import("./pages/SupplierPortal"));
 const TrackShipment = lazy(() => import("./pages/TrackShipment"));
+const ThreeDeeConcepts = lazy(() => import("./pages/ThreeDeeConcepts"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
