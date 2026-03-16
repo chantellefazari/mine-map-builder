@@ -10,7 +10,7 @@ import {
 } from "@/utils/storeLocationValidation";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-const setColWidths = (ws: XLSX.WorkSheet, widths: number[]) => {
+const setColWidths = (ws: any, widths: number[]) => {
   ws["!cols"] = widths.map((w) => ({ wch: w }));
 };
 
