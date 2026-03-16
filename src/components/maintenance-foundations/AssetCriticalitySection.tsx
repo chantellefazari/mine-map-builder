@@ -29,6 +29,7 @@ interface ParentAsset {
   asset_name: string;
   area_label: string;
   sub_area: string;
+  sort_order: number;
 }
 
 const RATING_CONFIG: Record<CriticalityRating, { label: string; color: string; description: string }> = {
