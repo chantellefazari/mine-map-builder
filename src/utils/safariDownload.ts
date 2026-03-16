@@ -1,5 +1,3 @@
-import * as XLSX from "xlsx";
-
 /**
  * Safari-safe file download helper.
  * Safari blocks programmatic anchor clicks when not in the direct user gesture
