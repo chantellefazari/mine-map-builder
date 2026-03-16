@@ -119,28 +119,29 @@ const ALL_SECTIONS = [
 ];
 
 const MappingTable = ({ rows }: { rows: MappingRow[] }) => (
-  <Table>
-    <TableHeader>
-      <TableRow>
-        <TableHead className="text-[10px] font-semibold w-[25%]">Field</TableHead>
-        <TableHead className="text-[10px] font-semibold w-[22%]">Source Document</TableHead>
-        <TableHead className="text-[10px] font-semibold w-[35%]">Transformation / Notes</TableHead>
-        <TableHead className="text-[10px] font-semibold w-[10%] text-center">Status</TableHead>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
-      {rows.map((row, i) => (
-        <TableRow key={i}>
-          <TableCell className="text-[10px] font-medium">{row.field}</TableCell>
-          <TableCell className="text-[10px] text-muted-foreground">{row.sourceDocument}</TableCell>
-          <TableCell className="text-[10px]">{row.transformation}</TableCell>
-          <TableCell className="text-center"><StatusBadge status={row.status} /></TableCell>
+  <div className="border-t border-border">
+    <Table className="[&_tr]:border-b [&_tr]:border-border [&_tr:last-child]:border-b-0">
+      <TableHeader>
+        <TableRow className="bg-muted/50 hover:bg-muted/50">
+          <TableHead className="text-[10px] font-semibold w-[25%] py-2 h-auto">Field</TableHead>
+          <TableHead className="text-[10px] font-semibold w-[22%] py-2 h-auto">Source Document</TableHead>
+          <TableHead className="text-[10px] font-semibold w-[35%] py-2 h-auto">Transformation / Notes</TableHead>
+          <TableHead className="text-[10px] font-semibold w-[10%] text-center py-2 h-auto">Status</TableHead>
         </TableRow>
-      ))}
-    </TableBody>
-  </Table>
+      </TableHeader>
+      <TableBody>
+        {rows.map((row, i) => (
+          <TableRow key={i} className={i % 2 === 0 ? "bg-background" : "bg-muted/30"}>
+            <TableCell className="text-[10px] font-medium py-1.5">{row.field}</TableCell>
+            <TableCell className="text-[10px] text-muted-foreground py-1.5">{row.sourceDocument}</TableCell>
+            <TableCell className="text-[10px] py-1.5">{row.transformation}</TableCell>
+            <TableCell className="text-center py-1.5"><StatusBadge status={row.status} /></TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </div>
 );
-
 const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
   allRows: MappingRow[]; ready: number; partial: number; notStarted: number; pct: number;
 }) => (
