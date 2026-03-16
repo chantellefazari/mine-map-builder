@@ -121,13 +121,18 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
             </DialogDescription>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={handleDownloadPDF} className="gap-2" disabled={downloading}>
+            <Button
+              variant="outline"
+              onClick={handleDownloadPDF}
+              className="gap-2"
+              disabled={downloading || printing}
+            >
               {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
               {downloading ? "Generating…" : "Download PDF"}
             </Button>
-            <Button onClick={handlePrint} className="gap-2">
-              <Printer className="w-4 h-4" />
-              Print
+            <Button onClick={handlePrint} className="gap-2" disabled={downloading || printing}>
+              {printing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
+              {printing ? "Preparing…" : "Print"}
             </Button>
             <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="w-4 h-4" />
