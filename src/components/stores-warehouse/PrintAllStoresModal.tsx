@@ -54,38 +54,52 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
     try {
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       let currentY = MARGIN_MM;
-      const SECTION_GAP_MM = 6;
+      const SECTION_GAP_MM = 4;
+      const PAGE_CONTENT_HEIGHT = A4_HEIGHT_MM - MARGIN_MM * 2;
 
-      const sections = Array.from(
+      // Collect all capturable blocks: for each top-level section,
+      // grab its direct children so we never slice mid-content.
+      const topSections = Array.from(
         el.querySelectorAll("[data-pdf-section]")
       ) as HTMLElement[];
 
-      for (let i = 0; i < sections.length; i++) {
-        const section = sections[i];
+      const blocks: HTMLElement[] = [];
+      for (const section of topSections) {
+        // The first child is the section title <p>, capture it
+        // Then capture each direct child of the component wrapper individually
+        const children = Array.from(section.children) as HTMLElement[];
+        if (children.length <= 1) {
+          // Tiny section — capture whole thing
+          blocks.push(section);
+        } else {
+          // Push each child as its own block so page breaks happen between them
+          for (const child of children) {
+            blocks.push(child);
+          }
+        }
+      }
 
-        const canvas = await html2canvas(section, {
+      for (const block of blocks) {
+        const canvas = await html2canvas(block, {
           scale: 2,
           useCORS: true,
           backgroundColor: "#ffffff",
           logging: false,
-          windowWidth: 794, // fixed A4-ish width for consistent rendering
+          windowWidth: 794,
         });
 
         const scaleFactor = CONTENT_WIDTH_MM / (canvas.width / 2);
-        const sectionHeightMM = (canvas.height / 2) * scaleFactor;
+        const blockHeightMM = (canvas.height / 2) * scaleFactor;
         const imgData = canvas.toDataURL("image/jpeg", 0.92);
 
-        // If section is taller than a full page, tile it across pages
-        if (sectionHeightMM > A4_HEIGHT_MM - MARGIN_MM * 2) {
-          // Need to slice this section across pages
-          const pageContentHeight = A4_HEIGHT_MM - MARGIN_MM * 2;
+        // If a single block is still taller than a full page, we must slice it
+        if (blockHeightMM > PAGE_CONTENT_HEIGHT) {
           const totalHeightPx = canvas.height;
           const pxPerMM = (canvas.width / 2) / CONTENT_WIDTH_MM;
           let srcYPx = 0;
 
           while (srcYPx < totalHeightPx) {
             if (currentY > MARGIN_MM) {
-              // Check remaining space
               const remainingMM = A4_HEIGHT_MM - MARGIN_MM - currentY;
               if (remainingMM < 20) {
                 pdf.addPage();
@@ -100,7 +114,6 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
             );
             const sliceHeightMM = (sliceHeightPx / 2) * scaleFactor;
 
-            // Create a sub-canvas for this slice
             const sliceCanvas = document.createElement("canvas");
             sliceCanvas.width = canvas.width;
             sliceCanvas.height = Math.ceil(sliceHeightPx);
@@ -108,13 +121,7 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
             if (ctx) {
               ctx.fillStyle = "#ffffff";
               ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
-              ctx.drawImage(
-                canvas,
-                0, srcYPx,
-                canvas.width, sliceHeightPx,
-                0, 0,
-                canvas.width, sliceHeightPx
-              );
+              ctx.drawImage(canvas, 0, srcYPx, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
             }
 
             const sliceData = sliceCanvas.toDataURL("image/jpeg", 0.92);
@@ -129,15 +136,15 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
             }
           }
         } else {
-          // Section fits on one page — check if it fits remaining space
+          // Check if block fits on current page
           const remainingSpace = A4_HEIGHT_MM - MARGIN_MM - currentY;
-          if (sectionHeightMM > remainingSpace && currentY > MARGIN_MM) {
+          if (blockHeightMM > remainingSpace && currentY > MARGIN_MM) {
             pdf.addPage();
             currentY = MARGIN_MM;
           }
 
-          pdf.addImage(imgData, "JPEG", MARGIN_MM, currentY, CONTENT_WIDTH_MM, sectionHeightMM);
-          currentY += sectionHeightMM + SECTION_GAP_MM;
+          pdf.addImage(imgData, "JPEG", MARGIN_MM, currentY, CONTENT_WIDTH_MM, blockHeightMM);
+          currentY += blockHeightMM + SECTION_GAP_MM;
         }
       }
 
