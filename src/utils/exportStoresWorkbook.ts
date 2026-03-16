@@ -15,7 +15,7 @@ const setColWidths = (ws: any, widths: number[]) => {
 };
 
 // ── Sheet 1 — Design Principles ─────────────────────────────────────────────
-function addDesignPrinciples(wb: XLSX.WorkBook) {
+function addDesignPrinciples(wb: any) {
   const rows: string[][] = [
     ["#", "Principle", "Description"],
     ["1", "Manual Handling Limit", "All container-stored items must be ≤15 kg and safely handled by one person without mechanical assistance."],
