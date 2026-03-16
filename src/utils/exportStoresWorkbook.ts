@@ -375,7 +375,8 @@ function addStockControl(wb: XLSX.WorkBook) {
 }
 
 // ── Main Export ─────────────────────────────────────────────────────────────
-export function exportStoresWorkbook() {
+export async function exportStoresWorkbook() {
+  XLSX = await loadXLSX();
   const wb = XLSX.utils.book_new();
   addDesignPrinciples(wb);
   addStockingScope(wb);
@@ -383,5 +384,5 @@ export function exportStoresWorkbook() {
   addDesignInputs(wb);
   addCapacityAnalysis(wb);
   addStockControl(wb);
-  writeXlsxFile(wb, "TCMG_Stores_Warehouse_Design.xlsx");
+  writeXlsxFile(wb, "TCMG_Stores_Warehouse_Design.xlsx", XLSX);
 }
