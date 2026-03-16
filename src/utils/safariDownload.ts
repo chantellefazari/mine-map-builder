@@ -8,81 +8,56 @@
  * then cleans up — which is the most reliable cross-browser approach.
  */
 
-let primedDownloadWindow: Window | null = null;
+let primedDownloadAnchor: HTMLAnchorElement | null = null;
 
-/** Prime a browser-allowed window during a direct user gesture for async downloads. */
+/** Prime an invisible anchor during the user click so async exports can reuse it. */
 export function primeDownloadGesture() {
-  try {
-    if (primedDownloadWindow && !primedDownloadWindow.closed) return;
-    primedDownloadWindow = window.open("", "_blank");
-    if (primedDownloadWindow) {
-      primedDownloadWindow.document.title = "Preparing download...";
-      primedDownloadWindow.document.body.innerHTML = "Preparing download...";
-    }
-  } catch {
-    primedDownloadWindow = null;
-  }
+  if (primedDownloadAnchor && primedDownloadAnchor.isConnected) return;
+  primedDownloadAnchor = document.createElement("a");
+  primedDownloadAnchor.style.display = "none";
+  primedDownloadAnchor.rel = "noopener noreferrer";
+  document.body.appendChild(primedDownloadAnchor);
 }
 
-/** Close any primed window if the async export fails. */
+/** Clean up the primed anchor if export fails before download starts. */
 export function cancelPrimedDownloadGesture() {
-  if (primedDownloadWindow && !primedDownloadWindow.closed) {
-    primedDownloadWindow.close();
+  if (primedDownloadAnchor?.isConnected) {
+    primedDownloadAnchor.remove();
   }
-  primedDownloadWindow = null;
+  primedDownloadAnchor = null;
+}
+
+/** Triggers a file download using a hidden anchor element. */
+export function triggerDownload(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const link = primedDownloadAnchor ?? document.createElement("a");
+  primedDownloadAnchor = null;
+
+  link.style.display = "none";
+  link.href = url;
+  link.download = filename;
+  link.rel = "noopener noreferrer";
+
+  if (!link.isConnected) {
+    document.body.appendChild(link);
+  }
+
+  try {
+    link.click();
+  } finally {
+    // Keep URL alive long enough for Safari/iframe download handoff.
+    setTimeout(() => {
+      if (link.isConnected) {
+        link.remove();
+      }
+      URL.revokeObjectURL(url);
+    }, 10000);
+  }
 }
 
 /** Download any Blob as a file */
 export function downloadBlob(blob: Blob, filename: string) {
-  const url = URL.createObjectURL(blob);
-  const primedWindow = primedDownloadWindow && !primedDownloadWindow.closed ? primedDownloadWindow : null;
-  primedDownloadWindow = null;
-
-  if (primedWindow) {
-    try {
-      const safeFilename = filename.replace(/"/g, "&quot;");
-      primedWindow.document.open();
-      primedWindow.document.write(`<!doctype html><html><body><a id="dl" href="${url}" download="${safeFilename}">Download</a><script>document.getElementById("dl")?.click();setTimeout(() => window.close(), 300);</script></body></html>`);
-      primedWindow.document.close();
-      setTimeout(() => URL.revokeObjectURL(url), 10000);
-      return;
-    } catch {
-      try {
-        primedWindow.close();
-      } catch {
-        // noop
-      }
-    }
-  }
-
-  const a = document.createElement("a");
-  let inIframe = false;
-  try {
-    inIframe = window.self !== window.top;
-  } catch {
-    inIframe = true;
-  }
-
-  a.href = url;
-  a.download = filename;
-  if (inIframe) {
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-  }
-  a.style.display = "none";
-  document.body.appendChild(a);
-
-  try {
-    a.click();
-  } catch {
-    window.open(url, "_blank", "noopener,noreferrer");
-  }
-
-  // Keep URL alive longer so iframe/sandboxed contexts can complete the handoff.
-  setTimeout(() => {
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, 4000);
+  triggerDownload(blob, filename);
 }
 
 /** Safari-safe replacement for XLSX.writeFile(). Pass the dynamically-imported XLSX module. */
