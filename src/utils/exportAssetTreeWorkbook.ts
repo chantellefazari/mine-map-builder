@@ -15,6 +15,7 @@ import {
  * Now pulls Processing Plant data from the database (single source of truth).
  */
 export async function exportAssetTreeWorkbook() {
+  const XLSX = await loadXLSX();
   const areasData = await fetchProcessingPlantAreas();
 
   const wb = XLSX.utils.book_new();
