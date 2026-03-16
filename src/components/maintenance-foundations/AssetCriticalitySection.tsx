@@ -29,6 +29,7 @@ interface ParentAsset {
   asset_name: string;
   area_label: string;
   sub_area: string;
+  sort_order: number;
 }
 
 const RATING_CONFIG: Record<CriticalityRating, { label: string; color: string; description: string }> = {
@@ -145,7 +146,7 @@ function useParentAssets() {
       for (const d of allRows) {
         if (seen.has(d.asset_number)) continue;
         seen.add(d.asset_number);
-        parents.push({ asset_number: d.asset_number, asset_name: d.asset_name, area_label: d.area_label, sub_area: d.sub_area });
+        parents.push({ asset_number: d.asset_number, asset_name: d.asset_name, area_label: d.area_label, sub_area: d.sub_area, sort_order: d.sort_order ?? 0 });
       }
       return parents;
     },
@@ -231,7 +232,7 @@ export const AssetCriticalitySection = () => {
       const aOrder = AREA_ORDER[a.area_label] ?? 99;
       const bOrder = AREA_ORDER[b.area_label] ?? 99;
       if (aOrder !== bOrder) return aOrder - bOrder;
-      return 0; // preserve original sort_order within same area
+      return (a.sort_order ?? 0) - (b.sort_order ?? 0);
     });
     return sorted.filter(a => {
       if (areaFilter !== "all" && a.area_label !== areaFilter) return false;
