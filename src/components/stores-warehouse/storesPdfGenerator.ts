@@ -9,9 +9,9 @@ const PAGE_CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
 const SECTION_GAP_MM = 4;
 const MAX_PAGES = 20;
 
-// Fewer passes + wider steps to reduce generation time dramatically
-const RENDER_SCALES = [1, 0.92, 0.84, 0.76, 0.68] as const;
-const CANVAS_SCALE = 1.4;
+const MIN_RENDER_SCALE = 0.68;
+const MAX_RENDER_SCALE = 1;
+const CANVAS_SCALE = 1.2;
 
 type PdfResult = {
   blob: Blob;
@@ -19,6 +19,8 @@ type PdfResult = {
 };
 
 type CanvasCache = WeakMap<HTMLElement, Promise<HTMLCanvasElement>>;
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 const getTopLevelSections = (root: HTMLElement) => {
   return Array.from(root.querySelectorAll("[data-pdf-section]")) as HTMLElement[];
@@ -48,6 +50,25 @@ const getCachedCanvas = (node: HTMLElement, cache: CanvasCache) => {
   return canvasPromise;
 };
 
+const estimateInitialScale = (root: HTMLElement, sections: HTMLElement[]) => {
+  const rootWidthPx = root.getBoundingClientRect().width || 794;
+  const totalHeightPx = sections.reduce((sum, section) => sum + section.getBoundingClientRect().height, 0);
+
+  if (rootWidthPx <= 0 || totalHeightPx <= 0) {
+    return MAX_RENDER_SCALE;
+  }
+
+  const pxPerMMAtBase = rootWidthPx / CONTENT_WIDTH_MM;
+  const totalHeightMM = totalHeightPx / pxPerMMAtBase;
+  const estimatedPages = Math.max(1, Math.ceil(totalHeightMM / PAGE_CONTENT_HEIGHT_MM));
+
+  if (estimatedPages <= MAX_PAGES) {
+    return MAX_RENDER_SCALE;
+  }
+
+  return clamp(MAX_PAGES / estimatedPages, MIN_RENDER_SCALE, MAX_RENDER_SCALE);
+};
+
 const buildPdfForScale = async (
   sections: HTMLElement[],
   renderScale: number,
@@ -63,7 +84,7 @@ const buildPdfForScale = async (
     if (!block) continue;
 
     processedBlocks += 1;
-    if (processedBlocks > 3000) {
+    if (processedBlocks > 2500) {
       throw new Error("PDF generation exceeded safe block limit.");
     }
 
@@ -82,7 +103,8 @@ const buildPdfForScale = async (
     if (drawHeightMM > PAGE_CONTENT_HEIGHT_MM) {
       const childBlocks = getChildBlocks(block);
 
-      if (childBlocks.length > 1) {
+      // Split at logical child boundaries only when safe; otherwise slice image directly.
+      if (childBlocks.length > 1 && childBlocks.length <= 80) {
         blocksQueue.unshift(...childBlocks);
         continue;
       }
@@ -134,7 +156,7 @@ const buildPdfForScale = async (
           );
         }
 
-        const sliceData = sliceCanvas.toDataURL("image/jpeg", 0.9);
+        const sliceData = sliceCanvas.toDataURL("image/jpeg", 0.88);
         pdf.addImage(sliceData, "JPEG", drawXMM, currentY, drawWidthMM, sliceDrawHeightMM);
 
         srcYPx += sliceHeightPx;
@@ -155,7 +177,7 @@ const buildPdfForScale = async (
       currentY = MARGIN_MM;
     }
 
-    const imgData = canvas.toDataURL("image/jpeg", 0.9);
+    const imgData = canvas.toDataURL("image/jpeg", 0.88);
     pdf.addImage(imgData, "JPEG", drawXMM, currentY, drawWidthMM, drawHeightMM);
     currentY += drawHeightMM + SECTION_GAP_MM * renderScale;
 
@@ -177,11 +199,15 @@ export async function generateStoresPdfBlob(root: HTMLElement): Promise<PdfResul
     throw new Error("No printable sections found.");
   }
 
+  const estimatedScale = estimateInitialScale(root, sections);
+  const fallbackScale = clamp(estimatedScale - 0.08, MIN_RENDER_SCALE, MAX_RENDER_SCALE);
+  const scales = Array.from(new Set([estimatedScale, fallbackScale, MIN_RENDER_SCALE]));
+
   const canvasCache: CanvasCache = new WeakMap();
   let bestPdf: jsPDF | null = null;
   let bestPageCount = Number.POSITIVE_INFINITY;
 
-  for (const renderScale of RENDER_SCALES) {
+  for (const renderScale of scales) {
     const { pdf, pageCount } = await buildPdfForScale(sections, renderScale, canvasCache);
     bestPdf = pdf;
     bestPageCount = pageCount;

@@ -26,8 +26,9 @@ interface PrintAllStoresModalProps {
 type ActionType = "print" | "download";
 type Phase = "idle" | "mounting" | "generating";
 
-const MOUNT_TIMEOUT_MS = 20000;
-const SETTLE_DELAY_MS = 500;
+const MOUNT_TIMEOUT_MS = 10000;
+const SETTLE_DELAY_MS = 400;
+const GENERATION_TIMEOUT_MS = 90000;
 
 const SECTION_TITLES = [
   "1. Implementation Plan",
@@ -65,20 +66,40 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
   const waitForSectionsToMount = useCallback(async () => {
     const start = Date.now();
 
-    // Ensure React commits the off-screen tree first
     await waitFrame();
     await waitFrame();
 
     while (Date.now() - start < MOUNT_TIMEOUT_MS) {
-      const sectionCount = printRef.current?.querySelectorAll("[data-pdf-section]").length ?? 0;
-      if (sectionCount === SECTION_COMPONENTS.length) {
+      const sectionCount =
+        printRef.current?.querySelectorAll("[data-stores-pdf-root-section]").length ?? 0;
+
+      if (sectionCount >= SECTION_COMPONENTS.length) {
         await waitMs(SETTLE_DELAY_MS);
         return true;
       }
-      await waitMs(150);
+
+      await waitMs(120);
     }
 
     return false;
+  }, []);
+
+  const generateWithTimeout = useCallback(async (container: HTMLElement) => {
+    let timeoutId: number | null = null;
+
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timeoutId = window.setTimeout(() => {
+        reject(new Error("PDF generation timed out. Please try again."));
+      }, GENERATION_TIMEOUT_MS);
+    });
+
+    try {
+      return await Promise.race([generateStoresPdfBlob(container), timeoutPromise]);
+    } finally {
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
+    }
   }, []);
 
   const handleAction = useCallback(
@@ -105,7 +126,7 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
 
         setPhase("generating");
 
-        const result = await generateStoresPdfBlob(container);
+        const result = await generateWithTimeout(container);
 
         if (result.pageCount > 20) {
           console.warn(`Stores PDF is ${result.pageCount} pages.`);
@@ -150,7 +171,7 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
         setActiveAction(null);
       }
     },
-    [phase, shouldRender, waitForSectionsToMount]
+    [phase, shouldRender, waitForSectionsToMount, generateWithTimeout]
   );
 
   const handleClose = useCallback(() => {
@@ -253,6 +274,7 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
               <div
                 key={SECTION_TITLES[i]}
                 data-pdf-section
+                data-stores-pdf-root-section
                 className={`stores-print-section ${i > 0 ? "mt-10 pt-8 border-t-2 border-primary/30" : ""}`}
               >
                 <p className="text-xs font-bold uppercase tracking-widest text-primary mb-4 border-l-4 border-primary pl-3">
