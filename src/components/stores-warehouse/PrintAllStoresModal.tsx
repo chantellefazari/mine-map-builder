@@ -117,6 +117,31 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
 
     const styleMarkup = collectPrintStyles();
 
+    // Clone innerHTML and convert relative image URLs to absolute
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = container.innerHTML;
+    const baseUrl = window.location.origin;
+    tempDiv.querySelectorAll("img").forEach((img) => {
+      const src = img.getAttribute("src");
+      if (src && !src.startsWith("http") && !src.startsWith("data:") && !src.startsWith("blob:")) {
+        img.setAttribute("src", new URL(src, baseUrl).href);
+      }
+    });
+
+    // Also handle background-image inline styles
+    tempDiv.querySelectorAll<HTMLElement>("[style]").forEach((el) => {
+      const style = el.getAttribute("style") || "";
+      if (style.includes("url(") && !style.includes("http")) {
+        el.setAttribute(
+          "style",
+          style.replace(/url\(['"]?([^'")]+)['"]?\)/g, (match, url) => {
+            if (url.startsWith("http") || url.startsWith("data:")) return match;
+            return `url('${new URL(url, baseUrl).href}')`;
+          })
+        );
+      }
+    });
+
     printWindow.document.open();
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -139,29 +164,94 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
             body {
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
+              color-adjust: exact;
             }
 
             .stores-print-root {
-              width: 794px;
+              width: 100%;
+              max-width: 794px;
               margin: 0 auto;
-              padding: 30px;
+              padding: 20px;
               background: #fff;
             }
 
+            /* Prevent ANY section from being split across pages */
             .stores-print-root .stores-print-section {
-              break-inside: avoid-page;
+              break-inside: avoid;
               page-break-inside: avoid;
+            }
+
+            /* Cards, tables, list items — keep together */
+            .stores-print-root [class*="card"],
+            .stores-print-root [class*="Card"],
+            .stores-print-root table,
+            .stores-print-root tr,
+            .stores-print-root li,
+            .stores-print-root [class*="rounded-lg"],
+            .stores-print-root [class*="border-border"] {
+              break-inside: avoid;
+              page-break-inside: avoid;
+            }
+
+            /* Force images to render */
+            .stores-print-root img {
+              max-width: 100%;
+              height: auto;
+              display: block;
+            }
+
+            /* Preserve background colours */
+            .stores-print-root [style*="background"],
+            .stores-print-root [class*="bg-"] {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              color-adjust: exact !important;
+            }
+
+            /* Hide interactive controls */
+            .stores-print-root button,
+            .stores-print-root input,
+            .stores-print-root select,
+            .stores-print-root [role="combobox"] {
+              display: none !important;
             }
           </style>
         </head>
         <body>
-          <div class="stores-print-root">${container.innerHTML}</div>
+          <div class="stores-print-root">${tempDiv.innerHTML}</div>
         </body>
       </html>
     `);
     printWindow.document.close();
 
-    await waitMs(PRINT_WINDOW_WAIT_MS);
+    // Wait for images and stylesheets to load
+    await new Promise<void>((resolve) => {
+      const imgs = Array.from(printWindow.document.querySelectorAll("img"));
+      if (imgs.length === 0) {
+        setTimeout(resolve, PRINT_WINDOW_WAIT_MS);
+        return;
+      }
+
+      let loaded = 0;
+      const checkDone = () => {
+        loaded++;
+        if (loaded >= imgs.length) {
+          setTimeout(resolve, 300);
+        }
+      };
+
+      imgs.forEach((img) => {
+        if (img.complete) {
+          checkDone();
+        } else {
+          img.addEventListener("load", checkDone);
+          img.addEventListener("error", checkDone);
+        }
+      });
+
+      // Safety timeout
+      setTimeout(resolve, 8000);
+    });
 
     printWindow.focus();
     printWindow.print();
