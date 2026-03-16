@@ -1,5 +1,4 @@
-import * as XLSX from "xlsx";
-import { writeXlsxFile } from "@/utils/safariDownload";
+import { writeXlsxFile, loadXLSX } from "@/utils/safariDownload";
 import { fetchProcessingPlantAreas } from "@/utils/fetchProcessingPlantData";
 
 /**
