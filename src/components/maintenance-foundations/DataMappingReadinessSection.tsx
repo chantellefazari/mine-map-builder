@@ -8,7 +8,6 @@ import { CheckCircle2, AlertCircle, Clock, Printer, Download, X, Loader2 } from 
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
-import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
 
 type ReadinessStatus = "Ready" | "Partial" | "Not Started";
 
