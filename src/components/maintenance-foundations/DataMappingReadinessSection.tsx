@@ -90,11 +90,11 @@ const SPARES_MAPPINGS: MappingRow[] = [
 const SUPPLIER_MAPPINGS: MappingRow[] = [
   { field: "Vendor Code", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
   { field: "Vendor Name", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
-  { field: "ABN / Tax ID", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
-  { field: "Primary Email", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
+  { field: "ABN / Tax ID", sourceDocument: "Supplier Register", transformation: "Requires collection from vendors (0% populated)", status: "Not Started" },
+  { field: "Primary Email", sourceDocument: "Supplier Register", transformation: "Direct: no change (95% populated)", status: "Partial" },
   { field: "Primary Contact Name", sourceDocument: "Supplier Register", transformation: "Direct: no change", status: "Ready" },
-  { field: "Payment Terms", sourceDocument: "Supplier Register", transformation: "Map to target system payment terms code (100%)", status: "Ready" },
-  { field: "Vendor Group", sourceDocument: "Supplier Register", transformation: "Map to target system vendor group (100%)", status: "Ready" },
+  { field: "Payment Terms", sourceDocument: "Supplier Register", transformation: "Requires collection from vendors (0% populated)", status: "Not Started" },
+  { field: "Vendor Group / Type", sourceDocument: "Supplier Register", transformation: "Map supplier type to target system vendor group (100%)", status: "Ready" },
   { field: "Preferred Vendor Flag", sourceDocument: "Supplier Register", transformation: "Boolean to Yes/No", status: "Ready" },
 ];
 
@@ -263,8 +263,8 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
           <p><strong>PM Task Checklists:</strong> 82 of 97 PM templates now have structured task data populated and validated.</p>
         </div>
         <div className="flex gap-2 items-start">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
-          <p><strong>Vendor Group Mapping:</strong> Supplier type and payment terms now 100% populated across all registered vendors.</p>
+          <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+          <p><strong>Vendor Data Enrichment:</strong> Supplier type is 100% populated across 65 vendors. ABN and payment terms are 0% populated, requiring collection from each vendor before migration.</p>
         </div>
         <div className="flex gap-2 items-start">
           <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
