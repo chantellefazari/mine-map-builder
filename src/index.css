@@ -300,66 +300,106 @@
   }
 }
 
-/* ─── Stores PDF compact mode ─── */
-.stores-pdf-compact * {
-  font-size: inherit;
-  line-height: inherit;
+/* ─── Stores PDF ultra-compact mode ─── */
+.stores-pdf-ultra-compact * {
+  font-size: inherit !important;
+  line-height: inherit !important;
 }
-.stores-pdf-compact h1,
-.stores-pdf-compact h2,
-.stores-pdf-compact h3 {
-  font-size: 11px !important;
-  margin-top: 4px !important;
-  margin-bottom: 2px !important;
-  line-height: 1.2 !important;
-}
-.stores-pdf-compact h4,
-.stores-pdf-compact h5,
-.stores-pdf-compact h6 {
-  font-size: 9px !important;
-  margin-top: 3px !important;
+.stores-pdf-ultra-compact h1,
+.stores-pdf-ultra-compact h2,
+.stores-pdf-ultra-compact h3 {
+  font-size: 7px !important;
+  margin-top: 2px !important;
   margin-bottom: 1px !important;
+  line-height: 1.1 !important;
 }
-.stores-pdf-compact p,
-.stores-pdf-compact li,
-.stores-pdf-compact span,
-.stores-pdf-compact td,
-.stores-pdf-compact th,
-.stores-pdf-compact div {
-  font-size: 8px !important;
-  line-height: 1.2 !important;
+.stores-pdf-ultra-compact h4,
+.stores-pdf-ultra-compact h5,
+.stores-pdf-ultra-compact h6 {
+  font-size: 6px !important;
+  margin-top: 1px !important;
+  margin-bottom: 0px !important;
 }
-.stores-pdf-compact table {
+.stores-pdf-ultra-compact p,
+.stores-pdf-ultra-compact li,
+.stores-pdf-ultra-compact span,
+.stores-pdf-ultra-compact td,
+.stores-pdf-ultra-compact th,
+.stores-pdf-ultra-compact div {
+  font-size: 5.5px !important;
+  line-height: 1.1 !important;
+}
+.stores-pdf-ultra-compact table {
   border-collapse: collapse;
 }
-.stores-pdf-compact td,
-.stores-pdf-compact th {
-  padding: 2px 4px !important;
+.stores-pdf-ultra-compact td,
+.stores-pdf-ultra-compact th {
+  padding: 1px 2px !important;
 }
-.stores-pdf-compact .rounded-lg,
-.stores-pdf-compact [class*="rounded"] {
-  padding: 4px 6px !important;
-  margin-bottom: 3px !important;
+.stores-pdf-ultra-compact .rounded-lg,
+.stores-pdf-ultra-compact [class*="rounded"] {
+  padding: 2px 3px !important;
+  margin-bottom: 1px !important;
+  border-radius: 2px !important;
 }
-.stores-pdf-compact .gap-4,
-.stores-pdf-compact .gap-3,
-.stores-pdf-compact .gap-6,
-.stores-pdf-compact .space-y-4 > * + *,
-.stores-pdf-compact .space-y-6 > * + *,
-.stores-pdf-compact .space-y-3 > * + * {
-  gap: 3px !important;
-  margin-top: 3px !important;
+.stores-pdf-ultra-compact .gap-4,
+.stores-pdf-ultra-compact .gap-3,
+.stores-pdf-ultra-compact .gap-6,
+.stores-pdf-ultra-compact .gap-2,
+.stores-pdf-ultra-compact .space-y-4 > * + *,
+.stores-pdf-ultra-compact .space-y-6 > * + *,
+.stores-pdf-ultra-compact .space-y-8 > * + *,
+.stores-pdf-ultra-compact .space-y-3 > * + *,
+.stores-pdf-ultra-compact .space-y-2 > * + * {
+  gap: 1px !important;
+  margin-top: 1px !important;
 }
-.stores-pdf-compact .mb-4,
-.stores-pdf-compact .mb-6,
-.stores-pdf-compact .mb-3 {
-  margin-bottom: 3px !important;
+.stores-pdf-ultra-compact .mb-4,
+.stores-pdf-ultra-compact .mb-6,
+.stores-pdf-ultra-compact .mb-3,
+.stores-pdf-ultra-compact .mb-2 {
+  margin-bottom: 1px !important;
 }
-.stores-pdf-compact .p-4,
-.stores-pdf-compact .p-6 {
-  padding: 4px !important;
+.stores-pdf-ultra-compact .p-4,
+.stores-pdf-ultra-compact .p-6,
+.stores-pdf-ultra-compact .p-3 {
+  padding: 2px !important;
 }
-.stores-pdf-compact .mt-4,
-.stores-pdf-compact .mt-6 {
-  margin-top: 3px !important;
+.stores-pdf-ultra-compact .mt-4,
+.stores-pdf-ultra-compact .mt-6,
+.stores-pdf-ultra-compact .mt-3 {
+  margin-top: 1px !important;
+}
+.stores-pdf-ultra-compact .pl-5 {
+  padding-left: 8px !important;
+}
+/* Hide decorative image placeholders */
+.stores-pdf-ultra-compact .border-dashed {
+  display: none !important;
+}
+/* Collapse icon containers */
+.stores-pdf-ultra-compact .w-9,
+.stores-pdf-ultra-compact .w-10,
+.stores-pdf-ultra-compact .h-9,
+.stores-pdf-ultra-compact .h-10 {
+  width: 12px !important;
+  height: 12px !important;
+}
+.stores-pdf-ultra-compact .w-5,
+.stores-pdf-ultra-compact .h-5,
+.stores-pdf-ultra-compact .w-4,
+.stores-pdf-ultra-compact .h-4 {
+  width: 8px !important;
+  height: 8px !important;
+}
+/* Compress card borders and shadows */
+.stores-pdf-ultra-compact [class*="card"],
+.stores-pdf-ultra-compact [class*="Card"] {
+  padding: 2px !important;
+  margin-bottom: 1px !important;
+  box-shadow: none !important;
+}
+/* Grid compression */
+.stores-pdf-ultra-compact .grid {
+  gap: 2px !important;
 }
