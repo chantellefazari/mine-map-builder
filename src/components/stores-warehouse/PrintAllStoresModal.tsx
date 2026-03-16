@@ -431,10 +431,13 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
               top: 0,
               width: "794px",
               background: "white",
-              padding: "30px",
+              padding: "20px",
               zIndex: -1,
               pointerEvents: "none",
+              fontSize: "8px",
+              lineHeight: "1.25",
             }}
+            className="stores-pdf-compact"
           >
             {SECTION_COMPONENTS.map((Component, i) => (
               <div
