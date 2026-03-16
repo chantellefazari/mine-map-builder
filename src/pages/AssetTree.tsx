@@ -16,7 +16,7 @@ import { exportAssetTreeWorkbook } from "@/utils/exportAssetTreeWorkbook";
 import { exportHierarchyWorkbook } from "@/utils/exportHierarchyWorkbook";
 import { exportProcessingPlantCSV } from "@/utils/exportProcessingPlantCSV";
 import { exportAssetTreePDF } from "@/utils/exportAssetTreePDF";
-import { loadXLSX } from "@/utils/safariDownload";
+import { cancelPrimedDownloadGesture, loadXLSX, primeDownloadGesture } from "@/utils/safariDownload";
 import { toast } from "sonner";
 import { RevBAssetTree } from "@/components/hierarchy/RevBAssetTree";
 
