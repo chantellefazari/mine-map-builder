@@ -1,5 +1,6 @@
-import * as XLSX from "xlsx";
-import { writeXlsxFile } from "@/utils/safariDownload";
+import { writeXlsxFile, loadXLSX } from "@/utils/safariDownload";
+
+let XLSX: any;
 import {
   CONTAINER_DISCIPLINE_MAP,
   VALID_BAYS,
@@ -9,12 +10,12 @@ import {
 } from "@/utils/storeLocationValidation";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-const setColWidths = (ws: XLSX.WorkSheet, widths: number[]) => {
+const setColWidths = (ws: any, widths: number[]) => {
   ws["!cols"] = widths.map((w) => ({ wch: w }));
 };
 
 // ── Sheet 1 — Design Principles ─────────────────────────────────────────────
-function addDesignPrinciples(wb: XLSX.WorkBook) {
+function addDesignPrinciples(wb: any) {
   const rows: string[][] = [
     ["#", "Principle", "Description"],
     ["1", "Manual Handling Limit", "All container-stored items must be ≤15 kg and safely handled by one person without mechanical assistance."],
@@ -30,7 +31,7 @@ function addDesignPrinciples(wb: XLSX.WorkBook) {
 }
 
 // ── Sheet 2 — Container Stocking Scope ──────────────────────────────────────
-function addStockingScope(wb: XLSX.WorkBook) {
+function addStockingScope(wb: any) {
   const rows: string[][] = [
     ["Container", "Title", "Container Type", "Special Requirement", "Sub-Category", "Item"],
   ];
@@ -107,7 +108,7 @@ function addStockingScope(wb: XLSX.WorkBook) {
 }
 
 // ── Sheet 3 — Location Coding ───────────────────────────────────────────────
-function addLocationCoding(wb: XLSX.WorkBook) {
+function addLocationCoding(wb: any) {
   const rows: string[][] = [];
 
   // Code format
@@ -185,7 +186,7 @@ function addLocationCoding(wb: XLSX.WorkBook) {
 }
 
 // ── Sheet 4 — Design Inputs ────────────────────────────────────────────────
-function addDesignInputs(wb: XLSX.WorkBook) {
+function addDesignInputs(wb: any) {
   const rows: string[][] = [
     ["Zone", "Container Type", "Contents", "Environment", "Access Frequency", "Growth Allowance"],
     ["C01-EL", "20ft Modified Container", "Electrical components, PLCs, VSDs, sensors", "Dust-controlled, positive airflow, climate-stable", "Daily", "20%"],
@@ -214,7 +215,7 @@ function addDesignInputs(wb: XLSX.WorkBook) {
 }
 
 // ── Sheet 5 — Capacity Analysis ─────────────────────────────────────────────
-function addCapacityAnalysis(wb: XLSX.WorkBook) {
+function addCapacityAnalysis(wb: any) {
   const rows: string[][] = [
     ["Zone", "Container Type", "SKU Count", "Bin Positions", "Items/Bin Ratio", "Usage %", "Status", "Furniture Breakdown", "Notes / Concerns"],
   ];
@@ -246,7 +247,7 @@ function addCapacityAnalysis(wb: XLSX.WorkBook) {
 }
 
 // ── Sheet 6 — Stock Control Procedure ───────────────────────────────────────
-function addStockControl(wb: XLSX.WorkBook) {
+function addStockControl(wb: any) {
   const rows: string[][] = [];
 
   // §1 Purpose
@@ -374,7 +375,8 @@ function addStockControl(wb: XLSX.WorkBook) {
 }
 
 // ── Main Export ─────────────────────────────────────────────────────────────
-export function exportStoresWorkbook() {
+export async function exportStoresWorkbook() {
+  XLSX = await loadXLSX();
   const wb = XLSX.utils.book_new();
   addDesignPrinciples(wb);
   addStockingScope(wb);
@@ -382,5 +384,5 @@ export function exportStoresWorkbook() {
   addDesignInputs(wb);
   addCapacityAnalysis(wb);
   addStockControl(wb);
-  writeXlsxFile(wb, "TCMG_Stores_Warehouse_Design.xlsx");
+  writeXlsxFile(wb, "TCMG_Stores_Warehouse_Design.xlsx", XLSX);
 }

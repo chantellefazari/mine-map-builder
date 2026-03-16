@@ -1,33 +1,22 @@
 
+# Remove Safety Requirements & Isolation from Work Order Template
 
-## Problem
+## What Changes
 
-The "Hierarchy Workbook" and "Download Workbook" buttons on the Asset Tree page fail silently. The console shows `"Importing a module script failed"` — this is the `xlsx` library (SheetJS) failing to load at runtime, likely due to a chunking/dynamic import issue in the production build.
+The entire "Safety Requirements" section (lines 137-224) will be removed from the Work Order template. This includes:
 
-## Root Cause
+- Isolation / LOTO Details block (isolation required checkbox, isolation number, isolation points, lock numbers, isolated by, date/time)
+- Permit Required block (Hot Work, Confined Space, Working at Heights)
+- PPE Required block (Safety Glasses, Hard Hat, Steel Caps, Hearing Protection, Gloves, Face Shield, Respirator)
 
-The `xlsx` package (v0.18.5) is a large CommonJS library that can fail in certain Vite bundling scenarios, particularly in preview/sandbox environments. The `import * as XLSX from "xlsx"` pattern pulls the entire library into the initial bundle or a chunk that fails to resolve.
+All of this information belongs on the Risk Assessment, not the Work Order.
 
-## Plan
+## Result
 
-### 1. Add error resilience with dynamic import of xlsx
+The Work Order template will flow directly from "Problem Description" into "Work Performed", keeping the template focused on the actual maintenance work record.
 
-Modify `exportHierarchyWorkbook.ts` and `exportAssetTreeWorkbook.ts` to use **dynamic `import()`** for the `xlsx` module instead of top-level static imports. This ensures:
-- The library loads on-demand only when the user clicks the button
-- If the chunk fails, the error is caught gracefully with a toast message
-- The main bundle size is reduced
+## Technical Detail
 
-### 2. Update safariDownload.ts
-
-Make `writeXlsxFile` accept the XLSX module as a parameter (or dynamically import it internally) so it doesn't also fail from the same static import issue.
-
-### 3. Files to modify
-
-- **`src/utils/safariDownload.ts`** — Change `writeXlsxFile` to accept a pre-imported XLSX instance or dynamically import xlsx internally
-- **`src/utils/exportHierarchyWorkbook.ts`** — Switch to `const XLSX = await import("xlsx")` inside the function body
-- **`src/utils/exportAssetTreeWorkbook.ts`** — Same dynamic import pattern
-- **`src/utils/exportStoresWorkbook.ts`** — Same fix for consistency
-- **`src/utils/exportPMWorkbook.ts`** — Same fix for consistency
-
-This is a minimal, targeted fix that addresses the module loading failure without changing any business logic.
-
+**Modified file**: `src/components/work-orders/MechanicalWorkOrderTemplate.tsx`
+- Delete the entire Safety Requirements `div` block (lines 137-224)
+- No other files affected

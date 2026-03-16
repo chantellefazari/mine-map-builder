@@ -8,8 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tag, Search, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import * as XLSX from "xlsx";
-import { writeXlsxFile } from "@/utils/safariDownload";
+import { writeXlsxFile, loadXLSX } from "@/utils/safariDownload";
 
 interface TaggedAsset {
   asset_name: string;
@@ -144,7 +143,8 @@ export const PidTaggedAssetRegister = () => {
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paged = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
-  const handleExport = () => {
+  const handleExport = async () => {
+    const XLSX = await loadXLSX();
     const rows = filtered.map((a, idx) => ({
       "#": idx + 1,
       "Asset Name": a.asset_name,
@@ -160,7 +160,7 @@ export const PidTaggedAssetRegister = () => {
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "P&ID Tagged Assets");
-    writeXlsxFile(wb, "PID_Tagged_Asset_Register_Tennant_Creek.xlsx");
+    writeXlsxFile(wb, "PID_Tagged_Asset_Register_Tennant_Creek.xlsx", XLSX);
   };
 
   return (

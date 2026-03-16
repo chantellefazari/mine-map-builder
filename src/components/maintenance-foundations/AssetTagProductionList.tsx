@@ -9,8 +9,7 @@ import { Factory, Search, Download, ChevronLeft, ChevronRight, Square, Circle, D
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import * as XLSX from "xlsx";
-import { writeXlsxFile, downloadCsv } from "@/utils/safariDownload";
+import { writeXlsxFile, downloadCsv, loadXLSX } from "@/utils/safariDownload";
 
 interface TaggedAsset {
   asset_name: string;
@@ -223,15 +222,17 @@ export const AssetTagProductionList = () => {
     return rows;
   };
 
-  const handleExportXLSX = () => {
+  const handleExportXLSX = async () => {
+    const XLSX = await loadXLSX();
     const ws = XLSX.utils.json_to_sheet(buildExportRows());
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Tag Production List");
-    writeXlsxFile(wb, "Asset_Tag_Production_List_Tennant_Creek.xlsx");
+    writeXlsxFile(wb, "Asset_Tag_Production_List_Tennant_Creek.xlsx", XLSX);
     toast.success("XLSX exported successfully");
   };
 
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
+    const XLSX = await loadXLSX();
     const ws = XLSX.utils.json_to_sheet(buildExportRows());
     const csv = XLSX.utils.sheet_to_csv(ws);
     downloadCsv(csv, "Asset_Tag_Production_List_Tennant_Creek.csv");

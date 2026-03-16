@@ -1,5 +1,4 @@
-import * as XLSX from "xlsx";
-import { writeXlsxFile } from "@/utils/safariDownload";
+import { writeXlsxFile, loadXLSX } from "@/utils/safariDownload";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -163,6 +162,7 @@ const templateRegistry: PMTemplateDefinition[] = [
 
 export const exportPMWorkbook = async () => {
   try {
+    const XLSX = await loadXLSX();
     toast.info("Generating PM Workbook...");
 
     // 1. Fetch all PM data from database
@@ -470,7 +470,7 @@ export const exportPMWorkbook = async () => {
     XLSX.utils.book_append_sheet(wb, wsSchema, "Data Schema");
 
     // Write file
-    writeXlsxFile(wb, "TCMG_PM_Templates_Complete.xlsx");
+    writeXlsxFile(wb, "TCMG_PM_Templates_Complete.xlsx", XLSX);
     toast.success(`PM Workbook exported – ${templateRegistry.length} templates, ${taskRows.length} tasks`);
 
   } catch (err) {

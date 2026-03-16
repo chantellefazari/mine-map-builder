@@ -1,5 +1,4 @@
-import * as XLSX from "xlsx";
-import { writeXlsxFile } from "@/utils/safariDownload";
+import { writeXlsxFile, loadXLSX } from "@/utils/safariDownload";
 import { fetchProcessingPlantAreas } from "@/utils/fetchProcessingPlantData";
 import { crushingPlantAreas } from "@/components/hierarchy/crushingPlantData";
 import { functionalLocations } from "@/components/hierarchy/functionalLocations";
@@ -16,6 +15,7 @@ import {
  * Now pulls Processing Plant data from the database (single source of truth).
  */
 export async function exportAssetTreeWorkbook() {
+  const XLSX = await loadXLSX();
   const areasData = await fetchProcessingPlantAreas();
 
   const wb = XLSX.utils.book_new();
@@ -90,5 +90,5 @@ export async function exportAssetTreeWorkbook() {
   const ws3 = XLSX.utils.aoa_to_sheet(ncRows);
   XLSX.utils.book_append_sheet(wb, ws3, "Naming Convention");
 
-  writeXlsxFile(wb, "TCMG_Asset_Tree_Workbook.xlsx");
+  writeXlsxFile(wb, "TCMG_Asset_Tree_Workbook.xlsx", XLSX);
 }
