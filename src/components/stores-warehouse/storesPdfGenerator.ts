@@ -9,8 +9,8 @@ const PAGE_CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
 const SECTION_GAP_MM = 4;
 const MAX_PAGES = 20;
 
-const MIN_RENDER_SCALE = 0.72;
-const MAX_RENDER_SCALE = 0.96;
+const MIN_RENDER_SCALE = 0.48;
+const MAX_RENDER_SCALE = 0.78;
 const CANVAS_SCALE = 1;
 const JPEG_QUALITY = 0.82;
 
@@ -197,8 +197,9 @@ export async function generateStoresPdfBlob(root: HTMLElement): Promise<PdfResul
   }
 
   const estimatedScale = estimateInitialScale(root, sections);
-  const fallbackScale = clamp(estimatedScale - 0.08, MIN_RENDER_SCALE, MAX_RENDER_SCALE);
-  const scales = Array.from(new Set([estimatedScale, fallbackScale]));
+  const fallback1 = clamp(estimatedScale - 0.10, MIN_RENDER_SCALE, MAX_RENDER_SCALE);
+  const fallback2 = clamp(estimatedScale - 0.20, MIN_RENDER_SCALE, MAX_RENDER_SCALE);
+  const scales = Array.from(new Set([estimatedScale, fallback1, fallback2]));
 
   const canvasCache: CanvasCache = new WeakMap();
   const imageCache: ImageCache = new WeakMap();
