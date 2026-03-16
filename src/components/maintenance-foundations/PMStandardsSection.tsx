@@ -153,7 +153,7 @@ export const PMStandardsSection = () => {
                 <div><strong>Doc:</strong> TCMG-STD-PM-001</div>
                 <div><strong>Rev:</strong> 1.0</div>
                 <div><strong>Date:</strong> {today}</div>
-                <div><strong>Status:</strong> Approved</div>
+                
               </div>
             </div>
           </div>
