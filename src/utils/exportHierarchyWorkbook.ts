@@ -8,6 +8,7 @@ import { fetchProcessingPlantAreas } from "@/utils/fetchProcessingPlantData";
  */
 
 export async function exportHierarchyWorkbook() {
+  const XLSX = await loadXLSX();
   const areasData = await fetchProcessingPlantAreas();
 
   const wb = XLSX.utils.book_new();
