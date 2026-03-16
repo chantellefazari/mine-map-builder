@@ -197,8 +197,9 @@ export async function generateStoresPdfBlob(root: HTMLElement): Promise<PdfResul
   }
 
   const estimatedScale = estimateInitialScale(root, sections);
-  const fallbackScale = clamp(estimatedScale - 0.08, MIN_RENDER_SCALE, MAX_RENDER_SCALE);
-  const scales = Array.from(new Set([estimatedScale, fallbackScale]));
+  const fallback1 = clamp(estimatedScale - 0.10, MIN_RENDER_SCALE, MAX_RENDER_SCALE);
+  const fallback2 = clamp(estimatedScale - 0.20, MIN_RENDER_SCALE, MAX_RENDER_SCALE);
+  const scales = Array.from(new Set([estimatedScale, fallback1, fallback2]));
 
   const canvasCache: CanvasCache = new WeakMap();
   const imageCache: ImageCache = new WeakMap();
