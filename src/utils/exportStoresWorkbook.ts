@@ -247,7 +247,7 @@ function addCapacityAnalysis(wb: any) {
 }
 
 // ── Sheet 6 — Stock Control Procedure ───────────────────────────────────────
-function addStockControl(wb: XLSX.WorkBook) {
+function addStockControl(wb: any) {
   const rows: string[][] = [];
 
   // §1 Purpose
