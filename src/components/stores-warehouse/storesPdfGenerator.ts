@@ -8,12 +8,17 @@ const CONTENT_WIDTH_MM = A4_WIDTH_MM - MARGIN_MM * 2;
 const PAGE_CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
 const SECTION_GAP_MM = 4;
 const MAX_PAGES = 20;
-const RENDER_SCALES = [1, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6] as const;
+
+// Fewer passes + wider steps to reduce generation time dramatically
+const RENDER_SCALES = [1, 0.92, 0.84, 0.76, 0.68] as const;
+const CANVAS_SCALE = 1.4;
 
 type PdfResult = {
   blob: Blob;
   pageCount: number;
 };
+
+type CanvasCache = WeakMap<HTMLElement, Promise<HTMLCanvasElement>>;
 
 const getTopLevelSections = (root: HTMLElement) => {
   return Array.from(root.querySelectorAll("[data-pdf-section]")) as HTMLElement[];
@@ -25,29 +30,51 @@ const getChildBlocks = (node: HTMLElement) => {
   );
 };
 
-const renderNodeCanvas = async (node: HTMLElement) => {
-  return html2canvas(node, {
-    scale: 2,
+const yieldThread = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
+
+const getCachedCanvas = (node: HTMLElement, cache: CanvasCache) => {
+  const existing = cache.get(node);
+  if (existing) return existing;
+
+  const canvasPromise = html2canvas(node, {
+    scale: CANVAS_SCALE,
     useCORS: true,
     backgroundColor: "#ffffff",
     logging: false,
     windowWidth: 794,
   });
+
+  cache.set(node, canvasPromise);
+  return canvasPromise;
 };
 
-const buildPdfForScale = async (sections: HTMLElement[], renderScale: number) => {
+const buildPdfForScale = async (
+  sections: HTMLElement[],
+  renderScale: number,
+  canvasCache: CanvasCache
+) => {
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   let currentY = MARGIN_MM;
   const blocksQueue = [...sections];
+  let processedBlocks = 0;
 
   while (blocksQueue.length > 0) {
     const block = blocksQueue.shift();
     if (!block) continue;
 
-    const canvas = await renderNodeCanvas(block);
+    processedBlocks += 1;
+    if (processedBlocks > 3000) {
+      throw new Error("PDF generation exceeded safe block limit.");
+    }
 
-    const baseScaleFactor = CONTENT_WIDTH_MM / (canvas.width / 2);
-    const baseHeightMM = (canvas.height / 2) * baseScaleFactor;
+    const canvas = await getCachedCanvas(block, canvasCache);
+
+    const logicalWidthPx = canvas.width / CANVAS_SCALE;
+    const logicalHeightPx = canvas.height / CANVAS_SCALE;
+
+    const baseScaleFactor = CONTENT_WIDTH_MM / logicalWidthPx;
+    const baseHeightMM = logicalHeightPx * baseScaleFactor;
+
     const drawWidthMM = CONTENT_WIDTH_MM * renderScale;
     const drawHeightMM = baseHeightMM * renderScale;
     const drawXMM = MARGIN_MM + (CONTENT_WIDTH_MM - drawWidthMM) / 2;
@@ -61,7 +88,7 @@ const buildPdfForScale = async (sections: HTMLElement[], renderScale: number) =>
       }
 
       const totalHeightPx = canvas.height;
-      const pxPerMMAtBase = (canvas.width / 2) / CONTENT_WIDTH_MM;
+      const pxPerMMAtBase = logicalWidthPx / CONTENT_WIDTH_MM;
       let srcYPx = 0;
 
       while (srcYPx < totalHeightPx) {
@@ -73,11 +100,17 @@ const buildPdfForScale = async (sections: HTMLElement[], renderScale: number) =>
         }
 
         const sliceHeightPx = Math.min(
-          (availableHeightMM * pxPerMMAtBase * 2) / renderScale,
+          (availableHeightMM * pxPerMMAtBase * CANVAS_SCALE) / renderScale,
           totalHeightPx - srcYPx
         );
 
-        const sliceBaseHeightMM = (sliceHeightPx / 2) * baseScaleFactor;
+        if (sliceHeightPx <= 0) {
+          pdf.addPage();
+          currentY = MARGIN_MM;
+          continue;
+        }
+
+        const sliceBaseHeightMM = (sliceHeightPx / CANVAS_SCALE) * baseScaleFactor;
         const sliceDrawHeightMM = sliceBaseHeightMM * renderScale;
 
         const sliceCanvas = document.createElement("canvas");
@@ -101,7 +134,7 @@ const buildPdfForScale = async (sections: HTMLElement[], renderScale: number) =>
           );
         }
 
-        const sliceData = sliceCanvas.toDataURL("image/jpeg", 0.92);
+        const sliceData = sliceCanvas.toDataURL("image/jpeg", 0.9);
         pdf.addImage(sliceData, "JPEG", drawXMM, currentY, drawWidthMM, sliceDrawHeightMM);
 
         srcYPx += sliceHeightPx;
@@ -122,9 +155,13 @@ const buildPdfForScale = async (sections: HTMLElement[], renderScale: number) =>
       currentY = MARGIN_MM;
     }
 
-    const imgData = canvas.toDataURL("image/jpeg", 0.92);
+    const imgData = canvas.toDataURL("image/jpeg", 0.9);
     pdf.addImage(imgData, "JPEG", drawXMM, currentY, drawWidthMM, drawHeightMM);
     currentY += drawHeightMM + SECTION_GAP_MM * renderScale;
+
+    if (processedBlocks % 2 === 0) {
+      await yieldThread();
+    }
   }
 
   return {
@@ -140,17 +177,20 @@ export async function generateStoresPdfBlob(root: HTMLElement): Promise<PdfResul
     throw new Error("No printable sections found.");
   }
 
+  const canvasCache: CanvasCache = new WeakMap();
   let bestPdf: jsPDF | null = null;
   let bestPageCount = Number.POSITIVE_INFINITY;
 
   for (const renderScale of RENDER_SCALES) {
-    const { pdf, pageCount } = await buildPdfForScale(sections, renderScale);
+    const { pdf, pageCount } = await buildPdfForScale(sections, renderScale, canvasCache);
     bestPdf = pdf;
     bestPageCount = pageCount;
 
     if (pageCount <= MAX_PAGES) {
       break;
     }
+
+    await yieldThread();
   }
 
   if (!bestPdf) {

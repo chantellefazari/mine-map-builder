@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import React, { useRef, useState, useCallback, ComponentType } from "react";
 import { X, Printer, FileText, Download, Loader2, CheckCircle2 } from "lucide-react";
 import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,12 @@ interface PrintAllStoresModalProps {
   onClose: () => void;
 }
 
+type ActionType = "print" | "download";
+type Phase = "idle" | "mounting" | "generating";
+
+const MOUNT_TIMEOUT_MS = 20000;
+const SETTLE_DELAY_MS = 500;
+
 const SECTION_TITLES = [
   "1. Implementation Plan",
   "2. Stores Design Principles",
@@ -31,9 +37,9 @@ const SECTION_TITLES = [
   "5. Design Inputs for 3D",
   "6. Capacity Analysis",
   "7. Stock Control Procedure",
-];
+] as const;
 
-const SECTION_COMPONENTS: React.FC[] = [
+const SECTION_COMPONENTS: ComponentType[] = [
   ImplementationPlanDocument,
   StoresDesignPrinciples,
   ContainerStockingScopeSection,
@@ -43,118 +49,124 @@ const SECTION_COMPONENTS: React.FC[] = [
   StockControlProcedure,
 ];
 
-type Phase = "idle" | "mounting" | "generating";
+const waitFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+const waitMs = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
   isOpen,
   onClose,
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
+
   const [phase, setPhase] = useState<Phase>("idle");
+  const [activeAction, setActiveAction] = useState<ActionType | null>(null);
   const [shouldRender, setShouldRender] = useState(false);
-  const pendingAction = useRef<"print" | "download" | null>(null);
 
-  const handleClose = useCallback(() => {
-    setShouldRender(false);
-    setPhase("idle");
-    pendingAction.current = null;
-    onClose();
-  }, [onClose]);
+  const waitForSectionsToMount = useCallback(async () => {
+    const start = Date.now();
 
-  // Once sections are mounted, generate the PDF
-  useEffect(() => {
-    if (phase !== "mounting" || !shouldRender) return;
+    // Ensure React commits the off-screen tree first
+    await waitFrame();
+    await waitFrame();
 
-    const timer = setTimeout(async () => {
-      const el = printRef.current;
-      const sections = el?.querySelectorAll("[data-pdf-section]");
-      if (!el || !sections || sections.length === 0) {
-        console.error("No sections found for PDF generation");
-        setPhase("idle");
-        return;
+    while (Date.now() - start < MOUNT_TIMEOUT_MS) {
+      const sectionCount = printRef.current?.querySelectorAll("[data-pdf-section]").length ?? 0;
+      if (sectionCount === SECTION_COMPONENTS.length) {
+        await waitMs(SETTLE_DELAY_MS);
+        return true;
       }
+      await waitMs(150);
+    }
 
-      setPhase("generating");
+    return false;
+  }, []);
+
+  const handleAction = useCallback(
+    async (action: ActionType) => {
+      if (phase !== "idle") return;
+
+      setActiveAction(action);
 
       try {
-        const result = await generateStoresPdfBlob(el);
+        if (!shouldRender) {
+          setPhase("mounting");
+          setShouldRender(true);
+
+          const mounted = await waitForSectionsToMount();
+          if (!mounted) {
+            throw new Error("Timed out while preparing print sections.");
+          }
+        }
+
+        const container = printRef.current;
+        if (!container) {
+          throw new Error("Print container not found.");
+        }
+
+        setPhase("generating");
+
+        const result = await generateStoresPdfBlob(container);
 
         if (result.pageCount > 20) {
           console.warn(`Stores PDF is ${result.pageCount} pages.`);
         }
 
-        const action = pendingAction.current;
         if (action === "download") {
           await uploadAndShowPdf(
             result.blob,
             "TCMG-Stores-Warehouse-Design.pdf",
             "Stores & Warehouse Design"
           );
-        } else if (action === "print") {
-          const pdfUrl = URL.createObjectURL(result.blob);
-          const printWindow = window.open(pdfUrl, "_blank");
-          if (!printWindow) {
-            await uploadAndShowPdf(
-              result.blob,
-              "TCMG-Stores-Warehouse-Design.pdf",
-              "Stores & Warehouse Design"
-            );
-            URL.revokeObjectURL(pdfUrl);
-          } else {
-            setTimeout(() => {
-              try { printWindow.focus(); printWindow.print(); } catch {}
-            }, 1200);
-            setTimeout(() => URL.revokeObjectURL(pdfUrl), 60000);
-          }
+          return;
         }
+
+        const pdfUrl = URL.createObjectURL(result.blob);
+        const printWindow = window.open(pdfUrl, "_blank");
+
+        if (!printWindow) {
+          await uploadAndShowPdf(
+            result.blob,
+            "TCMG-Stores-Warehouse-Design.pdf",
+            "Stores & Warehouse Design"
+          );
+          URL.revokeObjectURL(pdfUrl);
+          return;
+        }
+
+        setTimeout(() => {
+          try {
+            printWindow.focus();
+            printWindow.print();
+          } catch (error) {
+            console.error("Print window error:", error);
+          }
+        }, 1200);
+
+        setTimeout(() => URL.revokeObjectURL(pdfUrl), 60000);
       } catch (err) {
-        console.error("PDF generation error:", err);
+        console.error("Stores print action failed:", err);
       } finally {
         setPhase("idle");
-        pendingAction.current = null;
-        // Keep rendered to avoid re-mounting on next click
+        setActiveAction(null);
       }
-    }, 1500); // 1.5s settling time for DOM to paint
+    },
+    [phase, shouldRender, waitForSectionsToMount]
+  );
 
-    return () => clearTimeout(timer);
-  }, [phase, shouldRender]);
-
-  const handleAction = useCallback((action: "print" | "download") => {
-    pendingAction.current = action;
-    if (shouldRender) {
-      // Already mounted — go straight to generating
-      setPhase("generating");
-      // Trigger generation directly
-      const el = printRef.current;
-      if (!el) return;
-      generateStoresPdfBlob(el).then(async (result) => {
-        if (action === "download") {
-          await uploadAndShowPdf(result.blob, "TCMG-Stores-Warehouse-Design.pdf", "Stores & Warehouse Design");
-        } else {
-          const pdfUrl = URL.createObjectURL(result.blob);
-          const win = window.open(pdfUrl, "_blank");
-          if (!win) {
-            await uploadAndShowPdf(result.blob, "TCMG-Stores-Warehouse-Design.pdf", "Stores & Warehouse Design");
-            URL.revokeObjectURL(pdfUrl);
-          } else {
-            setTimeout(() => { try { win.focus(); win.print(); } catch {} }, 1200);
-            setTimeout(() => URL.revokeObjectURL(pdfUrl), 60000);
-          }
-        }
-      }).catch((err) => {
-        console.error("PDF error:", err);
-      }).finally(() => {
-        setPhase("idle");
-        pendingAction.current = null;
-      });
-    } else {
-      setShouldRender(true);
-      setPhase("mounting");
-    }
-  }, [shouldRender]);
+  const handleClose = useCallback(() => {
+    setPhase("idle");
+    setActiveAction(null);
+    setShouldRender(false);
+    onClose();
+  }, [onClose]);
 
   const isBusy = phase !== "idle";
-  const statusText = phase === "mounting" ? "Loading sections…" : phase === "generating" ? "Building PDF…" : "";
+  const statusText =
+    phase === "mounting"
+      ? "Loading sections…"
+      : phase === "generating"
+      ? "Building PDF…"
+      : "";
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -162,22 +174,36 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
         <DialogHeader className="p-4 border-b border-border flex-row items-center justify-between space-y-0 shrink-0">
           <div className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-primary" />
-            <DialogTitle className="text-lg font-semibold">
-              Print — Stores & Warehouse Design
-            </DialogTitle>
+            <DialogTitle className="text-lg font-semibold">Print — Stores & Warehouse Design</DialogTitle>
             <DialogDescription className="sr-only">
               Print or save the full Stores and Warehouse design document as PDF.
             </DialogDescription>
           </div>
+
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => handleAction("download")} className="gap-2" disabled={isBusy}>
-              {isBusy && pendingAction.current === "download" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-              {isBusy && pendingAction.current === "download" ? statusText : "Download PDF"}
+            <Button
+              variant="outline"
+              onClick={() => handleAction("download")}
+              className="gap-2"
+              disabled={isBusy}
+            >
+              {isBusy && activeAction === "download" ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Download className="w-4 h-4" />
+              )}
+              {isBusy && activeAction === "download" ? statusText : "Download PDF"}
             </Button>
+
             <Button onClick={() => handleAction("print")} className="gap-2" disabled={isBusy}>
-              {isBusy && pendingAction.current === "print" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
-              {isBusy && pendingAction.current === "print" ? statusText : "Print"}
+              {isBusy && activeAction === "print" ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Printer className="w-4 h-4" />
+              )}
+              {isBusy && activeAction === "print" ? statusText : "Print"}
             </Button>
+
             <Button variant="ghost" size="icon" onClick={handleClose}>
               <X className="w-4 h-4" />
             </Button>
@@ -190,12 +216,16 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
               The following sections will be included. Click <strong>Download PDF</strong> or <strong>Print</strong> to generate.
             </p>
             {SECTION_TITLES.map((title) => (
-              <div key={title} className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card">
+              <div
+                key={title}
+                className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card"
+              >
                 <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
                 <span className="text-sm font-medium">{title}</span>
               </div>
             ))}
           </div>
+
           {isBusy && (
             <div className="mt-6 flex items-center gap-3 p-4 rounded-lg bg-muted">
               <Loader2 className="w-5 h-5 animate-spin text-primary" />
@@ -204,20 +234,19 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
           )}
         </div>
 
-        {/* Off-screen render target — only mounted on first action */}
         {shouldRender && (
           <div
             ref={printRef}
             aria-hidden
             style={{
               position: "fixed",
-              left: "-9999px",
+              left: "-12000px",
               top: 0,
               width: "794px",
               background: "white",
               padding: "30px",
               zIndex: -1,
-              visibility: "hidden",
+              pointerEvents: "none",
             }}
           >
             {SECTION_COMPONENTS.map((Component, i) => (
