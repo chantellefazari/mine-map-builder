@@ -31,7 +31,7 @@ function addDesignPrinciples(wb: any) {
 }
 
 // ── Sheet 2 — Container Stocking Scope ──────────────────────────────────────
-function addStockingScope(wb: XLSX.WorkBook) {
+function addStockingScope(wb: any) {
   const rows: string[][] = [
     ["Container", "Title", "Container Type", "Special Requirement", "Sub-Category", "Item"],
   ];
