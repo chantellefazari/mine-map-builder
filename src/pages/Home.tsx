@@ -86,6 +86,14 @@ const ALL_SECTIONS = [
     href: "/purchase-requests",
     tabKey: "purchase-requests",
   },
+  {
+    title: "3D Concepts",
+    subtitle: "Visual Site Layouts",
+    description: "Quick 3D concept designs for site layout ideas — containers, shade structures, and more.",
+    icon: Box,
+    href: "/3d-concepts",
+    tabKey: "3d-concepts",
+  },
 ];
 
 const Home = () => {
