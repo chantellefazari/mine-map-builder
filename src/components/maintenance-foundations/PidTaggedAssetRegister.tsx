@@ -8,8 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tag, Search, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import * as XLSX from "xlsx";
-import { writeXlsxFile } from "@/utils/safariDownload";
+import { writeXlsxFile, loadXLSX } from "@/utils/safariDownload";
 
 interface TaggedAsset {
   asset_name: string;

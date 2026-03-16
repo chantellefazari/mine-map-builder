@@ -98,5 +98,5 @@ export async function exportHierarchyWorkbook() {
 
   XLSX.utils.book_append_sheet(wb, ws, "Processing Plant Hierarchy");
 
-  writeXlsxFile(wb, "TCMG_Processing_Plant_Hierarchy.xlsx");
+  writeXlsxFile(wb, "TCMG_Processing_Plant_Hierarchy.xlsx", XLSX);
 }
