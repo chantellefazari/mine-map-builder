@@ -249,7 +249,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
     })}
 
     {/* Outstanding Actions */}
-    <Card className="border-amber-300 dark:border-amber-700" data-pdf-section>
+    <Card className="border border-amber-300 dark:border-amber-700 rounded-md shadow-none" data-pdf-section>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">Outstanding Actions for Full Readiness</CardTitle>
       </CardHeader>
