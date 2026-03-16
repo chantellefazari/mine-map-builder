@@ -52,103 +52,144 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
     setDownloading(true);
 
     try {
-      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      let currentY = MARGIN_MM;
-      const SECTION_GAP_MM = 4;
-      const PAGE_CONTENT_HEIGHT = A4_HEIGHT_MM - MARGIN_MM * 2;
+      const MAX_PAGES = 20;
+      const RENDER_SCALES = [1, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6] as const;
+      const PAGE_CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
 
-      // Collect all capturable blocks: for each top-level section,
-      // grab its direct children so we never slice mid-content.
       const topSections = Array.from(
         el.querySelectorAll("[data-pdf-section]")
       ) as HTMLElement[];
 
-      const blocks: HTMLElement[] = [];
-      for (const section of topSections) {
-        // The first child is the section title <p>, capture it
-        // Then capture each direct child of the component wrapper individually
-        const children = Array.from(section.children) as HTMLElement[];
-        if (children.length <= 1) {
-          // Tiny section — capture whole thing
-          blocks.push(section);
-        } else {
-          // Push each child as its own block so page breaks happen between them
-          for (const child of children) {
-            blocks.push(child);
-          }
-        }
-      }
+      const buildPdfForScale = async (renderScale: number) => {
+        const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+        let currentY = MARGIN_MM;
+        const SECTION_GAP_MM = 4 * renderScale;
+        const blocksQueue = [...topSections];
 
-      for (const block of blocks) {
-        const canvas = await html2canvas(block, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: "#ffffff",
-          logging: false,
-          windowWidth: 794,
-        });
+        while (blocksQueue.length > 0) {
+          const block = blocksQueue.shift();
+          if (!block) continue;
 
-        const scaleFactor = CONTENT_WIDTH_MM / (canvas.width / 2);
-        const blockHeightMM = (canvas.height / 2) * scaleFactor;
-        const imgData = canvas.toDataURL("image/jpeg", 0.92);
+          const canvas = await html2canvas(block, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: false,
+            windowWidth: 794,
+          });
 
-        // If a single block is still taller than a full page, we must slice it
-        if (blockHeightMM > PAGE_CONTENT_HEIGHT) {
-          const totalHeightPx = canvas.height;
-          const pxPerMM = (canvas.width / 2) / CONTENT_WIDTH_MM;
-          let srcYPx = 0;
+          const baseScaleFactor = CONTENT_WIDTH_MM / (canvas.width / 2);
+          const baseHeightMM = (canvas.height / 2) * baseScaleFactor;
+          const drawWidthMM = CONTENT_WIDTH_MM * renderScale;
+          const drawHeightMM = baseHeightMM * renderScale;
+          const drawXMM = MARGIN_MM + (CONTENT_WIDTH_MM - drawWidthMM) / 2;
+          const imgData = canvas.toDataURL("image/jpeg", 0.92);
 
-          while (srcYPx < totalHeightPx) {
-            if (currentY > MARGIN_MM) {
-              const remainingMM = A4_HEIGHT_MM - MARGIN_MM - currentY;
-              if (remainingMM < 20) {
+          // Prefer splitting by DOM child blocks to avoid cutting through content.
+          if (drawHeightMM > PAGE_CONTENT_HEIGHT_MM) {
+            const childBlocks = Array.from(block.children).filter(
+              (child): child is HTMLElement => child instanceof HTMLElement
+            );
+
+            if (childBlocks.length > 1) {
+              blocksQueue.unshift(...childBlocks);
+              continue;
+            }
+
+            // Last-resort slice when a single block is taller than one page.
+            const totalHeightPx = canvas.height;
+            const pxPerMMAtBase = (canvas.width / 2) / CONTENT_WIDTH_MM;
+            let srcYPx = 0;
+
+            while (srcYPx < totalHeightPx) {
+              const availableHeightMM = A4_HEIGHT_MM - MARGIN_MM - currentY;
+              if (availableHeightMM < 12) {
                 pdf.addPage();
                 currentY = MARGIN_MM;
+                continue;
+              }
+
+              const sliceHeightPx = Math.min(
+                (availableHeightMM * pxPerMMAtBase * 2) / renderScale,
+                totalHeightPx - srcYPx
+              );
+
+              const sliceBaseHeightMM = (sliceHeightPx / 2) * baseScaleFactor;
+              const sliceDrawHeightMM = sliceBaseHeightMM * renderScale;
+
+              const sliceCanvas = document.createElement("canvas");
+              sliceCanvas.width = canvas.width;
+              sliceCanvas.height = Math.ceil(sliceHeightPx);
+              const ctx = sliceCanvas.getContext("2d");
+              if (ctx) {
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+                ctx.drawImage(
+                  canvas,
+                  0,
+                  srcYPx,
+                  canvas.width,
+                  sliceHeightPx,
+                  0,
+                  0,
+                  canvas.width,
+                  sliceHeightPx
+                );
+              }
+
+              const sliceData = sliceCanvas.toDataURL("image/jpeg", 0.92);
+              pdf.addImage(
+                sliceData,
+                "JPEG",
+                drawXMM,
+                currentY,
+                drawWidthMM,
+                sliceDrawHeightMM
+              );
+
+              srcYPx += sliceHeightPx;
+              if (srcYPx < totalHeightPx) {
+                pdf.addPage();
+                currentY = MARGIN_MM;
+              } else {
+                currentY += sliceDrawHeightMM + SECTION_GAP_MM;
               }
             }
 
-            const availableHeightMM = A4_HEIGHT_MM - MARGIN_MM - currentY;
-            const sliceHeightPx = Math.min(
-              availableHeightMM * pxPerMM * 2,
-              totalHeightPx - srcYPx
-            );
-            const sliceHeightMM = (sliceHeightPx / 2) * scaleFactor;
-
-            const sliceCanvas = document.createElement("canvas");
-            sliceCanvas.width = canvas.width;
-            sliceCanvas.height = Math.ceil(sliceHeightPx);
-            const ctx = sliceCanvas.getContext("2d");
-            if (ctx) {
-              ctx.fillStyle = "#ffffff";
-              ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
-              ctx.drawImage(canvas, 0, srcYPx, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
-            }
-
-            const sliceData = sliceCanvas.toDataURL("image/jpeg", 0.92);
-            pdf.addImage(sliceData, "JPEG", MARGIN_MM, currentY, CONTENT_WIDTH_MM, sliceHeightMM);
-
-            srcYPx += sliceHeightPx;
-            if (srcYPx < totalHeightPx) {
-              pdf.addPage();
-              currentY = MARGIN_MM;
-            } else {
-              currentY += sliceHeightMM + SECTION_GAP_MM;
-            }
+            continue;
           }
-        } else {
-          // Check if block fits on current page
-          const remainingSpace = A4_HEIGHT_MM - MARGIN_MM - currentY;
-          if (blockHeightMM > remainingSpace && currentY > MARGIN_MM) {
+
+          const remainingSpaceMM = A4_HEIGHT_MM - MARGIN_MM - currentY;
+          if (drawHeightMM > remainingSpaceMM && currentY > MARGIN_MM) {
             pdf.addPage();
             currentY = MARGIN_MM;
           }
 
-          pdf.addImage(imgData, "JPEG", MARGIN_MM, currentY, CONTENT_WIDTH_MM, blockHeightMM);
-          currentY += blockHeightMM + SECTION_GAP_MM;
+          pdf.addImage(imgData, "JPEG", drawXMM, currentY, drawWidthMM, drawHeightMM);
+          currentY += drawHeightMM + SECTION_GAP_MM;
         }
+
+        return { pdf, pageCount: pdf.getNumberOfPages() };
+      };
+
+      let bestPdf: jsPDF | null = null;
+      let bestPageCount = Number.POSITIVE_INFINITY;
+
+      for (const renderScale of RENDER_SCALES) {
+        const { pdf, pageCount } = await buildPdfForScale(renderScale);
+        bestPdf = pdf;
+        bestPageCount = pageCount;
+
+        if (pageCount <= MAX_PAGES) break;
       }
 
-      const blob = pdf.output("blob");
+      if (!bestPdf) return;
+
+      if (bestPageCount > MAX_PAGES) {
+        console.warn(`Stores PDF is ${bestPageCount} pages even after compaction.`);
+      }
+
+      const blob = bestPdf.output("blob");
       await uploadAndShowPdf(blob, "TCMG-Stores-Warehouse-Design.pdf", "Stores & Warehouse Design");
     } catch (err) {
       console.error("PDF download error:", err);
