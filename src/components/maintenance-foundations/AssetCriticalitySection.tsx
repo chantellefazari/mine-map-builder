@@ -543,11 +543,11 @@ export const AssetCriticalitySection = () => {
             {filteredAssets.map(asset => {
               const rating = getRating(asset.asset_number);
               const justification = getJustification(asset.asset_number);
-              const hasChange = !!pendingChanges[asset.asset_number];
-              const isSaved = !!ratingsMap[asset.asset_number] && !hasChange;
+              const isSaving = savingAssets.has(asset.asset_number);
+              const justSaved = savedAssets.has(asset.asset_number);
 
               return (
-                <TableRow key={asset.asset_number} className={hasChange ? "bg-yellow-50/50 dark:bg-yellow-950/20" : ""}>
+                <TableRow key={asset.asset_number} className={isSaving ? "bg-yellow-50/50 dark:bg-yellow-950/20" : justSaved ? "bg-emerald-50/50 dark:bg-emerald-950/20" : ""}>
                   <TableCell className="text-xs py-1.5">{asset.area_label}</TableCell>
                   <TableCell className="text-xs py-1.5">{asset.sub_area}</TableCell>
                   <TableCell className="text-xs py-1.5 font-mono">{asset.asset_number}</TableCell>
