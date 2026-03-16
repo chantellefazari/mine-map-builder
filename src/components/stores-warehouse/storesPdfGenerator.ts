@@ -9,10 +9,10 @@ const PAGE_CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
 const SECTION_GAP_MM = 4;
 const MAX_PAGES = 20;
 
-const MIN_RENDER_SCALE = 0.48;
-const MAX_RENDER_SCALE = 0.78;
+const MIN_RENDER_SCALE = 0.32;
+const MAX_RENDER_SCALE = 0.62;
 const CANVAS_SCALE = 1;
-const JPEG_QUALITY = 0.82;
+const JPEG_QUALITY = 0.78;
 
 type PdfResult = {
   blob: Blob;
