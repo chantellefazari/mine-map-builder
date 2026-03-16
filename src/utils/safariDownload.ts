@@ -24,13 +24,23 @@ export function downloadBlob(blob: Blob, filename: string) {
   }, 200);
 }
 
-/** Safari-safe replacement for XLSX.writeFile() */
-export function writeXlsxFile(wb: XLSX.WorkBook, filename: string) {
-  const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+/** Safari-safe replacement for XLSX.writeFile(). Pass the dynamically-imported XLSX module. */
+export function writeXlsxFile(wb: any, filename: string, XLSX?: any) {
+  const xlsxMod = XLSX ?? (globalThis as any).__XLSX_CACHE;
+  if (!xlsxMod) throw new Error("XLSX module not provided to writeXlsxFile");
+  const wbout = xlsxMod.write(wb, { bookType: "xlsx", type: "array" });
   const blob = new Blob([wbout], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
   downloadBlob(blob, filename);
+}
+
+/** Helper to dynamically load xlsx and cache it */
+export async function loadXLSX() {
+  const mod = await import("xlsx");
+  const XLSX = mod.default ?? mod;
+  (globalThis as any).__XLSX_CACHE = XLSX;
+  return XLSX;
 }
 
 /** Safari-safe CSV download */
