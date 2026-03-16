@@ -444,7 +444,7 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
                 key={SECTION_TITLES[i]}
                 data-pdf-section
                 data-stores-pdf-root-section
-                className={`stores-print-section ${i > 0 ? "mt-10 pt-8 border-t-2 border-primary/30" : ""}`}
+                className={`stores-print-section ${i > 0 ? "mt-4 pt-3 border-t-2 border-primary/30" : ""}`}
               >
                 <p className="text-xs font-bold uppercase tracking-widest text-primary mb-4 border-l-4 border-primary pl-3">
                   {SECTION_TITLES[i]}
