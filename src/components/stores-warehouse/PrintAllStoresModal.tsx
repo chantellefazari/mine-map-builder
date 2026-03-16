@@ -29,6 +29,7 @@ type Phase = "idle" | "mounting" | "generating";
 const MOUNT_TIMEOUT_MS = 10000;
 const SETTLE_DELAY_MS = 400;
 const GENERATION_TIMEOUT_MS = 90000;
+const PRINT_WINDOW_WAIT_MS = 700;
 
 const SECTION_TITLES = [
   "1. Implementation Plan",
@@ -52,6 +53,12 @@ const SECTION_COMPONENTS: ComponentType[] = [
 
 const waitFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 const waitMs = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+const collectPrintStyles = () => {
+  return Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
+    .map((node) => node.outerHTML)
+    .join("\n");
+};
 
 export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
   isOpen,
@@ -102,6 +109,64 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
     }
   }, []);
 
+  const printFromMountedContent = useCallback(async (container: HTMLElement) => {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      throw new Error("Print window was blocked.");
+    }
+
+    const styleMarkup = collectPrintStyles();
+
+    printWindow.document.open();
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Stores & Warehouse Design</title>
+          ${styleMarkup}
+          <style>
+            @page {
+              size: A4 portrait;
+              margin: 12mm;
+            }
+
+            html, body {
+              margin: 0;
+              padding: 0;
+              background: #fff !important;
+            }
+
+            body {
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+
+            .stores-print-root {
+              width: 794px;
+              margin: 0 auto;
+              padding: 30px;
+              background: #fff;
+            }
+
+            .stores-print-root .stores-print-section {
+              break-inside: avoid-page;
+              page-break-inside: avoid;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="stores-print-root">${container.innerHTML}</div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+
+    await waitMs(PRINT_WINDOW_WAIT_MS);
+
+    printWindow.focus();
+    printWindow.print();
+  }, []);
+
   const handleAction = useCallback(
     async (action: ActionType) => {
       if (phase !== "idle") return;
@@ -125,6 +190,15 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
         }
 
         setPhase("generating");
+
+        if (action === "print") {
+          try {
+            await printFromMountedContent(container);
+            return;
+          } catch (printError) {
+            console.warn("Direct print path failed, falling back to PDF print.", printError);
+          }
+        }
 
         const result = await generateWithTimeout(container);
 
@@ -171,7 +245,7 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
         setActiveAction(null);
       }
     },
-    [phase, shouldRender, waitForSectionsToMount, generateWithTimeout]
+    [phase, shouldRender, waitForSectionsToMount, generateWithTimeout, printFromMountedContent]
   );
 
   const handleClose = useCallback(() => {
@@ -185,6 +259,8 @@ export const PrintAllStoresModal: React.FC<PrintAllStoresModalProps> = ({
   const statusText =
     phase === "mounting"
       ? "Loading sections…"
+      : phase === "generating" && activeAction === "print"
+      ? "Preparing print…"
       : phase === "generating"
       ? "Building PDF…"
       : "";
