@@ -215,7 +215,7 @@ function addDesignInputs(wb: any) {
 }
 
 // ── Sheet 5 — Capacity Analysis ─────────────────────────────────────────────
-function addCapacityAnalysis(wb: XLSX.WorkBook) {
+function addCapacityAnalysis(wb: any) {
   const rows: string[][] = [
     ["Zone", "Container Type", "SKU Count", "Bin Positions", "Items/Bin Ratio", "Usage %", "Status", "Furniture Breakdown", "Notes / Concerns"],
   ];
