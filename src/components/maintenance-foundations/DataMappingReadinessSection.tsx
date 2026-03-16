@@ -321,7 +321,11 @@ export const DataMappingReadinessSection = () => {
 
   const handleSavePdf = useCallback(async () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      toast.error("Open print preview first");
+      return;
+    }
+
     setSaving(true);
     try {
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
@@ -337,17 +341,18 @@ export const DataMappingReadinessSection = () => {
       let position = MARGIN;
 
       pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
-      heightLeft -= (A4_H - MARGIN * 2);
+      heightLeft -= A4_H - MARGIN * 2;
 
       while (heightLeft > 0) {
         pdf.addPage();
         position = MARGIN - (totalImgH - heightLeft);
         pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
-        heightLeft -= (A4_H - MARGIN * 2);
+        heightLeft -= A4_H - MARGIN * 2;
       }
 
-      pdf.save("TCMG-Data-Mapping-Readiness.pdf");
-      toast.success("PDF downloaded");
+      const blob = pdf.output("blob");
+      await uploadAndShowPdf(blob, "TCMG-Data-Mapping-Readiness.pdf", "Data Mapping & Readiness");
+      toast.success("PDF opened");
     } catch (err) {
       console.error("PDF error:", err);
       toast.error("Failed to save PDF");
