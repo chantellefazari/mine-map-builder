@@ -263,8 +263,8 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
           <p><strong>PM Task Checklists:</strong> 82 of 97 PM templates now have structured task data populated and validated.</p>
         </div>
         <div className="flex gap-2 items-start">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
-          <p><strong>Vendor Group Mapping:</strong> Supplier type and payment terms now 100% populated across all registered vendors.</p>
+          <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+          <p><strong>Vendor Data Enrichment:</strong> Supplier type is 100% populated across 65 vendors. ABN and payment terms are 0% populated, requiring collection from each vendor before migration.</p>
         </div>
         <div className="flex gap-2 items-start">
           <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
