@@ -176,33 +176,45 @@ export const AssetCriticalitySection = () => {
   const [search, setSearch] = useState("");
   const [areaFilter, setAreaFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState<"all" | CriticalityRating>("all");
-  const [pendingChanges, setPendingChanges] = useState<Record<string, { criticality: CriticalityRating; justification: string }>>({});
+  const [savingAssets, setSavingAssets] = useState<Set<string>>(new Set());
+  const [savedAssets, setSavedAssets] = useState<Set<string>>(new Set());
   const pdfRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
+  const justificationTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
-  const saveMutation = useMutation({
-    mutationFn: async (changes: { asset_number: string; asset_name: string; area_label: string; sub_area: string; criticality: CriticalityRating; justification: string }[]) => {
-      for (const change of changes) {
-        const { error } = await supabase
-          .from("asset_criticality_ratings")
-          .upsert({
-            asset_number: change.asset_number,
-            asset_name: change.asset_name,
-            area_label: change.area_label,
-            sub_area: change.sub_area,
-            criticality: change.criticality,
-            justification: change.justification,
-            assessed_at: new Date().toISOString(),
-          }, { onConflict: "asset_number" });
-        if (error) throw error;
-      }
+  // Auto-save mutation: saves a single asset immediately
+  const autoSaveMutation = useMutation({
+    mutationFn: async (change: { asset_number: string; asset_name: string; area_label: string; sub_area: string; criticality: CriticalityRating; justification: string }) => {
+      const { error } = await supabase
+        .from("asset_criticality_ratings")
+        .upsert({
+          asset_number: change.asset_number,
+          asset_name: change.asset_name,
+          area_label: change.area_label,
+          sub_area: change.sub_area,
+          criticality: change.criticality,
+          justification: change.justification,
+          assessed_at: new Date().toISOString(),
+        }, { onConflict: "asset_number" });
+      if (error) throw error;
+      return change.asset_number;
     },
-    onSuccess: () => {
+    onMutate: (change) => {
+      setSavingAssets(prev => new Set(prev).add(change.asset_number));
+    },
+    onSuccess: (assetNumber) => {
       queryClient.invalidateQueries({ queryKey: ["asset-criticality-ratings"] });
-      setPendingChanges({});
-      toast.success("Criticality ratings saved");
+      setSavingAssets(prev => { const n = new Set(prev); n.delete(assetNumber); return n; });
+      setSavedAssets(prev => new Set(prev).add(assetNumber));
+      // Clear the "saved" indicator after 2s
+      setTimeout(() => {
+        setSavedAssets(prev => { const n = new Set(prev); n.delete(assetNumber); return n; });
+      }, 2000);
     },
-    onError: () => toast.error("Failed to save ratings"),
+    onError: (_err, change) => {
+      setSavingAssets(prev => { const n = new Set(prev); n.delete(change.asset_number); return n; });
+      toast.error(`Failed to save rating for ${change.asset_number}`);
+    },
   });
 
   const ratingsMap = useMemo(() => {
@@ -251,48 +263,45 @@ export const AssetCriticalitySection = () => {
       }
       return true;
     });
-  }, [orderedAssets, search, areaFilter, ratingFilter, pendingChanges, ratingsMap]);
+  }, [orderedAssets, search, areaFilter, ratingFilter, ratingsMap]);
 
   const getRating = (assetNumber: string): CriticalityRating => {
-    if (pendingChanges[assetNumber]?.criticality) return pendingChanges[assetNumber].criticality;
     if (ratingsMap[assetNumber]?.criticality) return ratingsMap[assetNumber].criticality as CriticalityRating;
-    // Auto-classify based on asset name/area when no saved rating exists
     const asset = assets?.find(a => a.asset_number === assetNumber);
     if (asset) return autoClassifyCriticality(asset.asset_name, asset.area_label, asset.sub_area);
     return "C";
   };
 
   const getJustification = (assetNumber: string): string => {
-    return pendingChanges[assetNumber]?.justification ?? ratingsMap[assetNumber]?.justification ?? "";
+    return ratingsMap[assetNumber]?.justification ?? "";
   };
 
+  const saveAsset = useCallback((asset: ParentAsset, criticality: CriticalityRating, justification: string) => {
+    autoSaveMutation.mutate({
+      asset_number: asset.asset_number,
+      asset_name: asset.asset_name,
+      area_label: asset.area_label,
+      sub_area: asset.sub_area,
+      criticality,
+      justification,
+    });
+  }, [autoSaveMutation]);
+
   const handleRatingChange = (asset: ParentAsset, rating: CriticalityRating) => {
-    setPendingChanges(prev => ({
-      ...prev,
-      [asset.asset_number]: { criticality: rating, justification: prev[asset.asset_number]?.justification ?? ratingsMap[asset.asset_number]?.justification ?? "" },
-    }));
+    const justification = getJustification(asset.asset_number);
+    saveAsset(asset, rating, justification);
   };
 
   const handleJustificationChange = (asset: ParentAsset, justification: string) => {
-    setPendingChanges(prev => ({
-      ...prev,
-      [asset.asset_number]: { criticality: prev[asset.asset_number]?.criticality ?? (ratingsMap[asset.asset_number]?.criticality as CriticalityRating) ?? "C", justification },
-    }));
-  };
-
-  const handleSaveAll = () => {
-    const changes = Object.entries(pendingChanges).map(([assetNumber, vals]) => {
-      const asset = assets?.find(a => a.asset_number === assetNumber);
-      return {
-        asset_number: assetNumber,
-        asset_name: asset?.asset_name || "",
-        area_label: asset?.area_label || "",
-        sub_area: asset?.sub_area || "",
-        ...vals,
-      };
-    });
-    if (changes.length === 0) { toast.info("No changes to save"); return; }
-    saveMutation.mutate(changes);
+    // Debounce justification saves (500ms) so we don't fire on every keystroke
+    if (justificationTimers.current[asset.asset_number]) {
+      clearTimeout(justificationTimers.current[asset.asset_number]);
+    }
+    justificationTimers.current[asset.asset_number] = setTimeout(() => {
+      const rating = getRating(asset.asset_number);
+      saveAsset(asset, rating, justification);
+      delete justificationTimers.current[asset.asset_number];
+    }, 500);
   };
 
   const handlePrint = () => {
