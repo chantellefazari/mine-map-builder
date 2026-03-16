@@ -492,13 +492,14 @@ export const AssetCriticalitySection = () => {
             {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
             {downloading ? "Generating..." : "Download PDF"}
           </Button>
-          <Button variant="outline" size="sm" onClick={handlePrint} className="gap-2">
-            <Printer className="w-3.5 h-3.5" /> Print
-          </Button>
-          <Button size="sm" onClick={handleSaveAll} disabled={pendingCount === 0 || saveMutation.isPending} className="gap-2">
-            {saveMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-            Save {pendingCount > 0 ? `(${pendingCount})` : ""}
-          </Button>
+           <Button variant="outline" size="sm" onClick={handlePrint} className="gap-2">
+             <Printer className="w-3.5 h-3.5" /> Print
+           </Button>
+           {savingCount > 0 && (
+             <Badge variant="outline" className="text-xs gap-1 animate-pulse">
+               <Loader2 className="w-3 h-3 animate-spin" /> Saving…
+             </Badge>
+           )}
         </div>
       </div>
 
