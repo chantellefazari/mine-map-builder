@@ -1,9 +1,8 @@
 import React, { useRef, useState } from "react";
 import { X, Printer, FileText, Download, Loader2 } from "lucide-react";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
 import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
 import { Button } from "@/components/ui/button";
+import { generateStoresPdfBlob } from "./storesPdfGenerator";
 import {
   Dialog,
   DialogContent,
