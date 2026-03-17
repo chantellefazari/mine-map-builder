@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { AppSidebarLayout } from "@/components/AppSidebarLayout";
 
 // Lazy-load all pages for code splitting
 const Home = lazy(() => import("./pages/Home"));
@@ -15,15 +16,12 @@ const AssetTree = lazy(() => import("./pages/AssetTree"));
 const PMDesign = lazy(() => import("./pages/PMDesign"));
 const PMPrint = lazy(() => import("./pages/PMPrint"));
 const StoresWarehouseDesign = lazy(() => import("./pages/StoresWarehouseDesign"));
-
 const SiteSparesCatalogue = lazy(() => import("./pages/SiteSparesCatalogue"));
-
 const WorkOrderTemplates = lazy(() => import("./pages/WorkOrderTemplates"));
 const WorkRequestTemplates = lazy(() => import("./pages/WorkRequestTemplates"));
 const MaintenanceFoundations = lazy(() => import("./pages/MaintenanceFoundations"));
 const SupplierRegister = lazy(() => import("./pages/SupplierRegister"));
 const SuppliersProcurement = lazy(() => import("./pages/SuppliersProcurement"));
-
 const PlanningRevisionControl = lazy(() => import("./pages/PlanningRevisionControl"));
 const POTracker = lazy(() => import("./pages/POTracker"));
 const PurchaseRequests = lazy(() => import("./pages/PurchaseRequests"));
@@ -46,8 +44,14 @@ const PageLoader = () => (
   </div>
 );
 
-const App = () => {
+/** Wraps a page in the sidebar layout + protected route */
+const P = ({ children, tabKey, adminOnly }: { children: React.ReactNode; tabKey?: string; adminOnly?: boolean }) => (
+  <ProtectedRoute tabKey={tabKey} adminOnly={adminOnly}>
+    <AppSidebarLayout>{children}</AppSidebarLayout>
+  </ProtectedRoute>
+);
 
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -62,31 +66,24 @@ const App = () => {
                 <Route path="/supplier-portal" element={<SupplierPortal />} />
                 <Route path="/track-shipment" element={<TrackShipment />} />
 
-                {/* Protected: Home */}
-                <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-
-                {/* Admin only */}
-                <Route path="/admin" element={<ProtectedRoute adminOnly><AdminPanel /></ProtectedRoute>} />
-
-                {/* Tab-protected routes */}
-                <Route path="/asset-tree" element={<ProtectedRoute tabKey="asset-tree"><AssetTree /></ProtectedRoute>} />
-                <Route path="/pm-design" element={<ProtectedRoute tabKey="pm-design"><PMDesign /></ProtectedRoute>} />
-                <Route path="/pm-print/:id" element={<ProtectedRoute tabKey="pm-design"><PMPrint /></ProtectedRoute>} />
-                
-                <Route path="/site-spares" element={<ProtectedRoute tabKey="site-spares"><SiteSparesCatalogue /></ProtectedRoute>} />
-                
-                <Route path="/work-order-templates" element={<ProtectedRoute tabKey="work-order-templates"><WorkOrderTemplates /></ProtectedRoute>} />
-                <Route path="/work-request-templates" element={<ProtectedRoute tabKey="work-order-templates"><WorkRequestTemplates /></ProtectedRoute>} />
-                <Route path="/maintenance-foundations" element={<ProtectedRoute tabKey="maintenance-foundations"><MaintenanceFoundations /></ProtectedRoute>} />
-                <Route path="/supplier-register" element={<ProtectedRoute tabKey="suppliers-procurement"><SupplierRegister /></ProtectedRoute>} />
-                <Route path="/suppliers-procurement" element={<ProtectedRoute tabKey="suppliers-procurement"><SuppliersProcurement /></ProtectedRoute>} />
-                
-                <Route path="/stores-warehouse-design" element={<ProtectedRoute tabKey="stores-warehouse-design"><StoresWarehouseDesign /></ProtectedRoute>} />
-                <Route path="/planning-revision" element={<ProtectedRoute tabKey="planning-revision"><PlanningRevisionControl /></ProtectedRoute>} />
-                <Route path="/po-tracker" element={<ProtectedRoute tabKey="po-tracker"><POTracker /></ProtectedRoute>} />
-                <Route path="/purchase-requests" element={<ProtectedRoute tabKey="purchase-requests"><PurchaseRequests /></ProtectedRoute>} />
-                <Route path="/3d-concepts" element={<ProtectedRoute tabKey="3d-concepts"><ThreeDeeConcepts /></ProtectedRoute>} />
-                <Route path="/plant-intelligence" element={<ProtectedRoute tabKey="plant-intelligence"><PlantIntelligence /></ProtectedRoute>} />
+                {/* Protected with sidebar */}
+                <Route path="/" element={<P><Home /></P>} />
+                <Route path="/admin" element={<P adminOnly><AdminPanel /></P>} />
+                <Route path="/asset-tree" element={<P tabKey="asset-tree"><AssetTree /></P>} />
+                <Route path="/pm-design" element={<P tabKey="pm-design"><PMDesign /></P>} />
+                <Route path="/pm-print/:id" element={<P tabKey="pm-design"><PMPrint /></P>} />
+                <Route path="/site-spares" element={<P tabKey="site-spares"><SiteSparesCatalogue /></P>} />
+                <Route path="/work-order-templates" element={<P tabKey="work-order-templates"><WorkOrderTemplates /></P>} />
+                <Route path="/work-request-templates" element={<P tabKey="work-order-templates"><WorkRequestTemplates /></P>} />
+                <Route path="/maintenance-foundations" element={<P tabKey="maintenance-foundations"><MaintenanceFoundations /></P>} />
+                <Route path="/supplier-register" element={<P tabKey="suppliers-procurement"><SupplierRegister /></P>} />
+                <Route path="/suppliers-procurement" element={<P tabKey="suppliers-procurement"><SuppliersProcurement /></P>} />
+                <Route path="/stores-warehouse-design" element={<P tabKey="stores-warehouse-design"><StoresWarehouseDesign /></P>} />
+                <Route path="/planning-revision" element={<P tabKey="planning-revision"><PlanningRevisionControl /></P>} />
+                <Route path="/po-tracker" element={<P tabKey="po-tracker"><POTracker /></P>} />
+                <Route path="/purchase-requests" element={<P tabKey="purchase-requests"><PurchaseRequests /></P>} />
+                <Route path="/3d-concepts" element={<P tabKey="3d-concepts"><ThreeDeeConcepts /></P>} />
+                <Route path="/plant-intelligence" element={<P tabKey="plant-intelligence"><PlantIntelligence /></P>} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
@@ -94,8 +91,6 @@ const App = () => {
             </Suspense>
           </AuthProvider>
         </BrowserRouter>
-
-
       </TooltipProvider>
     </QueryClientProvider>
   );
