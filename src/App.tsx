@@ -29,6 +29,7 @@ const SupplierPortal = lazy(() => import("./pages/SupplierPortal"));
 const TrackShipment = lazy(() => import("./pages/TrackShipment"));
 const ThreeDeeConcepts = lazy(() => import("./pages/ThreeDeeConcepts"));
 const PlantIntelligence = lazy(() => import("./pages/PlantIntelligence"));
+const MissionControl = lazy(() => import("./pages/MissionControl"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -84,6 +85,7 @@ const App = () => {
                 <Route path="/purchase-requests" element={<P tabKey="purchase-requests"><PurchaseRequests /></P>} />
                 <Route path="/3d-concepts" element={<P tabKey="3d-concepts"><ThreeDeeConcepts /></P>} />
                 <Route path="/plant-intelligence" element={<P tabKey="plant-intelligence"><PlantIntelligence /></P>} />
+                <Route path="/mission-control" element={<P tabKey="mission-control"><MissionControl /></P>} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />

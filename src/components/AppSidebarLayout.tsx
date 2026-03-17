@@ -4,7 +4,7 @@ import {
   TreePine, Wrench, ClipboardList, Warehouse, BookOpen,
   ShoppingCart, Building2, CalendarClock, LogOut, Shield,
   PackageSearch, FileInput, Home, Box, Brain, ChevronLeft,
-  ChevronRight,
+  ChevronRight, Radar,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -26,6 +26,7 @@ const NAV_ITEMS = [
   { title: "Purchase Requests", icon: FileInput, href: "/purchase-requests", tabKey: "purchase-requests" },
   { title: "3D Concepts", icon: Box, href: "/3d-concepts", tabKey: "3d-concepts" },
   { title: "Plant Intelligence", icon: Brain, href: "/plant-intelligence", tabKey: "plant-intelligence" },
+  { title: "Mission Control", icon: Radar, href: "/mission-control", tabKey: "mission-control" },
 ];
 
 export function AppSidebarLayout({ children }: { children: ReactNode }) {
