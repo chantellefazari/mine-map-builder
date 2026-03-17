@@ -44,13 +44,13 @@ const SECTION_TITLES = [
 ] as const;
 
 const SECTION_COMPONENTS: ComponentType[] = [
-  ImplementationPlanDocument,
-  StoresDesignPrinciples,
-  ContainerStockingScopeSection,
-  StoreLocationCodingSection,
-  DesignInputsSection,
-  CapacityAnalysis,
-  StockControlProcedure,
+  StoresImplementationSummarySection,
+  StoresDesignPrinciplesSummarySection,
+  ContainerStockingScopeSummarySection,
+  StoreLocationCodingSummarySection,
+  DesignInputsSummarySection,
+  CapacityAnalysisSummarySection,
+  StockControlProcedureSummarySection,
 ];
 
 const waitFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
