@@ -94,6 +94,14 @@ const ALL_SECTIONS = [
     href: "/3d-concepts",
     tabKey: "3d-concepts",
   },
+  {
+    title: "Plant Intelligence",
+    subtitle: "Site Logic Knowledge Base",
+    description: "Supervisor knowledge, dependencies, interactions, safety rules, and lessons learned — captured by voice or form.",
+    icon: Brain,
+    href: "/plant-intelligence",
+    tabKey: "plant-intelligence",
+  },
 ];
 
 const Home = () => {
