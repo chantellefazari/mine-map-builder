@@ -1,5 +1,5 @@
 import { FileText, Send, Package, History } from "lucide-react";
-import { PageNavDropdown } from "@/components/PageNavDropdown";
+
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PurchaseRequestRegister } from "@/components/purchase-requests/PurchaseRequestRegister";
 import { QuoteRequestsTab } from "@/components/purchase-requests/QuoteRequestsTab";
