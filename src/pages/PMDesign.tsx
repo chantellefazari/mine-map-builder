@@ -844,6 +844,8 @@ const PMSidebarContent = ({
   toggleDiscipline,
   expandedFrequencies,
   toggleFrequency,
+  collapsed: isCollapsed,
+  toggleCollapsed,
 }: { 
   activeView: ViewType; 
   setActiveView: (view: ViewType) => void;
@@ -851,19 +853,21 @@ const PMSidebarContent = ({
   toggleDiscipline: (disciplineId: Discipline) => void;
   expandedFrequencies: string[];
   toggleFrequency: (key: string) => void;
+  collapsed: boolean;
+  toggleCollapsed: () => void;
 }) => {
-  const { toggleSidebar, state } = useSidebar();
-  const isCollapsed = state === "collapsed";
-
   return (
-    <Sidebar className="w-64 border-r border-border" collapsible="icon">
-      <SidebarContent className="pt-4">
+    <aside className={cn(
+      "sticky top-0 h-screen flex-shrink-0 border-r border-border bg-card overflow-y-auto transition-all duration-200",
+      isCollapsed ? "w-12" : "w-60"
+    )}>
+      <div className="pt-4">
         {/* Collapse Toggle */}
-        <div className="px-4 mb-2 flex justify-end">
+        <div className="px-2 mb-2 flex justify-end">
           <Button
             variant="ghost"
             size="icon"
-            onClick={toggleSidebar}
+            onClick={toggleCollapsed}
             className="h-8 w-8"
           >
             {isCollapsed ? (
@@ -890,40 +894,29 @@ const PMSidebarContent = ({
         )}
 
         {/* Master Template */}
-        <SidebarGroup>
-          {!isCollapsed && (
-            <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4">
-              Template
-            </SidebarGroupLabel>
-          )}
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={() => setActiveView("master")}
-                  tooltip="Base PM Template"
-                  className={cn(
-                    "w-full justify-start gap-3 px-4 py-3",
-                    activeView === "master" && "bg-primary/10 text-primary border-l-2 border-primary"
-                  )}
-                >
-                  <FileText className="w-4 h-4" />
-                  {!isCollapsed && <span className="font-medium">Base PM Template</span>}
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {!isCollapsed && (
+          <div className="px-2 mb-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-1">Template</p>
+            <button
+              onClick={() => setActiveView("master")}
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors",
+                activeView === "master" 
+                  ? "bg-primary/10 text-primary border-l-2 border-primary" 
+                  : "text-foreground hover:bg-muted/50"
+              )}
+            >
+              <FileText className="w-4 h-4" />
+              <span className="font-medium">Base PM Template</span>
+            </button>
+          </div>
+        )}
 
         {/* Discipline Groups */}
-        <SidebarGroup className="mt-4">
-          {!isCollapsed && (
-            <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4">
-              By Discipline
-            </SidebarGroupLabel>
-          )}
-          <SidebarGroupContent>
-            <div className="space-y-1 px-2">
+        {!isCollapsed && (
+          <div className="px-2 mt-4">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-1">By Discipline</p>
+            <div className="space-y-1">
               {disciplines.map((discipline) => {
                 const DisciplineIcon = discipline.icon;
                 const frequencyPMs = Object.values(discipline.frequencies).reduce((sum, f) => sum + getFrequencyCount(f), 0);
@@ -950,187 +943,79 @@ const PMSidebarContent = ({
                             discipline.id === "electrical" ? "text-blue-500" : 
                             discipline.id === "lube" ? "text-amber-500" : "text-green-500"
                           )} />
-                          {!isCollapsed && <span className="font-semibold">{discipline.label}</span>}
+                          <span className="font-semibold">{discipline.label}</span>
                         </div>
-                        {!isCollapsed && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                              {totalPMs}
-                            </span>
-                            <ChevronRight 
-                              className={cn(
-                                "w-4 h-4 text-muted-foreground transition-transform",
-                                expandedDisciplines.includes(discipline.id) && "rotate-90"
-                              )} 
-                            />
-                          </div>
-                        )}
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                            {totalPMs}
+                          </span>
+                          <ChevronRight 
+                            className={cn(
+                              "w-4 h-4 text-muted-foreground transition-transform",
+                              expandedDisciplines.includes(discipline.id) && "rotate-90"
+                            )} 
+                          />
+                        </div>
                       </div>
                     </CollapsibleTrigger>
-                    {!isCollapsed && (
-                      <CollapsibleContent>
-                        <div className="ml-4 py-1 space-y-0.5">
-                          {frequencyGroups.map((freq) => {
-                            const freqKey = `${discipline.id}-${freq.id}`;
-                            const freqData = discipline.frequencies[freq.id as keyof typeof discipline.frequencies];
-                            
-                            // Skip if this frequency doesn't exist for this discipline
-                            if (!freqData) return null;
-                            
-                            const freqCount = getFrequencyCount(freqData);
-                            
-                            return (
-                              <Collapsible
-                                key={freqKey}
-                                open={expandedFrequencies.includes(freqKey)}
-                                onOpenChange={() => toggleFrequency(freqKey)}
-                              >
-                                <CollapsibleTrigger className="w-full">
-                                  <div
-                                    className={cn(
-                                      "flex items-center justify-between w-full px-2 py-2 rounded-md text-sm transition-colors",
-                                      "hover:bg-muted/50",
-                                      activeView === freqKey && "bg-primary/10 text-primary"
-                                    )}
-                                    onClick={(e) => {
-                                      if (freqCount === 0) {
-                                        e.stopPropagation();
-                                        setActiveView(freqKey as ViewType);
-                                      }
-                                    }}
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                                      <span className="text-sm">{freq.label}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <span className={cn(
-                                        "text-xs px-1.5 py-0.5 rounded",
-                                        freqCount > 0 
-                                          ? "bg-primary/10 text-primary" 
-                                          : "bg-muted text-muted-foreground"
-                                      )}>
-                                        {freqCount}
-                                      </span>
-                                      {freqCount > 0 && (
-                                        <ChevronRight 
-                                          className={cn(
-                                            "w-3.5 h-3.5 text-muted-foreground transition-transform",
-                                            expandedFrequencies.includes(freqKey) && "rotate-90"
-                                          )} 
-                                        />
-                                      )}
-                                    </div>
-                                  </div>
-                                </CollapsibleTrigger>
-                                {freqCount > 0 && (
-                                  <CollapsibleContent>
-                                    <div className="ml-5 py-1 pl-3 border-l border-border space-y-1">
-                                      {/* Render direct PMs first */}
-                                      {freqData.pms && freqData.pms.length > 0 && freqData.pms.map((pm) => (
-                                        <button
-                                          key={pm.id}
-                                          onClick={() => setActiveView(pm.id as ViewType)}
-                                          className={cn(
-                                            "text-xs text-left w-full py-1.5 px-2 rounded transition-colors",
-                                            activeView === pm.id 
-                                              ? "text-primary bg-primary/10" 
-                                              : "text-foreground hover:text-primary hover:bg-muted/50"
-                                          )}
-                                        >
-                                          {pm.name}
-                                        </button>
-                                      ))}
-                                      {/* Then render subgroups if they exist */}
-                                      {freqData.subgroups && freqData.subgroups.length > 0 && freqData.subgroups.map((subgroup) => (
-                                        <Collapsible
-                                          key={subgroup.id}
-                                          open={expandedFrequencies.includes(`${freqKey}-${subgroup.id}`)}
-                                          onOpenChange={() => toggleFrequency(`${freqKey}-${subgroup.id}`)}
-                                        >
-                                          <CollapsibleTrigger className="w-full">
-                                            <div className="flex items-center justify-between w-full px-2 py-1.5 rounded-md text-xs transition-colors hover:bg-muted/50">
-                                              <span className="font-medium text-muted-foreground">{subgroup.label}</span>
-                                              <div className="flex items-center gap-2">
-                                                <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary">
-                                                  {subgroup.pms.length}
-                                                </span>
-                                                <ChevronRight 
-                                                  className={cn(
-                                                    "w-3 h-3 text-muted-foreground transition-transform",
-                                                    expandedFrequencies.includes(`${freqKey}-${subgroup.id}`) && "rotate-90"
-                                                  )} 
-                                                />
-                                              </div>
-                                            </div>
-                                          </CollapsibleTrigger>
-                                          <CollapsibleContent>
-                                            <div className="ml-3 py-1 pl-2 border-l border-border/50 space-y-1">
-                                              {subgroup.pms.map((pm) => (
-                                                <button
-                                                  key={pm.id}
-                                                  onClick={() => setActiveView(pm.id as ViewType)}
-                                                  className={cn(
-                                                    "text-xs text-left w-full py-1.5 px-2 rounded transition-colors",
-                                                    activeView === pm.id 
-                                                      ? "text-primary bg-primary/10" 
-                                                      : "text-foreground hover:text-primary hover:bg-muted/50"
-                                                  )}
-                                                >
-                                                  {pm.name}
-                                                </button>
-                                              ))}
-                                            </div>
-                                          </CollapsibleContent>
-                                        </Collapsible>
-                                      ))}
-                                      <button className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 py-1 transition-colors">
-                                        <Plus className="w-3 h-3" />
-                                        Add PM
-                                      </button>
-                                    </div>
-                                  </CollapsibleContent>
-                                )}
-                              </Collapsible>
-                            );
-                          })}
+                    <CollapsibleContent>
+                      <div className="ml-4 py-1 space-y-0.5">
+                        {frequencyGroups.map((freq) => {
+                          const freqKey = `${discipline.id}-${freq.id}`;
+                          const freqData = discipline.frequencies[freq.id as keyof typeof discipline.frequencies];
                           
-                          {/* Render standalone groups (not under a frequency) */}
-                          {(discipline as any).standaloneGroups?.map((standaloneGroup: any) => {
-                            const standaloneKey = `${discipline.id}-standalone-${standaloneGroup.id}`;
-                            return (
-                              <Collapsible
-                                key={standaloneKey}
-                                open={expandedFrequencies.includes(standaloneKey)}
-                                onOpenChange={() => toggleFrequency(standaloneKey)}
-                              >
-                                <CollapsibleTrigger className="w-full">
-                                  <div
-                                    className={cn(
-                                      "flex items-center justify-between w-full px-2 py-2 rounded-md text-sm transition-colors",
-                                      "hover:bg-muted/50"
-                                    )}
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <FileText className="w-3.5 h-3.5 text-muted-foreground" />
-                                      <span className="text-sm font-medium">{standaloneGroup.label}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary">
-                                        {standaloneGroup.pms.length}
-                                      </span>
+                          if (!freqData) return null;
+                          
+                          const freqCount = getFrequencyCount(freqData);
+                          
+                          return (
+                            <Collapsible
+                              key={freqKey}
+                              open={expandedFrequencies.includes(freqKey)}
+                              onOpenChange={() => toggleFrequency(freqKey)}
+                            >
+                              <CollapsibleTrigger className="w-full">
+                                <div
+                                  className={cn(
+                                    "flex items-center justify-between w-full px-2 py-2 rounded-md text-sm transition-colors",
+                                    "hover:bg-muted/50",
+                                    activeView === freqKey && "bg-primary/10 text-primary"
+                                  )}
+                                  onClick={(e) => {
+                                    if (freqCount === 0) {
+                                      e.stopPropagation();
+                                      setActiveView(freqKey as ViewType);
+                                    }
+                                  }}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                                    <span className="text-sm">{freq.label}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <span className={cn(
+                                      "text-xs px-1.5 py-0.5 rounded",
+                                      freqCount > 0 
+                                        ? "bg-primary/10 text-primary" 
+                                        : "bg-muted text-muted-foreground"
+                                    )}>
+                                      {freqCount}
+                                    </span>
+                                    {freqCount > 0 && (
                                       <ChevronRight 
                                         className={cn(
                                           "w-3.5 h-3.5 text-muted-foreground transition-transform",
-                                          expandedFrequencies.includes(standaloneKey) && "rotate-90"
+                                          expandedFrequencies.includes(freqKey) && "rotate-90"
                                         )} 
                                       />
-                                    </div>
+                                    )}
                                   </div>
-                                </CollapsibleTrigger>
+                                </div>
+                              </CollapsibleTrigger>
+                              {freqCount > 0 && (
                                 <CollapsibleContent>
                                   <div className="ml-5 py-1 pl-3 border-l border-border space-y-1">
-                                    {standaloneGroup.pms.map((pm: any) => (
+                                    {freqData.pms && freqData.pms.length > 0 && freqData.pms.map((pm) => (
                                       <button
                                         key={pm.id}
                                         onClick={() => setActiveView(pm.id as ViewType)}
@@ -1144,22 +1029,123 @@ const PMSidebarContent = ({
                                         {pm.name}
                                       </button>
                                     ))}
+                                    {freqData.subgroups && freqData.subgroups.length > 0 && freqData.subgroups.map((subgroup) => (
+                                      <Collapsible
+                                        key={subgroup.id}
+                                        open={expandedFrequencies.includes(`${freqKey}-${subgroup.id}`)}
+                                        onOpenChange={() => toggleFrequency(`${freqKey}-${subgroup.id}`)}
+                                      >
+                                        <CollapsibleTrigger className="w-full">
+                                          <div className="flex items-center justify-between w-full px-2 py-1.5 rounded-md text-xs transition-colors hover:bg-muted/50">
+                                            <span className="font-medium text-muted-foreground">{subgroup.label}</span>
+                                            <div className="flex items-center gap-2">
+                                              <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary">
+                                                {subgroup.pms.length}
+                                              </span>
+                                              <ChevronRight 
+                                                className={cn(
+                                                  "w-3 h-3 text-muted-foreground transition-transform",
+                                                  expandedFrequencies.includes(`${freqKey}-${subgroup.id}`) && "rotate-90"
+                                                )} 
+                                              />
+                                            </div>
+                                          </div>
+                                        </CollapsibleTrigger>
+                                        <CollapsibleContent>
+                                          <div className="ml-3 py-1 pl-2 border-l border-border/50 space-y-1">
+                                            {subgroup.pms.map((pm) => (
+                                              <button
+                                                key={pm.id}
+                                                onClick={() => setActiveView(pm.id as ViewType)}
+                                                className={cn(
+                                                  "text-xs text-left w-full py-1.5 px-2 rounded transition-colors",
+                                                  activeView === pm.id 
+                                                    ? "text-primary bg-primary/10" 
+                                                    : "text-foreground hover:text-primary hover:bg-muted/50"
+                                                )}
+                                              >
+                                                {pm.name}
+                                              </button>
+                                            ))}
+                                          </div>
+                                        </CollapsibleContent>
+                                      </Collapsible>
+                                    ))}
+                                    <button className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 py-1 transition-colors">
+                                      <Plus className="w-3 h-3" />
+                                      Add PM
+                                    </button>
                                   </div>
                                 </CollapsibleContent>
-                              </Collapsible>
-                            );
-                          })}
-                        </div>
-                      </CollapsibleContent>
-                    )}
+                              )}
+                            </Collapsible>
+                          );
+                        })}
+                        
+                        {/* Render standalone groups */}
+                        {(discipline as any).standaloneGroups?.map((standaloneGroup: any) => {
+                          const standaloneKey = `${discipline.id}-standalone-${standaloneGroup.id}`;
+                          return (
+                            <Collapsible
+                              key={standaloneKey}
+                              open={expandedFrequencies.includes(standaloneKey)}
+                              onOpenChange={() => toggleFrequency(standaloneKey)}
+                            >
+                              <CollapsibleTrigger className="w-full">
+                                <div
+                                  className={cn(
+                                    "flex items-center justify-between w-full px-2 py-2 rounded-md text-sm transition-colors",
+                                    "hover:bg-muted/50"
+                                  )}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <FileText className="w-3.5 h-3.5 text-muted-foreground" />
+                                    <span className="text-sm font-medium">{standaloneGroup.label}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary">
+                                      {standaloneGroup.pms.length}
+                                    </span>
+                                    <ChevronRight 
+                                      className={cn(
+                                        "w-3.5 h-3.5 text-muted-foreground transition-transform",
+                                        expandedFrequencies.includes(standaloneKey) && "rotate-90"
+                                      )} 
+                                    />
+                                  </div>
+                                </div>
+                              </CollapsibleTrigger>
+                              <CollapsibleContent>
+                                <div className="ml-5 py-1 pl-3 border-l border-border space-y-1">
+                                  {standaloneGroup.pms.map((pm: any) => (
+                                    <button
+                                      key={pm.id}
+                                      onClick={() => setActiveView(pm.id as ViewType)}
+                                      className={cn(
+                                        "text-xs text-left w-full py-1.5 px-2 rounded transition-colors",
+                                        activeView === pm.id 
+                                          ? "text-primary bg-primary/10" 
+                                          : "text-foreground hover:text-primary hover:bg-muted/50"
+                                      )}
+                                    >
+                                      {pm.name}
+                                    </button>
+                                  ))}
+                                </div>
+                              </CollapsibleContent>
+                            </Collapsible>
+                          );
+                        })}
+                      </div>
+                    </CollapsibleContent>
                   </Collapsible>
                 );
               })}
             </div>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+          </div>
+        )}
+      </div>
+    </aside>
   );
 };
 
