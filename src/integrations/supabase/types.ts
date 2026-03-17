@@ -276,6 +276,84 @@ export type Database = {
           },
         ]
       }
+      plant_intelligence_rules: {
+        Row: {
+          added_by: string
+          applies_to: string
+          area: string
+          asset: string
+          because_reason: string
+          created_at: string
+          description: string
+          id: string
+          if_condition: string
+          impact_level: string
+          related_asset: string
+          requires_crane: boolean
+          requires_isolation: boolean
+          requires_permit: boolean
+          requires_scaffold: boolean
+          requires_shutdown: boolean
+          rule_id: string
+          rule_type: string
+          status: string
+          then_action: string
+          title: string
+          updated_at: string
+          voice_transcript: string
+        }
+        Insert: {
+          added_by?: string
+          applies_to?: string
+          area?: string
+          asset?: string
+          because_reason?: string
+          created_at?: string
+          description?: string
+          id?: string
+          if_condition?: string
+          impact_level?: string
+          related_asset?: string
+          requires_crane?: boolean
+          requires_isolation?: boolean
+          requires_permit?: boolean
+          requires_scaffold?: boolean
+          requires_shutdown?: boolean
+          rule_id?: string
+          rule_type?: string
+          status?: string
+          then_action?: string
+          title?: string
+          updated_at?: string
+          voice_transcript?: string
+        }
+        Update: {
+          added_by?: string
+          applies_to?: string
+          area?: string
+          asset?: string
+          because_reason?: string
+          created_at?: string
+          description?: string
+          id?: string
+          if_condition?: string
+          impact_level?: string
+          related_asset?: string
+          requires_crane?: boolean
+          requires_isolation?: boolean
+          requires_permit?: boolean
+          requires_scaffold?: boolean
+          requires_shutdown?: boolean
+          rule_id?: string
+          rule_type?: string
+          status?: string
+          then_action?: string
+          title?: string
+          updated_at?: string
+          voice_transcript?: string
+        }
+        Relationships: []
+      }
       pm_asset_link_staging: {
         Row: {
           asset_match_key: string | null

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield, PackageSearch, FileInput, Box } from "lucide-react";
+import { TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen, ShoppingCart, Building2, CalendarClock, LogOut, Shield, PackageSearch, FileInput, Box, Brain } from "lucide-react";
 import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -93,6 +93,14 @@ const ALL_SECTIONS = [
     icon: Box,
     href: "/3d-concepts",
     tabKey: "3d-concepts",
+  },
+  {
+    title: "Plant Intelligence",
+    subtitle: "Site Logic Knowledge Base",
+    description: "Supervisor knowledge, dependencies, interactions, safety rules, and lessons learned — captured by voice or form.",
+    icon: Brain,
+    href: "/plant-intelligence",
+    tabKey: "plant-intelligence",
   },
 ];
 
