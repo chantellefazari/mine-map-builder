@@ -29,6 +29,7 @@ const SupplierPortal = lazy(() => import("./pages/SupplierPortal"));
 const TrackShipment = lazy(() => import("./pages/TrackShipment"));
 const ThreeDeeConcepts = lazy(() => import("./pages/ThreeDeeConcepts"));
 const PlantIntelligence = lazy(() => import("./pages/PlantIntelligence"));
+const MissionControl = lazy(() => import("./pages/MissionControl"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
