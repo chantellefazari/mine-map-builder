@@ -39,6 +39,14 @@ const ALL_SECTIONS = [
     tabKey: "work-order-templates",
   },
   {
+    title: "Work Requests",
+    subtitle: "Field Submissions",
+    description: "Field-raised work requests with hazard ID, photos, and supervisor approval to convert to work orders.",
+    icon: FileInput,
+    href: "/work-request-templates",
+    tabKey: "work-order-templates",
+  },
+  {
     title: "Suppliers & Procurement",
     subtitle: "Vendor & Parts Foundation",
     description: "Master supplier contacts and OEM parts catalogue. Foundation for procurement and spares standardisation.",
