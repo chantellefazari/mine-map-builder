@@ -112,9 +112,6 @@ const POTracker = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="container py-4">
-          <div className="mb-3">
-            <PageNavDropdown />
-          </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">

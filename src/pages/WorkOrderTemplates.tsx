@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ClipboardList, Plus, Trash2, Loader2, Search } from "lucide-react";
-import { PageNavDropdown } from "@/components/PageNavDropdown";
+
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";

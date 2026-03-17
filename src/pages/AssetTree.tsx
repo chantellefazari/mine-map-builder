@@ -33,7 +33,7 @@ const AssetTree = () => {
       <header className="border-b border-border bg-card">
         <div className="container py-6">
           <div className="flex items-center gap-4">
-            <PageNavDropdown />
+            
             <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shadow-gold">
               <span className="text-primary-foreground font-bold text-lg">TC</span>
             </div>

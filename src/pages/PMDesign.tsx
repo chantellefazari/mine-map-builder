@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FileText, Calendar, ChevronRight, Plus, PanelLeftClose, PanelLeft, Wrench, Zap, Printer, Truck, ClipboardCheck, RefreshCw, Database, Download, Loader2 } from "lucide-react";
 import { exportSectionsToPdf } from "@/utils/sectionPdfExport";
 import { PDF_EXPORT_OPTS } from "@/utils/pdfExportStandard";
-import { PageNavDropdown } from "@/components/PageNavDropdown";
+
 import { supabase } from "@/integrations/supabase/client";
 import { seedPMTasks } from "@/utils/seedPMTasks";
 import { exportPMWorkbook } from "@/utils/exportPMWorkbook";
