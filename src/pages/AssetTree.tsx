@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FLBreadcrumbProvider } from "@/components/hierarchy/FLBreadcrumbContext";
 import { FLBreadcrumbBar } from "@/components/hierarchy/FLBreadcrumbBar";
-import { PageNavDropdown } from "@/components/PageNavDropdown";
+
 import { AssetTree as AssetTreeComponent } from "@/components/hierarchy/AssetTree";
 import { Legend } from "@/components/hierarchy/Legend";
 import { AssetSearch } from "@/components/hierarchy/AssetSearch";
@@ -33,7 +33,7 @@ const AssetTree = () => {
       <header className="border-b border-border bg-card">
         <div className="container py-6">
           <div className="flex items-center gap-4">
-            <PageNavDropdown />
+            
             <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shadow-gold">
               <span className="text-primary-foreground font-bold text-lg">TC</span>
             </div>

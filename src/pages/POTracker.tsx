@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Plus, Pencil, Trash2, PackageSearch, ChevronDown, ChevronRight, Search, X, DollarSign, Building2, Wrench } from "lucide-react";
-import { PageNavDropdown } from "@/components/PageNavDropdown";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -112,9 +112,6 @@ const POTracker = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="container py-4">
-          <div className="mb-3">
-            <PageNavDropdown />
-          </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">

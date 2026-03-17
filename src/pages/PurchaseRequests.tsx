@@ -1,5 +1,5 @@
 import { FileText, Send, Package, History } from "lucide-react";
-import { PageNavDropdown } from "@/components/PageNavDropdown";
+
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PurchaseRequestRegister } from "@/components/purchase-requests/PurchaseRequestRegister";
 import { QuoteRequestsTab } from "@/components/purchase-requests/QuoteRequestsTab";
@@ -12,7 +12,7 @@ const PurchaseRequests = () => {
       <header className="border-b border-border bg-card">
         <div className="container py-6">
           <div className="flex items-center gap-4">
-            <PageNavDropdown />
+            
             <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shadow-gold">
               <span className="text-primary-foreground font-bold text-lg">TC</span>
             </div>
