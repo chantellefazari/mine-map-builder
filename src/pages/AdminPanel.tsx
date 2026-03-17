@@ -30,13 +30,17 @@ const ALL_TABS = [
   { key: "maintenance-foundations", label: "Maintenance Process Foundations" },
   { key: "asset-tree", label: "Asset Tree" },
   { key: "pm-design", label: "Preventive Maintenance (PM) Design" },
-  { key: "work-order-templates", label: "Work Order Templates" },
+  { key: "work-order-templates", label: "Work Orders & Work Requests" },
   { key: "components-oem", label: "Components & OEM Data" },
   { key: "suppliers-procurement", label: "Suppliers & Procurement" },
   { key: "stores-warehouse-design", label: "Stores & Warehouse Design" },
   { key: "critical-spares", label: "Critical Spares Catalogue" },
   { key: "site-spares", label: "Site Spares Catalogue" },
   { key: "planning-revision", label: "Planning & Revision Control" },
+  { key: "po-tracker", label: "PO Register" },
+  { key: "purchase-requests", label: "Purchase Requests" },
+  { key: "3d-concepts", label: "3D Concepts" },
+  { key: "plant-intelligence", label: "Plant Intelligence" },
 ];
 
 interface UserRecord {
