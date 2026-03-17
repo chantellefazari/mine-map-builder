@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Plus, Pencil, Trash2, PackageSearch, ChevronDown, ChevronRight, Search, X, DollarSign, Building2, Wrench } from "lucide-react";
-import { PageNavDropdown } from "@/components/PageNavDropdown";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
