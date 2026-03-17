@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Building2, Package, FlaskConical } from "lucide-react";
-import { PageNavDropdown } from "@/components/PageNavDropdown";
+
 import { Button } from "@/components/ui/button";
 import { SupplierRegisterSection } from "@/components/suppliers-procurement/SupplierRegisterSection";
 import { SupplierCatalogueSection } from "@/components/suppliers-procurement/SupplierCatalogueSection";
