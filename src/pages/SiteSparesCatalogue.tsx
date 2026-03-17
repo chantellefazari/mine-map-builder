@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Package, FileText } from "lucide-react";
-import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { SiteSparesCatalogue as SiteSparesGrid } from "@/components/site-spares/SiteSparesCatalogue";
 import { BatchPDFDownloads } from "@/components/site-spares/BatchPDFDownloads";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,7 +11,6 @@ const SiteSparesCatalogue = () => {
       <header className="border-b border-border bg-card">
         <div className="container py-6">
           <div className="flex items-center gap-4">
-            <PageNavDropdown />
             <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center shadow-gold">
               <span className="text-primary-foreground font-bold text-lg">TC</span>
             </div>
@@ -21,7 +19,7 @@ const SiteSparesCatalogue = () => {
                 Site Spares Catalogue
               </h1>
               <p className="text-muted-foreground text-sm">
-                Visual inventory catalogue – click cards to upload photos
+                Visual inventory catalogue - click cards to upload photos
               </p>
             </div>
           </div>

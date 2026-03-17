@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Warehouse, AlertTriangle, Download, Printer } from "lucide-react";
-import { PageNavDropdown } from "@/components/PageNavDropdown";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { StoresDesignPrinciples } from "@/components/stores-warehouse/StoresDesignPrinciples";
@@ -22,10 +21,7 @@ const StoresWarehouseDesign = () => {
       {/* Header */}
       <header className="border-b border-border bg-card sticky top-0 z-10">
         <div className="container py-4">
-          <div className="flex items-center gap-4">
-            <PageNavDropdown />
-          </div>
-          <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Warehouse className="w-5 h-5 text-primary" />

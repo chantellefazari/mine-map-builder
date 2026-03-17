@@ -873,11 +873,6 @@ const PMSidebarContent = ({
           </Button>
         </div>
 
-        {/* Back to Home */}
-        <div className="px-4 mb-6">
-          <PageNavDropdown />
-        </div>
-
         {/* Header */}
         {!isCollapsed && (
           <div className="px-4 mb-6">
