@@ -10,13 +10,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ImplementationPlanDocument } from "./ImplementationPlanDocument";
-import { StoresDesignPrinciples } from "./StoresDesignPrinciples";
-import { ContainerStockingScopeSection } from "./ContainerStockingScopeSection";
-import { StoreLocationCodingSection } from "./StoreLocationCodingSection";
-import { DesignInputsSection } from "./DesignInputsSection";
-import { CapacityAnalysis } from "./CapacityAnalysis";
-import { StockControlProcedure } from "./StockControlProcedure";
+import {
+  CapacityAnalysisSummarySection,
+  ContainerStockingScopeSummarySection,
+  DesignInputsSummarySection,
+  StockControlProcedureSummarySection,
+  StoreLocationCodingSummarySection,
+  StoresDesignPrinciplesSummarySection,
+  StoresImplementationSummarySection,
+} from "./StoresPdfCompactSections";
 
 interface PrintAllStoresModalProps {
   isOpen: boolean;
@@ -42,13 +44,13 @@ const SECTION_TITLES = [
 ] as const;
 
 const SECTION_COMPONENTS: ComponentType[] = [
-  ImplementationPlanDocument,
-  StoresDesignPrinciples,
-  ContainerStockingScopeSection,
-  StoreLocationCodingSection,
-  DesignInputsSection,
-  CapacityAnalysis,
-  StockControlProcedure,
+  StoresImplementationSummarySection,
+  StoresDesignPrinciplesSummarySection,
+  ContainerStockingScopeSummarySection,
+  StoreLocationCodingSummarySection,
+  DesignInputsSummarySection,
+  CapacityAnalysisSummarySection,
+  StockControlProcedureSummarySection,
 ];
 
 const waitFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
