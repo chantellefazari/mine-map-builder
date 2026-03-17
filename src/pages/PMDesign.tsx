@@ -771,7 +771,7 @@ const PMDesign = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="flex w-full h-full bg-background">
         <PMSidebarContent 
           activeView={activeView} 
           setActiveView={setActiveView}
