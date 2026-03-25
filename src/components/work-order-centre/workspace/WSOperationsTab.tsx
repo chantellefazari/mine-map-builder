@@ -132,7 +132,7 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
                     <SelectTrigger className="h-7 text-xs"><SelectValue placeholder="-" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="none">-</SelectItem>
-                      {["Mechanical", "Electrical", "Instrumentation", "Boilermaker", "General"].map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                      {["Mechanical", "Electrical"].map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
