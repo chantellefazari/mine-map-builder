@@ -19,7 +19,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
     asset_id: "",
     functional_location: "",
     problem_description: "",
-    priority: "Normal",
+    priority: "Medium",
     work_type: "Repair",
     trade: "",
     requested_by: "",
