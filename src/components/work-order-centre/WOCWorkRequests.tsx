@@ -148,6 +148,58 @@ export function WOCWorkRequests({ onOpenWorkspace }: Props) {
         <TabsContent value="history" className="mt-4">{renderList(filtered("history"), false)}</TabsContent>
       </Tabs>
 
+      {/* Full Work Request Review Dialog */}
+      <Dialog open={!!viewingWr} onOpenChange={(o) => !o && setViewingWr(null)}>
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+          {viewingWr && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-base flex items-center gap-2">
+                  {viewingWr.wr_number}
+                  <Badge variant="secondary" className="text-[10px]">{viewingWr.status}</Badge>
+                  <Badge variant="outline" className="text-[10px]">{viewingWr.priority}</Badge>
+                </DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-4 text-sm">
+                <div className="grid grid-cols-2 gap-4">
+                  <DetailField label="Asset Number" value={viewingWr.asset_id} />
+                  <DetailField label="Equipment Description" value={viewingWr.functional_location} />
+                  <DetailField label="Request Type" value={viewingWr.work_type} />
+                  <DetailField label="Priority" value={viewingWr.priority} />
+                  <DetailField label="Trade" value={viewingWr.trade} />
+                  <DetailField label="Requested By" value={viewingWr.requested_by} />
+                  <DetailField label="Date Raised" value={viewingWr.date_raised ? format(new Date(viewingWr.date_raised), "dd/MM/yyyy HH:mm") : "-"} />
+                  <DetailField label="Isolation Required" value={viewingWr.isolation_required ? "Yes" : "No"} />
+                  <DetailField label="Hazard Identification" value={viewingWr.from_hazard_id ? "Yes" : "No"} />
+                </div>
+
+                <DetailBlock label="Description" value={viewingWr.problem_description} />
+                <DetailBlock label="Scope of Works" value={viewingWr.scope_of_works} />
+
+                {viewingWr.linked_wo_id && (
+                  <div className="p-3 bg-muted/50 rounded-lg border border-border">
+                    <p className="text-xs font-semibold text-muted-foreground">Linked Work Order</p>
+                    <p className="text-sm font-mono">{viewingWr.linked_wo_id}</p>
+                  </div>
+                )}
+              </div>
+
+              {(viewingWr.status === "Submitted" || viewingWr.status === "Pending Review" || viewingWr.status === "Draft") && (
+                <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                  <Button variant="destructive" size="sm" className="text-xs" onClick={() => { handleReject(viewingWr); setViewingWr(null); }}>
+                    Reject
+                  </Button>
+                  <Button size="sm" className="text-xs" onClick={() => { setViewingWr(null); handleApproveClick(viewingWr); }}>
+                    Approve & Create Work Order
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
       <WOTypeSelectDialog
         open={!!woTypeWr}
         onClose={() => setWoTypeWr(null)}
@@ -155,6 +207,26 @@ export function WOCWorkRequests({ onOpenWorkspace }: Props) {
         title="Approve & Create Work Order"
         description={woTypeWr ? `Converting ${woTypeWr.wr_number} into a Work Order. Select the Work Order Type:` : ""}
       />
+    </div>
+  );
+}
+
+function DetailField({ label, value }: { label: string; value?: string }) {
+  return (
+    <div className="space-y-0.5">
+      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>
+      <p className="text-sm text-foreground">{value || "-"}</p>
+    </div>
+  );
+}
+
+function DetailBlock({ label, value }: { label: string; value?: string }) {
+  return (
+    <div className="space-y-1">
+      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>
+      <div className="p-3 bg-muted/30 rounded-lg border border-border min-h-[48px]">
+        <p className="text-sm text-foreground whitespace-pre-wrap">{value || "-"}</p>
+      </div>
     </div>
   );
 }
