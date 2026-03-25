@@ -9,11 +9,9 @@ import { WorkOrder } from "@/hooks/useWorkOrders";
 interface Operation {
   id: string;
   lineNo: number;
-  title: string;
   description: string;
   trade: string;
   estimatedHours: number;
-  crewSize: number;
   requiresIsolation: boolean;
   requiresShutdown: boolean;
   parallelAllowed: boolean;
@@ -29,11 +27,9 @@ interface Props {
 const newOp = (lineNo: number): Operation => ({
   id: crypto.randomUUID(),
   lineNo,
-  title: "",
   description: "",
   trade: "",
   estimatedHours: 0,
-  crewSize: 1,
   requiresIsolation: false,
   requiresShutdown: false,
   parallelAllowed: false,
@@ -69,7 +65,7 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
 
   const duplicateOp = (op: Operation) => {
     const idx = ops.findIndex((o) => o.id === op.id);
-    const copy = { ...op, id: crypto.randomUUID(), lineNo: ops.length + 1, title: `${op.title} (Copy)` };
+    const copy = { ...op, id: crypto.randomUUID(), lineNo: ops.length + 1, description: `${op.description} (Copy)` };
     const updated = [...ops.slice(0, idx + 1), copy, ...ops.slice(idx + 1)].map((o, i) => ({ ...o, lineNo: i + 1 }));
     persist(updated);
   };
@@ -79,7 +75,7 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
     persist(updated);
   };
 
-  const totalHours = ops.reduce((sum, o) => sum + (o.estimatedHours * o.crewSize), 0);
+  const totalHours = ops.reduce((sum, o) => sum + o.estimatedHours, 0);
 
   return (
     <div className="space-y-4">
@@ -105,10 +101,10 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
                 <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                 <span className="text-xs font-bold text-muted-foreground w-8">#{op.lineNo}</span>
                 <Input
-                  value={op.title}
-                  onChange={(e) => updateOp(op.id, "title", e.target.value)}
-                  placeholder="Operation title"
-                  className="h-8 text-sm font-medium flex-1"
+                  value={op.description}
+                  onChange={(e) => updateOp(op.id, "description", e.target.value)}
+                  placeholder="Operation description"
+                  className="h-8 text-sm flex-1"
                 />
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => duplicateOp(op)} title="Duplicate">
                   <Copy className="w-3 h-3" />
@@ -118,14 +114,7 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
                 </Button>
               </div>
 
-              <Input
-                value={op.description}
-                onChange={(e) => updateOp(op.id, "description", e.target.value)}
-                placeholder="Detailed task description"
-                className="h-8 text-xs"
-              />
-
-              <div className="grid grid-cols-4 lg:grid-cols-6 gap-2">
+              <div className="grid grid-cols-3 lg:grid-cols-5 gap-2">
                 <div className="space-y-1">
                   <span className="text-[10px] text-muted-foreground font-medium">Trade</span>
                   <Select value={op.trade || "none"} onValueChange={(v) => updateOp(op.id, "trade", v === "none" ? "" : v)}>
@@ -139,10 +128,6 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
                 <div className="space-y-1">
                   <span className="text-[10px] text-muted-foreground font-medium">Est. Hours</span>
                   <Input type="number" value={op.estimatedHours} onChange={(e) => updateOp(op.id, "estimatedHours", parseFloat(e.target.value) || 0)} className="h-7 text-xs" />
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[10px] text-muted-foreground font-medium">Crew Size</span>
-                  <Input type="number" value={op.crewSize} onChange={(e) => updateOp(op.id, "crewSize", parseInt(e.target.value) || 1)} className="h-7 text-xs" />
                 </div>
                 <div className="space-y-1">
                   <span className="text-[10px] text-muted-foreground font-medium">Predecessor</span>
