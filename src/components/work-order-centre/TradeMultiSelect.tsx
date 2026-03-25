@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { X, ChevronDown } from "lucide-react";
 
-const TRADES = ["Mechanical", "Electrical", "Instrumentation", "Boilermaker", "General"];
+const TRADES = ["Mechanical", "Electrical", "Cranes"];
 
 interface TradeMultiSelectProps {
   value: string;
