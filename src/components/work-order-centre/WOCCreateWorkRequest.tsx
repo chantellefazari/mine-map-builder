@@ -19,12 +19,14 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
     asset_id: "",
     functional_location: "",
     problem_description: "",
+    scope_of_works: "",
     priority: "Medium",
     work_type: "Repair",
     trade: "",
     requested_by: "",
     isolation_required: false,
     from_hazard_id: false,
+    notes: "",
   });
 
   const set = (field: string, value: any) => setForm((f) => ({ ...f, [field]: value }));
