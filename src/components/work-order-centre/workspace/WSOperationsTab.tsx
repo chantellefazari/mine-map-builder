@@ -9,11 +9,9 @@ import { WorkOrder } from "@/hooks/useWorkOrders";
 interface Operation {
   id: string;
   lineNo: number;
-  title: string;
   description: string;
   trade: string;
   estimatedHours: number;
-  crewSize: number;
   requiresIsolation: boolean;
   requiresShutdown: boolean;
   parallelAllowed: boolean;
