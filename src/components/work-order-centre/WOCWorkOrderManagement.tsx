@@ -355,6 +355,14 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
       {perfTab === "analytics" && <WOCAnalyticsTab workOrders={workOrders} />}
       {perfTab === "pm-forms" && <WOCPMFormsTab />}
       {perfTab === "compliance" && <WOCComplianceTab />}
+
+      <WOTypeSelectDialog
+        open={showWoTypeDialog}
+        onClose={() => setShowWoTypeDialog(false)}
+        onConfirm={handleCreateConfirm}
+        title="Create Work Order"
+        description="Select the Work Order Type to begin planning:"
+      />
     </div>
   );
 }
