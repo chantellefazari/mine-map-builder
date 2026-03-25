@@ -2355,6 +2355,7 @@ export type Database = {
           id: string
           isolation_required: boolean
           linked_wo_id: string | null
+          notes: string
           photo_urls: string[]
           priority: string
           problem_description: string
@@ -2377,6 +2378,7 @@ export type Database = {
           id?: string
           isolation_required?: boolean
           linked_wo_id?: string | null
+          notes?: string
           photo_urls?: string[]
           priority?: string
           problem_description?: string
@@ -2399,6 +2401,7 @@ export type Database = {
           id?: string
           isolation_required?: boolean
           linked_wo_id?: string | null
+          notes?: string
           photo_urls?: string[]
           priority?: string
           problem_description?: string
