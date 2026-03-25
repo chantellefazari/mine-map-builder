@@ -117,7 +117,7 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
         if (existingDescs.has(desc.toLowerCase())) continue;
         await addPart.mutateAsync({
           work_order_id: woId,
-          part_number: comp.componentType || "",
+          part_number: "",
           part_description: desc,
           quantity_required: 1,
         });
