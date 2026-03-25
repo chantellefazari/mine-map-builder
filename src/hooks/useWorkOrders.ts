@@ -12,6 +12,7 @@ export interface WorkOrder {
   functional_location: string;
   problem_description: string;
   work_performed: string;
+  scope_of_works: string;
   parts_used: string;
   trade: string;
   requested_by: string;
