@@ -19,9 +19,8 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
     asset_id: "",
     functional_location: "",
     problem_description: "",
-    scope_of_works: "",
     priority: "Normal",
-    work_type: "Breakdown",
+    work_type: "Repair",
     trade: "",
     requested_by: "",
     isolation_required: false,
@@ -32,7 +31,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
 
   const handleSubmit = async () => {
     if (!form.problem_description.trim()) {
-      toast.error("Please enter a description");
+      toast.error("Please describe what was observed");
       return;
     }
     setSaving(true);
@@ -48,7 +47,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
       toast.success(`Work Request ${wr.wr_number} submitted`);
       setForm({
         asset_id: "", functional_location: "", problem_description: "",
-        scope_of_works: "", priority: "Normal", work_type: "Breakdown",
+        priority: "Normal", work_type: "Repair",
         trade: "", requested_by: "", isolation_required: false, from_hazard_id: false,
       });
       onCreated();
@@ -61,42 +60,47 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
 
   return (
     <div className="max-w-3xl space-y-6">
+      <p className="text-xs text-muted-foreground">
+        Raise an observation, defect, or request for maintenance attention. Keep it simple - describe what you see.
+      </p>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Asset Number</Label>
           <Input value={form.asset_id} onChange={(e) => set("asset_id", e.target.value)} placeholder="e.g. TC-200-PP-001" className="h-9 text-sm" />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold">Functional Location</Label>
-          <Input value={form.functional_location} onChange={(e) => set("functional_location", e.target.value)} placeholder="e.g. 200-GRN" className="h-9 text-sm" />
+          <Label className="text-xs font-semibold">Equipment Description</Label>
+          <Input value={form.functional_location} onChange={(e) => set("functional_location", e.target.value)} placeholder="e.g. Primary Crusher Feed Chute" className="h-9 text-sm" />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold">Priority</Label>
-          <Select value={form.priority} onValueChange={(v) => set("priority", v)}>
-            <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {["Low", "Normal", "High", "Critical", "Emergency"].map((p) => (
-                <SelectItem key={p} value={p}>{p}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs font-semibold">Work Type</Label>
+          <Label className="text-xs font-semibold">Request Type</Label>
           <Select value={form.work_type} onValueChange={(v) => set("work_type", v)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {["Breakdown", "Planned", "Shutdown", "Inspection", "Modification"].map((t) => (
+              {["Inspect", "Repair", "Replace", "Monitor"].map((t) => (
                 <SelectItem key={t} value={t}>{t}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold">Trade</Label>
-          <Select value={form.trade || ""} onValueChange={(v) => set("trade", v)}>
-            <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Select trade" /></SelectTrigger>
+          <Label className="text-xs font-semibold">Priority</Label>
+          <Select value={form.priority} onValueChange={(v) => set("priority", v)}>
+            <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
+              {["Low", "Normal", "High", "Critical"].map((p) => (
+                <SelectItem key={p} value={p}>{p}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold">Trade (optional)</Label>
+          <Select value={form.trade || "none"} onValueChange={(v) => set("trade", v === "none" ? "" : v)}>
+            <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Select" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">-</SelectItem>
               {["Mechanical", "Electrical", "Instrumentation", "Boilermaker", "General"].map((t) => (
                 <SelectItem key={t} value={t}>{t}</SelectItem>
               ))}
@@ -105,18 +109,13 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Requested By</Label>
-          <Input value={form.requested_by} onChange={(e) => set("requested_by", e.target.value)} placeholder="Name" className="h-9 text-sm" />
+          <Input value={form.requested_by} onChange={(e) => set("requested_by", e.target.value)} placeholder="Your name" className="h-9 text-sm" />
         </div>
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-xs font-semibold">Problem Description</Label>
-        <Textarea value={form.problem_description} onChange={(e) => set("problem_description", e.target.value)} placeholder="Describe the issue or work required..." rows={3} className="text-sm" />
-      </div>
-
-      <div className="space-y-1.5">
-        <Label className="text-xs font-semibold">Scope of Works</Label>
-        <Textarea value={form.scope_of_works} onChange={(e) => set("scope_of_works", e.target.value)} placeholder="Scope details (optional)..." rows={3} className="text-sm" />
+        <Label className="text-xs font-semibold">What did you observe?</Label>
+        <Textarea value={form.problem_description} onChange={(e) => set("problem_description", e.target.value)} placeholder="Describe the issue, defect, or observation..." rows={3} className="text-sm" />
       </div>
 
       <div className="flex items-center gap-6">
