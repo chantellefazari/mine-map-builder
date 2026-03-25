@@ -70,11 +70,17 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Asset Number</Label>
-          <Input value={form.asset_id} onChange={(e) => set("asset_id", e.target.value)} placeholder="e.g. TC-200-PP-001" className="h-9 text-sm" />
+          <WRAssetSearch
+            value={form.asset_id}
+            onSelect={(assetId, assetName) => {
+              set("asset_id", assetId);
+              set("functional_location", assetName);
+            }}
+          />
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Equipment Description</Label>
-          <Input value={form.functional_location} onChange={(e) => set("functional_location", e.target.value)} placeholder="e.g. Primary Crusher Feed Chute" className="h-9 text-sm" />
+          <Input value={form.functional_location} onChange={(e) => set("functional_location", e.target.value)} placeholder="Auto-filled from asset search" className="h-9 text-sm" readOnly />
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Request Type</Label>
