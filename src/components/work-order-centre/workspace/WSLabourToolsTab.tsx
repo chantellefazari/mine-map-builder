@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -49,13 +49,32 @@ export function WSLabourToolsTab({ wo, onUpdate }: Props) {
     return [];
   });
 
-  const addLabour = () => setLabourRows((r) => [...r, { id: crypto.randomUUID(), trade: "", personnel: 1, hoursPerPerson: 0, type: "Internal", crew: "", notes: "" }]);
-  const removeLabour = (id: string) => setLabourRows((r) => r.filter((l) => l.id !== id));
-  const updateLabour = (id: string, field: string, value: any) => setLabourRows((r) => r.map((l) => l.id === id ? { ...l, [field]: value } : l));
+  const labourDebounce = useRef<ReturnType<typeof setTimeout>>();
+  const toolDebounce = useRef<ReturnType<typeof setTimeout>>();
 
-  const addTool = () => setToolRows((r) => [...r, { id: crypto.randomUUID(), name: "", quantity: 1, forOperation: "", specialAccess: false, lifting: false, permitRelated: false, notes: "" }]);
-  const removeTool = (id: string) => setToolRows((r) => r.filter((t) => t.id !== id));
-  const updateTool = (id: string, field: string, value: any) => setToolRows((r) => r.map((t) => t.id === id ? { ...t, [field]: value } : t));
+  const persistLabour = (rows: LabourRow[]) => {
+    setLabourRows(rows);
+    clearTimeout(labourDebounce.current);
+    labourDebounce.current = setTimeout(() => {
+      onUpdate({ labour_hours: rows } as any);
+    }, 500);
+  };
+
+  const persistTools = (rows: ToolRow[]) => {
+    setToolRows(rows);
+    clearTimeout(toolDebounce.current);
+    toolDebounce.current = setTimeout(() => {
+      onUpdate({ required_tooling: JSON.stringify(rows) } as any);
+    }, 500);
+  };
+
+  const addLabour = () => persistLabour([...labourRows, { id: crypto.randomUUID(), trade: "", personnel: 1, hoursPerPerson: 0, type: "Internal", crew: "", notes: "" }]);
+  const removeLabour = (id: string) => persistLabour(labourRows.filter((l) => l.id !== id));
+  const updateLabour = (id: string, field: string, value: any) => persistLabour(labourRows.map((l) => l.id === id ? { ...l, [field]: value } : l));
+
+  const addTool = () => persistTools([...toolRows, { id: crypto.randomUUID(), name: "", quantity: 1, forOperation: "", specialAccess: false, lifting: false, permitRelated: false, notes: "" }]);
+  const removeTool = (id: string) => persistTools(toolRows.filter((t) => t.id !== id));
+  const updateTool = (id: string, field: string, value: any) => persistTools(toolRows.map((t) => t.id === id ? { ...t, [field]: value } : t));
 
   const totalLabourHours = labourRows.reduce((s, r) => s + r.personnel * r.hoursPerPerson, 0);
 
