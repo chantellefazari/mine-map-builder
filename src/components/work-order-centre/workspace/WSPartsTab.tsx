@@ -37,12 +37,22 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
   const { data: spares } = useQuery({
     queryKey: ["site-spares-catalogue"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("site_spares")
-        .select("id, part_number, description, manufacturer, qty_on_hand, bin_location, category")
-        .order("description");
-      if (error) throw error;
-      return data ?? [];
+      let allRows: any[] = [];
+      let from = 0;
+      const pageSize = 1000;
+      while (true) {
+        const { data, error } = await supabase
+          .from("site_spares")
+          .select("id, part_number, description, manufacturer, qty_on_hand, bin_location, category")
+          .order("description")
+          .range(from, from + pageSize - 1);
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        allRows = allRows.concat(data);
+        if (data.length < pageSize) break;
+        from += pageSize;
+      }
+      return allRows;
     },
     staleTime: 60_000,
   });
