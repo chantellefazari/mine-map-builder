@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { WRAssetSearch } from "../WRAssetSearch";
 import { WorkOrder } from "@/hooks/useWorkOrders";
-import { WorkOrder } from "@/hooks/useWorkOrders";
 
 interface Props {
   wo: WorkOrder;
