@@ -41,28 +41,26 @@ export function WOCWorkspaceHeader({ wo, onUpdate, onClose }: Props) {
 
   return (
     <div className="border-b border-border bg-card px-4 py-3 flex-shrink-0">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-center justify-between gap-6">
         {/* Left: WO identity */}
-        <div className="flex items-center gap-3 min-w-0">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-base font-bold font-mono text-foreground">{wo.wo_number}</span>
-              <Badge variant="outline" className={`text-[10px] ${statusColor(wo.status)}`}>{wo.status}</Badge>
-              <Badge variant="outline" className="text-[10px]">{wo.priority}</Badge>
-            </div>
-            <p className="text-xs text-muted-foreground truncate max-w-md mt-0.5">
-              {wo.problem_description || "No description"}
-            </p>
+        <div className="min-w-0 flex-shrink">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-base font-bold font-mono text-foreground whitespace-nowrap">{wo.wo_number}</span>
+            <Badge variant="outline" className={`text-[10px] ${statusColor(wo.status)}`}>{wo.status}</Badge>
+            <Badge variant="outline" className="text-[10px]">{wo.priority}</Badge>
           </div>
+          <p className="text-xs text-muted-foreground truncate max-w-xs mt-0.5">
+            {wo.problem_description || "No description"}
+          </p>
         </div>
 
         {/* Center: Key fields */}
         <div className="hidden lg:flex items-center gap-4 text-xs text-muted-foreground flex-shrink-0">
-          <div><span className="font-semibold text-foreground">Asset:</span> {wo.asset_id || "-"}</div>
-          <div><span className="font-semibold text-foreground">Area:</span> {wo.functional_location || "-"}</div>
-          <div><span className="font-semibold text-foreground">Trade:</span> {wo.trade || "-"}</div>
-          <div><span className="font-semibold text-foreground">WO Type:</span> {wo.work_type || "-"}</div>
-          <div><span className="font-semibold text-foreground">Created:</span> {wo.date_raised ? format(new Date(wo.date_raised), "dd/MM/yy") : "-"}</div>
+          <div className="whitespace-nowrap"><span className="font-semibold text-foreground">Asset:</span> {wo.asset_id || "-"}</div>
+          <div className="whitespace-nowrap"><span className="font-semibold text-foreground">Area:</span> {wo.functional_location || "-"}</div>
+          <div className="whitespace-nowrap"><span className="font-semibold text-foreground">Trade:</span> {wo.trade || "-"}</div>
+          <div className="whitespace-nowrap"><span className="font-semibold text-foreground">WO Type:</span> {wo.work_type || "-"}</div>
+          <div className="whitespace-nowrap"><span className="font-semibold text-foreground">Created:</span> {wo.date_raised ? format(new Date(wo.date_raised), "dd/MM/yy") : "-"}</div>
         </div>
 
         {/* Right: Actions */}
