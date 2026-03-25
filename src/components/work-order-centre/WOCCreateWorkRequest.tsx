@@ -19,12 +19,14 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
     asset_id: "",
     functional_location: "",
     problem_description: "",
+    scope_of_works: "",
     priority: "Medium",
     work_type: "Repair",
     trade: "",
     requested_by: "",
     isolation_required: false,
     from_hazard_id: false,
+    notes: "",
   });
 
   const set = (field: string, value: any) => setForm((f) => ({ ...f, [field]: value }));
@@ -47,8 +49,8 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
       toast.success(`Work Request ${wr.wr_number} submitted`);
       setForm({
         asset_id: "", functional_location: "", problem_description: "",
-        priority: "Medium", work_type: "Repair",
-        trade: "", requested_by: "", isolation_required: false, from_hazard_id: false,
+        scope_of_works: "", priority: "Medium", work_type: "Repair",
+        trade: "", requested_by: "", isolation_required: false, from_hazard_id: false, notes: "",
       });
       onCreated();
     } catch {
@@ -114,8 +116,18 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-xs font-semibold">What did you observe?</Label>
+        <Label className="text-xs font-semibold">Description</Label>
         <Textarea value={form.problem_description} onChange={(e) => set("problem_description", e.target.value)} placeholder="Describe the issue, defect, or observation..." rows={3} className="text-sm" />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs font-semibold">Scope of Works</Label>
+        <Textarea value={form.scope_of_works} onChange={(e) => set("scope_of_works", e.target.value)} placeholder="What work is required or recommended..." rows={3} className="text-sm" />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs font-semibold">Notes (optional)</Label>
+        <Textarea value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Any additional context, access requirements, or safety notes..." rows={2} className="text-sm" />
       </div>
 
       <div className="flex items-center gap-6">
