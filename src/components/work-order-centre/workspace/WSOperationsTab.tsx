@@ -27,11 +27,9 @@ interface Props {
 const newOp = (lineNo: number): Operation => ({
   id: crypto.randomUUID(),
   lineNo,
-  title: "",
   description: "",
   trade: "",
   estimatedHours: 0,
-  crewSize: 1,
   requiresIsolation: false,
   requiresShutdown: false,
   parallelAllowed: false,
