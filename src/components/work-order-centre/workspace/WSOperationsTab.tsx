@@ -114,7 +114,7 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
                 </Button>
               </div>
 
-              <div className="grid grid-cols-4 lg:grid-cols-6 gap-2">
+              <div className="grid grid-cols-3 lg:grid-cols-5 gap-2">
                 <div className="space-y-1">
                   <span className="text-[10px] text-muted-foreground font-medium">Trade</span>
                   <Select value={op.trade || "none"} onValueChange={(v) => updateOp(op.id, "trade", v === "none" ? "" : v)}>
@@ -128,10 +128,6 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
                 <div className="space-y-1">
                   <span className="text-[10px] text-muted-foreground font-medium">Est. Hours</span>
                   <Input type="number" value={op.estimatedHours} onChange={(e) => updateOp(op.id, "estimatedHours", parseFloat(e.target.value) || 0)} className="h-7 text-xs" />
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[10px] text-muted-foreground font-medium">Crew Size</span>
-                  <Input type="number" value={op.crewSize} onChange={(e) => updateOp(op.id, "crewSize", parseInt(e.target.value) || 1)} className="h-7 text-xs" />
                 </div>
                 <div className="space-y-1">
                   <span className="text-[10px] text-muted-foreground font-medium">Predecessor</span>
