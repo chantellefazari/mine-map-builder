@@ -65,7 +65,7 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
 
   const duplicateOp = (op: Operation) => {
     const idx = ops.findIndex((o) => o.id === op.id);
-    const copy = { ...op, id: crypto.randomUUID(), lineNo: ops.length + 1, title: `${op.title} (Copy)` };
+    const copy = { ...op, id: crypto.randomUUID(), lineNo: ops.length + 1, description: `${op.description} (Copy)` };
     const updated = [...ops.slice(0, idx + 1), copy, ...ops.slice(idx + 1)].map((o, i) => ({ ...o, lineNo: i + 1 }));
     persist(updated);
   };
