@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { WRAssetSearch } from "../WRAssetSearch";
+import { TradeMultiSelect } from "../TradeMultiSelect";
 import { WorkOrder } from "@/hooks/useWorkOrders";
 
 interface Props {
@@ -80,13 +81,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Trade</Label>
-          <Select value={local.trade || "none"} onValueChange={(v) => save("trade", v === "none" ? "" : v)}>
-            <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Select" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">-</SelectItem>
-              {["Mechanical", "Electrical", "Instrumentation", "Boilermaker", "General"].map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <TradeMultiSelect value={local.trade} onChange={(v) => save("trade", v)} />
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Requested By</Label>

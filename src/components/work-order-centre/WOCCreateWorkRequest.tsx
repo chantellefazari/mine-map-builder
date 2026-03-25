@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useWorkRequests } from "@/hooks/useWorkRequests";
 import { toast } from "sonner";
 import { WRAssetSearch } from "./WRAssetSearch";
+import { TradeMultiSelect } from "./TradeMultiSelect";
 
 interface Props {
   onCreated: () => void;
@@ -106,15 +107,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Trade (optional)</Label>
-          <Select value={form.trade || "none"} onValueChange={(v) => set("trade", v === "none" ? "" : v)}>
-            <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Select" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">-</SelectItem>
-              {["Mechanical", "Electrical", "Instrumentation", "Boilermaker", "General"].map((t) => (
-                <SelectItem key={t} value={t}>{t}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <TradeMultiSelect value={form.trade} onChange={(v) => set("trade", v)} />
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Requested By</Label>
