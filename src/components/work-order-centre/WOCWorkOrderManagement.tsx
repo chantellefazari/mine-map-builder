@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import {
-  Plus, Pause, CheckCircle2, Copy, PlayCircle, Search, Filter,
+  Plus, Pause, CheckCircle2, Copy, PlayCircle, Search,
 } from "lucide-react";
 import { toast } from "sonner";
 import { WOCView } from "@/pages/WorkOrderCentre";
@@ -13,6 +13,7 @@ import { WOCReportsTab } from "./performance/WOCReportsTab";
 import { WOCAnalyticsTab } from "./performance/WOCAnalyticsTab";
 import { WOCPMFormsTab } from "./performance/WOCPMFormsTab";
 import { WOCComplianceTab } from "./performance/WOCComplianceTab";
+import { WOTypeSelectDialog } from "./WOTypeSelectDialog";
 
 interface Props {
   onOpenWorkspace: (woId: string, from?: WOCView) => void;
