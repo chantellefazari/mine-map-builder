@@ -31,6 +31,7 @@ const ThreeDeeConcepts = lazy(() => import("./pages/ThreeDeeConcepts"));
 const PlantIntelligence = lazy(() => import("./pages/PlantIntelligence"));
 const MissionControl = lazy(() => import("./pages/MissionControl"));
 const WorkOrderCentre = lazy(() => import("./pages/WorkOrderCentre"));
+const WOPrint = lazy(() => import("./pages/WOPrint"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -88,6 +89,7 @@ const App = () => {
                 <Route path="/plant-intelligence" element={<P tabKey="plant-intelligence"><PlantIntelligence /></P>} />
                 <Route path="/mission-control" element={<P tabKey="mission-control"><MissionControl /></P>} />
                 <Route path="/work-order-centre" element={<P tabKey="work-order-centre"><WorkOrderCentre /></P>} />
+                <Route path="/wo-print/:woNumber" element={<P tabKey="work-order-centre"><WOPrint /></P>} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
