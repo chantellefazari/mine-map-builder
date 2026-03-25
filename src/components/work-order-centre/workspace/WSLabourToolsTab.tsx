@@ -43,7 +43,7 @@ export function WSLabourToolsTab({ wo, onUpdate }: Props) {
 
   const [toolRows, setToolRows] = useState<ToolRow[]>(() => {
     try {
-      const parsed = JSON.parse(wo.required_tooling || "[]");
+      const parsed = JSON.parse((wo as any).required_tooling || "[]");
       if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]?.name !== undefined) return parsed;
     } catch { /* */ }
     return [];

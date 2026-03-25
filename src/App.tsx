@@ -87,6 +87,7 @@ const App = () => {
                 <Route path="/3d-concepts" element={<P tabKey="3d-concepts"><ThreeDeeConcepts /></P>} />
                 <Route path="/plant-intelligence" element={<P tabKey="plant-intelligence"><PlantIntelligence /></P>} />
                 <Route path="/mission-control" element={<P tabKey="mission-control"><MissionControl /></P>} />
+                <Route path="/work-order-centre" element={<P tabKey="work-order-centre"><WorkOrderCentre /></P>} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />

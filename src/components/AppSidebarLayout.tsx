@@ -27,6 +27,7 @@ const NAV_ITEMS = [
   { title: "3D Concepts", icon: Box, href: "/3d-concepts", tabKey: "3d-concepts" },
   { title: "Plant Intelligence", icon: Brain, href: "/plant-intelligence", tabKey: "plant-intelligence" },
   { title: "Mission Control", icon: Radar, href: "/mission-control", tabKey: "mission-control" },
+  { title: "Work Order Centre", icon: ClipboardList, href: "/work-order-centre", tabKey: "work-order-centre" },
 ];
 
 export function AppSidebarLayout({ children }: { children: ReactNode }) {
