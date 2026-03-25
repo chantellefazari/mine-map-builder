@@ -45,6 +45,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
   const [opsTab, setOpsTab] = useState("planning");
   const [perfTab, setPerfTab] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [showWoTypeDialog, setShowWoTypeDialog] = useState(false);
 
   const activeGroup = perfTab ? "performance" : "operations";
 
@@ -63,10 +64,15 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
     return list;
   };
 
-  const handleCreate = async () => {
+  const handleCreate = () => {
+    setShowWoTypeDialog(true);
+  };
+
+  const handleCreateConfirm = async (woType: string) => {
+    setShowWoTypeDialog(false);
     try {
       const wo = await allocate.mutateAsync();
-      await update.mutateAsync({ id: wo.id, updates: { status: "Planning" } });
+      await update.mutateAsync({ id: wo.id, updates: { status: "Planning", work_type: woType } });
       onOpenWorkspace(wo.id, "wo-management");
     } catch {
       // handled in hook
