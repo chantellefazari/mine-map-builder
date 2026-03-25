@@ -2261,6 +2261,7 @@ export type Database = {
           operations_handover_date: string
           operations_handover_name: string
           parts_used: string | null
+          photo_urls: string[] | null
           priority: string
           problem_description: string | null
           requested_by: string | null
@@ -2292,6 +2293,7 @@ export type Database = {
           operations_handover_date?: string
           operations_handover_name?: string
           parts_used?: string | null
+          photo_urls?: string[] | null
           priority?: string
           problem_description?: string | null
           requested_by?: string | null
@@ -2323,6 +2325,7 @@ export type Database = {
           operations_handover_date?: string
           operations_handover_name?: string
           parts_used?: string | null
+          photo_urls?: string[] | null
           priority?: string
           problem_description?: string | null
           requested_by?: string | null

@@ -1,0 +1,1 @@
+ALTER TABLE public.work_orders ADD COLUMN photo_urls text[] DEFAULT '{}'::text[];

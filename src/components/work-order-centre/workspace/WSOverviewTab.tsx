@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { WRAssetSearch } from "../WRAssetSearch";
 import { TradeMultiSelect } from "../TradeMultiSelect";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { Camera, X, Sparkles, Loader2 } from "lucide-react";
 
 interface Props {
   wo: WorkOrder;
@@ -25,6 +29,13 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
     assigned_to: wo.assigned_to || "",
   });
 
+  const [photos, setPhotos] = useState<string[]>(wo.photo_urls || []);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [newPreviews, setNewPreviews] = useState<string[]>([]);
+  const [enhancingDesc, setEnhancingDesc] = useState(false);
+  const [enhancingScope, setEnhancingScope] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     setLocal({
       problem_description: wo.problem_description || "",
@@ -37,11 +48,83 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       requested_by: wo.requested_by || "",
       assigned_to: wo.assigned_to || "",
     });
+    setPhotos(wo.photo_urls || []);
+    setNewFiles([]);
+    setNewPreviews([]);
   }, [wo.id]);
 
   const save = (field: string, value: any) => {
     setLocal((l) => ({ ...l, [field]: value }));
     onUpdate({ [field]: value });
+  };
+
+  const handleEnhance = async (mode: "description" | "scope") => {
+    const text = mode === "description" ? local.problem_description : local.work_performed;
+    if (!text.trim()) {
+      toast.error(`Please enter some rough notes first`);
+      return;
+    }
+    if (mode === "description") setEnhancingDesc(true);
+    else setEnhancingScope(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("enhance-wo-description", {
+        body: { description: text, mode },
+      });
+      if (error) throw error;
+      if (data?.enhanced) {
+        const field = mode === "description" ? "problem_description" : "work_performed";
+        save(field, data.enhanced);
+        toast.success(`${mode === "description" ? "Description" : "Scope of works"} enhanced`);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to enhance text");
+    } finally {
+      if (mode === "description") setEnhancingDesc(false);
+      else setEnhancingScope(false);
+    }
+  };
+
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const imageFiles = files.filter((f) => f.type.startsWith("image/"));
+    if (imageFiles.length === 0) return;
+    const totalAllowed = 5 - photos.length;
+    const toAdd = imageFiles.slice(0, totalAllowed);
+    setNewFiles((p) => [...p, ...toAdd]);
+    setNewPreviews((p) => [...p, ...toAdd.map((f) => URL.createObjectURL(f))]);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const uploadAndSavePhotos = async () => {
+    if (newFiles.length === 0) return;
+    const urls: string[] = [...photos];
+    for (const file of newFiles) {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${wo.wo_number}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error } = await supabase.storage.from("wr-photos").upload(path, file);
+      if (error) { console.error("Upload error:", error); continue; }
+      const { data: urlData } = supabase.storage.from("wr-photos").getPublicUrl(path);
+      urls.push(urlData.publicUrl);
+    }
+    onUpdate({ photo_urls: urls } as any);
+    setPhotos(urls);
+    newPreviews.forEach((u) => URL.revokeObjectURL(u));
+    setNewFiles([]);
+    setNewPreviews([]);
+    toast.success("Photos uploaded");
+  };
+
+  const removeExistingPhoto = (index: number) => {
+    const updated = photos.filter((_, i) => i !== index);
+    setPhotos(updated);
+    onUpdate({ photo_urls: updated } as any);
+  };
+
+  const removeNewPhoto = (index: number) => {
+    URL.revokeObjectURL(newPreviews[index]);
+    setNewFiles((p) => p.filter((_, i) => i !== index));
+    setNewPreviews((p) => p.filter((_, i) => i !== index));
   };
 
   return (
@@ -89,14 +172,96 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
         </div>
       </div>
 
+      {/* Description with AI */}
       <div className="space-y-1.5">
-        <Label className="text-xs font-semibold">Description / Problem Statement</Label>
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-semibold">Description / Problem Statement</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs gap-1.5"
+            disabled={enhancingDesc}
+            onClick={() => handleEnhance("description")}
+          >
+            {enhancingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+            Generate with AI
+          </Button>
+        </div>
         <Textarea value={local.problem_description} onBlur={(e) => save("problem_description", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, problem_description: e.target.value }))} rows={4} className="text-sm" />
       </div>
 
+      {/* Scope of Works with AI */}
       <div className="space-y-1.5">
-        <Label className="text-xs font-semibold">Scope of Works / Notes</Label>
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-semibold">Scope of Works / Notes</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs gap-1.5"
+            disabled={enhancingScope}
+            onClick={() => handleEnhance("scope")}
+          >
+            {enhancingScope ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+            Generate with AI
+          </Button>
+        </div>
         <Textarea value={local.work_performed} onBlur={(e) => save("work_performed", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, work_performed: e.target.value }))} rows={4} className="text-sm" placeholder="Detail the scope, method, and requirements..." />
+      </div>
+
+      {/* Photos */}
+      <div className="space-y-2">
+        <Label className="text-xs font-semibold">Photos</Label>
+        <div className="flex items-center gap-3 flex-wrap">
+          {photos.map((url, i) => (
+            <div key={`existing-${i}`} className="relative w-20 h-20 rounded-lg overflow-hidden border border-border group">
+              <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
+              <button
+                type="button"
+                onClick={() => removeExistingPhoto(i)}
+                className="absolute top-0.5 right-0.5 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
+          {newPreviews.map((url, i) => (
+            <div key={`new-${i}`} className="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-dashed border-primary/40 group">
+              <img src={url} alt={`New ${i + 1}`} className="w-full h-full object-cover" />
+              <button
+                type="button"
+                onClick={() => removeNewPhoto(i)}
+                className="absolute top-0.5 right-0.5 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
+          {photos.length + newFiles.length < 5 && (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="w-20 h-20 rounded-lg border-2 border-dashed border-border hover:border-primary/50 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Camera className="h-5 w-5" />
+              <span className="text-[10px]">Add Photo</span>
+            </button>
+          )}
+        </div>
+        {newFiles.length > 0 && (
+          <Button type="button" size="sm" className="h-7 text-xs" onClick={uploadAndSavePhotos}>
+            Upload {newFiles.length} photo{newFiles.length > 1 ? "s" : ""}
+          </Button>
+        )}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          onChange={handlePhotoSelect}
+        />
       </div>
     </div>
   );
