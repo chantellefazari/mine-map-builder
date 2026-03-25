@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useWorkRequests, WorkRequest } from "@/hooks/useWorkRequests";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { Plus, Eye, XCircle, CheckCircle2 } from "lucide-react";
