@@ -19,7 +19,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
     asset_id: "",
     functional_location: "",
     problem_description: "",
-    priority: "Normal",
+    priority: "Medium",
     work_type: "Repair",
     trade: "",
     requested_by: "",
@@ -47,7 +47,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
       toast.success(`Work Request ${wr.wr_number} submitted`);
       setForm({
         asset_id: "", functional_location: "", problem_description: "",
-        priority: "Normal", work_type: "Repair",
+        priority: "Medium", work_type: "Repair",
         trade: "", requested_by: "", isolation_required: false, from_hazard_id: false,
       });
       onCreated();
@@ -89,7 +89,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
           <Select value={form.priority} onValueChange={(v) => set("priority", v)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {["Low", "Normal", "High", "Critical"].map((p) => (
+              {["Low", "Medium", "High", "Critical"].map((p) => (
                 <SelectItem key={p} value={p}>{p}</SelectItem>
               ))}
             </SelectContent>
