@@ -9,6 +9,7 @@ interface Props {
   wo: WorkOrder;
   onUpdate: (updates: Partial<WorkOrder>) => void;
   onClose: () => void;
+  partsCount?: number;
 }
 
 const statusColor = (s: string) => {
