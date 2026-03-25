@@ -66,7 +66,7 @@ export function WOCWorkspace({ woId, onClose }: Props) {
             <WSLabourToolsTab wo={wo} onUpdate={handleUpdate} />
           </TabsContent>
           <TabsContent value="parts" className="mt-4">
-            <WSPartsTab woId={woId} parts={parts} addPart={addPart} updatePart={updatePart} deletePart={deletePart} />
+            <WSPartsTab woId={woId} assetId={wo.asset_id || ""} parts={parts} addPart={addPart} updatePart={updatePart} deletePart={deletePart} />
           </TabsContent>
           <TabsContent value="procurement" className="mt-4">
             <WSProcurementTab parts={parts} poItems={poItems} linkedPRs={linkedPRs} />
