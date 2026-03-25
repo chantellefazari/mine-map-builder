@@ -75,7 +75,7 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
     persist(updated);
   };
 
-  const totalHours = ops.reduce((sum, o) => sum + (o.estimatedHours * o.crewSize), 0);
+  const totalHours = ops.reduce((sum, o) => sum + o.estimatedHours, 0);
 
   return (
     <div className="space-y-4">
