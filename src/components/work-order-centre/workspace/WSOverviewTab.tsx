@@ -48,11 +48,17 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Asset Number</Label>
-          <Input value={local.asset_id} onBlur={(e) => save("asset_id", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, asset_id: e.target.value }))} className="h-9 text-sm" />
+          <WRAssetSearch
+            value={local.asset_id}
+            onSelect={(assetId, assetName) => {
+              save("asset_id", assetId);
+              save("functional_location", assetName);
+            }}
+          />
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Area / Functional Location</Label>
-          <Input value={local.functional_location} onBlur={(e) => save("functional_location", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, functional_location: e.target.value }))} className="h-9 text-sm" />
+          <Input value={local.functional_location} readOnly className="h-9 text-sm" />
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Priority</Label>
