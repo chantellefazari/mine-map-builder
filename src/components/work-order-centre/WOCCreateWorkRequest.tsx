@@ -49,8 +49,8 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
       toast.success(`Work Request ${wr.wr_number} submitted`);
       setForm({
         asset_id: "", functional_location: "", problem_description: "",
-        priority: "Medium", work_type: "Repair",
-        trade: "", requested_by: "", isolation_required: false, from_hazard_id: false,
+        scope_of_works: "", priority: "Medium", work_type: "Repair",
+        trade: "", requested_by: "", isolation_required: false, from_hazard_id: false, notes: "",
       });
       onCreated();
     } catch {
