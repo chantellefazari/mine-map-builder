@@ -1,0 +1,1 @@
+ALTER TABLE public.work_requests ADD COLUMN notes text NOT NULL DEFAULT '';
