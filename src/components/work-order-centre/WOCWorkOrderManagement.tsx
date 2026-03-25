@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
+import { useWorkOrderParts } from "@/hooks/useWorkOrderParts";
 import {
   Plus, Pause, CheckCircle2, Copy, PlayCircle, Search,
+  CircleDot, FileText, Wrench, Users, Package,
 } from "lucide-react";
 import { toast } from "sonner";
 import { WOCView } from "@/pages/WorkOrderCentre";
@@ -21,10 +24,12 @@ interface Props {
 
 const OPS_STATUSES: Record<string, string[]> = {
   planning: ["Draft", "Planning", "Open"],
-  ready: ["Ready"],
+  planned: ["Planned"],
+  scheduled: ["Scheduled"],
   active: ["Active", "In Progress"],
   "on-hold": ["On Hold"],
-  completed: ["Completed", "Complete", "Closed"],
+  completed: ["Completed", "Complete"],
+  closed: ["Closed"],
   history: [],
 };
 
@@ -39,6 +44,63 @@ const priorityColor = (p: string) => {
       return "bg-muted text-muted-foreground border-border";
   }
 };
+
+/** Compute planning checklist for a work order */
+function planningChecklist(wo: WorkOrder, partsCount: number) {
+  const checks = [
+    { key: "asset", label: "Asset assigned", done: !!wo.asset_id?.trim() },
+    { key: "description", label: "Description written", done: !!wo.problem_description?.trim() },
+    { key: "scope", label: "Scope of works", done: !!wo.scope_of_works?.trim() || !!wo.work_performed?.trim() },
+    { key: "parts", label: "Parts identified", done: partsCount > 0 },
+    { key: "labour", label: "Labour planned", done: Array.isArray(wo.labour_hours) && wo.labour_hours.length > 0 },
+  ];
+  return checks;
+}
+
+function PlanningProgress({ wo, partsCount }: { wo: WorkOrder; partsCount: number }) {
+  const checks = planningChecklist(wo, partsCount);
+  const done = checks.filter((c) => c.done).length;
+  const total = checks.length;
+  const pct = Math.round((done / total) * 100);
+
+  const color =
+    pct === 100 ? "text-emerald-600" :
+    pct >= 60 ? "text-amber-500" :
+    "text-muted-foreground";
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="flex items-center gap-1.5 cursor-help">
+            <div className="flex gap-0.5">
+              {checks.map((c) => (
+                <div
+                  key={c.key}
+                  className={`w-2 h-2 rounded-full ${c.done ? "bg-emerald-500" : "bg-border"}`}
+                />
+              ))}
+            </div>
+            <span className={`text-[10px] font-semibold ${color}`}>{pct}%</span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="text-xs space-y-1 max-w-[200px]">
+          <p className="font-semibold mb-1">Planning Checklist</p>
+          {checks.map((c) => (
+            <div key={c.key} className="flex items-center gap-1.5">
+              {c.done ? (
+                <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+              ) : (
+                <CircleDot className="w-3 h-3 text-muted-foreground" />
+              )}
+              <span className={c.done ? "text-foreground" : "text-muted-foreground"}>{c.label}</span>
+            </div>
+          ))}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
 
 export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
   const { workOrders, allocate, update } = useWorkOrders();
@@ -116,13 +178,21 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
 
   const counts = {
     planning: filtered("planning").length,
-    ready: filtered("ready").length,
+    planned: filtered("planned").length,
+    scheduled: filtered("scheduled").length,
     active: filtered("active").length,
     "on-hold": filtered("on-hold").length,
     completed: filtered("completed").length,
+    closed: filtered("closed").length,
   };
 
-  const renderTable = (items: WorkOrder[], showActions = true) => (
+  // Collect all parts counts per WO for planning progress
+  // We'll use a simple approach: fetch part counts from the filtered list
+  const planningWoIds = useMemo(() => {
+    return filtered("planning").map((wo) => wo.id);
+  }, [workOrders, search]);
+
+  const renderTable = (items: WorkOrder[], showActions = true, showProgress = false) => (
     <div className="border border-border rounded-lg overflow-hidden">
       <table className="w-full text-xs">
         <thead>
@@ -133,6 +203,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
             <th className="text-left px-3 py-2 font-semibold">Area</th>
             <th className="text-left px-3 py-2 font-semibold">Priority</th>
             <th className="text-left px-3 py-2 font-semibold">Status</th>
+            {showProgress && <th className="text-left px-3 py-2 font-semibold">Progress</th>}
             <th className="text-left px-3 py-2 font-semibold">Trade</th>
             {showActions && (
               <th className="text-left px-3 py-2 font-semibold">Actions</th>
@@ -141,94 +212,20 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
         </thead>
         <tbody>
           {items.map((wo) => (
-            <tr
+            <WOTableRow
               key={wo.id}
-              className="border-b border-border last:border-b-0 hover:bg-muted/20 cursor-pointer"
-              onClick={() => onOpenWorkspace(wo.id, "wo-management")}
-            >
-              <td className="px-3 py-2 font-mono font-medium">
-                {wo.wo_number}
-              </td>
-              <td className="px-3 py-2">{wo.asset_id || "-"}</td>
-              <td className="px-3 py-2 truncate max-w-[200px]">
-                {wo.problem_description || "-"}
-              </td>
-              <td className="px-3 py-2 text-muted-foreground">
-                {wo.functional_location || "-"}
-              </td>
-              <td className="px-3 py-2">
-                <Badge
-                  variant="outline"
-                  className={`text-[10px] ${priorityColor(wo.priority)}`}
-                >
-                  {wo.priority}
-                </Badge>
-              </td>
-              <td className="px-3 py-2">
-                <Badge variant="secondary" className="text-[10px]">
-                  {wo.status}
-                </Badge>
-              </td>
-              <td className="px-3 py-2">{wo.trade || "-"}</td>
-              {showActions && (
-                <td
-                  className="px-3 py-2"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="flex items-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6"
-                      onClick={() => handleDuplicate(wo)}
-                      title="Duplicate"
-                    >
-                      <Copy className="w-3 h-3" />
-                    </Button>
-                    {wo.status !== "On Hold" && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() => handleStatusChange(wo, "On Hold")}
-                        title="Put On Hold"
-                      >
-                        <Pause className="w-3 h-3" />
-                      </Button>
-                    )}
-                    {wo.status === "On Hold" && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() => handleStatusChange(wo, "Planning")}
-                        title="Resume"
-                      >
-                        <PlayCircle className="w-3 h-3" />
-                      </Button>
-                    )}
-                    {!["Completed", "Complete", "Closed", "Ready"].includes(
-                      wo.status
-                    ) && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 text-emerald-600"
-                        onClick={() => handleStatusChange(wo, "Ready")}
-                        title="Mark Ready"
-                      >
-                        <CheckCircle2 className="w-3 h-3" />
-                      </Button>
-                    )}
-                  </div>
-                </td>
-              )}
-            </tr>
+              wo={wo}
+              showActions={showActions}
+              showProgress={showProgress}
+              onOpenWorkspace={onOpenWorkspace}
+              onDuplicate={handleDuplicate}
+              onStatusChange={handleStatusChange}
+            />
           ))}
           {items.length === 0 && (
             <tr>
               <td
-                colSpan={showActions ? 8 : 7}
+                colSpan={showActions ? (showProgress ? 9 : 8) : (showProgress ? 8 : 7)}
                 className="px-3 py-8 text-center text-muted-foreground"
               >
                 No work orders in this category
@@ -274,7 +271,6 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
 
       {/* ---- Two Tab Groups ---- */}
       <div className="space-y-1">
-        {/* Group Labels + Tabs on one row */}
         <div className="flex items-end gap-6 border-b border-border pb-px">
           {/* Operations group */}
           <div className="space-y-1">
@@ -285,10 +281,12 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
               {(
                 [
                   ["planning", "Planning"],
-                  ["ready", "Ready"],
+                  ["planned", "Planned"],
+                  ["scheduled", "Scheduled"],
                   ["active", "Active"],
                   ["on-hold", "On Hold"],
                   ["completed", "Completed"],
+                  ["closed", "Closed"],
                   ["history", "History"],
                 ] as [string, string][]
               ).map(([key, label]) => (
@@ -348,7 +346,13 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
 
       {/* ---- Content ---- */}
       {activeGroup === "operations" && (
-        <div className="mt-2">{renderTable(filtered(opsTab), opsTab !== "history")}</div>
+        <div className="mt-2">
+          {renderTable(
+            filtered(opsTab),
+            opsTab !== "history",
+            opsTab === "planning"
+          )}
+        </div>
       )}
 
       {perfTab === "reports" && <WOCReportsTab workOrders={workOrders} />}
@@ -364,5 +368,75 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
         description="Select the Work Order Type to begin planning:"
       />
     </div>
+  );
+}
+
+/** Individual row component — fetches its own parts count for progress */
+function WOTableRow({
+  wo,
+  showActions,
+  showProgress,
+  onOpenWorkspace,
+  onDuplicate,
+  onStatusChange,
+}: {
+  wo: WorkOrder;
+  showActions: boolean;
+  showProgress: boolean;
+  onOpenWorkspace: (woId: string, from?: WOCView) => void;
+  onDuplicate: (wo: WorkOrder) => void;
+  onStatusChange: (wo: WorkOrder, status: string) => void;
+}) {
+  // Only fetch parts if we need progress
+  const { parts } = useWorkOrderParts(showProgress ? wo.id : "");
+
+  return (
+    <tr
+      className="border-b border-border last:border-b-0 hover:bg-muted/20 cursor-pointer"
+      onClick={() => onOpenWorkspace(wo.id, "wo-management")}
+    >
+      <td className="px-3 py-2 font-mono font-medium">{wo.wo_number}</td>
+      <td className="px-3 py-2">{wo.asset_id || "-"}</td>
+      <td className="px-3 py-2 truncate max-w-[200px]">{wo.problem_description || "-"}</td>
+      <td className="px-3 py-2 text-muted-foreground">{wo.functional_location || "-"}</td>
+      <td className="px-3 py-2">
+        <Badge variant="outline" className={`text-[10px] ${priorityColor(wo.priority)}`}>
+          {wo.priority}
+        </Badge>
+      </td>
+      <td className="px-3 py-2">
+        <Badge variant="secondary" className="text-[10px]">{wo.status}</Badge>
+      </td>
+      {showProgress && (
+        <td className="px-3 py-2">
+          <PlanningProgress wo={wo} partsCount={parts.length} />
+        </td>
+      )}
+      <td className="px-3 py-2">{wo.trade || "-"}</td>
+      {showActions && (
+        <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onDuplicate(wo)} title="Duplicate">
+              <Copy className="w-3 h-3" />
+            </Button>
+            {wo.status !== "On Hold" && (
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onStatusChange(wo, "On Hold")} title="Put On Hold">
+                <Pause className="w-3 h-3" />
+              </Button>
+            )}
+            {wo.status === "On Hold" && (
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onStatusChange(wo, "Planning")} title="Resume">
+                <PlayCircle className="w-3 h-3" />
+              </Button>
+            )}
+            {OPS_STATUSES.planning.includes(wo.status) && (
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-emerald-600" onClick={() => onStatusChange(wo, "Planned")} title="Mark as Planned">
+                <CheckCircle2 className="w-3 h-3" />
+              </Button>
+            )}
+          </div>
+        </td>
+      )}
+    </tr>
   );
 }
