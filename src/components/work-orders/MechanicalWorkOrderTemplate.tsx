@@ -896,7 +896,9 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
       </div>
 
       {/* Sub-tabs for parts management - hidden on print */}
-      <WOSubTabs woNumber={woNumber} />
+      <div className="print:hidden">
+        <WOSubTabs woNumber={woNumber} />
+      </div>
     </div>
   );
 };
