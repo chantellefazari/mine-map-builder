@@ -72,6 +72,9 @@ export function WOCWorkspaceHeader({ wo, onUpdate, onClose, partsCount = 0 }: Pr
 
         {/* Right: Actions */}
         <div className="flex items-center gap-1.5 flex-shrink-0">
+          <Button variant="outline" size="sm" className="text-xs h-7 gap-1" onClick={() => { toast.success("Progress saved"); onClose(); }}>
+            <ArrowLeft className="w-3 h-3" /> Save & Exit
+          </Button>
           <Button variant="outline" size="sm" className="text-xs h-7 gap-1" onClick={() => window.open(`/wo-print/${encodeURIComponent(wo.wo_number)}`, '_blank')}>
             <Printer className="w-3 h-3" /> Print
           </Button>
@@ -86,8 +89,8 @@ export function WOCWorkspaceHeader({ wo, onUpdate, onClose, partsCount = 0 }: Pr
             </Button>
           )}
           {!["Completed", "Complete", "Closed"].includes(wo.status) && (
-            <Button variant="outline" size="sm" className="text-xs h-7 gap-1 text-destructive" onClick={() => { onUpdate({ status: "Closed" }); toast.success("Work order closed"); onClose(); }}>
-              <XCircle className="w-3 h-3" /> Close
+            <Button variant="outline" size="sm" className="text-xs h-7 gap-1 text-destructive" onClick={() => { onUpdate({ status: "Closed" }); toast.success("Work order cancelled"); onClose(); }}>
+              <XCircle className="w-3 h-3" /> Cancel WO
             </Button>
           )}
         </div>
