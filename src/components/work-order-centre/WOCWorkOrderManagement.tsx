@@ -16,7 +16,7 @@ import { WOCReportsTab } from "./performance/WOCReportsTab";
 import { WOCAnalyticsTab } from "./performance/WOCAnalyticsTab";
 import { WOCPMFormsTab } from "./performance/WOCPMFormsTab";
 import { WOCComplianceTab } from "./performance/WOCComplianceTab";
-import { WOTypeSelectDialog } from "./WOTypeSelectDialog";
+import { WOTypeSelectDialog, PMAutoFill } from "./WOTypeSelectDialog";
 
 interface Props {
   onOpenWorkspace: (woId: string, from?: WOCView) => void;
