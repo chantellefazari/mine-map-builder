@@ -49,14 +49,23 @@ export function WSLabourToolsTab({ wo, onUpdate }: Props) {
     return [];
   });
 
+  const labourDebounce = useRef<ReturnType<typeof setTimeout>>();
+  const toolDebounce = useRef<ReturnType<typeof setTimeout>>();
+
   const persistLabour = (rows: LabourRow[]) => {
     setLabourRows(rows);
-    onUpdate({ labour_hours: rows } as any);
+    clearTimeout(labourDebounce.current);
+    labourDebounce.current = setTimeout(() => {
+      onUpdate({ labour_hours: rows } as any);
+    }, 500);
   };
 
   const persistTools = (rows: ToolRow[]) => {
     setToolRows(rows);
-    onUpdate({ required_tooling: JSON.stringify(rows) } as any);
+    clearTimeout(toolDebounce.current);
+    toolDebounce.current = setTimeout(() => {
+      onUpdate({ required_tooling: JSON.stringify(rows) } as any);
+    }, 500);
   };
 
   const addLabour = () => persistLabour([...labourRows, { id: crypto.randomUUID(), trade: "", personnel: 1, hoursPerPerson: 0, type: "Internal", crew: "", notes: "" }]);

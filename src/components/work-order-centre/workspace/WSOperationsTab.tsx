@@ -46,9 +46,13 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
     return [];
   });
 
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const persist = (updated: Operation[]) => {
     setOps(updated);
-    onUpdate({ scope_of_works: JSON.stringify(updated) });
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      onUpdate({ scope_of_works: JSON.stringify(updated) });
+    }, 500);
   };
 
   const addOp = () => {
