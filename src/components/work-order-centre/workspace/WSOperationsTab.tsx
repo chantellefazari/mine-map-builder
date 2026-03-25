@@ -38,10 +38,9 @@ const newOp = (lineNo: number): Operation => ({
 });
 
 export function WSOperationsTab({ wo, onUpdate }: Props) {
-  // Store operations in scope_of_works as JSON for now
   const [ops, setOps] = useState<Operation[]>(() => {
     try {
-      const parsed = JSON.parse(wo.work_performed || "[]");
+      const parsed = JSON.parse(wo.scope_of_works || "[]");
       if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]?.lineNo !== undefined) return parsed;
     } catch { /* ignore */ }
     return [];
@@ -49,8 +48,7 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
 
   const persist = (updated: Operation[]) => {
     setOps(updated);
-    // We store operations as JSON - this is a pragmatic approach
-    // In production, a dedicated operations table would be better
+    onUpdate({ scope_of_works: JSON.stringify(updated) });
   };
 
   const addOp = () => {
