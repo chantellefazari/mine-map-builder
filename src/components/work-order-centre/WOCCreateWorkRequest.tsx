@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useWorkRequests } from "@/hooks/useWorkRequests";
 import { toast } from "sonner";
+import { WRAssetSearch } from "./WRAssetSearch";
 
 interface Props {
   onCreated: () => void;
