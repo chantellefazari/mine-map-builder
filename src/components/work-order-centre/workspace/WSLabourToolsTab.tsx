@@ -92,7 +92,7 @@ export function WSLabourToolsTab({ wo, onUpdate }: Props) {
                     <td className="px-2 py-1">
                       <Select value={r.trade || "none"} onValueChange={(v) => updateLabour(r.id, "trade", v === "none" ? "" : v)}>
                         <SelectTrigger className="h-7 text-xs border-0 shadow-none"><SelectValue placeholder="-" /></SelectTrigger>
-                        <SelectContent>{["Mechanical", "Electrical", "Instrumentation", "Boilermaker", "General"].map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                        <SelectContent>{["Mechanical", "Electrical"].map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
                       </Select>
                     </td>
                     <td className="px-2 py-1"><Input type="number" value={r.personnel} onChange={(e) => updateLabour(r.id, "personnel", parseInt(e.target.value) || 0)} className="h-7 text-xs w-16 border-0 shadow-none" /></td>
