@@ -116,8 +116,18 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-xs font-semibold">What did you observe?</Label>
+        <Label className="text-xs font-semibold">Description</Label>
         <Textarea value={form.problem_description} onChange={(e) => set("problem_description", e.target.value)} placeholder="Describe the issue, defect, or observation..." rows={3} className="text-sm" />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs font-semibold">Scope of Works</Label>
+        <Textarea value={form.scope_of_works} onChange={(e) => set("scope_of_works", e.target.value)} placeholder="What work is required or recommended..." rows={3} className="text-sm" />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs font-semibold">Notes (optional)</Label>
+        <Textarea value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Any additional context, access requirements, or safety notes..." rows={2} className="text-sm" />
       </div>
 
       <div className="flex items-center gap-6">
