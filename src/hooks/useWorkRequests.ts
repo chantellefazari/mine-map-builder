@@ -96,7 +96,7 @@ export function useWorkRequests() {
   });
 
   const convertToWOMutation = useMutation({
-    mutationFn: async (wrId: string) => {
+    mutationFn: async ({ wrId, woType }: { wrId: string; woType: string }) => {
       const { data: wr, error: wrErr } = await (supabase as any)
         .from("work_requests")
         .select("*")
@@ -114,9 +114,8 @@ export function useWorkRequests() {
           asset_id: wr.asset_id,
           functional_location: wr.functional_location,
           problem_description: wr.problem_description,
-          scope_of_works: wr.scope_of_works,
           priority: wr.priority,
-          work_type: wr.work_type,
+          work_type: woType,
           requested_by: wr.requested_by,
           trade: wr.trade,
           required_tooling: '[""]',

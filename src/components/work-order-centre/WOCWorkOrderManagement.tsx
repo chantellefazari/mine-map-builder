@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import {
-  Plus, Pause, CheckCircle2, Copy, PlayCircle, Search, Filter,
+  Plus, Pause, CheckCircle2, Copy, PlayCircle, Search,
 } from "lucide-react";
 import { toast } from "sonner";
 import { WOCView } from "@/pages/WorkOrderCentre";
@@ -13,6 +13,7 @@ import { WOCReportsTab } from "./performance/WOCReportsTab";
 import { WOCAnalyticsTab } from "./performance/WOCAnalyticsTab";
 import { WOCPMFormsTab } from "./performance/WOCPMFormsTab";
 import { WOCComplianceTab } from "./performance/WOCComplianceTab";
+import { WOTypeSelectDialog } from "./WOTypeSelectDialog";
 
 interface Props {
   onOpenWorkspace: (woId: string, from?: WOCView) => void;
@@ -44,6 +45,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
   const [opsTab, setOpsTab] = useState("planning");
   const [perfTab, setPerfTab] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [showWoTypeDialog, setShowWoTypeDialog] = useState(false);
 
   const activeGroup = perfTab ? "performance" : "operations";
 
@@ -62,10 +64,15 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
     return list;
   };
 
-  const handleCreate = async () => {
+  const handleCreate = () => {
+    setShowWoTypeDialog(true);
+  };
+
+  const handleCreateConfirm = async (woType: string) => {
+    setShowWoTypeDialog(false);
     try {
       const wo = await allocate.mutateAsync();
-      await update.mutateAsync({ id: wo.id, updates: { status: "Planning" } });
+      await update.mutateAsync({ id: wo.id, updates: { status: "Planning", work_type: woType } });
       onOpenWorkspace(wo.id, "wo-management");
     } catch {
       // handled in hook
@@ -348,6 +355,14 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
       {perfTab === "analytics" && <WOCAnalyticsTab workOrders={workOrders} />}
       {perfTab === "pm-forms" && <WOCPMFormsTab />}
       {perfTab === "compliance" && <WOCComplianceTab />}
+
+      <WOTypeSelectDialog
+        open={showWoTypeDialog}
+        onClose={() => setShowWoTypeDialog(false)}
+        onConfirm={handleCreateConfirm}
+        title="Create Work Order"
+        description="Select the Work Order Type to begin planning:"
+      />
     </div>
   );
 }

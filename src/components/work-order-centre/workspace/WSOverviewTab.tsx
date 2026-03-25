@@ -18,7 +18,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
     asset_id: wo.asset_id || "",
     functional_location: wo.functional_location || "",
     priority: wo.priority || "Normal",
-    work_type: wo.work_type || "Breakdown",
+    work_type: wo.work_type || "Planned",
     trade: wo.trade || "",
     requested_by: wo.requested_by || "",
     assigned_to: wo.assigned_to || "",
@@ -31,7 +31,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       asset_id: wo.asset_id || "",
       functional_location: wo.functional_location || "",
       priority: wo.priority || "Normal",
-      work_type: wo.work_type || "Breakdown",
+      work_type: wo.work_type || "Planned",
       trade: wo.trade || "",
       requested_by: wo.requested_by || "",
       assigned_to: wo.assigned_to || "",
@@ -64,11 +64,11 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
           </Select>
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold">Work Type</Label>
+          <Label className="text-xs font-semibold">Work Order Type</Label>
           <Select value={local.work_type} onValueChange={(v) => save("work_type", v)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {["Breakdown", "Planned", "Shutdown", "Inspection", "Modification"].map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+              {["Breakdown", "Planned", "Shutdown"].map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>

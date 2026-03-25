@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useWorkRequests, WorkRequest } from "@/hooks/useWorkRequests";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
-import { Plus, Eye, Pencil, XCircle, CheckCircle2 } from "lucide-react";
+import { Plus, Eye, XCircle, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { WOCCreateWorkRequest } from "./WOCCreateWorkRequest";
+import { WOTypeSelectDialog } from "./WOTypeSelectDialog";
 
 interface Props {
   onOpenWorkspace: (woId: string, from?: "work-requests") => void;
@@ -21,19 +22,26 @@ const STATUS_MAP: Record<string, string[]> = {
 };
 
 export function WOCWorkRequests({ onOpenWorkspace }: Props) {
-  const { workRequests, update, remove, convertToWO } = useWorkRequests();
+  const { workRequests, update, convertToWO } = useWorkRequests();
   const [tab, setTab] = useState("create");
   const [viewingWr, setViewingWr] = useState<WorkRequest | null>(null);
+  const [woTypeWr, setWoTypeWr] = useState<WorkRequest | null>(null);
 
   const filtered = (key: string) => {
     if (key === "history") return workRequests;
     return workRequests.filter((wr) => STATUS_MAP[key]?.includes(wr.status));
   };
 
-  const handleApprove = async (wr: WorkRequest) => {
+  const handleApproveClick = (wr: WorkRequest) => {
+    setWoTypeWr(wr);
+  };
+
+  const handleApproveConfirm = async (woType: string) => {
+    if (!woTypeWr) return;
     try {
-      const result = await convertToWO.mutateAsync(wr.id);
-      toast.success(`Work Order ${result.wo.wo_number} created`);
+      const result = await convertToWO.mutateAsync({ wrId: woTypeWr.id, woType });
+      toast.success(`Work Order ${result.wo.wo_number} created as ${woType}`);
+      setWoTypeWr(null);
       onOpenWorkspace(result.wo.id, "work-requests");
     } catch {
       // error handled in hook
@@ -53,9 +61,9 @@ export function WOCWorkRequests({ onOpenWorkspace }: Props) {
             <th className="text-left px-3 py-2 font-semibold">WR #</th>
             <th className="text-left px-3 py-2 font-semibold">Date</th>
             <th className="text-left px-3 py-2 font-semibold">Asset</th>
-            <th className="text-left px-3 py-2 font-semibold">Description</th>
+            <th className="text-left px-3 py-2 font-semibold">Observation</th>
             <th className="text-left px-3 py-2 font-semibold">Priority</th>
-            <th className="text-left px-3 py-2 font-semibold">Work Type</th>
+            <th className="text-left px-3 py-2 font-semibold">Request Type</th>
             <th className="text-left px-3 py-2 font-semibold">Requested By</th>
             <th className="text-left px-3 py-2 font-semibold">Status</th>
             {showActions && <th className="text-left px-3 py-2 font-semibold">Actions</th>}
@@ -91,7 +99,7 @@ export function WOCWorkRequests({ onOpenWorkspace }: Props) {
                           variant="ghost"
                           size="icon"
                           className="h-6 w-6 text-emerald-600"
-                          onClick={() => handleApprove(wr)}
+                          onClick={() => handleApproveClick(wr)}
                           title="Approve & Create WO"
                           disabled={convertToWO.isPending}
                         >
@@ -117,7 +125,7 @@ export function WOCWorkRequests({ onOpenWorkspace }: Props) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-bold text-foreground">Work Requests</h1>
-          <p className="text-xs text-muted-foreground">Create, review, and approve work requests</p>
+          <p className="text-xs text-muted-foreground">Raise observations, defects, and maintenance requests</p>
         </div>
       </div>
 
@@ -138,6 +146,14 @@ export function WOCWorkRequests({ onOpenWorkspace }: Props) {
         <TabsContent value="rejected" className="mt-4">{renderList(filtered("rejected"), false)}</TabsContent>
         <TabsContent value="history" className="mt-4">{renderList(filtered("history"), false)}</TabsContent>
       </Tabs>
+
+      <WOTypeSelectDialog
+        open={!!woTypeWr}
+        onClose={() => setWoTypeWr(null)}
+        onConfirm={handleApproveConfirm}
+        title="Approve & Create Work Order"
+        description={woTypeWr ? `Converting ${woTypeWr.wr_number} into a Work Order. Select the Work Order Type:` : ""}
+      />
     </div>
   );
 }
