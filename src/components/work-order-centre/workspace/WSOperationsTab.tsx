@@ -101,10 +101,10 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
                 <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                 <span className="text-xs font-bold text-muted-foreground w-8">#{op.lineNo}</span>
                 <Input
-                  value={op.title}
-                  onChange={(e) => updateOp(op.id, "title", e.target.value)}
-                  placeholder="Operation title"
-                  className="h-8 text-sm font-medium flex-1"
+                  value={op.description}
+                  onChange={(e) => updateOp(op.id, "description", e.target.value)}
+                  placeholder="Operation description"
+                  className="h-8 text-sm flex-1"
                 />
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => duplicateOp(op)} title="Duplicate">
                   <Copy className="w-3 h-3" />
@@ -113,13 +113,6 @@ export function WSOperationsTab({ wo, onUpdate }: Props) {
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>
-
-              <Input
-                value={op.description}
-                onChange={(e) => updateOp(op.id, "description", e.target.value)}
-                placeholder="Detailed task description"
-                className="h-8 text-xs"
-              />
 
               <div className="grid grid-cols-4 lg:grid-cols-6 gap-2">
                 <div className="space-y-1">
