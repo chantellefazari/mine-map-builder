@@ -65,7 +65,7 @@ export function WOCWorkspaceHeader({ wo, onUpdate, onClose }: Props) {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-1.5 flex-shrink-0">
-          <Button variant="outline" size="sm" className="text-xs h-7 gap-1" onClick={() => window.print()}>
+          <Button variant="outline" size="sm" className="text-xs h-7 gap-1" onClick={() => window.open(`/wo-print/${encodeURIComponent(wo.wo_number)}`, '_blank')}>
             <Printer className="w-3 h-3" /> Print
           </Button>
           {!["Ready", "Completed", "Complete", "Closed"].includes(wo.status) && (
