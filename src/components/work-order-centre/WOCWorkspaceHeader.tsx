@@ -9,6 +9,7 @@ interface Props {
   wo: WorkOrder;
   onUpdate: (updates: Partial<WorkOrder>) => void;
   onClose: () => void;
+  partsCount?: number;
 }
 
 const statusColor = (s: string) => {
@@ -22,15 +23,21 @@ const statusColor = (s: string) => {
   }
 };
 
-export function WOCWorkspaceHeader({ wo, onUpdate, onClose }: Props) {
+export function WOCWorkspaceHeader({ wo, onUpdate, onClose, partsCount = 0 }: Props) {
   const handleReadyForSchedule = () => {
-    const missing: string[] = [];
-    if (!wo.problem_description?.trim()) missing.push("Description or scope");
-    if (!wo.asset_id?.trim()) missing.push("Asset number");
+    const checks = [
+      { label: "Asset assigned", done: !!wo.asset_id?.trim() },
+      { label: "Description written", done: !!wo.problem_description?.trim() },
+      { label: "Scope of works", done: !!wo.scope_of_works?.trim() || !!wo.work_performed?.trim() },
+      { label: "Parts identified", done: partsCount > 0 },
+      { label: "Labour planned", done: Array.isArray(wo.labour_hours) && wo.labour_hours.length > 0 },
+    ];
+
+    const missing = checks.filter((c) => !c.done).map((c) => c.label);
 
     if (missing.length > 0) {
-      toast.error("Missing planning requirements", {
-        description: missing.join(", "),
+      toast.error("Planning must be 100% complete", {
+        description: `Missing: ${missing.join(", ")}`,
       });
       return;
     }
