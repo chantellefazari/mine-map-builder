@@ -61,7 +61,7 @@ export function WOCWorkspaceHeader({ wo, onUpdate, onClose }: Props) {
           <div><span className="font-semibold text-foreground">Asset:</span> {wo.asset_id || "-"}</div>
           <div><span className="font-semibold text-foreground">Area:</span> {wo.functional_location || "-"}</div>
           <div><span className="font-semibold text-foreground">Trade:</span> {wo.trade || "-"}</div>
-          <div><span className="font-semibold text-foreground">Type:</span> {wo.work_type || "-"}</div>
+          <div><span className="font-semibold text-foreground">WO Type:</span> {wo.work_type || "-"}</div>
           <div><span className="font-semibold text-foreground">Created:</span> {wo.date_raised ? format(new Date(wo.date_raised), "dd/MM/yy") : "-"}</div>
         </div>
 
