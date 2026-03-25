@@ -124,7 +124,8 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
       const existingDescs = new Set(parts.map((p) => p.part_description.toLowerCase()));
       let added = 0;
       for (const comp of comps) {
-        const desc = `${comp.componentName}${comp.model ? ` – ${comp.model}` : ""}`;
+        const model = comp.model && comp.model.toLowerCase() !== comp.componentName.toLowerCase() ? comp.model : "";
+        const desc = model ? `${comp.componentName} – ${model}` : comp.componentName;
         if (existingDescs.has(desc.toLowerCase())) continue;
         await addPart.mutateAsync({
           work_order_id: woId,
