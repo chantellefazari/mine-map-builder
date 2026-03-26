@@ -12,7 +12,8 @@ import { WSPartsTab } from "./workspace/WSPartsTab";
 import { WSProcurementTab } from "./workspace/WSProcurementTab";
 import { WSLinkedPOsTab } from "./workspace/WSLinkedPOsTab";
 import { WSActivityLogTab } from "./workspace/WSActivityLogTab";
-import { Eye, ListOrdered, Users, Package, ShoppingCart, Link2, History } from "lucide-react";
+import { WSPMFormTab } from "./workspace/WSPMFormTab";
+import { Eye, ListOrdered, Users, Package, ShoppingCart, Link2, History, ClipboardCheck } from "lucide-react";
 
 interface Props {
   woId: string;
