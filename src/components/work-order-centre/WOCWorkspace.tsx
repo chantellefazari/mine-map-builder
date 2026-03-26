@@ -13,6 +13,8 @@ import { WSProcurementTab } from "./workspace/WSProcurementTab";
 import { WSLinkedPOsTab } from "./workspace/WSLinkedPOsTab";
 import { WSActivityLogTab } from "./workspace/WSActivityLogTab";
 import { WSPMFormTab } from "./workspace/WSPMFormTab";
+import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
+import { MechanicalWorkOrderTemplate } from "@/components/work-orders/MechanicalWorkOrderTemplate";
 import { Eye, ListOrdered, Users, Package, ShoppingCart, Link2, History, ClipboardCheck } from "lucide-react";
 
 interface Props {
@@ -30,6 +32,7 @@ export function WOCWorkspace({ woId, onClose }: Props) {
   const isPMWorkOrder = wo ? (wo.problem_description || "").startsWith("PM:") : false;
   const isPMOnly = wo ? wo.work_type === "PM" : false;
   const [activeTab, setActiveTab] = useState(isPMWorkOrder ? "pm-form" : "overview");
+  const [showPrint, setShowPrint] = useState(false);
 
   if (!wo) {
     return (
@@ -45,7 +48,7 @@ export function WOCWorkspace({ woId, onClose }: Props) {
 
   return (
     <div className="flex flex-col h-full">
-      <WOCWorkspaceHeader wo={wo} onUpdate={handleUpdate} onClose={onClose} partsCount={parts.length} />
+      <WOCWorkspaceHeader wo={wo} onUpdate={handleUpdate} onClose={onClose} onPrint={() => setShowPrint(true)} partsCount={parts.length} />
 
       <div className="flex-1 overflow-auto p-4">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -109,6 +112,14 @@ export function WOCWorkspace({ woId, onClose }: Props) {
           )}
         </Tabs>
       </div>
+
+      <PrintPreviewModal
+        isOpen={showPrint}
+        onClose={() => setShowPrint(false)}
+        title={`Work Order ${wo.wo_number}`}
+      >
+        <MechanicalWorkOrderTemplate woNumber={wo.wo_number} />
+      </PrintPreviewModal>
     </div>
   );
 }

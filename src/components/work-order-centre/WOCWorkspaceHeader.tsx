@@ -9,6 +9,7 @@ interface Props {
   wo: WorkOrder;
   onUpdate: (updates: Partial<WorkOrder>) => void;
   onClose: () => void;
+  onPrint?: () => void;
   partsCount?: number;
 }
 
@@ -23,7 +24,7 @@ const statusColor = (s: string) => {
   }
 };
 
-export function WOCWorkspaceHeader({ wo, onUpdate, onClose, partsCount = 0 }: Props) {
+export function WOCWorkspaceHeader({ wo, onUpdate, onClose, onPrint, partsCount = 0 }: Props) {
   const handleReadyForSchedule = () => {
     const checks = [
       { label: "Asset assigned", done: !!wo.asset_id?.trim() },
@@ -75,31 +76,7 @@ export function WOCWorkspaceHeader({ wo, onUpdate, onClose, partsCount = 0 }: Pr
           <Button variant="outline" size="sm" className="text-xs h-7 gap-1" onClick={() => { toast.success("Progress saved"); onClose(); }}>
             <ArrowLeft className="w-3 h-3" /> Save & Exit
           </Button>
-          <Button variant="outline" size="sm" className="text-xs h-7 gap-1" onClick={() => {
-            const printWindow = window.open("", "_blank");
-            if (!printWindow) { toast.error("Popup blocked – please allow popups"); return; }
-            printWindow.document.write(`<!DOCTYPE html><html><head><title>${wo.wo_number}</title><style>
-              @page { size: A4 portrait; margin: 8mm; }
-              * { box-sizing: border-box; margin: 0; padding: 0; }
-              body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 9px; line-height: 1.3; color: #1a1a1a; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-              table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-              tr { page-break-inside: avoid; break-inside: avoid; }
-              thead { display: table-header-group; }
-              th, td { border: 1px solid #1a1a1a; padding: 3px 5px; text-align: left; font-size: 8px; word-wrap: break-word; }
-              th { background-color: #f5f5f5; font-weight: 600; }
-              .print-hide { display: none !important; }
-            </style></head><body><p style="font-size:14px;font-weight:bold;margin-bottom:8px;">${wo.wo_number} — ${wo.problem_description || "Work Order"}</p>
-            <table><tr><th>Asset</th><td>${wo.asset_id || "-"}</td><th>Area</th><td>${wo.functional_location || "-"}</td></tr>
-            <tr><th>Trade</th><td>${wo.trade || "-"}</td><th>Priority</th><td>${wo.priority || "-"}</td></tr>
-            <tr><th>Status</th><td>${wo.status}</td><th>WO Type</th><td>${wo.work_type || "-"}</td></tr>
-            <tr><th>Date Raised</th><td>${wo.date_raised || "-"}</td><th>Requested By</th><td>${wo.requested_by || "-"}</td></tr></table>
-            <h3 style="margin:10px 0 4px;font-size:10px;">Description</h3><p style="font-size:8px;">${wo.problem_description || "-"}</p>
-            <h3 style="margin:10px 0 4px;font-size:10px;">Scope of Works</h3><p style="font-size:8px;">${wo.scope_of_works || wo.work_performed || "-"}</p>
-            </body></html>`);
-            printWindow.document.close();
-            printWindow.focus();
-            setTimeout(() => { printWindow.print(); }, 400);
-          }}>
+          <Button variant="outline" size="sm" className="text-xs h-7 gap-1" onClick={onPrint}>
             <Printer className="w-3 h-3" /> Print
           </Button>
           {!["Ready", "Completed", "Complete", "Closed"].includes(wo.status) && (
