@@ -42,7 +42,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       work_performed: wo.work_performed || "",
       asset_id: wo.asset_id || "",
       functional_location: wo.functional_location || "",
-      priority: wo.priority || "Normal",
+      priority: wo.priority || "Medium",
       work_type: wo.work_type || "Planned",
       trade: wo.trade || "",
       requested_by: wo.requested_by || "",
