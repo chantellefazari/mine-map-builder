@@ -9,6 +9,7 @@ interface Props {
   wo: WorkOrder;
   onUpdate: (updates: Partial<WorkOrder>) => void;
   onClose: () => void;
+  onPrint?: () => void;
   partsCount?: number;
 }
 
