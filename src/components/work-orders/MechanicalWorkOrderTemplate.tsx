@@ -403,15 +403,73 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
               </Button>
             </div>
             <div className="p-3">
-              <Textarea
-                className="min-h-[60px] text-xs border-dashed print:border-none print:p-0 print:min-h-0 resize-none overflow-hidden"
-                style={{ height: 'auto' }}
-                ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
-                value={form.scope_of_works}
-                onChange={(e) => { setForm({ ...form, scope_of_works: e.target.value }); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
-                onBlur={(e) => handleFieldBlur("scope_of_works", e.target.value)}
-                placeholder="List the steps / method to carry out the work..."
-              />
+              {(() => {
+                // Try to parse as structured operations JSON
+                let operations: any[] = [];
+                try {
+                  const parsed = JSON.parse(form.scope_of_works || "[]");
+                  if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]?.lineNo !== undefined) {
+                    operations = parsed;
+                  }
+                } catch { /* not JSON, treat as plain text */ }
+
+                if (operations.length > 0) {
+                  return (
+                    <>
+                      {/* Print view - structured table */}
+                      <table className="w-full text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-gray-50">
+                            <th className="border border-gray-300 px-2 py-1 text-left w-10">#</th>
+                            <th className="border border-gray-300 px-2 py-1 text-left">Description</th>
+                            <th className="border border-gray-300 px-2 py-1 text-left w-24">Trade</th>
+                            <th className="border border-gray-300 px-2 py-1 text-center w-16">Est. Hrs</th>
+                            <th className="border border-gray-300 px-2 py-1 text-center w-16">Iso.</th>
+                            <th className="border border-gray-300 px-2 py-1 text-center w-16">S/D</th>
+                            <th className="border border-gray-300 px-2 py-1 text-left">Notes</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {operations.map((op: any, idx: number) => (
+                            <tr key={op.id || idx}>
+                              <td className="border border-gray-300 px-2 py-1">{op.lineNo || idx + 1}</td>
+                              <td className="border border-gray-300 px-2 py-1">{op.description || ""}</td>
+                              <td className="border border-gray-300 px-2 py-1">{op.trade || ""}</td>
+                              <td className="border border-gray-300 px-2 py-1 text-center">{op.estimatedHours || ""}</td>
+                              <td className="border border-gray-300 px-2 py-1 text-center">{op.requiresIsolation ? "Yes" : "No"}</td>
+                              <td className="border border-gray-300 px-2 py-1 text-center">{op.requiresShutdown ? "Yes" : "No"}</td>
+                              <td className="border border-gray-300 px-2 py-1">{op.notes || ""}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Edit view (hidden on print) */}
+                      <Textarea
+                        className="min-h-[60px] text-xs border-dashed print:hidden resize-none overflow-hidden mt-2"
+                        style={{ height: 'auto' }}
+                        ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
+                        value={form.scope_of_works}
+                        onChange={(e) => { setForm({ ...form, scope_of_works: e.target.value }); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
+                        onBlur={(e) => handleFieldBlur("scope_of_works", e.target.value)}
+                        placeholder="List the steps / method to carry out the work..."
+                      />
+                    </>
+                  );
+                }
+
+                // Plain text fallback
+                return (
+                  <Textarea
+                    className="min-h-[60px] text-xs border-dashed print:border-none print:p-0 print:min-h-0 resize-none overflow-hidden"
+                    style={{ height: 'auto' }}
+                    ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
+                    value={form.scope_of_works}
+                    onChange={(e) => { setForm({ ...form, scope_of_works: e.target.value }); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
+                    onBlur={(e) => handleFieldBlur("scope_of_works", e.target.value)}
+                    placeholder="List the steps / method to carry out the work..."
+                  />
+                );
+              })()}
             </div>
           </div>
 
