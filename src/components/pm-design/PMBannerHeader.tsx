@@ -31,7 +31,7 @@ export const PMBannerHeader = ({ title, subtitle }: PMBannerHeaderProps) => {
       <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
       <div className="absolute bottom-0 left-4 h-[60%] flex items-center gap-2 z-10">
         <img src={tennantIcon} alt="Tennant Mines" className="h-12" />
-        <img src={aspectLogo} alt="Aspect" className="h-8" />
+        <img src={aspectLogo || localAspectLogo} alt="Aspect" className="h-8" />
       </div>
       <div className="absolute bottom-0 left-[22%] right-[14%] h-[60%] flex items-center justify-center z-0">
         <div className="text-center">
