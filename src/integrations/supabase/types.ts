@@ -2268,6 +2268,7 @@ export type Database = {
           required_tooling: string | null
           resources_required: string
           returned_to_service: string
+          scheduled_date: string | null
           scope_of_works: string | null
           status: string
           supervisor_name: string
@@ -2300,6 +2301,7 @@ export type Database = {
           required_tooling?: string | null
           resources_required?: string
           returned_to_service?: string
+          scheduled_date?: string | null
           scope_of_works?: string | null
           status?: string
           supervisor_name?: string
@@ -2332,6 +2334,7 @@ export type Database = {
           required_tooling?: string | null
           resources_required?: string
           returned_to_service?: string
+          scheduled_date?: string | null
           scope_of_works?: string | null
           status?: string
           supervisor_name?: string
