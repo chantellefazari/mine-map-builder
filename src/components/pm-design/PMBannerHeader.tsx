@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
+import aspectLogo from "@/assets/aspect-logo.png";
 
 interface PMBannerHeaderProps {
   title: string;
