@@ -391,6 +391,31 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
         title="Create Work Order"
         description="Select the Work Order Type to begin planning:"
       />
+
+      <PMSchedulePanel
+        open={showPMSchedule}
+        onClose={() => setShowPMSchedule(false)}
+        onCreatePMWorkOrder={async (pmData) => {
+          setShowPMSchedule(false);
+          try {
+            const wo = await allocate.mutateAsync();
+            await update.mutateAsync({
+              id: wo.id,
+              updates: {
+                status: "Scheduled",
+                work_type: "PM",
+                problem_description: `PM: ${pmData.pmName} (${pmData.frequency})`,
+                asset_id: pmData.assetNumber || "",
+                trade: pmData.discipline || "",
+                required_tooling: JSON.stringify(pmData.requiredTools || []),
+              },
+            });
+            onOpenWorkspace(wo.id, "wo-management");
+          } catch {
+            // handled in hook
+          }
+        }}
+      />
     </div>
   );
 }
