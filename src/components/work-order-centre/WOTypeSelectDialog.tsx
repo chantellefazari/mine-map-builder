@@ -101,8 +101,17 @@ export function WOTypeSelectDialog({ open, onClose, onConfirm, title, descriptio
     if (step === "pm-select") {
       const pm = pms.find((p) => p.id === selectedPmId);
       if (pm) {
-        const taskDescriptions = (pm.tasks || [])
-          .map((t: any) => t.description || t.task || "")
+        // pm.tasks may be an array or a JSONB object with sections
+        let rawTasks: any[] = [];
+        if (Array.isArray(pm.tasks)) {
+          rawTasks = pm.tasks;
+        } else if (pm.tasks && typeof pm.tasks === "object" && Array.isArray((pm.tasks as any).sections)) {
+          rawTasks = (pm.tasks as any).sections.flatMap((s: any) =>
+            Array.isArray(s.tasks) ? s.tasks : Array.isArray(s.items) ? s.items : []
+          );
+        }
+        const taskDescriptions = rawTasks
+          .map((t: any) => t.description || t.task || t.equipmentName || t.sectionName || "")
           .filter(Boolean);
 
         const autoFill: PMAutoFill = {
