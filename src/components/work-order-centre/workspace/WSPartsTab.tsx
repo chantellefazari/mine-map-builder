@@ -24,6 +24,20 @@ interface AssetComponent {
   componentType: string;
   model: string;
   manufacturer: string | null;
+  serialNumber?: string;
+  oilType?: string;
+  oilVolume?: string;
+  voltage?: string;
+  motorSpeed?: string;
+  protection?: string;
+  pumpFlow?: string;
+  operatingPressure?: string;
+  inputSpeed?: string;
+  outputSpeed?: string;
+  weight?: string;
+  displacement?: string;
+  motorRef?: string;
+  pumpRef?: string;
 }
 
 export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePart }: Props) {
