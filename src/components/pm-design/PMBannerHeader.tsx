@@ -1,7 +1,13 @@
 import { Input } from "@/components/ui/input";
 import tennantBanner from "@/assets/tennant-banner-new.png";
 import tennantIcon from "@/assets/tennant-icon.png";
-import aspectLogo from "@/assets/aspect-logo.png";
+import localAspectLogo from "@/assets/aspect-logo.png";
+import { supabase } from "@/integrations/supabase/client";
+
+const { data: { publicUrl: aspectLogo } } = supabase
+  .storage
+  .from('brand-assets')
+  .getPublicUrl('aspect-logo.png');
 
 interface PMBannerHeaderProps {
   title: string;
