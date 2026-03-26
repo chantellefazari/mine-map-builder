@@ -47,7 +47,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
         problem_description: wr.problem_description || "",
         scope_of_works: wr.scope_of_works || "",
         priority: wr.priority || "Normal",
-        work_type: wr.work_type || "Breakdown",
+        work_type: wr.work_type || "Inspect",
         requested_by: wr.requested_by || "",
         trade: wr.trade || "",
         status: wr.status || "Open",
