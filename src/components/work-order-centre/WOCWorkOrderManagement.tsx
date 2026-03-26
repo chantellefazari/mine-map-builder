@@ -109,6 +109,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
   const [perfTab, setPerfTab] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [showWoTypeDialog, setShowWoTypeDialog] = useState(false);
+  const [showPMSchedule, setShowPMSchedule] = useState(false);
 
   const activeGroup = perfTab ? "performance" : "operations";
 
