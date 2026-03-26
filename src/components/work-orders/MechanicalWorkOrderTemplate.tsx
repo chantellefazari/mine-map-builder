@@ -36,7 +36,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     scope_of_works: "",
     work_performed: "",
     required_tooling: "",
-    priority: "Normal",
+    priority: "Medium",
     work_type: "Breakdown",
     requested_by: "",
     assigned_to: "",
