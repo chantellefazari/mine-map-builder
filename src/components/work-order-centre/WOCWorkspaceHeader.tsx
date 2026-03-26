@@ -24,7 +24,7 @@ const statusColor = (s: string) => {
   }
 };
 
-export function WOCWorkspaceHeader({ wo, onUpdate, onClose, partsCount = 0 }: Props) {
+export function WOCWorkspaceHeader({ wo, onUpdate, onClose, onPrint, partsCount = 0 }: Props) {
   const handleReadyForSchedule = () => {
     const checks = [
       { label: "Asset assigned", done: !!wo.asset_id?.trim() },
