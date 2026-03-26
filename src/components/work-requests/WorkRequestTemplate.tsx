@@ -20,7 +20,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
   const wr = workRequests.find((w) => w.wr_number === wrNumber);
   const [assetLookupOpen, setAssetLookupOpen] = useState(false);
   const [isEnhancingDesc, setIsEnhancingDesc] = useState(false);
-  const [isEnhancingScope] = useState(false);
+  
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
