@@ -150,7 +150,10 @@ export function PMSchedulePanel({ open, onClose, onCreatePMWorkOrder }: Props) {
                 <p className="text-xs text-muted-foreground text-center py-8">No PM templates found</p>
               ) : (
                 Object.entries(grouped)
-                  .sort(([a], [b]) => a.localeCompare(b))
+                  .sort(([a], [b]) => {
+                    const order = ["Mechanical", "Electrical", "Ops", "Mobile Equipment", "Lube"];
+                    return (order.indexOf(a) === -1 ? 99 : order.indexOf(a)) - (order.indexOf(b) === -1 ? 99 : order.indexOf(b));
+                  })
                   .map(([discipline, freqs]) => {
                     const meta = DISCIPLINE_META[discipline] || DISCIPLINE_META.Mechanical;
                     const DIcon = meta.icon;
