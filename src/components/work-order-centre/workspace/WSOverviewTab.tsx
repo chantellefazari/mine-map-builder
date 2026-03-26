@@ -149,7 +149,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
           <Select value={local.priority} onValueChange={(v) => save("priority", v)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {["Low", "Normal", "High", "Critical", "Emergency"].map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+              {["Low", "Medium", "High", "Urgent"].map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
