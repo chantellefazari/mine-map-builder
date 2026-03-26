@@ -20,6 +20,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
   const [local, setLocal] = useState({
     problem_description: wo.problem_description || "",
     work_performed: wo.work_performed || "",
+    scope_of_works: wo.scope_of_works || "",
     asset_id: wo.asset_id || "",
     functional_location: wo.functional_location || "",
     priority: wo.priority || "Medium",
@@ -40,6 +41,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
     setLocal({
       problem_description: wo.problem_description || "",
       work_performed: wo.work_performed || "",
+      scope_of_works: wo.scope_of_works || "",
       asset_id: wo.asset_id || "",
       functional_location: wo.functional_location || "",
       priority: wo.priority || "Medium",
@@ -59,7 +61,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
   };
 
   const handleEnhance = async (mode: "description" | "scope") => {
-    const text = mode === "description" ? local.problem_description : local.work_performed;
+    const text = mode === "description" ? local.problem_description : local.scope_of_works;
     if (!text.trim()) {
       toast.error(`Please enter some rough notes first`);
       return;
@@ -73,7 +75,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       });
       if (error) throw error;
       if (data?.enhanced) {
-        const field = mode === "description" ? "problem_description" : "work_performed";
+        const field = mode === "description" ? "problem_description" : "scope_of_works";
         save(field, data.enhanced);
         toast.success(`${mode === "description" ? "Description" : "Scope of works"} enhanced`);
       }
@@ -194,7 +196,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       {/* Scope of Works with AI */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <Label className="text-xs font-semibold">Scope of Works / Notes</Label>
+          <Label className="text-xs font-semibold">Scope of Works</Label>
           <Button
             type="button"
             variant="outline"
@@ -207,7 +209,13 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
             Generate with AI
           </Button>
         </div>
-        <Textarea value={local.work_performed} onBlur={(e) => save("work_performed", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, work_performed: e.target.value }))} rows={4} className="text-sm" placeholder="Detail the scope, method, and requirements..." />
+        <Textarea value={local.scope_of_works} onBlur={(e) => save("scope_of_works", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, scope_of_works: e.target.value }))} rows={4} className="text-sm" placeholder="Detail the scope, method, and requirements..." />
+      </div>
+
+      {/* Notes */}
+      <div className="space-y-1.5">
+        <Label className="text-xs font-semibold">Notes</Label>
+        <Textarea value={local.work_performed} onBlur={(e) => save("work_performed", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, work_performed: e.target.value }))} rows={3} className="text-sm" placeholder="Additional notes, observations, or comments..." />
       </div>
 
       {/* Photos */}
