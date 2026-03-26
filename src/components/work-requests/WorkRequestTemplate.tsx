@@ -105,7 +105,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
 
   const handleConvertToWO = () => {
     if (!wr) return;
-    convertToWO.mutate({ wrId: wr.id, woType: wr.work_type || "Planned" });
+    convertToWO.mutate({ wrId: wr.id, woType: "Planned" });
   };
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
