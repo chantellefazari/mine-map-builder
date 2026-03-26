@@ -12,7 +12,8 @@ import { WSPartsTab } from "./workspace/WSPartsTab";
 import { WSProcurementTab } from "./workspace/WSProcurementTab";
 import { WSLinkedPOsTab } from "./workspace/WSLinkedPOsTab";
 import { WSActivityLogTab } from "./workspace/WSActivityLogTab";
-import { Eye, ListOrdered, Users, Package, ShoppingCart, Link2, History } from "lucide-react";
+import { WSPMFormTab } from "./workspace/WSPMFormTab";
+import { Eye, ListOrdered, Users, Package, ShoppingCart, Link2, History, ClipboardCheck } from "lucide-react";
 
 interface Props {
   woId: string;
@@ -26,7 +27,8 @@ export function WOCWorkspace({ woId, onClose }: Props) {
   const { poItems, isLoading: poLoading } = usePOTracker(woId);
   const { listQuery: prQuery } = usePurchaseRequests();
   const linkedPRs = (prQuery.data ?? []).filter((pr) => pr.work_order_id === woId);
-  const [activeTab, setActiveTab] = useState("overview");
+  const isPMWorkOrder = wo ? (wo.problem_description || "").startsWith("PM:") : false;
+  const [activeTab, setActiveTab] = useState(isPMWorkOrder ? "pm-form" : "overview");
 
   if (!wo) {
     return (
@@ -46,8 +48,11 @@ export function WOCWorkspace({ woId, onClose }: Props) {
 
       <div className="flex-1 overflow-auto p-4">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full grid grid-cols-7">
+          <TabsList className={`w-full grid ${isPMWorkOrder ? "grid-cols-8" : "grid-cols-7"}`}>
             <TabsTrigger value="overview" className="text-xs gap-1"><Eye className="w-3 h-3" /> Overview</TabsTrigger>
+            {isPMWorkOrder && (
+              <TabsTrigger value="pm-form" className="text-xs gap-1"><ClipboardCheck className="w-3 h-3" /> PM Form</TabsTrigger>
+            )}
             <TabsTrigger value="operations" className="text-xs gap-1"><ListOrdered className="w-3 h-3" /> Operations</TabsTrigger>
             <TabsTrigger value="labour-tools" className="text-xs gap-1"><Users className="w-3 h-3" /> Labour & Tools</TabsTrigger>
             <TabsTrigger value="parts" className="text-xs gap-1"><Package className="w-3 h-3" /> Parts</TabsTrigger>
@@ -59,6 +64,11 @@ export function WOCWorkspace({ woId, onClose }: Props) {
           <TabsContent value="overview" className="mt-4">
             <WSOverviewTab wo={wo} onUpdate={handleUpdate} />
           </TabsContent>
+          {isPMWorkOrder && (
+            <TabsContent value="pm-form" className="mt-4">
+              <WSPMFormTab wo={wo} />
+            </TabsContent>
+          )}
           <TabsContent value="operations" className="mt-4">
             <WSOperationsTab wo={wo} onUpdate={handleUpdate} />
           </TabsContent>
