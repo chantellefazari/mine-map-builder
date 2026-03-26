@@ -21,6 +21,7 @@ import { PMSchedulePanel } from "./PMSchedulePanel";
 
 interface Props {
   onOpenWorkspace: (woId: string, from?: WOCView) => void;
+  onNavigate?: (view: WOCView) => void;
 }
 
 const OPS_STATUSES: Record<string, string[]> = {
@@ -103,7 +104,7 @@ function PlanningProgress({ wo, partsCount }: { wo: WorkOrder; partsCount: numbe
   );
 }
 
-export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
+export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
   const { workOrders, allocate, update } = useWorkOrders();
   const [opsTab, setOpsTab] = useState("planning");
   const [perfTab, setPerfTab] = useState<string | null>(null);
@@ -266,7 +267,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
             variant="outline"
             className="text-sm gap-1.5 h-8"
           >
-            <ClipboardCheck className="w-4 h-4" /> Schedule PM
+            <ClipboardCheck className="w-4 h-4" /> Create PM
           </Button>
           <Button
             onClick={handleCreate}
@@ -394,7 +395,11 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
                 trade: pmData.discipline || "",
               },
             });
-            onOpenWorkspace(wo.id, "wo-management");
+            // PM work orders go straight to schedule (unscheduled sidebar)
+            if (onNavigate) {
+              onNavigate("schedule");
+            }
+            toast.success(`PM Work Order ${wo.wo_number} created — ready to schedule`);
           } catch {
             // handled in hook
           }
