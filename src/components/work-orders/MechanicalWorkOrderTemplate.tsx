@@ -399,7 +399,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             // If no tooling items exist, show an "Add Tooling" button
             if (!Array.isArray(tooling) || tooling.length === 0) {
               return (
-                <div className="border border-dashed border-gray-300 rounded p-3 flex items-center justify-center print:hidden">
+                <div className="border border-dashed border-gray-300 rounded p-3 flex items-center justify-center print:hidden print-hide">
                   <Button
                     size="sm"
                     variant="outline"
