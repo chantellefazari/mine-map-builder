@@ -24,6 +24,20 @@ interface AssetComponent {
   componentType: string;
   model: string;
   manufacturer: string | null;
+  serialNumber?: string;
+  oilType?: string;
+  oilVolume?: string;
+  voltage?: string;
+  motorSpeed?: string;
+  protection?: string;
+  pumpFlow?: string;
+  operatingPressure?: string;
+  inputSpeed?: string;
+  outputSpeed?: string;
+  weight?: string;
+  displacement?: string;
+  motorRef?: string;
+  pumpRef?: string;
 }
 
 export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePart }: Props) {
@@ -111,6 +125,20 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
             componentType: c.componentType || "",
             model: c.model || "",
             manufacturer: c.manufacturer || null,
+            serialNumber: c.serialNumber || "",
+            oilType: c.oilType || "",
+            oilVolume: c.oilVolume || "",
+            voltage: c.voltage || "",
+            motorSpeed: c.motorSpeed || "",
+            protection: c.protection || "",
+            pumpFlow: c.pumpFlow || "",
+            operatingPressure: c.operatingPressure || "",
+            inputSpeed: c.inputSpeed || "",
+            outputSpeed: c.outputSpeed || "",
+            weight: c.weight || "",
+            displacement: c.displacement || "",
+            motorRef: c.motorRef || "",
+            pumpRef: c.pumpRef || "",
           }));
         }
       }
@@ -120,6 +148,27 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
         return;
       }
 
+      // Build specs string from component attributes
+      const buildSpecs = (comp: AssetComponent): string => {
+        const specs: string[] = [];
+        if (comp.manufacturer) specs.push(`Mfr: ${comp.manufacturer}`);
+        if (comp.serialNumber) specs.push(`S/N: ${comp.serialNumber}`);
+        if (comp.voltage) specs.push(`Voltage: ${comp.voltage}`);
+        if (comp.motorSpeed) specs.push(`Speed: ${comp.motorSpeed}`);
+        if (comp.protection) specs.push(`Protection: ${comp.protection}`);
+        if (comp.oilType) specs.push(`Oil: ${comp.oilType}`);
+        if (comp.oilVolume) specs.push(`Oil Vol: ${comp.oilVolume}`);
+        if (comp.inputSpeed) specs.push(`In: ${comp.inputSpeed}`);
+        if (comp.outputSpeed) specs.push(`Out: ${comp.outputSpeed}`);
+        if (comp.weight) specs.push(`Wt: ${comp.weight}`);
+        if (comp.pumpFlow) specs.push(`Flow: ${comp.pumpFlow}`);
+        if (comp.operatingPressure) specs.push(`Press: ${comp.operatingPressure}`);
+        if (comp.displacement) specs.push(`Disp: ${comp.displacement}`);
+        if (comp.motorRef) specs.push(`Motor: ${comp.motorRef}`);
+        if (comp.pumpRef) specs.push(`Pump: ${comp.pumpRef}`);
+        return specs.join("; ");
+      };
+
       // Add each component as a part (skip duplicates already in parts list)
       const existingDescs = new Set(parts.map((p) => p.part_description.toLowerCase()));
       let added = 0;
@@ -127,11 +176,13 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
         const model = comp.model && comp.model.toLowerCase() !== comp.componentName.toLowerCase() ? comp.model : "";
         const desc = model ? `${comp.componentName} – ${model}` : comp.componentName;
         if (existingDescs.has(desc.toLowerCase())) continue;
+        const specsStr = buildSpecs(comp);
         await addPart.mutateAsync({
           work_order_id: woId,
           part_number: "",
           part_description: desc,
           quantity_required: 1,
+          ...(specsStr ? { comment: specsStr } : {}),
         });
         added++;
       }
