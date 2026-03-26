@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Label } from "@/components/ui/label";
 import {
   X, Search, ChevronDown, ChevronRight, Wrench, Zap, Truck, Droplets,
-  ClipboardCheck, CalendarPlus,
+  ClipboardCheck, CalendarPlus, ArrowLeft, Clock, Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePMasterList } from "@/hooks/usePMData";
@@ -42,6 +43,8 @@ function groupPMs(pms: PMData[]) {
   return grouped;
 }
 
+type Step = "browse" | "overview";
+
 export function PMSchedulePanel({ open, onClose, onCreatePMWorkOrder }: Props) {
   const { pms, isLoading } = usePMasterList();
   const [search, setSearch] = useState("");
@@ -50,6 +53,9 @@ export function PMSchedulePanel({ open, onClose, onCreatePMWorkOrder }: Props) {
     Mechanical: true,
   });
   const [expandedFrequencies, setExpandedFrequencies] = useState<Record<string, boolean>>({});
+  const [step, setStep] = useState<Step>("browse");
+  const [editResources, setEditResources] = useState("");
+  const [editDuration, setEditDuration] = useState("");
 
   const filteredPMs = useMemo(() => {
     if (!search.trim()) return pms;
@@ -71,6 +77,24 @@ export function PMSchedulePanel({ open, onClose, onCreatePMWorkOrder }: Props) {
   const toggleFrequency = (key: string) =>
     setExpandedFrequencies((prev) => ({ ...prev, [key]: !prev[key] }));
 
+  const handleSelectPM = (pmId: string) => {
+    setSelectedPmId(pmId);
+    const pm = pms.find((p) => p.id === pmId);
+    if (pm) {
+      setEditResources(pm.resources || "");
+      setEditDuration(pm.estimatedDuration || "");
+    }
+  };
+
+  const handleProceedToOverview = () => {
+    if (!selectedPM) return;
+    setStep("overview");
+  };
+
+  const handleBackToBrowse = () => {
+    setStep("browse");
+  };
+
   const handleCreate = () => {
     if (!selectedPM) return;
 
@@ -79,7 +103,7 @@ export function PMSchedulePanel({ open, onClose, onCreatePMWorkOrder }: Props) {
       pmName: selectedPM.pmName,
       equipmentType: selectedPM.equipmentType,
       discipline: selectedPM.discipline,
-      estimatedDuration: selectedPM.estimatedDuration || "",
+      estimatedDuration: editDuration || selectedPM.estimatedDuration || "",
       requiredTools: selectedPM.requiredTools || [],
       assetNumber: selectedPM.assetNumber || "",
       purpose: selectedPM.purpose || "",
@@ -90,10 +114,117 @@ export function PMSchedulePanel({ open, onClose, onCreatePMWorkOrder }: Props) {
     onCreatePMWorkOrder(autoFill);
     setSelectedPmId(null);
     setSearch("");
+    setStep("browse");
+    setEditResources("");
+    setEditDuration("");
   };
 
   if (!open) return null;
 
+  // Step 2: Overview / confirm before creation
+  if (step === "overview" && selectedPM) {
+    return (
+      <div className="absolute inset-0 z-50 bg-background flex flex-col">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-card/50">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleBackToBrowse}>
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+            <div>
+              <h1 className="text-sm font-bold text-foreground">Create PM Work Order</h1>
+              <p className="text-[11px] text-muted-foreground">
+                Review details before creating
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleCreate}
+              size="sm"
+              className="gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700"
+            >
+              <CalendarPlus className="w-3.5 h-3.5" />
+              Create PM Work Order
+            </Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-auto p-6">
+          <div className="max-w-2xl mx-auto space-y-6">
+            {/* PM Summary */}
+            <div className="border border-border rounded-lg p-5 space-y-4">
+              <h2 className="text-sm font-bold text-foreground">{selectedPM.pmName}</h2>
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <span className="text-muted-foreground">Equipment Type</span>
+                  <p className="font-medium text-foreground mt-0.5">{selectedPM.equipmentType}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Discipline</span>
+                  <p className="font-medium text-foreground mt-0.5">{selectedPM.discipline}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Frequency</span>
+                  <p className="font-medium text-foreground mt-0.5">{selectedPM.frequency}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Asset</span>
+                  <p className="font-medium text-foreground mt-0.5">{selectedPM.assetNumber || "—"}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Resources & Duration — editable */}
+            <div className="border border-border rounded-lg p-5 space-y-4">
+              <h3 className="text-xs font-semibold text-foreground flex items-center gap-2">
+                <Users className="w-3.5 h-3.5 text-muted-foreground" />
+                Resources & Duration
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Resources</Label>
+                  <Input
+                    value={editResources}
+                    onChange={(e) => setEditResources(e.target.value)}
+                    placeholder="e.g. 1x Fitter (2 hrs)"
+                    className="h-8 text-xs"
+                  />
+                  <p className="text-[10px] text-muted-foreground">Who is needed for this PM</p>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Estimated Duration</Label>
+                  <Input
+                    value={editDuration}
+                    onChange={(e) => setEditDuration(e.target.value)}
+                    placeholder="e.g. 2 hours"
+                    className="h-8 text-xs"
+                  />
+                  <p className="text-[10px] text-muted-foreground">How long the PM takes</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Preview */}
+            {selectedViewId && (
+              <div className="border border-border rounded-lg overflow-hidden">
+                <div className="px-4 py-2 bg-muted/30 border-b border-border">
+                  <p className="text-xs font-medium text-muted-foreground">Template Preview</p>
+                </div>
+                <div className="transform origin-top-left scale-[0.7] w-[142.8%]">
+                  {renderPMDocument(selectedViewId)}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Step 1: Browse & select PM template
   return (
     <div className="absolute inset-0 z-50 bg-background flex flex-col">
       {/* Header */}
@@ -103,21 +234,21 @@ export function PMSchedulePanel({ open, onClose, onCreatePMWorkOrder }: Props) {
             <ClipboardCheck className="w-4 h-4 text-emerald-600" />
           </div>
           <div>
-            <h1 className="text-sm font-bold text-foreground">Schedule PM</h1>
+            <h1 className="text-sm font-bold text-foreground">Create PM</h1>
             <p className="text-[11px] text-muted-foreground">
-              Select a PM template to create a scheduled work order
+              Select a PM template to create a work order
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {selectedPM && (
             <Button
-              onClick={handleCreate}
+              onClick={handleProceedToOverview}
               size="sm"
               className="gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700"
             >
               <CalendarPlus className="w-3.5 h-3.5" />
-              Create PM Work Order
+              Next: Review & Create
             </Button>
           )}
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
@@ -217,7 +348,7 @@ export function PMSchedulePanel({ open, onClose, onCreatePMWorkOrder }: Props) {
                                           .map((pm) => (
                                             <button
                                               key={pm.id}
-                                              onClick={() => setSelectedPmId(pm.id)}
+                                              onClick={() => handleSelectPM(pm.id)}
                                               className={cn(
                                                 "w-full text-left px-2 py-1.5 rounded-md text-[11px] transition-colors",
                                                 selectedPmId === pm.id
