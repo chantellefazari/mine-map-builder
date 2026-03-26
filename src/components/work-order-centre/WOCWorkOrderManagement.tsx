@@ -277,6 +277,13 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
             />
           </div>
           <Button
+            onClick={() => setShowPMSchedule(true)}
+            variant="outline"
+            className="text-sm gap-1.5 h-8"
+          >
+            <ClipboardCheck className="w-4 h-4" /> Schedule PM
+          </Button>
+          <Button
             onClick={handleCreate}
             disabled={allocate.isPending}
             className="text-sm gap-1.5 h-8"
