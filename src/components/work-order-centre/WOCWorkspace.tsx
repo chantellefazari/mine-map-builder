@@ -13,6 +13,8 @@ import { WSProcurementTab } from "./workspace/WSProcurementTab";
 import { WSLinkedPOsTab } from "./workspace/WSLinkedPOsTab";
 import { WSActivityLogTab } from "./workspace/WSActivityLogTab";
 import { WSPMFormTab } from "./workspace/WSPMFormTab";
+import { PrintPreviewModal } from "@/components/pm-design/PrintPreviewModal";
+import { MechanicalWorkOrderTemplate } from "@/components/work-orders/MechanicalWorkOrderTemplate";
 import { Eye, ListOrdered, Users, Package, ShoppingCart, Link2, History, ClipboardCheck } from "lucide-react";
 
 interface Props {
