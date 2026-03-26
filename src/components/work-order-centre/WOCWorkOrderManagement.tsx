@@ -21,6 +21,7 @@ import { PMSchedulePanel } from "./PMSchedulePanel";
 
 interface Props {
   onOpenWorkspace: (woId: string, from?: WOCView) => void;
+  onNavigate?: (view: WOCView) => void;
 }
 
 const OPS_STATUSES: Record<string, string[]> = {
