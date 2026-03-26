@@ -53,13 +53,6 @@ const WO_TYPES = [
     icon: Wrench,
     accent: "border-orange-400/40 hover:border-orange-400",
   },
-  {
-    value: "PM",
-    label: "Preventive Maintenance",
-    desc: "Create a WO from an existing PM template",
-    icon: ClipboardCheck,
-    accent: "border-emerald-400/40 hover:border-emerald-400",
-  },
 ];
 
 const disciplineColor = (d: string) => {
