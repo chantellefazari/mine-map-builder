@@ -12,14 +12,14 @@ export const PMBannerHeader = ({ title, subtitle }: PMBannerHeaderProps) => {
   return (
     <div className="relative" data-pdf-section>
       <img src={tennantBanner} alt="Tennant Mines Banner" className="w-full h-auto" />
-      <div className="absolute bottom-0 left-4 h-[60%] flex items-center gap-3">
-        <img src={tennantIcon} alt="Tennant Mines" className="h-14" />
-        <img src={aspectLogo} alt="Aspect" className="h-10" />
+      <div className="absolute bottom-0 left-4 h-[60%] flex items-center gap-2 z-10">
+        <img src={tennantIcon} alt="Tennant Mines" className="h-12" />
+        <img src={aspectLogo} alt="Aspect" className="h-8" />
       </div>
-      <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-center justify-center pl-[160px] pr-[100px]">
+      <div className="absolute bottom-0 left-[22%] right-[14%] h-[60%] flex items-center justify-center z-0">
         <div className="text-center">
-          <h1 className="text-lg font-bold tracking-wide text-primary line-clamp-2">{title}</h1>
-          {subtitle && <p className="text-sm mt-1 text-primary/80">{subtitle}</p>}
+          <h1 className="text-[15px] font-bold tracking-wide text-primary leading-tight line-clamp-2">{title}</h1>
+          {subtitle && <p className="text-xs mt-0.5 text-primary/80">{subtitle}</p>}
         </div>
       </div>
       <div className="absolute bottom-1 right-2 h-[40%] flex items-center">
