@@ -28,6 +28,7 @@ export interface WorkOrder {
   operations_handover_date: string;
   labour_hours: any;
   photo_urls: string[];
+  scheduled_date: string | null;
   created_at: string;
   updated_at: string;
 }
