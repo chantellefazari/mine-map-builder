@@ -48,7 +48,7 @@ export function WOCWorkspace({ woId, onClose }: Props) {
 
   return (
     <div className="flex flex-col h-full">
-      <WOCWorkspaceHeader wo={wo} onUpdate={handleUpdate} onClose={onClose} partsCount={parts.length} />
+      <WOCWorkspaceHeader wo={wo} onUpdate={handleUpdate} onClose={onClose} onPrint={() => setShowPrint(true)} partsCount={parts.length} />
 
       <div className="flex-1 overflow-auto p-4">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
