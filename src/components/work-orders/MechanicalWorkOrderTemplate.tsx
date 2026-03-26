@@ -308,9 +308,9 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                     onBlur={(e) => handleFieldBlur("asset_id", e.target.value)}
                     placeholder="Enter or search"
                   />
-                  <Button size="icon" variant="outline" className="h-7 w-7 shrink-0 print:hidden" onClick={() => setAssetLookupOpen(true)} title="Search Asset Hierarchy">
-                    <Search className="h-3 w-3" />
-                  </Button>
+                   <Button size="icon" variant="outline" className="h-7 w-7 shrink-0 print:hidden print-hide" onClick={() => setAssetLookupOpen(true)} title="Search Asset Hierarchy">
+                     <Search className="h-3 w-3" />
+                   </Button>
                 </div>
               </div>
               <div className="border border-gray-300 p-2">
