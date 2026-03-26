@@ -141,7 +141,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
   };
 
   const priorityOptions = ["Critical", "High", "Normal", "Low"];
-  const workTypeOptions = ["Breakdown", "Planned", "Shutdown"];
+  const workTypeOptions = ["Inspect", "Repair", "Replace"];
   const isConverted = form.status === "Converted to WO";
 
   return (
