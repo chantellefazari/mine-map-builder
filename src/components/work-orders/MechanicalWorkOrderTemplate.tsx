@@ -205,7 +205,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
   return (
     <div className="space-y-4">
       {/* Header with Print Button */}
-      <div className="flex items-center justify-between print:hidden">
+      <div className="flex items-center justify-between print:hidden print-hide">
         <h2 className="text-xl font-semibold text-foreground">
           Work Order {woNumber && <span className="text-primary font-mono">({woNumber})</span>}
         </h2>
@@ -308,9 +308,9 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                     onBlur={(e) => handleFieldBlur("asset_id", e.target.value)}
                     placeholder="Enter or search"
                   />
-                  <Button size="icon" variant="outline" className="h-7 w-7 shrink-0 print:hidden" onClick={() => setAssetLookupOpen(true)} title="Search Asset Hierarchy">
-                    <Search className="h-3 w-3" />
-                  </Button>
+                   <Button size="icon" variant="outline" className="h-7 w-7 shrink-0 print:hidden print-hide" onClick={() => setAssetLookupOpen(true)} title="Search Asset Hierarchy">
+                     <Search className="h-3 w-3" />
+                   </Button>
                 </div>
               </div>
               <div className="border border-gray-300 p-2">
@@ -363,16 +363,16 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
           <div className="border border-gray-300">
             <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
               <span className="font-semibold text-gray-700">DESCRIPTION</span>
-              <Button
-                size="sm"
-                variant="outline"
-                className="gap-1.5 text-xs h-7 print:hidden"
-                onClick={() => handleEnhanceField("problem_description", "description")}
-                disabled={isEnhancingDesc || !form.problem_description.trim()}
-              >
-                {isEnhancingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                {isEnhancingDesc ? "Enhancing…" : "Generate with AI"}
-              </Button>
+               <Button
+                 size="sm"
+                 variant="outline"
+                 className="gap-1.5 text-xs h-7 print:hidden print-hide"
+                 onClick={() => handleEnhanceField("problem_description", "description")}
+                 disabled={isEnhancingDesc || !form.problem_description.trim()}
+               >
+                 {isEnhancingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                 {isEnhancingDesc ? "Enhancing…" : "Generate with AI"}
+               </Button>
             </div>
             <div className="p-3">
               <Textarea
@@ -399,7 +399,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             // If no tooling items exist, show an "Add Tooling" button
             if (!Array.isArray(tooling) || tooling.length === 0) {
               return (
-                <div className="border border-dashed border-gray-300 rounded p-3 flex items-center justify-center print:hidden">
+                <div className="border border-dashed border-gray-300 rounded p-3 flex items-center justify-center print:hidden print-hide">
                   <Button
                     size="sm"
                     variant="outline"
@@ -416,7 +416,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
               <div className="border border-gray-300">
                 <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
                   <span className="font-semibold text-gray-700">REQUIRED TOOLING</span>
-                  <div className="flex gap-1 print:hidden">
+                  <div className="flex gap-1 print:hidden print-hide">
                     <Button
                       size="sm"
                       variant="ghost"
@@ -452,10 +452,10 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                         onBlur={() => updateTooling(tooling)}
                         placeholder="e.g. 24mm spanner, torque wrench, bearing puller..."
                       />
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-6 w-6 p-0 text-gray-400 hover:text-destructive print:hidden shrink-0"
+                       <Button
+                         size="sm"
+                         variant="ghost"
+                         className="h-6 w-6 p-0 text-gray-400 hover:text-destructive print:hidden print-hide shrink-0"
                         onClick={() => {
                           const arr = tooling.filter((_, i) => i !== idx);
                           updateTooling(arr.length > 0 ? arr : []);
@@ -471,7 +471,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
           })()}
 
           {parts.length === 0 ? (
-            <div className="border border-dashed border-gray-300 rounded p-3 flex items-center justify-between print:hidden">
+            <div className="border border-dashed border-gray-300 rounded p-3 flex items-center justify-between print:hidden print-hide">
               <Button
                 size="sm"
                 variant="outline"
@@ -508,7 +508,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             <div className="border border-gray-300">
               <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
                 <span className="font-semibold text-gray-700">PARTS / MATERIALS USED</span>
-                <div className="flex gap-2 print:hidden">
+                <div className="flex gap-2 print:hidden print-hide">
                   <Button
                     size="sm"
                     variant="ghost"
@@ -547,7 +547,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                     <th className="text-left p-2 border-r border-gray-300">Description</th>
                     <th className="text-center p-2 border-r border-gray-300 w-16">Qty</th>
                     <th className="text-left p-2 border-r border-gray-300 w-24">Store Location</th>
-                    <th className="text-center p-2 w-10 print:hidden"></th>
+                    <th className="text-center p-2 w-10 print:hidden print-hide"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -557,10 +557,10 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                       <td className="p-2 border-r border-gray-300">{part.part_description || ""}</td>
                       <td className="p-2 border-r border-gray-300 text-center">{part.quantity_required || ""}</td>
                       <td className="p-2 border-r border-gray-300">{part.location || ""}</td>
-                      <td className="p-1 text-center print:hidden">
-                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => deletePart.mutate(part.id)}>
-                          <Trash2 className="h-3 w-3 text-destructive" />
-                        </Button>
+                       <td className="p-1 text-center print:hidden print-hide">
+                         <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => deletePart.mutate(part.id)}>
+                           <Trash2 className="h-3 w-3 text-destructive" />
+                         </Button>
                       </td>
                     </tr>
                   ))}
@@ -853,7 +853,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
       </div>
 
       {/* Sub-tabs for parts management - hidden on print */}
-      <div className="print:hidden">
+      <div className="print:hidden print-hide">
         <WOSubTabs woNumber={woNumber} />
       </div>
     </div>
