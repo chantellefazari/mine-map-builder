@@ -1,18 +1,16 @@
 
 
-## Plan: Update Work Request types to Inspect, Repair, Replace
+## Fix: Prevent Aspect logo overlapping with PM banner title
 
-**What changes:**
+**Problem**: The logos are positioned `left-4` and the title is centered across the full width (`left-0 right-0`), so on longer titles (e.g. "Matec 1520HP Filter Press Daily Online Inspection") the text overlaps the logos.
 
-1. **`src/components/work-requests/WorkRequestTemplate.tsx`** (line 144):
-   - Change `workTypeOptions` from `["Breakdown", "Planned", "Shutdown"]` to `["Inspect", "Repair", "Replace"]`
-   - Update default `work_type` value from `"Breakdown"` to `"Inspect"` (lines 33 and 50)
+**Solution**: Adjust the title container in `PMBannerHeader.tsx` to add left/right padding so the text sits between the logos and the WO# field, and reduce the title font size slightly to accommodate longer names.
 
-2. **`src/components/work-requests/WorkRequestTemplate.tsx`** (line 108):
-   - Update the "Convert to WO" logic — when converting a WR to a WO, the WO type should default to `"Planned"` instead of using the WR's work_type (since Inspect/Repair/Replace are not valid WO types)
+### Changes to `src/components/pm-design/PMBannerHeader.tsx`
 
-**No changes needed** to the WO creation dialog (`WOTypeSelectDialog.tsx`) — it already uses Breakdown, Planned, Shutdown, and PM as WO types.
+1. **Title container** (line 19): Add `pl-[160px] pr-[100px]` to the title's absolute container so it avoids the logo zone (left) and WO# zone (right)
+2. **Title font size** (line 21): Reduce from `text-2xl` to `text-lg` so longer titles fit cleanly
+3. **Subtitle font size** (line 22): Reduce from `text-base` to `text-sm`
 
-**Technical detail:**
-- The `work_type` column in the `work_requests` database table stores free text, so no migration is needed — the new values will just be stored as strings.
+This is a single shared component used by all 64+ PM templates, so the fix applies everywhere automatically. No other files need changes.
 
