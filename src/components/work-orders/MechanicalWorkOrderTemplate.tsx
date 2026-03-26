@@ -205,7 +205,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
   return (
     <div className="space-y-4">
       {/* Header with Print Button */}
-      <div className="flex items-center justify-between print:hidden">
+      <div className="flex items-center justify-between print:hidden print-hide">
         <h2 className="text-xl font-semibold text-foreground">
           Work Order {woNumber && <span className="text-primary font-mono">({woNumber})</span>}
         </h2>
