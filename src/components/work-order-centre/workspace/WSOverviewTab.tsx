@@ -59,30 +59,27 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
     onUpdate({ [field]: value });
   };
 
-  const handleEnhance = async (mode: "description" | "scope") => {
-    const text = mode === "description" ? local.problem_description : local.scope_of_works;
+  const handleEnhance = async () => {
+    const text = local.problem_description;
     if (!text.trim()) {
       toast.error(`Please enter some rough notes first`);
       return;
     }
-    if (mode === "description") setEnhancingDesc(true);
-    else setEnhancingScope(true);
+    setEnhancingDesc(true);
 
     try {
       const { data, error } = await supabase.functions.invoke("enhance-wo-description", {
-        body: { description: text, mode },
+        body: { description: text, mode: "description" },
       });
       if (error) throw error;
       if (data?.enhanced) {
-        const field = mode === "description" ? "problem_description" : "scope_of_works";
-        save(field, data.enhanced);
-        toast.success(`${mode === "description" ? "Description" : "Scope of works"} enhanced`);
+        save("problem_description", data.enhanced);
+        toast.success("Description enhanced");
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to enhance text");
     } finally {
-      if (mode === "description") setEnhancingDesc(false);
-      else setEnhancingScope(false);
+      setEnhancingDesc(false);
     }
   };
 
