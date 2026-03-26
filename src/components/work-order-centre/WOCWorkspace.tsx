@@ -112,6 +112,14 @@ export function WOCWorkspace({ woId, onClose }: Props) {
           )}
         </Tabs>
       </div>
+
+      <PrintPreviewModal
+        isOpen={showPrint}
+        onClose={() => setShowPrint(false)}
+        title={`Work Order ${wo.wo_number}`}
+      >
+        <MechanicalWorkOrderTemplate woNumber={wo.wo_number} />
+      </PrintPreviewModal>
     </div>
   );
 }
