@@ -358,7 +358,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                 size="sm"
                 variant="outline"
                 className="gap-1.5 text-xs h-7 print:hidden"
-                onClick={() => handleEnhanceField("problem_description", "description")}
+                onClick={handleEnhanceDescription}
                 disabled={isEnhancingDesc || !form.problem_description.trim()}
               >
                 {isEnhancingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
