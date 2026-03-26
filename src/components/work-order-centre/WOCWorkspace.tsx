@@ -27,7 +27,8 @@ export function WOCWorkspace({ woId, onClose }: Props) {
   const { poItems, isLoading: poLoading } = usePOTracker(woId);
   const { listQuery: prQuery } = usePurchaseRequests();
   const linkedPRs = (prQuery.data ?? []).filter((pr) => pr.work_order_id === woId);
-  const [activeTab, setActiveTab] = useState("overview");
+  const isPMWorkOrder = wo ? (wo.problem_description || "").startsWith("PM:") : false;
+  const [activeTab, setActiveTab] = useState(isPMWorkOrder ? "pm-form" : "overview");
 
   if (!wo) {
     return (
