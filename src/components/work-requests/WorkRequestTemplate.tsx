@@ -30,7 +30,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
     problem_description: "",
     scope_of_works: "",
     priority: "Normal",
-    work_type: "Breakdown",
+    work_type: "Inspect",
     requested_by: "",
     trade: "",
     status: "Open",
