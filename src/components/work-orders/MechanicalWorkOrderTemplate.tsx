@@ -508,7 +508,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             <div className="border border-gray-300">
               <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
                 <span className="font-semibold text-gray-700">PARTS / MATERIALS USED</span>
-                <div className="flex gap-2 print:hidden">
+                <div className="flex gap-2 print:hidden print-hide">
                   <Button
                     size="sm"
                     variant="ghost"
