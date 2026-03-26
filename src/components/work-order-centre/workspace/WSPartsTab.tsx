@@ -278,7 +278,15 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
                 <tr key={p.id} className="border-b border-border last:border-b-0">
                   <td className="px-3 py-2 font-mono">{p.part_number || "-"}</td>
                   <td className="px-3 py-2">{p.part_description}</td>
-                  <td className="px-3 py-2">{p.quantity_required}</td>
+                  <td className="px-3 py-1.5">
+                    <Input
+                      type="number"
+                      min={1}
+                      value={p.quantity_required}
+                      onChange={(e) => updatePart.mutate({ id: p.id, updates: { quantity_required: parseInt(e.target.value) || 1 } })}
+                      className="h-7 w-16 text-xs"
+                    />
+                  </td>
                   <td className="px-3 py-2">
                     <Select value={p.status} onValueChange={(v) => updatePart.mutate({ id: p.id, updates: { status: v } })}>
                       <SelectTrigger className="h-7 text-[10px] w-[110px]"><SelectValue /></SelectTrigger>
@@ -289,8 +297,22 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
                       </SelectContent>
                     </Select>
                   </td>
-                  <td className="px-3 py-2 text-muted-foreground">{p.location || "-"}</td>
-                  <td className="px-3 py-2 text-muted-foreground truncate max-w-[120px]">{p.comment || "-"}</td>
+                  <td className="px-3 py-1.5">
+                    <Input
+                      value={p.location || ""}
+                      onChange={(e) => updatePart.mutate({ id: p.id, updates: { location: e.target.value } })}
+                      placeholder="Location"
+                      className="h-7 w-24 text-xs"
+                    />
+                  </td>
+                  <td className="px-3 py-1.5">
+                    <Input
+                      value={p.comment || ""}
+                      onChange={(e) => updatePart.mutate({ id: p.id, updates: { comment: e.target.value } })}
+                      placeholder="Comment"
+                      className="h-7 text-xs"
+                    />
+                  </td>
                   <td className="px-1 py-2">
                     <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => deletePart.mutate(p.id)}>
                       <Trash2 className="w-3 h-3" />
