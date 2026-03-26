@@ -64,6 +64,11 @@ export function WOCWorkspace({ woId, onClose }: Props) {
           <TabsContent value="overview" className="mt-4">
             <WSOverviewTab wo={wo} onUpdate={handleUpdate} />
           </TabsContent>
+          {isPMWorkOrder && (
+            <TabsContent value="pm-form" className="mt-4">
+              <WSPMFormTab wo={wo} />
+            </TabsContent>
+          )}
           <TabsContent value="operations" className="mt-4">
             <WSOperationsTab wo={wo} onUpdate={handleUpdate} />
           </TabsContent>
