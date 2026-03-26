@@ -387,6 +387,64 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
             </div>
           </div>
 
+          {/* Operations Table (from scope_of_works JSONB) */}
+          {(() => {
+            let operations: any[] = [];
+            try {
+              const parsed = JSON.parse(form.scope_of_works || "[]");
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                operations = parsed;
+              }
+            } catch { /* not JSON */ }
+
+            if (operations.length === 0) return null;
+
+            const totalHours = operations.reduce((sum: number, op: any) => sum + (Number(op.estimatedHours) || 0), 0);
+
+            return (
+              <div className="border border-gray-300">
+                <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
+                  <span className="font-semibold text-gray-700">OPERATIONS</span>
+                </div>
+                <div className="p-0">
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-gray-50">
+                        <th className="border border-gray-300 px-2 py-1.5 text-left w-12">Op #</th>
+                        <th className="border border-gray-300 px-2 py-1.5 text-left">Description</th>
+                        <th className="border border-gray-300 px-2 py-1.5 text-left w-24">Trade</th>
+                        <th className="border border-gray-300 px-2 py-1.5 text-center w-16">Est. Hrs</th>
+                        <th className="border border-gray-300 px-2 py-1.5 text-center w-14">ISO</th>
+                        <th className="border border-gray-300 px-2 py-1.5 text-center w-14">S/D</th>
+                        <th className="border border-gray-300 px-2 py-1.5 text-left w-28">Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {operations.map((op: any, idx: number) => (
+                        <tr key={op.id || idx}>
+                          <td className="border border-gray-300 px-2 py-1.5">{op.lineNo || (idx + 1) * 10}</td>
+                          <td className="border border-gray-300 px-2 py-1.5">{op.description || ""}</td>
+                          <td className="border border-gray-300 px-2 py-1.5">{op.trade || ""}</td>
+                          <td className="border border-gray-300 px-2 py-1.5 text-center">{op.estimatedHours || ""}</td>
+                          <td className="border border-gray-300 px-2 py-1.5 text-center">{op.requiresIsolation ? "Yes" : "No"}</td>
+                          <td className="border border-gray-300 px-2 py-1.5 text-center">{op.requiresShutdown ? "Yes" : "No"}</td>
+                          <td className="border border-gray-300 px-2 py-1.5">{op.notes || ""}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr className="bg-gray-50 font-semibold">
+                        <td colSpan={3} className="border border-gray-300 px-2 py-1.5 text-right">Total Hours</td>
+                        <td className="border border-gray-300 px-2 py-1.5 text-center">{totalHours}</td>
+                        <td colSpan={3} className="border border-gray-300 px-2 py-1.5"></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Required Tooling - dynamic list */}
           {(() => {
             const tooling: string[] = (() => { try { return JSON.parse(form.required_tooling || "[]"); } catch { return []; } })();
