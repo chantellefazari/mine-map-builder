@@ -5,12 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   X, Search, ChevronDown, ChevronRight, Wrench, Zap, Truck, Droplets,
-  ClipboardCheck, Printer, CalendarPlus,
+  ClipboardCheck, CalendarPlus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePMasterList } from "@/hooks/usePMData";
 import { PMData } from "@/components/pm-design/PMFrequencySection";
 import { pmNameToViewId } from "@/components/pm-design/pmNameToViewId";
+import { renderPMDocument } from "./renderPMDocument";
 import { PMAutoFill } from "./WOTypeSelectDialog";
 
 interface Props {
@@ -39,25 +40,6 @@ function groupPMs(pms: PMData[]) {
     grouped[disc][freq].push(pm);
   }
   return grouped;
-}
-
-// Reuse the renderPMDocument from WSPMFormTab but import lazily
-import { lazy, Suspense } from "react";
-
-// We'll inline a simple preview that renders the PM document
-function PMPreviewRenderer({ viewId }: { viewId: string }) {
-  // Dynamic import approach — we reuse the existing WSPMFormTab render logic
-  // For simplicity, we'll use the same switch-case pattern
-  const PMDocComponent = useMemo(() => {
-    return lazy(() => import("./workspace/WSPMFormTab").then((mod) => ({
-      default: () => {
-        const fakeWo = { problem_description: `PM: placeholder` } as any;
-        return null; // We won't use this approach
-      },
-    })));
-  }, [viewId]);
-
-  return null;
 }
 
 export function PMSchedulePanel({ open, onClose, onCreatePMWorkOrder }: Props) {
@@ -91,15 +73,6 @@ export function PMSchedulePanel({ open, onClose, onCreatePMWorkOrder }: Props) {
 
   const handleCreate = () => {
     if (!selectedPM) return;
-
-    let rawTasks: any[] = [];
-    if (Array.isArray(selectedPM.tasks)) {
-      rawTasks = selectedPM.tasks;
-    } else if (selectedPM.tasks && typeof selectedPM.tasks === "object" && Array.isArray((selectedPM.tasks as any).sections)) {
-      rawTasks = (selectedPM.tasks as any).sections.flatMap((s: any) =>
-        Array.isArray(s.tasks) ? s.tasks : Array.isArray(s.items) ? s.items : []
-      );
-    }
 
     const autoFill: PMAutoFill = {
       pmId: selectedPM.id,
@@ -288,44 +261,16 @@ export function PMSchedulePanel({ open, onClose, onCreatePMWorkOrder }: Props) {
               </div>
             </div>
           ) : (
-            <PMDocumentPreview viewId={selectedViewId} pmName={selectedPM.pmName} />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/** Renders the PM document preview using the same components as WSPMFormTab */
-function PMDocumentPreview({ viewId, pmName }: { viewId: string; pmName: string }) {
-  // We need to render the PM document inline. Import the render function.
-  // To avoid duplicating the massive switch, we'll use dynamic import.
-  const { renderPMDocumentByViewId } = usePMDocumentRenderer();
-
-  const doc = useMemo(() => renderPMDocumentByViewId(viewId), [viewId]);
-
-  return (
-    <div className="p-4">
-      <div className="border border-border rounded-lg overflow-hidden">
-        <div className="transform origin-top-left scale-[0.8] w-[125%]">
-          {doc || (
-            <div className="p-8 text-center text-muted-foreground text-xs">
-              Template preview unavailable
+            <div className="p-4">
+              <div className="border border-border rounded-lg overflow-hidden">
+                <div className="transform origin-top-left scale-[0.8] w-[125%]">
+                  {renderPMDocument(selectedViewId)}
+                </div>
+              </div>
             </div>
           )}
         </div>
       </div>
     </div>
   );
-}
-
-/** Hook to lazily render PM documents by viewId — reuses the existing document components */
-function usePMDocumentRenderer() {
-  // We import this from a shared module to avoid duplication
-  const renderPMDocumentByViewId = (viewId: string): React.ReactNode => {
-    // This will be populated by a shared render utility
-    return null;
-  };
-
-  return { renderPMDocumentByViewId };
 }
