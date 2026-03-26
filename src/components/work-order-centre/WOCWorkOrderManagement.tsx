@@ -8,7 +8,7 @@ import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import { useWorkOrderParts } from "@/hooks/useWorkOrderParts";
 import {
   Plus, Pause, CheckCircle2, Copy, PlayCircle, Search,
-  CircleDot, FileText, Wrench, Users, Package,
+  CircleDot, FileText, Wrench, Users, Package, ClipboardCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { WOCView } from "@/pages/WorkOrderCentre";
