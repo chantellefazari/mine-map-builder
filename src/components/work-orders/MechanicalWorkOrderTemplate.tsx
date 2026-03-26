@@ -363,16 +363,16 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
           <div className="border border-gray-300">
             <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
               <span className="font-semibold text-gray-700">DESCRIPTION</span>
-              <Button
-                size="sm"
-                variant="outline"
-                className="gap-1.5 text-xs h-7 print:hidden"
-                onClick={() => handleEnhanceField("problem_description", "description")}
-                disabled={isEnhancingDesc || !form.problem_description.trim()}
-              >
-                {isEnhancingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                {isEnhancingDesc ? "Enhancing…" : "Generate with AI"}
-              </Button>
+               <Button
+                 size="sm"
+                 variant="outline"
+                 className="gap-1.5 text-xs h-7 print:hidden print-hide"
+                 onClick={() => handleEnhanceField("problem_description", "description")}
+                 disabled={isEnhancingDesc || !form.problem_description.trim()}
+               >
+                 {isEnhancingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                 {isEnhancingDesc ? "Enhancing…" : "Generate with AI"}
+               </Button>
             </div>
             <div className="p-3">
               <Textarea
