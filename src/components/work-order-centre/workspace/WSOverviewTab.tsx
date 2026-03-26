@@ -75,7 +75,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       });
       if (error) throw error;
       if (data?.enhanced) {
-        const field = mode === "description" ? "problem_description" : "work_performed";
+        const field = mode === "description" ? "problem_description" : "scope_of_works";
         save(field, data.enhanced);
         toast.success(`${mode === "description" ? "Description" : "Scope of works"} enhanced`);
       }
