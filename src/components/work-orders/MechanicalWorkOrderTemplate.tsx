@@ -547,7 +547,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                     <th className="text-left p-2 border-r border-gray-300">Description</th>
                     <th className="text-center p-2 border-r border-gray-300 w-16">Qty</th>
                     <th className="text-left p-2 border-r border-gray-300 w-24">Store Location</th>
-                    <th className="text-center p-2 w-10 print:hidden"></th>
+                    <th className="text-center p-2 w-10 print:hidden print-hide"></th>
                   </tr>
                 </thead>
                 <tbody>
