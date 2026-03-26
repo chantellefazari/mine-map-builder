@@ -184,7 +184,7 @@ ${printContent.innerHTML}
           <div className="mx-auto">
             <div
               ref={printRef}
-              className="bg-white shadow-xl mx-auto [&_.print-hide]:hidden [&_.print\\:hidden]:hidden"
+              className="bg-white shadow-xl mx-auto [&_.print-hide]:hidden"
               style={{
                 width: `${A4_WIDTH}px`,
                 padding: `${MARGIN}px`,
