@@ -557,10 +557,10 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                       <td className="p-2 border-r border-gray-300">{part.part_description || ""}</td>
                       <td className="p-2 border-r border-gray-300 text-center">{part.quantity_required || ""}</td>
                       <td className="p-2 border-r border-gray-300">{part.location || ""}</td>
-                      <td className="p-1 text-center print:hidden">
-                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => deletePart.mutate(part.id)}>
-                          <Trash2 className="h-3 w-3 text-destructive" />
-                        </Button>
+                       <td className="p-1 text-center print:hidden print-hide">
+                         <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => deletePart.mutate(part.id)}>
+                           <Trash2 className="h-3 w-3 text-destructive" />
+                         </Button>
                       </td>
                     </tr>
                   ))}
