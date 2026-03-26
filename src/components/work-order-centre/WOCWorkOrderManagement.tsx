@@ -132,26 +132,11 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
     setShowWoTypeDialog(true);
   };
 
-  const handleCreateConfirm = async (woType: string, pmData?: PMAutoFill) => {
+  const handleCreateConfirm = async (woType: string) => {
     setShowWoTypeDialog(false);
     try {
       const wo = await allocate.mutateAsync();
-      const updates: Record<string, any> = { status: "Planning", work_type: woType };
-
-      if (pmData) {
-        const taskDescriptions = (pmData.tasks || [])
-          .map((t: any, i: number) => `${i + 1}. ${t.description || t.task || ""}`)
-          .filter((s: string) => s.length > 3)
-          .join("\n");
-
-        updates.problem_description = `PM: ${pmData.pmName} (${pmData.frequency})`;
-        updates.scope_of_works = taskDescriptions || pmData.purpose || "";
-        updates.asset_id = pmData.assetNumber || "";
-        updates.trade = pmData.discipline || "";
-        updates.required_tooling = JSON.stringify(pmData.requiredTools || []);
-      }
-
-      await update.mutateAsync({ id: wo.id, updates });
+      await update.mutateAsync({ id: wo.id, updates: { status: "Planning", work_type: woType } });
       onOpenWorkspace(wo.id, "wo-management");
     } catch {
       // handled in hook
