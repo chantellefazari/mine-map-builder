@@ -139,7 +139,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold">Area / Functional Location</Label>
+          <Label className="text-xs font-semibold">Area</Label>
           <Input value={local.functional_location} readOnly className="h-9 text-sm" />
         </div>
         <div className="space-y-1.5">
