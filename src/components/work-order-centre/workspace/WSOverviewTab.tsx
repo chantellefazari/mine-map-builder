@@ -61,7 +61,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
   };
 
   const handleEnhance = async (mode: "description" | "scope") => {
-    const text = mode === "description" ? local.problem_description : local.work_performed;
+    const text = mode === "description" ? local.problem_description : local.scope_of_works;
     if (!text.trim()) {
       toast.error(`Please enter some rough notes first`);
       return;
