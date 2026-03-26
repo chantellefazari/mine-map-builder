@@ -33,7 +33,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [newPreviews, setNewPreviews] = useState<string[]>([]);
   const [enhancingDesc, setEnhancingDesc] = useState(false);
-  const [enhancingScope, setEnhancingScope] = useState(false);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
