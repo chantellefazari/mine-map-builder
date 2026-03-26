@@ -32,6 +32,7 @@ export function WOCWorkspace({ woId, onClose }: Props) {
   const isPMWorkOrder = wo ? (wo.problem_description || "").startsWith("PM:") : false;
   const isPMOnly = wo ? wo.work_type === "PM" : false;
   const [activeTab, setActiveTab] = useState(isPMWorkOrder ? "pm-form" : "overview");
+  const [showPrint, setShowPrint] = useState(false);
 
   if (!wo) {
     return (
