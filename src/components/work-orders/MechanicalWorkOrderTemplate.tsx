@@ -471,7 +471,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
           })()}
 
           {parts.length === 0 ? (
-            <div className="border border-dashed border-gray-300 rounded p-3 flex items-center justify-between print:hidden">
+            <div className="border border-dashed border-gray-300 rounded p-3 flex items-center justify-between print:hidden print-hide">
               <Button
                 size="sm"
                 variant="outline"
