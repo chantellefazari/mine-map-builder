@@ -82,24 +82,23 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
 
   const handlePrint = () => window.print();
 
-  const handleEnhanceField = async (field: "problem_description" | "scope_of_works", mode: "description" | "scope") => {
-    const value = form[field].trim();
+  const handleEnhanceDescription = async () => {
+    const value = form.problem_description.trim();
     if (!value) { toast.error("Write some rough notes first"); return; }
-    const setLoading = mode === "description" ? setIsEnhancingDesc : setIsEnhancingScope;
-    setLoading(true);
+    setIsEnhancingDesc(true);
     try {
       const { data, error } = await supabase.functions.invoke("enhance-wo-description", {
-        body: { description: value, mode },
+        body: { description: value, mode: "description" },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      setForm((prev) => ({ ...prev, [field]: data.enhanced }));
-      if (wr) saveField(field, data.enhanced);
-      toast.success(mode === "description" ? "Description enhanced" : "Scope of works generated");
+      setForm((prev) => ({ ...prev, problem_description: data.enhanced }));
+      if (wr) saveField("problem_description", data.enhanced);
+      toast.success("Description enhanced");
     } catch (err: any) {
       toast.error(err.message || "Failed to generate");
     } finally {
-      setLoading(false);
+      setIsEnhancingDesc(false);
     }
   };
 
