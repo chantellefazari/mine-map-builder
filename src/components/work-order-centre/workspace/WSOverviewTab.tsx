@@ -41,6 +41,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
     setLocal({
       problem_description: wo.problem_description || "",
       work_performed: wo.work_performed || "",
+      scope_of_works: wo.scope_of_works || "",
       asset_id: wo.asset_id || "",
       functional_location: wo.functional_location || "",
       priority: wo.priority || "Medium",
