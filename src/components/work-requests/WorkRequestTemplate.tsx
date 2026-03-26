@@ -20,7 +20,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
   const wr = workRequests.find((w) => w.wr_number === wrNumber);
   const [assetLookupOpen, setAssetLookupOpen] = useState(false);
   const [isEnhancingDesc, setIsEnhancingDesc] = useState(false);
-  const [isEnhancingScope, setIsEnhancingScope] = useState(false);
+  
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -82,24 +82,23 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
 
   const handlePrint = () => window.print();
 
-  const handleEnhanceField = async (field: "problem_description" | "scope_of_works", mode: "description" | "scope") => {
-    const value = form[field].trim();
+  const handleEnhanceDescription = async () => {
+    const value = form.problem_description.trim();
     if (!value) { toast.error("Write some rough notes first"); return; }
-    const setLoading = mode === "description" ? setIsEnhancingDesc : setIsEnhancingScope;
-    setLoading(true);
+    setIsEnhancingDesc(true);
     try {
       const { data, error } = await supabase.functions.invoke("enhance-wo-description", {
-        body: { description: value, mode },
+        body: { description: value, mode: "description" },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      setForm((prev) => ({ ...prev, [field]: data.enhanced }));
-      if (wr) saveField(field, data.enhanced);
-      toast.success(mode === "description" ? "Description enhanced" : "Scope of works generated");
+      setForm((prev) => ({ ...prev, problem_description: data.enhanced }));
+      if (wr) saveField("problem_description", data.enhanced);
+      toast.success("Description enhanced");
     } catch (err: any) {
       toast.error(err.message || "Failed to generate");
     } finally {
-      setLoading(false);
+      setIsEnhancingDesc(false);
     }
   };
 
@@ -359,7 +358,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                 size="sm"
                 variant="outline"
                 className="gap-1.5 text-xs h-7 print:hidden"
-                onClick={() => handleEnhanceField("problem_description", "description")}
+                onClick={handleEnhanceDescription}
                 disabled={isEnhancingDesc || !form.problem_description.trim()}
               >
                 {isEnhancingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
@@ -379,31 +378,61 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
             </div>
           </div>
 
-          {/* Scope of Works */}
+          {/* Operations */}
           <div className="border border-gray-300">
-            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
-              <span className="font-semibold text-gray-700">SCOPE OF WORKS</span>
-              <Button
-                size="sm"
-                variant="outline"
-                className="gap-1.5 text-xs h-7 print:hidden"
-                onClick={() => handleEnhanceField("scope_of_works", "scope")}
-                disabled={isEnhancingScope || !form.scope_of_works.trim()}
-              >
-                {isEnhancingScope ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                {isEnhancingScope ? "Generating…" : "Generate with AI"}
-              </Button>
+            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
+              <span className="font-semibold text-gray-700">OPERATIONS</span>
             </div>
-            <div className="p-3">
-              <Textarea
-                className="min-h-[60px] text-xs border-dashed print:border-none print:p-0 print:min-h-0 resize-none overflow-hidden"
-                style={{ height: 'auto' }}
-                ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
-                value={form.scope_of_works}
-                onChange={(e) => { setForm({ ...form, scope_of_works: e.target.value }); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
-                onBlur={(e) => handleFieldBlur("scope_of_works", e.target.value)}
-                placeholder="List the steps / method to carry out the work..."
-              />
+            <div className="p-0">
+              {(() => {
+                let ops: any[] = [];
+                try {
+                  const parsed = typeof form.scope_of_works === "string" ? JSON.parse(form.scope_of_works) : form.scope_of_works;
+                  if (Array.isArray(parsed)) ops = parsed;
+                } catch { /* not JSON, ignore */ }
+
+                if (ops.length === 0) {
+                  return (
+                    <div className="p-4 text-center text-xs text-muted-foreground">
+                      No operations defined. Add operations from the Work Order workspace.
+                    </div>
+                  );
+                }
+
+                return (
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-gray-300 bg-gray-50">
+                        <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-12">Op #</th>
+                        <th className="px-2 py-1.5 text-left font-medium text-gray-600">Description</th>
+                        <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-24">Trade</th>
+                        <th className="px-2 py-1.5 text-right font-medium text-gray-600 w-16">Hours</th>
+                        <th className="px-2 py-1.5 text-center font-medium text-gray-600 w-12">ISO</th>
+                        <th className="px-2 py-1.5 text-center font-medium text-gray-600 w-12">S/D</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ops.map((op, i) => (
+                        <tr key={op.id || i} className="border-b border-gray-200 last:border-b-0">
+                          <td className="px-2 py-1.5 font-mono text-gray-500">{op.lineNo || i + 1}</td>
+                          <td className="px-2 py-1.5">{op.description || "—"}</td>
+                          <td className="px-2 py-1.5">{op.trade || "—"}</td>
+                          <td className="px-2 py-1.5 text-right">{op.estimatedHours || 0}</td>
+                          <td className="px-2 py-1.5 text-center">{op.requiresIsolation ? "✓" : ""}</td>
+                          <td className="px-2 py-1.5 text-center">{op.requiresShutdown ? "✓" : ""}</td>
+                        </tr>
+                      ))}
+                      <tr className="border-t border-gray-300 bg-gray-50 font-medium">
+                        <td colSpan={3} className="px-2 py-1.5 text-right">Total Hours</td>
+                        <td className="px-2 py-1.5 text-right">
+                          {ops.reduce((sum: number, op: any) => sum + (Number(op.estimatedHours) || 0), 0)}
+                        </td>
+                        <td colSpan={2}></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                );
+              })()}
             </div>
           </div>
 
