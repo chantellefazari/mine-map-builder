@@ -452,10 +452,10 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                         onBlur={() => updateTooling(tooling)}
                         placeholder="e.g. 24mm spanner, torque wrench, bearing puller..."
                       />
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-6 w-6 p-0 text-gray-400 hover:text-destructive print:hidden shrink-0"
+                       <Button
+                         size="sm"
+                         variant="ghost"
+                         className="h-6 w-6 p-0 text-gray-400 hover:text-destructive print:hidden print-hide shrink-0"
                         onClick={() => {
                           const arr = tooling.filter((_, i) => i !== idx);
                           updateTooling(arr.length > 0 ? arr : []);
