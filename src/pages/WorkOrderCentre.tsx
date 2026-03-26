@@ -190,7 +190,7 @@ export default function WorkOrderCentre() {
       <div className="flex-1 min-w-0 overflow-auto">
         {view === "dashboard" && <WOCDashboard onNavigate={setView} />}
         {view === "work-requests" && <WOCWorkRequests onOpenWorkspace={openWorkspace} />}
-        {view === "wo-management" && <WOCWorkOrderManagement onOpenWorkspace={openWorkspace} />}
+        {view === "wo-management" && <WOCWorkOrderManagement onOpenWorkspace={openWorkspace} onNavigate={setView} />}
         {view === "schedule" && <WOCSchedule />}
         {view === "workspace" && workspaceWoId && (
           <WOCWorkspace woId={workspaceWoId} onClose={closeWorkspace} />

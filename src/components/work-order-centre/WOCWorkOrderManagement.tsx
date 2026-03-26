@@ -395,7 +395,11 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
                 trade: pmData.discipline || "",
               },
             });
-            onOpenWorkspace(wo.id, "wo-management");
+            // PM work orders go straight to schedule (unscheduled sidebar)
+            if (onNavigate) {
+              onNavigate("schedule");
+            }
+            toast.success(`PM Work Order ${wo.wo_number} created — ready to schedule`);
           } catch {
             // handled in hook
           }
