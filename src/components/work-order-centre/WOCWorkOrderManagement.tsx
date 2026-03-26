@@ -8,7 +8,7 @@ import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import { useWorkOrderParts } from "@/hooks/useWorkOrderParts";
 import {
   Plus, Pause, CheckCircle2, Copy, PlayCircle, Search,
-  CircleDot, FileText, Wrench, Users, Package,
+  CircleDot, FileText, Wrench, Users, Package, ClipboardCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { WOCView } from "@/pages/WorkOrderCentre";
@@ -17,6 +17,7 @@ import { WOCAnalyticsTab } from "./performance/WOCAnalyticsTab";
 import { WOCPMFormsTab } from "./performance/WOCPMFormsTab";
 import { WOCComplianceTab } from "./performance/WOCComplianceTab";
 import { WOTypeSelectDialog, PMAutoFill } from "./WOTypeSelectDialog";
+import { PMSchedulePanel } from "./PMSchedulePanel";
 
 interface Props {
   onOpenWorkspace: (woId: string, from?: WOCView) => void;
@@ -108,6 +109,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
   const [perfTab, setPerfTab] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [showWoTypeDialog, setShowWoTypeDialog] = useState(false);
+  const [showPMSchedule, setShowPMSchedule] = useState(false);
 
   const activeGroup = perfTab ? "performance" : "operations";
 
@@ -275,6 +277,13 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
             />
           </div>
           <Button
+            onClick={() => setShowPMSchedule(true)}
+            variant="outline"
+            className="text-sm gap-1.5 h-8"
+          >
+            <ClipboardCheck className="w-4 h-4" /> Schedule PM
+          </Button>
+          <Button
             onClick={handleCreate}
             disabled={allocate.isPending}
             className="text-sm gap-1.5 h-8"
@@ -381,6 +390,30 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
         onConfirm={handleCreateConfirm}
         title="Create Work Order"
         description="Select the Work Order Type to begin planning:"
+      />
+
+      <PMSchedulePanel
+        open={showPMSchedule}
+        onClose={() => setShowPMSchedule(false)}
+        onCreatePMWorkOrder={async (pmData) => {
+          setShowPMSchedule(false);
+          try {
+            const wo = await allocate.mutateAsync();
+            await update.mutateAsync({
+              id: wo.id,
+              updates: {
+                status: "Scheduled",
+                work_type: "PM",
+                problem_description: `PM: ${pmData.pmName} (${pmData.frequency})`,
+                asset_id: pmData.assetNumber || "",
+                trade: pmData.discipline || "",
+              },
+            });
+            onOpenWorkspace(wo.id, "wo-management");
+          } catch {
+            // handled in hook
+          }
+        }}
       />
     </div>
   );
