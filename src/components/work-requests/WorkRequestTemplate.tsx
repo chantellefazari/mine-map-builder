@@ -30,7 +30,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
     problem_description: "",
     scope_of_works: "",
     priority: "Normal",
-    work_type: "Breakdown",
+    work_type: "Inspect",
     requested_by: "",
     trade: "",
     status: "Open",
@@ -47,7 +47,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
         problem_description: wr.problem_description || "",
         scope_of_works: wr.scope_of_works || "",
         priority: wr.priority || "Normal",
-        work_type: wr.work_type || "Breakdown",
+        work_type: wr.work_type || "Inspect",
         requested_by: wr.requested_by || "",
         trade: wr.trade || "",
         status: wr.status || "Open",
@@ -105,7 +105,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
 
   const handleConvertToWO = () => {
     if (!wr) return;
-    convertToWO.mutate({ wrId: wr.id, woType: wr.work_type || "Planned" });
+    convertToWO.mutate({ wrId: wr.id, woType: "Planned" });
   };
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,7 +141,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
   };
 
   const priorityOptions = ["Critical", "High", "Normal", "Low"];
-  const workTypeOptions = ["Breakdown", "Planned", "Shutdown"];
+  const workTypeOptions = ["Inspect", "Repair", "Replace"];
   const isConverted = form.status === "Converted to WO";
 
   return (
