@@ -20,7 +20,6 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
   const [local, setLocal] = useState({
     problem_description: wo.problem_description || "",
     work_performed: wo.work_performed || "",
-    scope_of_works: wo.scope_of_works || "",
     asset_id: wo.asset_id || "",
     functional_location: wo.functional_location || "",
     priority: wo.priority || "Medium",
@@ -34,14 +33,14 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [newPreviews, setNewPreviews] = useState<string[]>([]);
   const [enhancingDesc, setEnhancingDesc] = useState(false);
-  const [enhancingScope, setEnhancingScope] = useState(false);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setLocal({
       problem_description: wo.problem_description || "",
       work_performed: wo.work_performed || "",
-      scope_of_works: wo.scope_of_works || "",
+      
       asset_id: wo.asset_id || "",
       functional_location: wo.functional_location || "",
       priority: wo.priority || "Medium",
@@ -60,30 +59,27 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
     onUpdate({ [field]: value });
   };
 
-  const handleEnhance = async (mode: "description" | "scope") => {
-    const text = mode === "description" ? local.problem_description : local.scope_of_works;
+  const handleEnhance = async () => {
+    const text = local.problem_description;
     if (!text.trim()) {
       toast.error(`Please enter some rough notes first`);
       return;
     }
-    if (mode === "description") setEnhancingDesc(true);
-    else setEnhancingScope(true);
+    setEnhancingDesc(true);
 
     try {
       const { data, error } = await supabase.functions.invoke("enhance-wo-description", {
-        body: { description: text, mode },
+        body: { description: text, mode: "description" },
       });
       if (error) throw error;
       if (data?.enhanced) {
-        const field = mode === "description" ? "problem_description" : "scope_of_works";
-        save(field, data.enhanced);
-        toast.success(`${mode === "description" ? "Description" : "Scope of works"} enhanced`);
+        save("problem_description", data.enhanced);
+        toast.success("Description enhanced");
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to enhance text");
     } finally {
-      if (mode === "description") setEnhancingDesc(false);
-      else setEnhancingScope(false);
+      setEnhancingDesc(false);
     }
   };
 
@@ -184,7 +180,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
             size="sm"
             className="h-7 text-xs gap-1.5"
             disabled={enhancingDesc}
-            onClick={() => handleEnhance("description")}
+            onClick={() => handleEnhance()}
           >
             {enhancingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
             Generate with AI
@@ -193,24 +189,6 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
         <Textarea value={local.problem_description} onBlur={(e) => save("problem_description", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, problem_description: e.target.value }))} rows={4} className="text-sm" />
       </div>
 
-      {/* Scope of Works with AI */}
-      <div className="space-y-1.5">
-        <div className="flex items-center justify-between">
-          <Label className="text-xs font-semibold">Scope of Works</Label>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-7 text-xs gap-1.5"
-            disabled={enhancingScope}
-            onClick={() => handleEnhance("scope")}
-          >
-            {enhancingScope ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-            Generate with AI
-          </Button>
-        </div>
-        <Textarea value={local.scope_of_works} onBlur={(e) => save("scope_of_works", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, scope_of_works: e.target.value }))} rows={4} className="text-sm" placeholder="Detail the scope, method, and requirements..." />
-      </div>
 
       {/* Notes */}
       <div className="space-y-1.5">
