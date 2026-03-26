@@ -180,7 +180,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
             size="sm"
             className="h-7 text-xs gap-1.5"
             disabled={enhancingDesc}
-            onClick={() => handleEnhance("description")}
+            onClick={() => handleEnhance()}
           >
             {enhancingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
             Generate with AI
