@@ -407,7 +407,6 @@ export function WOCWorkOrderManagement({ onOpenWorkspace }: Props) {
                 problem_description: `PM: ${pmData.pmName} (${pmData.frequency})`,
                 asset_id: pmData.assetNumber || "",
                 trade: pmData.discipline || "",
-                } as any,
               },
             });
             onOpenWorkspace(wo.id, "wo-management");
