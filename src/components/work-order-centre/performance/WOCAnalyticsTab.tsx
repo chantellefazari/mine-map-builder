@@ -31,7 +31,7 @@ export function WOCAnalyticsTab({ workOrders }: Props) {
   const priorityData = useMemo(() => {
     const map: Record<string, number> = {};
     workOrders.forEach((wo) => {
-      const p = wo.priority || "Normal";
+      const p = wo.priority || "Medium";
       map[p] = (map[p] || 0) + 1;
     });
     return Object.entries(map).map(([name, count]) => ({ name, count }));

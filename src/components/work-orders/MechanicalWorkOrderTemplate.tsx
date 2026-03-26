@@ -36,7 +36,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     scope_of_works: "",
     work_performed: "",
     required_tooling: "",
-    priority: "Normal",
+    priority: "Medium",
     work_type: "Breakdown",
     requested_by: "",
     assigned_to: "",
@@ -68,7 +68,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
         scope_of_works: (wo as any).scope_of_works || "",
         work_performed: wo.work_performed || "",
         required_tooling: (wo as any).required_tooling || "",
-        priority: wo.priority || "Normal",
+        priority: wo.priority || "Medium",
         work_type: wo.work_type || "Breakdown",
         requested_by: wo.requested_by || "",
         assigned_to: wo.assigned_to || "",
@@ -199,7 +199,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     }
   };
 
-  const priorityOptions = ["Critical", "High", "Normal", "Low"];
+  const priorityOptions = ["Low", "Medium", "High", "Urgent"];
   const workTypeOptions = ["Breakdown", "Planned", "Shutdown"];
 
   return (
