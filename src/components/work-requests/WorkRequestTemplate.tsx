@@ -462,7 +462,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                         <tr className="border-b border-gray-300 bg-gray-50">
                           <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-12">Op #</th>
                           <th className="px-2 py-1.5 text-left font-medium text-gray-600">Description</th>
-                          <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-24">Trade</th>
+                          <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-24">Work Centre</th>
                           <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-20">Work Centre</th>
                         </tr>
                       </thead>
@@ -471,7 +471,6 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                           <tr key={op.id || i} className="border-b border-gray-200 last:border-b-0">
                             <td className="px-2 py-1.5 font-mono text-gray-500">{op.lineNo || i + 1}</td>
                             <td className="px-2 py-1.5">{op.description || "—"}</td>
-                            <td className="px-2 py-1.5">{op.trade || "—"}</td>
                             <td className="px-2 py-1.5">{op.workCentre || "—"}</td>
                           </tr>
                         ))}
@@ -503,25 +502,6 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                           className="h-8 text-xs flex-1 border-dashed print:border-none"
                         />
                         <Select
-                          value={op.trade || "none"}
-                          onValueChange={(v) => {
-                            const updated = ops.map((o: any, idx: number) =>
-                              idx === i ? { ...o, trade: v === "none" ? "" : v } : o
-                            );
-                            const json = JSON.stringify(updated);
-                            setForm((prev) => ({ ...prev, scope_of_works: json }));
-                            if (wr) saveField("scope_of_works", json);
-                          }}
-                        >
-                          <SelectTrigger className="h-8 text-xs w-28 shrink-0 print:hidden"><SelectValue placeholder="Trade" /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">—</SelectItem>
-                            {["Mechanical", "Electrical"].map((t) => (
-                              <SelectItem key={t} value={t}>{t}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <Select
                           value={op.workCentre || "none"}
                           onValueChange={(v) => {
                             const updated = ops.map((o: any, idx: number) =>
@@ -532,7 +512,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                             if (wr) saveField("scope_of_works", json);
                           }}
                         >
-                          <SelectTrigger className="h-8 text-xs w-24 shrink-0 print:hidden"><SelectValue placeholder="Work Centre" /></SelectTrigger>
+                          <SelectTrigger className="h-8 text-xs w-28 shrink-0 print:hidden"><SelectValue placeholder="Work Centre" /></SelectTrigger>
                           <SelectContent>
                             <SelectItem value="none">—</SelectItem>
                             {["MECH", "ELEC", "PROJ"].map((t) => (

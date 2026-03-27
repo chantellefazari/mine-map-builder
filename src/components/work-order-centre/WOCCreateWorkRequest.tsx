@@ -287,17 +287,8 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
                   placeholder="What needs to be done..."
                   className="h-8 text-sm flex-1"
                 />
-                <Select value={op.trade || "none"} onValueChange={(v) => updateOp(op.id, "trade", v === "none" ? "" : v)}>
-                  <SelectTrigger className="h-8 text-xs w-28 shrink-0"><SelectValue placeholder="Trade" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">—</SelectItem>
-                    {["Mechanical", "Electrical"].map((t) => (
-                      <SelectItem key={t} value={t}>{t}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
                 <Select value={op.workCentre || "none"} onValueChange={(v) => updateOp(op.id, "workCentre", v === "none" ? "" : v)}>
-                  <SelectTrigger className="h-8 text-xs w-24 shrink-0"><SelectValue placeholder="Work Centre" /></SelectTrigger>
+                  <SelectTrigger className="h-8 text-xs w-28 shrink-0"><SelectValue placeholder="Work Centre" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">—</SelectItem>
                     {["MECH", "ELEC", "PROJ"].map((t) => (
