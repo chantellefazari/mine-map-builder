@@ -35,17 +35,9 @@ const OPS_STATUSES: Record<string, string[]> = {
   history: [],
 };
 
-const priorityColor = (p: string) => {
-  switch (p?.toLowerCase()) {
-    case "critical":
-    case "emergency":
-      return "bg-destructive/10 text-destructive border-destructive/30";
-    case "high":
-      return "bg-orange-100 text-orange-700 border-orange-300";
-    default:
-      return "bg-muted text-muted-foreground border-border";
-  }
-};
+import { getPriorityColor } from "@/constants/priorities";
+
+const priorityColor = getPriorityColor;
 
 /** Compute planning checklist for a work order */
 function planningChecklist(wo: WorkOrder, partsCount: number) {

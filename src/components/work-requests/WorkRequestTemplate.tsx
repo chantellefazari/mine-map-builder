@@ -139,7 +139,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
     if (wr) saveField("photo_urls", updated);
   };
 
-  const priorityOptions = ["Low", "Medium", "High", "Urgent"];
+  const priorityOptions = ["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low"];
   const workTypeOptions = ["Inspect", "Repair", "Replace"];
   const isConverted = form.status === "Converted to WO";
 

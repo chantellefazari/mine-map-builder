@@ -199,7 +199,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     }
   };
 
-  const priorityOptions = ["Low", "Medium", "High", "Urgent"];
+  const priorityOptions = ["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low", "P5 - Shutdown", "P6 - Engineering", "P7 - Projects"];
   const workTypeOptions = ["Breakdown", "Planned", "Shutdown"];
 
   return (

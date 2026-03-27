@@ -176,7 +176,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
           <Select value={form.priority} onValueChange={(v) => set("priority", v)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {["Low", "Medium", "High", "Urgent"].map((p) => (
+              {["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low"].map((p) => (
                 <SelectItem key={p} value={p}>{p}</SelectItem>
               ))}
             </SelectContent>
