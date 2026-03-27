@@ -206,7 +206,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
             Generate with AI
           </Button>
         </div>
-        <Textarea value={local.problem_description} onBlur={(e) => save("problem_description", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, problem_description: e.target.value }))} rows={4} className="text-sm" />
+        <Textarea value={local.problem_description} onChange={(e) => debouncedSave("problem_description", e.target.value)} rows={4} className="text-sm" />
       </div>
 
 
