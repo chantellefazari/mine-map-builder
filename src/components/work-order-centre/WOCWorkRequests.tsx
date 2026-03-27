@@ -176,7 +176,15 @@ export function WOCWorkRequests({ onOpenWorkspace }: Props) {
                 </div>
 
                 <DetailBlock label="Description" value={viewingWr.problem_description} />
-                <DetailBlock label="Scope of Works" value={viewingWr.scope_of_works} />
+                <DetailBlock label="Operations" value={(() => {
+                  try {
+                    const ops = JSON.parse(viewingWr.scope_of_works || "[]");
+                    if (Array.isArray(ops) && ops.length > 0) {
+                      return ops.map((o: any) => `${o.lineNo}. ${o.description}${o.trade ? ` [${o.trade}]` : ""}`).join("\n");
+                    }
+                  } catch {}
+                  return viewingWr.scope_of_works || "-";
+                })()} />
 
                 {viewingWr.linked_wo_id && (
                   <div className="p-3 bg-muted/50 rounded-lg border border-border">

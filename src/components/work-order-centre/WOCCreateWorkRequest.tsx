@@ -11,11 +11,25 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { WRAssetSearch } from "./WRAssetSearch";
 import { TradeMultiSelect } from "./TradeMultiSelect";
-import { Camera, X, Sparkles, Loader2 } from "lucide-react";
+import { Camera, X, Sparkles, Loader2, Plus, Trash2 } from "lucide-react";
 
 interface Props {
   onCreated: () => void;
 }
+
+interface SimpleOperation {
+  id: string;
+  lineNo: number;
+  description: string;
+  trade: string;
+}
+
+const newSimpleOp = (lineNo: number): SimpleOperation => ({
+  id: crypto.randomUUID(),
+  lineNo,
+  description: "",
+  trade: "",
+});
 
 export function WOCCreateWorkRequest({ onCreated }: Props) {
   const { allocate, update } = useWorkRequests();
@@ -24,13 +38,12 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
   const [enhancingDesc, setEnhancingDesc] = useState(false);
-  const [enhancingScope, setEnhancingScope] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [operations, setOperations] = useState<SimpleOperation[]>([]);
   const [form, setForm] = useState({
     asset_id: "",
     functional_location: "",
     problem_description: "",
-    scope_of_works: "",
     priority: "P3 - Medium",
     work_type: "Repair",
     trade: "",
@@ -41,6 +54,20 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
   });
 
   const set = (field: string, value: any) => setForm((f) => ({ ...f, [field]: value }));
+
+  const addOp = () => setOperations((ops) => [...ops, newSimpleOp(ops.length + 1)]);
+
+  const removeOp = (id: string) => {
+    setOperations((ops) =>
+      ops.filter((o) => o.id !== id).map((o, i) => ({ ...o, lineNo: i + 1 }))
+    );
+  };
+
+  const updateOp = (id: string, field: keyof SimpleOperation, value: string) => {
+    setOperations((ops) =>
+      ops.map((o) => (o.id === id ? { ...o, [field]: value } : o))
+    );
+  };
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -78,29 +105,26 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
     return urls;
   };
 
-  const handleEnhance = async (mode: "description" | "scope") => {
-    const text = mode === "description" ? form.problem_description : form.scope_of_works;
+  const handleEnhance = async () => {
+    const text = form.problem_description;
     if (!text.trim()) {
-      toast.error(`Please enter some rough notes in the ${mode === "description" ? "description" : "scope of works"} field first`);
+      toast.error("Please enter some rough notes in the description field first");
       return;
     }
-    if (mode === "description") setEnhancingDesc(true);
-    else setEnhancingScope(true);
-
+    setEnhancingDesc(true);
     try {
       const { data, error } = await supabase.functions.invoke("enhance-wo-description", {
-        body: { description: text, mode },
+        body: { description: text, mode: "description" },
       });
       if (error) throw error;
       if (data?.enhanced) {
-        set(mode === "description" ? "problem_description" : "scope_of_works", data.enhanced);
-        toast.success(`${mode === "description" ? "Description" : "Scope of works"} enhanced`);
+        set("problem_description", data.enhanced);
+        toast.success("Description enhanced");
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to enhance text");
     } finally {
-      if (mode === "description") setEnhancingDesc(false);
-      else setEnhancingScope(false);
+      setEnhancingDesc(false);
     }
   };
 
@@ -116,10 +140,28 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
       if (photos.length > 0) {
         photo_urls = await uploadPhotos(wr.wr_number);
       }
+
+      // Convert simple operations to the full format for WO compatibility
+      const scopeOps = operations
+        .filter((o) => o.description.trim())
+        .map((o) => ({
+          id: o.id,
+          lineNo: o.lineNo,
+          description: o.description,
+          trade: o.trade,
+          estimatedHours: 0,
+          requiresIsolation: false,
+          requiresShutdown: false,
+          parallelAllowed: false,
+          predecessor: "",
+          notes: "",
+        }));
+
       await update.mutateAsync({
         id: wr.id,
         updates: {
           ...form,
+          scope_of_works: JSON.stringify(scopeOps),
           photo_urls,
           status: "Submitted",
         },
@@ -128,9 +170,10 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
       photoPreviewUrls.forEach((u) => URL.revokeObjectURL(u));
       setPhotos([]);
       setPhotoPreviewUrls([]);
+      setOperations([]);
       setForm({
         asset_id: "", functional_location: "", problem_description: "",
-        scope_of_works: "", priority: "P3 - Medium", work_type: "Repair",
+        priority: "P3 - Medium", work_type: "Repair",
         trade: "", requested_by: "", isolation_required: false, from_hazard_id: false, notes: "",
       });
       onCreated();
@@ -204,7 +247,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
             size="sm"
             className="h-7 text-xs gap-1.5"
             disabled={enhancingDesc}
-            onClick={() => handleEnhance("description")}
+            onClick={handleEnhance}
           >
             {enhancingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
             Generate with AI
@@ -213,23 +256,51 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
         <Textarea value={form.problem_description} onChange={(e) => set("problem_description", e.target.value)} placeholder="Describe the issue, defect, or observation..." rows={3} className="text-sm" />
       </div>
 
-      {/* Scope of Works with AI button */}
-      <div className="space-y-1.5">
+      {/* Operations (replaces Scope of Works) */}
+      <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label className="text-xs font-semibold">Scope of Works</Label>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-7 text-xs gap-1.5"
-            disabled={enhancingScope}
-            onClick={() => handleEnhance("scope")}
-          >
-            {enhancingScope ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-            Generate with AI
+          <Label className="text-xs font-semibold">Operations</Label>
+          <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={addOp}>
+            <Plus className="h-3 w-3" /> Add Step
           </Button>
         </div>
-        <Textarea value={form.scope_of_works} onChange={(e) => set("scope_of_works", e.target.value)} placeholder="What work is required or recommended..." rows={3} className="text-sm" />
+        {operations.length === 0 ? (
+          <div
+            className="border-2 border-dashed border-border rounded-lg p-4 text-center cursor-pointer hover:border-primary/30 transition-colors"
+            onClick={addOp}
+          >
+            <p className="text-xs text-muted-foreground">No operations added. Click to add the first step.</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {operations.map((op) => (
+              <div key={op.id} className="flex items-center gap-2">
+                <span className="text-xs font-mono text-muted-foreground w-6 text-right shrink-0">
+                  {op.lineNo}
+                </span>
+                <Input
+                  value={op.description}
+                  onChange={(e) => updateOp(op.id, "description", e.target.value)}
+                  placeholder="What needs to be done..."
+                  className="h-8 text-sm flex-1"
+                />
+                <Select value={op.trade || "none"} onValueChange={(v) => updateOp(op.id, "trade", v === "none" ? "" : v)}>
+                  <SelectTrigger className="h-8 text-xs w-28 shrink-0"><SelectValue placeholder="Trade" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">—</SelectItem>
+                    {["Mechanical", "Electrical"].map((t) => (
+                      <SelectItem key={t} value={t}>{t}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-destructive" onClick={() => removeOp(op.id)}>
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+        <p className="text-[10px] text-muted-foreground">These steps will carry into the Work Order when approved. Planners can add hours, isolation, and details later.</p>
       </div>
 
       <div className="space-y-1.5">
