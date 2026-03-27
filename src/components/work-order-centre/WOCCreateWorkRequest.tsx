@@ -22,6 +22,7 @@ interface SimpleOperation {
   lineNo: number;
   description: string;
   trade: string;
+  workCentre: string;
 }
 
 const newSimpleOp = (lineNo: number): SimpleOperation => ({
@@ -29,6 +30,7 @@ const newSimpleOp = (lineNo: number): SimpleOperation => ({
   lineNo,
   description: "",
   trade: "",
+  workCentre: "",
 });
 
 export function WOCCreateWorkRequest({ onCreated }: Props) {
