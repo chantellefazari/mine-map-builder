@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Printer, Search, Sparkles, Loader2, SendHorizontal, ArrowRightCircle, Camera, X, ImagePlus } from "lucide-react";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { useWorkRequests } from "@/hooks/useWorkRequests";
+import { usePriorityConfig } from "@/hooks/usePriorityConfig";
 import { AssetLookupDialog } from "@/components/work-orders/AssetLookupDialog";
 import { format } from "date-fns";
 import { toast } from "sonner";
