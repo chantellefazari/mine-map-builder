@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useWorkRequests } from "@/hooks/useWorkRequests";
+import { usePriorityConfig } from "@/hooks/usePriorityConfig";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { WRAssetSearch } from "./WRAssetSearch";
