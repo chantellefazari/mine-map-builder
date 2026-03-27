@@ -128,7 +128,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
       setPhotoPreviewUrls([]);
       setForm({
         asset_id: "", functional_location: "", problem_description: "",
-        scope_of_works: "", priority: "Medium", work_type: "Repair",
+        scope_of_works: "", priority: "P3 - Medium", work_type: "Repair",
         trade: "", requested_by: "", isolation_required: false, from_hazard_id: false, notes: "",
       });
       onCreated();
