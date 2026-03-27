@@ -539,6 +539,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                               <SelectItem key={t} value={t}>{t}</SelectItem>
                             ))}
                           </SelectContent>
+                        </Select>
                         <Button
                           variant="ghost"
                           size="icon"
