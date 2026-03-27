@@ -381,10 +381,10 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
             </div>
           </div>
 
-          {/* Operations - Editable simple builder */}
+          {/* Scope of Works */}
           <div className="border border-gray-300">
             <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
-              <span className="font-semibold text-gray-700">OPERATIONS</span>
+              <span className="font-semibold text-gray-700">SCOPE OF WORKS</span>
               {!isConverted && (
                 <Button
                   size="sm"
@@ -397,17 +397,9 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                       if (Array.isArray(parsed)) ops = parsed;
                     } catch {}
                     const newOp = {
-                      id: crypto.randomUUID(),
-                      lineNo: ops.length + 1,
-                      description: "",
-                      trade: "",
-                      workCentre: "",
-                      estimatedHours: 0,
-                      requiresIsolation: false,
-                      requiresShutdown: false,
-                      parallelAllowed: false,
-                      predecessor: "",
-                      notes: "",
+                      id: crypto.randomUUID(), lineNo: ops.length + 1, description: "", workCentre: "",
+                      trade: "", estimatedHours: 0, requiresIsolation: false, requiresShutdown: false,
+                      parallelAllowed: false, predecessor: "", notes: "",
                     };
                     const updated = [...ops, newOp];
                     setForm((prev) => ({ ...prev, scope_of_works: JSON.stringify(updated) }));
@@ -418,7 +410,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                 </Button>
               )}
             </div>
-            <div className="p-3">
+            <div className="p-0">
               {(() => {
                 let ops: any[] = [];
                 try {
@@ -429,118 +421,103 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                 if (ops.length === 0) {
                   return (
                     <div
-                      className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-primary/30 transition-colors print:cursor-default"
+                      className="p-4 text-center cursor-pointer hover:bg-gray-50 transition-colors print:cursor-default"
                       onClick={() => {
                         if (isConverted) return;
                         const newOp = {
-                          id: crypto.randomUUID(),
-                          lineNo: 1,
-                          description: "",
-                          trade: "",
-                          workCentre: "",
-                          estimatedHours: 0,
-                          requiresIsolation: false,
-                          requiresShutdown: false,
-                          parallelAllowed: false,
-                          predecessor: "",
-                          notes: "",
+                          id: crypto.randomUUID(), lineNo: 1, description: "", workCentre: "",
+                          trade: "", estimatedHours: 0, requiresIsolation: false, requiresShutdown: false,
+                          parallelAllowed: false, predecessor: "", notes: "",
                         };
                         setForm((prev) => ({ ...prev, scope_of_works: JSON.stringify([newOp]) }));
                         if (wr) saveField("scope_of_works", JSON.stringify([newOp]));
                       }}
                     >
-                      <p className="text-xs text-muted-foreground">No operations added. Click to add the first step.</p>
+                      <p className="text-xs text-gray-400">No steps defined. Click to add.</p>
                     </div>
                   );
                 }
 
-                if (isConverted) {
-                  // Read-only view for converted WRs
-                  return (
-                    <table className="w-full text-xs">
-                      <thead>
-                        <tr className="border-b border-gray-300 bg-gray-50">
-                          <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-12">Op #</th>
-                          <th className="px-2 py-1.5 text-left font-medium text-gray-600">Description</th>
-                          <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-24">Work Centre</th>
-                          <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-20">Work Centre</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {ops.map((op: any, i: number) => (
-                          <tr key={op.id || i} className="border-b border-gray-200 last:border-b-0">
-                            <td className="px-2 py-1.5 font-mono text-gray-500">{op.lineNo || i + 1}</td>
-                            <td className="px-2 py-1.5">{op.description || "—"}</td>
-                            <td className="px-2 py-1.5">{op.workCentre || "—"}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  );
-                }
-
-                // Editable simple operations
                 return (
-                  <div className="space-y-2">
-                    {ops.map((op: any, i: number) => (
-                      <div key={op.id || i} className="flex items-end gap-2">
-                        <span className="text-xs font-mono text-muted-foreground w-6 text-right shrink-0">
-                          {op.lineNo || i + 1}
-                        </span>
-                        <Input
-                          value={op.description || ""}
-                          onChange={(e) => {
-                            const updated = ops.map((o: any, idx: number) =>
-                              idx === i ? { ...o, description: e.target.value } : o
-                            );
-                            setForm((prev) => ({ ...prev, scope_of_works: JSON.stringify(updated) }));
-                          }}
-                          onBlur={() => {
-                            if (wr) saveField("scope_of_works", form.scope_of_works);
-                          }}
-                          placeholder="What needs to be done..."
-                          className="h-8 text-xs flex-1 border-dashed print:border-none"
-                        />
-                        <div className="shrink-0 print:hidden">
-                          {i === 0 && <span className="text-[10px] text-muted-foreground font-medium block mb-0.5">Work Centre</span>}
-                          <Select
-                            value={op.workCentre || "none"}
-                            onValueChange={(v) => {
-                              const updated = ops.map((o: any, idx: number) =>
-                                idx === i ? { ...o, workCentre: v === "none" ? "" : v } : o
-                              );
-                              const json = JSON.stringify(updated);
-                              setForm((prev) => ({ ...prev, scope_of_works: json }));
-                              if (wr) saveField("scope_of_works", json);
-                            }}
-                          >
-                            <SelectTrigger className="h-8 text-xs w-28"><SelectValue placeholder="Select" /></SelectTrigger>
-                            <SelectContent>
-                              {["MECH", "ELEC", "PROJ"].map((t) => (
-                                <SelectItem key={t} value={t}>{t}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 shrink-0 text-destructive print:hidden"
-                          onClick={() => {
-                            const updated = ops
-                              .filter((_: any, idx: number) => idx !== i)
-                              .map((o: any, idx: number) => ({ ...o, lineNo: idx + 1 }));
-                            const json = JSON.stringify(updated);
-                            setForm((prev) => ({ ...prev, scope_of_works: json }));
-                            if (wr) saveField("scope_of_works", json);
-                          }}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))}
-                    <p className="text-[10px] text-muted-foreground">These steps carry into the Work Order. Planners add hours & details later.</p>
-                  </div>
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-gray-300 bg-gray-50">
+                        <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-10">#</th>
+                        <th className="px-2 py-1.5 text-left font-medium text-gray-600">Description</th>
+                        <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-24">Work Centre</th>
+                        {!isConverted && <th className="px-2 py-1.5 w-8 print:hidden"></th>}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ops.map((op: any, i: number) => (
+                        <tr key={op.id || i} className="border-b border-gray-200 last:border-b-0">
+                          <td className="px-2 py-1.5 font-mono text-gray-400">{op.lineNo || i + 1}</td>
+                          <td className="px-2 py-1">
+                            {isConverted ? (
+                              <span>{op.description || "—"}</span>
+                            ) : (
+                              <Input
+                                value={op.description || ""}
+                                onChange={(e) => {
+                                  const updated = ops.map((o: any, idx: number) =>
+                                    idx === i ? { ...o, description: e.target.value } : o
+                                  );
+                                  setForm((prev) => ({ ...prev, scope_of_works: JSON.stringify(updated) }));
+                                }}
+                                onBlur={() => { if (wr) saveField("scope_of_works", form.scope_of_works); }}
+                                placeholder="What needs to be done..."
+                                className="h-7 text-xs border-none shadow-none focus-visible:ring-0 bg-transparent px-0"
+                              />
+                            )}
+                          </td>
+                          <td className="px-2 py-1">
+                            {isConverted ? (
+                              <span>{op.workCentre || "—"}</span>
+                            ) : (
+                              <Select
+                                value={op.workCentre || "none"}
+                                onValueChange={(v) => {
+                                  const updated = ops.map((o: any, idx: number) =>
+                                    idx === i ? { ...o, workCentre: v === "none" ? "" : v } : o
+                                  );
+                                  const json = JSON.stringify(updated);
+                                  setForm((prev) => ({ ...prev, scope_of_works: json }));
+                                  if (wr) saveField("scope_of_works", json);
+                                }}
+                              >
+                                <SelectTrigger className="h-7 text-xs border-none shadow-none focus-visible:ring-0 bg-transparent px-0 print:hidden">
+                                  <SelectValue placeholder="—" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {["MECH", "ELEC", "PROJ"].map((t) => (
+                                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            )}
+                          </td>
+                          {!isConverted && (
+                            <td className="px-1 py-1 print:hidden">
+                              <Button
+                                variant="ghost" size="icon"
+                                className="h-6 w-6 text-gray-400 hover:text-destructive"
+                                onClick={() => {
+                                  const updated = ops
+                                    .filter((_: any, idx: number) => idx !== i)
+                                    .map((o: any, idx: number) => ({ ...o, lineNo: idx + 1 }));
+                                  const json = JSON.stringify(updated);
+                                  setForm((prev) => ({ ...prev, scope_of_works: json }));
+                                  if (wr) saveField("scope_of_works", json);
+                                }}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </td>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 );
               })()}
             </div>
