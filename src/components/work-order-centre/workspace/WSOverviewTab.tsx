@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { WRAssetSearch } from "../WRAssetSearch";
 import { TradeMultiSelect } from "../TradeMultiSelect";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { usePriorityConfig } from "@/hooks/usePriorityConfig";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Camera, X, Sparkles, Loader2 } from "lucide-react";
