@@ -401,6 +401,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                       lineNo: ops.length + 1,
                       description: "",
                       trade: "",
+                      workCentre: "",
                       estimatedHours: 0,
                       requiresIsolation: false,
                       requiresShutdown: false,
