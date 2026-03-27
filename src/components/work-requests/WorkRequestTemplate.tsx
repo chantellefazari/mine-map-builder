@@ -381,59 +381,161 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
             </div>
           </div>
 
-          {/* Operations */}
+          {/* Operations - Editable simple builder */}
           <div className="border border-gray-300">
-            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300">
+            <div className="bg-gray-100 px-3 py-2 border-b border-gray-300 flex items-center justify-between">
               <span className="font-semibold text-gray-700">OPERATIONS</span>
+              {!isConverted && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-1 text-xs h-7 print:hidden"
+                  onClick={() => {
+                    let ops: any[] = [];
+                    try {
+                      const parsed = typeof form.scope_of_works === "string" ? JSON.parse(form.scope_of_works) : form.scope_of_works;
+                      if (Array.isArray(parsed)) ops = parsed;
+                    } catch {}
+                    const newOp = {
+                      id: crypto.randomUUID(),
+                      lineNo: ops.length + 1,
+                      description: "",
+                      trade: "",
+                      estimatedHours: 0,
+                      requiresIsolation: false,
+                      requiresShutdown: false,
+                      parallelAllowed: false,
+                      predecessor: "",
+                      notes: "",
+                    };
+                    const updated = [...ops, newOp];
+                    setForm((prev) => ({ ...prev, scope_of_works: JSON.stringify(updated) }));
+                    if (wr) saveField("scope_of_works", JSON.stringify(updated));
+                  }}
+                >
+                  <Plus className="h-3 w-3" /> Add Step
+                </Button>
+              )}
             </div>
-            <div className="p-0">
+            <div className="p-3">
               {(() => {
                 let ops: any[] = [];
                 try {
                   const parsed = typeof form.scope_of_works === "string" ? JSON.parse(form.scope_of_works) : form.scope_of_works;
                   if (Array.isArray(parsed)) ops = parsed;
-                } catch { /* not JSON, ignore */ }
+                } catch {}
 
                 if (ops.length === 0) {
                   return (
-                    <div className="p-4 text-center text-xs text-muted-foreground">
-                      No operations defined. Add operations from the Work Order workspace.
+                    <div
+                      className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-primary/30 transition-colors print:cursor-default"
+                      onClick={() => {
+                        if (isConverted) return;
+                        const newOp = {
+                          id: crypto.randomUUID(),
+                          lineNo: 1,
+                          description: "",
+                          trade: "",
+                          estimatedHours: 0,
+                          requiresIsolation: false,
+                          requiresShutdown: false,
+                          parallelAllowed: false,
+                          predecessor: "",
+                          notes: "",
+                        };
+                        setForm((prev) => ({ ...prev, scope_of_works: JSON.stringify([newOp]) }));
+                        if (wr) saveField("scope_of_works", JSON.stringify([newOp]));
+                      }}
+                    >
+                      <p className="text-xs text-muted-foreground">No operations added. Click to add the first step.</p>
                     </div>
                   );
                 }
 
-                return (
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr className="border-b border-gray-300 bg-gray-50">
-                        <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-12">Op #</th>
-                        <th className="px-2 py-1.5 text-left font-medium text-gray-600">Description</th>
-                        <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-24">Trade</th>
-                        <th className="px-2 py-1.5 text-right font-medium text-gray-600 w-16">Hours</th>
-                        <th className="px-2 py-1.5 text-center font-medium text-gray-600 w-12">ISO</th>
-                        <th className="px-2 py-1.5 text-center font-medium text-gray-600 w-12">S/D</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ops.map((op, i) => (
-                        <tr key={op.id || i} className="border-b border-gray-200 last:border-b-0">
-                          <td className="px-2 py-1.5 font-mono text-gray-500">{op.lineNo || i + 1}</td>
-                          <td className="px-2 py-1.5">{op.description || "—"}</td>
-                          <td className="px-2 py-1.5">{op.trade || "—"}</td>
-                          <td className="px-2 py-1.5 text-right">{op.estimatedHours || 0}</td>
-                          <td className="px-2 py-1.5 text-center">{op.requiresIsolation ? "✓" : ""}</td>
-                          <td className="px-2 py-1.5 text-center">{op.requiresShutdown ? "✓" : ""}</td>
+                if (isConverted) {
+                  // Read-only view for converted WRs
+                  return (
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="border-b border-gray-300 bg-gray-50">
+                          <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-12">Op #</th>
+                          <th className="px-2 py-1.5 text-left font-medium text-gray-600">Description</th>
+                          <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-24">Trade</th>
                         </tr>
-                      ))}
-                      <tr className="border-t border-gray-300 bg-gray-50 font-medium">
-                        <td colSpan={3} className="px-2 py-1.5 text-right">Total Hours</td>
-                        <td className="px-2 py-1.5 text-right">
-                          {ops.reduce((sum: number, op: any) => sum + (Number(op.estimatedHours) || 0), 0)}
-                        </td>
-                        <td colSpan={2}></td>
-                      </tr>
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {ops.map((op: any, i: number) => (
+                          <tr key={op.id || i} className="border-b border-gray-200 last:border-b-0">
+                            <td className="px-2 py-1.5 font-mono text-gray-500">{op.lineNo || i + 1}</td>
+                            <td className="px-2 py-1.5">{op.description || "—"}</td>
+                            <td className="px-2 py-1.5">{op.trade || "—"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  );
+                }
+
+                // Editable simple operations
+                return (
+                  <div className="space-y-2">
+                    {ops.map((op: any, i: number) => (
+                      <div key={op.id || i} className="flex items-center gap-2">
+                        <span className="text-xs font-mono text-muted-foreground w-6 text-right shrink-0">
+                          {op.lineNo || i + 1}
+                        </span>
+                        <Input
+                          value={op.description || ""}
+                          onChange={(e) => {
+                            const updated = ops.map((o: any, idx: number) =>
+                              idx === i ? { ...o, description: e.target.value } : o
+                            );
+                            setForm((prev) => ({ ...prev, scope_of_works: JSON.stringify(updated) }));
+                          }}
+                          onBlur={() => {
+                            if (wr) saveField("scope_of_works", form.scope_of_works);
+                          }}
+                          placeholder="What needs to be done..."
+                          className="h-8 text-xs flex-1 border-dashed print:border-none"
+                        />
+                        <Select
+                          value={op.trade || "none"}
+                          onValueChange={(v) => {
+                            const updated = ops.map((o: any, idx: number) =>
+                              idx === i ? { ...o, trade: v === "none" ? "" : v } : o
+                            );
+                            const json = JSON.stringify(updated);
+                            setForm((prev) => ({ ...prev, scope_of_works: json }));
+                            if (wr) saveField("scope_of_works", json);
+                          }}
+                        >
+                          <SelectTrigger className="h-8 text-xs w-28 shrink-0 print:hidden"><SelectValue placeholder="Trade" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">—</SelectItem>
+                            {["Mechanical", "Electrical"].map((t) => (
+                              <SelectItem key={t} value={t}>{t}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 shrink-0 text-destructive print:hidden"
+                          onClick={() => {
+                            const updated = ops
+                              .filter((_: any, idx: number) => idx !== i)
+                              .map((o: any, idx: number) => ({ ...o, lineNo: idx + 1 }));
+                            const json = JSON.stringify(updated);
+                            setForm((prev) => ({ ...prev, scope_of_works: json }));
+                            if (wr) saveField("scope_of_works", json);
+                          }}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ))}
+                    <p className="text-[10px] text-muted-foreground">These steps carry into the Work Order. Planners add hours & details later.</p>
+                  </div>
                 );
               })()}
             </div>
