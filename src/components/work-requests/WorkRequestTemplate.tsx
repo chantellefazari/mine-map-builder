@@ -463,6 +463,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                           <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-12">Op #</th>
                           <th className="px-2 py-1.5 text-left font-medium text-gray-600">Description</th>
                           <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-24">Trade</th>
+                          <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-20">Work Centre</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -471,6 +472,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                             <td className="px-2 py-1.5 font-mono text-gray-500">{op.lineNo || i + 1}</td>
                             <td className="px-2 py-1.5">{op.description || "—"}</td>
                             <td className="px-2 py-1.5">{op.trade || "—"}</td>
+                            <td className="px-2 py-1.5">{op.workCentre || "—"}</td>
                           </tr>
                         ))}
                       </tbody>
