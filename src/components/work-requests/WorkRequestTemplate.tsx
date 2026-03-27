@@ -483,7 +483,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                 return (
                   <div className="space-y-2">
                     {ops.map((op: any, i: number) => (
-                      <div key={op.id || i} className="flex items-center gap-2">
+                      <div key={op.id || i} className="flex items-end gap-2">
                         <span className="text-xs font-mono text-muted-foreground w-6 text-right shrink-0">
                           {op.lineNo || i + 1}
                         </span>
