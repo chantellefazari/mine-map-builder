@@ -213,7 +213,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       {/* Notes */}
       <div className="space-y-1.5">
         <Label className="text-xs font-semibold">Notes</Label>
-        <Textarea value={local.work_performed} onBlur={(e) => save("work_performed", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, work_performed: e.target.value }))} rows={3} className="text-sm" placeholder="Additional notes, observations, or comments..." />
+        <Textarea value={local.work_performed} onChange={(e) => debouncedSave("work_performed", e.target.value)} rows={3} className="text-sm" placeholder="Additional notes, observations, or comments..." />
       </div>
 
       {/* Photos */}
