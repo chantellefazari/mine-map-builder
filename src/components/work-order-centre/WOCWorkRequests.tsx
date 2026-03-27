@@ -79,7 +79,7 @@ export function WOCWorkRequests({ onOpenWorkspace }: Props) {
               <td className="px-3 py-2">{wr.asset_id || "-"}</td>
               <td className="px-3 py-2 truncate max-w-[180px]">{wr.problem_description || "-"}</td>
               <td className="px-3 py-2">
-                <Badge variant="outline" className="text-[10px]">{wr.priority}</Badge>
+                <Badge variant="outline" className={`text-[10px] ${getPriorityColor(wr.priority)}`}>{wr.priority}</Badge>
               </td>
               <td className="px-3 py-2">{wr.work_type || "-"}</td>
               <td className="px-3 py-2">{wr.requested_by || "-"}</td>
