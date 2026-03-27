@@ -503,25 +503,6 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                           className="h-8 text-xs flex-1 border-dashed print:border-none"
                         />
                         <Select
-                          value={op.trade || "none"}
-                          onValueChange={(v) => {
-                            const updated = ops.map((o: any, idx: number) =>
-                              idx === i ? { ...o, trade: v === "none" ? "" : v } : o
-                            );
-                            const json = JSON.stringify(updated);
-                            setForm((prev) => ({ ...prev, scope_of_works: json }));
-                            if (wr) saveField("scope_of_works", json);
-                          }}
-                        >
-                          <SelectTrigger className="h-8 text-xs w-28 shrink-0 print:hidden"><SelectValue placeholder="Trade" /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">—</SelectItem>
-                            {["Mechanical", "Electrical"].map((t) => (
-                              <SelectItem key={t} value={t}>{t}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <Select
                           value={op.workCentre || "none"}
                           onValueChange={(v) => {
                             const updated = ops.map((o: any, idx: number) =>
@@ -532,7 +513,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                             if (wr) saveField("scope_of_works", json);
                           }}
                         >
-                          <SelectTrigger className="h-8 text-xs w-24 shrink-0 print:hidden"><SelectValue placeholder="Work Centre" /></SelectTrigger>
+                          <SelectTrigger className="h-8 text-xs w-28 shrink-0 print:hidden"><SelectValue placeholder="Work Centre" /></SelectTrigger>
                           <SelectContent>
                             <SelectItem value="none">—</SelectItem>
                             {["MECH", "ELEC", "PROJ"].map((t) => (
