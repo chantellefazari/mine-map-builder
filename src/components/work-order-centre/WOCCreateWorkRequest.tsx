@@ -151,6 +151,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
           lineNo: o.lineNo,
           description: o.description,
           trade: o.trade,
+          workCentre: o.workCentre,
           estimatedHours: 0,
           requiresIsolation: false,
           requiresShutdown: false,
