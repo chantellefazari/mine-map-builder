@@ -186,7 +186,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
         </div>
         <div className="space-y-1.5 col-span-2 lg:col-span-1">
           <Label className="text-xs font-semibold">Planner / Supervisor</Label>
-          <Input value={local.assigned_to} onBlur={(e) => save("assigned_to", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, assigned_to: e.target.value }))} className="h-9 text-sm" />
+          <Input value={local.assigned_to} onChange={(e) => debouncedSave("assigned_to", e.target.value)} className="h-9 text-sm" />
         </div>
       </div>
 
