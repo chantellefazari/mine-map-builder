@@ -462,7 +462,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                         <tr className="border-b border-gray-300 bg-gray-50">
                           <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-12">Op #</th>
                           <th className="px-2 py-1.5 text-left font-medium text-gray-600">Description</th>
-                          <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-24">Trade</th>
+                          <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-24">Work Centre</th>
                           <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-20">Work Centre</th>
                         </tr>
                       </thead>
