@@ -483,7 +483,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                 return (
                   <div className="space-y-2">
                     {ops.map((op: any, i: number) => (
-                      <div key={op.id || i} className="flex items-center gap-2">
+                      <div key={op.id || i} className="flex items-end gap-2">
                         <span className="text-xs font-mono text-muted-foreground w-6 text-right shrink-0">
                           {op.lineNo || i + 1}
                         </span>
@@ -501,8 +501,8 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                           placeholder="What needs to be done..."
                           className="h-8 text-xs flex-1 border-dashed print:border-none"
                         />
-                        <div className="shrink-0 space-y-0.5 print:hidden">
-                          <span className="text-[10px] text-muted-foreground font-medium">Work Centre</span>
+                        <div className="shrink-0 print:hidden">
+                          {i === 0 && <span className="text-[10px] text-muted-foreground font-medium block mb-0.5">Work Centre</span>}
                           <Select
                             value={op.workCentre || "none"}
                             onValueChange={(v) => {
