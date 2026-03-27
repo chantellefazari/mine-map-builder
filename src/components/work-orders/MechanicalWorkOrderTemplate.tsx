@@ -8,6 +8,7 @@ import tennantIcon from "@/assets/tennant-icon.png";
 import { WOSubTabs } from "./WOSubTabs";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { useWorkOrderParts } from "@/hooks/useWorkOrderParts";
+import { usePriorityConfig } from "@/hooks/usePriorityConfig";
 import { SparePartLookupDialog } from "@/components/po-tracker/SparePartLookupDialog";
 import { AssetLookupDialog } from "./AssetLookupDialog";
 import { format } from "date-fns";
