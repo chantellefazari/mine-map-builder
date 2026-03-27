@@ -471,7 +471,6 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                           <tr key={op.id || i} className="border-b border-gray-200 last:border-b-0">
                             <td className="px-2 py-1.5 font-mono text-gray-500">{op.lineNo || i + 1}</td>
                             <td className="px-2 py-1.5">{op.description || "—"}</td>
-                            <td className="px-2 py-1.5">{op.trade || "—"}</td>
                             <td className="px-2 py-1.5">{op.workCentre || "—"}</td>
                           </tr>
                         ))}
