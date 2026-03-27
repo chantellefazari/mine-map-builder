@@ -295,6 +295,15 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
                     ))}
                   </SelectContent>
                 </Select>
+                <Select value={op.workCentre || "none"} onValueChange={(v) => updateOp(op.id, "workCentre", v === "none" ? "" : v)}>
+                  <SelectTrigger className="h-8 text-xs w-24 shrink-0"><SelectValue placeholder="Work Centre" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">—</SelectItem>
+                    {["MECH", "ELEC", "PROJ"].map((t) => (
+                      <SelectItem key={t} value={t}>{t}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-destructive" onClick={() => removeOp(op.id)}>
                   <Trash2 className="h-3 w-3" />
                 </Button>
