@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useWorkRequests } from "@/hooks/useWorkRequests";
+import { usePriorityConfig } from "@/hooks/usePriorityConfig";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { WRAssetSearch } from "./WRAssetSearch";
@@ -18,6 +19,7 @@ interface Props {
 
 export function WOCCreateWorkRequest({ onCreated }: Props) {
   const { allocate, update } = useWorkRequests();
+  const { wrPriorityValues } = usePriorityConfig();
   const [saving, setSaving] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
@@ -176,7 +178,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
           <Select value={form.priority} onValueChange={(v) => set("priority", v)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low"].map((p) => (
+              {wrPriorityValues.map((p) => (
                 <SelectItem key={p} value={p}>{p}</SelectItem>
               ))}
             </SelectContent>

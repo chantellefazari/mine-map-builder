@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { WRAssetSearch } from "../WRAssetSearch";
 import { TradeMultiSelect } from "../TradeMultiSelect";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { usePriorityConfig } from "@/hooks/usePriorityConfig";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Camera, X, Sparkles, Loader2 } from "lucide-react";
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export function WSOverviewTab({ wo, onUpdate }: Props) {
+  const { woPriorityValues } = usePriorityConfig();
   const [local, setLocal] = useState({
     problem_description: wo.problem_description || "",
     work_performed: wo.work_performed || "",
@@ -147,7 +149,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
           <Select value={local.priority} onValueChange={(v) => save("priority", v)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low", "P5 - Shutdown", "P6 - Engineering", "P7 - Projects"].map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+              {woPriorityValues.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>

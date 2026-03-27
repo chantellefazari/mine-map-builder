@@ -8,6 +8,7 @@ import tennantIcon from "@/assets/tennant-icon.png";
 import { WOSubTabs } from "./WOSubTabs";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { useWorkOrderParts } from "@/hooks/useWorkOrderParts";
+import { usePriorityConfig } from "@/hooks/usePriorityConfig";
 import { SparePartLookupDialog } from "@/components/po-tracker/SparePartLookupDialog";
 import { AssetLookupDialog } from "./AssetLookupDialog";
 import { format } from "date-fns";
@@ -199,7 +200,8 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     }
   };
 
-  const priorityOptions = ["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low", "P5 - Shutdown", "P6 - Engineering", "P7 - Projects"];
+  const { woPriorities } = usePriorityConfig();
+  const priorityOptions = woPriorities.map(p => p.value);
   const workTypeOptions = ["Breakdown", "Planned", "Shutdown"];
 
   return (

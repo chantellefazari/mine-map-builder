@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Printer, Search, Sparkles, Loader2, SendHorizontal, ArrowRightCircle, Camera, X, ImagePlus } from "lucide-react";
 import tennantIcon from "@/assets/tennant-icon.png";
 import { useWorkRequests } from "@/hooks/useWorkRequests";
+import { usePriorityConfig } from "@/hooks/usePriorityConfig";
 import { AssetLookupDialog } from "@/components/work-orders/AssetLookupDialog";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -139,7 +140,8 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
     if (wr) saveField("photo_urls", updated);
   };
 
-  const priorityOptions = ["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low"];
+  const { wrPriorities } = usePriorityConfig();
+  const priorityOptions = wrPriorities.map(p => p.value);
   const workTypeOptions = ["Inspect", "Repair", "Replace"];
   const isConverted = form.status === "Converted to WO";
 
