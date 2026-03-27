@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -37,6 +37,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
   const [enhancingDesc, setEnhancingDesc] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const debounceTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   useEffect(() => {
     setLocal({
@@ -56,10 +57,27 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
     setNewPreviews([]);
   }, [wo.id]);
 
+  // Flush any pending debounced saves on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(debounceTimers.current).forEach(clearTimeout);
+    };
+  }, []);
+
+  // Immediate save for selects / dropdowns
   const save = (field: string, value: any) => {
     setLocal((l) => ({ ...l, [field]: value }));
     onUpdate({ [field]: value });
   };
+
+  // Debounced save for text inputs (500ms after last keystroke)
+  const debouncedSave = useCallback((field: string, value: any) => {
+    setLocal((l) => ({ ...l, [field]: value }));
+    clearTimeout(debounceTimers.current[field]);
+    debounceTimers.current[field] = setTimeout(() => {
+      onUpdate({ [field]: value });
+    }, 500);
+  }, [onUpdate]);
 
   const handleEnhance = async () => {
     const text = local.problem_description;
