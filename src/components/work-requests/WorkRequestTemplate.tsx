@@ -521,6 +521,24 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                             ))}
                           </SelectContent>
                         </Select>
+                        <Select
+                          value={op.workCentre || "none"}
+                          onValueChange={(v) => {
+                            const updated = ops.map((o: any, idx: number) =>
+                              idx === i ? { ...o, workCentre: v === "none" ? "" : v } : o
+                            );
+                            const json = JSON.stringify(updated);
+                            setForm((prev) => ({ ...prev, scope_of_works: json }));
+                            if (wr) saveField("scope_of_works", json);
+                          }}
+                        >
+                          <SelectTrigger className="h-8 text-xs w-24 shrink-0 print:hidden"><SelectValue placeholder="Work Centre" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">—</SelectItem>
+                            {["MECH", "ELEC", "PROJ"].map((t) => (
+                              <SelectItem key={t} value={t}>{t}</SelectItem>
+                            ))}
+                          </SelectContent>
                         <Button
                           variant="ghost"
                           size="icon"
