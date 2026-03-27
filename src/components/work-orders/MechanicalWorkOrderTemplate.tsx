@@ -200,7 +200,8 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     }
   };
 
-  const priorityOptions = ["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low", "P5 - Shutdown", "P6 - Engineering", "P7 - Projects"];
+  const { woPriorities } = usePriorityConfig();
+  const priorityOptions = woPriorities.map(p => p.value);
   const workTypeOptions = ["Breakdown", "Planned", "Shutdown"];
 
   return (
