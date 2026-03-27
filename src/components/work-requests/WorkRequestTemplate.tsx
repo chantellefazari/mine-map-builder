@@ -501,25 +501,27 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                           placeholder="What needs to be done..."
                           className="h-8 text-xs flex-1 border-dashed print:border-none"
                         />
-                        <Select
-                          value={op.workCentre || "none"}
-                          onValueChange={(v) => {
-                            const updated = ops.map((o: any, idx: number) =>
-                              idx === i ? { ...o, workCentre: v === "none" ? "" : v } : o
-                            );
-                            const json = JSON.stringify(updated);
-                            setForm((prev) => ({ ...prev, scope_of_works: json }));
-                            if (wr) saveField("scope_of_works", json);
-                          }}
-                        >
-                          <SelectTrigger className="h-8 text-xs w-28 shrink-0 print:hidden"><SelectValue placeholder="Work Centre" /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">—</SelectItem>
-                            {["MECH", "ELEC", "PROJ"].map((t) => (
-                              <SelectItem key={t} value={t}>{t}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="shrink-0 space-y-0.5 print:hidden">
+                          <span className="text-[10px] text-muted-foreground font-medium">Work Centre</span>
+                          <Select
+                            value={op.workCentre || "none"}
+                            onValueChange={(v) => {
+                              const updated = ops.map((o: any, idx: number) =>
+                                idx === i ? { ...o, workCentre: v === "none" ? "" : v } : o
+                              );
+                              const json = JSON.stringify(updated);
+                              setForm((prev) => ({ ...prev, scope_of_works: json }));
+                              if (wr) saveField("scope_of_works", json);
+                            }}
+                          >
+                            <SelectTrigger className="h-8 text-xs w-28"><SelectValue placeholder="Select" /></SelectTrigger>
+                            <SelectContent>
+                              {["MECH", "ELEC", "PROJ"].map((t) => (
+                                <SelectItem key={t} value={t}>{t}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
                         <Button
                           variant="ghost"
                           size="icon"

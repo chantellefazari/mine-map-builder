@@ -287,15 +287,17 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
                   placeholder="What needs to be done..."
                   className="h-8 text-sm flex-1"
                 />
-                <Select value={op.workCentre || "none"} onValueChange={(v) => updateOp(op.id, "workCentre", v === "none" ? "" : v)}>
-                  <SelectTrigger className="h-8 text-xs w-28 shrink-0"><SelectValue placeholder="Work Centre" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">—</SelectItem>
-                    {["MECH", "ELEC", "PROJ"].map((t) => (
-                      <SelectItem key={t} value={t}>{t}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="shrink-0 space-y-0.5">
+                  <span className="text-[10px] text-muted-foreground font-medium">Work Centre</span>
+                  <Select value={op.workCentre || "none"} onValueChange={(v) => updateOp(op.id, "workCentre", v === "none" ? "" : v)}>
+                    <SelectTrigger className="h-8 text-xs w-28"><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectContent>
+                      {["MECH", "ELEC", "PROJ"].map((t) => (
+                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-destructive" onClick={() => removeOp(op.id)}>
                   <Trash2 className="h-3 w-3" />
                 </Button>
