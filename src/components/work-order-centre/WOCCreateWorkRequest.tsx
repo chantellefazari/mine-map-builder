@@ -19,6 +19,7 @@ interface Props {
 
 export function WOCCreateWorkRequest({ onCreated }: Props) {
   const { allocate, update } = useWorkRequests();
+  const { wrPriorityValues } = usePriorityConfig();
   const [saving, setSaving] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);

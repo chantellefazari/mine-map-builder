@@ -18,6 +18,7 @@ interface Props {
 }
 
 export function WSOverviewTab({ wo, onUpdate }: Props) {
+  const { woPriorityValues } = usePriorityConfig();
   const [local, setLocal] = useState({
     problem_description: wo.problem_description || "",
     work_performed: wo.work_performed || "",
