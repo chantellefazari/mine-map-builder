@@ -280,7 +280,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
               <thead>
                 <tr className="bg-muted/50 border-b border-border">
                   <th className="px-2 py-1.5 text-left font-medium text-muted-foreground w-10">#</th>
-                  <th className="px-2 py-1.5 text-left font-medium text-muted-foreground">Description</th>
+                  <th className="px-2 py-1.5 text-left font-medium text-muted-foreground">Step</th>
                   <th className="px-2 py-1.5 text-left font-medium text-muted-foreground w-24">Work Centre</th>
                   <th className="px-2 py-1.5 w-8"></th>
                 </tr>

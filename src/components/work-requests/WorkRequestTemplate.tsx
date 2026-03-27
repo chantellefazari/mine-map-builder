@@ -443,7 +443,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
                     <thead>
                       <tr className="border-b border-gray-300 bg-gray-50">
                         <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-10">#</th>
-                        <th className="px-2 py-1.5 text-left font-medium text-gray-600">Description</th>
+                        <th className="px-2 py-1.5 text-left font-medium text-gray-600">Step</th>
                         <th className="px-2 py-1.5 text-left font-medium text-gray-600 w-24">Work Centre</th>
                         {!isConverted && <th className="px-2 py-1.5 w-8 print:hidden"></th>}
                       </tr>
