@@ -29,7 +29,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
     functional_location: "",
     problem_description: "",
     scope_of_works: "",
-    priority: "Medium",
+    priority: "P3 - Medium",
     work_type: "Repair",
     trade: "",
     requested_by: "",
