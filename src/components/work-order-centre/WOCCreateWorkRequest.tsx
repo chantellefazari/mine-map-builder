@@ -276,9 +276,9 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
           </div>
         ) : (
           <div className="space-y-2">
-            {operations.map((op) => (
-              <div key={op.id} className="flex items-center gap-2">
-                <span className="text-xs font-mono text-muted-foreground w-6 text-right shrink-0">
+            {operations.map((op, i) => (
+              <div key={op.id} className="flex items-end gap-2">
+                <span className="text-xs font-mono text-muted-foreground w-6 text-right shrink-0 pb-2">
                   {op.lineNo}
                 </span>
                 <Input
@@ -287,8 +287,8 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
                   placeholder="What needs to be done..."
                   className="h-8 text-sm flex-1"
                 />
-                <div className="shrink-0 space-y-0.5">
-                  <span className="text-[10px] text-muted-foreground font-medium">Work Centre</span>
+                <div className="shrink-0">
+                  {i === 0 && <span className="text-[10px] text-muted-foreground font-medium block mb-0.5">Work Centre</span>}
                   <Select value={op.workCentre || "none"} onValueChange={(v) => updateOp(op.id, "workCentre", v === "none" ? "" : v)}>
                     <SelectTrigger className="h-8 text-xs w-28"><SelectValue placeholder="Select" /></SelectTrigger>
                     <SelectContent>
