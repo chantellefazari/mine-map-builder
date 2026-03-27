@@ -29,7 +29,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
     functional_location: "",
     problem_description: "",
     scope_of_works: "",
-    priority: "Medium",
+    priority: "P3 - Medium",
     work_type: "Inspect",
     requested_by: "",
     trade: "",
