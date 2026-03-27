@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useWorkRequests, WorkRequest } from "@/hooks/useWorkRequests";
+import { getPriorityColor } from "@/constants/priorities";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { Plus, Eye, XCircle, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -78,7 +79,7 @@ export function WOCWorkRequests({ onOpenWorkspace }: Props) {
               <td className="px-3 py-2">{wr.asset_id || "-"}</td>
               <td className="px-3 py-2 truncate max-w-[180px]">{wr.problem_description || "-"}</td>
               <td className="px-3 py-2">
-                <Badge variant="outline" className="text-[10px]">{wr.priority}</Badge>
+                <Badge variant="outline" className={`text-[10px] ${getPriorityColor(wr.priority)}`}>{wr.priority}</Badge>
               </td>
               <td className="px-3 py-2">{wr.work_type || "-"}</td>
               <td className="px-3 py-2">{wr.requested_by || "-"}</td>

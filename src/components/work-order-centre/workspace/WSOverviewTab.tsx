@@ -22,7 +22,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
     work_performed: wo.work_performed || "",
     asset_id: wo.asset_id || "",
     functional_location: wo.functional_location || "",
-    priority: wo.priority || "Medium",
+    priority: wo.priority || "P3 - Medium",
     work_type: wo.work_type || "Planned",
     trade: wo.trade || "",
     requested_by: wo.requested_by || "",
@@ -43,7 +43,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       
       asset_id: wo.asset_id || "",
       functional_location: wo.functional_location || "",
-      priority: wo.priority || "Medium",
+      priority: wo.priority || "P3 - Medium",
       work_type: wo.work_type || "Planned",
       trade: wo.trade || "",
       requested_by: wo.requested_by || "",
@@ -147,7 +147,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
           <Select value={local.priority} onValueChange={(v) => save("priority", v)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {["Low", "Medium", "High", "Urgent"].map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+              {["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low", "P5 - Shutdown", "P6 - Engineering", "P7 - Projects"].map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>

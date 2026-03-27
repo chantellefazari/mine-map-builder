@@ -29,7 +29,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
     functional_location: "",
     problem_description: "",
     scope_of_works: "",
-    priority: "Medium",
+    priority: "P3 - Medium",
     work_type: "Inspect",
     requested_by: "",
     trade: "",
@@ -46,7 +46,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
         functional_location: wr.functional_location || "",
         problem_description: wr.problem_description || "",
         scope_of_works: wr.scope_of_works || "",
-        priority: wr.priority || "Medium",
+        priority: wr.priority || "P3 - Medium",
         work_type: wr.work_type || "Inspect",
         requested_by: wr.requested_by || "",
         trade: wr.trade || "",
@@ -139,7 +139,7 @@ export const WorkRequestTemplate = ({ wrNumber }: WorkRequestTemplateProps) => {
     if (wr) saveField("photo_urls", updated);
   };
 
-  const priorityOptions = ["Low", "Medium", "High", "Urgent"];
+  const priorityOptions = ["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low"];
   const workTypeOptions = ["Inspect", "Repair", "Replace"];
   const isConverted = form.status === "Converted to WO";
 
