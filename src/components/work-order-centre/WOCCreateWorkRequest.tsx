@@ -22,6 +22,7 @@ interface SimpleOperation {
   lineNo: number;
   description: string;
   trade: string;
+  workCentre: string;
 }
 
 const newSimpleOp = (lineNo: number): SimpleOperation => ({
@@ -29,6 +30,7 @@ const newSimpleOp = (lineNo: number): SimpleOperation => ({
   lineNo,
   description: "",
   trade: "",
+  workCentre: "",
 });
 
 export function WOCCreateWorkRequest({ onCreated }: Props) {
@@ -149,6 +151,7 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
           lineNo: o.lineNo,
           description: o.description,
           trade: o.trade,
+          workCentre: o.workCentre,
           estimatedHours: 0,
           requiresIsolation: false,
           requiresShutdown: false,
@@ -289,6 +292,15 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
                   <SelectContent>
                     <SelectItem value="none">—</SelectItem>
                     {["Mechanical", "Electrical"].map((t) => (
+                      <SelectItem key={t} value={t}>{t}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={op.workCentre || "none"} onValueChange={(v) => updateOp(op.id, "workCentre", v === "none" ? "" : v)}>
+                  <SelectTrigger className="h-8 text-xs w-24 shrink-0"><SelectValue placeholder="Work Centre" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">—</SelectItem>
+                    {["MECH", "ELEC", "PROJ"].map((t) => (
                       <SelectItem key={t} value={t}>{t}</SelectItem>
                     ))}
                   </SelectContent>
