@@ -182,7 +182,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Requested By</Label>
-          <Input value={local.requested_by} onBlur={(e) => save("requested_by", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, requested_by: e.target.value }))} className="h-9 text-sm" />
+          <Input value={local.requested_by} onChange={(e) => debouncedSave("requested_by", e.target.value)} className="h-9 text-sm" />
         </div>
         <div className="space-y-1.5 col-span-2 lg:col-span-1">
           <Label className="text-xs font-semibold">Planner / Supervisor</Label>
