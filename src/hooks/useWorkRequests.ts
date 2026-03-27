@@ -114,6 +114,7 @@ export function useWorkRequests() {
           asset_id: wr.asset_id,
           functional_location: wr.functional_location,
           problem_description: wr.problem_description,
+          scope_of_works: wr.scope_of_works || "[]",
           priority: wr.priority,
           work_type: woType,
           requested_by: wr.requested_by,
