@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -37,6 +37,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
   const [enhancingDesc, setEnhancingDesc] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const debounceTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   useEffect(() => {
     setLocal({
@@ -56,10 +57,27 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
     setNewPreviews([]);
   }, [wo.id]);
 
+  // Flush any pending debounced saves on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(debounceTimers.current).forEach(clearTimeout);
+    };
+  }, []);
+
+  // Immediate save for selects / dropdowns
   const save = (field: string, value: any) => {
     setLocal((l) => ({ ...l, [field]: value }));
     onUpdate({ [field]: value });
   };
+
+  // Debounced save for text inputs (500ms after last keystroke)
+  const debouncedSave = useCallback((field: string, value: any) => {
+    setLocal((l) => ({ ...l, [field]: value }));
+    clearTimeout(debounceTimers.current[field]);
+    debounceTimers.current[field] = setTimeout(() => {
+      onUpdate({ [field]: value });
+    }, 500);
+  }, [onUpdate]);
 
   const handleEnhance = async () => {
     const text = local.problem_description;
@@ -164,11 +182,11 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Requested By</Label>
-          <Input value={local.requested_by} onBlur={(e) => save("requested_by", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, requested_by: e.target.value }))} className="h-9 text-sm" />
+          <Input value={local.requested_by} onChange={(e) => debouncedSave("requested_by", e.target.value)} className="h-9 text-sm" />
         </div>
         <div className="space-y-1.5 col-span-2 lg:col-span-1">
           <Label className="text-xs font-semibold">Planner / Supervisor</Label>
-          <Input value={local.assigned_to} onBlur={(e) => save("assigned_to", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, assigned_to: e.target.value }))} className="h-9 text-sm" />
+          <Input value={local.assigned_to} onChange={(e) => debouncedSave("assigned_to", e.target.value)} className="h-9 text-sm" />
         </div>
       </div>
 
@@ -188,14 +206,14 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
             Generate with AI
           </Button>
         </div>
-        <Textarea value={local.problem_description} onBlur={(e) => save("problem_description", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, problem_description: e.target.value }))} rows={4} className="text-sm" />
+        <Textarea value={local.problem_description} onChange={(e) => debouncedSave("problem_description", e.target.value)} rows={4} className="text-sm" />
       </div>
 
 
       {/* Notes */}
       <div className="space-y-1.5">
         <Label className="text-xs font-semibold">Notes</Label>
-        <Textarea value={local.work_performed} onBlur={(e) => save("work_performed", e.target.value)} onChange={(e) => setLocal((l) => ({ ...l, work_performed: e.target.value }))} rows={3} className="text-sm" placeholder="Additional notes, observations, or comments..." />
+        <Textarea value={local.work_performed} onChange={(e) => debouncedSave("work_performed", e.target.value)} rows={3} className="text-sm" placeholder="Additional notes, observations, or comments..." />
       </div>
 
       {/* Photos */}
