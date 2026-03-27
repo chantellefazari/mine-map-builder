@@ -259,53 +259,68 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
         <Textarea value={form.problem_description} onChange={(e) => set("problem_description", e.target.value)} placeholder="Describe the issue, defect, or observation..." rows={3} className="text-sm" />
       </div>
 
-      {/* Operations (replaces Scope of Works) */}
-      <div className="space-y-2">
+      {/* Scope of Works */}
+      <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <Label className="text-xs font-semibold">Operations</Label>
+          <Label className="text-xs font-semibold">Scope of Works</Label>
           <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={addOp}>
             <Plus className="h-3 w-3" /> Add Step
           </Button>
         </div>
         {operations.length === 0 ? (
           <div
-            className="border-2 border-dashed border-border rounded-lg p-4 text-center cursor-pointer hover:border-primary/30 transition-colors"
+            className="border border-border rounded-lg p-4 text-center cursor-pointer hover:bg-muted/30 transition-colors"
             onClick={addOp}
           >
-            <p className="text-xs text-muted-foreground">No operations added. Click to add the first step.</p>
+            <p className="text-xs text-muted-foreground">No steps defined. Click to add.</p>
           </div>
         ) : (
-          <div className="space-y-2">
-            {operations.map((op, i) => (
-              <div key={op.id} className="flex items-end gap-2">
-                <span className="text-xs font-mono text-muted-foreground w-6 text-right shrink-0 pb-2">
-                  {op.lineNo}
-                </span>
-                <Input
-                  value={op.description}
-                  onChange={(e) => updateOp(op.id, "description", e.target.value)}
-                  placeholder="What needs to be done..."
-                  className="h-8 text-sm flex-1"
-                />
-                <div className="shrink-0">
-                  {i === 0 && <span className="text-[10px] text-muted-foreground font-medium block mb-0.5">Work Centre</span>}
-                  <Select value={op.workCentre || "none"} onValueChange={(v) => updateOp(op.id, "workCentre", v === "none" ? "" : v)}>
-                    <SelectTrigger className="h-8 text-xs w-28"><SelectValue placeholder="Select" /></SelectTrigger>
-                    <SelectContent>
-                      {["MECH", "ELEC", "PROJ"].map((t) => (
-                        <SelectItem key={t} value={t}>{t}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-destructive" onClick={() => removeOp(op.id)}>
-                  <Trash2 className="h-3 w-3" />
-                </Button>
-              </div>
-            ))}
+          <div className="border border-border rounded-lg overflow-hidden">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="bg-muted/50 border-b border-border">
+                  <th className="px-2 py-1.5 text-left font-medium text-muted-foreground w-10">#</th>
+                  <th className="px-2 py-1.5 text-left font-medium text-muted-foreground">Description</th>
+                  <th className="px-2 py-1.5 text-left font-medium text-muted-foreground w-24">Work Centre</th>
+                  <th className="px-2 py-1.5 w-8"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {operations.map((op) => (
+                  <tr key={op.id} className="border-b border-border last:border-b-0">
+                    <td className="px-2 py-1 font-mono text-muted-foreground">{op.lineNo}</td>
+                    <td className="px-2 py-1">
+                      <Input
+                        value={op.description}
+                        onChange={(e) => updateOp(op.id, "description", e.target.value)}
+                        placeholder="What needs to be done..."
+                        className="h-7 text-xs border-none shadow-none focus-visible:ring-0 bg-transparent px-0"
+                      />
+                    </td>
+                    <td className="px-2 py-1">
+                      <Select value={op.workCentre || "none"} onValueChange={(v) => updateOp(op.id, "workCentre", v === "none" ? "" : v)}>
+                        <SelectTrigger className="h-7 text-xs border-none shadow-none focus-visible:ring-0 bg-transparent px-0">
+                          <SelectValue placeholder="—" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {["MECH", "ELEC", "PROJ"].map((t) => (
+                            <SelectItem key={t} value={t}>{t}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </td>
+                    <td className="px-1 py-1">
+                      <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => removeOp(op.id)}>
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
-        <p className="text-[10px] text-muted-foreground">These steps will carry into the Work Order when approved. Planners can add hours, isolation, and details later.</p>
+        <p className="text-[10px] text-muted-foreground">These steps carry into the Work Order when approved. Planners add hours & details later.</p>
       </div>
 
       <div className="space-y-1.5">
