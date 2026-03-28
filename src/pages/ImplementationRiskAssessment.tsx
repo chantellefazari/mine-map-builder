@@ -244,10 +244,13 @@ const ImplementationRiskAssessment = () => {
     </section>
 
     {/* 3. Key Implementation Risks */}
-    <section data-pdf-section className="mb-10">
+    <section className="mb-10">
+      <div data-pdf-section>
+        <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">3. Key Implementation Risks</h2>
+      </div>
       <div className="space-y-2.5">
         {RISKS.map((r, i) => (
-          <div key={i} className="flex items-start gap-3 border border-border/60 rounded-lg px-4 py-3">
+          <div data-pdf-section key={i} className="flex items-start gap-3 border border-border/60 rounded-lg px-4 py-3">
             <span className="text-xs font-mono font-semibold text-muted-foreground mt-0.5 w-5 shrink-0 text-right">{i + 1}.</span>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-bold text-foreground">{r.title}</p>
