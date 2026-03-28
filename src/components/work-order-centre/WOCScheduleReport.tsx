@@ -229,7 +229,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
 
         {/* SECTION 1 */}
         <ReadinessSnapshot
-          data={data}
           totalJobs={totalJobs}
           totalPMs={totalPMs}
           totalReactive={totalReactive}
@@ -237,8 +236,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
           totalAvail={totalAvail}
           overallLoadPct={overallLoadPct}
           highPriScheduled={highPriScheduled}
-          highPriNotScheduled={unscheduledHighPri.length}
-          qualityChecks={qualityChecks}
         />
 
         {/* SECTION 2 */}
