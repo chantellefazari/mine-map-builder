@@ -30,6 +30,7 @@ export interface WorkOrder {
   photo_urls: string[];
   scheduled_date: string | null;
   job_status: string;
+  wo_return_status: string;
   created_at: string;
   updated_at: string;
 }
