@@ -93,6 +93,7 @@ const App = () => {
                 <Route path="/work-order-centre" element={<P tabKey="work-order-centre"><WorkOrderCentre /></P>} />
                 <Route path="/wo-print/:woNumber" element={<P tabKey="work-order-centre"><WOPrint /></P>} />
                 <Route path="/implementation-readiness" element={<P tabKey="implementation-readiness"><ImplementationReadiness /></P>} />
+                <Route path="/implementation-risk-assessment" element={<P tabKey="implementation-risk-assessment"><ImplementationRiskAssessment /></P>} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
