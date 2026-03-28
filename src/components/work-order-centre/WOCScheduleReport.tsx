@@ -13,8 +13,8 @@ import { toast } from "sonner";
 
 const HRS_PER_PERSON = 10.5;
 const DISCIPLINES = [
-  { key: "Mechanical", target: 80, accent: "#2563eb", light: "#eff6ff", dark: "#1e3a5f" },
-  { key: "Electrical", target: 90, accent: "#d97706", light: "#fffbeb", dark: "#5c3d0e" },
+  { key: "Mechanical", target: 80, accent: "#2563eb", light: "#eff6ff", dark: "#1e3a5f", band: "#dbeafe" },
+  { key: "Electrical", target: 90, accent: "#d97706", light: "#fffbeb", dark: "#5c3d0e", band: "#fef3c7" },
 ];
 
 function getWoHours(wo: WorkOrder): number {
@@ -23,6 +23,22 @@ function getWoHours(wo: WorkOrder): number {
   }
   return 2;
 }
+
+function matchesDiscipline(wo: WorkOrder, key: string): boolean {
+  const trade = wo.trade?.toLowerCase() || "";
+  if (key === "Mechanical") return trade === "mechanical" || trade === "";
+  if (key === "Electrical") return trade === "electrical";
+  return false;
+}
+
+const priorityLabel = (p: string) => {
+  if (p?.startsWith("P1")) return "P1";
+  if (p?.startsWith("P2")) return "P2";
+  if (p?.startsWith("P3")) return "P3";
+  if (p?.startsWith("P4")) return "P4";
+  if (p?.startsWith("P5")) return "P5";
+  return p || "P3";
+};
 
 interface Props { weekOffset: number; personnelByDay: Record<string, number>; }
 
@@ -36,7 +52,7 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
   const weekEnd = addDays(weekStart, 6);
   const weekLabel = `W${String(getISOWeek(weekStart)).padStart(2, "0")}`;
 
-  // Build data per discipline per day
+  // Build structured data
   const data = useMemo(() => {
     return DISCIPLINES.map((disc) => {
       const byDay = days.map((day) => {
@@ -44,17 +60,12 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
         const wos = workOrders.filter((wo) => {
           if (!wo.scheduled_date || !isSameDay(parseISO(wo.scheduled_date), day)) return false;
           if (!["Scheduled", "Active", "In Progress"].includes(wo.status)) return false;
-          const trade = wo.trade?.toLowerCase() || "";
-          if (disc.key === "Mechanical") return trade === "mechanical" || trade === "";
-          if (disc.key === "Electrical") return trade === "electrical";
-          return false;
+          return matchesDiscipline(wo, disc.key);
         });
-        const pms = wos.filter((w) => w.work_type === "PM");
-        const cms = wos.filter((w) => w.work_type !== "PM");
         const hrs = wos.reduce((s, w) => s + getWoHours(w), 0);
         const personnel = personnelByDay[dayKey] ?? 4;
         const avail = personnel * HRS_PER_PERSON;
-        return { dayKey, day, wos, pms, cms, hrs, avail, personnel };
+        return { dayKey, day, wos, hrs, avail, personnel };
       });
       const totalHrs = byDay.reduce((s, d) => s + d.hrs, 0);
       const totalAvail = byDay.reduce((s, d) => s + d.avail, 0);
@@ -63,6 +74,7 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
     });
   }, [workOrders, days, personnelByDay]);
 
+  // PDF
   const handleExportPdf = async () => {
     if (!reportRef.current) return;
     toast.info("Generating PDF...");
@@ -106,8 +118,11 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
     });
   };
 
-  const dayLabel = (d: Date) => format(d, "EEE").toUpperCase();
-  const dayDate = (d: Date) => format(d, "d");
+  const S: Record<string, React.CSSProperties> = {
+    th: { padding: "5px 6px", fontSize: 9, fontWeight: 700, borderBottom: "1px solid #d1d5db", textAlign: "left" as const, whiteSpace: "nowrap" as const },
+    td: { padding: "4px 6px", fontSize: 9, borderBottom: "1px solid #e5e7eb", verticalAlign: "top" as const },
+    badge: { display: "inline-block", padding: "1px 5px", borderRadius: 3, fontSize: 8, fontWeight: 600 },
+  };
 
   return (
     <div className="space-y-3">
@@ -120,125 +135,132 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
         </Button>
       </div>
 
-      <div ref={reportRef} style={{ background: "#fff", padding: 32, fontFamily: "'Segoe UI', system-ui, sans-serif", color: "#1a1a1a", maxWidth: 1100 }}>
-        {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "3px solid #C8960C", paddingBottom: 12, marginBottom: 20 }}>
+      <div ref={reportRef} style={{ background: "#fff", padding: "24px 28px", fontFamily: "'Segoe UI', system-ui, sans-serif", color: "#1a1a1a", maxWidth: 1100 }}>
+        {/* ── HEADER ── */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "3px solid #C8960C", paddingBottom: 10, marginBottom: 16 }}>
           <div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#C8960C", letterSpacing: 2, textTransform: "uppercase" }}>Tennant Creek Gold Mine</div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: "#1a1a1a", marginTop: 2 }}>Weekly Maintenance Schedule</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#C8960C", letterSpacing: 2, textTransform: "uppercase" }}>Tennant Creek Gold Mine</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: "#1a1a1a", marginTop: 1 }}>Weekly Maintenance Schedule</div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 28, fontWeight: 800, color: "#C8960C" }}>{weekLabel}</div>
-            <div style={{ fontSize: 12, color: "#666" }}>{format(weekStart, "d MMM")} — {format(weekEnd, "d MMM yyyy")}</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "#C8960C", lineHeight: 1 }}>{weekLabel}</div>
+            <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{format(weekStart, "d MMM")} — {format(weekEnd, "d MMM yyyy")}</div>
           </div>
         </div>
 
-        {/* Summary Bars */}
-        <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
+        {/* ── CAPACITY OVERVIEW ── */}
+        <div style={{ display: "flex", gap: 12, marginBottom: 18 }}>
           {data.map((disc) => (
-            <div key={disc.key} style={{ flex: 1, background: disc.light, borderRadius: 8, padding: "12px 16px", border: `1px solid ${disc.accent}22` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: disc.dark }}>{disc.key}</span>
-                <span style={{ fontSize: 22, fontWeight: 800, color: disc.loadPct > disc.target ? "#dc2626" : disc.accent }}>{disc.loadPct}%</span>
+            <div key={disc.key} style={{ flex: 1, borderRadius: 6, padding: "10px 14px", background: disc.light, border: `1px solid ${disc.accent}20` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: disc.dark }}>{disc.key}</span>
+                <span style={{ fontSize: 20, fontWeight: 800, color: disc.loadPct > disc.target ? "#dc2626" : disc.accent }}>{disc.loadPct}%</span>
               </div>
-              {/* Loading bar */}
-              <div style={{ height: 6, borderRadius: 3, background: `${disc.accent}20`, overflow: "hidden" }}>
-                <div style={{ height: "100%", borderRadius: 3, width: `${Math.min(disc.loadPct, 100)}%`, background: disc.loadPct > disc.target ? "#dc2626" : disc.accent, transition: "width 0.3s" }} />
+              <div style={{ height: 5, borderRadius: 3, background: `${disc.accent}18`, marginTop: 6, overflow: "hidden" }}>
+                <div style={{ height: "100%", borderRadius: 3, width: `${Math.min(disc.loadPct, 100)}%`, background: disc.loadPct > disc.target ? "#dc2626" : disc.accent }} />
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 10, color: "#888" }}>
-                <span>{disc.totalHrs.toFixed(1)}h scheduled</span>
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 5, fontSize: 9, color: "#888" }}>
+                <span>{disc.totalHrs.toFixed(1)}h loaded</span>
                 <span>{disc.totalAvail.toFixed(1)}h available</span>
-                <span>Target: {disc.target}%</span>
+                <span>Target {disc.target}%</span>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Day Columns Grid */}
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
-          <thead>
-            <tr>
-              <th style={{ width: 90, padding: "6px 8px", textAlign: "left", borderBottom: "2px solid #e5e7eb" }}></th>
-              {days.map((day) => {
-                const isToday = isSameDay(day, today);
-                return (
-                  <th key={day.toISOString()} style={{
-                    padding: "6px 4px", textAlign: "center", borderBottom: isToday ? "2px solid #C8960C" : "2px solid #e5e7eb",
-                    background: isToday ? "#fdf8ea" : "transparent",
-                  }}>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: isToday ? "#C8960C" : "#999", letterSpacing: 1 }}>{dayLabel(day)}</div>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: isToday ? "#C8960C" : "#1a1a1a" }}>{dayDate(day)}</div>
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((disc) => (
-              <>
-                {/* Discipline label row */}
-                <tr key={`${disc.key}-label`}>
-                  <td colSpan={8} style={{ padding: "10px 8px 4px", fontSize: 11, fontWeight: 700, color: disc.dark, borderBottom: `2px solid ${disc.accent}` }}>
-                    {disc.key}
-                  </td>
-                </tr>
-                {/* Hours row */}
-                <tr key={`${disc.key}-hrs`}>
-                  <td style={{ padding: "6px 8px", fontSize: 10, color: "#888", fontWeight: 600 }}>Hours</td>
-                  {disc.byDay.map((d) => (
-                    <td key={d.dayKey} style={{ padding: "4px", textAlign: "center", background: isSameDay(d.day, today) ? "#fdf8ea" : "transparent" }}>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: d.hrs > d.avail ? "#dc2626" : d.hrs > 0 ? disc.accent : "#ddd" }}>
-                        {d.hrs > 0 ? d.hrs.toFixed(1) : "—"}
-                      </div>
-                      <div style={{ fontSize: 9, color: "#bbb" }}>/ {d.avail.toFixed(0)}</div>
-                    </td>
-                  ))}
-                </tr>
-                {/* Work Orders row */}
-                <tr key={`${disc.key}-wo`}>
-                  <td style={{ padding: "4px 8px", fontSize: 10, color: "#888", verticalAlign: "top" }}>Work Orders</td>
-                  {disc.byDay.map((d) => (
-                    <td key={d.dayKey} style={{ padding: "3px 2px", verticalAlign: "top", textAlign: "center", background: isSameDay(d.day, today) ? "#fdf8ea" : "transparent" }}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
-                        {d.cms.map((wo) => (
-                          <span key={wo.id} style={{
-                            display: "inline-block", padding: "2px 6px", borderRadius: 4, fontSize: 9, fontWeight: 600,
-                            background: `${disc.accent}18`, color: disc.accent, border: `1px solid ${disc.accent}30`,
-                          }}>
-                            {wo.wo_number}
-                          </span>
-                        ))}
-                        {d.cms.length === 0 && <span style={{ color: "#e5e7eb", fontSize: 9 }}>—</span>}
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-                {/* PMs row */}
-                <tr key={`${disc.key}-pm`}>
-                  <td style={{ padding: "4px 8px 10px", fontSize: 10, color: "#888", verticalAlign: "top" }}>PMs</td>
-                  {disc.byDay.map((d) => (
-                    <td key={d.dayKey} style={{ padding: "3px 2px 10px", verticalAlign: "top", textAlign: "center", borderBottom: "1px solid #f3f4f6", background: isSameDay(d.day, today) ? "#fdf8ea" : "transparent" }}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
-                        {d.pms.map((wo) => (
-                          <span key={wo.id} style={{
-                            display: "inline-block", padding: "2px 6px", borderRadius: 4, fontSize: 9, fontWeight: 600,
-                            background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d030",
-                          }}>
-                            {wo.wo_number}
-                          </span>
-                        ))}
-                        {d.pms.length === 0 && <span style={{ color: "#e5e7eb", fontSize: 9 }}>—</span>}
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-              </>
-            ))}
-          </tbody>
-        </table>
+        {/* ── DAILY BREAKDOWN PER DISCIPLINE ── */}
+        {data.map((disc) => (
+          <div key={disc.key} style={{ marginBottom: 20 }}>
+            {/* Discipline header */}
+            <div style={{ background: disc.dark, color: "#fff", padding: "6px 10px", borderRadius: "4px 4px 0 0", fontSize: 11, fontWeight: 700, letterSpacing: 1 }}>
+              {disc.key.toUpperCase()}
+            </div>
 
-        {/* Footer */}
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 20, paddingTop: 10, borderTop: "1px solid #e5e7eb", fontSize: 9, color: "#bbb" }}>
+            {/* Day sections */}
+            {disc.byDay.map((dayData) => {
+              const isToday = isSameDay(dayData.day, today);
+              const hasWork = dayData.wos.length > 0;
+              return (
+                <div key={dayData.dayKey} style={{ borderLeft: `1px solid ${disc.accent}30`, borderRight: `1px solid ${disc.accent}30`, borderBottom: `1px solid ${disc.accent}20` }}>
+                  {/* Day bar */}
+                  <div style={{
+                    display: "flex", justifyContent: "space-between", alignItems: "center",
+                    padding: "5px 10px",
+                    background: isToday ? "#fdf8ea" : disc.band,
+                    borderLeft: isToday ? `3px solid #C8960C` : `3px solid ${disc.accent}60`,
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: isToday ? "#C8960C" : disc.dark }}>
+                        {format(dayData.day, "EEE").toUpperCase()}
+                      </span>
+                      <span style={{ fontSize: 11, color: "#666" }}>{format(dayData.day, "d MMMM")}</span>
+                      {isToday && <span style={{ ...S.badge, background: "#C8960C", color: "#fff" }}>TODAY</span>}
+                    </div>
+                    <div style={{ display: "flex", gap: 16, fontSize: 10 }}>
+                      <span style={{ color: "#888" }}>Personnel: <b style={{ color: "#1a1a1a" }}>{dayData.personnel}</b></span>
+                      <span style={{ color: "#888" }}>Available: <b style={{ color: "#1a1a1a" }}>{dayData.avail.toFixed(1)}h</b></span>
+                      <span style={{ color: "#888" }}>Loaded: <b style={{ color: dayData.hrs > dayData.avail ? "#dc2626" : disc.accent }}>{dayData.hrs.toFixed(1)}h</b></span>
+                      <span style={{ color: "#888" }}>Jobs: <b style={{ color: "#1a1a1a" }}>{dayData.wos.length}</b></span>
+                    </div>
+                  </div>
+
+                  {/* Work order table */}
+                  {hasWork ? (
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr style={{ background: "#f9fafb" }}>
+                          <th style={{ ...S.th, width: 90 }}>WO #</th>
+                          <th style={{ ...S.th, width: 50 }}>Type</th>
+                          <th style={{ ...S.th, width: 90 }}>Asset</th>
+                          <th style={S.th}>Description</th>
+                          <th style={{ ...S.th, width: 40, textAlign: "center" }}>Pri</th>
+                          <th style={{ ...S.th, width: 50, textAlign: "right" }}>Est Hrs</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {dayData.wos.map((wo, idx) => {
+                          const isPM = wo.work_type === "PM";
+                          return (
+                            <tr key={wo.id} style={{ background: idx % 2 === 1 ? "#fafafa" : "#fff" }}>
+                              <td style={S.td}>
+                                <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 9 }}>{wo.wo_number}</span>
+                              </td>
+                              <td style={S.td}>
+                                <span style={{
+                                  ...S.badge,
+                                  background: isPM ? "#ecfdf5" : `${disc.accent}12`,
+                                  color: isPM ? "#059669" : disc.accent,
+                                  border: `1px solid ${isPM ? "#a7f3d0" : disc.accent + "30"}`,
+                                }}>
+                                  {isPM ? "PM" : wo.work_type || "CM"}
+                                </span>
+                              </td>
+                              <td style={{ ...S.td, fontWeight: 600, fontSize: 9 }}>{wo.asset_id || ""}</td>
+                              <td style={{ ...S.td, fontSize: 9, maxWidth: 300 }}>
+                                {wo.problem_description || wo.scope_of_works || "No description"}
+                              </td>
+                              <td style={{ ...S.td, textAlign: "center", fontWeight: 600, fontSize: 9 }}>
+                                {priorityLabel(wo.priority)}
+                              </td>
+                              <td style={{ ...S.td, textAlign: "right", fontWeight: 600, fontSize: 9 }}>
+                                {getWoHours(wo).toFixed(1)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div style={{ padding: "8px 10px", fontSize: 9, color: "#ccc", fontStyle: "italic" }}>No jobs scheduled</div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+
+        {/* ── FOOTER ── */}
+        <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10, borderTop: "1px solid #e5e7eb", fontSize: 9, color: "#bbb" }}>
           <span>Tennant Creek Gold Mine</span>
           <span>Generated {format(new Date(), "d MMM yyyy, HH:mm")}</span>
           <span>minesite.ai</span>
