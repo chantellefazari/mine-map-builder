@@ -32,6 +32,7 @@ const PlantIntelligence = lazy(() => import("./pages/PlantIntelligence"));
 const MissionControl = lazy(() => import("./pages/MissionControl"));
 const WorkOrderCentre = lazy(() => import("./pages/WorkOrderCentre"));
 const WOPrint = lazy(() => import("./pages/WOPrint"));
+const ImplementationReadiness = lazy(() => import("./pages/ImplementationReadiness"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
