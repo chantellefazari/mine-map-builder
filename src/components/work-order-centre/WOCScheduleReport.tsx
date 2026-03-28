@@ -149,23 +149,69 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
         </div>
 
         {/* ── CAPACITY OVERVIEW ── */}
-        <div style={{ display: "flex", gap: 12, marginBottom: 18 }}>
-          {data.map((disc) => (
-            <div key={disc.key} style={{ flex: 1, borderRadius: 6, padding: "10px 14px", background: disc.light, border: `1px solid ${disc.accent}20` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 12, fontWeight: 700, color: disc.dark }}>{disc.key}</span>
-                <span style={{ fontSize: 20, fontWeight: 800, color: disc.loadPct > disc.target ? "#dc2626" : disc.accent }}>{disc.loadPct}%</span>
+        <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
+          {/* Combined summary card */}
+          <div style={{ flex: "0 0 auto", borderRadius: 6, padding: "12px 18px", background: "#f8f9fa", border: "1px solid #e5e7eb" }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#999", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 8 }}>Week Overview</div>
+            <div style={{ display: "flex", gap: 24 }}>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "#1a1a1a", lineHeight: 1 }}>
+                  {data.reduce((s, d) => s + d.totalHrs, 0).toFixed(0)}
+                </div>
+                <div style={{ fontSize: 9, color: "#888", marginTop: 3 }}>Scheduled Hrs</div>
               </div>
-              <div style={{ height: 5, borderRadius: 3, background: `${disc.accent}18`, marginTop: 6, overflow: "hidden" }}>
-                <div style={{ height: "100%", borderRadius: 3, width: `${Math.min(disc.loadPct, 100)}%`, background: disc.loadPct > disc.target ? "#dc2626" : disc.accent }} />
+              <div style={{ width: 1, background: "#e5e7eb" }} />
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "#1a1a1a", lineHeight: 1 }}>
+                  {data.reduce((s, d) => s + d.totalAvail, 0).toFixed(0)}
+                </div>
+                <div style={{ fontSize: 9, color: "#888", marginTop: 3 }}>Available Hrs</div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 5, fontSize: 9, color: "#888" }}>
-                <span>{disc.totalHrs.toFixed(1)}h loaded</span>
-                <span>{disc.totalAvail.toFixed(1)}h available</span>
-                <span>Target {disc.target}%</span>
+              <div style={{ width: 1, background: "#e5e7eb" }} />
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "#1a1a1a", lineHeight: 1 }}>
+                  {data.reduce((s, d) => s + d.byDay.reduce((a, b) => a + b.wos.length, 0), 0)}
+                </div>
+                <div style={{ fontSize: 9, color: "#888", marginTop: 3 }}>Total Jobs</div>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Per-discipline cards */}
+          {data.map((disc) => {
+            const overTarget = disc.loadPct > disc.target;
+            const pctColor = overTarget ? "#dc2626" : disc.accent;
+            return (
+              <div key={disc.key} style={{ flex: 1, borderRadius: 6, padding: "12px 16px", background: disc.light, border: `1px solid ${disc.accent}22`, position: "relative", overflow: "hidden" }}>
+                {/* Accent top strip */}
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: disc.accent }} />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginTop: 2 }}>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: disc.dark }}>{disc.key}</div>
+                    <div style={{ fontSize: 9, color: "#888", marginTop: 1 }}>Target: {disc.target}%</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 26, fontWeight: 800, color: pctColor, lineHeight: 1 }}>{disc.loadPct}%</div>
+                    <div style={{ fontSize: 8, fontWeight: 600, color: pctColor, marginTop: 1 }}>
+                      {overTarget ? "OVER TARGET" : "ON TRACK"}
+                    </div>
+                  </div>
+                </div>
+                {/* Progress bar */}
+                <div style={{ height: 6, borderRadius: 3, background: `${disc.accent}15`, marginTop: 8, overflow: "hidden", position: "relative" }}>
+                  <div style={{ height: "100%", borderRadius: 3, width: `${Math.min(disc.loadPct, 100)}%`, background: pctColor, transition: "width 0.3s" }} />
+                  {/* Target marker */}
+                  <div style={{ position: "absolute", top: -1, bottom: -1, left: `${disc.target}%`, width: 2, background: disc.dark, opacity: 0.4, borderRadius: 1 }} />
+                </div>
+                {/* Stats row */}
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, fontSize: 9, color: "#666" }}>
+                  <span><b style={{ color: "#1a1a1a" }}>{disc.totalHrs.toFixed(1)}h</b> scheduled</span>
+                  <span><b style={{ color: "#1a1a1a" }}>{disc.totalAvail.toFixed(1)}h</b> available</span>
+                  <span><b style={{ color: "#1a1a1a" }}>{disc.byDay.reduce((a, b) => a + b.wos.length, 0)}</b> jobs</span>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* ── DAILY BREAKDOWN PER DISCIPLINE ── */}
