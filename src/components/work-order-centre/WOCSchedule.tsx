@@ -441,6 +441,8 @@ export function WOCSchedule() {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }
