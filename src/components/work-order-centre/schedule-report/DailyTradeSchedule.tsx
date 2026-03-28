@@ -79,9 +79,9 @@ export function DailyTradeSchedule({ data }: Props) {
                       <tr style={{ background: "#f9fafb" }}>
                         <th style={{ ...S.th, width: "6%" }}>WO #</th>
                         <th style={{ ...S.th, width: "3%" }}>Type</th>
-                        <th style={{ ...S.th, width: "5%" }}>Asset</th>
+                        <th style={{ ...S.th, width: "7%" }}>Asset</th>
                         <th style={{ ...S.th, width: "9%" }}>Equipment</th>
-                        <th style={{ ...S.th, width: "17%" }}>Description</th>
+                        <th style={{ ...S.th, width: "15%" }}>Description</th>
                         <th style={{ ...S.th, width: "8%" }}>Resource</th>
                         <th style={{ ...S.th, width: "5%", textAlign: "center" }}>Priority</th>
                         <th style={{ ...S.th, width: "4%", textAlign: "right" }}>Hrs</th>
@@ -155,7 +155,7 @@ function WORow({ wo, idx, disc, onStatusChange }: { wo: WorkOrder; idx: number; 
           {isPM ? "PM" : wo.work_type || "CM"}
         </span>
       </td>
-      <td style={{ ...S.td, fontWeight: 600, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{wo.asset_id || "—"}</td>
+      <td style={{ ...S.td, fontWeight: 600, fontSize: 9, whiteSpace: "nowrap" }}>{wo.asset_id || "—"}</td>
       <td style={{ ...S.td, fontSize: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{wo.functional_location || "—"}</td>
       <td style={{ ...S.td, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
         {wo.problem_description || wo.scope_of_works || "No description"}
