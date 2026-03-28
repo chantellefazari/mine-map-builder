@@ -34,7 +34,6 @@ const WorkOrderCentre = lazy(() => import("./pages/WorkOrderCentre"));
 const WOPrint = lazy(() => import("./pages/WOPrint"));
 const ImplementationReadiness = lazy(() => import("./pages/ImplementationReadiness"));
 const ImplementationRiskAssessment = lazy(() => import("./pages/ImplementationRiskAssessment"));
-const WeeklyScheduleReport = lazy(() => import("./pages/WeeklyScheduleReport"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
