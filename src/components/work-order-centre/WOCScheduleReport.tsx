@@ -2,43 +2,26 @@ import { useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import { Printer, FileDown } from "lucide-react";
-import { cn } from "@/lib/utils";
 import {
-  format, startOfWeek, addWeeks, addDays, getISOWeek, getYear,
+  format, startOfWeek, addWeeks, addDays, getISOWeek,
   isSameDay, parseISO,
 } from "date-fns";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { toast } from "sonner";
 
-const HRS_PER_PERSON = 10.5;
-const DISCIPLINES = [
-  { key: "Mechanical", target: 80, accent: "#2563eb", light: "#eff6ff", dark: "#1e3a5f", band: "#dbeafe" },
-  { key: "Electrical", target: 90, accent: "#f97316", light: "#fff8f1", dark: "#9a3412", band: "#fed7aa" },
-];
-
-function getWoHours(wo: WorkOrder): number {
-  if (wo.labour_hours && Array.isArray(wo.labour_hours)) {
-    return wo.labour_hours.reduce((h: number, l: any) => h + (Number(l.hours) || 0), 0);
-  }
-  return 2;
-}
-
-function matchesDiscipline(wo: WorkOrder, key: string): boolean {
-  const trade = wo.trade?.toLowerCase() || "";
-  if (key === "Mechanical") return trade === "mechanical" || trade === "";
-  if (key === "Electrical") return trade === "electrical";
-  return false;
-}
-
-const priorityLabel = (p: string) => {
-  if (p?.startsWith("P1")) return "P1";
-  if (p?.startsWith("P2")) return "P2";
-  if (p?.startsWith("P3")) return "P3";
-  if (p?.startsWith("P4")) return "P4";
-  if (p?.startsWith("P5")) return "P5";
-  return p || "P3";
-};
+import {
+  DISCIPLINES, HRS_PER_PERSON, getWoHours, matchesDiscipline,
+  getCapacityStatus, priorityLabel,
+  DiscData, DayData, QualityCheck, UnscheduledWO,
+} from "./schedule-report/types";
+import { ReadinessSnapshot } from "./schedule-report/ReadinessSnapshot";
+import { TradeCapacitySummary } from "./schedule-report/TradeCapacitySummary";
+import { QualityChecksSection } from "./schedule-report/QualityChecks";
+import { ScheduleComposition } from "./schedule-report/ScheduleComposition";
+import { DailyTradeSchedule } from "./schedule-report/DailyTradeSchedule";
+import { UnscheduledWorkSection } from "./schedule-report/UnscheduledWork";
+import { SchedulerNotes } from "./schedule-report/SchedulerNotes";
 
 interface Props { weekOffset: number; personnelByDay: Record<string, number>; }
 
@@ -52,10 +35,10 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
   const weekEnd = addDays(weekStart, 6);
   const weekLabel = `W${String(getISOWeek(weekStart)).padStart(2, "0")}`;
 
-  // Build structured data
-  const data = useMemo(() => {
+  // ── Build structured data ──
+  const data: DiscData[] = useMemo(() => {
     return DISCIPLINES.map((disc) => {
-      const byDay = days.map((day) => {
+      const byDay: DayData[] = days.map((day) => {
         const dayKey = format(day, "yyyy-MM-dd");
         const wos = workOrders.filter((wo) => {
           if (!wo.scheduled_date || !isSameDay(parseISO(wo.scheduled_date), day)) return false;
@@ -65,16 +48,141 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
         const hrs = wos.reduce((s, w) => s + getWoHours(w), 0);
         const personnel = personnelByDay[dayKey] ?? 4;
         const avail = personnel * HRS_PER_PERSON;
-        return { dayKey, day, wos, hrs, avail, personnel };
+        const loadPct = avail > 0 ? Math.round((hrs / avail) * 100) : 0;
+        return { dayKey, day, wos, hrs, avail, personnel, loadPct };
       });
+      const allWos = byDay.flatMap(d => d.wos);
       const totalHrs = byDay.reduce((s, d) => s + d.hrs, 0);
       const totalAvail = byDay.reduce((s, d) => s + d.avail, 0);
       const loadPct = totalAvail > 0 ? Math.round((totalHrs / totalAvail) * 100) : 0;
-      return { ...disc, byDay, totalHrs, totalAvail, loadPct };
+      const totalJobs = allWos.length;
+      const pmCount = allWos.filter(w => w.work_type === "PM").length;
+      const reactiveCount = allWos.filter(w => ["BM", "Breakdown", "Reactive"].includes(w.work_type || "")).length;
+      const cmCount = totalJobs - pmCount - reactiveCount;
+      const capacityStatus = getCapacityStatus(loadPct, disc.target);
+      return { ...disc, byDay, totalHrs, totalAvail, loadPct, totalJobs, pmCount, cmCount, reactiveCount, capacityStatus };
     });
   }, [workOrders, days, personnelByDay]);
 
-  // PDF
+  // ── Aggregate totals ──
+  const totalJobs = data.reduce((s, d) => s + d.totalJobs, 0);
+  const totalPMs = data.reduce((s, d) => s + d.pmCount, 0);
+  const totalReactive = data.reduce((s, d) => s + d.reactiveCount, 0);
+  const totalPlanned = totalJobs - totalPMs - totalReactive;
+  const totalHrs = data.reduce((s, d) => s + d.totalHrs, 0);
+  const totalAvail = data.reduce((s, d) => s + d.totalAvail, 0);
+  const overallLoadPct = totalAvail > 0 ? Math.round((totalHrs / totalAvail) * 100) : 0;
+
+  // ── High priority analysis ──
+  const highPriScheduled = data.flatMap(d => d.byDay.flatMap(dd => dd.wos)).filter(w => {
+    const p = priorityLabel(w.priority);
+    return p === "P1" || p === "P2";
+  }).length;
+
+  const unscheduledHighPri = workOrders.filter(wo => {
+    const p = priorityLabel(wo.priority);
+    return (p === "P1" || p === "P2") && ["Scheduled", "Active", "Planning", "Planned"].includes(wo.status) && !wo.scheduled_date;
+  });
+
+  // ── Unscheduled work ──
+  const unscheduledItems: UnscheduledWO[] = useMemo(() => {
+    return workOrders
+      .filter(wo => ["Scheduled", "Active", "Planning", "Planned"].includes(wo.status) && !wo.scheduled_date)
+      .slice(0, 20)
+      .map(wo => {
+        let reason = "No capacity";
+        let action = "Schedule next available week";
+        const p = priorityLabel(wo.priority);
+        if (p === "P5") { reason = "Waiting shutdown window"; action = "Defer to next shutdown"; }
+        else if (p === "P6") { reason = "Engineering scope required"; action = "Complete engineering review"; }
+        else if (p === "P7") { reason = "Project schedule"; action = "Coordinate with project team"; }
+        else if (!wo.assigned_to && !wo.technician_name) { reason = "Labour unavailable"; action = "Assign resource and reschedule"; }
+        else if (!wo.scope_of_works && !wo.problem_description) { reason = "Scope not ready"; action = "Define scope before scheduling"; }
+        return { wo, reason, action };
+      });
+  }, [workOrders]);
+
+  // ── Quality checks ──
+  const qualityChecks: QualityCheck[] = useMemo(() => {
+    const checks: QualityCheck[] = [];
+    // Empty days
+    const allDays = data.flatMap(d => d.byDay);
+    const emptyDays = allDays.filter(d => d.wos.length === 0).length;
+    checks.push(emptyDays === 0
+      ? { label: "Day Coverage", status: "green", detail: "All days have scheduled work" }
+      : emptyDays <= 3
+        ? { label: "Day Coverage", status: "amber", detail: `${emptyDays} trade-day(s) have no work scheduled` }
+        : { label: "Day Coverage", status: "red", detail: `${emptyDays} trade-day(s) have no work scheduled` }
+    );
+
+    // Overloaded days
+    const overDays = allDays.filter(d => d.loadPct > 100).length;
+    checks.push(overDays === 0
+      ? { label: "Daily Overloads", status: "green", detail: "No days exceed 100% capacity" }
+      : { label: "Daily Overloads", status: "red", detail: `${overDays} trade-day(s) exceed 100% capacity` }
+    );
+
+    // High priority not scheduled
+    checks.push(unscheduledHighPri.length === 0
+      ? { label: "High Priority Coverage", status: "green", detail: "All P1/P2 work is scheduled" }
+      : { label: "High Priority Coverage", status: "red", detail: `${unscheduledHighPri.length} high priority job(s) not scheduled` }
+    );
+
+    // Jobs with no hours
+    const allScheduledWos = data.flatMap(d => d.byDay.flatMap(dd => dd.wos));
+    const noHours = allScheduledWos.filter(w => getWoHours(w) === 0).length;
+    checks.push(noHours === 0
+      ? { label: "Hours Assigned", status: "green", detail: "All jobs have estimated hours" }
+      : { label: "Hours Assigned", status: "amber", detail: `${noHours} job(s) have no estimated hours` }
+    );
+
+    // Jobs with no resource
+    const noResource = allScheduledWos.filter(w => !w.assigned_to && !w.technician_name).length;
+    checks.push(noResource === 0
+      ? { label: "Resource Allocation", status: "green", detail: "All jobs have an assigned resource" }
+      : { label: "Resource Allocation", status: "amber", detail: `${noResource} job(s) have no assigned resource` }
+    );
+
+    // Reactive work balance
+    const reactivePct = totalJobs > 0 ? Math.round((totalReactive / totalJobs) * 100) : 0;
+    checks.push(reactivePct <= 20
+      ? { label: "Reactive Work Balance", status: "green", detail: `Reactive work is ${reactivePct}% of schedule` }
+      : reactivePct <= 40
+        ? { label: "Reactive Work Balance", status: "amber", detail: `Reactive work is ${reactivePct}% — consider reducing` }
+        : { label: "Reactive Work Balance", status: "red", detail: `Reactive work is ${reactivePct}% — excessive reactive load` }
+    );
+
+    // Trade balance
+    for (const disc of data) {
+      const s = disc.capacityStatus;
+      checks.push({
+        label: `${disc.key} Loading`,
+        status: s === "Balanced" ? "green" : s === "Near Capacity" ? "amber" : s === "Overloaded" ? "red" : "amber",
+        detail: `${disc.key} is ${s.toLowerCase()} at ${disc.loadPct}% (target ${disc.target}%)`,
+      });
+    }
+
+    // Weekly load balance (check spread across days)
+    const dayHrs = data.flatMap(d => d.byDay.map(dd => dd.hrs)).filter(h => h > 0);
+    if (dayHrs.length > 1) {
+      const avg = dayHrs.reduce((a, b) => a + b, 0) / dayHrs.length;
+      const maxDev = Math.max(...dayHrs.map(h => Math.abs(h - avg)));
+      const devPct = avg > 0 ? Math.round((maxDev / avg) * 100) : 0;
+      checks.push(devPct <= 50
+        ? { label: "Weekly Balance", status: "green", detail: "Workload is evenly distributed across the week" }
+        : { label: "Weekly Balance", status: "amber", detail: "Workload distribution is uneven across the week" }
+      );
+    }
+
+    return checks;
+  }, [data, unscheduledHighPri, totalJobs, totalReactive]);
+
+  // ── Composition ──
+  const pmPct = totalJobs > 0 ? Math.round((totalPMs / totalJobs) * 100) : 0;
+  const reactivePct = totalJobs > 0 ? Math.round((totalReactive / totalJobs) * 100) : 0;
+  const plannedPct = 100 - pmPct - reactivePct;
+
+  // ── PDF Export ──
   const handleExportPdf = async () => {
     if (!reportRef.current) return;
     toast.info("Generating PDF...");
@@ -102,7 +210,7 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
           if (srcY < imgH) { pdf.addPage(); curY = M; }
         }
       }
-      pdf.save(`Weekly_Schedule_${format(weekStart, "yyyy-MM-dd")}.pdf`);
+      pdf.save(`Weekly_Schedule_Readiness_${format(weekStart, "yyyy-MM-dd")}.pdf`);
       toast.success("PDF exported");
     } catch { toast.error("PDF export failed"); }
   };
@@ -112,16 +220,10 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
     html2canvas(reportRef.current, { scale: 2, backgroundColor: "#ffffff", windowWidth: 1100 }).then((canvas) => {
       const win = window.open("", "_blank");
       if (!win) { toast.error("Popup blocked"); return; }
-      win.document.write(`<html><head><title>Weekly Schedule</title><style>@page{size:landscape;margin:8mm}body{margin:0;display:flex;justify-content:center}img{width:100%;height:auto}</style></head><body><img src="${canvas.toDataURL("image/png")}"/></body></html>`);
+      win.document.write(`<html><head><title>Weekly Schedule Readiness Report</title><style>@page{size:landscape;margin:8mm}body{margin:0;display:flex;justify-content:center}img{width:100%;height:auto}</style></head><body><img src="${canvas.toDataURL("image/png")}"/></body></html>`);
       win.document.close();
       setTimeout(() => win.print(), 500);
     });
-  };
-
-  const S: Record<string, React.CSSProperties> = {
-    th: { padding: "5px 6px", fontSize: 9, fontWeight: 700, borderBottom: "1px solid #d1d5db", textAlign: "left" as const, whiteSpace: "nowrap" as const },
-    td: { padding: "4px 6px", fontSize: 9, borderBottom: "1px solid #e5e7eb", verticalAlign: "top" as const },
-    badge: { display: "inline-block", padding: "1px 5px", borderRadius: 3, fontSize: 8, fontWeight: 600 },
   };
 
   return (
@@ -137,152 +239,63 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
 
       <div ref={reportRef} style={{ background: "#fff", padding: "24px 28px", fontFamily: "'Segoe UI', system-ui, sans-serif", color: "#1a1a1a", maxWidth: 1100 }}>
         {/* ── HEADER ── */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "3px solid #C8960C", paddingBottom: 10, marginBottom: 16 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "3px solid #C8960C", paddingBottom: 10, marginBottom: 20 }}>
           <div>
             <div style={{ fontSize: 10, fontWeight: 700, color: "#C8960C", letterSpacing: 2, textTransform: "uppercase" }}>Tennant Creek Gold Mine</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: "#1a1a1a", marginTop: 1 }}>Weekly Maintenance Schedule</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: "#1a1a1a", marginTop: 1 }}>Weekly Schedule Readiness Report</div>
+            <div style={{ fontSize: 10, color: "#888", marginTop: 2 }}>Pre-Issue Review — Schedule Verification & Workload Assessment</div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 24, fontWeight: 800, color: "#C8960C", lineHeight: 1 }}>{weekLabel}</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: "#C8960C", lineHeight: 1 }}>{weekLabel}</div>
             <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{format(weekStart, "d MMM")} — {format(weekEnd, "d MMM yyyy")}</div>
+            <div style={{ fontSize: 9, color: "#aaa", marginTop: 1 }}>Wednesday to Tuesday Cycle</div>
           </div>
         </div>
 
-        {/* ── SCHEDULE LOAD ── */}
-        <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
-          {data.map((disc) => {
-            const overTarget = disc.loadPct > disc.target;
-            const pctColor = overTarget ? "#dc2626" : disc.accent;
-            return (
-              <div key={disc.key} style={{ flex: 1, borderRadius: 6, padding: "12px 16px", background: disc.light, border: `1px solid ${disc.accent}22`, position: "relative", overflow: "hidden" }}>
-                {/* Accent top strip */}
-                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: disc.accent }} />
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginTop: 2 }}>
-                  <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: disc.dark }}>{disc.key}</div>
-                    <div style={{ fontSize: 9, color: "#888", marginTop: 1 }}>Target: {disc.target}%</div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: 26, fontWeight: 800, color: pctColor, lineHeight: 1 }}>{disc.loadPct}%</div>
-                    <div style={{ fontSize: 8, fontWeight: 600, color: pctColor, marginTop: 1 }}>
-                      {overTarget ? "OVER TARGET" : "ON TRACK"}
-                    </div>
-                  </div>
-                </div>
-                {/* Progress bar */}
-                <div style={{ height: 6, borderRadius: 3, background: `${disc.accent}15`, marginTop: 8, overflow: "hidden", position: "relative" }}>
-                  <div style={{ height: "100%", borderRadius: 3, width: `${Math.min(disc.loadPct, 100)}%`, background: pctColor, transition: "width 0.3s" }} />
-                  {/* Target marker */}
-                  <div style={{ position: "absolute", top: -1, bottom: -1, left: `${disc.target}%`, width: 2, background: disc.dark, opacity: 0.4, borderRadius: 1 }} />
-                </div>
-                {/* Stats row */}
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, fontSize: 9, color: "#666" }}>
-                  <span><b style={{ color: "#1a1a1a" }}>{disc.totalHrs.toFixed(1)}h</b> scheduled</span>
-                  <span><b style={{ color: "#1a1a1a" }}>{disc.totalAvail.toFixed(1)}h</b> available</span>
-                  <span><b style={{ color: "#1a1a1a" }}>{disc.byDay.reduce((a, b) => a + b.wos.length, 0)}</b> jobs</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        {/* SECTION 1 */}
+        <ReadinessSnapshot
+          data={data}
+          totalJobs={totalJobs}
+          totalPMs={totalPMs}
+          totalReactive={totalReactive}
+          totalHrs={totalHrs}
+          totalAvail={totalAvail}
+          overallLoadPct={overallLoadPct}
+          highPriScheduled={highPriScheduled}
+          highPriNotScheduled={unscheduledHighPri.length}
+          qualityChecks={qualityChecks}
+        />
 
-        {/* ── DAILY BREAKDOWN PER DISCIPLINE ── */}
-        {data.map((disc) => (
-          <div key={disc.key} style={{ marginBottom: 20 }}>
-            {/* Discipline header */}
-            <div style={{ background: disc.dark, color: "#fff", padding: "6px 10px", borderRadius: "4px 4px 0 0", fontSize: 11, fontWeight: 700, letterSpacing: 1 }}>
-              {disc.key.toUpperCase()}
-            </div>
+        {/* SECTION 2 */}
+        <TradeCapacitySummary data={data} />
 
-            {/* Day sections */}
-            {disc.byDay.map((dayData) => {
-              const hasWork = dayData.wos.length > 0;
-              return (
-                <div key={dayData.dayKey} style={{ borderLeft: `1px solid ${disc.accent}30`, borderRight: `1px solid ${disc.accent}30`, borderBottom: `1px solid ${disc.accent}20` }}>
-                  {/* Day bar */}
-                  <div style={{
-                    display: "flex", justifyContent: "space-between", alignItems: "center",
-                    padding: "5px 10px",
-                    background: disc.band,
-                    borderLeft: `3px solid ${disc.accent}60`,
-                  }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: disc.dark }}>
-                        {format(dayData.day, "EEE").toUpperCase()}
-                      </span>
-                      <span style={{ fontSize: 11, color: "#666" }}>{format(dayData.day, "d MMMM")}</span>
-                    </div>
-                    <div style={{ display: "flex", gap: 16, fontSize: 10 }}>
-                      <span style={{ color: "#888" }}>Personnel: <b style={{ color: "#1a1a1a" }}>{dayData.personnel}</b></span>
-                      <span style={{ color: "#888" }}>Available: <b style={{ color: "#1a1a1a" }}>{dayData.avail.toFixed(1)}h</b></span>
-                      <span style={{ color: "#888" }}>Loaded: <b style={{ color: dayData.hrs > dayData.avail ? "#dc2626" : disc.accent }}>{dayData.hrs.toFixed(1)}h</b></span>
-                      <span style={{ color: "#888" }}>Jobs: <b style={{ color: "#1a1a1a" }}>{dayData.wos.length}</b></span>
-                    </div>
-                  </div>
+        {/* SECTION 3 */}
+        <QualityChecksSection checks={qualityChecks} />
 
-                  {/* Work order table */}
-                  {hasWork ? (
-                    <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
-                      <thead>
-                        <tr style={{ background: "#f9fafb" }}>
-                          <th style={{ ...S.th, width: "9%" }}>WO #</th>
-                          <th style={{ ...S.th, width: "5%" }}>Type</th>
-                          <th style={{ ...S.th, width: "9%" }}>Asset</th>
-                          <th style={{ ...S.th, width: "38%" }}>Description</th>
-                          <th style={{ ...S.th, width: "18%" }}>Resource</th>
-                          <th style={{ ...S.th, width: "9%", textAlign: "center" }}>Priority</th>
-                          <th style={{ ...S.th, width: "6%", textAlign: "right" }}>Hrs</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {dayData.wos.map((wo, idx) => {
-                          const isPM = wo.work_type === "PM";
-                          return (
-                            <tr key={wo.id} style={{ background: idx % 2 === 1 ? "#fafafa" : "#fff" }}>
-                              <td style={S.td}>
-                                <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 9 }}>{wo.wo_number}</span>
-                              </td>
-                              <td style={S.td}>
-                                <span style={{
-                                  ...S.badge,
-                                  background: isPM ? "#ecfdf5" : `${disc.accent}12`,
-                                  color: isPM ? "#059669" : disc.accent,
-                                  border: `1px solid ${isPM ? "#a7f3d0" : disc.accent + "30"}`,
-                                }}>
-                                  {isPM ? "PM" : wo.work_type || "CM"}
-                                </span>
-                              </td>
-                              <td style={{ ...S.td, fontWeight: 600, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{wo.asset_id || "—"}</td>
-                              <td style={{ ...S.td, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                {wo.problem_description || wo.scope_of_works || "No description"}
-                              </td>
-                              <td style={{ ...S.td, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                {wo.assigned_to || wo.technician_name || "—"}
-                              </td>
-                              <td style={{ ...S.td, textAlign: "center", fontWeight: 600, fontSize: 9 }}>
-                                {priorityLabel(wo.priority)}
-                              </td>
-                              <td style={{ ...S.td, textAlign: "right", fontWeight: 700, fontSize: 9, fontFamily: "monospace" }}>
-                                {getWoHours(wo).toFixed(1)}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <div style={{ padding: "8px 10px", fontSize: 9, color: "#ccc", fontStyle: "italic" }}>No jobs scheduled</div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        ))}
+        {/* SECTION 4 */}
+        <ScheduleComposition
+          pmPct={pmPct}
+          plannedPct={plannedPct}
+          reactivePct={reactivePct}
+          pmCount={totalPMs}
+          plannedCount={totalPlanned}
+          reactiveCount={totalReactive}
+          totalJobs={totalJobs}
+        />
+
+        {/* SECTION 5 */}
+        <DailyTradeSchedule data={data} />
+
+        {/* SECTION 6 */}
+        <UnscheduledWorkSection items={unscheduledItems} />
+
+        {/* SECTION 7 */}
+        <SchedulerNotes />
 
         {/* ── FOOTER ── */}
         <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10, borderTop: "1px solid #e5e7eb", fontSize: 9, color: "#bbb" }}>
           <span>Tennant Creek Gold Mine</span>
-          <span>Generated {format(new Date(), "d MMM yyyy, HH:mm")}</span>
+          <span>Generated {format(new Date(), "d MMM yyyy, HH:mm")} — Pre-Issue Review Document</span>
           <span>minesite.ai</span>
         </div>
       </div>
