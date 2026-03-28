@@ -14,7 +14,7 @@ import { toast } from "sonner";
 const HRS_PER_PERSON = 10.5;
 const DISCIPLINES = [
   { key: "Mechanical", target: 80, accent: "#2563eb", light: "#eff6ff", dark: "#1e3a5f", band: "#dbeafe" },
-  { key: "Electrical", target: 90, accent: "#ea580c", light: "#fff7ed", dark: "#7c2d12", band: "#ffedd5" },
+  { key: "Electrical", target: 90, accent: "#f97316", light: "#fff8f1", dark: "#9a3412", band: "#fed7aa" },
 ];
 
 function getWoHours(wo: WorkOrder): number {
