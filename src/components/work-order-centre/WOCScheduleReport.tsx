@@ -177,10 +177,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
     return checks;
   }, [data, unscheduledHighPri, totalJobs, totalReactive]);
 
-  // ── Composition ──
-  const pmPct = totalJobs > 0 ? Math.round((totalPMs / totalJobs) * 100) : 0;
-  const reactivePct = totalJobs > 0 ? Math.round((totalReactive / totalJobs) * 100) : 0;
-  const plannedPct = 100 - pmPct - reactivePct;
 
   // ── PDF Export ──
   const handleExportPdf = async () => {
