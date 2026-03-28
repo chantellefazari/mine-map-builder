@@ -163,6 +163,26 @@ export function WOCSchedule() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <div className="flex items-center border border-border rounded-lg overflow-hidden">
+            <button
+              onClick={() => setScheduleView("calendar")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
+                scheduleView === "calendar" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Calendar className="w-3.5 h-3.5" /> Calendar
+            </button>
+            <button
+              onClick={() => setScheduleView("report")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
+                scheduleView === "report" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <FileText className="w-3.5 h-3.5" /> Weekly Report
+            </button>
+          </div>
           <Button variant="outline" size="sm" className="gap-1.5 text-xs">
             <Printer className="w-3.5 h-3.5" /> Print PMs
           </Button>
