@@ -194,7 +194,7 @@ const ImplementationRiskAssessment = () => {
       </div>
 
     {/* 1. Purpose */}
-    <section className="mb-10">
+    <section data-pdf-section className="mb-10">
       <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">1. Purpose</h2>
       <p className="text-[13px] text-muted-foreground leading-relaxed">
         This assessment outlines the implementation risks associated with rolling out the new work management system at Tennant Creek Gold Mine. The focus is on ensuring the system is introduced in a controlled and sustainable way, recognising that success depends on site readiness across people, process, data, and operational discipline.
