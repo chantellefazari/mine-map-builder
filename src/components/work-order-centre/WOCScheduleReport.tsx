@@ -13,15 +13,11 @@ import { toast } from "sonner";
 import {
   DISCIPLINES, HRS_PER_PERSON, getWoHours, matchesDiscipline,
   getCapacityStatus, priorityLabel,
-  DiscData, DayData, QualityCheck, UnscheduledWO,
+  DiscData, DayData, QualityCheck,
 } from "./schedule-report/types";
 import { ReadinessSnapshot } from "./schedule-report/ReadinessSnapshot";
 import { TradeCapacitySummary } from "./schedule-report/TradeCapacitySummary";
-import { QualityChecksSection } from "./schedule-report/QualityChecks";
-
 import { DailyTradeSchedule } from "./schedule-report/DailyTradeSchedule";
-import { UnscheduledWorkSection } from "./schedule-report/UnscheduledWork";
-import { SchedulerNotes } from "./schedule-report/SchedulerNotes";
 
 interface Props { weekOffset: number; personnelByDay: Record<string, number>; }
 
@@ -84,23 +80,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
     return (p === "P1" || p === "P2") && ["Scheduled", "Active", "Planning", "Planned"].includes(wo.status) && !wo.scheduled_date;
   });
 
-  // ── Unscheduled work ──
-  const unscheduledItems: UnscheduledWO[] = useMemo(() => {
-    return workOrders
-      .filter(wo => ["Scheduled", "Active", "Planning", "Planned"].includes(wo.status) && !wo.scheduled_date)
-      .slice(0, 20)
-      .map(wo => {
-        let reason = "No capacity";
-        let action = "Schedule next available week";
-        const p = priorityLabel(wo.priority);
-        if (p === "P5") { reason = "Waiting shutdown window"; action = "Defer to next shutdown"; }
-        else if (p === "P6") { reason = "Engineering scope required"; action = "Complete engineering review"; }
-        else if (p === "P7") { reason = "Project schedule"; action = "Coordinate with project team"; }
-        else if (!wo.assigned_to && !wo.technician_name) { reason = "Labour unavailable"; action = "Assign resource and reschedule"; }
-        else if (!wo.scope_of_works && !wo.problem_description) { reason = "Scope not ready"; action = "Define scope before scheduling"; }
-        return { wo, reason, action };
-      });
-  }, [workOrders]);
 
   // ── Quality checks ──
   const qualityChecks: QualityCheck[] = useMemo(() => {
@@ -270,11 +249,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
         {/* SECTION 5 */}
         <DailyTradeSchedule data={data} />
 
-        {/* SECTION 6 */}
-        <UnscheduledWorkSection items={unscheduledItems} />
-
-        {/* SECTION 7 */}
-        <SchedulerNotes />
 
         {/* ── FOOTER ── */}
         <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10, borderTop: "1px solid #e5e7eb", fontSize: 9, color: "#bbb" }}>
