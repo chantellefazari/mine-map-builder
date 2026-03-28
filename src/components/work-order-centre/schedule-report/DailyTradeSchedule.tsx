@@ -1,10 +1,35 @@
 import { format } from "date-fns";
 import { DiscData, DayData, S, getWoHours, priorityLabel, getDayLoadLabel } from "./types";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
+const JOB_STATUS_OPTIONS = ["", "Completed", "Not Completed", "Re-Scheduled", "Cancelled"] as const;
+const WO_STATUS_OPTIONS = ["", "Scheduled", "Active", "On Hold", "Completed", "Closed"] as const;
 
 interface Props { data: DiscData[]; }
 
 export function DailyTradeSchedule({ data }: Props) {
+  const queryClient = useQueryClient();
+
+  const handleStatusChange = async (woId: string, field: string, value: string) => {
+    const updates: Record<string, string> = {};
+    if (field === "job_status") updates.job_status = value;
+    if (field === "status") updates.status = value;
+
+    const { error } = await (supabase as any)
+      .from("work_orders")
+      .update(updates)
+      .eq("id", woId);
+
+    if (error) {
+      toast.error(`Failed to update: ${error.message}`);
+    } else {
+      queryClient.invalidateQueries({ queryKey: ["work_orders"] });
+    }
+  };
+
   return (
     <div style={{ marginBottom: 24 }}>
       <div style={S.sectionTitle}>Daily Trade Schedule</div>
@@ -52,20 +77,20 @@ export function DailyTradeSchedule({ data }: Props) {
                   <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
                     <thead>
                       <tr style={{ background: "#f9fafb" }}>
-                        <th style={{ ...S.th, width: "8%" }}>WO #</th>
-                        <th style={{ ...S.th, width: "5%" }}>Type</th>
-                        <th style={{ ...S.th, width: "7%" }}>Asset</th>
-                        <th style={{ ...S.th, width: "26%" }}>Description</th>
-                        <th style={{ ...S.th, width: "12%" }}>Resource</th>
-                        <th style={{ ...S.th, width: "7%", textAlign: "center" }}>Priority</th>
+                        <th style={{ ...S.th, width: "7%" }}>WO #</th>
+                        <th style={{ ...S.th, width: "4%" }}>Type</th>
+                        <th style={{ ...S.th, width: "6%" }}>Asset</th>
+                        <th style={{ ...S.th, width: "22%" }}>Description</th>
+                        <th style={{ ...S.th, width: "10%" }}>Resource</th>
+                        <th style={{ ...S.th, width: "6%", textAlign: "center" }}>Priority</th>
                         <th style={{ ...S.th, width: "5%", textAlign: "right" }}>Hrs</th>
-                        <th style={{ ...S.th, width: "15%", textAlign: "center" }}>Job Status</th>
-                        <th style={{ ...S.th, width: "15%", textAlign: "center" }}>Work Order Status</th>
+                        <th style={{ ...S.th, width: "12%", textAlign: "center" }}>Job Status</th>
+                        <th style={{ ...S.th, width: "12%", textAlign: "center" }}>Work Order Status</th>
                       </tr>
                     </thead>
                     <tbody>
                       {dayData.wos.map((wo, idx) => (
-                        <WORow key={wo.id} wo={wo} idx={idx} disc={disc} />
+                        <WORow key={wo.id} wo={wo} idx={idx} disc={disc} onStatusChange={handleStatusChange} />
                       ))}
                     </tbody>
                   </table>
@@ -83,7 +108,40 @@ export function DailyTradeSchedule({ data }: Props) {
   );
 }
 
-function WORow({ wo, idx, disc }: { wo: WorkOrder; idx: number; disc: DiscData }) {
+const selectStyle: React.CSSProperties = {
+  width: "100%",
+  fontSize: 8,
+  fontWeight: 600,
+  padding: "2px 4px",
+  border: "1px solid #e5e7eb",
+  borderRadius: 3,
+  background: "#fff",
+  cursor: "pointer",
+  color: "#1a1a1a",
+};
+
+function getJobStatusColor(status: string): string {
+  switch (status) {
+    case "Completed": return "#16a34a";
+    case "Not Completed": return "#dc2626";
+    case "Re-Scheduled": return "#d97706";
+    case "Cancelled": return "#6b7280";
+    default: return "#1a1a1a";
+  }
+}
+
+function getWoStatusColor(status: string): string {
+  switch (status) {
+    case "Scheduled": return "#2563eb";
+    case "Active": return "#16a34a";
+    case "On Hold": return "#d97706";
+    case "Completed": return "#059669";
+    case "Closed": return "#6b7280";
+    default: return "#1a1a1a";
+  }
+}
+
+function WORow({ wo, idx, disc, onStatusChange }: { wo: WorkOrder; idx: number; disc: DiscData; onStatusChange: (id: string, field: string, value: string) => void }) {
   const isPM = wo.work_type === "PM";
   return (
     <tr style={{ background: idx % 2 === 1 ? "#fafafa" : "#fff" }}>
@@ -107,8 +165,32 @@ function WORow({ wo, idx, disc }: { wo: WorkOrder; idx: number; disc: DiscData }
       </td>
       <td style={{ ...S.td, textAlign: "center", fontWeight: 600, fontSize: 9 }}>{priorityLabel(wo.priority)}</td>
       <td style={{ ...S.td, textAlign: "right", fontWeight: 700, fontSize: 9, fontFamily: "monospace" }}>{getWoHours(wo).toFixed(1)}</td>
-      <td style={{ ...S.td, borderBottom: "1px dotted #ccc", minHeight: 20 }}>&nbsp;</td>
-      <td style={{ ...S.td, borderBottom: "1px dotted #ccc", minHeight: 20 }}>&nbsp;</td>
+      <td style={{ ...S.td, textAlign: "center", padding: "2px 4px" }}>
+        <select
+          style={{ ...selectStyle, color: getJobStatusColor(wo.job_status || "") }}
+          value={wo.job_status || ""}
+          onChange={(e) => onStatusChange(wo.id, "job_status", e.target.value)}
+        >
+          {JOB_STATUS_OPTIONS.map(opt => (
+            <option key={opt} value={opt} style={{ color: getJobStatusColor(opt) }}>
+              {opt || "—"}
+            </option>
+          ))}
+        </select>
+      </td>
+      <td style={{ ...S.td, textAlign: "center", padding: "2px 4px" }}>
+        <select
+          style={{ ...selectStyle, color: getWoStatusColor(wo.status || "") }}
+          value={wo.status || ""}
+          onChange={(e) => onStatusChange(wo.id, "status", e.target.value)}
+        >
+          {WO_STATUS_OPTIONS.map(opt => (
+            <option key={opt} value={opt} style={{ color: getWoStatusColor(opt) }}>
+              {opt || "—"}
+            </option>
+          ))}
+        </select>
+      </td>
     </tr>
   );
 }
