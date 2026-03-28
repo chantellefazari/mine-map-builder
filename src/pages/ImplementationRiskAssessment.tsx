@@ -101,10 +101,10 @@ const ImplementationRiskAssessment = () => {
             new Paragraph({ spacing: { after: 200 }, children: [new TextRun({ text: "This assessment outlines the implementation risks associated with rolling out the new work management system at Tennant Creek Gold Mine. The focus is on ensuring the system is introduced in a controlled and sustainable way, recognising that success depends on site readiness across people, process, data, and operational discipline.", size: 22, font: "Arial" })] }),
             new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 300, after: 100 }, children: [new TextRun({ text: "2. Current Position", size: 26, bold: true, font: "Arial" })] }),
             new Paragraph({ spacing: { after: 80 }, children: [new TextRun({ text: "Progress Made", size: 22, bold: true, font: "Arial" })] }),
-            ...["Work Request and Work Order logic developed", "Scheduling capability established", "Asset hierarchy rebuild in progress", "Parts catalogue development underway", "PM logic being developed"].map(bullet),
-            new Paragraph({ spacing: { before: 120, after: 80 }, children: [new TextRun({ text: "Current Gaps", size: 22, bold: true, font: "Arial" })] }),
-            ...["No fully controlled stores environment", "Stock visibility not yet reliable", "Parts and BOM linkage incomplete", "Work management process not fully embedded", "Site culture remains reactive with low accountability"].map(bullet),
-            new Paragraph({ spacing: { before: 120, after: 200 }, indent: { left: 200 }, border: { left: { style: BorderStyle.SINGLE, size: 6, color: "C8960C", space: 4 } }, children: [new TextRun({ text: "The site is progressing toward readiness, but is not yet at a point for full uncontrolled system rollout.", size: 22, font: "Arial", italics: true })] }),
+            ...["Work Request and Work Order logic developed and being trialled on site", "Scheduling capability established", "Asset hierarchy rebuild in progress", "Parts catalogue development underway", "PM logic being developed", "System currently in active trial with site users creating live work orders"].map(bullet),
+            new Paragraph({ spacing: { before: 120, after: 80 }, children: [new TextRun({ text: "Areas Still Maturing", size: 22, bold: true, font: "Arial" })] }),
+            ...["Stores and inventory controls still being established", "Stock visibility not yet reliable", "Parts and BOM linkage incomplete", "Work management behaviours still being embedded", "Site culture and buy-in remain the biggest challenge"].map(bullet),
+            new Paragraph({ spacing: { before: 120, after: 200 }, indent: { left: 200 }, border: { left: { style: BorderStyle.SINGLE, size: 6, color: "C8960C", space: 4 } }, children: [new TextRun({ text: "The system is in active trial. Early adoption is encouraging, but embedding consistent use across the full workforce remains the key challenge.", size: 22, font: "Arial", italics: true })] }),
             new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 300, after: 100 }, children: [new TextRun({ text: "3. Key Implementation Risks", size: 26, bold: true, font: "Arial" })] }),
             new Table({ width: { size: 9360, type: WidthType.DXA }, columnWidths: [3200, 4960, 1200], rows: [
               new TableRow({ children: [
@@ -115,15 +115,15 @@ const ImplementationRiskAssessment = () => {
               ...riskRows,
             ] }),
             new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 400, after: 100 }, children: [new TextRun({ text: "4. Recommended Approach", size: 26, bold: true, font: "Arial" })] }),
-            new Paragraph({ spacing: { after: 80 }, indent: { left: 200 }, border: { left: { style: BorderStyle.SINGLE, size: 6, color: "DC2626", space: 4 } }, children: [new TextRun({ text: "Do not proceed with full site-wide rollout at this stage.", size: 22, font: "Arial", bold: true })] }),
+            new Paragraph({ spacing: { after: 80 }, indent: { left: 200 }, border: { left: { style: BorderStyle.SINGLE, size: 6, color: "C8960C", space: 4 } }, children: [new TextRun({ text: "Continue the current trial approach. Expand adoption gradually as site behaviours mature and confidence builds.", size: 22, font: "Arial", bold: true })] }),
             new Paragraph({ spacing: { before: 120, after: 40 }, children: [new TextRun({ text: "Phased Implementation:", size: 22, bold: true, font: "Arial" })] }),
             ...["Phase 1: Foundation Stabilisation", "Phase 2: Controlled Pilot", "Phase 3: Gradual Rollout"].map(bullet),
             new Paragraph({ spacing: { before: 120, after: 40 }, children: [new TextRun({ text: "Focus Areas:", size: 22, bold: true, font: "Arial" })] }),
             ...["Leadership enforcement of system use and process compliance", "User adoption through role-specific training and on-shift support", "Training delivered by role, reinforced through coaching and refreshers", "Removal of parallel systems (spreadsheets, manual trackers, whiteboards)"].map(bullet),
             new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 400, after: 100 }, children: [new TextRun({ text: "5. Final Position", size: 26, bold: true, font: "Arial" })] }),
-            new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "The system being developed is strong and has the potential to significantly improve site performance.", size: 22, font: "Arial", bold: true })] }),
-            new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "However, implementation success will depend on site readiness, not system capability alone. People, process, data, stores maturity, and leadership commitment are the deciding factors.", size: 22, font: "Arial" })] }),
-            new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "A controlled, phased rollout aligned with operational maturity is critical to ensure long-term adoption and avoid early failure.", size: 22, font: "Arial", bold: true })] }),
+            new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "The system is strong and is already being trialled on site with real work orders.", size: 22, font: "Arial", bold: true })] }),
+            new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "The biggest risk to successful rollout is not the software. It is site culture, user buy-in, and consistent leadership enforcement. Getting everyone on board, following the process every time, and removing reliance on old methods is what will determine whether this succeeds long-term.", size: 22, font: "Arial" })] }),
+            new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "A controlled, phased approach, continuing the current trial and expanding as behaviours mature, gives the best chance of lasting adoption.", size: 22, font: "Arial", bold: true })] }),
             new Paragraph({ spacing: { before: 400 }, border: { top: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC", space: 4 } }, children: [new TextRun({ text: "Tennant Creek Gold Mine \u2014 Implementation Risk Assessment \u2014 Prepared for leadership and stakeholder review", size: 16, font: "Arial", color: "999999" })] }),
           ],
         }],
@@ -185,11 +185,12 @@ const ImplementationRiskAssessment = () => {
           <p className="text-xs font-semibold text-foreground mb-2">Progress Made</p>
           <ul className="space-y-1.5">
             {[
-              "Work Request and Work Order logic developed",
+              "Work Request and Work Order logic developed and being trialled on site",
               "Scheduling capability established",
               "Asset hierarchy rebuild in progress",
               "Parts catalogue development underway",
               "PM logic being developed",
+              "System currently in active trial with site users creating live work orders",
             ].map(item => (
               <li key={item} className="text-[13px] text-muted-foreground flex gap-2">
                 <span className="text-emerald-600 mt-0.5">•</span>{item}
@@ -198,24 +199,24 @@ const ImplementationRiskAssessment = () => {
           </ul>
         </div>
         <div>
-          <p className="text-xs font-semibold text-foreground mb-2">Current Gaps</p>
+          <p className="text-xs font-semibold text-foreground mb-2">Areas Still Maturing</p>
           <ul className="space-y-1.5">
             {[
-              "No fully controlled stores environment",
+              "Stores and inventory controls still being established",
               "Stock visibility not yet reliable",
               "Parts and BOM linkage incomplete",
-              "Work management process not fully embedded",
-              "Site culture remains reactive with low accountability",
+              "Work management behaviours still being embedded",
+              "Site culture and buy-in remain the biggest challenge",
             ].map(item => (
               <li key={item} className="text-[13px] text-muted-foreground flex gap-2">
-                <span className="text-destructive mt-0.5">•</span>{item}
+                <span className="text-amber-600 mt-0.5">•</span>{item}
               </li>
             ))}
           </ul>
         </div>
       </div>
       <p className="text-[13px] text-muted-foreground font-semibold border-l-2 border-primary/40 pl-3">
-        The site is progressing toward readiness, but is not yet at a point for full uncontrolled system rollout.
+        The system is in active trial. Early adoption is encouraging, but embedding consistent use across the full workforce remains the key challenge. Success depends on culture, leadership reinforcement, and getting everyone on board.
       </p>
     </section>
 
@@ -242,8 +243,8 @@ const ImplementationRiskAssessment = () => {
     <section className="mb-10">
       <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">4. Recommended Approach</h2>
       <div className="space-y-4">
-        <p className="text-[13px] text-muted-foreground font-semibold border-l-2 border-destructive/40 pl-3">
-          Do not proceed with full site-wide rollout at this stage.
+        <p className="text-[13px] text-muted-foreground font-semibold border-l-2 border-primary/40 pl-3">
+          Continue the current trial approach. Expand adoption gradually as site behaviours mature and confidence builds.
         </p>
         <div>
           <p className="text-xs font-semibold text-foreground mb-2">Adopt Phased Implementation</p>
@@ -284,13 +285,13 @@ const ImplementationRiskAssessment = () => {
       <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">5. Final Position</h2>
       <div className="bg-muted/30 border border-border rounded-lg px-5 py-4 space-y-3">
         <p className="text-[13px] text-foreground font-semibold leading-relaxed">
-          The system being developed is strong and has the potential to significantly improve site performance.
+          The system is strong and is already being trialled on site with real work orders.
         </p>
         <p className="text-[13px] text-muted-foreground leading-relaxed">
-          However, implementation success will depend on site readiness, not system capability alone. People, process, data, stores maturity, and leadership commitment are the deciding factors.
+          The biggest risk to successful rollout is not the software. It is site culture, user buy-in, and consistent leadership enforcement. Getting everyone on board, following the process every time, and removing reliance on old methods is what will determine whether this succeeds long-term.
         </p>
         <p className="text-[13px] text-foreground font-semibold leading-relaxed">
-          A controlled, phased rollout aligned with operational maturity is critical to ensure long-term adoption and avoid early failure.
+          A controlled, phased approach, continuing the current trial and expanding as behaviours mature, gives the best chance of lasting adoption.
         </p>
       </div>
     </section>
