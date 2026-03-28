@@ -148,36 +148,8 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
           </div>
         </div>
 
-        {/* ── CAPACITY OVERVIEW ── */}
+        {/* ── SCHEDULE LOAD ── */}
         <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
-          {/* Combined summary card */}
-          <div style={{ flex: "0 0 auto", borderRadius: 6, padding: "12px 18px", background: "#f8f9fa", border: "1px solid #e5e7eb" }}>
-            <div style={{ fontSize: 9, fontWeight: 700, color: "#999", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 8 }}>Week Overview</div>
-            <div style={{ display: "flex", gap: 24 }}>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: "#1a1a1a", lineHeight: 1 }}>
-                  {data.reduce((s, d) => s + d.totalHrs, 0).toFixed(0)}
-                </div>
-                <div style={{ fontSize: 9, color: "#888", marginTop: 3 }}>Scheduled Hrs</div>
-              </div>
-              <div style={{ width: 1, background: "#e5e7eb" }} />
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: "#1a1a1a", lineHeight: 1 }}>
-                  {data.reduce((s, d) => s + d.totalAvail, 0).toFixed(0)}
-                </div>
-                <div style={{ fontSize: 9, color: "#888", marginTop: 3 }}>Available Hrs</div>
-              </div>
-              <div style={{ width: 1, background: "#e5e7eb" }} />
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: "#1a1a1a", lineHeight: 1 }}>
-                  {data.reduce((s, d) => s + d.byDay.reduce((a, b) => a + b.wos.length, 0), 0)}
-                </div>
-                <div style={{ fontSize: 9, color: "#888", marginTop: 3 }}>Total Jobs</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Per-discipline cards */}
           {data.map((disc) => {
             const overTarget = disc.loadPct > disc.target;
             const pctColor = overTarget ? "#dc2626" : disc.accent;
