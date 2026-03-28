@@ -243,8 +243,8 @@ const ImplementationRiskAssessment = () => {
     <section className="mb-10">
       <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">4. Recommended Approach</h2>
       <div className="space-y-4">
-        <p className="text-[13px] text-muted-foreground font-semibold border-l-2 border-destructive/40 pl-3">
-          Do not proceed with full site-wide rollout at this stage.
+        <p className="text-[13px] text-muted-foreground font-semibold border-l-2 border-primary/40 pl-3">
+          Continue the current trial approach. Expand adoption gradually as site behaviours mature and confidence builds.
         </p>
         <div>
           <p className="text-xs font-semibold text-foreground mb-2">Adopt Phased Implementation</p>
