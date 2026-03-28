@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const JOB_STATUS_OPTIONS = ["", "Completed", "Not Completed", "Re-Scheduled", "Cancelled"] as const;
-const WO_STATUS_OPTIONS = ["", "Scheduled", "Active", "On Hold", "Completed", "Closed"] as const;
+const WO_STATUS_OPTIONS = ["", "Work Order Returned", "Work Order Not Returned"] as const;
 
 interface Props { data: DiscData[]; }
 
@@ -16,7 +16,7 @@ export function DailyTradeSchedule({ data }: Props) {
   const handleStatusChange = async (woId: string, field: string, value: string) => {
     const updates: Record<string, string> = {};
     if (field === "job_status") updates.job_status = value;
-    if (field === "status") updates.status = value;
+    if (field === "wo_return_status") updates.wo_return_status = value;
 
     const { error } = await (supabase as any)
       .from("work_orders")
@@ -132,11 +132,8 @@ function getJobStatusColor(status: string): string {
 
 function getWoStatusColor(status: string): string {
   switch (status) {
-    case "Scheduled": return "#2563eb";
-    case "Active": return "#16a34a";
-    case "On Hold": return "#d97706";
-    case "Completed": return "#059669";
-    case "Closed": return "#6b7280";
+    case "Work Order Returned": return "#16a34a";
+    case "Work Order Not Returned": return "#dc2626";
     default: return "#1a1a1a";
   }
 }
@@ -180,9 +177,9 @@ function WORow({ wo, idx, disc, onStatusChange }: { wo: WorkOrder; idx: number; 
       </td>
       <td style={{ ...S.td, textAlign: "center", padding: "2px 4px" }}>
         <select
-          style={{ ...selectStyle, color: getWoStatusColor(wo.status || "") }}
-          value={wo.status || ""}
-          onChange={(e) => onStatusChange(wo.id, "status", e.target.value)}
+          style={{ ...selectStyle, color: getWoStatusColor(wo.wo_return_status || "") }}
+          value={wo.wo_return_status || ""}
+          onChange={(e) => onStatusChange(wo.id, "wo_return_status", e.target.value)}
         >
           {WO_STATUS_OPTIONS.map(opt => (
             <option key={opt} value={opt} style={{ color: getWoStatusColor(opt) }}>

@@ -1,0 +1,1 @@
+ALTER TABLE public.work_orders ADD COLUMN IF NOT EXISTS wo_return_status text NOT NULL DEFAULT '';
