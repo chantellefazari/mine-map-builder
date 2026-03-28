@@ -1,6 +1,6 @@
 import { useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
+import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { Printer, FileDown } from "lucide-react";
 import {
   format, startOfWeek, addWeeks, addDays, getISOWeek,
