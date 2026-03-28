@@ -4,7 +4,7 @@ import {
   TreePine, Wrench, ClipboardList, Warehouse, BookOpen,
   ShoppingCart, Building2, CalendarClock, LogOut, Shield,
   PackageSearch, FileInput, Home, Box, Brain, ChevronLeft,
-  ChevronRight, Radar,
+  ChevronRight, Radar, ClipboardCheck,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -28,6 +28,7 @@ const NAV_ITEMS = [
   { title: "Plant Intelligence", icon: Brain, href: "/plant-intelligence", tabKey: "plant-intelligence" },
   { title: "Mission Control", icon: Radar, href: "/mission-control", tabKey: "mission-control" },
   { title: "Work Order Centre", icon: ClipboardList, href: "/work-order-centre", tabKey: "work-order-centre" },
+  { title: "Implementation Readiness", icon: ClipboardCheck, href: "/implementation-readiness", tabKey: "implementation-readiness" },
 ];
 
 export function AppSidebarLayout({ children }: { children: ReactNode }) {
