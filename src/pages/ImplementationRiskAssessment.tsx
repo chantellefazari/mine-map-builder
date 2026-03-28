@@ -115,7 +115,7 @@ const ImplementationRiskAssessment = () => {
               ...riskRows,
             ] }),
             new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 400, after: 100 }, children: [new TextRun({ text: "4. Recommended Approach", size: 26, bold: true, font: "Arial" })] }),
-            new Paragraph({ spacing: { after: 80 }, indent: { left: 200 }, border: { left: { style: BorderStyle.SINGLE, size: 6, color: "DC2626", space: 4 } }, children: [new TextRun({ text: "Do not proceed with full site-wide rollout at this stage.", size: 22, font: "Arial", bold: true })] }),
+            new Paragraph({ spacing: { after: 80 }, indent: { left: 200 }, border: { left: { style: BorderStyle.SINGLE, size: 6, color: "C8960C", space: 4 } }, children: [new TextRun({ text: "Continue the current trial approach. Expand adoption gradually as site behaviours mature and confidence builds.", size: 22, font: "Arial", bold: true })] }),
             new Paragraph({ spacing: { before: 120, after: 40 }, children: [new TextRun({ text: "Phased Implementation:", size: 22, bold: true, font: "Arial" })] }),
             ...["Phase 1: Foundation Stabilisation", "Phase 2: Controlled Pilot", "Phase 3: Gradual Rollout"].map(bullet),
             new Paragraph({ spacing: { before: 120, after: 40 }, children: [new TextRun({ text: "Focus Areas:", size: 22, bold: true, font: "Arial" })] }),
