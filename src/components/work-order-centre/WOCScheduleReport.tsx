@@ -225,13 +225,13 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
                     <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
                       <thead>
                         <tr style={{ background: "#f9fafb" }}>
-                          <th style={{ ...S.th, width: 85 }}>WO #</th>
-                          <th style={{ ...S.th, width: 42 }}>Type</th>
-                          <th style={{ ...S.th, width: 80 }}>Asset</th>
-                          <th style={{ ...S.th }}>Description</th>
-                          <th style={{ ...S.th, width: 100 }}>Resource</th>
-                          <th style={{ ...S.th, width: 55, textAlign: "center" }}>Priority</th>
-                          <th style={{ ...S.th, width: 48, textAlign: "right" }}>Hrs</th>
+                          <th style={{ ...S.th, width: "9%" }}>WO #</th>
+                          <th style={{ ...S.th, width: "5%" }}>Type</th>
+                          <th style={{ ...S.th, width: "9%" }}>Asset</th>
+                          <th style={{ ...S.th, width: "38%" }}>Description</th>
+                          <th style={{ ...S.th, width: "18%" }}>Resource</th>
+                          <th style={{ ...S.th, width: "9%", textAlign: "center" }}>Priority</th>
+                          <th style={{ ...S.th, width: "6%", textAlign: "right" }}>Hrs</th>
                         </tr>
                       </thead>
                       <tbody>
