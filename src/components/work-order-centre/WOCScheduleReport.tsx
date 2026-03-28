@@ -222,15 +222,16 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
 
                   {/* Work order table */}
                   {hasWork ? (
-                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
                       <thead>
                         <tr style={{ background: "#f9fafb" }}>
-                          <th style={{ ...S.th, width: 90 }}>WO #</th>
-                          <th style={{ ...S.th, width: 50 }}>Type</th>
-                          <th style={{ ...S.th, width: 90 }}>Asset</th>
-                          <th style={S.th}>Description</th>
-                          <th style={{ ...S.th, width: 40, textAlign: "center" }}>Pri</th>
-                          <th style={{ ...S.th, width: 50, textAlign: "right" }}>Est Hrs</th>
+                          <th style={{ ...S.th, width: 85 }}>WO #</th>
+                          <th style={{ ...S.th, width: 42 }}>Type</th>
+                          <th style={{ ...S.th, width: 80 }}>Asset</th>
+                          <th style={{ ...S.th }}>Description</th>
+                          <th style={{ ...S.th, width: 100 }}>Resource</th>
+                          <th style={{ ...S.th, width: 55, textAlign: "center" }}>Priority</th>
+                          <th style={{ ...S.th, width: 48, textAlign: "right" }}>Hrs</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -251,14 +252,17 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
                                   {isPM ? "PM" : wo.work_type || "CM"}
                                 </span>
                               </td>
-                              <td style={{ ...S.td, fontWeight: 600, fontSize: 9 }}>{wo.asset_id || ""}</td>
-                              <td style={{ ...S.td, fontSize: 9, maxWidth: 300 }}>
+                              <td style={{ ...S.td, fontWeight: 600, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{wo.asset_id || "—"}</td>
+                              <td style={{ ...S.td, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                 {wo.problem_description || wo.scope_of_works || "No description"}
+                              </td>
+                              <td style={{ ...S.td, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                {wo.assigned_to || wo.technician_name || "—"}
                               </td>
                               <td style={{ ...S.td, textAlign: "center", fontWeight: 600, fontSize: 9 }}>
                                 {priorityLabel(wo.priority)}
                               </td>
-                              <td style={{ ...S.td, textAlign: "right", fontWeight: 600, fontSize: 9 }}>
+                              <td style={{ ...S.td, textAlign: "right", fontWeight: 700, fontSize: 9, fontFamily: "monospace" }}>
                                 {getWoHours(wo).toFixed(1)}
                               </td>
                             </tr>
