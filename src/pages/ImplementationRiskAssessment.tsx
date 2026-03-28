@@ -43,17 +43,25 @@ const ImplementationRiskAssessment = () => {
     if (!el) return;
     setSavingPdf(true);
     try {
-      const A4_W = 210, A4_H = 297, MARGIN = 10;
+      const A4_W = 210;
+      const A4_H = 297;
+      const MARGIN = 10;
+      const SECTION_GAP = 3;
       const contentW = A4_W - MARGIN * 2;
-      const usableH = A4_H - MARGIN * 2;
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-      // Get all direct children as sections using data-pdf-section or fallback to children
       const sections = Array.from(el.querySelectorAll("[data-pdf-section]")) as HTMLElement[];
       const elements = sections.length > 0 ? sections : (Array.from(el.children) as HTMLElement[]);
 
       let currentY = MARGIN;
-      let firstImage = true;
+
+      const ensurePageSpace = (neededMm: number) => {
+        const remaining = A4_H - MARGIN - currentY;
+        if (neededMm > remaining && currentY > MARGIN) {
+          pdf.addPage();
+          currentY = MARGIN;
+        }
+      };
 
       for (const section of elements) {
         if (section.classList.contains("print:hidden") || section.classList.contains("print-hidden")) continue;
@@ -66,24 +74,64 @@ const ImplementationRiskAssessment = () => {
         });
 
         const scaleFactor = contentW / canvas.width;
-        const sectionH = canvas.height * scaleFactor;
-        const imgData = canvas.toDataURL("image/png");
+        const sectionHeightMm = canvas.height * scaleFactor;
 
-        // If section doesn't fit on current page, start a new one
-        const remainingSpace = A4_H - MARGIN - currentY;
-        if (sectionH > remainingSpace && currentY > MARGIN) {
-          pdf.addPage();
-          currentY = MARGIN;
+        // Normal fit: place full section
+        if (sectionHeightMm <= A4_H - MARGIN * 2) {
+          ensurePageSpace(sectionHeightMm);
+          pdf.addImage(canvas.toDataURL("image/png"), "PNG", MARGIN, currentY, contentW, sectionHeightMm);
+          currentY += sectionHeightMm;
+        } else {
+          // Oversized section: slice into page-safe chunks so no content is cut off
+          let sourceY = 0;
+
+          while (sourceY < canvas.height) {
+            const remainingMm = A4_H - MARGIN - currentY;
+            if (remainingMm <= 0.1) {
+              pdf.addPage();
+              currentY = MARGIN;
+              continue;
+            }
+
+            const maxSliceHeightPx = Math.max(1, Math.floor(remainingMm / scaleFactor));
+            const sliceHeightPx = Math.min(maxSliceHeightPx, canvas.height - sourceY);
+
+            const sliceCanvas = document.createElement("canvas");
+            sliceCanvas.width = canvas.width;
+            sliceCanvas.height = sliceHeightPx;
+
+            const ctx = sliceCanvas.getContext("2d");
+            if (!ctx) break;
+
+            ctx.drawImage(
+              canvas,
+              0,
+              sourceY,
+              canvas.width,
+              sliceHeightPx,
+              0,
+              0,
+              canvas.width,
+              sliceHeightPx,
+            );
+
+            const sliceHeightMm = sliceHeightPx * scaleFactor;
+            pdf.addImage(sliceCanvas.toDataURL("image/png"), "PNG", MARGIN, currentY, contentW, sliceHeightMm);
+
+            currentY += sliceHeightMm;
+            sourceY += sliceHeightPx;
+
+            if (sourceY < canvas.height) {
+              pdf.addPage();
+              currentY = MARGIN;
+            }
+          }
         }
 
-        if (!firstImage && currentY === MARGIN) {
-          // Already added page above
-        } else if (firstImage) {
-          firstImage = false;
+        const remainingAfterSection = A4_H - MARGIN - currentY;
+        if (remainingAfterSection > SECTION_GAP) {
+          currentY += SECTION_GAP;
         }
-
-        pdf.addImage(imgData, "PNG", MARGIN, currentY, contentW, sectionH);
-        currentY += sectionH;
       }
 
       const blob = pdf.output("blob");
