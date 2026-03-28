@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import {
   Calendar, ChevronLeft, ChevronRight, Search, GripVertical,
-  Wrench, Zap, Users, Printer,
+  Wrench, Zap, Users, Printer, FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -13,6 +13,7 @@ import {
   isSameDay, parseISO, isWithinInterval,
 } from "date-fns";
 import { toast } from "sonner";
+import { WOCScheduleReport } from "./WOCScheduleReport";
 
 const DISCIPLINES = [
   { key: "Mechanical", label: "Mechanical", icon: Wrench, color: "text-blue-600", target: 80 },
