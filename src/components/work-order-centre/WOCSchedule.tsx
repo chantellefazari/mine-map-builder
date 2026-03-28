@@ -192,6 +192,10 @@ export function WOCSchedule() {
         </div>
       </div>
 
+      {scheduleView === "report" ? (
+        <WOCScheduleReport weekOffset={weekOffset} />
+      ) : (
+      <>
       {/* Discipline Tabs */}
       <div className="flex gap-1 border-b border-border pb-px">
         {DISCIPLINES.map((d) => (
