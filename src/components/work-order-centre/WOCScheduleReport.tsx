@@ -178,7 +178,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
 
             {/* Day sections */}
             {disc.byDay.map((dayData) => {
-              const isToday = isSameDay(dayData.day, today);
               const hasWork = dayData.wos.length > 0;
               return (
                 <div key={dayData.dayKey} style={{ borderLeft: `1px solid ${disc.accent}30`, borderRight: `1px solid ${disc.accent}30`, borderBottom: `1px solid ${disc.accent}20` }}>
@@ -186,15 +185,14 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
                   <div style={{
                     display: "flex", justifyContent: "space-between", alignItems: "center",
                     padding: "5px 10px",
-                    background: isToday ? "#fdf8ea" : disc.band,
-                    borderLeft: isToday ? `3px solid #C8960C` : `3px solid ${disc.accent}60`,
+                    background: disc.band,
+                    borderLeft: `3px solid ${disc.accent}60`,
                   }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: isToday ? "#C8960C" : disc.dark }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: disc.dark }}>
                         {format(dayData.day, "EEE").toUpperCase()}
                       </span>
                       <span style={{ fontSize: 11, color: "#666" }}>{format(dayData.day, "d MMMM")}</span>
-                      {isToday && <span style={{ ...S.badge, background: "#C8960C", color: "#fff" }}>TODAY</span>}
                     </div>
                     <div style={{ display: "flex", gap: 16, fontSize: 10 }}>
                       <span style={{ color: "#888" }}>Personnel: <b style={{ color: "#1a1a1a" }}>{dayData.personnel}</b></span>
