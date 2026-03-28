@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import { Printer, FileDown } from "lucide-react";
@@ -11,43 +11,11 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { toast } from "sonner";
 
-const DISCIPLINES = [
-  {
-    key: "Mechanical",
-    label: "MECHANICAL FITTERS / BOILERMAKERS",
-    headerBg: "#1a1a2e",
-    rowBg: "#eff6ff",
-    positions: [
-      "Mechanical Fitter 1", "Mechanical Fitter 2", "Mechanical Fitter 3", "Mechanical Fitter 4",
-      "Boilermaker 1", "Boilermaker 2", "Boilermaker 3", "Boilermaker 4",
-    ],
-  },
-  {
-    key: "Mobile",
-    label: "MOBILE / LV",
-    headerBg: "#2d2d1a",
-    rowBg: "#fffbeb",
-    positions: [
-      "HV Mechanic 1", "HV Mechanic 2", "HV Mechanic 3", "HV Mechanic 4",
-      "LV Mechanic 1", "LV Mechanic 2", "LV Mechanic 3",
-      "Service Person 1", "Service Person 2",
-    ],
-  },
-  {
-    key: "Electrical",
-    label: "ELECTRICAL",
-    headerBg: "#1a2e1a",
-    rowBg: "#ecfdf5",
-    positions: [
-      "E&I Technician 1", "E&I Technician 2", "E&I Technician 3",
-      "E&I Technician 4", "E&I Technician 5",
-      "Electrician 1", "Electrician 2",
-    ],
-  },
-];
-
 const HRS_PER_PERSON = 10.5;
-const DAY_LABELS = ["WED", "THU", "FRI", "SAT", "SUN", "MON", "TUE"];
+const DISCIPLINES = [
+  { key: "Mechanical", target: 80, accent: "#2563eb", light: "#eff6ff", dark: "#1e3a5f" },
+  { key: "Electrical", target: 90, accent: "#d97706", light: "#fffbeb", dark: "#5c3d0e" },
+];
 
 function getWoHours(wo: WorkOrder): number {
   if (wo.labour_hours && Array.isArray(wo.labour_hours)) {
@@ -56,107 +24,80 @@ function getWoHours(wo: WorkOrder): number {
   return 2;
 }
 
-interface Props {
-  weekOffset: number;
-}
+interface Props { weekOffset: number; personnelByDay: Record<string, number>; }
 
-export function WOCScheduleReport({ weekOffset }: Props) {
+export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
   const { workOrders } = useWorkOrders();
   const reportRef = useRef<HTMLDivElement>(null);
 
   const today = new Date();
   const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
-  const weekLabel = `Y${String(getYear(weekStart)).slice(2)}-W${String(getISOWeek(weekStart)).padStart(2, "0")}`;
+  const weekEnd = addDays(weekStart, 6);
+  const weekLabel = `W${String(getISOWeek(weekStart)).padStart(2, "0")}`;
 
-  const scheduledByDisciplineDay = useMemo(() => {
-    const map: Record<string, Record<string, WorkOrder[]>> = {};
-    for (const disc of DISCIPLINES) {
-      map[disc.key] = {};
-      for (const day of days) {
+  // Build data per discipline per day
+  const data = useMemo(() => {
+    return DISCIPLINES.map((disc) => {
+      const byDay = days.map((day) => {
         const dayKey = format(day, "yyyy-MM-dd");
-        map[disc.key][dayKey] = workOrders.filter((wo) => {
-          if (!wo.scheduled_date) return false;
-          if (!isSameDay(parseISO(wo.scheduled_date), day)) return false;
+        const wos = workOrders.filter((wo) => {
+          if (!wo.scheduled_date || !isSameDay(parseISO(wo.scheduled_date), day)) return false;
           if (!["Scheduled", "Active", "In Progress"].includes(wo.status)) return false;
           const trade = wo.trade?.toLowerCase() || "";
           if (disc.key === "Mechanical") return trade === "mechanical" || trade === "";
           if (disc.key === "Electrical") return trade === "electrical";
-          if (disc.key === "Mobile") return trade === "mobile" || trade === "mobile/lv";
           return false;
         });
-      }
-    }
-    return map;
-  }, [workOrders, days]);
-
-  const disciplineSummaries = useMemo(() => {
-    return DISCIPLINES.map((disc) => {
-      const posCount = disc.positions.length;
-      let totalAvail = 0, totalSched = 0;
-      const dailyAvail: number[] = [];
-      const dailySched: number[] = [];
-      for (const day of days) {
-        const dayKey = format(day, "yyyy-MM-dd");
-        const avail = posCount * HRS_PER_PERSON;
-        const sched = (scheduledByDisciplineDay[disc.key]?.[dayKey] || []).reduce((s, wo) => s + getWoHours(wo), 0);
-        totalAvail += avail;
-        totalSched += sched;
-        dailyAvail.push(avail);
-        dailySched.push(sched);
-      }
-      return { key: disc.key, totalAvail, totalSched, loadPct: totalAvail > 0 ? Math.round((totalSched / totalAvail) * 100) : 0, dailyAvail, dailySched };
+        const pms = wos.filter((w) => w.work_type === "PM");
+        const cms = wos.filter((w) => w.work_type !== "PM");
+        const hrs = wos.reduce((s, w) => s + getWoHours(w), 0);
+        const personnel = personnelByDay[dayKey] ?? 4;
+        const avail = personnel * HRS_PER_PERSON;
+        return { dayKey, day, wos, pms, cms, hrs, avail, personnel };
+      });
+      const totalHrs = byDay.reduce((s, d) => s + d.hrs, 0);
+      const totalAvail = byDay.reduce((s, d) => s + d.avail, 0);
+      const loadPct = totalAvail > 0 ? Math.round((totalHrs / totalAvail) * 100) : 0;
+      return { ...disc, byDay, totalHrs, totalAvail, loadPct };
     });
-  }, [scheduledByDisciplineDay, days]);
-
-  const grandTotals = useMemo(() => {
-    const t = { avail: 0, sched: 0 };
-    for (const s of disciplineSummaries) { t.avail += s.totalAvail; t.sched += s.totalSched; }
-    return { ...t, loadPct: t.avail > 0 ? Math.round((t.sched / t.avail) * 100) : 0 };
-  }, [disciplineSummaries]);
+  }, [workOrders, days, personnelByDay]);
 
   const handleExportPdf = async () => {
     if (!reportRef.current) return;
     toast.info("Generating PDF...");
     try {
-      const canvas = await html2canvas(reportRef.current, { scale: 2, useCORS: true, backgroundColor: "#ffffff", windowWidth: 1200 });
+      const canvas = await html2canvas(reportRef.current, { scale: 2, useCORS: true, backgroundColor: "#ffffff", windowWidth: 1100 });
       const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-      const A4_W = 297, A4_H = 210, MARGIN = 8;
-      const contentW = A4_W - MARGIN * 2;
+      const A4_W = 297, A4_H = 210, M = 8;
+      const cW = A4_W - M * 2;
       const imgW = canvas.width, imgH = canvas.height;
-      const scaleFactor = contentW / (imgW / 2);
-      const totalImgHMm = (imgH / 2) * scaleFactor;
-
-      if (totalImgHMm <= A4_H - MARGIN * 2) {
-        pdf.addImage(canvas.toDataURL("image/png"), "PNG", MARGIN, MARGIN, contentW, totalImgHMm);
+      const sf = cW / (imgW / 2);
+      const tH = (imgH / 2) * sf;
+      if (tH <= A4_H - M * 2) {
+        pdf.addImage(canvas.toDataURL("image/png"), "PNG", M, M, cW, tH);
       } else {
-        let sourceY = 0, currentY = MARGIN;
-        const pxPerMm = imgH / totalImgHMm;
-        while (sourceY < imgH) {
-          const remainMm = A4_H - MARGIN - currentY;
-          const slicePx = Math.min(Math.floor(remainMm * pxPerMm), imgH - sourceY);
-          const sliceMm = slicePx / pxPerMm;
-          const sliceCanvas = document.createElement("canvas");
-          sliceCanvas.width = imgW;
-          sliceCanvas.height = slicePx;
-          const ctx = sliceCanvas.getContext("2d")!;
-          ctx.drawImage(canvas, 0, sourceY, imgW, slicePx, 0, 0, imgW, slicePx);
-          pdf.addImage(sliceCanvas.toDataURL("image/png"), "PNG", MARGIN, currentY, contentW, sliceMm);
-          sourceY += slicePx;
-          if (sourceY < imgH) { pdf.addPage(); currentY = MARGIN; }
+        let srcY = 0, curY = M;
+        const ppm = imgH / tH;
+        while (srcY < imgH) {
+          const rem = A4_H - M - curY;
+          const slPx = Math.min(Math.floor(rem * ppm), imgH - srcY);
+          const slMm = slPx / ppm;
+          const sc = document.createElement("canvas"); sc.width = imgW; sc.height = slPx;
+          sc.getContext("2d")!.drawImage(canvas, 0, srcY, imgW, slPx, 0, 0, imgW, slPx);
+          pdf.addImage(sc.toDataURL("image/png"), "PNG", M, curY, cW, slMm);
+          srcY += slPx;
+          if (srcY < imgH) { pdf.addPage(); curY = M; }
         }
       }
-      pdf.save(`Weekly_Schedule_Report_${format(weekStart, "yyyy-MM-dd")}.pdf`);
+      pdf.save(`Weekly_Schedule_${format(weekStart, "yyyy-MM-dd")}.pdf`);
       toast.success("PDF exported");
-    } catch (err) {
-      toast.error("PDF export failed");
-      console.error(err);
-    }
+    } catch { toast.error("PDF export failed"); }
   };
 
   const handlePrint = () => {
     if (!reportRef.current) return;
-    html2canvas(reportRef.current, { scale: 2, backgroundColor: "#ffffff", windowWidth: 1200 }).then((canvas) => {
+    html2canvas(reportRef.current, { scale: 2, backgroundColor: "#ffffff", windowWidth: 1100 }).then((canvas) => {
       const win = window.open("", "_blank");
       if (!win) { toast.error("Popup blocked"); return; }
       win.document.write(`<html><head><title>Weekly Schedule</title><style>@page{size:landscape;margin:8mm}body{margin:0;display:flex;justify-content:center}img{width:100%;height:auto}</style></head><body><img src="${canvas.toDataURL("image/png")}"/></body></html>`);
@@ -165,9 +106,11 @@ export function WOCScheduleReport({ weekOffset }: Props) {
     });
   };
 
+  const dayLabel = (d: Date) => format(d, "EEE").toUpperCase();
+  const dayDate = (d: Date) => format(d, "d");
+
   return (
     <div className="space-y-3">
-      {/* Action bar */}
       <div className="flex items-center justify-end gap-2">
         <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={handlePrint}>
           <Printer className="w-3.5 h-3.5" /> Print
@@ -177,163 +120,127 @@ export function WOCScheduleReport({ weekOffset }: Props) {
         </Button>
       </div>
 
-      {/* Report Body */}
-      <div ref={reportRef} className="bg-white rounded-lg border border-border p-6 space-y-4" style={{ color: "#1a1a1a" }}>
-        {/* Title */}
-        <div className="text-center space-y-1 pb-3" style={{ borderBottom: "2px solid #C8960C" }}>
-          <h2 className="text-xl font-bold tracking-wide" style={{ color: "#1a1a1a" }}>MAINTENANCE WEEKLY SCHEDULE</h2>
-          <p className="text-sm font-medium" style={{ color: "#555" }}>Tennant Creek Gold Mine</p>
-          <p className="text-sm" style={{ color: "#666" }}>
-            Week Beginning: <span className="font-bold" style={{ color: "#1a1a1a" }}>{format(weekStart, "EEEE, d MMMM yyyy")}</span>
-            <span className="ml-4 font-medium" style={{ color: "#888" }}>{weekLabel}</span>
-          </p>
+      <div ref={reportRef} style={{ background: "#fff", padding: 32, fontFamily: "'Segoe UI', system-ui, sans-serif", color: "#1a1a1a", maxWidth: 1100 }}>
+        {/* Header */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "3px solid #C8960C", paddingBottom: 12, marginBottom: 20 }}>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: "#C8960C", letterSpacing: 2, textTransform: "uppercase" }}>Tennant Creek Gold Mine</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: "#1a1a1a", marginTop: 2 }}>Weekly Maintenance Schedule</div>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontSize: 28, fontWeight: 800, color: "#C8960C" }}>{weekLabel}</div>
+            <div style={{ fontSize: 12, color: "#666" }}>{format(weekStart, "d MMM")} — {format(weekEnd, "d MMM yyyy")}</div>
+          </div>
         </div>
 
-        {/* Summary Stats */}
-        <table className="w-full text-xs border-collapse" style={{ color: "#1a1a1a" }}>
+        {/* Summary Bars */}
+        <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
+          {data.map((disc) => (
+            <div key={disc.key} style={{ flex: 1, background: disc.light, borderRadius: 8, padding: "12px 16px", border: `1px solid ${disc.accent}22` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: disc.dark }}>{disc.key}</span>
+                <span style={{ fontSize: 22, fontWeight: 800, color: disc.loadPct > disc.target ? "#dc2626" : disc.accent }}>{disc.loadPct}%</span>
+              </div>
+              {/* Loading bar */}
+              <div style={{ height: 6, borderRadius: 3, background: `${disc.accent}20`, overflow: "hidden" }}>
+                <div style={{ height: "100%", borderRadius: 3, width: `${Math.min(disc.loadPct, 100)}%`, background: disc.loadPct > disc.target ? "#dc2626" : disc.accent, transition: "width 0.3s" }} />
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 10, color: "#888" }}>
+                <span>{disc.totalHrs.toFixed(1)}h scheduled</span>
+                <span>{disc.totalAvail.toFixed(1)}h available</span>
+                <span>Target: {disc.target}%</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Day Columns Grid */}
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
           <thead>
             <tr>
-              <th className="text-left px-3 py-2 font-bold border border-gray-300" style={{ background: "#f3f4f6", width: 200 }}></th>
-              {DISCIPLINES.map((d) => (
-                <th key={d.key} className="text-center px-3 py-2 font-bold border border-gray-300" style={{ background: "#f3f4f6" }}>{d.key}</th>
-              ))}
-              <th className="text-center px-3 py-2 font-bold border border-gray-300" style={{ background: "#f3f4f6" }}>TOTAL</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="px-3 py-1.5 font-bold border border-gray-300">TOTAL AVAILABLE HRS</td>
-              {disciplineSummaries.map((s) => <td key={s.key} className="text-center px-3 py-1.5 font-medium border border-gray-300">{s.totalAvail.toFixed(1)}</td>)}
-              <td className="text-center px-3 py-1.5 font-bold border border-gray-300">{grandTotals.avail.toFixed(1)}</td>
-            </tr>
-            <tr>
-              <td className="px-3 py-1.5 font-bold border border-gray-300">SCHEDULE LOAD (HRS)</td>
-              {disciplineSummaries.map((s) => <td key={s.key} className="text-center px-3 py-1.5 font-medium border border-gray-300">{s.totalSched.toFixed(1)}</td>)}
-              <td className="text-center px-3 py-1.5 font-bold border border-gray-300">{grandTotals.sched.toFixed(1)}</td>
-            </tr>
-            <tr>
-              <td className="px-3 py-1.5 font-bold border border-gray-300">SCHEDULE LOAD (%)</td>
-              {disciplineSummaries.map((s) => (
-                <td key={s.key} className={cn("text-center px-3 py-1.5 font-bold border border-gray-300", s.loadPct > 90 ? "text-red-600" : s.loadPct > 70 ? "text-amber-600" : "text-emerald-600")}>{s.loadPct}%</td>
-              ))}
-              <td className={cn("text-center px-3 py-1.5 font-bold border border-gray-300", grandTotals.loadPct > 90 ? "text-red-600" : grandTotals.loadPct > 70 ? "text-amber-600" : "text-emerald-600")}>{grandTotals.loadPct}%</td>
-            </tr>
-          </tbody>
-        </table>
-
-        {/* Discipline Sections */}
-        {DISCIPLINES.map((disc, dIdx) => {
-          const summary = disciplineSummaries[dIdx];
-          return (
-            <table key={disc.key} className="w-full text-xs border-collapse">
-              <thead>
-                <tr>
-                  <th colSpan={8} className="text-left px-3 py-2 font-bold text-[11px] tracking-wider border border-gray-400 text-white" style={{ background: disc.headerBg }}>
-                    {disc.label}
-                  </th>
-                </tr>
-                <tr style={{ background: "#f3f4f6" }}>
-                  <th className="text-left px-3 py-1.5 font-bold border border-gray-300" style={{ width: 200 }}>Position</th>
-                  {days.map((day, i) => (
-                    <th key={i} className="text-center px-2 py-1.5 font-bold border border-gray-300" style={{ width: 100 }}>
-                      <div>{DAY_LABELS[i]}</div>
-                      <div className="text-[9px] font-normal" style={{ color: "#777" }}>{format(day, "d MMM")}</div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {disc.positions.map((pos, pIdx) => (
-                  <tr key={pos} style={{ background: pIdx % 2 === 0 ? disc.rowBg : "#fff" }}>
-                    <td className="px-3 py-1 font-medium border border-gray-300 text-[10px]" style={{ color: "#333" }}>{pos.toUpperCase()}</td>
-                    {days.map((day, i) => {
-                      const dayKey = format(day, "yyyy-MM-dd");
-                      const dayWOs = scheduledByDisciplineDay[disc.key]?.[dayKey] || [];
-                      const woForRow = dayWOs[pIdx] || null;
-                      return (
-                        <td key={i} className="text-center px-1 py-1 border border-gray-300 text-[9px]">
-                          {woForRow ? (
-                            <span className={cn("inline-block px-1.5 py-0.5 rounded text-[8px] font-semibold", woForRow.work_type === "PM" ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800")}>
-                              {woForRow.wo_number}
-                            </span>
-                          ) : (
-                            <span style={{ color: "#ccc" }}>0</span>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-                <tr style={{ background: "#f3f4f6" }}>
-                  <td className="px-3 py-1.5 font-bold border border-gray-300 text-[10px]">AVAILABLE HRS</td>
-                  {summary.dailyAvail.map((h, i) => <td key={i} className="text-center px-2 py-1.5 border border-gray-300 text-[10px] font-bold">{h.toFixed(1)}</td>)}
-                </tr>
-                <tr style={{ background: "#fafafa" }}>
-                  <td className="px-3 py-1.5 font-semibold border border-gray-300 text-[10px]">SCHEDULED HRS</td>
-                  {summary.dailySched.map((h, i) => (
-                    <td key={i} className={cn("text-center px-2 py-1.5 border border-gray-300 text-[10px] font-semibold", h > 0 ? "text-blue-700" : "")}>{h.toFixed(1)}</td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          );
-        })}
-
-        {/* Work Orders Detail */}
-        <table className="w-full text-xs border-collapse">
-          <thead>
-            <tr>
-              <th colSpan={7} className="text-left px-3 py-2 font-bold text-[11px] tracking-wider border border-gray-400 text-white" style={{ background: "#1a1a2e" }}>
-                SCHEDULED WORK ORDERS DETAIL
-              </th>
-            </tr>
-            <tr style={{ background: "#f3f4f6" }}>
-              <th className="text-left px-3 py-1.5 font-bold border border-gray-300">WO Number</th>
-              <th className="text-left px-3 py-1.5 font-bold border border-gray-300">Type</th>
-              <th className="text-left px-3 py-1.5 font-bold border border-gray-300">Discipline</th>
-              <th className="text-left px-3 py-1.5 font-bold border border-gray-300">Priority</th>
-              <th className="text-left px-3 py-1.5 font-bold border border-gray-300">Date</th>
-              <th className="text-left px-3 py-1.5 font-bold border border-gray-300">Asset</th>
-              <th className="text-left px-3 py-1.5 font-bold border border-gray-300">Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(() => {
-              const allScheduled = workOrders.filter((wo) => {
-                if (!wo.scheduled_date) return false;
-                return days.some((d) => isSameDay(parseISO(wo.scheduled_date!), d)) &&
-                  ["Scheduled", "Active", "In Progress"].includes(wo.status);
-              }).sort((a, b) => (a.scheduled_date || "").localeCompare(b.scheduled_date || ""));
-
-              if (allScheduled.length === 0) {
+              <th style={{ width: 90, padding: "6px 8px", textAlign: "left", borderBottom: "2px solid #e5e7eb" }}></th>
+              {days.map((day) => {
+                const isToday = isSameDay(day, today);
                 return (
-                  <tr><td colSpan={7} className="text-center px-3 py-4 border border-gray-300" style={{ color: "#999" }}>No work orders scheduled for this week</td></tr>
+                  <th key={day.toISOString()} style={{
+                    padding: "6px 4px", textAlign: "center", borderBottom: isToday ? "2px solid #C8960C" : "2px solid #e5e7eb",
+                    background: isToday ? "#fdf8ea" : "transparent",
+                  }}>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: isToday ? "#C8960C" : "#999", letterSpacing: 1 }}>{dayLabel(day)}</div>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: isToday ? "#C8960C" : "#1a1a1a" }}>{dayDate(day)}</div>
+                  </th>
                 );
-              }
-
-              return allScheduled.map((wo, idx) => (
-                <tr key={wo.id} style={{ background: idx % 2 === 0 ? "#fdf8ea" : "#fff" }}>
-                  <td className="px-3 py-1 border border-gray-300 font-mono font-semibold text-[10px]">{wo.wo_number}</td>
-                  <td className="px-3 py-1 border border-gray-300 text-[10px]">
-                    <span className={cn("inline-block px-1.5 py-0.5 rounded text-[8px] font-semibold", wo.work_type === "PM" ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800")}>{wo.work_type || "CM"}</span>
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((disc) => (
+              <>
+                {/* Discipline label row */}
+                <tr key={`${disc.key}-label`}>
+                  <td colSpan={8} style={{ padding: "10px 8px 4px", fontSize: 11, fontWeight: 700, color: disc.dark, borderBottom: `2px solid ${disc.accent}` }}>
+                    {disc.key}
                   </td>
-                  <td className="px-3 py-1 border border-gray-300 text-[10px]">{wo.trade || "Mechanical"}</td>
-                  <td className="px-3 py-1 border border-gray-300 text-[10px]">
-                    <span className={cn("font-semibold", wo.priority === "Critical" ? "text-red-600" : wo.priority === "High" ? "text-amber-600" : wo.priority === "Medium" ? "text-blue-600" : "")}>{wo.priority}</span>
-                  </td>
-                  <td className="px-3 py-1 border border-gray-300 text-[10px]">{wo.scheduled_date ? format(parseISO(wo.scheduled_date), "EEE d MMM") : ""}</td>
-                  <td className="px-3 py-1 border border-gray-300 text-[10px]">{wo.asset_id || ""}</td>
-                  <td className="px-3 py-1 border border-gray-300 text-[10px] max-w-[250px] truncate">{wo.problem_description || ""}</td>
                 </tr>
-              ));
-            })()}
+                {/* Hours row */}
+                <tr key={`${disc.key}-hrs`}>
+                  <td style={{ padding: "6px 8px", fontSize: 10, color: "#888", fontWeight: 600 }}>Hours</td>
+                  {disc.byDay.map((d) => (
+                    <td key={d.dayKey} style={{ padding: "4px", textAlign: "center", background: isSameDay(d.day, today) ? "#fdf8ea" : "transparent" }}>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: d.hrs > d.avail ? "#dc2626" : d.hrs > 0 ? disc.accent : "#ddd" }}>
+                        {d.hrs > 0 ? d.hrs.toFixed(1) : "—"}
+                      </div>
+                      <div style={{ fontSize: 9, color: "#bbb" }}>/ {d.avail.toFixed(0)}</div>
+                    </td>
+                  ))}
+                </tr>
+                {/* Work Orders row */}
+                <tr key={`${disc.key}-wo`}>
+                  <td style={{ padding: "4px 8px", fontSize: 10, color: "#888", verticalAlign: "top" }}>Work Orders</td>
+                  {disc.byDay.map((d) => (
+                    <td key={d.dayKey} style={{ padding: "3px 2px", verticalAlign: "top", textAlign: "center", background: isSameDay(d.day, today) ? "#fdf8ea" : "transparent" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
+                        {d.cms.map((wo) => (
+                          <span key={wo.id} style={{
+                            display: "inline-block", padding: "2px 6px", borderRadius: 4, fontSize: 9, fontWeight: 600,
+                            background: `${disc.accent}18`, color: disc.accent, border: `1px solid ${disc.accent}30`,
+                          }}>
+                            {wo.wo_number}
+                          </span>
+                        ))}
+                        {d.cms.length === 0 && <span style={{ color: "#e5e7eb", fontSize: 9 }}>—</span>}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+                {/* PMs row */}
+                <tr key={`${disc.key}-pm`}>
+                  <td style={{ padding: "4px 8px 10px", fontSize: 10, color: "#888", verticalAlign: "top" }}>PMs</td>
+                  {disc.byDay.map((d) => (
+                    <td key={d.dayKey} style={{ padding: "3px 2px 10px", verticalAlign: "top", textAlign: "center", borderBottom: "1px solid #f3f4f6", background: isSameDay(d.day, today) ? "#fdf8ea" : "transparent" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
+                        {d.pms.map((wo) => (
+                          <span key={wo.id} style={{
+                            display: "inline-block", padding: "2px 6px", borderRadius: 4, fontSize: 9, fontWeight: 600,
+                            background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d030",
+                          }}>
+                            {wo.wo_number}
+                          </span>
+                        ))}
+                        {d.pms.length === 0 && <span style={{ color: "#e5e7eb", fontSize: 9 }}>—</span>}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              </>
+            ))}
           </tbody>
         </table>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-3 text-[9px]" style={{ borderTop: "1px solid #d1d5db", color: "#999" }}>
-          <span>Tennant Creek Gold Mine | Maintenance Weekly Schedule</span>
-          <span>Generated: {format(new Date(), "d MMM yyyy, HH:mm")}</span>
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 20, paddingTop: 10, borderTop: "1px solid #e5e7eb", fontSize: 9, color: "#bbb" }}>
+          <span>Tennant Creek Gold Mine</span>
+          <span>Generated {format(new Date(), "d MMM yyyy, HH:mm")}</span>
           <span>minesite.ai</span>
         </div>
       </div>
