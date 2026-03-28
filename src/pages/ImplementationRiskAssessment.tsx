@@ -262,7 +262,7 @@ const ImplementationRiskAssessment = () => {
     </section>
 
     {/* 4. Recommended Approach */}
-    <section className="mb-10">
+    <section data-pdf-section className="mb-10">
       <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">4. Recommended Approach</h2>
       <div className="space-y-4">
         <p className="text-[13px] text-muted-foreground font-semibold border-l-2 border-primary/40 pl-3">
