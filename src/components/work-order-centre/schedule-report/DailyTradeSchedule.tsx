@@ -155,7 +155,7 @@ function WORow({ wo, idx, disc, onStatusChange }: { wo: WorkOrder; idx: number; 
           {isPM ? "PM" : wo.work_type || "CM"}
         </span>
       </td>
-      <td style={{ ...S.td, fontWeight: 600, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{wo.asset_id || "—"}</td>
+      <td style={{ ...S.td, fontWeight: 600, fontSize: 9, whiteSpace: "nowrap" }}>{wo.asset_id || "—"}</td>
       <td style={{ ...S.td, fontSize: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{wo.functional_location || "—"}</td>
       <td style={{ ...S.td, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
         {wo.problem_description || wo.scope_of_works || "No description"}
