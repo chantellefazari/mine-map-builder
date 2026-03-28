@@ -1,4 +1,11 @@
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Printer, FileText, Loader2 } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
+import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
+import { toast } from "sonner";
 
 type Level = "High" | "Medium" | "Low";
 
@@ -28,15 +35,139 @@ const levelStyle: Record<Level, string> = {
   Low: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30",
 };
 
-const ImplementationRiskAssessment = () => (
-  <div className="p-6 md:p-10 max-w-[860px] mx-auto">
-    {/* Header */}
-    <div className="mb-10">
-      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.2em]">Tennant Creek Gold Mine</p>
-      <h1 className="text-2xl font-extrabold text-foreground mt-1 tracking-tight">Implementation Risk Assessment</h1>
-      <p className="text-xs text-muted-foreground mt-1">Minesite.ai Work Management System — Prepared for site leadership and stakeholder review</p>
-      <div className="h-[2px] bg-primary/30 mt-4 w-24" />
-    </div>
+const ImplementationRiskAssessment = () => {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [savingPdf, setSavingPdf] = useState(false);
+  const [savingDocx, setSavingDocx] = useState(false);
+
+  const handleSavePdf = async () => {
+    const el = contentRef.current;
+    if (!el) return;
+    setSavingPdf(true);
+    try {
+      const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: "#ffffff", logging: false });
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const A4_W = 210, A4_H = 297, MARGIN = 8;
+      const contentW = A4_W - MARGIN * 2;
+      const imgRatio = canvas.height / canvas.width;
+      const totalImgH = contentW * imgRatio;
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+      let heightLeft = totalImgH;
+      let position = MARGIN;
+      pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
+      heightLeft -= (A4_H - MARGIN * 2);
+      while (heightLeft > 0) {
+        pdf.addPage();
+        position = MARGIN - (totalImgH - heightLeft);
+        pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
+        heightLeft -= (A4_H - MARGIN * 2);
+      }
+      const blob = pdf.output("blob");
+      await uploadAndShowPdf(blob, "TCMG-Implementation-Risk-Assessment.pdf", "Implementation Risk Assessment");
+      toast.success("PDF saved successfully");
+    } catch (err) {
+      console.error("PDF save error:", err);
+      toast.error("Failed to save PDF");
+    } finally {
+      setSavingPdf(false);
+    }
+  };
+
+  const handleExportDocx = async () => {
+    setSavingDocx(true);
+    try {
+      const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, HeadingLevel, AlignmentType, BorderStyle, WidthType, ShadingType } = await import("docx");
+      const cellBorder = { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" };
+      const cellBorders = { top: cellBorder, bottom: cellBorder, left: cellBorder, right: cellBorder };
+      const cellMargins = { top: 60, bottom: 60, left: 100, right: 100 };
+      const riskRows = RISKS.map(r => new TableRow({
+        children: [
+          new TableCell({ borders: cellBorders, width: { size: 3200, type: WidthType.DXA }, margins: cellMargins, children: [new Paragraph({ children: [new TextRun({ text: r.title, bold: true, size: 20, font: "Arial" })] })] }),
+          new TableCell({ borders: cellBorders, width: { size: 4960, type: WidthType.DXA }, margins: cellMargins, children: [new Paragraph({ children: [new TextRun({ text: r.description, size: 20, font: "Arial" })] })] }),
+          new TableCell({ borders: cellBorders, width: { size: 1200, type: WidthType.DXA }, margins: cellMargins, shading: { fill: r.level === "High" ? "FDE8E8" : r.level === "Medium" ? "FEF3CD" : "D4EDDA", type: ShadingType.CLEAR }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: r.level, bold: true, size: 20, font: "Arial", color: r.level === "High" ? "DC2626" : r.level === "Medium" ? "B45309" : "16A34A" })] })] }),
+        ],
+      }));
+      const bullet = (t: string) => new Paragraph({ spacing: { after: 40 }, indent: { left: 360 }, children: [new TextRun({ text: `\u2022  ${t}`, size: 22, font: "Arial" })] });
+      const doc = new Document({
+        styles: { default: { document: { run: { font: "Arial", size: 24 } } } },
+        sections: [{
+          properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1440, right: 1200, bottom: 1440, left: 1200 } } },
+          children: [
+            new Paragraph({ children: [new TextRun({ text: "TENNANT CREEK GOLD MINE", size: 18, font: "Arial", color: "888888", bold: true })] }),
+            new Paragraph({ spacing: { before: 100 }, children: [new TextRun({ text: "Implementation Risk Assessment", size: 36, bold: true, font: "Arial" })] }),
+            new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "Minesite.ai Work Management System \u2014 Prepared for site leadership and stakeholder review", size: 20, font: "Arial", color: "666666" })] }),
+            new Paragraph({ spacing: { after: 300 }, border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "C8960C", space: 1 } }, children: [] }),
+            new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 300, after: 100 }, children: [new TextRun({ text: "1. Purpose", size: 26, bold: true, font: "Arial" })] }),
+            new Paragraph({ spacing: { after: 200 }, children: [new TextRun({ text: "This assessment outlines the implementation risks associated with rolling out the new work management system at Tennant Creek Gold Mine. The focus is on ensuring the system is introduced in a controlled and sustainable way, recognising that success depends on site readiness across people, process, data, and operational discipline.", size: 22, font: "Arial" })] }),
+            new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 300, after: 100 }, children: [new TextRun({ text: "2. Current Position", size: 26, bold: true, font: "Arial" })] }),
+            new Paragraph({ spacing: { after: 80 }, children: [new TextRun({ text: "Progress Made", size: 22, bold: true, font: "Arial" })] }),
+            ...["Work Request and Work Order logic developed", "Scheduling capability established", "Asset hierarchy rebuild in progress", "Parts catalogue development underway", "PM logic being developed"].map(bullet),
+            new Paragraph({ spacing: { before: 120, after: 80 }, children: [new TextRun({ text: "Current Gaps", size: 22, bold: true, font: "Arial" })] }),
+            ...["No fully controlled stores environment", "Stock visibility not yet reliable", "Parts and BOM linkage incomplete", "Work management process not fully embedded", "Site culture remains reactive with low accountability"].map(bullet),
+            new Paragraph({ spacing: { before: 120, after: 200 }, indent: { left: 200 }, border: { left: { style: BorderStyle.SINGLE, size: 6, color: "C8960C", space: 4 } }, children: [new TextRun({ text: "The site is progressing toward readiness, but is not yet at a point for full uncontrolled system rollout.", size: 22, font: "Arial", italics: true })] }),
+            new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 300, after: 100 }, children: [new TextRun({ text: "3. Key Implementation Risks", size: 26, bold: true, font: "Arial" })] }),
+            new Table({ width: { size: 9360, type: WidthType.DXA }, columnWidths: [3200, 4960, 1200], rows: [
+              new TableRow({ children: [
+                new TableCell({ borders: cellBorders, width: { size: 3200, type: WidthType.DXA }, margins: cellMargins, shading: { fill: "F0F0F0", type: ShadingType.CLEAR }, children: [new Paragraph({ children: [new TextRun({ text: "Risk", bold: true, size: 20, font: "Arial" })] })] }),
+                new TableCell({ borders: cellBorders, width: { size: 4960, type: WidthType.DXA }, margins: cellMargins, shading: { fill: "F0F0F0", type: ShadingType.CLEAR }, children: [new Paragraph({ children: [new TextRun({ text: "Description", bold: true, size: 20, font: "Arial" })] })] }),
+                new TableCell({ borders: cellBorders, width: { size: 1200, type: WidthType.DXA }, margins: cellMargins, shading: { fill: "F0F0F0", type: ShadingType.CLEAR }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Level", bold: true, size: 20, font: "Arial" })] })] }),
+              ] }),
+              ...riskRows,
+            ] }),
+            new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 400, after: 100 }, children: [new TextRun({ text: "4. Recommended Approach", size: 26, bold: true, font: "Arial" })] }),
+            new Paragraph({ spacing: { after: 80 }, indent: { left: 200 }, border: { left: { style: BorderStyle.SINGLE, size: 6, color: "DC2626", space: 4 } }, children: [new TextRun({ text: "Do not proceed with full site-wide rollout at this stage.", size: 22, font: "Arial", bold: true })] }),
+            new Paragraph({ spacing: { before: 120, after: 40 }, children: [new TextRun({ text: "Phased Implementation:", size: 22, bold: true, font: "Arial" })] }),
+            ...["Phase 1: Foundation Stabilisation", "Phase 2: Controlled Pilot", "Phase 3: Gradual Rollout"].map(bullet),
+            new Paragraph({ spacing: { before: 120, after: 40 }, children: [new TextRun({ text: "Focus Areas:", size: 22, bold: true, font: "Arial" })] }),
+            ...["Leadership enforcement of system use and process compliance", "User adoption through role-specific training and on-shift support", "Training delivered by role, reinforced through coaching and refreshers", "Removal of parallel systems (spreadsheets, manual trackers, whiteboards)"].map(bullet),
+            new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 400, after: 100 }, children: [new TextRun({ text: "5. Final Position", size: 26, bold: true, font: "Arial" })] }),
+            new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "The system being developed is strong and has the potential to significantly improve site performance.", size: 22, font: "Arial", bold: true })] }),
+            new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "However, implementation success will depend on site readiness, not system capability alone. People, process, data, stores maturity, and leadership commitment are the deciding factors.", size: 22, font: "Arial" })] }),
+            new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "A controlled, phased rollout aligned with operational maturity is critical to ensure long-term adoption and avoid early failure.", size: 22, font: "Arial", bold: true })] }),
+            new Paragraph({ spacing: { before: 400 }, border: { top: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC", space: 4 } }, children: [new TextRun({ text: "Tennant Creek Gold Mine \u2014 Implementation Risk Assessment \u2014 Prepared for leadership and stakeholder review", size: 16, font: "Arial", color: "999999" })] }),
+          ],
+        }],
+      });
+      const buffer = await Packer.toBuffer(doc);
+      const blob = new Blob([buffer as unknown as ArrayBuffer], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "TCMG-Implementation-Risk-Assessment.docx";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      toast.success("Word document exported");
+    } catch (err) {
+      console.error("DOCX export error:", err);
+      toast.error("Failed to export Word document");
+    } finally {
+      setSavingDocx(false);
+    }
+  };
+
+  return (
+    <div className="p-6 md:p-10 max-w-[860px] mx-auto">
+      <div className="flex justify-end gap-2 mb-4 print:hidden">
+        <Button variant="outline" size="sm" onClick={handleSavePdf} disabled={savingPdf} className="gap-2">
+          {savingPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Printer className="w-3.5 h-3.5" />}
+          {savingPdf ? "Saving\u2026" : "Save PDF"}
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleExportDocx} disabled={savingDocx} className="gap-2">
+          {savingDocx ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileText className="w-3.5 h-3.5" />}
+          {savingDocx ? "Exporting\u2026" : "Export Word"}
+        </Button>
+      </div>
+
+      <div ref={contentRef}>
+      {/* Header */}
+      <div className="mb-10">
+        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.2em]">Tennant Creek Gold Mine</p>
+        <h1 className="text-2xl font-extrabold text-foreground mt-1 tracking-tight">Implementation Risk Assessment</h1>
+        <p className="text-xs text-muted-foreground mt-1">Minesite.ai Work Management System — Prepared for site leadership and stakeholder review</p>
+        <div className="h-[2px] bg-primary/30 mt-4 w-24" />
+      </div>
 
     {/* 1. Purpose */}
     <section className="mb-10">
@@ -168,7 +299,9 @@ const ImplementationRiskAssessment = () => (
     <div className="border-t border-border pt-4 mt-10">
       <p className="text-[10px] text-muted-foreground">Tennant Creek Gold Mine — Implementation Risk Assessment — Prepared for leadership and stakeholder review</p>
     </div>
+    </div>
   </div>
-);
+  );
+};
 
 export default ImplementationRiskAssessment;
