@@ -80,23 +80,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
     return (p === "P1" || p === "P2") && ["Scheduled", "Active", "Planning", "Planned"].includes(wo.status) && !wo.scheduled_date;
   });
 
-  // ── Unscheduled work ──
-  const unscheduledItems: UnscheduledWO[] = useMemo(() => {
-    return workOrders
-      .filter(wo => ["Scheduled", "Active", "Planning", "Planned"].includes(wo.status) && !wo.scheduled_date)
-      .slice(0, 20)
-      .map(wo => {
-        let reason = "No capacity";
-        let action = "Schedule next available week";
-        const p = priorityLabel(wo.priority);
-        if (p === "P5") { reason = "Waiting shutdown window"; action = "Defer to next shutdown"; }
-        else if (p === "P6") { reason = "Engineering scope required"; action = "Complete engineering review"; }
-        else if (p === "P7") { reason = "Project schedule"; action = "Coordinate with project team"; }
-        else if (!wo.assigned_to && !wo.technician_name) { reason = "Labour unavailable"; action = "Assign resource and reschedule"; }
-        else if (!wo.scope_of_works && !wo.problem_description) { reason = "Scope not ready"; action = "Define scope before scheduling"; }
-        return { wo, reason, action };
-      });
-  }, [workOrders]);
 
   // ── Quality checks ──
   const qualityChecks: QualityCheck[] = useMemo(() => {
