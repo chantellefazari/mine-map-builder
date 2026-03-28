@@ -79,9 +79,9 @@ export function DailyTradeSchedule({ data }: Props) {
                       <tr style={{ background: "#f9fafb" }}>
                         <th style={{ ...S.th, width: "6%" }}>WO #</th>
                         <th style={{ ...S.th, width: "3%" }}>Type</th>
-                        <th style={{ ...S.th, width: "5%" }}>Asset</th>
+                        <th style={{ ...S.th, width: "7%" }}>Asset</th>
                         <th style={{ ...S.th, width: "9%" }}>Equipment</th>
-                        <th style={{ ...S.th, width: "17%" }}>Description</th>
+                        <th style={{ ...S.th, width: "15%" }}>Description</th>
                         <th style={{ ...S.th, width: "8%" }}>Resource</th>
                         <th style={{ ...S.th, width: "5%", textAlign: "center" }}>Priority</th>
                         <th style={{ ...S.th, width: "4%", textAlign: "right" }}>Hrs</th>
