@@ -1,31 +1,31 @@
 import { cn } from "@/lib/utils";
 
-type Level = "Critical" | "High" | "Moderate";
+type Level = "High" | "Medium" | "Low";
 
 const RISKS: { title: string; description: string; level: Level }[] = [
-  // Critical
-  { title: "Poor User Adoption and Site Culture", description: "Workforce continues verbal requests and reactive habits. System is deployed but not used as the primary operating tool. Work remains untracked and maintenance history is lost.", level: "Critical" },
-  { title: "Parallel Systems Continue", description: "Excel trackers, whiteboard schedules, and manual PO logs persist alongside the new system, creating two sources of truth. Users default to familiar tools and the system becomes a secondary record.", level: "Critical" },
-  { title: "Immature Stores and Inventory Control", description: "No controlled stores environment, no receiving process, no bin locations mapped, no cycle counting. Parts cannot be issued or received through the system. Emergency purchasing continues unchecked.", level: "Critical" },
-  { title: "Incomplete Parts Catalogue and BOM Linkage", description: "Many assets have no linked spare parts. Min/max stock levels are unpopulated, lead times are unknown, and unit costs are missing. Reorder logic does not function. PM work orders generate without parts lists.", level: "Critical" },
-  { title: "Work Management Process Not Consistently Followed", description: "WR to WO to close workflow is built but not embedded. Some supervisors approve verbally, priority is not assessed, and work orders are closed without completion notes or parts usage recorded.", level: "Critical" },
-  { title: "Lack of Leadership Enforcement", description: "Management does not consistently enforce system use. Supervisors are not held accountable for team compliance. Mixed signals to workforce cause adoption to stall and early adopters lose motivation.", level: "Critical" },
-  { title: "Training Not Role-Specific or Not Reinforced", description: "Generic training sessions delivered once with no follow-up coaching, no competency checks, and no refresher schedule. Users forget processes within days and workarounds develop.", level: "Critical" },
   // High
-  { title: "Asset Hierarchy Not Fully Stable", description: "Some parent-child relationships are incorrect, functional locations have gaps, and component-level detail is missing in secondary areas. Work orders raised against wrong assets and cost allocation is inaccurate.", level: "High" },
-  { title: "PM Data Quality Becomes Inconsistent", description: "Task descriptions are vague, inspection results are not recorded, and completion notes default to generic entries. PM history is useless for failure analysis and compliance reporting is unreliable.", level: "High" },
-  { title: "Premature Rollout Before Readiness Gates Met", description: "Pressure to show progress leads to go-live without completing stores setup, training, or leadership alignment prerequisites. Early failures erode confidence and recovery is harder than getting it right first time.", level: "High" },
-  { title: "Labour Time and Execution Behaviour Poorly Controlled", description: "Trades do not log actual hours, travel time is unaccounted, and job duration estimates are not validated. Cannot measure labour productivity or cost per work order.", level: "High" },
-  { title: "Too Much Rollout Scope Attempted Too Early", description: "All modules activated simultaneously instead of a controlled staged approach. Users are overwhelmed, support capacity is exceeded, and multiple process failures occur at once.", level: "High" },
-  // Moderate
-  { title: "Resistance to AI-Supported Workflows", description: "Site personnel distrust automated suggestions for PM scheduling, parts reordering, or work prioritisation. AI features are ignored or overridden, losing the value of intelligent automation.", level: "Moderate" },
-  { title: "Procurement Linkage Remains Immature", description: "PR to PO conversion is manual, supplier data is incomplete, no 3-way matching exists, and freight tracking is inconsistent. Procurement operates without financial controls and spend visibility is limited.", level: "Moderate" },
+  { title: "Poor User Adoption and Site Culture", description: "Workforce continues verbal requests and reactive habits. System is deployed but not used as the primary operating tool. Work remains untracked and maintenance history is lost.", level: "High" },
+  { title: "Parallel Systems Continue", description: "Excel trackers, whiteboard schedules, and manual PO logs persist alongside the new system, creating two sources of truth. Users default to familiar tools and the system becomes a secondary record.", level: "High" },
+  { title: "Immature Stores and Inventory Control", description: "No controlled stores environment, no receiving process, no bin locations mapped, no cycle counting. Parts cannot be issued or received through the system. Emergency purchasing continues unchecked.", level: "High" },
+  { title: "Incomplete Parts Catalogue and BOM Linkage", description: "Many assets have no linked spare parts. Min/max stock levels are unpopulated, lead times are unknown, and unit costs are missing. Reorder logic does not function. PM work orders generate without parts lists.", level: "High" },
+  { title: "Work Management Process Not Consistently Followed", description: "WR to WO to close workflow is built but not embedded. Some supervisors approve verbally, priority is not assessed, and work orders are closed without completion notes or parts usage recorded.", level: "High" },
+  { title: "Lack of Leadership Enforcement", description: "Management does not consistently enforce system use. Supervisors are not held accountable for team compliance. Mixed signals to workforce cause adoption to stall and early adopters lose motivation.", level: "High" },
+  { title: "Training Not Role-Specific or Not Reinforced", description: "Generic training sessions delivered once with no follow-up coaching, no competency checks, and no refresher schedule. Users forget processes within days and workarounds develop.", level: "High" },
+  // Medium
+  { title: "Asset Hierarchy Not Fully Stable", description: "Some parent-child relationships are incorrect, functional locations have gaps, and component-level detail is missing in secondary areas. Work orders raised against wrong assets and cost allocation is inaccurate.", level: "Medium" },
+  { title: "PM Data Quality Becomes Inconsistent", description: "Task descriptions are vague, inspection results are not recorded, and completion notes default to generic entries. PM history is useless for failure analysis and compliance reporting is unreliable.", level: "Medium" },
+  { title: "Premature Rollout Before Readiness Gates Met", description: "Pressure to show progress leads to go-live without completing stores setup, training, or leadership alignment prerequisites. Early failures erode confidence and recovery is harder than getting it right first time.", level: "Medium" },
+  { title: "Labour Time and Execution Behaviour Poorly Controlled", description: "Trades do not log actual hours, travel time is unaccounted, and job duration estimates are not validated. Cannot measure labour productivity or cost per work order.", level: "Medium" },
+  { title: "Too Much Rollout Scope Attempted Too Early", description: "All modules activated simultaneously instead of a controlled staged approach. Users are overwhelmed, support capacity is exceeded, and multiple process failures occur at once.", level: "Medium" },
+  // Low
+  { title: "Resistance to AI-Supported Workflows", description: "Site personnel distrust automated suggestions for PM scheduling, parts reordering, or work prioritisation. AI features are ignored or overridden, losing the value of intelligent automation.", level: "Low" },
+  { title: "Procurement Linkage Remains Immature", description: "PR to PO conversion is manual, supplier data is incomplete, no 3-way matching exists, and freight tracking is inconsistent. Procurement operates without financial controls and spend visibility is limited.", level: "Low" },
 ];
 
 const levelStyle: Record<Level, string> = {
-  Critical: "bg-destructive/10 text-destructive border-destructive/30",
-  High: "bg-amber-500/10 text-amber-700 border-amber-500/30",
-  Moderate: "bg-blue-500/10 text-blue-700 border-blue-500/30",
+  High: "bg-destructive/10 text-destructive border-destructive/30",
+  Medium: "bg-amber-500/10 text-amber-700 border-amber-500/30",
+  Low: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30",
 };
 
 const ImplementationRiskAssessment = () => (
