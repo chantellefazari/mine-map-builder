@@ -292,7 +292,7 @@ const ImplementationRiskAssessment = () => {
           <ul className="space-y-1.5">
             {[
               "Leadership enforcement of system use and process compliance",
-              "User adoption through role-specific training and on-shift support",
+              "User adoption through role specific training and on shift support",
               "Training delivered by role, reinforced through coaching and refreshers",
               "Removal of parallel systems (spreadsheets, manual trackers, whiteboards)",
             ].map(item => (
