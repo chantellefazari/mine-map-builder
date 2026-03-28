@@ -107,6 +107,8 @@ function WORow({ wo, idx, disc }: { wo: WorkOrder; idx: number; disc: DiscData }
       </td>
       <td style={{ ...S.td, textAlign: "center", fontWeight: 600, fontSize: 9 }}>{priorityLabel(wo.priority)}</td>
       <td style={{ ...S.td, textAlign: "right", fontWeight: 700, fontSize: 9, fontFamily: "monospace" }}>{getWoHours(wo).toFixed(1)}</td>
+      <td style={{ ...S.td, borderBottom: "1px dotted #ccc", minHeight: 20 }}>&nbsp;</td>
+      <td style={{ ...S.td, borderBottom: "1px dotted #ccc", minHeight: 20 }}>&nbsp;</td>
     </tr>
   );
 }
