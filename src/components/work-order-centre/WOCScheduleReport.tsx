@@ -270,11 +270,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
         {/* SECTION 5 */}
         <DailyTradeSchedule data={data} />
 
-        {/* SECTION 6 */}
-        <UnscheduledWorkSection items={unscheduledItems} />
-
-        {/* SECTION 7 */}
-        <SchedulerNotes />
 
         {/* ── FOOTER ── */}
         <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10, borderTop: "1px solid #e5e7eb", fontSize: 9, color: "#bbb" }}>
