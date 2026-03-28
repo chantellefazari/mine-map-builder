@@ -18,7 +18,7 @@ import {
 import { ReadinessSnapshot } from "./schedule-report/ReadinessSnapshot";
 import { TradeCapacitySummary } from "./schedule-report/TradeCapacitySummary";
 import { QualityChecksSection } from "./schedule-report/QualityChecks";
-import { ScheduleComposition } from "./schedule-report/ScheduleComposition";
+
 import { DailyTradeSchedule } from "./schedule-report/DailyTradeSchedule";
 import { UnscheduledWorkSection } from "./schedule-report/UnscheduledWork";
 import { SchedulerNotes } from "./schedule-report/SchedulerNotes";
@@ -177,10 +177,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
     return checks;
   }, [data, unscheduledHighPri, totalJobs, totalReactive]);
 
-  // ── Composition ──
-  const pmPct = totalJobs > 0 ? Math.round((totalPMs / totalJobs) * 100) : 0;
-  const reactivePct = totalJobs > 0 ? Math.round((totalReactive / totalJobs) * 100) : 0;
-  const plannedPct = 100 - pmPct - reactivePct;
 
   // ── PDF Export ──
   const handleExportPdf = async () => {
@@ -272,16 +268,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
         {/* SECTION 3 */}
         <QualityChecksSection checks={qualityChecks} />
 
-        {/* SECTION 4 */}
-        <ScheduleComposition
-          pmPct={pmPct}
-          plannedPct={plannedPct}
-          reactivePct={reactivePct}
-          pmCount={totalPMs}
-          plannedCount={totalPlanned}
-          reactiveCount={totalReactive}
-          totalJobs={totalJobs}
-        />
 
         {/* SECTION 5 */}
         <DailyTradeSchedule data={data} />
