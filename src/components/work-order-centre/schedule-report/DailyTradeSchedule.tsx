@@ -1,3 +1,4 @@
+import { useState, useRef, useCallback } from "react";
 import { format } from "date-fns";
 import { DiscData, DayData, S, getWoHours, priorityLabel, getDayLoadLabel } from "./types";
 import { WorkOrder } from "@/hooks/useWorkOrders";
@@ -17,6 +18,7 @@ export function DailyTradeSchedule({ data }: Props) {
     const updates: Record<string, string> = {};
     if (field === "job_status") updates.job_status = value;
     if (field === "wo_return_status") updates.wo_return_status = value;
+    if (field === "work_performed") updates.work_performed = value;
 
     const { error } = await (supabase as any)
       .from("work_orders")
@@ -142,6 +144,17 @@ function getWoStatusColor(status: string): string {
 
 function WORow({ wo, idx, disc, onStatusChange }: { wo: WorkOrder; idx: number; disc: DiscData; onStatusChange: (id: string, field: string, value: string) => void }) {
   const isPM = wo.work_type === "PM";
+  const [comment, setComment] = useState(wo.work_performed || "");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleCommentChange = useCallback((value: string) => {
+    setComment(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      onStatusChange(wo.id, "work_performed", value);
+    }, 500);
+  }, [wo.id, onStatusChange]);
+
   return (
     <tr style={{ background: idx % 2 === 1 ? "#fafafa" : "#fff" }}>
       <td style={S.td}><span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 9 }}>{wo.wo_number}</span></td>
@@ -191,8 +204,24 @@ function WORow({ wo, idx, disc, onStatusChange }: { wo: WorkOrder; idx: number; 
           ))}
         </select>
       </td>
-      <td style={{ ...S.td, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "#888" }}>
-        {wo.work_performed || "—"}
+      <td style={{ ...S.td, padding: "2px 4px" }}>
+        <input
+          type="text"
+          value={comment}
+          onChange={(e) => handleCommentChange(e.target.value)}
+          placeholder="Add comment..."
+          style={{
+            width: "100%",
+            fontSize: 8,
+            fontWeight: 500,
+            padding: "2px 4px",
+            border: "1px solid #e5e7eb",
+            borderRadius: 3,
+            background: "#fff",
+            color: "#1a1a1a",
+            outline: "none",
+          }}
+        />
       </td>
     </tr>
   );
