@@ -193,7 +193,7 @@ export function WOCSchedule() {
       </div>
 
       {scheduleView === "report" ? (
-        <WOCScheduleReport weekOffset={weekOffset} />
+        <WOCScheduleReport weekOffset={weekOffset} personnelByDay={personnel} />
       ) : (
       <>
       {/* Discipline Tabs */}
