@@ -185,11 +185,12 @@ const ImplementationRiskAssessment = () => {
           <p className="text-xs font-semibold text-foreground mb-2">Progress Made</p>
           <ul className="space-y-1.5">
             {[
-              "Work Request and Work Order logic developed",
+              "Work Request and Work Order logic developed and being trialled on site",
               "Scheduling capability established",
               "Asset hierarchy rebuild in progress",
               "Parts catalogue development underway",
               "PM logic being developed",
+              "System currently in active trial with site users creating live work orders",
             ].map(item => (
               <li key={item} className="text-[13px] text-muted-foreground flex gap-2">
                 <span className="text-emerald-600 mt-0.5">•</span>{item}
@@ -198,24 +199,24 @@ const ImplementationRiskAssessment = () => {
           </ul>
         </div>
         <div>
-          <p className="text-xs font-semibold text-foreground mb-2">Current Gaps</p>
+          <p className="text-xs font-semibold text-foreground mb-2">Areas Still Maturing</p>
           <ul className="space-y-1.5">
             {[
-              "No fully controlled stores environment",
+              "Stores and inventory controls still being established",
               "Stock visibility not yet reliable",
               "Parts and BOM linkage incomplete",
-              "Work management process not fully embedded",
-              "Site culture remains reactive with low accountability",
+              "Work management behaviours still being embedded",
+              "Site culture and buy-in remain the biggest challenge",
             ].map(item => (
               <li key={item} className="text-[13px] text-muted-foreground flex gap-2">
-                <span className="text-destructive mt-0.5">•</span>{item}
+                <span className="text-amber-600 mt-0.5">•</span>{item}
               </li>
             ))}
           </ul>
         </div>
       </div>
       <p className="text-[13px] text-muted-foreground font-semibold border-l-2 border-primary/40 pl-3">
-        The site is progressing toward readiness, but is not yet at a point for full uncontrolled system rollout.
+        The system is in active trial. Early adoption is encouraging, but embedding consistent use across the full workforce remains the key challenge. Success depends on culture, leadership reinforcement, and getting everyone on board.
       </p>
     </section>
 
