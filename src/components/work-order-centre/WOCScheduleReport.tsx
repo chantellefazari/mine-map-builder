@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import {
   DISCIPLINES, HRS_PER_PERSON, getWoHours, matchesDiscipline,
   getCapacityStatus, priorityLabel,
-  DiscData, DayData, QualityCheck,
+  DiscData, DayData,
 } from "./schedule-report/types";
 import { ReadinessSnapshot } from "./schedule-report/ReadinessSnapshot";
 import { TradeCapacitySummary } from "./schedule-report/TradeCapacitySummary";
