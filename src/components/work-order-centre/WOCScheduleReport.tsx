@@ -279,7 +279,7 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
         {/* ── FOOTER ── */}
         <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10, borderTop: "1px solid #e5e7eb", fontSize: 9, color: "#bbb" }}>
           <span>Tennant Creek Gold Mine</span>
-          <span>Generated {format(new Date(), "d MMM yyyy, HH:mm")} — Pre-Issue Review Document</span>
+          <span>Generated {format(new Date(), "d MMM yyyy, HH:mm")} — Final Issue Document</span>
           <span>minesite.ai</span>
         </div>
       </div>
