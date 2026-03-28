@@ -272,16 +272,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
         {/* SECTION 3 */}
         <QualityChecksSection checks={qualityChecks} />
 
-        {/* SECTION 4 */}
-        <ScheduleComposition
-          pmPct={pmPct}
-          plannedPct={plannedPct}
-          reactivePct={reactivePct}
-          pmCount={totalPMs}
-          plannedCount={totalPlanned}
-          reactiveCount={totalReactive}
-          totalJobs={totalJobs}
-        />
 
         {/* SECTION 5 */}
         <DailyTradeSchedule data={data} />
