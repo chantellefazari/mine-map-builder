@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import {
   Calendar, ChevronLeft, ChevronRight, Search, GripVertical,
-  Wrench, Zap, Users, Printer,
+  Wrench, Zap, Users, Printer, FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -13,6 +13,7 @@ import {
   isSameDay, parseISO, isWithinInterval,
 } from "date-fns";
 import { toast } from "sonner";
+import { WOCScheduleReport } from "./WOCScheduleReport";
 
 const DISCIPLINES = [
   { key: "Mechanical", label: "Mechanical", icon: Wrench, color: "text-blue-600", target: 80 },
@@ -38,6 +39,7 @@ export function WOCSchedule() {
   const [search, setSearch] = useState("");
   const [personnel, setPersonnel] = useState<Record<string, number>>({});
   const [dragWoId, setDragWoId] = useState<string | null>(null);
+  const [scheduleView, setScheduleView] = useState<"calendar" | "report">("calendar");
 
   const today = new Date();
   const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 }); // Wed start
@@ -161,6 +163,26 @@ export function WOCSchedule() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <div className="flex items-center border border-border rounded-lg overflow-hidden">
+            <button
+              onClick={() => setScheduleView("calendar")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
+                scheduleView === "calendar" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Calendar className="w-3.5 h-3.5" /> Calendar
+            </button>
+            <button
+              onClick={() => setScheduleView("report")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
+                scheduleView === "report" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <FileText className="w-3.5 h-3.5" /> Weekly Report
+            </button>
+          </div>
           <Button variant="outline" size="sm" className="gap-1.5 text-xs">
             <Printer className="w-3.5 h-3.5" /> Print PMs
           </Button>
@@ -170,6 +192,10 @@ export function WOCSchedule() {
         </div>
       </div>
 
+      {scheduleView === "report" ? (
+        <WOCScheduleReport weekOffset={weekOffset} />
+      ) : (
+      <>
       {/* Discipline Tabs */}
       <div className="flex gap-1 border-b border-border pb-px">
         {DISCIPLINES.map((d) => (
@@ -415,6 +441,8 @@ export function WOCSchedule() {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }
