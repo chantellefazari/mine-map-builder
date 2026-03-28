@@ -265,8 +265,6 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
         {/* SECTION 2 */}
         <TradeCapacitySummary data={data} />
 
-        {/* SECTION 3 */}
-        <QualityChecksSection checks={qualityChecks} />
 
 
         {/* SECTION 5 */}
