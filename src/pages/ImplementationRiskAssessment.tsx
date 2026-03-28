@@ -1,4 +1,11 @@
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Printer, FileText, Loader2 } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
+import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
+import { toast } from "sonner";
 
 type Level = "High" | "Medium" | "Low";
 
