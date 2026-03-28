@@ -39,6 +39,7 @@ export function WOCSchedule() {
   const [search, setSearch] = useState("");
   const [personnel, setPersonnel] = useState<Record<string, number>>({});
   const [dragWoId, setDragWoId] = useState<string | null>(null);
+  const [scheduleView, setScheduleView] = useState<"calendar" | "report">("calendar");
 
   const today = new Date();
   const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 }); // Wed start
