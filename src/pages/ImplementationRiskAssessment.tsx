@@ -285,13 +285,13 @@ const ImplementationRiskAssessment = () => {
       <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">5. Final Position</h2>
       <div className="bg-muted/30 border border-border rounded-lg px-5 py-4 space-y-3">
         <p className="text-[13px] text-foreground font-semibold leading-relaxed">
-          The system being developed is strong and has the potential to significantly improve site performance.
+          The system is strong and is already being trialled on site with real work orders.
         </p>
         <p className="text-[13px] text-muted-foreground leading-relaxed">
-          However, implementation success will depend on site readiness, not system capability alone. People, process, data, stores maturity, and leadership commitment are the deciding factors.
+          The biggest risk to successful rollout is not the software. It is site culture, user buy-in, and consistent leadership enforcement. Getting everyone on board, following the process every time, and removing reliance on old methods is what will determine whether this succeeds long-term.
         </p>
         <p className="text-[13px] text-foreground font-semibold leading-relaxed">
-          A controlled, phased rollout aligned with operational maturity is critical to ensure long-term adoption and avoid early failure.
+          A controlled, phased approach, continuing the current trial and expanding as behaviours mature, gives the best chance of lasting adoption.
         </p>
       </div>
     </section>
