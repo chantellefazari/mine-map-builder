@@ -177,9 +177,9 @@ function WORow({ wo, idx, disc, onStatusChange }: { wo: WorkOrder; idx: number; 
       </td>
       <td style={{ ...S.td, textAlign: "center", padding: "2px 4px" }}>
         <select
-          style={{ ...selectStyle, color: getWoStatusColor(wo.status || "") }}
-          value={wo.status || ""}
-          onChange={(e) => onStatusChange(wo.id, "status", e.target.value)}
+          style={{ ...selectStyle, color: getWoStatusColor(wo.wo_return_status || "") }}
+          value={wo.wo_return_status || ""}
+          onChange={(e) => onStatusChange(wo.id, "wo_return_status", e.target.value)}
         >
           {WO_STATUS_OPTIONS.map(opt => (
             <option key={opt} value={opt} style={{ color: getWoStatusColor(opt) }}>
