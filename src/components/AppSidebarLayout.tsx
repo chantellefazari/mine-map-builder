@@ -28,6 +28,7 @@ const NAV_ITEMS = [
   { title: "Plant Intelligence", icon: Brain, href: "/plant-intelligence", tabKey: "plant-intelligence" },
   { title: "Mission Control", icon: Radar, href: "/mission-control", tabKey: "mission-control" },
   { title: "Work Order Centre", icon: ClipboardList, href: "/work-order-centre", tabKey: "work-order-centre" },
+  { title: "Implementation Readiness", icon: ClipboardCheck, href: "/implementation-readiness", tabKey: "implementation-readiness" },
 ];
 
 export function AppSidebarLayout({ children }: { children: ReactNode }) {
