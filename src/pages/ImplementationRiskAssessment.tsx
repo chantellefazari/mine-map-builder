@@ -202,8 +202,7 @@ const ImplementationRiskAssessment = () => {
     </section>
 
     {/* 2. Current Position */}
-    <section className="mb-10">
-      <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">2. Current Position</h2>
+    <section data-pdf-section className="mb-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
         <div>
           <p className="text-xs font-semibold text-foreground mb-2">Progress Made</p>
