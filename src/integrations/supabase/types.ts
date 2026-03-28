@@ -2279,6 +2279,7 @@ export type Database = {
           trade: string | null
           updated_at: string
           wo_number: string
+          wo_return_status: string
           work_performed: string | null
           work_type: string
         }
@@ -2313,6 +2314,7 @@ export type Database = {
           trade?: string | null
           updated_at?: string
           wo_number: string
+          wo_return_status?: string
           work_performed?: string | null
           work_type?: string
         }
@@ -2347,6 +2349,7 @@ export type Database = {
           trade?: string | null
           updated_at?: string
           wo_number?: string
+          wo_return_status?: string
           work_performed?: string | null
           work_type?: string
         }

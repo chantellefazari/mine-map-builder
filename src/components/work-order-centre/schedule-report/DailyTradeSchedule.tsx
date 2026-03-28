@@ -16,7 +16,7 @@ export function DailyTradeSchedule({ data }: Props) {
   const handleStatusChange = async (woId: string, field: string, value: string) => {
     const updates: Record<string, string> = {};
     if (field === "job_status") updates.job_status = value;
-    if (field === "status") updates.status = value;
+    if (field === "wo_return_status") updates.wo_return_status = value;
 
     const { error } = await (supabase as any)
       .from("work_orders")
