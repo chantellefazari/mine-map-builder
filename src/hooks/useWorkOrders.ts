@@ -29,6 +29,7 @@ export interface WorkOrder {
   labour_hours: any;
   photo_urls: string[];
   scheduled_date: string | null;
+  job_status: string;
   created_at: string;
   updated_at: string;
 }
