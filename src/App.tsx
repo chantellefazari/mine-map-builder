@@ -34,6 +34,7 @@ const WorkOrderCentre = lazy(() => import("./pages/WorkOrderCentre"));
 const WOPrint = lazy(() => import("./pages/WOPrint"));
 const ImplementationReadiness = lazy(() => import("./pages/ImplementationReadiness"));
 const ImplementationRiskAssessment = lazy(() => import("./pages/ImplementationRiskAssessment"));
+const WeeklyScheduleReport = lazy(() => import("./pages/WeeklyScheduleReport"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -94,6 +95,7 @@ const App = () => {
                 <Route path="/wo-print/:woNumber" element={<P tabKey="work-order-centre"><WOPrint /></P>} />
                 <Route path="/implementation-readiness" element={<P tabKey="implementation-readiness"><ImplementationReadiness /></P>} />
                 <Route path="/implementation-risk-assessment" element={<P tabKey="implementation-risk-assessment"><ImplementationRiskAssessment /></P>} />
+                <Route path="/weekly-schedule-report" element={<P><WeeklyScheduleReport /></P>} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
