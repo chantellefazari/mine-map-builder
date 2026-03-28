@@ -77,15 +77,17 @@ export function DailyTradeSchedule({ data }: Props) {
                   <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
                     <thead>
                       <tr style={{ background: "#f9fafb" }}>
-                        <th style={{ ...S.th, width: "7%" }}>WO #</th>
-                        <th style={{ ...S.th, width: "4%" }}>Type</th>
-                        <th style={{ ...S.th, width: "6%" }}>Asset</th>
-                        <th style={{ ...S.th, width: "22%" }}>Description</th>
-                        <th style={{ ...S.th, width: "10%" }}>Resource</th>
-                        <th style={{ ...S.th, width: "6%", textAlign: "center" }}>Priority</th>
-                        <th style={{ ...S.th, width: "5%", textAlign: "right" }}>Hrs</th>
-                        <th style={{ ...S.th, width: "12%", textAlign: "center" }}>Job Status</th>
-                        <th style={{ ...S.th, width: "12%", textAlign: "center" }}>Work Order Status</th>
+                        <th style={{ ...S.th, width: "6%" }}>WO #</th>
+                        <th style={{ ...S.th, width: "3%" }}>Type</th>
+                        <th style={{ ...S.th, width: "5%" }}>Asset</th>
+                        <th style={{ ...S.th, width: "9%" }}>Equipment</th>
+                        <th style={{ ...S.th, width: "17%" }}>Description</th>
+                        <th style={{ ...S.th, width: "8%" }}>Resource</th>
+                        <th style={{ ...S.th, width: "5%", textAlign: "center" }}>Priority</th>
+                        <th style={{ ...S.th, width: "4%", textAlign: "right" }}>Hrs</th>
+                        <th style={{ ...S.th, width: "10%", textAlign: "center" }}>Job Status</th>
+                        <th style={{ ...S.th, width: "10%", textAlign: "center" }}>WO Status</th>
+                        <th style={{ ...S.th, width: "13%" }}>Comments</th>
                       </tr>
                     </thead>
                     <tbody>
