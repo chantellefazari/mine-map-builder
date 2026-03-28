@@ -186,7 +186,7 @@ const ImplementationRiskAssessment = () => {
 
       <div ref={contentRef}>
       {/* Header */}
-      <div className="mb-10">
+      <div data-pdf-section className="mb-10">
         <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.2em]">Tennant Creek Gold Mine</p>
         <h1 className="text-2xl font-extrabold text-foreground mt-1 tracking-tight">Implementation Risk Assessment</h1>
         <p className="text-xs text-muted-foreground mt-1">Minesite.ai Work Management System — Prepared for site leadership and stakeholder review</p>
