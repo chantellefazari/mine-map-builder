@@ -305,7 +305,7 @@ const ImplementationRiskAssessment = () => {
     </section>
 
     {/* 5. Final Position */}
-    <section className="mb-6">
+    <section data-pdf-section className="mb-6">
       <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">5. Final Position</h2>
       <div className="bg-muted/30 border border-border rounded-lg px-5 py-4 space-y-3">
         <p className="text-[13px] text-foreground font-semibold leading-relaxed">
