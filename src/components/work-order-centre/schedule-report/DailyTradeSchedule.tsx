@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const JOB_STATUS_OPTIONS = ["", "Completed", "Not Completed", "Re-Scheduled", "Cancelled"] as const;
-const WO_STATUS_OPTIONS = ["", "Scheduled", "Active", "On Hold", "Completed", "Closed"] as const;
+const WO_STATUS_OPTIONS = ["", "Work Order Returned", "Work Order Not Returned"] as const;
 
 interface Props { data: DiscData[]; }
 
