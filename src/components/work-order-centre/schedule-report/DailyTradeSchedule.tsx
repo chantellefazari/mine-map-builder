@@ -132,11 +132,8 @@ function getJobStatusColor(status: string): string {
 
 function getWoStatusColor(status: string): string {
   switch (status) {
-    case "Scheduled": return "#2563eb";
-    case "Active": return "#16a34a";
-    case "On Hold": return "#d97706";
-    case "Completed": return "#059669";
-    case "Closed": return "#6b7280";
+    case "Work Order Returned": return "#16a34a";
+    case "Work Order Not Returned": return "#dc2626";
     default: return "#1a1a1a";
   }
 }
