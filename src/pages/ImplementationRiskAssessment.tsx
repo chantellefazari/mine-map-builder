@@ -175,7 +175,9 @@ const ImplementationRiskAssessment = () => (
     <div className="border-t border-border pt-4 mt-10">
       <p className="text-[10px] text-muted-foreground">Tennant Creek Gold Mine — Implementation Risk Assessment — Prepared for leadership and stakeholder review</p>
     </div>
+    </div>
   </div>
-);
+  );
+};
 
 export default ImplementationRiskAssessment;
