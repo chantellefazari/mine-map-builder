@@ -238,8 +238,8 @@ export function WOCScheduleReport({ weekOffset, personnelByDay }: Props) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "3px solid #C8960C", paddingBottom: 10, marginBottom: 20 }}>
           <div>
             <div style={{ fontSize: 10, fontWeight: 700, color: "#C8960C", letterSpacing: 2, textTransform: "uppercase" }}>Tennant Creek Gold Mine</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: "#1a1a1a", marginTop: 1 }}>Weekly Schedule Readiness Report</div>
-            <div style={{ fontSize: 10, color: "#888", marginTop: 2 }}>Pre-Issue Review — Schedule Verification & Workload Assessment</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: "#1a1a1a", marginTop: 1 }}>Weekly Maintenance Schedule</div>
+            <div style={{ fontSize: 10, color: "#888", marginTop: 2 }}>Final Issue — Schedule Readiness & Workload Assessment</div>
           </div>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 26, fontWeight: 800, color: "#C8960C", lineHeight: 1 }}>{weekLabel}</div>
