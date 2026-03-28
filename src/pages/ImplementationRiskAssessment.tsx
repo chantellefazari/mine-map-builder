@@ -17,16 +17,14 @@ const RISKS: { title: string; description: string; level: Level }[] = [
   { title: "Incomplete Parts Catalogue and BOM Linkage", description: "Many assets have no linked spare parts. Min/max stock levels are unpopulated, lead times are unknown, and unit costs are missing. Reorder logic does not function. PM work orders generate without parts lists.", level: "High" },
   { title: "Work Management Process Not Consistently Followed", description: "WR to WO to close workflow is built but not embedded. Some supervisors approve verbally, priority is not assessed, and work orders are closed without completion notes or parts usage recorded.", level: "High" },
   { title: "Lack of Leadership Enforcement", description: "Management does not consistently enforce system use. Supervisors are not held accountable for team compliance. Mixed signals to workforce cause adoption to stall and early adopters lose motivation.", level: "High" },
-  { title: "Training Not Role-Specific or Not Reinforced", description: "Generic training sessions delivered once with no follow-up coaching, no competency checks, and no refresher schedule. Users forget processes within days and workarounds develop.", level: "High" },
-  // Medium
-  { title: "Asset Hierarchy Not Fully Stable", description: "Some parent-child relationships are incorrect, functional locations have gaps, and component-level detail is missing in secondary areas. Work orders raised against wrong assets and cost allocation is inaccurate.", level: "Medium" },
+  { title: "Training Not Role Specific or Not Reinforced", description: "Generic training sessions delivered once with no follow up coaching, no competency checks, and no refresher schedule. Users forget processes within days and workarounds develop.", level: "High" },
+  { title: "Asset Hierarchy Not Fully Stable", description: "Some parent child relationships are incorrect, functional locations have gaps, and component level detail is missing in secondary areas. Work orders raised against wrong assets and cost allocation is inaccurate.", level: "Medium" },
   { title: "PM Data Quality Becomes Inconsistent", description: "Task descriptions are vague, inspection results are not recorded, and completion notes default to generic entries. PM history is useless for failure analysis and compliance reporting is unreliable.", level: "Medium" },
-  { title: "Premature Rollout Before Readiness Gates Met", description: "Pressure to show progress leads to go-live without completing stores setup, training, or leadership alignment prerequisites. Early failures erode confidence and recovery is harder than getting it right first time.", level: "Medium" },
+  { title: "Premature Rollout Before Readiness Gates Met", description: "Pressure to show progress leads to go live without completing stores setup, training, or leadership alignment prerequisites. Early failures erode confidence and recovery is harder than getting it right first time.", level: "Medium" },
   { title: "Labour Time and Execution Behaviour Poorly Controlled", description: "Trades do not log actual hours, travel time is unaccounted, and job duration estimates are not validated. Cannot measure labour productivity or cost per work order.", level: "Medium" },
   { title: "Too Much Rollout Scope Attempted Too Early", description: "All modules activated simultaneously instead of a controlled staged approach. Users are overwhelmed, support capacity is exceeded, and multiple process failures occur at once.", level: "Medium" },
-  // Low
-  { title: "Resistance to AI-Supported Workflows", description: "Site personnel distrust automated suggestions for PM scheduling, parts reordering, or work prioritisation. AI features are ignored or overridden, losing the value of intelligent automation.", level: "Low" },
-  { title: "Procurement Linkage Remains Immature", description: "PR to PO conversion is manual, supplier data is incomplete, no 3-way matching exists, and freight tracking is inconsistent. Procurement operates without financial controls and spend visibility is limited.", level: "Low" },
+  { title: "Resistance to AI Supported Workflows", description: "Site personnel distrust automated suggestions for PM scheduling, parts reordering, or work prioritisation. AI features are ignored or overridden, losing the value of intelligent automation.", level: "Low" },
+  { title: "Procurement Linkage Remains Immature", description: "PR to PO conversion is manual, supplier data is incomplete, no 3 way matching exists, and freight tracking is inconsistent. Procurement operates without financial controls and spend visibility is limited.", level: "Low" },
 ];
 
 const levelStyle: Record<Level, string> = {
@@ -45,23 +43,49 @@ const ImplementationRiskAssessment = () => {
     if (!el) return;
     setSavingPdf(true);
     try {
-      const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: "#ffffff", logging: false });
-      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const A4_W = 210, A4_H = 297, MARGIN = 8;
+      const A4_W = 210, A4_H = 297, MARGIN = 10;
       const contentW = A4_W - MARGIN * 2;
-      const imgRatio = canvas.height / canvas.width;
-      const totalImgH = contentW * imgRatio;
-      const imgData = canvas.toDataURL("image/jpeg", 0.92);
-      let heightLeft = totalImgH;
-      let position = MARGIN;
-      pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
-      heightLeft -= (A4_H - MARGIN * 2);
-      while (heightLeft > 0) {
-        pdf.addPage();
-        position = MARGIN - (totalImgH - heightLeft);
-        pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
-        heightLeft -= (A4_H - MARGIN * 2);
+      const usableH = A4_H - MARGIN * 2;
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+      // Get all direct children as sections using data-pdf-section or fallback to children
+      const sections = Array.from(el.querySelectorAll("[data-pdf-section]")) as HTMLElement[];
+      const elements = sections.length > 0 ? sections : (Array.from(el.children) as HTMLElement[]);
+
+      let currentY = MARGIN;
+      let firstImage = true;
+
+      for (const section of elements) {
+        if (section.classList.contains("print:hidden") || section.classList.contains("print-hidden")) continue;
+
+        const canvas = await html2canvas(section, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+        });
+
+        const scaleFactor = contentW / canvas.width;
+        const sectionH = canvas.height * scaleFactor;
+        const imgData = canvas.toDataURL("image/png");
+
+        // If section doesn't fit on current page, start a new one
+        const remainingSpace = A4_H - MARGIN - currentY;
+        if (sectionH > remainingSpace && currentY > MARGIN) {
+          pdf.addPage();
+          currentY = MARGIN;
+        }
+
+        if (!firstImage && currentY === MARGIN) {
+          // Already added page above
+        } else if (firstImage) {
+          firstImage = false;
+        }
+
+        pdf.addImage(imgData, "PNG", MARGIN, currentY, contentW, sectionH);
+        currentY += sectionH;
       }
+
       const blob = pdf.output("blob");
       await uploadAndShowPdf(blob, "TCMG-Implementation-Risk-Assessment.pdf", "Implementation Risk Assessment");
       toast.success("PDF saved successfully");
@@ -119,7 +143,7 @@ const ImplementationRiskAssessment = () => {
             new Paragraph({ spacing: { before: 120, after: 40 }, children: [new TextRun({ text: "Phased Implementation:", size: 22, bold: true, font: "Arial" })] }),
             ...["Phase 1: Foundation Stabilisation", "Phase 2: Controlled Pilot", "Phase 3: Gradual Rollout"].map(bullet),
             new Paragraph({ spacing: { before: 120, after: 40 }, children: [new TextRun({ text: "Focus Areas:", size: 22, bold: true, font: "Arial" })] }),
-            ...["Leadership enforcement of system use and process compliance", "User adoption through role-specific training and on-shift support", "Training delivered by role, reinforced through coaching and refreshers", "Removal of parallel systems (spreadsheets, manual trackers, whiteboards)"].map(bullet),
+            ...["Leadership enforcement of system use and process compliance", "User adoption through role specific training and on shift support", "Training delivered by role, reinforced through coaching and refreshers", "Removal of parallel systems (spreadsheets, manual trackers, whiteboards)"].map(bullet),
             new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 400, after: 100 }, children: [new TextRun({ text: "5. Final Position", size: 26, bold: true, font: "Arial" })] }),
             new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "The system is strong and is already being trialled on site with real work orders.", size: 22, font: "Arial", bold: true })] }),
             new Paragraph({ spacing: { after: 100 }, children: [new TextRun({ text: "The biggest risk to successful rollout is not the software. It is site culture, user buy-in, and consistent leadership enforcement. Getting everyone on board, following the process every time, and removing reliance on old methods is what will determine whether this succeeds long-term.", size: 22, font: "Arial" })] }),
@@ -162,7 +186,7 @@ const ImplementationRiskAssessment = () => {
 
       <div ref={contentRef}>
       {/* Header */}
-      <div className="mb-10">
+      <div data-pdf-section className="mb-10">
         <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.2em]">Tennant Creek Gold Mine</p>
         <h1 className="text-2xl font-extrabold text-foreground mt-1 tracking-tight">Implementation Risk Assessment</h1>
         <p className="text-xs text-muted-foreground mt-1">Minesite.ai Work Management System — Prepared for site leadership and stakeholder review</p>
@@ -170,7 +194,7 @@ const ImplementationRiskAssessment = () => {
       </div>
 
     {/* 1. Purpose */}
-    <section className="mb-10">
+    <section data-pdf-section className="mb-10">
       <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">1. Purpose</h2>
       <p className="text-[13px] text-muted-foreground leading-relaxed">
         This assessment outlines the implementation risks associated with rolling out the new work management system at Tennant Creek Gold Mine. The focus is on ensuring the system is introduced in a controlled and sustainable way, recognising that success depends on site readiness across people, process, data, and operational discipline.
@@ -178,8 +202,7 @@ const ImplementationRiskAssessment = () => {
     </section>
 
     {/* 2. Current Position */}
-    <section className="mb-10">
-      <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">2. Current Position</h2>
+    <section data-pdf-section className="mb-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
         <div>
           <p className="text-xs font-semibold text-foreground mb-2">Progress Made</p>
@@ -222,10 +245,12 @@ const ImplementationRiskAssessment = () => {
 
     {/* 3. Key Implementation Risks */}
     <section className="mb-10">
-      <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">3. Key Implementation Risks</h2>
+      <div data-pdf-section>
+        <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">3. Key Implementation Risks</h2>
+      </div>
       <div className="space-y-2.5">
         {RISKS.map((r, i) => (
-          <div key={i} className="flex items-start gap-3 border border-border/60 rounded-lg px-4 py-3">
+          <div data-pdf-section key={i} className="flex items-start gap-3 border border-border/60 rounded-lg px-4 py-3">
             <span className="text-xs font-mono font-semibold text-muted-foreground mt-0.5 w-5 shrink-0 text-right">{i + 1}.</span>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-bold text-foreground">{r.title}</p>
@@ -240,7 +265,7 @@ const ImplementationRiskAssessment = () => {
     </section>
 
     {/* 4. Recommended Approach */}
-    <section className="mb-10">
+    <section data-pdf-section className="mb-10">
       <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">4. Recommended Approach</h2>
       <div className="space-y-4">
         <p className="text-[13px] text-muted-foreground font-semibold border-l-2 border-primary/40 pl-3">
@@ -267,7 +292,7 @@ const ImplementationRiskAssessment = () => {
           <ul className="space-y-1.5">
             {[
               "Leadership enforcement of system use and process compliance",
-              "User adoption through role-specific training and on-shift support",
+              "User adoption through role specific training and on shift support",
               "Training delivered by role, reinforced through coaching and refreshers",
               "Removal of parallel systems (spreadsheets, manual trackers, whiteboards)",
             ].map(item => (
@@ -281,7 +306,7 @@ const ImplementationRiskAssessment = () => {
     </section>
 
     {/* 5. Final Position */}
-    <section className="mb-6">
+    <section data-pdf-section className="mb-6">
       <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">5. Final Position</h2>
       <div className="bg-muted/30 border border-border rounded-lg px-5 py-4 space-y-3">
         <p className="text-[13px] text-foreground font-semibold leading-relaxed">
@@ -297,7 +322,7 @@ const ImplementationRiskAssessment = () => {
     </section>
 
     {/* Footer */}
-    <div className="border-t border-border pt-4 mt-10">
+    <div data-pdf-section className="border-t border-border pt-4 mt-10">
       <p className="text-[10px] text-muted-foreground">Tennant Creek Gold Mine — Implementation Risk Assessment — Prepared for leadership and stakeholder review</p>
     </div>
     </div>
