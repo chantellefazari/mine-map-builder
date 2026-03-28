@@ -18,7 +18,7 @@ import {
 import { ReadinessSnapshot } from "./schedule-report/ReadinessSnapshot";
 import { TradeCapacitySummary } from "./schedule-report/TradeCapacitySummary";
 import { QualityChecksSection } from "./schedule-report/QualityChecks";
-import { ScheduleComposition } from "./schedule-report/ScheduleComposition";
+
 import { DailyTradeSchedule } from "./schedule-report/DailyTradeSchedule";
 import { UnscheduledWorkSection } from "./schedule-report/UnscheduledWork";
 import { SchedulerNotes } from "./schedule-report/SchedulerNotes";
