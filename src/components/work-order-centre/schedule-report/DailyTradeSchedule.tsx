@@ -171,7 +171,7 @@ function WORow({ wo, idx, disc, onStatusChange }: { wo: WorkOrder; idx: number; 
       <td style={{ ...S.td, fontWeight: 600, fontSize: 9, whiteSpace: "nowrap" }}>{wo.asset_id || "—"}</td>
       <td style={{ ...S.td, fontSize: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{wo.functional_location || "—"}</td>
       <td style={{ ...S.td, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-        {wo.problem_description || wo.scope_of_works || "No description"}
+        {(wo.problem_description || wo.scope_of_works || "No description").replace(/^(PM|CM|BM):\s*/i, "")}
       </td>
       <td style={{ ...S.td, fontSize: 9, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
         {wo.assigned_to || wo.technician_name || "—"}
