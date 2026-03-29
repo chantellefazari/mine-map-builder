@@ -1,16 +1,29 @@
 
 
-## Fix: Prevent Aspect logo overlapping with PM banner title
+## Plan: Add "Data Centre — Workbook" Tab with CSV Download
 
-**Problem**: The logos are positioned `left-4` and the title is centered across the full width (`left-0 right-0`), so on longer titles (e.g. "Matec 1520HP Filter Press Daily Online Inspection") the text overlaps the logos.
+### What
+Add a third tab to the Site Spares Catalogue page called **"Data Centre — Workbook"** that provides a CSV download button for all 2184 parts (all data fields, no photos).
 
-**Solution**: Adjust the title container in `PMBannerHeader.tsx` to add left/right padding so the text sits between the logos and the WO# field, and reduce the title font size slightly to accommodate longer names.
+### Structure
 
-### Changes to `src/components/pm-design/PMBannerHeader.tsx`
+**1. Update `src/pages/SiteSparesCatalogue.tsx`**
+- Add a third tab trigger: "Data Centre — Workbook" with a `Database` icon
+- Add matching `TabsContent` rendering a new `DataCentreWorkbook` component
 
-1. **Title container** (line 19): Add `pl-[160px] pr-[100px]` to the title's absolute container so it avoids the logo zone (left) and WO# zone (right)
-2. **Title font size** (line 21): Reduce from `text-2xl` to `text-lg` so longer titles fit cleanly
-3. **Subtitle font size** (line 22): Reduce from `text-base` to `text-sm`
+**2. Create `src/components/site-spares/DataCentreWorkbook.tsx`**
+- Info banner explaining this is the complete parts data export for deliverable submission
+- Summary card showing total part count (fetched from `site_spares` table)
+- **"Download Complete CSV"** button that:
+  - Fetches ALL rows from `site_spares` (paginated to handle >1000 rows)
+  - Excludes `image_urls` and `id` columns
+  - Exports all remaining fields: `part_number`, `description`, `category`, `subcategory`, `manufacturer`, `oem_part_number`, `alternate_part_number`, `preferred_supplier`, `warehouse_area`, `aisle`, `rack`, `bin_location`, `storage_type`, `qty_on_hand`, `min_qty`, `max_qty`, `reorder_point`, `unit_cost`, `uom`, `lead_time_days`, `last_purchase_date`, `condition`, `status`, `is_critical`, `critical_spare_id`, `asset_tag`, `specifications`, `notes`
+  - Generates CSV in-browser and triggers download as `TCMG_Site_Spares_Complete_{date}.csv`
+  - Shows loading spinner during fetch, toast on success/error
 
-This is a single shared component used by all 64+ PM templates, so the fix applies everywhere automatically. No other files need changes.
+### Technical Details
+- CSV generation uses native browser APIs (no library needed) — build CSV string with proper escaping for commas/quotes
+- Pagination loop (same pattern as `generate-spares-pdf`) to fetch >1000 rows
+- File named with date stamp for version tracking
+- Matches existing minesite.io styling (card layout, primary accent, compact design)
 
