@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Package, FileText } from "lucide-react";
+import { Package, FileText, Database } from "lucide-react";
 import { SiteSparesCatalogue as SiteSparesGrid } from "@/components/site-spares/SiteSparesCatalogue";
 import { BatchPDFDownloads } from "@/components/site-spares/BatchPDFDownloads";
+import { DataCentreWorkbook } from "@/components/site-spares/DataCentreWorkbook";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const SiteSparesCatalogue = () => {
