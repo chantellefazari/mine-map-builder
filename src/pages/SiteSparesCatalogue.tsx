@@ -38,6 +38,10 @@ const SiteSparesCatalogue = () => {
               <FileText className="h-4 w-4" />
               PDF Parts List (with Images)
             </TabsTrigger>
+            <TabsTrigger value="data-workbook" className="gap-2">
+              <Database className="h-4 w-4" />
+              Data Centre — Workbook
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="catalogue" className="mt-6 space-y-6">
@@ -60,6 +64,10 @@ const SiteSparesCatalogue = () => {
 
           <TabsContent value="pdf-downloads" className="mt-6">
             <BatchPDFDownloads />
+          </TabsContent>
+
+          <TabsContent value="data-workbook" className="mt-6">
+            <DataCentreWorkbook />
           </TabsContent>
         </Tabs>
       </main>
