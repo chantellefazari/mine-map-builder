@@ -119,8 +119,8 @@ export const FoundationsContent = () => {
           </TabsTrigger>
           <TabsTrigger value="part-numbering" className="flex items-center gap-2 text-xs">
             <ListOrdered className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Site Part Numbering Standards</span>
-            <span className="sm:hidden">Part #</span>
+            <span className="hidden sm:inline">Stock Code Standards</span>
+            <span className="sm:hidden">Stock #</span>
           </TabsTrigger>
           <TabsTrigger value="wo-numbering" className="flex items-center gap-2 text-xs">
             <FileText className="w-3.5 h-3.5" />
