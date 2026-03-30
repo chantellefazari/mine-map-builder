@@ -42,7 +42,7 @@ const LOCKED_STANDARDS: LockedStandard[] = [
   { area: "Asset Numbering", standard: "Area Prefix First format with sequential numbering per sub area", reference: "TCMG-STD-FL-001", owner: "Engineering", status: "Locked" },
   { area: "Asset Naming", standard: "Standardised naming convention with equipment type prefixes and component suffixes (MTR, GBX, VSD, SWT, TX)", reference: "TCMG-STD-NAM-001", owner: "Engineering", status: "Locked" },
   { area: "P&ID Register", standard: "14 page verified P&ID set (PI-001 to PI-014) as sole source of truth for tag assignments", reference: "P&ID Drawing Set", owner: "Engineering", status: "Locked" },
-  { area: "Parts Numbering", standard: "7 digit numeric SSCCNNN format (Site Code 10, Category Codes CC, Sequential NNN)", reference: "TCMG-STD-SPN-001", owner: "Stores", status: "Locked" },
+  { area: "Stock Codes", standard: "7 digit numeric SSCCNNN format (Site Code 10, Category Codes CC, Sequential NNN)", reference: "TCMG-STD-SPN-001", owner: "Stores", status: "Locked" },
   { area: "Asset Tagging", standard: "TYPE A (Major Asset) and TYPE B (Equipment Position) tag standards with Gravotech LS100 production", reference: "TCMG-STD-TAG-002", owner: "Maintenance Supervisor", status: "Locked" },
   { area: "PM Templates", standard: "88 approved PM templates across 3 disciplines (Mechanical, Electrical, Mobile Equipment)", reference: "PM Master List", owner: "Maintenance Supervisor", status: "Locked" },
   { area: "Electrical Identifiers", standard: "Generator series 17-GN-xxx, MCC series 18-MCC-xxx", reference: "TCMG-STD-FL-001", owner: "Engineering", status: "Locked" },
@@ -107,7 +107,7 @@ const LOCKED_ITEMS = [
   "P&ID extraction register (14 page verified set)",
   "88 approved PM templates across 3 disciplines",
   "Electrical identifier series (17-GN-xxx, 18-MCC-xxx)",
-  "Site part numbering format (SSCCNNN)",
+  "Stock code format (SSCCNNN)",
   "Store location coding (C01 to C05, LD-A to LD-F)",
   "Stock control procedure and receiving/issuing rules",
 ];
@@ -122,7 +122,7 @@ const DOMAIN_SUMMARY = [
   { title: "Asset Hierarchy", ref: "TCMG-STD-AH-001", items: ["7 level structure", "6 area codes", "Parent child rules", "No level skipping"] },
   { title: "Functional Locations", ref: "TCMG-STD-FL-001", items: ["5 segment FL codes", "Area and Sub Area coding", "System level grouping", "Verified against registers"] },
   { title: "Naming Conventions", ref: "TCMG-STD-NAM-001", items: ["Equipment type prefixes", "Component suffixes", "Mobile equipment codes", "Aligned to registers"] },
-  { title: "Parts Numbering", ref: "TCMG-STD-SPN-001", items: ["SSCCNNN format", "Barcode compatible", "One part, one number", "Leading zeros enforced"] },
+  { title: "Stock Codes", ref: "TCMG-STD-SPN-001", items: ["SSCCNNN format", "Barcode compatible", "One part, one number", "Leading zeros enforced"] },
   { title: "PM Standards", ref: "PM Master List", items: ["88 approved templates", "3 disciplines", "Task level checklists", "Frequency governance"] },
   { title: "Data Mapping", ref: "TCMG-STD-DM-001", items: ["D365 field mapping", "Transformation rules", "Readiness scoring", "6 entity categories"] },
 ];

@@ -45,9 +45,9 @@ export const SitePartNumberingSection = () => {
             <Hash className="w-5 h-5 text-emerald-600" />
           </div>
           <div className="flex-1">
-            <CardTitle className="text-xl">Site Parts Numbering Standard (TCMG)</CardTitle>
+            <CardTitle className="text-xl">Stock Code Standard (TCMG)</CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              Approved 7-digit numeric format for Tennant Creek Mine - aligned with live inventory categories
+              Approved 7-digit numeric stock code format for Tennant Creek Mine - aligned with live inventory categories
             </p>
           </div>
           <Button variant="outline" className="gap-2 shrink-0" onClick={() => setDocOpen(true)}>
@@ -64,10 +64,10 @@ export const SitePartNumberingSection = () => {
             <h4 className="font-medium text-foreground">Purpose</h4>
           </div>
           <p className="text-sm text-muted-foreground">
-            This standard defines the site-based internal part number used at Tennant Creek Mine for <strong className="text-foreground">searching, cataloguing, and inventory control</strong>.
+            This standard defines the site-based internal stock code used at Tennant Creek Mine for <strong className="text-foreground">searching, cataloguing, and inventory control</strong>.
           </p>
           <p className="text-xs text-muted-foreground italic">
-            This is not a supplier or OEM part number. OEM / supplier numbers must be stored in a separate field.
+            This is not a supplier or OEM part number. OEM / supplier numbers must be stored in a separate field. The stock code is the site's internal identifier.
           </p>
         </div>
 
@@ -165,7 +165,7 @@ export const SitePartNumberingSection = () => {
           <h4 className="font-medium text-foreground">Rules (Non-Negotiable)</h4>
           <div className="grid gap-3 md:grid-cols-2">
             {[
-              { rule: "Numbers Only", desc: "No letters, no alphanumeric characters in the site part number" },
+              { rule: "Numbers Only", desc: "No letters, no alphanumeric characters in the stock code" },
               { rule: "One Part = One Number", desc: "One unique part number per item — never reused" },
               { rule: "Sequential Numbering", desc: "Sequential within each category (001, 002, 003…)" },
               { rule: "Leading Zeros Required", desc: "Always use 3-digit format: 001, 002, 003" },
@@ -192,9 +192,9 @@ export const SitePartNumberingSection = () => {
           <div className="space-y-3">
             {[
               "Confirm the correct Part Category Code (CC) — match the physical part to the category table above",
-              "Identify the highest existing NNN in that category from the Site Parts Catalogue",
-              "Assign the next available sequential number",
-              "Record the number in the Site Parts Catalogue and update the CMMS",
+              "Identify the highest existing NNN in that category from the Site Spares Catalogue",
+              "Assign the next available sequential stock code",
+              "Record the stock code in the Site Spares Catalogue and update the CMMS",
             ].map((step, i) => (
               <div key={i} className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -213,8 +213,8 @@ export const SitePartNumberingSection = () => {
             <h4 className="font-medium text-foreground">Notes</h4>
           </div>
           <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside">
-            <li>OEM / Supplier numbers must be stored in a <strong className="text-foreground">separate field</strong> — never as the site part number</li>
-            <li>This site part number is the <strong className="text-foreground">primary identifier</strong> used for stores, cataloguing, barcode scanning, and CMMS</li>
+            <li>OEM / Supplier numbers must be stored in a <strong className="text-foreground">separate field</strong> — never as the stock code</li>
+            <li>This stock code is the <strong className="text-foreground">primary identifier</strong> used for stores, cataloguing, barcode scanning, and CMMS</li>
             <li>All 25 categories are live and aligned with the site_spares inventory system</li>
             <li>Auto-numbering is available in the Site Spares Catalogue module</li>
           </ul>
@@ -227,7 +227,7 @@ export const SitePartNumberingSection = () => {
             <h4 className="font-medium text-foreground">Explicit Notice</h4>
           </div>
           <p className="text-sm text-muted-foreground">
-            This document <strong className="text-foreground">does not alter any existing part numbers</strong>. It defines the approved numbering standard for future part creation at Tennant Creek Mine.
+            This document <strong className="text-foreground">does not alter any existing stock codes</strong>. It defines the approved stock code standard for future part creation at Tennant Creek Mine.
           </p>
         </div>
       </CardContent>

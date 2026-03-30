@@ -38,7 +38,7 @@ const categoryData = [
 ];
 
 const rules = [
-  { rule: "Numbers Only", desc: "No letters or alphanumeric characters in the site part number. Purely numeric for barcode compatibility and CMMS search speed." },
+  { rule: "Numbers Only", desc: "No letters or alphanumeric characters in the stock code. Purely numeric for barcode compatibility and CMMS search speed." },
   { rule: "One Part = One Number", desc: "Every unique physical part receives one number. Never reused, even if a part is obsoleted." },
   { rule: "Sequential Numbering", desc: "Sequential within each category (001, 002, 003...). The system auto assigns the next available number." },
   { rule: "Leading Zeros Required", desc: "Always use 3 digit format: 001, 002, 003. This ensures consistent sorting and barcode formatting." },
@@ -51,9 +51,9 @@ const allocationSteps = [
   "Match the part to the correct Part Category Code (CC) using the category table in Section 4.",
   "Open the Site Spares Catalogue and filter by that category code.",
   "Check the highest existing NNN sequence number already allocated in that category.",
-  "Assign the next sequential number (e.g. if the last bearing was 1004087, the next is 1004088).",
-  "Enter the full 7 digit number into the Site Spares Catalogue and the CMMS asset record.",
-  "Record the OEM part number and supplier part number in the separate designated fields. Never as the site number.",
+  "Assign the next sequential stock code (e.g. if the last bearing was 1004087, the next is 1004088).",
+  "Enter the full 7 digit stock code into the Site Spares Catalogue and the CMMS asset record.",
+  "Record the OEM part number and supplier part number in the separate designated fields. Never as the stock code.",
 ];
 
 export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
@@ -64,7 +64,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
     if (!contentRef.current) return;
     setGenerating(true);
     try {
-      await exportSectionsToPdf(contentRef.current, "TCMG-STD-SPN-001_Site_Parts_Numbering_Standard.pdf", PDF_EXPORT_OPTS);
+      await exportSectionsToPdf(contentRef.current, "TCMG-STD-SPN-001_Stock_Code_Standard.pdf", PDF_EXPORT_OPTS);
     } finally {
       setGenerating(false);
     }
@@ -82,7 +82,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Site Parts Numbering Standard - PDF Preview</h3>
+        <h3 className="text-lg font-semibold">Stock Code Standard - PDF Preview</h3>
         <Button onClick={handleDownload} disabled={generating} className="gap-2">
           {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
           {generating ? "Generating..." : "Download PDF"}
@@ -103,10 +103,10 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
                   TENNANT CREEK MINE
                 </div>
                 <h1 style={{ fontSize: 22, fontWeight: 700, margin: "4px 0 0 0", letterSpacing: "-0.3px" }}>
-                  Site Parts Numbering Standard
+                  Stock Code Standard
                 </h1>
                 <p style={{ fontSize: 13, color: "#666", margin: "2px 0 0 0" }}>
-                  Gold Processing Plant | Internal Part Number Convention
+                  Gold Processing Plant | Internal Stock Code Convention
                 </p>
               </div>
               <div style={{ textAlign: "right", fontSize: 11, color: "#666", borderLeft: `3px solid ${GOLD}`, paddingLeft: 10 }}>
@@ -123,7 +123,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           {/* 1. Purpose */}
           <h2 style={headingStyle("1", "Purpose")}>1. Purpose</h2>
           <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 6px 0" }}>
-            This standard defines the site based internal part numbering system developed for Tennant Creek Mine. The system was designed to solve a core problem: the site had no unified way to identify, search, or catalogue spare parts across stores, the CMMS, and procurement. OEM part numbers vary by supplier, are inconsistent, and cannot be used as a universal key. This standard creates a single, permanent, numeric identifier for every physical spare part on site.
+            This standard defines the site based internal stock code system developed for Tennant Creek Mine. The system was designed to solve a core problem: the site had no unified way to identify, search, or catalogue spare parts across stores, the CMMS, and procurement. OEM part numbers vary by supplier, are inconsistent, and cannot be used as a universal key. This standard creates a single, permanent, numeric stock code for every physical spare part on site.
           </p>
           <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 6px 0" }}>
             The numbering logic was developed by analysing 2,000+ historical purchase order line items, grouping them into logical equipment categories, and assigning a fixed 2 digit category code to each group. The result is a 7 digit all numeric format that is barcode compatible, CMMS friendly, and human readable.
@@ -213,9 +213,9 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           </p>
 
           {/* 5. Allocation Process */}
-          <h2 style={headingStyle("5", "Allocation")}>5. How to Allocate a New Part Number</h2>
+          <h2 style={headingStyle("5", "Allocation")}>5. How to Allocate a New Stock Code</h2>
           <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 8px 0" }}>
-            When a new spare part arrives on site or is identified for the first time, follow these steps to assign a permanent site part number:
+            When a new spare part arrives on site or is identified for the first time, follow these steps to assign a permanent stock code:
           </p>
           <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
             <thead>
@@ -237,10 +237,10 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           {/* 6. Notes & Key Decisions */}
           <h2 style={headingStyle("6", "Notes")}>6. Key Design Decisions</h2>
           <ul style={{ fontSize: 13, lineHeight: 1.6, paddingLeft: 20, margin: "0 0 12px 0", color: "#333" }}>
-            <li><strong>Why numbers only?</strong> Purely numeric part numbers are faster to search, barcode compatible, and eliminate confusion between letters (O vs 0, I vs 1).</li>
+            <li><strong>Why numbers only?</strong> Purely numeric stock codes are faster to search, barcode compatible, and eliminate confusion between letters (O vs 0, I vs 1).</li>
             <li><strong>Why not use OEM numbers?</strong> OEM numbers change between suppliers, vary in format, and cannot be used as a universal key across stores and CMMS.</li>
-            <li><strong>Why 7 digits?</strong> 7 digits gives 22 categories x 999 parts = 21,978 unique numbers per site. More than sufficient for a single processing plant.</li>
-            <li><strong>Why site code 10?</strong> Tennant Creek is the first site. If a second site is added, it would use 20, keeping all existing numbers valid.</li>
+            <li><strong>Why 7 digits?</strong> 7 digits gives 22 categories x 999 parts = 21,978 unique stock codes per site. More than sufficient for a single processing plant.</li>
+            <li><strong>Why site code 10?</strong> Tennant Creek is the first site. If a second site is added, it would use 20, keeping all existing stock codes valid.</li>
             <li><strong>How were categories chosen?</strong> Categories were derived from analysis of 2,000+ PO line items, grouped by equipment function and aligned with the physical stores container layout.</li>
             <li><strong>Auto numbering:</strong> The Site Spares Catalogue module automatically assigns the next available NNN when adding a new part. No manual counting required.</li>
           </ul>
@@ -249,7 +249,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           <div style={{ border: `2px solid ${GOLD}`, backgroundColor: GOLD_BG, borderRadius: 4, padding: "10px 14px", marginBottom: 14 }}>
             <p style={{ fontSize: 13, fontWeight: 700, margin: "0 0 4px 0", color: GOLD }}>Important Notice</p>
             <p style={{ fontSize: 13, color: "#444", margin: 0 }}>
-              This document does not alter any existing part numbers. It defines the approved numbering standard for all future part creation at Tennant Creek Mine. All 2,184 existing parts in the catalogue have already been allocated under this system.
+              This document does not alter any existing stock codes. It defines the approved stock code standard for all future part creation at Tennant Creek Mine. All 2,184 existing parts in the catalogue have already been allocated under this system.
             </p>
           </div>
 
