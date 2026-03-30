@@ -103,10 +103,10 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
                   TENNANT CREEK MINE
                 </div>
                 <h1 style={{ fontSize: 22, fontWeight: 700, margin: "4px 0 0 0", letterSpacing: "-0.3px" }}>
-                  Site Parts Numbering Standard
+                  Stock Code Standard
                 </h1>
                 <p style={{ fontSize: 13, color: "#666", margin: "2px 0 0 0" }}>
-                  Gold Processing Plant | Internal Part Number Convention
+                  Gold Processing Plant | Internal Stock Code Convention
                 </p>
               </div>
               <div style={{ textAlign: "right", fontSize: 11, color: "#666", borderLeft: `3px solid ${GOLD}`, paddingLeft: 10 }}>
