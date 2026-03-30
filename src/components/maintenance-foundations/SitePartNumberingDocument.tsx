@@ -249,7 +249,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           <div style={{ border: `2px solid ${GOLD}`, backgroundColor: GOLD_BG, borderRadius: 4, padding: "10px 14px", marginBottom: 14 }}>
             <p style={{ fontSize: 13, fontWeight: 700, margin: "0 0 4px 0", color: GOLD }}>Important Notice</p>
             <p style={{ fontSize: 13, color: "#444", margin: 0 }}>
-              This document does not alter any existing part numbers. It defines the approved numbering standard for all future part creation at Tennant Creek Mine. All 2,184 existing parts in the catalogue have already been allocated under this system.
+              This document does not alter any existing stock codes. It defines the approved stock code standard for all future part creation at Tennant Creek Mine. All 2,184 existing parts in the catalogue have already been allocated under this system.
             </p>
           </div>
 

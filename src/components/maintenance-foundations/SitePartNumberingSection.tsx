@@ -227,7 +227,7 @@ export const SitePartNumberingSection = () => {
             <h4 className="font-medium text-foreground">Explicit Notice</h4>
           </div>
           <p className="text-sm text-muted-foreground">
-            This document <strong className="text-foreground">does not alter any existing part numbers</strong>. It defines the approved numbering standard for future part creation at Tennant Creek Mine.
+            This document <strong className="text-foreground">does not alter any existing stock codes</strong>. It defines the approved stock code standard for future part creation at Tennant Creek Mine.
           </p>
         </div>
       </CardContent>
