@@ -19,7 +19,7 @@ const categoryData = [
   { code: "07", name: "Electrical", examples: "VSDs, contactors, relays, PLC cards, circuit breakers, cables, terminals, cable glands, soft starters, enclosures", container: "C01-EL" },
   { code: "08", name: "Conveyor Component", examples: "Rollers, idlers, pulleys, belts, belt scrapers, belt cleaners, skirting, v-belts, sprockets, chains", container: "C03-ME / LD" },
   { code: "09", name: "Wear Parts", examples: "Crusher liners, cone liner concave/mantle, jaw plates, cyclone liners, chute liners, wear plates, screen panels", container: "LD / C03-ME" },
-  { code: "10", name: "Mechanical", examples: "Flexible couplings, shaft couplings, brackets, clamps, mounts, frames, guards, supports, handrails. Sub-category: Structural Steel — SHS, RHS, C-channel, flat bar, steel plate, bollards", container: "C03-ME / LD" },
+  { code: "10", name: "Mechanical", examples: "Flexible couplings, shaft couplings, brackets, clamps, mounts, frames, guards, supports, handrails", container: "C03-ME" },
   { code: "11", name: "Pipe Fitting", examples: "Hoses (air, water, hydraulic), BSP fittings, flanges, couplings, camlock, PE/Plasson fittings, pipe spools", container: "C02-IN / C03-ME" },
   { code: "12", name: "Seal", examples: "Mechanical seals, o-rings, gaskets, gland packing, oil seals, lip seals, diaphragm seals, seal kits", container: "C04-MP" },
   { code: "13", name: "Filter", examples: "Engine & air filters, hydraulic filters, oil filters, fuel filters, fuel water separators, breathers, strainers", container: "C05-CS / C02-IN" },
@@ -28,10 +28,13 @@ const categoryData = [
   { code: "16", name: "Tanks & Vessels", examples: "Process tanks, CIP tanks, reagent tanks, sumps, hoppers, heat exchangers, storage vessels", container: "LD" },
   { code: "17", name: "Safety Equipment", examples: "Safety showers, eyewash stations, machine guards, pull-wire systems, e-stops, fire extinguishers, spill kits", container: "C05-CS" },
   { code: "18", name: "Power Generation", examples: "Generators, alternators, substations, distribution boards, busbar, capacitor banks", container: "LD / C01-EL" },
-  { code: "19", name: "Tooling", examples: "Hand tools, power tools, torque tools, annular cutters, site boxes. Sub-categories: Rigging — slings, chain blocks, shackles, wire rope; PPE — hard hats, safety glasses, respirators, gloves, harnesses", container: "C05-CS / C03-ME" },
+  { code: "19", name: "Tooling", examples: "Hand tools, power tools, torque tools, annular cutters, site boxes, fluid extractors", container: "C05-CS" },
   { code: "20", name: "OEM Assembly", examples: "Complete pump skids, lube skids, filter press packages, complete OEM assemblies", container: "LD" },
   { code: "21", name: "Fastener", examples: "Bolts, nuts, washers, studs, anchors, rivets, zinc plated hardware, grade 8 fasteners", container: "C05-CS" },
   { code: "22", name: "Consumables", examples: "Flap discs, cutting wheels, grinding discs, lubricants, grease, adhesives, sealants, paint", container: "C05-CS / Flam. Cab." },
+  { code: "23", name: "Structural Steel", examples: "SHS, RHS, C-channel, equal angle, flat bar, steel plate, star pickets, bollards", container: "LD" },
+  { code: "24", name: "Rigging", examples: "Slings, chain blocks, lever hoists, shackles, wire rope, turnbuckles", container: "C03-ME" },
+  { code: "25", name: "PPE", examples: "Hard hats, safety glasses, respirators, earmuffs, gloves, hi-vis vests, harnesses", container: "C05-CS" },
 ];
 
 const rules = [
