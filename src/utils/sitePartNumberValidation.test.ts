@@ -78,6 +78,7 @@ describe("parseSitePartNumber", () => {
 describe("getCategoryName", () => {
   it("returns name for valid codes", () => {
     expect(getCategoryName("01")).toBe("Pumps");
+    expect(getCategoryName("23")).toBe("Structural Steel");
     expect(getCategoryName("25")).toBe("PPE");
   });
 
