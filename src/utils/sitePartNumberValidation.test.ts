@@ -10,7 +10,7 @@ describe("validateSitePartNumber", () => {
   it("accepts valid 7-digit part numbers", () => {
     expect(validateSitePartNumber("1003001").valid).toBe(true);
     expect(validateSitePartNumber("1001999").valid).toBe(true);
-    expect(validateSitePartNumber("1023001").valid).toBe(true);
+    expect(validateSitePartNumber("1025001").valid).toBe(true);
   });
 
   it("accepts legacy 6-digit part numbers with warning", () => {
