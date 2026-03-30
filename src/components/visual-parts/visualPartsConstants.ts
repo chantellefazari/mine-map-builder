@@ -24,8 +24,8 @@ export const PART_CATEGORIES = [
   "Safety Equipment",           // CC 17
   "Power Generation",           // CC 18
   "Tooling",                    // CC 19
-  "Rigging",                    // CC 19b
-  "PPE",                        // CC 19c
+  "Rigging",                    // CC 19 (sub-category)
+  "PPE",                        // CC 19 (sub-category)
   "OEM Assembly",               // CC 20
   "Fastener",                   // CC 21
   "Consumables",                // CC 22

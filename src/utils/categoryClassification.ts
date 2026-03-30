@@ -80,7 +80,7 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "garrick", "ear-lokt", "jack chain",
   ],
 
-  // CC 19c – PPE
+  // CC 19 (sub-category) – PPE
   "PPE": [
     "hard hat", "safety helmet", "bump cap",
     "safety glasses", "safety glass", "safety spectacles", "safety goggles",

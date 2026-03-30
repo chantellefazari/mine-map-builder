@@ -209,7 +209,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
             </tbody>
           </table>
           <p style={{ fontSize: 10, color: "#888", fontStyle: "italic", margin: "0 0 12px 0" }}>
-            * CC 10b, 19b, 19c are sub categories sharing the parent CC code for part numbering sequences.
+            * Structural Steel, Rigging, and PPE are sub-categories sharing the parent CC code (10 or 19) for stock code sequences.
           </p>
 
           {/* 5. Allocation Process */}
