@@ -43,10 +43,12 @@ const CATEGORY_CODE_MAP: Record<string, string> = {
   "Fasteners": "21", "Fastener": "21",
   "Consumables": "22", "Consumable": "22",
   "Unknown / To Be Confirmed": "22", "Unknown / TBC": "22", "General": "22",
-  // Additional visual-parts categories
+  // Additional categories
+  "Structural Steel": "23",
   "Belt / Chain": "08",
   "Hydraulic": "15",
-  "Rigging": "10",
+  "Rigging": "24",
+  "PPE": "25",
 };
 
 /**
