@@ -85,7 +85,7 @@ const zones = [
       { cc: "21", name: "Fastener", items: ["Bolts (hex, cap, set, zinc plated)", "Nuts (hex, nyloc, lock, spring)", "Washers (flat, spring)", "Studs, anchors, rivets", "Threaded rod, U-bolts"] },
       { cc: "22", name: "Consumables", items: ["Flap discs, cutting wheels, grinding discs", "Abrasives, fibre discs", "Adhesives, sealants, Loctite, silicone", "Paint, markers, tape (insulation, PVC)", "Anti-corrosion products, VCI bags"] },
       { cc: "19", name: "Tooling", items: ["Hand tools (wrenches, spanners, pliers)", "Power tools (Milwaukee, Makita, DeWalt)", "Drill bits, annular cutters, burr sets", "Torque tools, socket sets", "Site boxes, fluid extractors, gravity tables"] },
-      { cc: "19c", name: "PPE", items: ["Hard hats, safety helmets", "Safety glasses, face shields, visors", "Respirators & respiratory filters", "Earmuffs, earplugs", "Nitrile & rigger gloves", "Hi-vis vests, safety harnesses, lanyards"] },
+      { cc: "19", name: "PPE", items: ["Hard hats, safety helmets", "Safety glasses, face shields, visors", "Respirators & respiratory filters", "Earmuffs, earplugs", "Nitrile & rigger gloves", "Hi-vis vests, safety harnesses, lanyards"] },
       { cc: "17", name: "Safety Equipment", items: ["Fire extinguishers, fire blankets", "First aid kits, spill kits", "Safety signage", "Emergency equipment (non-electrical)"] },
       { cc: "13", name: "Filter (vehicle)", items: ["CAT, Donaldson, Fleetguard air filters", "Engine oil filters, fuel filters", "Fuel water separators", "Cabin air filters, breathers"] },
       { cc: "14", name: "Lubrication (bulk)", items: ["Grease cartridges", "Oil sample bottles", "Bulk lubricants (small containers)", "Desiccant breathers"] },
