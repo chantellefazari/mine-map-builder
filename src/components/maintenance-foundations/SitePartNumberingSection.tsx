@@ -165,7 +165,7 @@ export const SitePartNumberingSection = () => {
           <h4 className="font-medium text-foreground">Rules (Non-Negotiable)</h4>
           <div className="grid gap-3 md:grid-cols-2">
             {[
-              { rule: "Numbers Only", desc: "No letters, no alphanumeric characters in the site part number" },
+              { rule: "Numbers Only", desc: "No letters, no alphanumeric characters in the stock code" },
               { rule: "One Part = One Number", desc: "One unique part number per item — never reused" },
               { rule: "Sequential Numbering", desc: "Sequential within each category (001, 002, 003…)" },
               { rule: "Leading Zeros Required", desc: "Always use 3-digit format: 001, 002, 003" },
