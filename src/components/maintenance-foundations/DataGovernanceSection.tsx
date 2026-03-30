@@ -122,7 +122,7 @@ const DOMAIN_SUMMARY = [
   { title: "Asset Hierarchy", ref: "TCMG-STD-AH-001", items: ["7 level structure", "6 area codes", "Parent child rules", "No level skipping"] },
   { title: "Functional Locations", ref: "TCMG-STD-FL-001", items: ["5 segment FL codes", "Area and Sub Area coding", "System level grouping", "Verified against registers"] },
   { title: "Naming Conventions", ref: "TCMG-STD-NAM-001", items: ["Equipment type prefixes", "Component suffixes", "Mobile equipment codes", "Aligned to registers"] },
-  { title: "Parts Numbering", ref: "TCMG-STD-SPN-001", items: ["SSCCNNN format", "Barcode compatible", "One part, one number", "Leading zeros enforced"] },
+  { title: "Stock Codes", ref: "TCMG-STD-SPN-001", items: ["SSCCNNN format", "Barcode compatible", "One part, one number", "Leading zeros enforced"] },
   { title: "PM Standards", ref: "PM Master List", items: ["88 approved templates", "3 disciplines", "Task level checklists", "Frequency governance"] },
   { title: "Data Mapping", ref: "TCMG-STD-DM-001", items: ["D365 field mapping", "Transformation rules", "Readiness scoring", "6 entity categories"] },
 ];

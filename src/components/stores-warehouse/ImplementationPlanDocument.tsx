@@ -1089,7 +1089,7 @@ export const ImplementationPlanDocument = () => {
           A unified numbering and coding framework ensures every item in the warehouse is uniquely identified, traceable, and logically allocated. This framework synchronises part identification, location coding, and category taxonomy across all modules.
         </Prose>
 
-        <SubSection id="7.1" title="Site Part Numbering Standard (SSCCNNN)">
+        <SubSection id="7.1" title="Stock Code Standard (SSCCNNN)">
           <Prose>All site parts follow a 7-digit numeric format to ensure CMMS compatibility and collision-free identification.</Prose>
           <div className="bg-muted/50 border border-border rounded-lg p-4 space-y-3">
             <div className="flex items-center gap-3 font-mono text-lg text-foreground font-bold tracking-widest justify-center">
