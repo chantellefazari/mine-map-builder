@@ -38,7 +38,7 @@ const categoryData = [
 ];
 
 const rules = [
-  { rule: "Numbers Only", desc: "No letters or alphanumeric characters in the site part number. Purely numeric for barcode compatibility and CMMS search speed." },
+  { rule: "Numbers Only", desc: "No letters or alphanumeric characters in the stock code. Purely numeric for barcode compatibility and CMMS search speed." },
   { rule: "One Part = One Number", desc: "Every unique physical part receives one number. Never reused, even if a part is obsoleted." },
   { rule: "Sequential Numbering", desc: "Sequential within each category (001, 002, 003...). The system auto assigns the next available number." },
   { rule: "Leading Zeros Required", desc: "Always use 3 digit format: 001, 002, 003. This ensures consistent sorting and barcode formatting." },
