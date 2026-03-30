@@ -13,7 +13,7 @@
 const VALID_SITE_CODES = ["10"] as const;
 
 /** Valid category codes (01–23) */
-const VALID_CATEGORY_CODES = Array.from({ length: 23 }, (_, i) =>
+const VALID_CATEGORY_CODES = Array.from({ length: 25 }, (_, i) =>
   String(i + 1).padStart(2, "0")
 );
 
