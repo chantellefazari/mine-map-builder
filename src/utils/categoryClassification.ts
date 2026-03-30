@@ -68,7 +68,7 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "structural steel",
   ],
 
-  // CC 19 (sub-category) – Rigging
+  // CC 24 – Rigging
   "Rigging": [
     "sling", "round sling", "flat sling", "web sling",
     "chain block", "lever hoist", "come-along", "come along",
