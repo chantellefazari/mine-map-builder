@@ -51,9 +51,9 @@ const allocationSteps = [
   "Match the part to the correct Part Category Code (CC) using the category table in Section 4.",
   "Open the Site Spares Catalogue and filter by that category code.",
   "Check the highest existing NNN sequence number already allocated in that category.",
-  "Assign the next sequential number (e.g. if the last bearing was 1004087, the next is 1004088).",
-  "Enter the full 7 digit number into the Site Spares Catalogue and the CMMS asset record.",
-  "Record the OEM part number and supplier part number in the separate designated fields. Never as the site number.",
+  "Assign the next sequential stock code (e.g. if the last bearing was 1004087, the next is 1004088).",
+  "Enter the full 7 digit stock code into the Site Spares Catalogue and the CMMS asset record.",
+  "Record the OEM part number and supplier part number in the separate designated fields. Never as the stock code.",
 ];
 
 export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
