@@ -213,8 +213,8 @@ export const SitePartNumberingSection = () => {
             <h4 className="font-medium text-foreground">Notes</h4>
           </div>
           <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside">
-            <li>OEM / Supplier numbers must be stored in a <strong className="text-foreground">separate field</strong> — never as the site part number</li>
-            <li>This site part number is the <strong className="text-foreground">primary identifier</strong> used for stores, cataloguing, barcode scanning, and CMMS</li>
+            <li>OEM / Supplier numbers must be stored in a <strong className="text-foreground">separate field</strong> — never as the stock code</li>
+            <li>This stock code is the <strong className="text-foreground">primary identifier</strong> used for stores, cataloguing, barcode scanning, and CMMS</li>
             <li>All 25 categories are live and aligned with the site_spares inventory system</li>
             <li>Auto-numbering is available in the Site Spares Catalogue module</li>
           </ul>
