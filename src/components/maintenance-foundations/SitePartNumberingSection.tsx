@@ -192,9 +192,9 @@ export const SitePartNumberingSection = () => {
           <div className="space-y-3">
             {[
               "Confirm the correct Part Category Code (CC) — match the physical part to the category table above",
-              "Identify the highest existing NNN in that category from the Site Parts Catalogue",
-              "Assign the next available sequential number",
-              "Record the number in the Site Parts Catalogue and update the CMMS",
+              "Identify the highest existing NNN in that category from the Site Spares Catalogue",
+              "Assign the next available sequential stock code",
+              "Record the stock code in the Site Spares Catalogue and update the CMMS",
             ].map((step, i) => (
               <div key={i} className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
