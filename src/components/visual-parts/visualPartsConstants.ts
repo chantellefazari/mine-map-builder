@@ -14,7 +14,7 @@ export const PART_CATEGORIES = [
   "Conveyor Component",         // CC 08
   "Wear Parts",                 // CC 09
   "Mechanical",                 // CC 10
-  "Structural Steel",           // CC 10 (sub-category)
+  "Structural Steel",           // CC 23
   "Pipe Fitting",               // CC 11
   "Seal",                       // CC 12
   "Filter",                     // CC 13
