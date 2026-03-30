@@ -28,7 +28,7 @@ interface PrintAllFoundationsModalProps {
 const SECTIONS = [
   { title: "1. Asset Hierarchy & Parent-Child Rules", Component: HierarchyRulesSection },
   { title: "2. Functional Location Codes", Component: AssetNumberingSection },
-  { title: "3. Site Part Numbering Standards", Component: SitePartNumberingSection },
+  { title: "3. Stock Code Standards", Component: SitePartNumberingSection },
   { title: "4. Maintenance WO Numbering Standards", Component: JobNumberingSection },
   { title: "5. PM Standards", Component: PMStandardsSection },
   { title: "6. Spare Parts Strategy & Criticality", Component: SparesStrategySection },
