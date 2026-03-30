@@ -58,7 +58,7 @@ export function resolveCategoryCode(categoryNameOrCode: string): string {
   // If it already looks like a valid 2-digit code, return it
   if (/^\d{2}$/.test(categoryNameOrCode)) {
     const num = parseInt(categoryNameOrCode, 10);
-    if (num >= 1 && num <= 23) return categoryNameOrCode;
+    if (num >= 1 && num <= 25) return categoryNameOrCode;
   }
   return CATEGORY_CODE_MAP[categoryNameOrCode] || "22"; // default to Consumables
 }

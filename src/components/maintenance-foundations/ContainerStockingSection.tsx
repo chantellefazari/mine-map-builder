@@ -104,7 +104,7 @@ const zones = [
       { cc: "03", name: "Gearbox", items: ["All gearbox assemblies (SEW-Eurodrive, Falk, Flender)", "Speed reducers, planetary gearboxes", "Any complete gearbox unit"] },
       { cc: "01", name: "Pump Component (complete assemblies)", items: ["Submersible pumps, sump pumps, pumpsets", "Process water pumps, vertical multistage pumps", "Grundfos, Lowara complete assemblies", "Diesel pumps"] },
       { cc: "09", name: "Wear Parts (heavy)", items: ["Crusher liner concave & mantle", "Cone liners, jaw plates, cheek plates", "Chute liners (heavy)", "Screen panels", "Frame plate liners"] },
-      { cc: "10", name: "Structural Steel", items: ["SHS — square hollow sections", "RHS — rectangular hollow sections", "C-channel, channel beam", "Equal angle, flat bar (long)", "Steel plate, star pickets", "Bollards, stay brackets"] },
+      { cc: "23", name: "Structural Steel", items: ["SHS — square hollow sections", "RHS — rectangular hollow sections", "C-channel, channel beam", "Equal angle, flat bar (long)", "Steel plate, star pickets", "Bollards, stay brackets"] },
       { cc: "11", name: "Pipe Fitting (full pipe lengths)", items: ["Full HDPE pipe lengths (6m)", "Vinidex HDPE pipe", "Long pipe spools (DN150+)", "Pipe lengths >2m"] },
       { cc: "05", name: "Valve (large)", items: ["Valves DN150 and above", "Large pneumatic valve assemblies", "Heavy actuated valves"] },
       { cc: "15", name: "Air & Pneumatic (large)", items: ["Air receivers (1000L+)", "Large compressors", "Side channel blowers"] },

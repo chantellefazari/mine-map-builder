@@ -142,7 +142,9 @@ const CATEGORY_NAMES: Record<string, string> = {
   "20": "OEM Assemblies / Packages",
   "21": "Fasteners",
   "22": "Consumables",
-  "23": "Unknown / To Be Confirmed",
+  "23": "Structural Steel",
+  "24": "Rigging",
+  "25": "PPE",
 };
 
 export function getCategoryName(code: string): string | null {

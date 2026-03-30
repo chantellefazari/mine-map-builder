@@ -209,7 +209,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
             </tbody>
           </table>
           <p style={{ fontSize: 10, color: "#888", fontStyle: "italic", margin: "0 0 12px 0" }}>
-            * Structural Steel, Rigging, and PPE are sub-categories sharing the parent CC code (10 or 19) for stock code sequences.
+            * CC 01–25 are unique 2-digit category codes. Each category maintains its own independent NNN sequence.
           </p>
 
           {/* 5. Allocation Process */}
