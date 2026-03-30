@@ -39,7 +39,7 @@ import { AssetCriticalitySection } from "./AssetCriticalitySection";
 const TAB_LABELS: Record<string, string> = {
   "hierarchy": "Asset Hierarchy & Parent-Child Rules",
   "functional-locations": "Functional Location Codes",
-  "part-numbering": "Site Part Numbering Standards",
+  "part-numbering": "Stock Code Standards",
   "wo-numbering": "Maintenance WO Numbering Standards",
   "pm-standards": "PM Standards",
   "spares": "Spare Parts Strategy & Criticality",
