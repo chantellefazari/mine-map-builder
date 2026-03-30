@@ -107,7 +107,7 @@ const LOCKED_ITEMS = [
   "P&ID extraction register (14 page verified set)",
   "88 approved PM templates across 3 disciplines",
   "Electrical identifier series (17-GN-xxx, 18-MCC-xxx)",
-  "Site part numbering format (SSCCNNN)",
+  "Stock code format (SSCCNNN)",
   "Store location coding (C01 to C05, LD-A to LD-F)",
   "Stock control procedure and receiving/issuing rules",
 ];
