@@ -153,7 +153,7 @@ export const SitePartNumberingSection = () => {
             </Table>
           </div>
           <p className="text-xs text-muted-foreground italic">
-            * CC 10b (Structural Steel) and CC 19b (Rigging) and CC 19c (PPE) are sub-categories of CC 10 and CC 19 respectively and use their own sequential NNN series.
+            * Structural Steel (CC 10), Rigging (CC 19), and PPE (CC 19) are sub-categories sharing the parent code's NNN sequence.
           </p>
         </div>
 

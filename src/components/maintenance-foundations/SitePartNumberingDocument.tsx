@@ -196,7 +196,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
             </thead>
             <tbody>
               {categoryData.map((cat, i) => (
-                <tr key={cat.code} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                <tr key={`${cat.code}-${cat.name}`} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
                   <td style={{ padding: "4px 8px", border: "1px solid #ddd", fontFamily: "monospace", fontWeight: 700, fontSize: 12, color: GOLD }}>{cat.code}</td>
                   <td style={{ padding: "4px 8px", border: "1px solid #ddd", fontWeight: 600, fontSize: 12 }}>{cat.name}</td>
                   <td style={{ padding: "4px 8px", border: "1px solid #ddd", fontSize: 11.5, color: "#444" }}>{cat.examples}</td>
