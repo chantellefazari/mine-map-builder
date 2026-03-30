@@ -78,7 +78,7 @@ describe("parseSitePartNumber", () => {
 describe("getCategoryName", () => {
   it("returns name for valid codes", () => {
     expect(getCategoryName("01")).toBe("Pumps");
-    expect(getCategoryName("23")).toBe("Unknown / To Be Confirmed");
+    expect(getCategoryName("25")).toBe("PPE");
   });
 
   it("returns null for invalid codes", () => {
