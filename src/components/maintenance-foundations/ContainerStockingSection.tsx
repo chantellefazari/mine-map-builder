@@ -52,7 +52,7 @@ const zones = [
       { cc: "08", name: "Conveyor Component", items: ["Idler rollers, return rollers, trough rollers", "Belt scrapers & belt cleaners", "Skirting rubber", "V-belts, timing belts, wedge belts", "Sprockets, chains", "Fenner pulleys, belt tensioners", "Belt misalignment & pull-cord switches"] },
       { cc: "11", name: "Pipe Fitting (PE/Plasson & hoses)", items: ["PE100 / Plasson compression fittings (couplings, elbows, tees)", "Electrofusion fittings", "Rubber hoses (air, water, drag)", "Hydraulic hoses", "Claw couplings, camlocks, hosetails", "Pipe spools (short), repair clamps", "Saddle clamps, Saddle fittings"] },
       { cc: "05", name: "Valve (general mechanical)", items: ["Ball valves, knife gate valves", "Butterfly valves, check valves", "Gate valves, float valves, safety valves", "General process valves DN<150"] },
-      { cc: "19", name: "Rigging", items: ["Round slings, flat slings, web slings", "Chain blocks, lever hoists", "Shackles (dee, bow, screw pin)", "Wire rope & wire rope clips", "Turnbuckles, hook & eye sets", "Jack chain, ear-lokt buckles"] },
+      { cc: "24", name: "Rigging", items: ["Round slings, flat slings, web slings", "Chain blocks, lever hoists", "Shackles (dee, bow, screw pin)", "Wire rope & wire rope clips", "Turnbuckles, hook & eye sets", "Jack chain, ear-lokt buckles"] },
       { cc: "09", name: "Wear Parts (light)", items: ["Wear plates <15 kg", "Rubber liners <15 kg", "Wear strips & repair strips", "Light wear parts & kits"] },
       { cc: "01", name: "Pump Component (structural)", items: ["Pump casings", "Pump shafts & sleeves", "Impellers (medium)", "Volutes", "Gland packing, packing rings"] },
     ],
