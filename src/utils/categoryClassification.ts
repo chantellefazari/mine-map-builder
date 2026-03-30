@@ -59,7 +59,7 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "rapid clamp", "repair clamp", "pinchweld", "poly saddle",
   ],
 
-  // CC 10 (sub-category) – Structural Steel
+  // CC 23 – Structural Steel
   "Structural Steel": [
     "shs", "rhs", "square hollow section", "rectangular hollow section",
     "c-channel", "c channel", "channel beam", "channel steel",
