@@ -43,10 +43,12 @@ const CATEGORY_CODE_MAP: Record<string, string> = {
   "Fasteners": "21", "Fastener": "21",
   "Consumables": "22", "Consumable": "22",
   "Unknown / To Be Confirmed": "22", "Unknown / TBC": "22", "General": "22",
-  // Additional visual-parts categories
+  // Additional categories
+  "Structural Steel": "23",
   "Belt / Chain": "08",
   "Hydraulic": "15",
-  "Rigging": "10",
+  "Rigging": "24",
+  "PPE": "25",
 };
 
 /**
@@ -56,7 +58,7 @@ export function resolveCategoryCode(categoryNameOrCode: string): string {
   // If it already looks like a valid 2-digit code, return it
   if (/^\d{2}$/.test(categoryNameOrCode)) {
     const num = parseInt(categoryNameOrCode, 10);
-    if (num >= 1 && num <= 23) return categoryNameOrCode;
+    if (num >= 1 && num <= 25) return categoryNameOrCode;
   }
   return CATEGORY_CODE_MAP[categoryNameOrCode] || "22"; // default to Consumables
 }

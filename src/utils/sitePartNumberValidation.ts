@@ -13,7 +13,7 @@
 const VALID_SITE_CODES = ["10"] as const;
 
 /** Valid category codes (01–23) */
-const VALID_CATEGORY_CODES = Array.from({ length: 23 }, (_, i) =>
+const VALID_CATEGORY_CODES = Array.from({ length: 25 }, (_, i) =>
   String(i + 1).padStart(2, "0")
 );
 
@@ -142,7 +142,9 @@ const CATEGORY_NAMES: Record<string, string> = {
   "20": "OEM Assemblies / Packages",
   "21": "Fasteners",
   "22": "Consumables",
-  "23": "Unknown / To Be Confirmed",
+  "23": "Structural Steel",
+  "24": "Rigging",
+  "25": "PPE",
 };
 
 export function getCategoryName(code: string): string | null {

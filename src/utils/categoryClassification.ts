@@ -19,7 +19,7 @@ export type SpareCategory =
   | "Conveyor Component"          // CC 08
   | "Wear Parts"                  // CC 09
   | "Mechanical"                  // CC 10
-  | "Structural Steel"            // CC 10 (sub-category)
+  | "Structural Steel"            // CC 23
   | "Pipe Fitting"                // CC 11
   | "Seal"                        // CC 12
   | "Filter"                      // CC 13
@@ -29,8 +29,8 @@ export type SpareCategory =
   | "Safety Equipment"            // CC 17
   | "Power Generation"            // CC 18
   | "Tooling"                     // CC 19
-  | "Rigging"                     // CC 19 (sub-category)
-  | "PPE"                         // CC 19 (sub-category)
+  | "Rigging"                     // CC 24
+  | "PPE"                         // CC 25
   | "OEM Assembly"                // CC 20
   | "Fastener"                    // CC 21
   | "Consumables";                // CC 22 (also the fallback)
@@ -59,7 +59,7 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "rapid clamp", "repair clamp", "pinchweld", "poly saddle",
   ],
 
-  // CC 10 (sub-category) – Structural Steel
+  // CC 23 – Structural Steel
   "Structural Steel": [
     "shs", "rhs", "square hollow section", "rectangular hollow section",
     "c-channel", "c channel", "channel beam", "channel steel",
@@ -68,7 +68,7 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "structural steel",
   ],
 
-  // CC 19 (sub-category) – Rigging
+  // CC 24 – Rigging
   "Rigging": [
     "sling", "round sling", "flat sling", "web sling",
     "chain block", "lever hoist", "come-along", "come along",
@@ -80,7 +80,7 @@ const CATEGORY_KEYWORDS: Record<SpareCategory, string[]> = {
     "garrick", "ear-lokt", "jack chain",
   ],
 
-  // CC 19 (sub-category) – PPE
+  // CC 25 – PPE
   "PPE": [
     "hard hat", "safety helmet", "bump cap",
     "safety glasses", "safety glass", "safety spectacles", "safety goggles",

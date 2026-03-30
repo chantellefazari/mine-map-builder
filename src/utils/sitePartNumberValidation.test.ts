@@ -10,7 +10,7 @@ describe("validateSitePartNumber", () => {
   it("accepts valid 7-digit part numbers", () => {
     expect(validateSitePartNumber("1003001").valid).toBe(true);
     expect(validateSitePartNumber("1001999").valid).toBe(true);
-    expect(validateSitePartNumber("1023001").valid).toBe(true);
+    expect(validateSitePartNumber("1025001").valid).toBe(true);
   });
 
   it("accepts legacy 6-digit part numbers with warning", () => {
@@ -78,7 +78,8 @@ describe("parseSitePartNumber", () => {
 describe("getCategoryName", () => {
   it("returns name for valid codes", () => {
     expect(getCategoryName("01")).toBe("Pumps");
-    expect(getCategoryName("23")).toBe("Unknown / To Be Confirmed");
+    expect(getCategoryName("23")).toBe("Structural Steel");
+    expect(getCategoryName("25")).toBe("PPE");
   });
 
   it("returns null for invalid codes", () => {
