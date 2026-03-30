@@ -67,7 +67,7 @@ export const SitePartNumberingSection = () => {
             This standard defines the site-based internal stock code used at Tennant Creek Mine for <strong className="text-foreground">searching, cataloguing, and inventory control</strong>.
           </p>
           <p className="text-xs text-muted-foreground italic">
-            This is not a supplier or OEM part number. OEM / supplier numbers must be stored in a separate field.
+            This is not a supplier or OEM part number. OEM / supplier numbers must be stored in a separate field. The stock code is the site's internal identifier.
           </p>
         </div>
 
