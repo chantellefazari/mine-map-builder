@@ -18,8 +18,7 @@ export const SitePartNumberingSection = () => {
     { code: "07", name: "Electrical", examples: "VSDs, contactors, relays, PLC cards, circuit breakers, cables, terminals, cable glands, soft starters, enclosures, conduit, heat shrink, cable ties", container: "C01-EL" },
     { code: "08", name: "Conveyor Component", examples: "Rollers, idlers, pulleys, belts, belt scrapers, belt cleaners, skirting, v-belts, sprockets, chains, fenner pulleys, misalignment switches", container: "C03-ME / LD" },
     { code: "09", name: "Wear Parts", examples: "Crusher liners, cone liner concave/mantle, jaw plates, cyclone liners, chute liners, wear plates, screen panels, rubber liner, mill liners", container: "LD / C03-ME" },
-    { code: "10", name: "Mechanical", examples: "Flexible couplings, shaft couplings, brackets, clamps, mounts, frames, guards, supports, handrails, flexseal couplings, durasleeve carriers", container: "C03-ME" },
-    { code: "10", name: "Structural Steel", examples: "SHS, RHS, square & rectangular hollow sections, C-channel, equal angle, flat bar, steel plate, star pickets, bollards", container: "LD" },
+    { code: "10", name: "Mechanical", examples: "Flexible couplings, shaft couplings, brackets, clamps, mounts, frames, guards, supports, handrails, flexseal couplings, durasleeve carriers. Sub-category: Structural Steel — SHS, RHS, C-channel, equal angle, flat bar, steel plate, star pickets, bollards", container: "C03-ME / LD" },
     { code: "11", name: "Pipe Fitting", examples: "Hoses (air, water, hydraulic, drag), nylon tubing, BSP fittings (nipples, elbows, reducers, tees, bushes), flanges, couplings, camlock, hosetails, PE/Plasson fittings, saddle clamps, pipe spools, repair clamps", container: "C02-IN / C03-ME" },
     { code: "12", name: "Seal", examples: "Mechanical seals, o-rings, gaskets, gland packing, oil seals, lip seals, diaphragm seals, PTFE sheet, seal kits, gasket sets", container: "C04-MP" },
     { code: "13", name: "Filter", examples: "CAT/Donaldson/Fleetguard engine & air filters, hydraulic filters, oil filters, fuel filters, fuel water separators, breathers, filter elements, strainers", container: "C05-CS / C02-IN" },
@@ -28,9 +27,7 @@ export const SitePartNumberingSection = () => {
     { code: "16", name: "Tanks & Vessels", examples: "Process tanks, CIP tanks, reagent tanks, sumps, hoppers, heat exchangers (Dynacool), storage vessels", container: "LD" },
     { code: "17", name: "Safety Equipment", examples: "Safety showers, eyewash stations, machine guards, pull-wire systems, e-stops, fire extinguishers, fire blankets, spill kits, safety signage", container: "C05-CS" },
     { code: "18", name: "Power Generation", examples: "Generators, alternators, substations, distribution boards, busbar, capacitor banks, power factor correction equipment", container: "LD / C01-EL" },
-    { code: "19", name: "Tooling", examples: "Hand tools (wrenches, spanners, drill bits), power tools (Milwaukee, Makita, DeWalt), torque tools, annular cutters, site boxes, fluid extractors, gravity tables, Sydney Tools items", container: "C05-CS" },
-    { code: "19", name: "Rigging", examples: "Slings (round, flat, web), chain blocks, lever hoists, shackles (dee, bow), wire rope, turnbuckles, hook and eye sets, jack chain, ear-lokt buckles, garrick equipment", container: "C03-ME" },
-    { code: "19", name: "PPE", examples: "Hard hats, safety glasses, face shields, respirators, earmuffs, earplugs, nitrile gloves, riggers gloves, hi-vis vests, safety harnesses, fall arrest lanyards", container: "C05-CS" },
+    { code: "19", name: "Tooling", examples: "Hand tools (wrenches, spanners, drill bits), power tools (Milwaukee, Makita, DeWalt), torque tools, annular cutters, site boxes, fluid extractors. Sub-categories: Rigging — slings, chain blocks, shackles, wire rope, turnbuckles; PPE — hard hats, safety glasses, respirators, gloves, hi-vis vests, harnesses", container: "C05-CS / C03-ME" },
     { code: "20", name: "OEM Assembly", examples: "Complete pump skids, lube skids, filter press packages, complete OEM assemblies, skid-mounted packages", container: "LD" },
     { code: "21", name: "Fastener", examples: "Bolts (hex, cap, set), nuts (hex, nyloc, lock), washers (flat, spring), studs, anchors, rivets, zinc plated hardware, grade 8 fasteners", container: "C05-CS" },
     { code: "22", name: "Consumables", examples: "Flap discs, cutting wheels, grinding discs, abrasives, lubricants, grease, degreaser, adhesives, sealants, paint, batteries, anti-corrosion products", container: "C05-CS / Flammable Cabinet" },
@@ -143,7 +140,7 @@ export const SitePartNumberingSection = () => {
               </TableHeader>
               <TableBody>
                 {categoryData.map((cat) => (
-                  <TableRow key={cat.code}>
+                  <TableRow key={`${cat.code}-${cat.name}`}>
                     <TableCell className="font-mono font-bold text-primary">{cat.code}</TableCell>
                     <TableCell className="font-medium text-sm">{cat.name}</TableCell>
                     <TableCell className="text-muted-foreground text-xs">{cat.examples}</TableCell>
@@ -156,7 +153,7 @@ export const SitePartNumberingSection = () => {
             </Table>
           </div>
           <p className="text-xs text-muted-foreground italic">
-            * CC 10b (Structural Steel) and CC 19b (Rigging) and CC 19c (PPE) are sub-categories of CC 10 and CC 19 respectively and use their own sequential NNN series.
+            * Structural Steel (CC 10), Rigging (CC 19), and PPE (CC 19) are sub-categories sharing the parent code's NNN sequence.
           </p>
         </div>
 
