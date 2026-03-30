@@ -82,7 +82,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Site Parts Numbering Standard - PDF Preview</h3>
+        <h3 className="text-lg font-semibold">Stock Code Standard - PDF Preview</h3>
         <Button onClick={handleDownload} disabled={generating} className="gap-2">
           {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
           {generating ? "Generating..." : "Download PDF"}
