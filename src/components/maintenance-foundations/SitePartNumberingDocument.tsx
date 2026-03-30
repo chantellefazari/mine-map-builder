@@ -213,9 +213,9 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           </p>
 
           {/* 5. Allocation Process */}
-          <h2 style={headingStyle("5", "Allocation")}>5. How to Allocate a New Part Number</h2>
+          <h2 style={headingStyle("5", "Allocation")}>5. How to Allocate a New Stock Code</h2>
           <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 8px 0" }}>
-            When a new spare part arrives on site or is identified for the first time, follow these steps to assign a permanent site part number:
+            When a new spare part arrives on site or is identified for the first time, follow these steps to assign a permanent stock code:
           </p>
           <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
             <thead>
