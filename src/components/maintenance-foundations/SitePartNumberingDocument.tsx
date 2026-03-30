@@ -123,7 +123,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           {/* 1. Purpose */}
           <h2 style={headingStyle("1", "Purpose")}>1. Purpose</h2>
           <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 6px 0" }}>
-            This standard defines the site based internal part numbering system developed for Tennant Creek Mine. The system was designed to solve a core problem: the site had no unified way to identify, search, or catalogue spare parts across stores, the CMMS, and procurement. OEM part numbers vary by supplier, are inconsistent, and cannot be used as a universal key. This standard creates a single, permanent, numeric identifier for every physical spare part on site.
+            This standard defines the site based internal stock code system developed for Tennant Creek Mine. The system was designed to solve a core problem: the site had no unified way to identify, search, or catalogue spare parts across stores, the CMMS, and procurement. OEM part numbers vary by supplier, are inconsistent, and cannot be used as a universal key. This standard creates a single, permanent, numeric stock code for every physical spare part on site.
           </p>
           <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 6px 0" }}>
             The numbering logic was developed by analysing 2,000+ historical purchase order line items, grouping them into logical equipment categories, and assigning a fixed 2 digit category code to each group. The result is a 7 digit all numeric format that is barcode compatible, CMMS friendly, and human readable.
