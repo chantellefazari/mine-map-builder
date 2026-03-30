@@ -140,7 +140,7 @@ export const SitePartNumberingSection = () => {
               </TableHeader>
               <TableBody>
                 {categoryData.map((cat) => (
-                  <TableRow key={cat.code}>
+                  <TableRow key={`${cat.code}-${cat.name}`}>
                     <TableCell className="font-mono font-bold text-primary">{cat.code}</TableCell>
                     <TableCell className="font-medium text-sm">{cat.name}</TableCell>
                     <TableCell className="text-muted-foreground text-xs">{cat.examples}</TableCell>
