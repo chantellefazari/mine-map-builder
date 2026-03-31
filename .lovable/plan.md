@@ -1,61 +1,37 @@
 
 
-## Plan: TCMG Site Deliverable Workbook (.xlsx Download)
+## Plan: Add Stock Code Standard & Asset Hierarchy Sheets to Deliverable Workbook
 
 ### What
-Create a comprehensive multi-tab Excel workbook that consolidates all site data into a single deliverable document for TCMG handover. This will be an in-browser download button (similar to the existing Asset Tree Workbook export) producing a professional `.xlsx` file.
+Add two new sheets to the existing TCMG Site Deliverable Workbook (`exportDeliverableWorkbook.ts`), bringing the total from 9 to 11 sheets.
 
-### Workbook Tabs (8 Sheets)
+### New Sheets
 
-**Sheet 1 — Asset Register**
-Full asset tree from `processing_plant_assets_rev_b` + Crushing Plant file data. Columns: Site, Facility, Area Code, Area, Sub-Area, Parent Asset, Asset Number, Equipment Name, Component Code, Component Type, Component Name, Manufacturer, P&ID Tags, Functional Location.
+**Sheet 9 — Stock Code Standard**
+Contains the full category table from `SitePartNumberingSection.tsx`:
+- Columns: Category Code, Category Name, Examples, Storage Container
+- 25 rows (codes 01–25)
+- A header section with the format rules (SSCCNNN structure, 7-digit numeric, site code 10)
+- The allocation workflow steps
 
-**Sheet 2 — Asset Criticality**
-From `asset_criticality_ratings` table. Columns: Asset Number, Asset Name, Area, Sub-Area, Criticality Rating, Justification, Assessed By, Assessed Date.
+**Sheet 10 — Asset Hierarchy & Parent-Child Rules**
+Contains the structured data from `HierarchyRulesSection.tsx`:
+- Hierarchy Levels table: Level, Name, Example, Description, Has FL
+- Parent-Child Rules list (6 rules)
+- Constraints / "Do NOT" rules (6 items)
+- Equipment abbreviations table: Code, Meaning
+- Asset numbering examples: Number, Description
 
-**Sheet 3 — Critical Spares Register**
-From `site_spares` (where `is_critical = true`). Columns: Stock Code, Description, Category, Manufacturer, OEM Part No, Qty On Hand, Min Qty, Reorder Point, Unit Cost, UOM, Lead Time Days, Preferred Supplier, Condition, Warehouse Area, Bin Location, Specifications, Notes. No photos.
+### Files Changed
 
-**Sheet 4 — Complete Spares Catalogue**
-All 2,184 parts from `site_spares` (same columns as Sheet 3 but all parts, not just critical).
+1. **`src/utils/exportDeliverableWorkbook.ts`** — Add two new sheet-building sections after the Lifecycle sheet. Import the data arrays from `HierarchyRulesSection.tsx` (will extract the data constants or duplicate them inline since they're small).
 
-**Sheet 5 — PM Template Register**
-From `pm_master_list`. Columns: PM Name, Discipline, Equipment Type, Frequency, Duty Type, Skill Level, Estimated Duration, Resources, Purpose, Asset Number, Status.
+2. **`src/components/site-spares/DataCentreWorkbook.tsx`** — Update sheet count from 9 to 11 and add "Stock Code Standard" and "Asset Hierarchy Rules" to the sheet tag list.
 
-**Sheet 6 — Naming Conventions**
-From existing `namingConventionData.ts` — Area Codes, Equipment Prefixes, Component Suffixes, Instrumentation Suffixes, Special Patterns (same as current workbook Sheet 3).
+3. **Update the Document Register** (Sheet 0) to include rows for the two new documents.
 
-**Sheet 7 — Functional Locations**
-From `functionalLocations.ts` — FL Code, Area, Sub-Area, System Name.
-
-**Sheet 8 — Lifecycle & Condition (Placeholder)**
-Empty template with headers only to highlight missing data: Asset Number, Asset Name, Install Date, Expected Life (yrs), Condition Score (1-5), Last Inspection Date, Failure Mode, Run Hours, Meter Reading Date, Notes. This shows TCMG the gaps.
-
-### Where to Place It
-Add a **"Download Deliverable Workbook"** button on the existing **Data Centre — Workbook** tab in Site Spares Catalogue, below the existing CSV download card. Alternatively, a standalone export utility — but keeping it on the Data Centre tab is cleaner since it already serves as the export hub.
-
-### Document Register (Cover Sheet idea)
-Add a **Sheet 0 — Document Register** as the first tab listing all deliverable documents produced:
-- Asset Register & Hierarchy
-- Asset Criticality Assessment
-- Critical Spares Register
-- Site Spares Catalogue (Complete)
-- PM Template Library (97 templates)
-- Naming Convention Standard (TCMG-STD-NAM-001)
-- Functional Location Register
-- Lifecycle & Condition Data (Pending)
-- Stock Code Standard (TCMG-STD-SPN-001)
-- Asset Hierarchy Standard (TCMG-STD-AH-001)
-
-Each row: Document Title, Reference No, Status (Complete/Pending/Partial), Description, Platform Access (Y/N).
-
-### Technical Details
-
-**File**: Create `src/utils/exportDeliverableWorkbook.ts`
-- Uses the same `loadXLSX` / `writeXlsxFile` pattern from `safariDownload.ts`
-- Fetches from 4 database tables with pagination: `processing_plant_assets_rev_b`, `asset_criticality_ratings`, `site_spares`, `pm_master_list`
-- Crushing Plant + Naming + FL data from existing file-based sources
-- Output: `TCMG_Site_Deliverable_Workbook_{date}.xlsx`
-
-**UI**: Add a second card in `DataCentreWorkbook.tsx` with a "Download Deliverable Workbook" button, spinner, and sheet count summary.
+### Technical Notes
+- The stock code category data lives in `SitePartNumberingSection.tsx` as a local `categoryData` array — will extract inline since it's static.
+- The hierarchy data lives in `HierarchyRulesSection.tsx` as local constants — same approach.
+- No database changes needed; all data is file-based.
 
