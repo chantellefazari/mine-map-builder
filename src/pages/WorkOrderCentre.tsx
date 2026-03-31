@@ -20,7 +20,7 @@ export type WOCView =
   | "work-requests"
   | "wo-management"
   | "schedule"
-  | "vendor-scheduling"
+  
   | "inventory"
   | "take5"
   | "incidents"
