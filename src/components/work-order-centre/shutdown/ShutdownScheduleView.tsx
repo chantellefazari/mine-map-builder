@@ -160,11 +160,6 @@ export function ShutdownScheduleView() {
         </div>
       ) : (
         <div className="space-y-4">
-          {/* Resource Allocation */}
-          <div className="border border-border rounded-lg p-4 bg-card">
-            <ShutdownVendorPanel shutdownId={selected.id} />
-          </div>
-
           {/* Gantt / Calendar */}
           {viewMode === "gantt" ? (
             <ShutdownGantt
@@ -187,6 +182,11 @@ export function ShutdownScheduleView() {
               onUnassignWO={(linkId) => removeAssignment.mutate(linkId)}
             />
           )}
+
+          {/* Resource Allocation */}
+          <div className="border border-border rounded-lg p-4 bg-card">
+            <ShutdownVendorPanel shutdownId={selected.id} />
+          </div>
         </div>
       )}
 
