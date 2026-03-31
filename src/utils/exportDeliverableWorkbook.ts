@@ -44,23 +44,66 @@ export async function exportDeliverableWorkbook() {
     fetchAllRows("processing_functional_locations", "fl_code,area,sub_area,system_name,area_code", "fl_code"),
   ]);
 
-  // ── Sheet 0: Document Register ──
-  const docRows: string[][] = [
-    ["Document Title", "Reference No", "Status", "Description", "Platform Access"],
-    ["Asset Register & Hierarchy", "TCMG-REG-AH-001", "Complete", "Full asset tree with components, P&ID tags, and functional locations", "Y"],
-    ["Asset Criticality Assessment", "TCMG-REG-CRIT-001", "Complete", "ABC criticality ratings with justifications for all major equipment", "Y"],
-    ["Critical Spares Register", "TCMG-REG-CS-001", "Complete", "Filtered list of high-criticality spare parts", "Y"],
-    ["Site Spares Catalogue (Complete)", "TCMG-REG-SP-001", "Complete", "Full inventory of all site spare parts with stock codes", "Y"],
-    ["PM Template Library", "TCMG-REG-PM-001", "Complete", `${pmTemplates.length} preventive maintenance templates across all disciplines`, "Y"],
-    ["Naming Convention Standard", "TCMG-STD-NAM-001", "Complete", "Equipment prefixes, component suffixes, area codes", "Y"],
-    ["Functional Location Register", "TCMG-REG-FL-001", "Complete", "CMMS functional location hierarchy mapping", "Y"],
-    ["Lifecycle & Condition Data", "TCMG-REG-LC-001", "Pending", "Install dates, condition scores, run hours — data gaps identified", "Y"],
-    ["Stock Code Standard", "TCMG-STD-SPN-001", "Complete", "7-digit numeric stock code allocation standard (SSCCNNN) with 25 category codes", "Y"],
-    ["Asset Hierarchy Standard", "TCMG-STD-AH-001", "Complete", "7-level hierarchy with parent-child rules, constraints, and equipment abbreviations", "Y"],
+  // ── Sheet 0: Introduction (Professional Cover Sheet) ──
+  const introRows: any[][] = [];
+  introRows.push(["TCMG Site Deliverable Workbook"]);
+  introRows.push(["Complete asset data package for the MineSite.AI Platform"]);
+  introRows.push(["Tennant Creek Mine Gold — Prepared " + new Date().toISOString().slice(0, 10)]);
+  introRows.push([]);
+  introRows.push(["STEP-BY-STEP GUIDE"]);
+  introRows.push(["This workbook contains 11 data sheets. Each sheet serves a specific purpose in the site handover."]);
+  introRows.push([]);
+  introRows.push(["Sheet", "Name", "Description", "Data Source"]);
+  introRows.push(["1", "Asset Register", "Full asset tree with equipment, components, P&ID tags, and functional locations for both Processing and Crushing plants", "Live database (processing_plant_assets_rev_b) + CRU static data"]);
+  introRows.push(["2", "Asset Criticality", "ABC criticality ratings with justifications for all major equipment", "Database (asset_criticality_ratings)"]);
+  introRows.push(["3", "Critical Spares Register", "Filtered list of spare parts flagged as critical — essential for shutdown and breakdown response", "Database (site_spares, is_critical = true)"]);
+  introRows.push(["4", "Complete Spares Catalogue", "Full inventory of all site spare parts with stock codes, locations, and supplier details", "Database (site_spares)"]);
+  introRows.push(["5", "PM Template Register", "Preventive maintenance templates across Mechanical, Electrical, Mobile, and Lube disciplines", "Database (pm_master_list)"]);
+  introRows.push(["6", "Naming Conventions", "Equipment prefixes, component suffixes, area codes, and instrumentation tags", "Site standard (TCMG-STD-NAM-001)"]);
+  introRows.push(["7", "Functional Locations", "CMMS functional location hierarchy mapping for both Processing and Crushing plants", "Database (processing_functional_locations) + CRU static data"]);
+  introRows.push(["8", "Lifecycle & Condition", "Install dates, condition scores, run hours — columns provided to highlight current data gaps", "Placeholder (no data currently captured)"]);
+  introRows.push(["9", "Stock Code Standard", "7-digit numeric stock code allocation standard (SSCCNNN) with 25 category codes", "Site standard (TCMG-STD-SPN-001)"]);
+  introRows.push(["10", "Asset Hierarchy Rules", "7-level hierarchy with parent-child rules, constraints, and equipment abbreviations", "Site standard (TCMG-STD-AH-001)"]);
+  introRows.push([]);
+  introRows.push(["D365 / EAM COMPATIBILITY"]);
+  introRows.push([]);
+  introRows.push(["Topic", "Detail"]);
+  introRows.push(["ISO 14224", "Asset hierarchy follows ISO 14224 taxonomy: Site > Facility > Area > Sub-Area > Parent Asset > Equipment > Component"]);
+  introRows.push(["Criticality Classes", "ABC ratings align with D365 Criticality field. Class A = highest priority for PM scheduling and spares stocking"]);
+  introRows.push(["Maintenance Strategy", "PM templates are structured for direct import as D365 Maintenance Plans with frequency, discipline, and skill level fields"]);
+  introRows.push(["Financial Integration", "Stock codes (SSCCNNN) are designed for direct mapping to D365 Item Numbers with category-based grouping"]);
+  introRows.push(["Functional Locations", "FL codes follow the TCMG-PRO/CRU-AREA-SUBAREA-SYSTEM pattern, ready for D365 FL hierarchy import"]);
+  introRows.push([]);
+  introRows.push(["IMPORTANT NOTES"]);
+  introRows.push([]);
+  introRows.push(["Topic", "Detail"]);
+  introRows.push(["Date Format", "All dates use YYYY-MM-DD (ISO 8601) for international consistency"]);
+  introRows.push(["Asset References", "Asset numbers are the single source of truth. Do not create duplicate numbering systems"]);
+  introRows.push(["Required Fields", "Any cell highlighted or marked 'Pending' indicates a data gap that should be resolved before CMMS go-live"]);
+  introRows.push(["Data Currency", "This workbook was generated from live platform data. For the latest version, re-export from the MineSite.AI platform"]);
+  introRows.push(["Lifecycle Sheet", "Sheet 8 (Lifecycle & Condition) is intentionally empty — it documents the data gap for install dates, condition scores, and run hours"]);
+  introRows.push([]);
+  introRows.push(["DATA SOURCES"]);
+  introRows.push([]);
+  introRows.push(["Source", "Tables / Files"]);
+  introRows.push(["Database", "processing_plant_assets_rev_b, asset_criticality_ratings, site_spares, pm_master_list, processing_functional_locations"]);
+  introRows.push(["Static Standards", "crushingPlantData, namingConventionData, functionalLocations, crushingFunctionalLocations"]);
+  introRows.push(["Site Standards", "TCMG-STD-SPN-001 (Stock Codes), TCMG-STD-AH-001 (Asset Hierarchy), TCMG-STD-NAM-001 (Naming)"]);
+
+  const ws0 = XLSX.utils.aoa_to_sheet(introRows);
+  ws0["!cols"] = [{ wch: 8 }, { wch: 28 }, { wch: 80 }, { wch: 55 }];
+  // Merge title row across all columns
+  ws0["!merges"] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } },
+    { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } },
+    { s: { r: 2, c: 0 }, e: { r: 2, c: 3 } },
+    { s: { r: 4, c: 0 }, e: { r: 4, c: 3 } },
+    { s: { r: 5, c: 0 }, e: { r: 5, c: 3 } },
+    { s: { r: 21, c: 0 }, e: { r: 21, c: 3 } },
+    { s: { r: 29, c: 0 }, e: { r: 29, c: 3 } },
+    { s: { r: 37, c: 0 }, e: { r: 37, c: 3 } },
   ];
-  const ws0 = XLSX.utils.aoa_to_sheet(docRows);
-  ws0["!cols"] = [{ wch: 35 }, { wch: 22 }, { wch: 12 }, { wch: 65 }, { wch: 16 }];
-  XLSX.utils.book_append_sheet(wb, ws0, "Document Register");
+  XLSX.utils.book_append_sheet(wb, ws0, "Introduction");
 
   // ── Sheet 1: Asset Register ──
   const treeRows: string[][] = [

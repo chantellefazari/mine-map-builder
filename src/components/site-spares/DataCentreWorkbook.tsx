@@ -143,7 +143,7 @@ export const DataCentreWorkbook = () => {
           <p className="text-xs font-medium text-muted-foreground mb-2">Included sheets:</p>
           <div className="flex flex-wrap gap-1.5">
             {[
-              "Document Register",
+              "Introduction",
               "Asset Register",
               "Asset Criticality",
               "Critical Spares",
