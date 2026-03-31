@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Plus, Users, Phone, Mail, Trash2, Edit2, ChevronDown, ChevronRight, UserPlus, HardHat } from "lucide-react";
 import { ShutdownVendor, useShutdownVendors } from "@/hooks/useShutdowns";
@@ -28,6 +29,23 @@ const TRADE_COLORS: Record<string, string> = {
   "Supervisor": "bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-300",
   "General Hand": "bg-stone-100 text-stone-800 dark:bg-stone-900/30 dark:text-stone-300",
 };
+
+const TICKETS = [
+  "Confined Space",
+  "Working at Heights",
+  "EWP (Elevated Work Platform)",
+  "Forklift",
+  "Dogman / Rigger",
+  "Crane Operator",
+  "Hot Work Permit",
+  "Gas Test Atmosphere",
+  "First Aid",
+  "Fire Warden",
+  "Isolation / LOTO",
+  "Scaffolding",
+  "Asbestos Awareness",
+  "Electrical Licence",
+] as const;
 
 export function ShutdownResourcesTab({ shutdownId }: Props) {
   const { vendors, addVendor, updateVendor, removeVendor } = useShutdownVendors(shutdownId);
@@ -308,8 +326,35 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
               </div>
             </div>
             <div>
-              <Label className="text-xs">Notes</Label>
-              <Input placeholder="Tickets, competencies, etc." value={personForm.notes} onChange={(e) => setPersonForm({ ...personForm, notes: e.target.value })} className="h-9 text-sm" />
+              <Label className="text-xs">Tickets / Competencies</Label>
+              <div className="border border-input rounded-md bg-background">
+                <details className="group">
+                  <summary className="flex items-center justify-between px-3 py-2 cursor-pointer text-sm text-muted-foreground hover:text-foreground list-none">
+                    <span>{personForm.notes ? personForm.notes.split(", ").length + " selected" : "Select tickets..."}</span>
+                    <ChevronDown className="w-3.5 h-3.5 transition-transform group-open:rotate-180" />
+                  </summary>
+                  <div className="border-t border-input px-3 py-2 space-y-1.5 max-h-[180px] overflow-y-auto">
+                    {TICKETS.map((ticket) => {
+                      const selected = personForm.notes ? personForm.notes.split(", ").includes(ticket) : false;
+                      return (
+                        <label key={ticket} className="flex items-center gap-2 text-xs cursor-pointer hover:bg-muted/50 rounded px-1 py-1">
+                          <Checkbox
+                            checked={selected}
+                            onCheckedChange={(checked) => {
+                              const current = personForm.notes ? personForm.notes.split(", ").filter(Boolean) : [];
+                              const next = checked
+                                ? [...current, ticket]
+                                : current.filter((t) => t !== ticket);
+                              setPersonForm({ ...personForm, notes: next.join(", ") });
+                            }}
+                          />
+                          {ticket}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </details>
+              </div>
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="outline" size="sm" onClick={() => { setShowAddPerson(null); setEditingPerson(null); }}>Cancel</Button>
