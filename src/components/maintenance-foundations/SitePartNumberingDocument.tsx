@@ -255,10 +255,13 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           </div>
 
           {/* Footer */}
-          <div style={{ borderTop: `2px solid ${GOLD}`, paddingTop: 8, marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#888" }}>
+          <div style={{ borderTop: `2px solid ${GOLD}`, paddingTop: 8, marginTop: 6, display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 10, color: "#888" }}>
             <span>TCMG-STD-SPN-001 Rev 1.0</span>
             <span>Tennant Creek Mine - Confidential</span>
-            <span>{today}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span>{today}</span>
+              <img src={MinesiteLogo} alt="Minesite.AI" style={{ height: 28, width: "auto" }} />
+            </div>
           </div>
         </div>
       </div>
