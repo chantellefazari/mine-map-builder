@@ -116,7 +116,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
   };
 
   const openEditPerson = (p: ShutdownPersonnel) => {
-    setPersonForm({ name: p.name, trade: p.trade, role: p.role, phone: p.phone, notes: p.notes });
+    setPersonForm({ name: p.name, trade: p.trade, phone: p.phone, notes: p.notes });
     setEditingPerson(p);
     setShowAddPerson(p.vendor_id);
   };
