@@ -2,10 +2,11 @@ import { useState, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import {
   Calendar, ChevronLeft, ChevronRight, Search, GripVertical,
-  Wrench, Zap, Users, Printer, FileText,
+  Wrench, Zap, Users, Printer, FileText, Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -14,6 +15,7 @@ import {
 } from "date-fns";
 import { toast } from "sonner";
 import { WOCScheduleReport } from "./WOCScheduleReport";
+import { ShutdownScheduleView } from "./shutdown/ShutdownScheduleView";
 
 const DISCIPLINES = [
   { key: "Mechanical", label: "Mechanical", icon: Wrench, color: "text-blue-600", target: 80 },
