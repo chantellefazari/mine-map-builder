@@ -757,6 +757,39 @@ export async function exportSectionsToPdf(
     }
   }
 
+  // ── Stamp logo on every page (bottom-right) if provided ─────────
+  if (cfg.pageLogoUrl) {
+    try {
+      const logoImg = new Image();
+      logoImg.crossOrigin = "anonymous";
+      await new Promise<void>((resolve, reject) => {
+        logoImg.onload = () => resolve();
+        logoImg.onerror = reject;
+        logoImg.src = cfg.pageLogoUrl;
+      });
+      const aspect = logoImg.naturalHeight / logoImg.naturalWidth;
+      const logoW = cfg.pageLogoWidthMm;
+      const logoH = logoW * aspect;
+      const logoX = A4_W - MARGIN - logoW;
+      const logoY = A4_H - MARGIN - logoH;
+
+      const tmpCanvas = document.createElement("canvas");
+      tmpCanvas.width = logoImg.naturalWidth;
+      tmpCanvas.height = logoImg.naturalHeight;
+      const ctx = tmpCanvas.getContext("2d")!;
+      ctx.drawImage(logoImg, 0, 0);
+      const logoData = tmpCanvas.toDataURL("image/png");
+
+      const pageCount = pdf.getNumberOfPages();
+      for (let p = 1; p <= pageCount; p++) {
+        pdf.setPage(p);
+        pdf.addImage(logoData, "PNG", logoX, logoY, logoW, logoH);
+      }
+    } catch (e) {
+      console.warn("Could not stamp page logo:", e);
+    }
+  }
+
   const blob = pdf.output("blob");
   await uploadAndShowPdf(blob, filename);
   return blob;
