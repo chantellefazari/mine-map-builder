@@ -218,7 +218,9 @@ export function WOCSchedule() {
         </div>
       </div>
 
-      {scheduleMode === "shutdown" ? (
+      {scheduleMode === "vendors" ? (
+        <VendorSchedulingView />
+      ) : scheduleMode === "shutdown" ? (
         <ShutdownScheduleView />
       ) : scheduleView === "report" ? (
         <WOCScheduleReport weekOffset={weekOffset} personnelByDay={personnel} />
