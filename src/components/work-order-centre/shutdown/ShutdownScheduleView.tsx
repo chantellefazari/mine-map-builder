@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Calendar as CalendarIcon, Clock, Wrench, CheckCircle2, DollarSign,
-  Plus, Building2, BarChart3,
+  Plus, Building2, BarChart3, Users,
 } from "lucide-react";
 import { useShutdowns, useShutdownVendors, useShutdownWorkOrders } from "@/hooks/useShutdowns";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
