@@ -10,6 +10,7 @@ import { useShutdowns, useShutdownVendors, useShutdownWorkOrders } from "@/hooks
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { CreateShutdownDialog } from "./CreateShutdownDialog";
 import { ShutdownGantt } from "./ShutdownGantt";
+import { ShutdownCalendar } from "./ShutdownCalendar";
 import { ShutdownVendorPanel } from "./ShutdownVendorPanel";
 import { format, parseISO, differenceInDays } from "date-fns";
 import { cn } from "@/lib/utils";
