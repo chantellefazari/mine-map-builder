@@ -12,6 +12,7 @@ import { CreateShutdownDialog } from "./CreateShutdownDialog";
 import { ShutdownGantt } from "./ShutdownGantt";
 import { ShutdownCalendar } from "./ShutdownCalendar";
 import { ShutdownVendorPanel } from "./ShutdownVendorPanel";
+import { ShutdownResourcesTab } from "./ShutdownResourcesTab";
 import { format, parseISO, differenceInDays } from "date-fns";
 import { cn } from "@/lib/utils";
 
