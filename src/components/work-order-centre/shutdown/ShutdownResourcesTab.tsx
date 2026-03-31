@@ -16,18 +16,17 @@ interface Props {
 }
 
 const TRADE_COLORS: Record<string, string> = {
-  "Mechanical Fitter": "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-  "Boilermaker": "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
-  "Welder": "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
-  "Electrician": "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
-  "Instrument Tech": "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
-  "Rigger": "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
-  "Crane Operator": "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
-  "Scaffolder": "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300",
-  "Plumber": "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300",
-  "Millwright": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300",
   "Supervisor": "bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-300",
-  "General Hand": "bg-stone-100 text-stone-800 dark:bg-stone-900/30 dark:text-stone-300",
+  "Leading Hand": "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+  "Boilermaker": "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
+  "Electrician": "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+  "Fitter": "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300",
+  "Crane Operator": "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+  "Rigger": "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
+  "Scaffolder": "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300",
+  "Trades Assistant": "bg-stone-100 text-stone-800 dark:bg-stone-900/30 dark:text-stone-300",
+  "Engineer": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300",
+  "Instrument Tech": "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
 };
 
 const TICKETS = [
