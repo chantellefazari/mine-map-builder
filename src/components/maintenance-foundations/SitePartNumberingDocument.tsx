@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Download, Loader2 } from "lucide-react";
 import { exportSectionsToPdf } from "@/utils/sectionPdfExport";
 import { PDF_EXPORT_OPTS } from "@/utils/pdfExportStandard";
+import MinesiteLogo from "@/assets/Minesite_ai_logo.png";
 
 const GOLD = "#C8960C";
 const GOLD_LIGHT = "#f5ecd0";
