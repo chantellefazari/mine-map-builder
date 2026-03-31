@@ -30,6 +30,23 @@ const TRADE_COLORS: Record<string, string> = {
   "General Hand": "bg-stone-100 text-stone-800 dark:bg-stone-900/30 dark:text-stone-300",
 };
 
+const TICKETS = [
+  "Confined Space",
+  "Working at Heights",
+  "EWP (Elevated Work Platform)",
+  "Forklift",
+  "Dogman / Rigger",
+  "Crane Operator",
+  "Hot Work Permit",
+  "Gas Test Atmosphere",
+  "First Aid",
+  "Fire Warden",
+  "Isolation / LOTO",
+  "Scaffolding",
+  "Asbestos Awareness",
+  "Electrical Licence",
+] as const;
+
 export function ShutdownResourcesTab({ shutdownId }: Props) {
   const { vendors, addVendor, updateVendor, removeVendor } = useShutdownVendors(shutdownId);
   const { personnel, addPerson, updatePerson, removePerson } = useShutdownPersonnel(shutdownId);
