@@ -28,7 +28,7 @@ export function ShutdownScheduleView() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState("all");
-  const [viewMode, setViewMode] = useState<"gantt" | "calendar">("gantt");
+  const [viewMode, setViewMode] = useState<"gantt" | "calendar" | "resources">("gantt");
 
   const selected = shutdowns.find((s) => s.id === selectedId) ?? null;
   const { vendors } = useShutdownVendors(selectedId);
