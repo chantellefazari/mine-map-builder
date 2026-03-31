@@ -45,6 +45,10 @@ export interface SectionPdfOptions {
   maxWhitespaceRatio?: number;
   /** Logs full print container hierarchy used during rendering (default false) */
   debugContainerTree?: boolean;
+  /** URL/path of a logo image to stamp on every page (bottom-right corner) */
+  pageLogoUrl?: string;
+  /** Logo width in mm on each page (default 30) */
+  pageLogoWidthMm?: number;
 }
 
 interface KeepTogetherRegionPx {
