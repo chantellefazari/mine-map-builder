@@ -105,9 +105,9 @@ const AssetTree = () => {
                 onClick={async () => {
                   primeDownloadGesture();
                   try {
-                    toast.loading("Exporting workbook...", { id: "asset-wb" });
-                    await exportAssetTreeWorkbook();
-                    toast.success("Workbook downloaded", { id: "asset-wb" });
+                    toast.loading("Building site workbook...", { id: "asset-wb" });
+                    const stats = await exportDeliverableWorkbook();
+                    toast.success(`Site workbook exported — ${stats.sheetCount} sheets, ${stats.assetRows} assets`, { id: "asset-wb" });
                   } catch (e: any) {
                     cancelPrimedDownloadGesture();
                     toast.error(e.message || "Export failed", { id: "asset-wb" });
@@ -116,7 +116,7 @@ const AssetTree = () => {
                 className="gap-2"
               >
                 <FileSpreadsheet className="h-4 w-4" />
-                Download Workbook
+                Download Site Workbook
               </Button>
             </div>
           </div>
