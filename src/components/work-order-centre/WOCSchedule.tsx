@@ -16,6 +16,7 @@ import {
 import { toast } from "sonner";
 import { WOCScheduleReport } from "./WOCScheduleReport";
 import { ShutdownScheduleView } from "./shutdown/ShutdownScheduleView";
+import { VendorSchedulingView } from "./vendor-scheduling/VendorSchedulingView";
 
 const DISCIPLINES = [
   { key: "Mechanical", label: "Mechanical", icon: Wrench, color: "text-blue-600", target: 80 },
