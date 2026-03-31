@@ -230,7 +230,6 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
                                   {p.trade}
                                 </Badge>
                               </td>
-                              <td className="px-4 py-2.5 text-muted-foreground">{p.role || "—"}</td>
                               <td className="px-4 py-2.5 text-muted-foreground">{p.phone || "—"}</td>
                               <td className="px-4 py-2.5 text-muted-foreground truncate max-w-[200px]">{p.notes || "—"}</td>
                               <td className="px-4 py-2.5">
