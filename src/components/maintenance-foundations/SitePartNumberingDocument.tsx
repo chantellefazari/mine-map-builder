@@ -65,7 +65,7 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
     if (!contentRef.current) return;
     setGenerating(true);
     try {
-      await exportSectionsToPdf(contentRef.current, "TCMG-STD-SPN-001_Stock_Code_Standard.pdf", PDF_EXPORT_OPTS);
+      await exportSectionsToPdf(contentRef.current, "TCMG-STD-SPN-001_Stock_Code_Standard.pdf", { ...PDF_EXPORT_OPTS, pageLogoUrl: MinesiteLogo, pageLogoWidthMm: 35 });
     } finally {
       setGenerating(false);
     }
@@ -258,9 +258,9 @@ export const SitePartNumberingDocument: React.FC<{ onClose?: () => void }> = ({ 
           <div style={{ borderTop: `2px solid ${GOLD}`, paddingTop: 8, marginTop: 6, display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 10, color: "#888" }}>
             <span>TCMG-STD-SPN-001 Rev 1.0</span>
             <span>Tennant Creek Mine - Confidential</span>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <span>{today}</span>
-              <img src={MinesiteLogo} alt="Minesite.AI" style={{ height: 28, width: "auto" }} />
+              <img src={MinesiteLogo} alt="Minesite.AI" style={{ height: 40, width: "auto" }} />
             </div>
           </div>
         </div>

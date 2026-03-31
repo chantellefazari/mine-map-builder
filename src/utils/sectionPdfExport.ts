@@ -45,6 +45,10 @@ export interface SectionPdfOptions {
   maxWhitespaceRatio?: number;
   /** Logs full print container hierarchy used during rendering (default false) */
   debugContainerTree?: boolean;
+  /** URL/path of a logo image to stamp on every page (bottom-right corner) */
+  pageLogoUrl?: string;
+  /** Logo width in mm on each page (default 30) */
+  pageLogoWidthMm?: number;
 }
 
 interface KeepTogetherRegionPx {
@@ -68,6 +72,8 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   rowSnapStartRatio: 0.7,
   maxWhitespaceRatio: 0.18,
   debugContainerTree: false,
+  pageLogoUrl: "",
+  pageLogoWidthMm: 30,
 };
 
 /**
@@ -748,6 +754,39 @@ export async function exportSectionsToPdf(
       pdf.setDrawColor(180, 180, 180);
       pdf.setLineWidth(0.4);
       pdf.rect(MARGIN - 2, MARGIN - 2, CONTENT_W + 4, A4_H - MARGIN * 2 + 4);
+    }
+  }
+
+  // ── Stamp logo on every page (bottom-right) if provided ─────────
+  if (cfg.pageLogoUrl) {
+    try {
+      const logoImg = new Image();
+      logoImg.crossOrigin = "anonymous";
+      await new Promise<void>((resolve, reject) => {
+        logoImg.onload = () => resolve();
+        logoImg.onerror = reject;
+        logoImg.src = cfg.pageLogoUrl;
+      });
+      const aspect = logoImg.naturalHeight / logoImg.naturalWidth;
+      const logoW = cfg.pageLogoWidthMm;
+      const logoH = logoW * aspect;
+      const logoX = A4_W - MARGIN - logoW;
+      const logoY = A4_H - MARGIN - logoH;
+
+      const tmpCanvas = document.createElement("canvas");
+      tmpCanvas.width = logoImg.naturalWidth;
+      tmpCanvas.height = logoImg.naturalHeight;
+      const ctx = tmpCanvas.getContext("2d")!;
+      ctx.drawImage(logoImg, 0, 0);
+      const logoData = tmpCanvas.toDataURL("image/png");
+
+      const pageCount = pdf.getNumberOfPages();
+      for (let p = 1; p <= pageCount; p++) {
+        pdf.setPage(p);
+        pdf.addImage(logoData, "PNG", logoX, logoY, logoW, logoH);
+      }
+    } catch (e) {
+      console.warn("Could not stamp page logo:", e);
     }
   }
 
