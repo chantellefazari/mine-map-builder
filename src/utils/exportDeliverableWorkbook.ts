@@ -56,7 +56,7 @@ export async function exportDeliverableWorkbook() {
     ["Functional Location Register", "TCMG-REG-FL-001", "Complete", "CMMS functional location hierarchy mapping", "Y"],
     ["Lifecycle & Condition Data", "TCMG-REG-LC-001", "Pending", "Install dates, condition scores, run hours — data gaps identified", "Y"],
     ["Stock Code Standard", "TCMG-STD-SPN-001", "Complete", "7-digit numeric stock code allocation standard (SSCCNNN) with 25 category codes", "Y"],
-    ["Asset Hierarchy Standard", "TCMG-STD-AH-001", "Complete", "6-level hierarchy naming and structure standard", "Y"],
+    ["Asset Hierarchy Standard", "TCMG-STD-AH-001", "Complete", "7-level hierarchy with parent-child rules, constraints, and equipment abbreviations", "Y"],
   ];
   const ws0 = XLSX.utils.aoa_to_sheet(docRows);
   ws0["!cols"] = [{ wch: 35 }, { wch: 22 }, { wch: 12 }, { wch: 65 }, { wch: 16 }];
