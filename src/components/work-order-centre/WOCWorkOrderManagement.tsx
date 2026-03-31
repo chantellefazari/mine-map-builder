@@ -369,6 +369,10 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
       {perfTab === "analytics" && <WOCAnalyticsTab workOrders={workOrders} />}
       {perfTab === "pm-forms" && <WOCPMFormsTab />}
       {perfTab === "compliance" && <WOCComplianceTab />}
+      {perfTab === "sched-compliance" && <WOCScheduleComplianceTab workOrders={workOrders} />}
+      {perfTab === "backlog" && <WOCBacklogTab workOrders={workOrders} />}
+      {perfTab === "reliability" && <WOCReliabilityTab workOrders={workOrders} />}
+      {perfTab === "kpi-scorecard" && <WOCKPIScorecardTab workOrders={workOrders} />}
 
       <WOTypeSelectDialog
         open={showWoTypeDialog}
