@@ -48,6 +48,7 @@ const SECTIONS: SidebarSection[] = [
       { key: "work-requests", label: "Work Requests", icon: FileText },
       { key: "wo-management", label: "Work Order Management", icon: Wrench },
       { key: "schedule", label: "Schedule", icon: Calendar },
+      { key: "vendor-scheduling", label: "Vendor Scheduling", icon: Truck },
     ],
   },
   {
