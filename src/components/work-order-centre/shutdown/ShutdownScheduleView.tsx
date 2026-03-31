@@ -143,6 +143,15 @@ export function ShutdownScheduleView() {
               >
                 <CalendarIcon className="w-3.5 h-3.5" /> Calendar
               </button>
+              <button
+                onClick={() => setViewMode("resources")}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
+                  viewMode === "resources" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Users className="w-3.5 h-3.5" /> Resources
+              </button>
             </div>
           </>
         )}
