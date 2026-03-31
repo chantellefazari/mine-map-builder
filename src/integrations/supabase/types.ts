@@ -2299,6 +2299,54 @@ export type Database = {
         }
         Relationships: []
       }
+      vendor_visits: {
+        Row: {
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at: string
+          forms_required: string[]
+          id: string
+          notes: string
+          purpose: string
+          status: string
+          updated_at: string
+          vendor_name: string
+          visit_date: string
+          visit_end_date: string | null
+        }
+        Insert: {
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string
+          created_at?: string
+          forms_required?: string[]
+          id?: string
+          notes?: string
+          purpose?: string
+          status?: string
+          updated_at?: string
+          vendor_name: string
+          visit_date: string
+          visit_end_date?: string | null
+        }
+        Update: {
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string
+          created_at?: string
+          forms_required?: string[]
+          id?: string
+          notes?: string
+          purpose?: string
+          status?: string
+          updated_at?: string
+          vendor_name?: string
+          visit_date?: string
+          visit_end_date?: string | null
+        }
+        Relationships: []
+      }
       visual_parts_catalogue: {
         Row: {
           associated_asset: string | null
