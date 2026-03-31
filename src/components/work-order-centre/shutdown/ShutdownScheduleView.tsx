@@ -10,6 +10,7 @@ import { useShutdowns, useShutdownVendors, useShutdownWorkOrders } from "@/hooks
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { CreateShutdownDialog } from "./CreateShutdownDialog";
 import { ShutdownGantt } from "./ShutdownGantt";
+import { ShutdownCalendar } from "./ShutdownCalendar";
 import { ShutdownVendorPanel } from "./ShutdownVendorPanel";
 import { format, parseISO, differenceInDays } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -165,15 +166,27 @@ export function ShutdownScheduleView() {
           </div>
 
           {/* Gantt / Calendar */}
-          <ShutdownGantt
-            shutdown={selected}
-            vendors={vendors}
-            woLinks={woLinks}
-            workOrders={workOrders}
-            selectedVendor={selectedVendor}
-            onAssignWO={handleAssignWO}
-            onUnassignWO={(linkId) => removeAssignment.mutate(linkId)}
-          />
+          {viewMode === "gantt" ? (
+            <ShutdownGantt
+              shutdown={selected}
+              vendors={vendors}
+              woLinks={woLinks}
+              workOrders={workOrders}
+              selectedVendor={selectedVendor}
+              onAssignWO={handleAssignWO}
+              onUnassignWO={(linkId) => removeAssignment.mutate(linkId)}
+            />
+          ) : (
+            <ShutdownCalendar
+              shutdown={selected}
+              vendors={vendors}
+              woLinks={woLinks}
+              workOrders={workOrders}
+              selectedVendor={selectedVendor}
+              onAssignWO={handleAssignWO}
+              onUnassignWO={(linkId) => removeAssignment.mutate(linkId)}
+            />
+          )}
         </div>
       )}
 
