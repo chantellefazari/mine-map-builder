@@ -170,7 +170,6 @@ export function ShutdownScheduleView() {
         </div>
       ) : (
         <div className="space-y-4">
-          {/* Gantt / Calendar */}
           {viewMode === "gantt" ? (
             <ShutdownGantt
               shutdown={selected}
@@ -181,7 +180,7 @@ export function ShutdownScheduleView() {
               onAssignWO={handleAssignWO}
               onUnassignWO={(linkId) => removeAssignment.mutate(linkId)}
             />
-          ) : (
+          ) : viewMode === "calendar" ? (
             <ShutdownCalendar
               shutdown={selected}
               vendors={vendors}
@@ -191,12 +190,16 @@ export function ShutdownScheduleView() {
               onAssignWO={handleAssignWO}
               onUnassignWO={(linkId) => removeAssignment.mutate(linkId)}
             />
+          ) : (
+            <ShutdownResourcesTab shutdownId={selected.id} />
           )}
 
-          {/* Resource Allocation */}
-          <div className="border border-border rounded-lg p-4 bg-card">
-            <ShutdownVendorPanel shutdownId={selected.id} />
-          </div>
+          {/* Resource Allocation (compact) - only on Gantt/Calendar */}
+          {viewMode !== "resources" && (
+            <div className="border border-border rounded-lg p-4 bg-card">
+              <ShutdownVendorPanel shutdownId={selected.id} />
+            </div>
+          )}
         </div>
       )}
 
