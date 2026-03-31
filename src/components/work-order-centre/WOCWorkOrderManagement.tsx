@@ -16,6 +16,10 @@ import { WOCReportsTab } from "./performance/WOCReportsTab";
 import { WOCAnalyticsTab } from "./performance/WOCAnalyticsTab";
 import { WOCPMFormsTab } from "./performance/WOCPMFormsTab";
 import { WOCComplianceTab } from "./performance/WOCComplianceTab";
+import { WOCScheduleComplianceTab } from "./performance/WOCScheduleComplianceTab";
+import { WOCBacklogTab } from "./performance/WOCBacklogTab";
+import { WOCReliabilityTab } from "./performance/WOCReliabilityTab";
+import { WOCKPIScorecardTab } from "./performance/WOCKPIScorecardTab";
 import { WOTypeSelectDialog, PMAutoFill } from "./WOTypeSelectDialog";
 import { PMSchedulePanel } from "./PMSchedulePanel";
 
@@ -326,7 +330,11 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
                   ["reports", "Reports"],
                   ["analytics", "Analytics"],
                   ["pm-forms", "PM Forms"],
-                  ["compliance", "Compliance"],
+                  ["compliance", "PM Compliance"],
+                  ["sched-compliance", "Sched Compliance"],
+                  ["backlog", "Backlog"],
+                  ["reliability", "Reliability"],
+                  ["kpi-scorecard", "KPI Scorecard"],
                 ] as [string, string][]
               ).map(([key, label]) => (
                 <button
@@ -361,6 +369,10 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
       {perfTab === "analytics" && <WOCAnalyticsTab workOrders={workOrders} />}
       {perfTab === "pm-forms" && <WOCPMFormsTab />}
       {perfTab === "compliance" && <WOCComplianceTab />}
+      {perfTab === "sched-compliance" && <WOCScheduleComplianceTab workOrders={workOrders} />}
+      {perfTab === "backlog" && <WOCBacklogTab workOrders={workOrders} />}
+      {perfTab === "reliability" && <WOCReliabilityTab workOrders={workOrders} />}
+      {perfTab === "kpi-scorecard" && <WOCKPIScorecardTab workOrders={workOrders} />}
 
       <WOTypeSelectDialog
         open={showWoTypeDialog}
