@@ -72,8 +72,7 @@ export function CreateShutdownDialog({ open, onOpenChange, onSubmit }: Props) {
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="Planned Shutdown">Planned Shutdown</SelectItem>
-                <SelectItem value="Emergency Shutdown">Emergency Shutdown</SelectItem>
-                <SelectItem value="Turnaround">Turnaround</SelectItem>
+                <SelectItem value="Unscheduled Outage">Unscheduled Outage</SelectItem>
               </SelectContent>
             </Select>
           </div>
