@@ -123,7 +123,7 @@ export const DataCentreWorkbook = () => {
             <div>
               <h3 className="text-lg font-semibold text-foreground">TCMG Site Deliverable Workbook</h3>
               <p className="text-sm text-muted-foreground">
-                9 sheets · Asset Register · Criticality · Spares · PMs · Naming · FLs · Lifecycle
+                11 sheets · Asset Register · Criticality · Spares · PMs · Naming · FLs · Lifecycle · Stock Codes · Hierarchy
               </p>
             </div>
           </div>
