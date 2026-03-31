@@ -10,6 +10,7 @@ import { WOCWorkRequests } from "@/components/work-order-centre/WOCWorkRequests"
 import { WOCWorkOrderManagement } from "@/components/work-order-centre/WOCWorkOrderManagement";
 import { WOCSchedule } from "@/components/work-order-centre/WOCSchedule";
 import { WOCWorkspace } from "@/components/work-order-centre/WOCWorkspace";
+import { VendorSchedulingView } from "@/components/work-order-centre/vendor-scheduling/VendorSchedulingView";
 
 export type WOCView =
   | "dashboard"
