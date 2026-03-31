@@ -72,6 +72,8 @@ const DEFAULTS: Required<SectionPdfOptions> = {
   rowSnapStartRatio: 0.7,
   maxWhitespaceRatio: 0.18,
   debugContainerTree: false,
+  pageLogoUrl: "",
+  pageLogoWidthMm: 30,
 };
 
 /**
