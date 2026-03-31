@@ -781,10 +781,8 @@ export async function exportSectionsToPdf(
       const logoData = tmpCanvas.toDataURL("image/png");
 
       const pageCount = pdf.getNumberOfPages();
-      for (let p = 1; p <= pageCount; p++) {
-        pdf.setPage(p);
-        pdf.addImage(logoData, "PNG", logoX, logoY, logoW, logoH);
-      }
+      pdf.setPage(pageCount);
+      pdf.addImage(logoData, "PNG", logoX, logoY, logoW, logoH);
     } catch (e) {
       console.warn("Could not stamp page logo:", e);
     }
