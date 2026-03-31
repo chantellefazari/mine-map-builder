@@ -1742,6 +1742,63 @@ export type Database = {
         }
         Relationships: []
       }
+      shutdown_personnel: {
+        Row: {
+          created_at: string
+          id: string
+          is_available: boolean
+          name: string
+          notes: string
+          phone: string
+          role: string
+          shutdown_id: string
+          trade: string
+          updated_at: string
+          vendor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_available?: boolean
+          name?: string
+          notes?: string
+          phone?: string
+          role?: string
+          shutdown_id: string
+          trade?: string
+          updated_at?: string
+          vendor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_available?: boolean
+          name?: string
+          notes?: string
+          phone?: string
+          role?: string
+          shutdown_id?: string
+          trade?: string
+          updated_at?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shutdown_personnel_shutdown_id_fkey"
+            columns: ["shutdown_id"]
+            isOneToOne: false
+            referencedRelation: "shutdowns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shutdown_personnel_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "shutdown_vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shutdown_pm_requirements: {
         Row: {
           area: string

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Calendar as CalendarIcon, Clock, Wrench, CheckCircle2, DollarSign,
-  Plus, Building2, BarChart3,
+  Plus, Building2, BarChart3, Users,
 } from "lucide-react";
 import { useShutdowns, useShutdownVendors, useShutdownWorkOrders } from "@/hooks/useShutdowns";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
@@ -12,6 +12,7 @@ import { CreateShutdownDialog } from "./CreateShutdownDialog";
 import { ShutdownGantt } from "./ShutdownGantt";
 import { ShutdownCalendar } from "./ShutdownCalendar";
 import { ShutdownVendorPanel } from "./ShutdownVendorPanel";
+import { ShutdownResourcesTab } from "./ShutdownResourcesTab";
 import { format, parseISO, differenceInDays } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +28,7 @@ export function ShutdownScheduleView() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState("all");
-  const [viewMode, setViewMode] = useState<"gantt" | "calendar">("gantt");
+  const [viewMode, setViewMode] = useState<"gantt" | "calendar" | "resources">("gantt");
 
   const selected = shutdowns.find((s) => s.id === selectedId) ?? null;
   const { vendors } = useShutdownVendors(selectedId);
@@ -142,6 +143,15 @@ export function ShutdownScheduleView() {
               >
                 <CalendarIcon className="w-3.5 h-3.5" /> Calendar
               </button>
+              <button
+                onClick={() => setViewMode("resources")}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
+                  viewMode === "resources" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Users className="w-3.5 h-3.5" /> Resources
+              </button>
             </div>
           </>
         )}
@@ -160,7 +170,6 @@ export function ShutdownScheduleView() {
         </div>
       ) : (
         <div className="space-y-4">
-          {/* Gantt / Calendar */}
           {viewMode === "gantt" ? (
             <ShutdownGantt
               shutdown={selected}
@@ -171,7 +180,7 @@ export function ShutdownScheduleView() {
               onAssignWO={handleAssignWO}
               onUnassignWO={(linkId) => removeAssignment.mutate(linkId)}
             />
-          ) : (
+          ) : viewMode === "calendar" ? (
             <ShutdownCalendar
               shutdown={selected}
               vendors={vendors}
@@ -181,12 +190,16 @@ export function ShutdownScheduleView() {
               onAssignWO={handleAssignWO}
               onUnassignWO={(linkId) => removeAssignment.mutate(linkId)}
             />
+          ) : (
+            <ShutdownResourcesTab shutdownId={selected.id} />
           )}
 
-          {/* Resource Allocation */}
-          <div className="border border-border rounded-lg p-4 bg-card">
-            <ShutdownVendorPanel shutdownId={selected.id} />
-          </div>
+          {/* Resource Allocation (compact) - only on Gantt/Calendar */}
+          {viewMode !== "resources" && (
+            <div className="border border-border rounded-lg p-4 bg-card">
+              <ShutdownVendorPanel shutdownId={selected.id} />
+            </div>
+          )}
         </div>
       )}
 
