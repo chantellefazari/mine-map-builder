@@ -166,15 +166,27 @@ export function ShutdownScheduleView() {
           </div>
 
           {/* Gantt / Calendar */}
-          <ShutdownGantt
-            shutdown={selected}
-            vendors={vendors}
-            woLinks={woLinks}
-            workOrders={workOrders}
-            selectedVendor={selectedVendor}
-            onAssignWO={handleAssignWO}
-            onUnassignWO={(linkId) => removeAssignment.mutate(linkId)}
-          />
+          {viewMode === "gantt" ? (
+            <ShutdownGantt
+              shutdown={selected}
+              vendors={vendors}
+              woLinks={woLinks}
+              workOrders={workOrders}
+              selectedVendor={selectedVendor}
+              onAssignWO={handleAssignWO}
+              onUnassignWO={(linkId) => removeAssignment.mutate(linkId)}
+            />
+          ) : (
+            <ShutdownCalendar
+              shutdown={selected}
+              vendors={vendors}
+              woLinks={woLinks}
+              workOrders={workOrders}
+              selectedVendor={selectedVendor}
+              onAssignWO={handleAssignWO}
+              onUnassignWO={(linkId) => removeAssignment.mutate(linkId)}
+            />
+          )}
         </div>
       )}
 
