@@ -2,10 +2,11 @@ import { useState, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import {
   Calendar, ChevronLeft, ChevronRight, Search, GripVertical,
-  Wrench, Zap, Users, Printer, FileText,
+  Wrench, Zap, Users, Printer, FileText, Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -14,6 +15,7 @@ import {
 } from "date-fns";
 import { toast } from "sonner";
 import { WOCScheduleReport } from "./WOCScheduleReport";
+import { ShutdownScheduleView } from "./shutdown/ShutdownScheduleView";
 
 const DISCIPLINES = [
   { key: "Mechanical", label: "Mechanical", icon: Wrench, color: "text-blue-600", target: 80 },
@@ -40,7 +42,7 @@ export function WOCSchedule() {
   const [personnel, setPersonnel] = useState<Record<string, number>>({});
   const [dragWoId, setDragWoId] = useState<string | null>(null);
   const [scheduleView, setScheduleView] = useState<"calendar" | "report">("calendar");
-
+  const [scheduleMode, setScheduleMode] = useState<"weekly" | "shutdown">("weekly");
   const today = new Date();
   const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 }); // Wed start
   const weekEnd = endOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
@@ -158,41 +160,65 @@ export function WOCSchedule() {
             <Calendar className="w-5 h-5 text-muted-foreground" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-foreground">{discipline} Schedule</h1>
-            <p className="text-xs text-muted-foreground">Drag and drop work orders to schedule</p>
+            <h1 className="text-lg font-bold text-foreground">
+              {scheduleMode === "shutdown" ? "Shutdown Schedule" : `${discipline} Schedule`}
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              {scheduleMode === "shutdown" ? "SAP-style Gantt scheduling grouped by vendor" : "Drag and drop work orders to schedule"}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center border border-border rounded-lg overflow-hidden">
-            <button
-              onClick={() => setScheduleView("calendar")}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
-                scheduleView === "calendar" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Calendar className="w-3.5 h-3.5" /> Calendar
-            </button>
-            <button
-              onClick={() => setScheduleView("report")}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
-                scheduleView === "report" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <FileText className="w-3.5 h-3.5" /> Weekly Report
-            </button>
-          </div>
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
-            <Printer className="w-3.5 h-3.5" /> Print PMs
-          </Button>
-          <Badge variant="secondary" className="text-xs px-3 py-1">
-            {getWeekLabel(weekStart)}
-          </Badge>
+          {/* Schedule Mode Dropdown */}
+          <Select value={scheduleMode} onValueChange={(v: "weekly" | "shutdown") => setScheduleMode(v)}>
+            <SelectTrigger className="w-52 h-9">
+              <div className="flex items-center gap-1.5">
+                {scheduleMode === "shutdown" ? <Building2 className="w-3.5 h-3.5" /> : <Calendar className="w-3.5 h-3.5" />}
+                <SelectValue />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="weekly">Weekly Schedule</SelectItem>
+              <SelectItem value="shutdown">Shutdown Schedule</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {scheduleMode === "weekly" && (
+            <>
+              <div className="flex items-center border border-border rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setScheduleView("calendar")}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
+                    scheduleView === "calendar" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <Calendar className="w-3.5 h-3.5" /> Calendar
+                </button>
+                <button
+                  onClick={() => setScheduleView("report")}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
+                    scheduleView === "report" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <FileText className="w-3.5 h-3.5" /> Weekly Report
+                </button>
+              </div>
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+                <Printer className="w-3.5 h-3.5" /> Print PMs
+              </Button>
+              <Badge variant="secondary" className="text-xs px-3 py-1">
+                {getWeekLabel(weekStart)}
+              </Badge>
+            </>
+          )}
         </div>
       </div>
 
-      {scheduleView === "report" ? (
+      {scheduleMode === "shutdown" ? (
+        <ShutdownScheduleView />
+      ) : scheduleView === "report" ? (
         <WOCScheduleReport weekOffset={weekOffset} personnelByDay={personnel} />
       ) : (
       <>

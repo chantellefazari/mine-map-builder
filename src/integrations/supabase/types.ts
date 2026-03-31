@@ -1784,6 +1784,165 @@ export type Database = {
         }
         Relationships: []
       }
+      shutdown_vendors: {
+        Row: {
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          daily_hours: number | null
+          id: string
+          notes: string | null
+          personnel_count: number | null
+          shutdown_id: string
+          updated_at: string
+          vendor_code: string
+          vendor_name: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          daily_hours?: number | null
+          id?: string
+          notes?: string | null
+          personnel_count?: number | null
+          shutdown_id: string
+          updated_at?: string
+          vendor_code?: string
+          vendor_name: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          daily_hours?: number | null
+          id?: string
+          notes?: string | null
+          personnel_count?: number | null
+          shutdown_id?: string
+          updated_at?: string
+          vendor_code?: string
+          vendor_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shutdown_vendors_shutdown_id_fkey"
+            columns: ["shutdown_id"]
+            isOneToOne: false
+            referencedRelation: "shutdowns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shutdown_work_orders: {
+        Row: {
+          created_at: string
+          duration_hours: number | null
+          id: string
+          line_number: number | null
+          notes: string | null
+          scheduled_date: string | null
+          shutdown_id: string
+          updated_at: string
+          vendor_id: string | null
+          work_order_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_hours?: number | null
+          id?: string
+          line_number?: number | null
+          notes?: string | null
+          scheduled_date?: string | null
+          shutdown_id: string
+          updated_at?: string
+          vendor_id?: string | null
+          work_order_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_hours?: number | null
+          id?: string
+          line_number?: number | null
+          notes?: string | null
+          scheduled_date?: string | null
+          shutdown_id?: string
+          updated_at?: string
+          vendor_id?: string | null
+          work_order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shutdown_work_orders_shutdown_id_fkey"
+            columns: ["shutdown_id"]
+            isOneToOne: false
+            referencedRelation: "shutdowns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shutdown_work_orders_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "shutdown_vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shutdown_work_orders_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shutdowns: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          end_time: string | null
+          id: string
+          name: string
+          notes: string | null
+          shutdown_rev: string
+          start_date: string
+          start_time: string | null
+          status: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          end_time?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          shutdown_rev?: string
+          start_date: string
+          start_time?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          end_time?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          shutdown_rev?: string
+          start_date?: string
+          start_time?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_config: {
         Row: {
           config_key: string
