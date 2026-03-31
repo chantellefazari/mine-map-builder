@@ -149,6 +149,57 @@ export type Database = {
         }
         Relationships: []
       }
+      equipment_service_tracking: {
+        Row: {
+          asset_number: string
+          created_at: string
+          current_hours: number
+          equipment_name: string
+          forms_required: string[]
+          id: string
+          last_service_date: string | null
+          last_service_hours: number
+          next_service_due_hours: number
+          notes: string
+          service_interval_hours: number
+          service_vendor: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          asset_number?: string
+          created_at?: string
+          current_hours?: number
+          equipment_name: string
+          forms_required?: string[]
+          id?: string
+          last_service_date?: string | null
+          last_service_hours?: number
+          next_service_due_hours?: number
+          notes?: string
+          service_interval_hours?: number
+          service_vendor?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          asset_number?: string
+          created_at?: string
+          current_hours?: number
+          equipment_name?: string
+          forms_required?: string[]
+          id?: string
+          last_service_date?: string | null
+          last_service_hours?: number
+          next_service_due_hours?: number
+          notes?: string
+          service_interval_hours?: number
+          service_vendor?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       normalized_components: {
         Row: {
           alias_descriptions: string | null
