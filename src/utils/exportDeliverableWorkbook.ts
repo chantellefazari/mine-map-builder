@@ -149,7 +149,7 @@ export async function exportDeliverableWorkbook() {
   ncRows.push([]);
   ncRows.push(["=== Special Patterns ==="]);
   ncRows.push(["Pattern", "Description", "Example"]);
-  specialPatterns.forEach((s) => ncRows.push([s.pattern, s.description, s.example]));
+  specialPatterns.forEach((s) => ncRows.push([s.pattern, s.meaning, s.example]));
   const ws6 = XLSX.utils.aoa_to_sheet(ncRows);
   XLSX.utils.book_append_sheet(wb, ws6, "Naming Conventions");
 
