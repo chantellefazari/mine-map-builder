@@ -330,7 +330,11 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
                   ["reports", "Reports"],
                   ["analytics", "Analytics"],
                   ["pm-forms", "PM Forms"],
-                  ["compliance", "Compliance"],
+                  ["compliance", "PM Compliance"],
+                  ["sched-compliance", "Sched Compliance"],
+                  ["backlog", "Backlog"],
+                  ["reliability", "Reliability"],
+                  ["kpi-scorecard", "KPI Scorecard"],
                 ] as [string, string][]
               ).map(([key, label]) => (
                 <button
