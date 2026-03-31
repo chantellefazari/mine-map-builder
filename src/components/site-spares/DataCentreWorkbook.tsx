@@ -152,6 +152,8 @@ export const DataCentreWorkbook = () => {
               "Naming Conventions",
               "Functional Locations",
               "Lifecycle & Condition",
+              "Stock Code Standard",
+              "Asset Hierarchy Rules",
             ].map((s) => (
               <span key={s} className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-medium">
                 {s}

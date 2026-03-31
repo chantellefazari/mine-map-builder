@@ -297,7 +297,7 @@ export async function exportDeliverableWorkbook() {
   writeXlsxFile(wb, `TCMG_Site_Deliverable_Workbook_${dateStamp}.xlsx`, XLSX);
 
   return {
-    sheetCount: 9,
+    sheetCount: 11,
     assetRows: treeRows.length - 1,
     criticalityRows: critRows.length - 1,
     criticalSpares: critSpares.length,
