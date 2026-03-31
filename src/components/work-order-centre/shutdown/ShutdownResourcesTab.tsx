@@ -210,8 +210,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
                         <thead>
                           <tr className="border-b border-border bg-muted/20">
                             <th className="text-left px-4 py-2 font-semibold w-[250px]">Name</th>
-                            <th className="text-left px-4 py-2 font-semibold w-[160px]">Trade</th>
-                            <th className="text-left px-4 py-2 font-semibold w-[140px]">Role</th>
+                            <th className="text-left px-4 py-2 font-semibold w-[160px]">Trade / Role</th>
                             <th className="text-left px-4 py-2 font-semibold w-[120px]">Phone</th>
                             <th className="text-left px-4 py-2 font-semibold">Notes</th>
                             <th className="w-[70px]"></th>
