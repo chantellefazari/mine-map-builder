@@ -78,7 +78,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
   }, {} as Record<string, number>);
 
   const resetVendorForm = () => setVendorForm({ vendor_code: "", vendor_name: "", contact_name: "", contact_phone: "", contact_email: "", daily_hours: 10.5, notes: "" });
-  const resetPersonForm = () => setPersonForm({ name: "", trade: "Mechanical Fitter", role: "", phone: "", notes: "" });
+  const resetPersonForm = () => setPersonForm({ name: "", trade: "Fitter", phone: "", notes: "" });
 
   const handleSaveVendor = () => {
     if (!vendorForm.vendor_name.trim()) return;
