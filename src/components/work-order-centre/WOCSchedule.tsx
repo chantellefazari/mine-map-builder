@@ -16,6 +16,7 @@ import {
 import { toast } from "sonner";
 import { WOCScheduleReport } from "./WOCScheduleReport";
 import { ShutdownScheduleView } from "./shutdown/ShutdownScheduleView";
+import { VendorSchedulingView } from "./vendor-scheduling/VendorSchedulingView";
 
 const DISCIPLINES = [
   { key: "Mechanical", label: "Mechanical", icon: Wrench, color: "text-blue-600", target: 80 },
@@ -42,7 +43,7 @@ export function WOCSchedule() {
   const [personnel, setPersonnel] = useState<Record<string, number>>({});
   const [dragWoId, setDragWoId] = useState<string | null>(null);
   const [scheduleView, setScheduleView] = useState<"calendar" | "report">("calendar");
-  const [scheduleMode, setScheduleMode] = useState<"weekly" | "shutdown">("weekly");
+  const [scheduleMode, setScheduleMode] = useState<"weekly" | "shutdown" | "vendors">("weekly");
   const today = new Date();
   const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 }); // Wed start
   const weekEnd = endOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
@@ -170,16 +171,17 @@ export function WOCSchedule() {
         </div>
         <div className="flex items-center gap-2">
           {/* Schedule Mode Dropdown */}
-          <Select value={scheduleMode} onValueChange={(v: "weekly" | "shutdown") => setScheduleMode(v)}>
+          <Select value={scheduleMode} onValueChange={(v: "weekly" | "shutdown" | "vendors") => setScheduleMode(v)}>
             <SelectTrigger className="w-52 h-9">
               <div className="flex items-center gap-1.5">
-                {scheduleMode === "shutdown" ? <Building2 className="w-3.5 h-3.5" /> : <Calendar className="w-3.5 h-3.5" />}
+                {scheduleMode === "shutdown" ? <Building2 className="w-3.5 h-3.5" /> : scheduleMode === "vendors" ? <Wrench className="w-3.5 h-3.5" /> : <Calendar className="w-3.5 h-3.5" />}
                 <SelectValue />
               </div>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="weekly">Weekly Schedule</SelectItem>
               <SelectItem value="shutdown">Shutdown Schedule</SelectItem>
+              <SelectItem value="vendors">Vendors</SelectItem>
             </SelectContent>
           </Select>
 
@@ -216,7 +218,9 @@ export function WOCSchedule() {
         </div>
       </div>
 
-      {scheduleMode === "shutdown" ? (
+      {scheduleMode === "vendors" ? (
+        <VendorSchedulingView />
+      ) : scheduleMode === "shutdown" ? (
         <ShutdownScheduleView />
       ) : scheduleView === "report" ? (
         <WOCScheduleReport weekOffset={weekOffset} personnelByDay={personnel} />

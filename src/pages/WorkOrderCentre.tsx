@@ -10,7 +10,7 @@ import { WOCWorkRequests } from "@/components/work-order-centre/WOCWorkRequests"
 import { WOCWorkOrderManagement } from "@/components/work-order-centre/WOCWorkOrderManagement";
 import { WOCSchedule } from "@/components/work-order-centre/WOCSchedule";
 import { WOCWorkspace } from "@/components/work-order-centre/WOCWorkspace";
-import { VendorSchedulingView } from "@/components/work-order-centre/vendor-scheduling/VendorSchedulingView";
+
 
 export type WOCView =
   | "dashboard"
@@ -20,7 +20,7 @@ export type WOCView =
   | "work-requests"
   | "wo-management"
   | "schedule"
-  | "vendor-scheduling"
+  
   | "inventory"
   | "take5"
   | "incidents"
@@ -48,7 +48,6 @@ const SECTIONS: SidebarSection[] = [
       { key: "work-requests", label: "Work Requests", icon: FileText },
       { key: "wo-management", label: "Work Order Management", icon: Wrench },
       { key: "schedule", label: "Schedule", icon: Calendar },
-      { key: "vendor-scheduling", label: "Vendor Scheduling", icon: Truck },
     ],
   },
   {
@@ -195,7 +194,7 @@ export default function WorkOrderCentre() {
         {view === "work-requests" && <WOCWorkRequests onOpenWorkspace={openWorkspace} />}
         {view === "wo-management" && <WOCWorkOrderManagement onOpenWorkspace={openWorkspace} onNavigate={setView} />}
         {view === "schedule" && <WOCSchedule />}
-        {view === "vendor-scheduling" && <VendorSchedulingView />}
+        
         {view === "workspace" && workspaceWoId && (
           <WOCWorkspace woId={workspaceWoId} onClose={closeWorkspace} />
         )}
