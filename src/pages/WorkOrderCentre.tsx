@@ -67,7 +67,7 @@ const SECTIONS: SidebarSection[] = [
 
 const PLACEHOLDER_VIEWS: WOCView[] = [
   "shift-handover", "daily-works", "lv-prestart", "inventory",
-  "take5", "incidents", "audit-register",
+  "take5", "incidents", "audit-register", 
 ];
 
 export default function WorkOrderCentre() {
