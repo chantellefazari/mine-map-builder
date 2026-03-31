@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Database, Download, Loader2, FileSpreadsheet } from "lucide-react";
+import { Database, Download, Loader2, FileSpreadsheet, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { downloadCsv } from "@/utils/safariDownload";
+import { downloadCsv, primeDownloadGesture, cancelPrimedDownloadGesture } from "@/utils/safariDownload";
 
 const CSV_FIELDS = [
   "part_number", "description", "category", "subcategory", "manufacturer",
@@ -35,6 +35,7 @@ function escapeCSV(val: unknown): string {
 export const DataCentreWorkbook = () => {
   const [totalCount, setTotalCount] = useState<number | null>(null);
   const [downloading, setDownloading] = useState(false);
+  const [downloadingWorkbook, setDownloadingWorkbook] = useState(false);
 
   useEffect(() => {
     supabase
@@ -79,6 +80,22 @@ export const DataCentreWorkbook = () => {
     }
   };
 
+  const handleDownloadWorkbook = async () => {
+    primeDownloadGesture();
+    setDownloadingWorkbook(true);
+    try {
+      const { exportDeliverableWorkbook } = await import("@/utils/exportDeliverableWorkbook");
+      const stats = await exportDeliverableWorkbook();
+      toast.success(`Deliverable workbook exported — ${stats.sheetCount} sheets, ${stats.assetRows} assets, ${stats.totalSpares} spares`);
+    } catch (err: any) {
+      cancelPrimedDownloadGesture();
+      console.error("Workbook export error:", err);
+      toast.error("Failed to export deliverable workbook");
+    } finally {
+      setDownloadingWorkbook(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Info Banner */}
@@ -88,15 +105,63 @@ export const DataCentreWorkbook = () => {
         </div>
         <div className="text-sm">
           <p className="text-foreground font-medium">
-            Complete site spares data export for deliverable submission.
+            Complete site data exports for deliverable submission.
           </p>
           <p className="text-muted-foreground mt-1">
-            Downloads all parts data as a CSV workbook — excludes photos and internal IDs. Ready to submit as a project deliverable.
+            Download individual CSV exports or the consolidated multi-tab XLSX deliverable workbook for TCMG handover.
           </p>
         </div>
       </div>
 
-      {/* Summary + Download Card */}
+      {/* Deliverable Workbook Card */}
+      <div className="bg-card border-2 border-primary/30 rounded-lg p-6">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-lg bg-primary/15 flex items-center justify-center">
+              <BookOpen className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-foreground">TCMG Site Deliverable Workbook</h3>
+              <p className="text-sm text-muted-foreground">
+                9 sheets · Asset Register · Criticality · Spares · PMs · Naming · FLs · Lifecycle
+              </p>
+            </div>
+          </div>
+
+          <Button onClick={handleDownloadWorkbook} disabled={downloadingWorkbook} className="gap-2" variant="default">
+            {downloadingWorkbook ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
+            {downloadingWorkbook ? "Building Workbook..." : "Download Deliverable XLSX"}
+          </Button>
+        </div>
+
+        {/* Sheet list */}
+        <div className="mt-4 border-t border-border pt-3">
+          <p className="text-xs font-medium text-muted-foreground mb-2">Included sheets:</p>
+          <div className="flex flex-wrap gap-1.5">
+            {[
+              "Document Register",
+              "Asset Register",
+              "Asset Criticality",
+              "Critical Spares",
+              "Complete Spares",
+              "PM Templates",
+              "Naming Conventions",
+              "Functional Locations",
+              "Lifecycle & Condition",
+            ].map((s) => (
+              <span key={s} className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-medium">
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* CSV Download Card */}
       <div className="bg-card border border-border rounded-lg p-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
@@ -104,7 +169,7 @@ export const DataCentreWorkbook = () => {
               <FileSpreadsheet className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-foreground">Site Spares Complete Workbook</h3>
+              <h3 className="text-lg font-semibold text-foreground">Site Spares Complete CSV</h3>
               <p className="text-sm text-muted-foreground">
                 {totalCount !== null ? (
                   <>{totalCount.toLocaleString()} parts · {CSV_FIELDS.length} data fields · CSV format</>
@@ -115,7 +180,7 @@ export const DataCentreWorkbook = () => {
             </div>
           </div>
 
-          <Button onClick={handleDownload} disabled={downloading} className="gap-2">
+          <Button onClick={handleDownload} disabled={downloading} className="gap-2" variant="outline">
             {downloading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
