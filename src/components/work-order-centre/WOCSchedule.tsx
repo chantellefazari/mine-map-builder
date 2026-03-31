@@ -171,16 +171,17 @@ export function WOCSchedule() {
         </div>
         <div className="flex items-center gap-2">
           {/* Schedule Mode Dropdown */}
-          <Select value={scheduleMode} onValueChange={(v: "weekly" | "shutdown") => setScheduleMode(v)}>
+          <Select value={scheduleMode} onValueChange={(v: "weekly" | "shutdown" | "vendors") => setScheduleMode(v)}>
             <SelectTrigger className="w-52 h-9">
               <div className="flex items-center gap-1.5">
-                {scheduleMode === "shutdown" ? <Building2 className="w-3.5 h-3.5" /> : <Calendar className="w-3.5 h-3.5" />}
+                {scheduleMode === "shutdown" ? <Building2 className="w-3.5 h-3.5" /> : scheduleMode === "vendors" ? <Wrench className="w-3.5 h-3.5" /> : <Calendar className="w-3.5 h-3.5" />}
                 <SelectValue />
               </div>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="weekly">Weekly Schedule</SelectItem>
               <SelectItem value="shutdown">Shutdown Schedule</SelectItem>
+              <SelectItem value="vendors">Vendors</SelectItem>
             </SelectContent>
           </Select>
 
