@@ -301,7 +301,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
                 <Input placeholder="e.g., John Smith" value={personForm.name} onChange={(e) => setPersonForm({ ...personForm, name: e.target.value })} className="h-9 text-sm" />
               </div>
               <div>
-                <Label className="text-xs">Trade *</Label>
+                <Label className="text-xs">Trade / Role *</Label>
                 <Select value={personForm.trade} onValueChange={(v) => setPersonForm({ ...personForm, trade: v })}>
                   <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -312,11 +312,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
                 </Select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label className="text-xs">Role / Position</Label>
-                <Input placeholder="e.g., Leading Hand" value={personForm.role} onChange={(e) => setPersonForm({ ...personForm, role: e.target.value })} className="h-9 text-sm" />
-              </div>
+            <div>
               <div>
                 <Label className="text-xs">Phone</Label>
                 <Input placeholder="e.g., 0400 000 000" value={personForm.phone} onChange={(e) => setPersonForm({ ...personForm, phone: e.target.value })} className="h-9 text-sm" />
