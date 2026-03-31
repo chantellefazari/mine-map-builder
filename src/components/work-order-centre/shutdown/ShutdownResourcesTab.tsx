@@ -60,7 +60,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
   });
 
   const [personForm, setPersonForm] = useState({
-    name: "", trade: "Mechanical Fitter", role: "", phone: "", notes: "",
+    name: "", trade: "Fitter", phone: "", notes: "",
   });
 
   const toggleVendor = (id: string) => {
