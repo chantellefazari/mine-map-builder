@@ -17,18 +17,17 @@ export interface ShutdownPersonnel {
 }
 
 export const TRADES = [
-  "Mechanical Fitter",
-  "Boilermaker",
-  "Welder",
-  "Electrician",
-  "Instrument Tech",
-  "Rigger",
-  "Crane Operator",
-  "Scaffolder",
-  "Plumber",
-  "Millwright",
   "Supervisor",
-  "General Hand",
+  "Leading Hand",
+  "Boilermaker",
+  "Electrician",
+  "Fitter",
+  "Crane Operator",
+  "Rigger",
+  "Scaffolder",
+  "Trades Assistant",
+  "Engineer",
+  "Instrument Tech",
 ] as const;
 
 export function useShutdownPersonnel(shutdownId: string | null) {

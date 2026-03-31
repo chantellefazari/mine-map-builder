@@ -16,18 +16,17 @@ interface Props {
 }
 
 const TRADE_COLORS: Record<string, string> = {
-  "Mechanical Fitter": "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-  "Boilermaker": "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
-  "Welder": "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
-  "Electrician": "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
-  "Instrument Tech": "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
-  "Rigger": "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
-  "Crane Operator": "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
-  "Scaffolder": "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300",
-  "Plumber": "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300",
-  "Millwright": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300",
   "Supervisor": "bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-300",
-  "General Hand": "bg-stone-100 text-stone-800 dark:bg-stone-900/30 dark:text-stone-300",
+  "Leading Hand": "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+  "Boilermaker": "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
+  "Electrician": "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+  "Fitter": "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300",
+  "Crane Operator": "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+  "Rigger": "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
+  "Scaffolder": "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300",
+  "Trades Assistant": "bg-stone-100 text-stone-800 dark:bg-stone-900/30 dark:text-stone-300",
+  "Engineer": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300",
+  "Instrument Tech": "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
 };
 
 const TICKETS = [
@@ -61,7 +60,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
   });
 
   const [personForm, setPersonForm] = useState({
-    name: "", trade: "Mechanical Fitter", role: "", phone: "", notes: "",
+    name: "", trade: "Fitter", phone: "", notes: "",
   });
 
   const toggleVendor = (id: string) => {
@@ -79,7 +78,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
   }, {} as Record<string, number>);
 
   const resetVendorForm = () => setVendorForm({ vendor_code: "", vendor_name: "", contact_name: "", contact_phone: "", contact_email: "", daily_hours: 10.5, notes: "" });
-  const resetPersonForm = () => setPersonForm({ name: "", trade: "Mechanical Fitter", role: "", phone: "", notes: "" });
+  const resetPersonForm = () => setPersonForm({ name: "", trade: "Fitter", phone: "", notes: "" });
 
   const handleSaveVendor = () => {
     if (!vendorForm.vendor_name.trim()) return;
@@ -117,7 +116,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
   };
 
   const openEditPerson = (p: ShutdownPersonnel) => {
-    setPersonForm({ name: p.name, trade: p.trade, role: p.role, phone: p.phone, notes: p.notes });
+    setPersonForm({ name: p.name, trade: p.trade, phone: p.phone, notes: p.notes });
     setEditingPerson(p);
     setShowAddPerson(p.vendor_id);
   };
@@ -211,8 +210,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
                         <thead>
                           <tr className="border-b border-border bg-muted/20">
                             <th className="text-left px-4 py-2 font-semibold w-[250px]">Name</th>
-                            <th className="text-left px-4 py-2 font-semibold w-[160px]">Trade</th>
-                            <th className="text-left px-4 py-2 font-semibold w-[140px]">Role</th>
+                            <th className="text-left px-4 py-2 font-semibold w-[160px]">Trade / Role</th>
                             <th className="text-left px-4 py-2 font-semibold w-[120px]">Phone</th>
                             <th className="text-left px-4 py-2 font-semibold">Notes</th>
                             <th className="w-[70px]"></th>
@@ -232,7 +230,6 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
                                   {p.trade}
                                 </Badge>
                               </td>
-                              <td className="px-4 py-2.5 text-muted-foreground">{p.role || "—"}</td>
                               <td className="px-4 py-2.5 text-muted-foreground">{p.phone || "—"}</td>
                               <td className="px-4 py-2.5 text-muted-foreground truncate max-w-[200px]">{p.notes || "—"}</td>
                               <td className="px-4 py-2.5">
@@ -304,7 +301,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
                 <Input placeholder="e.g., John Smith" value={personForm.name} onChange={(e) => setPersonForm({ ...personForm, name: e.target.value })} className="h-9 text-sm" />
               </div>
               <div>
-                <Label className="text-xs">Trade *</Label>
+                <Label className="text-xs">Trade / Role *</Label>
                 <Select value={personForm.trade} onValueChange={(v) => setPersonForm({ ...personForm, trade: v })}>
                   <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -315,11 +312,7 @@ export function ShutdownResourcesTab({ shutdownId }: Props) {
                 </Select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label className="text-xs">Role / Position</Label>
-                <Input placeholder="e.g., Leading Hand" value={personForm.role} onChange={(e) => setPersonForm({ ...personForm, role: e.target.value })} className="h-9 text-sm" />
-              </div>
+            <div>
               <div>
                 <Label className="text-xs">Phone</Label>
                 <Input placeholder="e.g., 0400 000 000" value={personForm.phone} onChange={(e) => setPersonForm({ ...personForm, phone: e.target.value })} className="h-9 text-sm" />
