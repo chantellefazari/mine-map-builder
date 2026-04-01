@@ -111,6 +111,7 @@ const SHIFT_STYLE: Record<string, string> = {
 
 export function ShutdownOverviewTab() {
   const { shutdowns } = useShutdowns();
+  const { navigateToTab, setFilterArea, setSelectedPackageId } = useOrchestratorContext();
 
   // Use first shutdown as current — later this will come from orchestrator context
   const shutdown = shutdowns[0] ?? null;
