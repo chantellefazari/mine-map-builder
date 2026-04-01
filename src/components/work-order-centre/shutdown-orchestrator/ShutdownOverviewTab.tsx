@@ -289,7 +289,7 @@ export function ShutdownOverviewTab() {
                   <span>Blocked: <span className={cn("font-semibold", area.blocked > 0 && "text-destructive")}>{area.blocked}</span></span>
                 </div>
                 <div className="flex items-center gap-1 mt-1.5 text-[10px] opacity-70">
-                  <ChevronRight className="w-3 h-3" /> View area detail
+                  <ChevronRight className="w-3 h-3" /> View in Area Map
                 </div>
               </button>
             ))}
