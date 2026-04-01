@@ -118,6 +118,7 @@ const INITIAL_RULES: LearnedRule[] = [
 /* ------------------------------------------------------------------ */
 
 export function ShutdownAIPlannerTab() {
+  const { navigateToTab, setSelectedPackageId, addConfirmedRule } = useOrchestratorContext();
   const [input, setInput] = useState("");
   const [inputMode, setInputMode] = useState<"free" | "structured">("free");
   const [isProcessing, setIsProcessing] = useState(false);
