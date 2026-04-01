@@ -8,8 +8,9 @@ import { cn } from "@/lib/utils";
 import {
   Download, Printer, Brain, Package, PlayCircle, Activity, ShieldAlert,
   Clock, CheckCircle2, Route, AlertTriangle, MapPin, Lock,
-  ArrowRightLeft, Calendar, Target, ChevronRight,
+  ArrowRightLeft, Calendar, Target, ChevronRight, Box,
 } from "lucide-react";
+import { PlantOverview3D } from "./PlantOverview3D";
 import {
   PACKAGES, buildAreaSummaries, DEMO_RISKS, DEMO_SHIFT_FOCUS,
   type AreaSummary, type RiskItem, type ShiftFocusItem,
