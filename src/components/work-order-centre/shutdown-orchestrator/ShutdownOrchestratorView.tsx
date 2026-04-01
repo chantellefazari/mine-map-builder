@@ -88,6 +88,8 @@ export function ShutdownOrchestratorView() {
         <ShutdownSequenceFlowTab />
       ) : activeTab === "control" ? (
         <ShutdownControlBoardTab />
+      ) : activeTab === "critical-path" ? (
+        <ShutdownCriticalPathTab />
       ) : (
         <TabPlaceholder tab={currentTab} />
       )}
