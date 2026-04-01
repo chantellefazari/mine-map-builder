@@ -263,6 +263,7 @@ export function ShutdownOverviewTab() {
             {DEMO_AREAS.map((area) => (
               <button
                 key={area.area}
+                onClick={() => { setFilterArea(area.area); navigateToTab("area-map"); }}
                 className={cn(
                   "text-left rounded-lg border p-3 transition-colors hover:shadow-sm",
                   AREA_STATUS_STYLE[area.status]
