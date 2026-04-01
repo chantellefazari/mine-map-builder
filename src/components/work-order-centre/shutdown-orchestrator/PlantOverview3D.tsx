@@ -697,7 +697,7 @@ function AdminAndStores() {
       </Billboard>
 
       {/* ── Compound label ── */}
-      <Billboard position={[4, 1.8, -3]} follow lockX={false} lockY={false} lockZ={false}>
+      <Billboard position={[-6, 1.8, -3]} follow lockX={false} lockY={false} lockZ={false}>
         <Text fontSize={0.2} color="#eee" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Stores Compound</Text>
       </Billboard>
     </group>
