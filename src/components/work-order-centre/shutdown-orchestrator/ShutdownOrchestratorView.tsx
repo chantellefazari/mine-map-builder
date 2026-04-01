@@ -4,6 +4,7 @@ import {
   LayoutDashboard, Map, GitBranch, Columns3, Route, Printer, Brain,
 } from "lucide-react";
 import { ShutdownOverviewTab } from "./ShutdownOverviewTab";
+import { ShutdownAreaMapTab } from "./ShutdownAreaMapTab";
 
 const SUB_TABS = [
   { key: "overview", label: "Shutdown Overview", icon: LayoutDashboard },
@@ -78,6 +79,8 @@ export function ShutdownOrchestratorView() {
       {/* Tab content */}
       {activeTab === "overview" ? (
         <ShutdownOverviewTab />
+      ) : activeTab === "area-map" ? (
+        <ShutdownAreaMapTab />
       ) : (
         <TabPlaceholder tab={currentTab} />
       )}
