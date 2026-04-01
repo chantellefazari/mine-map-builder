@@ -8,7 +8,7 @@ import {
   Filter, Route, AlertTriangle, Wrench, Zap, Clock, Lock,
   CheckCircle2, Activity, Package, ChevronRight, Target, Eye,
   LayoutList, Columns3, Calendar, Shield, User, ArrowRight,
-  Printer, PlayCircle, X,
+  Printer, PlayCircle, X, GitBranch,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
