@@ -163,10 +163,10 @@ export function WOCSchedule() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-foreground">
-              {scheduleMode === "shutdown" ? "Shutdown Schedule" : `${discipline} Schedule`}
+              {scheduleMode === "shutdown" ? "Shutdown Schedule" : scheduleMode === "orchestrator" ? "Shutdown Orchestrator" : `${discipline} Schedule`}
             </h1>
             <p className="text-xs text-muted-foreground">
-              {scheduleMode === "shutdown" ? "SAP-style Gantt scheduling grouped by vendor" : "Drag and drop work orders to schedule"}
+              {scheduleMode === "shutdown" ? "SAP-style Gantt scheduling grouped by vendor" : scheduleMode === "orchestrator" ? "Area-based shutdown planning and control system" : "Drag and drop work orders to schedule"}
             </p>
           </div>
         </div>
