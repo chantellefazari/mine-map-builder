@@ -553,8 +553,8 @@ function SiteInfrastructure({ color }: { color: string }) {
 function AdminAndStores() {
   return (
     <group position={[2, 0, -18]}>
-      {/* ═══ ADMIN PRECINCT (left side) ═══ */}
-      <group position={[-6, 0, 0]}>
+      {/* ═══ ADMIN PRECINCT (right side) ═══ */}
+      <group position={[6, 0, 0]}>
 
         {/* ── Toilets — small building, upper-left ── */}
         <Box position={[-4, 0, -4]} size={[1.2, 0.8, 1.8]} color="#bdc3c7" />
