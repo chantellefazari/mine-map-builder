@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, Map, GitBranch, Columns3, Route, Printer, Brain,
 } from "lucide-react";
+import { ShutdownOverviewTab } from "./ShutdownOverviewTab";
 
 const SUB_TABS = [
   { key: "overview", label: "Shutdown Overview", icon: LayoutDashboard },
