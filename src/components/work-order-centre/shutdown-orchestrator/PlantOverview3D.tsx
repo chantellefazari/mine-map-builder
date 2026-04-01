@@ -814,6 +814,54 @@ function PulsingRing({ position, color, size }: { position: [number, number, num
 /*  SCENE                                                              */
 /* ------------------------------------------------------------------ */
 
+const DEFAULT_CAM_POS = new THREE.Vector3(12, 18, 22);
+const DEFAULT_TARGET = new THREE.Vector3(5, 0, -1);
+
+function CameraAnimator({ selectedArea }: { selectedArea: string }) {
+  const { camera } = useThree();
+  const controlsRef = useRef<any>(null);
+  const targetPos = useRef(DEFAULT_CAM_POS.clone());
+  const targetLook = useRef(DEFAULT_TARGET.clone());
+  const animating = useRef(false);
+
+  useEffect(() => {
+    const zone = selectedArea ? ZONE_BOUNDS[selectedArea] : null;
+    if (zone) {
+      const zoneCenter = new THREE.Vector3(zone.pos[0], 0, zone.pos[2]);
+      const zoneSize = Math.max(zone.size[0], zone.size[2]);
+      const dist = zoneSize * 0.9 + 3;
+      targetPos.current.set(zoneCenter.x + dist * 0.5, dist * 0.7, zoneCenter.z + dist * 0.6);
+      targetLook.current.copy(zoneCenter);
+    } else {
+      targetPos.current.copy(DEFAULT_CAM_POS);
+      targetLook.current.copy(DEFAULT_TARGET);
+    }
+    animating.current = true;
+  }, [selectedArea]);
+
+  useFrame(() => {
+    if (!animating.current || !controlsRef.current) return;
+    const speed = 0.06;
+    camera.position.lerp(targetPos.current, speed);
+    controlsRef.current.target.lerp(targetLook.current, speed);
+    controlsRef.current.update();
+    if (camera.position.distanceTo(targetPos.current) < 0.05) {
+      animating.current = false;
+    }
+  });
+
+  return (
+    <OrbitControls
+      ref={controlsRef}
+      enablePan enableZoom enableRotate
+      maxPolarAngle={Math.PI / 2.2}
+      minDistance={2}
+      maxDistance={45}
+      target={[5, 0, -1]}
+    />
+  );
+}
+
 function Scene({ areaSummaries, selectedArea, onSelectArea }: {
   areaSummaries: AreaSummary[];
   selectedArea: string;
@@ -860,13 +908,7 @@ function Scene({ areaSummaries, selectedArea, onSelectArea }: {
         );
       })}
 
-      <OrbitControls
-        enablePan enableZoom enableRotate
-        maxPolarAngle={Math.PI / 2.2}
-        minDistance={5}
-        maxDistance={45}
-        target={[5, 0, -1]}
-      />
+      <CameraAnimator selectedArea={selectedArea} />
     </>
   );
 }
