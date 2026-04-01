@@ -284,12 +284,12 @@ function SupportServices({ color }: { color: string }) {
 /* ------------------------------------------------------------------ */
 
 const ZONE_BOUNDS: Record<string, { pos: [number, number, number]; size: [number, number, number] }> = {
-  "Site Infrastructure":    { pos: [-8,  0.01, -6],   size: [6, 0.02, 4] },
-  "Utilities & Power":      { pos: [8.5, 0.01, -5.5], size: [5, 0.02, 4] },
-  "Comminution / Process":  { pos: [-5,  0.01, 1],    size: [6, 0.02, 5] },
-  "Gold Recovery":          { pos: [4.5, 0.01, 0.5],  size: [8, 0.02, 5] },
-  "Tailings":               { pos: [3,   0.01, 6],    size: [6, 0.02, 5] },
-  "Support Services":       { pos: [-7,  0.01, 5],    size: [6, 0.02, 4] },
+  "Site Infrastructure":    { pos: [10,  0.01, -7],   size: [6, 0.02, 4] },
+  "Utilities & Power":      { pos: [9.5, 0.01, 0.5],  size: [5, 0.02, 4] },
+  "Comminution / Process":  { pos: [3,   0.01, 6],    size: [7, 0.02, 5] },
+  "Gold Recovery":          { pos: [1.5, 0.01, -3.5], size: [8, 0.02, 5] },
+  "Tailings":               { pos: [-7,  0.01, 5],    size: [6, 0.02, 6] },
+  "Support Services":       { pos: [5,   0.01, -8],   size: [6, 0.02, 4] },
 };
 
 function ZoneOverlay({ area, layout, isSelected, onSelect }: {
