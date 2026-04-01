@@ -479,6 +479,8 @@ export function ShutdownControlBoardTab() {
                 )}
               </div>
             </div>
+          </div>
+        )}
       </div>
     </div>
   );
