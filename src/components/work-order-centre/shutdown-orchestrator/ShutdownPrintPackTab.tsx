@@ -9,76 +9,30 @@ import {
   AlertTriangle, Wrench, Zap, CheckCircle2, Shield, ChevronRight,
   ArrowRight, Target, Activity, CircleDot, Calendar, User,
 } from "lucide-react";
+import {
+  PACKAGES, SHUTDOWN_NAME, SHUTDOWN_DATE,
+  ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS,
+  type ShutdownWorkPackage, type WPStatus,
+} from "./shutdownData";
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
 /* ------------------------------------------------------------------ */
 
 type PackType = "area-overview" | "critical-sequence" | "shift-execution";
-type WPStatus = "Complete" | "Active" | "Ready" | "Blocked" | "Delayed";
-
-interface PrintPackage {
-  id: string;
-  title: string;
-  area: string;
-  trade: string;
-  plannedStart: string;
-  plannedFinish: string;
-  durationHrs: number;
-  status: WPStatus;
-  pctComplete: number;
-  supervisor: string;
-  shift: string;
-  criticalPath: boolean;
-  blockerType: string;
-  blockerDescription: string;
-  blockerOwner: string;
-  delayReason: string;
-  nextAction: string;
-  predecessors: string[];
-  successors: string[];
-  handoverNotes: string;
-}
 
 /* ------------------------------------------------------------------ */
-/*  DEMO DATA                                                          */
+/*  STYLING                                                            */
 /* ------------------------------------------------------------------ */
 
-const SHUTDOWN_NAME = "Annual Shutdown — Y26-SH01";
-const SHUTDOWN_DATE = "1 Apr – 3 Apr 2026";
-
-const PACKAGES: PrintPackage[] = [
-  { id: "WP-001", title: "Plant Isolation & Lockout", area: "Infrastructure", trade: "Electrical", plannedStart: "Day 1 06:00", plannedFinish: "Day 1 10:00", durationHrs: 4, status: "Complete", pctComplete: 100, supervisor: "L. Chen", shift: "Day", criticalPath: true, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "—", predecessors: [], successors: ["WP-002", "WP-003"], handoverNotes: "All isolations verified and tagged" },
-  { id: "WP-002", title: "Scaffold Erection — Grinding", area: "Grinding", trade: "Mechanical", plannedStart: "Day 1 06:00", plannedFinish: "Day 1 12:00", durationHrs: 6, status: "Complete", pctComplete: 100, supervisor: "J. Mitchell", shift: "Day", criticalPath: true, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "—", predecessors: ["WP-001"], successors: ["WP-004"], handoverNotes: "Full scaffold complete, tag checked" },
-  { id: "WP-003", title: "Crane Mobilisation", area: "Infrastructure", trade: "Mechanical", plannedStart: "Day 1 06:00", plannedFinish: "Day 1 09:00", durationHrs: 3, status: "Complete", pctComplete: 100, supervisor: "B. Williams", shift: "Day", criticalPath: false, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "—", predecessors: ["WP-001"], successors: ["WP-012"], handoverNotes: "250t crane positioned at Grinding bay" },
-  { id: "WP-004", title: "SAG Mill Liner Bolt-Out", area: "Grinding", trade: "Mechanical", plannedStart: "Day 1 12:00", plannedFinish: "Day 2 00:00", durationHrs: 12, status: "Active", pctComplete: 45, supervisor: "J. Mitchell", shift: "Day", criticalPath: true, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "Continue bolt removal — 55% remaining", predecessors: ["WP-002"], successors: ["WP-008"], handoverNotes: "Night shift to continue from Row 6" },
-  { id: "WP-005", title: "Jaw Crusher Liner Replacement", area: "Crushing", trade: "Mechanical", plannedStart: "Day 1 10:00", plannedFinish: "Day 1 18:00", durationHrs: 8, status: "Active", pctComplete: 60, supervisor: "M. Thompson", shift: "Day", criticalPath: false, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "Swing jaw install underway", predecessors: [], successors: [], handoverNotes: "Swing jaw fitted, fixed jaw next" },
-  { id: "WP-006", title: "CIL Agitator Gearbox Inspection", area: "CIL / Leaching", trade: "Mechanical", plannedStart: "Day 1 10:00", plannedFinish: "Day 1 16:00", durationHrs: 6, status: "Active", pctComplete: 70, supervisor: "K. Singh", shift: "Day", criticalPath: false, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "Tanks 5-6 inspection remaining", predecessors: [], successors: ["WP-013"], handoverNotes: "Tanks 1-4 complete, oil samples sent" },
-  { id: "WP-007", title: "Crusher MCC Switchboard Service", area: "Crushing", trade: "Electrical", plannedStart: "Day 1 10:00", plannedFinish: "Day 1 16:00", durationHrs: 6, status: "Blocked", pctComplete: 20, supervisor: "L. Chen", shift: "Day", criticalPath: false, blockerType: "Isolation", blockerDescription: "Crusher MCC isolation not verified — awaiting Control Room sign-off", blockerOwner: "Control Room — D. Kumar", delayReason: "", nextAction: "Awaiting isolation clearance", predecessors: [], successors: [], handoverNotes: "" },
-  { id: "WP-008", title: "SAG Mill Liner Install", area: "Grinding", trade: "Mechanical", plannedStart: "Day 2 00:00", plannedFinish: "Day 2 14:00", durationHrs: 14, status: "Ready", pctComplete: 0, supervisor: "J. Mitchell", shift: "Night", criticalPath: true, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "Pending WP-004 completion", predecessors: ["WP-004"], successors: ["WP-016"], handoverNotes: "" },
-  { id: "WP-009", title: "Ball Mill Trunnion Bearing Reline", area: "Grinding", trade: "Mechanical", plannedStart: "Day 1 12:00", plannedFinish: "Day 1 22:00", durationHrs: 10, status: "Active", pctComplete: 15, supervisor: "J. Mitchell", shift: "Day", criticalPath: true, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "Feed-end bearing removal in progress", predecessors: ["WP-002"], successors: ["WP-016"], handoverNotes: "Night crew to continue discharge end" },
-  { id: "WP-010", title: "Thickener Rake Arm Inspection", area: "Thickening", trade: "Mechanical", plannedStart: "Day 1 10:00", plannedFinish: "Day 1 18:00", durationHrs: 8, status: "Active", pctComplete: 40, supervisor: "A. Reyes", shift: "Day", criticalPath: true, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "Torque tube measurement underway", predecessors: [], successors: ["WP-016"], handoverNotes: "" },
-  { id: "WP-011", title: "VSD Replacement — Mill Drive", area: "Grinding", trade: "Electrical", plannedStart: "Day 1 14:00", plannedFinish: "Day 1 22:00", durationHrs: 8, status: "Delayed", pctComplete: 10, supervisor: "L. Chen", shift: "Day", criticalPath: true, blockerType: "Parts", blockerDescription: "Replacement VSD not received on site — freight delayed in transit", blockerOwner: "Procurement — S. Patel", delayReason: "Replacement VSD not received on site", nextAction: "Expedite parts delivery", predecessors: [], successors: ["WP-016", "WP-018"], handoverNotes: "" },
-  { id: "WP-012", title: "Cyclone Cluster Replacement", area: "Grinding", trade: "Mechanical", plannedStart: "Day 2 14:00", plannedFinish: "Day 2 20:00", durationHrs: 6, status: "Blocked", pctComplete: 0, supervisor: "J. Mitchell", shift: "Night", criticalPath: true, blockerType: "Crane", blockerDescription: "50t mobile crane delayed — ETA from contractor pending", blockerOwner: "B. Williams — Crane Contractor", delayReason: "", nextAction: "Cannot proceed until crane available", predecessors: ["WP-003"], successors: ["WP-016"], handoverNotes: "" },
-  { id: "WP-013", title: "Carbon Screen Panel Replacement", area: "CIL / Leaching", trade: "Mechanical", plannedStart: "Day 2 06:00", plannedFinish: "Day 2 11:00", durationHrs: 5, status: "Active", pctComplete: 70, supervisor: "K. Singh", shift: "Day", criticalPath: false, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "Final panels being fitted", predecessors: ["WP-006"], successors: ["WP-018"], handoverNotes: "" },
-  { id: "WP-014", title: "Underflow Pump Impeller Swap", area: "Tailings", trade: "Mechanical", plannedStart: "Day 2 06:00", plannedFinish: "Day 2 12:00", durationHrs: 6, status: "Blocked", pctComplete: 0, supervisor: "R. Torres", shift: "Day", criticalPath: true, blockerType: "Scaffold", blockerDescription: "Scaffold not erected — crew diverted to Grinding priority", blockerOwner: "Scaffold Crew — T. Brown", delayReason: "", nextAction: "Scaffold erection required first", predecessors: [], successors: ["WP-015"], handoverNotes: "" },
-  { id: "WP-015", title: "Tailings Pipeline Tie-In", area: "Tailings", trade: "Mechanical", plannedStart: "Day 2 12:00", plannedFinish: "Day 2 20:00", durationHrs: 8, status: "Delayed", pctComplete: 5, supervisor: "R. Torres", shift: "Night", criticalPath: true, blockerType: "Permit", blockerDescription: "Environmental clearance pending — Enviro team not yet signed off on discharge zone", blockerOwner: "Environmental — C. Davis", delayReason: "Environmental clearance pending", nextAction: "Chase environmental clearance", predecessors: ["WP-014"], successors: ["WP-018"], handoverNotes: "" },
-  { id: "WP-016", title: "Mill Alignment & Checks", area: "Grinding", trade: "Mechanical", plannedStart: "Day 2 20:00", plannedFinish: "Day 3 00:00", durationHrs: 4, status: "Ready", pctComplete: 0, supervisor: "J. Mitchell", shift: "Night", criticalPath: true, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "Awaiting Phase 2 & 3 completion", predecessors: ["WP-008", "WP-009", "WP-010", "WP-011", "WP-012"], successors: ["WP-018"], handoverNotes: "" },
-  { id: "WP-017", title: "Elution Column Heater Service", area: "Gold Room", trade: "Electrical", plannedStart: "Day 2 06:00", plannedFinish: "Day 2 12:00", durationHrs: 6, status: "Active", pctComplete: 80, supervisor: "P. Adams", shift: "Day", criticalPath: false, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "Thermocouple replacement in progress", predecessors: [], successors: ["WP-018"], handoverNotes: "" },
-  { id: "WP-018", title: "Pre-Start Commissioning", area: "Infrastructure", trade: "Electrical", plannedStart: "Day 3 00:00", plannedFinish: "Day 3 06:00", durationHrs: 6, status: "Ready", pctComplete: 0, supervisor: "L. Chen", shift: "Night", criticalPath: true, blockerType: "", blockerDescription: "", blockerOwner: "", delayReason: "", nextAction: "Final gate — all CP packages must complete", predecessors: ["WP-011", "WP-013", "WP-015", "WP-016", "WP-017"], successors: [], handoverNotes: "" },
-];
-
-const STATUS_STYLE: Record<WPStatus, { text: string; border: string; dot: string; label: string }> = {
+const STATUS_STYLE: Record<string, { text: string; border: string; dot: string; label: string }> = {
+  "Not Started": { text: "text-muted-foreground", border: "border-border", dot: "bg-muted-foreground/50", label: "Not Started" },
   Complete: { text: "text-muted-foreground", border: "border-border", dot: "bg-muted-foreground/50", label: "Complete" },
   Active: { text: "text-emerald-600", border: "border-emerald-500/30", dot: "bg-emerald-500", label: "Active" },
   Ready: { text: "text-blue-600", border: "border-blue-500/30", dot: "bg-blue-500", label: "Ready" },
   Blocked: { text: "text-destructive", border: "border-destructive/30", dot: "bg-destructive", label: "Blocked" },
   Delayed: { text: "text-amber-600", border: "border-amber-500/30", dot: "bg-amber-500", label: "Delayed" },
 };
-
-const ALL_AREAS = ["All", ...Array.from(new Set(PACKAGES.map((p) => p.area)))];
-const ALL_TRADES = ["All", "Mechanical", "Electrical"];
-const ALL_SHIFTS = ["All", "Day", "Night"];
 
 const PACK_TYPES: { key: PackType; label: string; icon: typeof Map; description: string }[] = [
   { key: "area-overview", label: "Shutdown Area Overview", icon: Map, description: "Leadership summary — area status, progress, and key risks" },
@@ -90,17 +44,17 @@ const PACK_TYPES: { key: PackType; label: string; icon: typeof Map; description:
 /*  HELPERS                                                            */
 /* ------------------------------------------------------------------ */
 
-function getAreaSummary(packages: PrintPackage[]) {
+function getAreaSummary(packages: ShutdownWorkPackage[]) {
   const areas = Array.from(new Set(packages.map((p) => p.area)));
   return areas.map((area) => {
-    const areaPackages = packages.filter((p) => p.area === area);
-    const complete = areaPackages.filter((p) => p.status === "Complete").length;
-    const active = areaPackages.filter((p) => p.status === "Active").length;
-    const blocked = areaPackages.filter((p) => p.status === "Blocked" || p.status === "Delayed").length;
-    const pct = areaPackages.length > 0 ? Math.round((areaPackages.reduce((s, p) => s + p.pctComplete, 0)) / areaPackages.length) : 0;
-    const status: WPStatus = blocked > 0 ? "Blocked" : active > 0 ? "Active" : complete === areaPackages.length ? "Complete" : "Ready";
-    const delays = areaPackages.filter((p) => p.blockerDescription);
-    return { area, total: areaPackages.length, complete, active, blocked, pct, status, delays, packages: areaPackages };
+    const ap = packages.filter((p) => p.area === area);
+    const complete = ap.filter((p) => p.status === "Complete").length;
+    const active = ap.filter((p) => p.status === "Active").length;
+    const blocked = ap.filter((p) => p.status === "Blocked" || p.status === "Delayed").length;
+    const pct = ap.length > 0 ? Math.round(ap.reduce((s, p) => s + p.pctComplete, 0) / ap.length) : 0;
+    const status: string = blocked > 0 ? "Blocked" : active > 0 ? "Active" : complete === ap.length ? "Complete" : "Ready";
+    const delays = ap.filter((p) => p.blockerDescription);
+    return { area, total: ap.length, complete, active, blocked, pct, status, delays, packages: ap };
   });
 }
 
@@ -108,24 +62,8 @@ function handlePrint(ref: React.RefObject<HTMLDivElement | null>) {
   if (!ref.current) return;
   const printWindow = window.open("", "_blank");
   if (!printWindow) return;
-  const styles = Array.from(document.querySelectorAll("style, link[rel='stylesheet']"))
-    .map((el) => el.outerHTML)
-    .join("\n");
-  printWindow.document.write(`
-    <!DOCTYPE html>
-    <html><head><title>Shutdown Print Pack</title>${styles}
-    <style>
-      @media print {
-        body { margin: 8mm; font-size: 11px; color: #000; background: #fff; }
-        .no-print { display: none !important; }
-        table { break-inside: auto; }
-        tr { break-inside: avoid; }
-        thead { display: table-header-group; }
-      }
-      body { background: #fff; padding: 16px; }
-    </style>
-    </head><body>${ref.current.innerHTML}</body></html>
-  `);
+  const styles = Array.from(document.querySelectorAll("style, link[rel='stylesheet']")).map((el) => el.outerHTML).join("\n");
+  printWindow.document.write(`<!DOCTYPE html><html><head><title>Shutdown Print Pack</title>${styles}<style>@media print { body { margin: 8mm; font-size: 11px; color: #000; background: #fff; } .no-print { display: none !important; } table { break-inside: auto; } tr { break-inside: avoid; } thead { display: table-header-group; } } body { background: #fff; padding: 16px; }</style></head><body>${ref.current.innerHTML}</body></html>`);
   printWindow.document.close();
   setTimeout(() => { printWindow.focus(); printWindow.print(); }, 400);
 }
@@ -153,17 +91,9 @@ export function ShutdownPrintPackTab() {
 
   return (
     <div className="space-y-4">
-      {/* ===== PACK TYPE SELECTOR ===== */}
       <div className="grid grid-cols-3 gap-3">
         {PACK_TYPES.map((pack) => (
-          <button
-            key={pack.key}
-            onClick={() => setPackType(pack.key)}
-            className={cn(
-              "text-left rounded-lg border p-4 transition-all hover:shadow-sm",
-              packType === pack.key ? "border-primary bg-primary/5 shadow-sm" : "border-border bg-card"
-            )}
-          >
+          <button key={pack.key} onClick={() => setPackType(pack.key)} className={cn("text-left rounded-lg border p-4 transition-all hover:shadow-sm", packType === pack.key ? "border-primary bg-primary/5 shadow-sm" : "border-border bg-card")}>
             <div className="flex items-center gap-2 mb-1.5">
               <pack.icon className={cn("w-4 h-4", packType === pack.key ? "text-primary" : "text-muted-foreground")} />
               <span className={cn("text-xs font-bold", packType === pack.key ? "text-primary" : "text-foreground")}>{pack.label}</span>
@@ -173,12 +103,11 @@ export function ShutdownPrintPackTab() {
         ))}
       </div>
 
-      {/* ===== FILTERS & ACTIONS ===== */}
       <div className="flex items-center gap-2 flex-wrap">
         <Filter className="w-3.5 h-3.5 text-muted-foreground" />
         <Select value={filterArea} onValueChange={setFilterArea}>
-          <SelectTrigger className="w-40 h-8 text-xs"><SelectValue /></SelectTrigger>
-          <SelectContent>{ALL_AREAS.map((a) => <SelectItem key={a} value={a}>{a === "All" ? "All Areas" : a}</SelectItem>)}</SelectContent>
+          <SelectTrigger className="w-44 h-8 text-xs"><SelectValue /></SelectTrigger>
+          <SelectContent>{ALL_AREA_OPTIONS.map((a) => <SelectItem key={a} value={a}>{a === "All" ? "All Areas" : a}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={filterTrade} onValueChange={setFilterTrade}>
           <SelectTrigger className="w-36 h-8 text-xs"><SelectValue /></SelectTrigger>
@@ -188,7 +117,6 @@ export function ShutdownPrintPackTab() {
           <SelectTrigger className="w-32 h-8 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>{ALL_SHIFTS.map((s) => <SelectItem key={s} value={s}>{s === "All" ? "All Shifts" : `${s} Shift`}</SelectItem>)}</SelectContent>
         </Select>
-
         <div className="ml-auto flex items-center gap-2">
           <Button variant={showPreview ? "default" : "outline"} size="sm" className="h-8 text-xs gap-1.5" onClick={() => setShowPreview(!showPreview)}>
             <Eye className="w-3.5 h-3.5" /> {showPreview ? "Close Preview" : "Print Preview"}
@@ -202,10 +130,8 @@ export function ShutdownPrintPackTab() {
         </div>
       </div>
 
-      {/* ===== PACK CONTENT ===== */}
       <div className={cn(showPreview && "border-2 border-dashed border-primary/20 rounded-lg p-6 bg-background shadow-inner")}>
         <div ref={printRef}>
-          {/* Pack Header */}
           <div className="mb-6 border-b-2 border-foreground pb-3">
             <div className="flex items-center justify-between">
               <div>
@@ -234,14 +160,13 @@ export function ShutdownPrintPackTab() {
 /*  PACK 1: AREA OVERVIEW                                              */
 /* ------------------------------------------------------------------ */
 
-function AreaOverviewPack({ packages }: { packages: PrintPackage[] }) {
+function AreaOverviewPack({ packages }: { packages: ShutdownWorkPackage[] }) {
   const areas = getAreaSummary(packages);
   const totalPct = packages.length > 0 ? Math.round(packages.reduce((s, p) => s + p.pctComplete, 0) / packages.length) : 0;
   const totalBlocked = packages.filter((p) => p.status === "Blocked" || p.status === "Delayed").length;
 
   return (
     <div className="space-y-5">
-      {/* Executive Summary */}
       <div className="grid grid-cols-4 gap-3">
         {[
           { label: "Overall Progress", value: `${totalPct}%` },
@@ -256,7 +181,6 @@ function AreaOverviewPack({ packages }: { packages: PrintPackage[] }) {
         ))}
       </div>
 
-      {/* Area Table */}
       <table className="w-full text-xs border-collapse">
         <thead>
           <tr className="border-b-2 border-foreground">
@@ -272,7 +196,7 @@ function AreaOverviewPack({ packages }: { packages: PrintPackage[] }) {
         </thead>
         <tbody>
           {areas.map((a, i) => {
-            const st = STATUS_STYLE[a.status];
+            const st = STATUS_STYLE[a.status] || STATUS_STYLE.Ready;
             return (
               <tr key={a.area} className={cn("border-b border-border", i % 2 === 0 && "bg-muted/20")}>
                 <td className="py-2 px-2 font-semibold">{a.area}</td>
@@ -295,9 +219,7 @@ function AreaOverviewPack({ packages }: { packages: PrintPackage[] }) {
                   </span>
                 </td>
                 <td className="py-2 px-2 text-[10px] text-muted-foreground">
-                  {a.delays.length > 0
-                    ? a.delays.map((d) => d.blockerDescription.substring(0, 50)).join("; ")
-                    : "—"}
+                  {a.delays.length > 0 ? a.delays.map((d) => d.blockerDescription.substring(0, 50)).join("; ") : "—"}
                 </td>
               </tr>
             );
@@ -305,11 +227,10 @@ function AreaOverviewPack({ packages }: { packages: PrintPackage[] }) {
         </tbody>
       </table>
 
-      {/* Active Packages by Area */}
       {areas.filter((a) => a.packages.some((p) => p.status !== "Complete")).map((a) => (
         <div key={a.area}>
           <h3 className="text-xs font-bold text-foreground border-b border-border pb-1 mb-2 flex items-center gap-2">
-            <span className={cn("w-2 h-2 rounded-full", STATUS_STYLE[a.status].dot)} />
+            <span className={cn("w-2 h-2 rounded-full", (STATUS_STYLE[a.status] || STATUS_STYLE.Ready).dot)} />
             {a.area} — {a.pct}% Complete
           </h3>
           <table className="w-full text-[11px] border-collapse mb-3">
@@ -325,22 +246,15 @@ function AreaOverviewPack({ packages }: { packages: PrintPackage[] }) {
             </thead>
             <tbody>
               {a.packages.filter((p) => p.status !== "Complete").map((p) => {
-                const ps = STATUS_STYLE[p.status];
+                const ps = STATUS_STYLE[p.status] || STATUS_STYLE.Ready;
                 return (
                   <tr key={p.id} className="border-b border-border/50">
                     <td className="py-1.5 px-2 font-mono font-semibold">{p.id}</td>
-                    <td className="py-1.5 px-2">
-                      {p.title}
-                      {p.criticalPath && <span className="text-destructive text-[9px] font-bold ml-1">CP</span>}
-                    </td>
+                    <td className="py-1.5 px-2">{p.title}{p.criticalPath && <span className="text-destructive text-[9px] font-bold ml-1">CP</span>}</td>
                     <td className="py-1.5 px-2">{p.trade}</td>
-                    <td className="py-1.5 px-2 text-center">
-                      <span className={cn("text-[10px] font-semibold", ps.text)}>{p.status}</span>
-                    </td>
+                    <td className="py-1.5 px-2 text-center"><span className={cn("text-[10px] font-semibold", ps.text)}>{p.status}</span></td>
                     <td className="py-1.5 px-2 text-center font-semibold">{p.pctComplete}</td>
-                    <td className="py-1.5 px-2 text-muted-foreground">
-                      {p.blockerDescription || p.nextAction}
-                    </td>
+                    <td className="py-1.5 px-2 text-muted-foreground">{p.blockerDescription || p.nextAction}</td>
                   </tr>
                 );
               })}
@@ -356,12 +270,10 @@ function AreaOverviewPack({ packages }: { packages: PrintPackage[] }) {
 /*  PACK 2: CRITICAL SEQUENCE SHEET                                    */
 /* ------------------------------------------------------------------ */
 
-function CriticalSequencePack({ packages }: { packages: PrintPackage[] }) {
+function CriticalSequencePack({ packages }: { packages: ShutdownWorkPackage[] }) {
   const cpPackages = packages.filter((p) => p.criticalPath);
-
   return (
     <div className="space-y-5">
-      {/* Summary */}
       <div className="grid grid-cols-4 gap-3">
         {[
           { label: "Critical Packages", value: cpPackages.length },
@@ -376,14 +288,13 @@ function CriticalSequencePack({ packages }: { packages: PrintPackage[] }) {
         ))}
       </div>
 
-      {/* Sequence Table */}
       <table className="w-full text-[11px] border-collapse">
         <thead>
           <tr className="border-b-2 border-foreground">
             <th className="text-left py-2 px-2 font-bold w-6">#</th>
             <th className="text-left py-2 px-2 font-bold w-20">WP</th>
             <th className="text-left py-2 px-2 font-bold">Title</th>
-            <th className="text-left py-2 px-2 font-bold w-24">Area</th>
+            <th className="text-left py-2 px-2 font-bold w-32">Area</th>
             <th className="text-left py-2 px-2 font-bold w-20">Trade</th>
             <th className="text-left py-2 px-2 font-bold w-24">Start</th>
             <th className="text-left py-2 px-2 font-bold w-24">Finish</th>
@@ -395,7 +306,7 @@ function CriticalSequencePack({ packages }: { packages: PrintPackage[] }) {
         </thead>
         <tbody>
           {cpPackages.map((p, i) => {
-            const ps = STATUS_STYLE[p.status];
+            const ps = STATUS_STYLE[p.status] || STATUS_STYLE.Ready;
             return (
               <tr key={p.id} className={cn("border-b border-border", i % 2 === 0 && "bg-muted/20", (p.status === "Blocked" || p.status === "Delayed") && "bg-destructive/[0.03]")}>
                 <td className="py-2 px-2 text-muted-foreground font-semibold">{i + 1}</td>
@@ -406,46 +317,38 @@ function CriticalSequencePack({ packages }: { packages: PrintPackage[] }) {
                 <td className="py-2 px-2 text-muted-foreground">{p.plannedStart}</td>
                 <td className="py-2 px-2 text-muted-foreground">{p.plannedFinish}</td>
                 <td className="py-2 px-2 text-center font-semibold">{p.durationHrs}</td>
-                <td className="py-2 px-2 text-center">
-                  <span className={cn("text-[10px] font-bold", ps.text)}>{p.status}</span>
-                </td>
-                <td className="py-2 px-2 text-muted-foreground font-mono text-[10px]">
-                  {p.predecessors.length > 0 ? p.predecessors.join(", ") : "—"}
-                </td>
-                <td className="py-2 px-2">
-                  {p.blockerDescription ? (
-                    <span className="text-destructive">{p.blockerDescription.substring(0, 55)}…</span>
-                  ) : (
-                    <span className="text-muted-foreground">{p.nextAction}</span>
-                  )}
-                </td>
+                <td className="py-2 px-2 text-center"><span className={cn("text-[10px] font-bold", ps.text)}>{p.status}</span></td>
+                <td className="py-2 px-2 text-muted-foreground font-mono text-[10px]">{p.predecessors.length > 0 ? p.predecessors.join(", ") : "—"}</td>
+                <td className="py-2 px-2">{p.blockerDescription ? <span className="text-destructive">{p.blockerDescription.substring(0, 55)}…</span> : <span className="text-muted-foreground">{p.nextAction}</span>}</td>
               </tr>
             );
           })}
         </tbody>
       </table>
 
-      {/* Active Blockers */}
       {cpPackages.filter((p) => p.blockerDescription).length > 0 && (
         <div>
           <h3 className="text-xs font-bold text-destructive border-b border-destructive/30 pb-1 mb-2 flex items-center gap-1.5">
             <AlertTriangle className="w-3.5 h-3.5" /> Active Critical Blockers
           </h3>
           <div className="space-y-2">
-            {cpPackages.filter((p) => p.blockerDescription).map((p) => (
-              <div key={p.id} className="border border-destructive/20 rounded-md p-3 bg-destructive/[0.02]">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-mono font-bold">{p.id}</span>
-                  <span className="text-xs font-semibold text-foreground">{p.title}</span>
-                  <Badge variant="outline" className={cn("text-[8px] h-3.5 ml-auto", STATUS_STYLE[p.status].text, STATUS_STYLE[p.status].border)}>{p.blockerType}</Badge>
+            {cpPackages.filter((p) => p.blockerDescription).map((p) => {
+              const ps = STATUS_STYLE[p.status] || STATUS_STYLE.Ready;
+              return (
+                <div key={p.id} className="border border-destructive/20 rounded-md p-3 bg-destructive/[0.02]">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-mono font-bold">{p.id}</span>
+                    <span className="text-xs font-semibold text-foreground">{p.title}</span>
+                    <Badge variant="outline" className={cn("text-[8px] h-3.5 ml-auto", ps.text, ps.border)}>{p.blockerType}</Badge>
+                  </div>
+                  <p className="text-[11px] text-destructive">{p.blockerDescription}</p>
+                  <div className="flex items-center gap-4 mt-1.5 text-[10px] text-muted-foreground">
+                    <span>Owner: <strong className="text-foreground">{p.blockerOwner}</strong></span>
+                    <span>Successors: <strong className="text-foreground">{p.successors.join(", ") || "—"}</strong></span>
+                  </div>
                 </div>
-                <p className="text-[11px] text-destructive">{p.blockerDescription}</p>
-                <div className="flex items-center gap-4 mt-1.5 text-[10px] text-muted-foreground">
-                  <span>Owner: <strong className="text-foreground">{p.blockerOwner}</strong></span>
-                  <span>Successors: <strong className="text-foreground">{p.successors.join(", ") || "—"}</strong></span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -457,8 +360,7 @@ function CriticalSequencePack({ packages }: { packages: PrintPackage[] }) {
 /*  PACK 3: SHIFT EXECUTION BOARD                                      */
 /* ------------------------------------------------------------------ */
 
-function ShiftExecutionPack({ packages, filterShift }: { packages: PrintPackage[]; filterShift: string }) {
-  const shiftLabel = filterShift !== "All" ? `${filterShift} Shift` : "All Shifts";
+function ShiftExecutionPack({ packages, filterShift }: { packages: ShutdownWorkPackage[]; filterShift: string }) {
   const toStart = packages.filter((p) => p.status === "Ready");
   const active = packages.filter((p) => p.status === "Active");
   const blocked = packages.filter((p) => p.status === "Blocked" || p.status === "Delayed");
@@ -466,7 +368,6 @@ function ShiftExecutionPack({ packages, filterShift }: { packages: PrintPackage[
 
   return (
     <div className="space-y-5">
-      {/* Quick Counts */}
       <div className="grid grid-cols-5 gap-3">
         {[
           { label: "Total", value: packages.length },
@@ -482,7 +383,6 @@ function ShiftExecutionPack({ packages, filterShift }: { packages: PrintPackage[
         ))}
       </div>
 
-      {/* Blocked / Delayed — TOP PRIORITY */}
       {blocked.length > 0 && (
         <div>
           <h3 className="text-xs font-bold text-destructive border-b border-destructive/30 pb-1 mb-2 flex items-center gap-1.5">
@@ -513,29 +413,9 @@ function ShiftExecutionPack({ packages, filterShift }: { packages: PrintPackage[
         </div>
       )}
 
-      {/* Active Work */}
-      {active.length > 0 && (
-        <ShiftSection
-          title="Active Work"
-          icon={<Activity className="w-3.5 h-3.5 text-emerald-600" />}
-          color="emerald"
-          packages={active}
-          showHandover
-        />
-      )}
+      {active.length > 0 && <ShiftSection title="Active Work" icon={<Activity className="w-3.5 h-3.5 text-emerald-600" />} color="emerald" packages={active} showHandover />}
+      {toStart.length > 0 && <ShiftSection title="Packages to Start" icon={<CircleDot className="w-3.5 h-3.5 text-blue-600" />} color="blue" packages={toStart} showHandover={false} />}
 
-      {/* To Start */}
-      {toStart.length > 0 && (
-        <ShiftSection
-          title="Packages to Start"
-          icon={<CircleDot className="w-3.5 h-3.5 text-blue-600" />}
-          color="blue"
-          packages={toStart}
-          showHandover={false}
-        />
-      )}
-
-      {/* Near Completion */}
       {toComplete.length > 0 && (
         <div>
           <h3 className="text-xs font-bold text-foreground border-b border-border pb-1 mb-2 flex items-center gap-1.5">
@@ -569,7 +449,7 @@ function ShiftExecutionPack({ packages, filterShift }: { packages: PrintPackage[
   );
 }
 
-function ShiftSection({ title, icon, color, packages, showHandover }: { title: string; icon: React.ReactNode; color: string; packages: PrintPackage[]; showHandover: boolean }) {
+function ShiftSection({ title, icon, color, packages, showHandover }: { title: string; icon: React.ReactNode; color: string; packages: ShutdownWorkPackage[]; showHandover: boolean }) {
   return (
     <div>
       <h3 className="text-xs font-bold text-foreground border-b border-border pb-1 mb-2 flex items-center gap-1.5">
@@ -580,7 +460,7 @@ function ShiftSection({ title, icon, color, packages, showHandover }: { title: s
           <tr className="border-b border-border bg-muted/30">
             <th className="text-left py-1.5 px-2 font-semibold w-20">WP</th>
             <th className="text-left py-1.5 px-2 font-semibold">Title</th>
-            <th className="text-left py-1.5 px-2 font-semibold w-24">Area</th>
+            <th className="text-left py-1.5 px-2 font-semibold w-32">Area</th>
             <th className="text-left py-1.5 px-2 font-semibold w-20">Trade</th>
             <th className="text-center py-1.5 px-2 font-semibold w-10">%</th>
             <th className="text-left py-1.5 px-2 font-semibold w-24">Owner</th>

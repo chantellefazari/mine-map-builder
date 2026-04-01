@@ -9,6 +9,10 @@ import {
   ChevronRight, Activity, CheckCircle2, Package, MapPin, Eye,
   Target, Filter, Layers, Calendar,
 } from "lucide-react";
+import {
+  PACKAGES, buildAreaZones, ALL_AREA_OPTIONS,
+  type AreaZone, type ShutdownWorkPackage,
+} from "./shutdownData";
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -18,86 +22,11 @@ type AreaStatus = "Not Started" | "Ready" | "Active" | "At Risk" | "Delayed" | "
 type WPStatus = "Ready" | "Active" | "Blocked" | "Delayed" | "Complete";
 type Overlay = "critical-path" | "delays" | "isolations" | "access" | "trade" | "progress";
 
-interface AreaZone {
-  id: string;
-  name: string;
-  status: AreaStatus;
-  pctComplete: number;
-  total: number;
-  active: number;
-  blocked: number;
-  delayed: number;
-  complete: number;
-  criticalPath: number;
-  isolationStatus: string;
-  accessConstraints: string;
-  supervisor: string;
-  // Layout positioning (percentage-based for responsive SVG)
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-
-interface WorkPackage {
-  id: string;
-  title: string;
-  trade: string;
-  status: WPStatus;
-  pctComplete: number;
-  delayReason: string;
-  criticalPath: boolean;
-  area: string;
-}
-
 /* ------------------------------------------------------------------ */
-/*  DEMO DATA                                                          */
+/*  DATA                                                               */
 /* ------------------------------------------------------------------ */
 
-const AREAS: AreaZone[] = [
-  { id: "cru", name: "Crushing", status: "Active", pctComplete: 43, total: 14, active: 4, blocked: 1, delayed: 0, complete: 6, criticalPath: 2, isolationStatus: "All Clear", accessConstraints: "None", supervisor: "M. Thompson", x: 2, y: 4, w: 22, h: 28 },
-  { id: "grn", name: "Grinding", status: "At Risk", pctComplete: 36, total: 22, active: 6, blocked: 2, delayed: 1, complete: 8, criticalPath: 4, isolationStatus: "3 Active", accessConstraints: "Crane exclusion zone — Level 2", supervisor: "J. Mitchell", x: 26, y: 4, w: 26, h: 28 },
-  { id: "cil", name: "CIL / Leaching", status: "Active", pctComplete: 67, total: 18, active: 3, blocked: 0, delayed: 0, complete: 12, criticalPath: 1, isolationStatus: "All Clear", accessConstraints: "None", supervisor: "K. Singh", x: 54, y: 4, w: 22, h: 28 },
-  { id: "gld", name: "Gold Room", status: "Active", pctComplete: 63, total: 8, active: 1, blocked: 0, delayed: 0, complete: 5, criticalPath: 0, isolationStatus: "Restricted Entry", accessConstraints: "Security escort required", supervisor: "P. Adams", x: 78, y: 4, w: 20, h: 28 },
-  { id: "thk", name: "Thickening", status: "Active", pctComplete: 70, total: 10, active: 2, blocked: 0, delayed: 0, complete: 7, criticalPath: 1, isolationStatus: "All Clear", accessConstraints: "None", supervisor: "A. Reyes", x: 2, y: 36, w: 22, h: 28 },
-  { id: "rgt", name: "Reagents", status: "Active", pctComplete: 83, total: 6, active: 1, blocked: 0, delayed: 0, complete: 5, criticalPath: 0, isolationStatus: "All Clear", accessConstraints: "None", supervisor: "D. Kumar", x: 26, y: 36, w: 18, h: 28 },
-  { id: "tal", name: "Tailings", status: "Delayed", pctComplete: 33, total: 12, active: 2, blocked: 1, delayed: 1, complete: 4, criticalPath: 3, isolationStatus: "2 Pending", accessConstraints: "Scaffold incomplete — Bay 3", supervisor: "R. Torres", x: 46, y: 36, w: 26, h: 28 },
-  { id: "wtr", name: "Water Services", status: "Complete", pctComplete: 100, total: 5, active: 0, blocked: 0, delayed: 0, complete: 5, criticalPath: 0, isolationStatus: "All Clear", accessConstraints: "None", supervisor: "S. Patel", x: 74, y: 36, w: 24, h: 28 },
-  { id: "pwr", name: "Power & Distribution", status: "Ready", pctComplete: 0, total: 9, active: 0, blocked: 0, delayed: 0, complete: 0, criticalPath: 2, isolationStatus: "Pending", accessConstraints: "HV exclusion zone", supervisor: "L. Chen", x: 2, y: 68, w: 30, h: 28 },
-  { id: "inf", name: "Infrastructure", status: "Not Started", pctComplete: 0, total: 4, active: 0, blocked: 0, delayed: 0, complete: 0, criticalPath: 0, isolationStatus: "N/A", accessConstraints: "None", supervisor: "B. Williams", x: 34, y: 68, w: 20, h: 28 },
-  { id: "aux", name: "Auxiliary Services", status: "Active", pctComplete: 50, total: 6, active: 2, blocked: 0, delayed: 0, complete: 3, criticalPath: 0, isolationStatus: "All Clear", accessConstraints: "None", supervisor: "N. Foster", x: 56, y: 68, w: 20, h: 28 },
-  { id: "lay", name: "Laydown / Staging", status: "Ready", pctComplete: 0, total: 3, active: 0, blocked: 0, delayed: 0, complete: 0, criticalPath: 0, isolationStatus: "N/A", accessConstraints: "Forklift traffic", supervisor: "C. Davis", x: 78, y: 68, w: 20, h: 28 },
-];
-
-const DEMO_PACKAGES: WorkPackage[] = [
-  // Crushing
-  { id: "WP-CRU-001", title: "Jaw crusher liner replacement", trade: "Mechanical", status: "Active", pctComplete: 60, delayReason: "", criticalPath: true, area: "cru" },
-  { id: "WP-CRU-002", title: "Apron feeder chain inspection", trade: "Mechanical", status: "Complete", pctComplete: 100, delayReason: "", criticalPath: false, area: "cru" },
-  { id: "WP-CRU-003", title: "Crusher MCC switchboard service", trade: "Electrical", status: "Blocked", pctComplete: 20, delayReason: "Waiting for isolation clearance", criticalPath: true, area: "cru" },
-  { id: "WP-CRU-004", title: "Discharge conveyor bearing swap", trade: "Mechanical", status: "Active", pctComplete: 45, delayReason: "", criticalPath: false, area: "cru" },
-  // Grinding
-  { id: "WP-GRN-001", title: "SAG mill liner bolt-out", trade: "Mechanical", status: "Active", pctComplete: 30, delayReason: "", criticalPath: true, area: "grn" },
-  { id: "WP-GRN-002", title: "Ball mill trunnion bearing reline", trade: "Mechanical", status: "Active", pctComplete: 15, delayReason: "", criticalPath: true, area: "grn" },
-  { id: "WP-GRN-003", title: "Cyclone cluster replacement", trade: "Mechanical", status: "Blocked", pctComplete: 0, delayReason: "Crane unavailable", criticalPath: true, area: "grn" },
-  { id: "WP-GRN-004", title: "Mill lubrication system flush", trade: "Mechanical", status: "Ready", pctComplete: 0, delayReason: "", criticalPath: false, area: "grn" },
-  { id: "WP-GRN-005", title: "VSD replacement — Mill drive", trade: "Electrical", status: "Delayed", pctComplete: 10, delayReason: "Parts not received", criticalPath: true, area: "grn" },
-  { id: "WP-GRN-006", title: "Pump gland repacking — P201", trade: "Mechanical", status: "Complete", pctComplete: 100, delayReason: "", criticalPath: false, area: "grn" },
-  // CIL
-  { id: "WP-CIL-001", title: "Agitator gearbox oil change — Tank 1-6", trade: "Mechanical", status: "Complete", pctComplete: 100, delayReason: "", criticalPath: false, area: "cil" },
-  { id: "WP-CIL-002", title: "Carbon screen panel replacement", trade: "Mechanical", status: "Active", pctComplete: 70, delayReason: "", criticalPath: true, area: "cil" },
-  { id: "WP-CIL-003", title: "Tank 4 agitator shaft inspection", trade: "Mechanical", status: "Active", pctComplete: 50, delayReason: "", criticalPath: false, area: "cil" },
-  // Tailings
-  { id: "WP-TAL-001", title: "Thickener rake arm inspection", trade: "Mechanical", status: "Active", pctComplete: 40, delayReason: "", criticalPath: true, area: "tal" },
-  { id: "WP-TAL-002", title: "Underflow pump impeller swap", trade: "Mechanical", status: "Blocked", pctComplete: 0, delayReason: "Scaffold not erected", criticalPath: true, area: "tal" },
-  { id: "WP-TAL-003", title: "Tailings pipeline tie-in", trade: "Mechanical", status: "Delayed", pctComplete: 5, delayReason: "Environmental clearance pending", criticalPath: true, area: "tal" },
-  // Gold Room
-  { id: "WP-GLD-001", title: "Elution column heater service", trade: "Electrical", status: "Active", pctComplete: 80, delayReason: "", criticalPath: false, area: "gld" },
-  { id: "WP-GLD-002", title: "Electrowinning cell clean", trade: "Mechanical", status: "Complete", pctComplete: 100, delayReason: "", criticalPath: false, area: "gld" },
-  // Thickening
-  { id: "WP-THK-001", title: "Feed well de-aeration cone repair", trade: "Mechanical", status: "Active", pctComplete: 55, delayReason: "", criticalPath: true, area: "thk" },
-  // Water Services
-  { id: "WP-WTR-001", title: "Raw water pump service", trade: "Mechanical", status: "Complete", pctComplete: 100, delayReason: "", criticalPath: false, area: "wtr" },
-];
+const AREAS = buildAreaZones(PACKAGES);
 
 /* ------------------------------------------------------------------ */
 /*  STATUS COLOURS                                                     */
@@ -121,7 +50,7 @@ const STATUS_BG: Record<AreaStatus, string> = {
   Complete: "bg-emerald-700/10 text-emerald-700",
 };
 
-const WP_STATUS_STYLE: Record<WPStatus, string> = {
+const WP_STATUS_STYLE: Record<string, string> = {
   Ready: "bg-blue-500/10 text-blue-600 border-blue-500/30",
   Active: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
   Blocked: "bg-destructive/10 text-destructive border-destructive/30",
@@ -138,7 +67,7 @@ const OVERLAY_OPTIONS: { key: Overlay; label: string; icon: typeof Route }[] = [
   { key: "progress", label: "% Complete", icon: Target },
 ];
 
-const ALL_TRADES = ["All", "Mechanical", "Electrical"];
+const ALL_TRADES = ["All", "Mechanical", "Electrical", "Instrumentation"];
 const ALL_STATUSES: AreaStatus[] = ["Not Started", "Ready", "Active", "At Risk", "Delayed", "Complete"];
 
 /* ------------------------------------------------------------------ */
@@ -154,7 +83,6 @@ export function ShutdownAreaMapTab() {
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterCritical, setFilterCritical] = useState(false);
 
-  // When selecting an area, propagate to context for cross-tab filtering
   const handleAreaSelect = (areaId: string | null) => {
     setSelectedAreaId(areaId);
     if (areaId) {
@@ -165,8 +93,8 @@ export function ShutdownAreaMapTab() {
 
   const selectedArea = AREAS.find((a) => a.id === selectedAreaId) ?? null;
   const areaPackages = useMemo(
-    () => (selectedAreaId ? DEMO_PACKAGES.filter((p) => p.area === selectedAreaId) : []),
-    [selectedAreaId]
+    () => (selectedArea ? PACKAGES.filter((p) => p.area === selectedArea.name) : []),
+    [selectedArea]
   );
 
   const toggleOverlay = (o: Overlay) => {
@@ -178,14 +106,13 @@ export function ShutdownAreaMapTab() {
     });
   };
 
-  // Apply filters to visible areas
   const visibleAreas = useMemo(() => {
     return AREAS.filter((a) => {
       if (filterArea !== "All" && a.id !== filterArea) return false;
       if (filterStatus !== "All" && a.status !== filterStatus) return false;
       if (filterCritical && a.criticalPath === 0) return false;
       if (filterTrade !== "All") {
-        const hasTradeWP = DEMO_PACKAGES.some((p) => p.area === a.id && p.trade === filterTrade);
+        const hasTradeWP = PACKAGES.some((p) => p.area === a.name && p.trade === filterTrade);
         if (!hasTradeWP) return false;
       }
       return true;
@@ -200,7 +127,7 @@ export function ShutdownAreaMapTab() {
       <div className="flex items-center gap-2 flex-wrap">
         <Filter className="w-3.5 h-3.5 text-muted-foreground" />
         <Select value={filterArea} onValueChange={setFilterArea}>
-          <SelectTrigger className="w-40 h-8 text-xs"><SelectValue placeholder="Area" /></SelectTrigger>
+          <SelectTrigger className="w-44 h-8 text-xs"><SelectValue placeholder="Area" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="All">All Areas</SelectItem>
             {AREAS.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
@@ -263,24 +190,9 @@ export function ShutdownAreaMapTab() {
           </div>
 
           {/* SVG Zone Map */}
-          <svg viewBox="0 0 100 100" className="w-full" style={{ maxHeight: 520 }}>
-            {/* Grid background */}
-            <rect x="0" y="0" width="100" height="100" className="fill-muted/30" rx="1" />
+          <svg viewBox="0 0 100 70" className="w-full" style={{ maxHeight: 520 }}>
+            <rect x="0" y="0" width="100" height="70" className="fill-muted/30" rx="1" />
 
-            {/* Flow arrows between zones */}
-            <defs>
-              <marker id="arrow" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
-                <path d="M0,0 L6,2 L0,4 Z" className="fill-muted-foreground/30" />
-              </marker>
-            </defs>
-            {/* Crushing → Grinding */}
-            <line x1="24" y1="18" x2="26" y2="18" className="stroke-muted-foreground/20" strokeWidth="0.3" markerEnd="url(#arrow)" />
-            {/* Grinding → CIL */}
-            <line x1="52" y1="18" x2="54" y2="18" className="stroke-muted-foreground/20" strokeWidth="0.3" markerEnd="url(#arrow)" />
-            {/* CIL → Gold Room */}
-            <line x1="76" y1="18" x2="78" y2="18" className="stroke-muted-foreground/20" strokeWidth="0.3" markerEnd="url(#arrow)" />
-
-            {/* Render area zones */}
             {AREAS.map((area) => {
               const visible = visibleIds.has(area.id);
               const isSelected = selectedAreaId === area.id;
@@ -296,19 +208,15 @@ export function ShutdownAreaMapTab() {
                   onClick={() => visible && handleAreaSelect(isSelected ? null : area.id)}
                 >
                   <rect
-                    x={area.x}
-                    y={area.y}
-                    width={area.w}
-                    height={area.h}
+                    x={area.x} y={area.y} width={area.w} height={area.h}
                     rx="0.8"
                     className={cn(
-                      STATUS_FILL[area.status],
+                      STATUS_FILL[area.status as AreaStatus],
                       "stroke-[0.4] transition-all",
                       isSelected && "stroke-[0.8] stroke-foreground"
                     )}
                   />
 
-                  {/* Progress bar inside zone */}
                   {overlays.has("progress") && (
                     <rect
                       x={area.x + 0.5}
@@ -320,37 +228,16 @@ export function ShutdownAreaMapTab() {
                     />
                   )}
 
-                  {/* Area label */}
-                  <text
-                    x={area.x + area.w / 2}
-                    y={area.y + 5}
-                    textAnchor="middle"
-                    className="fill-foreground text-[2.6px] font-semibold"
-                  >
+                  <text x={area.x + area.w / 2} y={area.y + 5} textAnchor="middle" className="fill-foreground text-[2.6px] font-semibold">
                     {area.name}
                   </text>
-
-                  {/* Status + percentage */}
-                  <text
-                    x={area.x + area.w / 2}
-                    y={area.y + 8.5}
-                    textAnchor="middle"
-                    className="fill-muted-foreground text-[2px]"
-                  >
+                  <text x={area.x + area.w / 2} y={area.y + 8.5} textAnchor="middle" className="fill-muted-foreground text-[2px]">
                     {area.status} — {area.pctComplete}%
                   </text>
-
-                  {/* Package count */}
-                  <text
-                    x={area.x + area.w / 2}
-                    y={area.y + 12}
-                    textAnchor="middle"
-                    className="fill-muted-foreground text-[1.8px]"
-                  >
+                  <text x={area.x + area.w / 2} y={area.y + 12} textAnchor="middle" className="fill-muted-foreground text-[1.8px]">
                     {area.total} packages • {area.active} active
                   </text>
 
-                  {/* Overlay badges */}
                   {isCriticalOverlay && (
                     <g>
                       <rect x={area.x + 1} y={area.y + area.h - 6} width="6" height="2.5" rx="0.5" className="fill-destructive/80" />
@@ -376,29 +263,27 @@ export function ShutdownAreaMapTab() {
                     </g>
                   )}
 
-                  {/* Trade overlay — show dot indicators */}
                   {overlays.has("trade") && (
                     <g>
-                      {DEMO_PACKAGES.filter((p) => p.area === area.id && p.trade === "Mechanical").length > 0 && (
+                      {PACKAGES.filter((p) => p.area === area.name && p.trade === "Mechanical").length > 0 && (
                         <>
-                          <circle cx={area.x + 3} y={area.y + area.h - 9} r="1.2" className="fill-blue-500/60" cy={area.y + area.h - 9} />
+                          <circle cx={area.x + 3} cy={area.y + area.h - 9} r="1.2" className="fill-blue-500/60" />
                           <text x={area.x + 5.5} y={area.y + area.h - 8.2} className="fill-muted-foreground text-[1.5px]">
-                            M: {DEMO_PACKAGES.filter((p) => p.area === area.id && p.trade === "Mechanical").length}
+                            M: {PACKAGES.filter((p) => p.area === area.name && p.trade === "Mechanical").length}
                           </text>
                         </>
                       )}
-                      {DEMO_PACKAGES.filter((p) => p.area === area.id && p.trade === "Electrical").length > 0 && (
+                      {PACKAGES.filter((p) => p.area === area.name && p.trade === "Electrical").length > 0 && (
                         <>
                           <circle cx={area.x + area.w / 2 + 2} cy={area.y + area.h - 9} r="1.2" className="fill-amber-500/60" />
                           <text x={area.x + area.w / 2 + 4.5} y={area.y + area.h - 8.2} className="fill-muted-foreground text-[1.5px]">
-                            E: {DEMO_PACKAGES.filter((p) => p.area === area.id && p.trade === "Electrical").length}
+                            E: {PACKAGES.filter((p) => p.area === area.name && p.trade === "Electrical").length}
                           </text>
                         </>
                       )}
                     </g>
                   )}
 
-                  {/* Blocked indicator */}
                   {area.blocked > 0 && (
                     <g>
                       <circle cx={area.x + area.w - 3} cy={area.y + 3} r="1.8" className="fill-destructive/80" />
@@ -414,8 +299,7 @@ export function ShutdownAreaMapTab() {
         {/* ===== DETAIL PANEL ===== */}
         {selectedArea && (
           <div className="w-96 flex-shrink-0 border border-border rounded-lg bg-card overflow-hidden">
-            {/* Panel header */}
-            <div className={cn("px-4 py-3 border-b border-border flex items-center justify-between", STATUS_BG[selectedArea.status])}>
+            <div className={cn("px-4 py-3 border-b border-border flex items-center justify-between", STATUS_BG[selectedArea.status as AreaStatus])}>
               <div>
                 <h3 className="text-sm font-bold">{selectedArea.name}</h3>
                 <p className="text-[10px] opacity-80">{selectedArea.status} — {selectedArea.pctComplete}% complete</p>
@@ -426,7 +310,6 @@ export function ShutdownAreaMapTab() {
             </div>
 
             <div className="p-4 space-y-4 max-h-[600px] overflow-y-auto">
-              {/* Area stats */}
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { label: "Total", value: selectedArea.total, color: "text-foreground" },
@@ -443,7 +326,6 @@ export function ShutdownAreaMapTab() {
                 ))}
               </div>
 
-              {/* Progress bar */}
               <div>
                 <div className="flex items-center justify-between text-[10px] mb-1">
                   <span className="text-muted-foreground">Progress</span>
@@ -454,7 +336,6 @@ export function ShutdownAreaMapTab() {
                 </div>
               </div>
 
-              {/* Isolation & Access */}
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2 text-xs">
                   <Shield className="w-3.5 h-3.5 text-muted-foreground" />
@@ -477,7 +358,6 @@ export function ShutdownAreaMapTab() {
                 </div>
               </div>
 
-              {/* Work Packages */}
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Package className="w-3.5 h-3.5 text-muted-foreground" />
@@ -490,7 +370,7 @@ export function ShutdownAreaMapTab() {
                       onClick={() => { ctx.setSelectedPackageId(wp.id); ctx.navigateToTab("sequence"); }}
                       className={cn(
                         "w-full text-left rounded-md border p-2.5 transition-colors hover:shadow-sm",
-                        WP_STATUS_STYLE[wp.status]
+                        WP_STATUS_STYLE[wp.status] || "border-border"
                       )}
                     >
                       <div className="flex items-center justify-between mb-0.5">
