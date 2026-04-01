@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import {
   Brain, Send, Loader2, CheckCircle2, XCircle, Pencil, BookOpen,
   AlertTriangle, ArrowRight, Shield, Lock, Wrench, Zap, Mic,
