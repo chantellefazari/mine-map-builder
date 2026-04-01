@@ -1,16 +1,14 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
-  X, Route, Clock, AlertTriangle, Wrench, Zap, Filter, ChevronRight,
-  Activity, CheckCircle2, Package, Lock, Target, ArrowRight, Layers,
-  Calendar, Shield, GitBranch, Play, Pause, Eye,
+  X, Route, AlertTriangle, Filter, ArrowRight, Lock,
 } from "lucide-react";
 import {
-  PACKAGES as NODES, EDGES, COL_LABELS,
+  PACKAGES, EDGES, COL_LABELS,
   ALL_AREA_OPTIONS, ALL_TRADES,
   type ShutdownWorkPackage, type DepType,
 } from "./shutdownData";
@@ -19,47 +17,51 @@ import {
 /*  STYLING                                                            */
 /* ------------------------------------------------------------------ */
 
-type WPStatus = "Ready" | "Active" | "Blocked" | "Delayed" | "Complete";
-
-const STATUS_NODE: Record<string, string> = {
-  "Not Started": "border-muted-foreground/30 bg-muted/50",
-  Ready: "border-blue-500/60 bg-blue-500/5",
-  Active: "border-emerald-500/60 bg-emerald-500/5",
-  Blocked: "border-destructive/60 bg-destructive/5",
-  Delayed: "border-amber-500/60 bg-amber-500/5",
-  Complete: "border-muted-foreground/30 bg-muted/50",
+const STATUS_ACCENT: Record<string, string> = {
+  "Not Started": "border-l-muted-foreground/40",
+  Ready:         "border-l-blue-500",
+  Active:        "border-l-emerald-500",
+  Blocked:       "border-l-destructive",
+  Delayed:       "border-l-amber-500",
+  Complete:      "border-l-muted-foreground/30",
 };
 
 const STATUS_DOT: Record<string, string> = {
-  "Not Started": "bg-muted-foreground/50",
-  Ready: "bg-blue-500",
-  Active: "bg-emerald-500",
-  Blocked: "bg-destructive",
-  Delayed: "bg-amber-500",
-  Complete: "bg-muted-foreground/50",
+  "Not Started": "bg-muted-foreground/40",
+  Ready:    "bg-blue-500",
+  Active:   "bg-emerald-500",
+  Blocked:  "bg-destructive",
+  Delayed:  "bg-amber-500",
+  Complete: "bg-muted-foreground/30",
 };
 
-const DEP_STYLE: Record<DepType, { color: string; dash: string; label: string }> = {
-  "finish-to-start": { color: "stroke-muted-foreground/40", dash: "", label: "Finish → Start" },
-  "start-to-start": { color: "stroke-blue-500/50", dash: "4 2", label: "Start → Start" },
-  parallel: { color: "stroke-emerald-500/40", dash: "2 2", label: "Parallel" },
-  "hold-point": { color: "stroke-destructive/50", dash: "6 2", label: "Hold Point" },
+const STATUS_BG: Record<string, string> = {
+  "Not Started": "",
+  Ready:    "",
+  Active:   "",
+  Blocked:  "bg-destructive/[0.03]",
+  Delayed:  "bg-amber-500/[0.03]",
+  Complete: "bg-muted/30",
 };
 
+const PROGRESS_COLOR: Record<string, string> = {
+  "Not Started": "bg-muted-foreground/20",
+  Ready:    "bg-blue-500/50",
+  Active:   "bg-emerald-500",
+  Blocked:  "bg-destructive/60",
+  Delayed:  "bg-amber-500",
+  Complete: "bg-muted-foreground/30",
+};
+
+const DEP_LABELS: Record<DepType, string> = {
+  "finish-to-start": "FS",
+  "start-to-start": "SS",
+  parallel: "PAR",
+  "hold-point": "HOLD",
+};
+
+type WPStatus = "Ready" | "Active" | "Blocked" | "Delayed" | "Complete";
 const ALL_STATUSES: WPStatus[] = ["Ready", "Active", "Blocked", "Delayed", "Complete"];
-
-/* ------------------------------------------------------------------ */
-/*  NODE DIMENSIONS                                                    */
-/* ------------------------------------------------------------------ */
-
-const NODE_W = 220;
-const NODE_H = 92;
-const COL_GAP = 60;
-const ROW_GAP = 18;
-const COL_W = NODE_W + COL_GAP;
-const HEADER_H = 32;
-const PAD_X = 24;
-const PAD_Y = 16;
 
 /* ------------------------------------------------------------------ */
 /*  COMPONENT                                                          */
@@ -70,10 +72,10 @@ export function ShutdownSequenceFlowTab() {
   const [filterStatus, setFilterStatus] = useState("All");
   const [showDelayedOnly, setShowDelayedOnly] = useState(false);
 
-  const selected = NODES.find((n) => n.id === selectedId) ?? null;
+  const selected = PACKAGES.find((n) => n.id === selectedId) ?? null;
 
   const delayedImpact = useMemo(() => {
-    const delayedIds = new Set(NODES.filter((n) => n.status === "Delayed" || n.status === "Blocked").map((n) => n.id));
+    const delayedIds = new Set(PACKAGES.filter((n) => n.status === "Delayed" || n.status === "Blocked").map((n) => n.id));
     const affected = new Set<string>();
     const visit = (id: string) => {
       EDGES.filter((e) => e.from === id).forEach((e) => {
@@ -88,7 +90,7 @@ export function ShutdownSequenceFlowTab() {
   }, []);
 
   const visibleNodes = useMemo(() => {
-    return NODES.filter((n) => {
+    return PACKAGES.filter((n) => {
       if (filterArea !== "All" && n.area !== filterArea) return false;
       if (filterTrade !== "All" && n.trade !== filterTrade) return false;
       if (filterStatus !== "All" && n.status !== filterStatus) return false;
@@ -100,28 +102,26 @@ export function ShutdownSequenceFlowTab() {
 
   const visibleIds = new Set(visibleNodes.map((n) => n.id));
 
+  // Group packages by column (phase)
+  const phases = useMemo(() => {
+    return COL_LABELS.map((label, colIdx) => ({
+      label,
+      packages: PACKAGES.filter(p => p.col === colIdx).sort((a, b) => a.row - b.row),
+    }));
+  }, []);
+
+  // Get predecessors/successors for selected
   const predecessors = useMemo(
-    () => (selectedId ? EDGES.filter((e) => e.to === selectedId).map((e) => ({ ...e, node: NODES.find((n) => n.id === e.from)! })) : []),
+    () => (selectedId ? EDGES.filter((e) => e.to === selectedId).map((e) => ({ ...e, node: PACKAGES.find((n) => n.id === e.from)! })).filter(e => e.node) : []),
     [selectedId]
   );
   const successors = useMemo(
-    () => (selectedId ? EDGES.filter((e) => e.from === selectedId).map((e) => ({ ...e, node: NODES.find((n) => n.id === e.to)! })) : []),
+    () => (selectedId ? EDGES.filter((e) => e.from === selectedId).map((e) => ({ ...e, node: PACKAGES.find((n) => n.id === e.to)! })).filter(e => e.node) : []),
     [selectedId]
   );
 
-  const getNodePos = useCallback((node: ShutdownWorkPackage) => {
-    const x = PAD_X + node.col * COL_W;
-    const y = PAD_Y + HEADER_H + node.row * (NODE_H + ROW_GAP);
-    return { x, y };
-  }, []);
-
-  const maxCol = Math.max(...NODES.map((n) => n.col));
-  const maxRow = Math.max(...NODES.map((n) => n.row));
-  const svgW = PAD_X * 2 + (maxCol + 1) * COL_W;
-  const svgH = PAD_Y * 2 + HEADER_H + (maxRow + 1) * (NODE_H + ROW_GAP);
-
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* ===== FILTERS ===== */}
       <div className="flex items-center gap-2 flex-wrap">
         <Filter className="w-3.5 h-3.5 text-muted-foreground" />
@@ -151,130 +151,130 @@ export function ShutdownSequenceFlowTab() {
           <AlertTriangle className="w-3 h-3" /> Delay Impact
         </Button>
 
+        {/* Legend */}
         <div className="ml-auto flex items-center gap-3 text-[10px] text-muted-foreground">
-          {Object.entries(DEP_STYLE).map(([key, val]) => (
-            <span key={key} className="flex items-center gap-1">
-              <svg width="20" height="8"><line x1="0" y1="4" x2="20" y2="4" className={val.color} strokeWidth="2" strokeDasharray={val.dash} /></svg>
-              {val.label}
-            </span>
-          ))}
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Active</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500" /> Ready</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-destructive" /> Blocked</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500" /> Delayed</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-muted-foreground/30" /> Complete</span>
         </div>
       </div>
 
-      {/* ===== MAIN: FLOW + PANEL ===== */}
+      {/* ===== MAIN: PHASE COLUMNS + DETAIL PANEL ===== */}
       <div className="flex gap-4">
-        <div className={cn("flex-1 min-w-0 border border-border rounded-lg bg-card overflow-x-auto")}>
-          <svg width={svgW} height={svgH} className="block">
-            {COL_LABELS.map((label, i) => (
-              <g key={i}>
-                <rect x={PAD_X + i * COL_W - 4} y={PAD_Y} width={NODE_W + 8} height={HEADER_H - 4} rx="4" className="fill-muted/60" />
-                <text x={PAD_X + i * COL_W + NODE_W / 2} y={PAD_Y + 18} textAnchor="middle" className="fill-foreground text-[11px] font-semibold">{label}</text>
-              </g>
+        {/* Phase columns */}
+        <div className="flex-1 min-w-0 overflow-x-auto">
+          <div className="flex gap-3 min-w-fit">
+            {phases.map((phase, phaseIdx) => (
+              <div key={phaseIdx} className="flex-1 min-w-[220px] max-w-[280px]">
+                {/* Phase header */}
+                <div className="rounded-t-lg bg-muted/60 border border-b-0 border-border px-3 py-2 flex items-center justify-between">
+                  <h3 className="text-[11px] font-bold text-foreground tracking-wide">{phase.label}</h3>
+                  <span className="text-[10px] text-muted-foreground font-medium">{phase.packages.filter(p => visibleIds.has(p.id)).length}</span>
+                </div>
+
+                {/* Phase cards */}
+                <div className="border border-border rounded-b-lg bg-background p-2 space-y-2 min-h-[200px]">
+                  {phase.packages.map((pkg) => {
+                    const visible = visibleIds.has(pkg.id);
+                    const isSelected = selectedId === pkg.id;
+                    const isImpacted = delayedImpact.has(pkg.id);
+
+                    // Get incoming edges for this package
+                    const incomingEdges = EDGES.filter(e => e.to === pkg.id);
+                    const outgoingEdges = EDGES.filter(e => e.from === pkg.id);
+
+                    return (
+                      <div
+                        key={pkg.id}
+                        onClick={() => visible && setSelectedId(isSelected ? null : pkg.id)}
+                        className={cn(
+                          "rounded-md border border-border border-l-[3px] p-2.5 cursor-pointer transition-all",
+                          STATUS_ACCENT[pkg.status],
+                          STATUS_BG[pkg.status],
+                          !visible && "opacity-15 pointer-events-none",
+                          isSelected && "ring-2 ring-foreground/20 shadow-sm",
+                          isImpacted && showDelayedOnly && "ring-1 ring-amber-500/40",
+                        )}
+                      >
+                        {/* Row 1: ID + badges */}
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", STATUS_DOT[pkg.status])} />
+                          <span className="text-[10px] font-mono font-bold text-foreground">{pkg.id}</span>
+                          {pkg.criticalPath && (
+                            <span className="text-[8px] font-bold text-destructive bg-destructive/10 px-1 rounded">CP</span>
+                          )}
+                          <span className="ml-auto text-[9px] font-semibold text-foreground">{pkg.pctComplete}%</span>
+                        </div>
+
+                        {/* Row 2: Title */}
+                        <p className="text-[11px] font-medium text-foreground leading-tight mb-1 line-clamp-2">
+                          {pkg.title}
+                        </p>
+
+                        {/* Row 3: Meta */}
+                        <p className="text-[9px] text-muted-foreground mb-1.5">
+                          {pkg.trade} · {pkg.durationHrs}h · {pkg.supervisor}
+                        </p>
+
+                        {/* Progress bar */}
+                        <div className="w-full h-1 bg-muted rounded-full overflow-hidden mb-1.5">
+                          <div
+                            className={cn("h-full rounded-full transition-all", PROGRESS_COLOR[pkg.status])}
+                            style={{ width: `${pkg.pctComplete}%` }}
+                          />
+                        </div>
+
+                        {/* Dependencies — compact inline */}
+                        {incomingEdges.length > 0 && (
+                          <div className="flex items-center gap-1 flex-wrap mb-1">
+                            <span className="text-[8px] text-muted-foreground">From:</span>
+                            {incomingEdges.map((e, i) => (
+                              <span
+                                key={i}
+                                className={cn(
+                                  "text-[8px] font-mono px-1 rounded border",
+                                  e.type === "hold-point"
+                                    ? "bg-destructive/10 border-destructive/20 text-destructive font-bold"
+                                    : "bg-muted/60 border-border text-muted-foreground"
+                                )}
+                              >
+                                {e.from}{e.type !== "finish-to-start" ? ` ${DEP_LABELS[e.type]}` : ""}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Delay/blocker warning */}
+                        {pkg.delayReason && (
+                          <div className="flex items-start gap-1 mt-1 text-[9px] text-amber-600 bg-amber-500/5 rounded px-1.5 py-1 border border-amber-500/10">
+                            <AlertTriangle className="w-2.5 h-2.5 flex-shrink-0 mt-0.5" />
+                            <span className="line-clamp-1">{pkg.delayReason}</span>
+                          </div>
+                        )}
+                        {pkg.blockerDescription && !pkg.delayReason && (
+                          <div className="flex items-start gap-1 mt-1 text-[9px] text-destructive bg-destructive/5 rounded px-1.5 py-1 border border-destructive/10">
+                            <Lock className="w-2.5 h-2.5 flex-shrink-0 mt-0.5" />
+                            <span className="line-clamp-1">{pkg.blockerDescription}</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  {phase.packages.filter(p => visibleIds.has(p.id)).length === 0 && (
+                    <div className="text-center py-8 text-[10px] text-muted-foreground">No packages</div>
+                  )}
+                </div>
+              </div>
             ))}
-
-            {Array.from({ length: maxCol }, (_, i) => (
-              <line
-                key={i}
-                x1={PAD_X + (i + 1) * COL_W - COL_GAP / 2}
-                y1={PAD_Y + HEADER_H}
-                x2={PAD_X + (i + 1) * COL_W - COL_GAP / 2}
-                y2={svgH - PAD_Y}
-                className="stroke-border"
-                strokeWidth="0.5"
-                strokeDasharray="4 4"
-              />
-            ))}
-
-            {EDGES.map((edge, i) => {
-              const fromNode = NODES.find((n) => n.id === edge.from);
-              const toNode = NODES.find((n) => n.id === edge.to);
-              if (!fromNode || !toNode) return null;
-              const fromVis = visibleIds.has(edge.from);
-              const toVis = visibleIds.has(edge.to);
-              if (!fromVis && !toVis) return null;
-              const fp = getNodePos(fromNode);
-              const tp = getNodePos(toNode);
-              const x1 = fp.x + NODE_W;
-              const y1 = fp.y + NODE_H / 2;
-              const x2 = tp.x;
-              const y2 = tp.y + NODE_H / 2;
-              const style = DEP_STYLE[edge.type];
-              const isOnCritical = fromNode.criticalPath && toNode.criticalPath;
-              const isDelayLine = (fromNode.status === "Delayed" || fromNode.status === "Blocked") && delayedImpact.has(toNode.id);
-              const dx = (x2 - x1) * 0.4;
-              return (
-                <g key={i}>
-                  <path
-                    d={`M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`}
-                    fill="none"
-                    className={cn(style.color, isDelayLine && "stroke-destructive/70", isOnCritical && showCriticalOnly && "stroke-destructive/60")}
-                    strokeWidth={isOnCritical ? 2 : 1.5}
-                    strokeDasharray={style.dash}
-                    opacity={(!fromVis || !toVis) ? 0.15 : 1}
-                  />
-                  <circle cx={x2} cy={y2} r="3" className={cn("fill-muted-foreground/30", isDelayLine && "fill-destructive/50")} />
-                  {edge.type === "hold-point" && (
-                    <g>
-                      <rect x={(x1 + x2) / 2 - 14} y={(y1 + y2) / 2 - 7} width="28" height="14" rx="3" className="fill-destructive/15 stroke-destructive/40" strokeWidth="0.5" />
-                      <text x={(x1 + x2) / 2} y={(y1 + y2) / 2 + 3} textAnchor="middle" className="fill-destructive text-[7px] font-bold">HOLD</text>
-                    </g>
-                  )}
-                </g>
-              );
-            })}
-
-            {NODES.map((node) => {
-              const pos = getNodePos(node);
-              const visible = visibleIds.has(node.id);
-              const isSelected = selectedId === node.id;
-              const isImpacted = delayedImpact.has(node.id);
-              return (
-                <g key={node.id} className={cn("cursor-pointer transition-opacity", !visible && "opacity-15")} onClick={() => visible && setSelectedId(isSelected ? null : node.id)}>
-                  {isImpacted && showDelayedOnly && (
-                    <rect x={pos.x - 3} y={pos.y - 3} width={NODE_W + 6} height={NODE_H + 6} rx="8" className="fill-amber-500/10 stroke-amber-500/30" strokeWidth="1" strokeDasharray="4 2" />
-                  )}
-                  <rect x={pos.x} y={pos.y} width={NODE_W} height={NODE_H} rx="6" className={cn("stroke-[1.5] fill-card transition-all", STATUS_NODE[node.status], isSelected && "stroke-[2.5] stroke-foreground", node.criticalPath && "stroke-[2]")} />
-                  {node.criticalPath && <rect x={pos.x} y={pos.y} width="4" height={NODE_H} rx="2" className="fill-destructive/60" />}
-                  <circle cx={pos.x + 14} cy={pos.y + 14} r="4" className={STATUS_DOT[node.status]} />
-                  <text x={pos.x + 24} y={pos.y + 17} className="fill-foreground text-[10px] font-mono font-bold">{node.id}</text>
-                  <text x={pos.x + 10} y={pos.y + 34} className="fill-foreground text-[10px] font-medium">
-                    {node.title.length > 28 ? node.title.substring(0, 28) + "…" : node.title}
-                  </text>
-                  <text x={pos.x + 10} y={pos.y + 48} className="fill-muted-foreground text-[8px]">
-                    {node.area} • {node.trade} • {node.durationHrs}h
-                  </text>
-                  <rect x={pos.x + 10} y={pos.y + 56} width={NODE_W - 20} height="4" rx="2" className="fill-muted/60" />
-                  <rect x={pos.x + 10} y={pos.y + 56} width={(NODE_W - 20) * (node.pctComplete / 100)} height="4" rx="2" className={cn(
-                    node.status === "Complete" ? "fill-muted-foreground/40" :
-                    node.status === "Delayed" ? "fill-amber-500/60" :
-                    node.status === "Blocked" ? "fill-destructive/60" :
-                    "fill-emerald-500/60"
-                  )} />
-                  <text x={pos.x + 10} y={pos.y + 72} className="fill-muted-foreground text-[8px]">{node.status}</text>
-                  <text x={pos.x + NODE_W - 10} y={pos.y + 72} textAnchor="end" className="fill-foreground text-[8px] font-semibold">{node.pctComplete}%</text>
-                  {node.criticalPath && (
-                    <g>
-                      <rect x={pos.x + NODE_W - 30} y={pos.y + 6} width="22" height="12" rx="3" className="fill-destructive/15 stroke-destructive/30" strokeWidth="0.5" />
-                      <text x={pos.x + NODE_W - 19} y={pos.y + 14.5} textAnchor="middle" className="fill-destructive text-[7px] font-bold">CP</text>
-                    </g>
-                  )}
-                  {node.delayReason && (
-                    <g>
-                      <rect x={pos.x + 10} y={pos.y + NODE_H - 16} width={NODE_W - 20} height="12" rx="3" className="fill-amber-500/10" />
-                      <text x={pos.x + 16} y={pos.y + NODE_H - 7.5} className="fill-amber-600 text-[7px]">
-                        ⚠ {node.delayReason.length > 32 ? node.delayReason.substring(0, 32) + "…" : node.delayReason}
-                      </text>
-                    </g>
-                  )}
-                </g>
-              );
-            })}
-          </svg>
+          </div>
         </div>
 
         {/* ===== DETAIL PANEL ===== */}
         {selected && (
-          <div className="w-96 flex-shrink-0 border border-border rounded-lg bg-card overflow-hidden">
+          <div className="w-[340px] flex-shrink-0 border border-border rounded-lg bg-card overflow-hidden">
             <div className={cn("px-4 py-3 border-b border-border flex items-center justify-between",
               selected.status === "Active" ? "bg-emerald-500/5" :
               selected.status === "Blocked" ? "bg-destructive/5" :
@@ -284,7 +284,7 @@ export function ShutdownSequenceFlowTab() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-mono font-bold text-foreground">{selected.id}</span>
-                  {selected.criticalPath && <Badge variant="outline" className="text-[8px] h-3.5 border-destructive text-destructive">Critical Path</Badge>}
+                  {selected.criticalPath && <Badge variant="outline" className="text-[8px] h-3.5 border-destructive text-destructive">CP</Badge>}
                   <Badge variant="outline" className="text-[9px] h-4">{selected.status}</Badge>
                 </div>
                 <h3 className="text-sm font-semibold text-foreground mt-1">{selected.title}</h3>
@@ -294,83 +294,115 @@ export function ShutdownSequenceFlowTab() {
               </Button>
             </div>
 
-            <div className="p-4 space-y-4 max-h-[560px] overflow-y-auto">
-              <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="p-3 space-y-3 max-h-[560px] overflow-y-auto">
+              {/* Details grid */}
+              <div className="grid grid-cols-2 gap-1.5 text-xs">
                 {[
                   { label: "Area", value: selected.area },
                   { label: "Trade", value: selected.trade },
                   { label: "Duration", value: `${selected.durationHrs}h` },
-                  { label: "% Complete", value: `${selected.pctComplete}%` },
-                  { label: "Planned Start", value: selected.plannedStart },
-                  { label: "Planned Finish", value: selected.plannedFinish },
+                  { label: "Progress", value: `${selected.pctComplete}%` },
+                  { label: "Start", value: selected.plannedStart },
+                  { label: "Finish", value: selected.plannedFinish },
                   { label: "Supervisor", value: selected.supervisor },
-                  { label: "Status", value: selected.status },
+                  { label: "Shift", value: selected.shift },
                 ].map((item) => (
-                  <div key={item.label} className="rounded-md border border-border px-2.5 py-1.5">
-                    <div className="text-[10px] text-muted-foreground">{item.label}</div>
+                  <div key={item.label} className="rounded border border-border px-2 py-1.5">
+                    <div className="text-[9px] text-muted-foreground">{item.label}</div>
                     <div className="font-medium text-foreground">{item.value}</div>
                   </div>
                 ))}
               </div>
 
+              {/* Progress bar */}
+              <div>
+                <div className="flex items-center justify-between text-[10px] mb-1">
+                  <span className="text-muted-foreground">Progress</span>
+                  <span className="font-semibold text-foreground">{selected.pctComplete}%</span>
+                </div>
+                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                  <div className={cn("h-full rounded-full transition-all", PROGRESS_COLOR[selected.status])} style={{ width: `${selected.pctComplete}%` }} />
+                </div>
+              </div>
+
+              {/* Blocker */}
               {selected.blockerDescription && (
-                <div className="rounded-md border border-destructive/30 bg-destructive/5 p-2.5">
+                <div className="rounded border border-destructive/30 bg-destructive/5 p-2.5">
                   <div className="flex items-center gap-1.5 text-[10px] font-semibold text-destructive mb-0.5">
-                    <AlertTriangle className="w-3 h-3" /> Blocker
+                    <AlertTriangle className="w-3 h-3" /> Blocker — {selected.blockerType}
                   </div>
-                  <p className="text-xs text-destructive">{selected.blockerDescription}</p>
+                  <p className="text-xs text-destructive mb-1">{selected.blockerDescription}</p>
+                  {selected.blockerOwner && (
+                    <p className="text-[10px] text-destructive/70">Owner: {selected.blockerOwner} · {selected.blockerETA}</p>
+                  )}
                 </div>
               )}
 
               {selected.delayReason && !selected.blockerDescription && (
-                <div className="rounded-md border border-amber-500/30 bg-amber-500/5 p-2.5">
+                <div className="rounded border border-amber-500/30 bg-amber-500/5 p-2.5">
                   <div className="flex items-center gap-1.5 text-[10px] font-semibold text-amber-600 mb-0.5">
-                    <Lock className="w-3 h-3" /> Delay Reason
+                    <Lock className="w-3 h-3" /> Delay
                   </div>
                   <p className="text-xs text-amber-600">{selected.delayReason}</p>
                 </div>
               )}
 
+              {/* Predecessors */}
               <div>
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground mb-1.5">
-                  <ArrowRight className="w-3 h-3 rotate-180" /> Predecessors ({predecessors.length})
-                </div>
+                <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">
+                  ← Predecessors ({predecessors.length})
+                </p>
                 {predecessors.length === 0 ? (
-                  <p className="text-[10px] text-muted-foreground">No predecessors</p>
+                  <p className="text-[10px] text-muted-foreground italic">None — start point</p>
                 ) : (
                   <div className="space-y-1">
                     {predecessors.map((p) => (
-                      <button key={p.from} className="w-full text-left flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-border hover:bg-muted/30 transition-colors" onClick={() => setSelectedId(p.from)}>
-                        <span className={cn("w-2 h-2 rounded-full", STATUS_DOT[p.node.status])} />
+                      <button key={p.from} className="w-full text-left flex items-center gap-2 px-2 py-1.5 rounded border border-border hover:bg-muted/30 transition-colors" onClick={() => setSelectedId(p.from)}>
+                        <span className={cn("w-1.5 h-1.5 rounded-full", STATUS_DOT[p.node.status])} />
                         <span className="text-[10px] font-mono font-semibold">{p.node.id}</span>
                         <span className="text-[10px] text-muted-foreground truncate flex-1">{p.node.title}</span>
-                        <Badge variant="outline" className="text-[8px] h-3.5">{DEP_STYLE[p.type].label}</Badge>
+                        <span className={cn(
+                          "text-[8px] font-mono px-1 rounded border",
+                          p.type === "hold-point" ? "bg-destructive/10 border-destructive/20 text-destructive" : "bg-muted/60 border-border text-muted-foreground"
+                        )}>{DEP_LABELS[p.type]}</span>
                       </button>
                     ))}
                   </div>
                 )}
               </div>
 
+              {/* Successors */}
               <div>
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground mb-1.5">
-                  <ArrowRight className="w-3 h-3" /> Successors ({successors.length})
-                </div>
+                <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">
+                  → Successors ({successors.length})
+                </p>
                 {successors.length === 0 ? (
-                  <p className="text-[10px] text-muted-foreground">No successors — endpoint</p>
+                  <p className="text-[10px] text-muted-foreground italic">None — end point</p>
                 ) : (
                   <div className="space-y-1">
                     {successors.map((s) => (
-                      <button key={s.to} className="w-full text-left flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-border hover:bg-muted/30 transition-colors" onClick={() => setSelectedId(s.to)}>
-                        <span className={cn("w-2 h-2 rounded-full", STATUS_DOT[s.node.status])} />
+                      <button key={s.to} className="w-full text-left flex items-center gap-2 px-2 py-1.5 rounded border border-border hover:bg-muted/30 transition-colors" onClick={() => setSelectedId(s.to)}>
+                        <span className={cn("w-1.5 h-1.5 rounded-full", STATUS_DOT[s.node.status])} />
                         <span className="text-[10px] font-mono font-semibold">{s.node.id}</span>
                         <span className="text-[10px] text-muted-foreground truncate flex-1">{s.node.title}</span>
-                        <Badge variant="outline" className="text-[8px] h-3.5">{DEP_STYLE[s.type].label}</Badge>
+                        <span className={cn(
+                          "text-[8px] font-mono px-1 rounded border",
+                          s.type === "hold-point" ? "bg-destructive/10 border-destructive/20 text-destructive" : "bg-muted/60 border-border text-muted-foreground"
+                        )}>{DEP_LABELS[s.type]}</span>
                         {delayedImpact.has(s.to) && <AlertTriangle className="w-3 h-3 text-amber-500" />}
                       </button>
                     ))}
                   </div>
                 )}
               </div>
+
+              {/* Handover notes */}
+              {selected.handoverNotes && (
+                <div className="rounded border border-border bg-muted/20 p-2.5">
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-0.5">Handover Notes</p>
+                  <p className="text-xs text-foreground">{selected.handoverNotes}</p>
+                </div>
+              )}
             </div>
           </div>
         )}
