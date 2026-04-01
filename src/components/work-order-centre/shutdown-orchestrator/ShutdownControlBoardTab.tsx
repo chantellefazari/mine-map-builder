@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
@@ -7,7 +8,7 @@ import {
   Filter, Route, AlertTriangle, Wrench, Zap, Clock, Lock,
   CheckCircle2, Activity, Package, ChevronRight, Target, Eye,
   LayoutList, Columns3, Calendar, Shield, User, ArrowRight,
-  Printer, PlayCircle, X,
+  Printer, PlayCircle, X, GitBranch,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -95,14 +96,10 @@ const ALL_SHIFTS = ["All", "Day", "Night"];
 /* ------------------------------------------------------------------ */
 
 export function ShutdownControlBoardTab() {
+  const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, showCriticalOnly: filterCritical, setShowCriticalOnly: setFilterCritical, navigateToTab } = useOrchestratorContext();
   const [viewMode, setViewMode] = useState<ViewMode>("table");
   const [groupBy, setGroupBy] = useState<GroupBy>("status");
-  const [filterArea, setFilterArea] = useState("All");
-  const [filterTrade, setFilterTrade] = useState("All");
-  const [filterShift, setFilterShift] = useState("All");
-  const [filterCritical, setFilterCritical] = useState(false);
   const [filterDelayed, setFilterDelayed] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const selected = PACKAGES.find((p) => p.id === selectedId) ?? null;
 
@@ -470,6 +467,17 @@ export function ShutdownControlBoardTab() {
                   <p className="text-xs text-amber-600">{selected.delayReason}</p>
                 </div>
               )}
+              {/* Cross-nav */}
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1 flex-1" onClick={() => navigateToTab("sequence")}>
+                  <GitBranch className="w-3 h-3" /> View in Sequence Flow
+                </Button>
+                {selected.criticalPath && (
+                  <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1 flex-1" onClick={() => navigateToTab("critical-path")}>
+                    <Route className="w-3 h-3" /> View in Critical Path
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         )}

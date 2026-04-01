@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useShutdowns, useShutdownWorkOrders, useShutdownVendors } from "@/hooks/useShutdowns";
@@ -110,6 +111,7 @@ const SHIFT_STYLE: Record<string, string> = {
 
 export function ShutdownOverviewTab() {
   const { shutdowns } = useShutdowns();
+  const { navigateToTab, setFilterArea, setSelectedPackageId } = useOrchestratorContext();
 
   // Use first shutdown as current — later this will come from orchestrator context
   const shutdown = shutdowns[0] ?? null;
@@ -198,13 +200,13 @@ export function ShutdownOverviewTab() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => navigateToTab("print-pack")}>
             <Download className="w-3.5 h-3.5" /> Export Summary
           </Button>
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => navigateToTab("print-pack")}>
             <Printer className="w-3.5 h-3.5" /> Print Overview
           </Button>
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => navigateToTab("ai-planner")}>
             <Brain className="w-3.5 h-3.5" /> AI Planner
           </Button>
         </div>
@@ -261,6 +263,7 @@ export function ShutdownOverviewTab() {
             {DEMO_AREAS.map((area) => (
               <button
                 key={area.area}
+                onClick={() => { setFilterArea(area.area); navigateToTab("area-map"); }}
                 className={cn(
                   "text-left rounded-lg border p-3 transition-colors hover:shadow-sm",
                   AREA_STATUS_STYLE[area.status]
@@ -286,7 +289,7 @@ export function ShutdownOverviewTab() {
                   <span>Blocked: <span className={cn("font-semibold", area.blocked > 0 && "text-destructive")}>{area.blocked}</span></span>
                 </div>
                 <div className="flex items-center gap-1 mt-1.5 text-[10px] opacity-70">
-                  <ChevronRight className="w-3 h-3" /> View area detail
+                  <ChevronRight className="w-3 h-3" /> View in Area Map
                 </div>
               </button>
             ))}
@@ -301,10 +304,11 @@ export function ShutdownOverviewTab() {
           </div>
           <div className="space-y-2 max-h-[420px] overflow-y-auto">
             {DEMO_RISKS.map((r, i) => (
-              <div
+              <button
                 key={i}
+                onClick={() => { setSelectedPackageId(r.workPackage); navigateToTab("control"); }}
                 className={cn(
-                  "rounded-md border p-2.5 text-xs",
+                  "w-full text-left rounded-md border p-2.5 text-xs cursor-pointer hover:shadow-sm transition-shadow",
                   SEVERITY_STYLE[r.severity]
                 )}
               >
@@ -319,7 +323,7 @@ export function ShutdownOverviewTab() {
                   <span className="font-mono">{r.workPackage}</span>
                   <span>{r.owner}</span>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>

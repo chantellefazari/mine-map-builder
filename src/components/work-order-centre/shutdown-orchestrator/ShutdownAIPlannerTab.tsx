@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import {
   Brain, Send, Loader2, CheckCircle2, XCircle, Pencil, BookOpen,
   AlertTriangle, ArrowRight, Shield, Lock, Wrench, Zap, Mic,
@@ -117,6 +118,7 @@ const INITIAL_RULES: LearnedRule[] = [
 /* ------------------------------------------------------------------ */
 
 export function ShutdownAIPlannerTab() {
+  const { navigateToTab, setSelectedPackageId, addConfirmedRule } = useOrchestratorContext();
   const [input, setInput] = useState("");
   const [inputMode, setInputMode] = useState<"free" | "structured">("free");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -184,6 +186,17 @@ export function ShutdownAIPlannerTab() {
       created_at: new Date().toISOString().split("T")[0],
     };
     setLearnedRules((prev) => [newRule, ...prev]);
+    // Push to orchestrator context for cross-tab visibility
+    addConfirmedRule({
+      id: newRule.id,
+      title: rule.title,
+      rule_type: rule.rule_type,
+      if_condition: rule.if_condition,
+      then_action: rule.then_action,
+      area: rule.area,
+      affected_packages: rule.affected_packages,
+      impact_level: rule.impact_level,
+    });
     toast.success(`Rule "${rule.title}" added to Shutdown Library`);
   };
 
@@ -388,8 +401,10 @@ export function ShutdownAIPlannerTab() {
                             </div>
                             <div className="flex flex-wrap gap-2 text-[10px] text-muted-foreground">
                               {rule.area && <span>Area: <strong className="text-foreground">{rule.area}</strong></span>}
-                              {rule.affected_packages && rule.affected_packages.length > 0 && (
-                                <span>Packages: <strong className="text-foreground font-mono">{rule.affected_packages.join(", ")}</strong></span>
+                                {rule.affected_packages && rule.affected_packages.length > 0 && (
+                                <span>Packages: {rule.affected_packages.map((pkg, pi) => (
+                                  <button key={pi} className="font-mono font-bold text-foreground hover:text-primary underline mx-0.5" onClick={(e) => { e.stopPropagation(); setSelectedPackageId(pkg); navigateToTab("sequence"); }}>{pkg}</button>
+                                ))}</span>
                               )}
                               {rule.predecessors && rule.predecessors.length > 0 && (
                                 <span>Predecessors: <strong className="text-foreground font-mono">{rule.predecessors.join(", ")}</strong></span>

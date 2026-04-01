@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
@@ -75,11 +76,8 @@ const ALL_SHIFTS = ["All", "Day", "Night"];
 /* ------------------------------------------------------------------ */
 
 export function ShutdownCriticalPathTab() {
-  const [filterArea, setFilterArea] = useState("All");
-  const [filterTrade, setFilterTrade] = useState("All");
-  const [filterShift, setFilterShift] = useState("All");
+  const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, navigateToTab } = useOrchestratorContext();
   const [filterSeverity, setFilterSeverity] = useState("All");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const selected = PACKAGES.find((p) => p.id === selectedId) ?? null;
 
@@ -403,6 +401,15 @@ export function ShutdownCriticalPathTab() {
                   </div>
                 </div>
               )}
+              {/* Cross-nav */}
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1 flex-1" onClick={() => navigateToTab("sequence")}>
+                  <ArrowRight className="w-3 h-3" /> View in Sequence Flow
+                </Button>
+                <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1 flex-1" onClick={() => navigateToTab("control")}>
+                  <ArrowRight className="w-3 h-3" /> View in Control Board
+                </Button>
+              </div>
             </div>
           </div>
         )}

@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
@@ -153,11 +154,8 @@ const PAD_Y = 16;
 /* ------------------------------------------------------------------ */
 
 export function ShutdownSequenceFlowTab() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [filterArea, setFilterArea] = useState("All");
-  const [filterTrade, setFilterTrade] = useState("All");
+  const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, showCriticalOnly, setShowCriticalOnly } = useOrchestratorContext();
   const [filterStatus, setFilterStatus] = useState("All");
-  const [showCriticalOnly, setShowCriticalOnly] = useState(false);
   const [showDelayedOnly, setShowDelayedOnly] = useState(false);
   const [groupBy, setGroupBy] = useState<"stage" | "area" | "day">("stage");
 

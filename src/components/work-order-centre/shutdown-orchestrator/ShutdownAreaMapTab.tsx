@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
@@ -145,12 +146,22 @@ const ALL_STATUSES: AreaStatus[] = ["Not Started", "Ready", "Active", "At Risk",
 /* ------------------------------------------------------------------ */
 
 export function ShutdownAreaMapTab() {
+  const ctx = useOrchestratorContext();
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
   const [overlays, setOverlays] = useState<Set<Overlay>>(new Set());
   const [filterArea, setFilterArea] = useState("All");
   const [filterTrade, setFilterTrade] = useState("All");
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterCritical, setFilterCritical] = useState(false);
+
+  // When selecting an area, propagate to context for cross-tab filtering
+  const handleAreaSelect = (areaId: string | null) => {
+    setSelectedAreaId(areaId);
+    if (areaId) {
+      const area = AREAS.find(a => a.id === areaId);
+      if (area) ctx.setFilterArea(area.name);
+    }
+  };
 
   const selectedArea = AREAS.find((a) => a.id === selectedAreaId) ?? null;
   const areaPackages = useMemo(
@@ -282,7 +293,7 @@ export function ShutdownAreaMapTab() {
                 <g
                   key={area.id}
                   className={cn("cursor-pointer transition-opacity", !visible && "opacity-20")}
-                  onClick={() => visible && setSelectedAreaId(isSelected ? null : area.id)}
+                  onClick={() => visible && handleAreaSelect(isSelected ? null : area.id)}
                 >
                   <rect
                     x={area.x}
@@ -409,7 +420,7 @@ export function ShutdownAreaMapTab() {
                 <h3 className="text-sm font-bold">{selectedArea.name}</h3>
                 <p className="text-[10px] opacity-80">{selectedArea.status} — {selectedArea.pctComplete}% complete</p>
               </div>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSelectedAreaId(null)}>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleAreaSelect(null)}>
                 <X className="w-4 h-4" />
               </Button>
             </div>
@@ -476,6 +487,7 @@ export function ShutdownAreaMapTab() {
                   {areaPackages.map((wp) => (
                     <button
                       key={wp.id}
+                      onClick={() => { ctx.setSelectedPackageId(wp.id); ctx.navigateToTab("sequence"); }}
                       className={cn(
                         "w-full text-left rounded-md border p-2.5 transition-colors hover:shadow-sm",
                         WP_STATUS_STYLE[wp.status]
@@ -504,7 +516,7 @@ export function ShutdownAreaMapTab() {
                         </p>
                       )}
                       <div className="flex items-center gap-1 mt-1 text-[9px] opacity-50">
-                        <ChevronRight className="w-2.5 h-2.5" /> View details
+                        <ChevronRight className="w-2.5 h-2.5" /> View in Sequence Flow
                       </div>
                     </button>
                   ))}

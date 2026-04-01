@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
@@ -134,10 +135,8 @@ function handlePrint(ref: React.RefObject<HTMLDivElement | null>) {
 /* ------------------------------------------------------------------ */
 
 export function ShutdownPrintPackTab() {
+  const { filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift } = useOrchestratorContext();
   const [packType, setPackType] = useState<PackType>("area-overview");
-  const [filterArea, setFilterArea] = useState("All");
-  const [filterTrade, setFilterTrade] = useState("All");
-  const [filterShift, setFilterShift] = useState("All");
   const [showPreview, setShowPreview] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
