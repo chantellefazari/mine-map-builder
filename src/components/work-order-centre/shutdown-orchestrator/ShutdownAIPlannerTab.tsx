@@ -13,6 +13,10 @@ import {
   ChevronDown, ChevronUp, Plus, Trash2, ToggleLeft, ToggleRight,
   Lightbulb, GitBranch, Clock, Target,
 } from "lucide-react";
+import {
+  WP_CONTEXT, ALL_AREA_OPTIONS, INITIAL_RULES,
+  type LearnedRule,
+} from "./shutdownData";
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -37,54 +41,23 @@ interface AIResult {
   sequencing_suggestions?: string[];
 }
 
-interface LearnedRule {
-  id: string;
-  title: string;
-  area: string;
-  description: string;
-  rule_type: string;
-  source: string;
-  active: boolean;
-  created_at: string;
-}
-
 type RuleDecision = "pending" | "accepted" | "rejected" | "edited";
 
 /* ------------------------------------------------------------------ */
-/*  DEMO CONTEXT                                                       */
+/*  CONSTANTS                                                          */
 /* ------------------------------------------------------------------ */
-
-const WP_CONTEXT = `Available Work Packages:
-WP-001: Plant Isolation & Lockout (Infrastructure, Electrical)
-WP-002: Scaffold Erection — Grinding (Grinding, Mechanical)
-WP-003: Crane Mobilisation (Infrastructure, Mechanical)
-WP-004: SAG Mill Liner Bolt-Out (Grinding, Mechanical)
-WP-005: Jaw Crusher Liner Replacement (Crushing, Mechanical)
-WP-006: CIL Agitator Gearbox Inspection (CIL / Leaching, Mechanical)
-WP-007: Crusher MCC Switchboard Service (Crushing, Electrical)
-WP-008: SAG Mill Liner Install (Grinding, Mechanical)
-WP-009: Ball Mill Trunnion Bearing Reline (Grinding, Mechanical)
-WP-010: Thickener Rake Arm Inspection (Thickening, Mechanical)
-WP-011: VSD Replacement — Mill Drive (Grinding, Electrical)
-WP-012: Cyclone Cluster Replacement (Grinding, Mechanical)
-WP-013: Carbon Screen Panel Replacement (CIL / Leaching, Mechanical)
-WP-014: Underflow Pump Impeller Swap (Tailings, Mechanical)
-WP-015: Tailings Pipeline Tie-In (Tailings, Mechanical)
-WP-016: Mill Alignment & Checks (Grinding, Mechanical)
-WP-017: Elution Column Heater Service (Gold Room, Electrical)
-WP-018: Pre-Start Commissioning (Infrastructure, Electrical)`;
 
 const EXAMPLE_PROMPTS = [
   "Do not start pump replacement until line isolation is confirmed.",
   "Scaffolding must be installed before mechanical access to the motor area.",
-  "Crane access for this lift clashes with scaffold crew in Grinding.",
+  "Crane access for this lift clashes with scaffold crew in Comminution.",
   "The mill cannot be restarted until all guards and electrical checks are complete.",
   "This task can run in parallel with inspection but not with commissioning.",
   "Last shutdown we lost 4 hours because the VSD wasn't on site — always confirm parts delivery 48hrs before.",
 ];
 
 const RULE_TYPE_ICON: Record<string, typeof Shield> = {
-  "Dependency": GitBranch,
+  Dependency: GitBranch,
   "Hold Point": Target,
   "Access Constraint": Lock,
   "Isolation Rule": Shield,
@@ -102,18 +75,6 @@ const IMPACT_STYLE: Record<string, { text: string; border: string }> = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  INITIAL LEARNED RULES                                              */
-/* ------------------------------------------------------------------ */
-
-const INITIAL_RULES: LearnedRule[] = [
-  { id: "LR-001", title: "Isolation before mechanical entry", area: "All", description: "All mechanical work areas require confirmed electrical isolation and LOTO before personnel entry.", rule_type: "Isolation Rule", source: "Site Standard", active: true, created_at: "2026-01-15" },
-  { id: "LR-002", title: "Scaffold before elevated access", area: "Grinding", description: "Scaffold erection must be complete and tagged before any elevated mechanical access in the mill area.", rule_type: "Access Constraint", source: "Supervisor — J. Mitchell", active: true, created_at: "2026-02-01" },
-  { id: "LR-003", title: "Crane exclusion zone during lifts", area: "All", description: "No concurrent scaffold or personnel work within 15m of active crane lifts.", rule_type: "Clash Warning", source: "Safety — Y25 Lesson", active: true, created_at: "2025-11-20" },
-  { id: "LR-004", title: "Parts confirmation 48hrs prior", area: "All", description: "All critical-path parts must be confirmed on-site 48 hours before scheduled start. Previous shutdowns lost 4-12 hours waiting for freight.", rule_type: "Lesson Learned", source: "Historical — Y25-SH02", active: true, created_at: "2025-12-01" },
-  { id: "LR-005", title: "VSD commissioning requires vendor", area: "Grinding", description: "VSD installation and commissioning requires vendor representative on-site for warranty compliance.", rule_type: "Shutdown Requirement", source: "Planner — L. Chen", active: true, created_at: "2026-03-10" },
-];
-
-/* ------------------------------------------------------------------ */
 /*  COMPONENT                                                          */
 /* ------------------------------------------------------------------ */
 
@@ -128,7 +89,6 @@ export function ShutdownAIPlannerTab() {
   const [showLibrary, setShowLibrary] = useState(false);
   const [historyItems, setHistoryItems] = useState<{ input: string; result: AIResult; timestamp: string }[]>([]);
 
-  // Structured mode fields
   const [structArea, setStructArea] = useState("All");
   const [structType, setStructType] = useState("Dependency");
 
@@ -137,29 +97,16 @@ export function ShutdownAIPlannerTab() {
     setIsProcessing(true);
     setResult(null);
     setRuleDecisions(new Map());
-
     try {
-      const fullInput = inputMode === "structured"
-        ? `[Area: ${structArea}] [Type: ${structType}] ${input}`
-        : input;
-
+      const fullInput = inputMode === "structured" ? `[Area: ${structArea}] [Type: ${structType}] ${input}` : input;
       const { data, error } = await supabase.functions.invoke("shutdown-ai-planner", {
         body: { input: fullInput, context: WP_CONTEXT },
       });
-
       if (error) throw error;
-
-      if (data?.error) {
-        toast.error(data.error);
-        return;
-      }
-
+      if (data?.error) { toast.error(data.error); return; }
       const aiResult = data as AIResult;
       setResult(aiResult);
-      setHistoryItems((prev) => [
-        { input: fullInput, result: aiResult, timestamp: new Date().toLocaleTimeString() },
-        ...prev,
-      ]);
+      setHistoryItems((prev) => [{ input: fullInput, result: aiResult, timestamp: new Date().toLocaleTimeString() }, ...prev]);
       toast.success("AI analysis complete");
     } catch (err: any) {
       console.error("AI Planner error:", err);
@@ -186,32 +133,20 @@ export function ShutdownAIPlannerTab() {
       created_at: new Date().toISOString().split("T")[0],
     };
     setLearnedRules((prev) => [newRule, ...prev]);
-    // Push to orchestrator context for cross-tab visibility
     addConfirmedRule({
-      id: newRule.id,
-      title: rule.title,
-      rule_type: rule.rule_type,
-      if_condition: rule.if_condition,
-      then_action: rule.then_action,
-      area: rule.area,
-      affected_packages: rule.affected_packages,
+      id: newRule.id, title: rule.title, rule_type: rule.rule_type,
+      if_condition: rule.if_condition, then_action: rule.then_action,
+      area: rule.area, affected_packages: rule.affected_packages,
       impact_level: rule.impact_level,
     });
     toast.success(`Rule "${rule.title}" added to Shutdown Library`);
   };
 
-  const toggleRule = (id: string) => {
-    setLearnedRules((prev) => prev.map((r) => (r.id === id ? { ...r, active: !r.active } : r)));
-  };
-
-  const deleteRule = (id: string) => {
-    setLearnedRules((prev) => prev.filter((r) => r.id !== id));
-    toast.success("Rule removed from library");
-  };
+  const toggleRule = (id: string) => setLearnedRules((prev) => prev.map((r) => (r.id === id ? { ...r, active: !r.active } : r)));
+  const deleteRule = (id: string) => { setLearnedRules((prev) => prev.filter((r) => r.id !== id)); toast.success("Rule removed from library"); };
 
   return (
     <div className="space-y-4">
-      {/* ===== HEADER ===== */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -223,12 +158,7 @@ export function ShutdownAIPlannerTab() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant={showLibrary ? "default" : "outline"}
-            size="sm"
-            className="h-8 text-xs gap-1.5"
-            onClick={() => setShowLibrary(!showLibrary)}
-          >
+          <Button variant={showLibrary ? "default" : "outline"} size="sm" className="h-8 text-xs gap-1.5" onClick={() => setShowLibrary(!showLibrary)}>
             <BookOpen className="w-3.5 h-3.5" />
             Shutdown Library
             <Badge variant="secondary" className="text-[9px] h-4 ml-1">{learnedRules.filter((r) => r.active).length}</Badge>
@@ -237,40 +167,24 @@ export function ShutdownAIPlannerTab() {
       </div>
 
       <div className="flex gap-4">
-        {/* ===== INPUT + RESULTS PANEL ===== */}
         <div className="flex-1 min-w-0 space-y-4">
-          {/* Input Card */}
           <div className="border border-border rounded-lg bg-card p-4 space-y-3">
-            {/* Mode Toggle */}
             <div className="flex items-center gap-2">
               <div className="flex items-center border border-border rounded-lg overflow-hidden">
-                <button
-                  onClick={() => setInputMode("free")}
-                  className={cn("px-3 py-1.5 text-[10px] font-medium transition-colors", inputMode === "free" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground")}
-                >
-                  Free Input
-                </button>
-                <button
-                  onClick={() => setInputMode("structured")}
-                  className={cn("px-3 py-1.5 text-[10px] font-medium transition-colors", inputMode === "structured" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground")}
-                >
-                  Structured
-                </button>
+                <button onClick={() => setInputMode("free")} className={cn("px-3 py-1.5 text-[10px] font-medium transition-colors", inputMode === "free" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground")}>Free Input</button>
+                <button onClick={() => setInputMode("structured")} className={cn("px-3 py-1.5 text-[10px] font-medium transition-colors", inputMode === "structured" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground")}>Structured</button>
               </div>
               <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1 ml-auto opacity-50 cursor-not-allowed" disabled>
                 <Mic className="w-3 h-3" /> Voice Capture
               </Button>
             </div>
 
-            {/* Structured fields */}
             {inputMode === "structured" && (
               <div className="flex items-center gap-2">
                 <Select value={structArea} onValueChange={setStructArea}>
-                  <SelectTrigger className="w-36 h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-44 h-8 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {["All", "Grinding", "Crushing", "CIL / Leaching", "Thickening", "Tailings", "Gold Room", "Infrastructure"].map((a) => (
-                      <SelectItem key={a} value={a}>{a}</SelectItem>
-                    ))}
+                    {ALL_AREA_OPTIONS.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}
                   </SelectContent>
                 </Select>
                 <Select value={structType} onValueChange={setStructType}>
@@ -284,55 +198,26 @@ export function ShutdownAIPlannerTab() {
               </div>
             )}
 
-            {/* Text Input */}
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Describe shutdown logic, constraints, dependencies, or lessons learned in plain language…"
-              className="min-h-[100px] text-sm resize-none"
-            />
+            <Textarea value={input} onChange={(e) => setInput(e.target.value)} placeholder="Describe shutdown logic, constraints, dependencies, or lessons learned in plain language…" className="min-h-[100px] text-sm resize-none" />
 
-            {/* Example prompts */}
             <div className="flex flex-wrap gap-1.5">
               {EXAMPLE_PROMPTS.slice(0, 4).map((prompt, i) => (
-                <button
-                  key={i}
-                  onClick={() => setInput(prompt)}
-                  className="text-[10px] px-2 py-1 rounded-md border border-border bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors truncate max-w-[280px]"
-                >
+                <button key={i} onClick={() => setInput(prompt)} className="text-[10px] px-2 py-1 rounded-md border border-border bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors truncate max-w-[280px]">
                   "{prompt.substring(0, 50)}…"
                 </button>
               ))}
             </div>
 
-            {/* Submit */}
             <div className="flex items-center justify-between">
-              <p className="text-[10px] text-muted-foreground">
-                AI will interpret your input and suggest structured shutdown logic for review.
-              </p>
-              <Button
-                size="sm"
-                className="h-8 text-xs gap-1.5"
-                onClick={handleSubmit}
-                disabled={!input.trim() || isProcessing}
-              >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" /> Analysing…
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-3.5 h-3.5" /> Analyse & Extract
-                  </>
-                )}
+              <p className="text-[10px] text-muted-foreground">AI will interpret your input and suggest structured shutdown logic for review.</p>
+              <Button size="sm" className="h-8 text-xs gap-1.5" onClick={handleSubmit} disabled={!input.trim() || isProcessing}>
+                {isProcessing ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Analysing…</> : <><Send className="w-3.5 h-3.5" /> Analyse & Extract</>}
               </Button>
             </div>
           </div>
 
-          {/* ===== AI RESULTS ===== */}
           {result && (
             <div className="space-y-4">
-              {/* Summary */}
               <div className="border border-primary/30 rounded-lg bg-primary/5 p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Brain className="w-4 h-4 text-primary" />
@@ -342,7 +227,6 @@ export function ShutdownAIPlannerTab() {
                 <p className="text-xs text-foreground leading-relaxed">{result.summary}</p>
               </div>
 
-              {/* Sequencing Suggestions */}
               {result.sequencing_suggestions && result.sequencing_suggestions.length > 0 && (
                 <div className="border border-blue-500/30 rounded-lg bg-blue-500/5 p-3">
                   <div className="flex items-center gap-1.5 mb-2">
@@ -352,36 +236,24 @@ export function ShutdownAIPlannerTab() {
                   <ul className="space-y-1">
                     {result.sequencing_suggestions.map((s, i) => (
                       <li key={i} className="text-xs text-blue-600 flex items-start gap-1.5">
-                        <ArrowRight className="w-3 h-3 flex-shrink-0 mt-0.5" />
-                        <span>{s}</span>
+                        <ArrowRight className="w-3 h-3 flex-shrink-0 mt-0.5" /><span>{s}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
 
-              {/* Extracted Rules — Review Panel */}
               <div>
                 <h3 className="text-xs font-bold text-foreground mb-2 flex items-center gap-2">
-                  <Target className="w-3.5 h-3.5 text-primary" />
-                  Extracted Rules — Review & Confirm
+                  <Target className="w-3.5 h-3.5 text-primary" /> Extracted Rules — Review & Confirm
                 </h3>
                 <div className="space-y-2">
                   {result.rules.map((rule, idx) => {
                     const decision = ruleDecisions.get(idx) || "pending";
                     const RuleIcon = RULE_TYPE_ICON[rule.rule_type] || AlertTriangle;
                     const impact = IMPACT_STYLE[rule.impact_level] || IMPACT_STYLE.Medium;
-
                     return (
-                      <div
-                        key={idx}
-                        className={cn(
-                          "border rounded-lg p-3 transition-all",
-                          decision === "accepted" ? "border-emerald-500/30 bg-emerald-500/5" :
-                          decision === "rejected" ? "border-muted bg-muted/30 opacity-50" :
-                          "border-border bg-card"
-                        )}
-                      >
+                      <div key={idx} className={cn("border rounded-lg p-3 transition-all", decision === "accepted" ? "border-emerald-500/30 bg-emerald-500/5" : decision === "rejected" ? "border-muted bg-muted/30 opacity-50" : "border-border bg-card")}>
                         <div className="flex items-start gap-3">
                           <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0", impact.border, "border bg-card")}>
                             <RuleIcon className={cn("w-4 h-4", impact.text)} />
@@ -401,7 +273,7 @@ export function ShutdownAIPlannerTab() {
                             </div>
                             <div className="flex flex-wrap gap-2 text-[10px] text-muted-foreground">
                               {rule.area && <span>Area: <strong className="text-foreground">{rule.area}</strong></span>}
-                                {rule.affected_packages && rule.affected_packages.length > 0 && (
+                              {rule.affected_packages && rule.affected_packages.length > 0 && (
                                 <span>Packages: {rule.affected_packages.map((pkg, pi) => (
                                   <button key={pi} className="font-mono font-bold text-foreground hover:text-primary underline mx-0.5" onClick={(e) => { e.stopPropagation(); setSelectedPackageId(pkg); navigateToTab("sequence"); }}>{pkg}</button>
                                 ))}</span>
@@ -423,7 +295,6 @@ export function ShutdownAIPlannerTab() {
                               </div>
                             )}
                           </div>
-                          {/* Actions */}
                           {decision === "pending" && (
                             <div className="flex items-center gap-1 flex-shrink-0">
                               <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => acceptRule(rule, idx)}>
@@ -443,7 +314,6 @@ export function ShutdownAIPlannerTab() {
             </div>
           )}
 
-          {/* ===== HISTORY ===== */}
           {historyItems.length > 0 && !result && (
             <div>
               <h3 className="text-xs font-bold text-muted-foreground mb-2 flex items-center gap-1.5">
@@ -451,11 +321,7 @@ export function ShutdownAIPlannerTab() {
               </h3>
               <div className="space-y-1.5">
                 {historyItems.slice(0, 5).map((item, i) => (
-                  <button
-                    key={i}
-                    onClick={() => { setInput(item.input); setResult(item.result); setRuleDecisions(new Map()); }}
-                    className="w-full text-left rounded-md border border-border p-2.5 hover:bg-muted/30 transition-colors"
-                  >
+                  <button key={i} onClick={() => { setInput(item.input); setResult(item.result); setRuleDecisions(new Map()); }} className="w-full text-left rounded-md border border-border p-2.5 hover:bg-muted/30 transition-colors">
                     <div className="flex items-center justify-between mb-0.5">
                       <span className="text-[10px] text-muted-foreground">{item.timestamp}</span>
                       <Badge variant="secondary" className="text-[8px] h-3.5">{item.result.rules.length} rules</Badge>
@@ -468,16 +334,13 @@ export function ShutdownAIPlannerTab() {
           )}
         </div>
 
-        {/* ===== SHUTDOWN LIBRARY PANEL ===== */}
         {showLibrary && (
           <div className="w-96 flex-shrink-0 border border-border rounded-lg bg-card overflow-hidden">
             <div className="px-4 py-3 border-b border-border bg-muted/30">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-primary" />
                 <h3 className="text-xs font-bold text-foreground">Shutdown Rule Library</h3>
-                <Badge variant="secondary" className="text-[9px] h-4 ml-auto">
-                  {learnedRules.filter((r) => r.active).length} active
-                </Badge>
+                <Badge variant="secondary" className="text-[9px] h-4 ml-auto">{learnedRules.filter((r) => r.active).length} active</Badge>
               </div>
               <p className="text-[10px] text-muted-foreground mt-0.5">Stored rules reused across shutdowns</p>
             </div>

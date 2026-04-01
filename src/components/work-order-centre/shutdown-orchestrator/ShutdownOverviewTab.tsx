@@ -2,76 +2,18 @@ import { useMemo } from "react";
 import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useShutdowns, useShutdownWorkOrders, useShutdownVendors } from "@/hooks/useShutdowns";
-import { useWorkOrders } from "@/hooks/useWorkOrders";
-import { format, parseISO, differenceInDays, isToday } from "date-fns";
+import { useShutdowns } from "@/hooks/useShutdowns";
+import { format, parseISO, differenceInDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import {
   Download, Printer, Brain, Package, PlayCircle, Activity, ShieldAlert,
-  Clock, CheckCircle2, Route, AlertTriangle, MapPin, Wrench, Lock,
-  Truck, ArrowRightLeft, Calendar, Target, ChevronRight,
+  Clock, CheckCircle2, Route, AlertTriangle, MapPin, Lock,
+  ArrowRightLeft, Calendar, Target, ChevronRight,
 } from "lucide-react";
-
-/* ------------------------------------------------------------------ */
-/*  TYPES                                                              */
-/* ------------------------------------------------------------------ */
-
-interface AreaSummary {
-  area: string;
-  total: number;
-  active: number;
-  blocked: number;
-  delayed: number;
-  complete: number;
-  pctComplete: number;
-  status: "Ready" | "Active" | "At Risk" | "Delayed" | "Complete";
-}
-
-interface RiskItem {
-  risk: string;
-  area: string;
-  workPackage: string;
-  severity: "Critical" | "High" | "Medium";
-  owner: string;
-}
-
-interface ShiftFocusItem {
-  label: string;
-  type: "start" | "finish" | "decision" | "handover";
-  area: string;
-}
-
-/* ------------------------------------------------------------------ */
-/*  DEMO DATA — will be replaced by real queries later                 */
-/* ------------------------------------------------------------------ */
-
-const DEMO_AREAS: AreaSummary[] = [
-  { area: "Crushing", total: 14, active: 4, blocked: 1, delayed: 0, complete: 6, pctComplete: 43, status: "Active" },
-  { area: "Grinding", total: 22, active: 6, blocked: 2, delayed: 1, complete: 8, pctComplete: 36, status: "At Risk" },
-  { area: "CIL / Leaching", total: 18, active: 3, blocked: 0, delayed: 0, complete: 12, pctComplete: 67, status: "Active" },
-  { area: "Thickening", total: 10, active: 2, blocked: 0, delayed: 0, complete: 7, pctComplete: 70, status: "Active" },
-  { area: "Gold Room", total: 8, active: 1, blocked: 0, delayed: 0, complete: 5, pctComplete: 63, status: "Active" },
-  { area: "Reagents", total: 6, active: 1, blocked: 0, delayed: 0, complete: 5, pctComplete: 83, status: "Active" },
-  { area: "Tailings", total: 12, active: 2, blocked: 1, delayed: 1, complete: 4, pctComplete: 33, status: "Delayed" },
-  { area: "Water Services", total: 5, active: 0, blocked: 0, delayed: 0, complete: 5, pctComplete: 100, status: "Complete" },
-];
-
-const DEMO_RISKS: RiskItem[] = [
-  { risk: "Crane unavailable — 50t mobile crane delayed by 4 hrs", area: "Grinding", workPackage: "WP-GRN-008", severity: "Critical", owner: "J. Mitchell" },
-  { risk: "Scaffold not erected — Level 3 access pending", area: "Tailings", workPackage: "WP-TAL-003", severity: "High", owner: "R. Torres" },
-  { risk: "Isolation tag clearance delayed by Control Room", area: "Grinding", workPackage: "WP-GRN-012", severity: "High", owner: "D. Kumar" },
-  { risk: "Replacement gasket set not yet received on site", area: "CIL / Leaching", workPackage: "WP-CIL-006", severity: "Medium", owner: "S. Patel" },
-  { risk: "Confined space permit pending gas test re-check", area: "Tailings", workPackage: "WP-TAL-009", severity: "High", owner: "M. Chen" },
-];
-
-const DEMO_SHIFT_FOCUS: ShiftFocusItem[] = [
-  { label: "SAG Mill liner bolt-out — Day Shift start", type: "start", area: "Grinding" },
-  { label: "Thickener rake arm inspection — target completion", type: "finish", area: "Thickening" },
-  { label: "Approve crane lift plan for ball mill trunnion", type: "decision", area: "Grinding" },
-  { label: "Elution column handover from Electrical to Mech", type: "handover", area: "Gold Room" },
-  { label: "CIL Tank 4 agitator gearbox swap — planned start", type: "start", area: "CIL / Leaching" },
-  { label: "Tailings pipeline tie-in clearance from Enviro", type: "decision", area: "Tailings" },
-];
+import {
+  PACKAGES, buildAreaSummaries, DEMO_RISKS, DEMO_SHIFT_FOCUS,
+  type AreaSummary, type RiskItem, type ShiftFocusItem,
+} from "./shutdownData";
 
 /* ------------------------------------------------------------------ */
 /*  HELPERS                                                            */
@@ -113,10 +55,10 @@ export function ShutdownOverviewTab() {
   const { shutdowns } = useShutdowns();
   const { navigateToTab, setFilterArea, setSelectedPackageId } = useOrchestratorContext();
 
-  // Use first shutdown as current — later this will come from orchestrator context
   const shutdown = shutdowns[0] ?? null;
 
-  // Compute summary numbers from demo data
+  const DEMO_AREAS = useMemo(() => buildAreaSummaries(PACKAGES), []);
+
   const summary = useMemo(() => {
     const total = DEMO_AREAS.reduce((s, a) => s + a.total, 0);
     const active = DEMO_AREAS.reduce((s, a) => s + a.active, 0);
@@ -124,11 +66,11 @@ export function ShutdownOverviewTab() {
     const delayed = DEMO_AREAS.reduce((s, a) => s + a.delayed, 0);
     const complete = DEMO_AREAS.reduce((s, a) => s + a.complete, 0);
     const ready = total - active - blocked - delayed - complete;
-    const criticalPath = 6; // placeholder
+    const criticalPath = PACKAGES.filter(p => p.criticalPath).length;
     const highRiskAreas = DEMO_AREAS.filter((a) => a.status === "At Risk" || a.status === "Delayed").length;
     const overallPct = total > 0 ? Math.round((complete / total) * 100) : 0;
     return { total, ready, active, blocked, delayed, complete, criticalPath, highRiskAreas, overallPct };
-  }, []);
+  }, [DEMO_AREAS]);
 
   const plannedDays = shutdown?.end_date
     ? differenceInDays(parseISO(shutdown.end_date), parseISO(shutdown.start_date)) + 1
@@ -189,9 +131,7 @@ export function ShutdownOverviewTab() {
               <span>
                 Day <span className="font-semibold text-foreground">{currentDay}</span> of {plannedDays}
               </span>
-              <span>
-                Day Shift
-              </span>
+              <span>Day Shift</span>
               <span>
                 Overall: <span className="font-semibold text-foreground">{summary.overallPct}%</span> complete
               </span>
@@ -259,7 +199,7 @@ export function ShutdownOverviewTab() {
             <MapPin className="w-4 h-4 text-muted-foreground" />
             <h3 className="text-sm font-semibold text-foreground">Area Status Overview</h3>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5">
             {DEMO_AREAS.map((area) => (
               <button
                 key={area.area}
@@ -275,7 +215,6 @@ export function ShutdownOverviewTab() {
                     {area.status}
                   </Badge>
                 </div>
-                {/* Mini progress bar */}
                 <div className="w-full h-1.5 bg-background/50 rounded-full mb-2 overflow-hidden">
                   <div
                     className="h-full rounded-full bg-current opacity-60 transition-all"

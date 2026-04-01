@@ -9,67 +9,23 @@ import {
   Filter, ArrowRight, Shield, X, TrendingDown, Calendar, User,
   Activity, CheckCircle2, CircleDot,
 } from "lucide-react";
+import {
+  PACKAGES, ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS,
+  type ShutdownWorkPackage,
+} from "./shutdownData";
 
 /* ------------------------------------------------------------------ */
-/*  TYPES                                                              */
+/*  STYLING                                                            */
 /* ------------------------------------------------------------------ */
 
-type CPStatus = "Complete" | "Active" | "Ready" | "Blocked" | "Delayed";
-
-interface CPPackage {
-  id: string;
-  title: string;
-  area: string;
-  trade: string;
-  plannedStart: string;
-  plannedFinish: string;
-  durationHrs: number;
-  status: CPStatus;
-  pctComplete: number;
-  supervisor: string;
-  shift: string;
-  delayHrs: number;
-  delayReason: string;
-  successors: string[];
-  nearCritical: boolean;
-  floatHrs: number;
-}
-
-/* ------------------------------------------------------------------ */
-/*  DEMO DATA                                                          */
-/* ------------------------------------------------------------------ */
-
-const PACKAGES: CPPackage[] = [
-  // Critical Path
-  { id: "WP-001", title: "Plant Isolation & Lockout", area: "Infrastructure", trade: "Electrical", plannedStart: "Day 1 06:00", plannedFinish: "Day 1 10:00", durationHrs: 4, status: "Complete", pctComplete: 100, supervisor: "L. Chen", shift: "Day", delayHrs: 0, delayReason: "", successors: ["WP-002", "WP-003"], nearCritical: false, floatHrs: 0 },
-  { id: "WP-002", title: "Scaffold Erection — Grinding", area: "Grinding", trade: "Mechanical", plannedStart: "Day 1 06:00", plannedFinish: "Day 1 12:00", durationHrs: 6, status: "Complete", pctComplete: 100, supervisor: "J. Mitchell", shift: "Day", delayHrs: 0, delayReason: "", successors: ["WP-004"], nearCritical: false, floatHrs: 0 },
-  { id: "WP-004", title: "SAG Mill Liner Bolt-Out", area: "Grinding", trade: "Mechanical", plannedStart: "Day 1 12:00", plannedFinish: "Day 2 00:00", durationHrs: 12, status: "Active", pctComplete: 45, supervisor: "J. Mitchell", shift: "Day", delayHrs: 0, delayReason: "", successors: ["WP-008"], nearCritical: false, floatHrs: 0 },
-  { id: "WP-008", title: "SAG Mill Liner Install", area: "Grinding", trade: "Mechanical", plannedStart: "Day 2 00:00", plannedFinish: "Day 2 14:00", durationHrs: 14, status: "Ready", pctComplete: 0, supervisor: "J. Mitchell", shift: "Night", delayHrs: 0, delayReason: "", successors: ["WP-016"], nearCritical: false, floatHrs: 0 },
-  { id: "WP-009", title: "Ball Mill Trunnion Bearing Reline", area: "Grinding", trade: "Mechanical", plannedStart: "Day 1 12:00", plannedFinish: "Day 1 22:00", durationHrs: 10, status: "Active", pctComplete: 15, supervisor: "J. Mitchell", shift: "Day", delayHrs: 0, delayReason: "", successors: ["WP-016"], nearCritical: false, floatHrs: 2 },
-  { id: "WP-010", title: "Thickener Rake Arm Inspection", area: "Thickening", trade: "Mechanical", plannedStart: "Day 1 10:00", plannedFinish: "Day 1 18:00", durationHrs: 8, status: "Active", pctComplete: 40, supervisor: "A. Reyes", shift: "Day", delayHrs: 0, delayReason: "", successors: ["WP-016"], nearCritical: false, floatHrs: 4 },
-  { id: "WP-011", title: "VSD Replacement — Mill Drive", area: "Grinding", trade: "Electrical", plannedStart: "Day 1 14:00", plannedFinish: "Day 1 22:00", durationHrs: 8, status: "Delayed", pctComplete: 10, supervisor: "L. Chen", shift: "Day", delayHrs: 12, delayReason: "Replacement VSD not received on site — freight delayed in transit", successors: ["WP-016", "WP-018"], nearCritical: false, floatHrs: 0 },
-  { id: "WP-012", title: "Cyclone Cluster Replacement", area: "Grinding", trade: "Mechanical", plannedStart: "Day 2 14:00", plannedFinish: "Day 2 20:00", durationHrs: 6, status: "Blocked", pctComplete: 0, supervisor: "J. Mitchell", shift: "Night", delayHrs: 4, delayReason: "50t mobile crane delayed — ETA from contractor pending", successors: ["WP-016"], nearCritical: false, floatHrs: 0 },
-  { id: "WP-014", title: "Underflow Pump Impeller Swap", area: "Tailings", trade: "Mechanical", plannedStart: "Day 2 06:00", plannedFinish: "Day 2 12:00", durationHrs: 6, status: "Blocked", pctComplete: 0, supervisor: "R. Torres", shift: "Day", delayHrs: 6, delayReason: "Scaffold not erected — crew diverted to Grinding priority", successors: ["WP-015"], nearCritical: false, floatHrs: 0 },
-  { id: "WP-015", title: "Tailings Pipeline Tie-In", area: "Tailings", trade: "Mechanical", plannedStart: "Day 2 12:00", plannedFinish: "Day 2 20:00", durationHrs: 8, status: "Delayed", pctComplete: 5, supervisor: "R. Torres", shift: "Night", delayHrs: 8, delayReason: "Environmental clearance pending", successors: ["WP-018"], nearCritical: false, floatHrs: 0 },
-  { id: "WP-016", title: "Mill Alignment & Checks", area: "Grinding", trade: "Mechanical", plannedStart: "Day 2 20:00", plannedFinish: "Day 3 00:00", durationHrs: 4, status: "Ready", pctComplete: 0, supervisor: "J. Mitchell", shift: "Night", delayHrs: 0, delayReason: "", successors: ["WP-018"], nearCritical: false, floatHrs: 0 },
-  { id: "WP-018", title: "Pre-Start Commissioning", area: "Infrastructure", trade: "Electrical", plannedStart: "Day 3 00:00", plannedFinish: "Day 3 06:00", durationHrs: 6, status: "Ready", pctComplete: 0, supervisor: "L. Chen", shift: "Night", delayHrs: 0, delayReason: "", successors: [], nearCritical: false, floatHrs: 0 },
-  // Near-Critical
-  { id: "WP-006", title: "CIL Agitator Gearbox Inspection", area: "CIL / Leaching", trade: "Mechanical", plannedStart: "Day 1 10:00", plannedFinish: "Day 1 16:00", durationHrs: 6, status: "Active", pctComplete: 70, supervisor: "K. Singh", shift: "Day", delayHrs: 0, delayReason: "", successors: ["WP-013"], nearCritical: true, floatHrs: 3 },
-  { id: "WP-013", title: "Carbon Screen Panel Replacement", area: "CIL / Leaching", trade: "Mechanical", plannedStart: "Day 2 06:00", plannedFinish: "Day 2 11:00", durationHrs: 5, status: "Active", pctComplete: 70, supervisor: "K. Singh", shift: "Day", delayHrs: 0, delayReason: "", successors: ["WP-018"], nearCritical: true, floatHrs: 3 },
-  { id: "WP-017", title: "Elution Column Heater Service", area: "Gold Room", trade: "Electrical", plannedStart: "Day 2 06:00", plannedFinish: "Day 2 12:00", durationHrs: 6, status: "Active", pctComplete: 80, supervisor: "P. Adams", shift: "Day", delayHrs: 0, delayReason: "", successors: ["WP-018"], nearCritical: true, floatHrs: 2 },
-];
-
-const STATUS_STYLE: Record<CPStatus, { bg: string; text: string; border: string; dot: string }> = {
+const STATUS_STYLE: Record<string, { bg: string; text: string; border: string; dot: string }> = {
+  "Not Started": { bg: "bg-muted/50", text: "text-muted-foreground", border: "border-border", dot: "bg-muted-foreground/50" },
   Complete: { bg: "bg-muted/50", text: "text-muted-foreground", border: "border-border", dot: "bg-muted-foreground/50" },
   Active: { bg: "bg-emerald-500/5", text: "text-emerald-600", border: "border-emerald-500/30", dot: "bg-emerald-500" },
   Ready: { bg: "bg-blue-500/5", text: "text-blue-600", border: "border-blue-500/30", dot: "bg-blue-500" },
   Blocked: { bg: "bg-destructive/5", text: "text-destructive", border: "border-destructive/30", dot: "bg-destructive" },
   Delayed: { bg: "bg-amber-500/5", text: "text-amber-600", border: "border-amber-500/30", dot: "bg-amber-500" },
 };
-
-const ALL_AREAS = ["All", ...Array.from(new Set(PACKAGES.map((p) => p.area)))];
-const ALL_TRADES = ["All", "Mechanical", "Electrical"];
-const ALL_SHIFTS = ["All", "Day", "Night"];
 
 /* ------------------------------------------------------------------ */
 /*  COMPONENT                                                          */
@@ -92,7 +48,7 @@ export function ShutdownCriticalPathTab() {
     });
   }, [filterArea, filterTrade, filterShift, filterSeverity]);
 
-  const criticalPath = useMemo(() => filtered.filter((p) => !p.nearCritical), [filtered]);
+  const criticalPath = useMemo(() => filtered.filter((p) => !p.nearCritical && p.criticalPath), [filtered]);
   const nearCritical = useMemo(() => filtered.filter((p) => p.nearCritical), [filtered]);
   const criticalDelays = useMemo(() => filtered.filter((p) => p.delayHrs > 0), [filtered]);
 
@@ -147,8 +103,8 @@ export function ShutdownCriticalPathTab() {
       <div className="flex items-center gap-2 flex-wrap">
         <Filter className="w-3.5 h-3.5 text-muted-foreground" />
         <Select value={filterArea} onValueChange={setFilterArea}>
-          <SelectTrigger className="w-40 h-8 text-xs"><SelectValue /></SelectTrigger>
-          <SelectContent>{ALL_AREAS.map((a) => <SelectItem key={a} value={a}>{a === "All" ? "All Areas" : a}</SelectItem>)}</SelectContent>
+          <SelectTrigger className="w-44 h-8 text-xs"><SelectValue /></SelectTrigger>
+          <SelectContent>{ALL_AREA_OPTIONS.map((a) => <SelectItem key={a} value={a}>{a === "All" ? "All Areas" : a}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={filterTrade} onValueChange={setFilterTrade}>
           <SelectTrigger className="w-36 h-8 text-xs"><SelectValue /></SelectTrigger>
@@ -171,8 +127,6 @@ export function ShutdownCriticalPathTab() {
       {/* ===== MAIN CONTENT ===== */}
       <div className="flex gap-4">
         <div className="flex-1 min-w-0 space-y-5">
-
-          {/* --- CURRENT CRITICAL DRIVER --- */}
           {currentDriver && (
             <div className={cn("border rounded-lg p-4", currentDriver.delayHrs > 0 ? "border-destructive/40 bg-destructive/5" : "border-primary/30 bg-primary/5")}>
               <div className="flex items-center gap-2 mb-2">
@@ -194,9 +148,7 @@ export function ShutdownCriticalPathTab() {
                   <div className="text-right">
                     <p className="text-xs text-muted-foreground">Progress</p>
                     <p className="text-lg font-black text-foreground">{currentDriver.pctComplete}%</p>
-                    {currentDriver.delayHrs > 0 && (
-                      <p className="text-xs text-destructive font-semibold">+{currentDriver.delayHrs}h delay</p>
-                    )}
+                    {currentDriver.delayHrs > 0 && <p className="text-xs text-destructive font-semibold">+{currentDriver.delayHrs}h delay</p>}
                   </div>
                 </div>
                 {currentDriver.delayReason && (
@@ -208,52 +160,22 @@ export function ShutdownCriticalPathTab() {
             </div>
           )}
 
-          {/* --- SECTION 1: CRITICAL PATH --- */}
-          <Section
-            title="Critical Path"
-            icon={<Route className="w-4 h-4 text-primary" />}
-            count={criticalPath.length}
-            color="primary"
-          >
+          <Section title="Critical Path" icon={<Route className="w-4 h-4 text-primary" />} count={criticalPath.length} color="primary">
             {criticalPath.map((p) => (
-              <PackageRow
-                key={p.id}
-                pkg={p}
-                isSelected={selectedId === p.id}
-                isDownstreamAffected={downstreamAffected.has(p.id)}
-                onClick={() => setSelectedId(p.id)}
-              />
+              <PackageRow key={p.id} pkg={p} isSelected={selectedId === p.id} isDownstreamAffected={downstreamAffected.has(p.id)} onClick={() => setSelectedId(p.id)} />
             ))}
           </Section>
 
-          {/* --- SECTION 2: NEAR-CRITICAL --- */}
           {nearCritical.length > 0 && (
-            <Section
-              title="Near-Critical Packages"
-              icon={<Activity className="w-4 h-4 text-amber-600" />}
-              count={nearCritical.length}
-              color="amber"
-            >
+            <Section title="Near-Critical Packages" icon={<Activity className="w-4 h-4 text-amber-600" />} count={nearCritical.length} color="amber">
               {nearCritical.map((p) => (
-                <PackageRow
-                  key={p.id}
-                  pkg={p}
-                  isSelected={selectedId === p.id}
-                  isDownstreamAffected={false}
-                  onClick={() => setSelectedId(p.id)}
-                />
+                <PackageRow key={p.id} pkg={p} isSelected={selectedId === p.id} isDownstreamAffected={false} onClick={() => setSelectedId(p.id)} />
               ))}
             </Section>
           )}
 
-          {/* --- SECTION 3: CRITICAL DELAYS --- */}
           {criticalDelays.length > 0 && (
-            <Section
-              title="Critical Delays"
-              icon={<AlertTriangle className="w-4 h-4 text-destructive" />}
-              count={criticalDelays.length}
-              color="destructive"
-            >
+            <Section title="Critical Delays" icon={<AlertTriangle className="w-4 h-4 text-destructive" />} count={criticalDelays.length} color="destructive">
               {criticalDelays.map((p) => (
                 <div key={p.id} className="border border-destructive/20 rounded-lg p-3 bg-destructive/[0.02]">
                   <button className="w-full text-left" onClick={() => setSelectedId(p.id)}>
@@ -278,13 +200,7 @@ export function ShutdownCriticalPathTab() {
             </Section>
           )}
 
-          {/* --- SECTION 4: FINISH DATE RISKS --- */}
-          <Section
-            title="Finish Date Risks"
-            icon={<TrendingDown className="w-4 h-4 text-destructive" />}
-            count={criticalDelays.length + downstreamAffected.size}
-            color="destructive"
-          >
+          <Section title="Finish Date Risks" icon={<TrendingDown className="w-4 h-4 text-destructive" />} count={criticalDelays.length + downstreamAffected.size} color="destructive">
             <div className="border border-border rounded-lg p-4 bg-card space-y-3">
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div className="rounded-md border border-border p-2">
@@ -300,7 +216,6 @@ export function ShutdownCriticalPathTab() {
                   <p className={cn("text-sm font-bold", totalDelayHrs > 0 ? "text-destructive" : "text-emerald-600")}>{totalDelayHrs > 0 ? `+${Math.ceil(totalDelayHrs / 2)}h` : "On Track"}</p>
                 </div>
               </div>
-
               {downstreamAffected.size > 0 && (
                 <div>
                   <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Downstream Packages at Risk</p>
@@ -329,7 +244,7 @@ export function ShutdownCriticalPathTab() {
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-mono font-bold text-foreground">{selected.id}</span>
                   <Badge variant="outline" className={cn("text-[9px]", STATUS_STYLE[selected.status].text, STATUS_STYLE[selected.status].border)}>{selected.status}</Badge>
-                  {!selected.nearCritical && <Badge variant="outline" className="text-[8px] h-3.5 border-destructive text-destructive">Critical Path</Badge>}
+                  {selected.criticalPath && !selected.nearCritical && <Badge variant="outline" className="text-[8px] h-3.5 border-destructive text-destructive">Critical Path</Badge>}
                   {selected.nearCritical && <Badge variant="outline" className="text-[8px] h-3.5 border-amber-500 text-amber-600">Near-Critical</Badge>}
                 </div>
                 <h3 className="text-sm font-semibold text-foreground mt-1">{selected.title}</h3>
@@ -338,7 +253,6 @@ export function ShutdownCriticalPathTab() {
                 <X className="w-4 h-4" />
               </Button>
             </div>
-
             <div className="p-4 space-y-4 max-h-[560px] overflow-y-auto">
               <div className="grid grid-cols-2 gap-2 text-xs">
                 {[
@@ -359,8 +273,6 @@ export function ShutdownCriticalPathTab() {
                   </div>
                 ))}
               </div>
-
-              {/* Progress */}
               <div>
                 <div className="flex items-center justify-between text-[10px] mb-1">
                   <span className="text-muted-foreground">Progress</span>
@@ -370,8 +282,6 @@ export function ShutdownCriticalPathTab() {
                   <div className={cn("h-full rounded-full transition-all", STATUS_STYLE[selected.status].dot)} style={{ width: `${selected.pctComplete}%` }} />
                 </div>
               </div>
-
-              {/* Delay */}
               {selected.delayHrs > 0 && (
                 <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 space-y-2">
                   <div className="flex items-center gap-1.5 text-[10px] font-bold text-destructive">
@@ -380,8 +290,6 @@ export function ShutdownCriticalPathTab() {
                   <p className="text-xs text-destructive leading-relaxed">{selected.delayReason}</p>
                 </div>
               )}
-
-              {/* Successors */}
               {selected.successors.length > 0 && (
                 <div>
                   <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Successor Packages</p>
@@ -401,7 +309,6 @@ export function ShutdownCriticalPathTab() {
                   </div>
                 </div>
               )}
-              {/* Cross-nav */}
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1 flex-1" onClick={() => navigateToTab("sequence")}>
                   <ArrowRight className="w-3 h-3" /> View in Sequence Flow
@@ -435,23 +342,14 @@ function Section({ title, icon, count, color, children }: { title: string; icon:
   );
 }
 
-function PackageRow({ pkg, isSelected, isDownstreamAffected, onClick }: { pkg: CPPackage; isSelected: boolean; isDownstreamAffected: boolean; onClick: () => void }) {
+function PackageRow({ pkg, isSelected, isDownstreamAffected, onClick }: { pkg: ShutdownWorkPackage; isSelected: boolean; isDownstreamAffected: boolean; onClick: () => void }) {
   const st = STATUS_STYLE[pkg.status];
   return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "w-full text-left rounded-lg border p-3 transition-all hover:shadow-sm",
-        isSelected ? "border-foreground shadow-sm" : isDownstreamAffected ? "border-amber-500/40 bg-amber-500/[0.03]" : "border-border bg-card",
-      )}
-    >
+    <button onClick={onClick} className={cn("w-full text-left rounded-lg border p-3 transition-all hover:shadow-sm", isSelected ? "border-foreground shadow-sm" : isDownstreamAffected ? "border-amber-500/40 bg-amber-500/[0.03]" : "border-border bg-card")}>
       <div className="flex items-center gap-3">
-        {/* Status dot + connector line */}
         <div className="flex flex-col items-center gap-0.5">
           <span className={cn("w-3 h-3 rounded-full border-2", st.dot, st.border)} />
         </div>
-
-        {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
             <span className="text-[10px] font-mono font-bold text-foreground">{pkg.id}</span>
@@ -470,17 +368,13 @@ function PackageRow({ pkg, isSelected, isDownstreamAffected, onClick }: { pkg: C
             {pkg.floatHrs > 0 && <span className="text-amber-600">Float: {pkg.floatHrs}h</span>}
           </div>
         </div>
-
-        {/* Right: progress + delay */}
         <div className="text-right flex-shrink-0">
           <p className="text-sm font-bold text-foreground">{pkg.pctComplete}%</p>
           {pkg.delayHrs > 0 && <p className="text-xs font-semibold text-destructive">+{pkg.delayHrs}h</p>}
           <p className="text-[10px] text-muted-foreground">{pkg.supervisor}</p>
         </div>
-
         <ChevronRight className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
       </div>
-
       {pkg.delayReason && (
         <div className="mt-2 ml-7 rounded border border-destructive/20 bg-destructive/5 px-2.5 py-1.5 text-[10px] text-destructive">
           <AlertTriangle className="w-2.5 h-2.5 inline mr-1" />{pkg.delayReason}
