@@ -691,8 +691,8 @@ function AdminAndStores() {
       </Billboard>
 
       {/* ── Delivery Drop Off ── */}
-      <GroundPad position={[10, 0, 7]} size={[2, 2]} color="#c0392b" />
-      <Billboard position={[10, 0.5, 7]} follow lockX={false} lockY={false} lockZ={false}>
+      <GroundPad position={[-12, 0, 7]} size={[2, 2]} color="#c0392b" />
+      <Billboard position={[-12, 0.5, 7]} follow lockX={false} lockY={false} lockZ={false}>
         <Text fontSize={0.15} color="#c0392b" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>Delivery Drop Off</Text>
       </Billboard>
 
