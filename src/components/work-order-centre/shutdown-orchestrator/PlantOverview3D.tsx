@@ -686,7 +686,7 @@ function AdminAndStores() {
 
       {/* ── C06 — 40ft container south ── */}
       <Box position={[-6, 0, 7]} size={[2.4, 0.9, 0.8]} color="#1976d2" />
-      <Billboard position={[4, 1.1, 7]} follow lockX={false} lockY={false} lockZ={false}>
+      <Billboard position={[-6, 1.1, 7]} follow lockX={false} lockY={false} lockZ={false}>
         <Text fontSize={0.15} color="#1976d2" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>C06</Text>
       </Billboard>
 
