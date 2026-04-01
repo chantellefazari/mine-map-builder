@@ -418,7 +418,7 @@ export function ShutdownAreaMapTab() {
                 <h3 className="text-sm font-bold">{selectedArea.name}</h3>
                 <p className="text-[10px] opacity-80">{selectedArea.status} — {selectedArea.pctComplete}% complete</p>
               </div>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSelectedAreaId(null)}>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleAreaSelect(null)}>
                 <X className="w-4 h-4" />
               </Button>
             </div>
