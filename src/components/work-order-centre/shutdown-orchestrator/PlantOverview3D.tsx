@@ -549,6 +549,122 @@ function SiteInfrastructure({ color }: { color: string }) {
   );
 }
 
+/* ── ADMIN BUILDINGS, BOLI BAY & STORES COMPOUND ── */
+function AdminAndStores() {
+  return (
+    <group position={[2, 0, -10]}>
+      {/* ── New Office — large purple/pink building ── */}
+      <Box position={[-3, 0, 0]} size={[3.5, 1.2, 2.5]} color="#9b59b6" />
+      <Box position={[-3, 1.2, 0]} size={[3.5, 0.08, 2.5]} color="#7d3c98" />
+      {/* Office windows (lighter strips) */}
+      <Box position={[-3, 0.6, -1.26]} size={[3, 0.4, 0.02]} color="#d2b4de" />
+      <Box position={[-3, 0.6, 1.26]} size={[3, 0.4, 0.02]} color="#d2b4de" />
+
+      {/* ── Geo Office — small yellow building ── */}
+      <Box position={[-6, 0, 2]} size={[1.2, 0.9, 1.8]} color="#f1c40f" />
+      <Box position={[-6, 0.9, 2]} size={[1.2, 0.06, 1.8]} color="#d4ac0d" />
+
+      {/* ── Boli Bay — vehicle wash/maintenance bay (corrugated roof structure) ── */}
+      <Box position={[-5.5, 0, -2.5]} size={[2.5, 1.4, 2]} color="#bdc3c7" />
+      <Box position={[-5.5, 1.4, -2.5]} size={[2.8, 0.08, 2.3]} color="#95a5a6" />
+      {/* Open front face visible */}
+      <Box position={[-5.5, 0.7, -1.48]} size={[2.2, 1.2, 0.04]} color="#7f8c8d" />
+      {/* Concrete apron */}
+      <GroundPad position={[-5.5, 0, -1]} size={[3, 2]} color="#999" />
+
+      {/* ── Stores Compound — U-shape containers ── */}
+      <group position={[2, 0, 0]}>
+        {/* Concrete slab 12m x 9.5m */}
+        <GroundPad position={[0, 0, 0]} size={[5, 4]} color="#aaa" />
+
+        {/* C01-EL (Electrical) — 20ft top-left */}
+        <Box position={[-1.8, 0, -1.5]} size={[1, 0.9, 1]} color="#00bcd4" />
+        <Billboard position={[-1.8, 1.1, -1.5]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.15} color="#00bcd4" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>C01-EL</Text>
+        </Billboard>
+
+        {/* C02-IN (Instrumentation) — 20ft top-right */}
+        <Box position={[1.8, 0, -1.5]} size={[1, 0.9, 1]} color="#00bcd4" />
+        <Billboard position={[1.8, 1.1, -1.5]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.15} color="#00bcd4" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>C02-IN</Text>
+        </Billboard>
+
+        {/* C04-MP (Mechanical Precision) — 20ft right side */}
+        <Box position={[1.8, 0, -0.3]} size={[1, 0.9, 1]} color="#00bcd4" />
+        <Billboard position={[1.8, 1.1, -0.3]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.15} color="#00bcd4" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>C04-MP</Text>
+        </Billboard>
+
+        {/* C03-ME (Mechanical) — 40ft base container */}
+        <Box position={[0, 0, 0.8]} size={[2.4, 0.9, 1]} color="#7986cb" />
+        <Billboard position={[0, 1.1, 0.8]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.15} color="#7986cb" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>C03-ME</Text>
+        </Billboard>
+
+        {/* C05-CS (Consumables & Supplies) — 20ft left side */}
+        <Box position={[-1.8, 0, 0.8]} size={[1, 0.9, 1]} color="#ab47bc" />
+        <Billboard position={[-1.8, 1.1, 0.8]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.15} color="#ab47bc" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>C05-CS</Text>
+        </Billboard>
+
+        {/* Dome roof — barrel vault approximation */}
+        <mesh position={[0, 1.3, -0.2]} rotation={[0, 0, 0]}>
+          <cylinderGeometry args={[2.6, 2.6, 5, 16, 1, true, 0, Math.PI]} />
+          <meshStandardMaterial color="#eee" roughness={0.6} metalness={0.1} transparent opacity={0.35} side={THREE.DoubleSide} />
+        </mesh>
+
+        {/* Laydown Yard — south of compound */}
+        <GroundPad position={[0, 0, 3]} size={[7, 3]} color="#8B8" />
+        {/* LD-A, LD-B bays */}
+        <Box position={[-1.5, 0, 2.5]} size={[1.5, 0.05, 1]} color="#aab" />
+        <Box position={[-1.5, 0, 3.5]} size={[1.5, 0.05, 1]} color="#aab" />
+        {/* Forklift access lane */}
+        <GroundPad position={[1, 0, 2.5]} size={[1.5, 1.5]} color="#cc9" />
+
+        {/* LD-C/D/E/F — right side laydown */}
+        <Box position={[3.5, 0, 2]} size={[1, 0.05, 0.8]} color="#aab" />
+        <Box position={[3.5, 0, 3]} size={[1, 0.05, 0.8]} color="#aab" />
+        <Box position={[3.5, 0, 4]} size={[1, 0.05, 0.8]} color="#aab" />
+
+        {/* C06 — 40ft container south */}
+        <Box position={[0, 0, 5]} size={[2.4, 0.9, 0.8]} color="#1976d2" />
+        <Billboard position={[0, 1.1, 5]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.15} color="#1976d2" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>C06</Text>
+        </Billboard>
+      </group>
+
+      {/* Hand Wash Station */}
+      <Box position={[0.5, 0, 2]} size={[0.5, 0.5, 0.5]} color="#eee" />
+
+      {/* Water Tank — circular blue tank nearby */}
+      <Tank position={[-2, 0, -4]} radius={0.8} height={1.5} color="#2980b9" rimColor="#1f618d" />
+      <Billboard position={[-2, 2, -4]} follow lockX={false} lockY={false} lockZ={false}>
+        <Text fontSize={0.18} color="#2980b9" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>Water Tank</Text>
+      </Billboard>
+
+      {/* Delivery Drop Off area */}
+      <GroundPad position={[6, 0, 5]} size={[2, 2]} color="#c0392b" />
+      <Billboard position={[6, 0.5, 5]} follow lockX={false} lockY={false} lockZ={false}>
+        <Text fontSize={0.15} color="#c0392b" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>Delivery Drop Off</Text>
+      </Billboard>
+
+      {/* Area labels */}
+      <Billboard position={[-3, 1.6, 0]} follow lockX={false} lockY={false} lockZ={false}>
+        <Text fontSize={0.2} color="#9b59b6" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>New Office</Text>
+      </Billboard>
+      <Billboard position={[-6, 1.2, 2]} follow lockX={false} lockY={false} lockZ={false}>
+        <Text fontSize={0.18} color="#f1c40f" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Geo Office</Text>
+      </Billboard>
+      <Billboard position={[-5.5, 1.8, -2.5]} follow lockX={false} lockY={false} lockZ={false}>
+        <Text fontSize={0.18} color="#bdc3c7" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Boli Bay</Text>
+      </Billboard>
+      <Billboard position={[2, 1.8, -0.2]} follow lockX={false} lockY={false} lockZ={false}>
+        <Text fontSize={0.2} color="#eee" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Stores Compound</Text>
+      </Billboard>
+    </group>
+  );
+}
+
 /* ── SUPPORT SERVICES ── */
 function SupportServices({ color }: { color: string }) {
   return (
@@ -728,6 +844,7 @@ function Scene({ areaSummaries, selectedArea, onSelectArea }: {
       <UtilitiesPower />
       <SiteInfrastructure color={areaColors["Site Infrastructure"] || "#3b82f6"} />
       <SupportServices color={areaColors["Support Services"] || "#6b7280"} />
+      <AdminAndStores />
 
       {areaSummaries.map((area) => {
         const layout = ZONE_BOUNDS[area.area];
