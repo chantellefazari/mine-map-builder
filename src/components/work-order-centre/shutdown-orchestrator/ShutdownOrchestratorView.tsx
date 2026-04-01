@@ -82,6 +82,8 @@ export function ShutdownOrchestratorView() {
         <ShutdownOverviewTab />
       ) : activeTab === "area-map" ? (
         <ShutdownAreaMapTab />
+      ) : activeTab === "sequence" ? (
+        <ShutdownSequenceFlowTab />
       ) : (
         <TabPlaceholder tab={currentTab} />
       )}
