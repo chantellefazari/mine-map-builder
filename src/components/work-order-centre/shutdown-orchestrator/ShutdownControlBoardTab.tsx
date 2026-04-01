@@ -467,9 +467,18 @@ export function ShutdownControlBoardTab() {
                   <p className="text-xs text-amber-600">{selected.delayReason}</p>
                 </div>
               )}
+              {/* Cross-nav */}
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1 flex-1" onClick={() => navigateToTab("sequence")}>
+                  <GitBranch className="w-3 h-3" /> View in Sequence Flow
+                </Button>
+                {selected.criticalPath && (
+                  <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1 flex-1" onClick={() => navigateToTab("critical-path")}>
+                    <Route className="w-3 h-3" /> View in Critical Path
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -401,6 +401,15 @@ export function ShutdownCriticalPathTab() {
                   </div>
                 </div>
               )}
+              {/* Cross-nav */}
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1 flex-1" onClick={() => navigateToTab("sequence")}>
+                  <ArrowRight className="w-3 h-3" /> View in Sequence Flow
+                </Button>
+                <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1 flex-1" onClick={() => navigateToTab("control")}>
+                  <ArrowRight className="w-3 h-3" /> View in Control Board
+                </Button>
+              </div>
             </div>
           </div>
         )}
