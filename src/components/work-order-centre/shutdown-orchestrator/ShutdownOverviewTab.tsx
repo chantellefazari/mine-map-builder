@@ -200,13 +200,13 @@ export function ShutdownOverviewTab() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => navigateToTab("print-pack")}>
             <Download className="w-3.5 h-3.5" /> Export Summary
           </Button>
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => navigateToTab("print-pack")}>
             <Printer className="w-3.5 h-3.5" /> Print Overview
           </Button>
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => navigateToTab("ai-planner")}>
             <Brain className="w-3.5 h-3.5" /> AI Planner
           </Button>
         </div>
