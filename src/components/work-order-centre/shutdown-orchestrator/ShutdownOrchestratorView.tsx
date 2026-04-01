@@ -76,7 +76,11 @@ export function ShutdownOrchestratorView() {
       </div>
 
       {/* Tab content */}
-      <TabPlaceholder tab={currentTab} />
+      {activeTab === "overview" ? (
+        <ShutdownOverviewTab />
+      ) : (
+        <TabPlaceholder tab={currentTab} />
+      )}
     </div>
   );
 }
