@@ -876,6 +876,7 @@ function AdminZoneOverlay({ layout, isSelected, onSelect }: {
   );
 }
 
+function PulsingRing({ position, color, size }: { position: [number, number, number]; color: string; size: number }) {
   const ref = useRef<THREE.Mesh>(null);
   useFrame(({ clock }) => {
     if (!ref.current) return;
