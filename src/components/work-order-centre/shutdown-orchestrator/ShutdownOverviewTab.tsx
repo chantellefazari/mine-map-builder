@@ -176,6 +176,16 @@ export function ShutdownOverviewTab() {
         </div>
       )}
 
+      {/* ============ 3D PLANT OVERVIEW ============ */}
+      <div className="border border-border rounded-lg bg-card p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Box className="w-4 h-4 text-muted-foreground" />
+          <h3 className="text-sm font-semibold text-foreground">3D Site Overview</h3>
+          <span className="text-[10px] text-muted-foreground ml-1">Click an area zone to inspect · Drag to orbit</span>
+        </div>
+        <PlantOverview3D />
+      </div>
+
       {/* ============ SUMMARY CARDS ============ */}
       <div className="grid grid-cols-4 xl:grid-cols-8 gap-3">
         {CARDS.map((card) => (
