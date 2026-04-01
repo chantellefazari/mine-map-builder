@@ -1064,6 +1064,23 @@ export function PlantOverview3D({ className }: { className?: string }) {
           </button>
         </div>
       )}
+
+      {selectedArea === "Admin & Stores" && (
+        <div className="absolute top-3 left-3 w-56 bg-card/95 backdrop-blur-sm border border-border rounded-lg p-3 shadow-lg">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-foreground">Admin & Stores</span>
+            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-primary/10 text-primary">
+              Support
+            </span>
+          </div>
+          <div className="text-[10px] text-muted-foreground space-y-1">
+            <p>Lab · Crib Room · Toilets</p>
+            <p>New Admin · Current Admin · Geo Office</p>
+            <p>Stores Compound · Boli Bay</p>
+            <p>Remo Units · Water Tanks</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
