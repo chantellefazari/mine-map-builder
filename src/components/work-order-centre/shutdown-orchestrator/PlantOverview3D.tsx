@@ -553,27 +553,65 @@ function SiteInfrastructure({ color }: { color: string }) {
 function AdminAndStores() {
   return (
     <group position={[2, 0, -18]}>
-      {/* ── New Office — large purple/pink building ── */}
-      <Box position={[-3, 0, 0]} size={[3.5, 1.2, 2.5]} color="#9b59b6" />
-      <Box position={[-3, 1.2, 0]} size={[3.5, 0.08, 2.5]} color="#7d3c98" />
-      {/* Office windows (lighter strips) */}
-      <Box position={[-3, 0.6, -1.26]} size={[3, 0.4, 0.02]} color="#d2b4de" />
-      <Box position={[-3, 0.6, 1.26]} size={[3, 0.4, 0.02]} color="#d2b4de" />
+      {/* ═══ ADMIN PRECINCT (left side) ═══ */}
+      <group position={[-6, 0, 0]}>
 
-      {/* ── Geo Office — small yellow building ── */}
-      <Box position={[-6, 0, 2]} size={[1.2, 0.9, 1.8]} color="#f1c40f" />
-      <Box position={[-6, 0.9, 2]} size={[1.2, 0.06, 1.8]} color="#d4ac0d" />
+        {/* ── Toilets — small building, upper-left ── */}
+        <Box position={[-4, 0, -4]} size={[1.2, 0.8, 1.8]} color="#bdc3c7" />
+        <Box position={[-4, 0.8, -4]} size={[1.2, 0.06, 1.8]} color="#95a5a6" />
+        <Billboard position={[-4, 1.2, -4]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.16} color="#bdc3c7" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Toilets</Text>
+        </Billboard>
 
-      {/* ── Boli Bay — vehicle wash/maintenance bay (corrugated roof structure) ── */}
-      <Box position={[-5.5, 0, -2.5]} size={[2.5, 1.4, 2]} color="#bdc3c7" />
-      <Box position={[-5.5, 1.4, -2.5]} size={[2.8, 0.08, 2.3]} color="#95a5a6" />
-      {/* Open front face visible */}
-      <Box position={[-5.5, 0.7, -1.48]} size={[2.2, 1.2, 0.04]} color="#7f8c8d" />
-      {/* Concrete apron */}
-      <GroundPad position={[-5.5, 0, -1]} size={[3, 2]} color="#999" />
+        {/* ── Water Tanks — two blue circular tanks ── */}
+        <Tank position={[-1.5, 0, -5]} radius={0.6} height={1.2} color="#2980b9" rimColor="#1f618d" />
+        <Tank position={[0.5, 0, -5]} radius={0.6} height={1.2} color="#2980b9" rimColor="#1f618d" />
+        <Billboard position={[-0.5, 1.8, -5]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.14} color="#2980b9" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>Water Tanks</Text>
+        </Billboard>
+
+        {/* ── Crib Room — upper-center-right ── */}
+        <Box position={[1, 0, -3.5]} size={[2, 0.9, 2]} color="#e67e22" />
+        <Box position={[1, 0.9, -3.5]} size={[2, 0.06, 2]} color="#d35400" />
+        <Billboard position={[1, 1.3, -3.5]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.16} color="#e67e22" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Crib Room</Text>
+        </Billboard>
+
+        {/* ── New Admin — center of precinct ── */}
+        <Box position={[1, 0, -0.5]} size={[2.5, 1.1, 2.2]} color="#9b59b6" />
+        <Box position={[1, 1.1, -0.5]} size={[2.5, 0.08, 2.2]} color="#7d3c98" />
+        <Box position={[1, 0.55, -1.61]} size={[2, 0.4, 0.02]} color="#d2b4de" />
+        <Box position={[1, 0.55, 0.61]} size={[2, 0.4, 0.02]} color="#d2b4de" />
+        <Billboard position={[1, 1.5, -0.5]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.18} color="#9b59b6" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>New Admin</Text>
+        </Billboard>
+
+        {/* ── Geo Office — bottom-center-left ── */}
+        <Box position={[-2, 0, 2.5]} size={[1.4, 0.9, 2]} color="#f1c40f" />
+        <Box position={[-2, 0.9, 2.5]} size={[1.4, 0.06, 2]} color="#d4ac0d" />
+        <Billboard position={[-2, 1.3, 2.5]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.16} color="#f1c40f" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Geo Office</Text>
+        </Billboard>
+
+        {/* ── Current Admin — bottom-center ── */}
+        <Box position={[1, 0, 2.5]} size={[2.5, 1, 2.2]} color="#8e44ad" />
+        <Box position={[1, 1, 2.5]} size={[2.5, 0.06, 2.2]} color="#6c3483" />
+        <Billboard position={[1, 1.4, 2.5]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.18} color="#8e44ad" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Current Admin</Text>
+        </Billboard>
+
+        {/* ── Lab — bottom-left, tall narrow building ── */}
+        <Box position={[-5, 0, 3.5]} size={[1.4, 1.2, 3]} color="#2ecc71" />
+        <Box position={[-5, 1.2, 3.5]} size={[1.4, 0.06, 3]} color="#27ae60" />
+        <Billboard position={[-5, 1.6, 3.5]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.18} color="#2ecc71" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Lab</Text>
+        </Billboard>
+      </group>
+
+      {/* ═══ WAREHOUSE & STORES (right side) ═══ */}
 
       {/* ── Stores Compound — U-shape containers ── */}
-      <group position={[2, 0, 0]}>
+      <group position={[4, 0, -3]}>
         {/* Concrete slab 12m x 9.5m */}
         <GroundPad position={[0, 0, 0]} size={[5, 4]} color="#aaa" />
 
@@ -612,53 +650,54 @@ function AdminAndStores() {
           <cylinderGeometry args={[2.6, 2.6, 5, 16, 1, true, 0, Math.PI]} />
           <meshStandardMaterial color="#eee" roughness={0.6} metalness={0.1} transparent opacity={0.35} side={THREE.DoubleSide} />
         </mesh>
+      </group>
 
-        {/* Laydown Yard — south of compound */}
-        <GroundPad position={[0, 0, 3]} size={[7, 3]} color="#8B8" />
-        {/* LD-A, LD-B bays */}
-        <Box position={[-1.5, 0, 2.5]} size={[1.5, 0.05, 1]} color="#aab" />
-        <Box position={[-1.5, 0, 3.5]} size={[1.5, 0.05, 1]} color="#aab" />
-        {/* Forklift access lane */}
-        <GroundPad position={[1, 0, 2.5]} size={[1.5, 1.5]} color="#cc9" />
+      {/* ── Laydown Yard — south of compound ── */}
+      <group position={[4, 0, 1]}>
+        <GroundPad position={[0, 0, 0]} size={[7, 3]} color="#8B8" />
+        <Box position={[-1.5, 0, -0.5]} size={[1.5, 0.05, 1]} color="#aab" />
+        <Box position={[-1.5, 0, 0.5]} size={[1.5, 0.05, 1]} color="#aab" />
+        <GroundPad position={[1, 0, -0.5]} size={[1.5, 1.5]} color="#cc9" />
+        <Box position={[3.5, 0, -1]} size={[1, 0.05, 0.8]} color="#aab" />
+        <Box position={[3.5, 0, 0]} size={[1, 0.05, 0.8]} color="#aab" />
+        <Box position={[3.5, 0, 1]} size={[1, 0.05, 0.8]} color="#aab" />
+      </group>
 
-        {/* LD-C/D/E/F — right side laydown */}
-        <Box position={[3.5, 0, 2]} size={[1, 0.05, 0.8]} color="#aab" />
-        <Box position={[3.5, 0, 3]} size={[1, 0.05, 0.8]} color="#aab" />
-        <Box position={[3.5, 0, 4]} size={[1, 0.05, 0.8]} color="#aab" />
-
-        {/* C06 — 40ft container south */}
-        <Box position={[0, 0, 5]} size={[2.4, 0.9, 0.8]} color="#1976d2" />
-        <Billboard position={[0, 1.1, 5]} follow lockX={false} lockY={false} lockZ={false}>
-          <Text fontSize={0.15} color="#1976d2" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>C06</Text>
+      {/* ── Boli Bay — vehicle wash bay, below warehouse ── */}
+      <group position={[4, 0, 4]}>
+        <Box position={[0, 0, 0]} size={[3, 1.4, 2]} color="#bdc3c7" />
+        <Box position={[0, 1.4, 0]} size={[3.3, 0.08, 2.3]} color="#95a5a6" />
+        <Box position={[0, 0.7, -1.02]} size={[2.5, 1.2, 0.04]} color="#7f8c8d" />
+        <GroundPad position={[0, 0, 1.5]} size={[3.5, 1.5]} color="#999" />
+        <Billboard position={[0, 1.8, 0]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.18} color="#bdc3c7" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Boli Bay</Text>
         </Billboard>
       </group>
 
-      {/* Hand Wash Station */}
-      <Box position={[0.5, 0, 2]} size={[0.5, 0.5, 0.5]} color="#eee" />
+      {/* ── Remo containers (accommodation/storage) — far right ── */}
+      <group position={[9, 0, 1]}>
+        <Box position={[0, 0, 0]} size={[2, 0.9, 1.2]} color="#78909c" />
+        <Box position={[0, 0, 2]} size={[2, 0.9, 1.2]} color="#78909c" />
+        <Box position={[0, 0, 4]} size={[2, 0.9, 1.2]} color="#78909c" />
+        <Billboard position={[0, 1.2, 2]} follow lockX={false} lockY={false} lockZ={false}>
+          <Text fontSize={0.16} color="#78909c" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Remo Units</Text>
+        </Billboard>
+      </group>
 
-      {/* Water Tank — circular blue tank nearby */}
-      <Tank position={[-2, 0, -4]} radius={0.8} height={1.5} color="#2980b9" rimColor="#1f618d" />
-      <Billboard position={[-2, 2, -4]} follow lockX={false} lockY={false} lockZ={false}>
-        <Text fontSize={0.18} color="#2980b9" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>Water Tank</Text>
+      {/* ── C06 — 40ft container south ── */}
+      <Box position={[4, 0, 7]} size={[2.4, 0.9, 0.8]} color="#1976d2" />
+      <Billboard position={[4, 1.1, 7]} follow lockX={false} lockY={false} lockZ={false}>
+        <Text fontSize={0.15} color="#1976d2" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>C06</Text>
       </Billboard>
 
-      {/* Delivery Drop Off area */}
-      <GroundPad position={[6, 0, 5]} size={[2, 2]} color="#c0392b" />
-      <Billboard position={[6, 0.5, 5]} follow lockX={false} lockY={false} lockZ={false}>
+      {/* ── Delivery Drop Off ── */}
+      <GroundPad position={[10, 0, 7]} size={[2, 2]} color="#c0392b" />
+      <Billboard position={[10, 0.5, 7]} follow lockX={false} lockY={false} lockZ={false}>
         <Text fontSize={0.15} color="#c0392b" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>Delivery Drop Off</Text>
       </Billboard>
 
-      {/* Area labels */}
-      <Billboard position={[-3, 1.6, 0]} follow lockX={false} lockY={false} lockZ={false}>
-        <Text fontSize={0.2} color="#9b59b6" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>New Office</Text>
-      </Billboard>
-      <Billboard position={[-6, 1.2, 2]} follow lockX={false} lockY={false} lockZ={false}>
-        <Text fontSize={0.18} color="#f1c40f" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Geo Office</Text>
-      </Billboard>
-      <Billboard position={[-5.5, 1.8, -2.5]} follow lockX={false} lockY={false} lockZ={false}>
-        <Text fontSize={0.18} color="#bdc3c7" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Boli Bay</Text>
-      </Billboard>
-      <Billboard position={[2, 1.8, -0.2]} follow lockX={false} lockY={false} lockZ={false}>
+      {/* ── Compound label ── */}
+      <Billboard position={[4, 1.8, -3]} follow lockX={false} lockY={false} lockZ={false}>
         <Text fontSize={0.2} color="#eee" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Stores Compound</Text>
       </Billboard>
     </group>
