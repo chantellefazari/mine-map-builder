@@ -553,8 +553,8 @@ function SiteInfrastructure({ color }: { color: string }) {
 function AdminAndStores() {
   return (
     <group position={[2, 0, -18]}>
-      {/* ═══ ADMIN PRECINCT (left side) ═══ */}
-      <group position={[-6, 0, 0]}>
+      {/* ═══ ADMIN PRECINCT (right side) ═══ */}
+      <group position={[6, 0, 0]}>
 
         {/* ── Toilets — small building, upper-left ── */}
         <Box position={[-4, 0, -4]} size={[1.2, 0.8, 1.8]} color="#bdc3c7" />
@@ -608,10 +608,10 @@ function AdminAndStores() {
         </Billboard>
       </group>
 
-      {/* ═══ WAREHOUSE & STORES (right side) ═══ */}
+      {/* ═══ WAREHOUSE & STORES (left side) ═══ */}
 
       {/* ── Stores Compound — U-shape containers ── */}
-      <group position={[4, 0, -3]}>
+      <group position={[-6, 0, -3]}>
         {/* Concrete slab 12m x 9.5m */}
         <GroundPad position={[0, 0, 0]} size={[5, 4]} color="#aaa" />
 
@@ -653,7 +653,7 @@ function AdminAndStores() {
       </group>
 
       {/* ── Laydown Yard — south of compound ── */}
-      <group position={[4, 0, 1]}>
+      <group position={[-6, 0, 1]}>
         <GroundPad position={[0, 0, 0]} size={[7, 3]} color="#8B8" />
         <Box position={[-1.5, 0, -0.5]} size={[1.5, 0.05, 1]} color="#aab" />
         <Box position={[-1.5, 0, 0.5]} size={[1.5, 0.05, 1]} color="#aab" />
@@ -664,7 +664,7 @@ function AdminAndStores() {
       </group>
 
       {/* ── Boli Bay — vehicle wash bay, below warehouse ── */}
-      <group position={[4, 0, 4]}>
+      <group position={[-6, 0, 4]}>
         <Box position={[0, 0, 0]} size={[3, 1.4, 2]} color="#bdc3c7" />
         <Box position={[0, 1.4, 0]} size={[3.3, 0.08, 2.3]} color="#95a5a6" />
         <Box position={[0, 0.7, -1.02]} size={[2.5, 1.2, 0.04]} color="#7f8c8d" />
@@ -675,7 +675,7 @@ function AdminAndStores() {
       </group>
 
       {/* ── Remo containers (accommodation/storage) — far right ── */}
-      <group position={[9, 0, 1]}>
+      <group position={[-11, 0, 1]}>
         <Box position={[0, 0, 0]} size={[2, 0.9, 1.2]} color="#78909c" />
         <Box position={[0, 0, 2]} size={[2, 0.9, 1.2]} color="#78909c" />
         <Box position={[0, 0, 4]} size={[2, 0.9, 1.2]} color="#78909c" />
@@ -685,19 +685,19 @@ function AdminAndStores() {
       </group>
 
       {/* ── C06 — 40ft container south ── */}
-      <Box position={[4, 0, 7]} size={[2.4, 0.9, 0.8]} color="#1976d2" />
-      <Billboard position={[4, 1.1, 7]} follow lockX={false} lockY={false} lockZ={false}>
+      <Box position={[-6, 0, 7]} size={[2.4, 0.9, 0.8]} color="#1976d2" />
+      <Billboard position={[-6, 1.1, 7]} follow lockX={false} lockY={false} lockZ={false}>
         <Text fontSize={0.15} color="#1976d2" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>C06</Text>
       </Billboard>
 
       {/* ── Delivery Drop Off ── */}
-      <GroundPad position={[10, 0, 7]} size={[2, 2]} color="#c0392b" />
-      <Billboard position={[10, 0.5, 7]} follow lockX={false} lockY={false} lockZ={false}>
+      <GroundPad position={[-12, 0, 7]} size={[2, 2]} color="#c0392b" />
+      <Billboard position={[-12, 0.5, 7]} follow lockX={false} lockY={false} lockZ={false}>
         <Text fontSize={0.15} color="#c0392b" anchorX="center" anchorY="bottom" outlineWidth={0.01} outlineColor="#000" font={undefined}>Delivery Drop Off</Text>
       </Billboard>
 
       {/* ── Compound label ── */}
-      <Billboard position={[4, 1.8, -3]} follow lockX={false} lockY={false} lockZ={false}>
+      <Billboard position={[-6, 1.8, -3]} follow lockX={false} lockY={false} lockZ={false}>
         <Text fontSize={0.2} color="#eee" anchorX="center" anchorY="bottom" outlineWidth={0.02} outlineColor="#000" font={undefined}>Stores Compound</Text>
       </Billboard>
     </group>
