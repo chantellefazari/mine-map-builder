@@ -608,10 +608,10 @@ function AdminAndStores() {
         </Billboard>
       </group>
 
-      {/* ═══ WAREHOUSE & STORES (right side) ═══ */}
+      {/* ═══ WAREHOUSE & STORES (left side) ═══ */}
 
       {/* ── Stores Compound — U-shape containers ── */}
-      <group position={[4, 0, -3]}>
+      <group position={[-6, 0, -3]}>
         {/* Concrete slab 12m x 9.5m */}
         <GroundPad position={[0, 0, 0]} size={[5, 4]} color="#aaa" />
 
