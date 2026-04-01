@@ -1,5 +1,5 @@
 import { useRef, useState, useMemo, useEffect, Suspense } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Text, Billboard } from "@react-three/drei";
 import * as THREE from "three";
 import { PACKAGES, SHUTDOWN_AREAS, buildAreaSummaries, type AreaSummary } from "./shutdownData";
