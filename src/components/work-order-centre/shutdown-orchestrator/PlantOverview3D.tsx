@@ -780,6 +780,7 @@ const ZONE_BOUNDS: Record<string, { pos: [number, number, number]; size: [number
   "Utilities & Power":      { pos: [10,   0.03, -5.5],  size: [8, 0.02, 4] },
   "Site Infrastructure":    { pos: [13,   0.03, -6],    size: [6, 0.02, 3] },
   "Support Services":       { pos: [14,   0.03, -3],    size: [5, 0.02, 3] },
+  "Admin & Stores":         { pos: [2,    0.03, -18],   size: [22, 0.02, 16] },
 };
 
 function ZoneOverlay({ area, layout, isSelected, onSelect }: {
@@ -829,6 +830,48 @@ function ZoneOverlay({ area, layout, isSelected, onSelect }: {
       {(area.status === "At Risk" || area.status === "Delayed") && (
         <PulsingRing position={layout.pos} color={baseColor} size={Math.max(layout.size[0], layout.size[2]) * 0.4} />
       )}
+    </group>
+  );
+}
+
+function AdminZoneOverlay({ layout, isSelected, onSelect }: {
+  layout: { pos: [number, number, number]; size: [number, number, number] };
+  isSelected: boolean;
+  onSelect: () => void;
+}) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+  useFrame(({ clock }) => {
+    if (!meshRef.current) return;
+    const mat = meshRef.current.material as THREE.MeshBasicMaterial;
+    mat.opacity = isSelected
+      ? 0.12 + Math.sin(clock.getElapsedTime() * 3) * 0.08
+      : hovered ? 0.1 : 0.04;
+  });
+  return (
+    <group>
+      <mesh
+        ref={meshRef}
+        position={layout.pos}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = "pointer"; }}
+        onPointerOut={() => { setHovered(false); document.body.style.cursor = "auto"; }}
+        onClick={(e) => { e.stopPropagation(); onSelect(); }}
+      >
+        <boxGeometry args={layout.size} />
+        <meshBasicMaterial color="#9b59b6" transparent opacity={0.04} />
+      </mesh>
+      {isSelected && (
+        <mesh position={layout.pos}>
+          <boxGeometry args={[layout.size[0] + 0.1, 0.04, layout.size[2] + 0.1]} />
+          <meshBasicMaterial color="#fff" wireframe />
+        </mesh>
+      )}
+      <Billboard position={[layout.pos[0], 3.5, layout.pos[2]]} follow lockX={false} lockY={false} lockZ={false}>
+        <Text fontSize={0.4} color="white" anchorX="center" anchorY="bottom"
+          outlineWidth={0.03} outlineColor="#000000" font={undefined}>
+          Admin & Stores
+        </Text>
+      </Billboard>
     </group>
   );
 }
@@ -947,6 +990,13 @@ function Scene({ areaSummaries, selectedArea, onSelectArea }: {
         );
       })}
 
+      {/* Admin & Stores clickable zone (no work packages, standalone) */}
+      <AdminZoneOverlay
+        layout={ZONE_BOUNDS["Admin & Stores"]}
+        isSelected={selectedArea === "Admin & Stores"}
+        onSelect={() => onSelectArea("Admin & Stores")}
+      />
+
       <CameraAnimator selectedArea={selectedArea} />
     </>
   );
@@ -1012,6 +1062,23 @@ export function PlantOverview3D({ className }: { className?: string }) {
           <button onClick={handleNavigate} className="w-full text-center text-[10px] font-medium text-primary hover:underline">
             Open in Area Map →
           </button>
+        </div>
+      )}
+
+      {selectedArea === "Admin & Stores" && (
+        <div className="absolute top-3 left-3 w-56 bg-card/95 backdrop-blur-sm border border-border rounded-lg p-3 shadow-lg">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-foreground">Admin & Stores</span>
+            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-primary/10 text-primary">
+              Support
+            </span>
+          </div>
+          <div className="text-[10px] text-muted-foreground space-y-1">
+            <p>Lab · Crib Room · Toilets</p>
+            <p>New Admin · Current Admin · Geo Office</p>
+            <p>Stores Compound · Boli Bay</p>
+            <p>Remo Units · Water Tanks</p>
+          </div>
         </div>
       )}
     </div>
