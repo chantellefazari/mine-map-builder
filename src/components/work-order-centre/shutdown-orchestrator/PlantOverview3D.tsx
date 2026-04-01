@@ -179,10 +179,10 @@ function Pipe({ points, color = "#888" }: { points: [number, number, number][]; 
 /*  AREA GROUPS — Each area is a group of 3D equipment                */
 /* ------------------------------------------------------------------ */
 
-/** Site Infrastructure — buildings, substation, offices */
+/** Site Infrastructure — buildings, substation, offices (top-right in drone view) */
 function SiteInfrastructure({ color }: { color: string }) {
   return (
-    <group position={[-9, 0, -6]}>
+    <group position={[9, 0, -7]}>
       <Building position={[0, 0, 0]} size={[2.5, 1.2, 1.8]} color={color} />
       <Building position={[3, 0, 0]} size={[1.5, 0.8, 1.2]} color={color} />
       <Building position={[1.5, 0, -2]} size={[1.8, 0.6, 1]} color="#666" />
@@ -190,10 +190,10 @@ function SiteInfrastructure({ color }: { color: string }) {
   );
 }
 
-/** Utilities & Power — generators, switchgear, transformers */
+/** Utilities & Power — generators, switchgear, transformers (right side, mid-level in drone view) */
 function UtilitiesPower({ color }: { color: string }) {
   return (
-    <group position={[8, 0, -6]}>
+    <group position={[9, 0, 0]}>
       {/* Generators */}
       <HorizontalCylinder position={[0, 0.8, 0]} radius={0.5} length={1.8} color={color} />
       <HorizontalCylinder position={[0, 0.8, 1.5]} radius={0.5} length={1.8} color={color} />
@@ -205,10 +205,10 @@ function UtilitiesPower({ color }: { color: string }) {
   );
 }
 
-/** Comminution / Process — mills, classification, screens */
+/** Comminution / Process — mills, classification, screens (bottom-center in drone view) */
 function ComminutionProcess({ color }: { color: string }) {
   return (
-    <group position={[-6, 0, 0]}>
+    <group position={[2, 0, 5]}>
       {/* Ball Mills */}
       <HorizontalCylinder position={[0, 1, 0]} radius={0.9} length={3} color="#2b2d7c" />
       <HorizontalCylinder position={[0, 1, 2.5]} radius={0.7} length={2.5} color="#5b3a8c" />
@@ -222,19 +222,21 @@ function ComminutionProcess({ color }: { color: string }) {
       {/* Pumps */}
       <Pump position={[2, 0, 2]} color={color} />
       <Pump position={[2.5, 0, 2]} color={color} />
+      {/* Conveyor running from mills toward recovery */}
+      <Conveyor start={[-1, 0.5, -0.5]} end={[-1, 1.5, -4]} color="#777" />
     </group>
   );
 }
 
-/** Gold Recovery — CIP tanks, elution, electro-winning */
+/** Gold Recovery — CIP tanks, elution, electro-winning (top-center in drone view, rows of tanks) */
 function GoldRecovery({ color }: { color: string }) {
   return (
-    <group position={[2, 0, 1]}>
-      {/* CIP Tanks row */}
+    <group position={[-1, 0, -3]}>
+      {/* CIP Tanks row — running left-to-right matching drone image */}
       {[0, 1.2, 2.4, 3.6, 4.8].map((x, i) => (
         <VerticalTank key={i} position={[x, 0, 0]} radius={0.5} height={1.3} color="#1a7a4a" rimColor="#0d5c34" />
       ))}
-      {/* Leach tanks */}
+      {/* Leach tanks — second row behind CIP */}
       <VerticalTank position={[0, 0, -2]} radius={0.55} height={1.4} color="#c49a2a" rimColor="#a07818" />
       <VerticalTank position={[1.3, 0, -2]} radius={0.55} height={1.4} color="#c49a2a" rimColor="#a07818" />
       <VerticalTank position={[2.6, 0, -2]} radius={0.55} height={1.4} color="#c49a2a" rimColor="#a07818" />
@@ -253,24 +255,24 @@ function GoldRecovery({ color }: { color: string }) {
   );
 }
 
-/** Tailings — thickener, pumps */
+/** Tailings — thickener, pumps (bottom-left in drone view) */
 function TailingsArea({ color }: { color: string }) {
   return (
-    <group position={[3, 0, 6]}>
+    <group position={[-7, 0, 5]}>
       <Thickener position={[0, 0, 0]} radius={2.2} color={color} />
       {/* Underflow pumps */}
       <Pump position={[-2.5, 0, 0]} color="#c49a2a" />
       <Pump position={[-2.5, 0, 0.6]} color="#c49a2a" />
-      {/* Pipe from thickener */}
-      <Pipe points={[[-2.2, 0.5, 0], [-2.5, 0.3, 0]]} color="#888" />
+      {/* Pipe from thickener toward comminution */}
+      <Pipe points={[[2.2, 0.5, 0], [4, 0.5, 0], [6, 0.8, 1]]} color="#888" />
     </group>
   );
 }
 
-/** Support Services — workshop, stores */
+/** Support Services — workshop, stores (top area, left of site infra in drone view) */
 function SupportServices({ color }: { color: string }) {
   return (
-    <group position={[-8, 0, 5]}>
+    <group position={[4, 0, -8]}>
       <Building position={[0, 0, 0]} size={[3, 1, 2]} color={color} />
       <Building position={[3.5, 0, 0]} size={[1.5, 0.7, 1.5]} color="#555" />
     </group>
