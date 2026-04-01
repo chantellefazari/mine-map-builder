@@ -224,6 +224,8 @@ export function WOCSchedule() {
         <VendorSchedulingView />
       ) : scheduleMode === "shutdown" ? (
         <ShutdownScheduleView />
+      ) : scheduleMode === "orchestrator" ? (
+        <ShutdownOrchestratorView />
       ) : scheduleView === "report" ? (
         <WOCScheduleReport weekOffset={weekOffset} personnelByDay={personnel} />
       ) : (
