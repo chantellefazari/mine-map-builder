@@ -6,6 +6,7 @@ import {
 import { ShutdownOverviewTab } from "./ShutdownOverviewTab";
 import { ShutdownAreaMapTab } from "./ShutdownAreaMapTab";
 import { ShutdownSequenceFlowTab } from "./ShutdownSequenceFlowTab";
+import { ShutdownControlBoardTab } from "./ShutdownControlBoardTab";
 
 const SUB_TABS = [
   { key: "overview", label: "Shutdown Overview", icon: LayoutDashboard },
@@ -84,6 +85,8 @@ export function ShutdownOrchestratorView() {
         <ShutdownAreaMapTab />
       ) : activeTab === "sequence" ? (
         <ShutdownSequenceFlowTab />
+      ) : activeTab === "control" ? (
+        <ShutdownControlBoardTab />
       ) : (
         <TabPlaceholder tab={currentTab} />
       )}
