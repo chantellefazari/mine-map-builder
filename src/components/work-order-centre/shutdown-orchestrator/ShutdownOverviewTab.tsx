@@ -323,7 +323,7 @@ export function ShutdownOverviewTab() {
                   <span className="font-mono">{r.workPackage}</span>
                   <span>{r.owner}</span>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
