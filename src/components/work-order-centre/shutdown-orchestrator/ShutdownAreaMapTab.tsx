@@ -146,6 +146,7 @@ const ALL_STATUSES: AreaStatus[] = ["Not Started", "Ready", "Active", "At Risk",
 /* ------------------------------------------------------------------ */
 
 export function ShutdownAreaMapTab() {
+  const ctx = useOrchestratorContext();
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
   const [overlays, setOverlays] = useState<Set<Overlay>>(new Set());
   const [filterArea, setFilterArea] = useState("All");
@@ -153,7 +154,14 @@ export function ShutdownAreaMapTab() {
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterCritical, setFilterCritical] = useState(false);
 
-  const selectedArea = AREAS.find((a) => a.id === selectedAreaId) ?? null;
+  // When selecting an area, propagate to context for cross-tab filtering
+  const handleAreaSelect = (areaId: string | null) => {
+    setSelectedAreaId(areaId);
+    if (areaId) {
+      const area = AREAS.find(a => a.id === areaId);
+      if (area) ctx.setFilterArea(area.name);
+    }
+  };
   const areaPackages = useMemo(
     () => (selectedAreaId ? DEMO_PACKAGES.filter((p) => p.area === selectedAreaId) : []),
     [selectedAreaId]
