@@ -72,35 +72,34 @@ function Thickener({ position, radius = 2, color }: {
 }) {
   return (
     <group position={position}>
-      {/* Main wall */}
       <mesh position={[0, 0.5, 0]} castShadow>
         <cylinderGeometry args={[radius, radius, 1, 32, 1, true]} />
         <meshStandardMaterial color={color} roughness={0.5} metalness={0.2} side={THREE.DoubleSide} />
       </mesh>
-      {/* Water surface */}
       <mesh position={[0, 0.95, 0]}>
         <cylinderGeometry args={[radius - 0.05, radius - 0.05, 0.05, 32]} />
         <meshStandardMaterial color="#4a9eb5" roughness={0.8} metalness={0} opacity={0.7} transparent />
       </mesh>
-      {/* Bridge/rake */}
       <mesh position={[0, 1.3, 0]}>
         <boxGeometry args={[radius * 2 - 0.2, 0.08, 0.15]} />
         <meshStandardMaterial color="#444" roughness={0.3} metalness={0.6} />
       </mesh>
-      {/* Center shaft */}
       <mesh position={[0, 0.7, 0]}>
         <cylinderGeometry args={[0.1, 0.1, 1.4, 12]} />
         <meshStandardMaterial color="#444" roughness={0.3} metalness={0.6} />
       </mesh>
-      {/* Drive head */}
       <mesh position={[0, 1.45, 0]}>
         <boxGeometry args={[0.3, 0.25, 0.3]} />
         <meshStandardMaterial color="#333" roughness={0.3} metalness={0.5} />
       </mesh>
-      {/* Rim ring */}
       <mesh position={[0, 1.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[radius, radius + 0.2, 32]} />
         <meshStandardMaterial color="#666" roughness={0.4} metalness={0.3} side={THREE.DoubleSide} />
+      </mesh>
+      {/* Handrail ring */}
+      <mesh position={[0, 1.15, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[radius + 0.15, radius + 0.2, 32]} />
+        <meshStandardMaterial color="#999" roughness={0.4} metalness={0.4} side={THREE.DoubleSide} />
       </mesh>
     </group>
   );
@@ -192,10 +191,39 @@ function SteelFrame({ position, size, color = "#4a9eb5" }: {
       <mesh position={[0, h, d/2]}><boxGeometry args={[w, bar, bar]} /><meshStandardMaterial color={color} roughness={0.3} metalness={0.6} /></mesh>
       <mesh position={[-w/2, h, 0]}><boxGeometry args={[bar, bar, d]} /><meshStandardMaterial color={color} roughness={0.3} metalness={0.6} /></mesh>
       <mesh position={[w/2, h, 0]}><boxGeometry args={[bar, bar, d]} /><meshStandardMaterial color={color} roughness={0.3} metalness={0.6} /></mesh>
-      <mesh position={[0, h * 0.5, -d/2]} rotation={[0, 0, Math.PI/6]}>
-        <boxGeometry args={[bar, h * 0.6, bar]} />
-        <meshStandardMaterial color={color} roughness={0.3} metalness={0.6} />
-      </mesh>
+      {/* Mid-height bracing */}
+      <mesh position={[0, h * 0.5, -d/2]}><boxGeometry args={[w, bar, bar]} /><meshStandardMaterial color={color} roughness={0.3} metalness={0.6} /></mesh>
+      <mesh position={[0, h * 0.5, d/2]}><boxGeometry args={[w, bar, bar]} /><meshStandardMaterial color={color} roughness={0.3} metalness={0.6} /></mesh>
+    </group>
+  );
+}
+
+function PipeRack({ start, end, height = 2, color = "#e8d44d" }: {
+  start: [number, number, number]; end: [number, number, number]; height?: number; color?: string;
+}) {
+  const dx = end[0] - start[0], dz = end[2] - start[2];
+  const len = Math.sqrt(dx * dx + dz * dz);
+  const cx = (start[0] + end[0]) / 2, cz = (start[2] + end[2]) / 2;
+  const yRot = Math.atan2(dx, dz);
+  const bar = 0.05;
+  const cols = Math.max(2, Math.floor(len / 2.5));
+  return (
+    <group position={[cx, 0, cz]} rotation={[0, yRot, 0]}>
+      {/* Uprights */}
+      {Array.from({ length: cols }, (_, i) => {
+        const z = -len / 2 + (i / (cols - 1)) * len;
+        return (
+          <group key={i}>
+            <mesh position={[-0.3, height / 2, z]}><boxGeometry args={[bar, height, bar]} /><meshStandardMaterial color={color} roughness={0.3} metalness={0.5} /></mesh>
+            <mesh position={[0.3, height / 2, z]}><boxGeometry args={[bar, height, bar]} /><meshStandardMaterial color={color} roughness={0.3} metalness={0.5} /></mesh>
+          </group>
+        );
+      })}
+      {/* Top beams */}
+      <mesh position={[-0.3, height, 0]}><boxGeometry args={[bar, bar, len]} /><meshStandardMaterial color={color} roughness={0.3} metalness={0.5} /></mesh>
+      <mesh position={[0.3, height, 0]}><boxGeometry args={[bar, bar, len]} /><meshStandardMaterial color={color} roughness={0.3} metalness={0.5} /></mesh>
+      {/* Cross beam at top */}
+      <mesh position={[0, height, 0]}><boxGeometry args={[0.65, bar, bar]} /><meshStandardMaterial color={color} roughness={0.3} metalness={0.5} /></mesh>
     </group>
   );
 }
@@ -212,119 +240,151 @@ function GroundPad({ position, size, color = "#8B7355" }: {
 }
 
 /* ------------------------------------------------------------------ */
-/*  LAYOUT — Matching Navisworks exactly                               */
-/*                                                                     */
-/*  Looking from camera (south-east looking north-west):               */
-/*                                                                     */
-/*  UPPER-LEFT: Tailings (Filter Press + Thickener)                    */
-/*  CENTER: Comminution (Cyclones, SAG Mill, Crusher, Conveyors)       */
-/*  CENTER-RIGHT: Gold Recovery (2 rows of CIP/Leach tanks)            */
-/*  UPPER-RIGHT: Utilities (Water tank, reagent tanks, MCC)            */
-/*  FAR RIGHT: TSF (red pond with concrete walls)                      */
-/*  BOTTOM-CENTER: ROM/Crusher area with conveyor going up             */
-/*                                                                     */
-/*  X = east (right), Z = south (toward camera), -Z = north            */
+/*  AREA COMPONENTS                                                    */
 /* ------------------------------------------------------------------ */
 
-/* ── TAILINGS (TAIL) — UPPER-LEFT: thickener + filter press buildings ── */
+/* ── TAILINGS (TAIL) ── */
 function TailingsArea() {
   return (
     <group position={[-7, 0, -4]}>
-      {/* Filter Press Buildings — far left, white with red/brown roof strips */}
-      {/* 3 rectangular buildings side by side */}
+      {/* Filter Press Buildings — white buildings with brown/red roofs */}
       <Box position={[-4, 0, -1]} size={[1.8, 1.8, 3]} color="#ddd" />
       <Box position={[-4, 1.8, -1]} size={[1.8, 0.15, 3]} color="#8B4513" />
+      {/* Internal brown/red equipment visible through buildings */}
+      <Box position={[-4, 0.3, -0.2]} size={[1.4, 1.2, 0.3]} color="#a0522d" />
+      <Box position={[-4, 0.3, -1.5]} size={[1.4, 1.2, 0.3]} color="#8B4513" />
+      
       <Box position={[-2, 0, -1]} size={[1.5, 1.8, 3]} color="#ddd" />
       <Box position={[-2, 1.8, -1]} size={[1.5, 0.15, 3]} color="#c0392b" />
+      <Box position={[-2, 0.3, -0.3]} size={[1.1, 1.2, 0.3]} color="#a0522d" />
+      <Box position={[-2, 0.3, -1.6]} size={[1.1, 1.2, 0.3]} color="#8B4513" />
+      
       <Box position={[-0.5, 0, -1]} size={[1, 1.5, 2.5]} color="#eee" />
       <Box position={[-0.5, 1.5, -1]} size={[1, 0.12, 2.5]} color="#8B4513" />
 
-      {/* Green steelwork around filter press */}
+      {/* Green steelwork around filter press — more prominent */}
       <SteelFrame position={[-3, 0, -1]} size={[6, 2.2, 4]} color="#27ae60" />
+      <SteelFrame position={[-3, 0, 1]} size={[5, 1.8, 1.5]} color="#27ae60" />
+      
+      {/* Yellow steelwork at back of filter press */}
+      <SteelFrame position={[-1, 0, -3]} size={[3, 2, 1.5]} color="#e8d44d" />
 
-      {/* Grey concrete pad under filter buildings */}
+      {/* Grey concrete pad */}
       <GroundPad position={[-3, 0, -1]} size={[8, 5]} color="#888" />
 
-      {/* Main Thickener — large bright cyan disc, right of filter buildings */}
+      {/* Main Thickener — large bright cyan disc */}
       <Thickener position={[3, 0, -1]} radius={2.8} color="#00b4d8" />
-      {/* Thickener concrete pad */}
       <GroundPad position={[3, 0, -1]} size={[7, 7]} color="#777" />
 
-      {/* Small yellow/green structures next to thickener */}
+      {/* Small structures around thickener */}
       <Box position={[3, 0, -4.5]} size={[2.5, 0.8, 1.5]} color="#b8960b" />
       <Box position={[5.5, 0, -4.5]} size={[1, 0.6, 1]} color="#27ae60" />
+      <Box position={[6.2, 0, -3]} size={[0.6, 0.4, 0.6]} color="#4a9eb5" />
+      
+      {/* Walkway bridge to thickener */}
+      <mesh position={[0.5, 1.1, -1]} rotation={[0, 0.3, 0]}>
+        <boxGeometry args={[2, 0.04, 0.5]} />
+        <meshStandardMaterial color="#4a9eb5" roughness={0.3} metalness={0.5} />
+      </mesh>
 
-      {/* Underflow pumps south side */}
+      {/* Underflow pumps */}
       <Pump position={[0.5, 0, 1.5]} color="#c49a2a" />
       <Pump position={[1.5, 0, 1.5]} color="#c49a2a" />
       <Pump position={[2.5, 0, 1.5]} color="#c49a2a" />
 
-      {/* Pipe from thickener south */}
+      {/* Pipes from thickener */}
       <Pipe points={[[3, 0.5, 1.5], [4, 0.5, 3], [6, 0.5, 4]]} color="#e84393" />
+      <Pipe points={[[5.5, 0.4, -1], [6.5, 0.4, 0], [7, 0.4, 2]]} color="#e84393" radius={0.05} />
     </group>
   );
 }
 
-/* ── COMMINUTION / PROCESS (COM) — CENTER: cyclones, SAG mill, crusher, conveyors ── */
+/* ── COMMINUTION / PROCESS (COM) ── */
 function ComminutionProcess() {
   return (
     <group position={[2, 0, 0]}>
-      {/* Cyclone cluster — tall blue steelwork tower with cone separators */}
+      {/* Cyclone cluster — tall blue steelwork tower */}
       <group position={[-2, 0, -2]}>
         <SteelFrame position={[0, 0, 0]} size={[2, 3.5, 2]} color="#0099cc" />
+        <SteelFrame position={[0, 3.5, 0]} size={[1.5, 1.5, 1.5]} color="#0099cc" />
         <ConeTank position={[-0.4, 1.5, -0.3]} radius={0.25} height={0.7} color="#4a9eb5" />
         <ConeTank position={[0.2, 1.5, -0.3]} radius={0.25} height={0.7} color="#4a9eb5" />
         <ConeTank position={[-0.1, 1.5, 0.3]} radius={0.25} height={0.7} color="#4a9eb5" />
         <ConeTank position={[0.5, 1.5, 0.3]} radius={0.25} height={0.7} color="#4a9eb5" />
-        {/* Extra steelwork levels */}
+        <ConeTank position={[-0.3, 2.8, 0]} radius={0.2} height={0.6} color="#4a9eb5" />
+        <ConeTank position={[0.3, 2.8, 0]} radius={0.2} height={0.6} color="#4a9eb5" />
+        {/* Platform grating */}
         <mesh position={[0, 2.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[2, 2]} />
           <meshStandardMaterial color="#0099cc" transparent opacity={0.3} side={THREE.DoubleSide} />
         </mesh>
+        <mesh position={[0, 1.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[2, 2]} />
+          <meshStandardMaterial color="#0099cc" transparent opacity={0.2} side={THREE.DoubleSide} />
+        </mesh>
       </group>
 
-      {/* Conveyor going down-left at angle (light blue tube in Navisworks) */}
-      <Conveyor start={[-2, 2.5, -1]} end={[-1, 1, 3]} color="#87CEEB" />
+      {/* Green tanks/vessels near cyclone cluster */}
+      <Tank position={[-3.5, 0, -1]} radius={0.35} height={1.2} color="#2ec4a0" rimColor="#1a8a70" />
+      <Tank position={[-3.5, 0, 0.5]} radius={0.3} height={1} color="#27ae60" rimColor="#1e8449" />
+      <Tank position={[-4.2, 0, -0.3]} radius={0.25} height={0.8} color="#4a9eb5" />
 
-      {/* SAG Mill — bright yellow ellipsoid, south of cyclones */}
+      {/* Main conveyor — light blue, angled from lower-left up to cyclones */}
+      <Conveyor start={[-2, 2.5, -1]} end={[-1, 1, 3]} color="#87CEEB" />
+      
+      {/* Second conveyor at steeper angle */}
+      <Conveyor start={[-3.5, 3, -2.5]} end={[-2, 4.5, -2]} color="#87CEEB" />
+
+      {/* SAG Mill — bright yellow */}
       <mesh position={[-1, 1, 4]} castShadow>
-        <sphereGeometry args={[0.9, 24, 16]} />
+        <sphereGeometry args={[1.1, 24, 16]} />
         <meshStandardMaterial color="#e8d44d" roughness={0.4} metalness={0.3} />
       </mesh>
-      <HorizCyl position={[-1, 1, 4]} radius={0.7} length={1.3} color="#c49a2a" rotation={[Math.PI / 2, 0, 0]} />
-      {/* Mill motor */}
-      <Box position={[-1, 0, 5.2]} size={[0.5, 0.5, 0.4]} color="#1a6b6b" />
-
-      {/* Magenta ring around SAG mill (visible in Navisworks) */}
+      <HorizCyl position={[-1, 1, 4]} radius={0.85} length={1.5} color="#c49a2a" rotation={[Math.PI / 2, 0, 0]} />
+      {/* Mill motor and gearbox */}
+      <Box position={[-1, 0, 5.5]} size={[0.6, 0.6, 0.5]} color="#1a6b6b" />
+      <Box position={[-0.2, 0, 5.5]} size={[0.3, 0.4, 0.4]} color="#333" />
+      
+      {/* Magenta ring around SAG mill */}
       <mesh position={[-1, 0.03, 4]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[1.1, 1.2, 32]} />
+        <ringGeometry args={[1.3, 1.45, 32]} />
         <meshStandardMaterial color="#e84393" side={THREE.DoubleSide} />
       </mesh>
 
-      {/* Crusher/ROM area — yellow equipment at bottom */}
+      {/* Crusher/ROM — yellow equipment at bottom */}
       <Box position={[0, 0, 6]} size={[1.5, 1.2, 1.2]} color="#b8960b" />
       <Box position={[0, 1.2, 6]} size={[1, 0.4, 0.8]} color="#8B7355" />
-      {/* Yellow crusher equipment */}
       <Box position={[1.8, 0, 6.5]} size={[0.8, 0.8, 0.6]} color="#e8d44d" />
       <Box position={[1.8, 0, 5.5]} size={[0.6, 0.6, 0.4]} color="#1a6b6b" />
+      <Box position={[-2, 0, 6]} size={[0.6, 0.5, 0.6]} color="#e8d44d" />
 
-      {/* Conveyor from ROM up to crusher */}
+      {/* ROM conveyors */}
       <Conveyor start={[0, 0.5, 8]} end={[0, 1.5, 6]} color="#777" />
-
-      {/* Conveyor from crusher to cyclones */}
       <Conveyor start={[0, 1.5, 5.5]} end={[-1.5, 2.5, -1]} color="#777" />
+
+      {/* Process building — olive/dark yellow with white sections (between comminution & recovery) */}
+      <Box position={[3, 0, -3]} size={[3, 1.2, 2]} color="#8B8B00" />
+      <Box position={[3, 1.2, -3]} size={[3, 0.1, 2]} color="#27ae60" />
+      <Box position={[4.8, 0, -3]} size={[0.8, 1.4, 1.8]} color="#eee" />
+      <Box position={[1.5, 0, -3.5]} size={[0.6, 0.8, 0.8]} color="#e8d44d" />
+      {/* Blue equipment box on top */}
+      <Box position={[3.5, 1.3, -3]} size={[0.5, 0.4, 0.5]} color="#0066cc" />
 
       {/* Grey concrete pad */}
       <GroundPad position={[-0.5, 0, 3]} size={[6, 10]} color="#888" />
+      <GroundPad position={[3, 0, -3]} size={[5, 3]} color="#888" />
 
-      {/* Pink/magenta pipe runs heading east to recovery */}
-      <Pipe points={[[1, 0.4, -2], [3, 0.4, -2], [5, 0.4, -2], [7, 0.4, -2]]} color="#e84393" radius={0.05} />
-      <Pipe points={[[1, 0.6, -1.5], [3, 0.6, -1.5], [5, 0.6, -1.5], [7, 0.6, -1.5]]} color="#e8d44d" radius={0.04} />
+      {/* Dense pipe runs heading east */}
+      <Pipe points={[[1, 0.4, -2], [3, 0.4, -2], [5, 0.4, -2], [7, 0.4, -2], [9, 0.4, -2]]} color="#e84393" radius={0.05} />
+      <Pipe points={[[1, 0.6, -1.5], [3, 0.6, -1.5], [5, 0.6, -1.5], [7, 0.6, -1.5], [9, 0.6, -1.5]]} color="#e8d44d" radius={0.04} />
+      <Pipe points={[[1, 0.8, -1.8], [3, 0.8, -1.8], [5, 0.8, -1.8], [7, 0.8, -1.8], [9, 0.8, -1.8]]} color="#e84393" radius={0.04} />
+      <Pipe points={[[-2, 0.5, -3.5], [0, 0.5, -3.5], [3, 0.5, -4], [6, 0.5, -4.5], [9, 0.5, -5]]} color="#e84393" radius={0.05} />
+      <Pipe points={[[-2, 0.3, 1], [0, 0.3, 1], [3, 0.3, 0.5], [6, 0.3, 0]]} color="#4a9eb5" radius={0.04} />
     </group>
   );
 }
 
-/* ── GOLD RECOVERY (REC) — CENTER-RIGHT: 2 rows of CIP/Leach green tanks ── */
+/* ── GOLD RECOVERY (REC) ── */
 function GoldRecovery() {
   return (
     <group position={[8, 0, -1]}>
@@ -337,70 +397,146 @@ function GoldRecovery() {
         <Tank key={`cip-s-${i}`} position={[x, 0, 0.5]} radius={0.65} height={1.8} color="#27ae60" rimColor="#1e8449" />
       ))}
 
-      {/* Smaller leach tanks / additional equipment behind north row */}
+      {/* Smaller leach tanks behind north row */}
       <Tank position={[-2.5, 0, -4]} radius={0.4} height={1} color="#2ec4a0" rimColor="#1a8a70" />
       <Tank position={[-1.2, 0, -4]} radius={0.4} height={1} color="#2ec4a0" rimColor="#1a8a70" />
+      <Tank position={[0, 0, -4]} radius={0.35} height={0.9} color="#4a9eb5" />
+      <Tank position={[1.2, 0, -4]} radius={0.35} height={0.9} color="#4a9eb5" />
 
-      {/* Steelwork/walkways surrounding the tank farm — cyan */}
+      {/* Small cyan tanks at bottom-left of recovery area */}
+      <Tank position={[-3.5, 0, 2]} radius={0.4} height={1.2} color="#87CEEB" rimColor="#5f9ea0" />
+      <Tank position={[-2.5, 0, 2]} radius={0.35} height={1} color="#87CEEB" rimColor="#5f9ea0" />
+      
+      {/* Yellow equipment between tank rows */}
+      <Box position={[2.6, 0, -0.6]} size={[0.5, 0.5, 0.4]} color="#e8d44d" />
+      <Box position={[0.9, 0, -0.6]} size={[0.4, 0.4, 0.3]} color="#e8d44d" />
+      <Box position={[-0.8, 0, -0.6]} size={[0.4, 0.4, 0.3]} color="#e8d44d" />
+
+      {/* Dense steelwork/walkways — cyan */}
       <SteelFrame position={[0, 0, -1.8]} size={[7, 2.4, 3]} color="#4a9eb5" />
       <SteelFrame position={[0, 0, 0.5]} size={[7, 2.2, 2.5]} color="#4a9eb5" />
+      {/* Additional steelwork tiers */}
+      <SteelFrame position={[0, 2.4, -1.8]} size={[7, 0.8, 3]} color="#4a9eb5" />
+      <SteelFrame position={[-2.5, 0, -0.6]} size={[1.5, 2, 1.5]} color="#4a9eb5" />
 
       {/* Walkway grating between rows */}
       <mesh position={[0, 2, -0.65]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[7, 1.8]} />
         <meshStandardMaterial color="#4a9eb5" roughness={0.4} metalness={0.3} transparent opacity={0.3} side={THREE.DoubleSide} />
       </mesh>
+      {/* Upper level walkway */}
+      <mesh position={[0, 2.8, -1.8]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[7, 2.5]} />
+        <meshStandardMaterial color="#4a9eb5" roughness={0.4} metalness={0.3} transparent opacity={0.15} side={THREE.DoubleSide} />
+      </mesh>
 
       {/* Pumps between rows */}
       <Pump position={[-1.5, 0, -0.6]} color="#27ae60" />
       <Pump position={[0, 0, -0.6]} color="#27ae60" />
       <Pump position={[1.5, 0, -0.6]} color="#27ae60" />
+      <Pump position={[-2.5, 0, -0.6]} color="#27ae60" />
 
-      {/* Inter-tank pipe runs — magenta (pink) like Navisworks */}
+      {/* Inter-tank pipe runs — magenta/pink */}
       <Pipe points={[[-3, 2.05, -1.8], [-1, 2.05, -1.8], [1, 2.05, -1.8], [3, 2.05, -1.8]]} color="#e84393" radius={0.05} />
       <Pipe points={[[-3, 1.85, 0.5], [-1, 1.85, 0.5], [1, 1.85, 0.5], [3, 1.85, 0.5]]} color="#e84393" radius={0.05} />
+      <Pipe points={[[-3, 2.2, -1.5], [-1, 2.2, -1.5], [1, 2.2, -1.5], [3, 2.2, -1.5]]} color="#e84393" radius={0.04} />
+      <Pipe points={[[-3, 2.3, -2.1], [-1, 2.3, -2.1], [1, 2.3, -2.1], [3, 2.3, -2.1]]} color="#e8d44d" radius={0.04} />
 
-      {/* Yellow pipe runs along south edge */}
+      {/* Yellow pipe along south edge */}
       <Pipe points={[[-3.5, 0.3, 2], [0, 0.3, 2], [3.5, 0.3, 2]]} color="#e8d44d" radius={0.05} />
       <Pipe points={[[-3.5, 0.5, 2.2], [0, 0.5, 2.2], [3.5, 0.5, 2.2]]} color="#e84393" radius={0.04} />
+      <Pipe points={[[-3.5, 0.7, 2.4], [0, 0.7, 2.4], [3.5, 0.7, 2.4]]} color="#e84393" radius={0.03} />
 
-      {/* Concrete pad under entire recovery area */}
+      {/* Concrete pad */}
       <GroundPad position={[0, 0, -1]} size={[9, 7]} color="#888" />
 
-      {/* Small white buildings — south of tanks (elution, carbon screen) */}
+      {/* Small white buildings south — elution, carbon screen */}
       <Box position={[3.5, 0, 2.5]} size={[1.5, 1, 1.2]} color="#eee" />
       <Box position={[1.5, 0, 2.5]} size={[1, 0.8, 1]} color="#ddd" />
+      <Box position={[-0.5, 0, 3]} size={[1.2, 0.7, 0.8]} color="#eee" />
     </group>
   );
 }
 
-/* ── UTILITIES & POWER (UTL) — UPPER-RIGHT: water tank, reagent tanks, MCC ── */
+/* ── UTILITIES & POWER (UTL) ── */
 function UtilitiesPower() {
   return (
     <group position={[10, 0, -5.5]}>
-      {/* Dark navy/blue water tank — large cylinder */}
-      <Tank position={[0, 0, 0]} radius={1} height={1.8} color="#2c3e50" rimColor="#1a252f" />
+      {/* Dark navy/blue water tank — large */}
+      <Tank position={[0, 0, 0]} radius={1.2} height={2.2} color="#2c3e50" rimColor="#1a252f" />
 
-      {/* Small green reagent tanks — row */}
-      <Tank position={[-3, 0, 0.5]} radius={0.35} height={0.9} color="#556B2F" rimColor="#4a5d23" />
-      <Tank position={[-2.2, 0, 0.5]} radius={0.35} height={0.9} color="#556B2F" rimColor="#4a5d23" />
-      <Tank position={[-1.4, 0, 0.5]} radius={0.35} height={0.9} color="#87CEEB" rimColor="#5f9ea0" />
+      {/* Second smaller blue tank */}
+      <Tank position={[-2.5, 0, 0]} radius={0.6} height={1.5} color="#34495e" rimColor="#2c3e50" />
+
+      {/* Small green reagent tanks */}
+      <Tank position={[-3.5, 0, 1.5]} radius={0.35} height={0.9} color="#556B2F" rimColor="#4a5d23" />
+      <Tank position={[-2.7, 0, 1.5]} radius={0.35} height={0.9} color="#556B2F" rimColor="#4a5d23" />
+      <Tank position={[-1.9, 0, 1.5]} radius={0.35} height={0.9} color="#87CEEB" rimColor="#5f9ea0" />
+      <Tank position={[-1.1, 0, 1.5]} radius={0.3} height={0.8} color="#556B2F" rimColor="#4a5d23" />
 
       {/* MCC / Switchroom — white/beige building */}
       <Box position={[2, 0, 1]} size={[1.5, 0.8, 1.2]} color="#f5f5dc" />
       <Box position={[2, 0.8, 1]} size={[1.5, 0.1, 1.2]} color="#0000cc" />
+      
+      {/* Additional small buildings */}
+      <Box position={[2, 0, -0.5]} size={[1, 0.6, 0.8]} color="#ddd" />
+      <Box position={[0, 0, 2]} size={[0.8, 0.5, 0.6]} color="#e8d44d" />
 
-      {/* Yellow/magenta pipe runs running east */}
-      <Pipe points={[[-3.5, 0.4, 2], [0, 0.4, 2], [3, 0.4, 2]]} color="#e8d44d" radius={0.04} />
-      <Pipe points={[[-3.5, 0.6, 2.2], [0, 0.6, 2.2], [3, 0.6, 2.2]]} color="#e84393" radius={0.04} />
+      {/* Pipe runs */}
+      <Pipe points={[[-3.5, 0.4, 2.5], [0, 0.4, 2.5], [3, 0.4, 2.5]]} color="#e8d44d" radius={0.04} />
+      <Pipe points={[[-3.5, 0.6, 2.7], [0, 0.6, 2.7], [3, 0.6, 2.7]]} color="#e84393" radius={0.04} />
 
       {/* Concrete pad */}
-      <GroundPad position={[0, 0, 0.5]} size={[8, 4]} color="#777" />
+      <GroundPad position={[0, 0, 0.5]} size={[8, 5]} color="#777" />
     </group>
   );
 }
 
-/* ── SITE INFRASTRUCTURE — small buildings upper area ── */
+/* ── ELEVATED PIPE RACKS — yellow structures carrying pipes across plant ── */
+function ElevatedPipeRacks() {
+  return (
+    <group>
+      {/* Main yellow pipe rack running east-west along north edge of recovery */}
+      <PipeRack start={[2, 0, -5]} end={[16, 0, -5]} height={2.5} color="#e8d44d" />
+      {/* Pipes on this rack */}
+      <Pipe points={[[2, 2.5, -5], [6, 2.5, -5], [10, 2.5, -5], [14, 2.5, -5], [16, 2.5, -5]]} color="#e84393" radius={0.05} />
+      <Pipe points={[[2, 2.3, -5.1], [6, 2.3, -5.1], [10, 2.3, -5.1], [14, 2.3, -5.1], [16, 2.3, -5.1]]} color="#e8d44d" radius={0.04} />
+      <Pipe points={[[2, 2.1, -4.9], [6, 2.1, -4.9], [10, 2.1, -4.9], [14, 2.1, -4.9], [16, 2.1, -4.9]]} color="#4a9eb5" radius={0.04} />
+      
+      {/* Secondary pipe rack running north-south */}
+      <PipeRack start={[5, 0, -6]} end={[5, 0, 1]} height={2.2} color="#e8d44d" />
+      <Pipe points={[[5, 2.2, -6], [5, 2.2, -3], [5, 2.2, 0], [5, 2.2, 1]]} color="#e84393" radius={0.05} />
+      
+      {/* Pipe rack from tailings to process */}
+      <PipeRack start={[-3, 0, -4]} end={[2, 0, -4]} height={2} color="#e8d44d" />
+      <Pipe points={[[-3, 2, -4], [0, 2, -4], [2, 2, -4]]} color="#e84393" radius={0.05} />
+      <Pipe points={[[-3, 1.8, -4.1], [0, 1.8, -4.1], [2, 1.8, -4.1]]} color="#e8d44d" radius={0.04} />
+    </group>
+  );
+}
+
+/* ── CROSS-PLANT PIPE RUNS — magenta and white pipes visible throughout ── */
+function CrossPlantPipes() {
+  return (
+    <group>
+      {/* Main magenta pipe east-west through middle of plant */}
+      <Pipe points={[[-12, 0.5, 1], [-6, 0.5, 1], [0, 0.5, 0.5], [6, 0.5, 0], [10, 0.5, -0.5], [14, 0.5, -1]]} color="#e84393" radius={0.06} />
+      <Pipe points={[[-12, 0.7, 1.2], [-6, 0.7, 1.2], [0, 0.7, 0.7], [6, 0.7, 0.2], [10, 0.7, -0.3], [14, 0.7, -0.8]]} color="#e84393" radius={0.05} />
+      
+      {/* White pipeline cross plant */}
+      <Pipe points={[[-12, 0.3, 3], [-6, 0.3, 3], [0, 0.3, 3], [6, 0.3, 2], [10, 0.3, 1.5]]} color="#ddd" radius={0.05} />
+      
+      {/* Yellow pipe runs */}
+      <Pipe points={[[-8, 0.4, -5], [-4, 0.4, -5], [0, 0.4, -5], [4, 0.4, -5], [8, 0.4, -5]]} color="#e8d44d" radius={0.04} />
+      
+      {/* Additional magenta pipes at various heights */}
+      <Pipe points={[[3, 1, -3], [5, 1, -3], [7, 1, -2.5], [9, 1, -2]]} color="#e84393" radius={0.04} />
+      <Pipe points={[[3, 1.2, -2.5], [5, 1.2, -2.5], [7, 1.2, -2], [9, 1.2, -1.5]]} color="#cc6699" radius={0.03} />
+    </group>
+  );
+}
+
+/* ── SITE INFRASTRUCTURE ── */
 function SiteInfrastructure({ color }: { color: string }) {
   return (
     <group position={[13, 0, -6]}>
@@ -408,6 +544,7 @@ function SiteInfrastructure({ color }: { color: string }) {
       <Box position={[-2, 0, 0]} size={[1.5, 0.6, 1]} color="#ddd" />
       <Box position={[2, 0, 0]} size={[0.5, 0.8, 0.5]} color="#333" />
       <Box position={[2.8, 0, 0]} size={[0.5, 0.8, 0.5]} color="#333" />
+      <Box position={[0, 0, -1.5]} size={[1.2, 0.5, 0.8]} color="#eee" />
     </group>
   );
 }
@@ -418,25 +555,23 @@ function SupportServices({ color }: { color: string }) {
     <group position={[14, 0, -3]}>
       <Box position={[0, 0, 0]} size={[2.5, 1, 2]} color={color} />
       <Box position={[2, 0, 0]} size={[1.5, 0.7, 1.2]} color="#555" />
+      <Box position={[-1.5, 0, 1]} size={[1, 0.5, 0.8]} color="#ddd" />
     </group>
   );
 }
 
-/* ── TSF — Tailings Storage Facility (FAR RIGHT, separate from plant) ── */
+/* ── TSF ── */
 function TSF() {
   return (
     <group position={[22, 0, -4]}>
-      {/* Grey/white concrete embankments — outer */}
       <mesh position={[0, 0.5, 0]}>
         <boxGeometry args={[7, 1, 7]} />
         <meshStandardMaterial color="#bbb" roughness={0.8} metalness={0} />
       </mesh>
-      {/* Inner step */}
       <mesh position={[0, 0.7, 0]}>
         <boxGeometry args={[5.5, 0.6, 5.5]} />
         <meshStandardMaterial color="#aaa" roughness={0.8} metalness={0} />
       </mesh>
-      {/* Red/orange tailings liquid surface */}
       <mesh position={[0, 1.02, 0]}>
         <boxGeometry args={[5, 0.04, 5]} />
         <meshStandardMaterial color="#c0392b" roughness={0.9} metalness={0} />
@@ -445,16 +580,12 @@ function TSF() {
   );
 }
 
-/* ── White pipelines from plant to TSF ── */
+/* ── Pipelines to TSF ── */
 function PipelineToTSF() {
   return (
     <group>
-      <Pipe points={[
-        [11, 0.5, -5], [14, 0.5, -5.5], [17, 0.5, -5], [20, 0.5, -4.5], [22, 0.5, -4],
-      ]} color="#ddd" radius={0.06} />
-      <Pipe points={[
-        [11, 0.7, -5], [14, 0.7, -5.5], [17, 0.7, -5], [20, 0.7, -4.5], [22, 0.7, -4],
-      ]} color="#ddd" radius={0.06} />
+      <Pipe points={[[11, 0.5, -5], [14, 0.5, -5.5], [17, 0.5, -5], [20, 0.5, -4.5], [22, 0.5, -4]]} color="#ddd" radius={0.06} />
+      <Pipe points={[[11, 0.7, -5], [14, 0.7, -5.5], [17, 0.7, -5], [20, 0.7, -4.5], [22, 0.7, -4]]} color="#ddd" radius={0.06} />
     </group>
   );
 }
@@ -463,37 +594,22 @@ function PipelineToTSF() {
 function Terrain() {
   return (
     <group>
-      {/* Outer ground — dark brown */}
       <mesh position={[5, -0.01, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[65, 40]} />
         <meshStandardMaterial color="#8B6914" roughness={0.95} metalness={0} />
       </mesh>
-      {/* Main plant pad — orange, raised slightly */}
       <mesh position={[3, 0.015, -1]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[28, 20]} />
         <meshStandardMaterial color="#c47a2a" roughness={0.95} metalness={0} />
       </mesh>
-      {/* Rounded edge effect — slightly bigger orange ring */}
       <mesh position={[3, 0.01, -1]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[30, 22]} />
         <meshStandardMaterial color="#b06a20" roughness={0.95} metalness={0} />
       </mesh>
-      {/* South dip in terrain (visible notch in Navisworks at bottom-center) */}
       <mesh position={[2, 0.016, 6]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[8, 6]} />
         <meshStandardMaterial color="#c47a2a" roughness={0.95} metalness={0} />
       </mesh>
-    </group>
-  );
-}
-
-/* ── White horizontal pipeline crossing the plant (visible in Navisworks) ── */
-function CrossPlantPipeline() {
-  return (
-    <group>
-      <Pipe points={[
-        [-12, 0.3, 3], [-6, 0.3, 3], [0, 0.3, 3], [6, 0.3, 2], [10, 0.3, 1.5],
-      ]} color="#ddd" radius={0.05} />
     </group>
   );
 }
@@ -603,7 +719,8 @@ function Scene({ areaSummaries, selectedArea, onSelectArea }: {
       <Terrain />
       <TSF />
       <PipelineToTSF />
-      <CrossPlantPipeline />
+      <CrossPlantPipes />
+      <ElevatedPipeRacks />
 
       <TailingsArea />
       <ComminutionProcess />
