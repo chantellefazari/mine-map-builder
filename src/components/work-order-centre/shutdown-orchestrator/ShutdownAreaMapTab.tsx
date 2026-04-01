@@ -291,7 +291,7 @@ export function ShutdownAreaMapTab() {
                 <g
                   key={area.id}
                   className={cn("cursor-pointer transition-opacity", !visible && "opacity-20")}
-                  onClick={() => visible && setSelectedAreaId(isSelected ? null : area.id)}
+                  onClick={() => visible && handleAreaSelect(isSelected ? null : area.id)}
                 >
                   <rect
                     x={area.x}
