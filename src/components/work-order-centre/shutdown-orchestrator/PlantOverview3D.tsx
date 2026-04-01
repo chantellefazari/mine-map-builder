@@ -653,7 +653,7 @@ function AdminAndStores() {
       </group>
 
       {/* ── Laydown Yard — south of compound ── */}
-      <group position={[4, 0, 1]}>
+      <group position={[-6, 0, 1]}>
         <GroundPad position={[0, 0, 0]} size={[7, 3]} color="#8B8" />
         <Box position={[-1.5, 0, -0.5]} size={[1.5, 0.05, 1]} color="#aab" />
         <Box position={[-1.5, 0, 0.5]} size={[1.5, 0.05, 1]} color="#aab" />
