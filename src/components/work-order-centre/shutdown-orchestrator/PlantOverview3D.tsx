@@ -834,7 +834,48 @@ function ZoneOverlay({ area, layout, isSelected, onSelect }: {
   );
 }
 
-function PulsingRing({ position, color, size }: { position: [number, number, number]; color: string; size: number }) {
+function AdminZoneOverlay({ layout, isSelected, onSelect }: {
+  layout: { pos: [number, number, number]; size: [number, number, number] };
+  isSelected: boolean;
+  onSelect: () => void;
+}) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+  useFrame(({ clock }) => {
+    if (!meshRef.current) return;
+    const mat = meshRef.current.material as THREE.MeshBasicMaterial;
+    mat.opacity = isSelected
+      ? 0.12 + Math.sin(clock.getElapsedTime() * 3) * 0.08
+      : hovered ? 0.1 : 0.04;
+  });
+  return (
+    <group>
+      <mesh
+        ref={meshRef}
+        position={layout.pos}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = "pointer"; }}
+        onPointerOut={() => { setHovered(false); document.body.style.cursor = "auto"; }}
+        onClick={(e) => { e.stopPropagation(); onSelect(); }}
+      >
+        <boxGeometry args={layout.size} />
+        <meshBasicMaterial color="#9b59b6" transparent opacity={0.04} />
+      </mesh>
+      {isSelected && (
+        <mesh position={layout.pos}>
+          <boxGeometry args={[layout.size[0] + 0.1, 0.04, layout.size[2] + 0.1]} />
+          <meshBasicMaterial color="#fff" wireframe />
+        </mesh>
+      )}
+      <Billboard position={[layout.pos[0], 3.5, layout.pos[2]]} follow lockX={false} lockY={false} lockZ={false}>
+        <Text fontSize={0.4} color="white" anchorX="center" anchorY="bottom"
+          outlineWidth={0.03} outlineColor="#000000" font={undefined}>
+          Admin & Stores
+        </Text>
+      </Billboard>
+    </group>
+  );
+}
+
   const ref = useRef<THREE.Mesh>(null);
   useFrame(({ clock }) => {
     if (!ref.current) return;
