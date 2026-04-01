@@ -22,19 +22,17 @@ const STATUS_COLOR: Record<string, string> = {
 /*  PRIMITIVE EQUIPMENT SHAPES                                         */
 /* ------------------------------------------------------------------ */
 
-/** Horizontal cylinder — Ball Mill / SAG Mill */
-function HorizontalCylinder({ position, radius = 0.6, length = 2.2, color }: {
-  position: [number, number, number]; radius?: number; length?: number; color: string;
+function HorizontalCylinder({ position, radius = 0.6, length = 2.2, color, rotation }: {
+  position: [number, number, number]; radius?: number; length?: number; color: string; rotation?: [number, number, number];
 }) {
   return (
-    <mesh position={position} rotation={[0, 0, Math.PI / 2]} castShadow>
+    <mesh position={position} rotation={rotation || [0, 0, Math.PI / 2]} castShadow>
       <cylinderGeometry args={[radius, radius, length, 24]} />
       <meshStandardMaterial color={color} roughness={0.4} metalness={0.3} />
     </mesh>
   );
 }
 
-/** Vertical cylinder — Tank / Leach tank / CIP tank */
 function VerticalTank({ position, radius = 0.45, height = 1.2, color, rimColor }: {
   position: [number, number, number]; radius?: number; height?: number; color: string; rimColor?: string;
 }) {
@@ -44,7 +42,6 @@ function VerticalTank({ position, radius = 0.45, height = 1.2, color, rimColor }
         <cylinderGeometry args={[radius, radius, height, 24]} />
         <meshStandardMaterial color={color} roughness={0.5} metalness={0.2} />
       </mesh>
-      {/* Rim ring */}
       <mesh position={[0, height + 0.02, 0]}>
         <cylinderGeometry args={[radius + 0.04, radius + 0.04, 0.06, 24]} />
         <meshStandardMaterial color={rimColor || "#555"} roughness={0.3} metalness={0.5} />
@@ -53,7 +50,6 @@ function VerticalTank({ position, radius = 0.45, height = 1.2, color, rimColor }
   );
 }
 
-/** Cone-bottom tank */
 function ConeTank({ position, radius = 0.4, height = 1.0, color }: {
   position: [number, number, number]; radius?: number; height?: number; color: string;
 }) {
@@ -71,54 +67,51 @@ function ConeTank({ position, radius = 0.4, height = 1.0, color }: {
   );
 }
 
-/** Thickener — large flat disc with bridge */
 function Thickener({ position, radius = 2, color }: {
   position: [number, number, number]; radius?: number; color: string;
 }) {
   return (
     <group position={position}>
-      {/* Tank wall */}
       <mesh position={[0, 0.5, 0]} castShadow>
         <cylinderGeometry args={[radius, radius, 1, 32, 1, true]} />
         <meshStandardMaterial color={color} roughness={0.5} metalness={0.2} side={THREE.DoubleSide} />
       </mesh>
-      {/* Liquid surface */}
       <mesh position={[0, 0.95, 0]}>
         <cylinderGeometry args={[radius - 0.05, radius - 0.05, 0.05, 32]} />
-        <meshStandardMaterial color="#8B7355" roughness={0.8} metalness={0} opacity={0.7} transparent />
+        <meshStandardMaterial color="#4a9eb5" roughness={0.8} metalness={0} opacity={0.7} transparent />
       </mesh>
-      {/* Bridge arm */}
-      <mesh position={[0, 1.3, 0]} rotation={[0, 0, 0]}>
+      <mesh position={[0, 1.3, 0]}>
         <boxGeometry args={[radius * 2 - 0.2, 0.08, 0.15]} />
         <meshStandardMaterial color="#444" roughness={0.3} metalness={0.6} />
       </mesh>
-      {/* Center column */}
       <mesh position={[0, 0.7, 0]}>
         <cylinderGeometry args={[0.1, 0.1, 1.4, 12]} />
         <meshStandardMaterial color="#444" roughness={0.3} metalness={0.6} />
       </mesh>
-      {/* Rake motor housing */}
       <mesh position={[0, 1.45, 0]}>
         <boxGeometry args={[0.3, 0.25, 0.3]} />
         <meshStandardMaterial color="#333" roughness={0.3} metalness={0.5} />
+      </mesh>
+      {/* Walkway/platform around thickener */}
+      <mesh position={[0, 1.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[radius, radius + 0.2, 32]} />
+        <meshStandardMaterial color="#666" roughness={0.4} metalness={0.3} side={THREE.DoubleSide} />
       </mesh>
     </group>
   );
 }
 
-/** Rectangular building / shed */
-function Building({ position, size, color }: {
-  position: [number, number, number]; size: [number, number, number]; color: string;
+function Building({ position, size, color, rotation }: {
+  position: [number, number, number]; size: [number, number, number]; color: string; rotation?: [number, number, number];
 }) {
   return (
-    <mesh position={[position[0], position[1] + size[1] / 2, position[2]]} castShadow>
+    <mesh position={[position[0], position[1] + size[1] / 2, position[2]]} rotation={rotation} castShadow>
       <boxGeometry args={size} />
       <meshStandardMaterial color={color} roughness={0.7} metalness={0.1} />
     </mesh>
   );
 }
 
-/** Small pump */
 function Pump({ position, color }: { position: [number, number, number]; color: string }) {
   return (
     <group position={position}>
@@ -134,7 +127,6 @@ function Pump({ position, color }: { position: [number, number, number]; color: 
   );
 }
 
-/** Conveyor belt */
 function Conveyor({ start, end, color }: {
   start: [number, number, number]; end: [number, number, number]; color: string;
 }) {
@@ -146,28 +138,35 @@ function Conveyor({ start, end, color }: {
 
   return (
     <group position={[cx, cy, cz]} rotation={[angle, yRot, 0]}>
-      {/* Belt */}
       <mesh castShadow>
         <boxGeometry args={[0.3, 0.06, len]} />
         <meshStandardMaterial color={color} roughness={0.6} metalness={0.2} />
       </mesh>
-      {/* Rails */}
-      {[-0.18, 0.18].map((x, i) => (
-        <mesh key={i} position={[x, -0.05, 0]}>
-          <boxGeometry args={[0.03, 0.04, len]} />
-          <meshStandardMaterial color="#555" roughness={0.3} metalness={0.5} />
-        </mesh>
-      ))}
+      {/* Support trusses */}
+      {Array.from({ length: Math.floor(len / 1.2) }, (_, i) => {
+        const z = -len / 2 + 0.6 + i * 1.2;
+        return (
+          <group key={i} position={[0, 0, z]}>
+            <mesh position={[-0.15, -0.3, 0]}>
+              <boxGeometry args={[0.03, 0.5, 0.03]} />
+              <meshStandardMaterial color="#4a9eb5" roughness={0.3} metalness={0.5} />
+            </mesh>
+            <mesh position={[0.15, -0.3, 0]}>
+              <boxGeometry args={[0.03, 0.5, 0.03]} />
+              <meshStandardMaterial color="#4a9eb5" roughness={0.3} metalness={0.5} />
+            </mesh>
+          </group>
+        );
+      })}
     </group>
   );
 }
 
-/** Pipe run */
-function Pipe({ points, color = "#888" }: { points: [number, number, number][]; color?: string }) {
+function Pipe({ points, color = "#888", radius = 0.04 }: { points: [number, number, number][]; color?: string; radius?: number }) {
   const curve = useMemo(() => {
     return new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p)));
   }, [points]);
-  const tubeGeo = useMemo(() => new THREE.TubeGeometry(curve, 20, 0.04, 8, false), [curve]);
+  const tubeGeo = useMemo(() => new THREE.TubeGeometry(curve, 20, radius, 8, false), [curve, radius]);
   return (
     <mesh geometry={tubeGeo}>
       <meshStandardMaterial color={color} roughness={0.3} metalness={0.5} />
@@ -175,106 +174,336 @@ function Pipe({ points, color = "#888" }: { points: [number, number, number][]; 
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  AREA GROUPS — Each area is a group of 3D equipment                */
-/* ------------------------------------------------------------------ */
-
-/** Site Infrastructure — buildings, substation, offices (top-right in drone view) */
-function SiteInfrastructure({ color }: { color: string }) {
+/** Structural steelwork frame */
+function SteelFrame({ position, size, color = "#4a9eb5" }: {
+  position: [number, number, number]; size: [number, number, number]; color?: string;
+}) {
+  const [w, h, d] = size;
+  const bar = 0.04;
   return (
-    <group position={[9, 0, -7]}>
-      <Building position={[0, 0, 0]} size={[2.5, 1.2, 1.8]} color={color} />
-      <Building position={[3, 0, 0]} size={[1.5, 0.8, 1.2]} color={color} />
-      <Building position={[1.5, 0, -2]} size={[1.8, 0.6, 1]} color="#666" />
+    <group position={position}>
+      {/* Vertical posts */}
+      {[[-w/2, 0, -d/2], [w/2, 0, -d/2], [-w/2, 0, d/2], [w/2, 0, d/2]].map((p, i) => (
+        <mesh key={i} position={[p[0], h/2, p[2]]}>
+          <boxGeometry args={[bar, h, bar]} />
+          <meshStandardMaterial color={color} roughness={0.3} metalness={0.6} />
+        </mesh>
+      ))}
+      {/* Top rails */}
+      <mesh position={[0, h, 0]}>
+        <boxGeometry args={[w, bar, bar]} />
+        <meshStandardMaterial color={color} roughness={0.3} metalness={0.6} />
+      </mesh>
+      <mesh position={[0, h, 0]}>
+        <boxGeometry args={[bar, bar, d]} />
+        <meshStandardMaterial color={color} roughness={0.3} metalness={0.6} />
+      </mesh>
     </group>
   );
 }
 
-/** Utilities & Power — generators, switchgear, transformers (right side, mid-level in drone view) */
-function UtilitiesPower({ color }: { color: string }) {
+/** Ground pad / concrete slab */
+function GroundPad({ position, size, color = "#8B7355" }: {
+  position: [number, number, number]; size: [number, number]; color?: string;
+}) {
   return (
-    <group position={[9, 0, 0]}>
-      {/* Generators */}
-      <HorizontalCylinder position={[0, 0.8, 0]} radius={0.5} length={1.8} color={color} />
-      <HorizontalCylinder position={[0, 0.8, 1.5]} radius={0.5} length={1.8} color={color} />
-      {/* Transformer */}
-      <Building position={[2, 0, 0.5]} size={[0.8, 1, 0.8]} color="#556B2F" />
-      {/* Switchroom */}
-      <Building position={[-1.5, 0, 0.5]} size={[1.2, 0.7, 1]} color="#555" />
+    <mesh position={[position[0], 0.02, position[2]]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      <planeGeometry args={size} />
+      <meshStandardMaterial color={color} roughness={0.9} metalness={0} />
+    </mesh>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  TSF — Tailings Storage Facility (red pond, far right)              */
+/* ------------------------------------------------------------------ */
+
+function TSF() {
+  return (
+    <group position={[22, 0, -2]}>
+      {/* Embankment walls */}
+      <mesh position={[0, 0.4, 0]}>
+        <boxGeometry args={[6, 0.8, 6]} />
+        <meshStandardMaterial color="#999" roughness={0.8} metalness={0} />
+      </mesh>
+      {/* Inner cavity — red liquid */}
+      <mesh position={[0, 0.82, 0]}>
+        <boxGeometry args={[5, 0.05, 5]} />
+        <meshStandardMaterial color="#c0392b" roughness={0.9} metalness={0} />
+      </mesh>
+      {/* Inner walls visible */}
+      <mesh position={[0, 0.6, 0]}>
+        <boxGeometry args={[5.2, 0.5, 5.2]} />
+        <meshStandardMaterial color="#bbb" roughness={0.8} metalness={0} />
+      </mesh>
     </group>
   );
 }
 
-/** Comminution / Process — mills, classification, screens (bottom-center in drone view) */
+/* ------------------------------------------------------------------ */
+/*  HAUL ROAD                                                          */
+/* ------------------------------------------------------------------ */
+
+function HaulRoad() {
+  const roadCurve = useMemo(() => {
+    return new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-14, 0.03, 8),
+      new THREE.Vector3(-14, 0.03, 2),
+      new THREE.Vector3(-13, 0.03, -2),
+      new THREE.Vector3(-11, 0.03, -5),
+      new THREE.Vector3(-8, 0.03, -6),
+      new THREE.Vector3(-5, 0.03, -5),
+      new THREE.Vector3(-4, 0.03, -2),
+      new THREE.Vector3(-5, 0.03, 1),
+      new THREE.Vector3(-8, 0.03, 4),
+      new THREE.Vector3(-11, 0.03, 6),
+      new THREE.Vector3(-14, 0.03, 8),
+    ]);
+  }, []);
+  const roadGeo = useMemo(() => new THREE.TubeGeometry(roadCurve, 60, 0.8, 4, true), [roadCurve]);
+  return (
+    <mesh geometry={roadGeo} rotation={[0, 0, 0]}>
+      <meshStandardMaterial color="#2a2a2a" roughness={0.95} metalness={0} />
+    </mesh>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  AREA GROUPS — positioned to match Navisworks layout                */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Navisworks layout (top-down, matching reference images):
+ *
+ *   Far left:   TAILINGS (thickener + filter press + pumps) on grey pad
+ *   Center:     GOLD RECOVERY (4-5 large green CIP tanks + leach tanks + steelwork)
+ *   Upper-left: COMMINUTION (SAG mill yellow, crusher, conveyors, cyclones)
+ *   Upper-right: SITE INFRA (elution, gold room, substation)
+ *   Right:       UTILITIES (reagent tanks, water tank)
+ *   Far right:   TSF (red pond with embankments)
+ *   Road:        Curved haul road loop on far left
+ */
+
+/** Comminution / Process — upper-left: SAG mill, crusher, conveyors, cyclones */
 function ComminutionProcess({ color }: { color: string }) {
   return (
-    <group position={[2, 0, 5]}>
-      {/* Ball Mills */}
-      <HorizontalCylinder position={[0, 1, 0]} radius={0.9} length={3} color="#2b2d7c" />
-      <HorizontalCylinder position={[0, 1, 2.5]} radius={0.7} length={2.5} color="#5b3a8c" />
+    <group position={[-3, 0, 2]}>
+      {/* SAG Mill — large yellow/olive ellipsoid */}
+      <mesh position={[0, 1.2, 0]} rotation={[0, Math.PI / 4, Math.PI / 2]} castShadow>
+        <sphereGeometry args={[1, 24, 16]} />
+        <meshStandardMaterial color="#d4a017" roughness={0.4} metalness={0.3} />
+      </mesh>
+      {/* SAG Mill drum */}
+      <HorizontalCylinder position={[0, 1.2, 0]} radius={0.95} length={1.4} color="#c49a2a" rotation={[Math.PI / 2, 0, Math.PI / 4]} />
+      
+      {/* Crusher — small yellow box, far left */}
+      <Building position={[-3.5, 0, -1]} size={[1.2, 1.5, 1]} color="#b8960b" />
+      <Building position={[-3.5, 1.5, -1]} size={[0.8, 0.4, 0.6]} color="#8B7355" />
+      
+      {/* Conveyor from crusher to SAG mill */}
+      <Conveyor start={[-3, 1.5, -1]} end={[-0.5, 2, 0]} color="#777" />
+      
+      {/* Cyclone cluster — above and right */}
+      <ConeTank position={[2, 0, -0.5]} radius={0.2} height={0.6} color="#4a9eb5" />
+      <ConeTank position={[2.4, 0, -0.5]} radius={0.2} height={0.6} color="#4a9eb5" />
+      <ConeTank position={[2.2, 0, 0.1]} radius={0.2} height={0.6} color="#4a9eb5" />
+      
+      {/* Cyclone support structure */}
+      <SteelFrame position={[2.2, 0, -0.2]} size={[1.2, 1.5, 1]} />
+      
       {/* Mill motor */}
-      <Building position={[-1.8, 0, 0]} size={[0.6, 0.7, 0.6]} color="#1a6b6b" />
-      <Building position={[-1.8, 0, 2.5]} size={[0.5, 0.6, 0.5]} color="#1a6b6b" />
-      {/* Cyclone cluster */}
-      <ConeTank position={[2.5, 0, 0.5]} radius={0.25} height={0.7} color="#c49a2a" />
-      <ConeTank position={[3, 0, 0.5]} radius={0.25} height={0.7} color="#c49a2a" />
-      <ConeTank position={[2.75, 0, 1.2]} radius={0.25} height={0.7} color="#c49a2a" />
-      {/* Pumps */}
-      <Pump position={[2, 0, 2]} color={color} />
-      <Pump position={[2.5, 0, 2]} color={color} />
-      {/* Conveyor running from mills toward recovery */}
-      <Conveyor start={[-1, 0.5, -0.5]} end={[-1, 1.5, -4]} color="#777" />
+      <Building position={[1.2, 0, 0.8]} size={[0.6, 0.5, 0.5]} color="#1a6b6b" />
+      
+      {/* Silo / feed hopper */}
+      <VerticalTank position={[-2, 0, 0.5]} radius={0.4} height={1.5} color="#87CEEB" rimColor="#5f9ea0" />
+      
+      {/* Ground pad */}
+      <GroundPad position={[0, 0, 0]} size={[8, 6]} color="#a0855a" />
     </group>
   );
 }
 
-/** Gold Recovery — CIP tanks, elution, electro-winning (top-center in drone view, rows of tanks) */
+/** Gold Recovery — center: large green CIP/Leach tanks */
 function GoldRecovery({ color }: { color: string }) {
   return (
-    <group position={[-1, 0, -3]}>
-      {/* CIP Tanks row — running left-to-right matching drone image */}
-      {[0, 1.2, 2.4, 3.6, 4.8].map((x, i) => (
-        <VerticalTank key={i} position={[x, 0, 0]} radius={0.5} height={1.3} color="#1a7a4a" rimColor="#0d5c34" />
+    <group position={[3, 0, 0]}>
+      {/* CIP Tank circuit — 4 large green tanks in a row (dominant feature) */}
+      {[0, 1.8, 3.6, 5.4].map((x, i) => (
+        <VerticalTank key={`cip-${i}`} position={[x, 0, 0]} radius={0.75} height={2} color="#2ecc71" rimColor="#27ae60" />
       ))}
-      {/* Leach tanks — second row behind CIP */}
-      <VerticalTank position={[0, 0, -2]} radius={0.55} height={1.4} color="#c49a2a" rimColor="#a07818" />
-      <VerticalTank position={[1.3, 0, -2]} radius={0.55} height={1.4} color="#c49a2a" rimColor="#a07818" />
-      <VerticalTank position={[2.6, 0, -2]} radius={0.55} height={1.4} color="#c49a2a" rimColor="#a07818" />
-      {/* Elution column */}
-      <VerticalTank position={[5.5, 0, -1]} radius={0.3} height={1.8} color="#8b2252" rimColor="#6b1a3e" />
-      {/* Electrowinning cell */}
-      <Building position={[5.5, 0, 0.5]} size={[0.8, 0.5, 0.6]} color="#b8860b" />
-      {/* Pumps */}
-      <Pump position={[1.3, 0, 1.5]} color={color} />
-      <Pump position={[3.6, 0, 1.5]} color={color} />
-      {/* Pipe run connecting tanks */}
+      
+      {/* Leach tanks — second row, slightly smaller */}
+      {[0.9, 2.7, 4.5].map((x, i) => (
+        <VerticalTank key={`leach-${i}`} position={[x, 0, -2.5]} radius={0.65} height={1.8} color="#27ae60" rimColor="#1e8449" />
+      ))}
+      
+      {/* Structural steelwork around tanks */}
+      <SteelFrame position={[2.7, 0, 0]} size={[7, 2.5, 2.5]} />
+      <SteelFrame position={[2.7, 0, -2.5]} size={[5, 2.2, 2]} />
+      
+      {/* Elution column — tall, right side */}
+      <VerticalTank position={[7, 0, -1]} radius={0.3} height={2.5} color="#27ae60" rimColor="#1a5c32" />
+      
+      {/* Gold room building */}
+      <Building position={[7.5, 0, 0.5]} size={[1, 0.8, 1]} color="#8B7355" />
+      
+      {/* Pumps between tank rows */}
+      <Pump position={[1.5, 0, -1.2]} color={color} />
+      <Pump position={[3.5, 0, -1.2]} color={color} />
+      
+      {/* Pipe runs connecting CIP tanks */}
       <Pipe points={[
-        [0, 1.35, 0], [1.2, 1.35, 0], [2.4, 1.35, 0], [3.6, 1.35, 0], [4.8, 1.35, 0],
-      ]} color="#0d5c34" />
+        [0, 2.05, 0], [1.8, 2.05, 0], [3.6, 2.05, 0], [5.4, 2.05, 0],
+      ]} color="#ff69b4" />
+      <Pipe points={[
+        [0, 2.05, 0], [0, 2.05, -1.2], [0.9, 1.85, -2.5],
+      ]} color="#ff69b4" />
+      
+      {/* Yellow pipe runs (matching Navisworks magenta/yellow pipes) */}
+      <Pipe points={[
+        [-1, 0.3, 2], [2, 0.3, 2], [5, 0.3, 2], [8, 0.3, 2],
+      ]} color="#e8d44d" />
+      
+      {/* Ground pad */}
+      <GroundPad position={[3, 0, -1]} size={[10, 7]} color="#a0855a" />
     </group>
   );
 }
 
-/** Tailings — thickener, pumps (bottom-left in drone view) */
+/** Tailings — far left: large thickener + filter press + pumps */
 function TailingsArea({ color }: { color: string }) {
   return (
-    <group position={[-7, 0, 5]}>
-      <Thickener position={[0, 0, 0]} radius={2.2} color={color} />
+    <group position={[-9, 0, -3]}>
+      {/* Main Thickener — large cyan disc */}
+      <Thickener position={[0, 0, 0]} radius={2.5} color="#3498db" />
+      
+      {/* Thickener concrete pad */}
+      <GroundPad position={[0, 0, 0]} size={[7, 7]} color="#777" />
+      
       {/* Underflow pumps */}
-      <Pump position={[-2.5, 0, 0]} color="#c49a2a" />
-      <Pump position={[-2.5, 0, 0.6]} color="#c49a2a" />
-      {/* Pipe from thickener toward comminution */}
-      <Pipe points={[[2.2, 0.5, 0], [4, 0.5, 0], [6, 0.8, 1]]} color="#888" />
+      <Pump position={[-2.8, 0, -1]} color="#c49a2a" />
+      <Pump position={[-2.8, 0, -0.3]} color="#c49a2a" />
+      <Pump position={[-2.8, 0, 0.4]} color="#c49a2a" />
+      
+      {/* Filter Press building — white/grey with red elements (left of thickener) */}
+      <Building position={[-4, 0, 3]} size={[3, 1.5, 2]} color="#ddd" />
+      <Building position={[-4, 1.5, 3]} size={[3, 0.3, 2]} color="#c0392b" />
+      {/* Second filter press building */}
+      <Building position={[-4, 0, 5.5]} size={[2.5, 1.5, 1.5]} color="#ddd" />
+      <Building position={[-4, 1.5, 5.5]} size={[2.5, 0.3, 1.5]} color="#c0392b" />
+      
+      {/* Green walkway/steelwork around filter area */}
+      <SteelFrame position={[-4, 0, 4]} size={[4, 2, 5]} color="#27ae60" />
+      
+      {/* Pipes from thickener to filter press */}
+      <Pipe points={[[-2.5, 0.5, 0], [-3.5, 0.5, 1.5], [-4, 0.5, 3]]} color="#ff69b4" />
+      
+      {/* Pipeline out to TSF */}
+      <Pipe points={[
+        [2.5, 0.5, 0],
+        [6, 0.5, -1],
+        [12, 0.4, -1.5],
+        [18, 0.4, -1.5],
+        [22, 0.5, -2],
+      ]} color="#ccc" radius={0.06} />
+      <Pipe points={[
+        [2.5, 0.7, 0],
+        [6, 0.7, -1],
+        [12, 0.6, -1.5],
+        [18, 0.6, -1.5],
+        [22, 0.7, -2],
+      ]} color="#ccc" radius={0.06} />
     </group>
   );
 }
 
-/** Support Services — workshop, stores (top area, left of site infra in drone view) */
+/** Utilities & Power — right side: reagent tanks, water storage */
+function UtilitiesPower({ color }: { color: string }) {
+  return (
+    <group position={[8, 0, -5]}>
+      {/* Reagent tanks — small green/olive */}
+      <VerticalTank position={[0, 0, 0]} radius={0.3} height={0.8} color="#556B2F" rimColor="#4a5d23" />
+      <VerticalTank position={[0.8, 0, 0]} radius={0.3} height={0.8} color="#556B2F" rimColor="#4a5d23" />
+      <VerticalTank position={[1.6, 0, 0]} radius={0.3} height={0.8} color="#556B2F" rimColor="#4a5d23" />
+      
+      {/* Water tank — large dark blue */}
+      <VerticalTank position={[0, 0, -2.5]} radius={0.8} height={1.5} color="#2c3e50" rimColor="#1a252f" />
+      
+      {/* MCC / Switchroom building */}
+      <Building position={[-2, 0, -1]} size={[2, 0.8, 1.5]} color="#f5f5dc" />
+      
+      {/* Carbon screen building (green/olive) */}
+      <Building position={[-1, 0, 1.5]} size={[2.5, 0.5, 1]} color="#556B2F" />
+      
+      {/* Substation / transformer */}
+      <Building position={[3, 0, -1]} size={[0.6, 0.8, 0.6]} color="#333" />
+      <Building position={[3, 0, -2]} size={[0.6, 0.8, 0.6]} color="#333" />
+      
+      {/* Pipes */}
+      <Pipe points={[[0, 0.4, 0], [-2, 0.4, 0], [-4, 0.4, 1]]} color="#e8d44d" />
+      <Pipe points={[[0, 0.4, 0], [0, 0.4, -2.5]]} color="#3498db" />
+    </group>
+  );
+}
+
+/** Site Infrastructure — upper-right area: admin, substation */
+function SiteInfrastructure({ color }: { color: string }) {
+  return (
+    <group position={[12, 0, -6]}>
+      {/* Main admin / control building */}
+      <Building position={[0, 0, 0]} size={[3, 1, 2]} color={color} />
+      {/* Substation */}
+      <Building position={[0, 0, -2.5]} size={[2, 0.6, 1.5]} color="#8B4513" />
+      {/* Guard house */}
+      <Building position={[-2, 0, 0]} size={[1, 0.6, 1]} color="#ddd" />
+    </group>
+  );
+}
+
+/** Support Services — workshop, stores */
 function SupportServices({ color }: { color: string }) {
   return (
-    <group position={[4, 0, -8]}>
-      <Building position={[0, 0, 0]} size={[3, 1, 2]} color={color} />
-      <Building position={[3.5, 0, 0]} size={[1.5, 0.7, 1.5]} color="#555" />
+    <group position={[14, 0, -3]}>
+      <Building position={[0, 0, 0]} size={[3, 1.2, 2.5]} color={color} />
+      <Building position={[0, 0, 2]} size={[2, 0.8, 1.5]} color="#555" />
+    </group>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  GROUND TERRAIN                                                     */
+/* ------------------------------------------------------------------ */
+
+function Terrain() {
+  return (
+    <group>
+      {/* Main plant pad — orange/brown like Navisworks */}
+      <mesh position={[2, 0.01, -1]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[28, 18]} />
+        <meshStandardMaterial color="#c47a2a" roughness={0.95} metalness={0} />
+      </mesh>
+      {/* Outer ground — darker brown */}
+      <mesh position={[2, 0, -1]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[60, 40]} />
+        <meshStandardMaterial color="#8B6914" roughness={0.95} metalness={0} />
+      </mesh>
+      {/* Tailings area pad */}
+      <mesh position={[-9, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[12, 14]} />
+        <meshStandardMaterial color="#b07025" roughness={0.95} metalness={0} />
+      </mesh>
+      {/* Perimeter fence line (as thin boxes) */}
+      {[
+        { pos: [2, 0.3, -10] as [number, number, number], size: [30, 0.6, 0.05] as [number, number, number] },
+        { pos: [2, 0.3, 8] as [number, number, number], size: [30, 0.6, 0.05] as [number, number, number] },
+        { pos: [-13, 0.3, -1] as [number, number, number], size: [0.05, 0.6, 18] as [number, number, number] },
+        { pos: [17, 0.3, -1] as [number, number, number], size: [0.05, 0.6, 18] as [number, number, number] },
+      ].map((fence, i) => (
+        <mesh key={i} position={fence.pos}>
+          <boxGeometry args={fence.size} />
+          <meshStandardMaterial color="#999" roughness={0.5} metalness={0.3} />
+        </mesh>
+      ))}
     </group>
   );
 }
@@ -284,12 +513,12 @@ function SupportServices({ color }: { color: string }) {
 /* ------------------------------------------------------------------ */
 
 const ZONE_BOUNDS: Record<string, { pos: [number, number, number]; size: [number, number, number] }> = {
-  "Site Infrastructure":    { pos: [10,  0.01, -7],   size: [6, 0.02, 4] },
-  "Utilities & Power":      { pos: [9.5, 0.01, 0.5],  size: [5, 0.02, 4] },
-  "Comminution / Process":  { pos: [3,   0.01, 6],    size: [7, 0.02, 5] },
-  "Gold Recovery":          { pos: [1.5, 0.01, -3.5], size: [8, 0.02, 5] },
-  "Tailings":               { pos: [-7,  0.01, 5],    size: [6, 0.02, 6] },
-  "Support Services":       { pos: [5,   0.01, -8],   size: [6, 0.02, 4] },
+  "Comminution / Process":  { pos: [-3,   0.03, 2],    size: [9, 0.02, 6] },
+  "Gold Recovery":          { pos: [5.5,  0.03, -0.5], size: [10, 0.02, 7] },
+  "Tailings":               { pos: [-9,   0.03, -1],   size: [10, 0.02, 12] },
+  "Utilities & Power":      { pos: [8,    0.03, -5],   size: [6, 0.02, 6] },
+  "Site Infrastructure":    { pos: [12,   0.03, -6.5], size: [5, 0.02, 4] },
+  "Support Services":       { pos: [14,   0.03, -2],   size: [5, 0.02, 5] },
 };
 
 function ZoneOverlay({ area, layout, isSelected, onSelect }: {
@@ -314,7 +543,6 @@ function ZoneOverlay({ area, layout, isSelected, onSelect }: {
 
   return (
     <group>
-      {/* Clickable ground overlay */}
       <mesh
         ref={meshRef}
         position={layout.pos}
@@ -326,7 +554,6 @@ function ZoneOverlay({ area, layout, isSelected, onSelect }: {
         <meshBasicMaterial color={baseColor} transparent opacity={0.04} />
       </mesh>
 
-      {/* Border outline */}
       {isSelected && (
         <mesh position={layout.pos}>
           <boxGeometry args={[layout.size[0] + 0.1, 0.04, layout.size[2] + 0.1]} />
@@ -334,22 +561,20 @@ function ZoneOverlay({ area, layout, isSelected, onSelect }: {
         </mesh>
       )}
 
-      {/* Area label */}
       <Billboard
-        position={[layout.pos[0], 2.5, layout.pos[2]]}
+        position={[layout.pos[0], 3.5, layout.pos[2]]}
         follow lockX={false} lockY={false} lockZ={false}
       >
-        <Text fontSize={0.35} color="white" anchorX="center" anchorY="bottom"
+        <Text fontSize={0.4} color="white" anchorX="center" anchorY="bottom"
           outlineWidth={0.03} outlineColor="#000000" font={undefined}>
           {SHUTDOWN_AREAS.find(a => a.label === area.area)?.code || area.area}
         </Text>
-        <Text fontSize={0.2} color="#e5e7eb" anchorX="center" anchorY="top"
+        <Text fontSize={0.22} color="#e5e7eb" anchorX="center" anchorY="top"
           position={[0, -0.06, 0]} outlineWidth={0.02} outlineColor="#000000" font={undefined}>
           {`${area.pctComplete}% · ${area.status}`}
         </Text>
       </Billboard>
 
-      {/* Status ring for at-risk / delayed */}
       {(area.status === "At Risk" || area.status === "Delayed") && (
         <StatusRing position={layout.pos} color={baseColor} size={Math.max(layout.size[0], layout.size[2]) * 0.4} />
       )}
@@ -395,26 +620,21 @@ function Scene({ areaSummaries, selectedArea, onSelectArea }: {
       <directionalLight position={[-10, 12, -8]} intensity={0.3} />
       <hemisphereLight args={["#b1e1ff", "#444", 0.4]} />
 
-      {/* Ground grid */}
-      <Grid
-        args={[40, 40]}
-        position={[0, 0, 0]}
-        cellSize={1}
-        cellThickness={0.5}
-        cellColor="#333"
-        sectionSize={5}
-        sectionThickness={1}
-        sectionColor="#555"
-        fadeDistance={50}
-        infiniteGrid
-      />
+      {/* Terrain */}
+      <Terrain />
+      
+      {/* Haul road */}
+      <HaulRoad />
+      
+      {/* TSF */}
+      <TSF />
 
       {/* Equipment groups */}
-      <SiteInfrastructure color={areaColors["Site Infrastructure"] || "#3b82f6"} />
-      <UtilitiesPower color={areaColors["Utilities & Power"] || "#3b82f6"} />
       <ComminutionProcess color={areaColors["Comminution / Process"] || "#10b981"} />
       <GoldRecovery color={areaColors["Gold Recovery"] || "#10b981"} />
-      <TailingsArea color={areaColors["Tailings"] || "#c49a2a"} />
+      <TailingsArea color={areaColors["Tailings"] || "#3498db"} />
+      <UtilitiesPower color={areaColors["Utilities & Power"] || "#3b82f6"} />
+      <SiteInfrastructure color={areaColors["Site Infrastructure"] || "#3b82f6"} />
       <SupportServices color={areaColors["Support Services"] || "#6b7280"} />
 
       {/* Clickable zone overlays */}
@@ -438,8 +658,8 @@ function Scene({ areaSummaries, selectedArea, onSelectArea }: {
         enableRotate
         maxPolarAngle={Math.PI / 2.2}
         minDistance={5}
-        maxDistance={35}
-        target={[0, 0, 1]}
+        maxDistance={45}
+        target={[2, 0, -1]}
       />
     </>
   );
@@ -481,7 +701,7 @@ export function PlantOverview3D({ className }: PlantOverview3DProps) {
         }>
           <Canvas
             shadows
-            camera={{ position: [5, 18, 22], fov: 45, near: 0.1, far: 100 }}
+            camera={{ position: [8, 20, 28], fov: 45, near: 0.1, far: 120 }}
             gl={{ antialias: true }}
           >
             <Scene
