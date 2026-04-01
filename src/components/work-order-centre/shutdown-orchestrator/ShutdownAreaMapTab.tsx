@@ -485,6 +485,7 @@ export function ShutdownAreaMapTab() {
                   {areaPackages.map((wp) => (
                     <button
                       key={wp.id}
+                      onClick={() => { ctx.setSelectedPackageId(wp.id); ctx.navigateToTab("sequence"); }}
                       className={cn(
                         "w-full text-left rounded-md border p-2.5 transition-colors hover:shadow-sm",
                         WP_STATUS_STYLE[wp.status]
