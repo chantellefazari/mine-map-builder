@@ -552,7 +552,7 @@ function SiteInfrastructure({ color }: { color: string }) {
 /* ── ADMIN BUILDINGS, BOLI BAY & STORES COMPOUND ── */
 function AdminAndStores() {
   return (
-    <group position={[2, 0, -14]}>
+    <group position={[2, 0, -18]}>
       {/* ── New Office — large purple/pink building ── */}
       <Box position={[-3, 0, 0]} size={[3.5, 1.2, 2.5]} color="#9b59b6" />
       <Box position={[-3, 1.2, 0]} size={[3.5, 0.08, 2.5]} color="#7d3c98" />
