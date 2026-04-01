@@ -552,7 +552,7 @@ function SiteInfrastructure({ color }: { color: string }) {
 /* ── ADMIN BUILDINGS, BOLI BAY & STORES COMPOUND ── */
 function AdminAndStores() {
   return (
-    <group position={[2, 0, -18]}>
+    <group position={[2, 0, -18]} scale={[-1, 1, 1]}>
       {/* ═══ ADMIN PRECINCT (right side) ═══ */}
       <group position={[6, 0, 0]}>
 
