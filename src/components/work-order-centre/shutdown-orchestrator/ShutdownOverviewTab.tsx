@@ -304,10 +304,11 @@ export function ShutdownOverviewTab() {
           </div>
           <div className="space-y-2 max-h-[420px] overflow-y-auto">
             {DEMO_RISKS.map((r, i) => (
-              <div
+              <button
                 key={i}
+                onClick={() => { setSelectedPackageId(r.workPackage); navigateToTab("control"); }}
                 className={cn(
-                  "rounded-md border p-2.5 text-xs",
+                  "w-full text-left rounded-md border p-2.5 text-xs cursor-pointer hover:shadow-sm transition-shadow",
                   SEVERITY_STYLE[r.severity]
                 )}
               >
