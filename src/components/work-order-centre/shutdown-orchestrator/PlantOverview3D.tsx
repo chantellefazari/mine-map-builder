@@ -664,7 +664,7 @@ function AdminAndStores() {
       </group>
 
       {/* ── Boli Bay — vehicle wash bay, below warehouse ── */}
-      <group position={[4, 0, 4]}>
+      <group position={[-6, 0, 4]}>
         <Box position={[0, 0, 0]} size={[3, 1.4, 2]} color="#bdc3c7" />
         <Box position={[0, 1.4, 0]} size={[3.3, 0.08, 2.3]} color="#95a5a6" />
         <Box position={[0, 0.7, -1.02]} size={[2.5, 1.2, 0.04]} color="#7f8c8d" />
