@@ -94,6 +94,8 @@ export function ShutdownOrchestratorView() {
         <ShutdownCriticalPathTab />
       ) : activeTab === "print-pack" ? (
         <ShutdownPrintPackTab />
+      ) : activeTab === "ai-planner" ? (
+        <ShutdownAIPlannerTab />
       ) : (
         <TabPlaceholder tab={currentTab} />
       )}
