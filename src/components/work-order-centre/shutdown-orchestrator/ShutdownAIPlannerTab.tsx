@@ -186,6 +186,17 @@ export function ShutdownAIPlannerTab() {
       created_at: new Date().toISOString().split("T")[0],
     };
     setLearnedRules((prev) => [newRule, ...prev]);
+    // Push to orchestrator context for cross-tab visibility
+    addConfirmedRule({
+      id: newRule.id,
+      title: rule.title,
+      rule_type: rule.rule_type,
+      if_condition: rule.if_condition,
+      then_action: rule.then_action,
+      area: rule.area,
+      affected_packages: rule.affected_packages,
+      impact_level: rule.impact_level,
+    });
     toast.success(`Rule "${rule.title}" added to Shutdown Library`);
   };
 
