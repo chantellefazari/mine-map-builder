@@ -135,10 +135,8 @@ function handlePrint(ref: React.RefObject<HTMLDivElement | null>) {
 /* ------------------------------------------------------------------ */
 
 export function ShutdownPrintPackTab() {
+  const { filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift } = useOrchestratorContext();
   const [packType, setPackType] = useState<PackType>("area-overview");
-  const [filterArea, setFilterArea] = useState("All");
-  const [filterTrade, setFilterTrade] = useState("All");
-  const [filterShift, setFilterShift] = useState("All");
   const [showPreview, setShowPreview] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 

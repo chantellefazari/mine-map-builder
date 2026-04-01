@@ -96,14 +96,10 @@ const ALL_SHIFTS = ["All", "Day", "Night"];
 /* ------------------------------------------------------------------ */
 
 export function ShutdownControlBoardTab() {
+  const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, showCriticalOnly: filterCritical, setShowCriticalOnly: setFilterCritical, navigateToTab } = useOrchestratorContext();
   const [viewMode, setViewMode] = useState<ViewMode>("table");
   const [groupBy, setGroupBy] = useState<GroupBy>("status");
-  const [filterArea, setFilterArea] = useState("All");
-  const [filterTrade, setFilterTrade] = useState("All");
-  const [filterShift, setFilterShift] = useState("All");
-  const [filterCritical, setFilterCritical] = useState(false);
   const [filterDelayed, setFilterDelayed] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const selected = PACKAGES.find((p) => p.id === selectedId) ?? null;
 

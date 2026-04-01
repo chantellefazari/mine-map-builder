@@ -401,8 +401,10 @@ export function ShutdownAIPlannerTab() {
                             </div>
                             <div className="flex flex-wrap gap-2 text-[10px] text-muted-foreground">
                               {rule.area && <span>Area: <strong className="text-foreground">{rule.area}</strong></span>}
-                              {rule.affected_packages && rule.affected_packages.length > 0 && (
-                                <span>Packages: <strong className="text-foreground font-mono">{rule.affected_packages.join(", ")}</strong></span>
+                                {rule.affected_packages && rule.affected_packages.length > 0 && (
+                                <span>Packages: {rule.affected_packages.map((pkg, pi) => (
+                                  <button key={pi} className="font-mono font-bold text-foreground hover:text-primary underline mx-0.5" onClick={(e) => { e.stopPropagation(); setSelectedPackageId(pkg); navigateToTab("sequence"); }}>{pkg}</button>
+                                ))}</span>
                               )}
                               {rule.predecessors && rule.predecessors.length > 0 && (
                                 <span>Predecessors: <strong className="text-foreground font-mono">{rule.predecessors.join(", ")}</strong></span>

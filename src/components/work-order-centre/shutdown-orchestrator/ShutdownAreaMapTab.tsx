@@ -162,6 +162,8 @@ export function ShutdownAreaMapTab() {
       if (area) ctx.setFilterArea(area.name);
     }
   };
+
+  const selectedArea = AREAS.find((a) => a.id === selectedAreaId) ?? null;
   const areaPackages = useMemo(
     () => (selectedAreaId ? DEMO_PACKAGES.filter((p) => p.area === selectedAreaId) : []),
     [selectedAreaId]

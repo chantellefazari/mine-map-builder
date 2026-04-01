@@ -76,11 +76,8 @@ const ALL_SHIFTS = ["All", "Day", "Night"];
 /* ------------------------------------------------------------------ */
 
 export function ShutdownCriticalPathTab() {
-  const [filterArea, setFilterArea] = useState("All");
-  const [filterTrade, setFilterTrade] = useState("All");
-  const [filterShift, setFilterShift] = useState("All");
+  const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, navigateToTab } = useOrchestratorContext();
   const [filterSeverity, setFilterSeverity] = useState("All");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const selected = PACKAGES.find((p) => p.id === selectedId) ?? null;
 
