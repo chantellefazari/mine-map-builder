@@ -8,6 +8,7 @@ import { ShutdownAreaMapTab } from "./ShutdownAreaMapTab";
 import { ShutdownSequenceFlowTab } from "./ShutdownSequenceFlowTab";
 import { ShutdownControlBoardTab } from "./ShutdownControlBoardTab";
 import { ShutdownCriticalPathTab } from "./ShutdownCriticalPathTab";
+import { ShutdownPrintPackTab } from "./ShutdownPrintPackTab";
 
 const SUB_TABS = [
   { key: "overview", label: "Shutdown Overview", icon: LayoutDashboard },
@@ -90,6 +91,8 @@ export function ShutdownOrchestratorView() {
         <ShutdownControlBoardTab />
       ) : activeTab === "critical-path" ? (
         <ShutdownCriticalPathTab />
+      ) : activeTab === "print-pack" ? (
+        <ShutdownPrintPackTab />
       ) : (
         <TabPlaceholder tab={currentTab} />
       )}
