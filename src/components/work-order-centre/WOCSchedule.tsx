@@ -183,6 +183,7 @@ export function WOCSchedule() {
               <SelectItem value="weekly">Weekly Schedule</SelectItem>
               <SelectItem value="shutdown">Shutdown Schedule</SelectItem>
               <SelectItem value="vendors">Vendors</SelectItem>
+              <SelectItem value="orchestrator">Shutdown Orchestrator</SelectItem>
             </SelectContent>
           </Select>
 
