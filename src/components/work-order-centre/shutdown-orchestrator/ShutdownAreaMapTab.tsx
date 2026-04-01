@@ -514,7 +514,7 @@ export function ShutdownAreaMapTab() {
                         </p>
                       )}
                       <div className="flex items-center gap-1 mt-1 text-[9px] opacity-50">
-                        <ChevronRight className="w-2.5 h-2.5" /> View details
+                        <ChevronRight className="w-2.5 h-2.5" /> View in Sequence Flow
                       </div>
                     </button>
                   ))}
