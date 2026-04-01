@@ -948,6 +948,13 @@ function Scene({ areaSummaries, selectedArea, onSelectArea }: {
         );
       })}
 
+      {/* Admin & Stores clickable zone (no work packages, standalone) */}
+      <AdminZoneOverlay
+        layout={ZONE_BOUNDS["Admin & Stores"]}
+        isSelected={selectedArea === "Admin & Stores"}
+        onSelect={() => onSelectArea("Admin & Stores")}
+      />
+
       <CameraAnimator selectedArea={selectedArea} />
     </>
   );
