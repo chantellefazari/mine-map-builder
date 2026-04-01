@@ -675,7 +675,7 @@ function AdminAndStores() {
       </group>
 
       {/* ── Remo containers (accommodation/storage) — far right ── */}
-      <group position={[9, 0, 1]}>
+      <group position={[-11, 0, 1]}>
         <Box position={[0, 0, 0]} size={[2, 0.9, 1.2]} color="#78909c" />
         <Box position={[0, 0, 2]} size={[2, 0.9, 1.2]} color="#78909c" />
         <Box position={[0, 0, 4]} size={[2, 0.9, 1.2]} color="#78909c" />
