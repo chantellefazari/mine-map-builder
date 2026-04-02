@@ -389,6 +389,7 @@ export const DataMappingReadinessSection = () => {
           useCORS: true,
           backgroundColor: "#ffffff",
           logging: false,
+          windowWidth: 1200,
         });
         canvases.push(c);
       }
