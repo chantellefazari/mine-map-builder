@@ -137,11 +137,8 @@ const FINANCE_COSTING_MAPPINGS: MappingRow[] = [
 ];
 
 const PHYSICAL_SITE_MAPPINGS: MappingRow[] = [
-  { field: "Defined Store / Laydown Areas", sourceDocument: "Stores Implementation Plan", transformation: "Layout designed (C01-C05 + LD-A to LD-F), not constructed", status: "Not Started" },
-  { field: "Safe Truck Access & Unloading Zone", sourceDocument: "Stores Implementation Plan", transformation: "Delivery zone and forklift lane designed, not built", status: "Not Started" },
-  { field: "Scrap & Waste Disposal Process", sourceDocument: "N/A — Not yet defined", transformation: "No scrap process or disposal area designated", status: "Not Started" },
-  { field: "Bunded Oil / Chemical Storage", sourceDocument: "N/A — Not yet defined", transformation: "No bunded storage area exists on site", status: "Not Started" },
-  { field: "Chemical Packaging Disposal", sourceDocument: "N/A — Not yet defined", transformation: "No disposal process defined, regulatory compliance risk", status: "Not Started" },
+  { field: "Defined Store / Laydown Areas", sourceDocument: "Stores Implementation Plan", transformation: "Layout designed (C01-C05 + LD-A to LD-F), not constructed", status: "Partial" },
+  { field: "Safe Truck Access & Unloading Zone", sourceDocument: "Stores Implementation Plan", transformation: "Delivery zone and forklift lane designed, not built", status: "Partial" },
   { field: "Physical Asset Tags / Signage", sourceDocument: "Asset Tag Rollout Plan (TCMG-STD-TAG-002)", transformation: "Tag register built (450+ tags), rollout plan complete, physical installation pending", status: "Partial" },
 ];
 
