@@ -20,7 +20,7 @@ import {
 /*  TYPES                                                              */
 /* ------------------------------------------------------------------ */
 
-type PackType = "area-overview" | "critical-sequence" | "shift-execution";
+type PackType = "wall-chart" | "area-overview" | "critical-sequence" | "shift-execution";
 
 /* ------------------------------------------------------------------ */
 /*  STYLING                                                            */
