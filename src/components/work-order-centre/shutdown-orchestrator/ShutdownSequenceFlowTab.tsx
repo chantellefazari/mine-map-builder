@@ -27,7 +27,7 @@ export function ShutdownSequenceFlowTab() {
   const {
     selectedPackageId: selectedId, setSelectedPackageId: setSelectedId,
     filterArea, setFilterArea, filterTrade, setFilterTrade,
-    showCriticalOnly, setShowCriticalOnly,
+    showCriticalOnly, setShowCriticalOnly, packages,
   } = useOrchestratorContext();
   const [filterStatus, setFilterStatus] = useState("All");
   const [showDelayedOnly, setShowDelayedOnly] = useState(false);
