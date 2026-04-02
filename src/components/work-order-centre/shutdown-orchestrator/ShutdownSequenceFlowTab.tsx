@@ -65,13 +65,12 @@ export function ShutdownSequenceFlowTab() {
   const phases = useMemo(() => {
     return COL_LABELS.map((label, colIdx) => ({
       label,
-      packages: PACKAGES.filter(p => p.col === colIdx).sort((a, b) => {
-        // Sort by planned start time, then by row
+      packages: packages.filter(p => p.col === colIdx).sort((a, b) => {
         if (a.plannedStart !== b.plannedStart) return a.plannedStart < b.plannedStart ? -1 : 1;
         return a.row - b.row;
       }),
     }));
-  }, []);
+  }, [packages]);
 
   return (
     <div className="space-y-3">

@@ -25,7 +25,7 @@ type Overlay = "critical-path" | "delays" | "isolations" | "access" | "trade" | 
 /*  DATA                                                               */
 /* ------------------------------------------------------------------ */
 
-const AREAS = buildAreaZones(PACKAGES);
+/* Derived from context */
 
 /* ------------------------------------------------------------------ */
 /*  STATUS STYLING                                                     */

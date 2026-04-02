@@ -38,7 +38,7 @@ export function ShutdownCriticalPathTab() {
   const selected = packages.find((p) => p.id === selectedId) ?? null;
 
   const filtered = useMemo(() => {
-    return PACKAGES.filter((p) => {
+    return packages.filter((p) => {
       if (filterArea !== "All" && p.area !== filterArea) return false;
       if (filterTrade !== "All" && p.trade !== filterTrade) return false;
       if (filterShift !== "All" && p.shift !== filterShift) return false;
@@ -46,7 +46,7 @@ export function ShutdownCriticalPathTab() {
       if (filterSeverity === "High" && p.delayHrs < 6) return false;
       return true;
     });
-  }, [filterArea, filterTrade, filterShift, filterSeverity]);
+  }, [filterArea, filterTrade, filterShift, filterSeverity, packages]);
 
   const criticalPath = useMemo(() => filtered.filter((p) => !p.nearCritical && p.criticalPath), [filtered]);
   const nearCritical = useMemo(() => filtered.filter((p) => p.nearCritical), [filtered]);
