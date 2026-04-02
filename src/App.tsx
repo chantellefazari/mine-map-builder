@@ -95,6 +95,7 @@ const App = () => {
                 <Route path="/wo-print/:woNumber" element={<P tabKey="work-order-centre"><WOPrint /></P>} />
                 <Route path="/implementation-readiness" element={<P tabKey="implementation-readiness"><ImplementationReadiness /></P>} />
                 <Route path="/implementation-risk-assessment" element={<P tabKey="implementation-risk-assessment"><ImplementationRiskAssessment /></P>} />
+                <Route path="/component-requests" element={<P tabKey="component-requests"><ComponentRequests /></P>} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
