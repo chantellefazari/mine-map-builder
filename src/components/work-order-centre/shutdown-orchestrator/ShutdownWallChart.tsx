@@ -90,6 +90,8 @@ export function ShutdownWallChart({ shutdownId }: Props) {
   const rundownHrs = rundownSteps.reduce((s, r) => s + r.duration_hours, 0);
   const runupHrs = runupSteps.reduce((s, r) => s + r.duration_hours, 0);
 
+  if (!shutdown) return <div className="text-center py-12 text-sm text-muted-foreground">No shutdown selected</div>;
+
   return (
     <div className="space-y-0 text-[11px]" style={{ minWidth: `${Math.max(1200, totalDays * 200 + 400)}px` }}>
       {/* ══════════ HEADER ══════════ */}
