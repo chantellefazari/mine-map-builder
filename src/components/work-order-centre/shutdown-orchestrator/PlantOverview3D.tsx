@@ -783,11 +783,12 @@ const ZONE_BOUNDS: Record<string, { pos: [number, number, number]; size: [number
   "Admin & Stores":         { pos: [2,    0.03, -18],   size: [22, 0.02, 16] },
 };
 
-function ZoneOverlay({ area, layout, isSelected, onSelect }: {
+function ZoneOverlay({ area, layout, isSelected, onSelect, onHover }: {
   area: AreaSummary;
   layout: { pos: [number, number, number]; size: [number, number, number] };
   isSelected: boolean;
   onSelect: () => void;
+  onHover: (hovered: boolean, e?: { clientX: number; clientY: number }) => void;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
@@ -804,8 +805,9 @@ function ZoneOverlay({ area, layout, isSelected, onSelect }: {
       <mesh
         ref={meshRef}
         position={layout.pos}
-        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = "pointer"; }}
-        onPointerOut={() => { setHovered(false); document.body.style.cursor = "auto"; }}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = "pointer"; onHover(true, { clientX: (e as any).clientX ?? 0, clientY: (e as any).clientY ?? 0 }); }}
+        onPointerMove={(e) => { onHover(true, { clientX: (e as any).clientX ?? 0, clientY: (e as any).clientY ?? 0 }); }}
+        onPointerOut={() => { setHovered(false); document.body.style.cursor = "auto"; onHover(false); }}
         onClick={(e) => { e.stopPropagation(); onSelect(); }}
       >
         <boxGeometry args={layout.size} />
@@ -944,10 +946,11 @@ function CameraAnimator({ selectedArea }: { selectedArea: string }) {
   );
 }
 
-function Scene({ areaSummaries, selectedArea, onSelectArea }: {
+function Scene({ areaSummaries, selectedArea, onSelectArea, onHoverArea }: {
   areaSummaries: AreaSummary[];
   selectedArea: string;
   onSelectArea: (area: string) => void;
+  onHoverArea: (area: string | null, e?: { clientX: number; clientY: number }) => void;
 }) {
   const areaColors = useMemo(() => {
     const map: Record<string, string> = {};
@@ -986,11 +989,11 @@ function Scene({ areaSummaries, selectedArea, onSelectArea }: {
             layout={layout}
             isSelected={selectedArea === area.area}
             onSelect={() => onSelectArea(area.area)}
+            onHover={(hovered, e) => onHoverArea(hovered ? area.area : null, e)}
           />
         );
       })}
 
-      {/* Admin & Stores clickable zone (no work packages, standalone) */}
       <AdminZoneOverlay
         layout={ZONE_BOUNDS["Admin & Stores"]}
         isSelected={selectedArea === "Admin & Stores"}
@@ -1007,21 +1010,46 @@ function Scene({ areaSummaries, selectedArea, onSelectArea }: {
 /* ------------------------------------------------------------------ */
 
 export function PlantOverview3D({ className }: { className?: string }) {
-  const { navigateToTab, setFilterArea, areaSummaries } = useOrchestratorContext();
+  const { navigateToTab, setFilterArea, areaSummaries, packages } = useOrchestratorContext();
   const [selectedArea, setSelectedArea] = useState("");
+  const [hoveredArea, setHoveredArea] = useState<string | null>(null);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleSelectArea = (area: string) => setSelectedArea(area === selectedArea ? "" : area);
   const handleNavigate = () => { if (selectedArea) { setFilterArea(selectedArea); navigateToTab("area-map"); } };
   const selected = areaSummaries.find(a => a.area === selectedArea);
 
+  const handleHoverArea = (area: string | null, e?: { clientX: number; clientY: number }) => {
+    setHoveredArea(area);
+    if (e && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setTooltipPos({ x: e.clientX - rect.left + 12, y: e.clientY - rect.top + 12 });
+    }
+  };
+
+  const hoveredPackages = useMemo(() => {
+    if (!hoveredArea) return [];
+    return packages.filter(p => p.area === hoveredArea);
+  }, [hoveredArea, packages]);
+
+  const STATUS_DOT: Record<string, string> = {
+    "Not Started": "bg-muted-foreground",
+    Ready: "bg-blue-500",
+    Active: "bg-emerald-500",
+    Blocked: "bg-destructive",
+    Delayed: "bg-amber-500",
+    Complete: "bg-muted-foreground",
+  };
+
   return (
-    <div className={cn("relative rounded-lg border border-border overflow-hidden bg-black/90", className)}>
+    <div ref={containerRef} className={cn("relative rounded-lg border border-border overflow-hidden bg-black/90", className)}>
       <div className="w-full h-[480px]">
         <Suspense fallback={
           <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">Loading 3D model…</div>
         }>
           <Canvas shadows camera={{ position: [12, 18, 22], fov: 45, near: 0.1, far: 120 }} gl={{ antialias: true }}>
-            <Scene areaSummaries={areaSummaries} selectedArea={selectedArea} onSelectArea={handleSelectArea} />
+            <Scene areaSummaries={areaSummaries} selectedArea={selectedArea} onSelectArea={handleSelectArea} onHoverArea={handleHoverArea} />
           </Canvas>
         </Suspense>
       </div>
@@ -1038,6 +1066,29 @@ export function PlantOverview3D({ className }: { className?: string }) {
       <div className="absolute top-3 right-3 text-[10px] text-muted-foreground bg-background/70 backdrop-blur-sm rounded px-2 py-1 border border-border">
         Click zone to select · Drag to rotate · Scroll to zoom
       </div>
+
+      {/* Hover tooltip showing packages */}
+      {hoveredArea && hoveredPackages.length > 0 && !selectedArea && (
+        <div
+          className="absolute z-50 w-64 bg-card/95 backdrop-blur-sm border border-border rounded-lg p-3 shadow-xl pointer-events-none"
+          style={{ left: Math.min(tooltipPos.x, 500), top: Math.min(tooltipPos.y, 300) }}
+        >
+          <div className="text-xs font-bold text-foreground mb-2">{hoveredArea}</div>
+          <div className="space-y-1 max-h-48 overflow-y-auto">
+            {hoveredPackages.map(p => (
+              <div key={p.id} className="flex items-center gap-2 text-[10px]">
+                <span className={cn("w-1.5 h-1.5 rounded-full shrink-0", STATUS_DOT[p.status] || "bg-muted-foreground")} />
+                <span className="font-mono font-semibold text-muted-foreground">{p.id}</span>
+                <span className="truncate text-foreground">{p.title}</span>
+                <span className="ml-auto shrink-0 font-semibold text-foreground">{p.pctComplete}%</span>
+              </div>
+            ))}
+          </div>
+          <div className="text-[9px] text-muted-foreground mt-2 pt-1.5 border-t border-border">
+            {hoveredPackages.length} package{hoveredPackages.length !== 1 ? "s" : ""} · Click to inspect
+          </div>
+        </div>
+      )}
 
       {selected && (
         <div className="absolute top-3 left-3 w-56 bg-card/95 backdrop-blur-sm border border-border rounded-lg p-3 shadow-lg">
