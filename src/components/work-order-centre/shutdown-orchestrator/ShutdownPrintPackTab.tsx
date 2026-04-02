@@ -36,6 +36,7 @@ const STATUS_STYLE: Record<string, { text: string; border: string; dot: string; 
 };
 
 const PACK_TYPES: { key: PackType; label: string; icon: typeof Map; description: string }[] = [
+  { key: "wall-chart", label: "Wall Chart Gantt", icon: BarChart3, description: "A1/A0 plotter print — full shutdown timeline with run-down, jobs by area, and run-up" },
   { key: "area-overview", label: "Shutdown Area Overview", icon: Map, description: "Leadership summary — area status, progress, and key risks" },
   { key: "critical-sequence", label: "Critical Sequence Sheet", icon: Route, description: "Critical path packages in dependency order with blockers" },
   { key: "shift-execution", label: "Shift Execution Board", icon: Clock, description: "Shift-specific packages, owners, blockers, and handover notes" },
