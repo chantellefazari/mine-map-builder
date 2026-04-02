@@ -95,7 +95,7 @@ function PlanningProgress({ wo, partsCount }: { wo: WorkOrder; partsCount: numbe
 export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
   const { workOrders, allocate, update } = useWorkOrders();
   const [opsTab, setOpsTab] = useState("planning");
-  const [perfTab, setPerfTab] = useState<string | null>(null);
+  
   const [search, setSearch] = useState("");
   const [showWoTypeDialog, setShowWoTypeDialog] = useState(false);
   const [showPMSchedule, setShowPMSchedule] = useState(false);
