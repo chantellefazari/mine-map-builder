@@ -32,7 +32,7 @@ const STATUS_STYLE: Record<string, { bg: string; text: string; border: string; d
 /* ------------------------------------------------------------------ */
 
 export function ShutdownCriticalPathTab() {
-  const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, navigateToTab } = useOrchestratorContext();
+  const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, navigateToTab, packages } = useOrchestratorContext();
   const [filterSeverity, setFilterSeverity] = useState("All");
 
   const selected = PACKAGES.find((p) => p.id === selectedId) ?? null;
