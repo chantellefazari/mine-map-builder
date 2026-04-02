@@ -20,6 +20,7 @@ interface RowData {
 
 const emptyRow = (): RowData => ({
   id: crypto.randomUUID(),
+  submittedBy: "",
   targetAsset: "",
   partName: "",
   manufacturer: "",
