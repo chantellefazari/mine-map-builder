@@ -251,10 +251,13 @@ export function ShutdownOverviewTab() {
             <h3 className="text-sm font-semibold text-foreground">Top Risks / Constraints</h3>
           </div>
           <div className="space-y-2 max-h-[420px] overflow-y-auto">
-            {DEMO_RISKS.map((r, i) => (
+            {liveRisks.length === 0 && (
+              <p className="text-xs text-muted-foreground py-4 text-center">No blocked or delayed packages</p>
+            )}
+            {liveRisks.map((r) => (
               <button
-                key={i}
-                onClick={() => { setSelectedPackageId(r.workPackage); navigateToTab("control"); }}
+                key={r.id}
+                onClick={() => { setSelectedPackageId(r.id); navigateToTab("control"); }}
                 className={cn(
                   "w-full text-left rounded-md border p-2.5 text-xs cursor-pointer hover:shadow-sm transition-shadow",
                   SEVERITY_STYLE[r.severity]
@@ -266,10 +269,10 @@ export function ShutdownOverviewTab() {
                   </Badge>
                   <span className="text-[10px] opacity-80">{r.area}</span>
                 </div>
-                <p className="font-medium leading-snug mb-1">{r.risk}</p>
+                <p className="font-medium leading-snug mb-1">{r.title}</p>
                 <div className="flex items-center justify-between text-[10px] opacity-80">
-                  <span className="font-mono">{r.workPackage}</span>
-                  <span>{r.owner}</span>
+                  <span className="font-mono">{r.id}</span>
+                  <span>{r.supervisor}</span>
                 </div>
               </button>
             ))}
