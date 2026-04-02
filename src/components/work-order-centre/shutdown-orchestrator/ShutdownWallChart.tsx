@@ -54,14 +54,14 @@ export function ShutdownWallChart({ shutdownId }: Props) {
   const { rundownSteps, runupSteps } = useRundownSteps(shutdownId);
 
   const shutdown = shutdowns.find(s => s.id === shutdownId);
-  if (!shutdown) return null;
 
-  const startDate = parseISO(shutdown.start_date);
-  const endDate = shutdown.end_date ? parseISO(shutdown.end_date) : startDate;
+  const startDate = shutdown ? parseISO(shutdown.start_date) : new Date();
+  const endDate = shutdown?.end_date ? parseISO(shutdown.end_date) : startDate;
   const totalDays = differenceInDays(endDate, startDate) + 1;
 
   // Build day headers
   const days = useMemo(() => {
+    if (!shutdown) return [];
     const result: { date: Date; label: string; dateStr: string; dayNum: number }[] = [];
     for (let i = 0; i < totalDays; i++) {
       const d = addDays(startDate, i);
@@ -73,7 +73,7 @@ export function ShutdownWallChart({ shutdownId }: Props) {
       });
     }
     return result;
-  }, [startDate, totalDays]);
+  }, [shutdown, startDate, totalDays]);
 
   // Group packages by area
   const areaGroups = useMemo(() => {
