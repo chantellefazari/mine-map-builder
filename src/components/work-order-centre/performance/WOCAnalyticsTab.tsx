@@ -59,6 +59,9 @@ export function WOCAnalyticsTab({ workOrders, workRequests }: Props) {
     ["Planning", "Draft", "Ready"].includes(w.status)
   ).length;
   const reactive = total - planned - completed;
+  const wrTotal = workRequests.length;
+  const wrConverted = workRequests.filter((wr) => wr.linked_wo_id).length;
+  const scheduledWOs = workOrders.filter((wo) => wo.scheduled_date).length;
 
   return (
     <div className="space-y-4 mt-2">
