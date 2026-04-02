@@ -123,7 +123,7 @@ const PLANNING_SCHEDULING_MAPPINGS: MappingRow[] = [
   { field: "Backlog Management", sourceDocument: "Minesite.ai Work Management", transformation: "Backlog visibility and ageing built in Minesite.ai", status: "Ready" },
   { field: "Resource Levelling / Trade Allocation", sourceDocument: "Minesite.ai Scheduling Module", transformation: "Trade-based allocation built in Minesite.ai", status: "Ready" },
   { field: "Shutdown Planning Process", sourceDocument: "Minesite.ai Shutdown Module", transformation: "Shutdown rundowns, PM requirements, and vendor management built", status: "Ready" },
-  { field: "Job Task Lists (Standard Jobs)", sourceDocument: "PM Templates Pack", transformation: "PM tasks defined across all disciplines, corrective job templates in progress", status: "Partial" },
+  { field: "Job Task Lists (Standard Jobs)", sourceDocument: "PM Templates Pack", transformation: "PM tasks defined across all disciplines, corrective job templates built", status: "Ready" },
   { field: "Maintenance Planning Workflow", sourceDocument: "Minesite.ai Work Management", transformation: "Plan → schedule → execute → close workflow built", status: "Ready" },
 ];
 
