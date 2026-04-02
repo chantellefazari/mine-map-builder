@@ -262,82 +262,38 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
         </div>
       </div>
 
-      {/* ---- Two Tab Groups ---- */}
-      <div className="space-y-1">
-        <div className="flex items-end gap-6 border-b border-border pb-px">
-          {/* Operations group */}
-          <div className="space-y-1">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1">
-              Operations
-            </span>
-            <div className="flex gap-0.5">
-              {(
-                [
-                  ["planning", "Planning"],
-                  ["planned", "Planned"],
-                  ["scheduled", "Scheduled"],
-                  ["active", "Active"],
-                  ["on-hold", "On Hold"],
-                  ["completed", "Completed"],
-                  ["closed", "Closed"],
-                  ["history", "History"],
-                ] as [string, string][]
-              ).map(([key, label]) => (
-                <button
-                  key={key}
-                  onClick={() => selectOps(key)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-t-md border-b-2 transition-colors ${
-                    activeGroup === "operations" && opsTab === key
-                      ? "border-primary text-foreground bg-background"
-                      : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/40"
-                  }`}
-                >
-                  {label}
-                  {key !== "history" && counts[key as keyof typeof counts] !== undefined && (
-                    <span className="ml-1 text-[10px] opacity-60">
-                      ({counts[key as keyof typeof counts]})
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="h-6 w-px bg-border mx-1" />
-
-          {/* Performance group */}
-          <div className="space-y-1">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1">
-              Performance
-            </span>
-            <div className="flex gap-0.5">
-              {(
-                [
-                  ["reports", "Reports"],
-                  ["analytics", "Analytics"],
-                  ["pm-forms", "PM Forms"],
-                  ["compliance", "PM Compliance"],
-                  ["sched-compliance", "Sched Compliance"],
-                  ["backlog", "Backlog"],
-                  ["reliability", "Reliability"],
-                  ["kpi-scorecard", "KPI Scorecard"],
-                ] as [string, string][]
-              ).map(([key, label]) => (
-                <button
-                  key={key}
-                  onClick={() => selectPerf(key)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-t-md border-b-2 transition-colors ${
-                    perfTab === key
-                      ? "border-primary text-foreground bg-background"
-                      : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/40"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
+      {/* ---- Tab Bar ---- */}
+      <div className="border-b border-border">
+        <div className="flex gap-0.5">
+          {(
+            [
+              ["planning", "Planning"],
+              ["planned", "Planned"],
+              ["scheduled", "Scheduled"],
+              ["active", "Active"],
+              ["on-hold", "On Hold"],
+              ["completed", "Completed"],
+              ["closed", "Closed"],
+              ["history", "History"],
+            ] as [string, string][]
+          ).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => selectOps(key)}
+              className={`px-3 py-1.5 text-xs font-medium rounded-t-md border-b-2 transition-colors ${
+                opsTab === key
+                  ? "border-primary text-foreground bg-background"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/40"
+              }`}
+            >
+              {label}
+              {key !== "history" && counts[key as keyof typeof counts] !== undefined && (
+                <span className="ml-1 text-[10px] opacity-60">
+                  ({counts[key as keyof typeof counts]})
+                </span>
+              )}
+            </button>
+          ))}
         </div>
       </div>
 
