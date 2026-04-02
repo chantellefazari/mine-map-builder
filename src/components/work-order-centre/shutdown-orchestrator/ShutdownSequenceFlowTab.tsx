@@ -50,7 +50,7 @@ export function ShutdownSequenceFlowTab() {
   }, [packages]);
 
   const visibleNodes = useMemo(() => {
-    return PACKAGES.filter((n) => {
+    return packages.filter((n) => {
       if (filterArea !== "All" && n.area !== filterArea) return false;
       if (filterTrade !== "All" && n.trade !== filterTrade) return false;
       if (filterStatus !== "All" && n.status !== filterStatus) return false;
@@ -58,7 +58,7 @@ export function ShutdownSequenceFlowTab() {
       if (showDelayedOnly && n.status !== "Delayed" && n.status !== "Blocked" && !delayedImpact.has(n.id)) return false;
       return true;
     });
-  }, [filterArea, filterTrade, filterStatus, showCriticalOnly, showDelayedOnly, delayedImpact]);
+  }, [filterArea, filterTrade, filterStatus, showCriticalOnly, showDelayedOnly, delayedImpact, packages]);
 
   const visibleIds = new Set(visibleNodes.map((n) => n.id));
 
