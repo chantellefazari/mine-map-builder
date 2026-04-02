@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
-  X, Route, Clock, AlertTriangle, Lock, Shield, Wrench, Zap,
-  ChevronRight, Activity, CheckCircle2, Package, MapPin, Eye,
-  Target, Filter, Layers, Calendar,
+  X, Route, Clock, AlertTriangle, Shield, Wrench, Zap,
+  ChevronRight, Activity, CheckCircle2, Package, MapPin,
+  Filter, Layers, Target, Lock,
 } from "lucide-react";
 import {
   PACKAGES, buildAreaZones, ALL_AREA_OPTIONS,
@@ -19,7 +19,6 @@ import {
 /* ------------------------------------------------------------------ */
 
 type AreaStatus = "Not Started" | "Ready" | "Active" | "At Risk" | "Delayed" | "Complete";
-type WPStatus = "Ready" | "Active" | "Blocked" | "Delayed" | "Complete";
 type Overlay = "critical-path" | "delays" | "isolations" | "access" | "trade" | "progress";
 
 /* ------------------------------------------------------------------ */
@@ -29,25 +28,16 @@ type Overlay = "critical-path" | "delays" | "isolations" | "access" | "trade" | 
 const AREAS = buildAreaZones(PACKAGES);
 
 /* ------------------------------------------------------------------ */
-/*  STATUS COLOURS                                                     */
+/*  STATUS STYLING                                                     */
 /* ------------------------------------------------------------------ */
 
-const STATUS_FILL: Record<AreaStatus, string> = {
-  "Not Started": "fill-muted-foreground/15 stroke-muted-foreground/40",
-  Ready: "fill-blue-500/15 stroke-blue-500/60",
-  Active: "fill-emerald-500/15 stroke-emerald-500/60",
-  "At Risk": "fill-amber-500/15 stroke-amber-500/60",
-  Delayed: "fill-destructive/15 stroke-destructive/60",
-  Complete: "fill-emerald-700/20 stroke-emerald-700/60",
-};
-
-const STATUS_BG: Record<AreaStatus, string> = {
-  "Not Started": "bg-muted text-muted-foreground",
-  Ready: "bg-blue-500/10 text-blue-600",
-  Active: "bg-emerald-500/10 text-emerald-600",
-  "At Risk": "bg-amber-500/10 text-amber-600",
-  Delayed: "bg-destructive/10 text-destructive",
-  Complete: "bg-emerald-700/10 text-emerald-700",
+const STATUS_CONFIG: Record<AreaStatus, { bg: string; border: string; text: string; dot: string; progressBar: string }> = {
+  "Not Started": { bg: "bg-muted/40", border: "border-border", text: "text-muted-foreground", dot: "bg-muted-foreground", progressBar: "bg-muted-foreground" },
+  Ready:    { bg: "bg-blue-500/5", border: "border-blue-500/30", text: "text-blue-600", dot: "bg-blue-500", progressBar: "bg-blue-500" },
+  Active:   { bg: "bg-emerald-500/5", border: "border-emerald-500/30", text: "text-emerald-600", dot: "bg-emerald-500", progressBar: "bg-emerald-500" },
+  "At Risk": { bg: "bg-amber-500/5", border: "border-amber-500/30", text: "text-amber-600", dot: "bg-amber-500", progressBar: "bg-amber-500" },
+  Delayed:  { bg: "bg-destructive/5", border: "border-destructive/30", text: "text-destructive", dot: "bg-destructive", progressBar: "bg-destructive" },
+  Complete: { bg: "bg-emerald-700/5", border: "border-emerald-700/30", text: "text-emerald-700", dot: "bg-emerald-700", progressBar: "bg-emerald-700" },
 };
 
 const WP_STATUS_STYLE: Record<string, string> = {
@@ -71,7 +61,269 @@ const ALL_TRADES = ["All", "Mechanical", "Electrical", "Instrumentation"];
 const ALL_STATUSES: AreaStatus[] = ["Not Started", "Ready", "Active", "At Risk", "Delayed", "Complete"];
 
 /* ------------------------------------------------------------------ */
-/*  COMPONENT                                                          */
+/*  AREA CARD                                                          */
+/* ------------------------------------------------------------------ */
+
+function AreaCard({
+  area,
+  isSelected,
+  onSelect,
+  overlays,
+  packages,
+}: {
+  area: AreaZone;
+  isSelected: boolean;
+  onSelect: () => void;
+  overlays: Set<Overlay>;
+  packages: ShutdownWorkPackage[];
+}) {
+  const status = area.status as AreaStatus;
+  const cfg = STATUS_CONFIG[status];
+  const cpCount = area.criticalPath;
+
+  return (
+    <button
+      onClick={onSelect}
+      className={cn(
+        "relative text-left rounded-xl border-2 p-4 transition-all hover:shadow-md",
+        cfg.bg, cfg.border,
+        isSelected && "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg",
+      )}
+    >
+      {/* Blocked badge */}
+      {area.blocked > 0 && (
+        <span className="absolute -top-2 -right-2 flex items-center justify-center w-5 h-5 rounded-full bg-destructive text-white text-[10px] font-bold shadow-sm">
+          {area.blocked}
+        </span>
+      )}
+
+      {/* Header */}
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <h4 className="text-sm font-bold text-foreground leading-tight">{area.name}</h4>
+        <Badge variant="outline" className={cn("text-[10px] shrink-0 border-current", cfg.text)}>
+          {area.status}
+        </Badge>
+      </div>
+
+      {/* Progress bar */}
+      <div className="mb-3">
+        <div className="flex items-center justify-between text-[10px] mb-1">
+          <span className="text-muted-foreground">Progress</span>
+          <span className={cn("font-bold", cfg.text)}>{area.pctComplete}%</span>
+        </div>
+        <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+          <div className={cn("h-full rounded-full transition-all", cfg.progressBar)} style={{ width: `${area.pctComplete}%` }} />
+        </div>
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-3 gap-1.5 mb-2">
+        <div className="text-center rounded-md bg-background/60 py-1">
+          <div className="text-xs font-bold text-foreground">{area.total}</div>
+          <div className="text-[9px] text-muted-foreground">Packages</div>
+        </div>
+        <div className="text-center rounded-md bg-background/60 py-1">
+          <div className="text-xs font-bold text-emerald-600">{area.active}</div>
+          <div className="text-[9px] text-muted-foreground">Active</div>
+        </div>
+        <div className="text-center rounded-md bg-background/60 py-1">
+          <div className={cn("text-xs font-bold", area.delayed > 0 ? "text-amber-600" : "text-muted-foreground")}>{area.delayed}</div>
+          <div className="text-[9px] text-muted-foreground">Delayed</div>
+        </div>
+      </div>
+
+      {/* Overlay info strips */}
+      <div className="space-y-1">
+        {overlays.has("critical-path") && cpCount > 0 && (
+          <div className="flex items-center gap-1.5 text-[10px] text-destructive">
+            <Route className="w-3 h-3" />
+            <span className="font-semibold">{cpCount} critical path items</span>
+          </div>
+        )}
+        {overlays.has("isolations") && area.isolationStatus !== "All Clear" && area.isolationStatus !== "N/A" && (
+          <div className="flex items-center gap-1.5 text-[10px] text-purple-600">
+            <Shield className="w-3 h-3" />
+            <span>{area.isolationStatus}</span>
+          </div>
+        )}
+        {overlays.has("access") && area.accessConstraints !== "None" && (
+          <div className="flex items-center gap-1.5 text-[10px] text-amber-600">
+            <Lock className="w-3 h-3" />
+            <span className="truncate">{area.accessConstraints}</span>
+          </div>
+        )}
+        {overlays.has("delays") && area.delayed > 0 && (
+          <div className="flex items-center gap-1.5 text-[10px] text-amber-600">
+            <Clock className="w-3 h-3" />
+            <span>{area.delayed} delayed package{area.delayed > 1 ? "s" : ""}</span>
+          </div>
+        )}
+        {overlays.has("trade") && (
+          <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+            {["Mechanical", "Electrical", "Instrumentation"].map(t => {
+              const c = packages.filter(p => p.trade === t).length;
+              if (c === 0) return null;
+              return (
+                <span key={t} className="flex items-center gap-0.5">
+                  {t === "Mechanical" ? <Wrench className="w-2.5 h-2.5" /> : <Zap className="w-2.5 h-2.5" />}
+                  {t.charAt(0)}: {c}
+                </span>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Supervisor */}
+      <div className="mt-2 pt-2 border-t border-border/50 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+        <Activity className="w-3 h-3" />
+        <span>{area.supervisor}</span>
+      </div>
+    </button>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  DETAIL PANEL                                                       */
+/* ------------------------------------------------------------------ */
+
+function DetailPanel({
+  area,
+  packages,
+  onClose,
+  ctx,
+}: {
+  area: AreaZone;
+  packages: ShutdownWorkPackage[];
+  onClose: () => void;
+  ctx: ReturnType<typeof useOrchestratorContext>;
+}) {
+  const status = area.status as AreaStatus;
+  const cfg = STATUS_CONFIG[status];
+
+  return (
+    <div className="w-[380px] flex-shrink-0 border border-border rounded-xl bg-card overflow-hidden shadow-lg">
+      {/* Header */}
+      <div className={cn("px-4 py-3 border-b border-border flex items-center justify-between", cfg.bg)}>
+        <div>
+          <h3 className="text-sm font-bold text-foreground">{area.name}</h3>
+          <div className="flex items-center gap-2 mt-0.5">
+            <Badge variant="outline" className={cn("text-[10px] border-current", cfg.text)}>{area.status}</Badge>
+            <span className="text-[10px] text-muted-foreground">{area.pctComplete}% complete</span>
+          </div>
+        </div>
+        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+
+      <div className="p-4 space-y-4 max-h-[600px] overflow-y-auto">
+        {/* Stats grid */}
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { label: "Total", value: area.total, color: "text-foreground" },
+            { label: "Active", value: area.active, color: "text-emerald-600" },
+            { label: "Blocked", value: area.blocked, color: "text-destructive" },
+            { label: "Delayed", value: area.delayed, color: "text-amber-600" },
+            { label: "Complete", value: area.complete, color: "text-emerald-700" },
+            { label: "Critical Path", value: area.criticalPath, color: "text-destructive" },
+          ].map((s) => (
+            <div key={s.label} className="rounded-lg border border-border px-2.5 py-2 text-center">
+              <div className="text-[10px] text-muted-foreground">{s.label}</div>
+              <div className={cn("text-lg font-bold", s.color)}>{s.value}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Progress */}
+        <div>
+          <div className="flex items-center justify-between text-[10px] mb-1">
+            <span className="text-muted-foreground">Overall Progress</span>
+            <span className="font-bold text-foreground">{area.pctComplete}%</span>
+          </div>
+          <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
+            <div className={cn("h-full rounded-full transition-all", cfg.progressBar)} style={{ width: `${area.pctComplete}%` }} />
+          </div>
+        </div>
+
+        {/* Constraints */}
+        <div className="space-y-2 rounded-lg bg-muted/30 p-3">
+          <div className="flex items-center gap-2 text-xs">
+            <Shield className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+            <span className="text-muted-foreground">Isolation:</span>
+            <span className={cn("font-medium", area.isolationStatus === "All Clear" ? "text-emerald-600" : "text-amber-600")}>
+              {area.isolationStatus}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+            <span className="text-muted-foreground">Access:</span>
+            <span className={cn("font-medium", area.accessConstraints === "None" ? "text-emerald-600" : "text-amber-600")}>
+              {area.accessConstraints}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <Activity className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+            <span className="text-muted-foreground">Supervisor:</span>
+            <span className="font-medium text-foreground">{area.supervisor}</span>
+          </div>
+        </div>
+
+        {/* Work Packages */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <Package className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="text-xs font-semibold text-foreground">Work Packages ({packages.length})</span>
+          </div>
+          <div className="space-y-2">
+            {packages.map((wp) => (
+              <button
+                key={wp.id}
+                onClick={() => { ctx.setSelectedPackageId(wp.id); ctx.navigateToTab("sequence"); }}
+                className={cn(
+                  "w-full text-left rounded-lg border p-3 transition-colors hover:shadow-sm",
+                  WP_STATUS_STYLE[wp.status] || "border-border"
+                )}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-mono font-bold">{wp.id}</span>
+                  <div className="flex items-center gap-1">
+                    {wp.criticalPath && (
+                      <Badge variant="outline" className="text-[8px] h-3.5 px-1 border-destructive text-destructive">CP</Badge>
+                    )}
+                    <Badge variant="outline" className="text-[8px] h-3.5 px-1 border-current">{wp.status}</Badge>
+                  </div>
+                </div>
+                <p className="text-[11px] font-medium leading-snug mb-1.5">{wp.title}</p>
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="flex items-center gap-1 opacity-80">
+                    {wp.trade === "Mechanical" ? <Wrench className="w-2.5 h-2.5" /> : <Zap className="w-2.5 h-2.5" />}
+                    {wp.trade}
+                  </span>
+                  <span className="font-semibold">{wp.pctComplete}%</span>
+                </div>
+                {wp.delayReason && (
+                  <p className="text-[10px] mt-1.5 opacity-70 flex items-center gap-1">
+                    <AlertTriangle className="w-2.5 h-2.5" /> {wp.delayReason}
+                  </p>
+                )}
+                <div className="flex items-center gap-1 mt-1.5 text-[9px] opacity-50">
+                  <ChevronRight className="w-2.5 h-2.5" /> View in Sequence Flow
+                </div>
+              </button>
+            ))}
+            {packages.length === 0 && (
+              <div className="text-center py-6 text-xs text-muted-foreground">No work packages in this area</div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  MAIN COMPONENT                                                     */
 /* ------------------------------------------------------------------ */
 
 export function ShutdownAreaMapTab() {
@@ -119,15 +371,36 @@ export function ShutdownAreaMapTab() {
     });
   }, [filterArea, filterTrade, filterStatus, filterCritical]);
 
-  const visibleIds = new Set(visibleAreas.map((a) => a.id));
+  // Summary stats
+  const totalPackages = AREAS.reduce((s, a) => s + a.total, 0);
+  const totalActive = AREAS.reduce((s, a) => s + a.active, 0);
+  const totalBlocked = AREAS.reduce((s, a) => s + a.blocked, 0);
+  const totalDelayed = AREAS.reduce((s, a) => s + a.delayed, 0);
+  const overallPct = AREAS.length > 0 ? Math.round(AREAS.reduce((s, a) => s + a.pctComplete, 0) / AREAS.length) : 0;
 
   return (
     <div className="space-y-4">
+      {/* ===== SUMMARY BAR ===== */}
+      <div className="grid grid-cols-5 gap-3">
+        {[
+          { label: "Total Packages", value: totalPackages, color: "text-foreground" },
+          { label: "Active", value: totalActive, color: "text-emerald-600" },
+          { label: "Blocked", value: totalBlocked, color: "text-destructive" },
+          { label: "Delayed", value: totalDelayed, color: "text-amber-600" },
+          { label: "Overall Progress", value: `${overallPct}%`, color: "text-primary" },
+        ].map((s) => (
+          <div key={s.label} className="rounded-lg border border-border bg-card px-3 py-2.5 text-center">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</div>
+            <div className={cn("text-xl font-bold mt-0.5", s.color)}>{s.value}</div>
+          </div>
+        ))}
+      </div>
+
       {/* ===== FILTERS BAR ===== */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-2 flex-wrap rounded-lg border border-border bg-card px-3 py-2">
         <Filter className="w-3.5 h-3.5 text-muted-foreground" />
         <Select value={filterArea} onValueChange={setFilterArea}>
-          <SelectTrigger className="w-44 h-8 text-xs"><SelectValue placeholder="Area" /></SelectTrigger>
+          <SelectTrigger className="w-40 h-8 text-xs"><SelectValue placeholder="Area" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="All">All Areas</SelectItem>
             {AREAS.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
@@ -155,9 +428,9 @@ export function ShutdownAreaMapTab() {
           <Route className="w-3 h-3" /> Critical Path
         </Button>
 
-        <div className="ml-auto flex items-center gap-1">
+        <div className="ml-auto flex items-center gap-1.5">
           <Layers className="w-3.5 h-3.5 text-muted-foreground" />
-          <span className="text-[10px] text-muted-foreground mr-1">Overlays:</span>
+          <span className="text-[10px] text-muted-foreground mr-0.5">Overlays:</span>
           {OVERLAY_OPTIONS.map((o) => (
             <Button
               key={o.key}
@@ -172,241 +445,54 @@ export function ShutdownAreaMapTab() {
         </div>
       </div>
 
-      {/* ===== MAIN CONTENT: MAP + DETAIL PANEL ===== */}
+      {/* ===== LEGEND ===== */}
+      <div className="flex items-center gap-4 px-1">
+        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+          <MapPin className="w-3 h-3" />
+          <span className="font-medium">Zone Status:</span>
+        </div>
+        {ALL_STATUSES.map((s) => (
+          <span key={s} className="flex items-center gap-1.5 text-[10px]">
+            <span className={cn("w-2.5 h-2.5 rounded-full", STATUS_CONFIG[s].dot)} />
+            <span className="text-muted-foreground">{s}</span>
+          </span>
+        ))}
+      </div>
+
+      {/* ===== MAIN CONTENT ===== */}
       <div className="flex gap-4">
-        {/* MAP PANEL */}
-        <div className={cn("flex-1 min-w-0 border border-border rounded-lg bg-card p-4", selectedArea && "xl:mr-0")}>
-          <div className="flex items-center gap-2 mb-3">
-            <MapPin className="w-4 h-4 text-muted-foreground" />
-            <h3 className="text-sm font-semibold text-foreground">Plant Shutdown Zone Map</h3>
-            <div className="ml-auto flex items-center gap-3 text-[10px] text-muted-foreground">
-              {(["Not Started", "Ready", "Active", "At Risk", "Delayed", "Complete"] as AreaStatus[]).map((s) => (
-                <span key={s} className="flex items-center gap-1">
-                  <span className={cn("w-2.5 h-2.5 rounded-sm border", STATUS_BG[s])} />
-                  {s}
-                </span>
-              ))}
-            </div>
+        {/* Zone Grid */}
+        <div className="flex-1 min-w-0">
+          <div className={cn(
+            "grid gap-4",
+            selectedArea ? "grid-cols-2" : "grid-cols-3",
+          )}>
+            {visibleAreas.map((area) => (
+              <AreaCard
+                key={area.id}
+                area={area}
+                isSelected={selectedAreaId === area.id}
+                onSelect={() => handleAreaSelect(selectedAreaId === area.id ? null : area.id)}
+                overlays={overlays}
+                packages={PACKAGES.filter(p => p.area === area.name)}
+              />
+            ))}
           </div>
-
-          {/* SVG Zone Map */}
-          <svg viewBox="0 0 100 70" className="w-full" style={{ maxHeight: 520 }}>
-            <rect x="0" y="0" width="100" height="70" className="fill-muted/30" rx="1" />
-
-            {AREAS.map((area) => {
-              const visible = visibleIds.has(area.id);
-              const isSelected = selectedAreaId === area.id;
-              const isCriticalOverlay = overlays.has("critical-path") && area.criticalPath > 0;
-              const isDelayOverlay = overlays.has("delays") && (area.status === "Delayed" || area.delayed > 0);
-              const isIsoOverlay = overlays.has("isolations") && area.isolationStatus !== "All Clear" && area.isolationStatus !== "N/A";
-              const isAccessOverlay = overlays.has("access") && area.accessConstraints !== "None";
-
-              return (
-                <g
-                  key={area.id}
-                  className={cn("cursor-pointer transition-opacity", !visible && "opacity-20")}
-                  onClick={() => visible && handleAreaSelect(isSelected ? null : area.id)}
-                >
-                  <rect
-                    x={area.x} y={area.y} width={area.w} height={area.h}
-                    rx="0.8"
-                    className={cn(
-                      STATUS_FILL[area.status as AreaStatus],
-                      "stroke-[0.4] transition-all",
-                      isSelected && "stroke-[0.8] stroke-foreground"
-                    )}
-                  />
-
-                  {overlays.has("progress") && (
-                    <rect
-                      x={area.x + 0.5}
-                      y={area.y + area.h - 2.5}
-                      width={(area.w - 1) * (area.pctComplete / 100)}
-                      height="1.5"
-                      rx="0.5"
-                      className="fill-foreground/20"
-                    />
-                  )}
-
-                  <text x={area.x + area.w / 2} y={area.y + 5} textAnchor="middle" className="fill-foreground text-[2.6px] font-semibold">
-                    {area.name}
-                  </text>
-                  <text x={area.x + area.w / 2} y={area.y + 8.5} textAnchor="middle" className="fill-muted-foreground text-[2px]">
-                    {area.status} — {area.pctComplete}%
-                  </text>
-                  <text x={area.x + area.w / 2} y={area.y + 12} textAnchor="middle" className="fill-muted-foreground text-[1.8px]">
-                    {area.total} packages • {area.active} active
-                  </text>
-
-                  {isCriticalOverlay && (
-                    <g>
-                      <rect x={area.x + 1} y={area.y + area.h - 6} width="6" height="2.5" rx="0.5" className="fill-destructive/80" />
-                      <text x={area.x + 4} y={area.y + area.h - 4.2} textAnchor="middle" className="fill-white text-[1.5px] font-bold">CP: {area.criticalPath}</text>
-                    </g>
-                  )}
-                  {isDelayOverlay && (
-                    <g>
-                      <rect x={area.x + area.w - 8} y={area.y + area.h - 6} width="7" height="2.5" rx="0.5" className="fill-amber-500/80" />
-                      <text x={area.x + area.w - 4.5} y={area.y + area.h - 4.2} textAnchor="middle" className="fill-white text-[1.5px] font-bold">DELAY</text>
-                    </g>
-                  )}
-                  {isIsoOverlay && (
-                    <g>
-                      <rect x={area.x + 1} y={area.y + 15} width="7" height="2.5" rx="0.5" className="fill-purple-500/70" />
-                      <text x={area.x + 4.5} y={area.y + 16.8} textAnchor="middle" className="fill-white text-[1.5px] font-bold">ISO</text>
-                    </g>
-                  )}
-                  {isAccessOverlay && (
-                    <g>
-                      <rect x={area.x + area.w - 9} y={area.y + 15} width="8" height="2.5" rx="0.5" className="fill-orange-500/70" />
-                      <text x={area.x + area.w - 5} y={area.y + 16.8} textAnchor="middle" className="fill-white text-[1.5px] font-bold">ACCESS</text>
-                    </g>
-                  )}
-
-                  {overlays.has("trade") && (
-                    <g>
-                      {PACKAGES.filter((p) => p.area === area.name && p.trade === "Mechanical").length > 0 && (
-                        <>
-                          <circle cx={area.x + 3} cy={area.y + area.h - 9} r="1.2" className="fill-blue-500/60" />
-                          <text x={area.x + 5.5} y={area.y + area.h - 8.2} className="fill-muted-foreground text-[1.5px]">
-                            M: {PACKAGES.filter((p) => p.area === area.name && p.trade === "Mechanical").length}
-                          </text>
-                        </>
-                      )}
-                      {PACKAGES.filter((p) => p.area === area.name && p.trade === "Electrical").length > 0 && (
-                        <>
-                          <circle cx={area.x + area.w / 2 + 2} cy={area.y + area.h - 9} r="1.2" className="fill-amber-500/60" />
-                          <text x={area.x + area.w / 2 + 4.5} y={area.y + area.h - 8.2} className="fill-muted-foreground text-[1.5px]">
-                            E: {PACKAGES.filter((p) => p.area === area.name && p.trade === "Electrical").length}
-                          </text>
-                        </>
-                      )}
-                    </g>
-                  )}
-
-                  {area.blocked > 0 && (
-                    <g>
-                      <circle cx={area.x + area.w - 3} cy={area.y + 3} r="1.8" className="fill-destructive/80" />
-                      <text x={area.x + area.w - 3} y={area.y + 3.6} textAnchor="middle" className="fill-white text-[1.8px] font-bold">{area.blocked}</text>
-                    </g>
-                  )}
-                </g>
-              );
-            })}
-          </svg>
+          {visibleAreas.length === 0 && (
+            <div className="text-center py-16 text-sm text-muted-foreground border border-dashed border-border rounded-xl">
+              No areas match the current filters
+            </div>
+          )}
         </div>
 
-        {/* ===== DETAIL PANEL ===== */}
+        {/* Detail Panel */}
         {selectedArea && (
-          <div className="w-96 flex-shrink-0 border border-border rounded-lg bg-card overflow-hidden">
-            <div className={cn("px-4 py-3 border-b border-border flex items-center justify-between", STATUS_BG[selectedArea.status as AreaStatus])}>
-              <div>
-                <h3 className="text-sm font-bold">{selectedArea.name}</h3>
-                <p className="text-[10px] opacity-80">{selectedArea.status} — {selectedArea.pctComplete}% complete</p>
-              </div>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleAreaSelect(null)}>
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-
-            <div className="p-4 space-y-4 max-h-[600px] overflow-y-auto">
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { label: "Total", value: selectedArea.total, color: "text-foreground" },
-                  { label: "Active", value: selectedArea.active, color: "text-emerald-600" },
-                  { label: "Blocked", value: selectedArea.blocked, color: "text-destructive" },
-                  { label: "Delayed", value: selectedArea.delayed, color: "text-amber-600" },
-                  { label: "Complete", value: selectedArea.complete, color: "text-emerald-700" },
-                  { label: "Critical Path", value: selectedArea.criticalPath, color: "text-destructive" },
-                ].map((s) => (
-                  <div key={s.label} className="rounded-md border border-border px-2.5 py-1.5 text-center">
-                    <div className="text-[10px] text-muted-foreground">{s.label}</div>
-                    <div className={cn("text-lg font-bold", s.color)}>{s.value}</div>
-                  </div>
-                ))}
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between text-[10px] mb-1">
-                  <span className="text-muted-foreground">Progress</span>
-                  <span className="font-semibold text-foreground">{selectedArea.pctComplete}%</span>
-                </div>
-                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full rounded-full bg-emerald-600 transition-all" style={{ width: `${selectedArea.pctComplete}%` }} />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2 text-xs">
-                  <Shield className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span className="text-muted-foreground">Isolation:</span>
-                  <span className={cn("font-medium", selectedArea.isolationStatus === "All Clear" ? "text-emerald-600" : "text-amber-600")}>
-                    {selectedArea.isolationStatus}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <Lock className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span className="text-muted-foreground">Access:</span>
-                  <span className={cn("font-medium", selectedArea.accessConstraints === "None" ? "text-emerald-600" : "text-amber-600")}>
-                    {selectedArea.accessConstraints}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <Activity className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span className="text-muted-foreground">Supervisor:</span>
-                  <span className="font-medium text-foreground">{selectedArea.supervisor}</span>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Package className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span className="text-xs font-semibold text-foreground">Work Packages ({areaPackages.length})</span>
-                </div>
-                <div className="space-y-1.5">
-                  {areaPackages.map((wp) => (
-                    <button
-                      key={wp.id}
-                      onClick={() => { ctx.setSelectedPackageId(wp.id); ctx.navigateToTab("sequence"); }}
-                      className={cn(
-                        "w-full text-left rounded-md border p-2.5 transition-colors hover:shadow-sm",
-                        WP_STATUS_STYLE[wp.status] || "border-border"
-                      )}
-                    >
-                      <div className="flex items-center justify-between mb-0.5">
-                        <span className="text-[10px] font-mono font-semibold">{wp.id}</span>
-                        <div className="flex items-center gap-1">
-                          {wp.criticalPath && (
-                            <Badge variant="outline" className="text-[8px] h-3.5 px-1 border-destructive text-destructive">CP</Badge>
-                          )}
-                          <Badge variant="outline" className="text-[8px] h-3.5 px-1 border-current">{wp.status}</Badge>
-                        </div>
-                      </div>
-                      <p className="text-[11px] font-medium leading-snug mb-1">{wp.title}</p>
-                      <div className="flex items-center justify-between text-[10px]">
-                        <span className="flex items-center gap-1 opacity-80">
-                          {wp.trade === "Mechanical" ? <Wrench className="w-2.5 h-2.5" /> : <Zap className="w-2.5 h-2.5" />}
-                          {wp.trade}
-                        </span>
-                        <span className="font-medium">{wp.pctComplete}%</span>
-                      </div>
-                      {wp.delayReason && (
-                        <p className="text-[10px] mt-1 opacity-70 flex items-center gap-1">
-                          <AlertTriangle className="w-2.5 h-2.5" /> {wp.delayReason}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-1 mt-1 text-[9px] opacity-50">
-                        <ChevronRight className="w-2.5 h-2.5" /> View in Sequence Flow
-                      </div>
-                    </button>
-                  ))}
-                  {areaPackages.length === 0 && (
-                    <div className="text-center py-6 text-xs text-muted-foreground">No work packages in this area</div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <DetailPanel
+            area={selectedArea}
+            packages={areaPackages}
+            onClose={() => handleAreaSelect(null)}
+            ctx={ctx}
+          />
         )}
       </div>
     </div>
