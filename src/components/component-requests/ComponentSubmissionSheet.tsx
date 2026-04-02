@@ -105,6 +105,7 @@ export const ComponentSubmissionSheet = () => {
             <thead className="bg-muted">
               <tr>
                 <th className="p-2 text-left font-semibold text-xs w-8">#</th>
+                <th className="p-2 text-left font-semibold text-xs min-w-[140px]">Your Name *</th>
                 <th className="p-2 text-left font-semibold text-xs min-w-[160px]">Asset / P&ID Tag *</th>
                 <th className="p-2 text-left font-semibold text-xs min-w-[180px]">Part Name *</th>
                 <th className="p-2 text-left font-semibold text-xs min-w-[140px]">Manufacturer</th>
