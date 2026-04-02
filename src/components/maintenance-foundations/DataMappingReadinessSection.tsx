@@ -246,8 +246,8 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct, weightedPct
         <CardTitle className="text-sm">Purpose</CardTitle>
       </CardHeader>
       <CardContent className="text-xs text-muted-foreground space-y-1.5">
-        <p>This document provides a complete field-level mapping of all maintenance data prepared during the TCMG Phase 1 foundation works. It is intended to support the configuration and data migration into D365 Asset Management, or any equivalent CMMS selected by the site.</p>
-        <p>Each section below identifies the data fields available, the TCMG source document they originate from, any transformation or formatting required, and the current readiness status.</p>
+        <p>This document provides a comprehensive site readiness assessment for CMMS implementation at Tennant Creek Gold Mine. It evaluates readiness across all domains — data foundations, operational processes, physical infrastructure, finance integration, and people/change management.</p>
+        <p>Each section identifies the readiness area, the source deliverable or responsible party, the current state of preparation, and an honest status rating. Items marked 'Partial' indicate the plan or procedure is complete but physical implementation on site is pending.</p>
       </CardContent>
     </Card>
 
