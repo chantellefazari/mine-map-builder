@@ -233,12 +233,8 @@ export function WOCDashboard({ onNavigate }: Props) {
           <WOCScheduleComplianceTab workOrders={workOrders} />
         </div>
       )}
-      {tab === "reliability" && (
-        <div className="space-y-4">
-          <WOCReliabilityTab workOrders={workOrders} />
-          <WOCBacklogTab workOrders={workOrders} />
-        </div>
-      )}
+      {tab === "reliability" && <WOCReliabilityTab workOrders={workOrders} />}
+      {tab === "backlog" && <WOCBacklogTab workOrders={workOrders} />}
       {tab === "kpi-scorecard" && <WOCKPIScorecardTab workOrders={workOrders} />}
     </div>
   );
