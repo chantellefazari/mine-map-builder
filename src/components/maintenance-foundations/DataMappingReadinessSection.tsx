@@ -260,15 +260,15 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct, weightedPct
         <div className="grid grid-cols-3 gap-4">
           <div className="flex items-center gap-2">
             <StatusBadge status="Ready" />
-            <span className="text-[10px] text-muted-foreground">Field validated and available for import</span>
+            <span className="text-[10px] text-muted-foreground">Fully ready — deliverable complete and operational or available for import</span>
           </div>
           <div className="flex items-center gap-2">
             <StatusBadge status="Partial" />
-            <span className="text-[10px] text-muted-foreground">Data exists, requires enrichment or completion</span>
+            <span className="text-[10px] text-muted-foreground">Plan/procedure complete, physical implementation or site activation pending</span>
           </div>
           <div className="flex items-center gap-2">
             <StatusBadge status="Not Started" />
-            <span className="text-[10px] text-muted-foreground">Field not yet captured, requires future work</span>
+            <span className="text-[10px] text-muted-foreground">Not yet addressed — requires future work or external dependency</span>
           </div>
         </div>
       </CardContent>
