@@ -32,21 +32,6 @@ const emptyRow = (): RowData => ({
 export const ComponentSubmissionSheet = () => {
   const [rows, setRows] = useState<RowData[]>([emptyRow(), emptyRow(), emptyRow()]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user } = useAuth();
-  const [userName, setUserName] = useState("");
-
-  useState(() => {
-    if (user) {
-      supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .maybeSingle()
-        .then(({ data }) => {
-          setUserName(data?.full_name || user.email || "unknown");
-        });
-    }
-  });
 
   const updateRow = (id: string, field: keyof RowData, value: string) => {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, [field]: value } : r)));
