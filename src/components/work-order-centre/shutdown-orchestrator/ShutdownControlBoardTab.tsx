@@ -11,7 +11,7 @@ import {
   Filter, Route, AlertTriangle, Wrench, Zap, Clock, Lock,
   CheckCircle2, Activity, Package, ChevronRight, Target, Eye,
   LayoutList, Columns3, Calendar, Shield, User, ArrowRight,
-  Printer, PlayCircle, X, GitBranch, Pencil, Save,
+  Printer, PlayCircle, X, GitBranch,
 } from "lucide-react";
 import {
   ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS, STATUS_ORDER, AREA_LABELS,
