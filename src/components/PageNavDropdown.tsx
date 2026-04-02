@@ -29,6 +29,7 @@ const NAV_ITEMS = [
   { title: "Purchase Requests", icon: FileInput, href: "/purchase-requests", tabKey: "purchase-requests" },
   { title: "3D Concepts", icon: Box, href: "/3d-concepts", tabKey: "3d-concepts" },
   { title: "Plant Intelligence", icon: Brain, href: "/plant-intelligence", tabKey: "plant-intelligence" },
+  { title: "Component Requests", icon: ClipboardList, href: "/component-requests", tabKey: "component-requests" },
 ];
 
 export const PageNavDropdown = () => {

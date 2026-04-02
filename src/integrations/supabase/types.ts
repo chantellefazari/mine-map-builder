@@ -149,6 +149,60 @@ export type Database = {
         }
         Relationships: []
       }
+      component_change_requests: {
+        Row: {
+          created_at: string
+          id: string
+          manufacturer: string
+          notes: string
+          part_model: string
+          part_name: string
+          quantity: number
+          reviewed_at: string | null
+          reviewed_by: string
+          reviewer_notes: string
+          status: string
+          submitted_by: string
+          target_asset_number: string
+          target_pid_tag: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          manufacturer?: string
+          notes?: string
+          part_model?: string
+          part_name?: string
+          quantity?: number
+          reviewed_at?: string | null
+          reviewed_by?: string
+          reviewer_notes?: string
+          status?: string
+          submitted_by?: string
+          target_asset_number?: string
+          target_pid_tag?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          manufacturer?: string
+          notes?: string
+          part_model?: string
+          part_name?: string
+          quantity?: number
+          reviewed_at?: string | null
+          reviewed_by?: string
+          reviewer_notes?: string
+          status?: string
+          submitted_by?: string
+          target_asset_number?: string
+          target_pid_tag?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       equipment_service_tracking: {
         Row: {
           asset_number: string

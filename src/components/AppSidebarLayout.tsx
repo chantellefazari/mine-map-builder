@@ -30,6 +30,7 @@ const NAV_ITEMS = [
   { title: "Work Order Centre", icon: ClipboardList, href: "/work-order-centre", tabKey: "work-order-centre" },
   { title: "Implementation Readiness", icon: ClipboardCheck, href: "/implementation-readiness", tabKey: "implementation-readiness" },
   { title: "Risk Assessment", icon: ShieldAlert, href: "/implementation-risk-assessment", tabKey: "implementation-risk-assessment" },
+  { title: "Component Requests", icon: ClipboardList, href: "/component-requests", tabKey: "component-requests" },
 ];
 
 export function AppSidebarLayout({ children }: { children: ReactNode }) {
