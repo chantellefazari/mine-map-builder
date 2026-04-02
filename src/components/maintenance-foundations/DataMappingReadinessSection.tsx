@@ -189,8 +189,8 @@ const MappingTable = ({ rows }: { rows: MappingRow[] }) => (
     </Table>
   </div>
 );
-const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
-  allRows: MappingRow[]; ready: number; partial: number; notStarted: number; pct: number;
+const DataMappingBody = ({ allRows, ready, partial, notStarted, pct, weightedPct }: {
+  allRows: MappingRow[]; ready: number; partial: number; notStarted: number; pct: number; weightedPct: number;
 }) => (
   <>
     {/* Document Header */}
