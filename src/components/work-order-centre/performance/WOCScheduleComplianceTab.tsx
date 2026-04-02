@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { WorkRequest } from "@/hooks/useWorkRequests";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend,
   LineChart, Line, CartesianGrid,
@@ -10,6 +11,7 @@ import { CalendarCheck, CalendarX, TrendingUp, Clock } from "lucide-react";
 
 interface Props {
   workOrders: WorkOrder[];
+  workRequests: WorkRequest[];
 }
 
 /** Schedule Compliance — Did we execute work on the day it was scheduled? */
