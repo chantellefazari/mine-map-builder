@@ -306,6 +306,7 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
         <CardTitle className="text-sm">Outstanding Actions for Full Readiness</CardTitle>
       </CardHeader>
       <CardContent className="text-xs space-y-2">
+        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Completed</p>
         <div className="flex gap-2 items-start">
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
           <p><strong>Asset Criticality Rating:</strong> Classification engine implemented, 117 assets assessed with A/B/C ratings based on production impact.</p>
@@ -314,6 +315,8 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
           <p><strong>PM Task Checklists:</strong> 82 of 97 PM templates now have structured task data populated and validated.</p>
         </div>
+
+        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-3 mb-1">Data Enrichment Required</p>
         <div className="flex gap-2 items-start">
           <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
           <p><strong>Vendor Data Enrichment:</strong> Supplier type is 100% populated across 65 vendors. ABN and payment terms are 0% populated, requiring collection from each vendor before migration.</p>
@@ -329,6 +332,36 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
         <div className="flex gap-2 items-start">
           <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
           <p><strong>Inventory Data Enrichment:</strong> Bin locations (0%), lead times (0%), unit costs (2%), min/max stock levels (1%), and asset linkages (1%) require population across 2,184 spare parts.</p>
+        </div>
+
+        <p className="text-[10px] font-semibold text-destructive uppercase tracking-wider mt-3 mb-1">Critical Gaps — Physical & Operational Prerequisites</p>
+        <div className="flex gap-2 items-start">
+          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
+          <p><strong>Physical Warehouse Construction:</strong> 5-container compound (C01–C05) and dome roof designed but not yet constructed. No physical stores exist on site — parts cannot be controlled or accounted for.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
+          <p><strong>Stock Control Activation:</strong> Receiving, issuing, and cycle count procedures are drafted but cannot operate without physical stores. Stock in/out process does not exist.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
+          <p><strong>Scheduling Capability:</strong> No weekly planning tool, backlog management, or resource levelling exists. Work will remain reactive without a scheduling engine.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
+          <p><strong>Finance Integration:</strong> Job numbers are not linked to D365 Finance. Parts costs cannot be traced to work orders. True maintenance costing is not possible.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
+          <p><strong>Physical Site Infrastructure:</strong> No defined laydown areas, safe truck unloading zone, scrap/waste process, or bunded chemical storage exists.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
+          <p><strong>People & Change Readiness:</strong> No formal change management plan, training materials, or site discipline framework. Storeperson role cannot function without physical stores. Largest single risk to implementation success.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
+          <p><strong>Asset Tag Installation:</strong> 450+ tags registered in system, but physical installation on equipment has not started. No way to confirm which asset work is performed on.</p>
         </div>
       </CardContent>
     </Card>
