@@ -298,24 +298,13 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
       </div>
 
       {/* ---- Content ---- */}
-      {activeGroup === "operations" && (
-        <div className="mt-2">
-          {renderTable(
-            filtered(opsTab),
-            opsTab !== "history",
-            opsTab === "planning"
-          )}
-        </div>
-      )}
-
-      {perfTab === "reports" && <WOCReportsTab workOrders={workOrders} />}
-      {perfTab === "analytics" && <WOCAnalyticsTab workOrders={workOrders} />}
-      {perfTab === "pm-forms" && <WOCPMFormsTab />}
-      {perfTab === "compliance" && <WOCComplianceTab />}
-      {perfTab === "sched-compliance" && <WOCScheduleComplianceTab workOrders={workOrders} />}
-      {perfTab === "backlog" && <WOCBacklogTab workOrders={workOrders} />}
-      {perfTab === "reliability" && <WOCReliabilityTab workOrders={workOrders} />}
-      {perfTab === "kpi-scorecard" && <WOCKPIScorecardTab workOrders={workOrders} />}
+      <div className="mt-2">
+        {renderTable(
+          filtered(opsTab),
+          opsTab !== "history",
+          opsTab === "planning"
+        )}
+      </div>
 
       <WOTypeSelectDialog
         open={showWoTypeDialog}
