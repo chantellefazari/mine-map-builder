@@ -5,10 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { useAuth } from "@/context/AuthContext";
+
 
 interface RowData {
   id: string;
+  submittedBy: string;
   targetAsset: string;
   partName: string;
   manufacturer: string;
@@ -19,6 +20,7 @@ interface RowData {
 
 const emptyRow = (): RowData => ({
   id: crypto.randomUUID(),
+  submittedBy: "",
   targetAsset: "",
   partName: "",
   manufacturer: "",
@@ -30,21 +32,6 @@ const emptyRow = (): RowData => ({
 export const ComponentSubmissionSheet = () => {
   const [rows, setRows] = useState<RowData[]>([emptyRow(), emptyRow(), emptyRow()]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user } = useAuth();
-  const [userName, setUserName] = useState("");
-
-  useState(() => {
-    if (user) {
-      supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .maybeSingle()
-        .then(({ data }) => {
-          setUserName(data?.full_name || user.email || "unknown");
-        });
-    }
-  });
 
   const updateRow = (id: string, field: keyof RowData, value: string) => {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, [field]: value } : r)));
@@ -57,11 +44,11 @@ export const ComponentSubmissionSheet = () => {
     setRows((prev) => prev.filter((r) => r.id !== id));
   };
 
-  const validRows = rows.filter((r) => r.targetAsset.trim() && r.partName.trim());
+  const validRows = rows.filter((r) => r.submittedBy.trim() && r.targetAsset.trim() && r.partName.trim());
 
   const handleSubmit = async () => {
     if (validRows.length === 0) {
-      toast({ title: "No valid rows", description: "Each row needs at least an Asset/P&ID Tag and Part Name.", variant: "destructive" });
+      toast({ title: "No valid rows", description: "Each row needs a Name, Asset/P&ID Tag, and Part Name.", variant: "destructive" });
       return;
     }
     setIsSubmitting(true);
@@ -74,7 +61,7 @@ export const ComponentSubmissionSheet = () => {
         part_model: r.partModel.trim(),
         quantity: parseInt(r.quantity) || 1,
         notes: r.notes.trim(),
-        submitted_by: userName || user?.email || "unknown",
+        submitted_by: r.submittedBy.trim(),
         status: "pending",
       }));
 
@@ -103,6 +90,7 @@ export const ComponentSubmissionSheet = () => {
             <thead className="bg-muted">
               <tr>
                 <th className="p-2 text-left font-semibold text-xs w-8">#</th>
+                <th className="p-2 text-left font-semibold text-xs min-w-[140px]">Your Name *</th>
                 <th className="p-2 text-left font-semibold text-xs min-w-[160px]">Asset / P&ID Tag *</th>
                 <th className="p-2 text-left font-semibold text-xs min-w-[180px]">Part Name *</th>
                 <th className="p-2 text-left font-semibold text-xs min-w-[140px]">Manufacturer</th>
@@ -116,6 +104,14 @@ export const ComponentSubmissionSheet = () => {
               {rows.map((row, idx) => (
                 <tr key={row.id} className="border-t border-border/50 hover:bg-muted/30">
                   <td className="p-1.5 text-xs text-muted-foreground text-center">{idx + 1}</td>
+                  <td className="p-1">
+                    <Input
+                      value={row.submittedBy}
+                      onChange={(e) => updateRow(row.id, "submittedBy", e.target.value)}
+                      placeholder="e.g. John Smith"
+                      className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1"
+                    />
+                  </td>
                   <td className="p-1">
                     <Input
                       value={row.targetAsset}
