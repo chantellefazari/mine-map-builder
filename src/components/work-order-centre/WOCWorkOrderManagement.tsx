@@ -160,11 +160,6 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
 
   const selectOps = (key: string) => {
     setOpsTab(key);
-    setPerfTab(null);
-  };
-
-  const selectPerf = (key: string) => {
-    setPerfTab(key);
   };
 
   const counts = {
