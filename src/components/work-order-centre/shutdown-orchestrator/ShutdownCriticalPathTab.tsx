@@ -221,7 +221,7 @@ export function ShutdownCriticalPathTab() {
                   <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Downstream Packages at Risk</p>
                   <div className="flex flex-wrap gap-1.5">
                     {Array.from(downstreamAffected).map((id) => {
-                      const pkg = PACKAGES.find((p) => p.id === id);
+                      const pkg = packages.find((p) => p.id === id);
                       return (
                         <button key={id} onClick={() => setSelectedId(id)} className="flex items-center gap-1 rounded border border-amber-500/30 bg-amber-500/5 px-2 py-1 text-[10px] font-medium text-amber-600 hover:bg-amber-500/10 transition-colors">
                           <CircleDot className="w-2.5 h-2.5" />
