@@ -100,7 +100,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
   const [showWoTypeDialog, setShowWoTypeDialog] = useState(false);
   const [showPMSchedule, setShowPMSchedule] = useState(false);
 
-  const activeGroup = perfTab ? "performance" : "operations";
+  
 
   const filtered = (key: string) => {
     let list = key === "history" ? workOrders : workOrders.filter((wo) => OPS_STATUSES[key]?.includes(wo.status));
