@@ -11,7 +11,7 @@ import {
   Filter, Route, AlertTriangle, Wrench, Zap, Clock, Lock,
   CheckCircle2, Activity, Package, ChevronRight, Target, Eye,
   LayoutList, Columns3, Calendar, Shield, User, ArrowRight,
-  Printer, PlayCircle, X, GitBranch, Pencil, Save,
+  Printer, PlayCircle, X, GitBranch,
 } from "lucide-react";
 import {
   ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS, STATUS_ORDER, AREA_LABELS,
@@ -344,6 +344,91 @@ export function ShutdownControlBoardTab() {
 
 const ALL_STATUSES: WPStatus[] = ["Not Started", "Ready", "Active", "Blocked", "Delayed", "Complete"];
 
+function InlineText({
+  value,
+  onSave,
+  className,
+}: {
+  value: string;
+  onSave: (v: string) => void;
+  className?: string;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [text, setText] = useState(value);
+
+  if (editing) {
+    return (
+      <Input
+        autoFocus
+        className={cn("h-7 text-xs", className)}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onBlur={() => { onSave(text); setEditing(false); }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") { onSave(text); setEditing(false); }
+          if (e.key === "Escape") { setText(value); setEditing(false); }
+        }}
+      />
+    );
+  }
+
+  return (
+    <span
+      onClick={() => { setText(value); setEditing(true); }}
+      className={cn("font-medium text-foreground cursor-pointer hover:bg-accent/50 rounded px-1 -mx-1 transition-colors", className)}
+      title="Click to edit"
+    >
+      {value || <span className="text-muted-foreground italic">—</span>}
+    </span>
+  );
+}
+
+function InlineNumber({
+  value,
+  onSave,
+  suffix,
+  min = 0,
+  max = 100,
+}: {
+  value: number;
+  onSave: (v: number) => void;
+  suffix?: string;
+  min?: number;
+  max?: number;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [num, setNum] = useState(String(value));
+
+  if (editing) {
+    return (
+      <Input
+        autoFocus
+        type="number"
+        min={min}
+        max={max}
+        className="h-7 text-xs w-20"
+        value={num}
+        onChange={(e) => setNum(e.target.value)}
+        onBlur={() => { onSave(Math.min(max, Math.max(min, Number(num) || 0))); setEditing(false); }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") { onSave(Math.min(max, Math.max(min, Number(num) || 0))); setEditing(false); }
+          if (e.key === "Escape") { setNum(String(value)); setEditing(false); }
+        }}
+      />
+    );
+  }
+
+  return (
+    <span
+      onClick={() => { setNum(String(value)); setEditing(true); }}
+      className="font-bold text-foreground cursor-pointer hover:bg-accent/50 rounded px-1 -mx-1 transition-colors"
+      title="Click to edit"
+    >
+      {value}{suffix}
+    </span>
+  );
+}
+
 function EditableDetailPanel({
   selected,
   onClose,
@@ -355,42 +440,12 @@ function EditableDetailPanel({
   onUpdate: (id: string, updates: Partial<ShutdownWorkPackage>) => void;
   onNavigate: (tab: string) => void;
 }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [draft, setDraft] = useState<Partial<ShutdownWorkPackage>>({});
-
-  const startEditing = () => {
-    setIsEditing(true);
-    setDraft({
-      status: selected.status,
-      pctComplete: selected.pctComplete,
-      nextAction: selected.nextAction,
-      supervisor: selected.supervisor,
-      shift: selected.shift,
-      trade: selected.trade,
-      area: selected.area,
-      blockerType: selected.blockerType,
-      blockerDescription: selected.blockerDescription,
-      blockerOwner: selected.blockerOwner,
-      blockerETA: selected.blockerETA,
-      delayReason: selected.delayReason,
-      handoverNotes: selected.handoverNotes,
-      criticalPath: selected.criticalPath,
-    });
-  };
-
-  const saveChanges = () => {
-    onUpdate(selected.id, draft);
-    setIsEditing(false);
-    setDraft({});
+  const update = (updates: Partial<ShutdownWorkPackage>) => {
+    onUpdate(selected.id, updates);
     toast.success(`${selected.id} updated — synced across all tabs`);
   };
 
-  const cancelEditing = () => {
-    setIsEditing(false);
-    setDraft({});
-  };
-
-  const st = STATUS_STYLE[(draft.status ?? selected.status) as string] ?? STATUS_STYLE.Ready;
+  const st = STATUS_STYLE[selected.status] ?? STATUS_STYLE.Ready;
 
   return (
     <div className="w-[420px] flex-shrink-0 border border-border rounded-lg bg-card overflow-hidden">
@@ -398,212 +453,129 @@ function EditableDetailPanel({
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-mono font-bold text-foreground">{selected.id}</span>
-            {(draft.criticalPath ?? selected.criticalPath) && <Badge variant="outline" className="text-[8px] h-3.5 border-destructive text-destructive">Critical Path</Badge>}
-            <Badge variant="outline" className={cn("text-[9px] h-4", st.text, st.border)}>{draft.status ?? selected.status}</Badge>
+            {selected.criticalPath && <Badge variant="outline" className="text-[8px] h-3.5 border-destructive text-destructive">Critical Path</Badge>}
+            <Badge variant="outline" className={cn("text-[9px] h-4", st.text, st.border)}>{selected.status}</Badge>
           </div>
           <h3 className="text-sm font-semibold text-foreground mt-1">{selected.title}</h3>
         </div>
-        <div className="flex items-center gap-1">
-          {!isEditing ? (
-            <Button variant="outline" size="icon" className="h-7 w-7" onClick={startEditing} title="Edit">
-              <Pencil className="w-3.5 h-3.5" />
-            </Button>
-          ) : (
-            <>
-              <Button variant="default" size="icon" className="h-7 w-7" onClick={saveChanges} title="Save">
-                <Save className="w-3.5 h-3.5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={cancelEditing} title="Cancel">
-                <X className="w-3.5 h-3.5" />
-              </Button>
-            </>
-          )}
-          {!isEditing && (
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
-              <X className="w-4 h-4" />
-            </Button>
-          )}
-        </div>
+        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
+          <X className="w-4 h-4" />
+        </Button>
       </div>
 
       <div className="p-4 space-y-4 max-h-[600px] overflow-y-auto">
-        {/* ── Status & Progress (always editable inline) ── */}
-        {isEditing ? (
-          <>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="rounded-md border border-border px-2.5 py-1.5">
-                <div className="text-[10px] text-muted-foreground mb-1">Status</div>
-                <Select value={draft.status ?? selected.status} onValueChange={(v: WPStatus) => setDraft(d => ({ ...d, status: v }))}>
-                  <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>{ALL_STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div className="rounded-md border border-border px-2.5 py-1.5">
-                <div className="text-[10px] text-muted-foreground mb-1">Trade</div>
-                <Select value={draft.trade ?? selected.trade} onValueChange={(v) => setDraft(d => ({ ...d, trade: v }))}>
-                  <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {["Mechanical", "Electrical", "Instrumentation"].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="rounded-md border border-border px-2.5 py-1.5">
-                <div className="text-[10px] text-muted-foreground mb-1">Area</div>
-                <Select value={draft.area ?? selected.area} onValueChange={(v) => setDraft(d => ({ ...d, area: v }))}>
-                  <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>{AREA_LABELS.map(a => <SelectItem key={a} value={a}>{a}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div className="rounded-md border border-border px-2.5 py-1.5">
-                <div className="text-[10px] text-muted-foreground mb-1">Shift</div>
-                <Select value={draft.shift ?? selected.shift} onValueChange={(v) => setDraft(d => ({ ...d, shift: v }))}>
-                  <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {["Day", "Night"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="rounded-md border border-border px-2.5 py-1.5">
-                <div className="text-[10px] text-muted-foreground mb-1">Supervisor</div>
-                <Input className="h-7 text-xs" value={draft.supervisor ?? ""} onChange={e => setDraft(d => ({ ...d, supervisor: e.target.value }))} />
-              </div>
-              <div className="rounded-md border border-border px-2.5 py-1.5 flex items-center gap-2">
-                <div className="text-[10px] text-muted-foreground">Critical Path</div>
-                <button
-                  onClick={() => setDraft(d => ({ ...d, criticalPath: !(d.criticalPath ?? selected.criticalPath) }))}
-                  className={cn("w-8 h-5 rounded-full transition-colors flex items-center px-0.5", (draft.criticalPath ?? selected.criticalPath) ? "bg-destructive justify-end" : "bg-muted justify-start")}
-                >
-                  <span className="w-4 h-4 rounded-full bg-background shadow-sm" />
-                </button>
-              </div>
-            </div>
+        {/* Fields grid — all inline editable */}
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="rounded-md border border-border px-2.5 py-1.5">
+            <div className="text-[10px] text-muted-foreground mb-0.5">Status</div>
+            <Select value={selected.status} onValueChange={(v: WPStatus) => update({ status: v })}>
+              <SelectTrigger className="h-7 text-xs border-0 p-0 shadow-none hover:bg-accent/50"><SelectValue /></SelectTrigger>
+              <SelectContent>{ALL_STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div className="rounded-md border border-border px-2.5 py-1.5">
+            <div className="text-[10px] text-muted-foreground mb-0.5">Trade</div>
+            <Select value={selected.trade} onValueChange={(v) => update({ trade: v })}>
+              <SelectTrigger className="h-7 text-xs border-0 p-0 shadow-none hover:bg-accent/50"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {["Mechanical", "Electrical", "Instrumentation"].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="rounded-md border border-border px-2.5 py-1.5">
+            <div className="text-[10px] text-muted-foreground mb-0.5">Area</div>
+            <Select value={selected.area} onValueChange={(v) => update({ area: v })}>
+              <SelectTrigger className="h-7 text-xs border-0 p-0 shadow-none hover:bg-accent/50"><SelectValue /></SelectTrigger>
+              <SelectContent>{AREA_LABELS.map(a => <SelectItem key={a} value={a}>{a}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div className="rounded-md border border-border px-2.5 py-1.5">
+            <div className="text-[10px] text-muted-foreground mb-0.5">Shift</div>
+            <Select value={selected.shift} onValueChange={(v) => update({ shift: v })}>
+              <SelectTrigger className="h-7 text-xs border-0 p-0 shadow-none hover:bg-accent/50"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {["Day", "Night"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="rounded-md border border-border px-2.5 py-1.5">
+            <div className="text-[10px] text-muted-foreground mb-0.5">Supervisor</div>
+            <InlineText value={selected.supervisor} onSave={(v) => update({ supervisor: v })} />
+          </div>
+          <div className="rounded-md border border-border px-2.5 py-1.5 flex items-center justify-between">
+            <div className="text-[10px] text-muted-foreground">Critical Path</div>
+            <button
+              onClick={() => update({ criticalPath: !selected.criticalPath })}
+              className={cn("w-8 h-5 rounded-full transition-colors flex items-center px-0.5", selected.criticalPath ? "bg-destructive justify-end" : "bg-muted justify-start")}
+            >
+              <span className="w-4 h-4 rounded-full bg-background shadow-sm" />
+            </button>
+          </div>
+        </div>
 
+        {/* Progress — click the % to type a new value, or drag the slider */}
+        <div>
+          <div className="flex items-center justify-between text-[10px] mb-1.5">
+            <span className="text-muted-foreground">% Complete</span>
+            <InlineNumber value={selected.pctComplete} onSave={(v) => update({ pctComplete: v })} suffix="%" />
+          </div>
+          <Slider
+            value={[selected.pctComplete]}
+            onValueChange={([v]) => update({ pctComplete: v })}
+            max={100}
+            step={5}
+            className="w-full"
+          />
+        </div>
+
+        {/* Next Action */}
+        <div className="rounded-md border border-blue-500/30 bg-blue-500/5 p-2.5">
+          <div className="flex items-center gap-1.5 text-[10px] font-semibold text-blue-600 mb-0.5">
+            <ArrowRight className="w-3 h-3" /> Next Action
+          </div>
+          <InlineText value={selected.nextAction} onSave={(v) => update({ nextAction: v })} className="text-xs text-blue-600" />
+        </div>
+
+        {/* Blocker section */}
+        <div className="rounded-md border border-border p-2.5 space-y-2">
+          <div className="text-[10px] font-semibold text-muted-foreground">Blocker Details</div>
+          <div className="grid grid-cols-2 gap-2">
             <div>
-              <div className="flex items-center justify-between text-[10px] mb-1.5">
-                <span className="text-muted-foreground">% Complete</span>
-                <span className="font-bold text-foreground">{draft.pctComplete ?? selected.pctComplete}%</span>
-              </div>
-              <Slider
-                value={[draft.pctComplete ?? selected.pctComplete]}
-                onValueChange={([v]) => setDraft(d => ({ ...d, pctComplete: v }))}
-                max={100}
-                step={5}
-                className="w-full"
-              />
+              <div className="text-[9px] text-muted-foreground mb-0.5">Blocker Type</div>
+              <Select value={selected.blockerType ?? ""} onValueChange={(v) => update({ blockerType: v || undefined })}>
+                <SelectTrigger className="h-7 text-xs"><SelectValue placeholder="None" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  {["Isolation", "Crane", "Scaffold", "Parts", "Permit", "Other"].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
-
             <div>
-              <div className="text-[10px] text-muted-foreground mb-1">Next Action</div>
-              <Input className="h-7 text-xs" value={draft.nextAction ?? ""} onChange={e => setDraft(d => ({ ...d, nextAction: e.target.value }))} />
+              <div className="text-[9px] text-muted-foreground mb-0.5">Owner</div>
+              <InlineText value={selected.blockerOwner ?? ""} onSave={(v) => update({ blockerOwner: v })} />
             </div>
+          </div>
+          <div>
+            <div className="text-[9px] text-muted-foreground mb-0.5">Description</div>
+            <InlineText value={selected.blockerDescription ?? ""} onSave={(v) => update({ blockerDescription: v })} />
+          </div>
+          <div>
+            <div className="text-[9px] text-muted-foreground mb-0.5">Expected Resolution</div>
+            <InlineText value={selected.blockerETA ?? ""} onSave={(v) => update({ blockerETA: v })} />
+          </div>
+        </div>
 
-            {/* Blocker fields */}
-            <div className="rounded-md border border-border p-2.5 space-y-2">
-              <div className="text-[10px] font-semibold text-muted-foreground">Blocker Details</div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <div className="text-[9px] text-muted-foreground mb-0.5">Blocker Type</div>
-                  <Select value={draft.blockerType ?? selected.blockerType ?? ""} onValueChange={(v) => setDraft(d => ({ ...d, blockerType: v }))}>
-                    <SelectTrigger className="h-7 text-xs"><SelectValue placeholder="None" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">None</SelectItem>
-                      {["Isolation", "Crane", "Scaffold", "Parts", "Permit", "Other"].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <div className="text-[9px] text-muted-foreground mb-0.5">Blocker Owner</div>
-                  <Input className="h-7 text-xs" value={draft.blockerOwner ?? ""} onChange={e => setDraft(d => ({ ...d, blockerOwner: e.target.value }))} />
-                </div>
-              </div>
-              <div>
-                <div className="text-[9px] text-muted-foreground mb-0.5">Blocker Description</div>
-                <Input className="h-7 text-xs" value={draft.blockerDescription ?? ""} onChange={e => setDraft(d => ({ ...d, blockerDescription: e.target.value }))} />
-              </div>
-              <div>
-                <div className="text-[9px] text-muted-foreground mb-0.5">Expected Resolution</div>
-                <Input className="h-7 text-xs" value={draft.blockerETA ?? ""} onChange={e => setDraft(d => ({ ...d, blockerETA: e.target.value }))} />
-              </div>
-            </div>
+        {/* Delay reason */}
+        <div>
+          <div className="text-[10px] text-muted-foreground mb-0.5">Delay Reason</div>
+          <InlineText value={selected.delayReason ?? ""} onSave={(v) => update({ delayReason: v })} />
+        </div>
 
-            <div>
-              <div className="text-[10px] text-muted-foreground mb-1">Handover Notes</div>
-              <Input className="h-7 text-xs" value={draft.handoverNotes ?? ""} onChange={e => setDraft(d => ({ ...d, handoverNotes: e.target.value }))} />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              {[
-                { label: "Area", value: selected.area },
-                { label: "Trade", value: selected.trade },
-                { label: "Planned Start", value: selected.plannedStart },
-                { label: "Planned Finish", value: selected.plannedFinish },
-                { label: "% Complete", value: `${selected.pctComplete}%` },
-                { label: "Shift", value: `${selected.shift} Shift` },
-                { label: "Supervisor", value: selected.supervisor },
-                { label: "Status", value: selected.status },
-              ].map((item) => (
-                <div key={item.label} className="rounded-md border border-border px-2.5 py-1.5">
-                  <div className="text-[10px] text-muted-foreground">{item.label}</div>
-                  <div className="font-medium text-foreground">{item.value}</div>
-                </div>
-              ))}
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between text-[10px] mb-1">
-                <span className="text-muted-foreground">Progress</span>
-                <span className="font-semibold text-foreground">{selected.pctComplete}%</span>
-              </div>
-              <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
-                <div className={cn("h-full rounded-full transition-all", STATUS_STYLE[selected.status].dot)} style={{ width: `${selected.pctComplete}%` }} />
-              </div>
-            </div>
-
-            <div className="rounded-md border border-blue-500/30 bg-blue-500/5 p-2.5">
-              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-blue-600 mb-0.5">
-                <ArrowRight className="w-3 h-3" /> Next Action
-              </div>
-              <p className="text-xs text-blue-600">{selected.nextAction}</p>
-            </div>
-
-            {selected.blockerDescription && (
-              <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 space-y-2">
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-destructive">
-                  <AlertTriangle className="w-3.5 h-3.5" /> BLOCKER — {selected.blockerType}
-                </div>
-                <p className="text-xs text-destructive leading-relaxed">{selected.blockerDescription}</p>
-                <div className="grid grid-cols-2 gap-2 text-[10px]">
-                  <div className="rounded border border-destructive/20 px-2 py-1">
-                    <div className="text-destructive/60">Owner to Clear</div>
-                    <div className="font-semibold text-destructive">{selected.blockerOwner}</div>
-                  </div>
-                  <div className="rounded border border-destructive/20 px-2 py-1">
-                    <div className="text-destructive/60">Expected Resolution</div>
-                    <div className="font-semibold text-destructive">{selected.blockerETA}</div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {selected.delayReason && !selected.blockerDescription && (
-              <div className="rounded-md border border-amber-500/30 bg-amber-500/5 p-2.5">
-                <div className="flex items-center gap-1.5 text-[10px] font-semibold text-amber-600 mb-0.5">
-                  <Clock className="w-3 h-3" /> Delay Reason
-                </div>
-                <p className="text-xs text-amber-600">{selected.delayReason}</p>
-              </div>
-            )}
-
-            {selected.handoverNotes && (
-              <div className="rounded-md border border-border bg-muted/30 p-2.5">
-                <div className="text-[10px] font-semibold text-muted-foreground mb-0.5">Handover Notes</div>
-                <p className="text-xs text-foreground">{selected.handoverNotes}</p>
-              </div>
-            )}
-          </>
-        )}
+        {/* Handover Notes */}
+        <div>
+          <div className="text-[10px] text-muted-foreground mb-0.5">Handover Notes</div>
+          <InlineText value={selected.handoverNotes ?? ""} onSave={(v) => update({ handoverNotes: v })} />
+        </div>
 
         <div className="flex gap-2">
           <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1 flex-1" onClick={() => onNavigate("sequence")}>
