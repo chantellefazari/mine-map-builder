@@ -224,18 +224,18 @@ export function WOCDashboard({ onNavigate }: Props) {
         </div>
       )}
 
-      {tab === "reports" && <WOCReportsTab workOrders={workOrders} />}
-      {tab === "analytics" && <WOCAnalyticsTab workOrders={workOrders} />}
+      {tab === "reports" && <WOCReportsTab workOrders={workOrders} workRequests={workRequests} />}
+      {tab === "analytics" && <WOCAnalyticsTab workOrders={workOrders} workRequests={workRequests} />}
       {tab === "pm-forms" && <WOCPMFormsTab />}
       {tab === "compliance" && (
         <div className="space-y-4">
           <WOCComplianceTab />
-          <WOCScheduleComplianceTab workOrders={workOrders} />
+          <WOCScheduleComplianceTab workOrders={workOrders} workRequests={workRequests} />
         </div>
       )}
-      {tab === "reliability" && <WOCReliabilityTab workOrders={workOrders} />}
-      {tab === "backlog" && <WOCBacklogTab workOrders={workOrders} />}
-      {tab === "kpi-scorecard" && <WOCKPIScorecardTab workOrders={workOrders} />}
+      {tab === "reliability" && <WOCReliabilityTab workOrders={workOrders} workRequests={workRequests} />}
+      {tab === "backlog" && <WOCBacklogTab workOrders={workOrders} workRequests={workRequests} />}
+      {tab === "kpi-scorecard" && <WOCKPIScorecardTab workOrders={workOrders} workRequests={workRequests} />}
     </div>
   );
 }

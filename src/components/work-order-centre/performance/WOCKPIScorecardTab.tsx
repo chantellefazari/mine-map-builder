@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { WorkRequest } from "@/hooks/useWorkRequests";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
   RadialBarChart, RadialBar,
@@ -10,6 +11,7 @@ import { Target, DollarSign, Users, Gauge, TrendingUp, CheckCircle2, AlertTriang
 
 interface Props {
   workOrders: WorkOrder[];
+  workRequests: WorkRequest[];
 }
 
 function RAGIndicator({ value, target, unit = "%", inverse = false }: { value: number; target: number; unit?: string; inverse?: boolean }) {
@@ -26,7 +28,7 @@ function RAGIndicator({ value, target, unit = "%", inverse = false }: { value: n
 }
 
 /** KPI Scorecard — Executive dashboard with Cost + Resource Utilisation */
-export function WOCKPIScorecardTab({ workOrders }: Props) {
+export function WOCKPIScorecardTab({ workOrders, workRequests }: Props) {
   const total = workOrders.length;
   const now = Date.now();
 

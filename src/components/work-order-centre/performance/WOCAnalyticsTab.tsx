@@ -1,12 +1,14 @@
 import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { WorkRequest } from "@/hooks/useWorkRequests";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend,
 } from "recharts";
 
 interface Props {
   workOrders: WorkOrder[];
+  workRequests: WorkRequest[];
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -18,7 +20,7 @@ const STATUS_COLORS: Record<string, string> = {
   Other: "hsl(0 0% 60%)",
 };
 
-export function WOCAnalyticsTab({ workOrders }: Props) {
+export function WOCAnalyticsTab({ workOrders, workRequests }: Props) {
   const statusData = useMemo(() => {
     const map: Record<string, number> = {};
     workOrders.forEach((wo) => {
@@ -57,15 +59,20 @@ export function WOCAnalyticsTab({ workOrders }: Props) {
     ["Planning", "Draft", "Ready"].includes(w.status)
   ).length;
   const reactive = total - planned - completed;
+  const wrTotal = workRequests.length;
+  const wrConverted = workRequests.filter((wr) => wr.linked_wo_id).length;
+  const scheduledWOs = workOrders.filter((wo) => wo.scheduled_date).length;
 
   return (
     <div className="space-y-4 mt-2">
       {/* KPI row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {[
+          { label: "Work Requests", value: wrTotal },
+          { label: "WR → WO Conversion", value: wrTotal ? `${Math.round((wrConverted / wrTotal) * 100)}%` : "-" },
           { label: "Total WOs", value: total },
+          { label: "Scheduled WOs", value: scheduledWOs },
           { label: "Completion %", value: total ? `${Math.round((completed / total) * 100)}%` : "-" },
-          { label: "Planned Work", value: planned },
           { label: "Reactive / Break-in", value: reactive },
         ].map((k) => (
           <Card key={k.label} className="border-border">

@@ -4,11 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { WorkRequest } from "@/hooks/useWorkRequests";
 import { FileDown, Printer } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
   workOrders: WorkOrder[];
+  workRequests: WorkRequest[];
 }
 
 const statBucket = (status: string) => {
@@ -21,7 +23,7 @@ const statBucket = (status: string) => {
   return "other";
 };
 
-export function WOCReportsTab({ workOrders }: Props) {
+export function WOCReportsTab({ workOrders, workRequests }: Props) {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
@@ -38,13 +40,32 @@ export function WOCReportsTab({ workOrders }: Props) {
     return buckets;
   }, [workOrders, from, to]);
 
+  const wrStats = useMemo(() => {
+    let list = workRequests;
+    if (from) list = list.filter((wr) => wr.date_raised >= from);
+    if (to) list = list.filter((wr) => wr.date_raised <= to);
+    const pending = list.filter((wr) => ["Submitted", "Pending Review"].includes(wr.status)).length;
+    const approved = list.filter((wr) => wr.status === "Approved").length;
+    const linked = list.filter((wr) => wr.linked_wo_id).length;
+    return { total: list.length, pending, approved, linked };
+  }, [workRequests, from, to]);
+
+  const scheduledCount = useMemo(() => {
+    let list = workOrders.filter((wo) => wo.scheduled_date);
+    if (from) list = list.filter((wo) => wo.scheduled_date! >= from);
+    if (to) list = list.filter((wo) => wo.scheduled_date! <= to);
+    return list.length;
+  }, [workOrders, from, to]);
+
   const tiles: { label: string; value: number; color: string }[] = [
+    { label: "Work Requests", value: wrStats.total, color: "bg-amber-500/10" },
+    { label: "WR → WO Converted", value: wrStats.linked, color: "bg-emerald-500/10" },
     { label: "Total Work Orders", value: stats.total, color: "bg-muted" },
+    { label: "Scheduled", value: scheduledCount, color: "bg-blue-500/10" },
     { label: "Completed", value: stats.completed, color: "bg-emerald-500/10" },
-    { label: "In Progress", value: stats.inProgress, color: "bg-blue-500/10" },
-    { label: "Open / Assigned", value: stats.open, color: "bg-amber-500/10" },
-    { label: "Ready", value: stats.ready, color: "bg-cyan-500/10" },
+    { label: "In Progress", value: stats.inProgress, color: "bg-cyan-500/10" },
     { label: "On Hold", value: stats.onHold, color: "bg-orange-500/10" },
+    { label: "WR Pending Review", value: wrStats.pending, color: "bg-amber-500/10" },
   ];
 
   return (
@@ -73,7 +94,7 @@ export function WOCReportsTab({ workOrders }: Props) {
       </div>
 
       {/* Stat tiles */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {tiles.map((t) => (
           <Card key={t.label} className={`${t.color} border-border`}>
             <CardContent className="p-4 text-center">

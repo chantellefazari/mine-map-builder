@@ -2,14 +2,16 @@ import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { WorkRequest } from "@/hooks/useWorkRequests";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend,
   PieChart, Pie,
 } from "recharts";
-import { AlertTriangle, Layers, Clock, TrendingDown } from "lucide-react";
+import { AlertTriangle, Layers, Clock, TrendingDown, FileText } from "lucide-react";
 
 interface Props {
   workOrders: WorkOrder[];
+  workRequests: WorkRequest[];
 }
 
 const AGING_BUCKETS = [
@@ -21,7 +23,7 @@ const AGING_BUCKETS = [
 ];
 
 /** Backlog Management — aging analysis by trade, area, priority */
-export function WOCBacklogTab({ workOrders }: Props) {
+export function WOCBacklogTab({ workOrders, workRequests }: Props) {
   // Backlog = all open/active WOs not completed/closed
   const backlog = useMemo(
     () => workOrders.filter((wo) => !["Completed", "Complete", "Closed"].includes(wo.status)),
@@ -76,6 +78,7 @@ export function WOCBacklogTab({ workOrders }: Props) {
   const avgAge = backlog.length > 0 ? Math.round(backlog.reduce((s, wo) => s + ageDays(wo), 0) / backlog.length) : 0;
   const critical = backlog.filter((wo) => ageDays(wo) > 30).length;
   const highPriority = backlog.filter((wo) => ["Critical", "Emergency", "High", "P1", "P2"].includes(wo.priority)).length;
+  const pendingWRs = workRequests.filter((wr) => ["Submitted", "Pending Review"].includes(wr.status)).length;
 
   const PRIORITY_COLORS: Record<string, string> = {
     Critical: "hsl(0 84% 60%)", Emergency: "hsl(0 84% 60%)", High: "hsl(25 90% 55%)", P1: "hsl(0 84% 60%)", P2: "hsl(25 90% 55%)",
@@ -85,12 +88,19 @@ export function WOCBacklogTab({ workOrders }: Props) {
   return (
     <div className="space-y-4 mt-2">
       {/* KPI row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <Card className="border-border">
           <CardContent className="p-4 text-center">
             <Layers className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
             <p className="text-2xl font-bold text-foreground">{backlog.length}</p>
-            <p className="text-[10px] text-muted-foreground mt-1">Total Backlog</p>
+            <p className="text-[10px] text-muted-foreground mt-1">WO Backlog</p>
+          </CardContent>
+        </Card>
+        <Card className="border-border">
+          <CardContent className="p-4 text-center">
+            <FileText className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
+            <p className="text-2xl font-bold text-foreground">{pendingWRs}</p>
+            <p className="text-[10px] text-muted-foreground mt-1">Pending WRs</p>
           </CardContent>
         </Card>
         <Card className="border-border">
