@@ -83,7 +83,7 @@ const SPARES_MAPPINGS: MappingRow[] = [
   { field: "Reorder Point / Max Stock", sourceDocument: "Site Parts Catalogue", transformation: "Not yet populated, requires full enrichment", status: "Not Started" },
   { field: "Linked Asset Reference", sourceDocument: "Site Parts Catalogue", transformation: "Cross-reference Asset Register (31/2184 linked)", status: "Partial" },
   { field: "Default Vendor", sourceDocument: "Supplier Register", transformation: "Lookup from Supplier Register (505/2184 populated)", status: "Partial" },
-  { field: "Standard Cost (AUD)", sourceDocument: "Site Parts Catalogue", transformation: "Direct: AUD value (36/2184 populated)", status: "Partial" },
+  { field: "Standard Cost (AUD)", sourceDocument: "Site Parts Catalogue", transformation: "Not yet populated, requires full cost enrichment across catalogue", status: "Not Started" },
   { field: "Lead Time (Days)", sourceDocument: "Site Parts Catalogue", transformation: "Direct integer (not yet captured)", status: "Not Started" },
 ];
 
