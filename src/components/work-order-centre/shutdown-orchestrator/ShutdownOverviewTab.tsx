@@ -58,7 +58,7 @@ export function ShutdownOverviewTab() {
 
   const shutdown = shutdowns[0] ?? null;
 
-  const DEMO_AREAS = useMemo(() => buildAreaSummaries(PACKAGES), []);
+  const DEMO_AREAS = areaSummaries;
 
   const summary = useMemo(() => {
     const total = DEMO_AREAS.reduce((s, a) => s + a.total, 0);
