@@ -121,12 +121,12 @@ const STORES_OPS_MAPPINGS: MappingRow[] = [
 ];
 
 const PLANNING_SCHEDULING_MAPPINGS: MappingRow[] = [
-  { field: "Weekly Maintenance Schedule", sourceDocument: "N/A — Not yet built", transformation: "No scheduling engine or weekly planning tool exists", status: "Not Started" },
-  { field: "Backlog Management", sourceDocument: "N/A — Not yet built", transformation: "No backlog register or ageing visibility exists", status: "Not Started" },
-  { field: "Resource Levelling / Trade Allocation", sourceDocument: "N/A — Not yet built", transformation: "No resource capacity planning exists", status: "Not Started" },
-  { field: "Shutdown Planning Process", sourceDocument: "Shutdown Management Module", transformation: "Shutdown rundowns and PM requirements built, informal planning", status: "Partial" },
-  { field: "Job Task Lists (Standard Jobs)", sourceDocument: "PM Templates Pack", transformation: "PM tasks defined, no standard job library for corrective work", status: "Partial" },
-  { field: "Maintenance Planning Workflow", sourceDocument: "N/A — Not yet built", transformation: "No formal plan → schedule → execute → close workflow", status: "Not Started" },
+  { field: "Weekly Maintenance Schedule", sourceDocument: "Minesite.ai Scheduling Module", transformation: "Built and operational in Minesite.ai", status: "Ready" },
+  { field: "Backlog Management", sourceDocument: "Minesite.ai Work Management", transformation: "Backlog visibility and ageing built in Minesite.ai", status: "Ready" },
+  { field: "Resource Levelling / Trade Allocation", sourceDocument: "Minesite.ai Scheduling Module", transformation: "Trade-based allocation built in Minesite.ai", status: "Ready" },
+  { field: "Shutdown Planning Process", sourceDocument: "Minesite.ai Shutdown Module", transformation: "Shutdown rundowns, PM requirements, and vendor management built", status: "Ready" },
+  { field: "Job Task Lists (Standard Jobs)", sourceDocument: "PM Templates Pack", transformation: "PM tasks defined across all disciplines, corrective job templates in progress", status: "Partial" },
+  { field: "Maintenance Planning Workflow", sourceDocument: "Minesite.ai Work Management", transformation: "Plan → schedule → execute → close workflow built", status: "Ready" },
 ];
 
 const FINANCE_COSTING_MAPPINGS: MappingRow[] = [
@@ -144,16 +144,16 @@ const PHYSICAL_SITE_MAPPINGS: MappingRow[] = [
   { field: "Scrap & Waste Disposal Process", sourceDocument: "N/A — Not yet defined", transformation: "No scrap process or disposal area designated", status: "Not Started" },
   { field: "Bunded Oil / Chemical Storage", sourceDocument: "N/A — Not yet defined", transformation: "No bunded storage area exists on site", status: "Not Started" },
   { field: "Chemical Packaging Disposal", sourceDocument: "N/A — Not yet defined", transformation: "No disposal process defined, regulatory compliance risk", status: "Not Started" },
-  { field: "Physical Asset Tags / Signage", sourceDocument: "Asset Tag Rollout Plan", transformation: "Tag register built (450+ tags), physical installation pending", status: "Partial" },
+  { field: "Physical Asset Tags / Signage", sourceDocument: "Asset Tag Rollout Plan (TCMG-STD-TAG-002)", transformation: "Tag register built (450+ tags), rollout plan complete, physical installation pending", status: "Partial" },
 ];
 
 const PEOPLE_CHANGE_MAPPINGS: MappingRow[] = [
-  { field: "Storeperson Role (Defined & Active)", sourceDocument: "CMMS Roles & RACI", transformation: "Role exists on site, cannot function without physical stores", status: "Partial" },
-  { field: "Additional Store Staff Onboarded", sourceDocument: "Site HR", transformation: "Recruitment starting, staff cannot succeed without foundations", status: "Partial" },
-  { field: "Site Discipline & Accountability", sourceDocument: "N/A — Cultural", transformation: "Not established, system use will be bypassed without enforcement", status: "Not Started" },
-  { field: "Ownership & Process Accountability", sourceDocument: "N/A — Leadership", transformation: "Weak — no formal endorsement of new processes", status: "Not Started" },
-  { field: "Role-Based Training Materials", sourceDocument: "N/A — Not yet built", transformation: "No training packages or super users identified", status: "Not Started" },
-  { field: "Change Management & Comms Plan", sourceDocument: "N/A — Not yet built", transformation: "No stakeholder engagement or resistance management plan", status: "Not Started" },
+  { field: "Storeperson Role (Defined & Active)", sourceDocument: "CMMS Roles & RACI", transformation: "Role defined, cannot fully function without physical stores", status: "Partial" },
+  { field: "Additional Store Staff Onboarded", sourceDocument: "Site HR", transformation: "Recruitment in progress, onboarding planned", status: "Partial" },
+  { field: "Site Discipline & Accountability", sourceDocument: "People & Change Readiness Plan", transformation: "Framework being established as part of change readiness", status: "Partial" },
+  { field: "Ownership & Process Accountability", sourceDocument: "People & Change Readiness Plan", transformation: "Leadership alignment and accountability framework in progress", status: "Partial" },
+  { field: "Role-Based Training Materials", sourceDocument: "People & Change Readiness Plan", transformation: "Training packages being developed, super users being identified", status: "Partial" },
+  { field: "Change Management & Comms Plan", sourceDocument: "People & Change Readiness Plan", transformation: "Stakeholder engagement and comms plan being developed", status: "Partial" },
 ];
 
 const ALL_SECTIONS = [
@@ -344,8 +344,16 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
           <p><strong>Stock Control Activation:</strong> Receiving, issuing, and cycle count procedures are drafted but cannot operate without physical stores. Stock in/out process does not exist.</p>
         </div>
         <div className="flex gap-2 items-start">
-          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
-          <p><strong>Scheduling Capability:</strong> No weekly planning tool, backlog management, or resource levelling exists. Work will remain reactive without a scheduling engine.</p>
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
+          <p><strong>Scheduling Capability:</strong> Weekly planning, backlog management, resource levelling, and shutdown planning fully built in Minesite.ai.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+          <p><strong>People & Change Readiness:</strong> Change management, training materials, site discipline, and leadership alignment currently being developed. In progress.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+          <p><strong>Asset Tag Installation:</strong> 450+ tags registered, rollout plan complete (TCMG-STD-TAG-002). Physical installation on equipment pending.</p>
         </div>
         <div className="flex gap-2 items-start">
           <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
@@ -354,14 +362,6 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct }: {
         <div className="flex gap-2 items-start">
           <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
           <p><strong>Physical Site Infrastructure:</strong> No defined laydown areas, safe truck unloading zone, scrap/waste process, or bunded chemical storage exists.</p>
-        </div>
-        <div className="flex gap-2 items-start">
-          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
-          <p><strong>People & Change Readiness:</strong> No formal change management plan, training materials, or site discipline framework. Storeperson role cannot function without physical stores. Largest single risk to implementation success.</p>
-        </div>
-        <div className="flex gap-2 items-start">
-          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
-          <p><strong>Asset Tag Installation:</strong> 450+ tags registered in system, but physical installation on equipment has not started. No way to confirm which asset work is performed on.</p>
         </div>
       </CardContent>
     </Card>
