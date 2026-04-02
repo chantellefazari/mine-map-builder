@@ -369,6 +369,7 @@ export const DataMappingReadinessSection = () => {
   const partial = allRows.filter(r => r.status === "Partial").length;
   const notStarted = allRows.filter(r => r.status === "Not Started").length;
   const pct = Math.round((ready / allRows.length) * 100);
+  const weightedPct = Math.round(((ready + partial * 0.5) / allRows.length) * 100);
 
   const contentRef = useRef<HTMLDivElement>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
