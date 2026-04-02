@@ -68,9 +68,11 @@ export function WOCAnalyticsTab({ workOrders, workRequests }: Props) {
       {/* KPI row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
+          { label: "Work Requests", value: wrTotal },
+          { label: "WR → WO Conversion", value: wrTotal ? `${Math.round((wrConverted / wrTotal) * 100)}%` : "-" },
           { label: "Total WOs", value: total },
+          { label: "Scheduled WOs", value: scheduledWOs },
           { label: "Completion %", value: total ? `${Math.round((completed / total) * 100)}%` : "-" },
-          { label: "Planned Work", value: planned },
           { label: "Reactive / Break-in", value: reactive },
         ].map((k) => (
           <Card key={k.label} className="border-border">
