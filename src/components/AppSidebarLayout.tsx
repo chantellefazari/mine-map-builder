@@ -4,7 +4,7 @@ import {
   TreePine, Wrench, ClipboardList, Warehouse, BookOpen,
   ShoppingCart, Building2, CalendarClock, LogOut, Shield,
   PackageSearch, FileInput, Home, Box, Brain, ChevronLeft,
-  ChevronRight, Radar, ClipboardCheck, ShieldAlert,
+  ChevronRight, Radar, ClipboardCheck, ShieldAlert, FileBadge,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
