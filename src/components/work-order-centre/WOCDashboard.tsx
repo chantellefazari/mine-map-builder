@@ -4,7 +4,7 @@ import { useWorkRequests } from "@/hooks/useWorkRequests";
 import {
   FileText, Wrench, AlertTriangle, CheckCircle2, Clock,
   ArrowRight, TrendingUp, BarChart3, ClipboardCheck, Activity,
-  LayoutDashboard, FileBarChart,
+  LayoutDashboard, FileBarChart, Layers,
 } from "lucide-react";
 import { WOCView } from "@/pages/WorkOrderCentre";
 import { cn } from "@/lib/utils";
