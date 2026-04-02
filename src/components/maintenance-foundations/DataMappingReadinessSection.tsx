@@ -109,6 +109,53 @@ const WO_MAPPINGS: MappingRow[] = [
   { field: "Labour Journal Lines", sourceDocument: "Work Order Register", transformation: "Structured entries per work order (0/7 populated)", status: "Partial" },
 ];
 
+const STORES_OPS_MAPPINGS: MappingRow[] = [
+  { field: "Physical Warehouse / Stores", sourceDocument: "Stores Implementation Plan", transformation: "5-container compound designed, not yet constructed", status: "Not Started" },
+  { field: "Defined Part Locations (Bin Codes)", sourceDocument: "Site Parts Catalogue", transformation: "C01-EL-A1 format defined, physical labels not installed", status: "Not Started" },
+  { field: "Stock In / Receiving Process", sourceDocument: "Stock Control Procedure", transformation: "Procedure drafted (SOP-STK-001), not operationally active", status: "Not Started" },
+  { field: "Stock Out / Issuing Process", sourceDocument: "Stock Control Procedure", transformation: "WO-linked issuing defined, no physical control in place", status: "Not Started" },
+  { field: "Stocktake / Cycle Count Capability", sourceDocument: "Stock Control Procedure", transformation: "Weekly revision day defined, no physical stock to count", status: "Not Started" },
+  { field: "Parts Issued to Jobs (WO Linkage)", sourceDocument: "Work Order Register", transformation: "Data model supports it, process not enforced on site", status: "Not Started" },
+  { field: "Min/Max Reorder Levels", sourceDocument: "Site Parts Catalogue", transformation: "13/2184 items populated, requires full enrichment", status: "Partial" },
+  { field: "Goods Receipt Matching (3-Way Match)", sourceDocument: "Procurement Workflow", transformation: "PR → PO → Receipt flow built, no physical goods receipt", status: "Not Started" },
+];
+
+const PLANNING_SCHEDULING_MAPPINGS: MappingRow[] = [
+  { field: "Weekly Maintenance Schedule", sourceDocument: "N/A — Not yet built", transformation: "No scheduling engine or weekly planning tool exists", status: "Not Started" },
+  { field: "Backlog Management", sourceDocument: "N/A — Not yet built", transformation: "No backlog register or ageing visibility exists", status: "Not Started" },
+  { field: "Resource Levelling / Trade Allocation", sourceDocument: "N/A — Not yet built", transformation: "No resource capacity planning exists", status: "Not Started" },
+  { field: "Shutdown Planning Process", sourceDocument: "Shutdown Management Module", transformation: "Shutdown rundowns and PM requirements built, informal planning", status: "Partial" },
+  { field: "Job Task Lists (Standard Jobs)", sourceDocument: "PM Templates Pack", transformation: "PM tasks defined, no standard job library for corrective work", status: "Partial" },
+  { field: "Maintenance Planning Workflow", sourceDocument: "N/A — Not yet built", transformation: "No formal plan → schedule → execute → close workflow", status: "Not Started" },
+];
+
+const FINANCE_COSTING_MAPPINGS: MappingRow[] = [
+  { field: "Job Numbers Linked to Finance", sourceDocument: "Work Order Register", transformation: "WO numbers exist but not linked to D365 Finance journals", status: "Not Started" },
+  { field: "Parts Cost Linked to Work Orders", sourceDocument: "Site Parts Catalogue", transformation: "Unit costs 2% populated, no cost roll-up to WOs", status: "Not Started" },
+  { field: "Labour Cost Capture", sourceDocument: "Work Order Register", transformation: "Labour journal structure exists, no time recording in practice", status: "Not Started" },
+  { field: "Maintenance Cost History", sourceDocument: "Existing Excel Records", transformation: "Costs exist but cannot be traced to specific work or assets", status: "Partial" },
+  { field: "Asset Lifecycle Costing", sourceDocument: "N/A — Not yet built", transformation: "No total cost of ownership tracking exists", status: "Not Started" },
+  { field: "GL Code Mapping (Maintenance)", sourceDocument: "D365 Finance", transformation: "D365 Finance is live, GL structure exists", status: "Ready" },
+];
+
+const PHYSICAL_SITE_MAPPINGS: MappingRow[] = [
+  { field: "Defined Store / Laydown Areas", sourceDocument: "Stores Implementation Plan", transformation: "Layout designed (C01-C05 + LD-A to LD-F), not constructed", status: "Not Started" },
+  { field: "Safe Truck Access & Unloading Zone", sourceDocument: "Stores Implementation Plan", transformation: "Delivery zone and forklift lane designed, not built", status: "Not Started" },
+  { field: "Scrap & Waste Disposal Process", sourceDocument: "N/A — Not yet defined", transformation: "No scrap process or disposal area designated", status: "Not Started" },
+  { field: "Bunded Oil / Chemical Storage", sourceDocument: "N/A — Not yet defined", transformation: "No bunded storage area exists on site", status: "Not Started" },
+  { field: "Chemical Packaging Disposal", sourceDocument: "N/A — Not yet defined", transformation: "No disposal process defined, regulatory compliance risk", status: "Not Started" },
+  { field: "Physical Asset Tags / Signage", sourceDocument: "Asset Tag Rollout Plan", transformation: "Tag register built (450+ tags), physical installation pending", status: "Partial" },
+];
+
+const PEOPLE_CHANGE_MAPPINGS: MappingRow[] = [
+  { field: "Storeperson Role (Defined & Active)", sourceDocument: "CMMS Roles & RACI", transformation: "Role exists on site, cannot function without physical stores", status: "Partial" },
+  { field: "Additional Store Staff Onboarded", sourceDocument: "Site HR", transformation: "Recruitment starting, staff cannot succeed without foundations", status: "Partial" },
+  { field: "Site Discipline & Accountability", sourceDocument: "N/A — Cultural", transformation: "Not established, system use will be bypassed without enforcement", status: "Not Started" },
+  { field: "Ownership & Process Accountability", sourceDocument: "N/A — Leadership", transformation: "Weak — no formal endorsement of new processes", status: "Not Started" },
+  { field: "Role-Based Training Materials", sourceDocument: "N/A — Not yet built", transformation: "No training packages or super users identified", status: "Not Started" },
+  { field: "Change Management & Comms Plan", sourceDocument: "N/A — Not yet built", transformation: "No stakeholder engagement or resistance management plan", status: "Not Started" },
+];
+
 const ALL_SECTIONS = [
   { title: "1. Asset Register", entity: "Asset Tree → Target System Asset Management", data: ASSET_MAPPINGS },
   { title: "2. Functional Locations", entity: "FL Codes Document → Target System Functional Locations", data: FL_MAPPINGS },
@@ -116,6 +163,11 @@ const ALL_SECTIONS = [
   { title: "4. Spare Parts & Inventory", entity: "Site Parts Catalogue → Target System Inventory Items", data: SPARES_MAPPINGS },
   { title: "5. Supplier Register", entity: "Supplier Register → Target System Vendor Master", data: SUPPLIER_MAPPINGS },
   { title: "6. Work Orders", entity: "Work Order Register → Target System Work Orders", data: WO_MAPPINGS },
+  { title: "7. Stores & Inventory Operations", entity: "Stock Control Procedures → Target System Warehouse Management", data: STORES_OPS_MAPPINGS },
+  { title: "8. Planning & Scheduling", entity: "Planning Workflows → Target System Scheduling Module", data: PLANNING_SCHEDULING_MAPPINGS },
+  { title: "9. Finance & Cost Integration", entity: "D365 Finance → Target System Maintenance Costing", data: FINANCE_COSTING_MAPPINGS },
+  { title: "10. Physical Site Foundations", entity: "Site Infrastructure → Operational Prerequisites", data: PHYSICAL_SITE_MAPPINGS },
+  { title: "11. People & Change Readiness", entity: "Workforce & Culture → Implementation Success Factors", data: PEOPLE_CHANGE_MAPPINGS },
 ];
 
 const MappingTable = ({ rows }: { rows: MappingRow[] }) => (
