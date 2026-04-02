@@ -20,7 +20,7 @@ const STATUS_COLORS: Record<string, string> = {
   Other: "hsl(0 0% 60%)",
 };
 
-export function WOCAnalyticsTab({ workOrders }: Props) {
+export function WOCAnalyticsTab({ workOrders, workRequests }: Props) {
   const statusData = useMemo(() => {
     const map: Record<string, number> = {};
     workOrders.forEach((wo) => {
