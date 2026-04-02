@@ -35,6 +35,7 @@ const WOPrint = lazy(() => import("./pages/WOPrint"));
 const ImplementationReadiness = lazy(() => import("./pages/ImplementationReadiness"));
 const ImplementationRiskAssessment = lazy(() => import("./pages/ImplementationRiskAssessment"));
 const ComponentRequests = lazy(() => import("./pages/ComponentRequests"));
+const ValveCertificates = lazy(() => import("./pages/ValveCertificates"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
