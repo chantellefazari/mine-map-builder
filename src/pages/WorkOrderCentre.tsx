@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, Clock, ClipboardList, Truck, FileText, Wrench,
   Calendar, Package, Shield, AlertTriangle, BookOpen, Settings,
-  HelpCircle, ChevronLeft, ChevronRight, ArrowLeft, BarChart3,
+  HelpCircle, ChevronLeft, ChevronRight, ArrowLeft,
 } from "lucide-react";
 import { WOCDashboard } from "@/components/work-order-centre/WOCDashboard";
 import { WOCWorkRequests } from "@/components/work-order-centre/WOCWorkRequests";
