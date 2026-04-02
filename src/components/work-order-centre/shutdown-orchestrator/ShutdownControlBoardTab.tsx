@@ -11,7 +11,7 @@ import {
   Printer, PlayCircle, X, GitBranch,
 } from "lucide-react";
 import {
-  PACKAGES, ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS, STATUS_ORDER,
+  ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS, STATUS_ORDER,
   type ShutdownWorkPackage, type WPStatus,
 } from "./shutdownData";
 
