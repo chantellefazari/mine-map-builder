@@ -76,7 +76,7 @@ export const ComponentSubmissionSheet = () => {
         part_model: r.partModel.trim(),
         quantity: parseInt(r.quantity) || 1,
         notes: r.notes.trim(),
-        submitted_by: userName || user?.email || "unknown",
+        submitted_by: r.submittedBy.trim(),
         status: "pending",
       }));
 
