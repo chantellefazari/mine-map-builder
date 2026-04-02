@@ -28,7 +28,7 @@ function RAGIndicator({ value, target, unit = "%", inverse = false }: { value: n
 }
 
 /** KPI Scorecard — Executive dashboard with Cost + Resource Utilisation */
-export function WOCKPIScorecardTab({ workOrders }: Props) {
+export function WOCKPIScorecardTab({ workOrders, workRequests }: Props) {
   const total = workOrders.length;
   const now = Date.now();
 

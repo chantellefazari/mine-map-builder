@@ -15,7 +15,7 @@ interface Props {
 }
 
 /** Reliability — MTBF / MTTR per asset class */
-export function WOCReliabilityTab({ workOrders }: Props) {
+export function WOCReliabilityTab({ workOrders, workRequests }: Props) {
   // Group completed corrective WOs by asset to compute MTBF & MTTR
   const assetMetrics = useMemo(() => {
     // Only corrective / breakdown work

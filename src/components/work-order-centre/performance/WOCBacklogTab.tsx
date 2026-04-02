@@ -88,12 +88,19 @@ export function WOCBacklogTab({ workOrders, workRequests }: Props) {
   return (
     <div className="space-y-4 mt-2">
       {/* KPI row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <Card className="border-border">
           <CardContent className="p-4 text-center">
             <Layers className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
             <p className="text-2xl font-bold text-foreground">{backlog.length}</p>
-            <p className="text-[10px] text-muted-foreground mt-1">Total Backlog</p>
+            <p className="text-[10px] text-muted-foreground mt-1">WO Backlog</p>
+          </CardContent>
+        </Card>
+        <Card className="border-border">
+          <CardContent className="p-4 text-center">
+            <FileText className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
+            <p className="text-2xl font-bold text-foreground">{pendingWRs}</p>
+            <p className="text-[10px] text-muted-foreground mt-1">Pending WRs</p>
           </CardContent>
         </Card>
         <Card className="border-border">

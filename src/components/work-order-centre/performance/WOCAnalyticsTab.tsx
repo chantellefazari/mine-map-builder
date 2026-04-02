@@ -66,7 +66,7 @@ export function WOCAnalyticsTab({ workOrders, workRequests }: Props) {
   return (
     <div className="space-y-4 mt-2">
       {/* KPI row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {[
           { label: "Work Requests", value: wrTotal },
           { label: "WR → WO Conversion", value: wrTotal ? `${Math.round((wrConverted / wrTotal) * 100)}%` : "-" },

@@ -15,7 +15,7 @@ interface Props {
 }
 
 /** Schedule Compliance — Did we execute work on the day it was scheduled? */
-export function WOCScheduleComplianceTab({ workOrders }: Props) {
+export function WOCScheduleComplianceTab({ workOrders, workRequests }: Props) {
   // Determine compliance: completed WOs where date_completed matches scheduled_date
   const analysis = useMemo(() => {
     const scheduled = workOrders.filter((wo) => wo.scheduled_date);
