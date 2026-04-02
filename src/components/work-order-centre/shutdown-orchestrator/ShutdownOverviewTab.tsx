@@ -287,26 +287,32 @@ export function ShutdownOverviewTab() {
           <h3 className="text-sm font-semibold text-foreground">Today / This Shift Focus</h3>
           <Badge variant="secondary" className="text-[9px] h-4 ml-1">Day Shift</Badge>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
-          {DEMO_SHIFT_FOCUS.map((item, i) => {
-            const Icon = SHIFT_ICON[item.type];
-            return (
-              <div
-                key={i}
-                className="flex items-start gap-2.5 px-3 py-2.5 rounded-md border border-border bg-background"
-              >
-                <Icon className={cn("w-4 h-4 mt-0.5 flex-shrink-0", SHIFT_STYLE[item.type])} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-foreground leading-snug">{item.label}</p>
-                  <span className="text-[10px] text-muted-foreground">{item.area}</span>
+        {todayPackages.length === 0 ? (
+          <p className="text-xs text-muted-foreground py-4 text-center">No packages scheduled for today</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
+            {todayPackages.map((pkg) => {
+              const statusType = pkg.status === "Complete" ? "finish" : pkg.status === "Active" ? "start" : "decision";
+              const Icon = SHIFT_ICON[statusType];
+              return (
+                <div
+                  key={pkg.id}
+                  className="flex items-start gap-2.5 px-3 py-2.5 rounded-md border border-border bg-background cursor-pointer hover:shadow-sm"
+                  onClick={() => { setSelectedPackageId(pkg.id); navigateToTab("control"); }}
+                >
+                  <Icon className={cn("w-4 h-4 mt-0.5 flex-shrink-0", SHIFT_STYLE[statusType])} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-foreground leading-snug">{pkg.title}</p>
+                    <span className="text-[10px] text-muted-foreground">{pkg.area}</span>
+                  </div>
+                  <Badge variant="outline" className="text-[9px] h-4 capitalize flex-shrink-0">
+                    {pkg.status}
+                  </Badge>
                 </div>
-                <Badge variant="outline" className="text-[9px] h-4 capitalize flex-shrink-0">
-                  {item.type}
-                </Badge>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* ============ RUN-DOWN / RUN-UP CHECKLISTS ============ */}
