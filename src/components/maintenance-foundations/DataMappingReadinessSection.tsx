@@ -128,12 +128,12 @@ const PLANNING_SCHEDULING_MAPPINGS: MappingRow[] = [
 ];
 
 const FINANCE_COSTING_MAPPINGS: MappingRow[] = [
-  { field: "Job Numbers Linked to Finance", sourceDocument: "Work Order Register", transformation: "WO numbers exist but not linked to D365 Finance journals", status: "Not Started" },
-  { field: "Parts Cost Linked to Work Orders", sourceDocument: "Site Parts Catalogue", transformation: "Unit costs 2% populated, no cost roll-up to WOs", status: "Not Started" },
-  { field: "Labour Cost Capture", sourceDocument: "Work Order Register", transformation: "Labour journal structure exists, no time recording in practice", status: "Not Started" },
-  { field: "Maintenance Cost History", sourceDocument: "Existing Excel Records", transformation: "Costs exist but cannot be traced to specific work or assets", status: "Partial" },
-  { field: "Asset Lifecycle Costing", sourceDocument: "N/A — Not yet built", transformation: "No total cost of ownership tracking exists", status: "Not Started" },
-  { field: "GL Code Mapping (Maintenance)", sourceDocument: "D365 Finance", transformation: "D365 Finance is live, GL structure exists", status: "Ready" },
+  { field: "Job Numbers Linked to Finance", sourceDocument: "D365 Finance (Finance Team)", transformation: "WO numbers exist, finance team to configure journal linkage in D365", status: "Partial" },
+  { field: "Parts Cost Linked to Work Orders", sourceDocument: "D365 Finance (Finance Team)", transformation: "Cost roll-up to WOs requires D365 configuration by finance team", status: "Partial" },
+  { field: "Labour Cost Capture", sourceDocument: "D365 Finance (Finance Team)", transformation: "Time recording configuration managed by finance team in D365", status: "Partial" },
+  { field: "Maintenance Cost History", sourceDocument: "D365 Finance (Finance Team)", transformation: "Historical costs held in D365 Finance, traceability to assets pending", status: "Partial" },
+  { field: "Asset Lifecycle Costing", sourceDocument: "D365 Finance (Finance Team)", transformation: "Total cost of ownership tracking to be configured in D365 by finance", status: "Partial" },
+  { field: "GL Code Mapping (Maintenance)", sourceDocument: "D365 Finance", transformation: "D365 Finance is live, GL structure exists and operational", status: "Ready" },
 ];
 
 const PHYSICAL_SITE_MAPPINGS: MappingRow[] = [
