@@ -132,26 +132,39 @@ export function ShutdownPrintPackTab() {
         </div>
       </div>
 
-      <div className={cn(showPreview && "border-2 border-dashed border-primary/20 rounded-lg p-6 bg-background shadow-inner")}>
+      <div className={cn(
+        showPreview && "border-2 border-dashed border-primary/20 rounded-lg p-6 bg-background shadow-inner",
+        packType === "wall-chart" && "overflow-x-auto"
+      )}>
         <div ref={printRef}>
-          <div className="mb-6 border-b-2 border-foreground pb-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-lg font-black text-foreground tracking-tight">{currentPack.label}</h1>
-                <p className="text-sm text-muted-foreground">{SHUTDOWN_NAME}</p>
+          {packType === "wall-chart" ? (
+            selectedShutdownId ? (
+              <ShutdownWallChart shutdownId={selectedShutdownId} />
+            ) : (
+              <div className="text-center py-12 text-sm text-muted-foreground">Select a shutdown to generate the wall chart</div>
+            )
+          ) : (
+            <>
+              <div className="mb-6 border-b-2 border-foreground pb-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h1 className="text-lg font-black text-foreground tracking-tight">{currentPack.label}</h1>
+                    <p className="text-sm text-muted-foreground">{SHUTDOWN_NAME}</p>
+                  </div>
+                  <div className="text-right text-xs text-muted-foreground">
+                    <p className="font-semibold text-foreground">{SHUTDOWN_DATE}</p>
+                    <p>Generated: {new Date().toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" })}</p>
+                    {filterArea !== "All" && <p>Area: {filterArea}</p>}
+                    {filterShift !== "All" && <p>Shift: {filterShift}</p>}
+                  </div>
+                </div>
               </div>
-              <div className="text-right text-xs text-muted-foreground">
-                <p className="font-semibold text-foreground">{SHUTDOWN_DATE}</p>
-                <p>Generated: {new Date().toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" })}</p>
-                {filterArea !== "All" && <p>Area: {filterArea}</p>}
-                {filterShift !== "All" && <p>Shift: {filterShift}</p>}
-              </div>
-            </div>
-          </div>
 
-          {packType === "area-overview" && <AreaOverviewPack packages={filtered} />}
-          {packType === "critical-sequence" && <CriticalSequencePack packages={filtered} />}
-          {packType === "shift-execution" && <ShiftExecutionPack packages={filtered} filterShift={filterShift} />}
+              {packType === "area-overview" && <AreaOverviewPack packages={filtered} />}
+              {packType === "critical-sequence" && <CriticalSequencePack packages={filtered} />}
+              {packType === "shift-execution" && <ShiftExecutionPack packages={filtered} filterShift={filterShift} />}
+            </>
+          )}
         </div>
       </div>
     </div>
