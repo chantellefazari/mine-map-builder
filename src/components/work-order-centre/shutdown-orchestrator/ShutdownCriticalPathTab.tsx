@@ -35,7 +35,7 @@ export function ShutdownCriticalPathTab() {
   const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, navigateToTab, packages } = useOrchestratorContext();
   const [filterSeverity, setFilterSeverity] = useState("All");
 
-  const selected = PACKAGES.find((p) => p.id === selectedId) ?? null;
+  const selected = packages.find((p) => p.id === selectedId) ?? null;
 
   const filtered = useMemo(() => {
     return PACKAGES.filter((p) => {
