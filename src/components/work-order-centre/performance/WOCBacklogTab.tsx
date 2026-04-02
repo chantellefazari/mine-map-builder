@@ -23,7 +23,7 @@ const AGING_BUCKETS = [
 ];
 
 /** Backlog Management — aging analysis by trade, area, priority */
-export function WOCBacklogTab({ workOrders }: Props) {
+export function WOCBacklogTab({ workOrders, workRequests }: Props) {
   // Backlog = all open/active WOs not completed/closed
   const backlog = useMemo(
     () => workOrders.filter((wo) => !["Completed", "Complete", "Closed"].includes(wo.status)),
