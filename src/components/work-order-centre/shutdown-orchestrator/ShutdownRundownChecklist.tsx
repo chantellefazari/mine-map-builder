@@ -1,6 +1,6 @@
 /**
  * Editable Run-Down / Run-Up checklist for shutdown orchestrator.
- * Allows adding, editing, removing, and marking steps complete.
+ * Includes work centre, start/finish times, duration hours per step.
  */
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useRundownSteps, type RundownStep } from "@/hooks/useRundownSteps";
 import {
-  Plus, Trash2, CheckCircle2, Lock, ArrowUp, GripVertical,
+  Plus, Trash2, CheckCircle2, Lock, ArrowUp,
 } from "lucide-react";
 
 interface Props {
@@ -57,6 +57,7 @@ export function ShutdownRundownChecklist({ shutdownId }: Props) {
     const Icon = icon;
     const completedCount = steps.filter(s => s.status === "Complete").length;
     const pct = steps.length > 0 ? Math.round((completedCount / steps.length) * 100) : 0;
+    const totalHours = steps.reduce((s, st) => s + (st.duration_hours || 0), 0);
 
     return (
       <div className={cn("border border-border rounded-lg overflow-hidden", bgColor)}>
@@ -66,6 +67,9 @@ export function ShutdownRundownChecklist({ shutdownId }: Props) {
             <Icon className="w-4 h-4" />
             <h3 className="text-sm font-bold">{title}</h3>
             <Badge variant="outline" className="text-[9px] h-4">{steps.length} steps</Badge>
+            {totalHours > 0 && (
+              <Badge variant="outline" className="text-[9px] h-4">{totalHours} hrs</Badge>
+            )}
           </div>
           <div className="flex items-center gap-2 text-xs">
             <span className="text-muted-foreground">{completedCount}/{steps.length}</span>
@@ -76,20 +80,32 @@ export function ShutdownRundownChecklist({ shutdownId }: Props) {
           </div>
         </div>
 
+        {/* Column Headers */}
+        <div className="flex items-center gap-2 px-4 py-1.5 border-b border-border/30 bg-muted/30 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
+          <span className="w-5 text-right">#</span>
+          <span className="w-5" />
+          <span className="flex-1">Step Description</span>
+          <span className="w-24 text-center">Work Centre</span>
+          <span className="w-16 text-center">Start</span>
+          <span className="w-16 text-center">Finish</span>
+          <span className="w-12 text-right">Hrs</span>
+          <span className="w-20 text-center">Owner</span>
+          <span className="w-16 text-center">Status</span>
+          <span className="w-4" />
+        </div>
+
         {/* Steps */}
         <div className="divide-y divide-border/30">
           {steps.map((step, i) => (
             <div
               key={step.id}
               className={cn(
-                "flex items-center gap-3 px-4 py-2 transition-colors hover:bg-background/50",
+                "flex items-center gap-2 px-4 py-2 transition-colors hover:bg-background/50",
                 step.status === "Complete" && "opacity-60",
               )}
             >
-              {/* Step number */}
               <span className="text-[10px] font-mono text-muted-foreground w-5 text-right">{i + 1}.</span>
 
-              {/* Status toggle */}
               <button
                 onClick={() => toggleStatus(step)}
                 className={cn(
@@ -105,27 +121,51 @@ export function ShutdownRundownChecklist({ shutdownId }: Props) {
                 {step.status === "In Progress" && <span className="w-2 h-2 rounded-full bg-amber-500" />}
               </button>
 
-              {/* Description — inline editable */}
+              {/* Description */}
               <InlineEditField
                 value={step.step_description}
                 onSave={(v) => updateStep.mutate({ id: step.id, updates: { step_description: v } })}
                 className={cn("flex-1 text-xs", step.status === "Complete" && "line-through")}
               />
 
-              {/* Responsible */}
+              {/* Work Centre */}
               <InlineEditField
-                value={step.responsible}
-                onSave={(v) => updateStep.mutate({ id: step.id, updates: { responsible: v } })}
-                className="w-24 text-[10px] text-muted-foreground"
-                placeholder="Owner"
+                value={step.work_centre}
+                onSave={(v) => updateStep.mutate({ id: step.id, updates: { work_centre: v } })}
+                className="w-24 text-[10px] text-muted-foreground text-center"
+                placeholder="Centre"
+              />
+
+              {/* Start Time */}
+              <InlineEditField
+                value={step.start_time}
+                onSave={(v) => updateStep.mutate({ id: step.id, updates: { start_time: v } })}
+                className="w-16 text-[10px] text-muted-foreground text-center font-mono"
+                placeholder="HH:MM"
+              />
+
+              {/* Finish Time */}
+              <InlineEditField
+                value={step.finish_time}
+                onSave={(v) => updateStep.mutate({ id: step.id, updates: { finish_time: v } })}
+                className="w-16 text-[10px] text-muted-foreground text-center font-mono"
+                placeholder="HH:MM"
               />
 
               {/* Duration */}
               <InlineEditField
                 value={step.duration_hours > 0 ? String(step.duration_hours) : ""}
                 onSave={(v) => updateStep.mutate({ id: step.id, updates: { duration_hours: Number(v) || 0 } })}
-                className="w-12 text-[10px] text-muted-foreground text-right"
+                className="w-12 text-[10px] text-muted-foreground text-right font-mono"
                 placeholder="hrs"
+              />
+
+              {/* Responsible */}
+              <InlineEditField
+                value={step.responsible}
+                onSave={(v) => updateStep.mutate({ id: step.id, updates: { responsible: v } })}
+                className="w-20 text-[10px] text-muted-foreground text-center"
+                placeholder="Owner"
               />
 
               {/* Status badge */}
@@ -133,7 +173,6 @@ export function ShutdownRundownChecklist({ shutdownId }: Props) {
                 {step.status}
               </Badge>
 
-              {/* Delete */}
               <button
                 onClick={() => removeStep.mutate(step.id)}
                 className="text-muted-foreground/40 hover:text-destructive transition-colors"
