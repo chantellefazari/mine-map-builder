@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { Route, AlertTriangle, Filter, ChevronRight } from "lucide-react";
 import {
-  PACKAGES, EDGES, COL_LABELS,
+  EDGES, COL_LABELS,
   ALL_AREA_OPTIONS, ALL_TRADES,
 } from "./shutdownData";
 import { SequenceFlowCard } from "./SequenceFlowCard";
@@ -27,15 +27,15 @@ export function ShutdownSequenceFlowTab() {
   const {
     selectedPackageId: selectedId, setSelectedPackageId: setSelectedId,
     filterArea, setFilterArea, filterTrade, setFilterTrade,
-    showCriticalOnly, setShowCriticalOnly,
+    showCriticalOnly, setShowCriticalOnly, packages,
   } = useOrchestratorContext();
   const [filterStatus, setFilterStatus] = useState("All");
   const [showDelayedOnly, setShowDelayedOnly] = useState(false);
 
-  const selected = PACKAGES.find((n) => n.id === selectedId) ?? null;
+  const selected = packages.find((n) => n.id === selectedId) ?? null;
 
   const delayedImpact = useMemo(() => {
-    const delayedIds = new Set(PACKAGES.filter((n) => n.status === "Delayed" || n.status === "Blocked").map((n) => n.id));
+    const delayedIds = new Set(packages.filter((n) => n.status === "Delayed" || n.status === "Blocked").map((n) => n.id));
     const affected = new Set<string>();
     const visit = (id: string) => {
       EDGES.filter((e) => e.from === id).forEach((e) => {
@@ -47,10 +47,10 @@ export function ShutdownSequenceFlowTab() {
     };
     delayedIds.forEach((id) => visit(id));
     return affected;
-  }, []);
+  }, [packages]);
 
   const visibleNodes = useMemo(() => {
-    return PACKAGES.filter((n) => {
+    return packages.filter((n) => {
       if (filterArea !== "All" && n.area !== filterArea) return false;
       if (filterTrade !== "All" && n.trade !== filterTrade) return false;
       if (filterStatus !== "All" && n.status !== filterStatus) return false;
@@ -58,20 +58,19 @@ export function ShutdownSequenceFlowTab() {
       if (showDelayedOnly && n.status !== "Delayed" && n.status !== "Blocked" && !delayedImpact.has(n.id)) return false;
       return true;
     });
-  }, [filterArea, filterTrade, filterStatus, showCriticalOnly, showDelayedOnly, delayedImpact]);
+  }, [filterArea, filterTrade, filterStatus, showCriticalOnly, showDelayedOnly, delayedImpact, packages]);
 
   const visibleIds = new Set(visibleNodes.map((n) => n.id));
 
   const phases = useMemo(() => {
     return COL_LABELS.map((label, colIdx) => ({
       label,
-      packages: PACKAGES.filter(p => p.col === colIdx).sort((a, b) => {
-        // Sort by planned start time, then by row
+      packages: packages.filter(p => p.col === colIdx).sort((a, b) => {
         if (a.plannedStart !== b.plannedStart) return a.plannedStart < b.plannedStart ? -1 : 1;
         return a.row - b.row;
       }),
     }));
-  }, []);
+  }, [packages]);
 
   return (
     <div className="space-y-3">
@@ -205,6 +204,7 @@ export function ShutdownSequenceFlowTab() {
             delayedImpact={delayedImpact}
             onClose={() => setSelectedId(null)}
             onSelect={setSelectedId}
+            packages={packages}
           />
         )}
       </div>

@@ -10,7 +10,7 @@ import {
   Activity, CheckCircle2, CircleDot,
 } from "lucide-react";
 import {
-  PACKAGES, ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS,
+  ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS,
   type ShutdownWorkPackage,
 } from "./shutdownData";
 
@@ -32,13 +32,13 @@ const STATUS_STYLE: Record<string, { bg: string; text: string; border: string; d
 /* ------------------------------------------------------------------ */
 
 export function ShutdownCriticalPathTab() {
-  const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, navigateToTab } = useOrchestratorContext();
+  const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, navigateToTab, packages } = useOrchestratorContext();
   const [filterSeverity, setFilterSeverity] = useState("All");
 
-  const selected = PACKAGES.find((p) => p.id === selectedId) ?? null;
+  const selected = packages.find((p) => p.id === selectedId) ?? null;
 
   const filtered = useMemo(() => {
-    return PACKAGES.filter((p) => {
+    return packages.filter((p) => {
       if (filterArea !== "All" && p.area !== filterArea) return false;
       if (filterTrade !== "All" && p.trade !== filterTrade) return false;
       if (filterShift !== "All" && p.shift !== filterShift) return false;
@@ -46,7 +46,7 @@ export function ShutdownCriticalPathTab() {
       if (filterSeverity === "High" && p.delayHrs < 6) return false;
       return true;
     });
-  }, [filterArea, filterTrade, filterShift, filterSeverity]);
+  }, [filterArea, filterTrade, filterShift, filterSeverity, packages]);
 
   const criticalPath = useMemo(() => filtered.filter((p) => !p.nearCritical && p.criticalPath), [filtered]);
   const nearCritical = useMemo(() => filtered.filter((p) => p.nearCritical), [filtered]);
@@ -62,7 +62,7 @@ export function ShutdownCriticalPathTab() {
     const delayed = new Set(criticalDelays.map((d) => d.id));
     const affected = new Set<string>();
     const visit = (id: string) => {
-      const pkg = PACKAGES.find((p) => p.id === id);
+      const pkg = packages.find((p) => p.id === id);
       if (!pkg) return;
       pkg.successors.forEach((s) => {
         if (!delayed.has(s) && !affected.has(s)) {
@@ -221,7 +221,7 @@ export function ShutdownCriticalPathTab() {
                   <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Downstream Packages at Risk</p>
                   <div className="flex flex-wrap gap-1.5">
                     {Array.from(downstreamAffected).map((id) => {
-                      const pkg = PACKAGES.find((p) => p.id === id);
+                      const pkg = packages.find((p) => p.id === id);
                       return (
                         <button key={id} onClick={() => setSelectedId(id)} className="flex items-center gap-1 rounded border border-amber-500/30 bg-amber-500/5 px-2 py-1 text-[10px] font-medium text-amber-600 hover:bg-amber-500/10 transition-colors">
                           <CircleDot className="w-2.5 h-2.5" />
@@ -295,7 +295,7 @@ export function ShutdownCriticalPathTab() {
                   <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Successor Packages</p>
                   <div className="space-y-1">
                     {selected.successors.map((sId) => {
-                      const s = PACKAGES.find((p) => p.id === sId);
+                      const s = packages.find((p) => p.id === sId);
                       const isAffected = downstreamAffected.has(sId);
                       return (
                         <button key={sId} onClick={() => setSelectedId(sId)} className={cn("w-full text-left rounded border px-2.5 py-1.5 text-xs flex items-center gap-2 transition-colors hover:bg-muted/30", isAffected ? "border-amber-500/30 bg-amber-500/5" : "border-border")}>

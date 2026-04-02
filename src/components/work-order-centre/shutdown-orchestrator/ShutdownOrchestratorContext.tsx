@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from "react";
+import { PACKAGES as INITIAL_PACKAGES, buildAreaSummaries, buildAreaZones, EDGES, type ShutdownWorkPackage, type AreaSummary, type AreaZone } from "./shutdownData";
 
 export type OrchestratorStatus = "Not Started" | "Ready" | "Active" | "Blocked" | "Delayed" | "Complete";
 
@@ -37,6 +38,16 @@ interface OrchestratorContextValue {
   // AI Planner integration
   confirmedRules: ConfirmedRule[];
   addConfirmedRule: (rule: ConfirmedRule) => void;
+
+  // ── Live packages state ──
+  packages: ShutdownWorkPackage[];
+  updatePackage: (id: string, updates: Partial<ShutdownWorkPackage>) => void;
+  addPackage: (pkg: ShutdownWorkPackage) => void;
+  removePackage: (id: string) => void;
+
+  // ── Derived data (recomputed when packages change) ──
+  areaSummaries: AreaSummary[];
+  areaZones: AreaZone[];
 }
 
 const OrchestratorCtx = createContext<OrchestratorContextValue | null>(null);
@@ -61,11 +72,11 @@ export function ShutdownOrchestratorProvider({ children, activeTab, onTabChange 
   const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
   const [highlightedPackageIds, setHighlightedPackageIds] = useState<Set<string>>(new Set());
   const [confirmedRules, setConfirmedRules] = useState<ConfirmedRule[]>([]);
+  const [packages, setPackages] = useState<ShutdownWorkPackage[]>(() => [...INITIAL_PACKAGES]);
 
   const navigateToTab = useCallback((tab: string, options?: { packageId?: string; areaId?: string }) => {
     if (options?.packageId) setSelectedPackageId(options.packageId);
     if (options?.areaId) {
-      // Find area name from id if needed — for now just set filter
       setFilterArea(options.areaId);
     }
     onTabChange(tab);
@@ -74,6 +85,21 @@ export function ShutdownOrchestratorProvider({ children, activeTab, onTabChange 
   const addConfirmedRule = useCallback((rule: ConfirmedRule) => {
     setConfirmedRules(prev => [...prev, rule]);
   }, []);
+
+  const updatePackage = useCallback((id: string, updates: Partial<ShutdownWorkPackage>) => {
+    setPackages(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
+  }, []);
+
+  const addPackage = useCallback((pkg: ShutdownWorkPackage) => {
+    setPackages(prev => [...prev, pkg]);
+  }, []);
+
+  const removePackage = useCallback((id: string) => {
+    setPackages(prev => prev.filter(p => p.id !== id));
+  }, []);
+
+  const areaSummaries = useMemo(() => buildAreaSummaries(packages), [packages]);
+  const areaZones = useMemo(() => buildAreaZones(packages), [packages]);
 
   return (
     <OrchestratorCtx.Provider value={{
@@ -85,6 +111,8 @@ export function ShutdownOrchestratorProvider({ children, activeTab, onTabChange 
       highlightedPackageIds, setHighlightedPackageIds,
       activeTab, navigateToTab,
       confirmedRules, addConfirmedRule,
+      packages, updatePackage, addPackage, removePackage,
+      areaSummaries, areaZones,
     }}>
       {children}
     </OrchestratorCtx.Provider>

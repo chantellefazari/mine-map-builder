@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 import { PlantOverview3D } from "./PlantOverview3D";
 import {
-  PACKAGES, buildAreaSummaries, DEMO_RISKS, DEMO_SHIFT_FOCUS,
-  type AreaSummary, type RiskItem, type ShiftFocusItem,
+  DEMO_RISKS, DEMO_SHIFT_FOCUS,
+  type RiskItem, type ShiftFocusItem,
 } from "./shutdownData";
 
 /* ------------------------------------------------------------------ */
@@ -54,11 +54,11 @@ const SHIFT_STYLE: Record<string, string> = {
 
 export function ShutdownOverviewTab() {
   const { shutdowns } = useShutdowns();
-  const { navigateToTab, setFilterArea, setSelectedPackageId } = useOrchestratorContext();
+  const { navigateToTab, setFilterArea, setSelectedPackageId, packages, areaSummaries } = useOrchestratorContext();
 
   const shutdown = shutdowns[0] ?? null;
 
-  const DEMO_AREAS = useMemo(() => buildAreaSummaries(PACKAGES), []);
+  const DEMO_AREAS = areaSummaries;
 
   const summary = useMemo(() => {
     const total = DEMO_AREAS.reduce((s, a) => s + a.total, 0);
@@ -67,11 +67,11 @@ export function ShutdownOverviewTab() {
     const delayed = DEMO_AREAS.reduce((s, a) => s + a.delayed, 0);
     const complete = DEMO_AREAS.reduce((s, a) => s + a.complete, 0);
     const ready = total - active - blocked - delayed - complete;
-    const criticalPath = PACKAGES.filter(p => p.criticalPath).length;
+    const criticalPath = packages.filter(p => p.criticalPath).length;
     const highRiskAreas = DEMO_AREAS.filter((a) => a.status === "At Risk" || a.status === "Delayed").length;
     const overallPct = total > 0 ? Math.round((complete / total) * 100) : 0;
     return { total, ready, active, blocked, delayed, complete, criticalPath, highRiskAreas, overallPct };
-  }, [DEMO_AREAS]);
+  }, [DEMO_AREAS, packages]);
 
   const plannedDays = shutdown?.end_date
     ? differenceInDays(parseISO(shutdown.end_date), parseISO(shutdown.start_date)) + 1

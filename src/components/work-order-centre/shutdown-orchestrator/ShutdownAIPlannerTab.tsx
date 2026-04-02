@@ -14,7 +14,7 @@ import {
   Lightbulb, GitBranch, Clock, Target,
 } from "lucide-react";
 import {
-  WP_CONTEXT, ALL_AREA_OPTIONS, INITIAL_RULES,
+  ALL_AREA_OPTIONS, INITIAL_RULES,
   type LearnedRule,
 } from "./shutdownData";
 
@@ -79,7 +79,7 @@ const IMPACT_STYLE: Record<string, { text: string; border: string }> = {
 /* ------------------------------------------------------------------ */
 
 export function ShutdownAIPlannerTab() {
-  const { navigateToTab, setSelectedPackageId, addConfirmedRule } = useOrchestratorContext();
+  const { navigateToTab, setSelectedPackageId, addConfirmedRule, packages } = useOrchestratorContext();
   const [input, setInput] = useState("");
   const [inputMode, setInputMode] = useState<"free" | "structured">("free");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -100,7 +100,7 @@ export function ShutdownAIPlannerTab() {
     try {
       const fullInput = inputMode === "structured" ? `[Area: ${structArea}] [Type: ${structType}] ${input}` : input;
       const { data, error } = await supabase.functions.invoke("shutdown-ai-planner", {
-        body: { input: fullInput, context: WP_CONTEXT },
+        body: { input: fullInput, context: packages.map(p => `${p.id}: ${p.title} (${p.area}, ${p.trade})`).join("\n") },
       });
       if (error) throw error;
       if (data?.error) { toast.error(data.error); return; }

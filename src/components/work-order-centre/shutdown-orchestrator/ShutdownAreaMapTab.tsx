@@ -10,7 +10,7 @@ import {
   Filter, Layers, Target, Lock,
 } from "lucide-react";
 import {
-  PACKAGES, buildAreaZones, ALL_AREA_OPTIONS,
+  ALL_AREA_OPTIONS,
   type AreaZone, type ShutdownWorkPackage,
 } from "./shutdownData";
 
@@ -25,7 +25,7 @@ type Overlay = "critical-path" | "delays" | "isolations" | "access" | "trade" | 
 /*  DATA                                                               */
 /* ------------------------------------------------------------------ */
 
-const AREAS = buildAreaZones(PACKAGES);
+/* Derived from context */
 
 /* ------------------------------------------------------------------ */
 /*  STATUS STYLING                                                     */
@@ -328,6 +328,7 @@ function DetailPanel({
 
 export function ShutdownAreaMapTab() {
   const ctx = useOrchestratorContext();
+  const { packages, areaZones: AREAS } = ctx;
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
   const [overlays, setOverlays] = useState<Set<Overlay>>(new Set());
   const [filterArea, setFilterArea] = useState("All");
@@ -345,8 +346,8 @@ export function ShutdownAreaMapTab() {
 
   const selectedArea = AREAS.find((a) => a.id === selectedAreaId) ?? null;
   const areaPackages = useMemo(
-    () => (selectedArea ? PACKAGES.filter((p) => p.area === selectedArea.name) : []),
-    [selectedArea]
+    () => (selectedArea ? packages.filter((p) => p.area === selectedArea.name) : []),
+    [selectedArea, packages]
   );
 
   const toggleOverlay = (o: Overlay) => {
@@ -364,12 +365,12 @@ export function ShutdownAreaMapTab() {
       if (filterStatus !== "All" && a.status !== filterStatus) return false;
       if (filterCritical && a.criticalPath === 0) return false;
       if (filterTrade !== "All") {
-        const hasTradeWP = PACKAGES.some((p) => p.area === a.name && p.trade === filterTrade);
+        const hasTradeWP = packages.some((p) => p.area === a.name && p.trade === filterTrade);
         if (!hasTradeWP) return false;
       }
       return true;
     });
-  }, [filterArea, filterTrade, filterStatus, filterCritical]);
+  }, [filterArea, filterTrade, filterStatus, filterCritical, AREAS, packages]);
 
   // Summary stats
   const totalPackages = AREAS.reduce((s, a) => s + a.total, 0);
@@ -474,7 +475,7 @@ export function ShutdownAreaMapTab() {
                 isSelected={selectedAreaId === area.id}
                 onSelect={() => handleAreaSelect(selectedAreaId === area.id ? null : area.id)}
                 overlays={overlays}
-                packages={PACKAGES.filter(p => p.area === area.name)}
+                packages={packages.filter(p => p.area === area.name)}
               />
             ))}
           </div>
