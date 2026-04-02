@@ -28,6 +28,7 @@ const DASHBOARD_TABS = [
   { key: "pm-forms", label: "PM Forms", icon: ClipboardCheck },
   { key: "compliance", label: "Compliance", icon: CheckCircle2 },
   { key: "reliability", label: "Reliability", icon: Activity },
+  { key: "backlog", label: "Backlog", icon: Layers },
   { key: "kpi-scorecard", label: "KPI Scorecard", icon: TrendingUp },
 ];
 
