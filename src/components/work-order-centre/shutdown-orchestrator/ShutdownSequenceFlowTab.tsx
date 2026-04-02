@@ -32,7 +32,7 @@ export function ShutdownSequenceFlowTab() {
   const [filterStatus, setFilterStatus] = useState("All");
   const [showDelayedOnly, setShowDelayedOnly] = useState(false);
 
-  const selected = PACKAGES.find((n) => n.id === selectedId) ?? null;
+  const selected = packages.find((n) => n.id === selectedId) ?? null;
 
   const delayedImpact = useMemo(() => {
     const delayedIds = new Set(PACKAGES.filter((n) => n.status === "Delayed" || n.status === "Blocked").map((n) => n.id));
