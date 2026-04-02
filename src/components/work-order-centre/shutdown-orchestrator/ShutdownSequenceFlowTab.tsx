@@ -35,7 +35,7 @@ export function ShutdownSequenceFlowTab() {
   const selected = packages.find((n) => n.id === selectedId) ?? null;
 
   const delayedImpact = useMemo(() => {
-    const delayedIds = new Set(PACKAGES.filter((n) => n.status === "Delayed" || n.status === "Blocked").map((n) => n.id));
+    const delayedIds = new Set(packages.filter((n) => n.status === "Delayed" || n.status === "Blocked").map((n) => n.id));
     const affected = new Set<string>();
     const visit = (id: string) => {
       EDGES.filter((e) => e.from === id).forEach((e) => {
@@ -47,7 +47,7 @@ export function ShutdownSequenceFlowTab() {
     };
     delayedIds.forEach((id) => visit(id));
     return affected;
-  }, []);
+  }, [packages]);
 
   const visibleNodes = useMemo(() => {
     return PACKAGES.filter((n) => {
