@@ -308,6 +308,11 @@ export function ShutdownOverviewTab() {
           })}
         </div>
       </div>
+
+      {/* ============ RUN-DOWN / RUN-UP CHECKLISTS ============ */}
+      {selectedShutdownId && (
+        <ShutdownRundownChecklist shutdownId={selectedShutdownId} />
+      )}
     </div>
   );
 }
