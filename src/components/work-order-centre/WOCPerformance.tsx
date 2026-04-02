@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
+import { useWorkRequests } from "@/hooks/useWorkRequests";
 import { BarChart3 } from "lucide-react";
 import { WOCReportsTab } from "./performance/WOCReportsTab";
 import { WOCAnalyticsTab } from "./performance/WOCAnalyticsTab";
