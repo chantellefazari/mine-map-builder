@@ -1007,8 +1007,7 @@ function Scene({ areaSummaries, selectedArea, onSelectArea }: {
 /* ------------------------------------------------------------------ */
 
 export function PlantOverview3D({ className }: { className?: string }) {
-  const { navigateToTab, setFilterArea } = useOrchestratorContext();
-  const areaSummaries = useMemo(() => buildAreaSummaries(PACKAGES), []);
+  const { navigateToTab, setFilterArea, areaSummaries } = useOrchestratorContext();
   const [selectedArea, setSelectedArea] = useState("");
 
   const handleSelectArea = (area: string) => setSelectedArea(area === selectedArea ? "" : area);

@@ -73,19 +73,19 @@ function handlePrint(ref: React.RefObject<HTMLDivElement | null>) {
 /* ------------------------------------------------------------------ */
 
 export function ShutdownPrintPackTab() {
-  const { filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift } = useOrchestratorContext();
+  const { filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, packages } = useOrchestratorContext();
   const [packType, setPackType] = useState<PackType>("area-overview");
   const [showPreview, setShowPreview] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
   const filtered = useMemo(() => {
-    return PACKAGES.filter((p) => {
+    return packages.filter((p) => {
       if (filterArea !== "All" && p.area !== filterArea) return false;
       if (filterTrade !== "All" && p.trade !== filterTrade) return false;
       if (filterShift !== "All" && p.shift !== filterShift) return false;
       return true;
     });
-  }, [filterArea, filterTrade, filterShift]);
+  }, [filterArea, filterTrade, filterShift, packages]);
 
   const currentPack = PACK_TYPES.find((p) => p.key === packType)!;
 

@@ -37,14 +37,14 @@ interface SequenceFlowDetailPanelProps {
   onSelect: (id: string) => void;
 }
 
-export function SequenceFlowDetailPanel({ selected, delayedImpact, onClose, onSelect }: SequenceFlowDetailPanelProps) {
+export function SequenceFlowDetailPanel({ selected, delayedImpact, onClose, onSelect, packages }: SequenceFlowDetailPanelProps & { packages: ShutdownWorkPackage[] }) {
   const predecessors = useMemo(
-    () => EDGES.filter((e) => e.to === selected.id).map((e) => ({ ...e, node: PACKAGES.find((n) => n.id === e.from)! })).filter(e => e.node),
-    [selected.id]
+    () => EDGES.filter((e) => e.to === selected.id).map((e) => ({ ...e, node: packages.find((n) => n.id === e.from)! })).filter(e => e.node),
+    [selected.id, packages]
   );
   const successors = useMemo(
-    () => EDGES.filter((e) => e.from === selected.id).map((e) => ({ ...e, node: PACKAGES.find((n) => n.id === e.to)! })).filter(e => e.node),
-    [selected.id]
+    () => EDGES.filter((e) => e.from === selected.id).map((e) => ({ ...e, node: packages.find((n) => n.id === e.to)! })).filter(e => e.node),
+    [selected.id, packages]
   );
 
   return (
