@@ -21,7 +21,7 @@ export type WOCView =
   | "work-requests"
   | "wo-management"
   | "schedule"
-  
+  | "performance"
   | "inventory"
   | "take5"
   | "incidents"
