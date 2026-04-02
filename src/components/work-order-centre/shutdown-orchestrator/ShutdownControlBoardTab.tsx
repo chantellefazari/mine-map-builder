@@ -50,7 +50,7 @@ const BLOCKER_ICON: Record<string, typeof Lock> = {
 /* ------------------------------------------------------------------ */
 
 export function ShutdownControlBoardTab() {
-  const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, showCriticalOnly: filterCritical, setShowCriticalOnly: setFilterCritical, navigateToTab } = useOrchestratorContext();
+  const { selectedPackageId: selectedId, setSelectedPackageId: setSelectedId, filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, showCriticalOnly: filterCritical, setShowCriticalOnly: setFilterCritical, navigateToTab, packages, updatePackage } = useOrchestratorContext();
   const [viewMode, setViewMode] = useState<ViewMode>("table");
   const [groupBy, setGroupBy] = useState<GroupBy>("status");
   const [filterDelayed, setFilterDelayed] = useState(false);
