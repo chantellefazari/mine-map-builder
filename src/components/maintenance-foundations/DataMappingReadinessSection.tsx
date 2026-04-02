@@ -556,7 +556,7 @@ export const DataMappingReadinessSection = () => {
       {/* Actual content */}
       <div ref={contentRef}>
         <div className="space-y-6">
-          <DataMappingBody allRows={allRows} ready={ready} partial={partial} notStarted={notStarted} pct={pct} />
+          <DataMappingBody allRows={allRows} ready={ready} partial={partial} notStarted={notStarted} pct={pct} weightedPct={weightedPct} />
         </div>
       </div>
     </div>
