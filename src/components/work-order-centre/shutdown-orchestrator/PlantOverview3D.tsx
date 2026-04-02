@@ -2,7 +2,7 @@ import { useRef, useState, useMemo, useEffect, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Text, Billboard } from "@react-three/drei";
 import * as THREE from "three";
-import { PACKAGES, SHUTDOWN_AREAS, buildAreaSummaries, type AreaSummary } from "./shutdownData";
+import { SHUTDOWN_AREAS, buildAreaSummaries, type AreaSummary } from "./shutdownData";
 import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import { cn } from "@/lib/utils";
 

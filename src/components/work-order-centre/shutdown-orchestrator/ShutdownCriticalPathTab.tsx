@@ -295,7 +295,7 @@ export function ShutdownCriticalPathTab() {
                   <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Successor Packages</p>
                   <div className="space-y-1">
                     {selected.successors.map((sId) => {
-                      const s = PACKAGES.find((p) => p.id === sId);
+                      const s = packages.find((p) => p.id === sId);
                       const isAffected = downstreamAffected.has(sId);
                       return (
                         <button key={sId} onClick={() => setSelectedId(sId)} className={cn("w-full text-left rounded border px-2.5 py-1.5 text-xs flex items-center gap-2 transition-colors hover:bg-muted/30", isAffected ? "border-amber-500/30 bg-amber-500/5" : "border-border")}>

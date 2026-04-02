@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { X, AlertTriangle, Lock } from "lucide-react";
-import { EDGES, PACKAGES, type ShutdownWorkPackage, type DepType } from "./shutdownData";
+import { EDGES, type ShutdownWorkPackage, type DepType } from "./shutdownData";
 import { useMemo } from "react";
 
 const STATUS_DOT: Record<string, string> = {

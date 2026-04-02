@@ -10,7 +10,7 @@ import {
   ArrowRight, Target, Activity, CircleDot, Calendar, User,
 } from "lucide-react";
 import {
-  PACKAGES, SHUTDOWN_NAME, SHUTDOWN_DATE,
+  SHUTDOWN_NAME, SHUTDOWN_DATE,
   ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS,
   type ShutdownWorkPackage, type WPStatus,
 } from "./shutdownData";

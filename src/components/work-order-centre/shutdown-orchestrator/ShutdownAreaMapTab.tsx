@@ -475,7 +475,7 @@ export function ShutdownAreaMapTab() {
                 isSelected={selectedAreaId === area.id}
                 onSelect={() => handleAreaSelect(selectedAreaId === area.id ? null : area.id)}
                 overlays={overlays}
-                packages={PACKAGES.filter(p => p.area === area.name)}
+                packages={packages.filter(p => p.area === area.name)}
               />
             ))}
           </div>
