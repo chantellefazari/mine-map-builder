@@ -108,14 +108,14 @@ const WO_MAPPINGS: MappingRow[] = [
 ];
 
 const STORES_OPS_MAPPINGS: MappingRow[] = [
-  { field: "Physical Warehouse / Stores", sourceDocument: "Stores Implementation Plan", transformation: "5-container compound designed, not yet constructed", status: "Not Started" },
-  { field: "Defined Part Locations (Bin Codes)", sourceDocument: "Site Parts Catalogue", transformation: "C01-EL-A1 format defined, physical labels not installed", status: "Not Started" },
-  { field: "Stock In / Receiving Process", sourceDocument: "Stock Control Procedure", transformation: "Procedure drafted (SOP-STK-001), not operationally active", status: "Not Started" },
-  { field: "Stock Out / Issuing Process", sourceDocument: "Stock Control Procedure", transformation: "WO-linked issuing defined, no physical control in place", status: "Not Started" },
-  { field: "Stocktake / Cycle Count Capability", sourceDocument: "Stock Control Procedure", transformation: "Weekly revision day defined, no physical stock to count", status: "Not Started" },
-  { field: "Parts Issued to Jobs (WO Linkage)", sourceDocument: "Work Order Register", transformation: "Data model supports it, process not enforced on site", status: "Not Started" },
+  { field: "Physical Warehouse / Stores", sourceDocument: "Stores Implementation Plan", transformation: "5-container compound fully designed and documented, physical construction pending", status: "Partial" },
+  { field: "Defined Part Locations (Bin Codes)", sourceDocument: "Site Parts Catalogue", transformation: "C01-EL-A1 bin code format defined and mapped, physical labels pending", status: "Partial" },
+  { field: "Stock In / Receiving Process", sourceDocument: "Stock Control Procedure (SOP-STK-001)", transformation: "Full procedure documented, physical implementation pending", status: "Partial" },
+  { field: "Stock Out / Issuing Process", sourceDocument: "Stock Control Procedure", transformation: "WO-linked issuing process defined, physical enforcement pending", status: "Partial" },
+  { field: "Stocktake / Cycle Count Capability", sourceDocument: "Stock Control Procedure", transformation: "Weekly revision day and cycle count process defined, physical stores pending", status: "Partial" },
+  { field: "Parts Issued to Jobs (WO Linkage)", sourceDocument: "Work Order Register", transformation: "Data model and process designed, site enforcement pending", status: "Partial" },
   { field: "Min/Max Reorder Levels", sourceDocument: "Site Parts Catalogue", transformation: "13/2184 items populated, requires full enrichment", status: "Partial" },
-  { field: "Goods Receipt Matching (3-Way Match)", sourceDocument: "Procurement Workflow", transformation: "PR → PO → Receipt flow built, no physical goods receipt", status: "Not Started" },
+  { field: "Goods Receipt Matching (3-Way Match)", sourceDocument: "Procurement Workflow", transformation: "PR → PO → Receipt flow built, physical goods receipt pending", status: "Partial" },
 ];
 
 const PLANNING_SCHEDULING_MAPPINGS: MappingRow[] = [
