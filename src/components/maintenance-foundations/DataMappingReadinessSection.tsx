@@ -376,6 +376,7 @@ export const DataMappingReadinessSection = () => {
         useCORS: true,
         backgroundColor: "#ffffff",
         logging: false,
+        windowWidth: 1200,
       });
       setPreviewImage(canvas.toDataURL("image/png"));
 
