@@ -58,7 +58,7 @@ export function ShutdownControlBoardTab() {
   const selected = packages.find((p) => p.id === selectedId) ?? null;
 
   const filtered = useMemo(() => {
-    return PACKAGES.filter((p) => {
+    return packages.filter((p) => {
       if (filterArea !== "All" && p.area !== filterArea) return false;
       if (filterTrade !== "All" && p.trade !== filterTrade) return false;
       if (filterShift !== "All" && p.shift !== filterShift) return false;
