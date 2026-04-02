@@ -4,7 +4,7 @@ import { useWorkRequests } from "@/hooks/useWorkRequests";
 import {
   FileText, Wrench, AlertTriangle, CheckCircle2, Clock,
   ArrowRight, TrendingUp, BarChart3, ClipboardCheck, Activity,
-  LayoutDashboard, FileBarChart,
+  LayoutDashboard, FileBarChart, Layers,
 } from "lucide-react";
 import { WOCView } from "@/pages/WorkOrderCentre";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,7 @@ const DASHBOARD_TABS = [
   { key: "pm-forms", label: "PM Forms", icon: ClipboardCheck },
   { key: "compliance", label: "Compliance", icon: CheckCircle2 },
   { key: "reliability", label: "Reliability", icon: Activity },
+  { key: "backlog", label: "Backlog", icon: Layers },
   { key: "kpi-scorecard", label: "KPI Scorecard", icon: TrendingUp },
 ];
 
@@ -232,12 +233,8 @@ export function WOCDashboard({ onNavigate }: Props) {
           <WOCScheduleComplianceTab workOrders={workOrders} />
         </div>
       )}
-      {tab === "reliability" && (
-        <div className="space-y-4">
-          <WOCReliabilityTab workOrders={workOrders} />
-          <WOCBacklogTab workOrders={workOrders} />
-        </div>
-      )}
+      {tab === "reliability" && <WOCReliabilityTab workOrders={workOrders} />}
+      {tab === "backlog" && <WOCBacklogTab workOrders={workOrders} />}
       {tab === "kpi-scorecard" && <WOCKPIScorecardTab workOrders={workOrders} />}
     </div>
   );
