@@ -24,6 +24,7 @@ const PERF_TABS = [
 
 export function WOCPerformance() {
   const { workOrders } = useWorkOrders();
+  const { workRequests } = useWorkRequests();
   const [tab, setTab] = useState("reports");
 
   return (
