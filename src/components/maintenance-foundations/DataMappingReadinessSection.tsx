@@ -343,9 +343,9 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct, weightedPct
       </CardContent>
     </Card>
 
-    {/* Logo */}
-    <div className="flex justify-end mt-6" data-pdf-section>
-      <img src="/images/minesite-logo.png" alt="Minesite.AI" className="h-10 opacity-80" />
+    {/* Logo - positioned at bottom of print page */}
+    <div className="flex justify-end mt-16 pt-8" data-pdf-section>
+      <img src="/images/minesite-logo.png" alt="Minesite.AI" className="h-20 opacity-90" />
     </div>
   </>
 );
