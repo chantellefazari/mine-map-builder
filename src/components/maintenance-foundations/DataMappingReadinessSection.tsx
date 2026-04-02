@@ -515,7 +515,7 @@ export const DataMappingReadinessSection = () => {
     <div className="space-y-6" data-pdf-section>
       {/* Section title bar */}
       <div className="flex items-center justify-between print-hide">
-        <h2 className="text-lg font-semibold">Data Mapping & Readiness</h2>
+        <h2 className="text-lg font-semibold">Site Readiness Assessment</h2>
         <Button variant="outline" size="sm" onClick={handleOpenPreview} disabled={capturing} className="gap-2">
           {capturing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
           {capturing ? "Capturing…" : "Print"}
