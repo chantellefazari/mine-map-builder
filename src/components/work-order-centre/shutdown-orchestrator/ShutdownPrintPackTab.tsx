@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
-  Printer, FileDown, Eye, Filter, Map, Route, Clock,
+  Printer, FileDown, Eye, Filter, Map, Route, Clock, BarChart3,
   AlertTriangle, Wrench, Zap, CheckCircle2, Shield, ChevronRight,
   ArrowRight, Target, Activity, CircleDot, Calendar, User,
 } from "lucide-react";
