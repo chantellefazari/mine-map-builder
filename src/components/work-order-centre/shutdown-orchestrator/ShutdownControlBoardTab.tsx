@@ -1,17 +1,20 @@
 import { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import {
   Filter, Route, AlertTriangle, Wrench, Zap, Clock, Lock,
   CheckCircle2, Activity, Package, ChevronRight, Target, Eye,
   LayoutList, Columns3, Calendar, Shield, User, ArrowRight,
-  Printer, PlayCircle, X, GitBranch,
+  Printer, PlayCircle, X, GitBranch, Pencil, Save,
 } from "lucide-react";
 import {
-  ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS, STATUS_ORDER,
+  ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS, STATUS_ORDER, AREA_LABELS,
   type ShutdownWorkPackage, type WPStatus,
 } from "./shutdownData";
 
