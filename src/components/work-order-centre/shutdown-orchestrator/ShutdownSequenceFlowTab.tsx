@@ -204,6 +204,7 @@ export function ShutdownSequenceFlowTab() {
             delayedImpact={delayedImpact}
             onClose={() => setSelectedId(null)}
             onSelect={setSelectedId}
+            packages={packages}
           />
         )}
       </div>
