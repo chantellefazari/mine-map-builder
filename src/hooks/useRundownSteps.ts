@@ -13,6 +13,9 @@ export interface RundownStep {
   status: string;
   notes: string;
   is_template: boolean;
+  work_centre: string;
+  start_time: string;
+  finish_time: string;
   created_at: string;
   updated_at: string;
 }
