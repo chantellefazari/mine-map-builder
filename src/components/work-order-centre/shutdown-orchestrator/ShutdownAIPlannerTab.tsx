@@ -79,7 +79,7 @@ const IMPACT_STYLE: Record<string, { text: string; border: string }> = {
 /* ------------------------------------------------------------------ */
 
 export function ShutdownAIPlannerTab() {
-  const { navigateToTab, setSelectedPackageId, addConfirmedRule } = useOrchestratorContext();
+  const { navigateToTab, setSelectedPackageId, addConfirmedRule, packages } = useOrchestratorContext();
   const [input, setInput] = useState("");
   const [inputMode, setInputMode] = useState<"free" | "structured">("free");
   const [isProcessing, setIsProcessing] = useState(false);
