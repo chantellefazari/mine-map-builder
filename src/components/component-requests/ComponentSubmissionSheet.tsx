@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 
 interface RowData {
   id: string;
+  submittedBy: string;
   targetAsset: string;
   partName: string;
   manufacturer: string;
