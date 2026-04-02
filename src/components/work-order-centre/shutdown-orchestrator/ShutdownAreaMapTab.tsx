@@ -10,7 +10,7 @@ import {
   Filter, Layers, Target, Lock,
 } from "lucide-react";
 import {
-  PACKAGES, buildAreaZones, ALL_AREA_OPTIONS,
+  ALL_AREA_OPTIONS,
   type AreaZone, type ShutdownWorkPackage,
 } from "./shutdownData";
 
