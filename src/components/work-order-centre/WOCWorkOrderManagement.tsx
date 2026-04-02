@@ -12,14 +12,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { WOCView } from "@/pages/WorkOrderCentre";
-import { WOCReportsTab } from "./performance/WOCReportsTab";
-import { WOCAnalyticsTab } from "./performance/WOCAnalyticsTab";
-import { WOCPMFormsTab } from "./performance/WOCPMFormsTab";
-import { WOCComplianceTab } from "./performance/WOCComplianceTab";
-import { WOCScheduleComplianceTab } from "./performance/WOCScheduleComplianceTab";
-import { WOCBacklogTab } from "./performance/WOCBacklogTab";
-import { WOCReliabilityTab } from "./performance/WOCReliabilityTab";
-import { WOCKPIScorecardTab } from "./performance/WOCKPIScorecardTab";
 import { WOTypeSelectDialog, PMAutoFill } from "./WOTypeSelectDialog";
 import { PMSchedulePanel } from "./PMSchedulePanel";
 
