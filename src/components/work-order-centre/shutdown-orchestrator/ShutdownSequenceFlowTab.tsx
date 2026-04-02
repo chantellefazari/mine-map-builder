@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { Route, AlertTriangle, Filter, ChevronRight } from "lucide-react";
 import {
-  PACKAGES, EDGES, COL_LABELS,
+  EDGES, COL_LABELS,
   ALL_AREA_OPTIONS, ALL_TRADES,
 } from "./shutdownData";
 import { SequenceFlowCard } from "./SequenceFlowCard";
