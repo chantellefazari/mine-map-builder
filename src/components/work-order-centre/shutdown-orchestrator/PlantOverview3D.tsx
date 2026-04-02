@@ -944,10 +944,11 @@ function CameraAnimator({ selectedArea }: { selectedArea: string }) {
   );
 }
 
-function Scene({ areaSummaries, selectedArea, onSelectArea }: {
+function Scene({ areaSummaries, selectedArea, onSelectArea, onHoverArea }: {
   areaSummaries: AreaSummary[];
   selectedArea: string;
   onSelectArea: (area: string) => void;
+  onHoverArea: (area: string | null, e?: { clientX: number; clientY: number }) => void;
 }) {
   const areaColors = useMemo(() => {
     const map: Record<string, string> = {};
@@ -986,11 +987,11 @@ function Scene({ areaSummaries, selectedArea, onSelectArea }: {
             layout={layout}
             isSelected={selectedArea === area.area}
             onSelect={() => onSelectArea(area.area)}
+            onHover={(hovered, e) => onHoverArea(hovered ? area.area : null, e)}
           />
         );
       })}
 
-      {/* Admin & Stores clickable zone (no work packages, standalone) */}
       <AdminZoneOverlay
         layout={ZONE_BOUNDS["Admin & Stores"]}
         isSelected={selectedArea === "Admin & Stores"}
