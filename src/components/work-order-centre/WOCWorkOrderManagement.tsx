@@ -12,14 +12,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { WOCView } from "@/pages/WorkOrderCentre";
-import { WOCReportsTab } from "./performance/WOCReportsTab";
-import { WOCAnalyticsTab } from "./performance/WOCAnalyticsTab";
-import { WOCPMFormsTab } from "./performance/WOCPMFormsTab";
-import { WOCComplianceTab } from "./performance/WOCComplianceTab";
-import { WOCScheduleComplianceTab } from "./performance/WOCScheduleComplianceTab";
-import { WOCBacklogTab } from "./performance/WOCBacklogTab";
-import { WOCReliabilityTab } from "./performance/WOCReliabilityTab";
-import { WOCKPIScorecardTab } from "./performance/WOCKPIScorecardTab";
 import { WOTypeSelectDialog, PMAutoFill } from "./WOTypeSelectDialog";
 import { PMSchedulePanel } from "./PMSchedulePanel";
 
@@ -103,12 +95,12 @@ function PlanningProgress({ wo, partsCount }: { wo: WorkOrder; partsCount: numbe
 export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
   const { workOrders, allocate, update } = useWorkOrders();
   const [opsTab, setOpsTab] = useState("planning");
-  const [perfTab, setPerfTab] = useState<string | null>(null);
+  
   const [search, setSearch] = useState("");
   const [showWoTypeDialog, setShowWoTypeDialog] = useState(false);
   const [showPMSchedule, setShowPMSchedule] = useState(false);
 
-  const activeGroup = perfTab ? "performance" : "operations";
+  
 
   const filtered = (key: string) => {
     let list = key === "history" ? workOrders : workOrders.filter((wo) => OPS_STATUSES[key]?.includes(wo.status));
@@ -168,11 +160,6 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
 
   const selectOps = (key: string) => {
     setOpsTab(key);
-    setPerfTab(null);
-  };
-
-  const selectPerf = (key: string) => {
-    setPerfTab(key);
   };
 
   const counts = {
@@ -275,104 +262,49 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
         </div>
       </div>
 
-      {/* ---- Two Tab Groups ---- */}
-      <div className="space-y-1">
-        <div className="flex items-end gap-6 border-b border-border pb-px">
-          {/* Operations group */}
-          <div className="space-y-1">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1">
-              Operations
-            </span>
-            <div className="flex gap-0.5">
-              {(
-                [
-                  ["planning", "Planning"],
-                  ["planned", "Planned"],
-                  ["scheduled", "Scheduled"],
-                  ["active", "Active"],
-                  ["on-hold", "On Hold"],
-                  ["completed", "Completed"],
-                  ["closed", "Closed"],
-                  ["history", "History"],
-                ] as [string, string][]
-              ).map(([key, label]) => (
-                <button
-                  key={key}
-                  onClick={() => selectOps(key)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-t-md border-b-2 transition-colors ${
-                    activeGroup === "operations" && opsTab === key
-                      ? "border-primary text-foreground bg-background"
-                      : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/40"
-                  }`}
-                >
-                  {label}
-                  {key !== "history" && counts[key as keyof typeof counts] !== undefined && (
-                    <span className="ml-1 text-[10px] opacity-60">
-                      ({counts[key as keyof typeof counts]})
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="h-6 w-px bg-border mx-1" />
-
-          {/* Performance group */}
-          <div className="space-y-1">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-1">
-              Performance
-            </span>
-            <div className="flex gap-0.5">
-              {(
-                [
-                  ["reports", "Reports"],
-                  ["analytics", "Analytics"],
-                  ["pm-forms", "PM Forms"],
-                  ["compliance", "PM Compliance"],
-                  ["sched-compliance", "Sched Compliance"],
-                  ["backlog", "Backlog"],
-                  ["reliability", "Reliability"],
-                  ["kpi-scorecard", "KPI Scorecard"],
-                ] as [string, string][]
-              ).map(([key, label]) => (
-                <button
-                  key={key}
-                  onClick={() => selectPerf(key)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-t-md border-b-2 transition-colors ${
-                    perfTab === key
-                      ? "border-primary text-foreground bg-background"
-                      : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/40"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
+      {/* ---- Tab Bar ---- */}
+      <div className="border-b border-border">
+        <div className="flex gap-0.5">
+          {(
+            [
+              ["planning", "Planning"],
+              ["planned", "Planned"],
+              ["scheduled", "Scheduled"],
+              ["active", "Active"],
+              ["on-hold", "On Hold"],
+              ["completed", "Completed"],
+              ["closed", "Closed"],
+              ["history", "History"],
+            ] as [string, string][]
+          ).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => selectOps(key)}
+              className={`px-3 py-1.5 text-xs font-medium rounded-t-md border-b-2 transition-colors ${
+                opsTab === key
+                  ? "border-primary text-foreground bg-background"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/40"
+              }`}
+            >
+              {label}
+              {key !== "history" && counts[key as keyof typeof counts] !== undefined && (
+                <span className="ml-1 text-[10px] opacity-60">
+                  ({counts[key as keyof typeof counts]})
+                </span>
+              )}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* ---- Content ---- */}
-      {activeGroup === "operations" && (
-        <div className="mt-2">
-          {renderTable(
-            filtered(opsTab),
-            opsTab !== "history",
-            opsTab === "planning"
-          )}
-        </div>
-      )}
-
-      {perfTab === "reports" && <WOCReportsTab workOrders={workOrders} />}
-      {perfTab === "analytics" && <WOCAnalyticsTab workOrders={workOrders} />}
-      {perfTab === "pm-forms" && <WOCPMFormsTab />}
-      {perfTab === "compliance" && <WOCComplianceTab />}
-      {perfTab === "sched-compliance" && <WOCScheduleComplianceTab workOrders={workOrders} />}
-      {perfTab === "backlog" && <WOCBacklogTab workOrders={workOrders} />}
-      {perfTab === "reliability" && <WOCReliabilityTab workOrders={workOrders} />}
-      {perfTab === "kpi-scorecard" && <WOCKPIScorecardTab workOrders={workOrders} />}
+      <div className="mt-2">
+        {renderTable(
+          filtered(opsTab),
+          opsTab !== "history",
+          opsTab === "planning"
+        )}
+      </div>
 
       <WOTypeSelectDialog
         open={showWoTypeDialog}
