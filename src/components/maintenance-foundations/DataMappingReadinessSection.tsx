@@ -298,65 +298,47 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct, weightedPct
     {/* Outstanding Actions */}
     <Card className="border border-amber-300 dark:border-amber-700 rounded-md shadow-none" data-pdf-section>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm">Outstanding Actions for Full Readiness</CardTitle>
+        <CardTitle className="text-sm">Outstanding Actions for Full Site Readiness</CardTitle>
       </CardHeader>
       <CardContent className="text-xs space-y-2">
-        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Completed</p>
+        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Completed & Operational</p>
         <div className="flex gap-2 items-start">
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
-          <p><strong>Asset Criticality Rating:</strong> Classification engine implemented, 117 assets assessed with A/B/C ratings based on production impact.</p>
+          <p><strong>Asset Register & Hierarchy:</strong> Rev B asset register finalised with functional locations, criticality ratings (117 assets), and P&ID tag linkages.</p>
         </div>
         <div className="flex gap-2 items-start">
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
-          <p><strong>PM Task Checklists:</strong> 82 of 97 PM templates now have structured task data populated and validated.</p>
+          <p><strong>PM Templates & Task Checklists:</strong> 82 of 97 PM templates populated and validated across Mechanical, Electrical, and Instrumentation disciplines.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
+          <p><strong>Planning & Scheduling:</strong> Weekly planning, backlog management, resource levelling, and shutdown orchestration fully built in Minesite.ai.</p>
+        </div>
+        <div className="flex gap-2 items-start">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
+          <p><strong>Work Order & Procurement Workflows:</strong> Full WR → WO lifecycle, PR → PO → Receipt flow, and supplier management operational.</p>
         </div>
 
-        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-3 mb-1">Data Enrichment Required</p>
+        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-3 mb-1">Plans Complete — Pending Physical Implementation</p>
         <div className="flex gap-2 items-start">
           <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-          <p><strong>Vendor Data Enrichment:</strong> Supplier type is 100% populated across 65 vendors. ABN and payment terms are 0% populated, requiring collection from each vendor before migration.</p>
-        </div>
-        <div className="flex gap-2 items-start">
-          <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-          <p><strong>Component Flattening:</strong> Level 7 components documented in the Asset Tree need to be extracted into individual child asset rows for import into the target system.</p>
+          <p><strong>Physical Warehouse & Stores:</strong> 5-container compound (C01–C05) and dome roof fully designed. Stock control procedures documented. Awaiting physical construction and activation.</p>
         </div>
         <div className="flex gap-2 items-start">
           <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-          <p><strong>Duration Standardisation:</strong> PM estimated duration stored as text (e.g. "2-3 hrs") needs conversion to numeric hours. Only 10 of 97 templates populated.</p>
+          <p><strong>Asset Tag Installation:</strong> 450+ tags registered, rollout plan complete (TCMG-STD-TAG-002). Physical installation on plant equipment pending.</p>
         </div>
         <div className="flex gap-2 items-start">
           <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-          <p><strong>Inventory Data Enrichment:</strong> Bin locations (0%), lead times (0%), unit costs (2%), min/max stock levels (1%), and asset linkages (1%) require population across 2,184 spare parts.</p>
-        </div>
-
-        <p className="text-[10px] font-semibold text-destructive uppercase tracking-wider mt-3 mb-1">Critical Gaps — Physical & Operational Prerequisites</p>
-        <div className="flex gap-2 items-start">
-          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
-          <p><strong>Physical Warehouse Construction:</strong> 5-container compound (C01–C05) and dome roof designed but not yet constructed. No physical stores exist on site — parts cannot be controlled or accounted for.</p>
-        </div>
-        <div className="flex gap-2 items-start">
-          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
-          <p><strong>Stock Control Activation:</strong> Receiving, issuing, and cycle count procedures are drafted but cannot operate without physical stores. Stock in/out process does not exist.</p>
-        </div>
-        <div className="flex gap-2 items-start">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
-          <p><strong>Scheduling Capability:</strong> Weekly planning, backlog management, resource levelling, and shutdown planning fully built in Minesite.ai.</p>
+          <p><strong>People & Change Readiness:</strong> Change management plan, training materials, site discipline framework, and leadership alignment currently being developed.</p>
         </div>
         <div className="flex gap-2 items-start">
           <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-          <p><strong>People & Change Readiness:</strong> Change management, training materials, site discipline, and leadership alignment currently being developed. In progress.</p>
+          <p><strong>Inventory Data Enrichment:</strong> Bin locations, lead times, unit costs, min/max stock levels, and asset linkages require population across 2,184 spare parts.</p>
         </div>
         <div className="flex gap-2 items-start">
           <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
-          <p><strong>Asset Tag Installation:</strong> 450+ tags registered, rollout plan complete (TCMG-STD-TAG-002). Physical installation on equipment pending.</p>
-        </div>
-        <div className="flex gap-2 items-start">
-          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
-          <p><strong>Finance Integration:</strong> Job numbers are not linked to D365 Finance. Parts costs cannot be traced to work orders. True maintenance costing is not possible.</p>
-        </div>
-        <div className="flex gap-2 items-start">
-          <AlertCircle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
-          <p><strong>Physical Site Infrastructure:</strong> No defined laydown areas, safe truck unloading zone, scrap/waste process, or bunded chemical storage exists.</p>
+          <p><strong>Finance Integration:</strong> D365 Finance is live (managed by finance team). Maintenance cost linkage to work orders and assets pending their configuration.</p>
         </div>
       </CardContent>
     </Card>
