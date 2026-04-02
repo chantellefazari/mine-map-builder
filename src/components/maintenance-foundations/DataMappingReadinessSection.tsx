@@ -80,7 +80,7 @@ const SPARES_MAPPINGS: MappingRow[] = [
   { field: "Item Group / Category", sourceDocument: "Site Parts Catalogue", transformation: "Map to target system Item Group", status: "Ready" },
   { field: "Criticality Class", sourceDocument: "Site Parts Catalogue", transformation: "Direct: Critical, Insurance, Non-Critical", status: "Ready" },
   { field: "Default Warehouse Location", sourceDocument: "Site Parts Catalogue", transformation: "Direct: C01-EL-A1 format (pending population)", status: "Partial" },
-  { field: "Reorder Point / Max Stock", sourceDocument: "Site Parts Catalogue", transformation: "Direct numeric values (13/2184 populated)", status: "Partial" },
+  { field: "Reorder Point / Max Stock", sourceDocument: "Site Parts Catalogue", transformation: "Not yet populated, requires full enrichment", status: "Not Started" },
   { field: "Linked Asset Reference", sourceDocument: "Site Parts Catalogue", transformation: "Cross-reference Asset Register (31/2184 linked)", status: "Partial" },
   { field: "Default Vendor", sourceDocument: "Supplier Register", transformation: "Lookup from Supplier Register (505/2184 populated)", status: "Partial" },
   { field: "Standard Cost (AUD)", sourceDocument: "Site Parts Catalogue", transformation: "Direct: AUD value (36/2184 populated)", status: "Partial" },
