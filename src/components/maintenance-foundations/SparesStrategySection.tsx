@@ -1,35 +1,38 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Package, AlertCircle, CheckCircle2, ArrowDown, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export const SparesStrategySection = () => {
   const criticalityLevels = [
     {
       level: "HIGH",
-      color: "bg-red-500",
+      color: "border-l-red-500 bg-red-500/5",
       badge: "destructive" as const,
-      desc: "Production/Safety critical",
-      impact: "Failure causes immediate plant stoppage",
-      examples: "Motors, Gearboxes, PLC, Major Pumps",
+      desc: "Production/Safety Critical",
+      impact: "Failure causes immediate plant stoppage or safety risk",
+      examples: "Motors, Gearboxes, Major Pumps, PLCs, VSDs, Crushers, Compressors, Transformers, Hoses",
       policy: "Min/Max levels mandatory, long lead time buffer",
+      keywordNote: "Matches complete equipment assemblies and major drive units",
     },
     {
       level: "MEDIUM",
-      color: "bg-orange-500",
+      color: "border-l-orange-500 bg-orange-500/5",
       badge: "default" as const,
-      desc: "Reliability/Throughput impact",
-      impact: "Plant can run in degraded mode",
-      examples: "Bearings, Seals, Rollers, Valves",
+      desc: "Reliability/Throughput Impact",
+      impact: "Plant can run in degraded mode, manageable delay",
+      examples: "Bearings, Seals, Valves, Instrumentation, Idlers, Pulleys, Couplings, Contactors, Screens",
       policy: "Min/Max levels recommended, reorder point set",
+      keywordNote: "Matches reliability components, sensors, and wear items",
     },
     {
       level: "LOW",
-      color: "bg-green-500",
+      color: "border-l-green-500 bg-green-500/5",
       badge: "secondary" as const,
       desc: "Operational/Consumable",
-      impact: "Minimal disruption, readily available",
-      examples: "Fasteners, Hoses, Filters",
+      impact: "Minimal disruption, readily available or easy to source",
+      examples: "Fasteners, Pipe Fittings, Filters, O-Rings, Cable Ties, PPE, Gaskets, Pump Parts, V-Belts",
       policy: "Stores-managed, replenish on demand",
+      keywordNote: "Matches consumables, fittings, individual components, and kits",
     },
   ];
 
@@ -49,6 +52,43 @@ export const SparesStrategySection = () => {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Classification Engine Logic */}
+        <div className="bg-muted/50 rounded-lg p-5 space-y-3">
+          <h4 className="font-medium text-foreground flex items-center gap-2">
+            <Info className="w-4 h-4 text-muted-foreground" />
+            Auto-Classification Engine
+          </h4>
+          <p className="text-sm text-muted-foreground">
+            Every spare part is automatically classified by scanning its description against keyword libraries.
+            The engine uses <span className="font-medium text-foreground">word-boundary regex</span> to prevent partial matches (e.g. "bolt" won't match "bolting").
+          </p>
+          <div className="flex items-center gap-2 flex-wrap text-xs">
+            <span className="font-medium text-foreground">Priority check order:</span>
+            <Badge variant="secondary" className="gap-1">
+              <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />
+              1. LOW first
+            </Badge>
+            <ArrowDown className="w-3 h-3 text-muted-foreground" />
+            <Badge variant="destructive" className="gap-1">
+              <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
+              2. HIGH
+            </Badge>
+            <ArrowDown className="w-3 h-3 text-muted-foreground" />
+            <Badge variant="default" className="gap-1">
+              <span className="w-2 h-2 rounded-full bg-orange-500 inline-block" />
+              3. MEDIUM
+            </Badge>
+            <ArrowDown className="w-3 h-3 text-muted-foreground" />
+            <Badge variant="outline" className="gap-1">
+              Default → LOW
+            </Badge>
+          </div>
+          <p className="text-xs text-muted-foreground italic">
+            LOW is checked first so component-level items (e.g. "pump sleeve", "motor hub") are correctly classified as consumables
+            rather than being falsely elevated by generic equipment keywords like "pump" or "motor".
+          </p>
+        </div>
+
         {/* Criticality Matrix */}
         <div className="space-y-4">
           <h4 className="font-medium text-foreground">Criticality Classification</h4>
@@ -56,13 +96,7 @@ export const SparesStrategySection = () => {
             {criticalityLevels.map((item) => (
               <div
                 key={item.level}
-                className={`rounded-lg p-4 border-l-4 ${
-                  item.level === "HIGH"
-                    ? "border-l-red-500 bg-red-500/5"
-                    : item.level === "MEDIUM"
-                    ? "border-l-orange-500 bg-orange-500/5"
-                    : "border-l-green-500 bg-green-500/5"
-                }`}
+                className={`rounded-lg p-4 border-l-4 ${item.color}`}
               >
                 <div className="flex items-start gap-3">
                   <Badge variant={item.badge} className="mt-0.5">
@@ -83,11 +117,22 @@ export const SparesStrategySection = () => {
                         <span className="text-muted-foreground">{item.policy}</span>
                       </div>
                     </div>
+                    <p className="text-xs text-muted-foreground/70 italic">{item.keywordNote}</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+
+        {/* is_critical flag */}
+        <div className="bg-red-500/5 border border-red-500/20 rounded-lg p-4">
+          <h4 className="font-medium text-foreground mb-2 text-sm">Database Flag: is_critical</h4>
+          <p className="text-xs text-muted-foreground">
+            Only <Badge variant="destructive" className="text-[10px] px-1.5 py-0">HIGH</Badge> items set <code className="bg-muted px-1 rounded text-[11px]">is_critical = true</code> in the database.
+            MEDIUM and LOW items are always <code className="bg-muted px-1 rounded text-[11px]">false</code>.
+            The "Reclassify Criticality" bulk action in the Spares Catalogue re-scans all 2,000+ items and updates this flag.
+          </p>
         </div>
 
         {/* Stocking Rules */}
