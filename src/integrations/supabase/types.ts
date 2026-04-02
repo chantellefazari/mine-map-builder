@@ -2466,6 +2466,60 @@ export type Database = {
         }
         Relationships: []
       }
+      valve_certificates: {
+        Row: {
+          asset_number: string
+          certificate_number: string
+          created_at: string
+          description: string
+          document_url: string | null
+          expiry_date: string | null
+          file_name: string
+          id: string
+          installed_by: string
+          installed_date: string | null
+          location: string
+          notes: string
+          status: string
+          updated_at: string
+          valve_type: string
+        }
+        Insert: {
+          asset_number?: string
+          certificate_number?: string
+          created_at?: string
+          description?: string
+          document_url?: string | null
+          expiry_date?: string | null
+          file_name?: string
+          id?: string
+          installed_by?: string
+          installed_date?: string | null
+          location?: string
+          notes?: string
+          status?: string
+          updated_at?: string
+          valve_type?: string
+        }
+        Update: {
+          asset_number?: string
+          certificate_number?: string
+          created_at?: string
+          description?: string
+          document_url?: string | null
+          expiry_date?: string | null
+          file_name?: string
+          id?: string
+          installed_by?: string
+          installed_date?: string | null
+          location?: string
+          notes?: string
+          status?: string
+          updated_at?: string
+          valve_type?: string
+        }
+        Relationships: []
+      }
       vendor_visits: {
         Row: {
           contact_email: string
