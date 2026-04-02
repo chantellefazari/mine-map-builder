@@ -94,7 +94,7 @@ export function WOCReportsTab({ workOrders, workRequests }: Props) {
       </div>
 
       {/* Stat tiles */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {tiles.map((t) => (
           <Card key={t.label} className={`${t.color} border-border`}>
             <CardContent className="p-4 text-center">
