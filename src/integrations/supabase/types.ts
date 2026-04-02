@@ -1892,6 +1892,59 @@ export type Database = {
         }
         Relationships: []
       }
+      shutdown_rundown_steps: {
+        Row: {
+          created_at: string
+          duration_hours: number
+          id: string
+          is_template: boolean
+          notes: string
+          phase: string
+          responsible: string
+          shutdown_id: string
+          sort_order: number
+          status: string
+          step_description: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          duration_hours?: number
+          id?: string
+          is_template?: boolean
+          notes?: string
+          phase?: string
+          responsible?: string
+          shutdown_id: string
+          sort_order?: number
+          status?: string
+          step_description?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          duration_hours?: number
+          id?: string
+          is_template?: boolean
+          notes?: string
+          phase?: string
+          responsible?: string
+          shutdown_id?: string
+          sort_order?: number
+          status?: string
+          step_description?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shutdown_rundown_steps_shutdown_id_fkey"
+            columns: ["shutdown_id"]
+            isOneToOne: false
+            referencedRelation: "shutdowns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shutdown_vendors: {
         Row: {
           contact_email: string | null
