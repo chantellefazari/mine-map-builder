@@ -66,7 +66,7 @@ export function ShutdownControlBoardTab() {
       if (filterDelayed && p.status !== "Delayed" && p.status !== "Blocked") return false;
       return true;
     });
-  }, [filterArea, filterTrade, filterShift, filterCritical, filterDelayed]);
+  }, [filterArea, filterTrade, filterShift, filterCritical, filterDelayed, packages]);
 
   const priorityPackages = useMemo(() => filtered.filter((p) => p.priority), [filtered]);
 

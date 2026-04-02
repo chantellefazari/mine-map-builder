@@ -67,11 +67,11 @@ export function ShutdownOverviewTab() {
     const delayed = DEMO_AREAS.reduce((s, a) => s + a.delayed, 0);
     const complete = DEMO_AREAS.reduce((s, a) => s + a.complete, 0);
     const ready = total - active - blocked - delayed - complete;
-    const criticalPath = PACKAGES.filter(p => p.criticalPath).length;
+    const criticalPath = packages.filter(p => p.criticalPath).length;
     const highRiskAreas = DEMO_AREAS.filter((a) => a.status === "At Risk" || a.status === "Delayed").length;
     const overallPct = total > 0 ? Math.round((complete / total) * 100) : 0;
     return { total, ready, active, blocked, delayed, complete, criticalPath, highRiskAreas, overallPct };
-  }, [DEMO_AREAS]);
+  }, [DEMO_AREAS, packages]);
 
   const plannedDays = shutdown?.end_date
     ? differenceInDays(parseISO(shutdown.end_date), parseISO(shutdown.start_date)) + 1
