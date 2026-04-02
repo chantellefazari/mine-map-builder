@@ -78,6 +78,7 @@ export function WOCBacklogTab({ workOrders, workRequests }: Props) {
   const avgAge = backlog.length > 0 ? Math.round(backlog.reduce((s, wo) => s + ageDays(wo), 0) / backlog.length) : 0;
   const critical = backlog.filter((wo) => ageDays(wo) > 30).length;
   const highPriority = backlog.filter((wo) => ["Critical", "Emergency", "High", "P1", "P2"].includes(wo.priority)).length;
+  const pendingWRs = workRequests.filter((wr) => ["Submitted", "Pending Review"].includes(wr.status)).length;
 
   const PRIORITY_COLORS: Record<string, string> = {
     Critical: "hsl(0 84% 60%)", Emergency: "hsl(0 84% 60%)", High: "hsl(25 90% 55%)", P1: "hsl(0 84% 60%)", P2: "hsl(25 90% 55%)",
