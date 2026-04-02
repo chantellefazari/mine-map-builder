@@ -114,7 +114,7 @@ const STORES_OPS_MAPPINGS: MappingRow[] = [
   { field: "Stock Out / Issuing Process", sourceDocument: "Stock Control Procedure", transformation: "WO-linked issuing process defined, physical enforcement pending", status: "Partial" },
   { field: "Stocktake / Cycle Count Capability", sourceDocument: "Stock Control Procedure", transformation: "Weekly revision day and cycle count process defined, physical stores pending", status: "Partial" },
   { field: "Parts Issued to Jobs (WO Linkage)", sourceDocument: "Work Order Register", transformation: "Data model and process designed, site enforcement pending", status: "Partial" },
-  { field: "Min/Max Reorder Levels", sourceDocument: "Site Parts Catalogue", transformation: "13/2184 items populated, requires full enrichment", status: "Partial" },
+  { field: "Min/Max Reorder Levels", sourceDocument: "Site Parts Catalogue", transformation: "Not yet populated, requires full enrichment across catalogue", status: "Not Started" },
   { field: "Goods Receipt Matching (3-Way Match)", sourceDocument: "Procurement Workflow", transformation: "PR → PO → Receipt flow built, physical goods receipt pending", status: "Partial" },
 ];
 
