@@ -60,14 +60,14 @@ export function WOCPerformance() {
       </div>
 
       {/* Content */}
-      {tab === "reports" && <WOCReportsTab workOrders={workOrders} />}
-      {tab === "analytics" && <WOCAnalyticsTab workOrders={workOrders} />}
+      {tab === "reports" && <WOCReportsTab workOrders={workOrders} workRequests={workRequests} />}
+      {tab === "analytics" && <WOCAnalyticsTab workOrders={workOrders} workRequests={workRequests} />}
       {tab === "pm-forms" && <WOCPMFormsTab />}
       {tab === "compliance" && <WOCComplianceTab />}
-      {tab === "sched-compliance" && <WOCScheduleComplianceTab workOrders={workOrders} />}
-      {tab === "backlog" && <WOCBacklogTab workOrders={workOrders} />}
-      {tab === "reliability" && <WOCReliabilityTab workOrders={workOrders} />}
-      {tab === "kpi-scorecard" && <WOCKPIScorecardTab workOrders={workOrders} />}
+      {tab === "sched-compliance" && <WOCScheduleComplianceTab workOrders={workOrders} workRequests={workRequests} />}
+      {tab === "backlog" && <WOCBacklogTab workOrders={workOrders} workRequests={workRequests} />}
+      {tab === "reliability" && <WOCReliabilityTab workOrders={workOrders} workRequests={workRequests} />}
+      {tab === "kpi-scorecard" && <WOCKPIScorecardTab workOrders={workOrders} workRequests={workRequests} />}
     </div>
   );
 }
