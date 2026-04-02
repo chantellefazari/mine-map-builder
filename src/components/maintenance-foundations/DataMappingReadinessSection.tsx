@@ -66,7 +66,7 @@ const PM_MAPPINGS: MappingRow[] = [
   { field: "Frequency / Recurrence", sourceDocument: "PM Templates Pack", transformation: "Map to target system recurrence pattern", status: "Ready" },
   { field: "Trade / Discipline", sourceDocument: "PM Templates Pack", transformation: "Direct: Mechanical, Electrical, Instrument", status: "Ready" },
   { field: "Linked Asset ID", sourceDocument: "PM Templates Pack", transformation: "Cross-reference to Asset Register", status: "Ready" },
-  { field: "Planned Duration", sourceDocument: "PM Templates Pack", transformation: "Parse text to numeric hours", status: "Partial" },
+  { field: "Planned Duration", sourceDocument: "PM Templates Pack", transformation: "Populated for existing PMs, additional PM templates still required", status: "Partial" },
   { field: "Task Checklist Lines", sourceDocument: "PM Templates Pack", transformation: "Structured checklist items (85% populated)", status: "Ready" },
   { field: "Safety Requirements (PPE)", sourceDocument: "PM Templates Pack", transformation: "Checklist items per template", status: "Ready" },
   { field: "Required Tools", sourceDocument: "PM Templates Pack", transformation: "Resource list per template", status: "Ready" },
