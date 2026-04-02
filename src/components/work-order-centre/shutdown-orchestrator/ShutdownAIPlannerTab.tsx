@@ -14,7 +14,7 @@ import {
   Lightbulb, GitBranch, Clock, Target,
 } from "lucide-react";
 import {
-  WP_CONTEXT, ALL_AREA_OPTIONS, INITIAL_RULES,
+  ALL_AREA_OPTIONS, INITIAL_RULES,
   type LearnedRule,
 } from "./shutdownData";
 
