@@ -1,11 +1,12 @@
 import { useState, useMemo, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
+import { ShutdownWallChart } from "./ShutdownWallChart";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
-  Printer, FileDown, Eye, Filter, Map, Route, Clock,
+  Printer, FileDown, Eye, Filter, Map, Route, Clock, BarChart3,
   AlertTriangle, Wrench, Zap, CheckCircle2, Shield, ChevronRight,
   ArrowRight, Target, Activity, CircleDot, Calendar, User,
 } from "lucide-react";
@@ -19,7 +20,7 @@ import {
 /*  TYPES                                                              */
 /* ------------------------------------------------------------------ */
 
-type PackType = "area-overview" | "critical-sequence" | "shift-execution";
+type PackType = "wall-chart" | "area-overview" | "critical-sequence" | "shift-execution";
 
 /* ------------------------------------------------------------------ */
 /*  STYLING                                                            */
@@ -35,6 +36,7 @@ const STATUS_STYLE: Record<string, { text: string; border: string; dot: string; 
 };
 
 const PACK_TYPES: { key: PackType; label: string; icon: typeof Map; description: string }[] = [
+  { key: "wall-chart", label: "Wall Chart Gantt", icon: BarChart3, description: "A1/A0 plotter print — full shutdown timeline with run-down, jobs by area, and run-up" },
   { key: "area-overview", label: "Shutdown Area Overview", icon: Map, description: "Leadership summary — area status, progress, and key risks" },
   { key: "critical-sequence", label: "Critical Sequence Sheet", icon: Route, description: "Critical path packages in dependency order with blockers" },
   { key: "shift-execution", label: "Shift Execution Board", icon: Clock, description: "Shift-specific packages, owners, blockers, and handover notes" },
@@ -73,8 +75,8 @@ function handlePrint(ref: React.RefObject<HTMLDivElement | null>) {
 /* ------------------------------------------------------------------ */
 
 export function ShutdownPrintPackTab() {
-  const { filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, packages } = useOrchestratorContext();
-  const [packType, setPackType] = useState<PackType>("area-overview");
+  const { filterArea, setFilterArea, filterTrade, setFilterTrade, filterShift, setFilterShift, packages, selectedShutdownId } = useOrchestratorContext();
+  const [packType, setPackType] = useState<PackType>("wall-chart");
   const [showPreview, setShowPreview] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -91,7 +93,7 @@ export function ShutdownPrintPackTab() {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-3">
         {PACK_TYPES.map((pack) => (
           <button key={pack.key} onClick={() => setPackType(pack.key)} className={cn("text-left rounded-lg border p-4 transition-all hover:shadow-sm", packType === pack.key ? "border-primary bg-primary/5 shadow-sm" : "border-border bg-card")}>
             <div className="flex items-center gap-2 mb-1.5">
@@ -130,26 +132,39 @@ export function ShutdownPrintPackTab() {
         </div>
       </div>
 
-      <div className={cn(showPreview && "border-2 border-dashed border-primary/20 rounded-lg p-6 bg-background shadow-inner")}>
+      <div className={cn(
+        showPreview && "border-2 border-dashed border-primary/20 rounded-lg p-6 bg-background shadow-inner",
+        packType === "wall-chart" && "overflow-x-auto"
+      )}>
         <div ref={printRef}>
-          <div className="mb-6 border-b-2 border-foreground pb-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-lg font-black text-foreground tracking-tight">{currentPack.label}</h1>
-                <p className="text-sm text-muted-foreground">{SHUTDOWN_NAME}</p>
+          {packType === "wall-chart" ? (
+            selectedShutdownId ? (
+              <ShutdownWallChart shutdownId={selectedShutdownId} />
+            ) : (
+              <div className="text-center py-12 text-sm text-muted-foreground">Select a shutdown to generate the wall chart</div>
+            )
+          ) : (
+            <>
+              <div className="mb-6 border-b-2 border-foreground pb-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h1 className="text-lg font-black text-foreground tracking-tight">{currentPack.label}</h1>
+                    <p className="text-sm text-muted-foreground">{SHUTDOWN_NAME}</p>
+                  </div>
+                  <div className="text-right text-xs text-muted-foreground">
+                    <p className="font-semibold text-foreground">{SHUTDOWN_DATE}</p>
+                    <p>Generated: {new Date().toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" })}</p>
+                    {filterArea !== "All" && <p>Area: {filterArea}</p>}
+                    {filterShift !== "All" && <p>Shift: {filterShift}</p>}
+                  </div>
+                </div>
               </div>
-              <div className="text-right text-xs text-muted-foreground">
-                <p className="font-semibold text-foreground">{SHUTDOWN_DATE}</p>
-                <p>Generated: {new Date().toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" })}</p>
-                {filterArea !== "All" && <p>Area: {filterArea}</p>}
-                {filterShift !== "All" && <p>Shift: {filterShift}</p>}
-              </div>
-            </div>
-          </div>
 
-          {packType === "area-overview" && <AreaOverviewPack packages={filtered} />}
-          {packType === "critical-sequence" && <CriticalSequencePack packages={filtered} />}
-          {packType === "shift-execution" && <ShiftExecutionPack packages={filtered} filterShift={filterShift} />}
+              {packType === "area-overview" && <AreaOverviewPack packages={filtered} />}
+              {packType === "critical-sequence" && <CriticalSequencePack packages={filtered} />}
+              {packType === "shift-execution" && <ShiftExecutionPack packages={filtered} filterShift={filterShift} />}
+            </>
+          )}
         </div>
       </div>
     </div>
