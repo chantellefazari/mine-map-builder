@@ -230,11 +230,11 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct, weightedPct
         </div>
         <div className="mt-3">
           <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-            <span>Overall Readiness</span>
-            <span className="font-semibold">{pct}%</span>
+            <span>Site Readiness (Ready = 100%, Partial = 50%)</span>
+            <span className="font-semibold">{weightedPct}%</span>
           </div>
           <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
-            <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
+            <div className="h-full rounded-full transition-all" style={{ width: `${weightedPct}%`, backgroundColor: weightedPct >= 75 ? '#10b981' : weightedPct >= 50 ? '#f59e0b' : '#ef4444' }} />
           </div>
         </div>
       </CardContent>
