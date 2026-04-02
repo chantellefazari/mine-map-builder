@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from "react";
-import { PACKAGES as INITIAL_PACKAGES, buildAreaSummaries, buildAreaZones, EDGES, type ShutdownWorkPackage, type AreaSummary, type AreaZone } from "./shutdownData";
+import { SHUTDOWN_AREAS, AREA_LABELS, buildAreaSummaries, buildAreaZones, type ShutdownWorkPackage, type AreaSummary, type AreaZone } from "./shutdownData";
 
 export type OrchestratorStatus = "Not Started" | "Ready" | "Active" | "Blocked" | "Delayed" | "Complete";
 
@@ -15,6 +15,10 @@ export interface ConfirmedRule {
 }
 
 interface OrchestratorContextValue {
+  // Selected shutdown
+  selectedShutdownId: string | null;
+  setSelectedShutdownId: (id: string | null) => void;
+
   // Shared filters
   filterArea: string;
   setFilterArea: (v: string) => void;
@@ -44,10 +48,14 @@ interface OrchestratorContextValue {
   updatePackage: (id: string, updates: Partial<ShutdownWorkPackage>) => void;
   addPackage: (pkg: ShutdownWorkPackage) => void;
   removePackage: (id: string) => void;
+  setPackages: (pkgs: ShutdownWorkPackage[]) => void;
 
   // ── Derived data (recomputed when packages change) ──
   areaSummaries: AreaSummary[];
   areaZones: AreaZone[];
+
+  // ── Loading state ──
+  isLoadingPackages: boolean;
 }
 
 const OrchestratorCtx = createContext<OrchestratorContextValue | null>(null);
@@ -65,6 +73,7 @@ interface Props {
 }
 
 export function ShutdownOrchestratorProvider({ children, activeTab, onTabChange }: Props) {
+  const [selectedShutdownId, setSelectedShutdownId] = useState<string | null>(null);
   const [filterArea, setFilterArea] = useState("All");
   const [filterTrade, setFilterTrade] = useState("All");
   const [filterShift, setFilterShift] = useState("All");
@@ -72,7 +81,8 @@ export function ShutdownOrchestratorProvider({ children, activeTab, onTabChange 
   const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
   const [highlightedPackageIds, setHighlightedPackageIds] = useState<Set<string>>(new Set());
   const [confirmedRules, setConfirmedRules] = useState<ConfirmedRule[]>([]);
-  const [packages, setPackages] = useState<ShutdownWorkPackage[]>(() => [...INITIAL_PACKAGES]);
+  const [packages, setPackagesState] = useState<ShutdownWorkPackage[]>([]);
+  const [isLoadingPackages, setIsLoadingPackages] = useState(false);
 
   const navigateToTab = useCallback((tab: string, options?: { packageId?: string; areaId?: string }) => {
     if (options?.packageId) setSelectedPackageId(options.packageId);
@@ -87,15 +97,19 @@ export function ShutdownOrchestratorProvider({ children, activeTab, onTabChange 
   }, []);
 
   const updatePackage = useCallback((id: string, updates: Partial<ShutdownWorkPackage>) => {
-    setPackages(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
+    setPackagesState(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
   }, []);
 
   const addPackage = useCallback((pkg: ShutdownWorkPackage) => {
-    setPackages(prev => [...prev, pkg]);
+    setPackagesState(prev => [...prev, pkg]);
   }, []);
 
   const removePackage = useCallback((id: string) => {
-    setPackages(prev => prev.filter(p => p.id !== id));
+    setPackagesState(prev => prev.filter(p => p.id !== id));
+  }, []);
+
+  const setPackages = useCallback((pkgs: ShutdownWorkPackage[]) => {
+    setPackagesState(pkgs);
   }, []);
 
   const areaSummaries = useMemo(() => buildAreaSummaries(packages), [packages]);
@@ -103,6 +117,7 @@ export function ShutdownOrchestratorProvider({ children, activeTab, onTabChange 
 
   return (
     <OrchestratorCtx.Provider value={{
+      selectedShutdownId, setSelectedShutdownId,
       filterArea, setFilterArea,
       filterTrade, setFilterTrade,
       filterShift, setFilterShift,
@@ -111,8 +126,9 @@ export function ShutdownOrchestratorProvider({ children, activeTab, onTabChange 
       highlightedPackageIds, setHighlightedPackageIds,
       activeTab, navigateToTab,
       confirmedRules, addConfirmedRule,
-      packages, updatePackage, addPackage, removePackage,
+      packages, updatePackage, addPackage, removePackage, setPackages,
       areaSummaries, areaZones,
+      isLoadingPackages,
     }}>
       {children}
     </OrchestratorCtx.Provider>
