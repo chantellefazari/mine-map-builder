@@ -148,12 +148,12 @@ const PHYSICAL_SITE_MAPPINGS: MappingRow[] = [
 ];
 
 const PEOPLE_CHANGE_MAPPINGS: MappingRow[] = [
-  { field: "Storeperson Role (Defined & Active)", sourceDocument: "CMMS Roles & RACI", transformation: "Role exists on site, cannot function without physical stores", status: "Partial" },
-  { field: "Additional Store Staff Onboarded", sourceDocument: "Site HR", transformation: "Recruitment starting, staff cannot succeed without foundations", status: "Partial" },
-  { field: "Site Discipline & Accountability", sourceDocument: "N/A — Cultural", transformation: "Not established, system use will be bypassed without enforcement", status: "Not Started" },
-  { field: "Ownership & Process Accountability", sourceDocument: "N/A — Leadership", transformation: "Weak — no formal endorsement of new processes", status: "Not Started" },
-  { field: "Role-Based Training Materials", sourceDocument: "N/A — Not yet built", transformation: "No training packages or super users identified", status: "Not Started" },
-  { field: "Change Management & Comms Plan", sourceDocument: "N/A — Not yet built", transformation: "No stakeholder engagement or resistance management plan", status: "Not Started" },
+  { field: "Storeperson Role (Defined & Active)", sourceDocument: "CMMS Roles & RACI", transformation: "Role defined, cannot fully function without physical stores", status: "Partial" },
+  { field: "Additional Store Staff Onboarded", sourceDocument: "Site HR", transformation: "Recruitment in progress, onboarding planned", status: "Partial" },
+  { field: "Site Discipline & Accountability", sourceDocument: "People & Change Readiness Plan", transformation: "Framework being established as part of change readiness", status: "Partial" },
+  { field: "Ownership & Process Accountability", sourceDocument: "People & Change Readiness Plan", transformation: "Leadership alignment and accountability framework in progress", status: "Partial" },
+  { field: "Role-Based Training Materials", sourceDocument: "People & Change Readiness Plan", transformation: "Training packages being developed, super users being identified", status: "Partial" },
+  { field: "Change Management & Comms Plan", sourceDocument: "People & Change Readiness Plan", transformation: "Stakeholder engagement and comms plan being developed", status: "Partial" },
 ];
 
 const ALL_SECTIONS = [
