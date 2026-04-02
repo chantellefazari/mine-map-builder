@@ -3,22 +3,12 @@ import { useOrchestratorContext } from "./ShutdownOrchestratorContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Route, AlertTriangle, Filter, ChevronRight } from "lucide-react";
-import {
-  EDGES, COL_LABELS,
-  ALL_AREA_OPTIONS, ALL_TRADES,
-} from "./shutdownData";
+import { Route, AlertTriangle, Filter, Calendar as CalendarIcon } from "lucide-react";
+import { ALL_AREA_OPTIONS, ALL_TRADES } from "./shutdownData";
 import { SequenceFlowCard } from "./SequenceFlowCard";
 import { SequenceFlowDetailPanel } from "./SequenceFlowDetailPanel";
-
-/* ── Phase timeline ranges ── */
-const PHASE_TIME: { start: string; end: string }[] = [
-  { start: "Day 1  06:00", end: "Day 1  12:00" },
-  { start: "Day 1  10:00", end: "Day 2  00:00" },
-  { start: "Day 1  12:00", end: "Day 2  14:00" },
-  { start: "Day 2  06:00", end: "Day 2  20:00" },
-  { start: "Day 2  20:00", end: "Day 3  06:00" },
-];
+import { useShutdowns } from "@/hooks/useShutdowns";
+import { format, parseISO, addDays, isSameDay } from "date-fns";
 
 type WPStatus = "Ready" | "Active" | "Blocked" | "Delayed" | "Complete";
 const ALL_STATUSES: WPStatus[] = ["Ready", "Active", "Blocked", "Delayed", "Complete"];
@@ -28,49 +18,67 @@ export function ShutdownSequenceFlowTab() {
     selectedPackageId: selectedId, setSelectedPackageId: setSelectedId,
     filterArea, setFilterArea, filterTrade, setFilterTrade,
     showCriticalOnly, setShowCriticalOnly, packages,
+    selectedShutdownId,
   } = useOrchestratorContext();
+  const { shutdowns } = useShutdowns();
   const [filterStatus, setFilterStatus] = useState("All");
-  const [showDelayedOnly, setShowDelayedOnly] = useState(false);
 
   const selected = packages.find((n) => n.id === selectedId) ?? null;
+  const shutdown = shutdowns.find(s => s.id === selectedShutdownId) ?? null;
 
-  const delayedImpact = useMemo(() => {
-    const delayedIds = new Set(packages.filter((n) => n.status === "Delayed" || n.status === "Blocked").map((n) => n.id));
-    const affected = new Set<string>();
-    const visit = (id: string) => {
-      EDGES.filter((e) => e.from === id).forEach((e) => {
-        if (!affected.has(e.to) && !delayedIds.has(e.to)) {
-          affected.add(e.to);
-          visit(e.to);
-        }
+  // Build day columns from shutdown date range
+  const dayColumns = useMemo(() => {
+    if (!shutdown) return [];
+    const start = parseISO(shutdown.start_date);
+    const end = shutdown.end_date ? parseISO(shutdown.end_date) : start;
+    const days: { date: Date; label: string; dateStr: string }[] = [];
+    let d = start;
+    let dayNum = 1;
+    while (d <= end) {
+      days.push({
+        date: d,
+        label: `Day ${dayNum} — ${format(d, "EEE d MMM")}`,
+        dateStr: format(d, "yyyy-MM-dd"),
       });
-    };
-    delayedIds.forEach((id) => visit(id));
-    return affected;
-  }, [packages]);
+      d = addDays(d, 1);
+      dayNum++;
+    }
+    // Add an "Unscheduled" column for WOs without a date
+    return days;
+  }, [shutdown]);
 
   const visibleNodes = useMemo(() => {
     return packages.filter((n) => {
       if (filterArea !== "All" && n.area !== filterArea) return false;
       if (filterTrade !== "All" && n.trade !== filterTrade) return false;
       if (filterStatus !== "All" && n.status !== filterStatus) return false;
-      if (showCriticalOnly && !n.criticalPath) return false;
-      if (showDelayedOnly && n.status !== "Delayed" && n.status !== "Blocked" && !delayedImpact.has(n.id)) return false;
+      if (showCriticalOnly && n.criticalPath) return false;
       return true;
     });
-  }, [filterArea, filterTrade, filterStatus, showCriticalOnly, showDelayedOnly, delayedImpact, packages]);
+  }, [filterArea, filterTrade, filterStatus, showCriticalOnly, packages]);
 
   const visibleIds = new Set(visibleNodes.map((n) => n.id));
 
-  const phases = useMemo(() => {
-    return COL_LABELS.map((label, colIdx) => ({
-      label,
-      packages: packages.filter(p => p.col === colIdx).sort((a, b) => {
-        if (a.plannedStart !== b.plannedStart) return a.plannedStart < b.plannedStart ? -1 : 1;
-        return a.row - b.row;
-      }),
-    }));
-  }, [packages]);
+  // Group packages by scheduled date
+  const packagesByDay = useMemo(() => {
+    const map = new Map<string, typeof packages>();
+    // Unscheduled bucket
+    map.set("unscheduled", []);
+    for (const col of dayColumns) {
+      map.set(col.dateStr, []);
+    }
+    for (const pkg of packages) {
+      const sd = (pkg as any).scheduledDate;
+      if (sd && map.has(sd)) {
+        map.get(sd)!.push(pkg);
+      } else {
+        map.get("unscheduled")!.push(pkg);
+      }
+    }
+    return map;
+  }, [packages, dayColumns]);
+
+  const unscheduled = packagesByDay.get("unscheduled") || [];
 
   return (
     <div className="space-y-3">
@@ -99,9 +107,6 @@ export function ShutdownSequenceFlowTab() {
         <Button variant={showCriticalOnly ? "default" : "outline"} size="sm" className="h-8 text-xs gap-1" onClick={() => setShowCriticalOnly(!showCriticalOnly)}>
           <Route className="w-3 h-3" /> Critical Path
         </Button>
-        <Button variant={showDelayedOnly ? "default" : "outline"} size="sm" className="h-8 text-xs gap-1" onClick={() => setShowDelayedOnly(!showDelayedOnly)}>
-          <AlertTriangle className="w-3 h-3" /> Delay Impact
-        </Button>
 
         {/* Legend */}
         <div className="ml-auto flex items-center gap-3 text-[10px] text-muted-foreground">
@@ -113,101 +118,138 @@ export function ShutdownSequenceFlowTab() {
         </div>
       </div>
 
-      {/* ===== MAIN: PHASE COLUMNS + DETAIL PANEL ===== */}
-      <div className="flex gap-0">
-        {/* Phase columns */}
-        <div className="flex-1 min-w-0 overflow-x-auto">
-          <div className="flex min-w-fit">
-            {phases.map((phase, phaseIdx) => {
-              const visibleCount = phase.packages.filter(p => visibleIds.has(p.id)).length;
-              const time = PHASE_TIME[phaseIdx];
-              const isLastPhase = phaseIdx === phases.length - 1;
-
-              return (
-                <div key={phaseIdx} className="flex items-stretch">
-                  {/* Phase column */}
+      {packages.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 border border-border rounded-lg bg-card">
+          <CalendarIcon className="w-12 h-12 text-muted-foreground/30 mb-3" />
+          <h3 className="text-sm font-semibold text-foreground">No Work Packages</h3>
+          <p className="text-xs text-muted-foreground mt-1">
+            Assign work orders to this shutdown from the Shutdown Schedule view
+          </p>
+        </div>
+      ) : (
+        <div className="flex gap-0">
+          {/* Day columns */}
+          <div className="flex-1 min-w-0 overflow-x-auto">
+            <div className="flex min-w-fit">
+              {/* Unscheduled column */}
+              {unscheduled.length > 0 && (
+                <div className="flex items-stretch">
                   <div className="min-w-[240px] max-w-[280px] flex-1">
-                    {/* Phase header with timeline */}
-                    <div className={cn(
-                      "border border-border px-3 py-2",
-                      phaseIdx === 0 ? "rounded-tl-lg" : "",
-                      isLastPhase ? "rounded-tr-lg" : "",
-                    )}>
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="text-[11px] font-bold text-foreground tracking-wide">{phase.label}</h3>
-                        <span className="text-[10px] text-muted-foreground font-semibold bg-muted/60 px-1.5 py-0.5 rounded-full">{visibleCount}</span>
+                    <div className="border border-border px-3 py-2 rounded-tl-lg bg-amber-500/5">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <h3 className="text-[11px] font-bold text-amber-600 tracking-wide">Unscheduled</h3>
+                        <span className="text-[10px] text-muted-foreground font-semibold bg-muted/60 px-1.5 py-0.5 rounded-full">
+                          {unscheduled.filter(p => visibleIds.has(p.id)).length}
+                        </span>
                       </div>
-                      {/* Time range bar */}
-                      <div className="flex items-center gap-1.5 text-[9px]">
-                        <span className="font-mono font-semibold text-foreground bg-muted/80 px-1.5 py-0.5 rounded">{time.start}</span>
-                        <div className="flex-1 h-px bg-border relative">
-                          <ChevronRight className="w-3 h-3 text-muted-foreground absolute -right-1 -top-1.5" />
-                        </div>
-                        <span className="font-mono text-muted-foreground">{time.end}</span>
-                      </div>
+                      <span className="text-[9px] text-muted-foreground">No date assigned</span>
                     </div>
-
-                    {/* Phase cards */}
-                    <div className={cn(
-                      "border border-t-0 border-border bg-background p-2 space-y-2 min-h-[200px]",
-                      phaseIdx === 0 ? "rounded-bl-lg" : "",
-                      isLastPhase ? "rounded-br-lg" : "",
-                    )}>
-                      {phase.packages.map((pkg) => {
+                    <div className="border border-t-0 border-border bg-background p-2 space-y-2 min-h-[200px] rounded-bl-lg">
+                      {unscheduled.map(pkg => {
                         const visible = visibleIds.has(pkg.id);
                         const isSelected = selectedId === pkg.id;
-                        const isImpacted = delayedImpact.has(pkg.id);
-                        const incomingEdges = EDGES.filter(e => e.to === pkg.id);
-
                         return (
                           <SequenceFlowCard
                             key={pkg.id}
                             pkg={pkg}
                             isSelected={isSelected}
                             isVisible={visible}
-                            isImpacted={isImpacted}
-                            showDelayedOnly={showDelayedOnly}
-                            incomingEdges={incomingEdges}
+                            isImpacted={false}
+                            showDelayedOnly={false}
+                            incomingEdges={[]}
                             onSelect={() => setSelectedId(isSelected ? null : pkg.id)}
                           />
                         );
                       })}
-
-                      {visibleCount === 0 && (
-                        <div className="text-center py-8 text-[10px] text-muted-foreground">No packages</div>
-                      )}
                     </div>
                   </div>
-
-                  {/* Flow arrow between phases */}
-                  {!isLastPhase && (
-                    <div className="flex flex-col items-center justify-center w-8 flex-shrink-0">
-                      <div className="flex-1 w-px bg-border" />
-                      <div className="my-2 flex flex-col items-center gap-1">
-                        <div className="w-6 h-6 rounded-full bg-muted/60 border border-border flex items-center justify-center">
-                          <ChevronRight className="w-3.5 h-3.5 text-foreground" />
-                        </div>
-                      </div>
-                      <div className="flex-1 w-px bg-border" />
-                    </div>
-                  )}
+                  <div className="flex flex-col items-center justify-center w-6 flex-shrink-0">
+                    <div className="flex-1 w-px bg-border" />
+                  </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
+              )}
 
-        {/* ===== DETAIL PANEL ===== */}
-        {selected && (
-          <SequenceFlowDetailPanel
-            selected={selected}
-            delayedImpact={delayedImpact}
-            onClose={() => setSelectedId(null)}
-            onSelect={setSelectedId}
-            packages={packages}
-          />
-        )}
-      </div>
+              {/* Day columns */}
+              {dayColumns.map((day, dayIdx) => {
+                const dayPkgs = packagesByDay.get(day.dateStr) || [];
+                const visibleCount = dayPkgs.filter(p => visibleIds.has(p.id)).length;
+                const isFirst = dayIdx === 0 && unscheduled.length === 0;
+                const isLast = dayIdx === dayColumns.length - 1;
+                const isToday = isSameDay(day.date, new Date());
+
+                return (
+                  <div key={day.dateStr} className="flex items-stretch">
+                    <div className="min-w-[240px] max-w-[280px] flex-1">
+                      {/* Day header */}
+                      <div className={cn(
+                        "border border-border px-3 py-2",
+                        isFirst ? "rounded-tl-lg" : "",
+                        isLast ? "rounded-tr-lg" : "",
+                        isToday && "bg-primary/5 border-primary/30",
+                      )}>
+                        <div className="flex items-center justify-between mb-0.5">
+                          <h3 className={cn("text-[11px] font-bold tracking-wide", isToday ? "text-primary" : "text-foreground")}>
+                            {day.label}
+                          </h3>
+                          <span className="text-[10px] text-muted-foreground font-semibold bg-muted/60 px-1.5 py-0.5 rounded-full">
+                            {visibleCount}
+                          </span>
+                        </div>
+                        {isToday && <span className="text-[9px] text-primary font-medium">TODAY</span>}
+                      </div>
+
+                      {/* Day cards */}
+                      <div className={cn(
+                        "border border-t-0 border-border bg-background p-2 space-y-2 min-h-[200px]",
+                        isFirst ? "rounded-bl-lg" : "",
+                        isLast ? "rounded-br-lg" : "",
+                      )}>
+                        {dayPkgs.map(pkg => {
+                          const visible = visibleIds.has(pkg.id);
+                          const isSelected = selectedId === pkg.id;
+                          return (
+                            <SequenceFlowCard
+                              key={pkg.id}
+                              pkg={pkg}
+                              isSelected={isSelected}
+                              isVisible={visible}
+                              isImpacted={false}
+                              showDelayedOnly={false}
+                              incomingEdges={[]}
+                              onSelect={() => setSelectedId(isSelected ? null : pkg.id)}
+                            />
+                          );
+                        })}
+                        {visibleCount === 0 && dayPkgs.length === 0 && (
+                          <div className="text-center py-8 text-[10px] text-muted-foreground">No packages</div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Divider between days */}
+                    {!isLast && (
+                      <div className="flex flex-col items-center justify-center w-4 flex-shrink-0">
+                        <div className="flex-1 w-px bg-border" />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Detail panel */}
+          {selected && (
+            <SequenceFlowDetailPanel
+              selected={selected}
+              delayedImpact={new Set()}
+              onClose={() => setSelectedId(null)}
+              onSelect={setSelectedId}
+              packages={packages}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }

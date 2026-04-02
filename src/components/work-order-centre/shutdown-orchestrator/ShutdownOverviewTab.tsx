@@ -54,9 +54,9 @@ const SHIFT_STYLE: Record<string, string> = {
 
 export function ShutdownOverviewTab() {
   const { shutdowns } = useShutdowns();
-  const { navigateToTab, setFilterArea, setSelectedPackageId, packages, areaSummaries } = useOrchestratorContext();
+  const { navigateToTab, setFilterArea, setSelectedPackageId, packages, areaSummaries, selectedShutdownId } = useOrchestratorContext();
 
-  const shutdown = shutdowns[0] ?? null;
+  const shutdown = shutdowns.find(s => s.id === selectedShutdownId) ?? null;
 
   const DEMO_AREAS = areaSummaries;
 
