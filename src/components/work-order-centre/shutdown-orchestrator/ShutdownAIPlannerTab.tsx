@@ -100,7 +100,7 @@ export function ShutdownAIPlannerTab() {
     try {
       const fullInput = inputMode === "structured" ? `[Area: ${structArea}] [Type: ${structType}] ${input}` : input;
       const { data, error } = await supabase.functions.invoke("shutdown-ai-planner", {
-        body: { input: fullInput, context: WP_CONTEXT },
+        body: { input: fullInput, context: packages.map(p => `${p.id}: ${p.title} (${p.area}, ${p.trade})`).join("\n") },
       });
       if (error) throw error;
       if (data?.error) { toast.error(data.error); return; }
