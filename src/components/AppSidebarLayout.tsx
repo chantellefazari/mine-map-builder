@@ -31,6 +31,7 @@ const NAV_ITEMS = [
   { title: "Implementation Readiness", icon: ClipboardCheck, href: "/implementation-readiness", tabKey: "implementation-readiness" },
   { title: "Risk Assessment", icon: ShieldAlert, href: "/implementation-risk-assessment", tabKey: "implementation-risk-assessment" },
   { title: "Component Requests", icon: ClipboardList, href: "/component-requests", tabKey: "component-requests" },
+  { title: "Valve Certificates", icon: FileBadge, href: "/valve-certificates", tabKey: "valve-certificates" },
 ];
 
 export function AppSidebarLayout({ children }: { children: ReactNode }) {

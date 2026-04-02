@@ -97,6 +97,7 @@ const App = () => {
                 <Route path="/implementation-readiness" element={<P tabKey="implementation-readiness"><ImplementationReadiness /></P>} />
                 <Route path="/implementation-risk-assessment" element={<P tabKey="implementation-risk-assessment"><ImplementationRiskAssessment /></P>} />
                 <Route path="/component-requests" element={<P tabKey="component-requests"><ComponentRequests /></P>} />
+                <Route path="/valve-certificates" element={<P tabKey="valve-certificates"><ValveCertificates /></P>} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
