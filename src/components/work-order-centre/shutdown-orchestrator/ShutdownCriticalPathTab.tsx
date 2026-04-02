@@ -10,7 +10,7 @@ import {
   Activity, CheckCircle2, CircleDot,
 } from "lucide-react";
 import {
-  PACKAGES, ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS,
+  ALL_AREA_OPTIONS, ALL_TRADES, ALL_SHIFTS,
   type ShutdownWorkPackage,
 } from "./shutdownData";
 
