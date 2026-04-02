@@ -93,7 +93,7 @@ export function ShutdownPrintPackTab() {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-3">
         {PACK_TYPES.map((pack) => (
           <button key={pack.key} onClick={() => setPackType(pack.key)} className={cn("text-left rounded-lg border p-4 transition-all hover:shadow-sm", packType === pack.key ? "border-primary bg-primary/5 shadow-sm" : "border-border bg-card")}>
             <div className="flex items-center gap-2 mb-1.5">
