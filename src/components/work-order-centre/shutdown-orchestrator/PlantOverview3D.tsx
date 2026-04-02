@@ -783,11 +783,12 @@ const ZONE_BOUNDS: Record<string, { pos: [number, number, number]; size: [number
   "Admin & Stores":         { pos: [2,    0.03, -18],   size: [22, 0.02, 16] },
 };
 
-function ZoneOverlay({ area, layout, isSelected, onSelect }: {
+function ZoneOverlay({ area, layout, isSelected, onSelect, onHover }: {
   area: AreaSummary;
   layout: { pos: [number, number, number]; size: [number, number, number] };
   isSelected: boolean;
   onSelect: () => void;
+  onHover: (hovered: boolean, e?: { clientX: number; clientY: number }) => void;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
@@ -804,8 +805,9 @@ function ZoneOverlay({ area, layout, isSelected, onSelect }: {
       <mesh
         ref={meshRef}
         position={layout.pos}
-        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = "pointer"; }}
-        onPointerOut={() => { setHovered(false); document.body.style.cursor = "auto"; }}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = "pointer"; onHover(true, { clientX: (e as any).clientX ?? 0, clientY: (e as any).clientY ?? 0 }); }}
+        onPointerMove={(e) => { onHover(true, { clientX: (e as any).clientX ?? 0, clientY: (e as any).clientY ?? 0 }); }}
+        onPointerOut={() => { setHovered(false); document.body.style.cursor = "auto"; onHover(false); }}
         onClick={(e) => { e.stopPropagation(); onSelect(); }}
       >
         <boxGeometry args={layout.size} />
