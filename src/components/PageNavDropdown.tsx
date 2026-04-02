@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import {
   TreePine, Wrench, Package, ClipboardList, Warehouse, BookOpen,
   ShoppingCart, Building2, CalendarClock, PackageSearch, FileInput,
-  Home, ChevronDown, Box, Brain,
+  Home, ChevronDown, Box, Brain, FileBadge,
 } from "lucide-react";
 import {
   DropdownMenu,
