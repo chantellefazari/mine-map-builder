@@ -2,14 +2,16 @@ import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { WorkRequest } from "@/hooks/useWorkRequests";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend,
   ScatterChart, Scatter, CartesianGrid, ZAxis,
 } from "recharts";
-import { Activity, Timer, Repeat, ShieldAlert } from "lucide-react";
+import { Activity, Timer, Repeat, ShieldAlert, FileText } from "lucide-react";
 
 interface Props {
   workOrders: WorkOrder[];
+  workRequests: WorkRequest[];
 }
 
 /** Reliability — MTBF / MTTR per asset class */
