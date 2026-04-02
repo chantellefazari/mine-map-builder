@@ -62,7 +62,7 @@ export function ShutdownCriticalPathTab() {
     const delayed = new Set(criticalDelays.map((d) => d.id));
     const affected = new Set<string>();
     const visit = (id: string) => {
-      const pkg = PACKAGES.find((p) => p.id === id);
+      const pkg = packages.find((p) => p.id === id);
       if (!pkg) return;
       pkg.successors.forEach((s) => {
         if (!delayed.has(s) && !affected.has(s)) {
