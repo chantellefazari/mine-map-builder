@@ -198,14 +198,14 @@ const DataMappingBody = ({ allRows, ready, partial, notStarted, pct, weightedPct
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-[10px] text-muted-foreground font-medium tracking-wide uppercase">TCMG-STD-DM-001 · Rev 1.0</p>
-            <CardTitle className="text-xl mt-1">Data Mapping & Readiness Documentation</CardTitle>
+            <p className="text-[10px] text-muted-foreground font-medium tracking-wide uppercase">TCMG-STD-SR-001 · Rev 2.0</p>
+            <CardTitle className="text-xl mt-1">Site Readiness Assessment</CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              Field-level mapping from TCMG source documents to target system (D365 or equivalent) entities
+              Full site readiness evaluation across data, processes, physical infrastructure, people, and systems
             </p>
           </div>
           <Badge variant="outline" className="text-xs shrink-0">
-            Phase 1 Deliverable
+            Site Readiness
           </Badge>
         </div>
       </CardHeader>
