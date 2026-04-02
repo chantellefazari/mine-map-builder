@@ -1896,6 +1896,7 @@ export type Database = {
         Row: {
           created_at: string
           duration_hours: number
+          finish_time: string
           id: string
           is_template: boolean
           notes: string
@@ -1903,13 +1904,16 @@ export type Database = {
           responsible: string
           shutdown_id: string
           sort_order: number
+          start_time: string
           status: string
           step_description: string
           updated_at: string
+          work_centre: string
         }
         Insert: {
           created_at?: string
           duration_hours?: number
+          finish_time?: string
           id?: string
           is_template?: boolean
           notes?: string
@@ -1917,13 +1921,16 @@ export type Database = {
           responsible?: string
           shutdown_id: string
           sort_order?: number
+          start_time?: string
           status?: string
           step_description?: string
           updated_at?: string
+          work_centre?: string
         }
         Update: {
           created_at?: string
           duration_hours?: number
+          finish_time?: string
           id?: string
           is_template?: boolean
           notes?: string
@@ -1931,9 +1938,11 @@ export type Database = {
           responsible?: string
           shutdown_id?: string
           sort_order?: number
+          start_time?: string
           status?: string
           step_description?: string
           updated_at?: string
+          work_centre?: string
         }
         Relationships: [
           {
