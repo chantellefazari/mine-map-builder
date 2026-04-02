@@ -11,6 +11,7 @@ import {
   ArrowRightLeft, Calendar, Target, ChevronRight, Box,
 } from "lucide-react";
 import { PlantOverview3D } from "./PlantOverview3D";
+import { ShutdownRundownChecklist } from "./ShutdownRundownChecklist";
 import {
   DEMO_RISKS, DEMO_SHIFT_FOCUS,
   type RiskItem, type ShiftFocusItem,
