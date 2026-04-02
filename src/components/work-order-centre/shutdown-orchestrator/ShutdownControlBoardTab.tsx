@@ -55,7 +55,7 @@ export function ShutdownControlBoardTab() {
   const [groupBy, setGroupBy] = useState<GroupBy>("status");
   const [filterDelayed, setFilterDelayed] = useState(false);
 
-  const selected = PACKAGES.find((p) => p.id === selectedId) ?? null;
+  const selected = packages.find((p) => p.id === selectedId) ?? null;
 
   const filtered = useMemo(() => {
     return PACKAGES.filter((p) => {
