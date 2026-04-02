@@ -12,10 +12,7 @@ import {
 } from "lucide-react";
 import { PlantOverview3D } from "./PlantOverview3D";
 import { ShutdownRundownChecklist } from "./ShutdownRundownChecklist";
-import {
-  DEMO_RISKS, DEMO_SHIFT_FOCUS,
-  type RiskItem, type ShiftFocusItem,
-} from "./shutdownData";
+import type { ShutdownWorkPackage } from "./shutdownData";
 
 /* ------------------------------------------------------------------ */
 /*  HELPERS                                                            */
@@ -73,6 +70,28 @@ export function ShutdownOverviewTab() {
     const overallPct = total > 0 ? Math.round((complete / total) * 100) : 0;
     return { total, ready, active, blocked, delayed, complete, criticalPath, highRiskAreas, overallPct };
   }, [DEMO_AREAS, packages]);
+
+  const liveRisks = useMemo(() => {
+    return packages
+      .filter(p => p.status === "Blocked" || p.status === "Delayed" || p.priority)
+      .map(p => ({
+        id: p.id,
+        title: p.title,
+        area: p.area,
+        supervisor: p.supervisor,
+        severity: p.status === "Blocked" ? "Critical" : p.priority ? "High" : "Medium",
+      }))
+      .slice(0, 8);
+  }, [packages]);
+
+  const todayPackages = useMemo(() => {
+    const today = format(new Date(), "yyyy-MM-dd");
+    return packages.filter(p => {
+      if ((p as any).scheduledDate === today) return true;
+      if (p.status === "Active") return true;
+      return false;
+    }).slice(0, 9);
+  }, [packages]);
 
   const plannedDays = shutdown?.end_date
     ? differenceInDays(parseISO(shutdown.end_date), parseISO(shutdown.start_date)) + 1
@@ -254,10 +273,13 @@ export function ShutdownOverviewTab() {
             <h3 className="text-sm font-semibold text-foreground">Top Risks / Constraints</h3>
           </div>
           <div className="space-y-2 max-h-[420px] overflow-y-auto">
-            {DEMO_RISKS.map((r, i) => (
+            {liveRisks.length === 0 && (
+              <p className="text-xs text-muted-foreground py-4 text-center">No blocked or delayed packages</p>
+            )}
+            {liveRisks.map((r) => (
               <button
-                key={i}
-                onClick={() => { setSelectedPackageId(r.workPackage); navigateToTab("control"); }}
+                key={r.id}
+                onClick={() => { setSelectedPackageId(r.id); navigateToTab("control"); }}
                 className={cn(
                   "w-full text-left rounded-md border p-2.5 text-xs cursor-pointer hover:shadow-sm transition-shadow",
                   SEVERITY_STYLE[r.severity]
@@ -269,10 +291,10 @@ export function ShutdownOverviewTab() {
                   </Badge>
                   <span className="text-[10px] opacity-80">{r.area}</span>
                 </div>
-                <p className="font-medium leading-snug mb-1">{r.risk}</p>
+                <p className="font-medium leading-snug mb-1">{r.title}</p>
                 <div className="flex items-center justify-between text-[10px] opacity-80">
-                  <span className="font-mono">{r.workPackage}</span>
-                  <span>{r.owner}</span>
+                  <span className="font-mono">{r.id}</span>
+                  <span>{r.supervisor}</span>
                 </div>
               </button>
             ))}
@@ -287,26 +309,32 @@ export function ShutdownOverviewTab() {
           <h3 className="text-sm font-semibold text-foreground">Today / This Shift Focus</h3>
           <Badge variant="secondary" className="text-[9px] h-4 ml-1">Day Shift</Badge>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
-          {DEMO_SHIFT_FOCUS.map((item, i) => {
-            const Icon = SHIFT_ICON[item.type];
-            return (
-              <div
-                key={i}
-                className="flex items-start gap-2.5 px-3 py-2.5 rounded-md border border-border bg-background"
-              >
-                <Icon className={cn("w-4 h-4 mt-0.5 flex-shrink-0", SHIFT_STYLE[item.type])} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-foreground leading-snug">{item.label}</p>
-                  <span className="text-[10px] text-muted-foreground">{item.area}</span>
+        {todayPackages.length === 0 ? (
+          <p className="text-xs text-muted-foreground py-4 text-center">No packages scheduled for today</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
+            {todayPackages.map((pkg) => {
+              const statusType = pkg.status === "Complete" ? "finish" : pkg.status === "Active" ? "start" : "decision";
+              const Icon = SHIFT_ICON[statusType];
+              return (
+                <div
+                  key={pkg.id}
+                  className="flex items-start gap-2.5 px-3 py-2.5 rounded-md border border-border bg-background cursor-pointer hover:shadow-sm"
+                  onClick={() => { setSelectedPackageId(pkg.id); navigateToTab("control"); }}
+                >
+                  <Icon className={cn("w-4 h-4 mt-0.5 flex-shrink-0", SHIFT_STYLE[statusType])} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-foreground leading-snug">{pkg.title}</p>
+                    <span className="text-[10px] text-muted-foreground">{pkg.area}</span>
+                  </div>
+                  <Badge variant="outline" className="text-[9px] h-4 capitalize flex-shrink-0">
+                    {pkg.status}
+                  </Badge>
                 </div>
-                <Badge variant="outline" className="text-[9px] h-4 capitalize flex-shrink-0">
-                  {item.type}
-                </Badge>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* ============ RUN-DOWN / RUN-UP CHECKLISTS ============ */}
