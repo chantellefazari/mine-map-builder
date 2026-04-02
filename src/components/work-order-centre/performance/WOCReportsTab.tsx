@@ -4,11 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { WorkRequest } from "@/hooks/useWorkRequests";
 import { FileDown, Printer } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
   workOrders: WorkOrder[];
+  workRequests: WorkRequest[];
 }
 
 const statBucket = (status: string) => {
