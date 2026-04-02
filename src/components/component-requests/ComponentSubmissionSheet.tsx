@@ -63,7 +63,7 @@ export const ComponentSubmissionSheet = () => {
 
   const handleSubmit = async () => {
     if (validRows.length === 0) {
-      toast({ title: "No valid rows", description: "Each row needs at least an Asset/P&ID Tag and Part Name.", variant: "destructive" });
+      toast({ title: "No valid rows", description: "Each row needs a Name, Asset/P&ID Tag, and Part Name.", variant: "destructive" });
       return;
     }
     setIsSubmitting(true);
