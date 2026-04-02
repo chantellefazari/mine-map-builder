@@ -2,14 +2,16 @@ import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { WorkOrder } from "@/hooks/useWorkOrders";
+import { WorkRequest } from "@/hooks/useWorkRequests";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend,
   PieChart, Pie,
 } from "recharts";
-import { AlertTriangle, Layers, Clock, TrendingDown } from "lucide-react";
+import { AlertTriangle, Layers, Clock, TrendingDown, FileText } from "lucide-react";
 
 interface Props {
   workOrders: WorkOrder[];
+  workRequests: WorkRequest[];
 }
 
 const AGING_BUCKETS = [
