@@ -144,7 +144,7 @@ const PHYSICAL_SITE_MAPPINGS: MappingRow[] = [
   { field: "Scrap & Waste Disposal Process", sourceDocument: "N/A — Not yet defined", transformation: "No scrap process or disposal area designated", status: "Not Started" },
   { field: "Bunded Oil / Chemical Storage", sourceDocument: "N/A — Not yet defined", transformation: "No bunded storage area exists on site", status: "Not Started" },
   { field: "Chemical Packaging Disposal", sourceDocument: "N/A — Not yet defined", transformation: "No disposal process defined, regulatory compliance risk", status: "Not Started" },
-  { field: "Physical Asset Tags / Signage", sourceDocument: "Asset Tag Rollout Plan", transformation: "Tag register built (450+ tags), physical installation pending", status: "Partial" },
+  { field: "Physical Asset Tags / Signage", sourceDocument: "Asset Tag Rollout Plan (TCMG-STD-TAG-002)", transformation: "Tag register built (450+ tags), rollout plan complete, physical installation pending", status: "Partial" },
 ];
 
 const PEOPLE_CHANGE_MAPPINGS: MappingRow[] = [
