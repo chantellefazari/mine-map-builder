@@ -121,6 +121,14 @@ export const ComponentSubmissionSheet = () => {
                   <td className="p-1.5 text-xs text-muted-foreground text-center">{idx + 1}</td>
                   <td className="p-1">
                     <Input
+                      value={row.submittedBy}
+                      onChange={(e) => updateRow(row.id, "submittedBy", e.target.value)}
+                      placeholder="e.g. John Smith"
+                      className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1"
+                    />
+                  </td>
+                  <td className="p-1">
+                    <Input
                       value={row.targetAsset}
                       onChange={(e) => updateRow(row.id, "targetAsset", e.target.value)}
                       placeholder="e.g. 4-FE-100"
