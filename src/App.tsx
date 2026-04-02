@@ -35,6 +35,7 @@ const WOPrint = lazy(() => import("./pages/WOPrint"));
 const ImplementationReadiness = lazy(() => import("./pages/ImplementationReadiness"));
 const ImplementationRiskAssessment = lazy(() => import("./pages/ImplementationRiskAssessment"));
 const ComponentRequests = lazy(() => import("./pages/ComponentRequests"));
+const ValveCertificates = lazy(() => import("./pages/ValveCertificates"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -96,6 +97,7 @@ const App = () => {
                 <Route path="/implementation-readiness" element={<P tabKey="implementation-readiness"><ImplementationReadiness /></P>} />
                 <Route path="/implementation-risk-assessment" element={<P tabKey="implementation-risk-assessment"><ImplementationRiskAssessment /></P>} />
                 <Route path="/component-requests" element={<P tabKey="component-requests"><ComponentRequests /></P>} />
+                <Route path="/valve-certificates" element={<P tabKey="valve-certificates"><ValveCertificates /></P>} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />

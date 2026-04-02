@@ -4,7 +4,7 @@ import {
   TreePine, Wrench, ClipboardList, Warehouse, BookOpen,
   ShoppingCart, Building2, CalendarClock, LogOut, Shield,
   PackageSearch, FileInput, Home, Box, Brain, ChevronLeft,
-  ChevronRight, Radar, ClipboardCheck, ShieldAlert,
+  ChevronRight, Radar, ClipboardCheck, ShieldAlert, FileBadge,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -31,6 +31,7 @@ const NAV_ITEMS = [
   { title: "Implementation Readiness", icon: ClipboardCheck, href: "/implementation-readiness", tabKey: "implementation-readiness" },
   { title: "Risk Assessment", icon: ShieldAlert, href: "/implementation-risk-assessment", tabKey: "implementation-risk-assessment" },
   { title: "Component Requests", icon: ClipboardList, href: "/component-requests", tabKey: "component-requests" },
+  { title: "Valve Certificates", icon: FileBadge, href: "/valve-certificates", tabKey: "valve-certificates" },
 ];
 
 export function AppSidebarLayout({ children }: { children: ReactNode }) {
