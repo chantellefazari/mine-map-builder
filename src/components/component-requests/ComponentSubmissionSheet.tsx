@@ -59,7 +59,7 @@ export const ComponentSubmissionSheet = () => {
     setRows((prev) => prev.filter((r) => r.id !== id));
   };
 
-  const validRows = rows.filter((r) => r.targetAsset.trim() && r.partName.trim());
+  const validRows = rows.filter((r) => r.submittedBy.trim() && r.targetAsset.trim() && r.partName.trim());
 
   const handleSubmit = async () => {
     if (validRows.length === 0) {
