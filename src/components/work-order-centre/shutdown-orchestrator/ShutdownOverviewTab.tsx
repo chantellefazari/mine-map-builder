@@ -71,6 +71,28 @@ export function ShutdownOverviewTab() {
     return { total, ready, active, blocked, delayed, complete, criticalPath, highRiskAreas, overallPct };
   }, [DEMO_AREAS, packages]);
 
+  const liveRisks = useMemo(() => {
+    return packages
+      .filter(p => p.status === "Blocked" || p.status === "Delayed" || p.priority)
+      .map(p => ({
+        id: p.id,
+        title: p.title,
+        area: p.area,
+        supervisor: p.supervisor,
+        severity: p.status === "Blocked" ? "Critical" : p.priority ? "High" : "Medium",
+      }))
+      .slice(0, 8);
+  }, [packages]);
+
+  const todayPackages = useMemo(() => {
+    const today = format(new Date(), "yyyy-MM-dd");
+    return packages.filter(p => {
+      if ((p as any).scheduledDate === today) return true;
+      if (p.status === "Active") return true;
+      return false;
+    }).slice(0, 9);
+  }, [packages]);
+
   const plannedDays = shutdown?.end_date
     ? differenceInDays(parseISO(shutdown.end_date), parseISO(shutdown.start_date)) + 1
     : 0;
