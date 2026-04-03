@@ -25,7 +25,8 @@ const Home = () => {
   const [previewTitle, setPreviewTitle] = useState("");
 
   const handlePreview = (doc: typeof documents[0]) => {
-    const fullUrl = `${window.location.origin}${doc.file}`;
+    const publishedOrigin = "https://mine-map-builder.lovable.app";
+    const fullUrl = `${publishedOrigin}${doc.file}`;
     const viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fullUrl)}`;
     setPreviewUrl(viewerUrl);
     setPreviewTitle(doc.name);
