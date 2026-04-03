@@ -114,11 +114,10 @@ export const ComponentSubmissionSheet = () => {
                     />
                   </td>
                   <td className="p-1">
-                    <Input
+                    <WRAssetSearch
                       value={row.targetAsset}
-                      onChange={(e) => updateRow(row.id, "targetAsset", e.target.value)}
-                      placeholder="e.g. 4-FE-100"
-                      className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1"
+                      onSelect={(assetId) => updateRow(row.id, "targetAsset", assetId)}
+                      className="min-w-[160px]"
                     />
                   </td>
                   <td className="p-1">
