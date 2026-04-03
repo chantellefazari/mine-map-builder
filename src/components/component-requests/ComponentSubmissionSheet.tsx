@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { WRAssetSearch } from "@/components/work-order-centre/WRAssetSearch";
 
 
 interface RowData {
