@@ -17,9 +17,10 @@ interface WRAssetSearchProps {
   value: string;
   onSelect: (assetId: string, assetName: string) => void;
   className?: string;
+  showClear?: boolean;
 }
 
-export function WRAssetSearch({ value, onSelect, className }: WRAssetSearchProps) {
+export function WRAssetSearch({ value, onSelect, className, showClear = true }: WRAssetSearchProps) {
   const { data: areas } = useRevBPlantAssets();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
@@ -93,7 +94,7 @@ export function WRAssetSearch({ value, onSelect, className }: WRAssetSearchProps
           placeholder="Search asset tree..."
           className="h-9 text-sm pl-8 pr-8"
         />
-        {value && (
+        {value && showClear && (
           <button onClick={handleClear} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
             <X className="h-3.5 w-3.5" />
           </button>

@@ -118,6 +118,7 @@ export const ComponentSubmissionSheet = () => {
                       value={row.targetAsset}
                       onSelect={(assetId) => updateRow(row.id, "targetAsset", assetId)}
                       className="min-w-[160px]"
+                      showClear={false}
                     />
                   </td>
                   <td className="p-1">
