@@ -17,6 +17,7 @@ interface WRAssetSearchProps {
   value: string;
   onSelect: (assetId: string, assetName: string) => void;
   className?: string;
+  showClear?: boolean;
 }
 
 export function WRAssetSearch({ value, onSelect, className }: WRAssetSearchProps) {
