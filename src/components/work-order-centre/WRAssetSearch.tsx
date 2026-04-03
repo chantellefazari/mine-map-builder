@@ -20,7 +20,7 @@ interface WRAssetSearchProps {
   showClear?: boolean;
 }
 
-export function WRAssetSearch({ value, onSelect, className }: WRAssetSearchProps) {
+export function WRAssetSearch({ value, onSelect, className, showClear = true }: WRAssetSearchProps) {
   const { data: areas } = useRevBPlantAssets();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
