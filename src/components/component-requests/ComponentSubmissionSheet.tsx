@@ -7,6 +7,7 @@ import { Plus, Trash2, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { WRAssetSearch } from "@/components/work-order-centre/WRAssetSearch";
+import { ComponentPicker } from "@/components/component-requests/ComponentPicker";
 import { useAuth } from "@/context/AuthContext";
 
 const CATEGORIES = [
@@ -27,6 +28,9 @@ interface RowData {
   id: string;
   changeType: string;
   targetAsset: string;
+  targetComponentValue: string; // "index:name"
+  targetComponentIndex: number | null;
+  targetComponentName: string;
   partName: string;
   category: string;
   manufacturer: string;
@@ -40,6 +44,9 @@ const emptyRow = (): RowData => ({
   id: crypto.randomUUID(),
   changeType: "Add",
   targetAsset: "",
+  targetComponentValue: "",
+  targetComponentIndex: null,
+  targetComponentName: "",
   partName: "",
   category: "",
   manufacturer: "",
@@ -56,8 +63,36 @@ export const ComponentSubmissionSheet = () => {
 
   const submittedBy = user?.user_metadata?.full_name || user?.email || "";
 
-  const updateRow = (id: string, field: keyof RowData, value: string) => {
+  const updateRow = (id: string, field: keyof RowData, value: any) => {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, [field]: value } : r)));
+  };
+
+  const handleChangeType = (id: string, type: string) => {
+    setRows((prev) => prev.map((r) => {
+      if (r.id !== id) return r;
+      return {
+        ...r,
+        changeType: type,
+        targetComponentValue: "",
+        targetComponentIndex: null,
+        targetComponentName: "",
+        // Clear fields when switching to Remove
+        ...(type === "Remove" ? { partName: "", category: "", manufacturer: "", partModel: "", criticality: "Medium" } : {}),
+      };
+    }));
+  };
+
+  const handleComponentSelect = (id: string, index: number, name: string) => {
+    setRows((prev) => prev.map((r) => {
+      if (r.id !== id) return r;
+      return {
+        ...r,
+        targetComponentValue: `${index}:${name}`,
+        targetComponentIndex: index,
+        targetComponentName: name,
+        partName: name, // pre-fill part name from selected component
+      };
+    }));
   };
 
   const addRow = () => setRows((prev) => [...prev, emptyRow()]);
@@ -67,11 +102,21 @@ export const ComponentSubmissionSheet = () => {
     setRows((prev) => prev.filter((r) => r.id !== id));
   };
 
-  const validRows = rows.filter((r) => r.targetAsset.trim() && r.partName.trim() && r.partModel.trim());
+  const validRows = rows.filter((r) => {
+    if (!r.targetAsset.trim()) return false;
+    if (r.changeType === "Remove") {
+      return r.targetComponentIndex !== null;
+    }
+    if (r.changeType === "Edit") {
+      return r.targetComponentIndex !== null && r.partName.trim();
+    }
+    // Add
+    return r.partName.trim() && r.partModel.trim();
+  });
 
   const handleSubmit = async () => {
     if (validRows.length === 0) {
-      toast({ title: "No valid rows", description: "Each row needs an Asset, Part Name, and Part #/Model.", variant: "destructive" });
+      toast({ title: "No valid rows", description: "Check required fields for each action type.", variant: "destructive" });
       return;
     }
     setIsSubmitting(true);
@@ -80,6 +125,8 @@ export const ComponentSubmissionSheet = () => {
         change_type: r.changeType.toLowerCase(),
         target_asset_number: r.targetAsset.trim(),
         target_pid_tag: r.targetAsset.trim(),
+        target_component_index: r.targetComponentIndex,
+        target_component_name: r.targetComponentName,
         part_name: r.partName.trim(),
         category: r.category,
         manufacturer: r.manufacturer.trim(),
@@ -103,6 +150,8 @@ export const ComponentSubmissionSheet = () => {
     }
   };
 
+  const isEditOrRemove = (type: string) => type === "Edit" || type === "Remove";
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -120,7 +169,9 @@ export const ComponentSubmissionSheet = () => {
               <tr>
                 <th className="p-2 text-left font-semibold text-xs uppercase tracking-wide min-w-[90px]">Action</th>
                 <th className="p-2 text-left font-semibold text-xs uppercase tracking-wide min-w-[200px]">Asset / P&ID Tag *</th>
-                <th className="p-2 text-left font-semibold text-xs uppercase tracking-wide min-w-[160px]">Part Name *</th>
+                <th className="p-2 text-left font-semibold text-xs uppercase tracking-wide min-w-[180px]">
+                  <span className="inline" id="col-component">Component / Part Name *</span>
+                </th>
                 <th className="p-2 text-left font-semibold text-xs uppercase tracking-wide min-w-[160px]">Category *</th>
                 <th className="p-2 text-left font-semibold text-xs uppercase tracking-wide min-w-[120px]">Manufacturer</th>
                 <th className="p-2 text-left font-semibold text-xs uppercase tracking-wide min-w-[140px]">Part # / Model *</th>
@@ -135,7 +186,7 @@ export const ComponentSubmissionSheet = () => {
               {rows.map((row) => (
                 <tr key={row.id} className="border-t border-border/50 hover:bg-muted/30">
                   <td className="p-1">
-                    <Select value={row.changeType} onValueChange={(v) => updateRow(row.id, "changeType", v)}>
+                    <Select value={row.changeType} onValueChange={(v) => handleChangeType(row.id, v)}>
                       <SelectTrigger className="h-8 text-xs border-0 bg-transparent">
                         <SelectValue />
                       </SelectTrigger>
@@ -149,73 +200,107 @@ export const ComponentSubmissionSheet = () => {
                   <td className="p-1">
                     <WRAssetSearch
                       value={row.targetAsset}
-                      onSelect={(assetId) => updateRow(row.id, "targetAsset", assetId)}
+                      onSelect={(assetId) => {
+                        updateRow(row.id, "targetAsset", assetId);
+                        // Reset component selection when asset changes
+                        updateRow(row.id, "targetComponentValue", "");
+                        updateRow(row.id, "targetComponentIndex", null);
+                        updateRow(row.id, "targetComponentName", "");
+                      }}
                       className="min-w-[160px]"
                       showClear={false}
                     />
                   </td>
                   <td className="p-1">
-                    <Input
-                      value={row.partName}
-                      onChange={(e) => updateRow(row.id, "partName", e.target.value)}
-                      placeholder="Part name"
-                      className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1"
-                    />
+                    {isEditOrRemove(row.changeType) ? (
+                      <ComponentPicker
+                        assetNumber={row.targetAsset}
+                        value={row.targetComponentValue}
+                        onSelect={(index, name) => handleComponentSelect(row.id, index, name)}
+                      />
+                    ) : (
+                      <Input
+                        value={row.partName}
+                        onChange={(e) => updateRow(row.id, "partName", e.target.value)}
+                        placeholder="Part name"
+                        className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1"
+                      />
+                    )}
                   </td>
                   <td className="p-1">
-                    <Select value={row.category} onValueChange={(v) => updateRow(row.id, "category", v)}>
-                      <SelectTrigger className="h-8 text-xs border-0 bg-transparent">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {CATEGORIES.map((c) => (
-                          <SelectItem key={c} value={c}>{c}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    {row.changeType === "Remove" ? (
+                      <span className="text-xs text-muted-foreground px-2">—</span>
+                    ) : (
+                      <Select value={row.category} onValueChange={(v) => updateRow(row.id, "category", v)}>
+                        <SelectTrigger className="h-8 text-xs border-0 bg-transparent">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CATEGORIES.map((c) => (
+                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   </td>
                   <td className="p-1">
-                    <Input
-                      value={row.manufacturer}
-                      onChange={(e) => updateRow(row.id, "manufacturer", e.target.value)}
-                      placeholder="Optional"
-                      className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1"
-                    />
+                    {row.changeType === "Remove" ? (
+                      <span className="text-xs text-muted-foreground px-2">—</span>
+                    ) : (
+                      <Input
+                        value={row.manufacturer}
+                        onChange={(e) => updateRow(row.id, "manufacturer", e.target.value)}
+                        placeholder="Optional"
+                        className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1"
+                      />
+                    )}
                   </td>
                   <td className="p-1">
-                    <Input
-                      value={row.partModel}
-                      onChange={(e) => updateRow(row.id, "partModel", e.target.value)}
-                      placeholder="Required"
-                      className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1"
-                    />
+                    {row.changeType === "Remove" ? (
+                      <span className="text-xs text-muted-foreground px-2">—</span>
+                    ) : (
+                      <Input
+                        value={row.partModel}
+                        onChange={(e) => updateRow(row.id, "partModel", e.target.value)}
+                        placeholder="Required"
+                        className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1"
+                      />
+                    )}
                   </td>
                   <td className="p-1">
-                    <Input
-                      type="number"
-                      min={1}
-                      value={row.quantity}
-                      onChange={(e) => updateRow(row.id, "quantity", e.target.value)}
-                      className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1 w-16"
-                    />
+                    {row.changeType === "Remove" ? (
+                      <span className="text-xs text-muted-foreground px-2">—</span>
+                    ) : (
+                      <Input
+                        type="number"
+                        min={1}
+                        value={row.quantity}
+                        onChange={(e) => updateRow(row.id, "quantity", e.target.value)}
+                        className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1 w-16"
+                      />
+                    )}
                   </td>
                   <td className="p-1">
-                    <Select value={row.criticality} onValueChange={(v) => updateRow(row.id, "criticality", v)}>
-                      <SelectTrigger className="h-8 text-xs border-0 bg-transparent">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {CRITICALITY_OPTIONS.map((c) => (
-                          <SelectItem key={c} value={c}>{c}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    {row.changeType === "Remove" ? (
+                      <span className="text-xs text-muted-foreground px-2">—</span>
+                    ) : (
+                      <Select value={row.criticality} onValueChange={(v) => updateRow(row.id, "criticality", v)}>
+                        <SelectTrigger className="h-8 text-xs border-0 bg-transparent">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CRITICALITY_OPTIONS.map((c) => (
+                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   </td>
                   <td className="p-1">
                     <Input
                       value={row.notes}
                       onChange={(e) => updateRow(row.id, "notes", e.target.value)}
-                      placeholder="Optional"
+                      placeholder={row.changeType === "Remove" ? "Reason for removal" : "Optional"}
                       className="h-8 text-xs border-0 bg-transparent focus-visible:ring-1"
                     />
                   </td>
