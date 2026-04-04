@@ -151,7 +151,10 @@ export type Database = {
       }
       component_change_requests: {
         Row: {
+          category: string
+          change_type: string
           created_at: string
+          criticality: string
           id: string
           manufacturer: string
           notes: string
@@ -168,7 +171,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string
+          change_type?: string
           created_at?: string
+          criticality?: string
           id?: string
           manufacturer?: string
           notes?: string
@@ -185,7 +191,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string
+          change_type?: string
           created_at?: string
+          criticality?: string
           id?: string
           manufacturer?: string
           notes?: string

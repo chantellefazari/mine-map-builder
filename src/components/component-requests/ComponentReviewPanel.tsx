@@ -4,9 +4,21 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, XCircle, Clock, Loader2 } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Loader2, Plus, Pencil, Trash } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
+
+const changeTypeIcon = (type: string) => {
+  if (type === "edit") return <Pencil className="h-3 w-3" />;
+  if (type === "remove") return <Trash className="h-3 w-3" />;
+  return <Plus className="h-3 w-3" />;
+};
+
+const changeTypeBadge = (type: string) => {
+  const label = (type || "add").charAt(0).toUpperCase() + (type || "add").slice(1);
+  const variant = type === "remove" ? "destructive" : type === "edit" ? "outline" : "secondary";
+  return <Badge variant={variant as any} className="gap-1 text-[10px]">{changeTypeIcon(type)}{label}</Badge>;
+};
 
 export const ComponentReviewPanel = () => {
   const queryClient = useQueryClient();
@@ -43,11 +55,11 @@ export const ComponentReviewPanel = () => {
         .eq("id", id);
       if (error) throw error;
 
-      // If approved, add component to the asset tree
       if (action === "approved") {
         const req = requests?.find((r) => r.id === id);
         if (req) {
-          await applyToAssetTree(req);
+          const changeType = (req as any).change_type || "add";
+          await applyToAssetTree(req, changeType);
         }
       }
 
@@ -62,8 +74,7 @@ export const ComponentReviewPanel = () => {
     }
   };
 
-  const applyToAssetTree = async (req: any) => {
-    // Find asset by P&ID tag or asset number
+  const applyToAssetTree = async (req: any, changeType: string) => {
     const { data: assets, error } = await supabase
       .from("processing_plant_assets_rev_b")
       .select("id, components")
@@ -76,21 +87,49 @@ export const ComponentReviewPanel = () => {
 
     const asset = assets[0];
     const existing = Array.isArray(asset.components) ? asset.components : [];
-    const newComponent = {
-      componentCode: "",
-      componentType: req.part_name,
-      componentName: req.part_name,
-      manufacturer: req.manufacturer || null,
-      model: req.part_model || null,
-    };
 
-    const { error: updateError } = await supabase
-      .from("processing_plant_assets_rev_b")
-      .update({ components: [...existing, newComponent] as any })
-      .eq("id", asset.id);
-
-    if (updateError) {
-      toast({ title: "Warning", description: "Approved but failed to write to asset tree.", variant: "destructive" });
+    if (changeType === "add") {
+      const newComponent = {
+        componentCode: "",
+        componentType: req.part_name,
+        componentName: req.part_name,
+        manufacturer: req.manufacturer || null,
+        model: req.part_model || null,
+        category: (req as any).category || "",
+        criticality: (req as any).criticality || "Medium",
+      };
+      const { error: updateError } = await supabase
+        .from("processing_plant_assets_rev_b")
+        .update({ components: [...existing, newComponent] as any })
+        .eq("id", asset.id);
+      if (updateError) toast({ title: "Warning", description: "Approved but failed to write to asset tree.", variant: "destructive" });
+    } else if (changeType === "remove") {
+      const updated = existing.filter((c: any) =>
+        !(c.componentName === req.part_name || c.componentType === req.part_name)
+      );
+      const { error: updateError } = await supabase
+        .from("processing_plant_assets_rev_b")
+        .update({ components: updated as any })
+        .eq("id", asset.id);
+      if (updateError) toast({ title: "Warning", description: "Approved but failed to remove from asset tree.", variant: "destructive" });
+    } else if (changeType === "edit") {
+      const updated = existing.map((c: any) => {
+        if (c.componentName === req.part_name || c.componentType === req.part_name) {
+          return {
+            ...c,
+            manufacturer: req.manufacturer || c.manufacturer,
+            model: req.part_model || c.model,
+            category: (req as any).category || c.category,
+            criticality: (req as any).criticality || c.criticality,
+          };
+        }
+        return c;
+      });
+      const { error: updateError } = await supabase
+        .from("processing_plant_assets_rev_b")
+        .update({ components: updated as any })
+        .eq("id", asset.id);
+      if (updateError) toast({ title: "Warning", description: "Approved but failed to update asset tree.", variant: "destructive" });
     }
   };
 
@@ -123,11 +162,14 @@ export const ComponentReviewPanel = () => {
               <thead className="bg-muted">
                 <tr>
                   <th className="p-2 text-left text-xs font-semibold">Status</th>
+                  <th className="p-2 text-left text-xs font-semibold">Action</th>
                   <th className="p-2 text-left text-xs font-semibold">Asset / Tag</th>
                   <th className="p-2 text-left text-xs font-semibold">Part Name</th>
+                  <th className="p-2 text-left text-xs font-semibold">Category</th>
                   <th className="p-2 text-left text-xs font-semibold">Manufacturer</th>
                   <th className="p-2 text-left text-xs font-semibold">Part # / Model</th>
                   <th className="p-2 text-left text-xs font-semibold">Qty</th>
+                  <th className="p-2 text-left text-xs font-semibold">Criticality</th>
                   <th className="p-2 text-left text-xs font-semibold">Submitted By</th>
                   <th className="p-2 text-left text-xs font-semibold">Date</th>
                   {filter === "pending" && <th className="p-2 text-left text-xs font-semibold min-w-[200px]">Actions</th>}
@@ -137,11 +179,14 @@ export const ComponentReviewPanel = () => {
                 {requests.map((req) => (
                   <tr key={req.id} className="border-t border-border/50">
                     <td className="p-2">{statusBadge(req.status)}</td>
+                    <td className="p-2">{changeTypeBadge((req as any).change_type || "add")}</td>
                     <td className="p-2 font-mono text-xs">{req.target_asset_number}</td>
                     <td className="p-2 font-medium">{req.part_name}</td>
+                    <td className="p-2 text-xs text-muted-foreground">{(req as any).category || "—"}</td>
                     <td className="p-2 text-muted-foreground">{req.manufacturer || "—"}</td>
                     <td className="p-2 font-mono text-xs">{req.part_model || "—"}</td>
                     <td className="p-2">{req.quantity}</td>
+                    <td className="p-2 text-xs">{(req as any).criticality || "—"}</td>
                     <td className="p-2 text-xs text-muted-foreground">{req.submitted_by}</td>
                     <td className="p-2 text-xs text-muted-foreground">{new Date(req.created_at).toLocaleDateString()}</td>
                     {filter === "pending" && (
