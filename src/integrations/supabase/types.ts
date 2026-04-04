@@ -167,6 +167,8 @@ export type Database = {
           status: string
           submitted_by: string
           target_asset_number: string
+          target_component_index: number | null
+          target_component_name: string
           target_pid_tag: string
           updated_at: string
         }
@@ -187,6 +189,8 @@ export type Database = {
           status?: string
           submitted_by?: string
           target_asset_number?: string
+          target_component_index?: number | null
+          target_component_name?: string
           target_pid_tag?: string
           updated_at?: string
         }
@@ -207,6 +211,8 @@ export type Database = {
           status?: string
           submitted_by?: string
           target_asset_number?: string
+          target_component_index?: number | null
+          target_component_name?: string
           target_pid_tag?: string
           updated_at?: string
         }
