@@ -59,13 +59,15 @@ export const ComponentReviewPanel = () => {
         const req = requests?.find((r) => r.id === id);
         if (req) {
           const changeType = (req as any).change_type || "add";
-          await applyToAssetTree(req, changeType);
+          const componentIndex = (req as any).target_component_index;
+          await applyToAssetTree(req, changeType, componentIndex);
         }
       }
 
       queryClient.invalidateQueries({ queryKey: ["component-change-requests"] });
       queryClient.invalidateQueries({ queryKey: ["rev-b-assets"] });
       queryClient.invalidateQueries({ queryKey: ["rev-b-plant-assets-tree"] });
+      queryClient.invalidateQueries({ queryKey: ["asset-components"] });
       toast({ title: action === "approved" ? "Approved ✅" : "Rejected ❌", description: `Request ${action}.` });
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
@@ -74,19 +76,21 @@ export const ComponentReviewPanel = () => {
     }
   };
 
-  const applyToAssetTree = async (req: any, changeType: string) => {
+  const applyToAssetTree = async (req: any, changeType: string, componentIndex: number | null) => {
     const { data: assets, error } = await supabase
       .from("processing_plant_assets_rev_b")
       .select("id, components")
       .or(`asset_number.eq.${req.target_asset_number},pid_tags.cs.{${req.target_pid_tag}}`);
 
     if (error || !assets || assets.length === 0) {
-      toast({ title: "Warning", description: "Component approved but target asset not found in tree. Manual placement needed.", variant: "destructive" });
+      toast({ title: "Warning", description: "Component approved but target asset not found. Manual placement needed.", variant: "destructive" });
       return;
     }
 
     const asset = assets[0];
     const existing = Array.isArray(asset.components) ? asset.components : [];
+
+    let updated: any[];
 
     if (changeType === "add") {
       const newComponent = {
@@ -98,38 +102,43 @@ export const ComponentReviewPanel = () => {
         category: (req as any).category || "",
         criticality: (req as any).criticality || "Medium",
       };
-      const { error: updateError } = await supabase
-        .from("processing_plant_assets_rev_b")
-        .update({ components: [...existing, newComponent] as any })
-        .eq("id", asset.id);
-      if (updateError) toast({ title: "Warning", description: "Approved but failed to write to asset tree.", variant: "destructive" });
+      updated = [...existing, newComponent];
     } else if (changeType === "remove") {
-      const updated = existing.filter((c: any) =>
-        !(c.componentName === req.part_name || c.componentType === req.part_name)
-      );
-      const { error: updateError } = await supabase
-        .from("processing_plant_assets_rev_b")
-        .update({ components: updated as any })
-        .eq("id", asset.id);
-      if (updateError) toast({ title: "Warning", description: "Approved but failed to remove from asset tree.", variant: "destructive" });
+      if (componentIndex !== null && componentIndex >= 0 && componentIndex < existing.length) {
+        updated = existing.filter((_: any, i: number) => i !== componentIndex);
+      } else {
+        toast({ title: "Warning", description: "Component index invalid. Manual removal needed.", variant: "destructive" });
+        return;
+      }
     } else if (changeType === "edit") {
-      const updated = existing.map((c: any) => {
-        if (c.componentName === req.part_name || c.componentType === req.part_name) {
+      if (componentIndex !== null && componentIndex >= 0 && componentIndex < existing.length) {
+        updated = existing.map((c: any, i: number) => {
+          if (i !== componentIndex) return c;
           return {
             ...c,
+            componentName: req.part_name || c.componentName,
+            componentType: req.part_name || c.componentType,
             manufacturer: req.manufacturer || c.manufacturer,
             model: req.part_model || c.model,
             category: (req as any).category || c.category,
             criticality: (req as any).criticality || c.criticality,
           };
-        }
-        return c;
-      });
-      const { error: updateError } = await supabase
-        .from("processing_plant_assets_rev_b")
-        .update({ components: updated as any })
-        .eq("id", asset.id);
-      if (updateError) toast({ title: "Warning", description: "Approved but failed to update asset tree.", variant: "destructive" });
+        });
+      } else {
+        toast({ title: "Warning", description: "Component index invalid. Manual edit needed.", variant: "destructive" });
+        return;
+      }
+    } else {
+      return;
+    }
+
+    const { error: updateError } = await supabase
+      .from("processing_plant_assets_rev_b")
+      .update({ components: updated as any })
+      .eq("id", asset.id);
+
+    if (updateError) {
+      toast({ title: "Warning", description: `Approved but failed to ${changeType} in asset tree.`, variant: "destructive" });
     }
   };
 
@@ -164,6 +173,7 @@ export const ComponentReviewPanel = () => {
                   <th className="p-2 text-left text-xs font-semibold">Status</th>
                   <th className="p-2 text-left text-xs font-semibold">Action</th>
                   <th className="p-2 text-left text-xs font-semibold">Asset / Tag</th>
+                  <th className="p-2 text-left text-xs font-semibold">Target Component</th>
                   <th className="p-2 text-left text-xs font-semibold">Part Name</th>
                   <th className="p-2 text-left text-xs font-semibold">Category</th>
                   <th className="p-2 text-left text-xs font-semibold">Manufacturer</th>
@@ -176,53 +186,58 @@ export const ComponentReviewPanel = () => {
                 </tr>
               </thead>
               <tbody>
-                {requests.map((req) => (
-                  <tr key={req.id} className="border-t border-border/50">
-                    <td className="p-2">{statusBadge(req.status)}</td>
-                    <td className="p-2">{changeTypeBadge((req as any).change_type || "add")}</td>
-                    <td className="p-2 font-mono text-xs">{req.target_asset_number}</td>
-                    <td className="p-2 font-medium">{req.part_name}</td>
-                    <td className="p-2 text-xs text-muted-foreground">{(req as any).category || "—"}</td>
-                    <td className="p-2 text-muted-foreground">{req.manufacturer || "—"}</td>
-                    <td className="p-2 font-mono text-xs">{req.part_model || "—"}</td>
-                    <td className="p-2">{req.quantity}</td>
-                    <td className="p-2 text-xs">{(req as any).criticality || "—"}</td>
-                    <td className="p-2 text-xs text-muted-foreground">{req.submitted_by}</td>
-                    <td className="p-2 text-xs text-muted-foreground">{new Date(req.created_at).toLocaleDateString()}</td>
-                    {filter === "pending" && (
-                      <td className="p-2">
-                        <div className="flex flex-col gap-1.5">
-                          <Textarea
-                            value={reviewNotes[req.id] || ""}
-                            onChange={(e) => setReviewNotes((prev) => ({ ...prev, [req.id]: e.target.value }))}
-                            placeholder="Review notes..."
-                            className="text-xs h-14 min-h-0"
-                          />
-                          <div className="flex gap-1.5">
-                            <Button
-                              size="sm"
-                              className="gap-1 bg-green-600 hover:bg-green-700 text-xs h-7"
-                              disabled={processing === req.id}
-                              onClick={() => handleAction(req.id, "approved")}
-                            >
-                              {processing === req.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCircle className="h-3 w-3" />}
-                              Approve
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              className="gap-1 text-xs h-7"
-                              disabled={processing === req.id}
-                              onClick={() => handleAction(req.id, "rejected")}
-                            >
-                              <XCircle className="h-3 w-3" /> Reject
-                            </Button>
+                {requests.map((req) => {
+                  const changeType = (req as any).change_type || "add";
+                  const targetComp = (req as any).target_component_name || "—";
+                  return (
+                    <tr key={req.id} className="border-t border-border/50">
+                      <td className="p-2">{statusBadge(req.status)}</td>
+                      <td className="p-2">{changeTypeBadge(changeType)}</td>
+                      <td className="p-2 font-mono text-xs">{req.target_asset_number}</td>
+                      <td className="p-2 text-xs">{changeType !== "add" ? targetComp : "—"}</td>
+                      <td className="p-2 font-medium">{req.part_name}</td>
+                      <td className="p-2 text-xs text-muted-foreground">{(req as any).category || "—"}</td>
+                      <td className="p-2 text-muted-foreground">{req.manufacturer || "—"}</td>
+                      <td className="p-2 font-mono text-xs">{req.part_model || "—"}</td>
+                      <td className="p-2">{req.quantity}</td>
+                      <td className="p-2 text-xs">{(req as any).criticality || "—"}</td>
+                      <td className="p-2 text-xs text-muted-foreground">{req.submitted_by}</td>
+                      <td className="p-2 text-xs text-muted-foreground">{new Date(req.created_at).toLocaleDateString()}</td>
+                      {filter === "pending" && (
+                        <td className="p-2">
+                          <div className="flex flex-col gap-1.5">
+                            <Textarea
+                              value={reviewNotes[req.id] || ""}
+                              onChange={(e) => setReviewNotes((prev) => ({ ...prev, [req.id]: e.target.value }))}
+                              placeholder="Review notes..."
+                              className="text-xs h-14 min-h-0"
+                            />
+                            <div className="flex gap-1.5">
+                              <Button
+                                size="sm"
+                                className="gap-1 bg-green-600 hover:bg-green-700 text-xs h-7"
+                                disabled={processing === req.id}
+                                onClick={() => handleAction(req.id, "approved")}
+                              >
+                                {processing === req.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCircle className="h-3 w-3" />}
+                                Approve
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                className="gap-1 text-xs h-7"
+                                disabled={processing === req.id}
+                                onClick={() => handleAction(req.id, "rejected")}
+                              >
+                                <XCircle className="h-3 w-3" /> Reject
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                ))}
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
