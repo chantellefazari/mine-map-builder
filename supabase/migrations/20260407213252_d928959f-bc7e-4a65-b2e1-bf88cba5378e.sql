@@ -1,0 +1,2 @@
+ALTER TABLE public.pm_master_list DROP CONSTRAINT pm_master_list_discipline_check;
+ALTER TABLE public.pm_master_list ADD CONSTRAINT pm_master_list_discipline_check CHECK (discipline = ANY (ARRAY['Mechanical','Electrical','Ops','Inspection','Mobile Equipment','Lube','Mobile & LVs']));
