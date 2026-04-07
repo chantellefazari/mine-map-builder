@@ -33,6 +33,16 @@ export const pmNameToViewId: Record<string, string> = {
   "Portable Generators Weekly Inspection": "portable-generators-weekly",
   "Power Station Generator Weekly Inspection": "power-station-generator-weekly",
 
+  // Generator Daily
+  "Generator Daily Inspection GN-001": "generator-daily-gn001",
+  "Generator Daily Inspection GN-002": "generator-daily-gn002",
+  "Generator Daily Inspection GN-003": "generator-daily-gn003",
+  "Generator Daily Inspection GN-004": "generator-daily-gn004",
+  "Generator Daily Inspection GN-005": "generator-daily-gn005",
+  "Generator Daily Inspection GN-006": "generator-daily-gn006",
+  "Generator Daily Inspection GN-007": "generator-daily-gn007",
+  "Generator Daily Inspection GN-008": "generator-daily-gn008",
+
   // Mobile Equipment Daily
   "CAT D8 Dozer Daily Inspection": "dozer-daily",
   "Excavator Daily Inspection": "excavator-daily",

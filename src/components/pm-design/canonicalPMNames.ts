@@ -46,6 +46,16 @@ export const canonicalPMs: CanonicalPM[] = [
   { pmName: "Portable Generators Weekly Inspection", discipline: "Mechanical", frequency: "1 Week", equipmentType: "Portable Generators" },
   { pmName: "Power Station Generator Weekly Inspection", discipline: "Mechanical", frequency: "1 Week", equipmentType: "Power Station Generator" },
 
+  // ── GENERATOR DAILY INSPECTIONS ──
+  { pmName: "Generator Daily Inspection GN-001", discipline: "Mechanical", frequency: "Daily", equipmentType: "Generator" },
+  { pmName: "Generator Daily Inspection GN-002", discipline: "Mechanical", frequency: "Daily", equipmentType: "Generator" },
+  { pmName: "Generator Daily Inspection GN-003", discipline: "Mechanical", frequency: "Daily", equipmentType: "Generator" },
+  { pmName: "Generator Daily Inspection GN-004", discipline: "Mechanical", frequency: "Daily", equipmentType: "Generator" },
+  { pmName: "Generator Daily Inspection GN-005", discipline: "Mechanical", frequency: "Daily", equipmentType: "Generator" },
+  { pmName: "Generator Daily Inspection GN-006", discipline: "Mechanical", frequency: "Daily", equipmentType: "Generator" },
+  { pmName: "Generator Daily Inspection GN-007", discipline: "Mechanical", frequency: "Daily", equipmentType: "Generator" },
+  { pmName: "Generator Daily Inspection GN-008", discipline: "Mechanical", frequency: "Daily", equipmentType: "Generator" },
+
   // ── OPS / MOBILE EQUIPMENT DAILY ──
   { pmName: "CAT D8 Dozer Daily Inspection", discipline: "Ops", frequency: "Daily", equipmentType: "CAT D8 Dozer" },
   { pmName: "Excavator Daily Inspection", discipline: "Ops", frequency: "Daily", equipmentType: "Excavator" },
