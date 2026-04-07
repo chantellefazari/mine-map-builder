@@ -11,6 +11,71 @@ export const pmInspectionData: Record<string, any> = {
   // MECHANICAL DAILY
   // ══════════════════════════════════════════════════════════════════
 
+  // ── GENERATOR DAILY INSPECTIONS (GN-001 to GN-008) ──
+  // All 8 generators share the same task structure from the Cummins 500KVA template.
+  ...(() => {
+    const generatorDailyTasks = {
+      sections: [
+        { sectionName: "Walk Around Inspection", tasks: [
+          { task: "Check for any visible damage to generator housing" },
+          { task: "Doors and panels securely closed" },
+          { task: "No obstructions around the generator" },
+          { task: "No unusual smells (burning, fuel, electrical)" },
+          { task: "Check for oil, coolant, or fuel leaks under or around unit" },
+          { task: "Ensure warning labels and signage are intact" },
+        ]},
+        { sectionName: "Fluids & Levels", tasks: [
+          { task: "Engine oil level" },
+          { task: "Coolant level" },
+          { task: "Fuel level" },
+          { task: "Battery electrolyte level (if applicable)" },
+          { task: "Radiator overflow bottle" },
+        ]},
+        { sectionName: "Engine Compartment", tasks: [
+          { task: "Inspect engine for fluid leaks" },
+          { task: "Check belts for wear and tension" },
+          { task: "Inspect engine mounts" },
+          { task: "Inspect air intake hoses and clamps" },
+          { task: "Air filter condition / intake restriction indicator" },
+          { task: "Check exhaust system for cracks, soot leaks, or loose fittings" },
+        ]},
+        { sectionName: "Cooling System", tasks: [
+          { task: "Radiator clean and free of debris" },
+          { task: "Radiator fins not bent or blocked" },
+          { task: "Coolant hoses in good condition (no cracks or bulging)" },
+          { task: "Fan and fan shroud intact" },
+          { task: "Verify coolant temperature normal during operation" },
+        ]},
+        { sectionName: "Fuel System", tasks: [
+          { task: "No leaks at fuel tank or lines" },
+          { task: "Fuel filters not excessively dirty" },
+          { task: "Water separator drained (if fitted)" },
+          { task: "Fuel cap seal in good condition" },
+          { task: "Fuel level sufficient for daily operation" },
+        ]},
+        { sectionName: "Electrical System", tasks: [
+          { task: "Battery terminals clean" },
+          { task: "Battery charger/maintainer operating" },
+          { task: "Control panel displays working" },
+        ]},
+        { sectionName: "Operational Test", tasks: [
+          { task: "Start engine – smooth start with no knocking" },
+          { task: "Observe vibration levels" },
+          { task: "Warm-up cycle completed" },
+          { task: "Shutdown normal with no alarms" },
+        ]},
+      ],
+    };
+    const entries: Record<string, any> = {};
+    for (let i = 1; i <= 8; i++) {
+      const id = `GN-${String(i).padStart(3, "0")}`;
+      entries[`Generator Daily Inspection ${id}`] = JSON.parse(JSON.stringify(generatorDailyTasks));
+    }
+    return entries;
+  })(),
+
+  // ══════════════════════════════════════════════════════════════════
+
   "Mill Daily Inspection": {
     sections: [
       { equipmentId: "MILL", equipmentName: "Ball Mill - System, Assembly and Components", tasks: [
