@@ -312,7 +312,12 @@ const disciplines = [
     label: "Mobile Equipment", 
     icon: Truck,
     frequencies: {
-      daily: { pms: mobileEquipmentDailyPMs, subgroups: [] },
+      daily: { 
+        pms: mobileEquipmentDailyPMs, 
+        subgroups: [
+          { id: "generator-daily", label: "Generator Daily Inspections", pms: generatorDailyPMs },
+        ] 
+      },
       "1-week": { 
         pms: mobileEquipmentWeeklyPMs,
         subgroups: []
