@@ -132,6 +132,18 @@ const otherWeeklyPMs = [
   { id: "top-of-tanks-weekly", name: "Top of Tanks" },
 ];
 
+// Generator Daily PMs
+const generatorDailyPMs = [
+  { id: "generator-daily-gn001", name: "Generator GN-001" },
+  { id: "generator-daily-gn002", name: "Generator GN-002" },
+  { id: "generator-daily-gn003", name: "Generator GN-003" },
+  { id: "generator-daily-gn004", name: "Generator GN-004" },
+  { id: "generator-daily-gn005", name: "Generator GN-005" },
+  { id: "generator-daily-gn006", name: "Generator GN-006" },
+  { id: "generator-daily-gn007", name: "Generator GN-007" },
+  { id: "generator-daily-gn008", name: "Generator GN-008" },
+];
+
 // Mobile Equipment Daily PMs
 const mobileEquipmentDailyPMs = [
   { id: "dozer-daily", name: "CAT D8 Dozer" },
