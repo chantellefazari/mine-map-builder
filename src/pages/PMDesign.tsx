@@ -85,6 +85,7 @@ import { LubePMDocument } from "@/components/pm-design/LubePMDocument";
 import { lubePMTemplates } from "@/components/pm-design/lubePMData";
 
 import { MotorInspectionsSheetsDocument } from "@/components/pm-design/MotorInspectionsSheetsDocument";
+import { GeneratorDailyPMDocument } from "@/components/pm-design/GeneratorDailyPMDocument";
 
 import { Button } from "@/components/ui/button";
 
