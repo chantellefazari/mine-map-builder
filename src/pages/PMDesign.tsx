@@ -655,6 +655,22 @@ const PMDesign = () => {
         return <LoaderWeeklyPMDocument />;
       case "telehandler-weekly":
         return <TelehandlerWeeklyPMDocument />;
+      case "generator-daily-gn001":
+        return <GeneratorDailyPMDocument assetNumber="GN-001" />;
+      case "generator-daily-gn002":
+        return <GeneratorDailyPMDocument assetNumber="GN-002" />;
+      case "generator-daily-gn003":
+        return <GeneratorDailyPMDocument assetNumber="GN-003" />;
+      case "generator-daily-gn004":
+        return <GeneratorDailyPMDocument assetNumber="GN-004" />;
+      case "generator-daily-gn005":
+        return <GeneratorDailyPMDocument assetNumber="GN-005" />;
+      case "generator-daily-gn006":
+        return <GeneratorDailyPMDocument assetNumber="GN-006" />;
+      case "generator-daily-gn007":
+        return <GeneratorDailyPMDocument assetNumber="GN-007" />;
+      case "generator-daily-gn008":
+        return <GeneratorDailyPMDocument assetNumber="GN-008" />;
       case "dozer-daily":
         return <DozerDailyPMDocument />;
       case "loader-daily":
