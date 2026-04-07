@@ -513,6 +513,14 @@ const PMDesign = () => {
       case "lab-generator-weekly": return "Lab Generator Weekly Inspection";
       case "portable-generators-weekly": return "Portable Generators Weekly Inspection";
       case "power-station-generator-weekly": return "Power Station Generator Weekly Inspection";
+      case "generator-daily-gn001": return "Generator Daily Inspection GN-001";
+      case "generator-daily-gn002": return "Generator Daily Inspection GN-002";
+      case "generator-daily-gn003": return "Generator Daily Inspection GN-003";
+      case "generator-daily-gn004": return "Generator Daily Inspection GN-004";
+      case "generator-daily-gn005": return "Generator Daily Inspection GN-005";
+      case "generator-daily-gn006": return "Generator Daily Inspection GN-006";
+      case "generator-daily-gn007": return "Generator Daily Inspection GN-007";
+      case "generator-daily-gn008": return "Generator Daily Inspection GN-008";
       case "forklift-weekly": return "Forklift Weekly Inspection";
       case "ewp-weekly": return "EWP Weekly Inspection";
       case "crane-weekly": return "Crane Weekly Inspection";
