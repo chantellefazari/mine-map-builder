@@ -14,6 +14,8 @@ export const GeneratorDailyPMDocument = ({ assetNumber }: GeneratorDailyPMDocume
   const { pms } = usePMasterList();
   const pmName = `Generator Daily Inspection ${assetNumber}`;
   const pm = pms.find((p) => p.pmName === pmName);
+  // Asset number in DB is now 17-GN-XXX format
+  const displayAsset = pm?.assetNumber || `17-${assetNumber}`;
 
   return (
     <div className="bg-background min-h-full">
