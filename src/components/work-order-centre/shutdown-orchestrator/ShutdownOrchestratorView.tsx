@@ -16,6 +16,7 @@ import { ShutdownAIPlannerTab } from "./ShutdownAIPlannerTab";
 import { useShutdowns } from "@/hooks/useShutdowns";
 import { useShutdownPackages } from "@/hooks/useShutdownPackages";
 import { format, parseISO, differenceInDays } from "date-fns";
+import { PACKAGES as MOCK_PACKAGES } from "./shutdownData";
 
 const SUB_TABS = [
   { key: "overview", label: "Shutdown Overview", icon: LayoutDashboard },
