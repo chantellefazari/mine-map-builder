@@ -47,7 +47,7 @@ export async function exportHierarchyWorkbook() {
 
     area.subAreas.forEach((sub) => {
       // Row for Level 4 — Sub-Area
-      rows.push([4, SITE, FACILITY, `${area.code} — ${area.label}`, sub.label, "", "", "", "", "", "", "", ""]);
+      rows.push([4, SITE, FACILITY, `${area.code} — ${area.label}`, formatSubAreaLabel(sub.label), "", "", "", "", "", "", "", ""]);
 
       sub.parentAssets.forEach((parent) => {
         // Row for Level 5 — Parent Asset / System
