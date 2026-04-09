@@ -92,7 +92,7 @@ export async function generateProcessingPlantCSVContent(): Promise<string> {
 
           // Level 6 — Equipment
           csvLines.push(rowToCSV([
-            "6", SITE, FACILITY, area.code, area.label, sub.label, pa.label, pa.functionalLocation || "",
+            "6", SITE, FACILITY, area.code, area.label, formatSubAreaLabel(sub.label), pa.label, pa.functionalLocation || "",
             equip.assetNumber, equip.name, equip.functionalLocation || "", equipTags,
             "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
           ]));
