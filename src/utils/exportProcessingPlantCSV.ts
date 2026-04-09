@@ -81,7 +81,7 @@ export async function generateProcessingPlantCSVContent(): Promise<string> {
 
     for (const sub of area.subAreas) {
       // Level 4 — Sub-Area
-      csvLines.push(rowToCSV(["4", SITE, FACILITY, area.code, area.label, sub.label, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]));
+      csvLines.push(rowToCSV(["4", SITE, FACILITY, area.code, area.label, formatSubAreaLabel(sub.label), "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]));
 
       for (const pa of sub.parentAssets) {
         // Level 5 — Parent Asset / System
