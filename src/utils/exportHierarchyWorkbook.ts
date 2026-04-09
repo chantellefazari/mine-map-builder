@@ -59,7 +59,7 @@ export async function exportHierarchyWorkbook() {
           // Row for Level 6 — Equipment
           rows.push([
             6, SITE, FACILITY,
-            `${area.code} — ${area.label}`, sub.label, parent.label,
+            `${area.code} — ${area.label}`, formatSubAreaLabel(sub.label), parent.label,
             equip.assetNumber, equip.name,
             "", "", "", "", allTags,
           ]);
