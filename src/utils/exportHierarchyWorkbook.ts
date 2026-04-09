@@ -51,7 +51,7 @@ export async function exportHierarchyWorkbook() {
 
       sub.parentAssets.forEach((parent) => {
         // Row for Level 5 — Parent Asset / System
-        rows.push([5, SITE, FACILITY, `${area.code} — ${area.label}`, sub.label, parent.label, "", "", "", "", "", "", ""]);
+        rows.push([5, SITE, FACILITY, `${area.code} — ${area.label}`, formatSubAreaLabel(sub.label), parent.label, "", "", "", "", "", "", ""]);
 
         parent.equipment.forEach((equip) => {
           const allTags = equip.pidTags?.join("; ") || "";
