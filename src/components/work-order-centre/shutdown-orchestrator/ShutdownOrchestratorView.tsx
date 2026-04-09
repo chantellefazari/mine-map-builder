@@ -16,6 +16,7 @@ import { ShutdownAIPlannerTab } from "./ShutdownAIPlannerTab";
 import { useShutdowns } from "@/hooks/useShutdowns";
 import { useShutdownPackages } from "@/hooks/useShutdownPackages";
 import { format, parseISO, differenceInDays } from "date-fns";
+import { PACKAGES as MOCK_PACKAGES } from "./shutdownData";
 
 const SUB_TABS = [
   { key: "overview", label: "Shutdown Overview", icon: LayoutDashboard },
@@ -34,10 +35,15 @@ function OrchestratorInner() {
   const { shutdowns, isLoading: loadingShutdowns } = useShutdowns();
   const { packages: livePackages, isLoading: loadingPackages } = useShutdownPackages(selectedShutdownId);
 
-  // Sync live packages into the context
+  // Sync live packages into the context — use mock data as fallback for demo
   useEffect(() => {
-    setPackages(livePackages as any);
-  }, [livePackages, setPackages]);
+    if (livePackages && livePackages.length > 0) {
+      setPackages(livePackages as any);
+    } else if (selectedShutdownId && !loadingPackages) {
+      // No real data found — load mock packages so the user can see the UI
+      setPackages(MOCK_PACKAGES);
+    }
+  }, [livePackages, setPackages, selectedShutdownId, loadingPackages]);
 
   const selected = shutdowns.find(s => s.id === selectedShutdownId) ?? null;
 
