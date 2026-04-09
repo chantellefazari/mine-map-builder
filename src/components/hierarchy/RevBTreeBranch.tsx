@@ -7,6 +7,44 @@ import { Loader2 } from "lucide-react";
 
 import { FLPathSegment } from "./FLBreadcrumbContext";
 
+// Sub-Area code mapping for FL path segments (Level 4)
+const subAreaCodeMap: Record<string, string> = {
+  // SITE
+  "Site Infrastructure": "INFRA",
+  // UTL
+  "Compressed Air": "COMP",
+  "Electrical / Controls": "ELEC",
+  "Power Generation": "PWR",
+  "Reagents (Lime)": "REAG",
+  "Water": "WTR",
+  "Hydraulic Systems": "HYD",
+  "Fuel Systems": "FUEL",
+  // COM
+  "Feed / Reclaim": "FEED",
+  "Conveying": "CONV",
+  "Grinding": "GRIND",
+  "Classification": "CLASS",
+  // REC
+  "Gravity Circuit": "GRAV",
+  "CIP": "CIP",
+  "Elution": "ELUT",
+  "Carbon Regeneration": "REGEN",
+  "Gold Room": "GOLD",
+  // TAIL
+  "Thickening": "THK",
+  "Filtering": "FILT",
+  // SUP
+  "Workshop": "WKSHP",
+  "Lab": "LAB",
+  "Mobile Equipment": "MOBILE",
+  "Light Vehicles": "LV",
+  "Heavy Vehicles (HV)": "HV",
+};
+
+function getSubAreaCode(label: string): string | undefined {
+  return subAreaCodeMap[label];
+}
+
 /**
  * Deduplicate Level 7 components: when two entries share the same componentName
  * and one has model === componentName (redundant) while another has a real model,
