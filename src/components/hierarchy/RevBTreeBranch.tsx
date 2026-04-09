@@ -21,9 +21,6 @@ const subAreaCodeMap: Record<string, string> = {
   "Water": "WTR",
   "Hydraulic Systems": "HYD",
   "Fuel Systems": "FUEL",
-  "Water": "WTR",
-  "Hydraulic Systems": "HYD",
-  "Fuel Systems": "FUEL",
   // COM
   "Feed / Reclaim": "FEED",
   "Conveying": "CONV",
