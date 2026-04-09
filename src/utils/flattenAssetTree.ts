@@ -46,7 +46,7 @@ export function flattenAssetTree(): FlatAsset[] {
           assetId: parent.label,
           assetName: parent.label,
           area: area.label,
-          subArea: subArea.label,
+          subArea: formatSubAreaLabel(subArea.label),
           parentAsset: "",
         });
         for (const eq of parent.equipment) {
