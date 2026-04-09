@@ -18,7 +18,7 @@ const areaCodeMapping: Record<string, string> = {
   "SITE": "SITE",
   "UTL": "UTL",
   "COM": "COM",
-  "REC": "GR",
+  "REC": "REC",
   "TAIL": "TAIL",
   "SUP": "SUP",
 };
