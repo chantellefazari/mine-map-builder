@@ -3,6 +3,7 @@
 // FLs stop at SYSTEM level - Assets do NOT get FL codes
 
 import { areasData } from "./assetData";
+import { getSubAreaCode } from "@/utils/subAreaCodes";
 
 export interface FunctionalLocation {
   code: string;
@@ -23,61 +24,26 @@ const areaCodeMapping: Record<string, string> = {
   "SUP": "SUP",
 };
 
-// Sub-Area code mapping
-const subAreaCodes: Record<string, string> = {
-  // SITE
-  "Site Infrastructure": "INFRA",
-  "Buildings": "BLDG",
-  // UTL
-  "Compressed Air": "COMP",
-  "Electrical / Controls": "ELEC",
-  "Power Generation": "PWR",
-  "Reagents (Lime)": "REAG",
-  "Reagents": "REAG",
-  "Water": "WTR",
-  "Hydraulic Systems": "HYD",
-  "Fuel Systems": "FUEL",
-  // COM
-  "Feed / Reclaim": "FEED",
-  "Conveying": "CONV",
-  "Grinding": "GRIND",
-  "Classification": "CLASS",
-  // REC
-  "Gravity Circuit": "GRAV",
-  "CIP": "CIP",
-  "Elution": "ELUT",
-  "Carbon Regeneration": "REGEN",
-  "Gold Room": "GOLD",
-  // TAIL
-  "Thickening": "THK",
-  "Filtering": "FILT",
-  // SUP
-  "Workshop": "WKSHP",
-  "Lab": "LAB",
-  "Mobile Equipment": "MOBILE",
-  "Light Vehicles": "LV",
-  "Heavy Vehicles (HV)": "HV",
-};
-
 // Extract the system code from the parent asset label
-// Labels follow format: "CODE01 Description" (e.g., "SINF01 Gold Plant", "COMP01 Air Compressor 1")
 function generateSystemCode(label: string): string {
-  // Extract the leading code (everything before the first space)
   const match = label.match(/^([A-Z0-9\-]+)\s/);
   if (match) {
     return match[1];
   }
-  // Fallback: use first 8 chars uppercase, stripped of non-alphanumeric
   return label.replace(/[^a-zA-Z0-9]/g, '').substring(0, 8).toUpperCase();
 }
 
-// Generate sub-area code
-function getSubAreaCode(label: string): string {
-  if (subAreaCodes[label]) {
-    return subAreaCodes[label];
-  }
-  // Fallback: first 4 chars uppercase
-  return label.substring(0, 4).toUpperCase().replace(/[^A-Z]/g, '');
+// Generate Functional Location code
+export function generateFLCode(
+  areaCode: string,
+  subAreaLabel: string,
+  systemLabel: string
+): string {
+  const area = areaCodeMapping[areaCode] || areaCode;
+  const subArea = getSubAreaCode(subAreaLabel);
+  const system = generateSystemCode(systemLabel);
+  
+  return `TCMG-PP-${area}-${subArea}-${system}`;
 }
 
 // Generate Functional Location code

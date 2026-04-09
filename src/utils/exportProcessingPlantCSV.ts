@@ -7,6 +7,7 @@
  */
 import { fetchAllProcessingPlantRows } from "@/utils/fetchProcessingPlantData";
 import { buildAreasFromRows } from "@/hooks/useProcessingPlantAssets";
+import { formatSubAreaLabel } from "@/utils/subAreaCodes";
 
 function escapeCSV(value: string): string {
   if (!value) return "";

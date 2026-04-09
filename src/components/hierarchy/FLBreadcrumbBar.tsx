@@ -66,7 +66,7 @@ export const FLBreadcrumbBar: React.FC = () => {
         flSegments.push(areaCodeMapping[seg.code] || seg.code);
       }
       else if (seg.level === "subarea") {
-        flSegments.push(subAreaCodes[seg.label] || seg.label.substring(0, 4).toUpperCase().replace(/[^A-Z]/g, ''));
+        flSegments.push(getSubAreaCode(seg.label));
       }
       else if (seg.code) flSegments.push(seg.code);
       else {
