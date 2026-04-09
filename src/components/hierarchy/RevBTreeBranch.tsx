@@ -243,7 +243,8 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                 ancestorPath={pathAfterPP}
               >
                 {area.subAreas.map((subArea, subIndex) => {
-                  const subAreaSegment: FLPathSegment = { level: "subarea", label: subArea.label };
+                  const subAreaCode = getSubAreaCode(subArea.label);
+                  const subAreaSegment: FLPathSegment = { level: "subarea", label: subArea.label, code: subAreaCode };
                   const pathAfterSubArea = [...pathAfterArea, subAreaSegment];
                   const subAreaExpanded = expandedPaths.has(`${area.code}/${subArea.label}`);
 
@@ -251,12 +252,13 @@ export const RevBTreeBranch: React.FC<RevBTreeBranchProps> = ({ searchQuery = ""
                     <TreeBranch key={subIndex} isLast={subIndex === area.subAreas.length - 1}>
                       <CollapsibleTreeNode
                         id={`revb-subarea-${area.code}-${subIndex}`}
+                        code={subAreaCode}
                         label={subArea.label}
                         level="subarea"
                         hasChildren={subArea.parentAssets.length > 0}
                         defaultExpanded={subAreaExpanded}
                         forceExpanded={subAreaExpanded}
-                        isHighlighted={matchesSearch(subArea.label)}
+                        isHighlighted={matchesSearch(subArea.label) || (subAreaCode ? matchesSearch(subAreaCode) : false)}
                         depth={3}
                         ancestorPath={pathAfterArea}
                       >
