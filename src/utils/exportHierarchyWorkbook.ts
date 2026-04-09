@@ -68,7 +68,7 @@ export async function exportHierarchyWorkbook() {
           equip.components?.forEach((comp) => {
             rows.push([
               7, SITE, FACILITY,
-              `${area.code} — ${area.label}`, sub.label, parent.label,
+              `${area.code} — ${area.label}`, formatSubAreaLabel(sub.label), parent.label,
               equip.assetNumber, equip.name,
               comp.componentCode, comp.componentType, comp.componentName, comp.manufacturer, "",
             ]);

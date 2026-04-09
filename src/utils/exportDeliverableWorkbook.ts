@@ -116,9 +116,9 @@ export async function exportDeliverableWorkbook() {
         parent.equipment.forEach((equip) => {
           const tags = equip.pidTags?.join("; ") || "";
           const fl = (equip as any).functionalLocation || "";
-          treeRows.push(["TCMG", "Processing Plant", area.code, area.label, sub.label, parent.label, equip.assetNumber, equip.name, "", "", "", "", tags, fl]);
+          treeRows.push(["TCMG", "Processing Plant", area.code, area.label, formatSubAreaLabel(sub.label), parent.label, equip.assetNumber, equip.name, "", "", "", "", tags, fl]);
           equip.components?.forEach((comp) => {
-            treeRows.push(["TCMG", "Processing Plant", area.code, area.label, sub.label, parent.label, equip.assetNumber, equip.name, comp.componentCode, comp.componentType, comp.componentName, comp.manufacturer, "", ""]);
+            treeRows.push(["TCMG", "Processing Plant", area.code, area.label, formatSubAreaLabel(sub.label), parent.label, equip.assetNumber, equip.name, comp.componentCode, comp.componentType, comp.componentName, comp.manufacturer, "", ""]);
           });
         });
       });
