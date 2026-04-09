@@ -11,11 +11,16 @@ import { FLPathSegment } from "./FLBreadcrumbContext";
 const subAreaCodeMap: Record<string, string> = {
   // SITE
   "Site Infrastructure": "INFRA",
+  "Buildings": "BLDG",
   // UTL
   "Compressed Air": "COMP",
   "Electrical / Controls": "ELEC",
   "Power Generation": "PWR",
   "Reagents (Lime)": "REAG",
+  "Reagents": "REAG",
+  "Water": "WTR",
+  "Hydraulic Systems": "HYD",
+  "Fuel Systems": "FUEL",
   "Water": "WTR",
   "Hydraulic Systems": "HYD",
   "Fuel Systems": "FUEL",
