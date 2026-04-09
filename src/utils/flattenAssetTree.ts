@@ -54,7 +54,7 @@ export function flattenAssetTree(): FlatAsset[] {
             assetId: eq.assetNumber,
             assetName: eq.name,
             area: area.label,
-            subArea: subArea.label,
+            subArea: formatSubAreaLabel(subArea.label),
             parentAsset: parent.label,
           });
         }
