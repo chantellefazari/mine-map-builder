@@ -33,6 +33,7 @@ const subAreaCodes: Record<string, string> = {
   "Electrical / Controls": "ELEC",
   "Power Generation": "PWR",
   "Reagents (Lime)": "REAG",
+  "Reagents": "REAG",
   "Water": "WTR",
   "Hydraulic Systems": "HYD",
   "Fuel Systems": "FUEL",
