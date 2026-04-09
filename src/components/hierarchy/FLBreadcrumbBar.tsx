@@ -2,36 +2,7 @@ import React from "react";
 import { useFLBreadcrumb, FLPathSegment } from "./FLBreadcrumbContext";
 import { MapPin, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-// Sub-area code mapping matching functionalLocations.ts
-const subAreaCodes: Record<string, string> = {
-  "Site Infrastructure": "INFRA",
-  "Compressed Air": "COMP",
-  "Electrical / Controls": "ELEC",
-  "Power Generation": "PWR",
-  "Reagents": "REAG",
-  "Reagents (Lime)": "REAG",
-  "Water": "WTR",
-  "Hydraulic Systems": "HYD",
-  "Fuel Systems": "FUEL",
-  "Feed / Reclaim": "FEED",
-  "Conveying": "CONV",
-  "Grinding": "GRIND",
-  "Classification": "CLASS",
-  "Gravity Circuit": "GRAV",
-  "CIP": "CIP",
-  "Elution": "ELUT",
-  "Carbon Regeneration": "REGEN",
-  "Gold Room": "GOLD",
-  "Thickening": "THK",
-  "Filtering": "FILT",
-  "Workshop Infrastructure": "WKSHP",
-  "Workshop": "WKSHP",
-  "Lab": "LAB",
-  "Mobile Equipment": "MOBILE",
-  "Light Vehicles": "LV",
-  "Heavy Vehicles (HV)": "HV",
-};
+import { subAreaCodeMap, getSubAreaCode } from "@/utils/subAreaCodes";
 
 // Area code mapping matching functionalLocations.ts
 const areaCodeMapping: Record<string, string> = {
