@@ -2,6 +2,7 @@ import { writeXlsxFile, loadXLSX } from "@/utils/safariDownload";
 import { fetchProcessingPlantAreas } from "@/utils/fetchProcessingPlantData";
 import { crushingPlantAreas } from "@/components/hierarchy/crushingPlantData";
 import { functionalLocations } from "@/components/hierarchy/functionalLocations";
+import { formatSubAreaLabel } from "@/utils/subAreaCodes";
 import {
   areaCodes,
   equipmentPrefixes,
