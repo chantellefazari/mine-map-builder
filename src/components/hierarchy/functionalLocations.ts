@@ -46,18 +46,7 @@ export function generateFLCode(
   return `TCMG-PP-${area}-${subArea}-${system}`;
 }
 
-// Generate Functional Location code
-export function generateFLCode(
-  areaCode: string,
-  subAreaLabel: string,
-  systemLabel: string
-): string {
-  const area = areaCodeMapping[areaCode] || areaCode;
-  const subArea = getSubAreaCode(subAreaLabel);
-  const system = generateSystemCode(systemLabel);
-  
-  return `TCMG-PP-${area}-${subArea}-${system}`;
-}
+// Dynamically generate ALL Functional Locations from asset data
 
 // Dynamically generate ALL Functional Locations from asset data
 function generateAllFunctionalLocations(): FunctionalLocation[] {
