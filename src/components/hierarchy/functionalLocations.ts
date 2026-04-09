@@ -18,7 +18,7 @@ const areaCodeMapping: Record<string, string> = {
   "SITE": "SITE",
   "UTL": "UTL",
   "COM": "COM",
-  "REC": "GR",
+  "REC": "REC",
   "TAIL": "TAIL",
   "SUP": "SUP",
 };
@@ -138,8 +138,8 @@ export const flSummary = {
   byArea: {
     SITE: functionalLocations.filter(fl => fl.areaCode === "SITE").length,
     UTL: functionalLocations.filter(fl => fl.areaCode === "UTL").length,
-    COMM: functionalLocations.filter(fl => fl.areaCode === "COMM").length,
-    GR: functionalLocations.filter(fl => fl.areaCode === "GR").length,
+    COM: functionalLocations.filter(fl => fl.areaCode === "COM").length,
+    REC: functionalLocations.filter(fl => fl.areaCode === "REC").length,
     TAIL: functionalLocations.filter(fl => fl.areaCode === "TAIL").length,
     SUP: functionalLocations.filter(fl => fl.areaCode === "SUP").length,
   }

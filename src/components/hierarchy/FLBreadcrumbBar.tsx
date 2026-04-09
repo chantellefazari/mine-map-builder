@@ -37,8 +37,8 @@ const subAreaCodes: Record<string, string> = {
 const areaCodeMapping: Record<string, string> = {
   "SITE": "SITE",
   "UTL": "UTL",
-  "COM": "COMM",
-  "REC": "GR",
+  "COM": "COM",
+  "REC": "REC",
   "TAIL": "TAIL",
   "SUP": "SUP",
 };
