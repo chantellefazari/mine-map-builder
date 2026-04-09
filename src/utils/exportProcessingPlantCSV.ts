@@ -102,7 +102,7 @@ export async function generateProcessingPlantCSVContent(): Promise<string> {
             for (const comp of equip.components) {
               const compTags = comp.pidTags?.join("; ") || "";
               csvLines.push(rowToCSV([
-                "7", SITE, FACILITY, area.code, area.label, sub.label, pa.label, pa.functionalLocation || "",
+                "7", SITE, FACILITY, area.code, area.label, formatSubAreaLabel(sub.label), pa.label, pa.functionalLocation || "",
                 equip.assetNumber, equip.name, equip.functionalLocation || "", "",
                 comp.componentCode, comp.componentType, comp.componentName,
                 comp.model || "", comp.manufacturer, comp.serialNumber || "", compTags,

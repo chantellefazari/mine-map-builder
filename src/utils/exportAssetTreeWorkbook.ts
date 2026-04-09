@@ -32,9 +32,9 @@ export async function exportAssetTreeWorkbook() {
       sub.parentAssets.forEach((parent) => {
         parent.equipment.forEach((equip) => {
           const tags = equip.pidTags?.join("; ") || "";
-          treeRows.push(["TCMG", "Processing Plant", area.code, area.label, sub.label, parent.label, equip.assetNumber, equip.name, "", "", "", "", tags]);
+          treeRows.push(["TCMG", "Processing Plant", area.code, area.label, formatSubAreaLabel(sub.label), parent.label, equip.assetNumber, equip.name, "", "", "", "", tags]);
           equip.components?.forEach((comp) => {
-            treeRows.push(["TCMG", "Processing Plant", area.code, area.label, sub.label, parent.label, equip.assetNumber, equip.name, comp.componentCode, comp.componentType, comp.componentName, comp.manufacturer, ""]);
+            treeRows.push(["TCMG", "Processing Plant", area.code, area.label, formatSubAreaLabel(sub.label), parent.label, equip.assetNumber, equip.name, comp.componentCode, comp.componentType, comp.componentName, comp.manufacturer, ""]);
           });
         });
       });
