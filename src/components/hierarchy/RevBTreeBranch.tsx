@@ -6,42 +6,7 @@ import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
 import { Loader2 } from "lucide-react";
 
 import { FLPathSegment } from "./FLBreadcrumbContext";
-
-// Sub-Area code mapping for FL path segments (Level 4)
-const subAreaCodeMap: Record<string, string> = {
-  // SITE
-  "Site Infrastructure": "INFRA",
-  "Buildings": "BLDG",
-  // UTL
-  "Compressed Air": "COMP",
-  "Electrical / Controls": "ELEC",
-  "Power Generation": "PWR",
-  "Reagents (Lime)": "REAG",
-  "Reagents": "REAG",
-  "Water": "WTR",
-  "Hydraulic Systems": "HYD",
-  "Fuel Systems": "FUEL",
-  // COM
-  "Feed / Reclaim": "FEED",
-  "Conveying": "CONV",
-  "Grinding": "GRIND",
-  "Classification": "CLASS",
-  // REC
-  "Gravity Circuit": "GRAV",
-  "CIP": "CIP",
-  "Elution": "ELUT",
-  "Carbon Regeneration": "REGEN",
-  "Gold Room": "GOLD",
-  // TAIL
-  "Thickening": "THK",
-  "Filtering": "FILT",
-  // SUP
-  "Workshop": "WKSHP",
-  "Lab": "LAB",
-  "Mobile Equipment": "MOBILE",
-  "Light Vehicles": "LV",
-  "Heavy Vehicles (HV)": "HV",
-};
+import { subAreaCodeMap } from "@/utils/subAreaCodes";
 
 function getSubAreaCode(label: string): string | undefined {
   return subAreaCodeMap[label];
