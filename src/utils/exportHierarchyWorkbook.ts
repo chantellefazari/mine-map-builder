@@ -1,5 +1,6 @@
 import { writeXlsxFile, loadXLSX } from "@/utils/safariDownload";
 import { fetchProcessingPlantAreas } from "@/utils/fetchProcessingPlantData";
+import { formatSubAreaLabel } from "@/utils/subAreaCodes";
 
 /**
  * Exports a workbook with one row per hierarchy node, with explicit level columns.
@@ -46,11 +47,11 @@ export async function exportHierarchyWorkbook() {
 
     area.subAreas.forEach((sub) => {
       // Row for Level 4 — Sub-Area
-      rows.push([4, SITE, FACILITY, `${area.code} — ${area.label}`, sub.label, "", "", "", "", "", "", "", ""]);
+      rows.push([4, SITE, FACILITY, `${area.code} — ${area.label}`, formatSubAreaLabel(sub.label), "", "", "", "", "", "", "", ""]);
 
       sub.parentAssets.forEach((parent) => {
         // Row for Level 5 — Parent Asset / System
-        rows.push([5, SITE, FACILITY, `${area.code} — ${area.label}`, sub.label, parent.label, "", "", "", "", "", "", ""]);
+        rows.push([5, SITE, FACILITY, `${area.code} — ${area.label}`, formatSubAreaLabel(sub.label), parent.label, "", "", "", "", "", "", ""]);
 
         parent.equipment.forEach((equip) => {
           const allTags = equip.pidTags?.join("; ") || "";
@@ -58,7 +59,7 @@ export async function exportHierarchyWorkbook() {
           // Row for Level 6 — Equipment
           rows.push([
             6, SITE, FACILITY,
-            `${area.code} — ${area.label}`, sub.label, parent.label,
+            `${area.code} — ${area.label}`, formatSubAreaLabel(sub.label), parent.label,
             equip.assetNumber, equip.name,
             "", "", "", "", allTags,
           ]);
@@ -67,7 +68,7 @@ export async function exportHierarchyWorkbook() {
           equip.components?.forEach((comp) => {
             rows.push([
               7, SITE, FACILITY,
-              `${area.code} — ${area.label}`, sub.label, parent.label,
+              `${area.code} — ${area.label}`, formatSubAreaLabel(sub.label), parent.label,
               equip.assetNumber, equip.name,
               comp.componentCode, comp.componentType, comp.componentName, comp.manufacturer, "",
             ]);

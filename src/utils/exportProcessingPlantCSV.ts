@@ -7,6 +7,7 @@
  */
 import { fetchAllProcessingPlantRows } from "@/utils/fetchProcessingPlantData";
 import { buildAreasFromRows } from "@/hooks/useProcessingPlantAssets";
+import { formatSubAreaLabel } from "@/utils/subAreaCodes";
 
 function escapeCSV(value: string): string {
   if (!value) return "";
@@ -80,18 +81,18 @@ export async function generateProcessingPlantCSVContent(): Promise<string> {
 
     for (const sub of area.subAreas) {
       // Level 4 — Sub-Area
-      csvLines.push(rowToCSV(["4", SITE, FACILITY, area.code, area.label, sub.label, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]));
+      csvLines.push(rowToCSV(["4", SITE, FACILITY, area.code, area.label, formatSubAreaLabel(sub.label), "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]));
 
       for (const pa of sub.parentAssets) {
         // Level 5 — Parent Asset / System
-        csvLines.push(rowToCSV(["5", SITE, FACILITY, area.code, area.label, sub.label, pa.label, pa.functionalLocation || "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]));
+        csvLines.push(rowToCSV(["5", SITE, FACILITY, area.code, area.label, formatSubAreaLabel(sub.label), pa.label, pa.functionalLocation || "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]));
 
         for (const equip of pa.equipment) {
           const equipTags = equip.pidTags?.join("; ") || "";
 
           // Level 6 — Equipment
           csvLines.push(rowToCSV([
-            "6", SITE, FACILITY, area.code, area.label, sub.label, pa.label, pa.functionalLocation || "",
+            "6", SITE, FACILITY, area.code, area.label, formatSubAreaLabel(sub.label), pa.label, pa.functionalLocation || "",
             equip.assetNumber, equip.name, equip.functionalLocation || "", equipTags,
             "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
           ]));
@@ -101,7 +102,7 @@ export async function generateProcessingPlantCSVContent(): Promise<string> {
             for (const comp of equip.components) {
               const compTags = comp.pidTags?.join("; ") || "";
               csvLines.push(rowToCSV([
-                "7", SITE, FACILITY, area.code, area.label, sub.label, pa.label, pa.functionalLocation || "",
+                "7", SITE, FACILITY, area.code, area.label, formatSubAreaLabel(sub.label), pa.label, pa.functionalLocation || "",
                 equip.assetNumber, equip.name, equip.functionalLocation || "", "",
                 comp.componentCode, comp.componentType, comp.componentName,
                 comp.model || "", comp.manufacturer, comp.serialNumber || "", compTags,

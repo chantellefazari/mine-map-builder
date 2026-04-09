@@ -4,6 +4,7 @@
  */
 import { areasData, Area, Equipment } from "@/components/hierarchy/assetData";
 import { crushingPlantAreas, CRUSubArea } from "@/components/hierarchy/crushingPlantData";
+import { formatSubAreaLabel } from "@/utils/subAreaCodes";
 
 export interface FlatAsset {
   assetId: string;
@@ -45,7 +46,7 @@ export function flattenAssetTree(): FlatAsset[] {
           assetId: parent.label,
           assetName: parent.label,
           area: area.label,
-          subArea: subArea.label,
+          subArea: formatSubAreaLabel(subArea.label),
           parentAsset: "",
         });
         for (const eq of parent.equipment) {
@@ -53,7 +54,7 @@ export function flattenAssetTree(): FlatAsset[] {
             assetId: eq.assetNumber,
             assetName: eq.name,
             area: area.label,
-            subArea: subArea.label,
+            subArea: formatSubAreaLabel(subArea.label),
             parentAsset: parent.label,
           });
         }
