@@ -3,6 +3,7 @@ import { fetchProcessingPlantAreas } from "@/utils/fetchProcessingPlantData";
 import { crushingPlantAreas } from "@/components/hierarchy/crushingPlantData";
 import { functionalLocations } from "@/components/hierarchy/functionalLocations";
 import { cruFunctionalLocations } from "@/components/hierarchy/crushingFunctionalLocations";
+import { formatSubAreaLabel } from "@/utils/subAreaCodes";
 import {
   areaCodes,
   equipmentPrefixes,
