@@ -4,6 +4,7 @@
  */
 import { areasData, Area, Equipment } from "@/components/hierarchy/assetData";
 import { crushingPlantAreas, CRUSubArea } from "@/components/hierarchy/crushingPlantData";
+import { formatSubAreaLabel } from "@/utils/subAreaCodes";
 
 export interface FlatAsset {
   assetId: string;
