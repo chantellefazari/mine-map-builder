@@ -1,5 +1,6 @@
 import { writeXlsxFile, loadXLSX } from "@/utils/safariDownload";
 import { fetchProcessingPlantAreas } from "@/utils/fetchProcessingPlantData";
+import { formatSubAreaLabel } from "@/utils/subAreaCodes";
 
 /**
  * Exports a workbook with one row per hierarchy node, with explicit level columns.
