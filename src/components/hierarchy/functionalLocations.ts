@@ -27,11 +27,13 @@ const areaCodeMapping: Record<string, string> = {
 const subAreaCodes: Record<string, string> = {
   // SITE
   "Site Infrastructure": "INFRA",
+  "Buildings": "BLDG",
   // UTL
   "Compressed Air": "COMP",
   "Electrical / Controls": "ELEC",
   "Power Generation": "PWR",
   "Reagents (Lime)": "REAG",
+  "Reagents": "REAG",
   "Water": "WTR",
   "Hydraulic Systems": "HYD",
   "Fuel Systems": "FUEL",
