@@ -708,7 +708,7 @@ export const AssetTagRolloutPlanSection = () => {
 
           {/* Format template */}
           <div className="bg-muted rounded-lg p-5 font-mono text-center mb-4">
-            <p className="text-2xl font-black text-foreground tracking-widest leading-none">BM01</p>
+            <p className="text-2xl font-black text-foreground tracking-widest leading-none">ML01</p>
             <p className="text-sm font-semibold text-foreground/80 uppercase tracking-wide mt-1.5">Primary Ball Mill</p>
             <p className="text-xs text-muted-foreground mt-3">← That is the entire tag. Nothing else.</p>
           </div>
@@ -741,7 +741,7 @@ export const AssetTagRolloutPlanSection = () => {
             <div className="bg-muted/40 rounded-md p-3">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Type A Tag Layout</p>
               <div className="bg-background border border-border rounded px-4 py-4 text-center font-mono">
-                <p className="text-lg font-bold text-foreground leading-none">BM01</p>
+                <p className="text-lg font-bold text-foreground leading-none">ML01</p>
                 <p className="text-xs text-muted-foreground mt-1.5">Primary Ball Mill</p>
               </div>
             </div>
