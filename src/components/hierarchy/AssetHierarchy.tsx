@@ -170,7 +170,7 @@ const hierarchyData = {
           ],
         },
         {
-          code: "SUP" as const,
+          code: "MOB" as const,
           label: "Mobile Equipment",
           subAreas: [
             {
