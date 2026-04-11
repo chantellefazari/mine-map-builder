@@ -575,7 +575,7 @@ export async function generateRolloutPlanPDF(
   const scopeText = "⚠  Scope: Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised. Do not apply this rollout plan to crushing or mining equipment.";
   pdf.text(scopeText, CONTENT_LEFT + 4, y + 5);
 
-  addPageNumbers(pdf, "TCMG Asset Tag Rollout Plan");
+  addPageNumbers(pdf, "TCMG Asset Tag Rollout Plan", logoImg);
   return getPdfBlob(pdf);
 }
 
