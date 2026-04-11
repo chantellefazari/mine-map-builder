@@ -39,7 +39,7 @@ export function useShutdownPMRequirements() {
   // Preserve order from data
   const areaOrder = [
     "Ore Handling (Feed / Reclaim)",
-    "Grinding (Comminution)",
+    "Grinding (Milling)",
     "Leaching (CIP)",
     "Thickening",
     "Tailings / Filtering",

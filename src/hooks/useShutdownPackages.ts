@@ -11,10 +11,10 @@ import type { ShutdownWorkPackage, WPStatus } from "@/components/work-order-cent
 const AREA_CODE_TO_LABEL: Record<string, string> = {
   SITE: "Site Infrastructure",
   UTL: "Utilities & Power",
-  COM: "Comminution / Process",
+  MILL: "Milling",
   REC: "Gold Recovery",
   TAIL: "Tailings",
-  SUP: "Support Services",
+  MOB: "Mobile Equipment",
 };
 
 function resolveArea(areaCode: string | null | undefined): string {

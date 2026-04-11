@@ -34,19 +34,19 @@ interface DBFunctionalLocation {
 const areaColors: Record<string, string> = {
   SITE: "bg-slate-500",
   UTL: "bg-amber-500",
-  COM: "bg-emerald-500",
-  GR: "bg-yellow-500",
+  MILL: "bg-emerald-500",
+  REC: "bg-yellow-500",
   TAIL: "bg-rose-500",
-  SUP: "bg-violet-500",
+  MOB: "bg-violet-500",
 };
 
 const areaLabels: Record<string, string> = {
-  SITE: "Site",
+  SITE: "Site Infrastructure",
   UTL: "Utilities & Power",
-  COM: "Comminution / Process",
-  GR: "Gold Recovery",
+  MILL: "Milling",
+  REC: "Gold Recovery",
   TAIL: "Tailings",
-  SUP: "Support Services",
+  MOB: "Mobile Equipment",
 };
 
 export const FunctionalLocationTable: React.FC = () => {

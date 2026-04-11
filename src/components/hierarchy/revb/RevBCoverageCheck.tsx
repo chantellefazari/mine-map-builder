@@ -149,7 +149,7 @@ export const RevBCoverageCheck: React.FC = () => {
         <h3 className="text-sm font-bold text-foreground mb-2">Assumptions & Questions</h3>
         <ul className="text-xs text-muted-foreground space-y-1.5 list-disc list-inside">
           <li><strong>Site Infrastructure</strong> – No tags extracted from P&IDs. This area covers non-process assets (buildings, roads, fencing) not shown on process P&IDs.</li>
-          <li><strong>Support Services</strong> – Only Reagents mapped from P&IDs. Mobile equipment, workshop, and camp assets are not on process P&IDs.</li>
+          <li><strong>Mobile Equipment</strong> – Only Reagents mapped from P&IDs. Mobile equipment assets are not on process P&IDs.</li>
           <li><strong>Valve nesting</strong> – Valves are grouped under area-level "Valves" parents. Detailed valve-to-equipment nesting requires manual review of each valve's service connection.</li>
           <li><strong>Instrument nesting</strong> – Same as valves. Instruments grouped at area level pending detailed loop-assignment review.</li>
           <li><strong>Line segments</strong> – Represented as "Line – [Area]" groups. Individual line routing requires isometric/layout cross-reference.</li>

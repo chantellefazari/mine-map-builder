@@ -307,7 +307,7 @@ export async function generateRolloutPlanPDF(
   });
   y = (pdf as any).lastAutoTable.finalY + 5;
   y = addParagraph(pdf, y, "Supplier: Trophy Central Alice Springs — quote provided for both options at 500+ quantity pricing.");
-  y = addParagraph(pdf, y, "Recommendation: Use 316 Stainless Steel for chemical/reagent areas (Gold Room, CIL, Reagents). Use DuraBlack for general plant areas (Water, Compressed Air, Comminution) to reduce cost while maintaining durability.");
+  y = addParagraph(pdf, y, "Recommendation: Use 316 Stainless Steel for chemical/reagent areas (Gold Room, CIL, Reagents). Use DuraBlack for general plant areas (Water, Compressed Air, Milling) to reduce cost while maintaining durability.");
 
   // ── 05 ASSET TAG PRODUCTION OPTIONS ── (force new page)
   pdf.addPage();

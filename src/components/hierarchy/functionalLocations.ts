@@ -21,7 +21,6 @@ const areaCodeMapping: Record<string, string> = {
   "MILL": "MILL",
   "REC": "REC",
   "TAIL": "TAIL",
-  "SUP": "SUP",
   "MOB": "MOB",
 };
 

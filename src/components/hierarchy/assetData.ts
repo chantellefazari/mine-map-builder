@@ -54,7 +54,7 @@ export interface SubArea {
   parentAssets: ParentAsset[];
 }
 
-export type AreaType = "SITE" | "UTL" | "MILL" | "REC" | "TAIL" | "SUP" | "MOB" | "CRU";
+export type AreaType = "SITE" | "UTL" | "MILL" | "REC" | "TAIL" | "MOB" | "CRU";
 
 export interface Area {
   code: AreaType;

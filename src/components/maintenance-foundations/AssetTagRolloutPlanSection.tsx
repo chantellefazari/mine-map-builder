@@ -1024,7 +1024,7 @@ export const AssetTagRolloutPlanSection = () => {
             <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
             <p className="text-xs text-foreground">
               <span className="font-semibold">Recommendation:</span> Use 316 Stainless Steel for chemical/reagent areas (Gold Room, CIL, Reagents).
-              Use DuraBlack for general plant areas (Water, Compressed Air, Comminution) to reduce cost while maintaining durability.
+              Use DuraBlack for general plant areas (Water, Compressed Air, Milling) to reduce cost while maintaining durability.
             </p>
           </div>
         </CardContent>
