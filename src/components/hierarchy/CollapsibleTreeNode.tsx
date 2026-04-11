@@ -69,7 +69,6 @@ const levelStyles: Record<NodeLevel, string> = {
 const areaColors: Record<AreaType, string> = {
   SITE: "bg-level-area-site",
   UTL: "bg-level-area-util",
-  COM: "bg-level-area-com",
   MILL: "bg-level-area-com",
   REC: "bg-level-area-rec",
   TAIL: "bg-level-area-tail",
