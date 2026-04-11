@@ -101,7 +101,7 @@ export const AssetNumberingSection = () => {
       </CardHeader>
       <CardContent>
         <div ref={contentRef} className="bg-white text-black rounded-lg border shadow-sm overflow-auto max-h-[70vh]" style={{ fontFamily: "'Segoe UI', Arial, Helvetica, sans-serif" }}>
-          <div data-pdf-section style={{ padding: "28px 32px 0 32px" }}>
+          <div data-pdf-section style={{ padding: "28px 32px" }}>
             {/* Header */}
             <div style={{ borderBottom: `3px solid ${GOLD}`, paddingBottom: 12, marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -251,8 +251,7 @@ export const AssetNumberingSection = () => {
                 ))}
               </tbody>
             </table>
-          </div>
-          <div data-pdf-section style={{ padding: "0 32px 28px 32px" }}>
+
             {/* 7. When New FLs Can Be Created */}
             <h2 style={heading("New FLs")}>7. When New FLs Can Be Created</h2>
             <div style={{ display: "flex", gap: 16, marginBottom: 10 }}>
@@ -300,6 +299,7 @@ export const AssetNumberingSection = () => {
               <span>{today}</span>
             </div>
           </div>
+          {/* closing single pdf-section */}
         </div>
       </CardContent>
     </Card>
