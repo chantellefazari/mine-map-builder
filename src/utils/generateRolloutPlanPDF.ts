@@ -212,8 +212,12 @@ function addProConLabel(pdf: jsPDF, y: number, label: string, color: [number, nu
   return y + 4;
 }
 
-function addPageNumbers(pdf: jsPDF, label: string) {
+function addPageNumbers(pdf: jsPDF, label: string, logoImg?: HTMLImageElement) {
   const totalPages = pdf.getNumberOfPages();
+  const LOGO_H_MM = 6;
+  const logoAspect = logoImg ? logoImg.naturalWidth / logoImg.naturalHeight : 1;
+  const LOGO_W_MM = LOGO_H_MM * logoAspect;
+
   for (let i = 1; i <= totalPages; i++) {
     pdf.setPage(i);
     const w = pdf.internal.pageSize.getWidth();
@@ -221,6 +225,14 @@ function addPageNumbers(pdf: jsPDF, label: string) {
     pdf.setFontSize(7);
     pdf.setTextColor(...MUTED);
     pdf.text(`${label}  |  Page ${i} of ${totalPages}`, w / 2, h - 8, { align: "center" });
+
+    // Stamp logo bottom-right
+    if (logoImg) {
+      const logoX = w - MARGIN - LOGO_W_MM;
+      const logoY = h - 3 - LOGO_H_MM - 1;
+      pdf.addImage(logoImg, "PNG", logoX, logoY, LOGO_W_MM, LOGO_H_MM);
+    }
+
     pdf.setFillColor(...GOLD);
     pdf.rect(0, h - 3, w, 3, "F");
   }
