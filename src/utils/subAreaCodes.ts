@@ -6,7 +6,7 @@ export const subAreaCodeMap: Record<string, string> = {
   "Site Infrastructure": "INFRA",
   "Buildings": "BLDG",
   "Compressed Air": "COMP",
-  "Electrical / Controls": "ELEC",
+  "Power Station / MCC": "PSMCC",
   "Power Generation": "PWR",
   "Reagents (Lime)": "REAG",
   "Reagents": "REAG",
