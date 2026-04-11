@@ -2,7 +2,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 
 export type NodeLevel = "site" | "plant" | "area" | "subarea" | "system";
-export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP";
+export type AreaType = "SITE" | "UTL" | "COM" | "REC" | "TAIL" | "SUP" | "MOB";
 
 interface HierarchyNodeProps {
   code?: string;
@@ -28,6 +28,7 @@ const areaColors: Record<AreaType, string> = {
   REC: "bg-level-area-rec",
   TAIL: "bg-level-area-tail",
   SUP: "bg-level-area-sup",
+  MOB: "bg-level-area-sup",
 };
 
 export const HierarchyNode: React.FC<HierarchyNodeProps> = ({
