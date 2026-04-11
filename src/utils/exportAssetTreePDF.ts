@@ -4,6 +4,7 @@
  */
 
 import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
+import minesiteLogo from "@/assets/Minesite_ai_logo_black.png";
 
 // ── CSV row interface ──────────────────────────────────────────────
 interface CsvRow {
