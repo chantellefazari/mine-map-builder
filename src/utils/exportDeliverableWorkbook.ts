@@ -288,8 +288,8 @@ export async function exportDeliverableWorkbook() {
   ahRows.push(["2", "Facility", "Processing Plant / Crushing Plant", "Major operational facility", "Yes"]);
   ahRows.push(["3", "Main Area", "SITE / UTL / COM / GR / TAIL / SUP", "High level process grouping (not an asset)", "Yes"]);
   ahRows.push(["4", "Sub Area", "GRIND, CIP, FILT, ELEC, WTR", "Logical process subdivision", "Yes"]);
-  ahRows.push(["5", "Parent Asset (System)", "BM01 Ball Mill, FP01 Filter Press", "Physical anchor asset. FL stops here", "Yes"]);
-  ahRows.push(["6", "Equipment", "BM01-MTR01, FP01-GBX01", "Maintainable equipment items", "No"]);
+  ahRows.push(["5", "Parent Asset (System)", "ML01 Ball Mill, FP01 Filter Press", "Physical anchor asset. FL stops here", "Yes"]);
+  ahRows.push(["6", "Equipment", "ML01-MTR01, FP01-GBX01", "Maintainable equipment items", "No"]);
   ahRows.push(["7", "Component", "Bearings, seals, impellers, belts", "OEM level parts. No asset number", "No"]);
   ahRows.push([]);
   ahRows.push(["2. Parent-Child Rules"]);
@@ -328,7 +328,7 @@ export async function exportDeliverableWorkbook() {
   ahRows.push(["5. Asset Numbering Examples"]);
   ahRows.push(["Asset Number", "Description"]);
   ahRows.push(["APRN01-CV01", "Transfer Conveyor 01 (Apron Feeder system)"]);
-  ahRows.push(["GRND01-BM01", "Ball Mill 01 (Grinding system)"]);
+  ahRows.push(["ML01", "Primary Ball Mill (Grinding system)"]);
   ahRows.push(["FILT01-FP01", "Filter Press 01 (Filtering system)"]);
   ahRows.push(["CIP01-AGT01", "Agitator 01 (CIP/Leaching system)"]);
   ahRows.push(["THK01-DRV01", "Drive 01 (Thickener system)"]);

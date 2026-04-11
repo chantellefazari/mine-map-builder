@@ -225,7 +225,7 @@ function buildRolloutPdf(taggedAssetCount: number, productionTagCount: number, t
   y = addSectionTitle(pdf, y, "06", "TAG NUMBERING");
   y = addParagraph(pdf, y, "Tag numbers are derived directly from the asset register. No independent numbering systems are permitted.");
   y = addBullets(pdf, y, [
-    "Tag number = Asset Number from the approved asset register (e.g. BM01, CFP01-PA01, THYD01-PMP01)",
+    "Tag number = Asset Number from the approved asset register (e.g. ML01, CFP01-PA01, THYD01-PMP01)",
     "The P&ID tag is shown as a secondary reference where space permits",
     "No site-local numbering, ad-hoc labels, or sequential tag numbers permitted",
     "If an asset is renumbered in the register, the physical tag must be replaced",
@@ -242,7 +242,7 @@ function buildRolloutPdf(taggedAssetCount: number, productionTagCount: number, t
   pdf.setDrawColor(120, 120, 120); pdf.setLineWidth(0.3);
   pdf.roundedRect(tagStartX + 3, y + 2, tagBoxW - 6, tagBoxH - 4, 1, 1, "S");
   pdf.setFont("courier", "bold"); pdf.setFontSize(14); pdf.setTextColor(...DARK);
-  pdf.text("BM01", tagStartX + tagBoxW / 2, y + 10, { align: "center" });
+  pdf.text("ML01", tagStartX + tagBoxW / 2, y + 10, { align: "center" });
   pdf.setFont("courier", "normal"); pdf.setFontSize(8); pdf.setTextColor(...MUTED);
   pdf.text("Primary Ball Mill", tagStartX + tagBoxW / 2, y + 17, { align: "center" });
 

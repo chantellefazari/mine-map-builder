@@ -188,7 +188,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
 
           {/* Format template */}
           <div className="bg-muted rounded-lg p-5 font-mono space-y-1 text-center">
-            <p className="text-2xl font-black text-foreground tracking-widest">BM01</p>
+            <p className="text-2xl font-black text-foreground tracking-widest">ML01</p>
             <p className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Primary Ball Mill</p>
             <p className="text-xs text-muted-foreground mt-3">← That is the entire tag. Nothing else.</p>
           </div>
@@ -200,7 +200,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Tag Format Examples | Processing Plant Asset Tree</p>
             <div className="grid sm:grid-cols-2 gap-2">
               {[
-                { id: "BM01",    desc: "Primary Ball Mill" },
+                { id: "ML01",    desc: "Primary Ball Mill" },
                 { id: "MFC01",   desc: "Mill Feed Conveyor" },
                 { id: "CYFPA01", desc: "Primary Cyclone Feed Pump A" },
                 { id: "CV01",    desc: "Transfer Conveyor" },
@@ -297,7 +297,7 @@ export const ProcessingPlantAssetTaggingSection = () => {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Flat Surface | 100mm × 50mm Plate (Standard)</p>
             <p className="text-xs text-muted-foreground">e.g. Ball Mill, Cyanide Tank, Electrowinning Cell</p>
             <div className="flex flex-wrap gap-6 items-center py-2">
-              <SimplifiedTagMockup assetId="BM01" description="Primary Ball Mill" size="standard" holePosition="none" />
+              <SimplifiedTagMockup assetId="ML01" description="Primary Ball Mill" size="standard" holePosition="none" />
               <SimplifiedTagMockup assetId="CMIX01" description="Cyanide Mixing Tank" size="standard" holePosition="none" />
               <SimplifiedTagMockup assetId="EWCL01" description="Electrowinning Cell" size="standard" holePosition="none" />
             </div>
