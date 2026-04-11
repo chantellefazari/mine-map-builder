@@ -9,6 +9,7 @@
  */
 
 import type { SectionPdfOptions } from "@/utils/sectionPdfExport";
+import minesiteLogoUrl from "@/assets/Minesite_ai_logo_full.png";
 
 // ─── Approved Color Palette ──────────────────────────────────────────
 export const PDF_COLORS = {
