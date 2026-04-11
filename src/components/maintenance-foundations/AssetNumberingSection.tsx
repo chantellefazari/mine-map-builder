@@ -10,7 +10,7 @@ const { GOLD, GOLD_BG, GOLD_LIGHT, DARK } = PDF_COLORS;
 const areaCodeTable = [
   { code: "SITE", label: "Site Infrastructure", subAreas: "INFRA" },
   { code: "UTL", label: "Utilities & Power", subAreas: "COMP, ELEC, REAG, WTR" },
-  { code: "COM", label: "Comminution / Process", subAreas: "FEED, GRIND, CLASS" },
+  { code: "MILL", label: "Milling", subAreas: "FEED, GRIND, CLASS" },
   { code: "GR", label: "Gold Recovery", subAreas: "CIP, ELUT, GOLD, GRAV, REGEN" },
   { code: "TAIL", label: "Tailings", subAreas: "FILT, THK" },
   { code: "SUP", label: "Support Services", subAreas: "MOBILE" },

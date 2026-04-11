@@ -18,10 +18,11 @@ export interface FunctionalLocation {
 const areaCodeMapping: Record<string, string> = {
   "SITE": "SITE",
   "UTL": "UTL",
-  "COM": "COM",
+  "MILL": "MILL",
   "REC": "REC",
   "TAIL": "TAIL",
   "SUP": "SUP",
+  "MOB": "MOB",
 };
 
 // Extract the system code from the parent asset label
@@ -95,9 +96,9 @@ export const flSummary = {
   byArea: {
     SITE: functionalLocations.filter(fl => fl.areaCode === "SITE").length,
     UTL: functionalLocations.filter(fl => fl.areaCode === "UTL").length,
-    COM: functionalLocations.filter(fl => fl.areaCode === "COM").length,
+    MILL: functionalLocations.filter(fl => fl.areaCode === "MILL").length,
     REC: functionalLocations.filter(fl => fl.areaCode === "REC").length,
     TAIL: functionalLocations.filter(fl => fl.areaCode === "TAIL").length,
-    SUP: functionalLocations.filter(fl => fl.areaCode === "SUP").length,
+    MOB: functionalLocations.filter(fl => fl.areaCode === "MOB").length,
   }
 };

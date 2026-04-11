@@ -8,10 +8,10 @@ import { subAreaCodeMap, getSubAreaCode } from "@/utils/subAreaCodes";
 const areaCodeMapping: Record<string, string> = {
   "SITE": "SITE",
   "UTL": "UTL",
-  "COM": "COM",
+  "MILL": "MILL",
   "REC": "REC",
   "TAIL": "TAIL",
-  "SUP": "SUP",
+  "MOB": "MOB",
 };
 
 const levelLabels: Record<string, string> = {
