@@ -583,6 +583,7 @@ export async function generateRolloutPlanPDF(
 // 2. ATTACHMENT A — P&ID TAGGED ASSET REGISTER PDF
 // ════════════════════════════════════════════════
 export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
+  const logoImg = await loadLogo().catch(() => undefined as HTMLImageElement | undefined);
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   let y = addDocHeader(pdf, "P&ID Tagged Asset Register", "Attachment A — Tennant Mines Gold");
 
@@ -618,7 +619,7 @@ export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
     theme: "grid",
   });
 
-  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register — Attachment A");
+  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register — Attachment A", logoImg);
   return getPdfBlob(pdf);
 }
 
@@ -626,6 +627,7 @@ export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
 // 3. ATTACHMENT B — ASSET TAG PRODUCTION LIST PDF
 // ════════════════════════════════════════════════
 export async function generateProductionListPDF(productionTags: ProductionTag[]) {
+  const logoImg = await loadLogo().catch(() => undefined as HTMLImageElement | undefined);
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   const typeA = productionTags.filter(t => t.tagType === "A").length;
   const typeB = productionTags.filter(t => t.tagType === "B").length;
@@ -682,6 +684,6 @@ export async function generateProductionListPDF(productionTags: ProductionTag[])
   pdf.text(`Type A (Major Asset Plates): ${typeA}   |   Type B (Position Tags): ${typeB}   |   TOTAL TAGS: ${productionTags.length}`, 16, y + 8);
   pdf.text("Scope: Processing Plant ONLY — Crushing Plant excluded until P&IDs are finalised.", 16, y + 13);
 
-  addPageNumbers(pdf, "TCMG Asset Tag Production List — Attachment B");
+  addPageNumbers(pdf, "TCMG Asset Tag Production List — Attachment B", logoImg);
   return getPdfBlob(pdf);
 }
