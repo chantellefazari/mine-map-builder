@@ -74,7 +74,7 @@ const hierarchyData = {
         },
         {
           code: "COM" as const,
-          label: "Comminution / Process",
+          label: "Milling",
           subAreas: [
             {
               label: "Feed / Reclaim",
