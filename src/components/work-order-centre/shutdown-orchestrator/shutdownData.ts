@@ -433,10 +433,10 @@ export function buildAreaZones(pkgs: ShutdownWorkPackage[] = PACKAGES): AreaZone
   const ZONE_LAYOUT: Record<string, { x: number; y: number; w: number; h: number; supervisor: string; isolationStatus: string; accessConstraints: string }> = {
     "Site Infrastructure":    { x: 2,  y: 4,  w: 22, h: 28, supervisor: "L. Chen",     isolationStatus: "All Clear",     accessConstraints: "None" },
     "Utilities & Power":      { x: 26, y: 4,  w: 24, h: 28, supervisor: "D. Kumar",     isolationStatus: "Pending",       accessConstraints: "HV exclusion zone" },
-    "Comminution / Process":  { x: 52, y: 4,  w: 24, h: 28, supervisor: "J. Mitchell",  isolationStatus: "3 Active",      accessConstraints: "Crane exclusion zone — Level 2" },
+    "Milling":                { x: 52, y: 4,  w: 24, h: 28, supervisor: "J. Mitchell",  isolationStatus: "3 Active",      accessConstraints: "Crane exclusion zone — Level 2" },
     "Gold Recovery":          { x: 78, y: 4,  w: 20, h: 28, supervisor: "K. Singh",     isolationStatus: "Restricted Entry", accessConstraints: "Security escort required" },
     "Tailings":               { x: 2,  y: 36, w: 30, h: 28, supervisor: "R. Torres",    isolationStatus: "2 Pending",     accessConstraints: "Scaffold incomplete — Bay 3" },
-    "Support Services":       { x: 34, y: 36, w: 20, h: 28, supervisor: "N. Foster",    isolationStatus: "N/A",           accessConstraints: "None" },
+    "Mobile Equipment":       { x: 34, y: 36, w: 20, h: 28, supervisor: "N. Foster",    isolationStatus: "N/A",           accessConstraints: "None" },
   };
 
   return summaries.map((s) => {

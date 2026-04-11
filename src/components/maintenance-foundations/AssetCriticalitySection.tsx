@@ -240,10 +240,10 @@ export const AssetCriticalitySection = () => {
   const AREA_ORDER: Record<string, number> = {
     "Site Infrastructure": 1,
     "Utilities & Power": 2,
-    "Comminution / Process": 3,
+    "Milling": 3,
     "Gold Recovery": 4,
     "Tailings": 5,
-    "Support Services": 6,
+    "Mobile Equipment": 6,
   };
 
   const getAreaOrder = (areaLabel: string) => AREA_ORDER[areaLabel?.trim()] ?? 99;
