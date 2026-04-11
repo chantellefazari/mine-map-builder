@@ -146,7 +146,7 @@ export function buildAreasFromRows(rows: DBAssetRow[]): Area[] {
   }
 
   // Convert maps to arrays, then sort to match the approved hierarchy order
-  const AREA_ORDER: string[] = ["SITE", "UTL", "COM", "REC", "TAIL", "SUP"];
+  const AREA_ORDER: string[] = ["COM", "REC", "TAIL", "UTL", "SITE", "SUP"];
   const unsorted = Array.from(areaMap.values()).map((area) => ({
     code: area.code,
     label: area.label,
