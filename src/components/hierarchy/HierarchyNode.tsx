@@ -28,6 +28,7 @@ const areaColors: Record<AreaType, string> = {
   REC: "bg-level-area-rec",
   TAIL: "bg-level-area-tail",
   SUP: "bg-level-area-sup",
+  MOB: "bg-level-area-sup",
 };
 
 export const HierarchyNode: React.FC<HierarchyNodeProps> = ({
