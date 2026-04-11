@@ -27,6 +27,7 @@ export const subAreaCodeMap: Record<string, string> = {
   "Workshop": "WKSHP",
   "Lab": "LAB",
   "Heavy Vehicles": "HV",
+  "Small Mobile Equipment": "SME",
   "Lighting Towers": "LTW",
   "Light Vehicles": "LV",
   
