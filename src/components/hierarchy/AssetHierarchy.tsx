@@ -191,12 +191,6 @@ const hierarchyData = {
                 { label: "Light Vehicle Fleet" },
               ],
             },
-            {
-              label: "Heavy Vehicles",
-              systems: [
-                { label: "Heavy Vehicle Fleet" },
-              ],
-            },
           ],
         },
       ],
