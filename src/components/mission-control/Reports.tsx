@@ -22,6 +22,7 @@ export function Reports({ areas, jobs, overallProgress }: Props) {
 
   const handleExportPDF = async () => {
     const { default: jsPDF } = await import("jspdf");
+    const { loadPdfLogo, stampLogoOnAllPages } = await import("@/utils/pdfLogoStamp");
     const doc = new jsPDF("p", "mm", "a4");
     doc.setFontSize(16);
     doc.text("Mission Control — Shutdown Report", 14, 20);
@@ -49,6 +50,9 @@ export function Reports({ areas, jobs, overallProgress }: Props) {
       doc.text(`${status}: ${count}`, 14, y);
       y += 6;
     }
+
+    const logoImg = await loadPdfLogo();
+    stampLogoOnAllPages(doc, logoImg);
 
     doc.save("mission-control-report.pdf");
   };

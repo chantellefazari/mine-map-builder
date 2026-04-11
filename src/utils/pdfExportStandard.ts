@@ -9,6 +9,7 @@
  */
 
 import type { SectionPdfOptions } from "@/utils/sectionPdfExport";
+import minesiteLogoUrl from "@/assets/Minesite_ai_logo_full.png";
 
 // ─── Approved Color Palette ──────────────────────────────────────────
 export const PDF_COLORS = {
@@ -36,6 +37,8 @@ export const PDF_EXPORT_OPTS: SectionPdfOptions = {
   blankPageThreshold: 15,
   rowSnapStartRatio: 0.5,
   maxWhitespaceRatio: 0.35,
+  pageLogoUrl: minesiteLogoUrl,
+  pageLogoWidthMm: 35,
 };
 
 // ─── Typography Constants ────────────────────────────────────────────

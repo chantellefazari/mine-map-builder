@@ -5,6 +5,7 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
 import { toast } from "sonner";
+import { loadPdfLogo, stampLogoOnAllPages } from "@/utils/pdfLogoStamp";
 import { Loader2 } from "lucide-react";
 import { 
   Hash,
@@ -89,6 +90,10 @@ export const FoundationsContent = () => {
         pdf.addImage(imgData, "JPEG", MARGIN, position, contentW, totalImgH);
         heightLeft -= (A4_H - MARGIN * 2);
       }
+
+      // Stamp logo on every page
+      const logoImg = await loadPdfLogo();
+      stampLogoOnAllPages(pdf, logoImg, MARGIN);
 
       const label = TAB_LABELS[activeTab] || "Maintenance Foundations";
       const filename = `TCMG-${label.replace(/[^a-zA-Z0-9]/g, "-")}.pdf`;

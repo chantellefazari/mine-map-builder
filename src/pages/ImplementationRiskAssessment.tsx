@@ -6,6 +6,7 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
 import { toast } from "sonner";
+import { loadPdfLogo, stampLogoOnAllPages } from "@/utils/pdfLogoStamp";
 
 type Level = "High" | "Medium" | "Low";
 
@@ -133,6 +134,10 @@ const ImplementationRiskAssessment = () => {
           currentY += SECTION_GAP;
         }
       }
+
+      // Stamp logo on every page
+      const logoImg = await loadPdfLogo();
+      stampLogoOnAllPages(pdf, logoImg, MARGIN);
 
       const blob = pdf.output("blob");
       await uploadAndShowPdf(blob, "TCMG-Implementation-Risk-Assessment.pdf", "Implementation Risk Assessment");

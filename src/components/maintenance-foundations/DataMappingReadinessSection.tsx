@@ -8,6 +8,7 @@ import { CheckCircle2, AlertCircle, Clock, Printer, Download, X, Loader2 } from 
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
+import { loadPdfLogo, stampLogoOnAllPages } from "@/utils/pdfLogoStamp";
 
 type ReadinessStatus = "Ready" | "Partial" | "Not Started";
 
@@ -486,6 +487,10 @@ export const DataMappingReadinessSection = () => {
           }
         }
       }
+
+      // Stamp logo on every page
+      const logoImg = await loadPdfLogo();
+      stampLogoOnAllPages(pdf, logoImg, MARGIN);
 
       const blobUrl = URL.createObjectURL(pdf.output("blob"));
       pdfWindow.location.href = blobUrl;
