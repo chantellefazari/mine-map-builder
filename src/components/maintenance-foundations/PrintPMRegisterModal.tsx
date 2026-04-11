@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { X, Loader2, Download } from "lucide-react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+import { loadPdfLogo, stampLogoOnAllPages } from "@/utils/pdfLogoStamp";
 
 interface PMItem {
   id: string;
@@ -347,7 +348,8 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
         currentY += sectionHeightMM + SECTION_GAP_MM;
       }
 
-      // Add page numbers
+      // Add page numbers and logo
+      const logoImg = await loadPdfLogo();
       const totalPages = pdf.getNumberOfPages();
       for (let i = 1; i <= totalPages; i++) {
         pdf.setPage(i);
@@ -355,6 +357,7 @@ export const PrintPMRegisterModal = ({ isOpen, onClose, pms }: Props) => {
         pdf.setTextColor(170, 170, 170);
         pdf.text(`Page ${i} of ${totalPages}`, A4_WIDTH_MM - MARGIN_MM, A4_HEIGHT_MM - 3, { align: "right" });
       }
+      stampLogoOnAllPages(pdf, logoImg, MARGIN_MM);
 
       pdf.save("TCMG-Site-PM-Register.pdf");
       onClose();
