@@ -252,6 +252,7 @@ export async function generateRolloutPlanPDF(
   typeACount: number,
   typeBCount: number
 ) {
+  const [logoImg] = await Promise.all([loadLogo().catch(() => undefined as HTMLImageElement | undefined)]);
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant — Tennant Mines Gold");
 
