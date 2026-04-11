@@ -17,9 +17,9 @@ const areaCodeTable = [
 ];
 
 const subAreaCodeTable = [
-  { area: "COM", code: "FEED", meaning: "Feed / Reclaim", example: "TCMG-PP-COM-FEED-RCFD01" },
-  { area: "COM", code: "GRIND", meaning: "Grinding", example: "TCMG-PP-COM-GRIND-ML01" },
-  { area: "COM", code: "CLASS", meaning: "Classification", example: "TCMG-PP-COM-CLASS-CYC01" },
+  { area: "MILL", code: "FEED", meaning: "Feed / Reclaim", example: "TCMG-PP-MILL-FEED-RCFD01" },
+  { area: "MILL", code: "GRIND", meaning: "Grinding", example: "TCMG-PP-MILL-GRIND-ML01" },
+  { area: "MILL", code: "CLASS", meaning: "Classification", example: "TCMG-PP-MILL-CLASS-CYC01" },
   { area: "GR", code: "CIP", meaning: "CIP / Leaching", example: "TCMG-PP-GR-CIP-LCH01" },
   { area: "GR", code: "ELUT", meaning: "Elution", example: "TCMG-PP-GR-ELUT-ELU01" },
   { area: "GR", code: "GOLD", meaning: "Gold Room", example: "TCMG-PP-GR-GOLD-EW01" },
@@ -36,8 +36,8 @@ const subAreaCodeTable = [
 ];
 
 const flExamples = [
-  { fl: "TCMG-PP-COM-GRIND-BM01", system: "BM01 Primary Ball Mill", children: "BM01-MTR01, BM01-GBX01, BM01-BRG01" },
-  { fl: "TCMG-PP-COM-CLASS-CYC01", system: "CYC01 Primary Cyclones", children: "CYC01-PMP01, CYC01-FDR01" },
+  { fl: "TCMG-PP-MILL-GRIND-ML01", system: "ML01 Primary Ball Mill", children: "ML01-MTR01, ML01-GBX01, ML01-BRG01" },
+  { fl: "TCMG-PP-MILL-CLASS-CYC01", system: "CYC01 Primary Cyclones", children: "CYC01-PMP01, CYC01-FDR01" },
   { fl: "TCMG-PP-GR-CIP-LCH01", system: "LCH01 Leach Tanks", children: "LCH01-AGT01, LCH01-PMP01" },
   { fl: "TCMG-PP-GR-GRAV-KNL01", system: "KNL01 Knelson Concentrator", children: "KNL01-PMP01, KNL01-PNL01" },
   { fl: "TCMG-PP-TAIL-THK-THK01", system: "THK01 Tails Thickener", children: "THK01-DRV01, THK01-PMP01" },
@@ -149,10 +149,10 @@ export const AssetNumberingSection = () => {
             <div style={{ fontFamily: "monospace", fontSize: 11, lineHeight: 1.6, marginBottom: 12, padding: "8px 12px", backgroundColor: GOLD_BG, border: `1px solid ${GOLD}`, borderRadius: 4 }}>
               <p style={{ margin: 0, fontWeight: 700 }}>TCMG</p>
               <p style={{ margin: 0, paddingLeft: 16, color: "#555" }}>└── PP (Processing Plant)</p>
-              <p style={{ margin: 0, paddingLeft: 32, color: "#555" }}>└── COM (Comminution / Process)</p>
+              <p style={{ margin: 0, paddingLeft: 32, color: "#555" }}>└── MILL (Milling)</p>
               <p style={{ margin: 0, paddingLeft: 48, color: "#555" }}>└── GRIND (Grinding)</p>
-              <p style={{ margin: 0, paddingLeft: 64, fontWeight: 700, color: GOLD }}>└── BM01 (Primary Ball Mill) ← FL stops here</p>
-              <p style={{ margin: 0, paddingLeft: 80, color: "#888" }}>└── BM01-MTR01 (inherits parent FL)</p>
+              <p style={{ margin: 0, paddingLeft: 64, fontWeight: 700, color: GOLD }}>└── ML01 (Primary Ball Mill) ← FL stops here</p>
+              <p style={{ margin: 0, paddingLeft: 80, color: "#888" }}>└── ML01-MTR01 (inherits parent FL)</p>
             </div>
 
             {/* 3. Area Codes */}
