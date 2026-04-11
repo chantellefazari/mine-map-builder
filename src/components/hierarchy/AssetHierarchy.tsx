@@ -171,35 +171,30 @@ const hierarchyData = {
         },
         {
           code: "SUP" as const,
-          label: "Support Services",
+          label: "Mobile Equipment",
           subAreas: [
             {
-              label: "Lab",
+              label: "Mobile Plant",
               systems: [
-                { label: "Sample Prep" },
-                { label: "Assay Equipment" },
+                { label: "Mobile Plant Fleet" },
               ],
             },
             {
-              label: "Mobile Equipment",
+              label: "Lighting Towers",
               systems: [
-                { label: "Loaders" },
-                { label: "Forklifts" },
-                { label: "Support Equipment" },
+                { label: "Lighting Towers" },
               ],
             },
             {
-              label: "Light Vehicles (LV)",
+              label: "Light Vehicles",
               systems: [
                 { label: "Light Vehicle Fleet" },
-                { label: "LV Maintenance" },
               ],
             },
             {
-              label: "Heavy Vehicles (HV)",
+              label: "Heavy Vehicles",
               systems: [
                 { label: "Heavy Vehicle Fleet" },
-                { label: "HV Maintenance" },
               ],
             },
           ],
