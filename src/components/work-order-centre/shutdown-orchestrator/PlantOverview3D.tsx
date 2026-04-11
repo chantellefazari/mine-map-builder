@@ -976,7 +976,7 @@ function Scene({ areaSummaries, selectedArea, onSelectArea, onHoverArea }: {
       <GoldRecovery />
       <UtilitiesPower />
       <SiteInfrastructure color={areaColors["Site Infrastructure"] || "#3b82f6"} />
-      <SupportServices color={areaColors["Support Services"] || "#6b7280"} />
+      <SupportServices color={areaColors["Mobile Equipment"] || "#6b7280"} />
       <AdminAndStores />
 
       {areaSummaries.map((area) => {

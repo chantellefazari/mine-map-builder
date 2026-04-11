@@ -94,7 +94,7 @@ export const PACKAGES: ShutdownWorkPackage[] = [
   },
   {
     id: "WP-002", title: "Scaffold Erection — Mill Area",
-    area: "Comminution / Process", trade: "Mechanical",
+    area: "Milling", trade: "Mechanical",
     plannedStart: "Day 1 06:00", plannedFinish: "Day 1 12:00", durationHrs: 6,
     status: "Complete", pctComplete: 100, criticalPath: true,
     supervisor: "J. Mitchell", shift: "Day",
@@ -115,14 +115,14 @@ export const PACKAGES: ShutdownWorkPackage[] = [
     blockerType: "", blockerDescription: "", blockerOwner: "", blockerETA: "",
     delayReason: "",
     predecessors: ["WP-001"], successors: ["WP-012"],
-    handoverNotes: "50t crane positioned at Comminution bay",
+    handoverNotes: "50t crane positioned at Milling bay",
     priority: false, col: 0, row: 2, delayHrs: 0, nearCritical: false, floatHrs: 0,
   },
 
   // ── Col 1 — Phase 1: Strip ──
   {
     id: "WP-004", title: "SAG Mill Liner Bolt-Out",
-    area: "Comminution / Process", trade: "Mechanical",
+    area: "Milling", trade: "Mechanical",
     plannedStart: "Day 1 12:00", plannedFinish: "Day 2 00:00", durationHrs: 12,
     status: "Active", pctComplete: 45, criticalPath: true,
     supervisor: "J. Mitchell", shift: "Day",
@@ -135,7 +135,7 @@ export const PACKAGES: ShutdownWorkPackage[] = [
   },
   {
     id: "WP-005", title: "Jaw Crusher Liner Replacement",
-    area: "Comminution / Process", trade: "Mechanical",
+    area: "Milling", trade: "Mechanical",
     plannedStart: "Day 1 10:00", plannedFinish: "Day 1 18:00", durationHrs: 8,
     status: "Active", pctComplete: 60, criticalPath: false,
     supervisor: "M. Thompson", shift: "Day",
@@ -176,7 +176,7 @@ export const PACKAGES: ShutdownWorkPackage[] = [
   // ── Col 2 — Phase 2: Replace ──
   {
     id: "WP-008", title: "SAG Mill Liner Install",
-    area: "Comminution / Process", trade: "Mechanical",
+    area: "Milling", trade: "Mechanical",
     plannedStart: "Day 2 00:00", plannedFinish: "Day 2 14:00", durationHrs: 14,
     status: "Ready", pctComplete: 0, criticalPath: true,
     supervisor: "J. Mitchell", shift: "Night",
@@ -189,7 +189,7 @@ export const PACKAGES: ShutdownWorkPackage[] = [
   },
   {
     id: "WP-009", title: "Ball Mill Trunnion Bearing Reline",
-    area: "Comminution / Process", trade: "Mechanical",
+    area: "Milling", trade: "Mechanical",
     plannedStart: "Day 1 12:00", plannedFinish: "Day 1 22:00", durationHrs: 10,
     status: "Active", pctComplete: 15, criticalPath: true,
     supervisor: "J. Mitchell", shift: "Day",
@@ -215,7 +215,7 @@ export const PACKAGES: ShutdownWorkPackage[] = [
   },
   {
     id: "WP-011", title: "VSD Replacement — Mill Drive",
-    area: "Comminution / Process", trade: "Electrical",
+    area: "Milling", trade: "Electrical",
     plannedStart: "Day 1 14:00", plannedFinish: "Day 1 22:00", durationHrs: 8,
     status: "Delayed", pctComplete: 10, criticalPath: true,
     supervisor: "L. Chen", shift: "Day",
@@ -230,7 +230,7 @@ export const PACKAGES: ShutdownWorkPackage[] = [
   // ── Col 3 — Phase 3: Build Back ──
   {
     id: "WP-012", title: "Cyclone Cluster Replacement",
-    area: "Comminution / Process", trade: "Mechanical",
+    area: "Milling", trade: "Mechanical",
     plannedStart: "Day 2 14:00", plannedFinish: "Day 2 20:00", durationHrs: 6,
     status: "Blocked", pctComplete: 0, criticalPath: true,
     supervisor: "J. Mitchell", shift: "Night",
@@ -284,7 +284,7 @@ export const PACKAGES: ShutdownWorkPackage[] = [
   // ── Col 4 — Completion ──
   {
     id: "WP-016", title: "Mill Alignment & Checks",
-    area: "Comminution / Process", trade: "Mechanical",
+    area: "Milling", trade: "Mechanical",
     plannedStart: "Day 2 20:00", plannedFinish: "Day 3 00:00", durationHrs: 4,
     status: "Ready", pctComplete: 0, criticalPath: true,
     supervisor: "J. Mitchell", shift: "Night",
@@ -482,10 +482,10 @@ export interface RiskItem {
 }
 
 export const DEMO_RISKS: RiskItem[] = [
-  { risk: "Crane unavailable — 50t mobile crane delayed by 4 hrs", area: "Comminution / Process", workPackage: "WP-012", severity: "Critical", owner: "J. Mitchell" },
+  { risk: "Crane unavailable — 50t mobile crane delayed by 4 hrs", area: "Milling", workPackage: "WP-012", severity: "Critical", owner: "J. Mitchell" },
   { risk: "Scaffold not erected — Level 3 access pending", area: "Tailings", workPackage: "WP-014", severity: "High", owner: "R. Torres" },
   { risk: "Isolation tag clearance delayed by Control Room", area: "Utilities & Power", workPackage: "WP-007", severity: "High", owner: "D. Kumar" },
-  { risk: "Replacement VSD not yet received on site", area: "Comminution / Process", workPackage: "WP-011", severity: "Medium", owner: "S. Patel" },
+  { risk: "Replacement VSD not yet received on site", area: "Milling", workPackage: "WP-011", severity: "Medium", owner: "S. Patel" },
   { risk: "Confined space permit pending gas test re-check", area: "Tailings", workPackage: "WP-015", severity: "High", owner: "M. Chen" },
 ];
 
@@ -500,9 +500,9 @@ export interface ShiftFocusItem {
 }
 
 export const DEMO_SHIFT_FOCUS: ShiftFocusItem[] = [
-  { label: "SAG Mill liner bolt-out — Day Shift start", type: "start", area: "Comminution / Process" },
+  { label: "SAG Mill liner bolt-out — Day Shift start", type: "start", area: "Milling" },
   { label: "Thickener rake arm inspection — target completion", type: "finish", area: "Tailings" },
-  { label: "Approve crane lift plan for ball mill trunnion", type: "decision", area: "Comminution / Process" },
+  { label: "Approve crane lift plan for ball mill trunnion", type: "decision", area: "Milling" },
   { label: "Elution column handover from Electrical to Mech", type: "handover", area: "Gold Recovery" },
   { label: "CIP Tank 4 agitator gearbox swap — planned start", type: "start", area: "Gold Recovery" },
   { label: "Tailings pipeline tie-in clearance from Enviro", type: "decision", area: "Tailings" },
@@ -532,8 +532,8 @@ export interface LearnedRule {
 
 export const INITIAL_RULES: LearnedRule[] = [
   { id: "LR-001", title: "Isolation before mechanical entry", area: "All", description: "All mechanical work areas require confirmed electrical isolation and LOTO before personnel entry.", rule_type: "Isolation Rule", source: "Site Standard", active: true, created_at: "2026-01-15" },
-  { id: "LR-002", title: "Scaffold before elevated access", area: "Comminution / Process", description: "Scaffold erection must be complete and tagged before any elevated mechanical access in the mill area.", rule_type: "Access Constraint", source: "Supervisor — J. Mitchell", active: true, created_at: "2026-02-01" },
+  { id: "LR-002", title: "Scaffold before elevated access", area: "Milling", description: "Scaffold erection must be complete and tagged before any elevated mechanical access in the mill area.", rule_type: "Access Constraint", source: "Supervisor — J. Mitchell", active: true, created_at: "2026-02-01" },
   { id: "LR-003", title: "Crane exclusion zone during lifts", area: "All", description: "No concurrent scaffold or personnel work within 15m of active crane lifts.", rule_type: "Clash Warning", source: "Safety — Y25 Lesson", active: true, created_at: "2025-11-20" },
   { id: "LR-004", title: "Parts confirmation 48hrs prior", area: "All", description: "All critical-path parts must be confirmed on-site 48 hours before scheduled start. Previous shutdowns lost 4-12 hours waiting for freight.", rule_type: "Lesson Learned", source: "Historical — Y25-SH02", active: true, created_at: "2025-12-01" },
-  { id: "LR-005", title: "VSD commissioning requires vendor", area: "Comminution / Process", description: "VSD installation and commissioning requires vendor representative on-site for warranty compliance.", rule_type: "Shutdown Requirement", source: "Planner — L. Chen", active: true, created_at: "2026-03-10" },
+  { id: "LR-005", title: "VSD commissioning requires vendor", area: "Milling", description: "VSD installation and commissioning requires vendor representative on-site for warranty compliance.", rule_type: "Shutdown Requirement", source: "Planner — L. Chen", active: true, created_at: "2026-03-10" },
 ];
