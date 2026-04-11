@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import minesiteLogoUrl from "@/assets/Minesite_ai_logo_full.png";
 
 
 // Pre-load the Gravotech LS100 image as base64 for PDF embedding
@@ -14,6 +15,17 @@ let gravoImageBase64: string | null = null;
     reader.readAsDataURL(blob);
   } catch { /* silent */ }
 })();
+
+/** Load the Minesite.AI logo as an HTMLImageElement for PDF stamping */
+function loadLogo(): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = minesiteLogoUrl;
+  });
+}
 
 interface TaggedAsset {
   asset_name: string;
