@@ -73,7 +73,7 @@ const hierarchyData = {
           ],
         },
         {
-          code: "COM" as const,
+          code: "MILL" as const,
           label: "Milling",
           subAreas: [
             {
