@@ -109,7 +109,7 @@ export const NamingConventionDocument = () => {
               <span style={{ fontSize: 16, fontWeight: 700, fontFamily: "monospace", letterSpacing: 2, color: DARK }}>[PREFIX][NUMBER]-[SUFFIX][NUMBER]</span>
             </div>
             <p style={{ fontSize: 11, color: "#555", margin: "4px 0 10px 0" }}>
-              <strong>Example:</strong> <span style={{ fontFamily: "monospace" }}>BM01-MTR01</span> = Ball Mill 01, Motor 01
+              <strong>Example:</strong> <span style={{ fontFamily: "monospace" }}>ML01-MTR01</span> = Primary Ball Mill, Motor 01
             </p>
 
             {/* 2. Area Codes */}

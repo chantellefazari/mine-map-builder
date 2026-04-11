@@ -11,8 +11,8 @@ const hierarchyLevels = [
   { level: "2", name: "Facility", example: "Processing Plant / Crushing Plant", desc: "Major operational facility", hasFL: "Yes" },
   { level: "3", name: "Main Area", example: "SITE / UTL / COM / GR / TAIL / SUP", desc: "High level process grouping (not an asset)", hasFL: "Yes" },
   { level: "4", name: "Sub Area", example: "GRIND, CIP, FILT, ELEC, WTR", desc: "Logical process subdivision", hasFL: "Yes" },
-  { level: "5", name: "Parent Asset (System)", example: "BM01 Ball Mill, FP01 Filter Press", desc: "Physical anchor asset. FL stops here", hasFL: "Yes" },
-  { level: "6", name: "Equipment", example: "BM01-MTR01, FP01-GBX01", desc: "Maintainable equipment items", hasFL: "No" },
+  { level: "5", name: "Parent Asset (System)", example: "ML01 Ball Mill, FP01 Filter Press", desc: "Physical anchor asset. FL stops here", hasFL: "Yes" },
+  { level: "6", name: "Equipment", example: "ML01-MTR01, FP01-GBX01", desc: "Maintainable equipment items", hasFL: "No" },
   { level: "7", name: "Component", example: "Bearings, seals, impellers, belts", desc: "OEM level parts. No asset number", hasFL: "No" },
 ];
 
@@ -36,7 +36,7 @@ const constraints = [
 
 const assetNumberingExamples = [
   { number: "APRN01-CV01", desc: "Transfer Conveyor 01 (Apron Feeder system)" },
-  { number: "GRND01-BM01", desc: "Ball Mill 01 (Grinding system)" },
+  { number: "ML01", desc: "Primary Ball Mill (Grinding system)" },
   { number: "FILT01-FP01", desc: "Filter Press 01 (Filtering system)" },
   { number: "CIP01-AGT01", desc: "Agitator 01 (CIP/Leaching system)" },
   { number: "THK01-DRV01", desc: "Drive 01 (Thickener system)" },
