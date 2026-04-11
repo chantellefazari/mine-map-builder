@@ -31,6 +31,36 @@ import { jsPDF } from "jspdf";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { ProductionTag } from "./AssetTagProductionList";
+import minesiteLogoUrl from "@/assets/Minesite_ai_logo_full.png";
+
+const loadRolloutPdfLogo = async () => {
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const logo = new Image();
+    logo.crossOrigin = "anonymous";
+    logo.decoding = "async";
+    logo.onload = () => resolve(logo);
+    logo.onerror = reject;
+    logo.src = minesiteLogoUrl;
+  });
+
+  if (!img.naturalWidth || !img.naturalHeight) {
+    throw new Error("Rollout logo dimensions unavailable");
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Could not prepare rollout logo for PDF export");
+
+  ctx.drawImage(img, 0, 0);
+
+  return {
+    dataUrl: canvas.toDataURL("image/png"),
+    aspectRatio: img.naturalHeight / img.naturalWidth,
+  };
+};
 
 const SectionHeading = ({
   icon: Icon,
@@ -188,6 +218,10 @@ export const AssetTagRolloutPlanSection = () => {
       }
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const logo = await loadRolloutPdfLogo().catch((error) => {
+        console.warn("Failed to load rollout plan logo:", error);
+        return null;
+      });
 
       // Draw document header on page 1
       const drawHeader = () => {
@@ -309,6 +343,9 @@ export const AssetTagRolloutPlanSection = () => {
 
       // Add page numbers and gold footer bar
       const totalPages = pdf.getNumberOfPages();
+      const logoWidthMm = 34;
+      const logoHeightMm = logo ? logoWidthMm * logo.aspectRatio : 0;
+
       for (let i = 1; i <= totalPages; i++) {
         pdf.setPage(i);
         pdf.setFontSize(7);
@@ -319,6 +356,13 @@ export const AssetTagRolloutPlanSection = () => {
           A4_H - 6,
           { align: "center" }
         );
+
+        if (logo && logoHeightMm > 0) {
+          const logoX = A4_W - MARGIN - logoWidthMm;
+          const logoY = A4_H - 3 - logoHeightMm - 1.5;
+          pdf.addImage(logo.dataUrl, "PNG", logoX, logoY, logoWidthMm, logoHeightMm);
+        }
+
         pdf.setFillColor(212, 160, 23);
         pdf.rect(0, A4_H - 3, A4_W, 3, "F");
       }
