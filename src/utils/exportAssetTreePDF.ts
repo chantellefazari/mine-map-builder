@@ -491,6 +491,23 @@ export async function exportAssetTreePDF() {
   }
 
   // === FOOTER on every page ===
+  // Load logo for footer stamping
+  const logoImg = new Image();
+  logoImg.crossOrigin = "anonymous";
+  const logoLoaded = new Promise<void>((resolve) => {
+    logoImg.onload = () => resolve();
+    logoImg.onerror = () => resolve(); // continue without logo if it fails
+    logoImg.src = minesiteLogo;
+  });
+  await logoLoaded;
+
+  // Get logo dimensions for proportional scaling
+  const LOGO_H_MM = 8;
+  const logoAspect = logoImg.naturalWidth && logoImg.naturalHeight
+    ? logoImg.naturalWidth / logoImg.naturalHeight
+    : 4; // fallback aspect ratio
+  const LOGO_W_MM = LOGO_H_MM * logoAspect;
+
   const totalPages = pdf.getNumberOfPages();
   for (let p = 1; p <= totalPages; p++) {
     addPageBorder(p);
@@ -500,6 +517,13 @@ export async function exportAssetTreePDF() {
     pdf.setTextColor(150, 150, 150);
     pdf.text(`TCMG Asset Hierarchy - Full Specification Register | Page ${p} of ${totalPages}`, MARGIN, PAGE_H - MARGIN + 5);
     pdf.text(`Generated: ${dateStr}`, MARGIN + CONTENT_W - 30, PAGE_H - MARGIN + 5);
+
+    // Stamp Minesite.AI logo bottom-right of every page
+    if (logoImg.naturalWidth > 0) {
+      const logoX = MARGIN + CONTENT_W - LOGO_W_MM;
+      const logoY = PAGE_H - MARGIN - LOGO_H_MM - 1;
+      pdf.addImage(logoImg, "PNG", logoX, logoY, LOGO_W_MM, LOGO_H_MM);
+    }
   }
 
   const blob = pdf.output("blob");
