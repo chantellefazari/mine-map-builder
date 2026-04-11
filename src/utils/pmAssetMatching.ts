@@ -25,7 +25,7 @@ export interface MatchResult {
  */
 const SITE_EQUIPMENT_MAP: Record<string, string> = {
   // ── Verified from processing_plant_assets_rev_b ──
-  "ball mill": "BM01",                    // "Primary Ball Mill"
+  "ball mill": "ML01",                    // "Primary Ball Mill"
   "filter press": "FP01",                 // "Filter Press"
   "filter press motor": "FP01-MTR01",     // "Filter Press – HPU Motor"
   "thickener": "THK01",                   // "Tails Thickener"
@@ -39,7 +39,7 @@ const SITE_EQUIPMENT_MAP: Record<string, string> = {
   "power station generator": "GEN01",    // "Generation (parent system)"
   "generator": "GEN01",                  // "Generation (parent system)"
   "lighting tower": "LTW01",             // "Lighting Tower 1"
-  "milling area motor": "BM01-MTR01",     // "Primary Ball Mill – Main Motor"
+  "milling area motor": "ML01-MTR01",     // "Primary Ball Mill – Main Motor"
   "electrowinning cell": "EWCL01",        // "Electrowinning Cell"
 };
 
@@ -53,7 +53,7 @@ const NO_RESULT: MatchResult = {
   validationStatus: "Manual Review Required",
 };
 
-// Equipment tag patterns (e.g., FP01, BM01, GEN01)
+// Equipment tag patterns (e.g., FP01, ML01, GEN01)
 const EQUIPMENT_TAG_PATTERN = /^[A-Z]{2,6}\d{1,3}[A-Z]?$/;
 
 function extractEquipmentTags(text: string): string[] {

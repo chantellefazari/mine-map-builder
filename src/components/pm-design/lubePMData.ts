@@ -34,7 +34,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
     plantArea: "Grinding",
     items: [
       {
-        plantId: "BM01",
+        plantId: "ML01",
         plantItem: "Tank; Motor Lube Oil; Ball Mill",
         lubePoints: [
           { location: "Tank", type: "VG460", quantity: "To Tank Capacity", uom: "" },
@@ -42,7 +42,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "BM01",
+        plantId: "ML01",
         plantItem: "Tank; G/B-Pin; Ball Mill",
         lubePoints: [
           { location: "Gearbox", type: "VG320", quantity: "190", uom: "l" },
@@ -51,7 +51,7 @@ export const lubePMTemplates: LubePMTemplate[] = [
         ],
       },
       {
-        plantId: "BM01",
+        plantId: "ML01",
         plantItem: "Tank; Trunnion Oil; Ball Mill",
         lubePoints: [
           { location: "Trunnion", type: "VG460", quantity: "To Tank Capacity", uom: "" },
