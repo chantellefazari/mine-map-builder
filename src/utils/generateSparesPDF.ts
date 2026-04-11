@@ -4,6 +4,7 @@ import { classifyCriticality } from "@/utils/criticalityClassification";
 import { getContainerForCategory } from "@/utils/categoryContainerMapping";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadAndShowPdf } from "@/utils/pdfDownloadHelper";
+import { loadPdfLogo, stampLogoOnAllPages } from "@/utils/pdfLogoStamp";
 
 interface SpareRow {
   id: string;
@@ -187,6 +188,10 @@ export async function generateSparesPDF(onProgress?: (msg: string) => void) {
     doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.getWidth() - 30, doc.internal.pageSize.getHeight() - 5);
     doc.text("TCMG Site Spares Register", 14, doc.internal.pageSize.getHeight() - 5);
   }
+
+  // Stamp logo on every page
+  const logoImg = await loadPdfLogo();
+  stampLogoOnAllPages(doc, logoImg, 14);
 
   const blob = doc.output("blob");
   await uploadAndShowPdf(blob, "Site_Spares_Parts_List.pdf", "Site Spares Parts List");
