@@ -29,7 +29,7 @@ export const subAreaCodeMap: Record<string, string> = {
   "Mobile Plant": "MPLANT",
   "Lighting Towers": "LTW",
   "Light Vehicles": "LV",
-  "Heavy Vehicles": "HV",
+  
 };
 
 /**
