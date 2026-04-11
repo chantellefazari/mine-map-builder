@@ -622,7 +622,7 @@ export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
     theme: "grid",
   });
 
-  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register — Attachment A", logoImg);
+  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register — Attachment A", logoImg, true);
   return getPdfBlob(pdf);
 }
 
