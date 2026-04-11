@@ -174,9 +174,9 @@ const hierarchyData = {
           label: "Mobile Equipment",
           subAreas: [
             {
-              label: "Mobile Plant",
+              label: "Heavy Vehicles",
               systems: [
-                { label: "Mobile Plant Fleet" },
+                { label: "Heavy Vehicle Fleet" },
               ],
             },
             {
