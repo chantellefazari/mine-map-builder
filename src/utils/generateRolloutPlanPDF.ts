@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import minesiteLogoUrl from "@/assets/Minesite_ai_logo_full.png";
 
 
 // Pre-load the Gravotech LS100 image as base64 for PDF embedding
@@ -14,6 +15,17 @@ let gravoImageBase64: string | null = null;
     reader.readAsDataURL(blob);
   } catch { /* silent */ }
 })();
+
+/** Load the Minesite.AI logo as an HTMLImageElement for PDF stamping */
+function loadLogo(): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = minesiteLogoUrl;
+  });
+}
 
 interface TaggedAsset {
   asset_name: string;
@@ -200,8 +212,12 @@ function addProConLabel(pdf: jsPDF, y: number, label: string, color: [number, nu
   return y + 4;
 }
 
-function addPageNumbers(pdf: jsPDF, label: string) {
+function addPageNumbers(pdf: jsPDF, label: string, logoImg?: HTMLImageElement) {
   const totalPages = pdf.getNumberOfPages();
+  const LOGO_H_MM = 6;
+  const logoAspect = logoImg ? logoImg.naturalWidth / logoImg.naturalHeight : 1;
+  const LOGO_W_MM = LOGO_H_MM * logoAspect;
+
   for (let i = 1; i <= totalPages; i++) {
     pdf.setPage(i);
     const w = pdf.internal.pageSize.getWidth();
@@ -209,6 +225,14 @@ function addPageNumbers(pdf: jsPDF, label: string) {
     pdf.setFontSize(7);
     pdf.setTextColor(...MUTED);
     pdf.text(`${label}  |  Page ${i} of ${totalPages}`, w / 2, h - 8, { align: "center" });
+
+    // Stamp logo bottom-right
+    if (logoImg) {
+      const logoX = w - MARGIN - LOGO_W_MM;
+      const logoY = h - 3 - LOGO_H_MM - 1;
+      pdf.addImage(logoImg, "PNG", logoX, logoY, LOGO_W_MM, LOGO_H_MM);
+    }
+
     pdf.setFillColor(...GOLD);
     pdf.rect(0, h - 3, w, 3, "F");
   }
@@ -228,6 +252,7 @@ export async function generateRolloutPlanPDF(
   typeACount: number,
   typeBCount: number
 ) {
+  const [logoImg] = await Promise.all([loadLogo().catch(() => undefined as HTMLImageElement | undefined)]);
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   let y = addDocHeader(pdf, "Asset Tag Rollout Plan", "Processing Plant — Tennant Mines Gold");
 
@@ -550,7 +575,7 @@ export async function generateRolloutPlanPDF(
   const scopeText = "⚠  Scope: Processing Plant ONLY. Crushing Plant excluded until P&IDs are finalised. Do not apply this rollout plan to crushing or mining equipment.";
   pdf.text(scopeText, CONTENT_LEFT + 4, y + 5);
 
-  addPageNumbers(pdf, "TCMG Asset Tag Rollout Plan");
+  addPageNumbers(pdf, "TCMG Asset Tag Rollout Plan", logoImg);
   return getPdfBlob(pdf);
 }
 
@@ -558,6 +583,7 @@ export async function generateRolloutPlanPDF(
 // 2. ATTACHMENT A — P&ID TAGGED ASSET REGISTER PDF
 // ════════════════════════════════════════════════
 export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
+  const logoImg = await loadLogo().catch(() => undefined as HTMLImageElement | undefined);
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   let y = addDocHeader(pdf, "P&ID Tagged Asset Register", "Attachment A — Tennant Mines Gold");
 
@@ -593,7 +619,7 @@ export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
     theme: "grid",
   });
 
-  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register — Attachment A");
+  addPageNumbers(pdf, "TCMG P&ID Tagged Asset Register — Attachment A", logoImg);
   return getPdfBlob(pdf);
 }
 
@@ -601,6 +627,7 @@ export async function generateAssetRegisterPDF(taggedAssets: TaggedAsset[]) {
 // 3. ATTACHMENT B — ASSET TAG PRODUCTION LIST PDF
 // ════════════════════════════════════════════════
 export async function generateProductionListPDF(productionTags: ProductionTag[]) {
+  const logoImg = await loadLogo().catch(() => undefined as HTMLImageElement | undefined);
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   const typeA = productionTags.filter(t => t.tagType === "A").length;
   const typeB = productionTags.filter(t => t.tagType === "B").length;
@@ -657,6 +684,6 @@ export async function generateProductionListPDF(productionTags: ProductionTag[])
   pdf.text(`Type A (Major Asset Plates): ${typeA}   |   Type B (Position Tags): ${typeB}   |   TOTAL TAGS: ${productionTags.length}`, 16, y + 8);
   pdf.text("Scope: Processing Plant ONLY — Crushing Plant excluded until P&IDs are finalised.", 16, y + 13);
 
-  addPageNumbers(pdf, "TCMG Asset Tag Production List — Attachment B");
+  addPageNumbers(pdf, "TCMG Asset Tag Production List — Attachment B", logoImg);
   return getPdfBlob(pdf);
 }
