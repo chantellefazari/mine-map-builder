@@ -2,7 +2,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 
 export type NodeLevel = "site" | "plant" | "area" | "subarea" | "system";
-export type AreaType = "SITE" | "UTL" | "MILL" | "COM" | "REC" | "TAIL" | "SUP" | "MOB";
+export type AreaType = "SITE" | "UTL" | "MILL" | "REC" | "TAIL" | "SUP" | "MOB";
 
 interface HierarchyNodeProps {
   code?: string;
