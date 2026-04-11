@@ -10,7 +10,7 @@ import {
 import { useFLBreadcrumb, FLPathSegment } from "./FLBreadcrumbContext";
 
 export type NodeLevel = "site" | "plant" | "area" | "subarea" | "parentAsset" | "equipment" | "component";
-export type AreaType = "SITE" | "UTL" | "MILL" | "REC" | "TAIL" | "SUP" | "MOB" | "CRU";
+export type AreaType = "SITE" | "UTL" | "MILL" | "REC" | "TAIL" | "MOB" | "CRU";
 
 interface ComponentSpecs {
   model?: string;

@@ -25,7 +25,7 @@ export const SHUTDOWN_AREAS: ShutdownArea[] = [
   { code: "MILL", label: "Milling" },
   { code: "REC",  label: "Gold Recovery" },
   { code: "TAIL", label: "Tailings" },
-  { code: "SUP",  label: "Support Services" },
+  { code: "MOB",  label: "Mobile Equipment" },
 ];
 
 export const AREA_LABELS = SHUTDOWN_AREAS.map(a => a.label);

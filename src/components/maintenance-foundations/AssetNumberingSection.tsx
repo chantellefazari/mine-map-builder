@@ -9,39 +9,42 @@ const { GOLD, GOLD_BG, GOLD_LIGHT, DARK } = PDF_COLORS;
 
 const areaCodeTable = [
   { code: "SITE", label: "Site Infrastructure", subAreas: "INFRA" },
-  { code: "UTL", label: "Utilities & Power", subAreas: "COMP, ELEC, REAG, WTR" },
+  { code: "UTL", label: "Utilities & Power", subAreas: "COMP, PSMCC, WTR" },
   { code: "MILL", label: "Milling", subAreas: "FEED, GRIND, CLASS" },
-  { code: "GR", label: "Gold Recovery", subAreas: "CIP, ELUT, GOLD, GRAV, REGEN" },
+  { code: "REC", label: "Gold Recovery", subAreas: "CIP, ELUT, GOLD, GRAV, REGEN, REAG" },
   { code: "TAIL", label: "Tailings", subAreas: "FILT, THK" },
-  { code: "SUP", label: "Support Services", subAreas: "MOBILE" },
+  { code: "MOB", label: "Mobile Equipment", subAreas: "HV, LV, SME, LTW" },
 ];
 
 const subAreaCodeTable = [
   { area: "MILL", code: "FEED", meaning: "Feed / Reclaim", example: "TCMG-PP-MILL-FEED-RCFD01" },
   { area: "MILL", code: "GRIND", meaning: "Grinding", example: "TCMG-PP-MILL-GRIND-ML01" },
   { area: "MILL", code: "CLASS", meaning: "Classification", example: "TCMG-PP-MILL-CLASS-CYC01" },
-  { area: "GR", code: "CIP", meaning: "CIP / Leaching", example: "TCMG-PP-GR-CIP-LCH01" },
-  { area: "GR", code: "ELUT", meaning: "Elution", example: "TCMG-PP-GR-ELUT-ELU01" },
-  { area: "GR", code: "GOLD", meaning: "Gold Room", example: "TCMG-PP-GR-GOLD-EW01" },
-  { area: "GR", code: "GRAV", meaning: "Gravity Circuit", example: "TCMG-PP-GR-GRAV-KNL01" },
-  { area: "GR", code: "REGEN", meaning: "Carbon Regeneration", example: "TCMG-PP-GR-REGEN-KLN01" },
+  { area: "REC", code: "CIP", meaning: "CIP / Leaching", example: "TCMG-PP-REC-CIP-LCH01" },
+  { area: "REC", code: "ELUT", meaning: "Elution", example: "TCMG-PP-REC-ELUT-ELU01" },
+  { area: "REC", code: "GOLD", meaning: "Gold Room", example: "TCMG-PP-REC-GOLD-EW01" },
+  { area: "REC", code: "GRAV", meaning: "Gravity Circuit", example: "TCMG-PP-REC-GRAV-KNL01" },
+  { area: "REC", code: "REGEN", meaning: "Carbon Regeneration", example: "TCMG-PP-REC-REGEN-KLN01" },
+  { area: "REC", code: "REAG", meaning: "Reagents", example: "TCMG-PP-REC-REAG-CN01" },
   { area: "TAIL", code: "FILT", meaning: "Filtering", example: "TCMG-PP-TAIL-FILT-FP01" },
   { area: "TAIL", code: "THK", meaning: "Thickening", example: "TCMG-PP-TAIL-THK-THK01" },
   { area: "UTL", code: "COMP", meaning: "Compressed Air", example: "TCMG-PP-UTL-COMP-COMP01" },
-  { area: "UTL", code: "ELEC", meaning: "Electrical / Controls", example: "TCMG-PP-UTL-ELEC-GEN01" },
-  { area: "UTL", code: "REAG", meaning: "Reagents", example: "TCMG-PP-UTL-REAG-LIME01" },
-  { area: "UTL", code: "WTR", meaning: "Water", example: "TCMG-PP-UTL-WTR-RO01" },
+  { area: "UTL", code: "PSMCC", meaning: "Power Station / MCC", example: "TCMG-PP-UTL-PSMCC-GEN01" },
+  { area: "UTL", code: "WTR", meaning: "Water", example: "TCMG-PP-UTL-WTR-RW01" },
   { area: "SITE", code: "INFRA", meaning: "Site Infrastructure", example: "TCMG-PP-SITE-INFRA-BLDG01" },
-  { area: "SUP", code: "MOBILE", meaning: "Mobile Equipment", example: "TCMG-PP-SUP-MOBILE-MOB01" },
+  { area: "MOB", code: "HV", meaning: "Heavy Vehicles", example: "TCMG-PP-MOB-HV-HV01" },
+  { area: "MOB", code: "LV", meaning: "Light Vehicles", example: "TCMG-PP-MOB-LV-LV01" },
+  { area: "MOB", code: "SME", meaning: "Small Mobile Equipment", example: "TCMG-PP-MOB-SME-SME01" },
+  { area: "MOB", code: "LTW", meaning: "Lighting Towers", example: "TCMG-PP-MOB-LTW-LTW01" },
 ];
 
 const flExamples = [
   { fl: "TCMG-PP-MILL-GRIND-ML01", system: "ML01 Primary Ball Mill", children: "ML01-MTR01, ML01-GBX01, ML01-BRG01" },
   { fl: "TCMG-PP-MILL-CLASS-CYC01", system: "CYC01 Primary Cyclones", children: "CYC01-PMP01, CYC01-FDR01" },
-  { fl: "TCMG-PP-GR-CIP-LCH01", system: "LCH01 Leach Tanks", children: "LCH01-AGT01, LCH01-PMP01" },
-  { fl: "TCMG-PP-GR-GRAV-KNL01", system: "KNL01 Knelson Concentrator", children: "KNL01-PMP01, KNL01-PNL01" },
+  { fl: "TCMG-PP-REC-CIP-LCH01", system: "LCH01 Leach Tanks", children: "LCH01-AGT01, LCH01-PMP01" },
+  { fl: "TCMG-PP-REC-GRAV-KNL01", system: "KNL01 Knelson Concentrator", children: "KNL01-PMP01, KNL01-PNL01" },
   { fl: "TCMG-PP-TAIL-THK-THK01", system: "THK01 Tails Thickener", children: "THK01-DRV01, THK01-PMP01" },
-  { fl: "TCMG-PP-UTL-ELEC-GEN01", system: "GEN01 Generation", children: "PGEN01, PGEN02, PGEN03" },
+  { fl: "TCMG-PP-UTL-PSMCC-GEN01", system: "GEN01 Generation", children: "PGEN01, PGEN02, PGEN03" },
 ];
 
 export const AssetNumberingSection = () => {

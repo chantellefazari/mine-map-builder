@@ -26,7 +26,7 @@ export const Legend: React.FC = () => {
         <LegendItem level="MILL" description="Milling" colorClass="bg-level-area-com" />
         <LegendItem level="REC" description="Gold Recovery" colorClass="bg-level-area-rec" />
         <LegendItem level="TAIL" description="Tailings" colorClass="bg-level-area-tail" />
-        <LegendItem level="SUP" description="Support" colorClass="bg-level-area-sup" />
+        <LegendItem level="MOB" description="Mobile Equipment" colorClass="bg-level-area-sup" />
         <LegendItem level="CRU" description="Crushing Plant" colorClass="bg-amber-600" />
       </div>
     </div>
