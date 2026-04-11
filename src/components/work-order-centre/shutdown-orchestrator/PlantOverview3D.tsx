@@ -775,11 +775,11 @@ function Terrain() {
 
 const ZONE_BOUNDS: Record<string, { pos: [number, number, number]; size: [number, number, number] }> = {
   "Tailings":               { pos: [-7,   0.03, -4],    size: [12, 0.02, 8] },
-  "Comminution / Process":  { pos: [2,    0.03, 2],     size: [8, 0.02, 12] },
+  "Milling":                { pos: [2,    0.03, 2],     size: [8, 0.02, 12] },
   "Gold Recovery":          { pos: [8,    0.03, -1],    size: [9, 0.02, 8] },
   "Utilities & Power":      { pos: [10,   0.03, -5.5],  size: [8, 0.02, 4] },
   "Site Infrastructure":    { pos: [13,   0.03, -6],    size: [6, 0.02, 3] },
-  "Support Services":       { pos: [14,   0.03, -3],    size: [5, 0.02, 3] },
+  "Mobile Equipment":       { pos: [14,   0.03, -3],    size: [5, 0.02, 3] },
   "Admin & Stores":         { pos: [2,    0.03, -18],   size: [22, 0.02, 16] },
 };
 

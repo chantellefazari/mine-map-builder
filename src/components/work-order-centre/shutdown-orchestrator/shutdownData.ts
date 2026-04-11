@@ -4,10 +4,10 @@
  * Area codes & labels match the live asset hierarchy:
  *   SITE — Site Infrastructure
  *   UTL  — Utilities & Power
- *   COM  — Comminution / Process
+ *   MILL — Milling
  *   REC  — Gold Recovery
  *   TAIL — Tailings
- *   SUP  — Support Services
+ *   MOB  — Mobile Equipment
  */
 
 /* ------------------------------------------------------------------ */
