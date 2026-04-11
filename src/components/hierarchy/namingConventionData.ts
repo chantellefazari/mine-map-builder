@@ -2,7 +2,7 @@
 export const areaCodes = [
   { code: "SITE", meaning: "Site Infrastructure", description: "Buildings, admin, amenities, and site-wide services" },
   { code: "UTL", meaning: "Utilities & Power", description: "Compressed air, electrical, power generation, water systems, reagents" },
-  { code: "COM", meaning: "Comminution / Process", description: "Feed/reclaim, milling, grinding, classification, conveying" },
+  { code: "MILL", meaning: "Milling", description: "Feed/reclaim, grinding, classification, conveying" },
   { code: "REC", meaning: "Gold Recovery", description: "Gravity circuit, CIP, elution, gold room, carbon regeneration" },
   { code: "TAIL", meaning: "Tailings", description: "Thickening, filtration, tailings storage facility" },
   { code: "SUP", meaning: "Support Services", description: "Workshop, laboratory, maintenance infrastructure" },

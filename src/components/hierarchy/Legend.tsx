@@ -23,7 +23,7 @@ export const Legend: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3">
         <LegendItem level="SITE" description="Site" colorClass="bg-level-area-site" />
         <LegendItem level="UTL" description="Utilities & Power" colorClass="bg-level-area-util" />
-        <LegendItem level="COM" description="Comminution" colorClass="bg-level-area-com" />
+        <LegendItem level="MILL" description="Milling" colorClass="bg-level-area-com" />
         <LegendItem level="REC" description="Gold Recovery" colorClass="bg-level-area-rec" />
         <LegendItem level="TAIL" description="Tailings" colorClass="bg-level-area-tail" />
         <LegendItem level="SUP" description="Support" colorClass="bg-level-area-sup" />

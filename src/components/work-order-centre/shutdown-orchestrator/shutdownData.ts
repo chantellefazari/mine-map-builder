@@ -22,7 +22,7 @@ export interface ShutdownArea {
 export const SHUTDOWN_AREAS: ShutdownArea[] = [
   { code: "SITE", label: "Site Infrastructure" },
   { code: "UTL",  label: "Utilities & Power" },
-  { code: "COM",  label: "Comminution / Process" },
+  { code: "MILL", label: "Milling" },
   { code: "REC",  label: "Gold Recovery" },
   { code: "TAIL", label: "Tailings" },
   { code: "SUP",  label: "Support Services" },

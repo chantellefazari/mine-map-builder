@@ -10,7 +10,7 @@ import {
 import { useFLBreadcrumb, FLPathSegment } from "./FLBreadcrumbContext";
 
 export type NodeLevel = "site" | "plant" | "area" | "subarea" | "parentAsset" | "equipment" | "component";
-export type AreaType = "SITE" | "UTL" | "MILL" | "COM" | "REC" | "TAIL" | "SUP" | "MOB" | "CRU";
+export type AreaType = "SITE" | "UTL" | "MILL" | "REC" | "TAIL" | "SUP" | "MOB" | "CRU";
 
 interface ComponentSpecs {
   model?: string;
@@ -69,7 +69,6 @@ const levelStyles: Record<NodeLevel, string> = {
 const areaColors: Record<AreaType, string> = {
   SITE: "bg-level-area-site",
   UTL: "bg-level-area-util",
-  COM: "bg-level-area-com",
   MILL: "bg-level-area-com",
   REC: "bg-level-area-rec",
   TAIL: "bg-level-area-tail",
