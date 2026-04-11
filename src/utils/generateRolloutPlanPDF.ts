@@ -214,8 +214,10 @@ function addProConLabel(pdf: jsPDF, y: number, label: string, color: [number, nu
 
 function addPageNumbers(pdf: jsPDF, label: string, logoImg?: HTMLImageElement) {
   const totalPages = pdf.getNumberOfPages();
-  const LOGO_H_MM = 6;
-  const logoAspect = logoImg ? logoImg.naturalWidth / logoImg.naturalHeight : 1;
+  const LOGO_H_MM = 8;
+  const logoAspect = logoImg && logoImg.naturalWidth && logoImg.naturalHeight
+    ? logoImg.naturalWidth / logoImg.naturalHeight
+    : 4;
   const LOGO_W_MM = LOGO_H_MM * logoAspect;
 
   for (let i = 1; i <= totalPages; i++) {
@@ -226,10 +228,10 @@ function addPageNumbers(pdf: jsPDF, label: string, logoImg?: HTMLImageElement) {
     pdf.setTextColor(...MUTED);
     pdf.text(`${label}  |  Page ${i} of ${totalPages}`, w / 2, h - 8, { align: "center" });
 
-    // Stamp logo bottom-right
-    if (logoImg) {
+    // Stamp Minesite.AI logo bottom-right of every page
+    if (logoImg && logoImg.naturalWidth > 0) {
       const logoX = w - MARGIN - LOGO_W_MM;
-      const logoY = h - 3 - LOGO_H_MM - 1;
+      const logoY = h - MARGIN - LOGO_H_MM;
       pdf.addImage(logoImg, "PNG", logoX, logoY, LOGO_W_MM, LOGO_H_MM);
     }
 
