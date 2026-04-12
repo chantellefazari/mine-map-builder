@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import { WO_TYPE_CONFIG } from "./AdvancedPlannerView";
 import type { MaterialStatus, WOMaterialSummary } from "@/hooks/useMaterialReadiness";
+import { PlannerPartsPanel } from "./PlannerPartsPanel";
 
 interface Props {
   items: PlannerItem[];
