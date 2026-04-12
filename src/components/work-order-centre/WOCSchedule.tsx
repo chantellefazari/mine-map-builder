@@ -517,11 +517,11 @@ export function WOCSchedule() {
                       <thead>
                         <tr className="bg-muted/20 border-t border-border">
                           <th className="text-left px-3 py-1.5 font-semibold text-muted-foreground" style={{ width: "8%" }}>WO #</th>
-                          <th className="text-center px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "4%" }}>Type</th>
+                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "7%" }}>Type</th>
                           <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "9%" }}>Asset</th>
                           <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "12%" }}>Equipment</th>
-                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "28%" }}>Description</th>
-                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "10%" }}>Work Centre</th>
+                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "26%" }}>Description</th>
+                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "9%" }}>Work Centre</th>
                           <th className="text-center px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "5%" }}>Priority</th>
                           <th className="text-right px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "5%" }}>Hrs</th>
                           <th className="text-center px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "4%" }}></th>
@@ -545,12 +545,14 @@ export function WOCSchedule() {
                               <td className="px-3 py-1.5">
                                 <span className="font-mono font-bold text-foreground">{wo.wo_number}</span>
                               </td>
-                              <td className="px-2 py-1.5 text-center">
+                              <td className="px-2 py-1.5">
                                 <Badge className={cn(
-                                  "text-[8px] h-4 px-1.5 font-bold",
+                                  "text-[8px] h-4 w-[56px] justify-center px-1 font-bold truncate",
                                   woIsPM
                                     ? "bg-emerald-100 text-emerald-700 border-emerald-300 hover:bg-emerald-100"
-                                    : "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-50"
+                                    : wo.work_type === "Breakdown"
+                                      ? "bg-amber-100 text-amber-700 border-amber-300 hover:bg-amber-100"
+                                      : "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-50"
                                 )}>
                                   {woIsPM ? "PM" : wo.work_type || "CM"}
                                 </Badge>
