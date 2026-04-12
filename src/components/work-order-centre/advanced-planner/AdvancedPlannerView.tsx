@@ -48,7 +48,7 @@ export interface PlannerItem {
 }
 
 /** Flatten PM tasks from either flat array or {sections: [{tasks, equipmentName}]} format */
-function flattenPMTasks(tasks: any): any[] {
+export function flattenPMTasks(tasks: any): any[] {
   if (Array.isArray(tasks)) return tasks;
   if (tasks && typeof tasks === "object" && Array.isArray(tasks.sections)) {
     const flat: any[] = [];
