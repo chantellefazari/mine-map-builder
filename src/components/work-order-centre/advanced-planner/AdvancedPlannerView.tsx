@@ -300,7 +300,7 @@ export function AdvancedPlannerView() {
           />
         )}
         {activeTab === "maintenance-plans" && (
-          <PlannerMaintenancePlansTab items={filteredItems.filter(i => i.source === "pm")} />
+          <PlannerMaintenancePlansTab items={allItems.filter(i => i.source === "pm")} />
         )}
         {activeTab === "work-orders" && (
           <PlannerWorkOrdersTab items={filteredItems.filter(i => i.source === "wo")} />
