@@ -484,7 +484,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
     lubricationNotes: rawPM?.lubricationNotes || "",
     oemReferences: rawPM?.oemReferences || "",
     resources: rawPM?.resources || "",
-    tasks: rawPM?.tasks || plannerItem.tasks || [],
+    tasks: flattenPMTasks(rawPM?.tasks || plannerItem.tasks || []),
     requiredTools: rawPM?.requiredTools || plannerItem.requiredTools || [],
     requiredPPE: rawPM?.requiredPPE || [],
     safetyNotes: rawPM?.safetyNotes || plannerItem.safetyNotes || [],
