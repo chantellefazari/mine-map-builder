@@ -29,7 +29,7 @@ function DetailSection({ title, icon: Icon, children, empty }: { title: string; 
 }
 
 export function PlannerItemDetail({ item, onClose }: Props) {
-  const typeStyle = WO_TYPE_STYLES[item.woType] || {};
+  const typeStyle = WO_TYPE_STYLES[item.woType] || { bg: "", text: "" };
 
   return (
     <div className="flex flex-col h-full bg-card">
