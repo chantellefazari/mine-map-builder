@@ -151,12 +151,12 @@ export function WOCSchedule() {
     } catch { /* handled */ }
   };
 
-  const totalPersonnel = days.reduce((s, d) => s + getPersonnel(format(d, "yyyy-MM-dd")), 0);
-  const totalHoursAvail = days.reduce((s, d) => s + getPersonnel(format(d, "yyyy-MM-dd")) * hrsPerDay, 0);
+  const totalPersonnel = days.reduce((s, d) => s + getPersonnel(format(d, "yyyy-MM-dd"), d), 0);
+  const totalHoursAvail = days.reduce((s, d) => s + getPersonnel(format(d, "yyyy-MM-dd"), d) * getHrsPerDay(d), 0);
   const totalSchedHrs = Object.values(scheduledByDay).flat().reduce((s, wo) => s + getWoHours(wo), 0);
   const totalUnschedHrs = totalHoursAvail - totalSchedHrs;
   const loadingPct = totalHoursAvail > 0 ? Math.round((totalSchedHrs / totalHoursAvail) * 100) : 0;
-  const discTarget = DISCIPLINES.find((d) => d.key === discipline)?.target ?? 85;
+  const discTarget = getTarget(days[0]) || (DISCIPLINES.find((d) => d.key === discipline)?.target ?? 85);
   const isPM = (wo: WorkOrder) => wo.work_type === "PM";
 
   const toggleDayExpand = (dayKey: string) => setExpandedDays(prev => ({ ...prev, [dayKey]: !prev[dayKey] }));
