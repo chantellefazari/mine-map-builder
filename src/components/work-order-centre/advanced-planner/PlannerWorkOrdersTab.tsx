@@ -272,12 +272,13 @@ export function PlannerWorkOrdersTab({ items }: Props) {
       <div className={cn(
         "grid gap-0 px-4 py-1.5 border-b border-border bg-muted/20",
         bulkMode
-          ? "grid-cols-[28px_90px_70px_90px_1fr_80px_70px_80px_110px_70px]"
-          : "grid-cols-[90px_70px_90px_1fr_80px_70px_80px_110px_70px]"
+          ? "grid-cols-[28px_90px_70px_50px_90px_1fr_80px_70px_80px_110px_70px]"
+          : "grid-cols-[90px_70px_50px_90px_1fr_80px_70px_80px_110px_70px]"
       )}>
         {bulkMode && <span />}
         <SortHeader field="woNumber" label="WO #" />
         <SortHeader field="woType" label="Type" />
+        <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide px-1">Activity</span>
         <SortHeader field="assetNumber" label="Asset" />
         <SortHeader field="taskName" label="Description" />
         <SortHeader field="discipline" label="Discipline" />
@@ -300,8 +301,8 @@ export function PlannerWorkOrdersTab({ items }: Props) {
                 className={cn(
                   "grid gap-0 items-center px-4 py-2 hover:bg-muted/20 transition-colors",
                   bulkMode
-                    ? "grid-cols-[28px_90px_70px_90px_1fr_80px_70px_80px_110px_70px]"
-                    : "grid-cols-[90px_70px_90px_1fr_80px_70px_80px_110px_70px]",
+                    ? "grid-cols-[28px_90px_70px_50px_90px_1fr_80px_70px_80px_110px_70px]"
+                    : "grid-cols-[90px_70px_50px_90px_1fr_80px_70px_80px_110px_70px]",
                   isSelected && "bg-primary/5"
                 )}
               >
@@ -319,6 +320,7 @@ export function PlannerWorkOrdersTab({ items }: Props) {
                     {item.woType}
                   </Badge>
                 </div>
+                <span className="text-[10px] font-mono font-semibold text-muted-foreground">{item.activityType || "—"}</span>
                 <span className="text-[10px] font-mono text-muted-foreground truncate">{item.assetNumber || "—"}</span>
                 <span className="text-[11px] text-foreground truncate pr-2" title={item.taskName}>{item.taskName}</span>
                 <span className="text-[10px] text-muted-foreground">{item.discipline || "—"}</span>
