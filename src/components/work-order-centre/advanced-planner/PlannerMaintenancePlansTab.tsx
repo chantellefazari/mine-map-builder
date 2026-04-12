@@ -804,6 +804,7 @@ function CreatePlanDialog({ open, onOpenChange, onCreatePM }: {
   const [form, setForm] = useState({
     pmName: "", equipmentType: "", frequency: "Monthly", discipline: "Mechanical",
     assetNumber: "", purpose: "", estimatedDuration: "1", dutyType: "Online", skillLevel: "Competent",
+    planCategory: "Preventive" as string,
   });
 
   const handleSubmit = async () => {
