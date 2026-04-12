@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { Search, ChevronDown, ChevronUp, CalendarDays, ArrowRightLeft, CheckSquare, Square, ChevronsRight, X, Save } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, CalendarDays, ArrowRightLeft, CheckSquare, Square, ChevronsRight, X, Save, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,14 +8,17 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { format, addDays, parseISO } from "date-fns";
 import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import { WO_TYPE_CONFIG } from "./AdvancedPlannerView";
+import type { MaterialStatus, WOMaterialSummary } from "@/hooks/useMaterialReadiness";
 
 interface Props {
   items: PlannerItem[];
+  getReadiness?: (workOrderId: string) => WOMaterialSummary;
 }
 
 type SortField = "woNumber" | "woType" | "assetNumber" | "taskName" | "priority" | "status" | "scheduledDate" | "estimatedHours" | "discipline" | "area";
@@ -41,7 +44,7 @@ const PRIORITY_COLORS: Record<string, string> = {
   Low: "text-blue-600",
 };
 
-export function PlannerWorkOrdersTab({ items }: Props) {
+export function PlannerWorkOrdersTab({ items, getReadiness }: Props) {
   const { update } = useWorkOrders();
   const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState<SortField>("woNumber");
@@ -272,8 +275,8 @@ export function PlannerWorkOrdersTab({ items }: Props) {
       <div className={cn(
         "grid gap-0 px-4 py-1.5 border-b border-border bg-muted/20",
         bulkMode
-          ? "grid-cols-[28px_90px_70px_60px_90px_1fr_80px_70px_80px_110px_70px]"
-          : "grid-cols-[90px_70px_60px_90px_1fr_80px_70px_80px_110px_70px]"
+          ? "grid-cols-[28px_90px_70px_60px_90px_1fr_80px_70px_80px_90px_110px_70px]"
+          : "grid-cols-[90px_70px_60px_90px_1fr_80px_70px_80px_90px_110px_70px]"
       )}>
         {bulkMode && <span />}
         <SortHeader field="woNumber" label="WO #" />
@@ -284,6 +287,7 @@ export function PlannerWorkOrdersTab({ items }: Props) {
         <SortHeader field="discipline" label="Discipline" />
         <SortHeader field="priority" label="Priority" />
         <SortHeader field="status" label="Status" />
+        <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide px-1 text-center">Parts</span>
         <SortHeader field="scheduledDate" label="Scheduled" />
         <SortHeader field="estimatedHours" label="Hours" />
       </div>
@@ -294,6 +298,7 @@ export function PlannerWorkOrdersTab({ items }: Props) {
             const typeCfg = WO_TYPE_CONFIG[item.woType];
             const isSelected = selectedIds.has(item.id);
             const isEditingDate = editingDateId === item.id;
+            const readiness = getReadiness?.(item.sourceId);
 
             return (
               <div
@@ -301,8 +306,8 @@ export function PlannerWorkOrdersTab({ items }: Props) {
                 className={cn(
                   "grid gap-0 items-center px-4 py-2 hover:bg-muted/20 transition-colors",
                   bulkMode
-                    ? "grid-cols-[28px_90px_70px_60px_90px_1fr_80px_70px_80px_110px_70px]"
-                    : "grid-cols-[90px_70px_60px_90px_1fr_80px_70px_80px_110px_70px]",
+                    ? "grid-cols-[28px_90px_70px_60px_90px_1fr_80px_70px_80px_90px_110px_70px]"
+                    : "grid-cols-[90px_70px_60px_90px_1fr_80px_70px_80px_90px_110px_70px]",
                   isSelected && "bg-primary/5"
                 )}
               >
@@ -326,6 +331,11 @@ export function PlannerWorkOrdersTab({ items }: Props) {
                 <span className="text-[10px] text-muted-foreground">{item.discipline || "—"}</span>
                 <span className={cn("text-[10px]", PRIORITY_COLORS[item.priority] || "text-foreground")}>{item.priority}</span>
                 <span className={cn("text-[10px] font-medium", STATUS_COLORS[item.status] || "text-muted-foreground")}>{item.status}</span>
+
+                {/* Material Readiness */}
+                <div className="flex justify-center">
+                  <MaterialReadinessBadge readiness={readiness} />
+                </div>
 
                 {/* Editable scheduled date */}
                 <Popover open={isEditingDate} onOpenChange={(open) => setEditingDateId(open ? item.id : null)}>
@@ -367,5 +377,37 @@ export function PlannerWorkOrdersTab({ items }: Props) {
         </div>
       </ScrollArea>
     </div>
+  );
+}
+
+/* ─── Material Readiness Badge Component ─── */
+const READINESS_CONFIG: Record<MaterialStatus, { label: string; dot: string; bg: string; text: string }> = {
+  Ready: { label: "Ready", dot: "bg-emerald-500", bg: "bg-emerald-500/10 border-emerald-300", text: "text-emerald-700" },
+  Partial: { label: "Partial", dot: "bg-amber-500", bg: "bg-amber-500/10 border-amber-300", text: "text-amber-700" },
+  Awaiting: { label: "Awaiting", dot: "bg-red-500", bg: "bg-red-500/10 border-red-300", text: "text-red-700" },
+  "PO Required": { label: "PO Req", dot: "bg-orange-500", bg: "bg-orange-500/10 border-orange-300", text: "text-orange-700" },
+  "No Parts": { label: "No Parts", dot: "bg-muted-foreground/40", bg: "bg-muted/30 border-border", text: "text-muted-foreground" },
+};
+
+function MaterialReadinessBadge({ readiness }: { readiness?: WOMaterialSummary }) {
+  const status = readiness?.status || "No Parts";
+  const cfg = READINESS_CONFIG[status];
+  const detail = readiness && readiness.totalParts > 0
+    ? `${readiness.partsReady}/${readiness.totalParts} parts on site`
+    : "No parts linked";
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className={cn("flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] font-medium cursor-default", cfg.bg, cfg.text)}>
+          <div className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", cfg.dot)} />
+          {cfg.label}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent side="top" className="text-xs">
+        <p className="font-semibold">{status}</p>
+        <p className="text-muted-foreground">{detail}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }

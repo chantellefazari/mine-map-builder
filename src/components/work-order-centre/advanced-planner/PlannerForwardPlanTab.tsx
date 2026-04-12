@@ -7,17 +7,20 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Search, ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
   Undo2, Save, CalendarDays, Pencil, Sparkles, Calendar,
-  Clock, Wrench, MapPin, AlertTriangle,
+  Clock, Wrench, MapPin, AlertTriangle, Package,
 } from "lucide-react";
 import {
   addDays, addWeeks, startOfWeek, format, isWithinInterval,
   getISOWeek, isSameWeek,
 } from "date-fns";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
+import type { WOMaterialSummary } from "@/hooks/useMaterialReadiness";
 
 interface Props {
   items: PlannerItem[];
+  getReadiness?: (workOrderId: string) => WOMaterialSummary;
   onEditSchedule?: (item: PlannerItem, date: Date) => void;
   onViewWorkOrder?: (item: PlannerItem) => void;
 }
@@ -80,7 +83,7 @@ const DISCIPLINE_FILTERS = [
   { key: "Mobile", label: "Mobile & LVs" },
 ];
 
-export function PlannerForwardPlanTab({ items, onEditSchedule, onViewWorkOrder }: Props) {
+export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder }: Props) {
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
 
