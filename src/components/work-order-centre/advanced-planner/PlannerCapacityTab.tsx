@@ -216,7 +216,7 @@ export function PlannerCapacityTab({ items }: Props) {
             <Button size="sm" variant="ghost" className="h-7 text-[10px]" disabled={page === 0} onClick={() => setPage(p => p - 1)}>
               <ChevronLeft className="w-3.5 h-3.5 mr-1" /> Previous
             </Button>
-            <span className="text-xs font-semibold text-foreground">{quarterLabel}</span>
+            <span className="text-xs font-semibold text-foreground">{revLabel}</span>
             <Button size="sm" variant="ghost" className="h-7 text-[10px]" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>
               Next <ChevronRight className="w-3.5 h-3.5 ml-1" />
             </Button>
