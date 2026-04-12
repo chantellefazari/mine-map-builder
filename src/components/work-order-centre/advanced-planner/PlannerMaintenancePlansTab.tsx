@@ -45,6 +45,7 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
   const [groupBy, setGroupBy] = useState<"frequency" | "discipline" | "area">("frequency");
   const [showCreate, setShowCreate] = useState(false);
   const [editingPlan, setEditingPlan] = useState<PlannerItem | null>(null);
+  const [activeCategory, setActiveCategory] = useState<PlanCategory | "All">("All");
 
   const allPMs = useMemo(() => items, [items]);
 
