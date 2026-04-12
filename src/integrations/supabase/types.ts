@@ -552,6 +552,7 @@ export type Database = {
           isolation_requirements: string
           lubrication_notes: string
           oem_references: string
+          plan_category: string
           pm_name: string
           purpose: string
           required_ppe: string[]
@@ -578,6 +579,7 @@ export type Database = {
           isolation_requirements?: string
           lubrication_notes?: string
           oem_references?: string
+          plan_category?: string
           pm_name: string
           purpose?: string
           required_ppe?: string[]
@@ -604,6 +606,7 @@ export type Database = {
           isolation_requirements?: string
           lubrication_notes?: string
           oem_references?: string
+          plan_category?: string
           pm_name?: string
           purpose?: string
           required_ppe?: string[]
