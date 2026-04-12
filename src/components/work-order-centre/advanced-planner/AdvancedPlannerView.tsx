@@ -208,7 +208,7 @@ export function AdvancedPlannerView() {
     a.click(); URL.revokeObjectURL(url);
   }, [filteredItems]);
 
-  const showFilters = activeTab === "work-orders" || activeTab === "asset-tree";
+  const showFilters = activeTab === "work-orders" || activeTab === "asset-tree" || activeTab === "rounds" || activeTab === "forecast";
 
   return (
     <div className="flex flex-col h-[calc(100vh-180px)] gap-0">
@@ -304,6 +304,15 @@ export function AdvancedPlannerView() {
         )}
         {activeTab === "work-orders" && (
           <PlannerWorkOrdersTab items={filteredItems.filter(i => i.source === "wo")} />
+        )}
+        {activeTab === "rounds" && (
+          <PlannerRoundsTab items={filteredItems} />
+        )}
+        {activeTab === "forecast" && (
+          <PlannerForecastTab items={filteredItems} />
+        )}
+        {activeTab === "shutdown-impact" && (
+          <PlannerShutdownImpactTab items={filteredItems} />
         )}
         {activeTab === "asset-tree" && (
           <PlannerTreeExplorer items={filteredItems} />
