@@ -588,6 +588,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
     acceptableCriteria: rawPM?.acceptableCriteria || [],
     signsOfFailure: rawPM?.signsOfFailure || [],
     inspectionPoints: rawPM?.inspectionPoints || [],
+    planCategory: rawPM?.planCategory || plannerItem.planCategory || "Preventive",
   }));
 
   const [saving, setSaving] = useState(false);
