@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import {
   Calendar, ChevronLeft, ChevronRight, Search, GripVertical,
-  Wrench, Zap, Users, Printer, FileText, Building2,
+  Wrench, Zap, Users, Printer, FileText, Building2, ClipboardList,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
