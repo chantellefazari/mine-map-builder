@@ -323,7 +323,17 @@ export function AdvancedPlannerView() {
           <PlannerWorkOrdersTab items={filteredItems.filter(i => i.source === "wo")} />
         )}
         {activeTab === "forward-plan" && (
-          <PlannerForwardPlanTab items={allItems} />
+          <PlannerForwardPlanTab
+            items={allItems}
+            onEditSchedule={(item, date) => {
+              setFpScheduleItem(item);
+              setFpScheduleDate(date);
+              setFpScheduleOpen(true);
+            }}
+            onViewWorkOrder={(item) => {
+              setFpDetailItem(item);
+            }}
+          />
         )}
         {activeTab === "rounds" && (
           <PlannerRoundsTab items={filteredItems} />
