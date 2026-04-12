@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Search, Download, FolderTree, ClipboardList, FileText, ListChecks,
-  LayoutDashboard, Wrench, Package,
+  LayoutDashboard, Wrench, Package, TrendingUp, Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
@@ -15,6 +15,9 @@ import { PlannerFilterBar } from "./PlannerFilterBar";
 import { PlannerOverviewTab } from "./PlannerOverviewTab";
 import { PlannerWorkOrdersTab } from "./PlannerWorkOrdersTab";
 import { PlannerMaintenancePlansTab } from "./PlannerMaintenancePlansTab";
+import { PlannerRoundsTab } from "./PlannerRoundsTab";
+import { PlannerForecastTab } from "./PlannerForecastTab";
+import { PlannerShutdownImpactTab } from "./PlannerShutdownImpactTab";
 
 export interface PlannerItem {
   id: string;
