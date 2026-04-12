@@ -76,14 +76,15 @@ export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
             </ul>
           </div>
 
-          <div className="flex items-center gap-4 border-t pt-4">
-            <div className="flex items-center gap-2">
-              <Info className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium">Next Available Number:</span>
+          <div className="border-t pt-4">
+            <h4 className="font-semibold text-sm text-foreground mb-2">Number Ranges</h4>
+            <div className="grid grid-cols-2 gap-2">
+              {WO_RANGES.map((r) => (
+                <Badge key={r.prefix} variant="outline" className="font-mono text-xs justify-start">
+                  {r.range}
+                </Badge>
+              ))}
             </div>
-            <Badge variant="outline" className="font-mono text-primary border-primary">
-              {nextNumber}
-            </Badge>
           </div>
         </CardContent>
       </Card>
