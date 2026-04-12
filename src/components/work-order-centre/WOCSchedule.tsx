@@ -385,8 +385,8 @@ export function WOCSchedule() {
                     </div>
                     {/* Description */}
                     <div className="px-3 pb-1.5">
-                      <p className="text-[11px] text-foreground/80 line-clamp-2 leading-tight">
-                        {(wo.problem_description || wo.scope_of_works || "No description").replace(/^(PM|CM|BM):\s*/i, "")}
+                      <p className="text-[11px] text-foreground/80 line-clamp-1 leading-tight">
+                        {(wo.problem_description || "No title").split(/\s[-–—]\s/)[0].replace(/^(PM|CM|BM):\s*/i, "").slice(0, 60)}
                       </p>
                     </div>
                     {/* Footer: Asset + Hours */}
