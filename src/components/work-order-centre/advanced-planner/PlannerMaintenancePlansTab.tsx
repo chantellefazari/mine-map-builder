@@ -276,12 +276,32 @@ function PlanRow({ plan, expanded, onToggle, onEdit, onDelete, onDuplicate }: {
         <div className="px-8 pb-3 space-y-2">
           {hasTasks && (
             <DetailBlock icon={ListChecks} title="Task List" count={plan.tasks.length}>
-              {plan.tasks.map((task: any, i: number) => (
-                <div key={i} className="flex items-start gap-2 text-[10px]">
-                  <span className="text-muted-foreground font-mono w-4 shrink-0">{i + 1}.</span>
-                  <span className="text-foreground">{typeof task === "string" ? task : task.description || task.task || JSON.stringify(task)}</span>
-                </div>
-              ))}
+              {(() => {
+                // Group tasks by section if they have one
+                const sections = new Map<string, any[]>();
+                for (const task of plan.tasks) {
+                  const sec = task.section || "";
+                  if (!sections.has(sec)) sections.set(sec, []);
+                  sections.get(sec)!.push(task);
+                }
+                let globalIdx = 0;
+                return Array.from(sections.entries()).map(([secName, tasks]) => (
+                  <div key={secName || "default"} className="space-y-0.5">
+                    {secName && sections.size > 1 && (
+                      <div className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wide mt-1 first:mt-0">{secName}</div>
+                    )}
+                    {tasks.map((task: any) => {
+                      globalIdx++;
+                      return (
+                        <div key={globalIdx} className="flex items-start gap-2 text-[10px]">
+                          <span className="text-muted-foreground font-mono w-4 shrink-0">{globalIdx}.</span>
+                          <span className="text-foreground">{typeof task === "string" ? task : task.description || task.task || JSON.stringify(task)}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ));
+              })()}
             </DetailBlock>
           )}
           {hasMaterials && (
