@@ -49,17 +49,34 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
 
   const allPMs = useMemo(() => items, [items]);
 
+  // Category counts (before search filter)
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { All: allPMs.length };
+    for (const cat of PLAN_CATEGORIES) counts[cat] = 0;
+    for (const item of allPMs) {
+      const cat = item.planCategory || "Preventive";
+      if (counts[cat] !== undefined) counts[cat]++;
+    }
+    return counts;
+  }, [allPMs]);
+
   const filtered = useMemo(() => {
-    if (!search.trim()) return allPMs;
-    const q = search.toLowerCase();
-    return allPMs.filter(i =>
-      i.taskName.toLowerCase().includes(q) ||
-      i.assetNumber.toLowerCase().includes(q) ||
-      i.frequency.toLowerCase().includes(q) ||
-      i.discipline.toLowerCase().includes(q) ||
-      i.area.toLowerCase().includes(q)
-    );
-  }, [allPMs, search]);
+    let items2 = allPMs;
+    if (activeCategory !== "All") {
+      items2 = items2.filter(i => (i.planCategory || "Preventive") === activeCategory);
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      items2 = items2.filter(i =>
+        i.taskName.toLowerCase().includes(q) ||
+        i.assetNumber.toLowerCase().includes(q) ||
+        i.frequency.toLowerCase().includes(q) ||
+        i.discipline.toLowerCase().includes(q) ||
+        i.area.toLowerCase().includes(q)
+      );
+    }
+    return items2;
+  }, [allPMs, search, activeCategory]);
 
   const groups = useMemo(() => {
     const map = new Map<string, PlannerItem[]>();
