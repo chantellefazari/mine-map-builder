@@ -139,7 +139,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
 
   const handleDuplicate = async (wo: WorkOrder) => {
     try {
-      const newWo = await allocate.mutateAsync();
+      const newWo = await allocate.mutateAsync(wo.work_type || "Planned");
       await update.mutateAsync({
         id: newWo.id,
         updates: {
@@ -320,7 +320,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
         onCreatePMWorkOrder={async (pmData) => {
           setShowPMSchedule(false);
           try {
-            const wo = await allocate.mutateAsync();
+            const wo = await allocate.mutateAsync("PM");
             await update.mutateAsync({
               id: wo.id,
               updates: {
