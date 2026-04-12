@@ -45,6 +45,7 @@ export interface PlannerItem {
   tasks: any[];
   source: "wo" | "pm";
   sourceId: string;
+  planCategory: string;
 }
 
 /** Flatten PM tasks from either flat array or {sections: [{tasks, equipmentName}]} format */
@@ -139,6 +140,7 @@ export function AdvancedPlannerView() {
         tasks: flattenPMTasks(pm.tasks),
         source: "pm",
         sourceId: pm.id,
+        planCategory: (pm as any).planCategory || "Preventive",
       });
     }
 
@@ -171,6 +173,7 @@ export function AdvancedPlannerView() {
         tasks: [],
         source: "wo",
         sourceId: wo.id,
+        planCategory: "Preventive",
       });
     }
 

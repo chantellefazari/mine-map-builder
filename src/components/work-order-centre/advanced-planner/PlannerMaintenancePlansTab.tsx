@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import {
   Search, ChevronDown, ChevronRight, Plus, Clock, Wrench,
   ListChecks, Package, ShieldAlert, AlertTriangle, Settings2,
-  Pencil, Trash2, X, Save, Copy,
+  Pencil, Trash2, X, Save, Copy, Activity, Power, RefreshCw, Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,16 @@ const DISCIPLINES = ["Mechanical", "Electrical", "Instrumentation", "Process", "
 const STATUSES = ["Draft", "Active", "Review", "Superseded"];
 const DUTY_TYPES = ["Online", "Offline", "Shutdown", "Both"];
 const SKILL_LEVELS = ["Basic", "Competent", "Advanced", "Specialist"];
+const PLAN_CATEGORIES = ["Preventive", "Shutdown", "Condition-Based", "Lifecycle"] as const;
+
+type PlanCategory = typeof PLAN_CATEGORIES[number];
+
+const CATEGORY_CONFIG: Record<PlanCategory, { label: string; icon: React.ElementType; description: string; color: string }> = {
+  Preventive: { label: "Preventive (Online)", icon: Activity, description: "Routine inspections & running PMs", color: "text-emerald-600" },
+  Shutdown: { label: "Shutdown / Offline", icon: Power, description: "Isolation, outage & offline work", color: "text-amber-600" },
+  "Condition-Based": { label: "Condition-Based", icon: Zap, description: "Triggered by monitoring data", color: "text-blue-600" },
+  Lifecycle: { label: "Lifecycle / Changeout", icon: RefreshCw, description: "Overhauls, rebuilds & replacements", color: "text-purple-600" },
+};
 
 export function PlannerMaintenancePlansTab({ items }: Props) {
   const { pms, upsertPM, deletePM } = usePMasterList();
@@ -35,20 +45,38 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
   const [groupBy, setGroupBy] = useState<"frequency" | "discipline" | "area">("frequency");
   const [showCreate, setShowCreate] = useState(false);
   const [editingPlan, setEditingPlan] = useState<PlannerItem | null>(null);
+  const [activeCategory, setActiveCategory] = useState<PlanCategory | "All">("All");
 
   const allPMs = useMemo(() => items, [items]);
 
+  // Category counts (before search filter)
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { All: allPMs.length };
+    for (const cat of PLAN_CATEGORIES) counts[cat] = 0;
+    for (const item of allPMs) {
+      const cat = item.planCategory || "Preventive";
+      if (counts[cat] !== undefined) counts[cat]++;
+    }
+    return counts;
+  }, [allPMs]);
+
   const filtered = useMemo(() => {
-    if (!search.trim()) return allPMs;
-    const q = search.toLowerCase();
-    return allPMs.filter(i =>
-      i.taskName.toLowerCase().includes(q) ||
-      i.assetNumber.toLowerCase().includes(q) ||
-      i.frequency.toLowerCase().includes(q) ||
-      i.discipline.toLowerCase().includes(q) ||
-      i.area.toLowerCase().includes(q)
-    );
-  }, [allPMs, search]);
+    let items2 = allPMs;
+    if (activeCategory !== "All") {
+      items2 = items2.filter(i => (i.planCategory || "Preventive") === activeCategory);
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      items2 = items2.filter(i =>
+        i.taskName.toLowerCase().includes(q) ||
+        i.assetNumber.toLowerCase().includes(q) ||
+        i.frequency.toLowerCase().includes(q) ||
+        i.discipline.toLowerCase().includes(q) ||
+        i.area.toLowerCase().includes(q)
+      );
+    }
+    return items2;
+  }, [allPMs, search, activeCategory]);
 
   const groups = useMemo(() => {
     const map = new Map<string, PlannerItem[]>();
@@ -136,6 +164,45 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
             <Plus className="w-3.5 h-3.5" /> New Plan
           </Button>
         </div>
+      </div>
+
+      {/* Category navigation bar */}
+      <div className="flex items-center gap-1 px-4 py-1.5 border-b border-border bg-muted/5 overflow-x-auto">
+        <button
+          onClick={() => setActiveCategory("All")}
+          className={cn(
+            "flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-medium transition-all whitespace-nowrap",
+            activeCategory === "All"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+          )}
+        >
+          <ListChecks className="w-3 h-3" />
+          All Plans
+          <Badge variant="secondary" className="text-[8px] px-1 h-3.5 ml-0.5">{categoryCounts.All}</Badge>
+        </button>
+        <div className="h-4 w-px bg-border mx-0.5" />
+        {PLAN_CATEGORIES.map(cat => {
+          const cfg = CATEGORY_CONFIG[cat];
+          const count = categoryCounts[cat] || 0;
+          const isActive = activeCategory === cat;
+          return (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-medium transition-all whitespace-nowrap",
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              )}
+            >
+              <cfg.icon className="w-3 h-3" />
+              {cfg.label}
+              <Badge variant="secondary" className="text-[8px] px-1 h-3.5 ml-0.5">{count}</Badge>
+            </button>
+          );
+        })}
       </div>
 
       {/* Column headers */}
@@ -521,6 +588,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
     acceptableCriteria: rawPM?.acceptableCriteria || [],
     signsOfFailure: rawPM?.signsOfFailure || [],
     inspectionPoints: rawPM?.inspectionPoints || [],
+    planCategory: rawPM?.planCategory || plannerItem.planCategory || "Preventive",
   }));
 
   const [saving, setSaving] = useState(false);
@@ -577,7 +645,16 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
                     <Input value={form.assetNumber} onChange={e => update("assetNumber", e.target.value)} className="text-xs h-8" />
                   </div>
                 </div>
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-5 gap-3">
+                  <div>
+                    <Label className="text-xs">Plan Category</Label>
+                    <Select value={form.planCategory} onValueChange={v => update("planCategory", v)}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {PLAN_CATEGORIES.map(c => <SelectItem key={c} value={c}>{CATEGORY_CONFIG[c].label}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div>
                     <Label className="text-xs">Frequency</Label>
                     <Select value={form.frequency} onValueChange={v => update("frequency", v)}>
@@ -737,6 +814,7 @@ function CreatePlanDialog({ open, onOpenChange, onCreatePM }: {
   const [form, setForm] = useState({
     pmName: "", equipmentType: "", frequency: "Monthly", discipline: "Mechanical",
     assetNumber: "", purpose: "", estimatedDuration: "1", dutyType: "Online", skillLevel: "Competent",
+    planCategory: "Preventive" as string,
   });
 
   const handleSubmit = async () => {
@@ -748,7 +826,7 @@ function CreatePlanDialog({ open, onOpenChange, onCreatePM }: {
       });
       toast.success("Maintenance plan created");
       onOpenChange(false);
-      setForm({ pmName: "", equipmentType: "", frequency: "Monthly", discipline: "Mechanical", assetNumber: "", purpose: "", estimatedDuration: "1", dutyType: "Online", skillLevel: "Competent" });
+      setForm({ pmName: "", equipmentType: "", frequency: "Monthly", discipline: "Mechanical", assetNumber: "", purpose: "", estimatedDuration: "1", dutyType: "Online", skillLevel: "Competent", planCategory: "Preventive" });
     } catch { toast.error("Failed to create plan"); }
   };
 
@@ -767,7 +845,14 @@ function CreatePlanDialog({ open, onOpenChange, onCreatePM }: {
               <Input value={form.assetNumber} onChange={e => setForm(f => ({ ...f, assetNumber: e.target.value }))} placeholder="e.g. ML01" className="text-xs h-8" />
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-4 gap-3">
+            <div>
+              <Label className="text-xs">Plan Category</Label>
+              <Select value={form.planCategory} onValueChange={v => setForm(f => ({ ...f, planCategory: v }))}>
+                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>{PLAN_CATEGORIES.map(c => <SelectItem key={c} value={c}>{CATEGORY_CONFIG[c].label}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
             <div>
               <Label className="text-xs">Frequency</Label>
               <Select value={form.frequency} onValueChange={v => setForm(f => ({ ...f, frequency: v }))}>
