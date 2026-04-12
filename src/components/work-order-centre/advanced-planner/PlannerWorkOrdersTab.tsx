@@ -272,8 +272,8 @@ export function PlannerWorkOrdersTab({ items }: Props) {
       <div className={cn(
         "grid gap-0 px-4 py-1.5 border-b border-border bg-muted/20",
         bulkMode
-          ? "grid-cols-[28px_90px_70px_50px_90px_1fr_80px_70px_80px_110px_70px]"
-          : "grid-cols-[90px_70px_50px_90px_1fr_80px_70px_80px_110px_70px]"
+          ? "grid-cols-[28px_90px_70px_60px_90px_1fr_80px_70px_80px_110px_70px]"
+          : "grid-cols-[90px_70px_60px_90px_1fr_80px_70px_80px_110px_70px]"
       )}>
         {bulkMode && <span />}
         <SortHeader field="woNumber" label="WO #" />
@@ -301,8 +301,8 @@ export function PlannerWorkOrdersTab({ items }: Props) {
                 className={cn(
                   "grid gap-0 items-center px-4 py-2 hover:bg-muted/20 transition-colors",
                   bulkMode
-                    ? "grid-cols-[28px_90px_70px_50px_90px_1fr_80px_70px_80px_110px_70px]"
-                    : "grid-cols-[90px_70px_50px_90px_1fr_80px_70px_80px_110px_70px]",
+                    ? "grid-cols-[28px_90px_70px_60px_90px_1fr_80px_70px_80px_110px_70px]"
+                    : "grid-cols-[90px_70px_60px_90px_1fr_80px_70px_80px_110px_70px]",
                   isSelected && "bg-primary/5"
                 )}
               >
