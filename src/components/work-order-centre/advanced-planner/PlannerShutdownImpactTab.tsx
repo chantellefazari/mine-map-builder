@@ -31,10 +31,7 @@ interface Props {
 /* ─── Block Types ─── */
 const BLOCK_TYPES = [
   { value: "Shutdown", label: "Planned Shutdown", icon: Building2, color: "text-amber-600", bg: "bg-amber-500/10 border-amber-300" },
-  { value: "Weather", label: "Weather Event", icon: CloudRain, color: "text-blue-600", bg: "bg-blue-500/10 border-blue-300" },
-  { value: "Holiday", label: "Public Holiday / RDO", icon: CalendarOff, color: "text-emerald-600", bg: "bg-emerald-500/10 border-emerald-300" },
-  { value: "Supply", label: "Supply / Logistics Delay", icon: Truck, color: "text-purple-600", bg: "bg-purple-500/10 border-purple-300" },
-  { value: "Other", label: "Other Block", icon: Ban, color: "text-muted-foreground", bg: "bg-muted/20 border-border" },
+  { value: "Outage", label: "Unscheduled Outage", icon: Zap, color: "text-red-600", bg: "bg-red-500/10 border-red-300" },
 ] as const;
 
 type BlockType = typeof BLOCK_TYPES[number]["value"];
@@ -154,7 +151,7 @@ export function PlannerShutdownImpactTab({ items }: Props) {
     if (activeBlock === id) setActiveBlock(blocks.length > 1 ? blocks.find(b => b.id !== id)?.id || null : null);
   };
 
-  const getBlockConfig = (type: BlockType) => BLOCK_TYPES.find(b => b.value === type) || BLOCK_TYPES[4];
+  const getBlockConfig = (type: BlockType) => BLOCK_TYPES.find(b => b.value === type) || BLOCK_TYPES[0];
 
   return (
     <div className="flex flex-col h-full">
