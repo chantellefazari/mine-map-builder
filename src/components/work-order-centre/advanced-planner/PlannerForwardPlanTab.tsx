@@ -82,7 +82,7 @@ const DISCIPLINE_FILTERS = [
   { key: "Mobile", label: "Mobile & LVs" },
 ];
 
-export function PlannerForwardPlanTab({ items, onEditSchedule, onViewWorkOrder }: Props) {
+export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder }: Props) {
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
 
