@@ -18,6 +18,7 @@ import { PlannerMaintenancePlansTab } from "./PlannerMaintenancePlansTab";
 import { PlannerRoundsTab } from "./PlannerRoundsTab";
 import { PlannerForecastTab } from "./PlannerForecastTab";
 import { PlannerShutdownImpactTab } from "./PlannerShutdownImpactTab";
+import { PlannerCapacityTab } from "./PlannerCapacityTab";
 
 export interface PlannerItem {
   id: string;
