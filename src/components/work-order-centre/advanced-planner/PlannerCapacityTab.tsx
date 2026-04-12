@@ -173,7 +173,7 @@ export function PlannerCapacityTab({ items }: Props) {
               </div>
               <div className="flex gap-1">
                 <Button size="sm" variant="outline" className="h-6 text-[9px] gap-1" onClick={() => applyDefaultsToQuarter(selectedWC)}>
-                  <Copy className="w-3 h-3" /> Apply to {quarterLabel.split("—")[0].trim()}
+                  <Copy className="w-3 h-3" /> Apply to Rev {page + 1}
                 </Button>
                 <Button size="sm" variant="outline" className="h-6 text-[9px] gap-1" onClick={() => applyDefaultsToAll(selectedWC)}>
                   <Copy className="w-3 h-3" /> Apply to All 52 Weeks
