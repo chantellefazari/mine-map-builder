@@ -55,7 +55,7 @@ function buildWeekInfos(year: number): WeekInfo[] {
     infos.push({
       index: w,
       weekNum: wNum,
-      label: `W${wNum} — ${format(ws, "dd MMM")} – ${format(we, "dd MMM")}`,
+      label: `W${wNum} — ${format(ws, "dd MMM yy")} – ${format(we, "dd MMM yy")}`,
       shortLabel: `W${wNum}`,
     });
   }
