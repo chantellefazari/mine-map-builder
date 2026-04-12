@@ -521,7 +521,7 @@ export function WOCSchedule() {
                           <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "9%" }}>Asset</th>
                           <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "12%" }}>Equipment</th>
                           <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "28%" }}>Description</th>
-                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "10%" }}>Resource</th>
+                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "10%" }}>Work Centre</th>
                           <th className="text-center px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "5%" }}>Priority</th>
                           <th className="text-right px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "5%" }}>Hrs</th>
                           <th className="text-center px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "4%" }}></th>
@@ -561,7 +561,7 @@ export function WOCSchedule() {
                                 {(wo.problem_description || wo.scope_of_works || "No description").replace(/^(PM|CM|BM):\s*/i, "")}
                               </td>
                               <td className="px-2 py-1.5 text-muted-foreground overflow-hidden text-ellipsis whitespace-nowrap">
-                                {wo.assigned_to || wo.technician_name || "—"}
+                                {wo.trade === "Mechanical" ? "MECH" : wo.trade === "Electrical" ? "ELEC" : wo.trade === "Mobile & LVS" ? "MOBILE" : wo.trade === "Projects" ? "PROJ" : wo.trade || "—"}
                               </td>
                               <td className="px-2 py-1.5 text-center">
                                 <Badge className={cn("text-[8px] h-4 px-1.5 font-bold border", pc.bg, pc.color, pc.border)} style={{ pointerEvents: "none" }}>
