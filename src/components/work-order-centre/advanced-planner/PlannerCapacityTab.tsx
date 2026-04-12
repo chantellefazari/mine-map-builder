@@ -6,81 +6,38 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { format, startOfWeek, addWeeks, addDays, startOfYear } from "date-fns";
 import type { PlannerItem } from "./AdvancedPlannerView";
+import {
+  useCapacityGrid,
+  WORK_CENTRES,
+  DEFAULT_CAPACITY,
+  buildWeekInfos,
+  type WorkCentreKey,
+  type WeekCapacity,
+} from "@/hooks/useCapacityGrid";
 
 interface Props {
   items: PlannerItem[];
 }
 
-const WORK_CENTRES = [
-  { key: "Mechanical", label: "Mechanical", icon: Wrench, short: "MECH" },
-  { key: "Electrical", label: "Electrical", icon: Zap, short: "ELEC" },
-  { key: "Mobile & LVS", label: "Mobile & LVS", icon: Truck, short: "MOB" },
-] as const;
-
-type WorkCentreKey = typeof WORK_CENTRES[number]["key"];
-
-interface WeekCapacity {
-  personnel: number;
-  hoursPerDay: number;
-  loadingTarget: number;
-}
-
-interface WeekInfo {
-  index: number;
-  weekNum: number;
-  label: string; // "W2 — 07 Jan – 13 Jan"
-  shortLabel: string; // "W2"
-}
-
 const TOTAL_WEEKS = 52;
 const DAYS_PER_WEEK = 7;
+const WEEKS_PER_PAGE = 13;
 
-const DEFAULT_VALUES: Record<string, WeekCapacity> = {
-  Mechanical: { personnel: 6, hoursPerDay: 10.5, loadingTarget: 80 },
-  Electrical: { personnel: 4, hoursPerDay: 10.5, loadingTarget: 90 },
-  "Mobile & LVS": { personnel: 3, hoursPerDay: 10.5, loadingTarget: 80 },
+const WC_ICONS: Record<string, React.ElementType> = {
+  Mechanical: Wrench,
+  Electrical: Zap,
+  "Mobile & LVS": Truck,
 };
 
-function buildWeekInfos(year: number): WeekInfo[] {
-  const yearStart = startOfYear(new Date(year, 0, 1));
-  const infos: WeekInfo[] = [];
-  for (let w = 0; w < TOTAL_WEEKS; w++) {
-    const ws = startOfWeek(addWeeks(yearStart, w), { weekStartsOn: 1 });
-    const we = addDays(ws, 6);
-    const wNum = w + 1;
-    infos.push({
-      index: w,
-      weekNum: wNum,
-      label: `W${wNum} — ${format(ws, "dd MMM yy")} – ${format(we, "dd MMM yy")}`,
-      shortLabel: `W${wNum}`,
-    });
-  }
-  return infos;
-}
-
-function buildInitialGrid(): Record<string, WeekCapacity[]> {
-  const grid: Record<string, WeekCapacity[]> = {};
-  for (const wc of WORK_CENTRES) {
-    grid[wc.key] = Array.from({ length: TOTAL_WEEKS }, () => ({ ...DEFAULT_VALUES[wc.key] }));
-  }
-  return grid;
-}
-
-const WEEKS_PER_PAGE = 13; // revision view
-
 export function PlannerCapacityTab({ items }: Props) {
-  const [grid, setGrid] = useState<Record<string, WeekCapacity[]>>(buildInitialGrid);
+  const { grid, updateCell, applyToAll, applyToRange, year } = useCapacityGrid();
   const [page, setPage] = useState(0);
   const [selectedWC, setSelectedWC] = useState<WorkCentreKey>("Mechanical");
-  const [year] = useState(() => new Date().getFullYear());
 
-  // Defaults editor
   const [defaults, setDefaults] = useState<Record<string, WeekCapacity>>(() =>
-    JSON.parse(JSON.stringify(DEFAULT_VALUES))
+    JSON.parse(JSON.stringify(DEFAULT_CAPACITY))
   );
 
   const weekInfos = useMemo(() => buildWeekInfos(year), [year]);
@@ -93,50 +50,28 @@ export function PlannerCapacityTab({ items }: Props) {
   const revLastWeek = weekInfos[pageEnd - 1];
   const revLabel = `Rev ${page + 1} — ${revFirstWeek?.label.split(" — ")[1]?.split(" – ")[0] || ""} to ${revLastWeek?.label.split(" – ")[1] || ""}`;
 
-  const updateCell = useCallback((wc: string, weekIdx: number, field: keyof WeekCapacity, val: number) => {
-    setGrid(prev => {
-      const next = { ...prev };
-      const arr = [...next[wc]];
-      arr[weekIdx] = { ...arr[weekIdx], [field]: val };
-      next[wc] = arr;
-      return next;
-    });
-  }, []);
-
   const applyDefaultsToAll = useCallback((wc: string) => {
-    setGrid(prev => {
-      const next = { ...prev };
-      next[wc] = Array.from({ length: TOTAL_WEEKS }, () => ({ ...defaults[wc] }));
-      return next;
-    });
-  }, [defaults]);
+    applyToAll(wc, defaults[wc]);
+  }, [defaults, applyToAll]);
 
   const applyDefaultsToQuarter = useCallback((wc: string) => {
-    setGrid(prev => {
-      const next = { ...prev };
-      const arr = [...next[wc]];
-      for (let i = pageStart; i < pageEnd; i++) {
-        arr[i] = { ...defaults[wc] };
-      }
-      next[wc] = arr;
-      return next;
-    });
-  }, [defaults, pageStart, pageEnd]);
+    applyToRange(wc, defaults[wc], pageStart, pageEnd);
+  }, [defaults, applyToRange, pageStart, pageEnd]);
 
   const getWeekAvail = (cap: WeekCapacity) =>
     cap.personnel * cap.hoursPerDay * DAYS_PER_WEEK * (cap.loadingTarget / 100);
 
-  // Summary for selected WC
   const wcSummary = useMemo(() => {
     const weeks = grid[selectedWC];
+    if (!weeks) return { totalAvail: 0, totalCap: 0, avgPersonnel: 0 };
     const totalAvail = weeks.reduce((s, w) => s + getWeekAvail(w), 0);
     const totalCap = weeks.reduce((s, w) => s + w.personnel * w.hoursPerDay * DAYS_PER_WEEK, 0);
     const avgPersonnel = weeks.reduce((s, w) => s + w.personnel, 0) / TOTAL_WEEKS;
     return { totalAvail, totalCap, avgPersonnel };
   }, [grid, selectedWC]);
 
+  const WCIcon = WC_ICONS[selectedWC] || Wrench;
   const wcInfo = WORK_CENTRES.find(w => w.key === selectedWC)!;
-  const WCIcon = wcInfo.icon;
 
   return (
     <div className="flex flex-col h-full">
@@ -145,6 +80,7 @@ export function PlannerCapacityTab({ items }: Props) {
         <div className="flex items-center gap-3">
           <Settings2 className="w-4 h-4 text-primary" />
           <span className="text-xs font-bold text-foreground">Weekly Capacity Loading</span>
+          <span className="text-[9px] text-muted-foreground bg-primary/10 px-2 py-0.5 rounded-full">Auto-saved · Synced to Schedule</span>
         </div>
         <div className="flex items-center gap-1">
           {WORK_CENTRES.map(wc => (
@@ -153,9 +89,9 @@ export function PlannerCapacityTab({ items }: Props) {
               size="sm"
               variant={selectedWC === wc.key ? "default" : "ghost"}
               className="h-7 text-[10px] gap-1"
-              onClick={() => setSelectedWC(wc.key)}
+              onClick={() => setSelectedWC(wc.key as WorkCentreKey)}
             >
-              <wc.icon className="w-3 h-3" />
+              {React.createElement(WC_ICONS[wc.key] || Wrench, { className: "w-3 h-3" })}
               {wc.short}
             </Button>
           ))}
@@ -255,7 +191,7 @@ export function PlannerCapacityTab({ items }: Props) {
                       <td key={w} className="px-0.5 py-0.5">
                         <Input
                           type="number" min={0}
-                          value={grid[selectedWC][w].personnel}
+                          value={grid[selectedWC]?.[w]?.personnel ?? 0}
                           onChange={e => updateCell(selectedWC, w, "personnel", Math.max(0, Number(e.target.value)))}
                           className="h-6 text-[10px] text-center px-1 tabular-nums"
                         />
@@ -271,7 +207,7 @@ export function PlannerCapacityTab({ items }: Props) {
                       <td key={w} className="px-0.5 py-0.5">
                         <Input
                           type="number" min={0} step="0.5"
-                          value={grid[selectedWC][w].hoursPerDay}
+                          value={grid[selectedWC]?.[w]?.hoursPerDay ?? 10.5}
                           onChange={e => updateCell(selectedWC, w, "hoursPerDay", Math.max(0, Number(e.target.value)))}
                           className="h-6 text-[10px] text-center px-1 tabular-nums"
                         />
@@ -287,7 +223,7 @@ export function PlannerCapacityTab({ items }: Props) {
                       <td key={w} className="px-0.5 py-0.5">
                         <Input
                           type="number" min={0} max={100}
-                          value={grid[selectedWC][w].loadingTarget}
+                          value={grid[selectedWC]?.[w]?.loadingTarget ?? 80}
                           onChange={e => updateCell(selectedWC, w, "loadingTarget", Math.min(100, Math.max(0, Number(e.target.value))))}
                           className="h-6 text-[10px] text-center px-1 tabular-nums"
                         />
@@ -300,8 +236,8 @@ export function PlannerCapacityTab({ items }: Props) {
                       Avail Hrs
                     </td>
                     {visibleWeeks.map(w => {
-                      const cap = grid[selectedWC][w];
-                      const avail = getWeekAvail(cap);
+                      const cap = grid[selectedWC]?.[w];
+                      const avail = cap ? getWeekAvail(cap) : 0;
                       return (
                         <td key={w} className="text-center px-1 py-1.5 tabular-nums font-semibold text-primary">
                           {avail.toFixed(0)}
@@ -315,8 +251,8 @@ export function PlannerCapacityTab({ items }: Props) {
                       Total Hrs
                     </td>
                     {visibleWeeks.map(w => {
-                      const cap = grid[selectedWC][w];
-                      const total = cap.personnel * cap.hoursPerDay * DAYS_PER_WEEK;
+                      const cap = grid[selectedWC]?.[w];
+                      const total = cap ? cap.personnel * cap.hoursPerDay * DAYS_PER_WEEK : 0;
                       return (
                         <td key={w} className="text-center px-1 py-1.5 tabular-nums text-muted-foreground">
                           {total.toFixed(0)}
@@ -356,14 +292,16 @@ export function PlannerCapacityTab({ items }: Props) {
               <tbody>
                 {WORK_CENTRES.map(wc => {
                   const weeks = grid[wc.key];
+                  if (!weeks) return null;
                   const annCap = weeks.reduce((s, w) => s + w.personnel * w.hoursPerDay * DAYS_PER_WEEK, 0);
                   const annAvail = weeks.reduce((s, w) => s + getWeekAvail(w), 0);
                   const avgLoading = weeks.reduce((s, w) => s + w.loadingTarget, 0) / TOTAL_WEEKS;
+                  const Icon = WC_ICONS[wc.key] || Wrench;
                   return (
                     <tr key={wc.key} className="border-b border-border/30 hover:bg-muted/10">
                       <td className="px-3 py-1.5 font-medium text-foreground">
                         <div className="flex items-center gap-1.5">
-                          <wc.icon className="w-3 h-3 text-muted-foreground" />
+                          <Icon className="w-3 h-3 text-muted-foreground" />
                           {wc.label}
                         </div>
                       </td>
