@@ -8,7 +8,7 @@ import {
   Calendar, ChevronLeft, ChevronRight, Search, GripVertical,
   Wrench, Zap, Users, Printer, FileText, Building2, ClipboardList,
   Truck, ArrowUpDown, Clock, MapPin, X,
-  Download, Lock, Pencil,
+  Download, Lock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
