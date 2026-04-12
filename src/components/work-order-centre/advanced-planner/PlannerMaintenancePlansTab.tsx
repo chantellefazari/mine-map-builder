@@ -514,9 +514,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
             <TabsTrigger value="criteria" className="text-[10px] h-6 px-3">Criteria ({form.acceptableCriteria.length + form.signsOfFailure.length})</TabsTrigger>
           </TabsList>
 
-          <div className="flex-1 min-h-0 overflow-y-auto">
-            <div className="p-4">
-              <TabsContent value="details" className="mt-0 space-y-3">
+          <TabsContent value="details" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4 space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Label className="text-xs">Plan Name *</Label>
@@ -608,9 +606,9 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
                     <Input value={form.resources} onChange={e => update("resources", e.target.value)} className="text-xs h-8" />
                   </div>
                 </div>
-              </TabsContent>
+          </TabsContent>
 
-              <TabsContent value="tasks" className="mt-0">
+          <TabsContent value="tasks" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h4 className="text-xs font-semibold text-foreground">Task Steps</h4>
@@ -618,9 +616,9 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
                   </div>
                   <EditableTaskList tasks={form.tasks} onChange={t => update("tasks", t)} />
                 </div>
-              </TabsContent>
+          </TabsContent>
 
-              <TabsContent value="tools" className="mt-0">
+          <TabsContent value="tools" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4">
                 <div className="space-y-4">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -637,17 +635,17 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
                     <EditableList items={form.requiredPPE} onChange={t => update("requiredPPE", t)} placeholder="Add PPE item..." />
                   </div>
                 </div>
-              </TabsContent>
+          </TabsContent>
 
-              <TabsContent value="safety" className="mt-0">
+          <TabsContent value="safety" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-xs font-semibold text-foreground">Safety Notes</h4>
                   <span className="text-[9px] text-muted-foreground">{form.safetyNotes.length} notes</span>
                 </div>
                 <EditableList items={form.safetyNotes} onChange={t => update("safetyNotes", t)} placeholder="Add safety note..." />
-              </TabsContent>
+          </TabsContent>
 
-              <TabsContent value="criteria" className="mt-0">
+          <TabsContent value="criteria" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4">
                 <div className="space-y-4">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -664,9 +662,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
                     <EditableList items={form.signsOfFailure} onChange={t => update("signsOfFailure", t)} placeholder="Add sign of failure..." />
                   </div>
                 </div>
-              </TabsContent>
-            </div>
-          </div>
+          </TabsContent>
         </Tabs>
 
         <DialogFooter className="border-t border-border pt-3">
