@@ -24,7 +24,7 @@ const FREQUENCIES = ["Daily", "Weekly", "Fortnightly", "Monthly", "Quarterly", "
 const DISCIPLINES = ["Mechanical", "Electrical", "Instrumentation", "Process", "General"];
 
 export function PlannerMaintenancePlansTab({ items }: Props) {
-  const { pms, create } = usePMasterList();
+  const { upsertPM } = usePMasterList();
   const [search, setSearch] = useState("");
   const [expandedPlans, setExpandedPlans] = useState<Set<string>>(new Set());
   const [groupBy, setGroupBy] = useState<"frequency" | "discipline" | "area">("frequency");
