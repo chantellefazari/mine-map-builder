@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   Users, Settings2, Wrench, Zap, Truck, BarChart3, Copy, ChevronLeft, ChevronRight,
 } from "lucide-react";
