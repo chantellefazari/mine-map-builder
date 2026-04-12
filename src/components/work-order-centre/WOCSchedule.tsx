@@ -500,10 +500,11 @@ export function WOCSchedule() {
                       <thead>
                         <tr className="bg-muted/20 border-t border-border">
                           <th className="text-left px-3 py-1.5 font-semibold text-muted-foreground" style={{ width: "8%" }}>WO #</th>
-                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "7%" }}>Type</th>
+                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "6%" }}>Type</th>
+                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "5%" }}>Activity</th>
                           <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "9%" }}>Asset</th>
                           <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "12%" }}>Equipment</th>
-                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "26%" }}>Description</th>
+                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "23%" }}>Description</th>
                           <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "9%" }}>Work Centre</th>
                           <th className="text-center px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "5%" }}>Priority</th>
                           <th className="text-right px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "5%" }}>Hrs</th>
