@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Search, Download, FolderTree, ClipboardList, FileText, ListChecks,
-  LayoutDashboard, Wrench, Package,
+  LayoutDashboard, Wrench, Package, TrendingUp, Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
@@ -15,6 +15,9 @@ import { PlannerFilterBar } from "./PlannerFilterBar";
 import { PlannerOverviewTab } from "./PlannerOverviewTab";
 import { PlannerWorkOrdersTab } from "./PlannerWorkOrdersTab";
 import { PlannerMaintenancePlansTab } from "./PlannerMaintenancePlansTab";
+import { PlannerRoundsTab } from "./PlannerRoundsTab";
+import { PlannerForecastTab } from "./PlannerForecastTab";
+import { PlannerShutdownImpactTab } from "./PlannerShutdownImpactTab";
 
 export interface PlannerItem {
   id: string;
@@ -57,12 +60,15 @@ export const WO_TYPE_CONFIG = {
   Shutdown: { label: "Shutdown", code: "14", color: "bg-amber-500", textColor: "text-amber-700" },
 };
 
-type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "asset-tree";
+type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "asset-tree" | "rounds" | "forecast" | "shutdown-impact";
 
 const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
   { key: "maintenance-plans", label: "Maintenance Plans", icon: ClipboardList },
   { key: "work-orders", label: "Work Orders", icon: FileText },
+  { key: "rounds", label: "Rounds", icon: Package },
+  { key: "forecast", label: "Forecast", icon: TrendingUp },
+  { key: "shutdown-impact", label: "Shutdown Impact", icon: Building2 },
   { key: "asset-tree", label: "Asset Tree", icon: FolderTree },
 ];
 
@@ -202,7 +208,7 @@ export function AdvancedPlannerView() {
     a.click(); URL.revokeObjectURL(url);
   }, [filteredItems]);
 
-  const showFilters = activeTab === "work-orders" || activeTab === "asset-tree";
+  const showFilters = activeTab === "work-orders" || activeTab === "asset-tree" || activeTab === "rounds" || activeTab === "forecast";
 
   return (
     <div className="flex flex-col h-[calc(100vh-180px)] gap-0">
@@ -298,6 +304,15 @@ export function AdvancedPlannerView() {
         )}
         {activeTab === "work-orders" && (
           <PlannerWorkOrdersTab items={filteredItems.filter(i => i.source === "wo")} />
+        )}
+        {activeTab === "rounds" && (
+          <PlannerRoundsTab items={filteredItems} />
+        )}
+        {activeTab === "forecast" && (
+          <PlannerForecastTab items={filteredItems} />
+        )}
+        {activeTab === "shutdown-impact" && (
+          <PlannerShutdownImpactTab items={filteredItems} />
         )}
         {activeTab === "asset-tree" && (
           <PlannerTreeExplorer items={filteredItems} />
