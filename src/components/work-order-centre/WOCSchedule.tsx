@@ -8,7 +8,7 @@ import {
   Calendar, ChevronLeft, ChevronRight, Search, GripVertical,
   Wrench, Zap, Users, Printer, FileText, Building2, ClipboardList,
   Truck, ArrowUpDown, Clock, MapPin, X,
-  Download, Lock, Pencil,
+  Download, Lock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -21,6 +21,7 @@ import { ShutdownScheduleView } from "./shutdown/ShutdownScheduleView";
 import { VendorSchedulingView } from "./vendor-scheduling/VendorSchedulingView";
 import { ShutdownOrchestratorView } from "./shutdown-orchestrator/ShutdownOrchestratorView";
 import { AdvancedPlannerView } from "./advanced-planner/AdvancedPlannerView";
+import { useCapacityGrid } from "@/hooks/useCapacityGrid";
 
 const DISCIPLINES = [
   { key: "Mechanical", label: "Mechanical", icon: Wrench, color: "text-blue-600", target: 80 },
@@ -61,10 +62,10 @@ function getWeekLabel(weekStart: Date) {
 
 export function WOCSchedule() {
   const { workOrders, update } = useWorkOrders();
+  const { getCapacityForDate } = useCapacityGrid();
   const [discipline, setDiscipline] = useState("Mechanical");
   const [weekOffset, setWeekOffset] = useState(0);
   const [search, setSearch] = useState("");
-  const [personnel, setPersonnel] = useState<Record<string, number>>({});
   const [dragWoId, setDragWoId] = useState<string | null>(null);
   const [scheduleView, setScheduleView] = useState<"calendar" | "report">("calendar");
   const [scheduleMode, setScheduleMode] = useState<"weekly" | "shutdown" | "vendors" | "orchestrator" | "advanced-planner">("weekly");
@@ -72,9 +73,6 @@ export function WOCSchedule() {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [sidebarTab, setSidebarTab] = useState<"unscheduled" | "pms">("unscheduled");
   const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({});
-  const [hrsPerDay, setHrsPerDay] = useState(10.5);
-  const [editingHrs, setEditingHrs] = useState(false);
-  const [quickFillVal, setQuickFillVal] = useState(4);
 
   const today = new Date();
   const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
@@ -124,19 +122,17 @@ export function WOCSchedule() {
     return map;
   }, [disciplineWOs, days]);
 
-  const getPersonnel = (dayKey: string) => personnel[dayKey] ?? 4;
-  const setDayPersonnel = (dayKey: string, val: number) => setPersonnel((prev) => ({ ...prev, [dayKey]: Math.max(0, val) }));
-
-  const quickFill = (val: number, daysToFill: "all" | "weekday" | "weekend") => {
-    const newP = { ...personnel };
-    for (const day of days) {
-      const key = format(day, "yyyy-MM-dd");
-      const dow = day.getDay();
-      if (daysToFill === "all") newP[key] = val;
-      else if (daysToFill === "weekday" && dow >= 1 && dow <= 5) newP[key] = val;
-      else if (daysToFill === "weekend" && (dow === 0 || dow === 6)) newP[key] = val;
-    }
-    setPersonnel(newP);
+  const getPersonnel = (dayKey: string, day: Date) => {
+    const cap = getCapacityForDate(discipline, day);
+    return cap.personnel;
+  };
+  const getHrsPerDay = (day: Date) => {
+    const cap = getCapacityForDate(discipline, day);
+    return cap.hoursPerDay;
+  };
+  const getTarget = (day: Date) => {
+    const cap = getCapacityForDate(discipline, day);
+    return cap.loadingTarget;
   };
 
   const handleDragStart = (woId: string) => setDragWoId(woId);
@@ -155,12 +151,12 @@ export function WOCSchedule() {
     } catch { /* handled */ }
   };
 
-  const totalPersonnel = days.reduce((s, d) => s + getPersonnel(format(d, "yyyy-MM-dd")), 0);
-  const totalHoursAvail = days.reduce((s, d) => s + getPersonnel(format(d, "yyyy-MM-dd")) * hrsPerDay, 0);
+  const totalPersonnel = days.reduce((s, d) => s + getPersonnel(format(d, "yyyy-MM-dd"), d), 0);
+  const totalHoursAvail = days.reduce((s, d) => s + getPersonnel(format(d, "yyyy-MM-dd"), d) * getHrsPerDay(d), 0);
   const totalSchedHrs = Object.values(scheduledByDay).flat().reduce((s, wo) => s + getWoHours(wo), 0);
   const totalUnschedHrs = totalHoursAvail - totalSchedHrs;
   const loadingPct = totalHoursAvail > 0 ? Math.round((totalSchedHrs / totalHoursAvail) * 100) : 0;
-  const discTarget = DISCIPLINES.find((d) => d.key === discipline)?.target ?? 85;
+  const discTarget = getTarget(days[0]) || (DISCIPLINES.find((d) => d.key === discipline)?.target ?? 85);
   const isPM = (wo: WorkOrder) => wo.work_type === "PM";
 
   const toggleDayExpand = (dayKey: string) => setExpandedDays(prev => ({ ...prev, [dayKey]: !prev[dayKey] }));
@@ -234,7 +230,7 @@ export function WOCSchedule() {
       ) : scheduleMode === "orchestrator" ? (
         <ShutdownOrchestratorView />
       ) : scheduleView === "report" ? (
-        <WOCScheduleReport weekOffset={weekOffset} personnelByDay={personnel} />
+        <WOCScheduleReport weekOffset={weekOffset} personnelByDay={{}} />
       ) : (
       <>
       {/* Discipline Tabs */}
@@ -442,26 +438,17 @@ export function WOCSchedule() {
             </div>
           </div>
 
-          {/* Quick Fill */}
+          {/* Capacity Source Indicator */}
           <div className="flex items-center gap-2 flex-wrap text-xs">
-            <span className="text-muted-foreground">Quick Fill:</span>
-            <Input type="number" value={quickFillVal} onChange={(e) => setQuickFillVal(Number(e.target.value))} className="w-14 h-7 text-xs text-center" min={0} />
-            <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(quickFillVal, "all")}>All Days</Button>
-            <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(quickFillVal, "weekday")}>Mon-Fri</Button>
-            <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(quickFillVal, "weekend")}>Sat-Sun</Button>
-            <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(0, "all")}>Clear</Button>
+            <span className="text-muted-foreground flex items-center gap-1.5">
+              <Users className="w-3.5 h-3.5" />
+              Capacity sourced from <b className="text-foreground">Advanced Planner</b>
+            </span>
+            <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+              Hrs/Day: {getHrsPerDay(days[0])} · Personnel: {getPersonnel(format(days[0], "yyyy-MM-dd"), days[0])} · Target: {getTarget(days[0])}%
+            </span>
             <div className="ml-4">
               <Button variant="outline" size="sm" className="h-7 text-[11px] gap-1" onClick={generatePMs}>✨ Generate PMs (Quick)</Button>
-            </div>
-            <div className="ml-auto flex items-center gap-1.5 text-muted-foreground">
-              Hrs/Person/Day:
-              {editingHrs ? (
-                <Input type="number" value={hrsPerDay} onChange={(e) => setHrsPerDay(Number(e.target.value))} onBlur={() => setEditingHrs(false)} onKeyDown={(e) => e.key === "Enter" && setEditingHrs(false)} className="w-16 h-6 text-xs text-center" step={0.5} autoFocus />
-              ) : (
-                <button onClick={() => setEditingHrs(true)} className="flex items-center gap-1 font-bold text-foreground hover:text-primary">
-                  {hrsPerDay} <Pencil className="w-3 h-3" />
-                </button>
-              )}
             </div>
           </div>
 
@@ -469,8 +456,8 @@ export function WOCSchedule() {
           <div className="space-y-1">
             {days.map((day) => {
               const dayKey = format(day, "yyyy-MM-dd");
-              const p = getPersonnel(dayKey);
-              const hoursAvail = p * hrsPerDay;
+              const p = getPersonnel(dayKey, day);
+              const hoursAvail = p * getHrsPerDay(day);
               const dayWOs = scheduledByDay[dayKey] || [];
               const schedHrs = dayWOs.reduce((s, wo) => s + getWoHours(wo), 0);
               const unschedHrs = hoursAvail - schedHrs;
@@ -497,11 +484,7 @@ export function WOCSchedule() {
                     <div className="flex items-center gap-5 text-[10px]">
                       <div className="flex items-center gap-1.5">
                         <span className="text-muted-foreground">Personnel:</span>
-                        <div className="flex items-center gap-0.5">
-                          <button onClick={() => setDayPersonnel(dayKey, p - 1)} className="w-4 h-4 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-[10px]">−</button>
-                          <span className="w-5 text-center font-bold text-foreground">{p}</span>
-                          <button onClick={() => setDayPersonnel(dayKey, p + 1)} className="w-4 h-4 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-[10px]">+</button>
-                        </div>
+                        <span className="font-bold text-foreground">{p}</span>
                       </div>
                       <span className="text-muted-foreground">Available: <b className="text-foreground">{hoursAvail.toFixed(1)}h</b></span>
                       <span className="text-muted-foreground">Scheduled: <b className={cn(isOverTarget ? "text-destructive" : "text-foreground")}>{schedHrs.toFixed(1)}h</b></span>
