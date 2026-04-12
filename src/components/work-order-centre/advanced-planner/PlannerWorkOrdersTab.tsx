@@ -278,7 +278,7 @@ export function PlannerWorkOrdersTab({ items }: Props) {
         {bulkMode && <span />}
         <SortHeader field="woNumber" label="WO #" />
         <SortHeader field="woType" label="Type" />
-        <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide px-1">Activity</span>
+        <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide px-1 text-center">Activity</span>
         <SortHeader field="assetNumber" label="Asset" />
         <SortHeader field="taskName" label="Description" />
         <SortHeader field="discipline" label="Discipline" />
