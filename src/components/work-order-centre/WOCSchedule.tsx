@@ -608,8 +608,6 @@ export function WOCSchedule() {
     </div>
   );
 }
-
-/* ── Scheduled WO Chip with Click-to-Expand Popover ── */
 function ScheduledWOChip({ wo, onDragStart, onUnschedule }: { wo: WorkOrder; onDragStart: (id: string) => void; onUnschedule: (id: string) => void }) {
   const isPM = wo.work_type === "PM";
   const pc = getPriorityConfig(wo.priority);
