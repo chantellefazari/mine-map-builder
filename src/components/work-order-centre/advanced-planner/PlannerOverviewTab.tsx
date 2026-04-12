@@ -20,6 +20,8 @@ interface Props {
     totalHrs: number; areas: number; assets: number;
   };
   onNavigate: (tab: PlannerTab) => void;
+  filterWOType: string;
+  setFilterWOType: (v: string) => void;
 }
 
 export function PlannerOverviewTab({ items, allItems, stats, onNavigate }: Props) {
