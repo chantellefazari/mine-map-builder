@@ -188,6 +188,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
             <th className="text-left px-3 py-2 font-semibold">Description</th>
             <th className="text-left px-3 py-2 font-semibold">Area</th>
             <th className="text-left px-3 py-2 font-semibold">Priority</th>
+            <th className="text-left px-3 py-2 font-semibold">Activity</th>
             <th className="text-left px-3 py-2 font-semibold">Status</th>
             {showProgress && <th className="text-left px-3 py-2 font-semibold">Progress</th>}
             <th className="text-left px-3 py-2 font-semibold">Trade</th>
@@ -211,7 +212,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
           {items.length === 0 && (
             <tr>
               <td
-                colSpan={showActions ? (showProgress ? 9 : 8) : (showProgress ? 8 : 7)}
+                colSpan={showActions ? (showProgress ? 10 : 9) : (showProgress ? 9 : 8)}
                 className="px-3 py-8 text-center text-muted-foreground"
               >
                 No work orders in this category
@@ -377,6 +378,9 @@ function WOTableRow({
         <Badge variant="outline" className={`text-[10px] ${priorityColor(wo.priority)}`}>
           {wo.priority}
         </Badge>
+      </td>
+      <td className="px-3 py-2">
+        <span className="font-mono text-[10px] font-semibold text-muted-foreground">{(wo as any).activity_type || "-"}</span>
       </td>
       <td className="px-3 py-2">
         <Badge variant="secondary" className="text-[10px]">{wo.status}</Badge>
