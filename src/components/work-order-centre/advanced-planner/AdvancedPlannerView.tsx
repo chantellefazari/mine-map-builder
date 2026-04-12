@@ -322,11 +322,12 @@ export function AdvancedPlannerView() {
           <PlannerMaintenancePlansTab items={allItems.filter(i => i.source === "pm")} />
         )}
         {activeTab === "work-orders" && (
-          <PlannerWorkOrdersTab items={filteredItems.filter(i => i.source === "wo")} />
+          <PlannerWorkOrdersTab items={filteredItems.filter(i => i.source === "wo")} getReadiness={getReadiness} />
         )}
         {activeTab === "forward-plan" && (
           <PlannerForwardPlanTab
             items={allItems}
+            getReadiness={getReadiness}
             onEditSchedule={(item, date) => {
               setFpScheduleItem(item);
               setFpScheduleDate(date);
