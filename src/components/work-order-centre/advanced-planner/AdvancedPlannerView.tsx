@@ -114,6 +114,11 @@ export function AdvancedPlannerView() {
   const [filterFrequency, setFilterFrequency] = useState("All");
   const [filterPriority, setFilterPriority] = useState("All");
 
+  // Forward Plan interactions
+  const [fpScheduleOpen, setFpScheduleOpen] = useState(false);
+  const [fpScheduleItem, setFpScheduleItem] = useState<PlannerItem | null>(null);
+  const [fpScheduleDate, setFpScheduleDate] = useState<Date | undefined>();
+  const [fpDetailItem, setFpDetailItem] = useState<PlannerItem | null>(null);
   // Build unified items
   const allItems: PlannerItem[] = useMemo(() => {
     const items: PlannerItem[] = [];
