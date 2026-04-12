@@ -320,7 +320,7 @@ export function PlannerWorkOrdersTab({ items }: Props) {
                     {item.woType}
                   </Badge>
                 </div>
-                <span className="text-[10px] font-mono font-semibold text-muted-foreground">{item.activityType || "—"}</span>
+                <span className="text-[10px] font-mono font-semibold text-muted-foreground text-center">{item.activityType || "—"}</span>
                 <span className="text-[10px] font-mono text-muted-foreground truncate">{item.assetNumber || "—"}</span>
                 <span className="text-[11px] text-foreground truncate pr-2" title={item.taskName}>{item.taskName}</span>
                 <span className="text-[10px] text-muted-foreground">{item.discipline || "—"}</span>
