@@ -47,6 +47,27 @@ export interface PlannerItem {
   sourceId: string;
 }
 
+/** Flatten PM tasks from either flat array or {sections: [{tasks, equipmentName}]} format */
+function flattenPMTasks(tasks: any): any[] {
+  if (Array.isArray(tasks)) return tasks;
+  if (tasks && typeof tasks === "object" && Array.isArray(tasks.sections)) {
+    const flat: any[] = [];
+    for (const section of tasks.sections) {
+      if (Array.isArray(section.tasks)) {
+        for (const t of section.tasks) {
+          flat.push({
+            ...t,
+            section: section.equipmentName || section.sectionName || "",
+          });
+        }
+      }
+    }
+    return flat;
+  }
+  return [];
+}
+
+
 function getWoTypeFromNumber(woNum: string): { type: PlannerItem["woType"]; code: string } {
   if (woNum.startsWith("WO-12")) return { type: "PM", code: "12" };
   if (woNum.startsWith("WO-13")) return { type: "Breakdown", code: "13" };
@@ -115,7 +136,7 @@ export function AdvancedPlannerView() {
         materialList: pm.requiredTools || [],
         requiredTools: pm.requiredTools || [],
         safetyNotes: pm.safetyNotes || [],
-        tasks: Array.isArray(pm.tasks) ? pm.tasks : [],
+        tasks: flattenPMTasks(pm.tasks),
         source: "pm",
         sourceId: pm.id,
       });
