@@ -229,9 +229,20 @@ export function PlannerCapacityTab({ items }: Props) {
                 <thead>
                   <tr className="bg-muted/30 border-b border-border">
                     <th className="text-left px-2 py-1.5 font-semibold sticky left-0 bg-muted/30 z-10 min-w-[80px]">Field</th>
-                    {visibleWeeks.map(w => (
-                      <th key={w} className="text-center px-1 py-1.5 font-semibold min-w-[60px]">W{w + 1}</th>
-                    ))}
+                    {visibleWeeks.map(w => {
+                      const wi = weekInfos[w];
+                      return (
+                        <Tooltip key={w}>
+                          <TooltipTrigger asChild>
+                            <th className="text-center px-1 py-1.5 font-semibold min-w-[60px] cursor-help">
+                              {wi.shortLabel}
+                              <div className="text-[8px] font-normal text-muted-foreground">{wi.label.split(" — ")[1]}</div>
+                            </th>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="text-xs">{wi.label}</TooltipContent>
+                        </Tooltip>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody>
