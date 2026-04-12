@@ -20,6 +20,8 @@ import { PlannerForecastTab } from "./PlannerForecastTab";
 import { PlannerShutdownImpactTab } from "./PlannerShutdownImpactTab";
 import { PlannerCapacityTab } from "./PlannerCapacityTab";
 import { PlannerForwardPlanTab } from "./PlannerForwardPlanTab";
+import { ForwardPlanScheduleDialog } from "./ForwardPlanScheduleDialog";
+import { PlannerItemDetail } from "./PlannerItemDetail";
 
 export interface PlannerItem {
   id: string;
@@ -112,6 +114,11 @@ export function AdvancedPlannerView() {
   const [filterFrequency, setFilterFrequency] = useState("All");
   const [filterPriority, setFilterPriority] = useState("All");
 
+  // Forward Plan interactions
+  const [fpScheduleOpen, setFpScheduleOpen] = useState(false);
+  const [fpScheduleItem, setFpScheduleItem] = useState<PlannerItem | null>(null);
+  const [fpScheduleDate, setFpScheduleDate] = useState<Date | undefined>();
+  const [fpDetailItem, setFpDetailItem] = useState<PlannerItem | null>(null);
   // Build unified items
   const allItems: PlannerItem[] = useMemo(() => {
     const items: PlannerItem[] = [];
@@ -334,6 +341,27 @@ export function AdvancedPlannerView() {
           <PlannerTreeExplorer items={filteredItems} />
         )}
       </div>
+
+      {/* Forward Plan Schedule Dialog */}
+      <ForwardPlanScheduleDialog
+        item={fpScheduleItem}
+        initialDate={fpScheduleDate}
+        open={fpScheduleOpen}
+        onOpenChange={(open) => {
+          setFpScheduleOpen(open);
+          if (!open) { setFpScheduleItem(null); setFpScheduleDate(undefined); }
+        }}
+      />
+
+      {/* Forward Plan Detail Side Panel */}
+      {fpDetailItem && (
+        <div className="fixed inset-0 z-50 flex">
+          <div className="flex-1 bg-black/40" onClick={() => setFpDetailItem(null)} />
+          <div className="w-[480px] bg-card border-l border-border shadow-2xl animate-in slide-in-from-right">
+            <PlannerItemDetail item={fpDetailItem} onClose={() => setFpDetailItem(null)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
