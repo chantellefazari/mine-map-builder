@@ -238,29 +238,6 @@ export function AdvancedPlannerView() {
               );
             })}
           </div>
-
-          {/* Type chips */}
-          <div className="h-5 w-px bg-border" />
-          {Object.entries(WO_TYPE_CONFIG).map(([key, cfg]) => {
-            const count = key === "PM" ? stats.pm : key === "General" ? stats.general : key === "Breakdown" ? stats.breakdown : stats.shutdown;
-            const isActive = filterWOType === key;
-            return (
-              <button
-                key={key}
-                onClick={() => setFilterWOType(filterWOType === key ? "All" : key)}
-                className={cn(
-                  "flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold transition-all border",
-                  isActive
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <span className={cn("w-1.5 h-1.5 rounded-full", cfg.color)} />
-                {cfg.label}
-                <span className="tabular-nums">{count}</span>
-              </button>
-            );
-          })}
         </div>
 
         <div className="flex items-center gap-2">
@@ -299,6 +276,8 @@ export function AdvancedPlannerView() {
             allItems={allItems}
             stats={stats}
             onNavigate={setActiveTab}
+            filterWOType={filterWOType}
+            setFilterWOType={setFilterWOType}
           />
         )}
         {activeTab === "maintenance-plans" && (
