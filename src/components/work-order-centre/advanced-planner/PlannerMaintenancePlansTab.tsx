@@ -506,7 +506,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
         </DialogHeader>
 
         <Tabs defaultValue="details" className="flex-1 min-h-0 flex flex-col">
-          <TabsList className="w-full justify-start h-8 bg-muted/30">
+          <TabsList className="w-full justify-start h-8 bg-muted/30 shrink-0">
             <TabsTrigger value="details" className="text-[10px] h-6 px-3">Details</TabsTrigger>
             <TabsTrigger value="tasks" className="text-[10px] h-6 px-3">Tasks ({form.tasks.length})</TabsTrigger>
             <TabsTrigger value="tools" className="text-[10px] h-6 px-3">Tools & PPE ({form.requiredTools.length + form.requiredPPE.length})</TabsTrigger>
@@ -514,7 +514,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
             <TabsTrigger value="criteria" className="text-[10px] h-6 px-3">Criteria ({form.acceptableCriteria.length + form.signsOfFailure.length})</TabsTrigger>
           </TabsList>
 
-          <ScrollArea className="flex-1 min-h-0">
+          <div className="flex-1 min-h-0 overflow-y-auto">
             <div className="p-4">
               <TabsContent value="details" className="mt-0 space-y-3">
                 <div className="grid grid-cols-2 gap-3">
@@ -666,7 +666,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
                 </div>
               </TabsContent>
             </div>
-          </ScrollArea>
+          </div>
         </Tabs>
 
         <DialogFooter className="border-t border-border pt-3">
