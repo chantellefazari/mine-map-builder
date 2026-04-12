@@ -315,6 +315,9 @@ export function AdvancedPlannerView() {
         {activeTab === "work-orders" && (
           <PlannerWorkOrdersTab items={filteredItems.filter(i => i.source === "wo")} />
         )}
+        {activeTab === "forward-plan" && (
+          <PlannerForwardPlanTab items={allItems} />
+        )}
         {activeTab === "rounds" && (
           <PlannerRoundsTab items={filteredItems} />
         )}
