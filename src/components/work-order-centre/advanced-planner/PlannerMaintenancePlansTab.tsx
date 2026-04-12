@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import {
   Search, ChevronDown, ChevronRight, Plus, Clock, Wrench,
   ListChecks, Package, ShieldAlert, AlertTriangle, Settings2,
-  Pencil, Trash2, X, Save, Copy,
+  Pencil, Trash2, X, Save, Copy, Activity, Power, RefreshCw, Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
