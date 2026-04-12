@@ -666,7 +666,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
                 </div>
               </TabsContent>
             </div>
-          </ScrollArea>
+          </div>
         </Tabs>
 
         <DialogFooter className="border-t border-border pt-3">
