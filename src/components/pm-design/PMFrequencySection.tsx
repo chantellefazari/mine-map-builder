@@ -39,6 +39,7 @@ export interface PMData {
   status: "Draft" | "Reviewed" | "Approved";
   assetNumber: string;
   resources: string;
+  planCategory?: "Preventive" | "Shutdown" | "Condition-Based" | "Lifecycle";
 }
 
 interface PMFrequencySectionProps {

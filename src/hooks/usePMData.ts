@@ -30,6 +30,7 @@ function rowToPMData(row: any): PMData {
     status: row.status as PMData["status"],
     assetNumber: row.asset_number ?? "",
     resources: row.resources ?? "",
+    planCategory: (row.plan_category ?? "Preventive") as PMData["planCategory"],
   };
 }
 
@@ -56,6 +57,7 @@ function pmDataToRow(pm: Partial<PMData>) {
   if (pm.status !== undefined) row.status = pm.status;
   if ((pm as any).assetNumber !== undefined) row.asset_number = (pm as any).assetNumber;
   if ((pm as any).resources !== undefined) row.resources = (pm as any).resources;
+  if ((pm as any).planCategory !== undefined) row.plan_category = (pm as any).planCategory;
   return row;
 }
 
