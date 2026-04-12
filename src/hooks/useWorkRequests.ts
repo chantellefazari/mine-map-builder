@@ -104,7 +104,7 @@ export function useWorkRequests() {
         .single();
       if (wrErr) throw wrErr;
 
-      const { data: woNum, error: woNumErr } = await (supabase as any).rpc("next_wo_number");
+      const { data: woNum, error: woNumErr } = await (supabase as any).rpc("next_wo_number", { p_work_type: woType });
       if (woNumErr) throw woNumErr;
 
       const { data: wo, error: woErr } = await (supabase as any)

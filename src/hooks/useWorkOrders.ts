@@ -51,8 +51,8 @@ export function useWorkOrders() {
   });
 
   const allocateMutation = useMutation({
-    mutationFn: async () => {
-      const { data: nextData, error: nextError } = await (supabase as any).rpc("next_wo_number");
+    mutationFn: async (workType: string = "Planned") => {
+      const { data: nextData, error: nextError } = await (supabase as any).rpc("next_wo_number", { p_work_type: workType });
       if (nextError) throw nextError;
       const woNumber = nextData as string;
       const { data, error } = await (supabase as any)

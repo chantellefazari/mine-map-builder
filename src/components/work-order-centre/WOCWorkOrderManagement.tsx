@@ -124,7 +124,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
   const handleCreateConfirm = async (woType: string) => {
     setShowWoTypeDialog(false);
     try {
-      const wo = await allocate.mutateAsync();
+      const wo = await allocate.mutateAsync(woType);
       await update.mutateAsync({ id: wo.id, updates: { status: "Planning", work_type: woType } });
       onOpenWorkspace(wo.id, "wo-management");
     } catch {
