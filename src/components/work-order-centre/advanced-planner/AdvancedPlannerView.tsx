@@ -352,6 +352,9 @@ export function AdvancedPlannerView() {
         {activeTab === "capacity" && (
           <PlannerCapacityTab items={filteredItems} />
         )}
+        {activeTab === "resource-leveling" && (
+          <PlannerResourceLevelingTab items={allItems} />
+        )}
         {activeTab === "asset-tree" && (
           <PlannerTreeExplorer items={filteredItems} />
         )}
