@@ -68,6 +68,7 @@ export function WOCWorkspaceHeader({ wo, onUpdate, onClose, onPrint, partsCount 
           <div className="whitespace-nowrap"><span className="font-semibold text-foreground">Area:</span> {wo.functional_location || "-"}</div>
           <div className="whitespace-nowrap"><span className="font-semibold text-foreground">Trade:</span> {wo.trade || "-"}</div>
           <div className="whitespace-nowrap"><span className="font-semibold text-foreground">WO Type:</span> {wo.work_type || "-"}</div>
+          {(wo as any).activity_type && <div className="whitespace-nowrap"><span className="font-semibold text-foreground">Activity:</span> <span className="font-mono">{(wo as any).activity_type}</span></div>}
           <div className="whitespace-nowrap"><span className="font-semibold text-foreground">Created:</span> {wo.date_raised ? format(new Date(wo.date_raised), "dd/MM/yy") : "-"}</div>
         </div>
 
