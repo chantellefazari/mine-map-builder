@@ -276,6 +276,8 @@ export function AdvancedPlannerView() {
             allItems={allItems}
             stats={stats}
             onNavigate={setActiveTab}
+            filterWOType={filterWOType}
+            setFilterWOType={setFilterWOType}
           />
         )}
         {activeTab === "maintenance-plans" && (
