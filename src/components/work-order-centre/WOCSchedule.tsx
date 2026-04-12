@@ -541,6 +541,9 @@ export function WOCSchedule() {
                                   {woIsPM ? "PM" : wo.work_type || "CM"}
                                 </Badge>
                               </td>
+                              <td className="px-2 py-1.5">
+                                <span className="font-mono font-semibold text-muted-foreground">{(wo as any).activity_type || "—"}</span>
+                              </td>
                               <td className="px-2 py-1.5 font-semibold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">{wo.asset_id || "—"}</td>
                               <td className="px-2 py-1.5 text-muted-foreground overflow-hidden text-ellipsis whitespace-nowrap">{wo.functional_location || "—"}</td>
                               <td className="px-2 py-1.5 text-foreground/80 overflow-hidden text-ellipsis whitespace-nowrap">
