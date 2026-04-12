@@ -46,6 +46,7 @@ export interface PlannerItem {
   source: "wo" | "pm";
   sourceId: string;
   planCategory: string;
+  activityType: string;
 }
 
 /** Flatten PM tasks from either flat array or {sections: [{tasks, equipmentName}]} format */
@@ -141,6 +142,7 @@ export function AdvancedPlannerView() {
         source: "pm",
         sourceId: pm.id,
         planCategory: (pm as any).planCategory || "Preventive",
+        activityType: "INS",
       });
     }
 
@@ -174,6 +176,7 @@ export function AdvancedPlannerView() {
         source: "wo",
         sourceId: wo.id,
         planCategory: "Preventive",
+        activityType: (wo as any).activity_type || "",
       });
     }
 
