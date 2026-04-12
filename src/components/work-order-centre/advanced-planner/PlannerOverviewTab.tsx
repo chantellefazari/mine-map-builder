@@ -19,7 +19,7 @@ interface Props {
     total: number; pm: number; general: number; breakdown: number; shutdown: number;
     totalHrs: number; areas: number; assets: number;
   };
-  onNavigate: (tab: string) => void;
+  onNavigate: (tab: PlannerTab) => void;
 }
 
 export function PlannerOverviewTab({ items, allItems, stats, onNavigate }: Props) {
