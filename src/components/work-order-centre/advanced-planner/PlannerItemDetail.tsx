@@ -1,7 +1,16 @@
-import { X, Wrench, Clock, Package, ListChecks, ShieldAlert, Hash, MapPin, Calendar, User, FileText } from "lucide-react";
+import { useState, useCallback } from "react";
+import { X, Wrench, Clock, Package, ListChecks, ShieldAlert, Hash, MapPin, Calendar, User, FileText, Save, CalendarDays, ChevronsRight, ArrowRightLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarPicker } from "@/components/ui/calendar";
+import { useWorkOrders } from "@/hooks/useWorkOrders";
+import { format, addDays, parseISO } from "date-fns";
+import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 
 interface Props {
@@ -29,7 +38,39 @@ function DetailSection({ title, icon: Icon, children, empty }: { title: string; 
 }
 
 export function PlannerItemDetail({ item, onClose }: Props) {
+  const { update } = useWorkOrders();
   const typeStyle = WO_TYPE_STYLES[item.woType] || { bg: "", text: "" };
+  const isWO = item.source === "wo";
+
+  const [pushDays, setPushDays] = useState(7);
+
+  // Update a field on the work order
+  const updateField = useCallback(async (field: string, value: any) => {
+    if (!isWO) {
+      toast.error("PM templates are updated from the PM module");
+      return;
+    }
+    try {
+      await update.mutateAsync({
+        id: item.sourceId,
+        updates: { [field]: value } as any,
+      });
+      toast.success(`Updated ${field}`);
+    } catch { /* handled */ }
+  }, [isWO, item.sourceId, update]);
+
+  // Set scheduled date
+  const setDate = useCallback(async (date: Date | undefined) => {
+    const dateStr = date ? format(date, "yyyy-MM-dd") : null;
+    await updateField("scheduled_date", dateStr);
+  }, [updateField]);
+
+  // Push date by N days
+  const pushDate = useCallback(async () => {
+    const currentDate = item.scheduledDate ? parseISO(item.scheduledDate) : new Date();
+    const newDate = addDays(currentDate, pushDays);
+    await updateField("scheduled_date", format(newDate, "yyyy-MM-dd"));
+  }, [item.scheduledDate, pushDays, updateField]);
 
   return (
     <div className="flex flex-col h-full bg-card">
@@ -51,6 +92,130 @@ export function PlannerItemDetail({ item, onClose }: Props) {
 
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-5">
+          {/* Schedule Actions — prominent */}
+          {isWO && (
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 space-y-3">
+              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-primary uppercase tracking-wider">
+                <CalendarDays className="w-3.5 h-3.5" />
+                Schedule & Revisions
+              </div>
+
+              {/* Current date display + picker */}
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] text-muted-foreground w-20">Scheduled:</span>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className={cn(
+                      "text-xs font-medium px-2.5 py-1 rounded border transition-colors",
+                      item.scheduledDate
+                        ? "text-foreground border-border hover:border-primary/50 bg-card"
+                        : "text-muted-foreground/50 border-dashed border-border hover:border-primary/50"
+                    )}>
+                      {item.scheduledDate || "Not scheduled — click to set"}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarPicker
+                      mode="single"
+                      selected={item.scheduledDate ? parseISO(item.scheduledDate) : undefined}
+                      onSelect={setDate}
+                    />
+                    {item.scheduledDate && (
+                      <div className="p-2 border-t border-border">
+                        <Button variant="ghost" size="sm" className="h-6 text-[10px] w-full" onClick={() => setDate(undefined)}>
+                          Clear Date
+                        </Button>
+                      </div>
+                    )}
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {/* Push by N days */}
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-muted-foreground w-20">Push by:</span>
+                <Input
+                  type="number"
+                  value={pushDays}
+                  onChange={(e) => setPushDays(Number(e.target.value))}
+                  className="w-16 h-7 text-xs text-center"
+                />
+                <span className="text-[10px] text-muted-foreground">days</span>
+                <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1" onClick={pushDate}>
+                  <ChevronsRight className="w-3 h-3" /> Push
+                </Button>
+                <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1" onClick={() => { setPushDays(-pushDays); }}>
+                  <ArrowRightLeft className="w-3 h-3" /> Reverse
+                </Button>
+              </div>
+
+              {/* Quick status change */}
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-muted-foreground w-20">Status:</span>
+                <Select value={item.status} onValueChange={(v) => updateField("status", v)}>
+                  <SelectTrigger className="h-7 w-36 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Planning">Planning</SelectItem>
+                    <SelectItem value="Planned">Planned</SelectItem>
+                    <SelectItem value="Scheduled">Scheduled</SelectItem>
+                    <SelectItem value="Active">Active</SelectItem>
+                    <SelectItem value="On Hold">On Hold</SelectItem>
+                    <SelectItem value="Completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Quick priority change */}
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-muted-foreground w-20">Priority:</span>
+                <Select value={item.priority} onValueChange={(v) => updateField("priority", v)}>
+                  <SelectTrigger className="h-7 w-36 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Critical">Critical</SelectItem>
+                    <SelectItem value="High">High</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="Standard">Standard</SelectItem>
+                    <SelectItem value="Low">Low</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Asset re-assignment */}
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-muted-foreground w-20">Asset:</span>
+                <Input
+                  defaultValue={item.assetNumber}
+                  onBlur={(e) => {
+                    if (e.target.value !== item.assetNumber) {
+                      updateField("asset_id", e.target.value);
+                    }
+                  }}
+                  className="h-7 w-40 text-xs font-mono"
+                  placeholder="Asset number"
+                />
+                <span className="text-[9px] text-muted-foreground">Updates WO + linked systems</span>
+              </div>
+
+              {/* Trade re-assignment */}
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-muted-foreground w-20">Trade:</span>
+                <Select value={item.trade || "Mechanical"} onValueChange={(v) => updateField("trade", v)}>
+                  <SelectTrigger className="h-7 w-36 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Mechanical">Mechanical</SelectItem>
+                    <SelectItem value="Electrical">Electrical</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+
           {/* Key info grid */}
           <div className="grid grid-cols-2 gap-x-6 gap-y-2">
             <InfoField icon={Hash} label="Asset Number" value={item.assetNumber} />
