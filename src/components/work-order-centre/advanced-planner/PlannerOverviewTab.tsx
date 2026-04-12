@@ -10,6 +10,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import { WO_TYPE_CONFIG } from "./AdvancedPlannerView";
 
+type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "asset-tree";
+
 interface Props {
   items: PlannerItem[];
   allItems: PlannerItem[];
