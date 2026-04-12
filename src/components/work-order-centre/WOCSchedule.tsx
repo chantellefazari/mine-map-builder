@@ -122,19 +122,17 @@ export function WOCSchedule() {
     return map;
   }, [disciplineWOs, days]);
 
-  const getPersonnel = (dayKey: string) => personnel[dayKey] ?? 4;
-  const setDayPersonnel = (dayKey: string, val: number) => setPersonnel((prev) => ({ ...prev, [dayKey]: Math.max(0, val) }));
-
-  const quickFill = (val: number, daysToFill: "all" | "weekday" | "weekend") => {
-    const newP = { ...personnel };
-    for (const day of days) {
-      const key = format(day, "yyyy-MM-dd");
-      const dow = day.getDay();
-      if (daysToFill === "all") newP[key] = val;
-      else if (daysToFill === "weekday" && dow >= 1 && dow <= 5) newP[key] = val;
-      else if (daysToFill === "weekend" && (dow === 0 || dow === 6)) newP[key] = val;
-    }
-    setPersonnel(newP);
+  const getPersonnel = (dayKey: string, day: Date) => {
+    const cap = getCapacityForDate(discipline, day);
+    return cap.personnel;
+  };
+  const getHrsPerDay = (day: Date) => {
+    const cap = getCapacityForDate(discipline, day);
+    return cap.hoursPerDay;
+  };
+  const getTarget = (day: Date) => {
+    const cap = getCapacityForDate(discipline, day);
+    return cap.loadingTarget;
   };
 
   const handleDragStart = (woId: string) => setDragWoId(woId);
