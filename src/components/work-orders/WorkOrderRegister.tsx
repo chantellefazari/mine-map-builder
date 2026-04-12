@@ -12,7 +12,7 @@ export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
   const { workOrders, isLoading, allocate } = useWorkOrders();
 
   const handleAllocate = async () => {
-    const result = await allocate.mutateAsync();
+    const result = await allocate.mutateAsync("Planned");
     onAllocateWO?.(result.wo_number);
   };
 
