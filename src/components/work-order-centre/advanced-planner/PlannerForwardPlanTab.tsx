@@ -390,7 +390,7 @@ export function PlannerForwardPlanTab({ items, onEditSchedule, onViewWorkOrder }
 
                 {/* LEVEL 1: Expanded PM → show all weeks with occurrences as inline rows */}
                 {isPMExpanded && (
-                  <div className="bg-muted/5 border-t border-border/20">
+                  <div className="bg-muted/5 border-t border-border/20" onClick={(e) => e.stopPropagation()}>
                     {/* PM summary bar */}
                     <div className="flex items-center gap-4 px-6 py-2 bg-muted/20 border-b border-border/20">
                       <Badge variant="outline" className="text-[10px]">{pm.discipline}</Badge>
@@ -492,8 +492,8 @@ export function PlannerForwardPlanTab({ items, onEditSchedule, onViewWorkOrder }
 
                                     {/* LEVEL 4: Expanded day → full detail card */}
                                     {isDayExpanded && (
-                                      <div className="px-16 py-3 bg-muted/5 border-b border-border/10">
-                                        <div className="bg-popover border border-border rounded-lg p-4 max-w-2xl shadow-sm">
+                                      <div className="px-16 py-3 bg-muted/5 border-b border-border/10" onClick={(e) => e.stopPropagation()}>
+                                        <div className="bg-popover border border-border rounded-lg p-4 max-w-2xl shadow-sm" onClick={(e) => e.stopPropagation()}>
                                           <div className="flex items-start justify-between mb-3">
                                             <div>
                                               <h4 className="text-sm font-bold text-foreground">{pm.name}</h4>
