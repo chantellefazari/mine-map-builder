@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import { WO_TYPE_CONFIG } from "./AdvancedPlannerView";
 import type { MaterialStatus, WOMaterialSummary } from "@/hooks/useMaterialReadiness";
+import { PlannerPartsPanel } from "./PlannerPartsPanel";
 
 interface Props {
   items: PlannerItem[];
@@ -53,6 +54,7 @@ export function PlannerWorkOrdersTab({ items, getReadiness }: Props) {
   const [bulkMode, setBulkMode] = useState(false);
   const [pushDays, setPushDays] = useState(7);
   const [editingDateId, setEditingDateId] = useState<string | null>(null);
+  const [partsItem, setPartsItem] = useState<PlannerItem | null>(null);
 
   const filtered = useMemo(() => {
     let list = items;
@@ -332,9 +334,9 @@ export function PlannerWorkOrdersTab({ items, getReadiness }: Props) {
                 <span className={cn("text-[10px]", PRIORITY_COLORS[item.priority] || "text-foreground")}>{item.priority}</span>
                 <span className={cn("text-[10px] font-medium", STATUS_COLORS[item.status] || "text-muted-foreground")}>{item.status}</span>
 
-                {/* Material Readiness */}
+                {/* Material Readiness - clickable */}
                 <div className="flex justify-center">
-                  <MaterialReadinessBadge readiness={readiness} />
+                  <MaterialReadinessBadge readiness={readiness} onClick={() => setPartsItem(item)} />
                 </div>
 
                 {/* Editable scheduled date */}
@@ -376,6 +378,14 @@ export function PlannerWorkOrdersTab({ items, getReadiness }: Props) {
           )}
         </div>
       </ScrollArea>
+
+      {/* Parts Panel */}
+      {partsItem && (
+        <PlannerPartsPanel
+          item={partsItem}
+          onClose={() => setPartsItem(null)}
+        />
+      )}
     </div>
   );
 }
@@ -389,7 +399,7 @@ const READINESS_CONFIG: Record<MaterialStatus, { label: string; dot: string; bg:
   "No Parts": { label: "No Parts", dot: "bg-muted-foreground/40", bg: "bg-muted/30 border-border", text: "text-muted-foreground" },
 };
 
-function MaterialReadinessBadge({ readiness }: { readiness?: WOMaterialSummary }) {
+function MaterialReadinessBadge({ readiness, onClick }: { readiness?: WOMaterialSummary; onClick?: () => void }) {
   const status = readiness?.status || "No Parts";
   const cfg = READINESS_CONFIG[status];
   const detail = readiness && readiness.totalParts > 0
@@ -399,14 +409,22 @@ function MaterialReadinessBadge({ readiness }: { readiness?: WOMaterialSummary }
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className={cn("flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] font-medium cursor-default", cfg.bg, cfg.text)}>
+        <button
+          onClick={onClick}
+          className={cn(
+            "flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] font-medium transition-colors",
+            "hover:ring-1 hover:ring-primary/30 cursor-pointer",
+            cfg.bg, cfg.text
+          )}
+        >
           <div className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", cfg.dot)} />
           {cfg.label}
-        </div>
+        </button>
       </TooltipTrigger>
       <TooltipContent side="top" className="text-xs">
         <p className="font-semibold">{status}</p>
         <p className="text-muted-foreground">{detail}</p>
+        <p className="text-primary text-[10px] mt-1">Click to manage parts</p>
       </TooltipContent>
     </Tooltip>
   );
