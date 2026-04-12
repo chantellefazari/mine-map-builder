@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import {
   Calendar, ChevronLeft, ChevronRight, Search, GripVertical,
-  Wrench, Zap, Users, Printer, FileText, Building2,
+  Wrench, Zap, Users, Printer, FileText, Building2, ClipboardList,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -18,6 +18,7 @@ import { WOCScheduleReport } from "./WOCScheduleReport";
 import { ShutdownScheduleView } from "./shutdown/ShutdownScheduleView";
 import { VendorSchedulingView } from "./vendor-scheduling/VendorSchedulingView";
 import { ShutdownOrchestratorView } from "./shutdown-orchestrator/ShutdownOrchestratorView";
+import { AdvancedPlannerView } from "./advanced-planner/AdvancedPlannerView";
 
 const DISCIPLINES = [
   { key: "Mechanical", label: "Mechanical", icon: Wrench, color: "text-blue-600", target: 80 },
@@ -44,7 +45,7 @@ export function WOCSchedule() {
   const [personnel, setPersonnel] = useState<Record<string, number>>({});
   const [dragWoId, setDragWoId] = useState<string | null>(null);
   const [scheduleView, setScheduleView] = useState<"calendar" | "report">("calendar");
-  const [scheduleMode, setScheduleMode] = useState<"weekly" | "shutdown" | "vendors" | "orchestrator">("weekly");
+  const [scheduleMode, setScheduleMode] = useState<"weekly" | "shutdown" | "vendors" | "orchestrator" | "advanced-planner">("weekly");
   const today = new Date();
   const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 }); // Wed start
   const weekEnd = endOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
@@ -163,24 +164,25 @@ export function WOCSchedule() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-foreground">
-              {scheduleMode === "shutdown" ? "Shutdown Schedule" : scheduleMode === "orchestrator" ? "Shutdown Orchestrator" : `${discipline} Schedule`}
+              {scheduleMode === "advanced-planner" ? "Advanced Planner Schedule" : scheduleMode === "shutdown" ? "Shutdown Schedule" : scheduleMode === "orchestrator" ? "Shutdown Orchestrator" : `${discipline} Schedule`}
             </h1>
             <p className="text-xs text-muted-foreground">
-              {scheduleMode === "shutdown" ? "SAP-style Gantt scheduling grouped by vendor" : scheduleMode === "orchestrator" ? "Area-based shutdown planning and control system" : "Drag and drop work orders to schedule"}
+              {scheduleMode === "advanced-planner" ? "Comprehensive maintenance planning and scheduling" : scheduleMode === "shutdown" ? "SAP-style Gantt scheduling grouped by vendor" : scheduleMode === "orchestrator" ? "Area-based shutdown planning and control system" : "Drag and drop work orders to schedule"}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {/* Schedule Mode Dropdown */}
-          <Select value={scheduleMode} onValueChange={(v: "weekly" | "shutdown" | "vendors" | "orchestrator") => setScheduleMode(v)}>
+          <Select value={scheduleMode} onValueChange={(v: "weekly" | "shutdown" | "vendors" | "orchestrator" | "advanced-planner") => setScheduleMode(v)}>
             <SelectTrigger className="w-56 h-9">
               <div className="flex items-center gap-1.5">
-                {scheduleMode === "shutdown" ? <Building2 className="w-3.5 h-3.5" /> : scheduleMode === "vendors" ? <Wrench className="w-3.5 h-3.5" /> : scheduleMode === "orchestrator" ? <Building2 className="w-3.5 h-3.5" /> : <Calendar className="w-3.5 h-3.5" />}
+                {scheduleMode === "shutdown" ? <Building2 className="w-3.5 h-3.5" /> : scheduleMode === "vendors" ? <Wrench className="w-3.5 h-3.5" /> : scheduleMode === "orchestrator" ? <Building2 className="w-3.5 h-3.5" /> : scheduleMode === "advanced-planner" ? <ClipboardList className="w-3.5 h-3.5" /> : <Calendar className="w-3.5 h-3.5" />}
                 <SelectValue />
               </div>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="weekly">Weekly Schedule</SelectItem>
+              <SelectItem value="advanced-planner">Advanced Planner</SelectItem>
               <SelectItem value="shutdown">Shutdown Schedule</SelectItem>
               <SelectItem value="vendors">Vendors</SelectItem>
               <SelectItem value="orchestrator">Shutdown Orchestrator</SelectItem>
@@ -220,7 +222,9 @@ export function WOCSchedule() {
         </div>
       </div>
 
-      {scheduleMode === "vendors" ? (
+      {scheduleMode === "advanced-planner" ? (
+        <AdvancedPlannerView />
+      ) : scheduleMode === "vendors" ? (
         <VendorSchedulingView />
       ) : scheduleMode === "shutdown" ? (
         <ShutdownScheduleView />
