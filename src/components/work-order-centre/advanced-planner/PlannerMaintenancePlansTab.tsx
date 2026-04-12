@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePMasterList } from "@/hooks/usePMData";
 import { toast } from "sonner";
-import type { PlannerItem } from "./AdvancedPlannerView";
+import { type PlannerItem, flattenPMTasks } from "./AdvancedPlannerView";
 
 interface Props {
   items: PlannerItem[];
