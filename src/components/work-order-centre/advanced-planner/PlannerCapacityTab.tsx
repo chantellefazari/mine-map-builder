@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { format, startOfWeek, addWeeks, addDays, startOfYear } from "date-fns";
 import type { PlannerItem } from "./AdvancedPlannerView";
 
 interface Props {
@@ -27,6 +29,13 @@ interface WeekCapacity {
   loadingTarget: number;
 }
 
+interface WeekInfo {
+  index: number;
+  weekNum: number;
+  label: string; // "W2 — 07 Jan – 13 Jan"
+  shortLabel: string; // "W2"
+}
+
 const TOTAL_WEEKS = 52;
 const DAYS_PER_WEEK = 7;
 
@@ -35,6 +44,23 @@ const DEFAULT_VALUES: Record<string, WeekCapacity> = {
   Electrical: { personnel: 4, hoursPerDay: 10.5, loadingTarget: 90 },
   "Mobile & LVS": { personnel: 3, hoursPerDay: 10.5, loadingTarget: 80 },
 };
+
+function buildWeekInfos(year: number): WeekInfo[] {
+  const yearStart = startOfYear(new Date(year, 0, 1));
+  const infos: WeekInfo[] = [];
+  for (let w = 0; w < TOTAL_WEEKS; w++) {
+    const ws = startOfWeek(addWeeks(yearStart, w), { weekStartsOn: 1 });
+    const we = addDays(ws, 6);
+    const wNum = w + 1;
+    infos.push({
+      index: w,
+      weekNum: wNum,
+      label: `W${wNum} — ${format(ws, "dd MMM")} – ${format(we, "dd MMM")}`,
+      shortLabel: `W${wNum}`,
+    });
+  }
+  return infos;
+}
 
 function buildInitialGrid(): Record<string, WeekCapacity[]> {
   const grid: Record<string, WeekCapacity[]> = {};
