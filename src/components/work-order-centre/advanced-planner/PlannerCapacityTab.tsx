@@ -76,17 +76,22 @@ export function PlannerCapacityTab({ items }: Props) {
   const [grid, setGrid] = useState<Record<string, WeekCapacity[]>>(buildInitialGrid);
   const [page, setPage] = useState(0);
   const [selectedWC, setSelectedWC] = useState<WorkCentreKey>("Mechanical");
+  const [year] = useState(() => new Date().getFullYear());
 
   // Defaults editor
   const [defaults, setDefaults] = useState<Record<string, WeekCapacity>>(() =>
     JSON.parse(JSON.stringify(DEFAULT_VALUES))
   );
 
+  const weekInfos = useMemo(() => buildWeekInfos(year), [year]);
+
   const pageStart = page * WEEKS_PER_PAGE;
   const pageEnd = Math.min(pageStart + WEEKS_PER_PAGE, TOTAL_WEEKS);
   const visibleWeeks = Array.from({ length: pageEnd - pageStart }, (_, i) => pageStart + i);
   const totalPages = Math.ceil(TOTAL_WEEKS / WEEKS_PER_PAGE);
-  const quarterLabel = `Rev ${page + 1} — Weeks ${pageStart + 1}–${pageEnd}`;
+  const revFirstWeek = weekInfos[pageStart];
+  const revLastWeek = weekInfos[pageEnd - 1];
+  const revLabel = `Rev ${page + 1} — ${revFirstWeek?.label.split(" — ")[1]?.split(" – ")[0] || ""} to ${revLastWeek?.label.split(" – ")[1] || ""}`;
 
   const updateCell = useCallback((wc: string, weekIdx: number, field: keyof WeekCapacity, val: number) => {
     setGrid(prev => {
