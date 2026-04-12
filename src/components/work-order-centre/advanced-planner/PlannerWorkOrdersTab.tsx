@@ -334,9 +334,9 @@ export function PlannerWorkOrdersTab({ items, getReadiness }: Props) {
                 <span className={cn("text-[10px]", PRIORITY_COLORS[item.priority] || "text-foreground")}>{item.priority}</span>
                 <span className={cn("text-[10px] font-medium", STATUS_COLORS[item.status] || "text-muted-foreground")}>{item.status}</span>
 
-                {/* Material Readiness */}
+                {/* Material Readiness - clickable */}
                 <div className="flex justify-center">
-                  <MaterialReadinessBadge readiness={readiness} />
+                  <MaterialReadinessBadge readiness={readiness} onClick={() => setPartsItem(item)} />
                 </div>
 
                 {/* Editable scheduled date */}
