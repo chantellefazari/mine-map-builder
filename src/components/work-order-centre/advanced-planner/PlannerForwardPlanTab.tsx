@@ -492,8 +492,8 @@ export function PlannerForwardPlanTab({ items, onEditSchedule, onViewWorkOrder }
 
                                     {/* LEVEL 4: Expanded day → full detail card */}
                                     {isDayExpanded && (
-                                      <div className="px-16 py-3 bg-muted/5 border-b border-border/10">
-                                        <div className="bg-popover border border-border rounded-lg p-4 max-w-2xl shadow-sm">
+                                      <div className="px-16 py-3 bg-muted/5 border-b border-border/10" onClick={(e) => e.stopPropagation()}>
+                                        <div className="bg-popover border border-border rounded-lg p-4 max-w-2xl shadow-sm" onClick={(e) => e.stopPropagation()}>
                                           <div className="flex items-start justify-between mb-3">
                                             <div>
                                               <h4 className="text-sm font-bold text-foreground">{pm.name}</h4>
