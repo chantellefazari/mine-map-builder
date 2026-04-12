@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { format, startOfWeek, addWeeks, addDays, startOfYear } from "date-fns";
 import type { PlannerItem } from "./AdvancedPlannerView";
 
 interface Props {
@@ -27,6 +29,13 @@ interface WeekCapacity {
   loadingTarget: number;
 }
 
+interface WeekInfo {
+  index: number;
+  weekNum: number;
+  label: string; // "W2 — 07 Jan – 13 Jan"
+  shortLabel: string; // "W2"
+}
+
 const TOTAL_WEEKS = 52;
 const DAYS_PER_WEEK = 7;
 
@@ -35,6 +44,23 @@ const DEFAULT_VALUES: Record<string, WeekCapacity> = {
   Electrical: { personnel: 4, hoursPerDay: 10.5, loadingTarget: 90 },
   "Mobile & LVS": { personnel: 3, hoursPerDay: 10.5, loadingTarget: 80 },
 };
+
+function buildWeekInfos(year: number): WeekInfo[] {
+  const yearStart = startOfYear(new Date(year, 0, 1));
+  const infos: WeekInfo[] = [];
+  for (let w = 0; w < TOTAL_WEEKS; w++) {
+    const ws = startOfWeek(addWeeks(yearStart, w), { weekStartsOn: 1 });
+    const we = addDays(ws, 6);
+    const wNum = w + 1;
+    infos.push({
+      index: w,
+      weekNum: wNum,
+      label: `W${wNum} — ${format(ws, "dd MMM")} – ${format(we, "dd MMM")}`,
+      shortLabel: `W${wNum}`,
+    });
+  }
+  return infos;
+}
 
 function buildInitialGrid(): Record<string, WeekCapacity[]> {
   const grid: Record<string, WeekCapacity[]> = {};
@@ -50,17 +76,22 @@ export function PlannerCapacityTab({ items }: Props) {
   const [grid, setGrid] = useState<Record<string, WeekCapacity[]>>(buildInitialGrid);
   const [page, setPage] = useState(0);
   const [selectedWC, setSelectedWC] = useState<WorkCentreKey>("Mechanical");
+  const [year] = useState(() => new Date().getFullYear());
 
   // Defaults editor
   const [defaults, setDefaults] = useState<Record<string, WeekCapacity>>(() =>
     JSON.parse(JSON.stringify(DEFAULT_VALUES))
   );
 
+  const weekInfos = useMemo(() => buildWeekInfos(year), [year]);
+
   const pageStart = page * WEEKS_PER_PAGE;
   const pageEnd = Math.min(pageStart + WEEKS_PER_PAGE, TOTAL_WEEKS);
   const visibleWeeks = Array.from({ length: pageEnd - pageStart }, (_, i) => pageStart + i);
   const totalPages = Math.ceil(TOTAL_WEEKS / WEEKS_PER_PAGE);
-  const quarterLabel = `Rev ${page + 1} — Weeks ${pageStart + 1}–${pageEnd}`;
+  const revFirstWeek = weekInfos[pageStart];
+  const revLastWeek = weekInfos[pageEnd - 1];
+  const revLabel = `Rev ${page + 1} — ${revFirstWeek?.label.split(" — ")[1]?.split(" – ")[0] || ""} to ${revLastWeek?.label.split(" – ")[1] || ""}`;
 
   const updateCell = useCallback((wc: string, weekIdx: number, field: keyof WeekCapacity, val: number) => {
     setGrid(prev => {
@@ -142,7 +173,7 @@ export function PlannerCapacityTab({ items }: Props) {
               </div>
               <div className="flex gap-1">
                 <Button size="sm" variant="outline" className="h-6 text-[9px] gap-1" onClick={() => applyDefaultsToQuarter(selectedWC)}>
-                  <Copy className="w-3 h-3" /> Apply to {quarterLabel.split("—")[0].trim()}
+                  <Copy className="w-3 h-3" /> Apply to Rev {page + 1}
                 </Button>
                 <Button size="sm" variant="outline" className="h-6 text-[9px] gap-1" onClick={() => applyDefaultsToAll(selectedWC)}>
                   <Copy className="w-3 h-3" /> Apply to All 52 Weeks
@@ -185,7 +216,7 @@ export function PlannerCapacityTab({ items }: Props) {
             <Button size="sm" variant="ghost" className="h-7 text-[10px]" disabled={page === 0} onClick={() => setPage(p => p - 1)}>
               <ChevronLeft className="w-3.5 h-3.5 mr-1" /> Previous
             </Button>
-            <span className="text-xs font-semibold text-foreground">{quarterLabel}</span>
+            <span className="text-xs font-semibold text-foreground">{revLabel}</span>
             <Button size="sm" variant="ghost" className="h-7 text-[10px]" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>
               Next <ChevronRight className="w-3.5 h-3.5 ml-1" />
             </Button>
@@ -198,9 +229,20 @@ export function PlannerCapacityTab({ items }: Props) {
                 <thead>
                   <tr className="bg-muted/30 border-b border-border">
                     <th className="text-left px-2 py-1.5 font-semibold sticky left-0 bg-muted/30 z-10 min-w-[80px]">Field</th>
-                    {visibleWeeks.map(w => (
-                      <th key={w} className="text-center px-1 py-1.5 font-semibold min-w-[60px]">W{w + 1}</th>
-                    ))}
+                    {visibleWeeks.map(w => {
+                      const wi = weekInfos[w];
+                      return (
+                        <Tooltip key={w}>
+                          <TooltipTrigger asChild>
+                            <th className="text-center px-1 py-1.5 font-semibold min-w-[60px] cursor-help">
+                              {wi.shortLabel}
+                              <div className="text-[8px] font-normal text-muted-foreground">{wi.label.split(" — ")[1]}</div>
+                            </th>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="text-xs">{wi.label}</TooltipContent>
+                        </Tooltip>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody>
