@@ -115,7 +115,7 @@ export function AdvancedPlannerView() {
         materialList: pm.requiredTools || [],
         requiredTools: pm.requiredTools || [],
         safetyNotes: pm.safetyNotes || [],
-        tasks: Array.isArray(pm.tasks) ? pm.tasks : [],
+        tasks: flattenPMTasks(pm.tasks),
         source: "pm",
         sourceId: pm.id,
       });
