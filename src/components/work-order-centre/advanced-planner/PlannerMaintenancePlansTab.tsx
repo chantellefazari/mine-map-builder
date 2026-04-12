@@ -166,6 +166,45 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
         </div>
       </div>
 
+      {/* Category navigation bar */}
+      <div className="flex items-center gap-1 px-4 py-1.5 border-b border-border bg-muted/5 overflow-x-auto">
+        <button
+          onClick={() => setActiveCategory("All")}
+          className={cn(
+            "flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-medium transition-all whitespace-nowrap",
+            activeCategory === "All"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+          )}
+        >
+          <ListChecks className="w-3 h-3" />
+          All Plans
+          <Badge variant="secondary" className="text-[8px] px-1 h-3.5 ml-0.5">{categoryCounts.All}</Badge>
+        </button>
+        <div className="h-4 w-px bg-border mx-0.5" />
+        {PLAN_CATEGORIES.map(cat => {
+          const cfg = CATEGORY_CONFIG[cat];
+          const count = categoryCounts[cat] || 0;
+          const isActive = activeCategory === cat;
+          return (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-medium transition-all whitespace-nowrap",
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              )}
+            >
+              <cfg.icon className="w-3 h-3" />
+              {cfg.label}
+              <Badge variant="secondary" className="text-[8px] px-1 h-3.5 ml-0.5">{count}</Badge>
+            </button>
+          );
+        })}
+      </div>
+
       {/* Column headers */}
       <div className="grid grid-cols-[1fr_100px_90px_80px_70px_60px_80px] gap-0 px-4 py-1.5 border-b border-border bg-muted/20 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
         <span>Plan Name / Asset</span>
