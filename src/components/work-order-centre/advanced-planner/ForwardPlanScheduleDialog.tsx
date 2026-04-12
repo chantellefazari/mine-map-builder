@@ -103,7 +103,7 @@ export function ForwardPlanScheduleDialog({ item, initialDate, open, onOpenChang
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <CalendarPicker mode="single" selected={selectedDate} onSelect={handleSetDate} />
+                <CalendarPicker mode="single" selected={selectedDate} onSelect={handleSetDate} className="p-3 pointer-events-auto" />
                 {selectedDate && (
                   <div className="p-2 border-t border-border">
                     <Button variant="ghost" size="sm" className="h-6 text-[10px] w-full" onClick={() => handleSetDate(undefined)}>
