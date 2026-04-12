@@ -3,10 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import {
   Calendar, ChevronLeft, ChevronRight, Search, GripVertical,
   Wrench, Zap, Users, Printer, FileText, Building2, ClipboardList,
+  Truck, ArrowUpDown, Filter, Clock, MapPin, AlertTriangle, X,
+  Download, Lock, ChevronDown, ChevronUp, Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -22,8 +25,30 @@ import { AdvancedPlannerView } from "./advanced-planner/AdvancedPlannerView";
 
 const DISCIPLINES = [
   { key: "Mechanical", label: "Mechanical", icon: Wrench, color: "text-blue-600", target: 80 },
-  { key: "Electrical", label: "Electrical", icon: Zap, color: "text-amber-600", target: 90 },
+  { key: "Electrical", label: "Electrical", icon: Zap, color: "text-amber-600", target: 80 },
+  { key: "Mobile & LVs", label: "Mobile & LVs", icon: Truck, color: "text-emerald-600", target: 85 },
 ];
+
+const PRIORITY_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; sort: number }> = {
+  "1": { label: "P1 — Emergency", color: "text-red-700", bg: "bg-red-50", border: "border-red-300", sort: 1 },
+  "2": { label: "P2 — Urgent", color: "text-orange-700", bg: "bg-orange-50", border: "border-orange-300", sort: 2 },
+  "3": { label: "P3 — Normal", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-200", sort: 3 },
+  "4": { label: "P4 — Low", color: "text-slate-600", bg: "bg-slate-50", border: "border-slate-200", sort: 4 },
+};
+
+function getPriorityConfig(p: string) {
+  return PRIORITY_CONFIG[p] || { label: `P${p}`, color: "text-muted-foreground", bg: "bg-muted/30", border: "border-border", sort: 5 };
+}
+
+function getWoHours(wo: WorkOrder): number {
+  if (wo.labour_hours && Array.isArray(wo.labour_hours)) {
+    return wo.labour_hours.reduce((h: number, l: any) => h + (Number(l.hours) || 0), 0);
+  }
+  return 0;
+}
+
+type SortOption = "priority" | "hours-desc" | "hours-asc" | "wo-number";
+type TypeFilter = "all" | "PM" | "CM";
 
 const HRS_PER_PERSON = 10.5;
 
