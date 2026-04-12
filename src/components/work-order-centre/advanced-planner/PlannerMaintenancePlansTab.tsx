@@ -502,7 +502,9 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
     }
     setSaving(true);
     try {
-      await onSave({ id: pmId, ...form });
+      // Rebuild sections format for DB storage so print templates render correctly
+      const tasksForDb = rebuildTaskSections(form.tasks);
+      await onSave({ id: pmId, ...form, tasks: tasksForDb });
       toast.success("Plan updated successfully");
       onOpenChange(false);
     } catch {
