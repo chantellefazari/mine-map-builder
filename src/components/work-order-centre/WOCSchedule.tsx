@@ -3,15 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
 import {
   Calendar, ChevronLeft, ChevronRight, Search, GripVertical,
   Wrench, Zap, Users, Printer, FileText, Building2, ClipboardList,
+  Truck, ArrowUpDown, Clock, MapPin, X,
+  Download, Lock, Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   format, startOfWeek, endOfWeek, addWeeks, addDays, getISOWeek, getYear,
-  isSameDay, parseISO, isWithinInterval,
+  isSameDay, parseISO,
 } from "date-fns";
 import { toast } from "sonner";
 import { WOCScheduleReport } from "./WOCScheduleReport";
@@ -22,10 +25,30 @@ import { AdvancedPlannerView } from "./advanced-planner/AdvancedPlannerView";
 
 const DISCIPLINES = [
   { key: "Mechanical", label: "Mechanical", icon: Wrench, color: "text-blue-600", target: 80 },
-  { key: "Electrical", label: "Electrical", icon: Zap, color: "text-amber-600", target: 90 },
+  { key: "Electrical", label: "Electrical", icon: Zap, color: "text-amber-600", target: 80 },
+  { key: "Mobile & LVs", label: "Mobile & LVs", icon: Truck, color: "text-emerald-600", target: 85 },
 ];
 
-const HRS_PER_PERSON = 10.5;
+const PRIORITY_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; sort: number }> = {
+  "1": { label: "P1", color: "text-red-700", bg: "bg-red-50", border: "border-red-300", sort: 1 },
+  "2": { label: "P2", color: "text-orange-700", bg: "bg-orange-50", border: "border-orange-300", sort: 2 },
+  "3": { label: "P3", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-200", sort: 3 },
+  "4": { label: "P4", color: "text-slate-600", bg: "bg-slate-50", border: "border-slate-200", sort: 4 },
+};
+
+function getPriorityConfig(p: string) {
+  return PRIORITY_CONFIG[p] || { label: `P${p}`, color: "text-muted-foreground", bg: "bg-muted/30", border: "border-border", sort: 5 };
+}
+
+function getWoHours(wo: WorkOrder): number {
+  if (wo.labour_hours && Array.isArray(wo.labour_hours)) {
+    return wo.labour_hours.reduce((h: number, l: any) => h + (Number(l.hours) || 0), 0);
+  }
+  return 0;
+}
+
+type SortOption = "priority" | "hours-desc" | "hours-asc" | "wo-number";
+type TypeFilter = "all" | "PM" | "CM";
 
 function getWeekDays(weekStart: Date) {
   return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
@@ -46,59 +69,65 @@ export function WOCSchedule() {
   const [dragWoId, setDragWoId] = useState<string | null>(null);
   const [scheduleView, setScheduleView] = useState<"calendar" | "report">("calendar");
   const [scheduleMode, setScheduleMode] = useState<"weekly" | "shutdown" | "vendors" | "orchestrator" | "advanced-planner">("weekly");
+  const [sortBy, setSortBy] = useState<SortOption>("priority");
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [sidebarTab, setSidebarTab] = useState<"unscheduled" | "pms">("unscheduled");
+  const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({});
+  const [hrsPerDay, setHrsPerDay] = useState(10.5);
+  const [editingHrs, setEditingHrs] = useState(false);
+  const [quickFillVal, setQuickFillVal] = useState(4);
+
   const today = new Date();
-  const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 }); // Wed start
+  const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
   const weekEnd = endOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
   const days = getWeekDays(weekStart);
 
-  // Filter WOs by discipline (trade)
   const disciplineWOs = useMemo(() => {
     return workOrders.filter((wo) => {
       const trade = wo.trade?.toLowerCase() || "";
       if (discipline === "Mechanical") return trade === "mechanical" || trade === "";
       if (discipline === "Electrical") return trade === "electrical";
+      if (discipline === "Mobile & LVs") return trade === "mobile" || trade === "mobile & lvs" || trade === "lvs";
       return true;
     });
   }, [workOrders, discipline]);
 
-  // Unscheduled: status Scheduled but no scheduled_date, or scheduled_date outside this week
   const unscheduled = useMemo(() => {
-    let list = disciplineWOs.filter(
-      (wo) => wo.status === "Scheduled" && !wo.scheduled_date
-    );
+    let list = disciplineWOs.filter((wo) => wo.status === "Scheduled" && !wo.scheduled_date);
+    if (typeFilter === "PM") list = list.filter(wo => wo.work_type === "PM");
+    else if (typeFilter === "CM") list = list.filter(wo => wo.work_type !== "PM");
     if (search.trim()) {
       const q = search.toLowerCase();
-      list = list.filter(
-        (wo) =>
-          wo.wo_number?.toLowerCase().includes(q) ||
-          wo.problem_description?.toLowerCase().includes(q) ||
-          wo.asset_id?.toLowerCase().includes(q)
+      list = list.filter((wo) =>
+        wo.wo_number?.toLowerCase().includes(q) ||
+        wo.problem_description?.toLowerCase().includes(q) ||
+        wo.asset_id?.toLowerCase().includes(q) ||
+        wo.functional_location?.toLowerCase().includes(q)
       );
     }
+    list = [...list].sort((a, b) => {
+      if (sortBy === "priority") return getPriorityConfig(a.priority).sort - getPriorityConfig(b.priority).sort;
+      if (sortBy === "hours-desc") return getWoHours(b) - getWoHours(a);
+      if (sortBy === "hours-asc") return getWoHours(a) - getWoHours(b);
+      return (a.wo_number || "").localeCompare(b.wo_number || "");
+    });
     return list;
-  }, [disciplineWOs, search]);
+  }, [disciplineWOs, search, typeFilter, sortBy]);
 
-  // Scheduled per day
   const scheduledByDay = useMemo(() => {
     const map: Record<string, WorkOrder[]> = {};
     for (const day of days) {
       const key = format(day, "yyyy-MM-dd");
       map[key] = disciplineWOs.filter(
-        (wo) =>
-          wo.scheduled_date &&
-          isSameDay(parseISO(wo.scheduled_date), day) &&
-          ["Scheduled", "Active", "In Progress"].includes(wo.status)
+        (wo) => wo.scheduled_date && isSameDay(parseISO(wo.scheduled_date), day) && ["Scheduled", "Active", "In Progress"].includes(wo.status)
       );
     }
     return map;
   }, [disciplineWOs, days]);
 
   const getPersonnel = (dayKey: string) => personnel[dayKey] ?? 4;
-  const setDayPersonnel = (dayKey: string, val: number) => {
-    setPersonnel((prev) => ({ ...prev, [dayKey]: Math.max(0, val) }));
-  };
+  const setDayPersonnel = (dayKey: string, val: number) => setPersonnel((prev) => ({ ...prev, [dayKey]: Math.max(0, val) }));
 
-  // Quick fill
   const quickFill = (val: number, daysToFill: "all" | "weekday" | "weekend") => {
     const newP = { ...personnel };
     for (const day of days) {
@@ -111,48 +140,35 @@ export function WOCSchedule() {
     setPersonnel(newP);
   };
 
-  const [quickFillVal, setQuickFillVal] = useState(4);
-
-  // Drag handlers
   const handleDragStart = (woId: string) => setDragWoId(woId);
-
   const handleDrop = async (dayKey: string) => {
     if (!dragWoId) return;
     try {
-      await update.mutateAsync({
-        id: dragWoId,
-        updates: { scheduled_date: dayKey } as any,
-      });
+      await update.mutateAsync({ id: dragWoId, updates: { scheduled_date: dayKey } as any });
       toast.success("Work order scheduled");
     } catch { /* handled */ }
     setDragWoId(null);
   };
-
   const handleUnschedule = async (woId: string) => {
     try {
-      await update.mutateAsync({
-        id: woId,
-        updates: { scheduled_date: null } as any,
-      });
+      await update.mutateAsync({ id: woId, updates: { scheduled_date: null } as any });
       toast.success("Work order unscheduled");
     } catch { /* handled */ }
   };
 
-  // Capacity calculations
   const totalPersonnel = days.reduce((s, d) => s + getPersonnel(format(d, "yyyy-MM-dd")), 0);
-  const totalHoursAvail = days.reduce((s, d) => s + getPersonnel(format(d, "yyyy-MM-dd")) * HRS_PER_PERSON, 0);
-  const totalSchedHrs = Object.values(scheduledByDay).flat().reduce((s, wo) => {
-    // Extract estimated hours from labour_hours or default to 0
-    if (wo.labour_hours && Array.isArray(wo.labour_hours)) {
-      return s + wo.labour_hours.reduce((h: number, l: any) => h + (Number(l.hours) || 0), 0);
-    }
-    return s;
-  }, 0);
+  const totalHoursAvail = days.reduce((s, d) => s + getPersonnel(format(d, "yyyy-MM-dd")) * hrsPerDay, 0);
+  const totalSchedHrs = Object.values(scheduledByDay).flat().reduce((s, wo) => s + getWoHours(wo), 0);
   const totalUnschedHrs = totalHoursAvail - totalSchedHrs;
   const loadingPct = totalHoursAvail > 0 ? Math.round((totalSchedHrs / totalHoursAvail) * 100) : 0;
   const discTarget = DISCIPLINES.find((d) => d.key === discipline)?.target ?? 85;
-
   const isPM = (wo: WorkOrder) => wo.work_type === "PM";
+
+  const toggleDayExpand = (dayKey: string) => setExpandedDays(prev => ({ ...prev, [dayKey]: !prev[dayKey] }));
+
+  const generatePMs = useCallback(() => {
+    toast.info("PM generation triggered — this would auto-schedule PMs based on frequency");
+  }, []);
 
   return (
     <div className="p-6 space-y-4">
@@ -172,8 +188,7 @@ export function WOCSchedule() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {/* Schedule Mode Dropdown */}
-          <Select value={scheduleMode} onValueChange={(v: "weekly" | "shutdown" | "vendors" | "orchestrator" | "advanced-planner") => setScheduleMode(v)}>
+          <Select value={scheduleMode} onValueChange={(v: any) => setScheduleMode(v)}>
             <SelectTrigger className="w-56 h-9">
               <div className="flex items-center gap-1.5">
                 {scheduleMode === "shutdown" ? <Building2 className="w-3.5 h-3.5" /> : scheduleMode === "vendors" ? <Wrench className="w-3.5 h-3.5" /> : scheduleMode === "orchestrator" ? <Building2 className="w-3.5 h-3.5" /> : scheduleMode === "advanced-planner" ? <ClipboardList className="w-3.5 h-3.5" /> : <Calendar className="w-3.5 h-3.5" />}
@@ -192,31 +207,20 @@ export function WOCSchedule() {
           {scheduleMode === "weekly" && (
             <>
               <div className="flex items-center border border-border rounded-lg overflow-hidden">
-                <button
-                  onClick={() => setScheduleView("calendar")}
-                  className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
-                    scheduleView === "calendar" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
-                  )}
-                >
+                <button onClick={() => setScheduleView("calendar")} className={cn("flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors", scheduleView === "calendar" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground")}>
                   <Calendar className="w-3.5 h-3.5" /> Calendar
                 </button>
-                <button
-                  onClick={() => setScheduleView("report")}
-                  className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors",
-                    scheduleView === "report" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
-                  )}
-                >
+                <button onClick={() => setScheduleView("report")} className={cn("flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors", scheduleView === "report" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground")}>
                   <FileText className="w-3.5 h-3.5" /> Weekly Report
                 </button>
               </div>
-              <Button variant="outline" size="sm" className="gap-1.5 text-xs">
-                <Printer className="w-3.5 h-3.5" /> Print PMs
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs"><Printer className="w-3.5 h-3.5" /> Print PMs</Button>
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs"><Printer className="w-3.5 h-3.5" /> Print WOs</Button>
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs"><Download className="w-3.5 h-3.5" /> Export CSV</Button>
+              <Badge variant="secondary" className="text-xs px-3 py-1">{getWeekLabel(weekStart)}</Badge>
+              <Button size="sm" className="gap-1.5 text-xs bg-destructive hover:bg-destructive/90 text-destructive-foreground">
+                <Lock className="w-3.5 h-3.5" /> Lock Schedule
               </Button>
-              <Badge variant="secondary" className="text-xs px-3 py-1">
-                {getWeekLabel(weekStart)}
-              </Badge>
             </>
           )}
         </div>
@@ -252,115 +256,214 @@ export function WOCSchedule() {
             <span className="text-muted-foreground ml-1">Target: {d.target}%</span>
           </button>
         ))}
+        <div className="ml-auto flex items-center gap-1">
+          <button className="px-3 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors">Combined Schedule</button>
+          <button className="px-3 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors">PM Forward Plan</button>
+        </div>
       </div>
 
       {/* Week Navigation */}
-      <div className="flex items-center justify-center gap-3">
-        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setWeekOffset((o) => o - 1)}>
-          <ChevronLeft className="w-4 h-4" />
-        </Button>
-        <Button variant="outline" size="sm" className="text-xs" onClick={() => setWeekOffset(0)}>
-          Today
-        </Button>
-        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setWeekOffset((o) => o + 1)}>
-          <ChevronRight className="w-4 h-4" />
-        </Button>
-        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <Calendar className="w-4 h-4 text-muted-foreground" />
-          Week of {format(weekStart, "MMM d")} - {format(weekEnd, "MMM d, yyyy")}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setWeekOffset((o) => o - 1)}>
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          <Button variant="outline" size="sm" className="text-xs" onClick={() => setWeekOffset(0)}>Today</Button>
+          <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setWeekOffset((o) => o + 1)}>
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <Calendar className="w-4 h-4 text-muted-foreground" />
+            Week of {format(weekStart, "MMM d")} - {format(weekEnd, "MMM d, yyyy")}
+          </div>
+        </div>
+        <div className="flex items-center gap-3 text-xs">
+          <span className="text-muted-foreground">Supervisor</span>
+          <div className="w-10 h-5 bg-muted rounded-full relative cursor-pointer">
+            <div className="absolute right-0.5 top-0.5 w-4 h-4 bg-primary rounded-full" />
+          </div>
+          <span className="font-medium text-foreground">Planner</span>
         </div>
       </div>
 
       <div className="flex gap-4">
-        {/* Sidebar — Unscheduled WOs */}
-        <div className="w-64 flex-shrink-0 space-y-3">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-            <Input
-              placeholder="Search work orders..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-8 h-8 text-xs"
-            />
+        {/* ── SIDEBAR — Rich WO Cards ── */}
+        <div className="w-80 flex-shrink-0 space-y-3 border-r border-border pr-4">
+          {/* Sidebar Tabs */}
+          <div className="flex items-center gap-1 border-b border-border pb-1">
+            <button onClick={() => setSidebarTab("unscheduled")} className={cn("px-3 py-1.5 text-xs font-medium rounded-t transition-colors", sidebarTab === "unscheduled" ? "bg-background border border-border border-b-transparent text-foreground -mb-px" : "text-muted-foreground hover:text-foreground")}>
+              ⚙ Work Orders
+            </button>
+            <button onClick={() => setSidebarTab("pms")} className={cn("px-3 py-1.5 text-xs font-medium rounded-t transition-colors", sidebarTab === "pms" ? "bg-background border border-border border-b-transparent text-foreground -mb-px" : "text-muted-foreground hover:text-foreground")}>
+              ⚡ PMs
+            </button>
           </div>
 
-          <div className="text-xs font-medium text-muted-foreground">
-            Unscheduled ({unscheduled.length})
+          {/* Drag-to-unschedule drop zone */}
+          <div
+            className={cn(
+              "flex items-center justify-center gap-2 py-2 px-3 rounded-md border-2 border-dashed text-xs transition-colors",
+              dragWoId ? "border-destructive/40 bg-destructive/5 text-destructive" : "border-border text-muted-foreground"
+            )}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => { e.preventDefault(); if (dragWoId) { handleUnschedule(dragWoId); setDragWoId(null); } }}
+          >
+            ↓ Drag here to unschedule
           </div>
 
-          <div className="space-y-1.5 max-h-[500px] overflow-y-auto">
+          {/* Search + Sort + Filter */}
+          <div className="space-y-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <Input placeholder="Search work orders..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-8 h-8 text-xs" />
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Select value={sortBy} onValueChange={(v: SortOption) => setSortBy(v)}>
+                <SelectTrigger className="h-7 text-[10px] flex-1">
+                  <div className="flex items-center gap-1"><ArrowUpDown className="w-3 h-3" /><SelectValue /></div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="priority">Critical First</SelectItem>
+                  <SelectItem value="hours-desc">Most Hours</SelectItem>
+                  <SelectItem value="hours-asc">Least Hours</SelectItem>
+                  <SelectItem value="wo-number">WO Number</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="flex items-center border border-border rounded overflow-hidden">
+                {(["all", "PM", "CM"] as TypeFilter[]).map(t => (
+                  <button key={t} onClick={() => setTypeFilter(t)} className={cn("px-2 py-1 text-[10px] font-medium transition-colors", typeFilter === t ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}>
+                    {t === "all" ? "All" : t}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Count + Total Hours */}
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">Unscheduled ({unscheduled.length})</span>
+            <span className="text-muted-foreground font-medium">
+              {unscheduled.reduce((s, wo) => s + getWoHours(wo), 0).toFixed(1)}h total
+            </span>
+          </div>
+
+          {/* WO Cards — rich detail */}
+          <div className="space-y-2 max-h-[calc(100vh-420px)] overflow-y-auto pr-1">
             {unscheduled.length === 0 ? (
-              <div className="text-center py-8 text-xs text-muted-foreground">
-                All work orders are scheduled
+              <div className="text-center py-10">
+                <Calendar className="w-8 h-8 mx-auto text-muted-foreground/30 mb-2" />
+                <p className="text-xs text-muted-foreground">All work orders are scheduled</p>
               </div>
             ) : (
-              unscheduled.map((wo) => (
-                <div
-                  key={wo.id}
-                  draggable
-                  onDragStart={() => handleDragStart(wo.id)}
-                  className={cn(
-                    "flex items-center gap-2 px-2.5 py-2 rounded-md border border-border bg-card cursor-grab hover:shadow-sm transition-shadow",
-                    isPM(wo) && "border-l-2 border-l-emerald-500"
-                  )}
-                >
-                  <GripVertical className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-mono font-semibold">{wo.wo_number}</span>
-                      {isPM(wo) && (
-                        <Badge variant="secondary" className="text-[9px] h-4 px-1">PM</Badge>
-                      )}
+              unscheduled.map((wo) => {
+                const pc = getPriorityConfig(wo.priority);
+                const hrs = getWoHours(wo);
+                return (
+                  <div
+                    key={wo.id}
+                    draggable
+                    onDragStart={() => handleDragStart(wo.id)}
+                    className={cn(
+                      "rounded-lg border bg-card cursor-grab hover:shadow-md transition-all group",
+                      pc.border,
+                      isPM(wo) && "border-l-[3px] border-l-emerald-500"
+                    )}
+                  >
+                    {/* Card Header */}
+                    <div className="flex items-start justify-between px-3 pt-2.5 pb-1">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <GripVertical className="w-3 h-3 text-muted-foreground/40 flex-shrink-0 group-hover:text-muted-foreground" />
+                        <span className="text-[11px] font-mono font-bold text-foreground">{wo.wo_number}</span>
+                        {isPM(wo) ? (
+                          <Badge className="text-[9px] h-4 px-1.5 bg-emerald-100 text-emerald-700 border-emerald-300 hover:bg-emerald-100">PM</Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-[9px] h-4 px-1.5">{wo.work_type || "CM"}</Badge>
+                        )}
+                      </div>
+                      <Badge className={cn("text-[9px] h-4 px-1.5 font-bold border", pc.bg, pc.color, pc.border)} style={{ pointerEvents: "none" }}>
+                        P{wo.priority || "3"}
+                      </Badge>
                     </div>
-                    <p className="text-[10px] text-muted-foreground truncate">
-                      {wo.problem_description || wo.asset_id || "No description"}
-                    </p>
+                    {/* Description */}
+                    <div className="px-3 pb-1.5">
+                      <p className="text-[11px] text-foreground/80 line-clamp-2 leading-tight">
+                        {(wo.problem_description || wo.scope_of_works || "No description").replace(/^(PM|CM|BM):\s*/i, "")}
+                      </p>
+                    </div>
+                    {/* Footer: Asset + Hours */}
+                    <div className="flex items-center justify-between px-3 pb-2.5 text-[10px]">
+                      <div className="flex items-center gap-3 text-muted-foreground min-w-0">
+                        {wo.asset_id && (
+                          <span className="flex items-center gap-1 flex-shrink-0">
+                            <MapPin className="w-2.5 h-2.5" />
+                            <span className="font-semibold text-foreground">{wo.asset_id}</span>
+                          </span>
+                        )}
+                        {wo.functional_location && (
+                          <span className="truncate max-w-[120px]">{wo.functional_location}</span>
+                        )}
+                      </div>
+                      <span className="flex items-center gap-1 font-semibold text-foreground flex-shrink-0">
+                        <Clock className="w-2.5 h-2.5 text-muted-foreground" />
+                        {hrs > 0 ? `${hrs.toFixed(1)}h` : "—"}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>
 
-        {/* Main Schedule Table */}
+        {/* ── MAIN SCHEDULE TABLE ── */}
         <div className="flex-1 min-w-0 space-y-3">
           {/* Manning Hours Header */}
-          <div className="flex items-center justify-between px-3 py-2 bg-muted/30 rounded-lg border border-border">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between px-4 py-3 bg-muted/30 rounded-lg border border-border">
+            <div className="flex items-center gap-3">
               <Users className="w-4 h-4 text-muted-foreground" />
               <span className="text-sm font-semibold text-foreground">Manning Hours</span>
-              <span className="text-xs text-muted-foreground">
-                {format(weekStart, "MMM d")} - {format(weekEnd, "MMM d, yyyy")}
-              </span>
+              <span className="text-xs text-muted-foreground">{format(weekStart, "MMM d")} - {format(weekEnd, "MMM d, yyyy")}</span>
             </div>
             <div className="flex items-center gap-4 text-xs">
-              <span className="text-muted-foreground">Loading:</span>
-              <span className={cn(
-                "font-semibold",
-                loadingPct > discTarget ? "text-destructive" : loadingPct > 50 ? "text-amber-600" : "text-emerald-600"
-              )}>
-                {loadingPct}%
-                {loadingPct > discTarget && " ⚠"}
-              </span>
-              <span className="text-muted-foreground">Man Hours: <span className="font-semibold text-foreground">{totalHoursAvail.toFixed(1)}</span></span>
+              <div className="flex items-center gap-3">
+                <span className="text-muted-foreground">Legend:</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-blue-500" /> Mechanical WOs</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-amber-500" /> Electrical WOs</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /> Mobile & LVs WOs</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-yellow-400" /> PMs</span>
+              </div>
+              <div className="h-4 border-l border-border" />
+              <span className="text-muted-foreground">Loading: <span className={cn("font-bold", loadingPct > discTarget ? "text-destructive" : loadingPct > 50 ? "text-amber-600" : "text-emerald-600")}>{loadingPct}%</span></span>
+              <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
+                <div className={cn("h-full rounded-full transition-all", loadingPct > discTarget ? "bg-destructive" : loadingPct > 50 ? "bg-amber-500" : "bg-emerald-500")} style={{ width: `${Math.min(loadingPct, 100)}%` }} />
+              </div>
+              <Badge variant={loadingPct > discTarget ? "destructive" : "secondary"} className="text-[10px] h-5">
+                {discTarget}% {loadingPct > discTarget ? "⚠" : "✓"}
+              </Badge>
             </div>
           </div>
 
           {/* Quick Fill */}
           <div className="flex items-center gap-2 flex-wrap text-xs">
             <span className="text-muted-foreground">Quick Fill:</span>
-            <Input
-              type="number"
-              value={quickFillVal}
-              onChange={(e) => setQuickFillVal(Number(e.target.value))}
-              className="w-14 h-7 text-xs text-center"
-              min={0}
-            />
+            <Input type="number" value={quickFillVal} onChange={(e) => setQuickFillVal(Number(e.target.value))} className="w-14 h-7 text-xs text-center" min={0} />
             <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(quickFillVal, "all")}>All Days</Button>
             <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(quickFillVal, "weekday")}>Mon-Fri</Button>
             <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(quickFillVal, "weekend")}>Sat-Sun</Button>
             <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(0, "all")}>Clear</Button>
-            <span className="ml-auto text-muted-foreground">Hrs/Person/Day: <span className="font-semibold text-foreground">{HRS_PER_PERSON}</span></span>
+            <div className="ml-4">
+              <Button variant="outline" size="sm" className="h-7 text-[11px] gap-1" onClick={generatePMs}>✨ Generate PMs (Quick)</Button>
+            </div>
+            <div className="ml-auto flex items-center gap-1.5 text-muted-foreground">
+              Hrs/Person/Day:
+              {editingHrs ? (
+                <Input type="number" value={hrsPerDay} onChange={(e) => setHrsPerDay(Number(e.target.value))} onBlur={() => setEditingHrs(false)} onKeyDown={(e) => e.key === "Enter" && setEditingHrs(false)} className="w-16 h-6 text-xs text-center" step={0.5} autoFocus />
+              ) : (
+                <button onClick={() => setEditingHrs(true)} className="flex items-center gap-1 font-bold text-foreground hover:text-primary">
+                  {hrsPerDay} <Pencil className="w-3 h-3" />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Schedule Table */}
@@ -368,95 +471,69 @@ export function WOCSchedule() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="bg-muted/50 border-b border-border">
-                  <th className="text-left px-3 py-2 font-semibold w-28">Day / Date</th>
-                  <th className="text-center px-3 py-2 font-semibold w-24">Personnel Avail</th>
-                  <th className="text-center px-3 py-2 font-semibold w-20">Hours Avail</th>
-                  <th className="text-center px-3 py-2 font-semibold w-20">Sched Hrs</th>
-                  <th className="text-center px-3 py-2 font-semibold w-20">Unsched Hrs</th>
-                  <th className="text-left px-3 py-2 font-semibold">Scheduled Work Orders / PMs</th>
+                  <th className="text-left px-3 py-2.5 font-semibold w-28">Day / Date</th>
+                  <th className="text-center px-3 py-2.5 font-semibold w-24">Personnel Avail</th>
+                  <th className="text-center px-3 py-2.5 font-semibold w-20">Hours Avail</th>
+                  <th className="text-center px-3 py-2.5 font-semibold w-20">Sched Hrs</th>
+                  <th className="text-center px-3 py-2.5 font-semibold w-20">Unsched Hrs</th>
+                  <th className="text-left px-3 py-2.5 font-semibold">Scheduled Work Orders / PMs</th>
                 </tr>
               </thead>
               <tbody>
                 {days.map((day) => {
                   const dayKey = format(day, "yyyy-MM-dd");
                   const p = getPersonnel(dayKey);
-                  const hoursAvail = p * HRS_PER_PERSON;
+                  const hoursAvail = p * hrsPerDay;
                   const dayWOs = scheduledByDay[dayKey] || [];
-                  const schedHrs = dayWOs.reduce((s, wo) => {
-                    if (wo.labour_hours && Array.isArray(wo.labour_hours)) {
-                      return s + wo.labour_hours.reduce((h: number, l: any) => h + (Number(l.hours) || 0), 0);
-                    }
-                    return s;
-                  }, 0);
+                  const schedHrs = dayWOs.reduce((s, wo) => s + getWoHours(wo), 0);
                   const unschedHrs = hoursAvail - schedHrs;
                   const isToday = isSameDay(day, today);
+                  const isExpanded = expandedDays[dayKey];
+                  const MAX_VISIBLE = 6;
+                  const visibleWOs = isExpanded ? dayWOs : dayWOs.slice(0, MAX_VISIBLE);
+                  const hiddenCount = dayWOs.length - MAX_VISIBLE;
 
                   return (
                     <tr
                       key={dayKey}
-                      className={cn(
-                        "border-b border-border last:border-b-0",
-                        isToday && "bg-primary/5",
-                        dragWoId && "hover:bg-muted/30"
-                      )}
-                      onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("bg-muted/50"); }}
-                      onDragLeave={(e) => { e.currentTarget.classList.remove("bg-muted/50"); }}
-                      onDrop={(e) => { e.preventDefault(); e.currentTarget.classList.remove("bg-muted/50"); handleDrop(dayKey); }}
+                      className={cn("border-b border-border last:border-b-0", isToday && "bg-primary/5", dragWoId && "hover:bg-muted/30")}
+                      onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("bg-primary/10"); }}
+                      onDragLeave={(e) => e.currentTarget.classList.remove("bg-primary/10")}
+                      onDrop={(e) => { e.preventDefault(); e.currentTarget.classList.remove("bg-primary/10"); handleDrop(dayKey); }}
                     >
-                      <td className="px-3 py-2">
-                        <span className={cn("font-semibold", isToday && "text-primary")}>
-                          {format(day, "EEE")}
-                        </span>{" "}
+                      <td className="px-3 py-2.5">
+                        <span className={cn("font-bold", isToday && "text-primary")}>{format(day, "EEE")}</span>{" "}
                         <span className="text-muted-foreground">{format(day, "d MMM")}</span>
                       </td>
-                      <td className="px-3 py-2 text-center">
+                      <td className="px-3 py-2.5 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <button
-                            onClick={() => setDayPersonnel(dayKey, p - 1)}
-                            className="w-5 h-5 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-xs"
-                          >
-                            −
-                          </button>
+                          <button onClick={() => setDayPersonnel(dayKey, p - 1)} className="w-5 h-5 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-xs">−</button>
                           <span className="w-6 text-center font-medium">{p}</span>
-                          <button
-                            onClick={() => setDayPersonnel(dayKey, p + 1)}
-                            className="w-5 h-5 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-xs"
-                          >
-                            +
-                          </button>
+                          <button onClick={() => setDayPersonnel(dayKey, p + 1)} className="w-5 h-5 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-xs">+</button>
                         </div>
                       </td>
-                      <td className="px-3 py-2 text-center text-muted-foreground">{hoursAvail.toFixed(1)}</td>
-                      <td className="px-3 py-2 text-center font-medium">{schedHrs.toFixed(1)}</td>
-                      <td className="px-3 py-2 text-center text-muted-foreground">{unschedHrs.toFixed(1)}</td>
-                      <td className="px-3 py-2">
+                      <td className="px-3 py-2.5 text-center text-muted-foreground">{hoursAvail.toFixed(1)}</td>
+                      <td className="px-3 py-2.5 text-center font-medium">{schedHrs.toFixed(1)}</td>
+                      <td className={cn("px-3 py-2.5 text-center", unschedHrs < 0 ? "text-destructive font-bold" : "text-muted-foreground")}>{unschedHrs.toFixed(1)}</td>
+                      <td className="px-3 py-2.5">
                         {dayWOs.length > 0 ? (
                           <div className="flex flex-wrap gap-1">
-                            {dayWOs.map((wo) => (
-                              <div
-                                key={wo.id}
-                                draggable
-                                onDragStart={() => handleDragStart(wo.id)}
-                                className={cn(
-                                  "inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium border cursor-grab",
-                                  isPM(wo)
-                                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                    : "bg-blue-50 text-blue-700 border-blue-200"
-                                )}
-                              >
-                                {isPM(wo) ? "📋" : "🔧"} {wo.wo_number}
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); handleUnschedule(wo.id); }}
-                                  className="ml-0.5 text-muted-foreground hover:text-foreground"
-                                  title="Unschedule"
-                                >
-                                  ×
-                                </button>
-                              </div>
+                            {visibleWOs.map((wo) => (
+                              <ScheduledWOChip key={wo.id} wo={wo} onDragStart={handleDragStart} onUnschedule={handleUnschedule} />
                             ))}
+                            {hiddenCount > 0 && !isExpanded && (
+                              <button onClick={() => toggleDayExpand(dayKey)} className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium text-primary hover:bg-primary/10 transition-colors">
+                                +{hiddenCount} more
+                              </button>
+                            )}
+                            {isExpanded && hiddenCount > 0 && (
+                              <button onClick={() => toggleDayExpand(dayKey)} className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium text-muted-foreground hover:bg-muted transition-colors">
+                                Show less
+                              </button>
+                            )}
                           </div>
                         ) : (
-                          <span className="text-muted-foreground/50 text-[10px]">Drop work orders here</span>
+                          <span className="text-muted-foreground/40 text-[10px] italic">Drop work orders here</span>
                         )}
                       </td>
                     </tr>
@@ -465,12 +542,12 @@ export function WOCSchedule() {
 
                 {/* Totals */}
                 <tr className="bg-muted/30 font-semibold">
-                  <td className="px-3 py-2">Total</td>
-                  <td className="px-3 py-2 text-center">{totalPersonnel}</td>
-                  <td className="px-3 py-2 text-center">{totalHoursAvail.toFixed(1)}</td>
-                  <td className="px-3 py-2 text-center">{totalSchedHrs.toFixed(1)}</td>
-                  <td className="px-3 py-2 text-center">{totalUnschedHrs.toFixed(1)}</td>
-                  <td className="px-3 py-2 text-muted-foreground text-[10px]">
+                  <td className="px-3 py-2.5">Total</td>
+                  <td className="px-3 py-2.5 text-center">{totalPersonnel}</td>
+                  <td className="px-3 py-2.5 text-center">{totalHoursAvail.toFixed(1)}</td>
+                  <td className="px-3 py-2.5 text-center">{totalSchedHrs.toFixed(1)}</td>
+                  <td className="px-3 py-2.5 text-center">{totalUnschedHrs.toFixed(1)}</td>
+                  <td className="px-3 py-2.5 text-muted-foreground text-[10px]">
                     {Object.values(scheduledByDay).flat().length} items total
                   </td>
                 </tr>
@@ -482,5 +559,71 @@ export function WOCSchedule() {
       </>
       )}
     </div>
+  );
+}
+
+/* ── Scheduled WO Chip with Click-to-Expand Popover ── */
+function ScheduledWOChip({ wo, onDragStart, onUnschedule }: { wo: WorkOrder; onDragStart: (id: string) => void; onUnschedule: (id: string) => void }) {
+  const isPM = wo.work_type === "PM";
+  const pc = getPriorityConfig(wo.priority);
+  const hrs = getWoHours(wo);
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <div
+          draggable
+          onDragStart={() => onDragStart(wo.id)}
+          className={cn(
+            "inline-flex items-center gap-1.5 pl-2 pr-1 py-1 rounded-md text-[10px] font-medium border cursor-grab hover:shadow-sm transition-all group",
+            isPM
+              ? "bg-yellow-50 text-yellow-800 border-yellow-300"
+              : pc.bg + " " + pc.color + " " + pc.border
+          )}
+        >
+          <span className="font-mono font-bold">{isPM ? "📋" : "🔧"} {wo.wo_number}</span>
+          {wo.asset_id && <span className="text-[9px] opacity-70">· {wo.asset_id}</span>}
+          {hrs > 0 && <span className="text-[9px] opacity-60">{hrs.toFixed(1)}h</span>}
+          <button
+            onClick={(e) => { e.stopPropagation(); onUnschedule(wo.id); }}
+            className="ml-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all"
+          >
+            <X className="w-2.5 h-2.5" />
+          </button>
+        </div>
+      </PopoverTrigger>
+      <PopoverContent side="top" align="start" className="w-72 p-0">
+        <div className="p-3 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-mono font-bold text-foreground">{wo.wo_number}</span>
+            <div className="flex items-center gap-1.5">
+              {isPM ? (
+                <Badge className="text-[9px] h-4 px-1.5 bg-emerald-100 text-emerald-700 border-emerald-300 hover:bg-emerald-100">PM</Badge>
+              ) : (
+                <Badge variant="outline" className="text-[9px] h-4 px-1.5">{wo.work_type || "CM"}</Badge>
+              )}
+              <Badge className={cn("text-[9px] h-4 px-1.5 font-bold border", pc.bg, pc.color, pc.border)} style={{ pointerEvents: "none" }}>
+                P{wo.priority || "3"}
+              </Badge>
+            </div>
+          </div>
+          <p className="text-[11px] text-foreground/80 leading-snug">
+            {(wo.problem_description || wo.scope_of_works || "No description").replace(/^(PM|CM|BM):\s*/i, "")}
+          </p>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] border-t border-border pt-2">
+            <div><span className="text-muted-foreground">Asset:</span> <span className="font-semibold">{wo.asset_id || "—"}</span></div>
+            <div><span className="text-muted-foreground">Hours:</span> <span className="font-semibold">{hrs > 0 ? `${hrs.toFixed(1)}h` : "—"}</span></div>
+            <div className="col-span-2"><span className="text-muted-foreground">Equipment:</span> <span className="font-semibold">{wo.functional_location || "—"}</span></div>
+            <div><span className="text-muted-foreground">Assigned:</span> <span className="font-semibold">{wo.assigned_to || wo.technician_name || "—"}</span></div>
+            <div><span className="text-muted-foreground">Requested:</span> <span className="font-semibold">{wo.requested_by || "—"}</span></div>
+          </div>
+          <div className="flex items-center gap-2 pt-1 border-t border-border">
+            <Button variant="ghost" size="sm" className="h-6 text-[10px] flex-1 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => onUnschedule(wo.id)}>
+              Unschedule
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
