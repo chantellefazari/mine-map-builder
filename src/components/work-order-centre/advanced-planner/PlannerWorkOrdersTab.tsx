@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { Search, ChevronDown, ChevronUp, CalendarDays, ArrowRightLeft, CheckSquare, Square, ChevronsRight, X, Save } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, CalendarDays, ArrowRightLeft, CheckSquare, Square, ChevronsRight, X, Save, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,14 +8,17 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { format, addDays, parseISO } from "date-fns";
 import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import { WO_TYPE_CONFIG } from "./AdvancedPlannerView";
+import type { MaterialStatus, WOMaterialSummary } from "@/hooks/useMaterialReadiness";
 
 interface Props {
   items: PlannerItem[];
+  getReadiness?: (workOrderId: string) => WOMaterialSummary;
 }
 
 type SortField = "woNumber" | "woType" | "assetNumber" | "taskName" | "priority" | "status" | "scheduledDate" | "estimatedHours" | "discipline" | "area";
