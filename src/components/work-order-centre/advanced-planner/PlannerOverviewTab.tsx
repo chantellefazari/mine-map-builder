@@ -84,6 +84,29 @@ export function PlannerOverviewTab({ items, allItems, stats, onNavigate, filterW
   return (
     <ScrollArea className="h-full">
       <div className="p-5 space-y-5">
+        {/* WO Type filter chips */}
+        <div className="flex items-center gap-2">
+          {Object.entries(WO_TYPE_CONFIG).map(([key, cfg]) => {
+            const count = key === "PM" ? stats.pm : key === "General" ? stats.general : key === "Breakdown" ? stats.breakdown : stats.shutdown;
+            const isActive = filterWOType === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setFilterWOType(filterWOType === key ? "All" : key)}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold transition-all border",
+                  isActive
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                )}
+              >
+                <span className={cn("w-2 h-2 rounded-full", cfg.color)} />
+                {cfg.label}
+                <span className="tabular-nums">{count}</span>
+              </button>
+            );
+          })}
+        </div>
         {/* Summary cards */}
         <div className="grid grid-cols-6 gap-3">
           <SummaryCard
