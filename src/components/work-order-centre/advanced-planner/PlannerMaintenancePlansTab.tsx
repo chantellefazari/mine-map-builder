@@ -845,7 +845,14 @@ function CreatePlanDialog({ open, onOpenChange, onCreatePM }: {
               <Input value={form.assetNumber} onChange={e => setForm(f => ({ ...f, assetNumber: e.target.value }))} placeholder="e.g. ML01" className="text-xs h-8" />
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-4 gap-3">
+            <div>
+              <Label className="text-xs">Plan Category</Label>
+              <Select value={form.planCategory} onValueChange={v => setForm(f => ({ ...f, planCategory: v }))}>
+                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>{PLAN_CATEGORIES.map(c => <SelectItem key={c} value={c}>{CATEGORY_CONFIG[c].label}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
             <div>
               <Label className="text-xs">Frequency</Label>
               <Select value={form.frequency} onValueChange={v => setForm(f => ({ ...f, frequency: v }))}>
