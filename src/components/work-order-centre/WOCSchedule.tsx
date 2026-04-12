@@ -71,8 +71,14 @@ export function WOCSchedule() {
   const [dragWoId, setDragWoId] = useState<string | null>(null);
   const [scheduleView, setScheduleView] = useState<"calendar" | "report">("calendar");
   const [scheduleMode, setScheduleMode] = useState<"weekly" | "shutdown" | "vendors" | "orchestrator" | "advanced-planner">("weekly");
+  const [sortBy, setSortBy] = useState<SortOption>("priority");
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [sidebarTab, setSidebarTab] = useState<"unscheduled" | "pms">("unscheduled");
+  const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({});
+  const [hrsPerDay, setHrsPerDay] = useState(10.5);
+  const [editingHrs, setEditingHrs] = useState(false);
   const today = new Date();
-  const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 }); // Wed start
+  const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
   const weekEnd = endOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
   const days = getWeekDays(weekStart);
 
