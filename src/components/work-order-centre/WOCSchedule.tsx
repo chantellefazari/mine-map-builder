@@ -230,7 +230,7 @@ export function WOCSchedule() {
       ) : scheduleMode === "orchestrator" ? (
         <ShutdownOrchestratorView />
       ) : scheduleView === "report" ? (
-        <WOCScheduleReport weekOffset={weekOffset} personnelByDay={personnel} />
+        <WOCScheduleReport weekOffset={weekOffset} personnelByDay={{}} />
       ) : (
       <>
       {/* Discipline Tabs */}
@@ -438,26 +438,17 @@ export function WOCSchedule() {
             </div>
           </div>
 
-          {/* Quick Fill */}
+          {/* Capacity Source Indicator */}
           <div className="flex items-center gap-2 flex-wrap text-xs">
-            <span className="text-muted-foreground">Quick Fill:</span>
-            <Input type="number" value={quickFillVal} onChange={(e) => setQuickFillVal(Number(e.target.value))} className="w-14 h-7 text-xs text-center" min={0} />
-            <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(quickFillVal, "all")}>All Days</Button>
-            <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(quickFillVal, "weekday")}>Mon-Fri</Button>
-            <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(quickFillVal, "weekend")}>Sat-Sun</Button>
-            <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => quickFill(0, "all")}>Clear</Button>
+            <span className="text-muted-foreground flex items-center gap-1.5">
+              <Users className="w-3.5 h-3.5" />
+              Capacity sourced from <b className="text-foreground">Advanced Planner</b>
+            </span>
+            <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+              Hrs/Day: {getHrsPerDay(days[0])} · Personnel: {getPersonnel(format(days[0], "yyyy-MM-dd"), days[0])} · Target: {getTarget(days[0])}%
+            </span>
             <div className="ml-4">
               <Button variant="outline" size="sm" className="h-7 text-[11px] gap-1" onClick={generatePMs}>✨ Generate PMs (Quick)</Button>
-            </div>
-            <div className="ml-auto flex items-center gap-1.5 text-muted-foreground">
-              Hrs/Person/Day:
-              {editingHrs ? (
-                <Input type="number" value={hrsPerDay} onChange={(e) => setHrsPerDay(Number(e.target.value))} onBlur={() => setEditingHrs(false)} onKeyDown={(e) => e.key === "Enter" && setEditingHrs(false)} className="w-16 h-6 text-xs text-center" step={0.5} autoFocus />
-              ) : (
-                <button onClick={() => setEditingHrs(true)} className="flex items-center gap-1 font-bold text-foreground hover:text-primary">
-                  {hrsPerDay} <Pencil className="w-3 h-3" />
-                </button>
-              )}
             </div>
           </div>
 
@@ -465,8 +456,8 @@ export function WOCSchedule() {
           <div className="space-y-1">
             {days.map((day) => {
               const dayKey = format(day, "yyyy-MM-dd");
-              const p = getPersonnel(dayKey);
-              const hoursAvail = p * hrsPerDay;
+              const p = getPersonnel(dayKey, day);
+              const hoursAvail = p * getHrsPerDay(day);
               const dayWOs = scheduledByDay[dayKey] || [];
               const schedHrs = dayWOs.reduce((s, wo) => s + getWoHours(wo), 0);
               const unschedHrs = hoursAvail - schedHrs;
@@ -493,11 +484,7 @@ export function WOCSchedule() {
                     <div className="flex items-center gap-5 text-[10px]">
                       <div className="flex items-center gap-1.5">
                         <span className="text-muted-foreground">Personnel:</span>
-                        <div className="flex items-center gap-0.5">
-                          <button onClick={() => setDayPersonnel(dayKey, p - 1)} className="w-4 h-4 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-[10px]">−</button>
-                          <span className="w-5 text-center font-bold text-foreground">{p}</span>
-                          <button onClick={() => setDayPersonnel(dayKey, p + 1)} className="w-4 h-4 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-[10px]">+</button>
-                        </div>
+                        <span className="font-bold text-foreground">{p}</span>
                       </div>
                       <span className="text-muted-foreground">Available: <b className="text-foreground">{hoursAvail.toFixed(1)}h</b></span>
                       <span className="text-muted-foreground">Scheduled: <b className={cn(isOverTarget ? "text-destructive" : "text-foreground")}>{schedHrs.toFixed(1)}h</b></span>
