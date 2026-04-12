@@ -21,6 +21,7 @@ import { ShutdownScheduleView } from "./shutdown/ShutdownScheduleView";
 import { VendorSchedulingView } from "./vendor-scheduling/VendorSchedulingView";
 import { ShutdownOrchestratorView } from "./shutdown-orchestrator/ShutdownOrchestratorView";
 import { AdvancedPlannerView } from "./advanced-planner/AdvancedPlannerView";
+import { useCapacityGrid } from "@/hooks/useCapacityGrid";
 
 const DISCIPLINES = [
   { key: "Mechanical", label: "Mechanical", icon: Wrench, color: "text-blue-600", target: 80 },
