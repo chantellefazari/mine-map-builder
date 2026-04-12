@@ -18,6 +18,8 @@ import type { PlannerItem } from "./AdvancedPlannerView";
 
 interface Props {
   items: PlannerItem[];
+  onEditSchedule?: (pmId: string, date: Date) => void;
+  onViewWorkOrder?: (pmId: string) => void;
 }
 
 function freqToDays(freq: string): number {
@@ -77,7 +79,7 @@ const DISCIPLINE_FILTERS = [
   { key: "Mobile", label: "Mobile & LVs" },
 ];
 
-export function PlannerForwardPlanTab({ items }: Props) {
+export function PlannerForwardPlanTab({ items, onEditSchedule, onViewWorkOrder }: Props) {
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
 
@@ -534,10 +536,12 @@ export function PlannerForwardPlanTab({ items }: Props) {
 
                                           {/* Action buttons */}
                                           <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border">
-                                            <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1">
+                                            <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1"
+                                              onClick={(e) => { e.stopPropagation(); onEditSchedule?.(pm.id, day.date); }}>
                                               <Pencil className="w-3 h-3" /> Edit Schedule
                                             </Button>
-                                            <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1">
+                                            <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1"
+                                              onClick={(e) => { e.stopPropagation(); onViewWorkOrder?.(pm.id); }}>
                                               <CalendarDays className="w-3 h-3" /> View Work Order
                                             </Button>
                                             <div className="flex-1" />
