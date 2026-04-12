@@ -44,7 +44,7 @@ function buildInitialGrid(): Record<string, WeekCapacity[]> {
   return grid;
 }
 
-const WEEKS_PER_PAGE = 13; // quarter view
+const WEEKS_PER_PAGE = 13; // revision view
 
 export function PlannerCapacityTab({ items }: Props) {
   const [grid, setGrid] = useState<Record<string, WeekCapacity[]>>(buildInitialGrid);
@@ -60,7 +60,7 @@ export function PlannerCapacityTab({ items }: Props) {
   const pageEnd = Math.min(pageStart + WEEKS_PER_PAGE, TOTAL_WEEKS);
   const visibleWeeks = Array.from({ length: pageEnd - pageStart }, (_, i) => pageStart + i);
   const totalPages = Math.ceil(TOTAL_WEEKS / WEEKS_PER_PAGE);
-  const quarterLabel = `Q${page + 1} — Weeks ${pageStart + 1}–${pageEnd}`;
+  const quarterLabel = `Rev ${page + 1} — Weeks ${pageStart + 1}–${pageEnd}`;
 
   const updateCell = useCallback((wc: string, weekIdx: number, field: keyof WeekCapacity, val: number) => {
     setGrid(prev => {
