@@ -2767,6 +2767,7 @@ export type Database = {
       }
       work_orders: {
         Row: {
+          activity_type: string
           asset_id: string | null
           assigned_to: string | null
           created_at: string
@@ -2802,6 +2803,7 @@ export type Database = {
           work_type: string
         }
         Insert: {
+          activity_type?: string
           asset_id?: string | null
           assigned_to?: string | null
           created_at?: string
@@ -2837,6 +2839,7 @@ export type Database = {
           work_type?: string
         }
         Update: {
+          activity_type?: string
           asset_id?: string | null
           assigned_to?: string | null
           created_at?: string

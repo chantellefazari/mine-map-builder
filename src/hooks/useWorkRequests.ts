@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { workTypeToActivityCode } from "@/constants/activityTypes";
 
 export interface WorkRequest {
   id: string;
@@ -107,6 +108,8 @@ export function useWorkRequests() {
       const { data: woNum, error: woNumErr } = await (supabase as any).rpc("next_wo_number", { p_work_type: woType });
       if (woNumErr) throw woNumErr;
 
+      const activityCode = workTypeToActivityCode(wr.work_type);
+
       const { data: wo, error: woErr } = await (supabase as any)
         .from("work_orders")
         .insert({
@@ -117,6 +120,7 @@ export function useWorkRequests() {
           scope_of_works: wr.scope_of_works || "[]",
           priority: wr.priority,
           work_type: woType,
+          activity_type: activityCode,
           requested_by: wr.requested_by,
           trade: wr.trade,
           required_tooling: '[""]',

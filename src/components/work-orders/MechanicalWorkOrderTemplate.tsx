@@ -297,6 +297,10 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                   ))}
                 </div>
               </div>
+              <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block mb-1">Activity</span>
+                <span className="font-mono font-semibold text-sm">{(wo as any)?.activity_type || "-"}</span>
+              </div>
             </div>
             {/* Row 2: Asset Number, Equipment Description, Isolation Required, Requested By */}
             <div className="grid grid-cols-[1fr_1.6fr_auto_1.2fr] gap-2">
