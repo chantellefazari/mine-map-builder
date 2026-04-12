@@ -39,7 +39,7 @@ const WorkOrderTemplates = () => {
   }, [workOrders, searchQuery]);
 
   const handleAllocateWO = async () => {
-    const result = await allocate.mutateAsync();
+    const result = await allocate.mutateAsync("Planned");
     setSelectedWO(result.wo_number);
     // Seed one empty parts row
     await (supabase as any)

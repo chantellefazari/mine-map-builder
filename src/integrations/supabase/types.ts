@@ -2646,6 +2646,21 @@ export type Database = {
         }
         Relationships: []
       }
+      work_order_counters: {
+        Row: {
+          last_number: number
+          work_type: string
+        }
+        Insert: {
+          last_number?: number
+          work_type: string
+        }
+        Update: {
+          last_number?: number
+          work_type?: string
+        }
+        Relationships: []
+      }
       work_order_parts: {
         Row: {
           comment: string
@@ -2949,7 +2964,9 @@ export type Database = {
       }
       next_po_number: { Args: never; Returns: string }
       next_pr_number: { Args: never; Returns: string }
-      next_wo_number: { Args: never; Returns: string }
+      next_wo_number:
+        | { Args: never; Returns: string }
+        | { Args: { p_work_type?: string }; Returns: string }
       next_wr_number: { Args: never; Returns: string }
     }
     Enums: {

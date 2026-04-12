@@ -12,13 +12,16 @@ export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
   const { workOrders, isLoading, allocate } = useWorkOrders();
 
   const handleAllocate = async () => {
-    const result = await allocate.mutateAsync();
+    const result = await allocate.mutateAsync("Planned");
     onAllocateWO?.(result.wo_number);
   };
 
-  const nextNumber = workOrders.length > 0
-    ? `WO-${String(parseInt(workOrders[workOrders.length - 1].wo_number.slice(3), 10) + 1).padStart(6, "0")}`
-    : "WO-000001";
+  const WO_RANGES = [
+    { type: "Planned (General)", prefix: "WO-11", range: "WO-110001 → WO-119999" },
+    { type: "PM (Preventive)", prefix: "WO-12", range: "WO-120001 → WO-129999" },
+    { type: "Breakdown (Reactive)", prefix: "WO-13", range: "WO-130001 → WO-139999" },
+    { type: "Shutdown", prefix: "WO-14", range: "WO-140001 → WO-149999" },
+  ];
 
   return (
     <div className="space-y-6 p-6">
@@ -35,20 +38,18 @@ export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
             <div className="space-y-2">
               <h4 className="font-semibold text-sm text-foreground">Format Structure</h4>
               <div className="bg-background border rounded-lg p-3">
-                <code className="text-primary font-mono text-lg">WO-XXXXXX</code>
+                <code className="text-primary font-mono text-lg">WO-TTNNNN</code>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Prefix "WO-" + 6-digit sequential number
+                  Prefix "WO-" + 2-digit type code + 4-digit sequential number
                 </p>
               </div>
             </div>
             <div className="space-y-2">
-              <h4 className="font-semibold text-sm text-foreground">Capacity</h4>
-              <div className="bg-background border rounded-lg p-3">
-                <p className="text-sm"><span className="font-medium">Range:</span> WO-000001 to WO-999999</p>
-                <p className="text-sm"><span className="font-medium">Total Capacity:</span> 999,999 work orders</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  At 50 WOs/week = ~385 years of capacity
-                </p>
+              <h4 className="font-semibold text-sm text-foreground">Type Ranges</h4>
+              <div className="bg-background border rounded-lg p-3 space-y-1">
+                {WO_RANGES.map((r) => (
+                  <p key={r.prefix} className="text-sm"><span className="font-medium font-mono">{r.prefix}:</span> {r.type}</p>
+                ))}
               </div>
             </div>
           </div>
@@ -75,14 +76,15 @@ export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
             </ul>
           </div>
 
-          <div className="flex items-center gap-4 border-t pt-4">
-            <div className="flex items-center gap-2">
-              <Info className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium">Next Available Number:</span>
+          <div className="border-t pt-4">
+            <h4 className="font-semibold text-sm text-foreground mb-2">Number Ranges</h4>
+            <div className="grid grid-cols-2 gap-2">
+              {WO_RANGES.map((r) => (
+                <Badge key={r.prefix} variant="outline" className="font-mono text-xs justify-start">
+                  {r.range}
+                </Badge>
+              ))}
             </div>
-            <Badge variant="outline" className="font-mono text-primary border-primary">
-              {nextNumber}
-            </Badge>
           </div>
         </CardContent>
       </Card>
