@@ -70,6 +70,7 @@ interface PMRow {
   weeks: WeekCell[];
   estimatedHours: number;
   trade: string;
+  originalItem: PlannerItem;
 }
 
 const DISCIPLINE_FILTERS = [
