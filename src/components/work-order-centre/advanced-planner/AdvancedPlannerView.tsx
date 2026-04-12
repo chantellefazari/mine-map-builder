@@ -21,6 +21,7 @@ import { PlannerForecastTab } from "./PlannerForecastTab";
 import { PlannerShutdownImpactTab } from "./PlannerShutdownImpactTab";
 import { PlannerCapacityTab } from "./PlannerCapacityTab";
 import { PlannerForwardPlanTab } from "./PlannerForwardPlanTab";
+import { PlannerResourceLevelingTab } from "./PlannerResourceLevelingTab";
 import { ForwardPlanScheduleDialog } from "./ForwardPlanScheduleDialog";
 import { PlannerItemDetail } from "./PlannerItemDetail";
 
@@ -88,7 +89,7 @@ export const WO_TYPE_CONFIG = {
   Shutdown: { label: "Shutdown", code: "14", color: "bg-amber-500", textColor: "text-amber-700" },
 };
 
-type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "forward-plan" | "asset-tree" | "rounds" | "forecast" | "capacity" | "schedule-blocks";
+type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "forward-plan" | "asset-tree" | "rounds" | "forecast" | "capacity" | "resource-leveling" | "schedule-blocks";
 
 const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
@@ -98,6 +99,7 @@ const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "rounds", label: "Rounds", icon: Package },
   { key: "forecast", label: "Forecast", icon: TrendingUp },
   { key: "capacity", label: "Capacity", icon: Users },
+  { key: "resource-leveling", label: "Resource Leveling", icon: Layers },
   { key: "schedule-blocks", label: "Schedule Blocks", icon: Building2 },
   { key: "asset-tree", label: "Asset Tree", icon: FolderTree },
 ];
