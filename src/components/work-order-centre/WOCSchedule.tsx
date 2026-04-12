@@ -466,93 +466,140 @@ export function WOCSchedule() {
             </div>
           </div>
 
-          {/* Schedule Table */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="bg-muted/50 border-b border-border">
-                  <th className="text-left px-3 py-2.5 font-semibold w-28">Day / Date</th>
-                  <th className="text-center px-3 py-2.5 font-semibold w-24">Personnel Avail</th>
-                  <th className="text-center px-3 py-2.5 font-semibold w-20">Hours Avail</th>
-                  <th className="text-center px-3 py-2.5 font-semibold w-20">Sched Hrs</th>
-                  <th className="text-center px-3 py-2.5 font-semibold w-20">Unsched Hrs</th>
-                  <th className="text-left px-3 py-2.5 font-semibold">Scheduled Work Orders / PMs</th>
-                </tr>
-              </thead>
-              <tbody>
-                {days.map((day) => {
-                  const dayKey = format(day, "yyyy-MM-dd");
-                  const p = getPersonnel(dayKey);
-                  const hoursAvail = p * hrsPerDay;
-                  const dayWOs = scheduledByDay[dayKey] || [];
-                  const schedHrs = dayWOs.reduce((s, wo) => s + getWoHours(wo), 0);
-                  const unschedHrs = hoursAvail - schedHrs;
-                  const isToday = isSameDay(day, today);
-                  const isExpanded = expandedDays[dayKey];
-                  const MAX_VISIBLE = 6;
-                  const visibleWOs = isExpanded ? dayWOs : dayWOs.slice(0, MAX_VISIBLE);
-                  const hiddenCount = dayWOs.length - MAX_VISIBLE;
+          {/* Schedule — Day-by-Day with Inline Detail */}
+          <div className="space-y-1">
+            {days.map((day) => {
+              const dayKey = format(day, "yyyy-MM-dd");
+              const p = getPersonnel(dayKey);
+              const hoursAvail = p * hrsPerDay;
+              const dayWOs = scheduledByDay[dayKey] || [];
+              const schedHrs = dayWOs.reduce((s, wo) => s + getWoHours(wo), 0);
+              const unschedHrs = hoursAvail - schedHrs;
+              const isToday = isSameDay(day, today);
+              const loadPct = hoursAvail > 0 ? Math.round((schedHrs / hoursAvail) * 100) : 0;
+              const isOverTarget = loadPct > discTarget;
 
-                  return (
-                    <tr
-                      key={dayKey}
-                      className={cn("border-b border-border last:border-b-0", isToday && "bg-primary/5", dragWoId && "hover:bg-muted/30")}
-                      onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("bg-primary/10"); }}
-                      onDragLeave={(e) => e.currentTarget.classList.remove("bg-primary/10")}
-                      onDrop={(e) => { e.preventDefault(); e.currentTarget.classList.remove("bg-primary/10"); handleDrop(dayKey); }}
-                    >
-                      <td className="px-3 py-2.5">
-                        <span className={cn("font-bold", isToday && "text-primary")}>{format(day, "EEE")}</span>{" "}
-                        <span className="text-muted-foreground">{format(day, "d MMM")}</span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          <button onClick={() => setDayPersonnel(dayKey, p - 1)} className="w-5 h-5 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-xs">−</button>
-                          <span className="w-6 text-center font-medium">{p}</span>
-                          <button onClick={() => setDayPersonnel(dayKey, p + 1)} className="w-5 h-5 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-xs">+</button>
+              return (
+                <div
+                  key={dayKey}
+                  className={cn("rounded-lg border border-border overflow-hidden transition-colors", isToday && "ring-1 ring-primary/30", dragWoId && "hover:border-primary/40")}
+                  onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("border-primary", "bg-primary/5"); }}
+                  onDragLeave={(e) => { e.currentTarget.classList.remove("border-primary", "bg-primary/5"); }}
+                  onDrop={(e) => { e.preventDefault(); e.currentTarget.classList.remove("border-primary", "bg-primary/5"); handleDrop(dayKey); }}
+                >
+                  {/* Day Summary Bar */}
+                  <div className={cn("flex items-center justify-between px-4 py-2", isToday ? "bg-primary/5" : "bg-muted/30")}>
+                    <div className="flex items-center gap-3">
+                      <span className={cn("text-xs font-bold w-8", isToday ? "text-primary" : "text-foreground")}>{format(day, "EEE").toUpperCase()}</span>
+                      <span className="text-xs text-muted-foreground">{format(day, "d MMMM")}</span>
+                      {isToday && <Badge variant="default" className="text-[9px] h-4 px-1.5">Today</Badge>}
+                      {dayWOs.length === 0 && <span className="text-[10px] text-muted-foreground/50 italic ml-2">Drop work orders here</span>}
+                    </div>
+                    <div className="flex items-center gap-5 text-[10px]">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-muted-foreground">Personnel:</span>
+                        <div className="flex items-center gap-0.5">
+                          <button onClick={() => setDayPersonnel(dayKey, p - 1)} className="w-4 h-4 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-[10px]">−</button>
+                          <span className="w-5 text-center font-bold text-foreground">{p}</span>
+                          <button onClick={() => setDayPersonnel(dayKey, p + 1)} className="w-4 h-4 rounded border border-border text-muted-foreground hover:bg-muted flex items-center justify-center text-[10px]">+</button>
                         </div>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-muted-foreground">{hoursAvail.toFixed(1)}</td>
-                      <td className="px-3 py-2.5 text-center font-medium">{schedHrs.toFixed(1)}</td>
-                      <td className={cn("px-3 py-2.5 text-center", unschedHrs < 0 ? "text-destructive font-bold" : "text-muted-foreground")}>{unschedHrs.toFixed(1)}</td>
-                      <td className="px-3 py-2.5">
-                        {dayWOs.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
-                            {visibleWOs.map((wo) => (
-                              <ScheduledWOChip key={wo.id} wo={wo} onDragStart={handleDragStart} onUnschedule={handleUnschedule} />
-                            ))}
-                            {hiddenCount > 0 && !isExpanded && (
-                              <button onClick={() => toggleDayExpand(dayKey)} className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium text-primary hover:bg-primary/10 transition-colors">
-                                +{hiddenCount} more
-                              </button>
-                            )}
-                            {isExpanded && hiddenCount > 0 && (
-                              <button onClick={() => toggleDayExpand(dayKey)} className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium text-muted-foreground hover:bg-muted transition-colors">
-                                Show less
-                              </button>
-                            )}
-                          </div>
-                        ) : (
-                          <span className="text-muted-foreground/40 text-[10px] italic">Drop work orders here</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
+                      </div>
+                      <span className="text-muted-foreground">Available: <b className="text-foreground">{hoursAvail.toFixed(1)}h</b></span>
+                      <span className="text-muted-foreground">Scheduled: <b className={cn(isOverTarget ? "text-destructive" : "text-foreground")}>{schedHrs.toFixed(1)}h</b></span>
+                      <span className="text-muted-foreground">Remaining: <b className={cn(unschedHrs < 0 ? "text-destructive" : "text-foreground")}>{unschedHrs.toFixed(1)}h</b></span>
+                      <span className="text-muted-foreground">Load: <b className={cn(isOverTarget ? "text-destructive" : loadPct > 50 ? "text-amber-600" : "text-emerald-600")}>{loadPct}%</b></span>
+                      <span className="text-muted-foreground">Jobs: <b className="text-foreground">{dayWOs.length}</b></span>
+                    </div>
+                  </div>
 
-                {/* Totals */}
-                <tr className="bg-muted/30 font-semibold">
-                  <td className="px-3 py-2.5">Total</td>
-                  <td className="px-3 py-2.5 text-center">{totalPersonnel}</td>
-                  <td className="px-3 py-2.5 text-center">{totalHoursAvail.toFixed(1)}</td>
-                  <td className="px-3 py-2.5 text-center">{totalSchedHrs.toFixed(1)}</td>
-                  <td className="px-3 py-2.5 text-center">{totalUnschedHrs.toFixed(1)}</td>
-                  <td className="px-3 py-2.5 text-muted-foreground text-[10px]">
-                    {Object.values(scheduledByDay).flat().length} items total
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  {/* WO Detail Table */}
+                  {dayWOs.length > 0 && (
+                    <table className="w-full text-[10px]" style={{ tableLayout: "fixed" }}>
+                      <thead>
+                        <tr className="bg-muted/20 border-t border-border">
+                          <th className="text-left px-3 py-1.5 font-semibold text-muted-foreground" style={{ width: "8%" }}>WO #</th>
+                          <th className="text-center px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "4%" }}>Type</th>
+                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "9%" }}>Asset</th>
+                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "12%" }}>Equipment</th>
+                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "28%" }}>Description</th>
+                          <th className="text-left px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "10%" }}>Resource</th>
+                          <th className="text-center px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "5%" }}>Priority</th>
+                          <th className="text-right px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "5%" }}>Hrs</th>
+                          <th className="text-center px-2 py-1.5 font-semibold text-muted-foreground" style={{ width: "4%" }}></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {dayWOs.map((wo, idx) => {
+                          const woIsPM = wo.work_type === "PM";
+                          const pc = getPriorityConfig(wo.priority);
+                          const hrs = getWoHours(wo);
+                          return (
+                            <tr
+                              key={wo.id}
+                              draggable
+                              onDragStart={() => handleDragStart(wo.id)}
+                              className={cn(
+                                "border-t border-border/50 cursor-grab hover:bg-muted/30 transition-colors group",
+                                idx % 2 === 1 && "bg-muted/10"
+                              )}
+                            >
+                              <td className="px-3 py-1.5">
+                                <span className="font-mono font-bold text-foreground">{wo.wo_number}</span>
+                              </td>
+                              <td className="px-2 py-1.5 text-center">
+                                <Badge className={cn(
+                                  "text-[8px] h-4 px-1.5 font-bold",
+                                  woIsPM
+                                    ? "bg-emerald-100 text-emerald-700 border-emerald-300 hover:bg-emerald-100"
+                                    : "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-50"
+                                )}>
+                                  {woIsPM ? "PM" : wo.work_type || "CM"}
+                                </Badge>
+                              </td>
+                              <td className="px-2 py-1.5 font-semibold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">{wo.asset_id || "—"}</td>
+                              <td className="px-2 py-1.5 text-muted-foreground overflow-hidden text-ellipsis whitespace-nowrap">{wo.functional_location || "—"}</td>
+                              <td className="px-2 py-1.5 text-foreground/80 overflow-hidden text-ellipsis whitespace-nowrap">
+                                {(wo.problem_description || wo.scope_of_works || "No description").replace(/^(PM|CM|BM):\s*/i, "")}
+                              </td>
+                              <td className="px-2 py-1.5 text-muted-foreground overflow-hidden text-ellipsis whitespace-nowrap">
+                                {wo.assigned_to || wo.technician_name || "—"}
+                              </td>
+                              <td className="px-2 py-1.5 text-center">
+                                <Badge className={cn("text-[8px] h-4 px-1.5 font-bold border", pc.bg, pc.color, pc.border)} style={{ pointerEvents: "none" }}>
+                                  P{wo.priority || "3"}
+                                </Badge>
+                              </td>
+                              <td className="px-2 py-1.5 text-right font-mono font-bold text-foreground">{hrs > 0 ? hrs.toFixed(1) : "—"}</td>
+                              <td className="px-2 py-1.5 text-center">
+                                <button
+                                  onClick={() => handleUnschedule(wo.id)}
+                                  className="w-4 h-4 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all"
+                                  title="Unschedule"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Totals Bar */}
+            <div className="flex items-center justify-between px-4 py-2.5 bg-muted/40 rounded-lg border border-border text-xs font-semibold">
+              <span>Total</span>
+              <div className="flex items-center gap-6 text-[10px]">
+                <span>Personnel: {totalPersonnel}</span>
+                <span>Available: {totalHoursAvail.toFixed(1)}h</span>
+                <span>Scheduled: {totalSchedHrs.toFixed(1)}h</span>
+                <span>Remaining: {totalUnschedHrs.toFixed(1)}h</span>
+                <span>{Object.values(scheduledByDay).flat().length} items total</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
