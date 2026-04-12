@@ -560,7 +560,7 @@ export function WOCSchedule() {
                               <td className="px-2 py-1.5 font-semibold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">{wo.asset_id || "—"}</td>
                               <td className="px-2 py-1.5 text-muted-foreground overflow-hidden text-ellipsis whitespace-nowrap">{wo.functional_location || "—"}</td>
                               <td className="px-2 py-1.5 text-foreground/80 overflow-hidden text-ellipsis whitespace-nowrap">
-                                {(wo.problem_description || wo.scope_of_works || "No description").replace(/^(PM|CM|BM):\s*/i, "")}
+                                {(wo.problem_description || "No title").split(/\s[-–—]\s/)[0].replace(/^(PM|CM|BM):\s*/i, "").slice(0, 50)}
                               </td>
                               <td className="px-2 py-1.5 text-muted-foreground overflow-hidden text-ellipsis whitespace-nowrap">
                                 {wo.trade === "Mechanical" ? "MECH" : wo.trade === "Electrical" ? "ELEC" : wo.trade === "Mobile & LVS" ? "MOBILE" : wo.trade === "Projects" ? "PROJ" : wo.trade || "—"}
