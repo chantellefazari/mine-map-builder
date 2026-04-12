@@ -44,7 +44,7 @@ const PRIORITY_COLORS: Record<string, string> = {
   Low: "text-blue-600",
 };
 
-export function PlannerWorkOrdersTab({ items }: Props) {
+export function PlannerWorkOrdersTab({ items, getReadiness }: Props) {
   const { update } = useWorkOrders();
   const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState<SortField>("woNumber");

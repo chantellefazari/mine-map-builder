@@ -15,9 +15,11 @@ import {
 } from "date-fns";
 import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
+import type { WOMaterialSummary } from "@/hooks/useMaterialReadiness";
 
 interface Props {
   items: PlannerItem[];
+  getReadiness?: (workOrderId: string) => WOMaterialSummary;
   onEditSchedule?: (item: PlannerItem, date: Date) => void;
   onViewWorkOrder?: (item: PlannerItem) => void;
 }
