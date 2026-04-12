@@ -816,7 +816,7 @@ function CreatePlanDialog({ open, onOpenChange, onCreatePM }: {
       });
       toast.success("Maintenance plan created");
       onOpenChange(false);
-      setForm({ pmName: "", equipmentType: "", frequency: "Monthly", discipline: "Mechanical", assetNumber: "", purpose: "", estimatedDuration: "1", dutyType: "Online", skillLevel: "Competent" });
+      setForm({ pmName: "", equipmentType: "", frequency: "Monthly", discipline: "Mechanical", assetNumber: "", purpose: "", estimatedDuration: "1", dutyType: "Online", skillLevel: "Competent", planCategory: "Preventive" });
     } catch { toast.error("Failed to create plan"); }
   };
 
