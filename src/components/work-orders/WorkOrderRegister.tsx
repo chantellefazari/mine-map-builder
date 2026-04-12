@@ -38,20 +38,18 @@ export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
             <div className="space-y-2">
               <h4 className="font-semibold text-sm text-foreground">Format Structure</h4>
               <div className="bg-background border rounded-lg p-3">
-                <code className="text-primary font-mono text-lg">WO-XXXXXX</code>
+                <code className="text-primary font-mono text-lg">WO-TTNNNN</code>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Prefix "WO-" + 6-digit sequential number
+                  Prefix "WO-" + 2-digit type code + 4-digit sequential number
                 </p>
               </div>
             </div>
             <div className="space-y-2">
-              <h4 className="font-semibold text-sm text-foreground">Capacity</h4>
-              <div className="bg-background border rounded-lg p-3">
-                <p className="text-sm"><span className="font-medium">Range:</span> WO-000001 to WO-999999</p>
-                <p className="text-sm"><span className="font-medium">Total Capacity:</span> 999,999 work orders</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  At 50 WOs/week = ~385 years of capacity
-                </p>
+              <h4 className="font-semibold text-sm text-foreground">Type Ranges</h4>
+              <div className="bg-background border rounded-lg p-3 space-y-1">
+                {WO_RANGES.map((r) => (
+                  <p key={r.prefix} className="text-sm"><span className="font-medium font-mono">{r.prefix}:</span> {r.type}</p>
+                ))}
               </div>
             </div>
           </div>
