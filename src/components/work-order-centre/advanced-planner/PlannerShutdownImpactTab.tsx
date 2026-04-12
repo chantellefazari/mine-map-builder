@@ -151,7 +151,7 @@ export function PlannerShutdownImpactTab({ items }: Props) {
     if (activeBlock === id) setActiveBlock(blocks.length > 1 ? blocks.find(b => b.id !== id)?.id || null : null);
   };
 
-  const getBlockConfig = (type: BlockType) => BLOCK_TYPES.find(b => b.value === type) || BLOCK_TYPES[4];
+  const getBlockConfig = (type: BlockType) => BLOCK_TYPES.find(b => b.value === type) || BLOCK_TYPES[0];
 
   return (
     <div className="flex flex-col h-full">
