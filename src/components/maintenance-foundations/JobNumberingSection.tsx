@@ -17,7 +17,7 @@ const numberingRules = [
 
 const mandatoryFields = [
   { field: "Work Order Number", desc: "Unique identifier for traceability" },
-  { field: "Work Type", desc: "Breakdown, Planned, Shutdown" },
+  { field: "Work Type", desc: "Planned (11), PM (12), Breakdown (13), Shutdown (14)" },
   { field: "Priority", desc: "Critical, High, Medium, Low" },
   { field: "Asset / Equipment ID", desc: "What is being worked on" },
   { field: "Functional Location", desc: "Where in the hierarchy" },
@@ -115,23 +115,43 @@ export const JobNumberingSection = () => {
             {/* 2. Numbering Format */}
             <h2 style={heading("Format")}>2. Work Order Numbering Format</h2>
             <p style={{ fontSize: 13, lineHeight: 1.5, color: "#333", margin: "0 0 8px 0" }}>
-              All work orders use a standardised 6 digit sequential format generated from the central register. Numbers are auto allocated and cannot be manually assigned or overridden.
+              All work orders use a type-coded numbering format. The first two digits after "WO-" identify the work type, followed by a 4-digit sequential number within that range. Numbers are auto-allocated from the central register and cannot be manually assigned.
             </p>
             <div style={{ display: "inline-block", border: `2px solid ${GOLD}`, borderRadius: 5, padding: "8px 24px", marginBottom: 10, backgroundColor: GOLD_BG }}>
-              <span style={{ fontSize: 22, fontWeight: 700, fontFamily: "monospace", letterSpacing: 4, color: DARK }}>WO-XXXXXX</span>
+              <span style={{ fontSize: 22, fontWeight: 700, fontFamily: "monospace", letterSpacing: 4, color: DARK }}>WO-TTNNNN</span>
             </div>
+            <p style={{ fontSize: 12, color: "#555", margin: "0 0 12px 0" }}>
+              <strong>TT</strong> = Work Type Code &nbsp;|&nbsp; <strong>NNNN</strong> = Sequential Number
+            </p>
 
-            <div style={{ display: "flex", gap: 16, marginBottom: 12 }}>
-              {[
-                { n: "WO-000001", d: "First work order" },
-                { n: "WO-000150", d: "Sequential allocation" },
-                { n: "WO-001234", d: "Current range" },
-              ].map((ex) => (
-                <div key={ex.n} style={{ flex: 1, border: `1px solid ${GOLD}`, borderRadius: 4, padding: "6px 10px", backgroundColor: GOLD_BG, textAlign: "center" }}>
-                  <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 16, color: DARK }}>{ex.n}</span>
-                  <p style={{ fontSize: 11, color: "#666", margin: "2px 0 0 0" }}>{ex.d}</p>
-                </div>
-              ))}
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", marginBottom: 12 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thGold, width: "14%" }}>Type Code</th>
+                  <th style={{ ...thGold, width: "22%" }}>Work Type</th>
+                  <th style={{ ...thGold, width: "32%" }}>Number Range</th>
+                  <th style={thGold}>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { code: "11", type: "Planned (General)", range: "WO-110001 → WO-119999", example: "WO-110001" },
+                  { code: "12", type: "PM (Preventive Maintenance)", range: "WO-120001 → WO-129999", example: "WO-120001" },
+                  { code: "13", type: "Breakdown (Reactive)", range: "WO-130001 → WO-139999", example: "WO-130001" },
+                  { code: "14", type: "Shutdown", range: "WO-140001 → WO-149999", example: "WO-140001" },
+                ].map((r, i) => (
+                  <tr key={i} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
+                    <td style={{ ...td, fontWeight: 700, fontFamily: "monospace", textAlign: "center", color: DARK }}>{r.code}</td>
+                    <td style={{ ...td, fontWeight: 600 }}>{r.type}</td>
+                    <td style={{ ...td, fontFamily: "monospace", fontSize: 12 }}>{r.range}</td>
+                    <td style={{ ...td, fontFamily: "monospace", fontWeight: 700, color: DARK }}>{r.example}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div style={{ backgroundColor: GOLD_BG, border: `1px solid ${GOLD}`, borderRadius: 4, padding: "8px 12px", marginBottom: 12, fontSize: 12, color: "#444" }}>
+              <strong style={{ color: DARK }}>Capacity:</strong> Each type supports 9,999 work orders. At 50 WOs/week per type = ~3.8 years per range. Total system capacity across all types = 39,996 work orders.
             </div>
 
             {/* 3. Numbering Rules */}
