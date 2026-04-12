@@ -20,6 +20,8 @@ import { PlannerForecastTab } from "./PlannerForecastTab";
 import { PlannerShutdownImpactTab } from "./PlannerShutdownImpactTab";
 import { PlannerCapacityTab } from "./PlannerCapacityTab";
 import { PlannerForwardPlanTab } from "./PlannerForwardPlanTab";
+import { ForwardPlanScheduleDialog } from "./ForwardPlanScheduleDialog";
+import { PlannerItemDetail } from "./PlannerItemDetail";
 
 export interface PlannerItem {
   id: string;
