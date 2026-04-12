@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Search, Download, FolderTree, ClipboardList, FileText, ListChecks,
-  LayoutDashboard, Wrench, Package, TrendingUp, Building2, Users, CalendarRange,
+  LayoutDashboard, Wrench, Package, TrendingUp, Building2, Users, CalendarRange, Layers,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
