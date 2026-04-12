@@ -24,7 +24,7 @@ interface Props {
   setFilterWOType: (v: string) => void;
 }
 
-export function PlannerOverviewTab({ items, allItems, stats, onNavigate }: Props) {
+export function PlannerOverviewTab({ items, allItems, stats, onNavigate, filterWOType, setFilterWOType }: Props) {
   // By-area breakdown
   const areaBreakdown = useMemo(() => {
     const map = new Map<string, { total: number; pm: number; wo: number; hours: number }>();
