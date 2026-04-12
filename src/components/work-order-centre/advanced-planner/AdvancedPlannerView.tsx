@@ -60,7 +60,7 @@ export const WO_TYPE_CONFIG = {
   Shutdown: { label: "Shutdown", code: "14", color: "bg-amber-500", textColor: "text-amber-700" },
 };
 
-type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "asset-tree" | "rounds" | "forecast" | "shutdown-impact";
+type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "asset-tree" | "rounds" | "forecast" | "schedule-blocks";
 
 const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
@@ -68,7 +68,7 @@ const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "work-orders", label: "Work Orders", icon: FileText },
   { key: "rounds", label: "Rounds", icon: Package },
   { key: "forecast", label: "Forecast", icon: TrendingUp },
-  { key: "shutdown-impact", label: "Shutdown Impact", icon: Building2 },
+  { key: "schedule-blocks", label: "Schedule Blocks", icon: Building2 },
   { key: "asset-tree", label: "Asset Tree", icon: FolderTree },
 ];
 
@@ -311,7 +311,7 @@ export function AdvancedPlannerView() {
         {activeTab === "forecast" && (
           <PlannerForecastTab items={filteredItems} />
         )}
-        {activeTab === "shutdown-impact" && (
+        {activeTab === "schedule-blocks" && (
           <PlannerShutdownImpactTab items={filteredItems} />
         )}
         {activeTab === "asset-tree" && (
