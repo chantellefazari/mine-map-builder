@@ -9,6 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { usePMasterList } from "@/hooks/usePMData";
+import { useMaterialReadiness } from "@/hooks/useMaterialReadiness";
 import { format } from "date-fns";
 import { PlannerTreeExplorer } from "./PlannerTreeExplorer";
 import { PlannerFilterBar } from "./PlannerFilterBar";
@@ -104,6 +105,7 @@ const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
 export function AdvancedPlannerView() {
   const { workOrders } = useWorkOrders();
   const { pms, isLoading: loadingPMs } = usePMasterList();
+  const { getReadiness, readinessMap } = useMaterialReadiness();
   const [activeTab, setActiveTab] = useState<PlannerTab>("overview");
 
   const [searchQuery, setSearchQuery] = useState("");
