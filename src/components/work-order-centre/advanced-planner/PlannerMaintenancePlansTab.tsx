@@ -404,6 +404,36 @@ function EditableList({ items, onChange, placeholder }: { items: string[]; onCha
   );
 }
 
+/** Rebuild flattened tasks back into {sections: [...]} format for DB storage */
+function rebuildTaskSections(tasks: any[]): any {
+  const hasSections = tasks.some(t => t.section);
+  if (!hasSections) {
+    return {
+      sections: [{
+        equipmentName: "",
+        tasks: tasks.map(t => {
+          if (typeof t === "string") return { task: t };
+          const { section, ...rest } = t;
+          return { task: rest.task || rest.description || "", ...rest };
+        }),
+      }],
+    };
+  }
+  const sectionMap = new Map<string, any[]>();
+  for (const t of tasks) {
+    const sec = t.section || "";
+    if (!sectionMap.has(sec)) sectionMap.set(sec, []);
+    const { section, ...rest } = t;
+    sectionMap.get(sec)!.push(rest);
+  }
+  return {
+    sections: Array.from(sectionMap.entries()).map(([name, items]) => ({
+      equipmentName: name,
+      tasks: items,
+    })),
+  };
+}
+
 /* ─── Editable Task List ─── */
 function EditableTaskList({ tasks, onChange }: { tasks: any[]; onChange: (tasks: any[]) => void }) {
   const [newDesc, setNewDesc] = useState("");
