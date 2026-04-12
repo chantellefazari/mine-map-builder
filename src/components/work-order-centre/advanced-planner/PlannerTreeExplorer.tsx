@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
 import type { Area, SubArea, ParentAsset, Equipment, Component } from "@/components/hierarchy/assetData";
 import type { PlannerItem } from "./AdvancedPlannerView";
-import { PlannerItemDetail } from "./PlannerItemDetail";
+import { AssetMaintenancePanel } from "./AssetMaintenancePanel";
 
 interface Props {
   items: PlannerItem[];
@@ -37,9 +37,7 @@ function TreeIndent({ depth, isLast, parentIsLast }: { depth: number; isLast: bo
     <div className="flex items-stretch flex-shrink-0" style={{ width: depth * 20 }}>
       {parentIsLast.map((last, i) => (
         <div key={i} className="w-5 flex-shrink-0 relative">
-          {!last && (
-            <div className="absolute left-2 top-0 bottom-0 w-px bg-border" />
-          )}
+          {!last && <div className="absolute left-2 top-0 bottom-0 w-px bg-border" />}
         </div>
       ))}
     </div>
@@ -49,18 +47,21 @@ function TreeIndent({ depth, isLast, parentIsLast }: { depth: number; isLast: bo
 function BranchConnector({ isLast }: { isLast: boolean }) {
   return (
     <div className="w-5 flex-shrink-0 relative self-stretch">
-      {/* Vertical line */}
       <div className={cn("absolute left-2 top-0 w-px bg-border", isLast ? "h-[50%]" : "h-full")} />
-      {/* Horizontal line */}
       <div className="absolute left-2 top-[50%] w-2.5 h-px bg-border" />
     </div>
   );
 }
 
+interface SelectedEquipment {
+  equipment: Equipment;
+  plans: PlannerItem[];
+}
+
 export function PlannerTreeExplorer({ items }: Props) {
   const { data: areas, isLoading } = useRevBPlantAssets();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [selectedItem, setSelectedItem] = useState<PlannerItem | null>(null);
+  const [selectedEquipment, setSelectedEquipment] = useState<SelectedEquipment | null>(null);
 
   const itemsByAsset = useMemo(() => {
     const map = new Map<string, PlannerItem[]>();
@@ -104,6 +105,11 @@ export function PlannerTreeExplorer({ items }: Props) {
     });
   }, []);
 
+  const selectEquipment = useCallback((equip: Equipment) => {
+    const plans = getEquipmentPlans(equip);
+    setSelectedEquipment({ equipment: equip, plans });
+  }, [getEquipmentPlans]);
+
   const expandAll = useCallback(() => {
     if (!areas) return;
     const keys = new Set<string>();
@@ -113,9 +119,7 @@ export function PlannerTreeExplorer({ items }: Props) {
         keys.add(`sa-${area.code}-${sa.label}`);
         for (const pa of sa.parentAssets) {
           keys.add(`pa-${area.code}-${sa.label}-${pa.label}`);
-          for (const eq of pa.equipment) {
-            keys.add(`eq-${eq.assetNumber}`);
-          }
+          for (const eq of pa.equipment) keys.add(`eq-${eq.assetNumber}`);
         }
       }
     }
@@ -124,17 +128,12 @@ export function PlannerTreeExplorer({ items }: Props) {
 
   const collapseAll = useCallback(() => setExpanded(new Set()), []);
 
-  if (isLoading) {
-    return <div className="flex items-center justify-center h-40 text-sm text-muted-foreground">Loading asset tree…</div>;
-  }
-
-  if (!areas || areas.length === 0) {
-    return <div className="flex items-center justify-center h-40 text-sm text-muted-foreground">No asset data available</div>;
-  }
+  if (isLoading) return <div className="flex items-center justify-center h-40 text-sm text-muted-foreground">Loading asset tree…</div>;
+  if (!areas || areas.length === 0) return <div className="flex items-center justify-center h-40 text-sm text-muted-foreground">No asset data available</div>;
 
   return (
     <div className="flex h-full">
-      <div className={cn("flex flex-col border-r border-border bg-card transition-all", selectedItem ? "w-[55%]" : "w-full")}>
+      <div className={cn("flex flex-col border-r border-border bg-card transition-all", selectedEquipment ? "w-[50%]" : "w-full")}>
         <div className="flex items-center justify-between px-3 py-1.5 border-b border-border bg-muted/20">
           <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
             <span className="font-semibold text-foreground">{areas.length} Areas</span>
@@ -160,17 +159,22 @@ export function PlannerTreeExplorer({ items }: Props) {
                 getParentPlans={getParentPlans}
                 getSubAreaPlans={getSubAreaPlans}
                 getAreaPlans={getAreaPlans}
-                selectedId={selectedItem?.id || null}
-                onSelect={setSelectedItem}
+                selectedAssetNumber={selectedEquipment?.equipment.assetNumber || null}
+                onSelectEquipment={selectEquipment}
               />
             ))}
           </div>
         </ScrollArea>
       </div>
 
-      {selectedItem && (
+      {selectedEquipment && (
         <div className="flex-1 min-w-0 overflow-hidden">
-          <PlannerItemDetail item={selectedItem} onClose={() => setSelectedItem(null)} />
+          <AssetMaintenancePanel
+            equipment={selectedEquipment.equipment}
+            plans={selectedEquipment.plans}
+            allItems={items}
+            onClose={() => setSelectedEquipment(null)}
+          />
         </div>
       )}
     </div>
@@ -178,14 +182,15 @@ export function PlannerTreeExplorer({ items }: Props) {
 }
 
 /* ─── Area Node ─── */
-function AreaNode({ area, isLast, expanded, toggle, getEquipmentPlans, getParentPlans, getSubAreaPlans, getAreaPlans, selectedId, onSelect }: {
+function AreaNode({ area, isLast, expanded, toggle, getEquipmentPlans, getParentPlans, getSubAreaPlans, getAreaPlans, selectedAssetNumber, onSelectEquipment }: {
   area: Area; isLast: boolean;
   expanded: Set<string>; toggle: (k: string) => void;
   getEquipmentPlans: (e: Equipment) => PlannerItem[];
   getParentPlans: (pa: ParentAsset) => number;
   getSubAreaPlans: (sa: SubArea) => number;
   getAreaPlans: (a: Area) => number;
-  selectedId: string | null; onSelect: (item: PlannerItem) => void;
+  selectedAssetNumber: string | null;
+  onSelectEquipment: (e: Equipment) => void;
 }) {
   const key = `area-${area.code}`;
   const isOpen = expanded.has(key);
@@ -193,46 +198,30 @@ function AreaNode({ area, isLast, expanded, toggle, getEquipmentPlans, getParent
 
   return (
     <div>
-      <div
-        onClick={() => toggle(key)}
-        className="flex items-center gap-2 py-1.5 cursor-pointer hover:bg-muted/40 transition-colors group"
-      >
+      <div onClick={() => toggle(key)} className="flex items-center gap-2 py-1.5 cursor-pointer hover:bg-muted/40 transition-colors group">
         <BranchConnector isLast={isLast} />
         {isOpen ? <ChevronDown className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />}
-        <Badge className={cn("text-[9px] px-1.5 py-0 h-4 text-white border-0", AREA_COLORS[area.code] || "bg-muted-foreground")}>
-          {area.code}
-        </Badge>
+        <Badge className={cn("text-[9px] px-1.5 py-0 h-4 text-white border-0", AREA_COLORS[area.code] || "bg-muted-foreground")}>{area.code}</Badge>
         <span className="text-xs font-bold text-foreground">{area.label}</span>
         {planCount > 0 && <span className="text-[9px] text-muted-foreground ml-auto mr-3 tabular-nums">{planCount} plans</span>}
       </div>
       {isOpen && area.subAreas.map((sa, saIdx) => (
-        <SubAreaNode
-          key={sa.label}
-          subArea={sa}
-          areaCode={area.code}
-          isLast={saIdx === area.subAreas.length - 1}
-          parentIsLast={[isLast]}
-          expanded={expanded}
-          toggle={toggle}
-          getEquipmentPlans={getEquipmentPlans}
-          getParentPlans={getParentPlans}
-          getSubAreaPlans={getSubAreaPlans}
-          selectedId={selectedId}
-          onSelect={onSelect}
-        />
+        <SubAreaNode key={sa.label} subArea={sa} areaCode={area.code} isLast={saIdx === area.subAreas.length - 1} parentIsLast={[isLast]}
+          expanded={expanded} toggle={toggle} getEquipmentPlans={getEquipmentPlans} getParentPlans={getParentPlans} getSubAreaPlans={getSubAreaPlans}
+          selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment} />
       ))}
     </div>
   );
 }
 
 /* ─── Sub-Area Node ─── */
-function SubAreaNode({ subArea, areaCode, isLast, parentIsLast, expanded, toggle, getEquipmentPlans, getParentPlans, getSubAreaPlans, selectedId, onSelect }: {
+function SubAreaNode({ subArea, areaCode, isLast, parentIsLast, expanded, toggle, getEquipmentPlans, getParentPlans, getSubAreaPlans, selectedAssetNumber, onSelectEquipment }: {
   subArea: SubArea; areaCode: string; isLast: boolean; parentIsLast: boolean[];
   expanded: Set<string>; toggle: (k: string) => void;
   getEquipmentPlans: (e: Equipment) => PlannerItem[];
   getParentPlans: (pa: ParentAsset) => number;
   getSubAreaPlans: (sa: SubArea) => number;
-  selectedId: string | null; onSelect: (item: PlannerItem) => void;
+  selectedAssetNumber: string | null; onSelectEquipment: (e: Equipment) => void;
 }) {
   const key = `sa-${areaCode}-${subArea.label}`;
   const isOpen = expanded.has(key);
@@ -240,10 +229,7 @@ function SubAreaNode({ subArea, areaCode, isLast, parentIsLast, expanded, toggle
 
   return (
     <div>
-      <div
-        onClick={() => toggle(key)}
-        className="flex items-center py-1.5 cursor-pointer hover:bg-muted/20 transition-colors"
-      >
+      <div onClick={() => toggle(key)} className="flex items-center py-1.5 cursor-pointer hover:bg-muted/20 transition-colors">
         <TreeIndent depth={parentIsLast.length} isLast={isLast} parentIsLast={parentIsLast} />
         <BranchConnector isLast={isLast} />
         {isOpen ? <ChevronDown className="w-3 h-3 text-muted-foreground flex-shrink-0" /> : <ChevronRight className="w-3 h-3 text-muted-foreground flex-shrink-0" />}
@@ -251,32 +237,22 @@ function SubAreaNode({ subArea, areaCode, isLast, parentIsLast, expanded, toggle
         {planCount > 0 && <span className="text-[9px] text-primary font-medium ml-2">{planCount}</span>}
       </div>
       {isOpen && subArea.parentAssets.map((pa, paIdx) => (
-        <ParentAssetNode
-          key={pa.label}
-          parent={pa}
-          areaCode={areaCode}
-          subAreaLabel={subArea.label}
-          isLast={paIdx === subArea.parentAssets.length - 1}
-          parentIsLast={[...parentIsLast, isLast]}
-          expanded={expanded}
-          toggle={toggle}
-          getEquipmentPlans={getEquipmentPlans}
-          getParentPlans={getParentPlans}
-          selectedId={selectedId}
-          onSelect={onSelect}
-        />
+        <ParentAssetNode key={pa.label} parent={pa} areaCode={areaCode} subAreaLabel={subArea.label}
+          isLast={paIdx === subArea.parentAssets.length - 1} parentIsLast={[...parentIsLast, isLast]}
+          expanded={expanded} toggle={toggle} getEquipmentPlans={getEquipmentPlans} getParentPlans={getParentPlans}
+          selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment} />
       ))}
     </div>
   );
 }
 
 /* ─── Parent Asset Node ─── */
-function ParentAssetNode({ parent, areaCode, subAreaLabel, isLast, parentIsLast, expanded, toggle, getEquipmentPlans, getParentPlans, selectedId, onSelect }: {
+function ParentAssetNode({ parent, areaCode, subAreaLabel, isLast, parentIsLast, expanded, toggle, getEquipmentPlans, getParentPlans, selectedAssetNumber, onSelectEquipment }: {
   parent: ParentAsset; areaCode: string; subAreaLabel: string; isLast: boolean; parentIsLast: boolean[];
   expanded: Set<string>; toggle: (k: string) => void;
   getEquipmentPlans: (e: Equipment) => PlannerItem[];
   getParentPlans: (pa: ParentAsset) => number;
-  selectedId: string | null; onSelect: (item: PlannerItem) => void;
+  selectedAssetNumber: string | null; onSelectEquipment: (e: Equipment) => void;
 }) {
   const key = `pa-${areaCode}-${subAreaLabel}-${parent.label}`;
   const isOpen = expanded.has(key);
@@ -284,10 +260,7 @@ function ParentAssetNode({ parent, areaCode, subAreaLabel, isLast, parentIsLast,
 
   return (
     <div>
-      <div
-        onClick={() => toggle(key)}
-        className="flex items-center py-1.5 cursor-pointer hover:bg-muted/20 transition-colors"
-      >
+      <div onClick={() => toggle(key)} className="flex items-center py-1.5 cursor-pointer hover:bg-muted/20 transition-colors">
         <TreeIndent depth={parentIsLast.length} isLast={isLast} parentIsLast={parentIsLast} />
         <BranchConnector isLast={isLast} />
         {isOpen ? <ChevronDown className="w-3 h-3 text-muted-foreground flex-shrink-0" /> : <ChevronRight className="w-3 h-3 text-muted-foreground flex-shrink-0" />}
@@ -301,55 +274,48 @@ function ParentAssetNode({ parent, areaCode, subAreaLabel, isLast, parentIsLast,
         )}
       </div>
       {isOpen && parent.equipment.map((eq, eqIdx) => (
-        <EquipmentNode
-          key={eq.assetNumber}
-          equipment={eq}
-          isLast={eqIdx === parent.equipment.length - 1}
-          parentIsLast={[...parentIsLast, isLast]}
-          expanded={expanded}
-          toggle={toggle}
-          plans={getEquipmentPlans(eq)}
-          selectedId={selectedId}
-          onSelect={onSelect}
-        />
+        <EquipmentNode key={eq.assetNumber} equipment={eq} isLast={eqIdx === parent.equipment.length - 1}
+          parentIsLast={[...parentIsLast, isLast]} expanded={expanded} toggle={toggle}
+          plans={getEquipmentPlans(eq)} selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment} />
       ))}
     </div>
   );
 }
 
 /* ─── Equipment Node ─── */
-function EquipmentNode({ equipment, isLast, parentIsLast, expanded, toggle, plans, selectedId, onSelect }: {
+function EquipmentNode({ equipment, isLast, parentIsLast, expanded, toggle, plans, selectedAssetNumber, onSelectEquipment }: {
   equipment: Equipment; isLast: boolean; parentIsLast: boolean[];
   expanded: Set<string>; toggle: (k: string) => void;
   plans: PlannerItem[];
-  selectedId: string | null; onSelect: (item: PlannerItem) => void;
+  selectedAssetNumber: string | null; onSelectEquipment: (e: Equipment) => void;
 }) {
   const key = `eq-${equipment.assetNumber}`;
   const isOpen = expanded.has(key);
-  const hasChildren = (equipment.components && equipment.components.length > 0) || plans.length > 0;
-
-  const childItems = [
-    ...plans.map((p, i) => ({ type: "plan" as const, data: p, idx: i })),
-    ...(equipment.components || []).map((c, i) => ({ type: "comp" as const, data: c, idx: i })),
-  ];
+  const hasComponents = equipment.components && equipment.components.length > 0;
+  const isSelected = selectedAssetNumber === equipment.assetNumber;
 
   return (
     <div>
       <div
-        onClick={() => hasChildren && toggle(key)}
-        className={cn("flex items-center py-1 transition-colors", hasChildren ? "cursor-pointer hover:bg-muted/20" : "")}
+        className={cn(
+          "flex items-center py-1 transition-colors cursor-pointer",
+          isSelected ? "bg-primary/10 border-l-2 border-l-primary" : "hover:bg-muted/20"
+        )}
+        onClick={() => onSelectEquipment(equipment)}
       >
         <TreeIndent depth={parentIsLast.length} isLast={isLast} parentIsLast={parentIsLast} />
         <BranchConnector isLast={isLast} />
-        {hasChildren ? (
-          isOpen ? <ChevronDown className="w-3 h-3 text-muted-foreground flex-shrink-0" /> : <ChevronRight className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+        {hasComponents ? (
+          <button onClick={(e) => { e.stopPropagation(); toggle(key); }} className="flex-shrink-0">
+            {isOpen ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
+          </button>
         ) : <span className="w-3 flex-shrink-0" />}
         <Wrench className="w-3 h-3 text-blue-500 flex-shrink-0 ml-1" />
         <span className="text-[10px] font-mono font-semibold text-foreground ml-1.5">{equipment.assetNumber}</span>
         <span className="text-[10px] text-muted-foreground ml-1.5 truncate">{equipment.name}</span>
         {plans.length > 0 && (
           <div className="flex items-center gap-0.5 ml-auto mr-3 flex-shrink-0">
-            {plans.map(p => (
+            {plans.slice(0, 6).map(p => (
               <span key={p.id} className={cn("w-1.5 h-1.5 rounded-full", WO_TYPE_DOTS[p.woType])} title={`${p.woType}: ${p.taskName}`} />
             ))}
             <span className="text-[9px] text-primary font-medium ml-1">{plans.length}</span>
@@ -357,65 +323,10 @@ function EquipmentNode({ equipment, isLast, parentIsLast, expanded, toggle, plan
         )}
       </div>
 
-      {isOpen && childItems.map((child, ci) => {
-        const childIsLast = ci === childItems.length - 1;
-        const childParentIsLast = [...parentIsLast, isLast];
-        if (child.type === "plan") {
-          return (
-            <PlanLeafNode
-              key={child.data.id}
-              plan={child.data as PlannerItem}
-              isLast={childIsLast}
-              parentIsLast={childParentIsLast}
-              isSelected={(child.data as PlannerItem).id === selectedId}
-              onSelect={onSelect}
-            />
-          );
-        } else {
-          return (
-            <ComponentNode
-              key={`${(child.data as Component).componentCode}-${child.idx}`}
-              component={child.data as Component}
-              isLast={childIsLast}
-              parentIsLast={childParentIsLast}
-            />
-          );
-        }
-      })}
-    </div>
-  );
-}
-
-/* ─── Plan Leaf Node ─── */
-function PlanLeafNode({ plan, isLast, parentIsLast, isSelected, onSelect }: {
-  plan: PlannerItem; isLast: boolean; parentIsLast: boolean[];
-  isSelected: boolean; onSelect: (item: PlannerItem) => void;
-}) {
-  const WO_TYPE_STYLES: Record<string, string> = {
-    PM: "bg-blue-500/10 text-blue-700 border-blue-300",
-    General: "bg-emerald-500/10 text-emerald-700 border-emerald-300",
-    Breakdown: "bg-red-500/10 text-red-700 border-red-300",
-    Shutdown: "bg-amber-500/10 text-amber-700 border-amber-300",
-  };
-
-  return (
-    <div
-      onClick={() => onSelect(plan)}
-      className={cn(
-        "flex items-center py-1 cursor-pointer transition-colors",
-        isSelected ? "bg-primary/10 border-l-2 border-l-primary" : "hover:bg-primary/5"
-      )}
-    >
-      <TreeIndent depth={parentIsLast.length} isLast={isLast} parentIsLast={parentIsLast} />
-      <BranchConnector isLast={isLast} />
-      <span className={cn("w-2 h-2 rounded-full flex-shrink-0 ml-1", WO_TYPE_DOTS[plan.woType])} />
-      <ClipboardList className="w-3 h-3 text-muted-foreground flex-shrink-0 ml-1" />
-      <span className="text-[10px] text-foreground truncate flex-1 ml-1.5">{plan.taskName}</span>
-      {plan.woNumber && <span className="text-[9px] font-mono text-muted-foreground flex-shrink-0 mr-1">{plan.woNumber}</span>}
-      <Badge variant="outline" className={cn("text-[8px] px-1 py-0 h-3.5 flex-shrink-0 mr-1", WO_TYPE_STYLES[plan.woType])}>
-        {plan.woType}
-      </Badge>
-      {plan.frequency && <span className="text-[9px] text-muted-foreground flex-shrink-0 mr-3">{plan.frequency}</span>}
+      {isOpen && hasComponents && equipment.components!.map((comp, ci) => (
+        <ComponentNode key={`${comp.componentCode}-${ci}`} component={comp}
+          isLast={ci === equipment.components!.length - 1} parentIsLast={[...parentIsLast, isLast]} />
+      ))}
     </div>
   );
 }
