@@ -390,7 +390,7 @@ export function PlannerForwardPlanTab({ items, onEditSchedule, onViewWorkOrder }
 
                 {/* LEVEL 1: Expanded PM → show all weeks with occurrences as inline rows */}
                 {isPMExpanded && (
-                  <div className="bg-muted/5 border-t border-border/20">
+                  <div className="bg-muted/5 border-t border-border/20" onClick={(e) => e.stopPropagation()}>
                     {/* PM summary bar */}
                     <div className="flex items-center gap-4 px-6 py-2 bg-muted/20 border-b border-border/20">
                       <Badge variant="outline" className="text-[10px]">{pm.discipline}</Badge>
