@@ -2,12 +2,9 @@ import { useState, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Search, Filter, Download, Plus, FolderTree, Wrench, Zap, ShieldAlert,
-  Building2, ClipboardList, Package, ListChecks, ChevronDown, ChevronRight,
-  Hash, Clock, AlertTriangle, CheckCircle2, Settings2, RefreshCw,
+  Search, Download, FolderTree, ClipboardList, FileText, ListChecks,
+  LayoutDashboard, Wrench, Package,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
@@ -15,6 +12,9 @@ import { usePMasterList } from "@/hooks/usePMData";
 import { format } from "date-fns";
 import { PlannerTreeExplorer } from "./PlannerTreeExplorer";
 import { PlannerFilterBar } from "./PlannerFilterBar";
+import { PlannerOverviewTab } from "./PlannerOverviewTab";
+import { PlannerWorkOrdersTab } from "./PlannerWorkOrdersTab";
+import { PlannerMaintenancePlansTab } from "./PlannerMaintenancePlansTab";
 
 export interface PlannerItem {
   id: string;
@@ -50,16 +50,26 @@ function getWoTypeFromNumber(woNum: string): { type: PlannerItem["woType"]; code
   return { type: "General", code: "11" };
 }
 
-const WO_TYPE_CONFIG = {
+export const WO_TYPE_CONFIG = {
   General: { label: "General", code: "11", color: "bg-emerald-500", textColor: "text-emerald-700" },
   PM: { label: "PM", code: "12", color: "bg-blue-500", textColor: "text-blue-700" },
   Breakdown: { label: "Breakdown", code: "13", color: "bg-red-500", textColor: "text-red-700" },
   Shutdown: { label: "Shutdown", code: "14", color: "bg-amber-500", textColor: "text-amber-700" },
 };
 
+type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "asset-tree";
+
+const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
+  { key: "overview", label: "Overview", icon: LayoutDashboard },
+  { key: "maintenance-plans", label: "Maintenance Plans", icon: ClipboardList },
+  { key: "work-orders", label: "Work Orders", icon: FileText },
+  { key: "asset-tree", label: "Asset Tree", icon: FolderTree },
+];
+
 export function AdvancedPlannerView() {
   const { workOrders } = useWorkOrders();
   const { pms, isLoading: loadingPMs } = usePMasterList();
+  const [activeTab, setActiveTab] = useState<PlannerTab>("overview");
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterWOType, setFilterWOType] = useState("All");
@@ -160,7 +170,6 @@ export function AdvancedPlannerView() {
     return items;
   }, [allItems, filterWOType, filterArea, filterDiscipline, filterStatus, filterFrequency, filterPriority, searchQuery]);
 
-  // Filter options
   const filterOptions = useMemo(() => ({
     areas: [...new Set(allItems.map(i => i.area).filter(Boolean))].sort(),
     disciplines: [...new Set(allItems.map(i => i.discipline).filter(Boolean))].sort(),
@@ -169,7 +178,6 @@ export function AdvancedPlannerView() {
     statuses: [...new Set(allItems.map(i => i.status).filter(Boolean))].sort(),
   }), [allItems]);
 
-  // Stats
   const stats = useMemo(() => ({
     total: filteredItems.length,
     pm: filteredItems.filter(i => i.woType === "PM").length,
@@ -194,17 +202,37 @@ export function AdvancedPlannerView() {
     a.click(); URL.revokeObjectURL(url);
   }, [filteredItems]);
 
+  const showFilters = activeTab === "work-orders" || activeTab === "asset-tree";
+
   return (
     <div className="flex flex-col h-[calc(100vh-180px)] gap-0">
-      {/* Command bar */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <FolderTree className="w-4 h-4 text-primary" />
-            <span className="text-sm font-bold text-foreground">Maintenance Planner</span>
+      {/* Top bar with tabs */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card">
+        <div className="flex items-center gap-4">
+          {/* Tabs */}
+          <div className="flex items-center gap-0.5 bg-muted/40 rounded-lg p-0.5">
+            {TABS.map(tab => {
+              const isActive = activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                    isActive
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <tab.icon className="w-3.5 h-3.5" />
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
-          <div className="h-5 w-px bg-border" />
+
           {/* Type chips */}
+          <div className="h-5 w-px bg-border" />
           {Object.entries(WO_TYPE_CONFIG).map(([key, cfg]) => {
             const count = key === "PM" ? stats.pm : key === "General" ? stats.general : key === "Breakdown" ? stats.breakdown : stats.shutdown;
             const isActive = filterWOType === key;
@@ -213,20 +241,18 @@ export function AdvancedPlannerView() {
                 key={key}
                 onClick={() => setFilterWOType(filterWOType === key ? "All" : key)}
                 className={cn(
-                  "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold transition-all border",
+                  "flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold transition-all border",
                   isActive
                     ? "border-primary bg-primary/10 text-primary"
-                    : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
                 )}
               >
-                <span className={cn("w-2 h-2 rounded-full", cfg.color)} />
+                <span className={cn("w-1.5 h-1.5 rounded-full", cfg.color)} />
                 {cfg.label}
                 <span className="tabular-nums">{count}</span>
               </button>
             );
           })}
-          <div className="h-5 w-px bg-border" />
-          <span className="text-[10px] text-muted-foreground tabular-nums">{stats.total} items · {stats.areas} areas · {stats.assets} assets · {stats.totalHrs.toFixed(0)} hrs</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -236,7 +262,7 @@ export function AdvancedPlannerView() {
               placeholder="Search plans, assets, WO#..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 h-8 w-64 text-xs"
+              className="pl-8 h-8 w-56 text-xs"
             />
           </div>
           <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs" onClick={exportCSV}>
@@ -245,19 +271,37 @@ export function AdvancedPlannerView() {
         </div>
       </div>
 
-      {/* Filter bar */}
-      <PlannerFilterBar
-        filterArea={filterArea} setFilterArea={setFilterArea}
-        filterDiscipline={filterDiscipline} setFilterDiscipline={setFilterDiscipline}
-        filterFrequency={filterFrequency} setFilterFrequency={setFilterFrequency}
-        filterPriority={filterPriority} setFilterPriority={setFilterPriority}
-        filterStatus={filterStatus} setFilterStatus={setFilterStatus}
-        options={filterOptions}
-      />
+      {/* Filter bar - only on relevant tabs */}
+      {showFilters && (
+        <PlannerFilterBar
+          filterArea={filterArea} setFilterArea={setFilterArea}
+          filterDiscipline={filterDiscipline} setFilterDiscipline={setFilterDiscipline}
+          filterFrequency={filterFrequency} setFilterFrequency={setFilterFrequency}
+          filterPriority={filterPriority} setFilterPriority={setFilterPriority}
+          filterStatus={filterStatus} setFilterStatus={setFilterStatus}
+          options={filterOptions}
+        />
+      )}
 
-      {/* Tree Explorer */}
+      {/* Tab content */}
       <div className="flex-1 min-h-0 overflow-hidden">
-        <PlannerTreeExplorer items={filteredItems} />
+        {activeTab === "overview" && (
+          <PlannerOverviewTab
+            items={filteredItems}
+            allItems={allItems}
+            stats={stats}
+            onNavigate={setActiveTab}
+          />
+        )}
+        {activeTab === "maintenance-plans" && (
+          <PlannerMaintenancePlansTab items={filteredItems.filter(i => i.source === "pm")} />
+        )}
+        {activeTab === "work-orders" && (
+          <PlannerWorkOrdersTab items={filteredItems.filter(i => i.source === "wo")} />
+        )}
+        {activeTab === "asset-tree" && (
+          <PlannerTreeExplorer items={filteredItems} />
+        )}
       </div>
     </div>
   );
