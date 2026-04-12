@@ -44,7 +44,7 @@ function buildInitialGrid(): Record<string, WeekCapacity[]> {
   return grid;
 }
 
-const WEEKS_PER_PAGE = 13; // quarter view
+const WEEKS_PER_PAGE = 13; // revision view
 
 export function PlannerCapacityTab({ items }: Props) {
   const [grid, setGrid] = useState<Record<string, WeekCapacity[]>>(buildInitialGrid);
