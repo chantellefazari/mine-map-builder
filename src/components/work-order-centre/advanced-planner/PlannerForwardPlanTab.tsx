@@ -18,8 +18,8 @@ import type { PlannerItem } from "./AdvancedPlannerView";
 
 interface Props {
   items: PlannerItem[];
-  onEditSchedule?: (pmId: string, date: Date) => void;
-  onViewWorkOrder?: (pmId: string) => void;
+  onEditSchedule?: (item: PlannerItem, date: Date) => void;
+  onViewWorkOrder?: (item: PlannerItem) => void;
 }
 
 function freqToDays(freq: string): number {
