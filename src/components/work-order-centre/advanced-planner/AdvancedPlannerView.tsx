@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Search, Download, FolderTree, ClipboardList, FileText, ListChecks,
-  LayoutDashboard, Wrench, Package, TrendingUp, Building2, Users,
+  LayoutDashboard, Wrench, Package, TrendingUp, Building2, Users, CalendarRange,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
@@ -19,6 +19,7 @@ import { PlannerRoundsTab } from "./PlannerRoundsTab";
 import { PlannerForecastTab } from "./PlannerForecastTab";
 import { PlannerShutdownImpactTab } from "./PlannerShutdownImpactTab";
 import { PlannerCapacityTab } from "./PlannerCapacityTab";
+import { PlannerForwardPlanTab } from "./PlannerForwardPlanTab";
 
 export interface PlannerItem {
   id: string;
@@ -84,12 +85,13 @@ export const WO_TYPE_CONFIG = {
   Shutdown: { label: "Shutdown", code: "14", color: "bg-amber-500", textColor: "text-amber-700" },
 };
 
-type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "asset-tree" | "rounds" | "forecast" | "capacity" | "schedule-blocks";
+type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "forward-plan" | "asset-tree" | "rounds" | "forecast" | "capacity" | "schedule-blocks";
 
 const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
   { key: "maintenance-plans", label: "Maintenance Plans", icon: ClipboardList },
   { key: "work-orders", label: "Work Orders", icon: FileText },
+  { key: "forward-plan", label: "Forward Plan", icon: CalendarRange },
   { key: "rounds", label: "Rounds", icon: Package },
   { key: "forecast", label: "Forecast", icon: TrendingUp },
   { key: "capacity", label: "Capacity", icon: Users },
