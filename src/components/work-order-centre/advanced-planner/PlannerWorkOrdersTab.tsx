@@ -54,6 +54,7 @@ export function PlannerWorkOrdersTab({ items, getReadiness }: Props) {
   const [bulkMode, setBulkMode] = useState(false);
   const [pushDays, setPushDays] = useState(7);
   const [editingDateId, setEditingDateId] = useState<string | null>(null);
+  const [partsItem, setPartsItem] = useState<PlannerItem | null>(null);
 
   const filtered = useMemo(() => {
     let list = items;
