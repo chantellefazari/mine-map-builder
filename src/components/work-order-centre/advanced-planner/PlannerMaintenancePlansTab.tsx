@@ -516,7 +516,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
 
           <div className="flex-1 min-h-0 overflow-y-auto">
             <div className="p-4">
-              <TabsContent value="details" className="mt-0 space-y-3" forceMount={false}>
+              <TabsContent value="details" className="mt-0 space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Label className="text-xs">Plan Name *</Label>
