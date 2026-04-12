@@ -62,10 +62,10 @@ function getWeekLabel(weekStart: Date) {
 
 export function WOCSchedule() {
   const { workOrders, update } = useWorkOrders();
+  const { getCapacityForDate } = useCapacityGrid();
   const [discipline, setDiscipline] = useState("Mechanical");
   const [weekOffset, setWeekOffset] = useState(0);
   const [search, setSearch] = useState("");
-  const [personnel, setPersonnel] = useState<Record<string, number>>({});
   const [dragWoId, setDragWoId] = useState<string | null>(null);
   const [scheduleView, setScheduleView] = useState<"calendar" | "report">("calendar");
   const [scheduleMode, setScheduleMode] = useState<"weekly" | "shutdown" | "vendors" | "orchestrator" | "advanced-planner">("weekly");
@@ -73,9 +73,6 @@ export function WOCSchedule() {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [sidebarTab, setSidebarTab] = useState<"unscheduled" | "pms">("unscheduled");
   const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({});
-  const [hrsPerDay, setHrsPerDay] = useState(10.5);
-  const [editingHrs, setEditingHrs] = useState(false);
-  const [quickFillVal, setQuickFillVal] = useState(4);
 
   const today = new Date();
   const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
