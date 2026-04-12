@@ -138,7 +138,7 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
         </div>
       </ScrollArea>
 
-      <CreatePlanDialog open={showCreate} onOpenChange={setShowCreate} onCreate={create} />
+      <CreatePlanDialog open={showCreate} onOpenChange={setShowCreate} onCreatePM={upsertPM} />
     </div>
   );
 }
@@ -276,9 +276,9 @@ function DetailBlock({ icon: Icon, title, count, children }: { icon: React.Eleme
 }
 
 /* ─── Create Plan Dialog ─── */
-function CreatePlanDialog({ open, onOpenChange, onCreate }: {
+function CreatePlanDialog({ open, onOpenChange, onCreatePM }: {
   open: boolean; onOpenChange: (v: boolean) => void;
-  onCreate: { mutateAsync: (data: any) => Promise<any> };
+  onCreatePM: (data: any) => Promise<any>;
 }) {
   const [form, setForm] = useState({
     pmName: "",
@@ -298,7 +298,7 @@ function CreatePlanDialog({ open, onOpenChange, onCreate }: {
       return;
     }
     try {
-      await onCreate.mutateAsync({
+      await onCreatePM({
         pmName: form.pmName,
         equipmentType: form.equipmentType,
         frequency: form.frequency,
