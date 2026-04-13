@@ -100,6 +100,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
   const [weekOffset, setWeekOffset] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDiscipline, setFilterDiscipline] = useState("All");
+  const [sortBy, setSortBy] = useState<SortKey>("criticality");
   const [adjustments, setAdjustments] = useState<Record<string, number>>({});
   // Multi-level expansion: Set of expanded PM ids, and set of "pmId:weekIdx" for expanded weeks, and set of "pmId:weekIdx:dayIdx" for expanded days
   const [expandedPMs, setExpandedPMs] = useState<Set<string>>(new Set());
@@ -136,8 +137,21 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
       const q = searchQuery.toLowerCase();
       result = result.filter(pm => pm.taskName.toLowerCase().includes(q) || pm.assetNumber.toLowerCase().includes(q));
     }
+    // Sort
+    result = [...result].sort((a, b) => {
+      if (sortBy === "criticality") {
+        const ca = getCriticalitySortOrder(a.assetNumber);
+        const cb = getCriticalitySortOrder(b.assetNumber);
+        if (ca !== cb) return ca - cb;
+        return a.taskName.localeCompare(b.taskName);
+      }
+      if (sortBy === "name") return a.taskName.localeCompare(b.taskName);
+      if (sortBy === "frequency") return (a.frequency || "").localeCompare(b.frequency || "");
+      if (sortBy === "discipline") return (a.discipline || "").localeCompare(b.discipline || "");
+      return 0;
+    });
     return result;
-  }, [pmItems, filterDiscipline, searchQuery]);
+  }, [pmItems, filterDiscipline, searchQuery, sortBy, getCriticalitySortOrder]);
 
   const disciplineCounts = useMemo(() => {
     const counts: Record<string, number> = { All: pmItems.length };
