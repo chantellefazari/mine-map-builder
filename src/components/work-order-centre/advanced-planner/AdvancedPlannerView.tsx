@@ -253,7 +253,7 @@ export function AdvancedPlannerView() {
   const showFilters = activeTab === "work-orders" || activeTab === "asset-tree" || activeTab === "rounds" || activeTab === "forecast";
 
   return (
-    <div className="flex flex-col h-[calc(100vh-180px)] gap-0">
+    <div className="flex flex-col h-full gap-0">
       {/* Top bar with tabs */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card">
         <div className="flex items-center gap-4">
