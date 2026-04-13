@@ -221,7 +221,6 @@ export function WOCSchedule() {
       </div>
 
       {scheduleMode === "vendors" ? (
-      ) : scheduleMode === "vendors" ? (
         <VendorSchedulingView />
       ) : scheduleMode === "shutdown" ? (
         <ShutdownScheduleView />
