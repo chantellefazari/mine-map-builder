@@ -175,10 +175,10 @@ export function WOCSchedule() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-foreground">
-              {scheduleMode === "advanced-planner" ? "Advanced Planner Schedule" : scheduleMode === "shutdown" ? "Shutdown Schedule" : scheduleMode === "orchestrator" ? "Shutdown Orchestrator" : `${discipline} Schedule`}
+              {scheduleMode === "shutdown" ? "Shutdown Schedule" : scheduleMode === "orchestrator" ? "Shutdown Orchestrator" : `${discipline} Schedule`}
             </h1>
             <p className="text-xs text-muted-foreground">
-              {scheduleMode === "advanced-planner" ? "Comprehensive maintenance planning and scheduling" : scheduleMode === "shutdown" ? "SAP-style Gantt scheduling grouped by vendor" : scheduleMode === "orchestrator" ? "Area-based shutdown planning and control system" : "Drag and drop work orders to schedule"}
+              {scheduleMode === "shutdown" ? "SAP-style Gantt scheduling grouped by vendor" : scheduleMode === "orchestrator" ? "Area-based shutdown planning and control system" : "Drag and drop work orders to schedule"}
             </p>
           </div>
         </div>
@@ -186,13 +186,12 @@ export function WOCSchedule() {
           <Select value={scheduleMode} onValueChange={(v: any) => setScheduleMode(v)}>
             <SelectTrigger className="w-56 h-9">
               <div className="flex items-center gap-1.5">
-                {scheduleMode === "shutdown" ? <Building2 className="w-3.5 h-3.5" /> : scheduleMode === "vendors" ? <Wrench className="w-3.5 h-3.5" /> : scheduleMode === "orchestrator" ? <Building2 className="w-3.5 h-3.5" /> : scheduleMode === "advanced-planner" ? <ClipboardList className="w-3.5 h-3.5" /> : <Calendar className="w-3.5 h-3.5" />}
+                {scheduleMode === "shutdown" ? <Building2 className="w-3.5 h-3.5" /> : scheduleMode === "vendors" ? <Wrench className="w-3.5 h-3.5" /> : scheduleMode === "orchestrator" ? <Building2 className="w-3.5 h-3.5" /> : <Calendar className="w-3.5 h-3.5" />}
                 <SelectValue />
               </div>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="weekly">Weekly Schedule</SelectItem>
-              <SelectItem value="advanced-planner">Advanced Planner</SelectItem>
               <SelectItem value="shutdown">Shutdown Schedule</SelectItem>
               <SelectItem value="vendors">Vendors</SelectItem>
               <SelectItem value="orchestrator">Shutdown Orchestrator</SelectItem>
@@ -221,8 +220,7 @@ export function WOCSchedule() {
         </div>
       </div>
 
-      {scheduleMode === "advanced-planner" ? (
-        <AdvancedPlannerView />
+      {scheduleMode === "vendors" ? (
       ) : scheduleMode === "vendors" ? (
         <VendorSchedulingView />
       ) : scheduleMode === "shutdown" ? (
