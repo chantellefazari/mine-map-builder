@@ -291,28 +291,33 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
     <div className="flex flex-col h-full gap-0">
       {/* Top bar with tabs */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card">
-        <div className="flex items-center gap-4">
-          {/* Tabs */}
-          <div className="flex items-center gap-0.5 bg-muted/40 rounded-lg p-0.5">
-            {TABS.map(tab => {
-              const isActive = activeTab === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
-                    isActive
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <tab.icon className="w-3.5 h-3.5" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
+        <div className="flex items-center gap-1 flex-wrap">
+          {TAB_GROUPS.map((group, gi) => (
+            <div key={group.group} className="flex items-center">
+              {gi > 0 && <div className="w-px h-6 bg-border mx-1.5" />}
+              <span className="text-[9px] font-semibold text-muted-foreground tracking-wider mr-1 select-none">{group.group}</span>
+              <div className="flex items-center gap-0.5">
+                {group.tabs.map(tab => {
+                  const isActive = activeTab === tab.key;
+                  return (
+                    <button
+                      key={tab.key}
+                      onClick={() => setActiveTab(tab.key)}
+                      className={cn(
+                        "flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all",
+                        isActive
+                          ? "bg-background text-foreground shadow-sm border border-border"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      )}
+                    >
+                      <tab.icon className="w-3.5 h-3.5" />
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="flex items-center gap-2">
