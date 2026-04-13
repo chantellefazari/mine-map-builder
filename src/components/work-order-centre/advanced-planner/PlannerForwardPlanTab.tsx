@@ -77,6 +77,13 @@ interface PMRow {
   originalItem: PlannerItem;
 }
 
+const DISCIPLINE_FILTERS = [
+  { key: "All", label: "All" },
+  { key: "Mechanical", label: "Mechanical" },
+  { key: "Electrical", label: "Electrical" },
+  { key: "Mobile", label: "Mobile & LVs" },
+];
+
 const SORT_OPTIONS = [
   { key: "criticality", label: "Criticality (A→C)" },
   { key: "name", label: "PM Name" },
