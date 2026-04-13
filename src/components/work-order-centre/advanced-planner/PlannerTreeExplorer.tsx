@@ -291,16 +291,18 @@ function ParentAssetNode({ parent, areaCode, subAreaLabel, isLast, parentIsLast,
 }
 
 /* ─── Equipment Node ─── */
-function EquipmentNode({ equipment, isLast, parentIsLast, expanded, toggle, plans, selectedAssetNumber, onSelectEquipment }: {
+function EquipmentNode({ equipment, isLast, parentIsLast, expanded, toggle, plans, selectedAssetNumber, onSelectEquipment, getCriticality }: {
   equipment: Equipment; isLast: boolean; parentIsLast: boolean[];
   expanded: Set<string>; toggle: (k: string) => void;
   plans: PlannerItem[];
   selectedAssetNumber: string | null; onSelectEquipment: (e: Equipment) => void;
+  getCriticality: (assetNumber: string) => CriticalityRating | null;
 }) {
   const key = `eq-${equipment.assetNumber}`;
   const isOpen = expanded.has(key);
   const hasComponents = equipment.components && equipment.components.length > 0;
   const isSelected = selectedAssetNumber === equipment.assetNumber;
+  const crit = getCriticality(equipment.assetNumber);
 
   return (
     <div>
@@ -321,6 +323,21 @@ function EquipmentNode({ equipment, isLast, parentIsLast, expanded, toggle, plan
         <Wrench className="w-3 h-3 text-blue-500 flex-shrink-0 ml-1" />
         <span className="text-[10px] font-mono font-semibold text-foreground ml-1.5">{equipment.assetNumber}</span>
         <span className="text-[10px] text-muted-foreground ml-1.5 truncate">{equipment.name}</span>
+        {crit && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className={cn(
+                "text-[8px] font-bold px-1 py-0 rounded font-mono flex-shrink-0 ml-1.5",
+                crit === "A" ? "text-destructive" : crit === "B" ? "text-amber-600" : "text-muted-foreground"
+              )}>
+                {crit}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="text-[10px]">
+              {CRITICALITY_CONFIG[crit].label} — {CRITICALITY_CONFIG[crit].description}
+            </TooltipContent>
+          </Tooltip>
+        )}
         {plans.length > 0 && (
           <div className="flex items-center gap-0.5 ml-auto mr-3 flex-shrink-0">
             {plans.slice(0, 6).map(p => (
