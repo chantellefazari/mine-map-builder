@@ -135,7 +135,7 @@ export const JobNumberingSection = () => {
               </thead>
               <tbody>
                 {[
-                  { code: "11", type: "Planned (General)", range: "WO-110001 → WO-119999", example: "WO-110001" },
+                  { code: "11", type: "Planned Work", range: "WO-110001 → WO-119999", example: "WO-110001" },
                   { code: "12", type: "PM (Preventive Maintenance)", range: "WO-120001 → WO-129999", example: "WO-120001" },
                   { code: "13", type: "Breakdown (Reactive)", range: "WO-130001 → WO-139999", example: "WO-130001" },
                   { code: "14", type: "Shutdown", range: "WO-140001 → WO-149999", example: "WO-140001" },

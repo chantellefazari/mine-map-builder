@@ -20,14 +20,14 @@ interface Props {
 
 const WO_TYPE_DOTS: Record<string, string> = {
   PM: "bg-blue-500",
-  General: "bg-emerald-500",
+  Planned: "bg-emerald-500",
   Breakdown: "bg-red-500",
   Shutdown: "bg-amber-500",
 };
 
 const WO_TYPE_BADGE: Record<string, string> = {
   PM: "bg-blue-500/10 text-blue-700 border-blue-200",
-  General: "bg-emerald-500/10 text-emerald-700 border-emerald-200",
+  Planned: "bg-emerald-500/10 text-emerald-700 border-emerald-200",
   Breakdown: "bg-red-500/10 text-red-700 border-red-200",
   Shutdown: "bg-amber-500/10 text-amber-700 border-amber-200",
 };

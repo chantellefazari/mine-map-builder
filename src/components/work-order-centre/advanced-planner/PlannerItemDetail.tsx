@@ -20,7 +20,7 @@ interface Props {
 
 const WO_TYPE_STYLES: Record<string, { bg: string; text: string }> = {
   PM: { bg: "bg-blue-500/10", text: "text-blue-700" },
-  General: { bg: "bg-emerald-500/10", text: "text-emerald-700" },
+  Planned: { bg: "bg-emerald-500/10", text: "text-emerald-700" },
   Breakdown: { bg: "bg-red-500/10", text: "text-red-700" },
   Shutdown: { bg: "bg-amber-500/10", text: "text-amber-700" },
 };

@@ -28,7 +28,7 @@ const AREA_COLORS: Record<string, string> = {
 
 const WO_TYPE_DOTS: Record<string, string> = {
   PM: "bg-blue-500",
-  General: "bg-emerald-500",
+  Planned: "bg-emerald-500",
   Breakdown: "bg-red-500",
   Shutdown: "bg-amber-500",
 };
