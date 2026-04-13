@@ -2773,6 +2773,7 @@ export type Database = {
           created_at: string
           date_completed: string | null
           date_raised: string | null
+          duty_type: string
           functional_location: string | null
           id: string
           isolation_required: boolean
@@ -2809,6 +2810,7 @@ export type Database = {
           created_at?: string
           date_completed?: string | null
           date_raised?: string | null
+          duty_type?: string
           functional_location?: string | null
           id?: string
           isolation_required?: boolean
@@ -2845,6 +2847,7 @@ export type Database = {
           created_at?: string
           date_completed?: string | null
           date_raised?: string | null
+          duty_type?: string
           functional_location?: string | null
           id?: string
           isolation_required?: boolean
