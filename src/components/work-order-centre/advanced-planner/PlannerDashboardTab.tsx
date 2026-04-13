@@ -139,7 +139,7 @@ export function PlannerDashboardTab({ items }: Props) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-bold text-foreground">Planner Dashboard — Quick View</h2>
+            <h2 className="text-sm font-bold text-foreground">Performance — Maintenance KPIs &amp; Reporting</h2>
           </div>
           <Badge variant="outline" className="text-[9px]">Live from WO Centre</Badge>
         </div>
