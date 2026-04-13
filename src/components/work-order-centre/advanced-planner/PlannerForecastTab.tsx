@@ -262,16 +262,17 @@ export function PlannerForecastTab({ items }: Props) {
                   return (
                     <div key={`${item.id}-${i}`} className="flex items-center gap-2 text-[10px] py-0.5">
                       <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", WO_TYPE_CONFIG[item.woType]?.color || "bg-muted-foreground")} />
-                      {critCfg && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className={cn("text-[8px] font-bold px-1 py-0 rounded border flex-shrink-0", critCfg.bgColor, critCfg.borderColor, critCfg.color)}>
-                              {crit}
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent side="top" className="text-[10px]">{critCfg.label}</TooltipContent>
-                        </Tooltip>
-                      )}
+                      {critCfg && (() => {
+                        const dotColor = crit === "A" ? "bg-destructive" : crit === "B" ? "bg-amber-500" : "bg-muted-foreground/40";
+                        return (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className={cn("w-2 h-2 rounded-full flex-shrink-0", dotColor)} />
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="text-[10px]">{critCfg.label}</TooltipContent>
+                          </Tooltip>
+                        );
+                      })()}
                       <span className="font-mono text-muted-foreground w-20 flex-shrink-0">{item.woNumber || "PM"}</span>
                       <span className="text-foreground truncate flex-1">{item.taskName}</span>
                       <span className="text-muted-foreground flex-shrink-0">{item.assetNumber}</span>
