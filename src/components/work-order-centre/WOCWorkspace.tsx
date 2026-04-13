@@ -36,7 +36,7 @@ export function WOCWorkspace({ woId, onClose }: Props) {
   const [activeTab, setActiveTab] = useState(isPMWorkOrder ? "pm-form" : "overview");
   const [showPrint, setShowPrint] = useState(false);
 
-  const isCreationMode = wo ? CREATION_STATUSES.includes(wo.status) : false;
+  const isCreationMode = !!isNew;
 
   if (!wo) {
     return (
