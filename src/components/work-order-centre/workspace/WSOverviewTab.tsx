@@ -239,7 +239,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
           <Select value={local.work_type} onValueChange={(v) => save("work_type", v)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {["Breakdown", "Planned", "Shutdown", "Out of Scope"].map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+              {["Breakdown", "Planned", "Shutdown", "Engineering", "Projects", "Out of Scope"].map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>

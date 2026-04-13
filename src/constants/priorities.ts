@@ -19,5 +19,7 @@ export const WR_PRIORITIES = PRIORITIES.filter((p) =>
   ["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low"].includes(p.value)
 );
 
-/** Work Order priorities (all 7) */
-export const WO_PRIORITIES = PRIORITIES;
+/** Work Order priorities (P1–P4 only — Shutdown/Engineering/Projects are Work Order Types) */
+export const WO_PRIORITIES = PRIORITIES.filter((p) =>
+  ["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low"].includes(p.value)
+);
