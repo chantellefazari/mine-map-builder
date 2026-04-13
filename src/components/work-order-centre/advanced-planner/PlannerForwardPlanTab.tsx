@@ -77,12 +77,13 @@ interface PMRow {
   originalItem: PlannerItem;
 }
 
-const DISCIPLINE_FILTERS = [
-  { key: "All", label: "All" },
-  { key: "Mechanical", label: "Mechanical" },
-  { key: "Electrical", label: "Electrical" },
-  { key: "Mobile", label: "Mobile & LVs" },
-];
+const SORT_OPTIONS = [
+  { key: "criticality", label: "Criticality (A→C)" },
+  { key: "name", label: "PM Name" },
+  { key: "frequency", label: "Frequency" },
+  { key: "discipline", label: "Discipline" },
+] as const;
+type SortKey = typeof SORT_OPTIONS[number]["key"];
 
 export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder }: Props) {
   const { getCriticality, getCriticalitySortOrder } = useAssetCriticality();
