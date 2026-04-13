@@ -152,6 +152,19 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
   const { pms, isLoading: loadingPMs } = usePMasterList();
   const { getReadiness, readinessMap } = useMaterialReadiness();
   const [activeTab, setActiveTab] = useState<PlannerTab>("overview");
+  const [activeGroup, setActiveGroup] = useState("Planning");
+
+  const handleTabChange = useCallback((tab: PlannerTab) => {
+    setActiveTab(tab);
+    setActiveGroup(getGroupForTab(tab));
+  }, []);
+
+  const handleGroupChange = useCallback((group: string) => {
+    setActiveGroup(group);
+    // Switch to first tab of that group
+    const g = TAB_GROUPS.find(g => g.group === group);
+    if (g) setActiveTab(g.tabs[0].key);
+  }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterWOType, setFilterWOType] = useState("All");
