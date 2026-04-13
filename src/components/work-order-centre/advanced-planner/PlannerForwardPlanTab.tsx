@@ -85,6 +85,7 @@ const DISCIPLINE_FILTERS = [
 ];
 
 export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder }: Props) {
+  const { getCriticality, getCriticalitySortOrder } = useAssetCriticality();
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
 
