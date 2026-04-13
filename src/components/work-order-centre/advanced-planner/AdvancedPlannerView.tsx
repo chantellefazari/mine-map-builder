@@ -105,7 +105,7 @@ const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "asset-tree", label: "Asset Tree", icon: FolderTree },
 ];
 
-export function AdvancedPlannerView() {
+export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: string) => void }) {
   const { workOrders } = useWorkOrders();
   const { pms, isLoading: loadingPMs } = usePMasterList();
   const { getReadiness, readinessMap } = useMaterialReadiness();
@@ -327,7 +327,7 @@ export function AdvancedPlannerView() {
           />
         )}
         {activeTab === "dashboard" && (
-          <PlannerDashboardTab items={filteredItems} />
+          <PlannerDashboardTab items={filteredItems} onNavigateWOC={onNavigateWOC} />
         )}
         {activeTab === "maintenance-plans" && (
           <PlannerMaintenancePlansTab items={allItems.filter(i => i.source === "pm")} />

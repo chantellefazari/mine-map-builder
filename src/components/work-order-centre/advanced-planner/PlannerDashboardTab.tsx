@@ -13,6 +13,7 @@ import type { PlannerItem } from "./AdvancedPlannerView";
 
 interface Props {
   items: PlannerItem[];
+  onNavigateWOC?: (view: string) => void;
 }
 
 function RAGDot({ value, target, inverse = false }: { value: number; target: number; inverse?: boolean }) {
@@ -22,20 +23,26 @@ function RAGDot({ value, target, inverse = false }: { value: number; target: num
   return <div className={cn("w-2.5 h-2.5 rounded-full flex-shrink-0", color)} />;
 }
 
-function KPICard({ label, value, unit, target, targetLabel, icon: Icon, inverse = false }: {
+function KPICard({ label, value, unit, target, targetLabel, icon: Icon, inverse = false, onClick }: {
   label: string; value: number; unit: string; target: number; targetLabel?: string;
-  icon: React.ElementType; inverse?: boolean;
+  icon: React.ElementType; inverse?: boolean; onClick?: () => void;
 }) {
   const met = inverse ? value <= target : value >= target;
   return (
-    <Card className="border-border">
+    <Card
+      className={cn("border-border transition-colors", onClick && "cursor-pointer hover:border-primary/40 hover:bg-primary/5")}
+      onClick={onClick}
+    >
       <CardContent className="p-3">
         <div className="flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-1.5">
             <Icon className="w-3.5 h-3.5 text-muted-foreground" />
             <span className="text-[10px] font-medium text-muted-foreground">{label}</span>
           </div>
-          <RAGDot value={value} target={target} inverse={inverse} />
+          <div className="flex items-center gap-1">
+            <RAGDot value={value} target={target} inverse={inverse} />
+            {onClick && <ArrowUpRight className="w-3 h-3 text-muted-foreground" />}
+          </div>
         </div>
         <div className="flex items-baseline gap-1">
           <span className="text-xl font-bold text-foreground tabular-nums">{value}</span>

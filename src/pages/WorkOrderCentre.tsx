@@ -198,7 +198,7 @@ export default function WorkOrderCentre() {
         {view === "work-requests" && <WOCWorkRequests onOpenWorkspace={openWorkspace} />}
         {view === "wo-management" && <WOCWorkOrderManagement onOpenWorkspace={openWorkspace} onNavigate={setView} />}
         {view === "schedule" && <WOCSchedule />}
-        {view === "planner" && <AdvancedPlannerView />}
+        {view === "planner" && <AdvancedPlannerView onNavigateWOC={setView} />}
         
         {view === "workspace" && workspaceWoId && (
           <WOCWorkspace woId={workspaceWoId} onClose={closeWorkspace} />
