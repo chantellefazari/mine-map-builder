@@ -112,7 +112,7 @@ export function PlannerResourceLevelingTab({ items }: Props) {
   const initialPage = Math.floor((currentWeekNum - 1) / WEEKS_PER_PAGE);
   const [page, setPage] = useState(initialPage);
   const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
-  const [showGuide, setShowGuide] = useState(true);
+  
 
   const yearStart = startOfYear(new Date(year, 0, 1));
   const weekInfos = useMemo(() => buildWeekInfos(year), [year]);
