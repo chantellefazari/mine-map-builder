@@ -256,9 +256,7 @@ export function PlannerForecastTab({ items }: Props) {
                 </span>
               </div>
               <div className="space-y-1 max-h-48 overflow-y-auto">
-                {[...selectedData.items, ...selectedData.projectedPMs].map((item, i) => {
-                  return (
-                  return (
+                {[...selectedData.items, ...selectedData.projectedPMs].map((item, i) => (
                     <div key={`${item.id}-${i}`} className="flex items-center gap-2 text-[10px] py-0.5">
                       <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", WO_TYPE_CONFIG[item.woType]?.color || "bg-muted-foreground")} />
                       <span className="font-mono text-muted-foreground w-20 flex-shrink-0">{item.woNumber || "PM"}</span>
