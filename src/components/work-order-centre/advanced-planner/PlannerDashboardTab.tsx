@@ -60,7 +60,7 @@ function KPICard({ label, value, unit, target, targetLabel, icon: Icon, inverse 
   );
 }
 
-export function PlannerDashboardTab({ items }: Props) {
+export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
   const { workOrders } = useWorkOrders();
   const { workRequests } = useWorkRequests();
 
