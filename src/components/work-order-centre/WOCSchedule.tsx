@@ -20,7 +20,7 @@ import { WOCScheduleReport } from "./WOCScheduleReport";
 import { ShutdownScheduleView } from "./shutdown/ShutdownScheduleView";
 import { VendorSchedulingView } from "./vendor-scheduling/VendorSchedulingView";
 import { ShutdownOrchestratorView } from "./shutdown-orchestrator/ShutdownOrchestratorView";
-import { AdvancedPlannerView } from "./advanced-planner/AdvancedPlannerView";
+
 import { useCapacityGrid } from "@/hooks/useCapacityGrid";
 
 const DISCIPLINES = [
