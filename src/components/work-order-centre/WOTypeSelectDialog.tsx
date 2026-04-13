@@ -3,7 +3,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Wrench, CalendarCheck, AlertTriangle } from "lucide-react";
+import { Wrench, CalendarCheck, AlertTriangle, FileQuestion } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -41,6 +41,13 @@ const WO_TYPES = [
     desc: "Scheduled maintenance or improvement work",
     icon: CalendarCheck,
     accent: "border-primary/40 hover:border-primary",
+  },
+  {
+    value: "Out of Scope",
+    label: "Out of Scope",
+    desc: "Contractor out-of-scope works requiring separate tracking",
+    icon: FileQuestion,
+    accent: "border-amber-500/40 hover:border-amber-500",
   },
 ];
 

@@ -40,7 +40,7 @@ export interface PlannerItem {
   assetNumber: string;
   assetName: string;
   woNumber: string;
-  woType: "Planned" | "PM" | "Breakdown";
+  woType: "Planned" | "PM" | "Breakdown" | "Out of Scope";
   woTypeCode: string;
   taskName: string;
   frequency: string;
