@@ -202,7 +202,8 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
 
   const { woPriorities } = usePriorityConfig();
   const priorityOptions = woPriorities.map(p => p.value);
-  const workTypeOptions = ["Breakdown", "Planned", "Shutdown"];
+  const workTypeOptions = ["Breakdown", "Planned"];
+  const dutyTypeOptions = ["Online", "Offline"];
 
   return (
     <div className="space-y-4">
