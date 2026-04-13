@@ -162,6 +162,7 @@ export function PlannerForecastTab({ items }: Props) {
               <SelectItem value="PM">PM</SelectItem>
               <SelectItem value="Planned">Planned</SelectItem>
               <SelectItem value="Breakdown">Breakdown</SelectItem>
+              <SelectItem value="Out of Scope">Out of Scope</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -3245,7 +3245,7 @@ export type Database = {
       next_pr_number: { Args: never; Returns: string }
       next_wo_number:
         | { Args: never; Returns: string }
-        | { Args: { p_work_type?: string }; Returns: string }
+        | { Args: { p_work_type: string }; Returns: string }
       next_wr_number: { Args: never; Returns: string }
     }
     Enums: {
