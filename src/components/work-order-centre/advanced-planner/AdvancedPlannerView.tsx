@@ -291,8 +291,9 @@ export function AdvancedPlannerView() {
               className="pl-8 h-8 w-56 text-xs"
             />
           </div>
+          <PlannerExcelToolbar items={allItems} />
           <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs" onClick={exportCSV}>
-            <Download className="w-3.5 h-3.5" /> Export
+            <Download className="w-3.5 h-3.5" /> CSV
           </Button>
         </div>
       </div>
