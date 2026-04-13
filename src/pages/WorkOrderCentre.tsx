@@ -3,13 +3,14 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, Clock, ClipboardList, Truck, FileText, Wrench,
   Calendar, Package, Shield, AlertTriangle, BookOpen, Settings,
-  HelpCircle, ChevronLeft, ChevronRight, ArrowLeft,
+  HelpCircle, ChevronLeft, ChevronRight, ArrowLeft, BarChart3,
 } from "lucide-react";
 import { WOCDashboard } from "@/components/work-order-centre/WOCDashboard";
 import { WOCWorkRequests } from "@/components/work-order-centre/WOCWorkRequests";
 import { WOCWorkOrderManagement } from "@/components/work-order-centre/WOCWorkOrderManagement";
 import { WOCSchedule } from "@/components/work-order-centre/WOCSchedule";
 import { WOCWorkspace } from "@/components/work-order-centre/WOCWorkspace";
+import { AdvancedPlannerView } from "@/components/work-order-centre/advanced-planner/AdvancedPlannerView";
 
 
 
@@ -21,6 +22,7 @@ export type WOCView =
   | "work-requests"
   | "wo-management"
   | "schedule"
+  | "planner"
   
   | "inventory"
   | "take5"
@@ -49,6 +51,7 @@ const SECTIONS: SidebarSection[] = [
       { key: "work-requests", label: "Work Requests", icon: FileText },
       { key: "wo-management", label: "Work Order Management", icon: Wrench },
       { key: "schedule", label: "Schedule", icon: Calendar },
+      { key: "planner", label: "Maintenance Planner", icon: BarChart3 },
     ],
   },
   {
@@ -195,7 +198,7 @@ export default function WorkOrderCentre() {
         {view === "work-requests" && <WOCWorkRequests onOpenWorkspace={openWorkspace} />}
         {view === "wo-management" && <WOCWorkOrderManagement onOpenWorkspace={openWorkspace} onNavigate={setView} />}
         {view === "schedule" && <WOCSchedule />}
-        
+        {view === "planner" && <AdvancedPlannerView />}
         
         {view === "workspace" && workspaceWoId && (
           <WOCWorkspace woId={workspaceWoId} onClose={closeWorkspace} />
