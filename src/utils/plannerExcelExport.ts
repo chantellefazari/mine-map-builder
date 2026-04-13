@@ -182,12 +182,12 @@ function buildSummarySheet(items: PlannerItem[]) {
 async function fetchCapacityRows(): Promise<any[][]> {
   const { data } = await supabase
     .from("site_config")
-    .select("value")
-    .eq("key", "capacity_grid")
+    .select("config_value")
+    .eq("config_key", "capacity_grid")
     .maybeSingle();
 
-  if (!data?.value) return [];
-  const grid = data.value as any;
+  if (!data?.config_value) return [];
+  const grid = data.config_value as any;
   const rows: any[][] = [];
 
   const workCentres = ["Mechanical", "Electrical", "Mobile & LVS", "Projects"];
