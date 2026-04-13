@@ -10,9 +10,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PlannerItem } from "./AdvancedPlannerView";
+import type { WOCView } from "@/pages/WorkOrderCentre";
 
 interface Props {
   items: PlannerItem[];
+  onNavigateWOC?: (view: WOCView) => void;
 }
 
 function RAGDot({ value, target, inverse = false }: { value: number; target: number; inverse?: boolean }) {
@@ -22,20 +24,26 @@ function RAGDot({ value, target, inverse = false }: { value: number; target: num
   return <div className={cn("w-2.5 h-2.5 rounded-full flex-shrink-0", color)} />;
 }
 
-function KPICard({ label, value, unit, target, targetLabel, icon: Icon, inverse = false }: {
+function KPICard({ label, value, unit, target, targetLabel, icon: Icon, inverse = false, onClick }: {
   label: string; value: number; unit: string; target: number; targetLabel?: string;
-  icon: React.ElementType; inverse?: boolean;
+  icon: React.ElementType; inverse?: boolean; onClick?: () => void;
 }) {
   const met = inverse ? value <= target : value >= target;
   return (
-    <Card className="border-border">
+    <Card
+      className={cn("border-border transition-colors", onClick && "cursor-pointer hover:border-primary/40 hover:bg-primary/5")}
+      onClick={onClick}
+    >
       <CardContent className="p-3">
         <div className="flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-1.5">
             <Icon className="w-3.5 h-3.5 text-muted-foreground" />
             <span className="text-[10px] font-medium text-muted-foreground">{label}</span>
           </div>
-          <RAGDot value={value} target={target} inverse={inverse} />
+          <div className="flex items-center gap-1">
+            <RAGDot value={value} target={target} inverse={inverse} />
+            {onClick && <ArrowUpRight className="w-3 h-3 text-muted-foreground" />}
+          </div>
         </div>
         <div className="flex items-baseline gap-1">
           <span className="text-xl font-bold text-foreground tabular-nums">{value}</span>
@@ -52,7 +60,7 @@ function KPICard({ label, value, unit, target, targetLabel, icon: Icon, inverse 
   );
 }
 
-export function PlannerDashboardTab({ items }: Props) {
+export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
   const { workOrders } = useWorkOrders();
   const { workRequests } = useWorkRequests();
 
@@ -146,17 +154,17 @@ export function PlannerDashboardTab({ items }: Props) {
 
         {/* KPI Scorecard Row */}
         <div className="grid grid-cols-3 lg:grid-cols-6 gap-2">
-          <KPICard label="PM Compliance" value={pmCompliance} unit="%" target={90} icon={CheckCircle2} />
-          <KPICard label="Schedule Compliance" value={schedCompliance} unit="%" target={85} icon={Target} />
-          <KPICard label="Planned Ratio" value={plannedPct} unit="%" target={70} icon={TrendingUp} />
-          <KPICard label="Completion Rate" value={completionRate} unit="%" target={80} icon={Gauge} />
-          <KPICard label="Avg MTTR" value={avgMTTR} unit="h" target={24} icon={Clock} inverse />
-          <KPICard label="Backlog" value={backlogWeeks} unit="wks" target={4} icon={AlertTriangle} inverse targetLabel="≤4 wks target" />
+          <KPICard label="PM Compliance" value={pmCompliance} unit="%" target={90} icon={CheckCircle2} onClick={() => onNavigateWOC?.("dashboard")} />
+          <KPICard label="Schedule Compliance" value={schedCompliance} unit="%" target={85} icon={Target} onClick={() => onNavigateWOC?.("dashboard")} />
+          <KPICard label="Planned Ratio" value={plannedPct} unit="%" target={70} icon={TrendingUp} onClick={() => onNavigateWOC?.("dashboard")} />
+          <KPICard label="Completion Rate" value={completionRate} unit="%" target={80} icon={Gauge} onClick={() => onNavigateWOC?.("dashboard")} />
+          <KPICard label="Avg MTTR" value={avgMTTR} unit="h" target={24} icon={Clock} inverse onClick={() => onNavigateWOC?.("dashboard")} />
+          <KPICard label="Backlog" value={backlogWeeks} unit="wks" target={4} icon={AlertTriangle} inverse targetLabel="≤4 wks target" onClick={() => onNavigateWOC?.("dashboard")} />
         </div>
 
         <div className="grid grid-cols-3 gap-3">
           {/* Work Requests Pipeline */}
-          <Card className="border-border">
+          <Card className={cn("border-border transition-colors", onNavigateWOC && "cursor-pointer hover:border-primary/40 hover:bg-primary/5")} onClick={() => onNavigateWOC?.("work-requests")}>
             <CardContent className="p-3">
               <div className="flex items-center gap-1.5 mb-3">
                 <Wrench className="w-3.5 h-3.5 text-muted-foreground" />
@@ -180,7 +188,7 @@ export function PlannerDashboardTab({ items }: Props) {
           </Card>
 
           {/* Planned vs Reactive */}
-          <Card className="border-border">
+          <Card className={cn("border-border transition-colors", onNavigateWOC && "cursor-pointer hover:border-primary/40 hover:bg-primary/5")} onClick={() => onNavigateWOC?.("dashboard")}>
             <CardContent className="p-3">
               <div className="flex items-center gap-1.5 mb-3">
                 <Layers className="w-3.5 h-3.5 text-muted-foreground" />
@@ -244,7 +252,7 @@ export function PlannerDashboardTab({ items }: Props) {
 
         <div className="grid grid-cols-2 gap-3">
           {/* Backlog Aging */}
-          <Card className="border-border">
+          <Card className={cn("border-border transition-colors", onNavigateWOC && "cursor-pointer hover:border-primary/40 hover:bg-primary/5")} onClick={() => onNavigateWOC?.("dashboard")}>
             <CardContent className="p-3">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-1.5">
