@@ -312,7 +312,12 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
-              <Calendar mode="single" selected={local.scheduled_date ? new Date(local.scheduled_date) : undefined} onSelect={(date) => save("scheduled_date", date ? format(date, "yyyy-MM-dd") : null)} />
+              <Calendar mode="single" selected={local.scheduled_date ? new Date(local.scheduled_date) : undefined} onSelect={(date) => save("scheduled_date", date ? format(date, "yyyy-MM-dd") : null)} className="pointer-events-auto" />
+              {local.scheduled_date && (
+                <div className="border-t p-2">
+                  <Button variant="ghost" size="sm" className="w-full h-7 text-xs text-muted-foreground" onClick={() => save("scheduled_date", null)}>Clear date</Button>
+                </div>
+              )}
             </PopoverContent>
           </Popover>
         </div>
