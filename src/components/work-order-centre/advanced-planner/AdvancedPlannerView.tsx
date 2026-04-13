@@ -96,21 +96,44 @@ export const WO_TYPE_CONFIG = {
 
 type PlannerTab = "overview" | "dashboard" | "maintenance-plans" | "work-orders" | "forward-plan" | "asset-tree" | "rounds" | "forecast" | "capacity" | "resource-leveling" | "schedule-blocks" | "permits" | "failures" | "condition-monitoring";
 
-const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
-  { key: "overview", label: "Overview", icon: LayoutDashboard },
-  { key: "dashboard", label: "Performance", icon: BarChart3 },
-  { key: "maintenance-plans", label: "Maintenance Plans", icon: ClipboardList },
-  { key: "work-orders", label: "Work Orders", icon: FileText },
-  { key: "forward-plan", label: "Forward Plan", icon: CalendarRange },
-  { key: "permits", label: "Permits", icon: ShieldAlert },
-  { key: "failures", label: "Failures", icon: Activity },
-  { key: "condition-monitoring", label: "CBM", icon: Gauge },
-  { key: "rounds", label: "Rounds", icon: Package },
-  { key: "forecast", label: "Forecast", icon: TrendingUp },
-  { key: "capacity", label: "Capacity", icon: Users },
-  { key: "resource-leveling", label: "Resource Leveling", icon: Layers },
-  { key: "schedule-blocks", label: "Schedule Blocks", icon: Building2 },
-  { key: "asset-tree", label: "Asset Tree", icon: FolderTree },
+interface TabDef { key: PlannerTab; label: string; icon: React.ElementType }
+interface TabGroup { group: string; tabs: TabDef[] }
+
+const TAB_GROUPS: TabGroup[] = [
+  {
+    group: "PLANNING",
+    tabs: [
+      { key: "overview", label: "Overview", icon: LayoutDashboard },
+      { key: "dashboard", label: "Performance", icon: BarChart3 },
+      { key: "maintenance-plans", label: "Plans", icon: ClipboardList },
+      { key: "forward-plan", label: "Forward Plan", icon: CalendarRange },
+      { key: "forecast", label: "Forecast", icon: TrendingUp },
+    ],
+  },
+  {
+    group: "SCHEDULING",
+    tabs: [
+      { key: "work-orders", label: "Work Orders", icon: FileText },
+      { key: "capacity", label: "Capacity", icon: Users },
+      { key: "resource-leveling", label: "Leveling", icon: Layers },
+      { key: "schedule-blocks", label: "Blocks", icon: Building2 },
+    ],
+  },
+  {
+    group: "OPERATIONS",
+    tabs: [
+      { key: "permits", label: "Permits", icon: ShieldAlert },
+      { key: "failures", label: "Failures", icon: Activity },
+      { key: "condition-monitoring", label: "CBM", icon: Gauge },
+      { key: "rounds", label: "Rounds", icon: Package },
+    ],
+  },
+  {
+    group: "ASSETS",
+    tabs: [
+      { key: "asset-tree", label: "Asset Tree", icon: FolderTree },
+    ],
+  },
 ];
 
 export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: WOCView) => void }) {
