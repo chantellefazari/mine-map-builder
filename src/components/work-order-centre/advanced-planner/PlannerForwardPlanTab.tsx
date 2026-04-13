@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Search, ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
   Undo2, Save, CalendarDays, Pencil, Sparkles, Calendar,
-  Clock, Wrench, MapPin, AlertTriangle, Package,
+  Clock, Wrench, MapPin, AlertTriangle, Package, Shield,
 } from "lucide-react";
 import {
   addDays, addWeeks, startOfWeek, format, isWithinInterval,
@@ -17,6 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import type { WOMaterialSummary } from "@/hooks/useMaterialReadiness";
+import { useAssetCriticality, CRITICALITY_CONFIG, type CriticalityRating } from "@/hooks/useAssetCriticality";
 
 interface Props {
   items: PlannerItem[];
