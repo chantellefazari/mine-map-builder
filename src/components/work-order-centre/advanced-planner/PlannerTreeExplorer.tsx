@@ -62,6 +62,7 @@ interface SelectedEquipment {
 
 export function PlannerTreeExplorer({ items }: Props) {
   const { data: areas, isLoading } = useRevBPlantAssets();
+  const { getCriticality } = useAssetCriticality();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [selectedEquipment, setSelectedEquipment] = useState<SelectedEquipment | null>(null);
 
