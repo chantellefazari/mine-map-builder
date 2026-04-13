@@ -293,9 +293,13 @@ export function PlannerReportBuilder() {
       }));
       case "failure_records": return failuresQuery.data || [];
       case "permits": return permitsQuery.data || [];
+      case "assets": return assetsQuery.data || [];
+      case "purchase_orders": return poQuery.data || [];
+      case "equipment_service": return equipServiceQuery.data || [];
+      case "condition_triggers": return cbmQuery.data || [];
       default: return [];
     }
-  }, [source, workOrders, workRequests, pms, failuresQuery.data, permitsQuery.data]);
+  }, [source, workOrders, workRequests, pms, failuresQuery.data, permitsQuery.data, assetsQuery.data, poQuery.data, equipServiceQuery.data, cbmQuery.data]);
 
   // Date field for each source
   const dateField = useMemo(() => {
@@ -305,6 +309,10 @@ export function PlannerReportBuilder() {
       case "pm_schedules": return null;
       case "failure_records": return "failure_date";
       case "permits": return "valid_from";
+      case "assets": return null;
+      case "purchase_orders": return "order_date";
+      case "equipment_service": return "last_service_date";
+      case "condition_triggers": return "last_reading_date";
       default: return null;
     }
   }, [source]);
