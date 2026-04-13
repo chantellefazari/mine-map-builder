@@ -3203,6 +3203,8 @@ export type Database = {
           status: string
           trade: string
           updated_at: string
+          work_centre: string
+          work_title: string
           work_type: string
           wr_number: string
         }
@@ -3226,6 +3228,8 @@ export type Database = {
           status?: string
           trade?: string
           updated_at?: string
+          work_centre?: string
+          work_title?: string
           work_type?: string
           wr_number: string
         }
@@ -3249,6 +3253,8 @@ export type Database = {
           status?: string
           trade?: string
           updated_at?: string
+          work_centre?: string
+          work_title?: string
           work_type?: string
           wr_number?: string
         }
