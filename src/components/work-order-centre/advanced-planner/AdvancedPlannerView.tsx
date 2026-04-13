@@ -290,13 +290,13 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
   return (
     <div className="flex flex-col h-full gap-0">
       {/* Top bar with tabs */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card">
-        <div className="flex items-center gap-1 flex-wrap">
-          {TAB_GROUPS.map((group, gi) => (
-            <div key={group.group} className="flex items-center">
-              {gi > 0 && <div className="w-px h-6 bg-border mx-1.5" />}
-              <span className="text-[9px] font-semibold text-muted-foreground tracking-wider mr-1 select-none">{group.group}</span>
-              <div className="flex items-center gap-0.5">
+      {/* Navigation bar */}
+      <div className="border-b border-border bg-card">
+        <div className="flex items-center justify-between px-4 py-1.5">
+          <div className="flex items-center gap-0 overflow-x-auto scrollbar-none">
+            {TAB_GROUPS.map((group, gi) => (
+              <div key={group.group} className="flex items-center shrink-0">
+                {gi > 0 && <div className="w-px h-5 bg-border mx-2" />}
                 {group.tabs.map(tab => {
                   const isActive = activeTab === tab.key;
                   return (
@@ -304,10 +304,10 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
                       key={tab.key}
                       onClick={() => setActiveTab(tab.key)}
                       className={cn(
-                        "flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all",
+                        "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all whitespace-nowrap border-b-2 -mb-[7px]",
                         isActive
-                          ? "bg-background text-foreground shadow-sm border border-border"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                          ? "text-foreground border-primary"
+                          : "text-muted-foreground hover:text-foreground border-transparent"
                       )}
                     >
                       <tab.icon className="w-3.5 h-3.5" />
@@ -316,24 +316,24 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
                   );
                 })}
               </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-            <Input
-              placeholder="Search plans, assets, WO#..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 h-8 w-56 text-xs"
-            />
+            ))}
           </div>
-          <PlannerExcelToolbar items={allItems} />
-          <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs" onClick={exportCSV}>
-            <Download className="w-3.5 h-3.5" /> CSV
-          </Button>
+
+          <div className="flex items-center gap-2 shrink-0 ml-4">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Search plans, assets, WO#..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8 h-8 w-48 text-xs"
+              />
+            </div>
+            <PlannerExcelToolbar items={allItems} />
+            <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs" onClick={exportCSV}>
+              <Download className="w-3.5 h-3.5" /> CSV
+            </Button>
+          </div>
         </div>
       </div>
 
