@@ -33,7 +33,6 @@ type PlanCategory = typeof PLAN_CATEGORIES[number];
 
 const CATEGORY_CONFIG: Record<PlanCategory, { label: string; icon: React.ElementType; description: string; color: string }> = {
   Preventive: { label: "Preventive (Online)", icon: Activity, description: "Routine inspections & running PMs", color: "text-emerald-600" },
-  Shutdown: { label: "Shutdown / Offline", icon: Power, description: "Isolation, outage & offline work", color: "text-amber-600" },
   "Condition-Based": { label: "Condition-Based", icon: Zap, description: "Triggered by monitoring data", color: "text-blue-600" },
   Lifecycle: { label: "Lifecycle / Changeout", icon: RefreshCw, description: "Overhauls, rebuilds & replacements", color: "text-purple-600" },
 };
