@@ -11,7 +11,11 @@ import { useWorkRequests } from "@/hooks/useWorkRequests";
 import { usePMasterList } from "@/hooks/usePMData";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Download, Filter, Columns3, Group, FileDown, RotateCcw, Search } from "lucide-react";
+import {
+  Download, Filter, Columns3, Group, FileDown, RotateCcw, Search,
+  Zap, FileText, ClipboardList, ShieldAlert, Activity, Package, Gauge, Wrench,
+  BarChart3, Hash, Clock,
+} from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +32,92 @@ interface FilterDef {
   operator: "equals" | "contains" | "gte" | "lte";
   value: string;
 }
+
+interface ReportPreset {
+  id: string;
+  label: string;
+  description: string;
+  icon: React.ElementType;
+  source: DataSource;
+  filters: FilterDef[];
+  groupBy: string;
+  visibleColumns?: string[];
+}
+
+const REPORT_PRESETS: ReportPreset[] = [
+  {
+    id: "open_wo_by_type",
+    label: "Open WOs by Type",
+    description: "All open work orders grouped by WO type",
+    icon: FileText,
+    source: "work_orders",
+    filters: [{ field: "status", operator: "equals", value: "In Progress" }],
+    groupBy: "work_type",
+  },
+  {
+    id: "overdue_pms",
+    label: "PM Schedule Overview",
+    description: "All active PM schedules grouped by frequency",
+    icon: ClipboardList,
+    source: "pm_schedules",
+    filters: [{ field: "status", operator: "equals", value: "Active" }],
+    groupBy: "frequency",
+  },
+  {
+    id: "weekly_oos",
+    label: "Out of Scope WOs",
+    description: "All Out of Scope work orders for tracking contractor costs",
+    icon: Wrench,
+    source: "work_orders",
+    filters: [{ field: "work_type", operator: "equals", value: "Out of Scope" }],
+    groupBy: "status",
+  },
+  {
+    id: "failures_by_area",
+    label: "Failures by Area",
+    description: "Failure records grouped by area for reliability analysis",
+    icon: Activity,
+    source: "failure_records",
+    filters: [],
+    groupBy: "area",
+  },
+  {
+    id: "open_permits",
+    label: "Active Permits",
+    description: "All non-closed permits to work",
+    icon: ShieldAlert,
+    source: "permits",
+    filters: [{ field: "status", operator: "contains", value: "" }],
+    groupBy: "permit_type",
+  },
+  {
+    id: "outstanding_pos",
+    label: "Outstanding POs",
+    description: "Purchase orders not yet received",
+    icon: Package,
+    source: "purchase_orders",
+    filters: [{ field: "status", operator: "equals", value: "Ordered" }],
+    groupBy: "supplier",
+  },
+  {
+    id: "cbm_warnings",
+    label: "CBM Warning/Critical",
+    description: "Condition triggers in warning or critical state",
+    icon: Gauge,
+    source: "condition_triggers",
+    filters: [{ field: "status", operator: "contains", value: "" }],
+    groupBy: "area",
+  },
+  {
+    id: "wo_by_discipline",
+    label: "WOs by Discipline",
+    description: "All work orders grouped by trade/discipline",
+    icon: BarChart3,
+    source: "work_orders",
+    filters: [],
+    groupBy: "trade",
+  },
+];
 
 const SOURCE_CONFIG: Record<DataSource, { label: string; columns: { key: string; label: string }[] }> = {
   work_orders: {
@@ -47,6 +137,7 @@ const SOURCE_CONFIG: Record<DataSource, { label: string; columns: { key: string;
       { key: "date_completed", label: "Completed" },
       { key: "duty_type", label: "Duty Type" },
       { key: "requested_by", label: "Requested By" },
+      { key: "labour_hours", label: "Labour Hours" },
       { key: "work_performed", label: "Work Performed" },
       { key: "parts_used", label: "Parts Used" },
     ],
@@ -193,6 +284,19 @@ const GROUPABLE_FIELDS: Record<DataSource, string[]> = {
   condition_triggers: ["area", "trigger_type", "status"],
 };
 
+// Numeric fields for summary stats
+const NUMERIC_FIELDS: Record<DataSource, string[]> = {
+  work_orders: ["labour_hours"],
+  work_requests: [],
+  pm_schedules: ["estimated_duration"],
+  failure_records: ["downtime_hours"],
+  permits: [],
+  assets: [],
+  purchase_orders: ["total_value"],
+  equipment_service: ["current_hours", "service_interval_hours", "last_service_hours", "next_service_due_hours"],
+  condition_triggers: ["threshold_value", "current_value"],
+};
+
 export function PlannerReportBuilder() {
   const [source, setSource] = useState<DataSource>("work_orders");
   const [columns, setColumns] = useState<ColumnDef[]>(() =>
@@ -204,6 +308,8 @@ export function PlannerReportBuilder() {
   const [dateTo, setDateTo] = useState("");
   const [searchText, setSearchText] = useState("");
   const [showColumnPicker, setShowColumnPicker] = useState(false);
+  const [showPresets, setShowPresets] = useState(true);
+  const [showStats, setShowStats] = useState(true);
 
   // Fetch data based on source
   const { workOrders } = useWorkOrders();
@@ -271,6 +377,23 @@ export function PlannerReportBuilder() {
     setFilters([]);
     setGroupBy("");
     setSearchText("");
+    setShowPresets(false);
+  }, []);
+
+  // Apply preset
+  const applyPreset = useCallback((preset: ReportPreset) => {
+    setSource(preset.source);
+    const cols = SOURCE_CONFIG[preset.source].columns;
+    setColumns(cols.map((c, i) => ({
+      ...c,
+      visible: preset.visibleColumns ? preset.visibleColumns.includes(c.key) : i < 8,
+    })));
+    setFilters(preset.filters);
+    setGroupBy(preset.groupBy);
+    setSearchText("");
+    setDateFrom("");
+    setDateTo("");
+    setShowPresets(false);
   }, []);
 
   // Raw data for current source
@@ -354,6 +477,37 @@ export function PlannerReportBuilder() {
     return data;
   }, [rawData, dateField, dateFrom, dateTo, filters, searchText, columns]);
 
+  // Summary statistics
+  const summaryStats = useMemo(() => {
+    const numericFields = NUMERIC_FIELDS[source] || [];
+    const stats: { field: string; label: string; sum: number; avg: number; min: number; max: number; count: number }[] = [];
+
+    for (const fieldKey of numericFields) {
+      const colDef = SOURCE_CONFIG[source].columns.find(c => c.key === fieldKey);
+      const values = filteredData.map(r => parseFloat(r[fieldKey])).filter(v => !isNaN(v) && v > 0);
+      if (values.length > 0) {
+        stats.push({
+          field: fieldKey,
+          label: colDef?.label || fieldKey,
+          sum: values.reduce((s, v) => s + v, 0),
+          avg: values.reduce((s, v) => s + v, 0) / values.length,
+          min: Math.min(...values),
+          max: Math.max(...values),
+          count: values.length,
+        });
+      }
+    }
+
+    // Status breakdown
+    const statusCounts: Record<string, number> = {};
+    for (const row of filteredData) {
+      const s = String(row["status"] || row["Status"] || "Unknown");
+      statusCounts[s] = (statusCounts[s] || 0) + 1;
+    }
+
+    return { numericStats: stats, statusCounts };
+  }, [filteredData, source]);
+
   // Grouped data
   const groupedData = useMemo(() => {
     if (!groupBy) return null;
@@ -413,6 +567,7 @@ export function PlannerReportBuilder() {
     setDateTo("");
     setSearchText("");
     setColumns(SOURCE_CONFIG[source].columns.map((c, i) => ({ ...c, visible: i < 8 })));
+    setShowPresets(true);
   }, [source]);
 
   const renderValue = (val: any) => {
@@ -448,6 +603,36 @@ export function PlannerReportBuilder() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
+      {/* Quick report presets */}
+      {showPresets && (
+        <div className="px-4 py-3 border-b border-border bg-muted/10">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Zap className="w-3.5 h-3.5 text-primary" />
+              <span className="text-xs font-bold text-foreground">Quick Reports</span>
+            </div>
+            <Button variant="ghost" size="sm" className="h-5 text-[10px] text-muted-foreground" onClick={() => setShowPresets(false)}>
+              Hide
+            </Button>
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            {REPORT_PRESETS.map(preset => (
+              <button
+                key={preset.id}
+                onClick={() => applyPreset(preset)}
+                className="flex items-start gap-2 p-2 rounded-lg border border-border bg-card hover:bg-muted/30 hover:border-primary/30 transition-all text-left"
+              >
+                <preset.icon className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                <div>
+                  <div className="text-[11px] font-semibold text-foreground">{preset.label}</div>
+                  <div className="text-[9px] text-muted-foreground">{preset.description}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-2 px-4 py-3 border-b border-border bg-card">
         {/* Source */}
@@ -516,6 +701,22 @@ export function PlannerReportBuilder() {
         <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={addFilter}>
           <Filter className="w-3.5 h-3.5" /> Add Filter
         </Button>
+
+        {/* Stats toggle */}
+        <Button
+          variant={showStats ? "default" : "outline"}
+          size="sm"
+          className="h-7 text-xs gap-1"
+          onClick={() => setShowStats(!showStats)}
+        >
+          <BarChart3 className="w-3.5 h-3.5" /> Stats
+        </Button>
+
+        {!showPresets && (
+          <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" onClick={() => setShowPresets(true)}>
+            <Zap className="w-3 h-3" /> Presets
+          </Button>
+        )}
 
         <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" onClick={reset}>
           <RotateCcw className="w-3 h-3" /> Reset
@@ -593,23 +794,68 @@ export function PlannerReportBuilder() {
         </div>
       )}
 
-      {/* Summary bar */}
-      <div className="flex items-center gap-3 px-4 py-1.5 border-b border-border bg-muted/10">
-        <Badge variant="secondary" className="text-[10px] font-mono">
-          {filteredData.length} records
-        </Badge>
-        {groupedData && (
-          <Badge variant="outline" className="text-[10px]">
-            {groupedData.length} groups
+      {/* Summary stats panel */}
+      {showStats && (
+        <div className="flex items-center gap-3 px-4 py-2 border-b border-border bg-muted/5">
+          {/* Record count */}
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-card border border-border rounded-md">
+            <Hash className="w-3 h-3 text-muted-foreground" />
+            <span className="text-[10px] text-muted-foreground">Records</span>
+            <span className="text-xs font-bold text-foreground tabular-nums">{filteredData.length}</span>
+          </div>
+          {/* Numeric summaries */}
+          {summaryStats.numericStats.map(stat => (
+            <div key={stat.field} className="flex items-center gap-2 px-2.5 py-1 bg-card border border-border rounded-md">
+              <Clock className="w-3 h-3 text-muted-foreground" />
+              <span className="text-[10px] text-muted-foreground">{stat.label}</span>
+              <div className="flex items-center gap-1.5 text-[10px]">
+                <span className="text-foreground font-semibold tabular-nums" title="Total">Σ {stat.sum.toFixed(1)}</span>
+                <span className="text-muted-foreground">·</span>
+                <span className="text-muted-foreground tabular-nums" title="Average">μ {stat.avg.toFixed(1)}</span>
+                <span className="text-muted-foreground">·</span>
+                <span className="text-muted-foreground tabular-nums" title="Min-Max">{stat.min.toFixed(0)}–{stat.max.toFixed(0)}</span>
+              </div>
+            </div>
+          ))}
+          {/* Status breakdown chips */}
+          {Object.entries(summaryStats.statusCounts).length > 0 && Object.entries(summaryStats.statusCounts).length <= 8 && (
+            <>
+              <span className="w-px h-5 bg-border" />
+              {Object.entries(summaryStats.statusCounts).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([status, count]) => (
+                <Badge key={status} variant="outline" className="text-[9px] gap-1 py-0">
+                  {status} <span className="font-bold">{count}</span>
+                </Badge>
+              ))}
+            </>
+          )}
+          {groupedData && (
+            <>
+              <span className="w-px h-5 bg-border" />
+              <Badge variant="secondary" className="text-[10px]">{groupedData.length} groups</Badge>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Summary bar (minimal if stats shown) */}
+      {!showStats && (
+        <div className="flex items-center gap-3 px-4 py-1.5 border-b border-border bg-muted/10">
+          <Badge variant="secondary" className="text-[10px] font-mono">
+            {filteredData.length} records
           </Badge>
-        )}
-        {filteredData.length > 500 && (
-          <span className="text-[10px] text-amber-600">Showing first 500 rows • Export for full data</span>
-        )}
-        <span className="text-[10px] text-muted-foreground ml-auto">
-          {visibleCols.length} of {columns.length} columns visible
-        </span>
-      </div>
+          {groupedData && (
+            <Badge variant="outline" className="text-[10px]">
+              {groupedData.length} groups
+            </Badge>
+          )}
+          {filteredData.length > 500 && (
+            <span className="text-[10px] text-amber-600">Showing first 500 rows • Export for full data</span>
+          )}
+          <span className="text-[10px] text-muted-foreground ml-auto">
+            {visibleCols.length} of {columns.length} columns visible
+          </span>
+        </div>
+      )}
 
       {/* Data table */}
       <div className="flex-1 min-h-0 overflow-auto">
@@ -620,6 +866,20 @@ export function PlannerReportBuilder() {
                 <div className="sticky top-0 z-10 flex items-center gap-2 px-4 py-1.5 bg-muted border-b border-border">
                   <span className="text-xs font-bold text-foreground">{groupKey}</span>
                   <Badge variant="secondary" className="text-[10px]">{rows.length}</Badge>
+                  {/* Group-level numeric summary */}
+                  {NUMERIC_FIELDS[source].map(nf => {
+                    const vals = rows.map(r => parseFloat(r[nf])).filter(v => !isNaN(v));
+                    const total = vals.reduce((s, v) => s + v, 0);
+                    if (total > 0) {
+                      const colLabel = SOURCE_CONFIG[source].columns.find(c => c.key === nf)?.label || nf;
+                      return (
+                        <span key={nf} className="text-[10px] text-muted-foreground ml-1">
+                          {colLabel}: {total.toFixed(1)}
+                        </span>
+                      );
+                    }
+                    return null;
+                  })}
                 </div>
                 {renderTable(rows)}
               </div>
