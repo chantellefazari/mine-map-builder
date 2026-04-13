@@ -264,8 +264,7 @@ export function PlannerForecastTab({ items }: Props) {
                       <span className="text-muted-foreground flex-shrink-0">{item.assetNumber}</span>
                       <Badge variant="outline" className="text-[8px] px-1 py-0 h-3.5 flex-shrink-0">{item.frequency || item.woType}</Badge>
                     </div>
-                  );
-                })}
+                ))}
                 {selectedData.items.length === 0 && selectedData.projectedPMs.length === 0 && (
                   <span className="text-[10px] text-muted-foreground">No work planned for this week</span>
                 )}
