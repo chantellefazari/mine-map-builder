@@ -186,7 +186,7 @@ export function PlannerTreeExplorer({ items }: Props) {
 }
 
 /* ─── Area Node ─── */
-function AreaNode({ area, isLast, expanded, toggle, getEquipmentPlans, getParentPlans, getSubAreaPlans, getAreaPlans, selectedAssetNumber, onSelectEquipment }: {
+function AreaNode({ area, isLast, expanded, toggle, getEquipmentPlans, getParentPlans, getSubAreaPlans, getAreaPlans, selectedAssetNumber, onSelectEquipment, getCriticality }: {
   area: Area; isLast: boolean;
   expanded: Set<string>; toggle: (k: string) => void;
   getEquipmentPlans: (e: Equipment) => PlannerItem[];
@@ -195,6 +195,7 @@ function AreaNode({ area, isLast, expanded, toggle, getEquipmentPlans, getParent
   getAreaPlans: (a: Area) => number;
   selectedAssetNumber: string | null;
   onSelectEquipment: (e: Equipment) => void;
+  getCriticality: (assetNumber: string) => CriticalityRating | null;
 }) {
   const key = `area-${area.code}`;
   const isOpen = expanded.has(key);
@@ -212,7 +213,7 @@ function AreaNode({ area, isLast, expanded, toggle, getEquipmentPlans, getParent
       {isOpen && area.subAreas.map((sa, saIdx) => (
         <SubAreaNode key={sa.label} subArea={sa} areaCode={area.code} isLast={saIdx === area.subAreas.length - 1} parentIsLast={[isLast]}
           expanded={expanded} toggle={toggle} getEquipmentPlans={getEquipmentPlans} getParentPlans={getParentPlans} getSubAreaPlans={getSubAreaPlans}
-          selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment} />
+          selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment} getCriticality={getCriticality} />
       ))}
     </div>
   );
