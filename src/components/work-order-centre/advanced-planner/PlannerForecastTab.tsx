@@ -8,31 +8,39 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   format, startOfWeek, addWeeks, getISOWeek, getYear, addDays,
   parseISO, isWithinInterval, startOfYear,
 } from "date-fns";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import { WO_TYPE_CONFIG } from "./AdvancedPlannerView";
+import { useAssetCriticality, CRITICALITY_CONFIG } from "@/hooks/useAssetCriticality";
 
 interface Props {
   items: PlannerItem[];
 }
 
-const FREQ_TO_WEEKS: Record<string, number[]> = {
-  Daily: Array.from({ length: 52 }, (_, i) => i + 1),
-  Weekly: Array.from({ length: 52 }, (_, i) => i + 1),
-  Fortnightly: Array.from({ length: 26 }, (_, i) => i * 2 + 1),
-  Monthly: [1, 5, 9, 13, 18, 22, 26, 31, 35, 39, 44, 48],
-  "6-Monthly": [1, 26],
-  Quarterly: [1, 13, 26, 39],
-  Annually: [1],
-  Yearly: [1],
-};
-
 function getWeeksForFrequency(freq: string): number[] {
-  const key = Object.keys(FREQ_TO_WEEKS).find(k => freq.toLowerCase().includes(k.toLowerCase()));
-  return key ? FREQ_TO_WEEKS[key] : [];
+  if (!freq) return [];
+  const f = freq.trim().toLowerCase();
+  if (f === "daily") return Array.from({ length: 52 }, (_, i) => i + 1);
+  const weekMatch = f.match(/^(\d+)\s*week/i);
+  if (weekMatch) {
+    const interval = parseInt(weekMatch[1], 10);
+    if (interval <= 0) return [];
+    if (interval === 1) return Array.from({ length: 52 }, (_, i) => i + 1);
+    const weeks: number[] = [];
+    for (let w = 1; w <= 52; w += interval) weeks.push(w);
+    return weeks;
+  }
+  if (f === "weekly") return Array.from({ length: 52 }, (_, i) => i + 1);
+  if (f === "fortnightly") return Array.from({ length: 26 }, (_, i) => i * 2 + 1);
+  if (f === "monthly") return [1, 5, 9, 13, 18, 22, 26, 31, 35, 39, 44, 48];
+  if (f === "quarterly") return [1, 13, 26, 39];
+  if (f.includes("6-month")) return [1, 26];
+  if (f === "annually" || f === "yearly") return [1];
+  return [];
 }
 
 interface WeekBucket {
