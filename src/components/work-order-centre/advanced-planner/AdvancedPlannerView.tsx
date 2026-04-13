@@ -23,6 +23,7 @@ import { PlannerCapacityTab } from "./PlannerCapacityTab";
 import { PlannerForwardPlanTab } from "./PlannerForwardPlanTab";
 import { PlannerResourceLevelingTab } from "./PlannerResourceLevelingTab";
 import { ForwardPlanScheduleDialog } from "./ForwardPlanScheduleDialog";
+import { PlannerExcelToolbar } from "./PlannerExcelToolbar";
 import { PlannerItemDetail } from "./PlannerItemDetail";
 
 export interface PlannerItem {
