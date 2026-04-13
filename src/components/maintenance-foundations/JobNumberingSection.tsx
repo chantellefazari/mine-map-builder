@@ -17,7 +17,7 @@ const numberingRules = [
 
 const mandatoryFields = [
   { field: "Work Order Number", desc: "Unique identifier for traceability" },
-  { field: "Work Type", desc: "Planned (11), PM (12), Breakdown (13), Shutdown (14)" },
+  { field: "Work Type", desc: "Planned (11), PM (12), Breakdown (13)" },
   { field: "Priority", desc: "Critical, High, Medium, Low" },
   { field: "Asset / Equipment ID", desc: "What is being worked on" },
   { field: "Functional Location", desc: "Where in the hierarchy" },
@@ -32,9 +32,9 @@ const mandatoryFields = [
 
 const workTypes = [
   { type: "Breakdown", category: "Reactive", desc: "Unplanned maintenance performed when equipment has failed, is failing, or poses an immediate safety or production risk", examples: "Pump seal failure, motor tripping on overload, conveyor belt tear, gearbox failure" },
-  { type: "Preventive", category: "Proactive", desc: "Fixed interval tasks performed on a scheduled basis to prevent failure and maintain reliability", examples: "Weekly inspections, monthly greasing, annual overhauls, filter changes" },
+  { type: "Planned", category: "Proactive", desc: "Scheduled corrective or improvement work identified through inspections, condition monitoring, or operational requests", examples: "Bearing replacement, valve rebuild, belt alignment, pipe modification" },
+  { type: "Preventive (PM)", category: "Proactive", desc: "Fixed interval tasks performed on a scheduled basis to prevent failure and maintain reliability", examples: "Weekly inspections, monthly greasing, annual overhauls, filter changes" },
   { type: "Condition Based", category: "Proactive", desc: "Maintenance triggered by condition monitoring thresholds rather than fixed intervals", examples: "Vibration analysis, oil sampling, thermography, bearing temperature trends" },
-  { type: "Shutdown", category: "Proactive", desc: "Planned major maintenance events requiring full or partial plant shutdown", examples: "Mill reline, thickener internal inspection, major electrical shutdowns" },
 ];
 
 export const JobNumberingSection = () => {
@@ -138,7 +138,6 @@ export const JobNumberingSection = () => {
                   { code: "11", type: "Planned Work", range: "WO-110001 → WO-119999", example: "WO-110001" },
                   { code: "12", type: "PM (Preventive Maintenance)", range: "WO-120001 → WO-129999", example: "WO-120001" },
                   { code: "13", type: "Breakdown (Reactive)", range: "WO-130001 → WO-139999", example: "WO-130001" },
-                  { code: "14", type: "Shutdown", range: "WO-140001 → WO-149999", example: "WO-140001" },
                 ].map((r, i) => (
                   <tr key={i} style={{ backgroundColor: i % 2 === 1 ? GOLD_BG : "transparent" }}>
                     <td style={{ ...td, fontWeight: 700, fontFamily: "monospace", textAlign: "center", color: DARK }}>{r.code}</td>
@@ -151,7 +150,7 @@ export const JobNumberingSection = () => {
             </table>
 
             <div style={{ backgroundColor: GOLD_BG, border: `1px solid ${GOLD}`, borderRadius: 4, padding: "8px 12px", marginBottom: 12, fontSize: 12, color: "#444" }}>
-              <strong style={{ color: DARK }}>Capacity:</strong> Each type supports 9,999 work orders. At 50 WOs/week per type = ~3.8 years per range. Total system capacity across all types = 39,996 work orders.
+              <strong style={{ color: DARK }}>Capacity:</strong> Each type supports 9,999 work orders. Total system capacity across all types = 29,997 work orders. Shutdown work is tagged via the Online/Offline duty type flag on any WO — not a separate number series.
             </div>
 
             {/* 3. Numbering Rules */}

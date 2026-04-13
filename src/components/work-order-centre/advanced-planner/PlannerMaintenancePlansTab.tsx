@@ -25,9 +25,9 @@ interface Props {
 const FREQUENCIES = ["Daily", "Weekly", "Fortnightly", "Monthly", "Quarterly", "6-Monthly", "Annually", "Shutdown"];
 const DISCIPLINES = ["Mechanical", "Electrical", "Instrumentation", "Process", "General"];
 const STATUSES = ["Draft", "Active", "Review", "Superseded"];
-const DUTY_TYPES = ["Online", "Offline", "Shutdown", "Both"];
+const DUTY_TYPES = ["Online", "Offline", "Both"];
 const SKILL_LEVELS = ["Basic", "Competent", "Advanced", "Specialist"];
-const PLAN_CATEGORIES = ["Preventive", "Shutdown", "Condition-Based", "Lifecycle"] as const;
+const PLAN_CATEGORIES = ["Preventive", "Condition-Based", "Lifecycle"] as const;
 
 type PlanCategory = typeof PLAN_CATEGORIES[number];
 
