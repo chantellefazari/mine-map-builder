@@ -213,17 +213,33 @@ export function PlannerResourceLevelingTab({ items }: Props) {
           <Layers className="w-4 h-4 text-primary" />
           <span className="text-xs font-bold text-foreground">Resource Leveling</span>
           <span className="text-[9px] text-muted-foreground bg-primary/10 px-2 py-0.5 rounded-full">Demand vs Capacity</span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-xs text-xs leading-relaxed">
+              <p className="font-semibold mb-1">How it works</p>
+              <p>Compares weekly demand (scheduled WOs + projected PMs) against crew capacity. Set capacity in the <strong>Capacity</strong> tab, schedule work via <strong>Forward Plan</strong>, then balance overloaded weeks here.</p>
+            </TooltipContent>
+          </Tooltip>
+          <div className="flex items-center gap-3 ml-2 pl-2 border-l border-border">
+            <div className="flex items-center gap-1">
+              <BarChart3 className="w-3 h-3 text-blue-500" />
+              <span className="text-[9px] text-muted-foreground">{totalPMs} PMs</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <CalendarRange className="w-3 h-3 text-emerald-500" />
+              <span className="text-[9px] text-muted-foreground">{scheduledWOs} WOs</span>
+            </div>
+            {unscheduledWOs > 0 && (
+              <div className="flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3 text-amber-500" />
+                <span className="text-[9px] text-amber-600">{unscheduledWOs} unscheduled</span>
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 text-[10px] gap-1"
-            onClick={() => setShowGuide(!showGuide)}
-          >
-            <Lightbulb className="w-3 h-3" />
-            {showGuide ? "Hide" : "Show"} Guide
-          </Button>
           <Select value={selectedWC} onValueChange={setSelectedWC}>
             <SelectTrigger className="h-7 w-36 text-[10px]"><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -238,72 +254,6 @@ export function PlannerResourceLevelingTab({ items }: Props) {
 
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-4">
-
-          {/* How-to guide */}
-          {showGuide && (
-            <div className="border border-primary/30 rounded-lg bg-primary/5 p-4">
-              <div className="flex items-start gap-3">
-                <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <div className="space-y-2 flex-1">
-                  <h3 className="text-xs font-bold text-foreground">How Resource Leveling Works</h3>
-                  <p className="text-[10px] text-muted-foreground leading-relaxed">
-                    This view compares your <strong>weekly work demand</strong> (scheduled WOs + projected PM hours)
-                    against your <strong>available crew capacity</strong> (personnel × hours/day × 7 days × loading target%).
-                    Use it to spot weeks that are overloaded or underutilised so you can redistribute work.
-                  </p>
-                  <div className="grid grid-cols-3 gap-3 mt-2">
-                    <div className="flex items-start gap-2">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[9px] font-bold text-primary">1</span>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-semibold text-foreground">Set Capacity</p>
-                        <p className="text-[9px] text-muted-foreground">Go to the <strong>Capacity</strong> tab and set your personnel, hours/day and loading % per discipline per week.</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[9px] font-bold text-primary">2</span>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-semibold text-foreground">Schedule Work</p>
-                        <p className="text-[9px] text-muted-foreground">Use the <strong>Forward Plan</strong> or <strong>Weekly Schedule</strong> to assign WOs to specific weeks. PMs are auto-projected from frequency.</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[9px] font-bold text-primary">3</span>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-semibold text-foreground">Balance Load</p>
-                        <p className="text-[9px] text-muted-foreground">Review the heatmap and chart below. Move work from <strong className="text-destructive">red</strong> (overloaded) weeks to <strong className="text-amber-600">amber</strong> (underloaded) weeks.</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Data coverage status */}
-                  <div className="flex items-center gap-4 mt-3 pt-3 border-t border-primary/20">
-                    <div className="flex items-center gap-1.5">
-                      <BarChart3 className="w-3 h-3 text-blue-500" />
-                      <span className="text-[9px] text-foreground font-medium">{totalPMs} PMs projected</span>
-                      <span className="text-[8px] text-muted-foreground">(from frequency)</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <CalendarRange className="w-3 h-3 text-emerald-500" />
-                      <span className="text-[9px] text-foreground font-medium">{scheduledWOs} WOs scheduled</span>
-                    </div>
-                    {unscheduledWOs > 0 && (
-                      <div className="flex items-center gap-1.5">
-                        <AlertTriangle className="w-3 h-3 text-amber-500" />
-                        <span className="text-[9px] text-amber-600 font-medium">{unscheduledWOs} WOs unscheduled</span>
-                        <span className="text-[8px] text-muted-foreground">(not shown in demand)</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Summary cards */}
           <div className="grid grid-cols-6 gap-2">
