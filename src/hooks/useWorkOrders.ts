@@ -32,6 +32,19 @@ export interface WorkOrder {
   duty_type: string;
   job_status: string;
   wo_return_status: string;
+  activity_type: string;
+  isolation_required: boolean;
+  work_title: string;
+  findings: string;
+  work_centre: string;
+  planned_start: string | null;
+  planned_finish: string | null;
+  linked_wr_number: string;
+  revision_week: string;
+  permit_required: boolean;
+  confined_space: boolean;
+  working_at_heights: boolean;
+  hot_work: boolean;
   created_at: string;
   updated_at: string;
 }
