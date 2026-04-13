@@ -1,20 +1,31 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
 import { useWorkRequests } from "@/hooks/useWorkRequests";
 import {
   Target, CheckCircle2, TrendingUp, Gauge, Clock, AlertTriangle,
   Users, BarChart3, Wrench, CalendarCheck, Layers, ArrowUpRight,
+  ArrowLeft, FileBarChart, Activity, ClipboardCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PlannerItem } from "./AdvancedPlannerView";
-import type { WOCView } from "@/pages/WorkOrderCentre";
+
+// Import the full reporting components
+import { WOCReportsTab } from "../performance/WOCReportsTab";
+import { WOCAnalyticsTab } from "../performance/WOCAnalyticsTab";
+import { WOCComplianceTab } from "../performance/WOCComplianceTab";
+import { WOCScheduleComplianceTab } from "../performance/WOCScheduleComplianceTab";
+import { WOCBacklogTab } from "../performance/WOCBacklogTab";
+import { WOCReliabilityTab } from "../performance/WOCReliabilityTab";
+import { WOCKPIScorecardTab } from "../performance/WOCKPIScorecardTab";
+
+type SubView = "overview" | "reports" | "analytics" | "compliance" | "sched-compliance" | "backlog" | "reliability" | "kpi-scorecard";
 
 interface Props {
   items: PlannerItem[];
-  onNavigateWOC?: (view: WOCView) => void;
 }
 
 function RAGDot({ value, target, inverse = false }: { value: number; target: number; inverse?: boolean }) {
@@ -60,7 +71,19 @@ function KPICard({ label, value, unit, target, targetLabel, icon: Icon, inverse 
   );
 }
 
-export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
+const SUB_VIEW_LABELS: Record<SubView, { label: string; icon: React.ElementType }> = {
+  overview: { label: "Performance Overview", icon: BarChart3 },
+  reports: { label: "Reports", icon: FileBarChart },
+  analytics: { label: "Analytics", icon: BarChart3 },
+  compliance: { label: "PM Compliance", icon: CheckCircle2 },
+  "sched-compliance": { label: "Schedule Compliance", icon: Target },
+  backlog: { label: "Backlog Management", icon: AlertTriangle },
+  reliability: { label: "Reliability", icon: Activity },
+  "kpi-scorecard": { label: "KPI Scorecard", icon: TrendingUp },
+};
+
+export function PlannerDashboardTab({ items }: Props) {
+  const [subView, setSubView] = useState<SubView>("overview");
   const { workOrders } = useWorkOrders();
   const { workRequests } = useWorkRequests();
 
@@ -106,11 +129,9 @@ export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
     ? Math.round(workRequests.filter(wr => wr.status === "Approved" || wr.linked_wo_id).length / workRequests.length * 100)
     : 0;
 
-  // Planner-specific: duty type breakdown
+  // Planner-specific
   const onlineCount = items.filter(i => (i.dutyType || "Online") === "Online").length;
   const offlineCount = items.filter(i => i.dutyType === "Offline").length;
-
-  // Total labour from planner items
   const totalPlannerHrs = useMemo(() => Math.round(items.reduce((s, i) => s + i.estimatedHours, 0)), [items]);
 
   // Backlog aging bands
@@ -127,7 +148,7 @@ export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
     return bands;
   }, [backlog, now]);
 
-  // By discipline for planner items
+  // Discipline hours
   const disciplineHours = useMemo(() => {
     const map = new Map<string, { count: number; hours: number }>();
     items.forEach(i => {
@@ -140,6 +161,72 @@ export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
     return Array.from(map.entries()).sort((a, b) => b[1].hours - a[1].hours).slice(0, 6);
   }, [items]);
 
+  // Sub-view navigation tabs shown at the top of drill-down views
+  const REPORT_TABS: { key: SubView; label: string; icon: React.ElementType }[] = [
+    { key: "reports", label: "Reports", icon: FileBarChart },
+    { key: "analytics", label: "Analytics", icon: BarChart3 },
+    { key: "compliance", label: "PM Compliance", icon: CheckCircle2 },
+    { key: "sched-compliance", label: "Schedule Compliance", icon: Target },
+    { key: "backlog", label: "Backlog", icon: AlertTriangle },
+    { key: "reliability", label: "Reliability", icon: Activity },
+    { key: "kpi-scorecard", label: "KPI Scorecard", icon: TrendingUp },
+  ];
+
+  // If we're in a sub-view, render the back bar + the full reporting component
+  if (subView !== "overview") {
+    const currentView = SUB_VIEW_LABELS[subView];
+    const CurrentIcon = currentView.icon;
+    return (
+      <div className="flex flex-col h-full">
+        {/* Back bar + sibling nav */}
+        <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-card/50">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+            onClick={() => setSubView("overview")}
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Performance
+          </Button>
+          <div className="w-px h-5 bg-border" />
+          <div className="flex items-center gap-0.5">
+            {REPORT_TABS.map(tab => {
+              const isActive = subView === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setSubView(tab.key)}
+                  className={cn(
+                    "flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium transition-all",
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                  )}
+                >
+                  <tab.icon className="w-3 h-3" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Full reporting view */}
+        <div className="flex-1 min-h-0 overflow-auto p-4">
+          {subView === "reports" && <WOCReportsTab workOrders={workOrders} workRequests={workRequests} />}
+          {subView === "analytics" && <WOCAnalyticsTab workOrders={workOrders} workRequests={workRequests} />}
+          {subView === "compliance" && <WOCComplianceTab />}
+          {subView === "sched-compliance" && <WOCScheduleComplianceTab workOrders={workOrders} workRequests={workRequests} />}
+          {subView === "backlog" && <WOCBacklogTab workOrders={workOrders} workRequests={workRequests} />}
+          {subView === "reliability" && <WOCReliabilityTab workOrders={workOrders} workRequests={workRequests} />}
+          {subView === "kpi-scorecard" && <WOCKPIScorecardTab workOrders={workOrders} workRequests={workRequests} />}
+        </div>
+      </div>
+    );
+  }
+
+  // Overview (main Performance landing page)
   return (
     <ScrollArea className="h-full">
       <div className="p-5 space-y-4">
@@ -149,26 +236,44 @@ export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
             <BarChart3 className="w-4 h-4 text-primary" />
             <h2 className="text-sm font-bold text-foreground">Performance — Maintenance KPIs &amp; Reporting</h2>
           </div>
-          <Badge variant="outline" className="text-[9px]">Live from WO Centre</Badge>
+          <Badge variant="outline" className="text-[9px]">Live Data</Badge>
+        </div>
+
+        {/* Reporting module quick-access strip */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {REPORT_TABS.map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setSubView(tab.key)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all"
+            >
+              <tab.icon className="w-3 h-3" />
+              {tab.label}
+              <ArrowUpRight className="w-2.5 h-2.5 opacity-40" />
+            </button>
+          ))}
         </div>
 
         {/* KPI Scorecard Row */}
         <div className="grid grid-cols-3 lg:grid-cols-6 gap-2">
-          <KPICard label="PM Compliance" value={pmCompliance} unit="%" target={90} icon={CheckCircle2} onClick={() => onNavigateWOC?.("dashboard")} />
-          <KPICard label="Schedule Compliance" value={schedCompliance} unit="%" target={85} icon={Target} onClick={() => onNavigateWOC?.("dashboard")} />
-          <KPICard label="Planned Ratio" value={plannedPct} unit="%" target={70} icon={TrendingUp} onClick={() => onNavigateWOC?.("dashboard")} />
-          <KPICard label="Completion Rate" value={completionRate} unit="%" target={80} icon={Gauge} onClick={() => onNavigateWOC?.("dashboard")} />
-          <KPICard label="Avg MTTR" value={avgMTTR} unit="h" target={24} icon={Clock} inverse onClick={() => onNavigateWOC?.("dashboard")} />
-          <KPICard label="Backlog" value={backlogWeeks} unit="wks" target={4} icon={AlertTriangle} inverse targetLabel="≤4 wks target" onClick={() => onNavigateWOC?.("dashboard")} />
+          <KPICard label="PM Compliance" value={pmCompliance} unit="%" target={90} icon={CheckCircle2} onClick={() => setSubView("compliance")} />
+          <KPICard label="Schedule Compliance" value={schedCompliance} unit="%" target={85} icon={Target} onClick={() => setSubView("sched-compliance")} />
+          <KPICard label="Planned Ratio" value={plannedPct} unit="%" target={70} icon={TrendingUp} onClick={() => setSubView("kpi-scorecard")} />
+          <KPICard label="Completion Rate" value={completionRate} unit="%" target={80} icon={Gauge} onClick={() => setSubView("analytics")} />
+          <KPICard label="Avg MTTR" value={avgMTTR} unit="h" target={24} icon={Clock} inverse onClick={() => setSubView("reliability")} />
+          <KPICard label="Backlog" value={backlogWeeks} unit="wks" target={4} icon={AlertTriangle} inverse targetLabel="≤4 wks target" onClick={() => setSubView("backlog")} />
         </div>
 
         <div className="grid grid-cols-3 gap-3">
           {/* Work Requests Pipeline */}
-          <Card className={cn("border-border transition-colors", onNavigateWOC && "cursor-pointer hover:border-primary/40 hover:bg-primary/5")} onClick={() => onNavigateWOC?.("work-requests")}>
+          <Card className="border-border cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-colors" onClick={() => setSubView("analytics")}>
             <CardContent className="p-3">
-              <div className="flex items-center gap-1.5 mb-3">
-                <Wrench className="w-3.5 h-3.5 text-muted-foreground" />
-                <span className="text-xs font-semibold text-foreground">Work Request Pipeline</span>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-1.5">
+                  <Wrench className="w-3.5 h-3.5 text-muted-foreground" />
+                  <span className="text-xs font-semibold text-foreground">Work Request Pipeline</span>
+                </div>
+                <ArrowUpRight className="w-3 h-3 text-muted-foreground" />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -188,11 +293,14 @@ export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
           </Card>
 
           {/* Planned vs Reactive */}
-          <Card className={cn("border-border transition-colors", onNavigateWOC && "cursor-pointer hover:border-primary/40 hover:bg-primary/5")} onClick={() => onNavigateWOC?.("dashboard")}>
+          <Card className="border-border cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-colors" onClick={() => setSubView("kpi-scorecard")}>
             <CardContent className="p-3">
-              <div className="flex items-center gap-1.5 mb-3">
-                <Layers className="w-3.5 h-3.5 text-muted-foreground" />
-                <span className="text-xs font-semibold text-foreground">Planned vs Reactive</span>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-1.5">
+                  <Layers className="w-3.5 h-3.5 text-muted-foreground" />
+                  <span className="text-xs font-semibold text-foreground">Planned vs Reactive</span>
+                </div>
+                <ArrowUpRight className="w-3 h-3 text-muted-foreground" />
               </div>
               <div className="flex items-center gap-3 mb-2">
                 <div className="text-center flex-1">
@@ -252,14 +360,17 @@ export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
 
         <div className="grid grid-cols-2 gap-3">
           {/* Backlog Aging */}
-          <Card className={cn("border-border transition-colors", onNavigateWOC && "cursor-pointer hover:border-primary/40 hover:bg-primary/5")} onClick={() => onNavigateWOC?.("dashboard")}>
+          <Card className="border-border cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-colors" onClick={() => setSubView("backlog")}>
             <CardContent className="p-3">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-1.5">
                   <AlertTriangle className="w-3.5 h-3.5 text-muted-foreground" />
                   <span className="text-xs font-semibold text-foreground">Backlog Aging</span>
                 </div>
-                <span className="text-[10px] text-muted-foreground">{backlogCount} open WOs</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-muted-foreground">{backlogCount} open WOs</span>
+                  <ArrowUpRight className="w-3 h-3 text-muted-foreground" />
+                </div>
               </div>
               <div className="grid grid-cols-4 gap-2">
                 {Object.entries(agingBands).map(([band, count]) => {
