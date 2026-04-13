@@ -15,7 +15,7 @@ import { Download, Filter, Columns3, Group, FileDown, RotateCcw, Search } from "
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
-type DataSource = "work_orders" | "work_requests" | "pm_schedules" | "failure_records" | "permits";
+type DataSource = "work_orders" | "work_requests" | "pm_schedules" | "failure_records" | "permits" | "assets" | "purchase_orders" | "equipment_service" | "condition_triggers";
 
 interface ColumnDef {
   key: string;
