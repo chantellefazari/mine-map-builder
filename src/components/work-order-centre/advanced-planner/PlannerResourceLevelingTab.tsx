@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import {
   ChevronLeft, ChevronRight, Layers, AlertTriangle, CheckCircle2,
   Wrench, Zap, Truck, Users, Clock, TrendingDown, Info, ArrowRight,
-  BarChart3, CalendarRange, Lightbulb,
+  BarChart3, CalendarRange,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
