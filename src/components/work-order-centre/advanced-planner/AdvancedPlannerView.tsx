@@ -93,7 +93,7 @@ type PlannerTab = "overview" | "dashboard" | "maintenance-plans" | "work-orders"
 
 const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
-  { key: "dashboard", label: "Dashboard", icon: BarChart3 },
+  { key: "dashboard", label: "Performance", icon: BarChart3 },
   { key: "maintenance-plans", label: "Maintenance Plans", icon: ClipboardList },
   { key: "work-orders", label: "Work Orders", icon: FileText },
   { key: "forward-plan", label: "Forward Plan", icon: CalendarRange },
