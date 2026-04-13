@@ -357,7 +357,9 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
       </div>
 
       {/* Row 2: Sub-tabs for active group */}
-      <div className="flex items-center gap-0.5 px-4 py-1 border-b border-border bg-muted/20">
+      <div className="flex items-center gap-1 px-4 py-1.5 border-b border-border bg-muted/20">
+        <span className="text-[10px] font-bold text-primary uppercase tracking-wider mr-1 select-none">{currentGroup.group}</span>
+        <ChevronRight className="w-3 h-3 text-muted-foreground mr-0.5" />
         {currentGroup.tabs.map(tab => {
           const isActive = activeTab === tab.key;
           return (
