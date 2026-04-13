@@ -328,7 +328,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
           />
         )}
         {activeTab === "dashboard" && (
-          <PlannerDashboardTab items={filteredItems} onNavigateWOC={onNavigateWOC} />
+          <PlannerDashboardTab items={filteredItems} />
         )}
         {activeTab === "maintenance-plans" && (
           <PlannerMaintenancePlansTab items={allItems.filter(i => i.source === "pm")} />
