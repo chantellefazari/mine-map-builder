@@ -253,12 +253,13 @@ function SubAreaNode({ subArea, areaCode, isLast, parentIsLast, expanded, toggle
 }
 
 /* ─── Parent Asset Node ─── */
-function ParentAssetNode({ parent, areaCode, subAreaLabel, isLast, parentIsLast, expanded, toggle, getEquipmentPlans, getParentPlans, selectedAssetNumber, onSelectEquipment }: {
+function ParentAssetNode({ parent, areaCode, subAreaLabel, isLast, parentIsLast, expanded, toggle, getEquipmentPlans, getParentPlans, selectedAssetNumber, onSelectEquipment, getCriticality }: {
   parent: ParentAsset; areaCode: string; subAreaLabel: string; isLast: boolean; parentIsLast: boolean[];
   expanded: Set<string>; toggle: (k: string) => void;
   getEquipmentPlans: (e: Equipment) => PlannerItem[];
   getParentPlans: (pa: ParentAsset) => number;
   selectedAssetNumber: string | null; onSelectEquipment: (e: Equipment) => void;
+  getCriticality: (assetNumber: string) => CriticalityRating | null;
 }) {
   const key = `pa-${areaCode}-${subAreaLabel}-${parent.label}`;
   const isOpen = expanded.has(key);
@@ -282,7 +283,8 @@ function ParentAssetNode({ parent, areaCode, subAreaLabel, isLast, parentIsLast,
       {isOpen && parent.equipment.map((eq, eqIdx) => (
         <EquipmentNode key={eq.assetNumber} equipment={eq} isLast={eqIdx === parent.equipment.length - 1}
           parentIsLast={[...parentIsLast, isLast]} expanded={expanded} toggle={toggle}
-          plans={getEquipmentPlans(eq)} selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment} />
+          plans={getEquipmentPlans(eq)} selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment}
+          getCriticality={getCriticality} />
       ))}
     </div>
   );
