@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Search, Download, FolderTree, ClipboardList, FileText, ListChecks,
-  LayoutDashboard, Wrench, Package, TrendingUp, Building2, Users, CalendarRange, Layers,
+  LayoutDashboard, Wrench, Package, TrendingUp, Building2, Users, CalendarRange, Layers, BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
@@ -22,6 +22,7 @@ import { PlannerShutdownImpactTab } from "./PlannerShutdownImpactTab";
 import { PlannerCapacityTab } from "./PlannerCapacityTab";
 import { PlannerForwardPlanTab } from "./PlannerForwardPlanTab";
 import { PlannerResourceLevelingTab } from "./PlannerResourceLevelingTab";
+import { PlannerDashboardTab } from "./PlannerDashboardTab";
 import { ForwardPlanScheduleDialog } from "./ForwardPlanScheduleDialog";
 import { PlannerExcelToolbar } from "./PlannerExcelToolbar";
 import { PlannerItemDetail } from "./PlannerItemDetail";
@@ -88,10 +89,11 @@ export const WO_TYPE_CONFIG = {
   Breakdown: { label: "Breakdown", code: "13", color: "bg-red-500", textColor: "text-red-700" },
 };
 
-type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "forward-plan" | "asset-tree" | "rounds" | "forecast" | "capacity" | "resource-leveling" | "schedule-blocks";
+type PlannerTab = "overview" | "dashboard" | "maintenance-plans" | "work-orders" | "forward-plan" | "asset-tree" | "rounds" | "forecast" | "capacity" | "resource-leveling" | "schedule-blocks";
 
 const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
+  { key: "dashboard", label: "Dashboard", icon: BarChart3 },
   { key: "maintenance-plans", label: "Maintenance Plans", icon: ClipboardList },
   { key: "work-orders", label: "Work Orders", icon: FileText },
   { key: "forward-plan", label: "Forward Plan", icon: CalendarRange },
@@ -323,6 +325,9 @@ export function AdvancedPlannerView() {
             filterWOType={filterWOType}
             setFilterWOType={setFilterWOType}
           />
+        )}
+        {activeTab === "dashboard" && (
+          <PlannerDashboardTab items={filteredItems} />
         )}
         {activeTab === "maintenance-plans" && (
           <PlannerMaintenancePlansTab items={allItems.filter(i => i.source === "pm")} />
