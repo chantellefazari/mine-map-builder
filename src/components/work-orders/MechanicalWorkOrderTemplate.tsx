@@ -39,6 +39,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
     required_tooling: "",
     priority: "Medium",
     work_type: "Breakdown",
+    duty_type: "Online",
     requested_by: "",
     assigned_to: "",
     trade: "",
@@ -71,6 +72,7 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
         required_tooling: (wo as any).required_tooling || "",
         priority: wo.priority || "Medium",
         work_type: wo.work_type || "Breakdown",
+        duty_type: (wo as any).duty_type || "Online",
         requested_by: wo.requested_by || "",
         assigned_to: wo.assigned_to || "",
         trade: wo.trade || "",
@@ -294,6 +296,22 @@ export const MechanicalWorkOrderTemplate = ({ woNumber }: MechanicalWorkOrderTem
                         {form.work_type === t && "✓"}
                       </div>
                       <span className="text-xs">{t}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="border border-gray-300 p-2">
+                <span className="text-xs text-gray-500 block mb-1">Duty Type</span>
+                <div className="flex flex-col gap-1">
+                  {dutyTypeOptions.map((dt) => (
+                    <label key={dt} className="flex items-center gap-1 cursor-pointer" onClick={() => {
+                      setForm({ ...form, duty_type: dt });
+                      if (wo) saveField("duty_type", dt);
+                    }}>
+                      <div className={`w-4 h-4 border border-gray-400 flex items-center justify-center text-[10px] ${form.duty_type === dt ? "bg-primary text-primary-foreground" : ""}`}>
+                        {form.duty_type === dt && "✓"}
+                      </div>
+                      <span className="text-xs">{dt}</span>
                     </label>
                   ))}
                 </div>
