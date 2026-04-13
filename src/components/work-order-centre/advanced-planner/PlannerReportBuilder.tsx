@@ -228,6 +228,42 @@ export function PlannerReportBuilder() {
     },
   });
 
+  const assetsQuery = useQuery({
+    queryKey: ["assets_report"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("processing_plant_assets_rev_b").select("*").order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as any[];
+    },
+  });
+
+  const poQuery = useQuery({
+    queryKey: ["po_tracker_report"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("po_tracker").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as any[];
+    },
+  });
+
+  const equipServiceQuery = useQuery({
+    queryKey: ["equipment_service_report"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("equipment_service_tracking").select("*").order("equipment_name", { ascending: true });
+      if (error) throw error;
+      return data as any[];
+    },
+  });
+
+  const cbmQuery = useQuery({
+    queryKey: ["condition_triggers_report"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("condition_triggers").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as any[];
+    },
+  });
+
   // Switch columns when source changes
   const handleSourceChange = useCallback((s: DataSource) => {
     setSource(s);
