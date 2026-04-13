@@ -17,7 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import type { WOMaterialSummary } from "@/hooks/useMaterialReadiness";
-import { useAssetCriticality, CRITICALITY_CONFIG, type CriticalityRating } from "@/hooks/useAssetCriticality";
+
 
 interface Props {
   items: PlannerItem[];
@@ -85,7 +85,6 @@ const DISCIPLINE_FILTERS = [
 ];
 
 const SORT_OPTIONS = [
-  { key: "criticality", label: "Criticality (A→C)" },
   { key: "name", label: "PM Name" },
   { key: "frequency", label: "Frequency" },
   { key: "discipline", label: "Discipline" },
@@ -93,14 +92,14 @@ const SORT_OPTIONS = [
 type SortKey = typeof SORT_OPTIONS[number]["key"];
 
 export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder }: Props) {
-  const { getCriticality, getCriticalitySortOrder } = useAssetCriticality();
+  
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
 
   const [weekOffset, setWeekOffset] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDiscipline, setFilterDiscipline] = useState("All");
-  const [sortBy, setSortBy] = useState<SortKey>("criticality");
+  const [sortBy, setSortBy] = useState<SortKey>("name");
   const [adjustments, setAdjustments] = useState<Record<string, number>>({});
   // Multi-level expansion: Set of expanded PM ids, and set of "pmId:weekIdx" for expanded weeks, and set of "pmId:weekIdx:dayIdx" for expanded days
   const [expandedPMs, setExpandedPMs] = useState<Set<string>>(new Set());
@@ -139,19 +138,13 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     }
     // Sort
     result = [...result].sort((a, b) => {
-      if (sortBy === "criticality") {
-        const ca = getCriticalitySortOrder(a.assetNumber);
-        const cb = getCriticalitySortOrder(b.assetNumber);
-        if (ca !== cb) return ca - cb;
-        return a.taskName.localeCompare(b.taskName);
-      }
       if (sortBy === "name") return a.taskName.localeCompare(b.taskName);
       if (sortBy === "frequency") return (a.frequency || "").localeCompare(b.frequency || "");
       if (sortBy === "discipline") return (a.discipline || "").localeCompare(b.discipline || "");
       return 0;
     });
     return result;
-  }, [pmItems, filterDiscipline, searchQuery, sortBy, getCriticalitySortOrder]);
+  }, [pmItems, filterDiscipline, searchQuery, sortBy]);
 
   const disciplineCounts = useMemo(() => {
     const counts: Record<string, number> = { All: pmItems.length };
