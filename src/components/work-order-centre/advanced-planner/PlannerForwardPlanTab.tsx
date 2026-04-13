@@ -138,19 +138,13 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     }
     // Sort
     result = [...result].sort((a, b) => {
-      if (sortBy === "criticality") {
-        const ca = getCriticalitySortOrder(a.assetNumber);
-        const cb = getCriticalitySortOrder(b.assetNumber);
-        if (ca !== cb) return ca - cb;
-        return a.taskName.localeCompare(b.taskName);
-      }
       if (sortBy === "name") return a.taskName.localeCompare(b.taskName);
       if (sortBy === "frequency") return (a.frequency || "").localeCompare(b.frequency || "");
       if (sortBy === "discipline") return (a.discipline || "").localeCompare(b.discipline || "");
       return 0;
     });
     return result;
-  }, [pmItems, filterDiscipline, searchQuery, sortBy, getCriticalitySortOrder]);
+  }, [pmItems, filterDiscipline, searchQuery, sortBy]);
 
   const disciplineCounts = useMemo(() => {
     const counts: Record<string, number> = { All: pmItems.length };

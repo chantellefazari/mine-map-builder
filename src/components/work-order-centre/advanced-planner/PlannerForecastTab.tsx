@@ -257,8 +257,7 @@ export function PlannerForecastTab({ items }: Props) {
               </div>
               <div className="space-y-1 max-h-48 overflow-y-auto">
                 {[...selectedData.items, ...selectedData.projectedPMs].map((item, i) => {
-                  const crit = getCriticality(item.assetNumber);
-                  const critCfg = crit ? CRITICALITY_CONFIG[crit] : null;
+                  return (
                   return (
                     <div key={`${item.id}-${i}`} className="flex items-center gap-2 text-[10px] py-0.5">
                       <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", WO_TYPE_CONFIG[item.woType]?.color || "bg-muted-foreground")} />
