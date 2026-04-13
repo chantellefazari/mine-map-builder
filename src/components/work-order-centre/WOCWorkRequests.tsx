@@ -13,7 +13,7 @@ import { WOCCreateWorkRequest } from "./WOCCreateWorkRequest";
 import { WOTypeSelectDialog } from "./WOTypeSelectDialog";
 
 interface Props {
-  onOpenWorkspace: (woId: string, from?: "work-requests") => void;
+  onOpenWorkspace: (woId: string, from?: "work-requests", isNew?: boolean) => void;
 }
 
 const STATUS_MAP: Record<string, string[]> = {
