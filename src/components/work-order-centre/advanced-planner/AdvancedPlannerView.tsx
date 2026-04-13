@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Search, Download, FolderTree, ClipboardList, FileText, ListChecks,
-  LayoutDashboard, Wrench, Package, TrendingUp, Building2, Users, CalendarRange, Layers,
+  LayoutDashboard, Wrench, Package, TrendingUp, Building2, Users, CalendarRange, Layers, BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
@@ -325,6 +325,9 @@ export function AdvancedPlannerView() {
             filterWOType={filterWOType}
             setFilterWOType={setFilterWOType}
           />
+        )}
+        {activeTab === "dashboard" && (
+          <PlannerDashboardTab items={filteredItems} />
         )}
         {activeTab === "maintenance-plans" && (
           <PlannerMaintenancePlansTab items={allItems.filter(i => i.source === "pm")} />
