@@ -126,7 +126,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
     try {
       const wo = await allocate.mutateAsync(woType);
       await update.mutateAsync({ id: wo.id, updates: { status: "Planning", work_type: woType } });
-      onOpenWorkspace(wo.id, "wo-management");
+      onOpenWorkspace(wo.id, "wo-management", true);
     } catch {
       // handled in hook
     }

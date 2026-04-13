@@ -44,7 +44,7 @@ export function WOCWorkRequests({ onOpenWorkspace }: Props) {
       const result = await convertToWO.mutateAsync({ wrId: woTypeWr.id, woType });
       toast.success(`Work Order ${result.wo.wo_number} created as ${woType}`);
       setWoTypeWr(null);
-      onOpenWorkspace(result.wo.id, "work-requests");
+      onOpenWorkspace(result.wo.id, "work-requests", true);
     } catch {
       // error handled in hook
     }

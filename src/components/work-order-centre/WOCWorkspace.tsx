@@ -47,7 +47,9 @@ export function WOCWorkspace({ woId, onClose, isNew, onSaved }: Props) {
   }
 
   const handleUpdate = (updates: Partial<WorkOrder>) => {
-    update.mutateAsync({ id: woId, updates });
+    update.mutateAsync({ id: woId, updates }).then(() => {
+      if (isNew && onSaved) onSaved();
+    });
   };
 
   return (
