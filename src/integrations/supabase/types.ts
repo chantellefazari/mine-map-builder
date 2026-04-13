@@ -218,6 +218,95 @@ export type Database = {
         }
         Relationships: []
       }
+      condition_triggers: {
+        Row: {
+          area: string
+          asset_name: string
+          asset_number: string
+          auto_generate_wo: boolean
+          created_at: string
+          created_by: string
+          critical_threshold: number | null
+          current_value: number
+          frequency_hours: number | null
+          id: string
+          last_reading_date: string | null
+          last_triggered_at: string | null
+          linked_wo_id: string | null
+          notes: string
+          parameter_name: string
+          pm_template_id: string | null
+          reading_source: string
+          status: string
+          threshold_unit: string
+          threshold_value: number
+          trigger_name: string
+          trigger_type: string
+          updated_at: string
+          warning_threshold: number | null
+        }
+        Insert: {
+          area?: string
+          asset_name?: string
+          asset_number?: string
+          auto_generate_wo?: boolean
+          created_at?: string
+          created_by?: string
+          critical_threshold?: number | null
+          current_value?: number
+          frequency_hours?: number | null
+          id?: string
+          last_reading_date?: string | null
+          last_triggered_at?: string | null
+          linked_wo_id?: string | null
+          notes?: string
+          parameter_name?: string
+          pm_template_id?: string | null
+          reading_source?: string
+          status?: string
+          threshold_unit?: string
+          threshold_value?: number
+          trigger_name?: string
+          trigger_type?: string
+          updated_at?: string
+          warning_threshold?: number | null
+        }
+        Update: {
+          area?: string
+          asset_name?: string
+          asset_number?: string
+          auto_generate_wo?: boolean
+          created_at?: string
+          created_by?: string
+          critical_threshold?: number | null
+          current_value?: number
+          frequency_hours?: number | null
+          id?: string
+          last_reading_date?: string | null
+          last_triggered_at?: string | null
+          linked_wo_id?: string | null
+          notes?: string
+          parameter_name?: string
+          pm_template_id?: string | null
+          reading_source?: string
+          status?: string
+          threshold_unit?: string
+          threshold_value?: number
+          trigger_name?: string
+          trigger_type?: string
+          updated_at?: string
+          warning_threshold?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "condition_triggers_linked_wo_id_fkey"
+            columns: ["linked_wo_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       equipment_service_tracking: {
         Row: {
           asset_number: string
@@ -268,6 +357,92 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      failure_records: {
+        Row: {
+          area: string
+          asset_name: string
+          asset_number: string
+          component_failed: string
+          corrective_action: string
+          created_at: string
+          detected_by: string
+          detection_method: string
+          downtime_hours: number
+          failure_cause: string
+          failure_class: string
+          failure_date: string
+          failure_mode: string
+          failure_remedy: string
+          id: string
+          is_recurring: boolean
+          notes: string
+          preventive_action: string
+          reported_by: string
+          root_cause_category: string
+          severity: string
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          area?: string
+          asset_name?: string
+          asset_number?: string
+          component_failed?: string
+          corrective_action?: string
+          created_at?: string
+          detected_by?: string
+          detection_method?: string
+          downtime_hours?: number
+          failure_cause?: string
+          failure_class?: string
+          failure_date?: string
+          failure_mode?: string
+          failure_remedy?: string
+          id?: string
+          is_recurring?: boolean
+          notes?: string
+          preventive_action?: string
+          reported_by?: string
+          root_cause_category?: string
+          severity?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          area?: string
+          asset_name?: string
+          asset_number?: string
+          component_failed?: string
+          corrective_action?: string
+          created_at?: string
+          detected_by?: string
+          detection_method?: string
+          downtime_hours?: number
+          failure_cause?: string
+          failure_class?: string
+          failure_date?: string
+          failure_mode?: string
+          failure_remedy?: string
+          id?: string
+          is_recurring?: boolean
+          notes?: string
+          preventive_action?: string
+          reported_by?: string
+          root_cause_category?: string
+          severity?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "failure_records_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       normalized_components: {
         Row: {
@@ -392,6 +567,101 @@ export type Database = {
             columns: ["pr_id"]
             isOneToOne: false
             referencedRelation: "purchase_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      permits_to_work: {
+        Row: {
+          approved_at: string | null
+          approved_by: string
+          area: string
+          asset_number: string
+          closed_at: string | null
+          closed_by: string
+          closure_notes: string
+          confined_space: boolean
+          controls: Json
+          created_at: string
+          description: string
+          hazards: Json
+          hot_work: boolean
+          id: string
+          isolation_required: boolean
+          issued_by: string
+          location_detail: string
+          permit_number: string
+          permit_type: string
+          ppe_required: string[]
+          status: string
+          updated_at: string
+          valid_from: string | null
+          valid_to: string | null
+          work_order_id: string | null
+          working_at_heights: boolean
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string
+          area?: string
+          asset_number?: string
+          closed_at?: string | null
+          closed_by?: string
+          closure_notes?: string
+          confined_space?: boolean
+          controls?: Json
+          created_at?: string
+          description?: string
+          hazards?: Json
+          hot_work?: boolean
+          id?: string
+          isolation_required?: boolean
+          issued_by?: string
+          location_detail?: string
+          permit_number?: string
+          permit_type?: string
+          ppe_required?: string[]
+          status?: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_to?: string | null
+          work_order_id?: string | null
+          working_at_heights?: boolean
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string
+          area?: string
+          asset_number?: string
+          closed_at?: string | null
+          closed_by?: string
+          closure_notes?: string
+          confined_space?: boolean
+          controls?: Json
+          created_at?: string
+          description?: string
+          hazards?: Json
+          hot_work?: boolean
+          id?: string
+          isolation_required?: boolean
+          issued_by?: string
+          location_detail?: string
+          permit_number?: string
+          permit_type?: string
+          ppe_required?: string[]
+          status?: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_to?: string | null
+          work_order_id?: string | null
+          working_at_heights?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "permits_to_work_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
             referencedColumns: ["id"]
           },
         ]
