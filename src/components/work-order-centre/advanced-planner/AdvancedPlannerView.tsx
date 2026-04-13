@@ -94,7 +94,7 @@ export const WO_TYPE_CONFIG = {
   Breakdown: { label: "Breakdown", code: "13", color: "bg-red-500", textColor: "text-red-700" },
 };
 
-type PlannerTab = "overview" | "dashboard" | "maintenance-plans" | "work-orders" | "forward-plan" | "asset-tree" | "rounds" | "forecast" | "capacity" | "resource-leveling" | "schedule-blocks";
+type PlannerTab = "overview" | "dashboard" | "maintenance-plans" | "work-orders" | "forward-plan" | "asset-tree" | "rounds" | "forecast" | "capacity" | "resource-leveling" | "schedule-blocks" | "permits" | "failures" | "condition-monitoring";
 
 const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
@@ -102,6 +102,9 @@ const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "maintenance-plans", label: "Maintenance Plans", icon: ClipboardList },
   { key: "work-orders", label: "Work Orders", icon: FileText },
   { key: "forward-plan", label: "Forward Plan", icon: CalendarRange },
+  { key: "permits", label: "Permits", icon: ShieldAlert },
+  { key: "failures", label: "Failures", icon: Activity },
+  { key: "condition-monitoring", label: "CBM", icon: Gauge },
   { key: "rounds", label: "Rounds", icon: Package },
   { key: "forecast", label: "Forecast", icon: TrendingUp },
   { key: "capacity", label: "Capacity", icon: Users },
