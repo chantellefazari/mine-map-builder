@@ -7,6 +7,7 @@ import { useWorkRequests } from "@/hooks/useWorkRequests";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { WRAssetSearch } from "./WRAssetSearch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Camera, X, Sparkles, Loader2, Plus, Trash2, ArrowLeft, Send, Printer } from "lucide-react";
 import { format } from "date-fns";
 
