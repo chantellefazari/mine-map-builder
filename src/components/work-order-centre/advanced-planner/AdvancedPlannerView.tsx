@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import type { WOCView } from "@/pages/WorkOrderCentre";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
@@ -105,7 +106,7 @@ const TABS: { key: PlannerTab; label: string; icon: React.ElementType }[] = [
   { key: "asset-tree", label: "Asset Tree", icon: FolderTree },
 ];
 
-export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: string) => void }) {
+export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: WOCView) => void }) {
   const { workOrders } = useWorkOrders();
   const { pms, isLoading: loadingPMs } = usePMasterList();
   const { getReadiness, readinessMap } = useMaterialReadiness();

@@ -10,10 +10,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PlannerItem } from "./AdvancedPlannerView";
+import type { WOCView } from "@/pages/WorkOrderCentre";
 
 interface Props {
   items: PlannerItem[];
-  onNavigateWOC?: (view: string) => void;
+  onNavigateWOC?: (view: WOCView) => void;
 }
 
 function RAGDot({ value, target, inverse = false }: { value: number; target: number; inverse?: boolean }) {
