@@ -310,9 +310,18 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="relative w-64">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-            <Input placeholder="Search PMs..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="h-8 pl-8 text-xs" />
+          <div className="flex items-center gap-2">
+            <div className="relative w-56">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <Input placeholder="Search PMs..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="h-8 pl-8 text-xs" />
+            </div>
+            <select
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value as SortKey)}
+              className="h-8 px-2 text-xs border border-border rounded-md bg-background text-foreground"
+            >
+              {SORT_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+            </select>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="h-8 text-xs gap-1">
