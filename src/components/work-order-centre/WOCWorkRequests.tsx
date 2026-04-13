@@ -13,7 +13,7 @@ import { WOCCreateWorkRequest } from "./WOCCreateWorkRequest";
 import { WOTypeSelectDialog } from "./WOTypeSelectDialog";
 
 interface Props {
-  onOpenWorkspace: (woId: string, from?: "work-requests") => void;
+  onOpenWorkspace: (woId: string, from?: "work-requests", isNew?: boolean) => void;
 }
 
 const STATUS_MAP: Record<string, string[]> = {
@@ -44,7 +44,7 @@ export function WOCWorkRequests({ onOpenWorkspace }: Props) {
       const result = await convertToWO.mutateAsync({ wrId: woTypeWr.id, woType });
       toast.success(`Work Order ${result.wo.wo_number} created as ${woType}`);
       setWoTypeWr(null);
-      onOpenWorkspace(result.wo.id, "work-requests");
+      onOpenWorkspace(result.wo.id, "work-requests", true);
     } catch {
       // error handled in hook
     }

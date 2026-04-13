@@ -16,7 +16,7 @@ import { WOTypeSelectDialog, PMAutoFill } from "./WOTypeSelectDialog";
 import { PMSchedulePanel } from "./PMSchedulePanel";
 
 interface Props {
-  onOpenWorkspace: (woId: string, from?: WOCView) => void;
+  onOpenWorkspace: (woId: string, from?: WOCView, isNew?: boolean) => void;
   onNavigate?: (view: WOCView) => void;
 }
 
@@ -126,7 +126,7 @@ export function WOCWorkOrderManagement({ onOpenWorkspace, onNavigate }: Props) {
     try {
       const wo = await allocate.mutateAsync(woType);
       await update.mutateAsync({ id: wo.id, updates: { status: "Planning", work_type: woType } });
-      onOpenWorkspace(wo.id, "wo-management");
+      onOpenWorkspace(wo.id, "wo-management", true);
     } catch {
       // handled in hook
     }
@@ -358,7 +358,7 @@ function WOTableRow({
   wo: WorkOrder;
   showActions: boolean;
   showProgress: boolean;
-  onOpenWorkspace: (woId: string, from?: WOCView) => void;
+  onOpenWorkspace: (woId: string, from?: WOCView, isNew?: boolean) => void;
   onDuplicate: (wo: WorkOrder) => void;
   onStatusChange: (wo: WorkOrder, status: string) => void;
 }) {

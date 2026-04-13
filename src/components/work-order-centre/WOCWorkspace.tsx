@@ -20,11 +20,11 @@ import { Eye, Hammer, Package, ShoppingCart, Link2, History, ClipboardCheck } fr
 interface Props {
   woId: string;
   onClose: () => void;
+  isNew?: boolean;
+  onSaved?: () => void;
 }
 
-const CREATION_STATUSES = ["Draft"];
-
-export function WOCWorkspace({ woId, onClose }: Props) {
+export function WOCWorkspace({ woId, onClose, isNew, onSaved }: Props) {
   const { workOrders, update } = useWorkOrders();
   const wo = workOrders.find((w) => w.id === woId);
   const { parts, auditLog, addPart, updatePart, deletePart } = useWorkOrderParts(woId);
@@ -36,7 +36,7 @@ export function WOCWorkspace({ woId, onClose }: Props) {
   const [activeTab, setActiveTab] = useState(isPMWorkOrder ? "pm-form" : "overview");
   const [showPrint, setShowPrint] = useState(false);
 
-  const isCreationMode = wo ? CREATION_STATUSES.includes(wo.status) : false;
+  const isCreationMode = !!isNew;
 
   if (!wo) {
     return (
@@ -47,7 +47,9 @@ export function WOCWorkspace({ woId, onClose }: Props) {
   }
 
   const handleUpdate = (updates: Partial<WorkOrder>) => {
-    update.mutateAsync({ id: woId, updates });
+    update.mutateAsync({ id: woId, updates }).then(() => {
+      if (isNew && onSaved) onSaved();
+    });
   };
 
   return (

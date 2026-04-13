@@ -77,10 +77,12 @@ export default function WorkOrderCentre() {
   const [view, setView] = useState<WOCView>("dashboard");
   const [collapsed, setCollapsed] = useState(false);
   const [workspaceWoId, setWorkspaceWoId] = useState<string | null>(null);
+  const [workspaceIsNew, setWorkspaceIsNew] = useState(false);
   const [returnView, setReturnView] = useState<WOCView>("wo-management");
 
-  const openWorkspace = useCallback((woId: string, from?: WOCView) => {
+  const openWorkspace = useCallback((woId: string, from?: WOCView, isNew?: boolean) => {
     setWorkspaceWoId(woId);
+    setWorkspaceIsNew(!!isNew);
     setReturnView(from ?? "wo-management");
     setView("workspace");
   }, []);
@@ -201,7 +203,7 @@ export default function WorkOrderCentre() {
         {view === "planner" && <AdvancedPlannerView onNavigateWOC={setView} />}
         
         {view === "workspace" && workspaceWoId && (
-          <WOCWorkspace woId={workspaceWoId} onClose={closeWorkspace} />
+          <WOCWorkspace woId={workspaceWoId} onClose={closeWorkspace} isNew={workspaceIsNew} onSaved={() => setWorkspaceIsNew(false)} />
         )}
         {PLACEHOLDER_VIEWS.includes(view) && view !== "workspace" && (
           <div className="p-8 flex items-center justify-center h-full">
