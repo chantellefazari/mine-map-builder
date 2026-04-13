@@ -154,17 +154,17 @@ export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
 
         {/* KPI Scorecard Row */}
         <div className="grid grid-cols-3 lg:grid-cols-6 gap-2">
-          <KPICard label="PM Compliance" value={pmCompliance} unit="%" target={90} icon={CheckCircle2} />
-          <KPICard label="Schedule Compliance" value={schedCompliance} unit="%" target={85} icon={Target} />
-          <KPICard label="Planned Ratio" value={plannedPct} unit="%" target={70} icon={TrendingUp} />
-          <KPICard label="Completion Rate" value={completionRate} unit="%" target={80} icon={Gauge} />
-          <KPICard label="Avg MTTR" value={avgMTTR} unit="h" target={24} icon={Clock} inverse />
-          <KPICard label="Backlog" value={backlogWeeks} unit="wks" target={4} icon={AlertTriangle} inverse targetLabel="≤4 wks target" />
+          <KPICard label="PM Compliance" value={pmCompliance} unit="%" target={90} icon={CheckCircle2} onClick={() => onNavigateWOC?.("dashboard")} />
+          <KPICard label="Schedule Compliance" value={schedCompliance} unit="%" target={85} icon={Target} onClick={() => onNavigateWOC?.("dashboard")} />
+          <KPICard label="Planned Ratio" value={plannedPct} unit="%" target={70} icon={TrendingUp} onClick={() => onNavigateWOC?.("dashboard")} />
+          <KPICard label="Completion Rate" value={completionRate} unit="%" target={80} icon={Gauge} onClick={() => onNavigateWOC?.("dashboard")} />
+          <KPICard label="Avg MTTR" value={avgMTTR} unit="h" target={24} icon={Clock} inverse onClick={() => onNavigateWOC?.("dashboard")} />
+          <KPICard label="Backlog" value={backlogWeeks} unit="wks" target={4} icon={AlertTriangle} inverse targetLabel="≤4 wks target" onClick={() => onNavigateWOC?.("dashboard")} />
         </div>
 
         <div className="grid grid-cols-3 gap-3">
           {/* Work Requests Pipeline */}
-          <Card className="border-border">
+          <Card className={cn("border-border transition-colors", onNavigateWOC && "cursor-pointer hover:border-primary/40 hover:bg-primary/5")} onClick={() => onNavigateWOC?.("work-requests")}>
             <CardContent className="p-3">
               <div className="flex items-center gap-1.5 mb-3">
                 <Wrench className="w-3.5 h-3.5 text-muted-foreground" />
@@ -188,7 +188,7 @@ export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
           </Card>
 
           {/* Planned vs Reactive */}
-          <Card className="border-border">
+          <Card className={cn("border-border transition-colors", onNavigateWOC && "cursor-pointer hover:border-primary/40 hover:bg-primary/5")} onClick={() => onNavigateWOC?.("dashboard")}>
             <CardContent className="p-3">
               <div className="flex items-center gap-1.5 mb-3">
                 <Layers className="w-3.5 h-3.5 text-muted-foreground" />
