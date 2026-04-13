@@ -7,12 +7,14 @@ interface Props {
   filterFrequency: string; setFilterFrequency: (v: string) => void;
   filterPriority: string; setFilterPriority: (v: string) => void;
   filterStatus: string; setFilterStatus: (v: string) => void;
+  filterDutyType: string; setFilterDutyType: (v: string) => void;
   options: {
     areas: string[];
     disciplines: string[];
     frequencies: string[];
     priorities: string[];
     statuses: string[];
+    dutyTypes: string[];
   };
 }
 
@@ -32,7 +34,7 @@ function FilterSelect({ label, value, onChange, options }: { label: string; valu
 }
 
 export function PlannerFilterBar(props: Props) {
-  const activeCount = [props.filterArea, props.filterDiscipline, props.filterFrequency, props.filterPriority, props.filterStatus].filter(v => v !== "All").length;
+  const activeCount = [props.filterArea, props.filterDiscipline, props.filterFrequency, props.filterPriority, props.filterStatus, props.filterDutyType].filter(v => v !== "All").length;
 
   return (
     <div className="flex items-center gap-1 px-4 py-1.5 border-b border-border bg-muted/20 text-[10px]">
@@ -46,11 +48,14 @@ export function PlannerFilterBar(props: Props) {
       <FilterSelect label="Priority" value={props.filterPriority} onChange={props.setFilterPriority} options={props.options.priorities} />
       <span className="text-border">|</span>
       <FilterSelect label="Status" value={props.filterStatus} onChange={props.setFilterStatus} options={props.options.statuses} />
+      <span className="text-border">|</span>
+      <FilterSelect label="Duty" value={props.filterDutyType} onChange={props.setFilterDutyType} options={props.options.dutyTypes} />
       {activeCount > 0 && (
         <button
           onClick={() => {
             props.setFilterArea("All"); props.setFilterDiscipline("All");
             props.setFilterFrequency("All"); props.setFilterPriority("All"); props.setFilterStatus("All");
+            props.setFilterDutyType("All");
           }}
           className="ml-2 text-[10px] text-primary hover:underline"
         >
