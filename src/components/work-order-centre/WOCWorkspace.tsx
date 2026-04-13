@@ -20,11 +20,11 @@ import { Eye, Hammer, Package, ShoppingCart, Link2, History, ClipboardCheck } fr
 interface Props {
   woId: string;
   onClose: () => void;
+  isNew?: boolean;
+  onSaved?: () => void;
 }
 
-const CREATION_STATUSES = ["Draft"];
-
-export function WOCWorkspace({ woId, onClose }: Props) {
+export function WOCWorkspace({ woId, onClose, isNew, onSaved }: Props) {
   const { workOrders, update } = useWorkOrders();
   const wo = workOrders.find((w) => w.id === woId);
   const { parts, auditLog, addPart, updatePart, deletePart } = useWorkOrderParts(woId);
