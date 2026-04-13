@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Search, ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
   Undo2, Save, CalendarDays, Pencil, Sparkles, Calendar,
-  Clock, Wrench, MapPin, AlertTriangle, Package,
+  Clock, Wrench, MapPin, AlertTriangle, Package, Shield,
 } from "lucide-react";
 import {
   addDays, addWeeks, startOfWeek, format, isWithinInterval,
@@ -17,6 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import type { WOMaterialSummary } from "@/hooks/useMaterialReadiness";
+import { useAssetCriticality, CRITICALITY_CONFIG, type CriticalityRating } from "@/hooks/useAssetCriticality";
 
 interface Props {
   items: PlannerItem[];
@@ -83,13 +84,23 @@ const DISCIPLINE_FILTERS = [
   { key: "Mobile", label: "Mobile & LVs" },
 ];
 
+const SORT_OPTIONS = [
+  { key: "criticality", label: "Criticality (A→C)" },
+  { key: "name", label: "PM Name" },
+  { key: "frequency", label: "Frequency" },
+  { key: "discipline", label: "Discipline" },
+] as const;
+type SortKey = typeof SORT_OPTIONS[number]["key"];
+
 export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder }: Props) {
+  const { getCriticality, getCriticalitySortOrder } = useAssetCriticality();
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
 
   const [weekOffset, setWeekOffset] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDiscipline, setFilterDiscipline] = useState("All");
+  const [sortBy, setSortBy] = useState<SortKey>("criticality");
   const [adjustments, setAdjustments] = useState<Record<string, number>>({});
   // Multi-level expansion: Set of expanded PM ids, and set of "pmId:weekIdx" for expanded weeks, and set of "pmId:weekIdx:dayIdx" for expanded days
   const [expandedPMs, setExpandedPMs] = useState<Set<string>>(new Set());
@@ -126,8 +137,21 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
       const q = searchQuery.toLowerCase();
       result = result.filter(pm => pm.taskName.toLowerCase().includes(q) || pm.assetNumber.toLowerCase().includes(q));
     }
+    // Sort
+    result = [...result].sort((a, b) => {
+      if (sortBy === "criticality") {
+        const ca = getCriticalitySortOrder(a.assetNumber);
+        const cb = getCriticalitySortOrder(b.assetNumber);
+        if (ca !== cb) return ca - cb;
+        return a.taskName.localeCompare(b.taskName);
+      }
+      if (sortBy === "name") return a.taskName.localeCompare(b.taskName);
+      if (sortBy === "frequency") return (a.frequency || "").localeCompare(b.frequency || "");
+      if (sortBy === "discipline") return (a.discipline || "").localeCompare(b.discipline || "");
+      return 0;
+    });
     return result;
-  }, [pmItems, filterDiscipline, searchQuery]);
+  }, [pmItems, filterDiscipline, searchQuery, sortBy, getCriticalitySortOrder]);
 
   const disciplineCounts = useMemo(() => {
     const counts: Record<string, number> = { All: pmItems.length };
@@ -286,9 +310,18 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="relative w-64">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-            <Input placeholder="Search PMs..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="h-8 pl-8 text-xs" />
+          <div className="flex items-center gap-2">
+            <div className="relative w-56">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <Input placeholder="Search PMs..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="h-8 pl-8 text-xs" />
+            </div>
+            <select
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value as SortKey)}
+              className="h-8 px-2 text-xs border border-border rounded-md bg-background text-foreground"
+            >
+              {SORT_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+            </select>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="h-8 text-xs gap-1">
@@ -354,6 +387,24 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
+                        {(() => {
+                          const crit = getCriticality(pm.assetNumber);
+                          if (!crit) return null;
+                          const cfg = CRITICALITY_CONFIG[crit];
+                          return (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className={cn("text-[8px] font-bold px-1 py-0 rounded border flex-shrink-0", cfg.bgColor, cfg.borderColor, cfg.color)}>
+                                  {crit}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="text-[10px]">
+                                <div className="font-semibold">{cfg.label}</div>
+                                <div className="text-muted-foreground">{cfg.description}</div>
+                              </TooltipContent>
+                            </Tooltip>
+                          );
+                        })()}
                         <p className="text-xs font-semibold text-foreground truncate">{pm.name}</p>
                         <Pencil className="w-3 h-3 text-muted-foreground/50 flex-shrink-0 opacity-0 group-hover:opacity-100 cursor-pointer" />
                       </div>

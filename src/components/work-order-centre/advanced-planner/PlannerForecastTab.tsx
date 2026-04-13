@@ -8,31 +8,39 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   format, startOfWeek, addWeeks, getISOWeek, getYear, addDays,
   parseISO, isWithinInterval, startOfYear,
 } from "date-fns";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import { WO_TYPE_CONFIG } from "./AdvancedPlannerView";
+import { useAssetCriticality, CRITICALITY_CONFIG } from "@/hooks/useAssetCriticality";
 
 interface Props {
   items: PlannerItem[];
 }
 
-const FREQ_TO_WEEKS: Record<string, number[]> = {
-  Daily: Array.from({ length: 52 }, (_, i) => i + 1),
-  Weekly: Array.from({ length: 52 }, (_, i) => i + 1),
-  Fortnightly: Array.from({ length: 26 }, (_, i) => i * 2 + 1),
-  Monthly: [1, 5, 9, 13, 18, 22, 26, 31, 35, 39, 44, 48],
-  "6-Monthly": [1, 26],
-  Quarterly: [1, 13, 26, 39],
-  Annually: [1],
-  Yearly: [1],
-};
-
 function getWeeksForFrequency(freq: string): number[] {
-  const key = Object.keys(FREQ_TO_WEEKS).find(k => freq.toLowerCase().includes(k.toLowerCase()));
-  return key ? FREQ_TO_WEEKS[key] : [];
+  if (!freq) return [];
+  const f = freq.trim().toLowerCase();
+  if (f === "daily") return Array.from({ length: 52 }, (_, i) => i + 1);
+  const weekMatch = f.match(/^(\d+)\s*week/i);
+  if (weekMatch) {
+    const interval = parseInt(weekMatch[1], 10);
+    if (interval <= 0) return [];
+    if (interval === 1) return Array.from({ length: 52 }, (_, i) => i + 1);
+    const weeks: number[] = [];
+    for (let w = 1; w <= 52; w += interval) weeks.push(w);
+    return weeks;
+  }
+  if (f === "weekly") return Array.from({ length: 52 }, (_, i) => i + 1);
+  if (f === "fortnightly") return Array.from({ length: 26 }, (_, i) => i * 2 + 1);
+  if (f === "monthly") return [1, 5, 9, 13, 18, 22, 26, 31, 35, 39, 44, 48];
+  if (f === "quarterly") return [1, 13, 26, 39];
+  if (f.includes("6-month")) return [1, 26];
+  if (f === "annually" || f === "yearly") return [1];
+  return [];
 }
 
 interface WeekBucket {
@@ -47,6 +55,7 @@ interface WeekBucket {
 }
 
 export function PlannerForecastTab({ items }: Props) {
+  const { getCriticality } = useAssetCriticality();
   const [year, setYear] = useState(getYear(new Date()));
   const [filterDiscipline, setFilterDiscipline] = useState("All");
   const [filterType, setFilterType] = useState("All");
@@ -247,15 +256,29 @@ export function PlannerForecastTab({ items }: Props) {
                 </span>
               </div>
               <div className="space-y-1 max-h-48 overflow-y-auto">
-                {[...selectedData.items, ...selectedData.projectedPMs].map((item, i) => (
-                  <div key={`${item.id}-${i}`} className="flex items-center gap-2 text-[10px] py-0.5">
-                    <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", WO_TYPE_CONFIG[item.woType]?.color || "bg-muted-foreground")} />
-                    <span className="font-mono text-muted-foreground w-20 flex-shrink-0">{item.woNumber || "PM"}</span>
-                    <span className="text-foreground truncate flex-1">{item.taskName}</span>
-                    <span className="text-muted-foreground flex-shrink-0">{item.assetNumber}</span>
-                    <Badge variant="outline" className="text-[8px] px-1 py-0 h-3.5 flex-shrink-0">{item.frequency || item.woType}</Badge>
-                  </div>
-                ))}
+                {[...selectedData.items, ...selectedData.projectedPMs].map((item, i) => {
+                  const crit = getCriticality(item.assetNumber);
+                  const critCfg = crit ? CRITICALITY_CONFIG[crit] : null;
+                  return (
+                    <div key={`${item.id}-${i}`} className="flex items-center gap-2 text-[10px] py-0.5">
+                      <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", WO_TYPE_CONFIG[item.woType]?.color || "bg-muted-foreground")} />
+                      {critCfg && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className={cn("text-[8px] font-bold px-1 py-0 rounded border flex-shrink-0", critCfg.bgColor, critCfg.borderColor, critCfg.color)}>
+                              {crit}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="text-[10px]">{critCfg.label}</TooltipContent>
+                        </Tooltip>
+                      )}
+                      <span className="font-mono text-muted-foreground w-20 flex-shrink-0">{item.woNumber || "PM"}</span>
+                      <span className="text-foreground truncate flex-1">{item.taskName}</span>
+                      <span className="text-muted-foreground flex-shrink-0">{item.assetNumber}</span>
+                      <Badge variant="outline" className="text-[8px] px-1 py-0 h-3.5 flex-shrink-0">{item.frequency || item.woType}</Badge>
+                    </div>
+                  );
+                })}
                 {selectedData.items.length === 0 && selectedData.projectedPMs.length === 0 && (
                   <span className="text-[10px] text-muted-foreground">No work planned for this week</span>
                 )}
