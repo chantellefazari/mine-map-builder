@@ -387,6 +387,24 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
+                        {(() => {
+                          const crit = getCriticality(pm.assetNumber);
+                          if (!crit) return null;
+                          const cfg = CRITICALITY_CONFIG[crit];
+                          return (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className={cn("text-[8px] font-bold px-1 py-0 rounded border flex-shrink-0", cfg.bgColor, cfg.borderColor, cfg.color)}>
+                                  {crit}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="text-[10px]">
+                                <div className="font-semibold">{cfg.label}</div>
+                                <div className="text-muted-foreground">{cfg.description}</div>
+                              </TooltipContent>
+                            </Tooltip>
+                          );
+                        })()}
                         <p className="text-xs font-semibold text-foreground truncate">{pm.name}</p>
                         <Pencil className="w-3 h-3 text-muted-foreground/50 flex-shrink-0 opacity-0 group-hover:opacity-100 cursor-pointer" />
                       </div>
