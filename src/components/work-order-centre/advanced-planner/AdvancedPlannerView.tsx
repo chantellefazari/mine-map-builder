@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import {
   Search, Download, FolderTree, ClipboardList, FileText, ListChecks,
   LayoutDashboard, Wrench, Package, TrendingUp, Building2, Users, CalendarRange, Layers, BarChart3,
-  ShieldAlert, Activity, Gauge,
+  ShieldAlert, Activity, Gauge, ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
