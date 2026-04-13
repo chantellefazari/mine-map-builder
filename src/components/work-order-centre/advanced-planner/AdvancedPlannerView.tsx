@@ -398,7 +398,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
             items={filteredItems}
             allItems={allItems}
             stats={stats}
-            onNavigate={setActiveTab}
+            onNavigate={handleTabChange}
             filterWOType={filterWOType}
             setFilterWOType={setFilterWOType}
           />
