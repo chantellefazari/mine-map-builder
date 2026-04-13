@@ -22,7 +22,7 @@ interface Props {
   getReadiness?: (workOrderId: string) => WOMaterialSummary;
 }
 
-type SortField = "woNumber" | "woType" | "assetNumber" | "taskName" | "priority" | "status" | "scheduledDate" | "estimatedHours" | "discipline" | "area";
+type SortField = "woNumber" | "woType" | "assetNumber" | "taskName" | "priority" | "status" | "scheduledDate" | "estimatedHours" | "discipline" | "area" | "dutyType";
 type SortDir = "asc" | "desc";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -277,8 +277,8 @@ export function PlannerWorkOrdersTab({ items, getReadiness }: Props) {
       <div className={cn(
         "grid gap-0 px-4 py-1.5 border-b border-border bg-muted/20",
         bulkMode
-          ? "grid-cols-[28px_90px_70px_60px_90px_1fr_80px_70px_80px_90px_110px_70px]"
-          : "grid-cols-[90px_70px_60px_90px_1fr_80px_70px_80px_90px_110px_70px]"
+          ? "grid-cols-[28px_90px_70px_60px_90px_1fr_80px_60px_70px_80px_90px_110px_70px]"
+          : "grid-cols-[90px_70px_60px_90px_1fr_80px_60px_70px_80px_90px_110px_70px]"
       )}>
         {bulkMode && <span />}
         <SortHeader field="woNumber" label="WO #" />
@@ -287,6 +287,7 @@ export function PlannerWorkOrdersTab({ items, getReadiness }: Props) {
         <SortHeader field="assetNumber" label="Asset" />
         <SortHeader field="taskName" label="Description" />
         <SortHeader field="discipline" label="Discipline" />
+        <SortHeader field="dutyType" label="Duty" />
         <SortHeader field="priority" label="Priority" />
         <SortHeader field="status" label="Status" />
         <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide px-1 text-center">Parts</span>
@@ -308,8 +309,8 @@ export function PlannerWorkOrdersTab({ items, getReadiness }: Props) {
                 className={cn(
                   "grid gap-0 items-center px-4 py-2 hover:bg-muted/20 transition-colors",
                   bulkMode
-                    ? "grid-cols-[28px_90px_70px_60px_90px_1fr_80px_70px_80px_90px_110px_70px]"
-                    : "grid-cols-[90px_70px_60px_90px_1fr_80px_70px_80px_90px_110px_70px]",
+                    ? "grid-cols-[28px_90px_70px_60px_90px_1fr_80px_60px_70px_80px_90px_110px_70px]"
+                    : "grid-cols-[90px_70px_60px_90px_1fr_80px_60px_70px_80px_90px_110px_70px]",
                   isSelected && "bg-primary/5"
                 )}
               >
@@ -331,6 +332,12 @@ export function PlannerWorkOrdersTab({ items, getReadiness }: Props) {
                 <span className="text-[10px] font-mono text-muted-foreground truncate">{item.assetNumber || "—"}</span>
                 <span className="text-[11px] text-foreground truncate pr-2" title={item.taskName}>{item.taskName}</span>
                 <span className="text-[10px] text-muted-foreground">{item.discipline || "—"}</span>
+                <Badge variant="outline" className={cn(
+                  "text-[8px] px-1.5 py-0 h-4",
+                  item.dutyType === "Offline" ? "text-amber-700 border-amber-300 bg-amber-500/10" : "text-emerald-700 border-emerald-300 bg-emerald-500/10"
+                )}>
+                  {item.dutyType || "Online"}
+                </Badge>
                 <span className={cn("text-[10px]", PRIORITY_COLORS[item.priority] || "text-foreground")}>{item.priority}</span>
                 <span className={cn("text-[10px] font-medium", STATUS_COLORS[item.status] || "text-muted-foreground")}>{item.status}</span>
 
