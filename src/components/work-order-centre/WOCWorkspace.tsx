@@ -22,7 +22,7 @@ interface Props {
   onClose: () => void;
 }
 
-const CREATION_STATUSES = ["Draft", "Planning", "Open"];
+const CREATION_STATUSES = ["Draft"];
 
 export function WOCWorkspace({ woId, onClose }: Props) {
   const { workOrders, update } = useWorkOrders();
