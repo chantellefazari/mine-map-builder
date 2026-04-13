@@ -31,6 +31,7 @@ import { PlannerItemDetail } from "./PlannerItemDetail";
 import { PlannerPermitsTab } from "./PlannerPermitsTab";
 import { PlannerFailuresTab } from "./PlannerFailuresTab";
 import { PlannerConditionMonitoringTab } from "./PlannerConditionMonitoringTab";
+import { PlannerReportBuilder } from "./PlannerReportBuilder";
 
 export interface PlannerItem {
   id: string;
@@ -94,7 +95,7 @@ export const WO_TYPE_CONFIG = {
   Breakdown: { label: "Breakdown", code: "13", color: "bg-red-500", textColor: "text-red-700" },
 };
 
-type PlannerTab = "overview" | "dashboard" | "maintenance-plans" | "work-orders" | "forward-plan" | "asset-tree" | "rounds" | "forecast" | "capacity" | "resource-leveling" | "schedule-blocks" | "permits" | "failures" | "condition-monitoring";
+type PlannerTab = "overview" | "dashboard" | "maintenance-plans" | "work-orders" | "forward-plan" | "asset-tree" | "rounds" | "forecast" | "capacity" | "resource-leveling" | "schedule-blocks" | "permits" | "failures" | "condition-monitoring" | "reports";
 
 interface TabDef { key: PlannerTab; label: string; icon: React.ElementType }
 interface TabGroup { group: string; icon: React.ElementType; tabs: TabDef[] }
@@ -109,6 +110,7 @@ const TAB_GROUPS: TabGroup[] = [
       { key: "maintenance-plans", label: "Maintenance Plans", icon: ClipboardList },
       { key: "forward-plan", label: "Forward Plan", icon: CalendarRange },
       { key: "forecast", label: "Forecast", icon: TrendingUp },
+      { key: "reports", label: "Reports", icon: FileText },
     ],
   },
   {
@@ -460,6 +462,9 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
         )}
         {activeTab === "condition-monitoring" && (
           <PlannerConditionMonitoringTab />
+        )}
+        {activeTab === "reports" && (
+          <PlannerReportBuilder />
         )}
       </div>
 
