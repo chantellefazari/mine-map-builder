@@ -115,6 +115,70 @@ const SOURCE_CONFIG: Record<DataSource, { label: string; columns: { key: string;
       { key: "isolation_required", label: "Isolation" },
     ],
   },
+  assets: {
+    label: "Asset Register",
+    columns: [
+      { key: "asset_number", label: "Asset #" },
+      { key: "asset_name", label: "Asset Name" },
+      { key: "area_label", label: "Area" },
+      { key: "sub_area", label: "Sub Area" },
+      { key: "parent_asset_label", label: "Parent Asset" },
+      { key: "functional_location", label: "Func. Location" },
+      { key: "area_code", label: "Area Code" },
+      { key: "facility", label: "Facility" },
+      { key: "rev_status", label: "Rev Status" },
+      { key: "change_type", label: "Change Type" },
+    ],
+  },
+  purchase_orders: {
+    label: "Purchase Orders",
+    columns: [
+      { key: "po_number", label: "PO #" },
+      { key: "supplier", label: "Supplier" },
+      { key: "status", label: "Status" },
+      { key: "description", label: "Description" },
+      { key: "total_value", label: "Total Value" },
+      { key: "order_date", label: "Order Date" },
+      { key: "eta", label: "ETA" },
+      { key: "date_received", label: "Received" },
+      { key: "freight_company", label: "Freight Co." },
+      { key: "supervisor", label: "Supervisor" },
+      { key: "created_by", label: "Created By" },
+      { key: "confirmed_on_site", label: "On Site" },
+    ],
+  },
+  equipment_service: {
+    label: "Equipment Service",
+    columns: [
+      { key: "equipment_name", label: "Equipment" },
+      { key: "asset_number", label: "Asset #" },
+      { key: "current_hours", label: "Current Hrs" },
+      { key: "service_interval_hours", label: "Interval Hrs" },
+      { key: "last_service_hours", label: "Last Service Hrs" },
+      { key: "next_service_due_hours", label: "Next Due Hrs" },
+      { key: "last_service_date", label: "Last Service" },
+      { key: "status", label: "Status" },
+      { key: "service_vendor", label: "Vendor" },
+      { key: "notes", label: "Notes" },
+    ],
+  },
+  condition_triggers: {
+    label: "CBM Triggers",
+    columns: [
+      { key: "trigger_name", label: "Trigger" },
+      { key: "asset_number", label: "Asset #" },
+      { key: "asset_name", label: "Asset Name" },
+      { key: "area", label: "Area" },
+      { key: "trigger_type", label: "Type" },
+      { key: "parameter_name", label: "Parameter" },
+      { key: "threshold_value", label: "Threshold" },
+      { key: "current_value", label: "Current" },
+      { key: "threshold_unit", label: "Unit" },
+      { key: "status", label: "Status" },
+      { key: "auto_generate_wo", label: "Auto WO" },
+      { key: "last_reading_date", label: "Last Reading" },
+    ],
+  },
 };
 
 const GROUPABLE_FIELDS: Record<DataSource, string[]> = {
@@ -123,6 +187,10 @@ const GROUPABLE_FIELDS: Record<DataSource, string[]> = {
   pm_schedules: ["frequency", "discipline", "duty_type", "status", "plan_category"],
   failure_records: ["area", "failure_class", "severity", "failure_mode"],
   permits: ["permit_type", "status", "area"],
+  assets: ["area_label", "sub_area", "facility", "rev_status", "change_type"],
+  purchase_orders: ["status", "supplier", "freight_company"],
+  equipment_service: ["status", "service_vendor"],
+  condition_triggers: ["area", "trigger_type", "status"],
 };
 
 export function PlannerReportBuilder() {
