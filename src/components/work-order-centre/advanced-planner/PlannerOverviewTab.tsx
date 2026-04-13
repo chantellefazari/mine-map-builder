@@ -152,7 +152,7 @@ export function PlannerOverviewTab({ items, allItems, stats, onNavigate, filterW
         </div>
 
         {/* WO Type breakdown */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           {Object.entries(WO_TYPE_CONFIG).map(([key, cfg]) => {
             const count = key === "PM" ? stats.pm : key === "Planned" ? stats.planned : stats.breakdown;
             const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
