@@ -316,26 +316,31 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
   return (
     <div className="flex flex-col h-full gap-0">
       {/* Navigation */}
-      <div className="border-b border-border bg-card">
+      <div className="bg-card">
         {/* Row 1: Group selectors + search */}
-        <div className="flex items-center justify-between px-4 pt-2 pb-1.5">
-          <div className="flex items-center gap-0.5 bg-muted/50 rounded-lg p-0.5">
+        <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+          <div className="flex items-center gap-3">
             {TAB_GROUPS.map(group => {
               const isActiveGroup = activeGroup === group.group;
               const GroupIcon = group.icon;
+              const tabCount = group.tabs.length;
               return (
                 <button
                   key={group.group}
                   onClick={() => handleGroupChange(group.group)}
                   className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold transition-all",
+                    "flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all border",
                     isActiveGroup
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-primary/10 text-primary border-primary/30"
+                      : "bg-transparent text-muted-foreground border-transparent hover:text-foreground hover:bg-muted/40"
                   )}
                 >
-                  <GroupIcon className="w-3.5 h-3.5" />
+                  <GroupIcon className="w-4 h-4" />
                   {group.group}
+                  <span className={cn(
+                    "text-[10px] font-normal px-1.5 py-0.5 rounded-full",
+                    isActiveGroup ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
+                  )}>{tabCount}</span>
                 </button>
               );
             })}
@@ -359,7 +364,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
         </div>
 
         {/* Row 2: Sub-tabs for active group */}
-        <div className="flex items-center gap-0 px-4 pb-0">
+        <div className="flex items-center gap-0.5 px-4 py-0 bg-muted/30 border-b border-border">
           {currentGroup.tabs.map(tab => {
             const isActive = activeTab === tab.key;
             return (
@@ -367,9 +372,9 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
                 key={tab.key}
                 onClick={() => handleTabChange(tab.key)}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium transition-all whitespace-nowrap border-b-2",
+                  "flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium transition-all whitespace-nowrap border-b-2 -mb-px",
                   isActive
-                    ? "text-foreground border-primary"
+                    ? "text-foreground border-primary bg-background"
                     : "text-muted-foreground hover:text-foreground border-transparent"
                 )}
               >
