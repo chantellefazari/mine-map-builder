@@ -42,13 +42,6 @@ const WO_TYPES = [
     icon: CalendarCheck,
     accent: "border-primary/40 hover:border-primary",
   },
-  {
-    value: "Shutdown",
-    label: "Shutdown",
-    desc: "Work requiring plant or area shutdown",
-    icon: Wrench,
-    accent: "border-orange-400/40 hover:border-orange-400",
-  },
 ];
 
 export function WOTypeSelectDialog({ open, onClose, onConfirm, title, description }: Props) {

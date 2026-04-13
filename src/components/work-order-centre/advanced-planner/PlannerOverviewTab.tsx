@@ -16,7 +16,7 @@ interface Props {
   items: PlannerItem[];
   allItems: PlannerItem[];
   stats: {
-    total: number; pm: number; planned: number; breakdown: number; shutdown: number;
+    total: number; pm: number; planned: number; breakdown: number; offline: number;
     totalHrs: number; areas: number; assets: number;
   };
   onNavigate: (tab: PlannerTab) => void;
@@ -87,7 +87,7 @@ export function PlannerOverviewTab({ items, allItems, stats, onNavigate, filterW
         {/* WO Type filter chips */}
         <div className="flex items-center gap-2">
           {Object.entries(WO_TYPE_CONFIG).map(([key, cfg]) => {
-            const count = key === "PM" ? stats.pm : key === "Planned" ? stats.planned : key === "Breakdown" ? stats.breakdown : stats.shutdown;
+            const count = key === "PM" ? stats.pm : key === "Planned" ? stats.planned : stats.breakdown;
             const isActive = filterWOType === key;
             return (
               <button
@@ -118,7 +118,7 @@ export function PlannerOverviewTab({ items, allItems, stats, onNavigate, filterW
           />
           <SummaryCard
             label="Work Orders"
-            value={stats.planned + stats.breakdown + stats.shutdown}
+            value={stats.planned + stats.breakdown}
             icon={FileText}
             color="text-emerald-600"
             onClick={() => onNavigate("work-orders")}
@@ -152,9 +152,9 @@ export function PlannerOverviewTab({ items, allItems, stats, onNavigate, filterW
         </div>
 
         {/* WO Type breakdown */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           {Object.entries(WO_TYPE_CONFIG).map(([key, cfg]) => {
-            const count = key === "PM" ? stats.pm : key === "Planned" ? stats.planned : key === "Breakdown" ? stats.breakdown : stats.shutdown;
+            const count = key === "PM" ? stats.pm : key === "Planned" ? stats.planned : stats.breakdown;
             const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
             return (
               <div key={key} className="bg-card border border-border rounded-lg p-3">

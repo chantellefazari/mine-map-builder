@@ -33,7 +33,7 @@ export interface PlannerItem {
   assetNumber: string;
   assetName: string;
   woNumber: string;
-  woType: "Planned" | "PM" | "Breakdown" | "Shutdown";
+  woType: "Planned" | "PM" | "Breakdown";
   woTypeCode: string;
   taskName: string;
   frequency: string;
@@ -79,7 +79,6 @@ export function flattenPMTasks(tasks: any): any[] {
 function getWoTypeFromNumber(woNum: string): { type: PlannerItem["woType"]; code: string } {
   if (woNum.startsWith("WO-12")) return { type: "PM", code: "12" };
   if (woNum.startsWith("WO-13")) return { type: "Breakdown", code: "13" };
-  if (woNum.startsWith("WO-14")) return { type: "Shutdown", code: "14" };
   return { type: "Planned", code: "11" };
 }
 
@@ -87,7 +86,6 @@ export const WO_TYPE_CONFIG = {
   Planned: { label: "Planned", code: "11", color: "bg-emerald-500", textColor: "text-emerald-700" },
   PM: { label: "PM", code: "12", color: "bg-blue-500", textColor: "text-blue-700" },
   Breakdown: { label: "Breakdown", code: "13", color: "bg-red-500", textColor: "text-red-700" },
-  Shutdown: { label: "Shutdown", code: "14", color: "bg-amber-500", textColor: "text-amber-700" },
 };
 
 type PlannerTab = "overview" | "maintenance-plans" | "work-orders" | "forward-plan" | "asset-tree" | "rounds" | "forecast" | "capacity" | "resource-leveling" | "schedule-blocks";
@@ -182,7 +180,7 @@ export function AdvancedPlannerView() {
         trade: wo.trade || "",
         assignedTo: wo.assigned_to || "",
         scheduledDate: wo.scheduled_date || null,
-        dutyType: "",
+        dutyType: (wo as any).duty_type || "Online",
         materialList: wo.parts_used ? [wo.parts_used] : [],
         requiredTools: [],
         safetyNotes: [],
@@ -232,7 +230,7 @@ export function AdvancedPlannerView() {
     pm: filteredItems.filter(i => i.woType === "PM").length,
     planned: filteredItems.filter(i => i.woType === "Planned").length,
     breakdown: filteredItems.filter(i => i.woType === "Breakdown").length,
-    shutdown: filteredItems.filter(i => i.woType === "Shutdown").length,
+    offline: filteredItems.filter(i => i.dutyType === "Offline").length,
     totalHrs: filteredItems.reduce((s, i) => s + i.estimatedHours, 0),
     areas: new Set(filteredItems.map(i => i.area)).size,
     assets: new Set(filteredItems.map(i => i.assetNumber)).size,

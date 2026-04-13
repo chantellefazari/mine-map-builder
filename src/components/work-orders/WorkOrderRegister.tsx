@@ -20,7 +20,6 @@ export const WorkOrderRegister = ({ onAllocateWO }: WorkOrderRegisterProps) => {
     { type: "Planned Work", prefix: "WO-11", range: "WO-110001 → WO-119999" },
     { type: "PM (Preventive)", prefix: "WO-12", range: "WO-120001 → WO-129999" },
     { type: "Breakdown (Reactive)", prefix: "WO-13", range: "WO-130001 → WO-139999" },
-    { type: "Shutdown", prefix: "WO-14", range: "WO-140001 → WO-149999" },
   ];
 
   return (
