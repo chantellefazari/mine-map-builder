@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   ChevronLeft, ChevronRight, Layers, AlertTriangle, CheckCircle2,
-  Wrench, Zap, Truck, Users, Clock, TrendingDown,
+  Wrench, Zap, Truck, Users, Clock, TrendingDown, Info, ArrowRight,
+  BarChart3, CalendarRange, Lightbulb,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -26,20 +27,43 @@ interface Props {
   items: PlannerItem[];
 }
 
-const FREQ_TO_WEEKS: Record<string, number[]> = {
-  Daily: Array.from({ length: 52 }, (_, i) => i + 1),
-  Weekly: Array.from({ length: 52 }, (_, i) => i + 1),
-  Fortnightly: Array.from({ length: 26 }, (_, i) => i * 2 + 1),
-  Monthly: [1, 5, 9, 13, 18, 22, 26, 31, 35, 39, 44, 48],
-  "6-Monthly": [1, 26],
-  Quarterly: [1, 13, 26, 39],
-  Annually: [1],
-  Yearly: [1],
-};
-
+/**
+ * Improved frequency-to-week mapping.
+ * Handles actual DB values like "1 Week", "12 Week", "26 Week", "Daily", etc.
+ */
 function getWeeksForFrequency(freq: string): number[] {
-  const key = Object.keys(FREQ_TO_WEEKS).find(k => freq.toLowerCase().includes(k.toLowerCase()));
-  return key ? FREQ_TO_WEEKS[key] : [];
+  if (!freq) return [];
+  const f = freq.trim().toLowerCase();
+
+  // "Daily" / "daily"
+  if (f === "daily") return Array.from({ length: 52 }, (_, i) => i + 1);
+
+  // Parse "N Week" pattern (e.g. "1 Week", "12 Week", "26 Week", "52 Week")
+  const weekMatch = f.match(/^(\d+)\s*week/i);
+  if (weekMatch) {
+    const interval = parseInt(weekMatch[1], 10);
+    if (interval <= 0) return [];
+    if (interval === 1) return Array.from({ length: 52 }, (_, i) => i + 1);
+    const weeks: number[] = [];
+    for (let w = 1; w <= 52; w += interval) weeks.push(w);
+    return weeks;
+  }
+
+  // Legacy/alternate formats
+  if (f === "weekly" || f === "1w") return Array.from({ length: 52 }, (_, i) => i + 1);
+  if (f === "fortnightly" || f === "2w") return Array.from({ length: 26 }, (_, i) => i * 2 + 1);
+  if (f === "monthly") return [1, 5, 9, 13, 18, 22, 26, 31, 35, 39, 44, 48];
+  if (f === "quarterly") return [1, 13, 26, 39];
+  if (f.includes("6-month") || f.includes("6 month")) return [1, 26];
+  if (f === "annually" || f === "yearly") return [1];
+  if (f === "once") return [];
+
+  return [];
+}
+
+/** How many times per year this frequency fires */
+function getFrequencyOccurrences(freq: string): number {
+  return getWeeksForFrequency(freq).length;
 }
 
 const DISCIPLINE_MAP: Record<string, string> = {
@@ -48,6 +72,8 @@ const DISCIPLINE_MAP: Record<string, string> = {
   "Mobile & LVs": "Mobile & LVS",
   "Mobile & LVS": "Mobile & LVS",
   Instrumentation: "Electrical",
+  Lube: "Mechanical",
+  Ops: "Mechanical",
 };
 
 function mapDiscipline(d: string): string {
@@ -70,7 +96,7 @@ interface WeekLevelData {
   endDate: Date;
   demand: number;
   capacity: number;
-  utilisation: number; // demand / capacity as %
+  utilisation: number;
   pmHours: number;
   woHours: number;
   items: PlannerItem[];
@@ -81,8 +107,12 @@ interface WeekLevelData {
 export function PlannerResourceLevelingTab({ items }: Props) {
   const { grid, year } = useCapacityGrid();
   const [selectedWC, setSelectedWC] = useState("All");
-  const [page, setPage] = useState(0);
+  const currentWeekNum = getISOWeek(new Date());
+  const currentYear = getYear(new Date());
+  const initialPage = Math.floor((currentWeekNum - 1) / WEEKS_PER_PAGE);
+  const [page, setPage] = useState(initialPage);
   const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
+  const [showGuide, setShowGuide] = useState(true);
 
   const yearStart = startOfYear(new Date(year, 0, 1));
   const weekInfos = useMemo(() => buildWeekInfos(year), [year]);
@@ -97,7 +127,7 @@ export function PlannerResourceLevelingTab({ items }: Props) {
     for (let w = 0; w < 52; w++) {
       const weekStart = startOfWeek(addWeeks(yearStart, w), { weekStartsOn: 1 });
       const weekEnd = addDays(weekStart, 6);
-      const weekNum = getISOWeek(weekStart);
+      const weekNum = w + 1;
 
       // Calculate capacity for this week across selected work centres
       let totalCapacity = 0;
@@ -158,9 +188,13 @@ export function PlannerResourceLevelingTab({ items }: Props) {
   const underloadedWeeks = weekData.filter(w => w.underloaded).length;
   const balancedWeeks = 52 - overloadedWeeks - underloadedWeeks;
   const avgUtilisation = weekData.reduce((s, w) => s + w.utilisation, 0) / 52;
-  const peakWeek = weekData.reduce((max, w) => w.utilisation > max.utilisation ? w : max, weekData[0]);
   const totalDemand = weekData.reduce((s, w) => s + w.demand, 0);
   const totalCapacity = weekData.reduce((s, w) => s + w.capacity, 0);
+
+  // Scheduled vs unscheduled counts
+  const scheduledWOs = items.filter(i => i.source === "wo" && i.scheduledDate).length;
+  const unscheduledWOs = items.filter(i => i.source === "wo" && !i.scheduledDate).length;
+  const totalPMs = items.filter(i => i.source === "pm").length;
 
   // Pagination
   const pageStart = page * WEEKS_PER_PAGE;
@@ -168,9 +202,6 @@ export function PlannerResourceLevelingTab({ items }: Props) {
   const visibleWeeks = weekData.slice(pageStart, pageEnd);
   const totalPages = Math.ceil(52 / WEEKS_PER_PAGE);
   const maxBarValue = Math.max(...visibleWeeks.map(w => Math.max(w.demand, w.capacity)), 1);
-
-  const currentWeekNum = getISOWeek(new Date());
-  const currentYear = getYear(new Date());
 
   const selectedData = selectedWeek !== null ? weekData.find(w => w.weekNum === selectedWeek) : null;
 
@@ -184,6 +215,15 @@ export function PlannerResourceLevelingTab({ items }: Props) {
           <span className="text-[9px] text-muted-foreground bg-primary/10 px-2 py-0.5 rounded-full">Demand vs Capacity</span>
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 text-[10px] gap-1"
+            onClick={() => setShowGuide(!showGuide)}
+          >
+            <Lightbulb className="w-3 h-3" />
+            {showGuide ? "Hide" : "Show"} Guide
+          </Button>
           <Select value={selectedWC} onValueChange={setSelectedWC}>
             <SelectTrigger className="h-7 w-36 text-[10px]"><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -198,6 +238,73 @@ export function PlannerResourceLevelingTab({ items }: Props) {
 
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-4">
+
+          {/* How-to guide */}
+          {showGuide && (
+            <div className="border border-primary/30 rounded-lg bg-primary/5 p-4">
+              <div className="flex items-start gap-3">
+                <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                <div className="space-y-2 flex-1">
+                  <h3 className="text-xs font-bold text-foreground">How Resource Leveling Works</h3>
+                  <p className="text-[10px] text-muted-foreground leading-relaxed">
+                    This view compares your <strong>weekly work demand</strong> (scheduled WOs + projected PM hours)
+                    against your <strong>available crew capacity</strong> (personnel × hours/day × 7 days × loading target%).
+                    Use it to spot weeks that are overloaded or underutilised so you can redistribute work.
+                  </p>
+                  <div className="grid grid-cols-3 gap-3 mt-2">
+                    <div className="flex items-start gap-2">
+                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-[9px] font-bold text-primary">1</span>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-semibold text-foreground">Set Capacity</p>
+                        <p className="text-[9px] text-muted-foreground">Go to the <strong>Capacity</strong> tab and set your personnel, hours/day and loading % per discipline per week.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-[9px] font-bold text-primary">2</span>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-semibold text-foreground">Schedule Work</p>
+                        <p className="text-[9px] text-muted-foreground">Use the <strong>Forward Plan</strong> or <strong>Weekly Schedule</strong> to assign WOs to specific weeks. PMs are auto-projected from frequency.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-[9px] font-bold text-primary">3</span>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-semibold text-foreground">Balance Load</p>
+                        <p className="text-[9px] text-muted-foreground">Review the heatmap and chart below. Move work from <strong className="text-destructive">red</strong> (overloaded) weeks to <strong className="text-amber-600">amber</strong> (underloaded) weeks.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Data coverage status */}
+                  <div className="flex items-center gap-4 mt-3 pt-3 border-t border-primary/20">
+                    <div className="flex items-center gap-1.5">
+                      <BarChart3 className="w-3 h-3 text-blue-500" />
+                      <span className="text-[9px] text-foreground font-medium">{totalPMs} PMs projected</span>
+                      <span className="text-[8px] text-muted-foreground">(from frequency)</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <CalendarRange className="w-3 h-3 text-emerald-500" />
+                      <span className="text-[9px] text-foreground font-medium">{scheduledWOs} WOs scheduled</span>
+                    </div>
+                    {unscheduledWOs > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <AlertTriangle className="w-3 h-3 text-amber-500" />
+                        <span className="text-[9px] text-amber-600 font-medium">{unscheduledWOs} WOs unscheduled</span>
+                        <span className="text-[8px] text-muted-foreground">(not shown in demand)</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Summary cards */}
           <div className="grid grid-cols-6 gap-2">
             <LevelCard
@@ -281,7 +388,10 @@ export function PlannerResourceLevelingTab({ items }: Props) {
                   <Tooltip key={week.weekIdx}>
                     <TooltipTrigger asChild>
                       <button
-                        onClick={() => setSelectedWeek(prev => prev === week.weekNum ? null : week.weekNum)}
+                        onClick={() => {
+                          setSelectedWeek(prev => prev === week.weekNum ? null : week.weekNum);
+                          setPage(Math.floor(week.weekIdx / WEEKS_PER_PAGE));
+                        }}
                         className={cn(
                           "h-6 rounded-sm transition-all text-[7px] font-mono flex items-center justify-center",
                           bgColor,
@@ -300,11 +410,14 @@ export function PlannerResourceLevelingTab({ items }: Props) {
                     <TooltipContent side="top" className="text-[10px]">
                       <div className="font-semibold">W{week.weekNum} — {format(week.startDate, "d MMM")}</div>
                       <div>Demand: {week.demand.toFixed(0)}h / Capacity: {week.capacity.toFixed(0)}h</div>
-                      <div>Utilisation: {week.utilisation.toFixed(0)}%</div>
+                      <div>Utilisation: {week.utilisation.toFixed(0)}% • {week.items.length} jobs</div>
                     </TooltipContent>
                   </Tooltip>
                 );
               })}
+            </div>
+            <div className="text-[8px] text-muted-foreground mt-1.5 text-center">
+              Click any week to drill down • Current week highlighted with gold ring
             </div>
           </div>
 
@@ -317,7 +430,7 @@ export function PlannerResourceLevelingTab({ items }: Props) {
                   <ChevronLeft className="w-3 h-3" />
                 </Button>
                 <span className="text-[10px] font-semibold text-foreground tabular-nums">
-                  Rev {page + 1} of {totalPages}
+                  W{pageStart + 1}–W{pageEnd} (Rev {page + 1} of {totalPages})
                 </span>
                 <Button size="sm" variant="ghost" className="h-6 text-[9px] px-2" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>
                   <ChevronRight className="w-3 h-3" />
@@ -393,6 +506,7 @@ export function PlannerResourceLevelingTab({ items }: Props) {
                           <div className={week.overloaded ? "text-destructive" : "text-emerald-600"}>
                             Demand: {week.demand.toFixed(0)}h ({week.utilisation.toFixed(0)}%)
                           </div>
+                          <div className="text-muted-foreground">{week.items.length} jobs this week</div>
                         </TooltipContent>
                       </Tooltip>
                     );
@@ -402,11 +516,17 @@ export function PlannerResourceLevelingTab({ items }: Props) {
 
               {/* X axis labels */}
               <div className="flex gap-1 ml-10 mt-1">
-                {visibleWeeks.map(week => (
-                  <div key={week.weekIdx} className="flex-1 text-center">
-                    <div className="text-[7px] text-muted-foreground font-mono">W{week.weekNum}</div>
-                  </div>
-                ))}
+                {visibleWeeks.map(week => {
+                  const isCurrent = year === currentYear && week.weekNum === currentWeekNum;
+                  return (
+                    <div key={week.weekIdx} className="flex-1 text-center">
+                      <div className={cn(
+                        "text-[7px] font-mono",
+                        isCurrent ? "text-primary font-bold" : "text-muted-foreground",
+                      )}>W{week.weekNum}</div>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Legend */}
@@ -433,8 +553,9 @@ export function PlannerResourceLevelingTab({ items }: Props) {
 
           {/* Utilisation table */}
           <div className="border border-border rounded-lg overflow-hidden">
-            <div className="px-3 py-2 bg-muted/30 border-b border-border">
-              <span className="text-xs font-bold text-foreground">Weekly Detail — Rev {page + 1}</span>
+            <div className="px-3 py-2 bg-muted/30 border-b border-border flex items-center justify-between">
+              <span className="text-xs font-bold text-foreground">Weekly Detail — W{pageStart + 1} to W{pageEnd}</span>
+              <span className="text-[9px] text-muted-foreground">Click a row to see jobs breakdown</span>
             </div>
             <table className="w-full text-[10px]">
               <thead>
@@ -445,6 +566,7 @@ export function PlannerResourceLevelingTab({ items }: Props) {
                   <th className="text-center px-2 py-1.5 font-semibold">PM Hrs</th>
                   <th className="text-center px-2 py-1.5 font-semibold">WO Hrs</th>
                   <th className="text-center px-2 py-1.5 font-semibold">Total Demand</th>
+                  <th className="text-center px-2 py-1.5 font-semibold">Jobs</th>
                   <th className="text-center px-2 py-1.5 font-semibold">Utilisation</th>
                   <th className="text-center px-2 py-1.5 font-semibold">Variance</th>
                   <th className="text-center px-2 py-1.5 font-semibold">Status</th>
@@ -466,7 +588,7 @@ export function PlannerResourceLevelingTab({ items }: Props) {
                     >
                       <td className="px-3 py-1.5 font-mono font-semibold text-foreground">
                         W{week.weekNum}
-                        {isCurrent && <span className="ml-1 text-[8px] text-primary">●</span>}
+                        {isCurrent && <span className="ml-1 text-[8px] text-primary font-normal">Now</span>}
                       </td>
                       <td className="px-2 py-1.5 text-muted-foreground">
                         {format(week.startDate, "d MMM")} – {format(week.endDate, "d MMM")}
@@ -475,13 +597,26 @@ export function PlannerResourceLevelingTab({ items }: Props) {
                       <td className="text-center px-2 py-1.5 tabular-nums text-blue-600">{week.pmHours.toFixed(0)}h</td>
                       <td className="text-center px-2 py-1.5 tabular-nums text-emerald-600">{week.woHours.toFixed(0)}h</td>
                       <td className="text-center px-2 py-1.5 tabular-nums font-semibold text-foreground">{week.demand.toFixed(0)}h</td>
+                      <td className="text-center px-2 py-1.5 tabular-nums text-muted-foreground">{week.items.length}</td>
                       <td className="text-center px-2 py-1.5">
-                        <span className={cn(
-                          "tabular-nums font-semibold",
-                          week.overloaded ? "text-destructive" : week.utilisation > 80 ? "text-amber-600" : "text-emerald-600",
-                        )}>
-                          {week.utilisation.toFixed(0)}%
-                        </span>
+                        {/* Visual bar + percentage */}
+                        <div className="flex items-center gap-1 justify-center">
+                          <div className="w-12 h-1.5 rounded-full bg-muted overflow-hidden">
+                            <div
+                              className={cn(
+                                "h-full rounded-full transition-all",
+                                week.overloaded ? "bg-destructive" : week.utilisation > 80 ? "bg-amber-500" : "bg-emerald-500",
+                              )}
+                              style={{ width: `${Math.min(week.utilisation, 100)}%` }}
+                            />
+                          </div>
+                          <span className={cn(
+                            "tabular-nums font-semibold text-[9px]",
+                            week.overloaded ? "text-destructive" : week.utilisation > 80 ? "text-amber-600" : "text-emerald-600",
+                          )}>
+                            {week.utilisation.toFixed(0)}%
+                          </span>
+                        </div>
                       </td>
                       <td className={cn(
                         "text-center px-2 py-1.5 tabular-nums font-medium",
@@ -507,11 +642,11 @@ export function PlannerResourceLevelingTab({ items }: Props) {
 
           {/* Selected week drill-down */}
           {selectedData && (
-            <div className="border border-border rounded-lg bg-card p-3">
+            <div className="border border-primary/30 rounded-lg bg-card p-3">
               <div className="flex items-center gap-2 mb-2">
                 <Layers className="w-3.5 h-3.5 text-primary" />
                 <span className="text-xs font-bold text-foreground">
-                  Week {selectedData.weekNum} — {format(selectedData.startDate, "d MMM")} to {format(selectedData.endDate, "d MMM yyyy")}
+                  Week {selectedData.weekNum} Drill-Down — {format(selectedData.startDate, "d MMM")} to {format(selectedData.endDate, "d MMM yyyy")}
                 </span>
                 <div className="ml-auto flex items-center gap-2">
                   <span className="text-[10px] text-primary tabular-nums">Cap: {selectedData.capacity.toFixed(0)}h</span>
@@ -526,22 +661,54 @@ export function PlannerResourceLevelingTab({ items }: Props) {
               </div>
 
               {selectedData.items.length > 0 ? (
-                <div className="space-y-1 max-h-60 overflow-y-auto">
-                  {selectedData.items.map((item, i) => (
-                    <div key={`${item.id}-${i}`} className="flex items-center gap-2 text-[10px] py-1 px-2 rounded hover:bg-muted/30">
-                      <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", WO_TYPE_CONFIG[item.woType]?.color || "bg-muted-foreground")} />
-                      <Badge variant="outline" className="text-[8px] px-1 py-0 h-3.5 flex-shrink-0">
-                        {item.woType}
-                      </Badge>
-                      <span className="font-mono text-muted-foreground w-20 flex-shrink-0">{item.woNumber || "PM"}</span>
-                      <span className="text-foreground truncate flex-1">{item.taskName}</span>
-                      <span className="text-muted-foreground flex-shrink-0">{item.discipline}</span>
-                      <span className="text-muted-foreground flex-shrink-0 tabular-nums">{item.estimatedHours.toFixed(1)}h</span>
-                    </div>
-                  ))}
+                <div className="border border-border rounded overflow-hidden">
+                  <table className="w-full text-[10px]">
+                    <thead>
+                      <tr className="bg-muted/30 border-b border-border">
+                        <th className="text-left px-2 py-1 font-semibold">Type</th>
+                        <th className="text-left px-2 py-1 font-semibold">WO / PM</th>
+                        <th className="text-left px-2 py-1 font-semibold">Task</th>
+                        <th className="text-left px-2 py-1 font-semibold">Asset</th>
+                        <th className="text-left px-2 py-1 font-semibold">Discipline</th>
+                        <th className="text-left px-2 py-1 font-semibold">Frequency</th>
+                        <th className="text-right px-2 py-1 font-semibold">Hours</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedData.items.map((item, i) => (
+                        <tr key={`${item.id}-${i}`} className="border-b border-border/30 hover:bg-muted/10">
+                          <td className="px-2 py-1">
+                            <Badge
+                              variant="outline"
+                              className={cn(
+                                "text-[8px] px-1 py-0 h-3.5",
+                                WO_TYPE_CONFIG[item.woType]?.textColor || "text-muted-foreground",
+                              )}
+                            >
+                              {item.woType}
+                            </Badge>
+                          </td>
+                          <td className="px-2 py-1 font-mono text-muted-foreground">{item.woNumber || "PM"}</td>
+                          <td className="px-2 py-1 text-foreground truncate max-w-[300px]">{item.taskName}</td>
+                          <td className="px-2 py-1 text-muted-foreground font-mono">{item.assetNumber || "—"}</td>
+                          <td className="px-2 py-1 text-muted-foreground">{item.discipline || "—"}</td>
+                          <td className="px-2 py-1 text-muted-foreground">{item.frequency || "Once"}</td>
+                          <td className="px-2 py-1 text-right tabular-nums font-semibold">{item.estimatedHours.toFixed(1)}h</td>
+                        </tr>
+                      ))}
+                      <tr className="bg-muted/20 font-semibold">
+                        <td colSpan={6} className="px-2 py-1 text-right text-foreground">Total</td>
+                        <td className="px-2 py-1 text-right tabular-nums">{selectedData.demand.toFixed(1)}h</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               ) : (
-                <span className="text-[10px] text-muted-foreground">No work planned for this week</span>
+                <div className="text-center py-6">
+                  <CalendarRange className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
+                  <p className="text-[10px] text-muted-foreground">No work planned for this week</p>
+                  <p className="text-[9px] text-muted-foreground mt-1">Schedule WOs via the Forward Plan or Weekly Schedule</p>
+                </div>
               )}
             </div>
           )}
@@ -550,33 +717,37 @@ export function PlannerResourceLevelingTab({ items }: Props) {
           {selectedWC === "All" && (
             <div className="border border-border rounded-lg overflow-hidden">
               <div className="px-3 py-2 bg-muted/30 border-b border-border">
-                <span className="text-xs font-bold text-foreground">Discipline Breakdown — Rev {page + 1}</span>
+                <span className="text-xs font-bold text-foreground">Discipline Breakdown — W{pageStart + 1} to W{pageEnd}</span>
               </div>
               <table className="w-full text-[10px]">
                 <thead>
                   <tr className="bg-muted/20 border-b border-border">
                     <th className="text-left px-3 py-1.5 font-semibold">Discipline</th>
-                    <th className="text-center px-2 py-1.5 font-semibold">Rev Capacity</th>
-                    <th className="text-center px-2 py-1.5 font-semibold">Rev Demand</th>
+                    <th className="text-center px-2 py-1.5 font-semibold">Personnel</th>
+                    <th className="text-center px-2 py-1.5 font-semibold">Period Capacity</th>
+                    <th className="text-center px-2 py-1.5 font-semibold">Period Demand</th>
                     <th className="text-center px-2 py-1.5 font-semibold">Utilisation</th>
                     <th className="text-center px-2 py-1.5 font-semibold">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {WORK_CENTRES.map(wc => {
-                    const wcWeeks = weekData.slice(pageStart, pageEnd);
-                    // Recalculate per-discipline
                     let cap = 0;
                     let dem = 0;
+                    let avgPersonnel = 0;
                     for (let w = pageStart; w < pageEnd; w++) {
                       const c = grid[wc.key]?.[w];
-                      if (c) cap += c.personnel * c.hoursPerDay * DAYS_PER_WEEK * (c.loadingTarget / 100);
+                      if (c) {
+                        cap += c.personnel * c.hoursPerDay * DAYS_PER_WEEK * (c.loadingTarget / 100);
+                        avgPersonnel += c.personnel;
+                      }
                     }
+                    avgPersonnel = avgPersonnel / (pageEnd - pageStart);
                     const wcItems = items.filter(i => mapDiscipline(i.discipline) === wc.key);
                     for (let w = pageStart; w < pageEnd; w++) {
                       const weekStart = startOfWeek(addWeeks(yearStart, w), { weekStartsOn: 1 });
                       const weekEnd = addDays(weekStart, 6);
-                      const weekNum = getISOWeek(weekStart);
+                      const weekNum = w + 1;
                       const scheduled = wcItems.filter(i => {
                         if (!i.scheduledDate) return false;
                         try { return isWithinInterval(parseISO(i.scheduledDate), { start: weekStart, end: weekEnd }); }
@@ -595,15 +766,27 @@ export function PlannerResourceLevelingTab({ items }: Props) {
                             {wc.label}
                           </div>
                         </td>
+                        <td className="text-center px-2 py-1.5 tabular-nums text-muted-foreground">{avgPersonnel.toFixed(0)} avg</td>
                         <td className="text-center px-2 py-1.5 tabular-nums text-primary">{cap.toFixed(0)}h</td>
                         <td className="text-center px-2 py-1.5 tabular-nums font-semibold">{dem.toFixed(0)}h</td>
                         <td className="text-center px-2 py-1.5">
-                          <span className={cn(
-                            "tabular-nums font-semibold",
-                            util > 100 ? "text-destructive" : util > 80 ? "text-amber-600" : "text-emerald-600",
-                          )}>
-                            {util.toFixed(0)}%
-                          </span>
+                          <div className="flex items-center gap-1 justify-center">
+                            <div className="w-12 h-1.5 rounded-full bg-muted overflow-hidden">
+                              <div
+                                className={cn(
+                                  "h-full rounded-full",
+                                  util > 100 ? "bg-destructive" : util > 80 ? "bg-amber-500" : "bg-emerald-500",
+                                )}
+                                style={{ width: `${Math.min(util, 100)}%` }}
+                              />
+                            </div>
+                            <span className={cn(
+                              "tabular-nums font-semibold text-[9px]",
+                              util > 100 ? "text-destructive" : util > 80 ? "text-amber-600" : "text-emerald-600",
+                            )}>
+                              {util.toFixed(0)}%
+                            </span>
+                          </div>
                         </td>
                         <td className="text-center px-2 py-1.5">
                           {util > 100 ? (
