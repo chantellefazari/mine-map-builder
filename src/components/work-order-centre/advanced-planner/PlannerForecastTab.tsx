@@ -256,15 +256,29 @@ export function PlannerForecastTab({ items }: Props) {
                 </span>
               </div>
               <div className="space-y-1 max-h-48 overflow-y-auto">
-                {[...selectedData.items, ...selectedData.projectedPMs].map((item, i) => (
-                  <div key={`${item.id}-${i}`} className="flex items-center gap-2 text-[10px] py-0.5">
-                    <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", WO_TYPE_CONFIG[item.woType]?.color || "bg-muted-foreground")} />
-                    <span className="font-mono text-muted-foreground w-20 flex-shrink-0">{item.woNumber || "PM"}</span>
-                    <span className="text-foreground truncate flex-1">{item.taskName}</span>
-                    <span className="text-muted-foreground flex-shrink-0">{item.assetNumber}</span>
-                    <Badge variant="outline" className="text-[8px] px-1 py-0 h-3.5 flex-shrink-0">{item.frequency || item.woType}</Badge>
-                  </div>
-                ))}
+                {[...selectedData.items, ...selectedData.projectedPMs].map((item, i) => {
+                  const crit = getCriticality(item.assetNumber);
+                  const critCfg = crit ? CRITICALITY_CONFIG[crit] : null;
+                  return (
+                    <div key={`${item.id}-${i}`} className="flex items-center gap-2 text-[10px] py-0.5">
+                      <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", WO_TYPE_CONFIG[item.woType]?.color || "bg-muted-foreground")} />
+                      {critCfg && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className={cn("text-[8px] font-bold px-1 py-0 rounded border flex-shrink-0", critCfg.bgColor, critCfg.borderColor, critCfg.color)}>
+                              {crit}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="text-[10px]">{critCfg.label}</TooltipContent>
+                        </Tooltip>
+                      )}
+                      <span className="font-mono text-muted-foreground w-20 flex-shrink-0">{item.woNumber || "PM"}</span>
+                      <span className="text-foreground truncate flex-1">{item.taskName}</span>
+                      <span className="text-muted-foreground flex-shrink-0">{item.assetNumber}</span>
+                      <Badge variant="outline" className="text-[8px] px-1 py-0 h-3.5 flex-shrink-0">{item.frequency || item.woType}</Badge>
+                    </div>
+                  );
+                })}
                 {selectedData.items.length === 0 && selectedData.projectedPMs.length === 0 && (
                   <span className="text-[10px] text-muted-foreground">No work planned for this week</span>
                 )}
