@@ -15,7 +15,7 @@ import {
 } from "date-fns";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import { WO_TYPE_CONFIG } from "./AdvancedPlannerView";
-import { useAssetCriticality, CRITICALITY_CONFIG } from "@/hooks/useAssetCriticality";
+
 
 interface Props {
   items: PlannerItem[];
@@ -55,7 +55,7 @@ interface WeekBucket {
 }
 
 export function PlannerForecastTab({ items }: Props) {
-  const { getCriticality } = useAssetCriticality();
+  
   const [year, setYear] = useState(getYear(new Date()));
   const [filterDiscipline, setFilterDiscipline] = useState("All");
   const [filterType, setFilterType] = useState("All");
