@@ -291,8 +291,8 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
         </div>
       </div>
 
-      {/* Row 4: Revision, Scheduled Date */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* Row 4: Revision, Scheduled Date, Planned Start, Planned Finish */}
+      <div className="grid grid-cols-4 gap-4">
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Revision</Label>
           <Select value={local.revision_week} onValueChange={(v) => save("revision_week" as any, v)}>
@@ -308,7 +308,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
             <PopoverTrigger asChild>
               <Button variant="outline" className="h-9 w-full justify-start text-sm font-normal">
                 <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-                {local.scheduled_date ? format(new Date(local.scheduled_date), "dd MMM yyyy") : <span className="text-muted-foreground">— No date selected —</span>}
+                {local.scheduled_date ? format(new Date(local.scheduled_date), "dd MMM yyyy") : <span className="text-muted-foreground">— No date —</span>}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
@@ -316,10 +316,6 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
             </PopoverContent>
           </Popover>
         </div>
-      </div>
-
-      {/* Row 5: Planned Start / Planned Finish */}
-      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Planned Start</Label>
           <Popover>
