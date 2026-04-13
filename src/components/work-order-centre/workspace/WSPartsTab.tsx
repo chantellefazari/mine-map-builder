@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, Trash2, Search, Download, Package } from "lucide-react";
+import { Plus, Trash2, Search, Download, Package, CheckCircle, ClipboardList, AlertCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -41,11 +41,11 @@ interface AssetComponent {
 }
 
 export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePart }: Props) {
-  const [adding, setAdding] = useState(false);
   const [showCatalogue, setShowCatalogue] = useState(false);
   const [catalogueSearch, setCatalogueSearch] = useState("");
-  const [newPart, setNewPart] = useState({ part_number: "", part_description: "", quantity_required: 1 });
   const [loadingComponents, setLoadingComponents] = useState(false);
+  const [partsConfirmed, setPartsConfirmed] = useState(false);
+  const [noPartsRequired, setNoPartsRequired] = useState(false);
 
   // Fetch site_spares for catalogue search
   const { data: spares } = useQuery({
@@ -83,26 +83,13 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
     ).slice(0, 50);
   }, [spares, catalogueSearch]);
 
-  const handleAdd = async () => {
-    if (!newPart.part_description.trim()) return;
-    await addPart.mutateAsync({
-      work_order_id: woId,
-      part_number: newPart.part_number,
-      part_description: newPart.part_description,
-      quantity_required: newPart.quantity_required,
-    });
-    setNewPart({ part_number: "", part_description: "", quantity_required: 1 });
-    setAdding(false);
-  };
-
-  const handleLoadComponents = async () => {
+  const handleLoadBOM = async () => {
     if (!assetId?.trim()) {
       toast.error("No asset selected on the Overview tab");
       return;
     }
     setLoadingComponents(true);
     try {
-      // Fetch the asset row to get its components
       const { data, error } = await supabase
         .from("processing_plant_assets_rev_b")
         .select("asset_number, asset_name, components")
@@ -148,7 +135,6 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
         return;
       }
 
-      // Build specs string from component attributes
       const buildSpecs = (comp: AssetComponent): string => {
         const specs: string[] = [];
         if (comp.manufacturer) specs.push(`Mfr: ${comp.manufacturer}`);
@@ -169,7 +155,6 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
         return specs.join("; ");
       };
 
-      // Add each component as a part (skip duplicates already in parts list)
       const existingDescs = new Set(parts.map((p) => p.part_description.toLowerCase()));
       let added = 0;
       for (const comp of comps) {
@@ -211,20 +196,30 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
 
   return (
     <div className="space-y-4">
+      {/* Header with count + action buttons */}
       <div className="flex items-center justify-between">
-        <div>
+        <div className="flex items-center gap-2">
           <h2 className="text-sm font-bold text-foreground">Parts & Materials</h2>
-          <p className="text-xs text-muted-foreground">{parts.length} part(s) linked to this work order</p>
+          <Badge variant="secondary" className="text-[10px]">{parts.length}</Badge>
         </div>
         <div className="flex gap-2">
           <Button
-            onClick={handleLoadComponents}
+            onClick={() => { setNoPartsRequired(true); toast.success("Marked: No parts required"); }}
+            size="sm"
+            variant="outline"
+            className="text-xs gap-1"
+            disabled={noPartsRequired}
+          >
+            <CheckCircle className="w-3 h-3" /> No Parts Required
+          </Button>
+          <Button
+            onClick={handleLoadBOM}
             size="sm"
             variant="outline"
             className="text-xs gap-1"
             disabled={loadingComponents || !assetId}
           >
-            <Download className="w-3 h-3" /> {loadingComponents ? "Loading..." : "Load from Asset"}
+            <Download className="w-3 h-3" /> {loadingComponents ? "Loading..." : "Load from BOM"}
           </Button>
           <Button
             onClick={() => setShowCatalogue(!showCatalogue)}
@@ -234,8 +229,13 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
           >
             <Search className="w-3 h-3" /> Search Catalogue
           </Button>
-          <Button onClick={() => setAdding(true)} size="sm" className="text-xs gap-1">
-            <Plus className="w-3 h-3" /> Manual Entry
+          <Button
+            onClick={() => toast.info("Pick list generated")}
+            size="sm"
+            variant="outline"
+            className="text-xs gap-1"
+          >
+            <ClipboardList className="w-3 h-3" /> Pick List
           </Button>
         </div>
       </div>
@@ -289,26 +289,10 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
         </div>
       )}
 
-      {/* Manual add */}
-      {adding && (
-        <div className="border border-primary/30 rounded-lg p-3 bg-primary/5 space-y-2">
-          <p className="text-xs font-semibold text-foreground">Manual Entry</p>
-          <div className="grid grid-cols-4 gap-2">
-            <Input value={newPart.part_number} onChange={(e) => setNewPart((p) => ({ ...p, part_number: e.target.value }))} placeholder="Part number" className="h-8 text-xs" />
-            <Input value={newPart.part_description} onChange={(e) => setNewPart((p) => ({ ...p, part_description: e.target.value }))} placeholder="Description" className="h-8 text-xs col-span-2" />
-            <Input type="number" value={newPart.quantity_required} onChange={(e) => setNewPart((p) => ({ ...p, quantity_required: parseInt(e.target.value) || 1 }))} className="h-8 text-xs" />
-          </div>
-          <div className="flex gap-2">
-            <Button size="sm" className="text-xs h-7" onClick={handleAdd} disabled={addPart.isPending}>Add</Button>
-            <Button size="sm" variant="ghost" className="text-xs h-7" onClick={() => setAdding(false)}>Cancel</Button>
-          </div>
-        </div>
-      )}
-
       {/* Parts table */}
-      {parts.length === 0 && !adding && !showCatalogue ? (
+      {parts.length === 0 && !showCatalogue ? (
         <div className="border border-dashed border-border rounded-lg p-8 text-center text-sm text-muted-foreground">
-          No parts added. Use "Load from Asset" to pull components, search the catalogue, or add manually.
+          No parts added. Use "Load from BOM" to pull components, search the catalogue, or add manually.
         </div>
       ) : parts.length > 0 && (
         <div className="border border-border rounded-lg overflow-hidden">
@@ -317,6 +301,7 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
               <tr className="bg-muted/50 border-b border-border">
                 <th className="text-left px-3 py-2 font-semibold">Part #</th>
                 <th className="text-left px-3 py-2 font-semibold">Description</th>
+                <th className="text-left px-3 py-2 font-semibold">Supplier</th>
                 <th className="text-left px-3 py-2 font-semibold">Qty</th>
                 <th className="text-left px-3 py-2 font-semibold">Status</th>
                 <th className="text-left px-3 py-2 font-semibold">Location</th>
@@ -327,8 +312,16 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
             <tbody>
               {parts.map((p) => (
                 <tr key={p.id} className="border-b border-border last:border-b-0">
-                  <td className="px-3 py-2 font-mono">{p.part_number || "-"}</td>
-                  <td className="px-3 py-2">{p.part_description}</td>
+                  <td className="px-3 py-2 font-mono">{p.part_number || "–"}</td>
+                  <td className="px-3 py-2 max-w-[280px]">{p.part_description}</td>
+                  <td className="px-3 py-1.5">
+                    <Input
+                      value={(p as any).supplier || ""}
+                      onChange={(e) => updatePart.mutate({ id: p.id, updates: { supplier: e.target.value } })}
+                      placeholder="Supplier"
+                      className="h-7 w-24 text-xs"
+                    />
+                  </td>
                   <td className="px-3 py-1.5">
                     <Input
                       type="number"
@@ -373,6 +366,25 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Parts confirmation status */}
+      {parts.length > 0 && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <AlertCircle className="w-3.5 h-3.5" />
+            {partsConfirmed ? "Parts have been confirmed as complete" : "Parts have not been confirmed as complete"}
+          </div>
+          {!partsConfirmed && (
+            <Button
+              size="sm"
+              className="text-xs gap-1.5"
+              onClick={() => { setPartsConfirmed(true); toast.success("Parts confirmed as complete"); }}
+            >
+              <CheckCircle className="w-3.5 h-3.5" /> Confirm Parts Complete
+            </Button>
+          )}
         </div>
       )}
     </div>
