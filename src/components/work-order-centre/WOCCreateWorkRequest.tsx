@@ -264,21 +264,14 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
               </div>
             </FieldBox>
             <FieldBox label="Work Centre">
-              <div className="flex items-center gap-2 mt-2">
-                {WORK_CENTRES.map((wc) => (
-                  <button
-                    key={wc}
-                    type="button"
-                    onClick={() => set("work_centre", form.work_centre === wc ? "" : wc)}
-                    className={`px-3 py-1 text-xs font-mono rounded border transition-colors ${
-                      form.work_centre === wc
-                        ? "bg-foreground text-background border-foreground"
-                        : "bg-background text-foreground border-border hover:border-foreground/50"
-                    }`}
-                  >
-                    {wc}
-                  </button>
-                ))}
+              <div className="mt-1">
+                <Select value={form.work_centre || "none"} onValueChange={(v) => set("work_centre", v === "none" ? "" : v)}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Select..." /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">— Select —</SelectItem>
+                    {WORK_CENTRES.map((wc) => <SelectItem key={wc} value={wc}>{wc}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
             </FieldBox>
           </div>
