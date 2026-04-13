@@ -315,69 +315,70 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
 
   return (
     <div className="flex flex-col h-full gap-0">
-      {/* Row 1: Group selectors + search */}
-      <div className="flex items-center justify-between px-4 py-1.5 border-b border-border bg-card">
-        <div className="flex items-center gap-1">
-          {TAB_GROUPS.map(group => {
-            const isActiveGroup = activeGroup === group.group;
-            const GroupIcon = group.icon;
+      {/* Navigation */}
+      <div className="border-b border-border bg-card">
+        {/* Row 1: Group selectors + search */}
+        <div className="flex items-center justify-between px-4 pt-2 pb-1.5">
+          <div className="flex items-center gap-0.5 bg-muted/50 rounded-lg p-0.5">
+            {TAB_GROUPS.map(group => {
+              const isActiveGroup = activeGroup === group.group;
+              const GroupIcon = group.icon;
+              return (
+                <button
+                  key={group.group}
+                  onClick={() => handleGroupChange(group.group)}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold transition-all",
+                    isActiveGroup
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <GroupIcon className="w-3.5 h-3.5" />
+                  {group.group}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Search plans, assets, WO#..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8 h-8 w-52 text-xs"
+              />
+            </div>
+            <PlannerExcelToolbar items={allItems} />
+            <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs" onClick={exportCSV}>
+              <Download className="w-3.5 h-3.5" /> CSV
+            </Button>
+          </div>
+        </div>
+
+        {/* Row 2: Sub-tabs for active group */}
+        <div className="flex items-center gap-0 px-4 pb-0">
+          {currentGroup.tabs.map(tab => {
+            const isActive = activeTab === tab.key;
             return (
               <button
-                key={group.group}
-                onClick={() => handleGroupChange(group.group)}
+                key={tab.key}
+                onClick={() => handleTabChange(tab.key)}
                 className={cn(
-                  "flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all",
-                  isActiveGroup
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                  "flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium transition-all whitespace-nowrap border-b-2",
+                  isActive
+                    ? "text-foreground border-primary"
+                    : "text-muted-foreground hover:text-foreground border-transparent"
                 )}
               >
-                <GroupIcon className="w-3.5 h-3.5" />
-                {group.group}
+                <tab.icon className="w-3.5 h-3.5" />
+                {tab.label}
               </button>
             );
           })}
         </div>
-
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-            <Input
-              placeholder="Search plans, assets, WO#..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 h-8 w-52 text-xs"
-            />
-          </div>
-          <PlannerExcelToolbar items={allItems} />
-          <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs" onClick={exportCSV}>
-            <Download className="w-3.5 h-3.5" /> CSV
-          </Button>
-        </div>
-      </div>
-
-      {/* Row 2: Sub-tabs for active group */}
-      <div className="flex items-center gap-1 px-4 py-1.5 border-b border-border bg-muted/20">
-        <span className="text-[10px] font-bold text-primary uppercase tracking-wider mr-1 select-none">{currentGroup.group}</span>
-        <ChevronRight className="w-3 h-3 text-muted-foreground mr-0.5" />
-        {currentGroup.tabs.map(tab => {
-          const isActive = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              onClick={() => handleTabChange(tab.key)}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap",
-                isActive
-                  ? "bg-background text-foreground shadow-sm border border-border"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              )}
-            >
-              <tab.icon className="w-3.5 h-3.5" />
-              {tab.label}
-            </button>
-          );
-        })}
       </div>
 
       {/* Filter bar - only on relevant tabs */}
