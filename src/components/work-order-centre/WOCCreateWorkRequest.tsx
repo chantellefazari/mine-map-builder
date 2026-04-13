@@ -7,6 +7,7 @@ import { useWorkRequests } from "@/hooks/useWorkRequests";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { WRAssetSearch } from "./WRAssetSearch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Camera, X, Sparkles, Loader2, Plus, Trash2, ArrowLeft, Send, Printer } from "lucide-react";
 import { format } from "date-fns";
 
@@ -204,33 +205,23 @@ export function WOCCreateWorkRequest({ onCreated }: Props) {
               <p className="text-sm font-semibold mt-1">{today}</p>
             </FieldBox>
             <FieldBox label="Priority" required>
-              <div className="space-y-1 mt-1">
-                {PRIORITIES.map((p) => (
-                  <label key={p.value} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={form.priority === p.value}
-                      onChange={() => set("priority", p.value)}
-                      className="h-3.5 w-3.5 rounded border-border accent-amber-500"
-                    />
-                    <span className="text-xs">{p.label}</span>
-                  </label>
-                ))}
+              <div className="mt-1">
+                <Select value={form.priority} onValueChange={(v) => set("priority", v)}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {PRIORITIES.map((p) => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
             </FieldBox>
             <FieldBox label="Work Type" required>
-              <div className="space-y-1 mt-1">
-                {WORK_TYPES.map((t) => (
-                  <label key={t} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={form.work_type === t}
-                      onChange={() => set("work_type", t)}
-                      className="h-3.5 w-3.5 rounded border-border accent-amber-500"
-                    />
-                    <span className="text-xs">{t}</span>
-                  </label>
-                ))}
+              <div className="mt-1">
+                <Select value={form.work_type} onValueChange={(v) => set("work_type", v)}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {WORK_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
             </FieldBox>
           </div>
