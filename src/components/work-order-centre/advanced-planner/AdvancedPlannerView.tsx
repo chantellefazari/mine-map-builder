@@ -116,6 +116,7 @@ export function AdvancedPlannerView() {
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterFrequency, setFilterFrequency] = useState("All");
   const [filterPriority, setFilterPriority] = useState("All");
+  const [filterDutyType, setFilterDutyType] = useState("All");
 
   // Forward Plan interactions
   const [fpScheduleOpen, setFpScheduleOpen] = useState(false);
@@ -204,6 +205,7 @@ export function AdvancedPlannerView() {
     if (filterStatus !== "All") items = items.filter(i => i.status === filterStatus);
     if (filterFrequency !== "All") items = items.filter(i => i.frequency === filterFrequency);
     if (filterPriority !== "All") items = items.filter(i => i.priority === filterPriority);
+    if (filterDutyType !== "All") items = items.filter(i => (i.dutyType || "Online") === filterDutyType);
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       items = items.filter(i =>
@@ -215,7 +217,7 @@ export function AdvancedPlannerView() {
       );
     }
     return items;
-  }, [allItems, filterWOType, filterArea, filterDiscipline, filterStatus, filterFrequency, filterPriority, searchQuery]);
+  }, [allItems, filterWOType, filterArea, filterDiscipline, filterStatus, filterFrequency, filterPriority, filterDutyType, searchQuery]);
 
   const filterOptions = useMemo(() => ({
     areas: [...new Set(allItems.map(i => i.area).filter(Boolean))].sort(),
@@ -223,6 +225,7 @@ export function AdvancedPlannerView() {
     frequencies: [...new Set(allItems.map(i => i.frequency).filter(Boolean))].sort(),
     priorities: [...new Set(allItems.map(i => i.priority).filter(Boolean))].sort(),
     statuses: [...new Set(allItems.map(i => i.status).filter(Boolean))].sort(),
+    dutyTypes: [...new Set(allItems.map(i => i.dutyType || "Online").filter(Boolean))].sort(),
   }), [allItems]);
 
   const stats = useMemo(() => ({
@@ -304,6 +307,7 @@ export function AdvancedPlannerView() {
           filterFrequency={filterFrequency} setFilterFrequency={setFilterFrequency}
           filterPriority={filterPriority} setFilterPriority={setFilterPriority}
           filterStatus={filterStatus} setFilterStatus={setFilterStatus}
+          filterDutyType={filterDutyType} setFilterDutyType={setFilterDutyType}
           options={filterOptions}
         />
       )}
