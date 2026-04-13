@@ -164,6 +164,7 @@ export function PlannerTreeExplorer({ items }: Props) {
                 getAreaPlans={getAreaPlans}
                 selectedAssetNumber={selectedEquipment?.equipment.assetNumber || null}
                 onSelectEquipment={selectEquipment}
+                getCriticality={getCriticality}
               />
             ))}
           </div>
