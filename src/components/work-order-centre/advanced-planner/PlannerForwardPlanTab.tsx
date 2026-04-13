@@ -391,12 +391,11 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                           const crit = getCriticality(pm.assetNumber);
                           if (!crit) return null;
                           const cfg = CRITICALITY_CONFIG[crit];
+                          const dotColor = crit === "A" ? "bg-destructive" : crit === "B" ? "bg-amber-500" : "bg-muted-foreground/40";
                           return (
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <span className={cn("text-[8px] font-bold px-1 py-0 rounded border flex-shrink-0", cfg.bgColor, cfg.borderColor, cfg.color)}>
-                                  {crit}
-                                </span>
+                                <span className={cn("w-2 h-2 rounded-full flex-shrink-0", dotColor)} />
                               </TooltipTrigger>
                               <TooltipContent side="top" className="text-[10px]">
                                 <div className="font-semibold">{cfg.label}</div>
