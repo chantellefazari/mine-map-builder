@@ -55,6 +55,7 @@ interface WeekBucket {
 }
 
 export function PlannerForecastTab({ items }: Props) {
+  const { getCriticality } = useAssetCriticality();
   const [year, setYear] = useState(getYear(new Date()));
   const [filterDiscipline, setFilterDiscipline] = useState("All");
   const [filterType, setFilterType] = useState("All");
