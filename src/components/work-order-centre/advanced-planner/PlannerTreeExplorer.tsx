@@ -30,7 +30,6 @@ const WO_TYPE_DOTS: Record<string, string> = {
   PM: "bg-blue-500",
   Planned: "bg-emerald-500",
   Breakdown: "bg-red-500",
-  Shutdown: "bg-amber-500",
 };
 
 /* ─── Tree connector lines ─── */
