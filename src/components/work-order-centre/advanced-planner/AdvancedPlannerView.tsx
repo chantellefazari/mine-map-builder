@@ -28,6 +28,9 @@ import { PlannerDashboardTab } from "./PlannerDashboardTab";
 import { ForwardPlanScheduleDialog } from "./ForwardPlanScheduleDialog";
 import { PlannerExcelToolbar } from "./PlannerExcelToolbar";
 import { PlannerItemDetail } from "./PlannerItemDetail";
+import { PlannerPermitsTab } from "./PlannerPermitsTab";
+import { PlannerFailuresTab } from "./PlannerFailuresTab";
+import { PlannerConditionMonitoringTab } from "./PlannerConditionMonitoringTab";
 
 export interface PlannerItem {
   id: string;
