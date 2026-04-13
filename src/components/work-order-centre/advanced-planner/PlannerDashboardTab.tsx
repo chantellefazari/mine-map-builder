@@ -252,7 +252,7 @@ export function PlannerDashboardTab({ items, onNavigateWOC }: Props) {
 
         <div className="grid grid-cols-2 gap-3">
           {/* Backlog Aging */}
-          <Card className="border-border">
+          <Card className={cn("border-border transition-colors", onNavigateWOC && "cursor-pointer hover:border-primary/40 hover:bg-primary/5")} onClick={() => onNavigateWOC?.("dashboard")}>
             <CardContent className="p-3">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-1.5">
