@@ -20,7 +20,6 @@ interface Props {
   onUpdate: (updates: Partial<WorkOrder>) => void;
 }
 
-// Generate revision week options
 function getRevisionWeeks() {
   const weeks: string[] = [];
   const now = new Date();
@@ -33,6 +32,16 @@ function getRevisionWeeks() {
   }
   return weeks;
 }
+
+const ACTIVITY_TYPES = [
+  { code: "RPR", label: "RPR — Repair" },
+  { code: "RPL", label: "RPL — Replace" },
+  { code: "INS", label: "INS — Inspect" },
+  { code: "NEW", label: "NEW — New Install" },
+  { code: "MON", label: "MON — Monitor" },
+];
+
+const WORK_CENTRES = ["MECH", "ELEC", "MOBILE", "PROJ"];
 
 export function WSOverviewTab({ wo, onUpdate }: Props) {
   const { woPriorityValues } = usePriorityConfig();
@@ -54,6 +63,15 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
     work_centre: (wo as any).work_centre || "MECH",
     revision_week: (wo as any).revision_week || "",
     scheduled_date: wo.scheduled_date || null,
+    activity_type: (wo as any).activity_type || "",
+    duty_type: wo.duty_type || "Online",
+    planned_start: (wo as any).planned_start || null,
+    planned_finish: (wo as any).planned_finish || null,
+    linked_wr_number: (wo as any).linked_wr_number || "",
+    permit_required: (wo as any).permit_required || false,
+    confined_space: (wo as any).confined_space || false,
+    working_at_heights: (wo as any).working_at_heights || false,
+    hot_work: (wo as any).hot_work || false,
   });
 
   const [equipmentDesc, setEquipmentDesc] = useState("");
@@ -65,7 +83,6 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const debounceTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
-  // Look up equipment description from asset
   useEffect(() => {
     if (!local.asset_id) { setEquipmentDesc(""); return; }
     (async () => {
@@ -95,6 +112,15 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       work_centre: (wo as any).work_centre || "MECH",
       revision_week: (wo as any).revision_week || "",
       scheduled_date: wo.scheduled_date || null,
+      activity_type: (wo as any).activity_type || "",
+      duty_type: wo.duty_type || "Online",
+      planned_start: (wo as any).planned_start || null,
+      planned_finish: (wo as any).planned_finish || null,
+      linked_wr_number: (wo as any).linked_wr_number || "",
+      permit_required: (wo as any).permit_required || false,
+      confined_space: (wo as any).confined_space || false,
+      working_at_heights: (wo as any).working_at_heights || false,
+      hot_work: (wo as any).hot_work || false,
     });
     setPhotos(wo.photo_urls || []);
     setNewFiles([]);
@@ -102,9 +128,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
   }, [wo.id]);
 
   useEffect(() => {
-    return () => {
-      Object.values(debounceTimers.current).forEach(clearTimeout);
-    };
+    return () => { Object.values(debounceTimers.current).forEach(clearTimeout); };
   }, []);
 
   const save = (field: string, value: any) => {
@@ -132,17 +156,14 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       if (data?.enhanced) { save("problem_description", data.enhanced); toast.success("Description enhanced"); }
     } catch (err: any) {
       toast.error(err.message || "Failed to enhance text");
-    } finally {
-      setEnhancingDesc(false);
-    }
+    } finally { setEnhancingDesc(false); }
   };
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const imageFiles = files.filter((f) => f.type.startsWith("image/"));
     if (imageFiles.length === 0) return;
-    const totalAllowed = 5 - photos.length;
-    const toAdd = imageFiles.slice(0, totalAllowed);
+    const toAdd = imageFiles.slice(0, 5 - photos.length);
     setNewFiles((p) => [...p, ...toAdd]);
     setNewPreviews((p) => [...p, ...toAdd.map((f) => URL.createObjectURL(f))]);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -162,21 +183,20 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
     onUpdate({ photo_urls: urls } as any);
     setPhotos(urls);
     newPreviews.forEach((u) => URL.revokeObjectURL(u));
-    setNewFiles([]);
-    setNewPreviews([]);
+    setNewFiles([]); setNewPreviews([]);
     toast.success("Photos uploaded");
   };
 
-  const removeExistingPhoto = (index: number) => {
-    const updated = photos.filter((_, i) => i !== index);
+  const removeExistingPhoto = (i: number) => {
+    const updated = photos.filter((_, idx) => idx !== i);
     setPhotos(updated);
     onUpdate({ photo_urls: updated } as any);
   };
 
-  const removeNewPhoto = (index: number) => {
-    URL.revokeObjectURL(newPreviews[index]);
-    setNewFiles((p) => p.filter((_, i) => i !== index));
-    setNewPreviews((p) => p.filter((_, i) => i !== index));
+  const removeNewPhoto = (i: number) => {
+    URL.revokeObjectURL(newPreviews[i]);
+    setNewFiles((p) => p.filter((_, idx) => idx !== i));
+    setNewPreviews((p) => p.filter((_, idx) => idx !== i));
   };
 
   return (
@@ -228,7 +248,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
           <Select value={local.work_centre} onValueChange={(v) => save("work_centre" as any, v)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {["MECH", "ELEC", "MOB", "INST"].map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+              {WORK_CENTRES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
@@ -238,7 +258,40 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
         </div>
       </div>
 
-      {/* Row 3: Revision, Scheduled Date */}
+      {/* Row 3: Activity Type, Duty Type, Linked WR */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold">Activity Type <span className="text-destructive">*</span></Label>
+          <Select value={local.activity_type || "none"} onValueChange={(v) => save("activity_type", v === "none" ? "" : v)}>
+            <SelectTrigger className="h-9 text-sm font-mono"><SelectValue placeholder="Select..." /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">— Select —</SelectItem>
+              {ACTIVITY_TYPES.map((a) => <SelectItem key={a.code} value={a.code}>{a.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold">Duty Type <span className="text-destructive">*</span></Label>
+          <Select value={local.duty_type} onValueChange={(v) => save("duty_type", v)}>
+            <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Online">Online</SelectItem>
+              <SelectItem value="Offline">Offline</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold">Linked Work Request</Label>
+          <Input
+            value={local.linked_wr_number}
+            onChange={(e) => debouncedSave("linked_wr_number" as any, e.target.value)}
+            className="h-9 text-sm font-mono"
+            placeholder="e.g. WR-500123"
+          />
+        </div>
+      </div>
+
+      {/* Row 4: Revision, Scheduled Date */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold">Revision</Label>
@@ -259,11 +312,39 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={local.scheduled_date ? new Date(local.scheduled_date) : undefined}
-                onSelect={(date) => save("scheduled_date", date ? format(date, "yyyy-MM-dd") : null)}
-              />
+              <Calendar mode="single" selected={local.scheduled_date ? new Date(local.scheduled_date) : undefined} onSelect={(date) => save("scheduled_date", date ? format(date, "yyyy-MM-dd") : null)} />
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+
+      {/* Row 5: Planned Start / Planned Finish */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold">Planned Start</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="h-9 w-full justify-start text-sm font-normal">
+                <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                {local.planned_start ? format(new Date(local.planned_start), "dd MMM yyyy") : <span className="text-muted-foreground">— No date —</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar mode="single" selected={local.planned_start ? new Date(local.planned_start) : undefined} onSelect={(date) => save("planned_start" as any, date ? format(date, "yyyy-MM-dd") : null)} />
+            </PopoverContent>
+          </Popover>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold">Planned Finish</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="h-9 w-full justify-start text-sm font-normal">
+                <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                {local.planned_finish ? format(new Date(local.planned_finish), "dd MMM yyyy") : <span className="text-muted-foreground">— No date —</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar mode="single" selected={local.planned_finish ? new Date(local.planned_finish) : undefined} onSelect={(date) => save("planned_finish" as any, date ? format(date, "yyyy-MM-dd") : null)} />
             </PopoverContent>
           </Popover>
         </div>
@@ -272,12 +353,7 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       {/* Work Title */}
       <div className="space-y-1.5">
         <Label className="text-xs font-semibold">Work Title <span className="text-destructive">*</span></Label>
-        <Input
-          value={local.work_title}
-          onChange={(e) => debouncedSave("work_title" as any, e.target.value)}
-          className="h-9 text-sm"
-          placeholder="Brief title for this work order..."
-        />
+        <Input value={local.work_title} onChange={(e) => debouncedSave("work_title" as any, e.target.value)} className="h-9 text-sm" placeholder="Brief title for this work order..." />
       </div>
 
       {/* Description with AI */}
@@ -296,26 +372,14 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
       <div className="space-y-1.5">
         <Label className="text-xs font-semibold">Additional Notes</Label>
         <p className="text-[11px] text-muted-foreground">Important instructions for the crew — safety considerations, access requirements, special instructions.</p>
-        <Textarea
-          value={local.work_performed}
-          onChange={(e) => debouncedSave("work_performed", e.target.value)}
-          rows={3}
-          className="text-sm"
-          placeholder="e.g. Will need to use EWP to remove. Work in with ops to set time to achieve."
-        />
+        <Textarea value={local.work_performed} onChange={(e) => debouncedSave("work_performed", e.target.value)} rows={3} className="text-sm" placeholder="e.g. Will need to use EWP to remove. Work in with ops to set time to achieve." />
       </div>
 
       {/* Findings & Follow-up Actions */}
       <div className="space-y-1.5">
         <Label className="text-xs font-semibold">Findings & Follow-up Actions</Label>
         <p className="text-[11px] text-muted-foreground">Observations, issues found, and follow-up actions from execution.</p>
-        <Textarea
-          value={local.findings}
-          onChange={(e) => debouncedSave("findings" as any, e.target.value)}
-          rows={3}
-          className="text-sm"
-          placeholder="Record findings and follow-up actions during or after execution..."
-        />
+        <Textarea value={local.findings} onChange={(e) => debouncedSave("findings" as any, e.target.value)} rows={3} className="text-sm" placeholder="Record findings and follow-up actions during or after execution..." />
       </div>
 
       {/* Photos */}
@@ -325,43 +389,52 @@ export function WSOverviewTab({ wo, onUpdate }: Props) {
           {photos.map((url, i) => (
             <div key={`existing-${i}`} className="relative w-20 h-20 rounded-lg overflow-hidden border border-border group">
               <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
-              <button type="button" onClick={() => removeExistingPhoto(i)} className="absolute top-0.5 right-0.5 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                <X className="h-3 w-3" />
-              </button>
+              <button type="button" onClick={() => removeExistingPhoto(i)} className="absolute top-0.5 right-0.5 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"><X className="h-3 w-3" /></button>
             </div>
           ))}
           {newPreviews.map((url, i) => (
             <div key={`new-${i}`} className="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-dashed border-primary/40 group">
               <img src={url} alt={`New ${i + 1}`} className="w-full h-full object-cover" />
-              <button type="button" onClick={() => removeNewPhoto(i)} className="absolute top-0.5 right-0.5 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                <X className="h-3 w-3" />
-              </button>
+              <button type="button" onClick={() => removeNewPhoto(i)} className="absolute top-0.5 right-0.5 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"><X className="h-3 w-3" /></button>
             </div>
           ))}
           {photos.length + newFiles.length < 5 && (
             <button type="button" onClick={() => fileInputRef.current?.click()} className="w-20 h-20 rounded-lg border-2 border-dashed border-border hover:border-primary/50 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-primary transition-colors">
-              <Camera className="h-5 w-5" />
-              <span className="text-[10px]">Add Photo</span>
+              <Camera className="h-5 w-5" /><span className="text-[10px]">Add Photo</span>
             </button>
           )}
         </div>
         {newFiles.length > 0 && (
-          <Button type="button" size="sm" className="h-7 text-xs" onClick={uploadAndSavePhotos}>
-            Upload {newFiles.length} photo{newFiles.length > 1 ? "s" : ""}
-          </Button>
+          <Button type="button" size="sm" className="h-7 text-xs" onClick={uploadAndSavePhotos}>Upload {newFiles.length} photo{newFiles.length > 1 ? "s" : ""}</Button>
         )}
         <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handlePhotoSelect} />
       </div>
 
-      {/* Isolation Required */}
-      <div className="border border-border rounded-lg p-4">
-        <label className="flex items-center gap-3 cursor-pointer">
-          <Switch
-            checked={local.isolation_required}
-            onCheckedChange={(v) => save("isolation_required" as any, v)}
-          />
-          <span className="text-sm font-semibold">Isolation Required</span>
-        </label>
+      {/* Safety Flags */}
+      <div className="border border-border rounded-lg p-4 space-y-3">
+        <Label className="text-xs font-semibold">Safety Requirements</Label>
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          <label className="flex items-center gap-2.5 cursor-pointer">
+            <Switch checked={local.isolation_required} onCheckedChange={(v) => save("isolation_required" as any, v)} />
+            <span className="text-sm">Isolation Required</span>
+          </label>
+          <label className="flex items-center gap-2.5 cursor-pointer">
+            <Switch checked={local.permit_required} onCheckedChange={(v) => save("permit_required" as any, v)} />
+            <span className="text-sm">Permit Required</span>
+          </label>
+          <label className="flex items-center gap-2.5 cursor-pointer">
+            <Switch checked={local.confined_space} onCheckedChange={(v) => save("confined_space" as any, v)} />
+            <span className="text-sm">Confined Space</span>
+          </label>
+          <label className="flex items-center gap-2.5 cursor-pointer">
+            <Switch checked={local.working_at_heights} onCheckedChange={(v) => save("working_at_heights" as any, v)} />
+            <span className="text-sm">Working at Heights</span>
+          </label>
+          <label className="flex items-center gap-2.5 cursor-pointer">
+            <Switch checked={local.hot_work} onCheckedChange={(v) => save("hot_work" as any, v)} />
+            <span className="text-sm">Hot Work</span>
+          </label>
+        </div>
       </div>
     </div>
   );

@@ -93,6 +93,14 @@ export function WOCWorkspaceHeader({ wo, onUpdate, onClose, onPrint, partsCount 
           <Badge variant="outline" className={`text-[10px] ${statusColor(wo.status)}`}>{wo.status}</Badge>
           <Badge variant="outline" className={`text-[10px] ${priorityColor(wo.priority)}`}>{wo.priority}</Badge>
           <span className="text-xs text-muted-foreground">Type: {wo.work_type || "-"}</span>
+          {wo.activity_type && (
+            <Badge variant="outline" className="text-[10px] font-mono">{wo.activity_type}</Badge>
+          )}
+          {wo.duty_type && (
+            <Badge variant="outline" className={`text-[10px] ${wo.duty_type === "Online" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-amber-50 text-amber-700 border-amber-200"}`}>
+              {wo.duty_type}
+            </Badge>
+          )}
           <CompletionDots wo={wo} partsCount={partsCount} />
         </div>
 

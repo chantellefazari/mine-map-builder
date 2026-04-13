@@ -3040,25 +3040,33 @@ export type Database = {
           activity_type: string
           asset_id: string | null
           assigned_to: string | null
+          confined_space: boolean
           created_at: string
           date_completed: string | null
           date_raised: string | null
           duty_type: string
+          findings: string
           functional_location: string | null
+          hot_work: boolean
           id: string
           isolation_required: boolean
           job_status: string
           labour_hours: Json
+          linked_wr_number: string
           operations_handover_date: string
           operations_handover_name: string
           parts_used: string | null
+          permit_required: boolean
           photo_urls: string[] | null
+          planned_finish: string | null
+          planned_start: string | null
           priority: string
           problem_description: string | null
           requested_by: string | null
           required_tooling: string | null
           resources_required: string
           returned_to_service: string
+          revision_week: string
           scheduled_date: string | null
           scope_of_works: string | null
           status: string
@@ -3070,32 +3078,43 @@ export type Database = {
           updated_at: string
           wo_number: string
           wo_return_status: string
+          work_centre: string
           work_performed: string | null
+          work_title: string
           work_type: string
+          working_at_heights: boolean
         }
         Insert: {
           activity_type?: string
           asset_id?: string | null
           assigned_to?: string | null
+          confined_space?: boolean
           created_at?: string
           date_completed?: string | null
           date_raised?: string | null
           duty_type?: string
+          findings?: string
           functional_location?: string | null
+          hot_work?: boolean
           id?: string
           isolation_required?: boolean
           job_status?: string
           labour_hours?: Json
+          linked_wr_number?: string
           operations_handover_date?: string
           operations_handover_name?: string
           parts_used?: string | null
+          permit_required?: boolean
           photo_urls?: string[] | null
+          planned_finish?: string | null
+          planned_start?: string | null
           priority?: string
           problem_description?: string | null
           requested_by?: string | null
           required_tooling?: string | null
           resources_required?: string
           returned_to_service?: string
+          revision_week?: string
           scheduled_date?: string | null
           scope_of_works?: string | null
           status?: string
@@ -3107,32 +3126,43 @@ export type Database = {
           updated_at?: string
           wo_number: string
           wo_return_status?: string
+          work_centre?: string
           work_performed?: string | null
+          work_title?: string
           work_type?: string
+          working_at_heights?: boolean
         }
         Update: {
           activity_type?: string
           asset_id?: string | null
           assigned_to?: string | null
+          confined_space?: boolean
           created_at?: string
           date_completed?: string | null
           date_raised?: string | null
           duty_type?: string
+          findings?: string
           functional_location?: string | null
+          hot_work?: boolean
           id?: string
           isolation_required?: boolean
           job_status?: string
           labour_hours?: Json
+          linked_wr_number?: string
           operations_handover_date?: string
           operations_handover_name?: string
           parts_used?: string | null
+          permit_required?: boolean
           photo_urls?: string[] | null
+          planned_finish?: string | null
+          planned_start?: string | null
           priority?: string
           problem_description?: string | null
           requested_by?: string | null
           required_tooling?: string | null
           resources_required?: string
           returned_to_service?: string
+          revision_week?: string
           scheduled_date?: string | null
           scope_of_works?: string | null
           status?: string
@@ -3144,8 +3174,11 @@ export type Database = {
           updated_at?: string
           wo_number?: string
           wo_return_status?: string
+          work_centre?: string
           work_performed?: string | null
+          work_title?: string
           work_type?: string
+          working_at_heights?: boolean
         }
         Relationships: []
       }
