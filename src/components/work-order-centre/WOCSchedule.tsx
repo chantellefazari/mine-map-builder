@@ -68,7 +68,7 @@ export function WOCSchedule() {
   const [search, setSearch] = useState("");
   const [dragWoId, setDragWoId] = useState<string | null>(null);
   const [scheduleView, setScheduleView] = useState<"calendar" | "report">("calendar");
-  const [scheduleMode, setScheduleMode] = useState<"weekly" | "shutdown" | "vendors" | "orchestrator" | "advanced-planner">("weekly");
+  const [scheduleMode, setScheduleMode] = useState<"weekly" | "shutdown" | "vendors" | "orchestrator">("weekly");
   const [sortBy, setSortBy] = useState<SortOption>("priority");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [sidebarTab, setSidebarTab] = useState<"unscheduled" | "pms">("unscheduled");
