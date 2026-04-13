@@ -17,7 +17,7 @@ const numberingRules = [
 
 const mandatoryFields = [
   { field: "Work Order Number", desc: "Unique identifier for traceability" },
-  { field: "Work Type", desc: "Planned (11), PM (12), Breakdown (13)" },
+  { field: "Work Type", desc: "Planned (11), PM (12), Breakdown (13), Out of Scope (14)" },
   { field: "Priority", desc: "Critical, High, Medium, Low" },
   { field: "Asset / Equipment ID", desc: "What is being worked on" },
   { field: "Functional Location", desc: "Where in the hierarchy" },
