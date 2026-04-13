@@ -379,7 +379,7 @@ export function WSPartsTab({ woId, assetId, parts, addPart, updatePart, deletePa
           {!partsConfirmed && (
             <Button
               size="sm"
-              className="text-xs gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="text-xs gap-1.5"
               onClick={() => { setPartsConfirmed(true); toast.success("Parts confirmed as complete"); }}
             >
               <CheckCircle className="w-3.5 h-3.5" /> Confirm Parts Complete
