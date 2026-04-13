@@ -375,6 +375,15 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
         {activeTab === "asset-tree" && (
           <PlannerTreeExplorer items={filteredItems} />
         )}
+        {activeTab === "permits" && (
+          <PlannerPermitsTab />
+        )}
+        {activeTab === "failures" && (
+          <PlannerFailuresTab />
+        )}
+        {activeTab === "condition-monitoring" && (
+          <PlannerConditionMonitoringTab />
+        )}
       </div>
 
       {/* Forward Plan Schedule Dialog */}
