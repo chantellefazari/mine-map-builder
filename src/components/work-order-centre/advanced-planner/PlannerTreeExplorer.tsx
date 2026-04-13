@@ -6,7 +6,9 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
+import { useAssetCriticality, CRITICALITY_CONFIG, type CriticalityRating } from "@/hooks/useAssetCriticality";
 import type { Area, SubArea, ParentAsset, Equipment, Component } from "@/components/hierarchy/assetData";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import { AssetMaintenancePanel } from "./AssetMaintenancePanel";
@@ -60,6 +62,7 @@ interface SelectedEquipment {
 
 export function PlannerTreeExplorer({ items }: Props) {
   const { data: areas, isLoading } = useRevBPlantAssets();
+  const { getCriticality } = useAssetCriticality();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [selectedEquipment, setSelectedEquipment] = useState<SelectedEquipment | null>(null);
 
@@ -161,6 +164,7 @@ export function PlannerTreeExplorer({ items }: Props) {
                 getAreaPlans={getAreaPlans}
                 selectedAssetNumber={selectedEquipment?.equipment.assetNumber || null}
                 onSelectEquipment={selectEquipment}
+                getCriticality={getCriticality}
               />
             ))}
           </div>
@@ -182,7 +186,7 @@ export function PlannerTreeExplorer({ items }: Props) {
 }
 
 /* ─── Area Node ─── */
-function AreaNode({ area, isLast, expanded, toggle, getEquipmentPlans, getParentPlans, getSubAreaPlans, getAreaPlans, selectedAssetNumber, onSelectEquipment }: {
+function AreaNode({ area, isLast, expanded, toggle, getEquipmentPlans, getParentPlans, getSubAreaPlans, getAreaPlans, selectedAssetNumber, onSelectEquipment, getCriticality }: {
   area: Area; isLast: boolean;
   expanded: Set<string>; toggle: (k: string) => void;
   getEquipmentPlans: (e: Equipment) => PlannerItem[];
@@ -191,6 +195,7 @@ function AreaNode({ area, isLast, expanded, toggle, getEquipmentPlans, getParent
   getAreaPlans: (a: Area) => number;
   selectedAssetNumber: string | null;
   onSelectEquipment: (e: Equipment) => void;
+  getCriticality: (assetNumber: string) => CriticalityRating | null;
 }) {
   const key = `area-${area.code}`;
   const isOpen = expanded.has(key);
@@ -208,20 +213,21 @@ function AreaNode({ area, isLast, expanded, toggle, getEquipmentPlans, getParent
       {isOpen && area.subAreas.map((sa, saIdx) => (
         <SubAreaNode key={sa.label} subArea={sa} areaCode={area.code} isLast={saIdx === area.subAreas.length - 1} parentIsLast={[isLast]}
           expanded={expanded} toggle={toggle} getEquipmentPlans={getEquipmentPlans} getParentPlans={getParentPlans} getSubAreaPlans={getSubAreaPlans}
-          selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment} />
+          selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment} getCriticality={getCriticality} />
       ))}
     </div>
   );
 }
 
 /* ─── Sub-Area Node ─── */
-function SubAreaNode({ subArea, areaCode, isLast, parentIsLast, expanded, toggle, getEquipmentPlans, getParentPlans, getSubAreaPlans, selectedAssetNumber, onSelectEquipment }: {
+function SubAreaNode({ subArea, areaCode, isLast, parentIsLast, expanded, toggle, getEquipmentPlans, getParentPlans, getSubAreaPlans, selectedAssetNumber, onSelectEquipment, getCriticality }: {
   subArea: SubArea; areaCode: string; isLast: boolean; parentIsLast: boolean[];
   expanded: Set<string>; toggle: (k: string) => void;
   getEquipmentPlans: (e: Equipment) => PlannerItem[];
   getParentPlans: (pa: ParentAsset) => number;
   getSubAreaPlans: (sa: SubArea) => number;
   selectedAssetNumber: string | null; onSelectEquipment: (e: Equipment) => void;
+  getCriticality: (assetNumber: string) => CriticalityRating | null;
 }) {
   const key = `sa-${areaCode}-${subArea.label}`;
   const isOpen = expanded.has(key);
@@ -240,19 +246,20 @@ function SubAreaNode({ subArea, areaCode, isLast, parentIsLast, expanded, toggle
         <ParentAssetNode key={pa.label} parent={pa} areaCode={areaCode} subAreaLabel={subArea.label}
           isLast={paIdx === subArea.parentAssets.length - 1} parentIsLast={[...parentIsLast, isLast]}
           expanded={expanded} toggle={toggle} getEquipmentPlans={getEquipmentPlans} getParentPlans={getParentPlans}
-          selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment} />
+          selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment} getCriticality={getCriticality} />
       ))}
     </div>
   );
 }
 
 /* ─── Parent Asset Node ─── */
-function ParentAssetNode({ parent, areaCode, subAreaLabel, isLast, parentIsLast, expanded, toggle, getEquipmentPlans, getParentPlans, selectedAssetNumber, onSelectEquipment }: {
+function ParentAssetNode({ parent, areaCode, subAreaLabel, isLast, parentIsLast, expanded, toggle, getEquipmentPlans, getParentPlans, selectedAssetNumber, onSelectEquipment, getCriticality }: {
   parent: ParentAsset; areaCode: string; subAreaLabel: string; isLast: boolean; parentIsLast: boolean[];
   expanded: Set<string>; toggle: (k: string) => void;
   getEquipmentPlans: (e: Equipment) => PlannerItem[];
   getParentPlans: (pa: ParentAsset) => number;
   selectedAssetNumber: string | null; onSelectEquipment: (e: Equipment) => void;
+  getCriticality: (assetNumber: string) => CriticalityRating | null;
 }) {
   const key = `pa-${areaCode}-${subAreaLabel}-${parent.label}`;
   const isOpen = expanded.has(key);
@@ -276,23 +283,26 @@ function ParentAssetNode({ parent, areaCode, subAreaLabel, isLast, parentIsLast,
       {isOpen && parent.equipment.map((eq, eqIdx) => (
         <EquipmentNode key={eq.assetNumber} equipment={eq} isLast={eqIdx === parent.equipment.length - 1}
           parentIsLast={[...parentIsLast, isLast]} expanded={expanded} toggle={toggle}
-          plans={getEquipmentPlans(eq)} selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment} />
+          plans={getEquipmentPlans(eq)} selectedAssetNumber={selectedAssetNumber} onSelectEquipment={onSelectEquipment}
+          getCriticality={getCriticality} />
       ))}
     </div>
   );
 }
 
 /* ─── Equipment Node ─── */
-function EquipmentNode({ equipment, isLast, parentIsLast, expanded, toggle, plans, selectedAssetNumber, onSelectEquipment }: {
+function EquipmentNode({ equipment, isLast, parentIsLast, expanded, toggle, plans, selectedAssetNumber, onSelectEquipment, getCriticality }: {
   equipment: Equipment; isLast: boolean; parentIsLast: boolean[];
   expanded: Set<string>; toggle: (k: string) => void;
   plans: PlannerItem[];
   selectedAssetNumber: string | null; onSelectEquipment: (e: Equipment) => void;
+  getCriticality: (assetNumber: string) => CriticalityRating | null;
 }) {
   const key = `eq-${equipment.assetNumber}`;
   const isOpen = expanded.has(key);
   const hasComponents = equipment.components && equipment.components.length > 0;
   const isSelected = selectedAssetNumber === equipment.assetNumber;
+  const crit = getCriticality(equipment.assetNumber);
 
   return (
     <div>
@@ -313,6 +323,21 @@ function EquipmentNode({ equipment, isLast, parentIsLast, expanded, toggle, plan
         <Wrench className="w-3 h-3 text-blue-500 flex-shrink-0 ml-1" />
         <span className="text-[10px] font-mono font-semibold text-foreground ml-1.5">{equipment.assetNumber}</span>
         <span className="text-[10px] text-muted-foreground ml-1.5 truncate">{equipment.name}</span>
+        {crit && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className={cn(
+                "text-[8px] font-bold px-1 py-0 rounded font-mono flex-shrink-0 ml-1.5",
+                crit === "A" ? "text-destructive" : crit === "B" ? "text-amber-600" : "text-muted-foreground"
+              )}>
+                {crit}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="text-[10px]">
+              {CRITICALITY_CONFIG[crit].label} — {CRITICALITY_CONFIG[crit].description}
+            </TooltipContent>
+          </Tooltip>
+        )}
         {plans.length > 0 && (
           <div className="flex items-center gap-0.5 ml-auto mr-3 flex-shrink-0">
             {plans.slice(0, 6).map(p => (
