@@ -6,7 +6,9 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useRevBPlantAssets } from "@/hooks/useProcessingPlantAssets";
+import { useAssetCriticality, CRITICALITY_CONFIG, type CriticalityRating } from "@/hooks/useAssetCriticality";
 import type { Area, SubArea, ParentAsset, Equipment, Component } from "@/components/hierarchy/assetData";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import { AssetMaintenancePanel } from "./AssetMaintenancePanel";
