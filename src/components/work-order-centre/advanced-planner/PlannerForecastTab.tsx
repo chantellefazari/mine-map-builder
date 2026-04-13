@@ -160,7 +160,7 @@ export function PlannerForecastTab({ items }: Props) {
             <SelectContent>
               <SelectItem value="All">All Types</SelectItem>
               <SelectItem value="PM">PM</SelectItem>
-              <SelectItem value="General">General</SelectItem>
+              <SelectItem value="Planned">Planned</SelectItem>
               <SelectItem value="Breakdown">Breakdown</SelectItem>
               <SelectItem value="Shutdown">Shutdown</SelectItem>
             </SelectContent>
