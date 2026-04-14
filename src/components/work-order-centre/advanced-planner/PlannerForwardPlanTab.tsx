@@ -82,8 +82,9 @@ interface PMRow {
   estimatedHours: number;
   trade: string;
   originalItem: PlannerItem;
-  planType: "Inspection" | "Maintenance";
+  planType: "Inspection" | "Maintenance" | "Scheduled WO";
   totalSuppressed: number;
+  woType?: PlannerItem["woType"];
 }
 
 const DISCIPLINE_FILTERS = [
@@ -133,12 +134,23 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     return cols;
   }, [viewStart, now]);
 
+  // PM template items (recurring plans)
   const pmItems = useMemo(() => {
     const map = new Map<string, PlannerItem>();
     for (const item of items) {
       if (item.source === "pm" && !map.has(item.sourceId)) map.set(item.sourceId, item);
     }
     return Array.from(map.values());
+  }, [items]);
+
+  // Scheduled WO items (one-off or already-called work orders with a scheduled_date in the view window)
+  const scheduledWOItems = useMemo(() => {
+    return items.filter(item => 
+      item.source === "wo" && 
+      item.scheduledDate && 
+      item.status !== "Closed" && 
+      item.status !== "Cancelled"
+    );
   }, [items]);
 
   const filteredPMs = useMemo(() => {
@@ -305,18 +317,71 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     });
   }, [filteredPMs, weekColumns, adjustments, now, suppressionMap]);
 
+  // Build rows for scheduled WOs (one-off, already-called work orders)
+  const woRows: PMRow[] = useMemo(() => {
+    return scheduledWOItems
+      .filter(wo => {
+        if (filterDiscipline !== "All" && wo.discipline !== filterDiscipline) return false;
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase();
+          if (!wo.taskName.toLowerCase().includes(q) && !wo.assetNumber.toLowerCase().includes(q) && !wo.woNumber.toLowerCase().includes(q)) return false;
+        }
+        return true;
+      })
+      .map(wo => {
+        const scheduledDate = wo.scheduledDate ? new Date(wo.scheduledDate) : null;
+        const woTypeLabel = wo.woType === "PM" ? "Inspection" as const
+          : wo.woType === "Planned" ? "Maintenance" as const
+          : "Scheduled WO" as const;
+
+        const weeks: WeekCell[] = weekColumns.map((wc) => {
+          const isInWeek = scheduledDate && isWithinInterval(scheduledDate, { start: wc.start, end: wc.end });
+          const days: DayOccurrence[] = [];
+          if (isInWeek && scheduledDate) {
+            const dayNames = ["Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"];
+            const dayOfWeek = Math.floor((scheduledDate.getTime() - wc.start.getTime()) / 86400000);
+            days.push({
+              date: scheduledDate,
+              dayLabel: format(scheduledDate, "dd MMM"),
+              dayName: dayNames[Math.min(dayOfWeek, 6)] || format(scheduledDate, "EEE"),
+              status: scheduledDate <= now ? "Scheduled" : "Projected",
+            });
+          }
+          return {
+            weekStart: wc.start, weekEnd: wc.end, weekNum: wc.weekNum, dateLabel: wc.dateLabel,
+            actual: days.length, expected: 0, suppressed: 0, days,
+            isCurrent: wc.isCurrent, isPast: wc.isPast,
+          };
+        });
+
+        // Only include if the WO falls within the visible weeks
+        const hasAnyOccurrence = weeks.some(w => w.actual > 0);
+        return hasAnyOccurrence ? {
+          id: wo.id, name: wo.taskName || wo.woNumber, assetNumber: wo.assetNumber,
+          frequency: "One-off", discipline: wo.discipline, freqDays: 0,
+          expectedPerWeek: 0, weeks, estimatedHours: wo.estimatedHours, trade: wo.trade,
+          originalItem: wo, planType: woTypeLabel, totalSuppressed: 0,
+          woType: wo.woType,
+        } : null;
+      })
+      .filter(Boolean) as PMRow[];
+  }, [scheduledWOItems, weekColumns, now, filterDiscipline, searchQuery]);
+
+  // Combine all rows
+  const allRows = useMemo(() => [...pmRows, ...woRows], [pmRows, woRows]);
+
   // Summary stats
   const summaryStats = useMemo(() => {
     let totalOccurrences = 0;
     let totalSuppressed = 0;
-    for (const pm of pmRows) {
-      for (const w of pm.weeks) {
+    for (const row of allRows) {
+      for (const w of row.weeks) {
         totalOccurrences += w.actual + w.suppressed;
         totalSuppressed += w.suppressed;
       }
     }
-    return { totalOccurrences, totalSuppressed, netWOs: totalOccurrences - totalSuppressed };
-  }, [pmRows]);
+    return { totalOccurrences, totalSuppressed, netWOs: totalOccurrences - totalSuppressed, scheduledWOs: woRows.length };
+  }, [allRows, woRows]);
 
   const togglePM = useCallback((id: string) => {
     setExpandedPMs(prev => {
@@ -372,7 +437,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
               <CalendarDays className="w-5 h-5 text-primary" />
               Forward Plan — 90-Day Call Horizon
             </h2>
-            <p className="text-xs text-muted-foreground">Auto-generates & schedules PM work orders 13 weeks ahead · Frequency suppression active</p>
+            <p className="text-xs text-muted-foreground">All maintenance plans · PMs, scheduled work orders & rebuilds · 13-week rolling view</p>
           </div>
           <div className="flex items-center gap-2">
             {hasAdjustments && (
@@ -407,6 +472,13 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
             <span className="text-[10px] text-muted-foreground">Net WOs to Generate:</span>
             <span className="text-xs font-bold text-primary">{summaryStats.netWOs}</span>
           </div>
+          {summaryStats.scheduledWOs > 0 && (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-500/5 border border-blue-500/20">
+              <Wrench className="w-3.5 h-3.5 text-blue-500" />
+              <span className="text-[10px] text-muted-foreground">Scheduled WOs:</span>
+              <span className="text-xs font-bold text-blue-600">{summaryStats.scheduledWOs}</span>
+            </div>
+          )}
           <div className="flex-1" />
           <button
             onClick={() => setShowSuppressed(!showSuppressed)}
@@ -511,11 +583,11 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
             </div>
           </div>
 
-          {/* PM Rows */}
-          {pmRows.length === 0 && (
+          {/* All Maintenance Plan Rows (PMs + Scheduled WOs) */}
+          {allRows.length === 0 && (
             <div className="p-12 text-center text-muted-foreground text-sm">No maintenance plans found</div>
           )}
-          {pmRows.map(pm => {
+          {allRows.map(pm => {
             const isPMExpanded = expandedPMs.has(pm.id);
             const adj = adjustments[pm.id] || 0;
             const totalOccurrences = pm.weeks.reduce((s, w) => s + w.actual, 0);
@@ -554,9 +626,11 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                     </div>
                     <Badge variant="outline" className={cn(
                       "text-[8px] px-1 py-0 flex-shrink-0",
-                      pm.planType === "Inspection" ? "border-primary/40 text-primary" : "border-purple-500/40 text-purple-600"
+                      pm.planType === "Inspection" ? "border-primary/40 text-primary" 
+                        : pm.planType === "Scheduled WO" ? "border-blue-500/40 text-blue-600"
+                        : "border-purple-500/40 text-purple-600"
                     )}>
-                      {pm.planType === "Inspection" ? "INS" : "MNT"}
+                      {pm.planType === "Inspection" ? "INS" : pm.planType === "Scheduled WO" ? pm.woType || "WO" : "MNT"}
                     </Badge>
                     <span className="text-[10px] font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded flex-shrink-0 w-16 text-right">{pm.frequency}</span>
                   </div>
