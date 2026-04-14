@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import { usePMAutoGenerate } from "@/hooks/usePMAutoGenerate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -62,6 +63,7 @@ function getWeekLabel(weekStart: Date) {
 
 export function WOCSchedule() {
   const { workOrders, update } = useWorkOrders();
+  const { generate: pmAutoGenerate } = usePMAutoGenerate();
   const { getCapacityForDate } = useCapacityGrid();
   const [discipline, setDiscipline] = useState("Mechanical");
   const [weekOffset, setWeekOffset] = useState(0);
@@ -161,9 +163,20 @@ export function WOCSchedule() {
 
   const toggleDayExpand = (dayKey: string) => setExpandedDays(prev => ({ ...prev, [dayKey]: !prev[dayKey] }));
 
+  const [pmGenRange, setPmGenRange] = useState<"week" | "4week" | "13week">("week");
+
   const generatePMs = useCallback(() => {
-    toast.info("PM generation triggered — this would auto-schedule PMs based on frequency");
-  }, []);
+    const rangeStart = new Date(weekStart);
+    let rangeEnd: Date;
+    if (pmGenRange === "4week") {
+      rangeEnd = addDays(weekStart, 27);
+    } else if (pmGenRange === "13week") {
+      rangeEnd = addDays(weekStart, 90);
+    } else {
+      rangeEnd = addDays(weekStart, 6);
+    }
+    pmAutoGenerate.mutate({ rangeStart, rangeEnd });
+  }, [weekStart, pmGenRange, pmAutoGenerate]);
 
   return (
     <div className="p-6 space-y-4">
@@ -444,8 +457,24 @@ export function WOCSchedule() {
             <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
               Hrs/Day: {getHrsPerDay(days[0])} · Personnel: {getPersonnel(format(days[0], "yyyy-MM-dd"), days[0])} · Target: {getTarget(days[0])}%
             </span>
-            <div className="ml-4">
-              <Button variant="outline" size="sm" className="h-7 text-[11px] gap-1" onClick={generatePMs}>✨ Generate PMs (Quick)</Button>
+            <div className="ml-4 flex items-center gap-2">
+              <Select value={pmGenRange} onValueChange={(v: any) => setPmGenRange(v)}>
+                <SelectTrigger className="h-7 w-28 text-[10px]"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">This Week</SelectItem>
+                  <SelectItem value="4week">4 Weeks</SelectItem>
+                  <SelectItem value="13week">13 Weeks (90d)</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 text-[11px] gap-1"
+                onClick={generatePMs}
+                disabled={pmAutoGenerate.isPending}
+              >
+                {pmAutoGenerate.isPending ? "Generating..." : "✨ Generate PMs"}
+              </Button>
             </div>
           </div>
 
