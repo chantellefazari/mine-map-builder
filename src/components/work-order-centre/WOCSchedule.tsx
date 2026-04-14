@@ -163,9 +163,20 @@ export function WOCSchedule() {
 
   const toggleDayExpand = (dayKey: string) => setExpandedDays(prev => ({ ...prev, [dayKey]: !prev[dayKey] }));
 
+  const [pmGenRange, setPmGenRange] = useState<"week" | "4week" | "13week">("week");
+
   const generatePMs = useCallback(() => {
-    toast.info("PM generation triggered — this would auto-schedule PMs based on frequency");
-  }, []);
+    const rangeStart = new Date(weekStart);
+    let rangeEnd: Date;
+    if (pmGenRange === "4week") {
+      rangeEnd = addDays(weekStart, 27);
+    } else if (pmGenRange === "13week") {
+      rangeEnd = addDays(weekStart, 90);
+    } else {
+      rangeEnd = addDays(weekStart, 6);
+    }
+    pmAutoGenerate.mutate({ rangeStart, rangeEnd });
+  }, [weekStart, pmGenRange, pmAutoGenerate]);
 
   return (
     <div className="p-6 space-y-4">
