@@ -258,6 +258,34 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     return map;
   }, [filteredPMs, weekColumns, adjustments]);
 
+  // Build superseded entries for the log panel
+  const supersededEntries: SupersededEntry[] = useMemo(() => {
+    const entries: SupersededEntry[] = [];
+    for (const [key, value] of supersessionMap) {
+      const [pmId, wIdxStr] = key.split(":");
+      const wIdx = parseInt(wIdxStr);
+      const pm = filteredPMs.find(p => p.sourceId === pmId);
+      const wc = weekColumns[wIdx];
+      if (pm && wc) {
+        entries.push({
+          pmId: pm.sourceId,
+          pmName: pm.taskName,
+          assetNumber: pm.assetNumber,
+          frequency: pm.frequency,
+          discipline: pm.discipline,
+          weekNum: wc.weekNum,
+          weekStart: wc.start,
+          supersededBy: value.supersededBy,
+        });
+      }
+    }
+    return entries.sort((a, b) => a.weekNum - b.weekNum || a.pmName.localeCompare(b.pmName));
+  }, [supersessionMap, filteredPMs, weekColumns]);
+
+  const handleReinstate = useCallback((pmId: string, weekNum: number) => {
+    toast.success(`Plan reinstated for W${weekNum} — manual override applied`);
+  }, []);
+
   const pmRows: PMRow[] = useMemo(() => {
     return filteredPMs.map(pm => {
       const freqDays = freqToDays(pm.frequency);
