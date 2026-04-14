@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { WorkOrder } from "@/hooks/useWorkOrders";
-import { ArrowLeft, Printer, Pause, XCircle, Send } from "lucide-react";
+import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
+import { ArrowLeft, Printer, Pause, XCircle, Send, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -11,6 +11,7 @@ interface Props {
   onClose: () => void;
   onPrint?: () => void;
   partsCount?: number;
+  onRaiseDefect?: () => void;
 }
 
 const statusColor = (s: string) => {
@@ -58,7 +59,8 @@ function CompletionDots({ wo, partsCount }: { wo: WorkOrder; partsCount: number 
   );
 }
 
-export function WOCWorkspaceHeader({ wo, onUpdate, onClose, onPrint, partsCount = 0 }: Props) {
+export function WOCWorkspaceHeader({ wo, onUpdate, onClose, onPrint, partsCount = 0, onRaiseDefect }: Props) {
+  const isPM = wo.work_type === "PM";
   const handleSubmitForScheduling = () => {
     const checks = [
       { label: "Asset assigned", done: !!wo.asset_id?.trim() },
@@ -120,6 +122,11 @@ export function WOCWorkspaceHeader({ wo, onUpdate, onClose, onPrint, partsCount 
         <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5" onClick={onPrint}>
           <Printer className="w-3.5 h-3.5" /> Print
         </Button>
+        {isPM && onRaiseDefect && !["Completed", "Complete", "Closed"].includes(wo.status) && (
+          <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 text-amber-700 border-amber-300 hover:bg-amber-50" onClick={onRaiseDefect}>
+            <AlertTriangle className="w-3.5 h-3.5" /> Raise Defect WO
+          </Button>
+        )}
         {!["Ready", "Completed", "Complete", "Closed"].includes(wo.status) && (
           <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5" onClick={() => { onUpdate({ status: "On Hold" }); toast.success("Put on hold"); }}>
             <Pause className="w-3.5 h-3.5" /> Hold
