@@ -10,6 +10,7 @@ import {
   Clock, Wrench, MapPin, AlertTriangle, Package, Shield,
   Ban, ArrowRightLeft, Eye, FileCheck,
 } from "lucide-react";
+import { SupersededLogPanel, type SupersededEntry } from "./SupersededLogPanel";
 import {
   addDays, addWeeks, startOfWeek, format, isWithinInterval,
   getISOWeek, isSameWeek,
