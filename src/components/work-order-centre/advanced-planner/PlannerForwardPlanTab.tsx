@@ -167,13 +167,31 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
   // Build suppression map: for each asset+equipmentType+week, find the longest-frequency PM
   // IMPORTANT: Only suppress when PMs share the SAME asset AND the SAME equipment type.
   // Different inspection types (e.g. "Weekly Generator Inspection" vs "RCD Testing") must NOT suppress each other.
+  // Extract the "inspection family" from a PM name by stripping frequency words.
+  // e.g. "Admin Generator Weekly Inspection" → "admin generator inspection"
+  //      "Admin Generator 3M Inspection"     → "admin generator inspection"  (SAME family → suppression applies)
+  //      "RCD Testing Sheets"                → "rcd testing sheets"          (DIFFERENT family → no suppression)
+  const getSuppressionFamily = useCallback((pm: PlannerItem): string => {
+    const stripped = pm.taskName
+      .toLowerCase()
+      .replace(/\b(daily|weekly|fortnightly|monthly|quarterly|yearly|annual)\b/gi, "")
+      .replace(/\b\d+\s*(?:week|wk|month|mth|day|yr|year|m)\b/gi, "")
+      .replace(/\b(?:1|2|3|4|6|12|13|26|52)\s*(?:week|wk|month|mth)\b/gi, "")
+      .replace(/\b\d+[mM]\b/g, "") // "3M", "6M" etc
+      .replace(/\s+/g, " ")
+      .trim();
+    return stripped;
+  }, []);
+
   const suppressionMap = useMemo(() => {
-    // Group PMs by asset number + equipment type (suppression family)
+    // Group PMs by asset number + inspection family (NOT just equipment type)
+    // "Admin Generator Weekly Inspection" and "Admin Generator 3M Inspection" = SAME family
+    // "Admin Generator Weekly Inspection" and "RCD Testing Sheets" = DIFFERENT families
     const familyPMs = new Map<string, PlannerItem[]>();
     for (const pm of filteredPMs) {
       if (!pm.assetNumber) continue;
-      // Use equipmentType as the suppression family key — different types = different families
-      const familyKey = `${pm.assetNumber}::${(pm.equipmentType || pm.taskName).toLowerCase().trim()}`;
+      const family = getSuppressionFamily(pm);
+      const familyKey = `${pm.assetNumber}::${family}`;
       if (!familyPMs.has(familyKey)) familyPMs.set(familyKey, []);
       familyPMs.get(familyKey)!.push(pm);
     }
