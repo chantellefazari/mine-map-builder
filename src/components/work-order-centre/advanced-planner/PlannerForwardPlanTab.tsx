@@ -84,7 +84,7 @@ interface PMRow {
   originalItem: PlannerItem;
   planType: "Inspection" | "Maintenance" | "Scheduled WO";
   totalSuppressed: number;
-  woType?: string;
+  woType?: PlannerItem["woType"];
 }
 
 const DISCIPLINE_FILTERS = [
