@@ -73,15 +73,27 @@ export function WOCWorkspace({ woId, onClose, isNew, onSaved }: Props) {
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             {isPMOnly ? (
               <>
-                <TabsList className="w-full grid grid-cols-2">
+                <TabsList className="w-full grid grid-cols-5">
                   <TabsTrigger value="pm-form" className="text-xs gap-1"><ClipboardCheck className="w-3 h-3" /> PM Form</TabsTrigger>
                   <TabsTrigger value="overview" className="text-xs gap-1"><Eye className="w-3 h-3" /> Overview</TabsTrigger>
+                  <TabsTrigger value="execution" className="text-xs gap-1"><Hammer className="w-3 h-3" /> Execution</TabsTrigger>
+                  <TabsTrigger value="parts" className="text-xs gap-1"><Package className="w-3 h-3" /> Parts</TabsTrigger>
+                  <TabsTrigger value="activity" className="text-xs gap-1"><History className="w-3 h-3" /> History</TabsTrigger>
                 </TabsList>
                 <TabsContent value="pm-form" className="mt-4">
                   <WSPMFormTab wo={wo} />
                 </TabsContent>
                 <TabsContent value="overview" className="mt-4">
                   <WSOverviewTab wo={wo} onUpdate={handleUpdate} />
+                </TabsContent>
+                <TabsContent value="execution" className="mt-4">
+                  <WSExecutionTab wo={wo} onUpdate={handleUpdate} />
+                </TabsContent>
+                <TabsContent value="parts" className="mt-4">
+                  <WSPartsTab woId={woId} assetId={wo.asset_id || ""} parts={parts} addPart={addPart} updatePart={updatePart} deletePart={deletePart} />
+                </TabsContent>
+                <TabsContent value="activity" className="mt-4">
+                  <WSActivityLogTab auditLog={auditLog} wo={wo} />
                 </TabsContent>
               </>
             ) : (

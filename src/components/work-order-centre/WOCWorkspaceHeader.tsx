@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { WorkOrder } from "@/hooks/useWorkOrders";
-import { ArrowLeft, Printer, Pause, XCircle, Send } from "lucide-react";
+import { useWorkOrders, WorkOrder } from "@/hooks/useWorkOrders";
+import { ArrowLeft, Printer, Pause, XCircle, Send, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
