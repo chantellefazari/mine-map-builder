@@ -54,8 +54,8 @@ interface DayOccurrence {
   date: Date;
   dayLabel: string;
   dayName: string;
-  status: "Scheduled" | "Projected" | "Suppressed";
-  suppressedBy?: string; // name of the longer-frequency PM that suppresses this
+  status: "Scheduled" | "Projected" | "Superseded";
+  supersededBy?: string; // name of the longer-frequency PM that supersedes this
 }
 
 interface WeekCell {
@@ -115,7 +115,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
   const [filterDiscipline, setFilterDiscipline] = useState("All");
   const [sortBy, setSortBy] = useState<SortKey>("name");
   const [adjustments, setAdjustments] = useState<Record<string, number>>({});
-  const [showSuppressed, setShowSuppressed] = useState(true);
+  const [showSuperseded, setShowSuperseded] = useState(true);
   const [expandedPMs, setExpandedPMs] = useState<Set<string>>(new Set());
   const [expandedWeeks, setExpandedWeeks] = useState<Set<string>>(new Set());
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
@@ -177,15 +177,15 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     return counts;
   }, [pmItems]);
 
-  // Build suppression map: for each asset+equipmentType+week, find the longest-frequency PM
-  // IMPORTANT: Only suppress when PMs share the SAME asset AND the SAME equipment type.
-  // Different inspection types (e.g. "Weekly Generator Inspection" vs "RCD Testing") must NOT suppress each other.
+  // Build supersession map: for each asset+equipmentType+week, find the longest-frequency PM
+  // IMPORTANT: Only supersede when PMs share the SAME asset AND the SAME equipment type.
+  // Different inspection types (e.g. "Weekly Generator Inspection" vs "RCD Testing") must NOT supersede each other.
   // Extract the "inspection family" from a PM name by stripping frequency words.
   // This determines which PMs are the SAME type of work at different intervals.
   // Daily PMs are ALWAYS a different family — they're quick operational checks, not the same scope as weekly/monthly.
-  const getSuppressionFamily = useCallback((pm: PlannerItem): string => {
+  const getSupersessionFamily = useCallback((pm: PlannerItem): string => {
     const freq = pm.frequency.toLowerCase().trim();
-    // Daily PMs are never suppressed — different scope of work entirely
+    // Daily PMs are never superseded — different scope of work entirely
     if (freq === "daily" || freqToDays(pm.frequency) === 1) return `__daily__${pm.taskName.toLowerCase()}`;
     
     const stripped = pm.taskName
@@ -199,20 +199,20 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     return stripped;
   }, []);
 
-  const suppressionMap = useMemo(() => {
+  const supersessionMap = useMemo(() => {
     // Group PMs by asset number + inspection family (NOT just equipment type)
     // "Admin Generator Weekly Inspection" and "Admin Generator 3M Inspection" = SAME family
     // "Admin Generator Weekly Inspection" and "RCD Testing Sheets" = DIFFERENT families
     const familyPMs = new Map<string, PlannerItem[]>();
     for (const pm of filteredPMs) {
       if (!pm.assetNumber) continue;
-      const family = getSuppressionFamily(pm);
+      const family = getSupersessionFamily(pm);
       const familyKey = `${pm.assetNumber}::${family}`;
       if (!familyPMs.has(familyKey)) familyPMs.set(familyKey, []);
       familyPMs.get(familyKey)!.push(pm);
     }
 
-    const map = new Map<string, { suppressedBy: string }>();
+    const map = new Map<string, { supersededBy: string }>();
 
     for (const [, pmsForFamily] of familyPMs) {
       if (pmsForFamily.length < 2) continue;
