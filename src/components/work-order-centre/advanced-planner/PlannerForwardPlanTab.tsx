@@ -445,13 +445,6 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
             <span className="text-[10px] text-muted-foreground">Net WOs to Generate:</span>
             <span className="text-xs font-bold text-primary">{summaryStats.netWOs}</span>
           </div>
-          {summaryStats.scheduledWOs > 0 && (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-500/5 border border-blue-500/20">
-              <Wrench className="w-3.5 h-3.5 text-blue-500" />
-              <span className="text-[10px] text-muted-foreground">Scheduled WOs:</span>
-              <span className="text-xs font-bold text-blue-600">{summaryStats.scheduledWOs}</span>
-            </div>
-          )}
           <div className="flex-1" />
           <button
             onClick={() => setShowSuperseded(!showSuperseded)}
