@@ -11,6 +11,7 @@ interface Props {
   onClose: () => void;
   onPrint?: () => void;
   partsCount?: number;
+  onRaiseDefect?: () => void;
 }
 
 const statusColor = (s: string) => {
