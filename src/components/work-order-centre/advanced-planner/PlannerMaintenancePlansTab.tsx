@@ -3,6 +3,7 @@ import {
   Search, ChevronDown, ChevronRight, Plus, Clock, Wrench,
   ListChecks, Package, ShieldAlert, AlertTriangle, Settings2,
   Pencil, Trash2, X, Save, Copy, Activity, Power, RefreshCw, Zap,
+  Eye, CheckCircle2, FileCheck, ClipboardCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -24,17 +25,34 @@ interface Props {
 
 const FREQUENCIES = ["Daily", "Weekly", "Fortnightly", "Monthly", "Quarterly", "6-Monthly", "Annually", "Shutdown"];
 const DISCIPLINES = ["Mechanical", "Electrical", "Instrumentation", "Process", "General"];
-const STATUSES = ["Draft", "Active", "Review", "Superseded"];
+const LIFECYCLE_STATUSES = ["Draft", "Preview", "Approved", "Active"] as const;
 const DUTY_TYPES = ["Online", "Offline", "Both"];
 const SKILL_LEVELS = ["Basic", "Competent", "Advanced", "Specialist"];
-const PLAN_CATEGORIES = ["Preventive", "Condition-Based", "Lifecycle"] as const;
+const PLAN_CATEGORIES = ["Preventive", "Shutdown", "Condition-Based", "Lifecycle"] as const;
 
 type PlanCategory = typeof PLAN_CATEGORIES[number];
+type LifecycleStatus = typeof LIFECYCLE_STATUSES[number];
+
+/** Plan type derived from category */
+type PlanType = "Inspection" | "Maintenance";
+
+function getPlanType(category: string): PlanType {
+  if (category === "Lifecycle") return "Maintenance";
+  return "Inspection";
+}
 
 const CATEGORY_CONFIG: Record<PlanCategory, { label: string; icon: React.ElementType; description: string; color: string }> = {
   Preventive: { label: "Preventive (Online)", icon: Activity, description: "Routine inspections & running PMs", color: "text-emerald-600" },
+  Shutdown: { label: "Shutdown / Offline", icon: Power, description: "Isolation-dependent maintenance", color: "text-amber-600" },
   "Condition-Based": { label: "Condition-Based", icon: Zap, description: "Triggered by monitoring data", color: "text-blue-600" },
   Lifecycle: { label: "Lifecycle / Changeout", icon: RefreshCw, description: "Overhauls, rebuilds & replacements", color: "text-purple-600" },
+};
+
+const LIFECYCLE_CONFIG: Record<LifecycleStatus, { label: string; icon: React.ElementType; color: string; bg: string }> = {
+  Draft: { label: "Draft", icon: Pencil, color: "text-muted-foreground", bg: "bg-muted" },
+  Preview: { label: "Preview", icon: Eye, color: "text-blue-600", bg: "bg-blue-500/10" },
+  Approved: { label: "Approved", icon: CheckCircle2, color: "text-amber-600", bg: "bg-amber-500/10" },
+  Active: { label: "Active", icon: FileCheck, color: "text-emerald-600", bg: "bg-emerald-500/10" },
 };
 
 export function PlannerMaintenancePlansTab({ items }: Props) {
@@ -204,14 +222,36 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
         })}
       </div>
 
+      {/* Lifecycle status pipeline */}
+      <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-muted/5">
+        <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mr-2">Lifecycle:</span>
+        {LIFECYCLE_STATUSES.map((ls, idx) => {
+          const cfg = LIFECYCLE_CONFIG[ls];
+          const count = filtered.filter(i => (i.status || "Draft") === ls).length;
+          return (
+            <div key={ls} className="flex items-center gap-1">
+              {idx > 0 && <ChevronRight className="w-3 h-3 text-muted-foreground/30" />}
+              <div className={cn("flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium", cfg.bg, cfg.color)}>
+                <cfg.icon className="w-3 h-3" />
+                {cfg.label}
+                <Badge variant="secondary" className="text-[8px] px-1 h-3.5 ml-0.5">{count}</Badge>
+              </div>
+            </div>
+          );
+        })}
+        <div className="flex-1" />
+        <span className="text-[9px] text-muted-foreground italic">Only Active plans generate work orders</span>
+      </div>
+
       {/* Column headers */}
-      <div className="grid grid-cols-[1fr_100px_90px_80px_70px_60px_80px] gap-0 px-4 py-1.5 border-b border-border bg-muted/20 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
+      <div className="grid grid-cols-[1fr_80px_100px_90px_80px_70px_100px_80px] gap-0 px-4 py-1.5 border-b border-border bg-muted/20 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
         <span>Plan Name / Asset</span>
+        <span className="text-center">Type</span>
         <span className="text-center">Discipline</span>
         <span className="text-center">Frequency</span>
         <span className="text-center">Duty</span>
         <span className="text-center">Hours</span>
-        <span className="text-center">Status</span>
+        <span className="text-center">Lifecycle</span>
         <span className="text-center">Actions</span>
       </div>
 
@@ -295,10 +335,14 @@ function PlanRow({ plan, expanded, onToggle, onEdit, onDelete, onDuplicate }: {
   const hasSafety = plan.safetyNotes.length > 0;
   const hasDetail = hasTasks || hasMaterials || hasTools || hasSafety;
 
+  const planType = getPlanType(plan.planCategory || "Preventive");
+  const lifecycleStatus = (plan.status || "Draft") as LifecycleStatus;
+  const lcCfg = LIFECYCLE_CONFIG[lifecycleStatus] || LIFECYCLE_CONFIG.Draft;
+
   return (
     <div className={cn("border-b border-border/20", expanded && "bg-primary/5")}>
       <div className={cn(
-        "grid grid-cols-[1fr_100px_90px_80px_70px_60px_80px] gap-0 items-center px-4 py-2 transition-colors",
+        "grid grid-cols-[1fr_80px_100px_90px_80px_70px_100px_80px] gap-0 items-center px-4 py-2 transition-colors",
         hasDetail ? "cursor-pointer hover:bg-muted/20" : ""
       )}>
         <div className="flex items-center gap-2 min-w-0" onClick={hasDetail ? onToggle : undefined}>
@@ -314,6 +358,14 @@ function PlanRow({ plan, expanded, onToggle, onEdit, onDelete, onDuplicate }: {
             <div className="text-[10px] text-muted-foreground font-mono">{plan.assetNumber}</div>
           </div>
         </div>
+        <div className="text-center">
+          <Badge variant="outline" className={cn(
+            "text-[9px] px-1.5 py-0",
+            planType === "Inspection" ? "border-primary/40 text-primary" : "border-purple-500/40 text-purple-600"
+          )}>
+            {planType === "Inspection" ? "INS" : "MNT"}
+          </Badge>
+        </div>
         <div className="text-center text-[10px] text-muted-foreground">{plan.discipline || "—"}</div>
         <div className="text-center">
           <Badge variant="outline" className="text-[9px] px-1.5 py-0">{plan.frequency || "—"}</Badge>
@@ -323,13 +375,16 @@ function PlanRow({ plan, expanded, onToggle, onEdit, onDelete, onDuplicate }: {
         </div>
         <div className="text-center text-[11px] font-medium text-foreground tabular-nums">{plan.estimatedHours > 0 ? `${plan.estimatedHours}h` : "—"}</div>
         <div className="text-center">
-          <span className={cn("text-[9px] font-medium", plan.status === "Active" ? "text-emerald-600" : plan.status === "Draft" ? "text-muted-foreground" : "text-foreground")}>{plan.status}</span>
+          <div className={cn("inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-medium", lcCfg.bg, lcCfg.color)}>
+            <lcCfg.icon className="w-3 h-3" />
+            {lcCfg.label}
+          </div>
         </div>
         <div className="flex items-center justify-center gap-0.5">
           <button onClick={(e) => { e.stopPropagation(); onEdit(plan); }} className="p-1 rounded hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors" title="Edit Plan">
             <Pencil className="w-3.5 h-3.5" />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); onDuplicate(plan); }} className="p-1 rounded hover:bg-blue-500/10 text-muted-foreground hover:text-blue-600 transition-colors" title="Duplicate">
+          <button onClick={(e) => { e.stopPropagation(); onDuplicate(plan); }} className="p-1 rounded hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors" title="Duplicate">
             <Copy className="w-3.5 h-3.5" />
           </button>
           <button onClick={(e) => { e.stopPropagation(); onDelete(plan); }} className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors" title="Delete">
@@ -686,7 +741,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
                     <Select value={form.status} onValueChange={v => update("status", v)}>
                       <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        {STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                        {LIFECYCLE_STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
