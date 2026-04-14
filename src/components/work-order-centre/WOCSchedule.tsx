@@ -457,8 +457,24 @@ export function WOCSchedule() {
             <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
               Hrs/Day: {getHrsPerDay(days[0])} · Personnel: {getPersonnel(format(days[0], "yyyy-MM-dd"), days[0])} · Target: {getTarget(days[0])}%
             </span>
-            <div className="ml-4">
-              <Button variant="outline" size="sm" className="h-7 text-[11px] gap-1" onClick={generatePMs}>✨ Generate PMs (Quick)</Button>
+            <div className="ml-4 flex items-center gap-2">
+              <Select value={pmGenRange} onValueChange={(v: any) => setPmGenRange(v)}>
+                <SelectTrigger className="h-7 w-28 text-[10px]"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">This Week</SelectItem>
+                  <SelectItem value="4week">4 Weeks</SelectItem>
+                  <SelectItem value="13week">13 Weeks (90d)</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 text-[11px] gap-1"
+                onClick={generatePMs}
+                disabled={pmAutoGenerate.isPending}
+              >
+                {pmAutoGenerate.isPending ? "Generating..." : "✨ Generate PMs"}
+              </Button>
             </div>
           </div>
 
