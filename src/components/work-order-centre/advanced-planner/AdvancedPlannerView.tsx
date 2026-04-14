@@ -60,6 +60,7 @@ export interface PlannerItem {
   sourceId: string;
   planCategory: string;
   activityType: string;
+  equipmentType: string;
 }
 
 /** Flatten PM tasks from either flat array or {sections: [{tasks, equipmentName}]} format */
@@ -215,6 +216,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
         sourceId: pm.id,
         planCategory: (pm as any).planCategory || "Preventive",
         activityType: "INS",
+        equipmentType: pm.equipmentType || "",
       });
     }
 
