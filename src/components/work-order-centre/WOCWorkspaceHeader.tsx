@@ -122,6 +122,11 @@ export function WOCWorkspaceHeader({ wo, onUpdate, onClose, onPrint, partsCount 
         <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5" onClick={onPrint}>
           <Printer className="w-3.5 h-3.5" /> Print
         </Button>
+        {isPM && onRaiseDefect && !["Completed", "Complete", "Closed"].includes(wo.status) && (
+          <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5 text-amber-700 border-amber-300 hover:bg-amber-50" onClick={onRaiseDefect}>
+            <AlertTriangle className="w-3.5 h-3.5" /> Raise Defect WO
+          </Button>
+        )}
         {!["Ready", "Completed", "Complete", "Closed"].includes(wo.status) && (
           <Button variant="outline" size="sm" className="text-xs h-8 gap-1.5" onClick={() => { onUpdate({ status: "On Hold" }); toast.success("Put on hold"); }}>
             <Pause className="w-3.5 h-3.5" /> Hold
