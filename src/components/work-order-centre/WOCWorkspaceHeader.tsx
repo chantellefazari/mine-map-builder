@@ -59,7 +59,8 @@ function CompletionDots({ wo, partsCount }: { wo: WorkOrder; partsCount: number 
   );
 }
 
-export function WOCWorkspaceHeader({ wo, onUpdate, onClose, onPrint, partsCount = 0 }: Props) {
+export function WOCWorkspaceHeader({ wo, onUpdate, onClose, onPrint, partsCount = 0, onRaiseDefect }: Props) {
+  const isPM = wo.work_type === "PM";
   const handleSubmitForScheduling = () => {
     const checks = [
       { label: "Asset assigned", done: !!wo.asset_id?.trim() },
