@@ -364,7 +364,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
           woType: wo.woType,
         } : null;
       })
-      .filter((r): r is PMRow => r !== null);
+      .filter(Boolean) as PMRow[];
   }, [scheduledWOItems, weekColumns, now, filterDiscipline, searchQuery]);
 
   // Combine all rows
