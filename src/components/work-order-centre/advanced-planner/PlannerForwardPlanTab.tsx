@@ -65,7 +65,7 @@ interface WeekCell {
   dateLabel: string;
   actual: number;
   expected: number;
-  suppressed: number;
+  superseded: number;
   days: DayOccurrence[];
   isCurrent: boolean;
   isPast: boolean;
@@ -278,8 +278,8 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
       let totalSuperseded = 0;
 
       const weeks: WeekCell[] = weekColumns.map((wc, wIdx) => {
-        const suppression = supersessionMap.get(`${pm.sourceId}:${wIdx}`);
-        const isSuppressed = !!suppression;
+        const supersession = supersessionMap.get(`${pm.sourceId}:${wIdx}`);
+        const isSuperseded = !!supersession?;
 
         const daysInWeek: DayOccurrence[] = [];
         const dayNames = ["Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"];
@@ -290,20 +290,20 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
               date: occ,
               dayLabel: format(occ, "dd MMM"),
               dayName: dayNames[Math.min(dayOfWeek, 6)] || format(occ, "EEE"),
-              status: isSuppressed ? "Superseded" : occ <= now ? "Scheduled" : "Projected",
-              supersededBy: suppression?.supersededBy,
+              status: isSuperseded ? "Superseded" : occ <= now ? "Scheduled" : "Projected",
+              supersededBy: supersession??.supersededBy,
             });
           }
         }
 
-        const supersededCount = isSuppressed ? daysInWeek.length : 0;
+        const supersededCount = isSuperseded ? daysInWeek.length : 0;
         totalSuperseded += supersededCount;
 
         return {
           weekStart: wc.start, weekEnd: wc.end, weekNum: wc.weekNum, dateLabel: wc.dateLabel,
-          actual: isSuppressed ? 0 : daysInWeek.length,
+          actual: isSuperseded ? 0 : daysInWeek.length,
           expected: expectedPerWeek,
-          suppressed: supersededCount,
+          superseded: supersededCount,
           days: daysInWeek,
           isCurrent: wc.isCurrent, isPast: wc.isPast,
         };
@@ -350,7 +350,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
           }
           return {
             weekStart: wc.start, weekEnd: wc.end, weekNum: wc.weekNum, dateLabel: wc.dateLabel,
-            actual: days.length, expected: 0, suppressed: 0, days,
+            actual: days.length, expected: 0, superseded: 0, days,
             isCurrent: wc.isCurrent, isPast: wc.isPast,
           };
         });
@@ -377,8 +377,8 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     let totalSuperseded = 0;
     for (const row of allRows) {
       for (const w of row.weeks) {
-        totalOccurrences += w.actual + w.suppressed;
-        totalSuperseded += w.suppressed;
+        totalOccurrences += w.actual + w.superseded;
+        totalSuperseded += w.superseded;
       }
     }
     return { totalOccurrences, totalSuperseded, netWOs: totalOccurrences - totalSuperseded, scheduledWOs: woRows.length };
@@ -543,7 +543,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs max-w-xs">
                 <p className="font-semibold mb-1">Auto-Generate PM Work Orders</p>
-                <p>Creates WO-12xxxx (Inspection) and WO-11xxxx (Maintenance) work orders for the next 90 days. Applies frequency suppression to prevent duplicates on the same asset.</p>
+                <p>Creates WO-12xxxx (Inspection) and WO-11xxxx (Maintenance) work orders for the next 90 days. Applies frequency supersession? to prevent duplicates on the same asset.</p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -592,7 +592,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
             const isPMExpanded = expandedPMs.has(pm.id);
             const adj = adjustments[pm.id] || 0;
             const totalOccurrences = pm.weeks.reduce((s, w) => s + w.actual, 0);
-            const totalSupersededWeeks = pm.weeks.filter(w => w.suppressed > 0).length;
+            const totalSupersededWeeks = pm.weeks.filter(w => w.superseded > 0).length;
 
             return (
               <div key={pm.id} className="border-b border-border/30">
@@ -640,7 +640,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                   <div className="flex-1 flex">
                     {pm.weeks.map((week, wIdx) => {
                       const hasOccs = week.actual > 0;
-                      const hasSuperseded = week.suppressed > 0;
+                      const hasSuperseded = week.superseded > 0;
                       const isComplete = week.actual >= week.expected && hasOccs;
                       return (
                         <div key={wIdx} className={cn(
@@ -652,11 +652,11 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                               <TooltipTrigger asChild>
                                 <div className="flex items-center gap-0.5 px-1 py-0.5 rounded text-[10px] font-mono text-muted-foreground/50">
                                   <Ban className="w-3 h-3" />
-                                  <span className="line-through">{week.suppressed}</span>
+                                  <span className="line-through">{week.superseded}</span>
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent className="text-xs">
-                                Suppressed by: {week.days[0]?.supersededBy || "longer-frequency PM"}
+                                Superseded by: {week.days[0]?.supersededBy || "longer-frequency PM"}
                               </TooltipContent>
                             </Tooltip>
                           ) : hasOccs ? (
@@ -700,7 +700,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                       </span>
                       {pm.totalSuperseded > 0 && (
                         <span className="text-[10px] text-muted-foreground">
-                          <Ban className="w-3 h-3 inline mr-1" />{pm.totalSuperseded} suppressed
+                          <Ban className="w-3 h-3 inline mr-1" />{pm.totalSuperseded} superseded
                         </span>
                       )}
                       {adj !== 0 && (
@@ -723,10 +723,10 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
 
                     {/* Week-by-week breakdown */}
                     {pm.weeks.map((week, wIdx) => {
-                      if (week.actual === 0 && week.suppressed === 0) return null;
+                      if (week.actual === 0 && week.superseded === 0) return null;
                       const weekKey = `${pm.id}:${wIdx}`;
                       const isWeekExpanded = expandedWeeks.has(weekKey);
-                      const isSupersededWeek = week.suppressed > 0 && week.actual === 0;
+                      const isSupersededWeek = week.superseded > 0 && week.actual === 0;
 
                       return (
                         <div key={wIdx}>
