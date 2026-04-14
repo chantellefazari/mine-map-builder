@@ -307,7 +307,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
 
       const weeks: WeekCell[] = weekColumns.map((wc, wIdx) => {
         const supersession = supersessionMap.get(`${pm.sourceId}:${wIdx}`);
-        const isSuperseded = !!supersession?;
+        const isSuperseded = !!supersession;
 
         const daysInWeek: DayOccurrence[] = [];
         const dayNames = ["Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"];
@@ -319,7 +319,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
               dayLabel: format(occ, "dd MMM"),
               dayName: dayNames[Math.min(dayOfWeek, 6)] || format(occ, "EEE"),
               status: isSuperseded ? "Superseded" : occ <= now ? "Scheduled" : "Projected",
-              supersededBy: supersession??.supersededBy,
+              supersededBy: supersession?.supersededBy,
             });
           }
         }
