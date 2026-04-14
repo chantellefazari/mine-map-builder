@@ -82,8 +82,9 @@ interface PMRow {
   estimatedHours: number;
   trade: string;
   originalItem: PlannerItem;
-  planType: "Inspection" | "Maintenance";
+  planType: "Inspection" | "Maintenance" | "Scheduled WO";
   totalSuppressed: number;
+  woType?: string;
 }
 
 const DISCIPLINE_FILTERS = [
@@ -133,12 +134,23 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     return cols;
   }, [viewStart, now]);
 
+  // PM template items (recurring plans)
   const pmItems = useMemo(() => {
     const map = new Map<string, PlannerItem>();
     for (const item of items) {
       if (item.source === "pm" && !map.has(item.sourceId)) map.set(item.sourceId, item);
     }
     return Array.from(map.values());
+  }, [items]);
+
+  // Scheduled WO items (one-off or already-called work orders with a scheduled_date in the view window)
+  const scheduledWOItems = useMemo(() => {
+    return items.filter(item => 
+      item.source === "wo" && 
+      item.scheduledDate && 
+      item.status !== "Closed" && 
+      item.status !== "Cancelled"
+    );
   }, [items]);
 
   const filteredPMs = useMemo(() => {
