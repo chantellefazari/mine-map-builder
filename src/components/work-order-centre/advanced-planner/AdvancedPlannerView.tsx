@@ -251,6 +251,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
         sourceId: wo.id,
         planCategory: "Preventive",
         activityType: (wo as any).activity_type || "",
+        equipmentType: "",
       });
     }
 
