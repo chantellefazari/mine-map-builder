@@ -8,6 +8,7 @@ import {
   Search, ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
   Undo2, Save, CalendarDays, Pencil, Sparkles, Calendar,
   Clock, Wrench, MapPin, AlertTriangle, Package, Shield,
+  Ban, ArrowRightLeft, Eye, FileCheck,
 } from "lucide-react";
 import {
   addDays, addWeeks, startOfWeek, format, isWithinInterval,
@@ -34,6 +35,10 @@ function freqToDays(freq: string): number {
   if (match) return parseInt(match[1]) * 7;
   if (lower.includes("month")) return 30;
   if (lower.includes("quarter") || lower.includes("13")) return 91;
+  if (lower.includes("6") && lower.includes("month")) return 182;
+  if (lower.includes("annual") || lower.includes("year") || lower.includes("52")) return 364;
+  if (lower.includes("26")) return 182;
+  if (lower.includes("fortnight")) return 14;
   return 28;
 }
 
@@ -48,7 +53,8 @@ interface DayOccurrence {
   date: Date;
   dayLabel: string;
   dayName: string;
-  status: "Scheduled" | "Projected";
+  status: "Scheduled" | "Projected" | "Suppressed";
+  suppressedBy?: string; // name of the longer-frequency PM that suppresses this
 }
 
 interface WeekCell {
@@ -58,6 +64,7 @@ interface WeekCell {
   dateLabel: string;
   actual: number;
   expected: number;
+  suppressed: number;
   days: DayOccurrence[];
   isCurrent: boolean;
   isPast: boolean;
@@ -75,6 +82,8 @@ interface PMRow {
   estimatedHours: number;
   trade: string;
   originalItem: PlannerItem;
+  planType: "Inspection" | "Maintenance";
+  totalSuppressed: number;
 }
 
 const DISCIPLINE_FILTERS = [
@@ -88,8 +97,11 @@ const SORT_OPTIONS = [
   { key: "name", label: "PM Name" },
   { key: "frequency", label: "Frequency" },
   { key: "discipline", label: "Discipline" },
+  { key: "asset", label: "Asset" },
 ] as const;
 type SortKey = typeof SORT_OPTIONS[number]["key"];
+
+const CALL_HORIZON_DAYS = 91; // 13 weeks / ~3 months
 
 export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder }: Props) {
   
@@ -101,7 +113,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
   const [filterDiscipline, setFilterDiscipline] = useState("All");
   const [sortBy, setSortBy] = useState<SortKey>("name");
   const [adjustments, setAdjustments] = useState<Record<string, number>>({});
-  // Multi-level expansion: Set of expanded PM ids, and set of "pmId:weekIdx" for expanded weeks, and set of "pmId:weekIdx:dayIdx" for expanded days
+  const [showSuppressed, setShowSuppressed] = useState(true);
   const [expandedPMs, setExpandedPMs] = useState<Set<string>>(new Set());
   const [expandedWeeks, setExpandedWeeks] = useState<Set<string>>(new Set());
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
@@ -136,11 +148,11 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
       const q = searchQuery.toLowerCase();
       result = result.filter(pm => pm.taskName.toLowerCase().includes(q) || pm.assetNumber.toLowerCase().includes(q));
     }
-    // Sort
     result = [...result].sort((a, b) => {
       if (sortBy === "name") return a.taskName.localeCompare(b.taskName);
-      if (sortBy === "frequency") return (a.frequency || "").localeCompare(b.frequency || "");
+      if (sortBy === "frequency") return freqToDays(a.frequency) - freqToDays(b.frequency);
       if (sortBy === "discipline") return (a.discipline || "").localeCompare(b.discipline || "");
+      if (sortBy === "asset") return (a.assetNumber || "").localeCompare(b.assetNumber || "");
       return 0;
     });
     return result;
@@ -152,6 +164,69 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     return counts;
   }, [pmItems]);
 
+  // Build suppression map: for each asset+week, find the longest-frequency PM
+  const suppressionMap = useMemo(() => {
+    // Group PMs by asset number
+    const assetPMs = new Map<string, PlannerItem[]>();
+    for (const pm of filteredPMs) {
+      if (!pm.assetNumber) continue;
+      if (!assetPMs.has(pm.assetNumber)) assetPMs.set(pm.assetNumber, []);
+      assetPMs.get(pm.assetNumber)!.push(pm);
+    }
+
+    // For each asset with multiple PMs, determine which ones suppress which per week
+    // Key: "pmSourceId:weekIdx" → { suppressed: true, suppressedBy: "PM Name (frequency)" }
+    const map = new Map<string, { suppressedBy: string }>();
+
+    for (const [, pmsForAsset] of assetPMs) {
+      if (pmsForAsset.length < 2) continue;
+
+      // For each week, find which PMs have occurrences
+      for (let wIdx = 0; wIdx < weekColumns.length; wIdx++) {
+        const wc = weekColumns[wIdx];
+        
+        // Find all PMs that have an occurrence in this week
+        const pmsInWeek: { pm: PlannerItem; freqDays: number }[] = [];
+        
+        for (const pm of pmsForAsset) {
+          const fDays = freqToDays(pm.frequency);
+          const adj = adjustments[pm.sourceId] || 0;
+          let d = addDays(startOfWeek(new Date("2026-03-25"), { weekStartsOn: 3 }), adj);
+          let hasOcc = false;
+          while (d <= wc.end) {
+            if (d >= wc.start && isWithinInterval(d, { start: wc.start, end: wc.end })) {
+              hasOcc = true;
+              break;
+            }
+            d = addDays(d, fDays === 1 ? 1 : fDays);
+          }
+          if (hasOcc) pmsInWeek.push({ pm, freqDays: fDays });
+        }
+
+        if (pmsInWeek.length < 2) continue;
+
+        // Sort by frequency days descending — longest frequency wins
+        pmsInWeek.sort((a, b) => b.freqDays - a.freqDays);
+        const winner = pmsInWeek[0];
+
+        // All others are suppressed
+        for (let i = 1; i < pmsInWeek.length; i++) {
+          const loser = pmsInWeek[i];
+          // Only suppress if the longer frequency is a multiple (or close) of the shorter
+          // e.g. 6-month suppresses 3-month, 2-week suppresses 1-week
+          const ratio = winner.freqDays / loser.freqDays;
+          if (ratio >= 1.8) { // ~2x or more
+            map.set(`${loser.pm.sourceId}:${wIdx}`, {
+              suppressedBy: `${winner.pm.taskName} (${winner.pm.frequency})`,
+            });
+          }
+        }
+      }
+    }
+
+    return map;
+  }, [filteredPMs, weekColumns, adjustments]);
+
   const pmRows: PMRow[] = useMemo(() => {
     return filteredPMs.map(pm => {
       const freqDays = freqToDays(pm.frequency);
@@ -159,6 +234,8 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
       const adj = adjustments[pm.sourceId] || 0;
       const allStart = weekColumns[0].start;
       const allEnd = weekColumns[weekColumns.length - 1].end;
+      const planCategory = pm.planCategory || "Preventive";
+      const planType = planCategory === "Lifecycle" ? "Maintenance" as const : "Inspection" as const;
 
       const occDates: Date[] = [];
       let d = addDays(startOfWeek(new Date("2026-03-25"), { weekStartsOn: 3 }), adj);
@@ -167,7 +244,12 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         d = addDays(d, freqDays === 1 ? 1 : freqDays);
       }
 
-      const weeks: WeekCell[] = weekColumns.map(wc => {
+      let totalSuppressed = 0;
+
+      const weeks: WeekCell[] = weekColumns.map((wc, wIdx) => {
+        const suppression = suppressionMap.get(`${pm.sourceId}:${wIdx}`);
+        const isSuppressed = !!suppression;
+
         const daysInWeek: DayOccurrence[] = [];
         const dayNames = ["Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"];
         for (const occ of occDates) {
@@ -177,13 +259,21 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
               date: occ,
               dayLabel: format(occ, "dd MMM"),
               dayName: dayNames[Math.min(dayOfWeek, 6)] || format(occ, "EEE"),
-              status: occ <= now ? "Scheduled" : "Projected",
+              status: isSuppressed ? "Suppressed" : occ <= now ? "Scheduled" : "Projected",
+              suppressedBy: suppression?.suppressedBy,
             });
           }
         }
+
+        const suppressedCount = isSuppressed ? daysInWeek.length : 0;
+        totalSuppressed += suppressedCount;
+
         return {
           weekStart: wc.start, weekEnd: wc.end, weekNum: wc.weekNum, dateLabel: wc.dateLabel,
-          actual: daysInWeek.length, expected: expectedPerWeek, days: daysInWeek,
+          actual: isSuppressed ? 0 : daysInWeek.length,
+          expected: expectedPerWeek,
+          suppressed: suppressedCount,
+          days: daysInWeek,
           isCurrent: wc.isCurrent, isPast: wc.isPast,
         };
       });
@@ -192,30 +282,32 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         id: pm.sourceId, name: pm.taskName, assetNumber: pm.assetNumber,
         frequency: pm.frequency, discipline: pm.discipline, freqDays,
         expectedPerWeek, weeks, estimatedHours: pm.estimatedHours, trade: pm.trade,
-        originalItem: pm,
+        originalItem: pm, planType, totalSuppressed,
       };
     });
-  }, [filteredPMs, weekColumns, adjustments, now]);
+  }, [filteredPMs, weekColumns, adjustments, now, suppressionMap]);
+
+  // Summary stats
+  const summaryStats = useMemo(() => {
+    let totalOccurrences = 0;
+    let totalSuppressed = 0;
+    for (const pm of pmRows) {
+      for (const w of pm.weeks) {
+        totalOccurrences += w.actual + w.suppressed;
+        totalSuppressed += w.suppressed;
+      }
+    }
+    return { totalOccurrences, totalSuppressed, netWOs: totalOccurrences - totalSuppressed };
+  }, [pmRows]);
 
   const togglePM = useCallback((id: string) => {
     setExpandedPMs(prev => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
-        // Also collapse all children
-        setExpandedWeeks(wp => {
-          const n = new Set(wp);
-          for (const k of n) { if (k.startsWith(id + ":")) n.delete(k); }
-          return n;
-        });
-        setExpandedDays(dp => {
-          const n = new Set(dp);
-          for (const k of n) { if (k.startsWith(id + ":")) n.delete(k); }
-          return n;
-        });
-      } else {
-        next.add(id);
-      }
+        setExpandedWeeks(wp => { const n = new Set(wp); for (const k of n) { if (k.startsWith(id + ":")) n.delete(k); } return n; });
+        setExpandedDays(dp => { const n = new Set(dp); for (const k of n) { if (k.startsWith(id + ":")) n.delete(k); } return n; });
+      } else { next.add(id); }
       return next;
     });
   }, []);
@@ -225,15 +317,8 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
       const next = new Set(prev);
       if (next.has(key)) {
         next.delete(key);
-        // collapse child days
-        setExpandedDays(dp => {
-          const n = new Set(dp);
-          for (const k of n) { if (k.startsWith(key + ":")) n.delete(k); }
-          return n;
-        });
-      } else {
-        next.add(key);
-      }
+        setExpandedDays(dp => { const n = new Set(dp); for (const k of n) { if (k.startsWith(key + ":")) n.delete(k); } return n; });
+      } else { next.add(key); }
       return next;
     });
   }, []);
@@ -257,7 +342,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     toast.success(`${count} PM schedule adjustment${count !== 1 ? "s" : ""} saved`);
   };
 
-  const viewRangeLabel = `W${weekColumns[0]?.weekNum} — ${format(weekColumns[0]?.start, "dd MMM")} – ${format(weekColumns[weekColumns.length - 1]?.end, "dd MMM")}...`;
+  const viewRangeLabel = `W${weekColumns[0]?.weekNum} — ${format(weekColumns[0]?.start, "dd MMM")} – ${format(weekColumns[weekColumns.length - 1]?.end, "dd MMM")}`;
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -267,9 +352,9 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
           <div>
             <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
               <CalendarDays className="w-5 h-5 text-primary" />
-              PM Forward Plan
+              Forward Plan — 90-Day Call Horizon
             </h2>
-            <p className="text-xs text-muted-foreground">Plan, preview, and control all preventive maintenance</p>
+            <p className="text-xs text-muted-foreground">Auto-generates & schedules PM work orders 13 weeks ahead · Frequency suppression active</p>
           </div>
           <div className="flex items-center gap-2">
             {hasAdjustments && (
@@ -283,6 +368,40 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
               </>
             )}
           </div>
+        </div>
+
+        {/* Summary cards */}
+        <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted/50 border border-border">
+            <CalendarDays className="w-3.5 h-3.5 text-primary" />
+            <span className="text-[10px] text-muted-foreground">Projected WOs:</span>
+            <span className="text-xs font-bold text-foreground">{summaryStats.totalOccurrences}</span>
+          </div>
+          {summaryStats.totalSuppressed > 0 && (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted/50 border border-border">
+              <Ban className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-[10px] text-muted-foreground">Suppressed:</span>
+              <span className="text-xs font-bold text-muted-foreground line-through">{summaryStats.totalSuppressed}</span>
+            </div>
+          )}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary/5 border border-primary/20">
+            <FileCheck className="w-3.5 h-3.5 text-primary" />
+            <span className="text-[10px] text-muted-foreground">Net WOs to Generate:</span>
+            <span className="text-xs font-bold text-primary">{summaryStats.netWOs}</span>
+          </div>
+          <div className="flex-1" />
+          <button
+            onClick={() => setShowSuppressed(!showSuppressed)}
+            className={cn(
+              "flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-medium border transition-colors",
+              showSuppressed
+                ? "bg-muted border-border text-foreground"
+                : "bg-background border-border text-muted-foreground"
+            )}
+          >
+            <Eye className="w-3 h-3" />
+            {showSuppressed ? "Showing" : "Hiding"} Suppressed
+          </button>
         </div>
 
         <div className="flex items-center gap-2 mb-3">
@@ -306,7 +425,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
           <div className="flex items-center gap-2">
             <div className="relative w-56">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-              <Input placeholder="Search PMs..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="h-8 pl-8 text-xs" />
+              <Input placeholder="Search PMs or assets..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="h-8 pl-8 text-xs" />
             </div>
             <select
               value={sortBy}
@@ -325,10 +444,32 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
               <span className="text-xs font-medium px-3 min-w-[140px] text-center">{viewRangeLabel}</span>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setWeekOffset(p => p + 4)}><ChevronRight className="w-3.5 h-3.5" /></Button>
             </div>
-            <Button size="sm" className="h-8 text-xs gap-1 bg-foreground text-background hover:bg-foreground/90">
-              <Sparkles className="w-3.5 h-3.5" /> Generate
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="sm" className="h-8 text-xs gap-1 bg-foreground text-background hover:bg-foreground/90">
+                  <Sparkles className="w-3.5 h-3.5" /> Generate 90-Day
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs max-w-xs">
+                <p className="font-semibold mb-1">Auto-Generate PM Work Orders</p>
+                <p>Creates WO-12xxxx (Inspection) and WO-11xxxx (Maintenance) work orders for the next 90 days. Applies frequency suppression to prevent duplicates on the same asset.</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="flex items-center gap-4 px-4 py-1.5 border-b border-border bg-muted/10 text-[9px] text-muted-foreground">
+        <span className="font-semibold uppercase tracking-wider">Legend:</span>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-primary" /> Projected (will generate WO)</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-primary/40" /> Scheduled (WO exists)</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-muted-foreground/30" /><span className="line-through">Suppressed</span> (longer freq overrides)</div>
+        <div className="flex items-center gap-1">
+          <Badge variant="outline" className="text-[8px] px-1 py-0 border-primary/40 text-primary">INS</Badge> Inspection (12-series)
+        </div>
+        <div className="flex items-center gap-1">
+          <Badge variant="outline" className="text-[8px] px-1 py-0 border-purple-500/40 text-purple-600">MNT</Badge> Maintenance (11-series)
         </div>
       </div>
 
@@ -337,9 +478,10 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         <div className="min-w-[1200px]">
           {/* Header */}
           <div className="flex border-b border-border bg-muted/30 sticky top-0 z-10">
-            <div className="w-[320px] flex-shrink-0 px-4 py-2 border-r border-border flex items-end">
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider w-[220px]">PM Name</span>
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider font-mono">Freq</span>
+            <div className="w-[340px] flex-shrink-0 px-4 py-2 border-r border-border flex items-end gap-2">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider flex-1">PM Name / Asset</span>
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider w-12 text-center">Type</span>
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider font-mono w-16 text-right">Freq</span>
             </div>
             <div className="flex-1 flex">
               {weekColumns.map((wc, i) => (
@@ -359,10 +501,11 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
             const isPMExpanded = expandedPMs.has(pm.id);
             const adj = adjustments[pm.id] || 0;
             const totalOccurrences = pm.weeks.reduce((s, w) => s + w.actual, 0);
+            const totalSuppressedWeeks = pm.weeks.filter(w => w.suppressed > 0).length;
 
             return (
               <div key={pm.id} className="border-b border-border/30">
-                {/* Main PM row - click to expand */}
+                {/* Main PM row */}
                 <div
                   className={cn(
                     "flex cursor-pointer transition-colors group",
@@ -371,34 +514,59 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                   onClick={() => togglePM(pm.id)}
                 >
                   {/* PM name cell */}
-                  <div className="w-[320px] flex-shrink-0 px-4 py-2.5 border-r border-border flex items-center gap-2">
-                    <div className={cn(
-                      "w-4 h-4 flex items-center justify-center rounded transition-transform flex-shrink-0",
-                      isPMExpanded && "text-primary"
-                    )}>
+                  <div className="w-[340px] flex-shrink-0 px-4 py-2.5 border-r border-border flex items-center gap-2">
+                    <div className={cn("w-4 h-4 flex items-center justify-center rounded transition-transform flex-shrink-0", isPMExpanded && "text-primary")}>
                       {isPMExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <p className="text-xs font-semibold text-foreground truncate">{pm.name}</p>
-                        <Pencil className="w-3 h-3 text-muted-foreground/50 flex-shrink-0 opacity-0 group-hover:opacity-100 cursor-pointer" />
+                        {pm.totalSuppressed > 0 && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Badge variant="outline" className="text-[8px] px-1 py-0 border-muted-foreground/30 text-muted-foreground">
+                                <Ban className="w-2.5 h-2.5 mr-0.5" />{pm.totalSuppressed}
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="text-xs">{pm.totalSuppressed} occurrence{pm.totalSuppressed !== 1 ? "s" : ""} suppressed by longer-frequency PM on same asset</TooltipContent>
+                          </Tooltip>
+                        )}
                       </div>
                       <p className="text-[10px] text-muted-foreground font-mono mt-0.5">{pm.assetNumber || "No asset linked"}</p>
                     </div>
-                    <span className="text-[10px] font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded flex-shrink-0">{pm.frequency}</span>
+                    <Badge variant="outline" className={cn(
+                      "text-[8px] px-1 py-0 flex-shrink-0",
+                      pm.planType === "Inspection" ? "border-primary/40 text-primary" : "border-purple-500/40 text-purple-600"
+                    )}>
+                      {pm.planType === "Inspection" ? "INS" : "MNT"}
+                    </Badge>
+                    <span className="text-[10px] font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded flex-shrink-0 w-16 text-right">{pm.frequency}</span>
                   </div>
 
                   {/* Week cells */}
                   <div className="flex-1 flex">
                     {pm.weeks.map((week, wIdx) => {
                       const hasOccs = week.actual > 0;
+                      const hasSuppressed = week.suppressed > 0;
                       const isComplete = week.actual >= week.expected && hasOccs;
                       return (
                         <div key={wIdx} className={cn(
                           "flex-1 flex items-center justify-center py-2 border-r border-border/20 last:border-r-0",
                           week.isCurrent && "bg-primary/5"
                         )}>
-                          {hasOccs ? (
+                          {hasSuppressed && showSuppressed ? (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center gap-0.5 px-1 py-0.5 rounded text-[10px] font-mono text-muted-foreground/50">
+                                  <Ban className="w-3 h-3" />
+                                  <span className="line-through">{week.suppressed}</span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent className="text-xs">
+                                Suppressed by: {week.days[0]?.suppressedBy || "longer-frequency PM"}
+                              </TooltipContent>
+                            </Tooltip>
+                          ) : hasOccs ? (
                             <div className={cn(
                               "flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-mono font-semibold",
                               isComplete
@@ -425,12 +593,23 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                     {/* PM summary bar */}
                     <div className="flex items-center gap-4 px-6 py-2 bg-muted/20 border-b border-border/20">
                       <Badge variant="outline" className="text-[10px]">{pm.discipline}</Badge>
+                      <Badge variant="outline" className={cn(
+                        "text-[9px]",
+                        pm.planType === "Inspection" ? "border-primary/40 text-primary" : "border-purple-500/40 text-purple-600"
+                      )}>
+                        {pm.planType === "Inspection" ? "12-series (PM)" : "11-series (Planned)"}
+                      </Badge>
                       <span className="text-[10px] text-muted-foreground">
                         <Clock className="w-3 h-3 inline mr-1" />{pm.estimatedHours || 0}h est.
                       </span>
                       <span className="text-[10px] text-muted-foreground">
                         {totalOccurrences} occurrence{totalOccurrences !== 1 ? "s" : ""} in view
                       </span>
+                      {pm.totalSuppressed > 0 && (
+                        <span className="text-[10px] text-muted-foreground">
+                          <Ban className="w-3 h-3 inline mr-1" />{pm.totalSuppressed} suppressed
+                        </span>
+                      )}
                       {adj !== 0 && (
                         <span className="text-[10px] font-mono font-bold text-primary">
                           Shifted {adj > 0 ? `+${adj}` : adj} days
@@ -451,17 +630,18 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
 
                     {/* Week-by-week breakdown */}
                     {pm.weeks.map((week, wIdx) => {
-                      if (week.actual === 0) return null;
+                      if (week.actual === 0 && week.suppressed === 0) return null;
                       const weekKey = `${pm.id}:${wIdx}`;
                       const isWeekExpanded = expandedWeeks.has(weekKey);
+                      const isSuppressedWeek = week.suppressed > 0 && week.actual === 0;
 
                       return (
                         <div key={wIdx}>
-                          {/* LEVEL 2: Week row - click to expand days */}
+                          {/* LEVEL 2: Week row */}
                           <div
                             className={cn(
                               "flex items-center gap-3 px-8 py-1.5 cursor-pointer transition-colors border-b border-border/10",
-                              isWeekExpanded ? "bg-primary/5" : "hover:bg-muted/10"
+                              isSuppressedWeek ? "bg-muted/10 opacity-60" : isWeekExpanded ? "bg-primary/5" : "hover:bg-muted/10"
                             )}
                             onClick={() => toggleWeek(weekKey)}
                           >
@@ -474,12 +654,23 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                             )}>
                               W{week.weekNum}
                             </div>
-                            <span className="text-[11px] font-medium text-foreground">
+                            <span className={cn("text-[11px] font-medium", isSuppressedWeek ? "text-muted-foreground line-through" : "text-foreground")}>
                               {format(week.weekStart, "dd MMM")} – {format(week.weekEnd, "dd MMM yyyy")}
                             </span>
-                            <Badge variant="outline" className="text-[9px] font-mono">
-                              {week.actual}/{week.expected}
-                            </Badge>
+                            {isSuppressedWeek ? (
+                              <Badge variant="outline" className="text-[9px] font-mono border-muted-foreground/30 text-muted-foreground">
+                                <Ban className="w-3 h-3 mr-1" /> Suppressed
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-[9px] font-mono">
+                                {week.actual}/{week.expected}
+                              </Badge>
+                            )}
+                            {isSuppressedWeek && week.days[0]?.suppressedBy && (
+                              <span className="text-[9px] text-muted-foreground italic">
+                                → {week.days[0].suppressedBy}
+                              </span>
+                            )}
                             {week.isCurrent && (
                               <Badge className="text-[9px] bg-primary/15 text-primary border-primary/30">Current Week</Badge>
                             )}
@@ -491,6 +682,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                               {week.days.map((day, dIdx) => {
                                 const dayKey = `${pm.id}:${wIdx}:${dIdx}`;
                                 const isDayExpanded = expandedDays.has(dayKey);
+                                const isSuppressedDay = day.status === "Suppressed";
 
                                 return (
                                   <div key={dIdx}>
@@ -498,7 +690,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                     <div
                                       className={cn(
                                         "flex items-center gap-3 px-12 py-2 cursor-pointer transition-colors border-b border-border/10",
-                                        isDayExpanded ? "bg-primary/5" : "hover:bg-muted/10"
+                                        isSuppressedDay ? "opacity-50" : isDayExpanded ? "bg-primary/5" : "hover:bg-muted/10"
                                       )}
                                       onClick={() => toggleDay(dayKey)}
                                     >
@@ -506,19 +698,24 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                         {isDayExpanded ? <ChevronDown className="w-3 h-3 text-primary" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
                                       </div>
                                       <span className="text-[10px] text-muted-foreground font-medium w-8">{day.dayName}</span>
-                                      <span className="text-xs font-bold text-foreground w-12">{format(day.date, "dd/MM")}</span>
-                                      <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
+                                      <span className={cn("text-xs font-bold w-12", isSuppressedDay ? "text-muted-foreground line-through" : "text-foreground")}>{format(day.date, "dd/MM")}</span>
+                                      <div className={cn("w-2 h-2 rounded-full flex-shrink-0", isSuppressedDay ? "bg-muted-foreground/30" : "bg-primary")} />
                                       <Badge className={cn(
                                         "text-[9px] h-4",
-                                        day.status === "Scheduled"
-                                          ? "bg-primary/15 text-primary border-primary/30"
+                                        day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
+                                          : day.status === "Suppressed" ? "bg-muted text-muted-foreground border-muted-foreground/30"
                                           : "bg-muted text-muted-foreground border-border"
                                       )}>
                                         {day.status}
                                       </Badge>
-                                      <span className="text-[10px] text-muted-foreground">{format(day.date, "EEEE, dd MMMM yyyy")}</span>
+                                      {isSuppressedDay && day.suppressedBy && (
+                                        <span className="text-[9px] text-muted-foreground italic">→ {day.suppressedBy}</span>
+                                      )}
+                                      {!isSuppressedDay && (
+                                        <span className="text-[10px] text-muted-foreground">{format(day.date, "EEEE, dd MMMM yyyy")}</span>
+                                      )}
                                       <div className="flex-1" />
-                                      <Pencil className="w-3 h-3 text-muted-foreground/40 hover:text-foreground cursor-pointer" onClick={e => e.stopPropagation()} />
+                                      {!isSuppressedDay && <Pencil className="w-3 h-3 text-muted-foreground/40 hover:text-foreground cursor-pointer" onClick={e => e.stopPropagation()} />}
                                     </div>
 
                                     {/* LEVEL 4: Expanded day → full detail card */}
@@ -527,20 +724,38 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                         <div className="bg-popover border border-border rounded-lg p-4 max-w-2xl shadow-sm" onClick={(e) => e.stopPropagation()}>
                                           <div className="flex items-start justify-between mb-3">
                                             <div>
-                                              <h4 className="text-sm font-bold text-foreground">{pm.name}</h4>
+                                              <h4 className={cn("text-sm font-bold", isSuppressedDay ? "text-muted-foreground line-through" : "text-foreground")}>{pm.name}</h4>
                                               <p className="text-[10px] text-muted-foreground mt-0.5">
                                                 {format(day.date, "EEEE dd MMMM yyyy")} · {pm.frequency} · {pm.discipline}
                                               </p>
                                             </div>
-                                            <Badge className={cn(
-                                              "text-[10px]",
-                                              day.status === "Scheduled"
-                                                ? "bg-primary/15 text-primary border-primary/30"
-                                                : "bg-muted text-muted-foreground border-border"
-                                            )}>
-                                              {day.status}
-                                            </Badge>
+                                            <div className="flex items-center gap-1.5">
+                                              <Badge variant="outline" className={cn(
+                                                "text-[9px]",
+                                                pm.planType === "Inspection" ? "border-primary/40 text-primary" : "border-purple-500/40 text-purple-600"
+                                              )}>
+                                                {pm.planType === "Inspection" ? "WO-12xxxx" : "WO-11xxxx"}
+                                              </Badge>
+                                              <Badge className={cn(
+                                                "text-[10px]",
+                                                day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
+                                                  : day.status === "Suppressed" ? "bg-muted text-muted-foreground border-muted-foreground/30"
+                                                  : "bg-muted text-muted-foreground border-border"
+                                              )}>
+                                                {day.status}
+                                              </Badge>
+                                            </div>
                                           </div>
+
+                                          {isSuppressedDay && day.suppressedBy && (
+                                            <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-md bg-muted/50 border border-border">
+                                              <ArrowRightLeft className="w-4 h-4 text-muted-foreground" />
+                                              <div>
+                                                <p className="text-[11px] font-medium text-foreground">Suppressed by longer-frequency PM</p>
+                                                <p className="text-[10px] text-muted-foreground">{day.suppressedBy} — WO will not be generated for this occurrence</p>
+                                              </div>
+                                            </div>
+                                          )}
 
                                           <div className="grid grid-cols-2 gap-3 text-[11px]">
                                             <div className="flex items-center gap-2">
@@ -566,27 +781,29 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                           </div>
 
                                           {/* Action buttons */}
-                                          <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border">
-                                            <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1"
-                                              onClick={(e) => { e.stopPropagation(); onEditSchedule?.(pm.originalItem, day.date); }}>
-                                              <Pencil className="w-3 h-3" /> Edit Schedule
-                                            </Button>
-                                            <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1"
-                                              onClick={(e) => { e.stopPropagation(); onViewWorkOrder?.(pm.originalItem); }}>
-                                              <CalendarDays className="w-3 h-3" /> View Work Order
-                                            </Button>
-                                            <div className="flex-1" />
-                                            <div className="flex items-center gap-1">
-                                              <Button variant="ghost" size="sm" className="h-6 text-[9px] px-2"
-                                                onClick={(e) => { e.stopPropagation(); handleAdjust(pm.id, -1); }}>
-                                                −1 day
+                                          {!isSuppressedDay && (
+                                            <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border">
+                                              <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1"
+                                                onClick={(e) => { e.stopPropagation(); onEditSchedule?.(pm.originalItem, day.date); }}>
+                                                <Pencil className="w-3 h-3" /> Edit Schedule
                                               </Button>
-                                              <Button variant="ghost" size="sm" className="h-6 text-[9px] px-2"
-                                                onClick={(e) => { e.stopPropagation(); handleAdjust(pm.id, 1); }}>
-                                                +1 day
+                                              <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1"
+                                                onClick={(e) => { e.stopPropagation(); onViewWorkOrder?.(pm.originalItem); }}>
+                                                <CalendarDays className="w-3 h-3" /> View Work Order
                                               </Button>
+                                              <div className="flex-1" />
+                                              <div className="flex items-center gap-1">
+                                                <Button variant="ghost" size="sm" className="h-6 text-[9px] px-2"
+                                                  onClick={(e) => { e.stopPropagation(); handleAdjust(pm.id, -1); }}>
+                                                  −1 day
+                                                </Button>
+                                                <Button variant="ghost" size="sm" className="h-6 text-[9px] px-2"
+                                                  onClick={(e) => { e.stopPropagation(); handleAdjust(pm.id, 1); }}>
+                                                  +1 day
+                                                </Button>
+                                              </div>
                                             </div>
-                                          </div>
+                                          )}
                                         </div>
                                       </div>
                                     )}
@@ -608,12 +825,20 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
 
       {/* Footer */}
       <div className="px-4 py-2 border-t border-border bg-muted/20 flex items-center justify-between text-[10px] text-muted-foreground">
-        <span>{filteredPMs.length} PMs · {NUM_WEEKS}-week view · Click rows to drill down</span>
-        {hasAdjustments && (
-          <span className="text-primary font-medium">
-            {Object.values(adjustments).filter(v => v !== 0).length} PMs adjusted
-          </span>
-        )}
+        <div className="flex items-center gap-4">
+          <span>{filteredPMs.length} PMs · {NUM_WEEKS}-week call horizon · Click rows to drill down</span>
+          <span>Call Horizon: {CALL_HORIZON_DAYS} days ({Math.ceil(CALL_HORIZON_DAYS / 7)} weeks)</span>
+        </div>
+        <div className="flex items-center gap-3">
+          {summaryStats.totalSuppressed > 0 && (
+            <span>{summaryStats.totalSuppressed} suppressed (same-asset frequency override)</span>
+          )}
+          {hasAdjustments && (
+            <span className="text-primary font-medium">
+              {Object.values(adjustments).filter(v => v !== 0).length} PMs adjusted
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
