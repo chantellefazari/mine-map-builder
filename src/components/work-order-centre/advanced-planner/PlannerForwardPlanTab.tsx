@@ -437,7 +437,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
               <CalendarDays className="w-5 h-5 text-primary" />
               Forward Plan — 90-Day Call Horizon
             </h2>
-            <p className="text-xs text-muted-foreground">Auto-generates & schedules PM work orders 13 weeks ahead · Frequency suppression active</p>
+            <p className="text-xs text-muted-foreground">All maintenance plans · PMs, scheduled work orders & rebuilds · 13-week rolling view</p>
           </div>
           <div className="flex items-center gap-2">
             {hasAdjustments && (
