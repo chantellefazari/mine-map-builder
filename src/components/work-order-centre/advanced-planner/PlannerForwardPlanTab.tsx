@@ -619,9 +619,11 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                     </div>
                     <Badge variant="outline" className={cn(
                       "text-[8px] px-1 py-0 flex-shrink-0",
-                      pm.planType === "Inspection" ? "border-primary/40 text-primary" : "border-purple-500/40 text-purple-600"
+                      pm.planType === "Inspection" ? "border-primary/40 text-primary" 
+                        : pm.planType === "Scheduled WO" ? "border-blue-500/40 text-blue-600"
+                        : "border-purple-500/40 text-purple-600"
                     )}>
-                      {pm.planType === "Inspection" ? "INS" : "MNT"}
+                      {pm.planType === "Inspection" ? "INS" : pm.planType === "Scheduled WO" ? pm.woType || "WO" : "MNT"}
                     </Badge>
                     <span className="text-[10px] font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded flex-shrink-0 w-16 text-right">{pm.frequency}</span>
                   </div>
