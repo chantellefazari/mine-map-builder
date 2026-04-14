@@ -164,31 +164,31 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     return counts;
   }, [pmItems]);
 
-  // Build suppression map: for each asset+week, find the longest-frequency PM
+  // Build suppression map: for each asset+equipmentType+week, find the longest-frequency PM
+  // IMPORTANT: Only suppress when PMs share the SAME asset AND the SAME equipment type.
+  // Different inspection types (e.g. "Weekly Generator Inspection" vs "RCD Testing") must NOT suppress each other.
   const suppressionMap = useMemo(() => {
-    // Group PMs by asset number
-    const assetPMs = new Map<string, PlannerItem[]>();
+    // Group PMs by asset number + equipment type (suppression family)
+    const familyPMs = new Map<string, PlannerItem[]>();
     for (const pm of filteredPMs) {
       if (!pm.assetNumber) continue;
-      if (!assetPMs.has(pm.assetNumber)) assetPMs.set(pm.assetNumber, []);
-      assetPMs.get(pm.assetNumber)!.push(pm);
+      // Use equipmentType as the suppression family key — different types = different families
+      const familyKey = `${pm.assetNumber}::${(pm.equipmentType || pm.taskName).toLowerCase().trim()}`;
+      if (!familyPMs.has(familyKey)) familyPMs.set(familyKey, []);
+      familyPMs.get(familyKey)!.push(pm);
     }
 
-    // For each asset with multiple PMs, determine which ones suppress which per week
-    // Key: "pmSourceId:weekIdx" → { suppressed: true, suppressedBy: "PM Name (frequency)" }
     const map = new Map<string, { suppressedBy: string }>();
 
-    for (const [, pmsForAsset] of assetPMs) {
-      if (pmsForAsset.length < 2) continue;
+    for (const [, pmsForFamily] of familyPMs) {
+      if (pmsForFamily.length < 2) continue;
 
-      // For each week, find which PMs have occurrences
       for (let wIdx = 0; wIdx < weekColumns.length; wIdx++) {
         const wc = weekColumns[wIdx];
         
-        // Find all PMs that have an occurrence in this week
         const pmsInWeek: { pm: PlannerItem; freqDays: number }[] = [];
         
-        for (const pm of pmsForAsset) {
+        for (const pm of pmsForFamily) {
           const fDays = freqToDays(pm.frequency);
           const adj = adjustments[pm.sourceId] || 0;
           let d = addDays(startOfWeek(new Date("2026-03-25"), { weekStartsOn: 3 }), adj);
@@ -209,13 +209,10 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         pmsInWeek.sort((a, b) => b.freqDays - a.freqDays);
         const winner = pmsInWeek[0];
 
-        // All others are suppressed
         for (let i = 1; i < pmsInWeek.length; i++) {
           const loser = pmsInWeek[i];
-          // Only suppress if the longer frequency is a multiple (or close) of the shorter
-          // e.g. 6-month suppresses 3-month, 2-week suppresses 1-week
           const ratio = winner.freqDays / loser.freqDays;
-          if (ratio >= 1.8) { // ~2x or more
+          if (ratio >= 1.8) {
             map.set(`${loser.pm.sourceId}:${wIdx}`, {
               suppressedBy: `${winner.pm.taskName} (${winner.pm.frequency})`,
             });
