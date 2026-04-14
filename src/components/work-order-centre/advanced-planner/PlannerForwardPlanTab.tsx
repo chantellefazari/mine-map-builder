@@ -381,7 +381,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
       }
     }
     return { totalOccurrences, totalSuppressed, netWOs: totalOccurrences - totalSuppressed, scheduledWOs: woRows.length };
-  }, [pmRows]);
+  }, [allRows, woRows]);
 
   const togglePM = useCallback((id: string) => {
     setExpandedPMs(prev => {
@@ -576,11 +576,11 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
             </div>
           </div>
 
-          {/* PM Rows */}
-          {pmRows.length === 0 && (
+          {/* All Maintenance Plan Rows (PMs + Scheduled WOs) */}
+          {allRows.length === 0 && (
             <div className="p-12 text-center text-muted-foreground text-sm">No maintenance plans found</div>
           )}
-          {pmRows.map(pm => {
+          {allRows.map(pm => {
             const isPMExpanded = expandedPMs.has(pm.id);
             const adj = adjustments[pm.id] || 0;
             const totalOccurrences = pm.weeks.reduce((s, w) => s + w.actual, 0);
