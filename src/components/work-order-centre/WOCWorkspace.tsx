@@ -26,7 +26,7 @@ interface Props {
 }
 
 export function WOCWorkspace({ woId, onClose, isNew, onSaved }: Props) {
-  const { workOrders, update } = useWorkOrders();
+  const { workOrders, update, allocate } = useWorkOrders();
   const wo = workOrders.find((w) => w.id === woId);
   const { parts, auditLog, addPart, updatePart, deletePart } = useWorkOrderParts(woId);
   const { poItems, isLoading: poLoading } = usePOTracker(woId);
@@ -53,9 +53,32 @@ export function WOCWorkspace({ woId, onClose, isNew, onSaved }: Props) {
     });
   };
 
+  const handleRaiseDefect = async () => {
+    try {
+      const defectWO = await allocate.mutateAsync("Breakdown");
+      // Pre-populate with parent PM data
+      await update.mutateAsync({
+        id: defectWO.id,
+        updates: {
+          asset_id: wo.asset_id,
+          functional_location: wo.functional_location,
+          work_centre: wo.work_centre,
+          trade: wo.trade,
+          problem_description: `Defect from ${wo.wo_number}: `,
+          work_title: `Defect — ${wo.work_title || wo.problem_description?.replace(/^PM:\s*/, "").split("(")[0]?.trim() || ""}`,
+          linked_wr_number: wo.wo_number,
+          status: "Planning",
+        } as any,
+      });
+      toast.success(`Defect ${defectWO.wo_number} created and linked to ${wo.wo_number}`);
+    } catch {
+      toast.error("Failed to create defect work order");
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
-      <WOCWorkspaceHeader wo={wo} onUpdate={handleUpdate} onClose={onClose} onPrint={() => setShowPrint(true)} partsCount={parts.length} />
+      <WOCWorkspaceHeader wo={wo} onUpdate={handleUpdate} onClose={onClose} onPrint={() => setShowPrint(true)} partsCount={parts.length} onRaiseDefect={isPMOnly ? handleRaiseDefect : undefined} />
 
       <div className="flex-1 overflow-auto p-4">
         {isCreationMode && !isPMOnly ? (
