@@ -144,15 +144,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     return Array.from(map.values());
   }, [items]);
 
-  // Scheduled WO items (one-off or already-called work orders with a scheduled_date in the view window)
-  const scheduledWOItems = useMemo(() => {
-    return items.filter(item => 
-      item.source === "wo" && 
-      item.scheduledDate && 
-      item.status !== "Closed" && 
-      item.status !== "Cancelled"
-    );
-  }, [items]);
+  // Forward Plan only shows recurring PM plans — one-off WOs are managed elsewhere
 
   const filteredPMs = useMemo(() => {
     let result = pmItems;
@@ -346,58 +338,10 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     });
   }, [filteredPMs, weekColumns, adjustments, now, supersessionMap]);
 
-  // Build rows for scheduled WOs (one-off, already-called work orders)
-  const woRows: PMRow[] = useMemo(() => {
-    return scheduledWOItems
-      .filter(wo => {
-        if (filterDiscipline !== "All" && wo.discipline !== filterDiscipline) return false;
-        if (searchQuery.trim()) {
-          const q = searchQuery.toLowerCase();
-          if (!wo.taskName.toLowerCase().includes(q) && !wo.assetNumber.toLowerCase().includes(q) && !wo.woNumber.toLowerCase().includes(q)) return false;
-        }
-        return true;
-      })
-      .map(wo => {
-        const scheduledDate = wo.scheduledDate ? new Date(wo.scheduledDate) : null;
-        const woTypeLabel = wo.woType === "PM" ? "Inspection" as const
-          : wo.woType === "Planned" ? "Maintenance" as const
-          : "Scheduled WO" as const;
+  // No one-off WO rows in Forward Plan — recurring PMs only
 
-        const weeks: WeekCell[] = weekColumns.map((wc) => {
-          const isInWeek = scheduledDate && isWithinInterval(scheduledDate, { start: wc.start, end: wc.end });
-          const days: DayOccurrence[] = [];
-          if (isInWeek && scheduledDate) {
-            const dayNames = ["Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"];
-            const dayOfWeek = Math.floor((scheduledDate.getTime() - wc.start.getTime()) / 86400000);
-            days.push({
-              date: scheduledDate,
-              dayLabel: format(scheduledDate, "dd MMM"),
-              dayName: dayNames[Math.min(dayOfWeek, 6)] || format(scheduledDate, "EEE"),
-              status: scheduledDate <= now ? "Scheduled" : "Projected",
-            });
-          }
-          return {
-            weekStart: wc.start, weekEnd: wc.end, weekNum: wc.weekNum, dateLabel: wc.dateLabel,
-            actual: days.length, expected: 0, superseded: 0, days,
-            isCurrent: wc.isCurrent, isPast: wc.isPast,
-          };
-        });
-
-        // Only include if the WO falls within the visible weeks
-        const hasAnyOccurrence = weeks.some(w => w.actual > 0);
-        return hasAnyOccurrence ? {
-          id: wo.id, name: wo.taskName || wo.woNumber, assetNumber: wo.assetNumber,
-          frequency: "One-off", discipline: wo.discipline, freqDays: 0,
-          expectedPerWeek: 0, weeks, estimatedHours: wo.estimatedHours, trade: wo.trade,
-          originalItem: wo, planType: woTypeLabel, totalSuperseded: 0,
-          woType: wo.woType,
-        } : null;
-      })
-      .filter(Boolean) as PMRow[];
-  }, [scheduledWOItems, weekColumns, now, filterDiscipline, searchQuery]);
-
-  // Combine all rows
-  const allRows = useMemo(() => [...pmRows, ...woRows], [pmRows, woRows]);
+  // All rows are recurring PM rows only
+  const allRows = pmRows;
 
   // Summary stats
   const summaryStats = useMemo(() => {
@@ -409,8 +353,8 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         totalSuperseded += w.superseded;
       }
     }
-    return { totalOccurrences, totalSuperseded, netWOs: totalOccurrences - totalSuperseded, scheduledWOs: woRows.length };
-  }, [allRows, woRows]);
+    return { totalOccurrences, totalSuperseded, netWOs: totalOccurrences - totalSuperseded };
+  }, [allRows]);
 
   const togglePM = useCallback((id: string) => {
     setExpandedPMs(prev => {
