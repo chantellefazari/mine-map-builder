@@ -168,16 +168,19 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
   // IMPORTANT: Only suppress when PMs share the SAME asset AND the SAME equipment type.
   // Different inspection types (e.g. "Weekly Generator Inspection" vs "RCD Testing") must NOT suppress each other.
   // Extract the "inspection family" from a PM name by stripping frequency words.
-  // e.g. "Admin Generator Weekly Inspection" → "admin generator inspection"
-  //      "Admin Generator 3M Inspection"     → "admin generator inspection"  (SAME family → suppression applies)
-  //      "RCD Testing Sheets"                → "rcd testing sheets"          (DIFFERENT family → no suppression)
+  // This determines which PMs are the SAME type of work at different intervals.
+  // Daily PMs are ALWAYS a different family — they're quick operational checks, not the same scope as weekly/monthly.
   const getSuppressionFamily = useCallback((pm: PlannerItem): string => {
+    const freq = pm.frequency.toLowerCase().trim();
+    // Daily PMs are never suppressed — different scope of work entirely
+    if (freq === "daily" || freqToDays(pm.frequency) === 1) return `__daily__${pm.taskName.toLowerCase()}`;
+    
     const stripped = pm.taskName
       .toLowerCase()
       .replace(/\b(daily|weekly|fortnightly|monthly|quarterly|yearly|annual)\b/gi, "")
       .replace(/\b\d+\s*(?:week|wk|month|mth|day|yr|year|m)\b/gi, "")
       .replace(/\b(?:1|2|3|4|6|12|13|26|52)\s*(?:week|wk|month|mth)\b/gi, "")
-      .replace(/\b\d+[mM]\b/g, "") // "3M", "6M" etc
+      .replace(/\b\d+[mM]\b/g, "")
       .replace(/\s+/g, " ")
       .trim();
     return stripped;
