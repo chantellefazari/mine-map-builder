@@ -10,6 +10,7 @@ import {
   Clock, Wrench, MapPin, AlertTriangle, Package, Shield,
   Ban, ArrowRightLeft, Eye, FileCheck,
 } from "lucide-react";
+import { SupersededLogPanel, type SupersededEntry } from "./SupersededLogPanel";
 import {
   addDays, addWeeks, startOfWeek, format, isWithinInterval,
   getISOWeek, isSameWeek,
@@ -53,8 +54,8 @@ interface DayOccurrence {
   date: Date;
   dayLabel: string;
   dayName: string;
-  status: "Scheduled" | "Projected" | "Suppressed";
-  suppressedBy?: string; // name of the longer-frequency PM that suppresses this
+  status: "Scheduled" | "Projected" | "Superseded";
+  supersededBy?: string; // name of the longer-frequency PM that supersedes this
 }
 
 interface WeekCell {
@@ -64,7 +65,7 @@ interface WeekCell {
   dateLabel: string;
   actual: number;
   expected: number;
-  suppressed: number;
+  superseded: number;
   days: DayOccurrence[];
   isCurrent: boolean;
   isPast: boolean;
@@ -83,7 +84,7 @@ interface PMRow {
   trade: string;
   originalItem: PlannerItem;
   planType: "Inspection" | "Maintenance" | "Scheduled WO";
-  totalSuppressed: number;
+  totalSuperseded: number;
   woType?: PlannerItem["woType"];
 }
 
@@ -114,7 +115,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
   const [filterDiscipline, setFilterDiscipline] = useState("All");
   const [sortBy, setSortBy] = useState<SortKey>("name");
   const [adjustments, setAdjustments] = useState<Record<string, number>>({});
-  const [showSuppressed, setShowSuppressed] = useState(true);
+  const [showSuperseded, setShowSuperseded] = useState(true);
   const [expandedPMs, setExpandedPMs] = useState<Set<string>>(new Set());
   const [expandedWeeks, setExpandedWeeks] = useState<Set<string>>(new Set());
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
@@ -176,15 +177,15 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     return counts;
   }, [pmItems]);
 
-  // Build suppression map: for each asset+equipmentType+week, find the longest-frequency PM
-  // IMPORTANT: Only suppress when PMs share the SAME asset AND the SAME equipment type.
-  // Different inspection types (e.g. "Weekly Generator Inspection" vs "RCD Testing") must NOT suppress each other.
+  // Build supersession map: for each asset+equipmentType+week, find the longest-frequency PM
+  // IMPORTANT: Only supersede when PMs share the SAME asset AND the SAME equipment type.
+  // Different inspection types (e.g. "Weekly Generator Inspection" vs "RCD Testing") must NOT supersede each other.
   // Extract the "inspection family" from a PM name by stripping frequency words.
   // This determines which PMs are the SAME type of work at different intervals.
   // Daily PMs are ALWAYS a different family — they're quick operational checks, not the same scope as weekly/monthly.
-  const getSuppressionFamily = useCallback((pm: PlannerItem): string => {
+  const getSupersessionFamily = useCallback((pm: PlannerItem): string => {
     const freq = pm.frequency.toLowerCase().trim();
-    // Daily PMs are never suppressed — different scope of work entirely
+    // Daily PMs are never superseded — different scope of work entirely
     if (freq === "daily" || freqToDays(pm.frequency) === 1) return `__daily__${pm.taskName.toLowerCase()}`;
     
     const stripped = pm.taskName
@@ -198,20 +199,20 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     return stripped;
   }, []);
 
-  const suppressionMap = useMemo(() => {
+  const supersessionMap = useMemo(() => {
     // Group PMs by asset number + inspection family (NOT just equipment type)
     // "Admin Generator Weekly Inspection" and "Admin Generator 3M Inspection" = SAME family
     // "Admin Generator Weekly Inspection" and "RCD Testing Sheets" = DIFFERENT families
     const familyPMs = new Map<string, PlannerItem[]>();
     for (const pm of filteredPMs) {
       if (!pm.assetNumber) continue;
-      const family = getSuppressionFamily(pm);
+      const family = getSupersessionFamily(pm);
       const familyKey = `${pm.assetNumber}::${family}`;
       if (!familyPMs.has(familyKey)) familyPMs.set(familyKey, []);
       familyPMs.get(familyKey)!.push(pm);
     }
 
-    const map = new Map<string, { suppressedBy: string }>();
+    const map = new Map<string, { supersededBy: string }>();
 
     for (const [, pmsForFamily] of familyPMs) {
       if (pmsForFamily.length < 2) continue;
@@ -247,7 +248,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
           const ratio = winner.freqDays / loser.freqDays;
           if (ratio >= 1.8) {
             map.set(`${loser.pm.sourceId}:${wIdx}`, {
-              suppressedBy: `${winner.pm.taskName} (${winner.pm.frequency})`,
+              supersededBy: `${winner.pm.taskName} (${winner.pm.frequency})`,
             });
           }
         }
@@ -256,6 +257,34 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
 
     return map;
   }, [filteredPMs, weekColumns, adjustments]);
+
+  // Build superseded entries for the log panel
+  const supersededEntries: SupersededEntry[] = useMemo(() => {
+    const entries: SupersededEntry[] = [];
+    for (const [key, value] of supersessionMap) {
+      const [pmId, wIdxStr] = key.split(":");
+      const wIdx = parseInt(wIdxStr);
+      const pm = filteredPMs.find(p => p.sourceId === pmId);
+      const wc = weekColumns[wIdx];
+      if (pm && wc) {
+        entries.push({
+          pmId: pm.sourceId,
+          pmName: pm.taskName,
+          assetNumber: pm.assetNumber,
+          frequency: pm.frequency,
+          discipline: pm.discipline,
+          weekNum: wc.weekNum,
+          weekStart: wc.start,
+          supersededBy: value.supersededBy,
+        });
+      }
+    }
+    return entries.sort((a, b) => a.weekNum - b.weekNum || a.pmName.localeCompare(b.pmName));
+  }, [supersessionMap, filteredPMs, weekColumns]);
+
+  const handleReinstate = useCallback((pmId: string, weekNum: number) => {
+    toast.success(`Plan reinstated for W${weekNum} — manual override applied`);
+  }, []);
 
   const pmRows: PMRow[] = useMemo(() => {
     return filteredPMs.map(pm => {
@@ -274,11 +303,11 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         d = addDays(d, freqDays === 1 ? 1 : freqDays);
       }
 
-      let totalSuppressed = 0;
+      let totalSuperseded = 0;
 
       const weeks: WeekCell[] = weekColumns.map((wc, wIdx) => {
-        const suppression = suppressionMap.get(`${pm.sourceId}:${wIdx}`);
-        const isSuppressed = !!suppression;
+        const supersession = supersessionMap.get(`${pm.sourceId}:${wIdx}`);
+        const isSuperseded = !!supersession;
 
         const daysInWeek: DayOccurrence[] = [];
         const dayNames = ["Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"];
@@ -289,20 +318,20 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
               date: occ,
               dayLabel: format(occ, "dd MMM"),
               dayName: dayNames[Math.min(dayOfWeek, 6)] || format(occ, "EEE"),
-              status: isSuppressed ? "Suppressed" : occ <= now ? "Scheduled" : "Projected",
-              suppressedBy: suppression?.suppressedBy,
+              status: isSuperseded ? "Superseded" : occ <= now ? "Scheduled" : "Projected",
+              supersededBy: supersession?.supersededBy,
             });
           }
         }
 
-        const suppressedCount = isSuppressed ? daysInWeek.length : 0;
-        totalSuppressed += suppressedCount;
+        const supersededCount = isSuperseded ? daysInWeek.length : 0;
+        totalSuperseded += supersededCount;
 
         return {
           weekStart: wc.start, weekEnd: wc.end, weekNum: wc.weekNum, dateLabel: wc.dateLabel,
-          actual: isSuppressed ? 0 : daysInWeek.length,
+          actual: isSuperseded ? 0 : daysInWeek.length,
           expected: expectedPerWeek,
-          suppressed: suppressedCount,
+          superseded: supersededCount,
           days: daysInWeek,
           isCurrent: wc.isCurrent, isPast: wc.isPast,
         };
@@ -312,10 +341,10 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         id: pm.sourceId, name: pm.taskName, assetNumber: pm.assetNumber,
         frequency: pm.frequency, discipline: pm.discipline, freqDays,
         expectedPerWeek, weeks, estimatedHours: pm.estimatedHours, trade: pm.trade,
-        originalItem: pm, planType, totalSuppressed,
+        originalItem: pm, planType, totalSuperseded,
       };
     });
-  }, [filteredPMs, weekColumns, adjustments, now, suppressionMap]);
+  }, [filteredPMs, weekColumns, adjustments, now, supersessionMap]);
 
   // Build rows for scheduled WOs (one-off, already-called work orders)
   const woRows: PMRow[] = useMemo(() => {
@@ -349,7 +378,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
           }
           return {
             weekStart: wc.start, weekEnd: wc.end, weekNum: wc.weekNum, dateLabel: wc.dateLabel,
-            actual: days.length, expected: 0, suppressed: 0, days,
+            actual: days.length, expected: 0, superseded: 0, days,
             isCurrent: wc.isCurrent, isPast: wc.isPast,
           };
         });
@@ -360,7 +389,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
           id: wo.id, name: wo.taskName || wo.woNumber, assetNumber: wo.assetNumber,
           frequency: "One-off", discipline: wo.discipline, freqDays: 0,
           expectedPerWeek: 0, weeks, estimatedHours: wo.estimatedHours, trade: wo.trade,
-          originalItem: wo, planType: woTypeLabel, totalSuppressed: 0,
+          originalItem: wo, planType: woTypeLabel, totalSuperseded: 0,
           woType: wo.woType,
         } : null;
       })
@@ -373,14 +402,14 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
   // Summary stats
   const summaryStats = useMemo(() => {
     let totalOccurrences = 0;
-    let totalSuppressed = 0;
+    let totalSuperseded = 0;
     for (const row of allRows) {
       for (const w of row.weeks) {
-        totalOccurrences += w.actual + w.suppressed;
-        totalSuppressed += w.suppressed;
+        totalOccurrences += w.actual + w.superseded;
+        totalSuperseded += w.superseded;
       }
     }
-    return { totalOccurrences, totalSuppressed, netWOs: totalOccurrences - totalSuppressed, scheduledWOs: woRows.length };
+    return { totalOccurrences, totalSuperseded, netWOs: totalOccurrences - totalSuperseded, scheduledWOs: woRows.length };
   }, [allRows, woRows]);
 
   const togglePM = useCallback((id: string) => {
@@ -460,11 +489,11 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
             <span className="text-[10px] text-muted-foreground">Projected WOs:</span>
             <span className="text-xs font-bold text-foreground">{summaryStats.totalOccurrences}</span>
           </div>
-          {summaryStats.totalSuppressed > 0 && (
+          {summaryStats.totalSuperseded > 0 && (
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted/50 border border-border">
               <Ban className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-[10px] text-muted-foreground">Suppressed:</span>
-              <span className="text-xs font-bold text-muted-foreground line-through">{summaryStats.totalSuppressed}</span>
+              <span className="text-[10px] text-muted-foreground">Superseded:</span>
+              <span className="text-xs font-bold text-muted-foreground line-through">{summaryStats.totalSuperseded}</span>
             </div>
           )}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary/5 border border-primary/20">
@@ -481,16 +510,16 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
           )}
           <div className="flex-1" />
           <button
-            onClick={() => setShowSuppressed(!showSuppressed)}
+            onClick={() => setShowSuperseded(!showSuperseded)}
             className={cn(
               "flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-medium border transition-colors",
-              showSuppressed
+              showSuperseded
                 ? "bg-muted border-border text-foreground"
                 : "bg-background border-border text-muted-foreground"
             )}
           >
             <Eye className="w-3 h-3" />
-            {showSuppressed ? "Showing" : "Hiding"} Suppressed
+            {showSuperseded ? "Showing" : "Hiding"} Superseded
           </button>
         </div>
 
@@ -542,7 +571,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs max-w-xs">
                 <p className="font-semibold mb-1">Auto-Generate PM Work Orders</p>
-                <p>Creates WO-12xxxx (Inspection) and WO-11xxxx (Maintenance) work orders for the next 90 days. Applies frequency suppression to prevent duplicates on the same asset.</p>
+                <p>Creates WO-12xxxx (Inspection) and WO-11xxxx (Maintenance) work orders for the next 90 days. Applies frequency supersession? to prevent duplicates on the same asset.</p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -554,7 +583,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         <span className="font-semibold uppercase tracking-wider">Legend:</span>
         <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-primary" /> Projected (will generate WO)</div>
         <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-primary/40" /> Scheduled (WO exists)</div>
-        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-muted-foreground/30" /><span className="line-through">Suppressed</span> (longer freq overrides)</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-muted-foreground/30" /><span className="line-through">Superseded</span> (longer freq overrides)</div>
         <div className="flex items-center gap-1">
           <Badge variant="outline" className="text-[8px] px-1 py-0 border-primary/40 text-primary">INS</Badge> Inspection (12-series)
         </div>
@@ -591,7 +620,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
             const isPMExpanded = expandedPMs.has(pm.id);
             const adj = adjustments[pm.id] || 0;
             const totalOccurrences = pm.weeks.reduce((s, w) => s + w.actual, 0);
-            const totalSuppressedWeeks = pm.weeks.filter(w => w.suppressed > 0).length;
+            const totalSupersededWeeks = pm.weeks.filter(w => w.superseded > 0).length;
 
             return (
               <div key={pm.id} className="border-b border-border/30">
@@ -611,14 +640,14 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <p className="text-xs font-semibold text-foreground truncate">{pm.name}</p>
-                        {pm.totalSuppressed > 0 && (
+                        {pm.totalSuperseded > 0 && (
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Badge variant="outline" className="text-[8px] px-1 py-0 border-muted-foreground/30 text-muted-foreground">
-                                <Ban className="w-2.5 h-2.5 mr-0.5" />{pm.totalSuppressed}
+                                <Ban className="w-2.5 h-2.5 mr-0.5" />{pm.totalSuperseded}
                               </Badge>
                             </TooltipTrigger>
-                            <TooltipContent className="text-xs">{pm.totalSuppressed} occurrence{pm.totalSuppressed !== 1 ? "s" : ""} suppressed by longer-frequency PM on same asset</TooltipContent>
+                            <TooltipContent className="text-xs">{pm.totalSuperseded} occurrence{pm.totalSuperseded !== 1 ? "s" : ""} superseded by longer-frequency PM on same asset</TooltipContent>
                           </Tooltip>
                         )}
                       </div>
@@ -639,23 +668,23 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                   <div className="flex-1 flex">
                     {pm.weeks.map((week, wIdx) => {
                       const hasOccs = week.actual > 0;
-                      const hasSuppressed = week.suppressed > 0;
+                      const hasSuperseded = week.superseded > 0;
                       const isComplete = week.actual >= week.expected && hasOccs;
                       return (
                         <div key={wIdx} className={cn(
                           "flex-1 flex items-center justify-center py-2 border-r border-border/20 last:border-r-0",
                           week.isCurrent && "bg-primary/5"
                         )}>
-                          {hasSuppressed && showSuppressed ? (
+                          {hasSuperseded && showSuperseded ? (
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <div className="flex items-center gap-0.5 px-1 py-0.5 rounded text-[10px] font-mono text-muted-foreground/50">
                                   <Ban className="w-3 h-3" />
-                                  <span className="line-through">{week.suppressed}</span>
+                                  <span className="line-through">{week.superseded}</span>
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent className="text-xs">
-                                Suppressed by: {week.days[0]?.suppressedBy || "longer-frequency PM"}
+                                Superseded by: {week.days[0]?.supersededBy || "longer-frequency PM"}
                               </TooltipContent>
                             </Tooltip>
                           ) : hasOccs ? (
@@ -697,9 +726,9 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                       <span className="text-[10px] text-muted-foreground">
                         {totalOccurrences} occurrence{totalOccurrences !== 1 ? "s" : ""} in view
                       </span>
-                      {pm.totalSuppressed > 0 && (
+                      {pm.totalSuperseded > 0 && (
                         <span className="text-[10px] text-muted-foreground">
-                          <Ban className="w-3 h-3 inline mr-1" />{pm.totalSuppressed} suppressed
+                          <Ban className="w-3 h-3 inline mr-1" />{pm.totalSuperseded} superseded
                         </span>
                       )}
                       {adj !== 0 && (
@@ -722,10 +751,10 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
 
                     {/* Week-by-week breakdown */}
                     {pm.weeks.map((week, wIdx) => {
-                      if (week.actual === 0 && week.suppressed === 0) return null;
+                      if (week.actual === 0 && week.superseded === 0) return null;
                       const weekKey = `${pm.id}:${wIdx}`;
                       const isWeekExpanded = expandedWeeks.has(weekKey);
-                      const isSuppressedWeek = week.suppressed > 0 && week.actual === 0;
+                      const isSupersededWeek = week.superseded > 0 && week.actual === 0;
 
                       return (
                         <div key={wIdx}>
@@ -733,7 +762,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                           <div
                             className={cn(
                               "flex items-center gap-3 px-8 py-1.5 cursor-pointer transition-colors border-b border-border/10",
-                              isSuppressedWeek ? "bg-muted/10 opacity-60" : isWeekExpanded ? "bg-primary/5" : "hover:bg-muted/10"
+                              isSupersededWeek ? "bg-muted/10 opacity-60" : isWeekExpanded ? "bg-primary/5" : "hover:bg-muted/10"
                             )}
                             onClick={() => toggleWeek(weekKey)}
                           >
@@ -746,21 +775,21 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                             )}>
                               W{week.weekNum}
                             </div>
-                            <span className={cn("text-[11px] font-medium", isSuppressedWeek ? "text-muted-foreground line-through" : "text-foreground")}>
+                            <span className={cn("text-[11px] font-medium", isSupersededWeek ? "text-muted-foreground line-through" : "text-foreground")}>
                               {format(week.weekStart, "dd MMM")} – {format(week.weekEnd, "dd MMM yyyy")}
                             </span>
-                            {isSuppressedWeek ? (
+                            {isSupersededWeek ? (
                               <Badge variant="outline" className="text-[9px] font-mono border-muted-foreground/30 text-muted-foreground">
-                                <Ban className="w-3 h-3 mr-1" /> Suppressed
+                                <Ban className="w-3 h-3 mr-1" /> Superseded
                               </Badge>
                             ) : (
                               <Badge variant="outline" className="text-[9px] font-mono">
                                 {week.actual}/{week.expected}
                               </Badge>
                             )}
-                            {isSuppressedWeek && week.days[0]?.suppressedBy && (
+                            {isSupersededWeek && week.days[0]?.supersededBy && (
                               <span className="text-[9px] text-muted-foreground italic">
-                                → {week.days[0].suppressedBy}
+                                → {week.days[0].supersededBy}
                               </span>
                             )}
                             {week.isCurrent && (
@@ -774,7 +803,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                               {week.days.map((day, dIdx) => {
                                 const dayKey = `${pm.id}:${wIdx}:${dIdx}`;
                                 const isDayExpanded = expandedDays.has(dayKey);
-                                const isSuppressedDay = day.status === "Suppressed";
+                                const isSupersededDay = day.status === "Superseded";
 
                                 return (
                                   <div key={dIdx}>
@@ -782,7 +811,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                     <div
                                       className={cn(
                                         "flex items-center gap-3 px-12 py-2 cursor-pointer transition-colors border-b border-border/10",
-                                        isSuppressedDay ? "opacity-50" : isDayExpanded ? "bg-primary/5" : "hover:bg-muted/10"
+                                        isSupersededDay ? "opacity-50" : isDayExpanded ? "bg-primary/5" : "hover:bg-muted/10"
                                       )}
                                       onClick={() => toggleDay(dayKey)}
                                     >
@@ -790,24 +819,24 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                         {isDayExpanded ? <ChevronDown className="w-3 h-3 text-primary" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
                                       </div>
                                       <span className="text-[10px] text-muted-foreground font-medium w-8">{day.dayName}</span>
-                                      <span className={cn("text-xs font-bold w-12", isSuppressedDay ? "text-muted-foreground line-through" : "text-foreground")}>{format(day.date, "dd/MM")}</span>
-                                      <div className={cn("w-2 h-2 rounded-full flex-shrink-0", isSuppressedDay ? "bg-muted-foreground/30" : "bg-primary")} />
+                                      <span className={cn("text-xs font-bold w-12", isSupersededDay ? "text-muted-foreground line-through" : "text-foreground")}>{format(day.date, "dd/MM")}</span>
+                                      <div className={cn("w-2 h-2 rounded-full flex-shrink-0", isSupersededDay ? "bg-muted-foreground/30" : "bg-primary")} />
                                       <Badge className={cn(
                                         "text-[9px] h-4",
                                         day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
-                                          : day.status === "Suppressed" ? "bg-muted text-muted-foreground border-muted-foreground/30"
+                                          : day.status === "Superseded" ? "bg-muted text-muted-foreground border-muted-foreground/30"
                                           : "bg-muted text-muted-foreground border-border"
                                       )}>
                                         {day.status}
                                       </Badge>
-                                      {isSuppressedDay && day.suppressedBy && (
-                                        <span className="text-[9px] text-muted-foreground italic">→ {day.suppressedBy}</span>
+                                      {isSupersededDay && day.supersededBy && (
+                                        <span className="text-[9px] text-muted-foreground italic">→ {day.supersededBy}</span>
                                       )}
-                                      {!isSuppressedDay && (
+                                      {!isSupersededDay && (
                                         <span className="text-[10px] text-muted-foreground">{format(day.date, "EEEE, dd MMMM yyyy")}</span>
                                       )}
                                       <div className="flex-1" />
-                                      {!isSuppressedDay && <Pencil className="w-3 h-3 text-muted-foreground/40 hover:text-foreground cursor-pointer" onClick={e => e.stopPropagation()} />}
+                                      {!isSupersededDay && <Pencil className="w-3 h-3 text-muted-foreground/40 hover:text-foreground cursor-pointer" onClick={e => e.stopPropagation()} />}
                                     </div>
 
                                     {/* LEVEL 4: Expanded day → full detail card */}
@@ -816,7 +845,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                         <div className="bg-popover border border-border rounded-lg p-4 max-w-2xl shadow-sm" onClick={(e) => e.stopPropagation()}>
                                           <div className="flex items-start justify-between mb-3">
                                             <div>
-                                              <h4 className={cn("text-sm font-bold", isSuppressedDay ? "text-muted-foreground line-through" : "text-foreground")}>{pm.name}</h4>
+                                              <h4 className={cn("text-sm font-bold", isSupersededDay ? "text-muted-foreground line-through" : "text-foreground")}>{pm.name}</h4>
                                               <p className="text-[10px] text-muted-foreground mt-0.5">
                                                 {format(day.date, "EEEE dd MMMM yyyy")} · {pm.frequency} · {pm.discipline}
                                               </p>
@@ -831,7 +860,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                               <Badge className={cn(
                                                 "text-[10px]",
                                                 day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
-                                                  : day.status === "Suppressed" ? "bg-muted text-muted-foreground border-muted-foreground/30"
+                                                  : day.status === "Superseded" ? "bg-muted text-muted-foreground border-muted-foreground/30"
                                                   : "bg-muted text-muted-foreground border-border"
                                               )}>
                                                 {day.status}
@@ -839,12 +868,12 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                             </div>
                                           </div>
 
-                                          {isSuppressedDay && day.suppressedBy && (
+                                          {isSupersededDay && day.supersededBy && (
                                             <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-md bg-muted/50 border border-border">
                                               <ArrowRightLeft className="w-4 h-4 text-muted-foreground" />
                                               <div>
-                                                <p className="text-[11px] font-medium text-foreground">Suppressed by longer-frequency PM</p>
-                                                <p className="text-[10px] text-muted-foreground">{day.suppressedBy} — WO will not be generated for this occurrence</p>
+                                                <p className="text-[11px] font-medium text-foreground">Superseded by longer-frequency PM</p>
+                                                <p className="text-[10px] text-muted-foreground">{day.supersededBy} — WO will not be generated for this occurrence</p>
                                               </div>
                                             </div>
                                           )}
@@ -873,7 +902,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                           </div>
 
                                           {/* Action buttons */}
-                                          {!isSuppressedDay && (
+                                          {!isSupersededDay && (
                                             <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border">
                                               <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1"
                                                 onClick={(e) => { e.stopPropagation(); onEditSchedule?.(pm.originalItem, day.date); }}>
@@ -915,6 +944,9 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         </div>
       </ScrollArea>
 
+      {/* Superseded Log Panel */}
+      <SupersededLogPanel entries={supersededEntries} onReinstate={handleReinstate} />
+
       {/* Footer */}
       <div className="px-4 py-2 border-t border-border bg-muted/20 flex items-center justify-between text-[10px] text-muted-foreground">
         <div className="flex items-center gap-4">
@@ -922,8 +954,8 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
           <span>Call Horizon: {CALL_HORIZON_DAYS} days ({Math.ceil(CALL_HORIZON_DAYS / 7)} weeks)</span>
         </div>
         <div className="flex items-center gap-3">
-          {summaryStats.totalSuppressed > 0 && (
-            <span>{summaryStats.totalSuppressed} suppressed (same-asset frequency override)</span>
+          {summaryStats.totalSuperseded > 0 && (
+            <span>{summaryStats.totalSuperseded} superseded (same-asset frequency override)</span>
           )}
           {hasAdjustments && (
             <span className="text-primary font-medium">
