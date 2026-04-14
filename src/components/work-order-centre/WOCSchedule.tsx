@@ -63,6 +63,7 @@ function getWeekLabel(weekStart: Date) {
 
 export function WOCSchedule() {
   const { workOrders, update } = useWorkOrders();
+  const { generate: pmAutoGenerate } = usePMAutoGenerate();
   const { getCapacityForDate } = useCapacityGrid();
   const [discipline, setDiscipline] = useState("Mechanical");
   const [weekOffset, setWeekOffset] = useState(0);
