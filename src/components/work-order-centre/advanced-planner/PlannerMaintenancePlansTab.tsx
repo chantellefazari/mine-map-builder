@@ -217,7 +217,7 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
       <ScrollArea className="flex-1">
         <div className="divide-y divide-border/30">
           {groups.map(([groupKey, plans]) => (
-            <GroupSection key={groupKey} groupKey={groupKey} plans={plans} expandedPlans={expandedPlans} togglePlan={togglePlan} groupBy={groupBy} onEdit={setEditingPlan} onDelete={handleDelete} onDuplicate={handleDuplicate} />
+            <GroupSection key={groupKey} groupKey={groupKey} plans={plans} expandedPlans={expandedPlans} togglePlan={togglePlan} groupBy={groupBy} onEdit={setEditingPlan} onDelete={handleDelete} onDuplicate={handleDuplicate} onView={handleViewTemplate} />
           ))}
           {groups.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 space-y-2">
@@ -235,6 +235,7 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
       {editingPlan && (
         <EditPlanDialog open={!!editingPlan} onOpenChange={(v) => { if (!v) setEditingPlan(null); }} plannerItem={editingPlan} rawPM={getRawPM(editingPlan)} onSave={upsertPM} />
       )}
+      <PMTemplateViewDialog open={!!viewingPM} onOpenChange={(v) => { if (!v) setViewingPM(null); }} pmData={viewingPM} />
     </div>
   );
 }
