@@ -19,10 +19,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import type { WOMaterialSummary } from "@/hooks/useMaterialReadiness";
+import type { WorkOrder } from "@/hooks/useWorkOrders";
 
 
 interface Props {
   items: PlannerItem[];
+  workOrders?: WorkOrder[];
   getReadiness?: (workOrderId: string) => WOMaterialSummary;
   onEditSchedule?: (item: PlannerItem, date: Date) => void;
   onViewWorkOrder?: (item: PlannerItem) => void;
