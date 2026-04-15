@@ -147,6 +147,12 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
     }
   };
 
+  const handleViewTemplate = useCallback((plan: PlannerItem) => {
+    const raw = getRawPM(plan);
+    if (raw) setViewingPM(raw);
+    else toast.error("PM data not found");
+  }, [getRawPM]);
+
   const totalHrs = filtered.reduce((s, i) => s + i.estimatedHours, 0);
 
   return (
