@@ -465,6 +465,9 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
           </button>
         </div>
 
+        {/* Superseded Log Panel — prominent position */}
+        <SupersededLogPanel entries={supersededEntries} onReinstate={handleReinstate} />
+
         <div className="flex items-center gap-2 mb-3">
           {DISCIPLINE_FILTERS.map(df => (
             <button
@@ -886,8 +889,7 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         </div>
       </ScrollArea>
 
-      {/* Superseded Log Panel */}
-      <SupersededLogPanel entries={supersededEntries} onReinstate={handleReinstate} />
+      {/* Superseded Log moved to toolbar area above */}
 
       {/* Footer */}
       <div className="px-4 py-2 border-t border-border bg-muted/20 flex items-center justify-between text-[10px] text-muted-foreground">
