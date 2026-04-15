@@ -68,6 +68,7 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
   const [showCreate, setShowCreate] = useState(false);
   const [editingPlan, setEditingPlan] = useState<PlannerItem | null>(null);
   const [activeCategory, setActiveCategory] = useState<PlanCategory | "All">("All");
+  const [viewingPM, setViewingPM] = useState<PMData | null>(null);
 
   const allPMs = useMemo(() => items, [items]);
 
