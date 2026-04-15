@@ -68,25 +68,35 @@ export function SupersededLogPanel({ entries, onReinstate }: Props) {
 
   return (
     <Collapsible open={isOpen && !isEmpty} onOpenChange={isEmpty ? undefined : setIsOpen}>
-      <div className="border border-border rounded-md bg-muted/10">
+      <div className="border-b border-border bg-muted/5">
         <CollapsibleTrigger asChild>
-          <button className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-muted/30 transition-colors">
+          <button
+            className={cn(
+              "w-full flex items-center justify-between px-4 py-1.5 transition-colors",
+              isEmpty ? "cursor-default" : "hover:bg-muted/20"
+            )}
+          >
             <div className="flex items-center gap-2">
-              <ArrowRightLeft className="w-4 h-4 text-muted-foreground" />
-              <span className="text-xs font-bold text-foreground">Superseded Log</span>
-              <Badge variant="outline" className={cn(
-                "text-[10px] px-1.5 py-0 border-muted-foreground/30",
-                isEmpty ? "text-muted-foreground" : "text-primary border-primary/30"
+              <ArrowRightLeft className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Superseded</span>
+              <span className={cn(
+                "text-[10px] font-bold",
+                isEmpty ? "text-muted-foreground" : "text-primary"
               )}>
-                {isEmpty ? "None" : `${entries.length} occurrence${entries.length !== 1 ? "s" : ""}`}
-              </Badge>
-              <span className="text-[10px] text-muted-foreground ml-2">
+                {isEmpty ? "0" : entries.length}
+              </span>
+              <span className="text-[10px] text-muted-foreground/70 ml-1">
                 {isEmpty
-                  ? "No plans currently superseded — all frequencies are running independently"
-                  : "Audit trail of plans superseded by longer-frequency tasks on the same asset"}
+                  ? "— All frequencies running independently"
+                  : `— ${entries.length} plan${entries.length !== 1 ? "s" : ""} overridden by longer-frequency tasks`}
               </span>
             </div>
-            {!isEmpty && (isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />)}
+            {!isEmpty && (
+              <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                <span>{isOpen ? "Hide" : "View"} details</span>
+                {isOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              </div>
+            )}
           </button>
         </CollapsibleTrigger>
 
