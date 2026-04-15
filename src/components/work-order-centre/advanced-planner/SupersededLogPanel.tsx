@@ -64,7 +64,7 @@ export function SupersededLogPanel({ entries, onReinstate }: Props) {
     return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
   }, [filtered]);
 
-  if (entries.length === 0) return null;
+  const isEmpty = entries.length === 0;
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
