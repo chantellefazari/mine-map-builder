@@ -31,6 +31,8 @@ interface Props {
   onEditSchedule?: (item: PlannerItem, date: Date) => void;
   onViewWorkOrder?: (item: PlannerItem) => void;
   onSupersededCount?: (count: number) => void;
+  /** Expose the adjust function so the schedule dialog can push PM anchors */
+  onRegisterAdjust?: (adjustFn: (pmId: string, days: number) => void) => void;
 }
 
 function freqToDays(freq: string): number {
@@ -111,7 +113,7 @@ type SortKey = typeof SORT_OPTIONS[number]["key"];
 
 const CALL_HORIZON_DAYS = 91; // 13 weeks / ~3 months
 
-export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, onEditSchedule, onViewWorkOrder, onSupersededCount }: Props) {
+export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, onEditSchedule, onViewWorkOrder, onSupersededCount, onRegisterAdjust }: Props) {
   
   const queryClient = useQueryClient();
   const now = useMemo(() => new Date(), []);
@@ -435,6 +437,11 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
   const handleAdjust = useCallback((pmId: string, daysDelta: number) => {
     setAdjustments(prev => ({ ...prev, [pmId]: (prev[pmId] || 0) + daysDelta }));
   }, []);
+
+  // Register the adjust function so the dialog can use it
+  useEffect(() => {
+    onRegisterAdjust?.(handleAdjust);
+  }, [handleAdjust, onRegisterAdjust]);
 
   const hasAdjustments = Object.values(adjustments).some(v => v !== 0);
   const resetAll = () => { setAdjustments({}); toast.success("All adjustments reset"); };

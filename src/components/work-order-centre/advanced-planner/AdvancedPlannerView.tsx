@@ -184,6 +184,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
   const [fpScheduleItem, setFpScheduleItem] = useState<PlannerItem | null>(null);
   const [fpScheduleDate, setFpScheduleDate] = useState<Date | undefined>();
   const [fpDetailItem, setFpDetailItem] = useState<PlannerItem | null>(null);
+  const [fpAdjustPM, setFpAdjustPM] = useState<((pmId: string, days: number) => void) | null>(null);
   // Build unified items
   const allItems: PlannerItem[] = useMemo(() => {
     const items: PlannerItem[] = [];
@@ -450,6 +451,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
             onViewWorkOrder={(item) => {
               setFpDetailItem(item);
             }}
+            onRegisterAdjust={(fn) => setFpAdjustPM(() => fn)}
           />
         )}
         {activeTab === "rounds" && (
@@ -493,6 +495,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
           setFpScheduleOpen(open);
           if (!open) { setFpScheduleItem(null); setFpScheduleDate(undefined); }
         }}
+        onAdjustPM={fpAdjustPM || undefined}
       />
 
       {/* Forward Plan Detail Side Panel */}
