@@ -876,7 +876,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
                 <AssetSearchSelect value={form.assetNumber} onChange={v => update("assetNumber", v)} />
               </div>
             </div>
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-4 gap-3">
               <div>
                 <Label className="text-xs">Category</Label>
                 <Select value={form.planCategory} onValueChange={v => update("planCategory", v)}>
@@ -903,13 +903,6 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
                 <Select value={form.dutyType} onValueChange={v => update("dutyType", v)}>
                   <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>{DUTY_TYPES.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-xs">Status</Label>
-                <Select value={form.status} onValueChange={v => update("status", v)}>
-                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>{LIFECYCLE_STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
             </div>
