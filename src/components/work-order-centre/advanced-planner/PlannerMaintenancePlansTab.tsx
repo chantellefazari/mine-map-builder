@@ -204,7 +204,7 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
 
 
       {/* Column headers */}
-      <div className="grid grid-cols-[1fr_80px_100px_90px_80px_70px_80px] gap-0 px-4 py-1.5 border-b border-border bg-muted/20 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
+      <div className="grid grid-cols-[1fr_80px_100px_90px_80px_70px_100px] gap-0 px-4 py-1.5 border-b border-border bg-muted/20 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
         <span>Plan Name / Asset</span>
         <span className="text-center">Type</span>
         <span className="text-center">Discipline</span>
