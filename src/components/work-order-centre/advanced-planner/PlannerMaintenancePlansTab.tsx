@@ -4,7 +4,7 @@ import {
   ListChecks, Package, ShieldAlert, AlertTriangle, Settings2,
   Pencil, Trash2, X, Save, Copy, Activity, Power, RefreshCw, Zap,
   Eye, CheckCircle2, FileCheck, ClipboardCheck, Users, Gauge, FileText,
-  Lock, Flame, Mountain, Droplets,
+  Lock, Flame, Mountain, Droplets, Printer,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,8 @@ import { usePMasterList } from "@/hooks/usePMData";
 import { toast } from "sonner";
 import { type PlannerItem, flattenPMTasks } from "./AdvancedPlannerView";
 import { AssetSearchSelect, AssetMultiSelect } from "./AssetSearchSelect";
+import { PMTemplateViewDialog } from "./PMTemplateViewDialog";
+import type { PMData } from "@/components/pm-design/PMFrequencySection";
 
 interface Props {
   items: PlannerItem[];
@@ -66,6 +68,7 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
   const [showCreate, setShowCreate] = useState(false);
   const [editingPlan, setEditingPlan] = useState<PlannerItem | null>(null);
   const [activeCategory, setActiveCategory] = useState<PlanCategory | "All">("All");
+  const [viewingPM, setViewingPM] = useState<PMData | null>(null);
 
   const allPMs = useMemo(() => items, [items]);
 
@@ -144,6 +147,12 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
     }
   };
 
+  const handleViewTemplate = useCallback((plan: PlannerItem) => {
+    const raw = getRawPM(plan);
+    if (raw) setViewingPM(raw);
+    else toast.error("PM data not found");
+  }, [getRawPM]);
+
   const totalHrs = filtered.reduce((s, i) => s + i.estimatedHours, 0);
 
   return (
@@ -195,7 +204,7 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
 
 
       {/* Column headers */}
-      <div className="grid grid-cols-[1fr_80px_100px_90px_80px_70px_80px] gap-0 px-4 py-1.5 border-b border-border bg-muted/20 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
+      <div className="grid grid-cols-[1fr_80px_100px_90px_80px_70px_100px] gap-0 px-4 py-1.5 border-b border-border bg-muted/20 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
         <span>Plan Name / Asset</span>
         <span className="text-center">Type</span>
         <span className="text-center">Discipline</span>
@@ -208,7 +217,7 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
       <ScrollArea className="flex-1">
         <div className="divide-y divide-border/30">
           {groups.map(([groupKey, plans]) => (
-            <GroupSection key={groupKey} groupKey={groupKey} plans={plans} expandedPlans={expandedPlans} togglePlan={togglePlan} groupBy={groupBy} onEdit={setEditingPlan} onDelete={handleDelete} onDuplicate={handleDuplicate} />
+            <GroupSection key={groupKey} groupKey={groupKey} plans={plans} expandedPlans={expandedPlans} togglePlan={togglePlan} groupBy={groupBy} onEdit={setEditingPlan} onDelete={handleDelete} onDuplicate={handleDuplicate} onView={handleViewTemplate} />
           ))}
           {groups.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 space-y-2">
@@ -226,14 +235,15 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
       {editingPlan && (
         <EditPlanDialog open={!!editingPlan} onOpenChange={(v) => { if (!v) setEditingPlan(null); }} plannerItem={editingPlan} rawPM={getRawPM(editingPlan)} onSave={upsertPM} />
       )}
+      <PMTemplateViewDialog open={!!viewingPM} onOpenChange={(v) => { if (!v) setViewingPM(null); }} pmData={viewingPM} />
     </div>
   );
 }
 
 /* ─── Group Section ─── */
-function GroupSection({ groupKey, plans, expandedPlans, togglePlan, groupBy, onEdit, onDelete, onDuplicate }: {
+function GroupSection({ groupKey, plans, expandedPlans, togglePlan, groupBy, onEdit, onDelete, onDuplicate, onView }: {
   groupKey: string; plans: PlannerItem[]; expandedPlans: Set<string>; togglePlan: (id: string) => void; groupBy: string;
-  onEdit: (p: PlannerItem) => void; onDelete: (p: PlannerItem) => void; onDuplicate: (p: PlannerItem) => void;
+  onEdit: (p: PlannerItem) => void; onDelete: (p: PlannerItem) => void; onDuplicate: (p: PlannerItem) => void; onView: (p: PlannerItem) => void;
 }) {
   const [open, setOpen] = useState(true);
   const totalHrs = plans.reduce((s, p) => s + p.estimatedHours, 0);
@@ -249,16 +259,16 @@ function GroupSection({ groupKey, plans, expandedPlans, togglePlan, groupBy, onE
         <span className="text-[10px] text-muted-foreground ml-auto">{totalHrs.toFixed(0)} hrs total</span>
       </div>
       {open && plans.map(plan => (
-        <PlanRow key={plan.id} plan={plan} expanded={expandedPlans.has(plan.id)} onToggle={() => togglePlan(plan.id)} onEdit={onEdit} onDelete={onDelete} onDuplicate={onDuplicate} />
+        <PlanRow key={plan.id} plan={plan} expanded={expandedPlans.has(plan.id)} onToggle={() => togglePlan(plan.id)} onEdit={onEdit} onDelete={onDelete} onDuplicate={onDuplicate} onView={onView} />
       ))}
     </div>
   );
 }
 
 /* ─── Plan Row ─── */
-function PlanRow({ plan, expanded, onToggle, onEdit, onDelete, onDuplicate }: {
+function PlanRow({ plan, expanded, onToggle, onEdit, onDelete, onDuplicate, onView }: {
   plan: PlannerItem; expanded: boolean; onToggle: () => void;
-  onEdit: (p: PlannerItem) => void; onDelete: (p: PlannerItem) => void; onDuplicate: (p: PlannerItem) => void;
+  onEdit: (p: PlannerItem) => void; onDelete: (p: PlannerItem) => void; onDuplicate: (p: PlannerItem) => void; onView: (p: PlannerItem) => void;
 }) {
   const hasTasks = plan.tasks.length > 0;
   const hasMaterials = plan.materialList.length > 0 && plan.materialList.some(Boolean);
@@ -270,7 +280,7 @@ function PlanRow({ plan, expanded, onToggle, onEdit, onDelete, onDuplicate }: {
 
   return (
     <div className={cn("border-b border-border/20", expanded && "bg-primary/5")}>
-      <div className={cn("grid grid-cols-[1fr_80px_100px_90px_80px_70px_80px] gap-0 items-center px-4 py-2 transition-colors", hasDetail ? "cursor-pointer hover:bg-muted/20" : "")}>
+      <div className={cn("grid grid-cols-[1fr_80px_100px_90px_80px_70px_100px] gap-0 items-center px-4 py-2 transition-colors", hasDetail ? "cursor-pointer hover:bg-muted/20" : "")}>
         <div className="flex items-center gap-2 min-w-0" onClick={hasDetail ? onToggle : undefined}>
           {hasDetail ? (expanded ? <ChevronDown className="w-3 h-3 text-muted-foreground flex-shrink-0" /> : <ChevronRight className="w-3 h-3 text-muted-foreground flex-shrink-0" />) : <span className="w-3 flex-shrink-0" />}
           <div className="min-w-0">
@@ -288,6 +298,7 @@ function PlanRow({ plan, expanded, onToggle, onEdit, onDelete, onDuplicate }: {
         <div className="text-center"><Badge variant="outline" className="text-[9px] px-1.5 py-0">{plan.dutyType || "—"}</Badge></div>
         <div className="text-center text-[11px] font-medium text-foreground tabular-nums">{plan.estimatedHours > 0 ? `${plan.estimatedHours}h` : "—"}</div>
         <div className="flex items-center justify-center gap-0.5">
+          <button onClick={(e) => { e.stopPropagation(); onView(plan); }} className="p-1 rounded hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors" title="View Template"><FileText className="w-3.5 h-3.5" /></button>
           <button onClick={(e) => { e.stopPropagation(); onEdit(plan); }} className="p-1 rounded hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors" title="Edit Plan"><Pencil className="w-3.5 h-3.5" /></button>
           <button onClick={(e) => { e.stopPropagation(); onDuplicate(plan); }} className="p-1 rounded hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors" title="Duplicate"><Copy className="w-3.5 h-3.5" /></button>
           <button onClick={(e) => { e.stopPropagation(); onDelete(plan); }} className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors" title="Delete"><Trash2 className="w-3.5 h-3.5" /></button>
