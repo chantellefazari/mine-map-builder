@@ -431,24 +431,24 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
           </div>
         </div>
 
-        {/* Summary cards */}
+        {/* Summary row */}
         <div className="flex items-center gap-3 mb-3">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted/50 border border-border">
             <CalendarDays className="w-3.5 h-3.5 text-primary" />
             <span className="text-[10px] text-muted-foreground">Projected WOs:</span>
             <span className="text-xs font-bold text-foreground">{summaryStats.totalOccurrences}</span>
           </div>
-          {summaryStats.totalSuperseded > 0 && (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted/50 border border-border">
-              <Ban className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-[10px] text-muted-foreground">Superseded:</span>
-              <span className="text-xs font-bold text-muted-foreground line-through">{summaryStats.totalSuperseded}</span>
-            </div>
-          )}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary/5 border border-primary/20">
             <FileCheck className="w-3.5 h-3.5 text-primary" />
             <span className="text-[10px] text-muted-foreground">Net WOs to Generate:</span>
             <span className="text-xs font-bold text-primary">{summaryStats.netWOs}</span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-muted/50">
+            <ArrowRightLeft className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="text-[10px] text-muted-foreground">Superseded:</span>
+            <span className={cn("text-xs font-bold", supersededEntries.length > 0 ? "text-primary" : "text-muted-foreground")}>
+              {supersededEntries.length > 0 ? supersededEntries.length : "None"}
+            </span>
           </div>
           <div className="flex-1" />
           <button
@@ -464,9 +464,6 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
             {showSuperseded ? "Showing" : "Hiding"} Superseded
           </button>
         </div>
-
-        {/* Superseded Log Panel — prominent position */}
-        <SupersededLogPanel entries={supersededEntries} onReinstate={handleReinstate} />
 
         <div className="flex items-center gap-2 mb-3">
           {DISCIPLINE_FILTERS.map(df => (
