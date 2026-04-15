@@ -438,6 +438,11 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
     setAdjustments(prev => ({ ...prev, [pmId]: (prev[pmId] || 0) + daysDelta }));
   }, []);
 
+  // Register the adjust function so the dialog can use it
+  useEffect(() => {
+    onRegisterAdjust?.(handleAdjust);
+  }, [handleAdjust, onRegisterAdjust]);
+
   const hasAdjustments = Object.values(adjustments).some(v => v !== 0);
   const resetAll = () => { setAdjustments({}); toast.success("All adjustments reset"); };
   const saveAdjustments = () => {
