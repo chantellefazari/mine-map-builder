@@ -90,8 +90,7 @@ export function WOCSchedule() {
     autoGenRef.current = weekKey;
     // Silently generate PM WOs for the current visible week
     pmAutoGenerate.mutate(
-      { rangeStart: weekStart, rangeEnd: addDays(weekStart, 6) },
-      { onSuccess: () => {}, onError: () => {} } // silent — no toasts for auto-gen
+      { rangeStart: weekStart, rangeEnd: addDays(weekStart, 6), silent: true },
     );
   }, [weekStart, scheduleMode]);
 
