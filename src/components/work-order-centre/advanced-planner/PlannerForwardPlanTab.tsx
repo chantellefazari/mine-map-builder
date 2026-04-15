@@ -57,8 +57,9 @@ interface DayOccurrence {
   date: Date;
   dayLabel: string;
   dayName: string;
-  status: "Scheduled" | "Projected" | "Superseded";
-  supersededBy?: string; // name of the longer-frequency PM that supersedes this
+  status: "Scheduled" | "Projected" | "Superseded" | "Completed" | "Overdue";
+  supersededBy?: string;
+  linkedWO?: WorkOrder;
 }
 
 interface WeekCell {
@@ -108,7 +109,7 @@ type SortKey = typeof SORT_OPTIONS[number]["key"];
 
 const CALL_HORIZON_DAYS = 91; // 13 weeks / ~3 months
 
-export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder, onSupersededCount }: Props) {
+export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, onEditSchedule, onViewWorkOrder, onSupersededCount }: Props) {
   
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
