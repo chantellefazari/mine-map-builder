@@ -21,6 +21,8 @@ import { usePMasterList } from "@/hooks/usePMData";
 import { toast } from "sonner";
 import { type PlannerItem, flattenPMTasks } from "./AdvancedPlannerView";
 import { AssetSearchSelect, AssetMultiSelect } from "./AssetSearchSelect";
+import { PMTemplateViewDialog } from "./PMTemplateViewDialog";
+import type { PMData } from "@/components/pm-design/PMFrequencySection";
 
 interface Props {
   items: PlannerItem[];
