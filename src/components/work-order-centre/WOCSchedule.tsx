@@ -81,18 +81,19 @@ export function WOCSchedule() {
   const weekEnd = endOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
   const days = getWeekDays(weekStart);
 
-  // Auto-generate PM WOs for the visible week (runs once per week change)
-  const autoGenRef = useRef<string>("");
+  // Auto-generate PM WOs for the next 90 days (runs once on mount)
+  const autoGenRef = useRef<boolean>(false);
   useEffect(() => {
-    const weekKey = format(weekStart, "yyyy-MM-dd");
-    if (autoGenRef.current === weekKey) return;
+    if (autoGenRef.current) return;
     if (scheduleMode !== "weekly") return;
-    autoGenRef.current = weekKey;
-    // Silently generate PM WOs for the current visible week
+    autoGenRef.current = true;
+    // Silently generate all PM WOs for the 90-day call horizon
+    const rangeStart = startOfWeek(today, { weekStartsOn: 3 });
+    const rangeEnd = addDays(rangeStart, 89);
     pmAutoGenerate.mutate(
-      { rangeStart: weekStart, rangeEnd: addDays(weekStart, 6), silent: true },
+      { rangeStart, rangeEnd, silent: true },
     );
-  }, [weekStart, scheduleMode]);
+  }, [scheduleMode]);
 
   const disciplineWOs = useMemo(() => {
     return workOrders.filter((wo) => {
