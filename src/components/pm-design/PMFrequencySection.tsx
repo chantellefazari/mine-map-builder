@@ -40,6 +40,23 @@ export interface PMData {
   assetNumber: string;
   resources: string;
   planCategory?: "Preventive" | "Shutdown" | "Condition-Based" | "Lifecycle";
+  // Extended fields
+  workCentre?: string;
+  crewSize?: number;
+  tradeHours?: Record<string, number>;
+  materials?: Array<{ partNumber: string; description: string; qty: number; stockCode: string }>;
+  permitRequirements?: {
+    loto_required: boolean;
+    confined_space: boolean;
+    hot_work: boolean;
+    working_at_heights: boolean;
+    isolation_required: boolean;
+    permit_type: string;
+    environmental_hazards: string;
+    stored_energy_hazards: string;
+  };
+  measurements?: Array<{ parameter: string; unit: string; min: string; max: string }>;
+  documents?: Array<{ title: string; type: string; reference: string }>;
 }
 
 interface PMFrequencySectionProps {

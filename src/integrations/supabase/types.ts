@@ -812,7 +812,9 @@ export type Database = {
           acceptable_criteria: string[]
           asset_number: string
           created_at: string
+          crew_size: number
           discipline: string
+          documents: Json
           duty_type: string
           equipment_type: string
           estimated_duration: string
@@ -821,7 +823,10 @@ export type Database = {
           inspection_points: Json
           isolation_requirements: string
           lubrication_notes: string
+          materials: Json
+          measurements: Json
           oem_references: string
+          permit_requirements: Json
           plan_category: string
           pm_name: string
           purpose: string
@@ -833,13 +838,17 @@ export type Database = {
           skill_level: string
           status: string
           tasks: Json
+          trade_hours: Json
           updated_at: string
+          work_centre: string
         }
         Insert: {
           acceptable_criteria?: string[]
           asset_number?: string
           created_at?: string
+          crew_size?: number
           discipline: string
+          documents?: Json
           duty_type?: string
           equipment_type: string
           estimated_duration?: string
@@ -848,7 +857,10 @@ export type Database = {
           inspection_points?: Json
           isolation_requirements?: string
           lubrication_notes?: string
+          materials?: Json
+          measurements?: Json
           oem_references?: string
+          permit_requirements?: Json
           plan_category?: string
           pm_name: string
           purpose?: string
@@ -860,13 +872,17 @@ export type Database = {
           skill_level?: string
           status?: string
           tasks?: Json
+          trade_hours?: Json
           updated_at?: string
+          work_centre?: string
         }
         Update: {
           acceptable_criteria?: string[]
           asset_number?: string
           created_at?: string
+          crew_size?: number
           discipline?: string
+          documents?: Json
           duty_type?: string
           equipment_type?: string
           estimated_duration?: string
@@ -875,7 +891,10 @@ export type Database = {
           inspection_points?: Json
           isolation_requirements?: string
           lubrication_notes?: string
+          materials?: Json
+          measurements?: Json
           oem_references?: string
+          permit_requirements?: Json
           plan_category?: string
           pm_name?: string
           purpose?: string
@@ -887,7 +906,9 @@ export type Database = {
           skill_level?: string
           status?: string
           tasks?: Json
+          trade_hours?: Json
           updated_at?: string
+          work_centre?: string
         }
         Relationships: []
       }
