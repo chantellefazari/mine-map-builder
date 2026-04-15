@@ -113,6 +113,7 @@ const CALL_HORIZON_DAYS = 91; // 13 weeks / ~3 months
 
 export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, onEditSchedule, onViewWorkOrder, onSupersededCount }: Props) {
   
+  const queryClient = useQueryClient();
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
 
@@ -125,6 +126,7 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
   const [expandedPMs, setExpandedPMs] = useState<Set<string>>(new Set());
   const [expandedWeeks, setExpandedWeeks] = useState<Set<string>>(new Set());
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const NUM_WEEKS = 13;
   const viewStart = useMemo(() => addWeeks(todayWeekStart, weekOffset - 2), [todayWeekStart, weekOffset]);
