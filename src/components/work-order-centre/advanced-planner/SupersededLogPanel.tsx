@@ -64,24 +64,29 @@ export function SupersededLogPanel({ entries, onReinstate }: Props) {
     return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
   }, [filtered]);
 
-  if (entries.length === 0) return null;
+  const isEmpty = entries.length === 0;
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <Collapsible open={isOpen && !isEmpty} onOpenChange={isEmpty ? undefined : setIsOpen}>
       <div className="border-t border-border bg-muted/10">
         <CollapsibleTrigger asChild>
           <button className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-muted/30 transition-colors">
             <div className="flex items-center gap-2">
               <ArrowRightLeft className="w-4 h-4 text-muted-foreground" />
               <span className="text-xs font-bold text-foreground">Superseded Log</span>
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-muted-foreground/30 text-muted-foreground">
-                {entries.length} occurrence{entries.length !== 1 ? "s" : ""}
+              <Badge variant="outline" className={cn(
+                "text-[10px] px-1.5 py-0 border-muted-foreground/30",
+                isEmpty ? "text-muted-foreground" : "text-primary border-primary/30"
+              )}>
+                {isEmpty ? "None" : `${entries.length} occurrence${entries.length !== 1 ? "s" : ""}`}
               </Badge>
               <span className="text-[10px] text-muted-foreground ml-2">
-                Audit trail of plans superseded by longer-frequency tasks on the same asset
+                {isEmpty
+                  ? "No plans currently superseded — all frequencies are running independently"
+                  : "Audit trail of plans superseded by longer-frequency tasks on the same asset"}
               </span>
             </div>
-            {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+            {!isEmpty && (isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />)}
           </button>
         </CollapsibleTrigger>
 
