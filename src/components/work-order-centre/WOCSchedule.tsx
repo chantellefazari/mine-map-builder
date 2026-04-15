@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { usePMAutoGenerate } from "@/hooks/usePMAutoGenerate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
