@@ -79,6 +79,8 @@ export interface PMGenerateOptions {
   rangeStart: Date;
   /** End of the generation window */
   rangeEnd: Date;
+  /** If true, suppress toast notifications (used for auto-generation) */
+  silent?: boolean;
 }
 
 export function usePMAutoGenerate() {
@@ -199,9 +201,10 @@ export function usePMAutoGenerate() {
 
       return { created, skipped: toCreate.length - created };
     },
-    onSuccess: (result) => {
+    onSuccess: (result, variables) => {
       if (result) {
         queryClient.invalidateQueries({ queryKey: ["work_orders"] });
+        if (variables.silent) return;
         if (result.created > 0) {
           toast.success(`${result.created} PM work order${result.created !== 1 ? "s" : ""} auto-generated and scheduled`);
         } else {
@@ -209,7 +212,8 @@ export function usePMAutoGenerate() {
         }
       }
     },
-    onError: (err: any) => {
+    onError: (err: any, variables) => {
+      if (variables?.silent) return;
       toast.error(`PM generation failed: ${err.message}`);
     },
   });
