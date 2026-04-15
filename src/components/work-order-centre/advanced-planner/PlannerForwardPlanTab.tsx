@@ -849,15 +849,22 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
                                               </p>
                                             </div>
                                             <div className="flex items-center gap-1.5">
+                                              {day.linkedWO && (
+                                                <Badge variant="outline" className="text-[9px] font-mono">
+                                                  {day.linkedWO.wo_number}
+                                                </Badge>
+                                              )}
                                               <Badge variant="outline" className={cn(
                                                 "text-[9px]",
                                                 pm.planType === "Inspection" ? "border-primary/40 text-primary" : "border-purple-500/40 text-purple-600"
                                               )}>
-                                                {pm.planType === "Inspection" ? "WO-12xxxx" : "WO-11xxxx"}
+                                                {day.linkedWO ? day.linkedWO.wo_number : pm.planType === "Inspection" ? "WO-12xxxx" : "WO-11xxxx"}
                                               </Badge>
                                               <Badge className={cn(
                                                 "text-[10px]",
-                                                day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
+                                                day.status === "Completed" ? "bg-emerald-500/15 text-emerald-700 border-emerald-500/30"
+                                                  : day.status === "Overdue" ? "bg-destructive/15 text-destructive border-destructive/30"
+                                                  : day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
                                                   : day.status === "Superseded" ? "bg-muted text-muted-foreground border-muted-foreground/30"
                                                   : "bg-muted text-muted-foreground border-border"
                                               )}>
