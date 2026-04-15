@@ -801,7 +801,7 @@ function EditPlanDialog({ open, onOpenChange, plannerItem, rawPM, onSave }: {
     estimatedDuration: rawPM?.estimatedDuration || String(plannerItem.estimatedHours) || "1",
     dutyType: rawPM?.dutyType || plannerItem.dutyType || "Online",
     skillLevel: rawPM?.skillLevel || "Competent",
-    status: rawPM?.status || plannerItem.status || "Draft",
+    status: rawPM?.status || plannerItem.status || "Active",
     isolationRequirements: rawPM?.isolationRequirements || "",
     lubricationNotes: rawPM?.lubricationNotes || "",
     oemReferences: rawPM?.oemReferences || "",
