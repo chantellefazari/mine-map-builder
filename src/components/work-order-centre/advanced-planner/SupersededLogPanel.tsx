@@ -68,7 +68,7 @@ export function SupersededLogPanel({ entries, onReinstate }: Props) {
 
   return (
     <Collapsible open={isOpen && !isEmpty} onOpenChange={isEmpty ? undefined : setIsOpen}>
-      <div className="border-t border-border bg-muted/10">
+      <div className="border border-border rounded-md bg-muted/10">
         <CollapsibleTrigger asChild>
           <button className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-muted/30 transition-colors">
             <div className="flex items-center gap-2">
