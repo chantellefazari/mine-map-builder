@@ -439,6 +439,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
         {activeTab === "forward-plan" && (
           <PlannerForwardPlanTab
             items={allItems}
+            workOrders={workOrders}
             getReadiness={getReadiness}
             onSupersededCount={setSupersededCount}
             onEditSchedule={(item, date) => {

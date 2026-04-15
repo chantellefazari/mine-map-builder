@@ -803,14 +803,22 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
                                       </div>
                                       <span className="text-[10px] text-muted-foreground font-medium w-8">{day.dayName}</span>
                                       <span className={cn("text-xs font-bold w-12", isSupersededDay ? "text-muted-foreground line-through" : "text-foreground")}>{format(day.date, "dd/MM")}</span>
-                                      <div className={cn("w-2 h-2 rounded-full flex-shrink-0", isSupersededDay ? "bg-muted-foreground/30" : "bg-primary")} />
+                                      <div className={cn("w-2 h-2 rounded-full flex-shrink-0", 
+                                        isSupersededDay ? "bg-muted-foreground/30" 
+                                        : day.status === "Completed" ? "bg-emerald-500"
+                                        : day.status === "Overdue" ? "bg-destructive"
+                                        : day.status === "Scheduled" ? "bg-primary/60"
+                                        : "bg-primary"
+                                      )} />
                                       <Badge className={cn(
                                         "text-[9px] h-4",
-                                        day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
+                                        day.status === "Completed" ? "bg-emerald-500/15 text-emerald-700 border-emerald-500/30"
+                                          : day.status === "Overdue" ? "bg-destructive/15 text-destructive border-destructive/30"
+                                          : day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
                                           : day.status === "Superseded" ? "bg-muted text-muted-foreground border-muted-foreground/30"
                                           : "bg-muted text-muted-foreground border-border"
                                       )}>
-                                        {day.status}
+                                        {day.status}{day.linkedWO ? ` · ${day.linkedWO.wo_number}` : ""}
                                       </Badge>
                                       {isSupersededDay && day.supersededBy && (
                                         <span className="text-[9px] text-muted-foreground italic">→ {day.supersededBy}</span>
