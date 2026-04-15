@@ -66,6 +66,14 @@ function pmDataToRow(pm: Partial<PMData>) {
   if ((pm as any).assetNumber !== undefined) row.asset_number = (pm as any).assetNumber;
   if ((pm as any).resources !== undefined) row.resources = (pm as any).resources;
   if ((pm as any).planCategory !== undefined) row.plan_category = (pm as any).planCategory;
+  // New fields
+  if ((pm as any).workCentre !== undefined) row.work_centre = (pm as any).workCentre;
+  if ((pm as any).crewSize !== undefined) row.crew_size = (pm as any).crewSize;
+  if ((pm as any).tradeHours !== undefined) row.trade_hours = (pm as any).tradeHours as unknown as Json;
+  if ((pm as any).materials !== undefined) row.materials = (pm as any).materials as unknown as Json;
+  if ((pm as any).permitRequirements !== undefined) row.permit_requirements = (pm as any).permitRequirements as unknown as Json;
+  if ((pm as any).measurements !== undefined) row.measurements = (pm as any).measurements as unknown as Json;
+  if ((pm as any).documents !== undefined) row.documents = (pm as any).documents as unknown as Json;
   return row;
 }
 
