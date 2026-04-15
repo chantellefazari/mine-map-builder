@@ -386,6 +386,11 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
               >
                 <tab.icon className="w-3.5 h-3.5" />
                 {tab.label}
+                {tab.key === "forward-plan" && supersededCount > 0 && (
+                  <span className="ml-1 inline-flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary/15 text-primary text-[9px] font-bold">
+                    {supersededCount}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -430,6 +435,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
           <PlannerForwardPlanTab
             items={allItems}
             getReadiness={getReadiness}
+            onSupersededCount={setSupersededCount}
             onEditSchedule={(item, date) => {
               setFpScheduleItem(item);
               setFpScheduleDate(date);
