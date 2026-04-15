@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format, addDays, parseISO } from "date-fns";
-import { Calendar, ChevronsRight, ArrowRightLeft } from "lucide-react";
+import { Calendar, ChevronsRight, ArrowRightLeft, AlertTriangle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useWorkOrders } from "@/hooks/useWorkOrders";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 
@@ -17,40 +18,88 @@ interface Props {
   initialDate?: Date;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** For PM items: adjust the anchor offset by N days (cascades all future occurrences) */
+  onAdjustPM?: (pmSourceId: string, daysDelta: number) => void;
 }
 
-export function ForwardPlanScheduleDialog({ item, initialDate, open, onOpenChange }: Props) {
+export function ForwardPlanScheduleDialog({ item, initialDate, open, onOpenChange, onAdjustPM }: Props) {
   const { update } = useWorkOrders();
   const [pushDays, setPushDays] = useState(7);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(initialDate);
+  const [isCascading, setIsCascading] = useState(false);
+
+  // Reset state when item changes
+  useEffect(() => {
+    setSelectedDate(initialDate);
+    setPushDays(7);
+  }, [initialDate, item?.sourceId]);
 
   if (!item) return null;
 
   const isWO = item.source === "wo";
+  const isPM = item.source === "pm";
 
   const handleSetDate = async (date: Date | undefined) => {
     setSelectedDate(date);
-    if (!isWO) {
-      toast.info("PM template schedules are managed from the Maintenance Plans module");
-      return;
+    if (isWO) {
+      try {
+        await update.mutateAsync({
+          id: item.sourceId,
+          updates: { scheduled_date: date ? format(date, "yyyy-MM-dd") : null } as any,
+        });
+        toast.success("Schedule updated");
+      } catch { /* handled */ }
     }
-    try {
-      await update.mutateAsync({
-        id: item.sourceId,
-        updates: { scheduled_date: date ? format(date, "yyyy-MM-dd") : null } as any,
-      });
-      toast.success("Schedule updated");
-    } catch { /* handled */ }
   };
 
+  /** Push the schedule by N days — works for both WOs and PMs */
   const handlePush = async () => {
     const base = selectedDate || (item.scheduledDate ? parseISO(item.scheduledDate) : new Date());
     const newDate = addDays(base, pushDays);
     setSelectedDate(newDate);
-    if (!isWO) {
-      toast.info("PM template schedules are managed from the Maintenance Plans module");
+
+    if (isPM) {
+      setIsCascading(true);
+      try {
+        // 1. Adjust the PM anchor offset (moves all projected occurrences)
+        onAdjustPM?.(item.sourceId, pushDays);
+
+        // 2. Cascade: push all existing future WOs linked to this PM
+        const today = format(new Date(), "yyyy-MM-dd");
+        const pmPattern = `PM: ${item.taskName} (${item.frequency})`;
+        
+        const { data: futureWOs, error: fetchErr } = await supabase
+          .from("work_orders")
+          .select("id, scheduled_date")
+          .eq("work_type", "PM")
+          .eq("problem_description", pmPattern)
+          .gte("scheduled_date", today)
+          .neq("status", "Completed");
+
+        if (!fetchErr && futureWOs && futureWOs.length > 0) {
+          let cascaded = 0;
+          for (const wo of futureWOs) {
+            const woDate = wo.scheduled_date ? parseISO(wo.scheduled_date) : new Date();
+            const pushed = addDays(woDate, pushDays);
+            const { error: upErr } = await supabase
+              .from("work_orders")
+              .update({ scheduled_date: format(pushed, "yyyy-MM-dd") })
+              .eq("id", wo.id);
+            if (!upErr) cascaded++;
+          }
+          toast.success(`PM pushed ${pushDays} days — ${cascaded} future work order${cascaded !== 1 ? "s" : ""} cascaded`);
+        } else {
+          toast.success(`PM schedule pushed ${pushDays} days — all future occurrences moved`);
+        }
+      } catch {
+        toast.error("Failed to cascade push");
+      } finally {
+        setIsCascading(false);
+      }
       return;
     }
+
+    // WO push
     try {
       await update.mutateAsync({
         id: item.sourceId,
@@ -87,6 +136,16 @@ export function ForwardPlanScheduleDialog({ item, initialDate, open, onOpenChang
         </DialogHeader>
 
         <div className="space-y-4 pt-2">
+          {/* PM cascade info */}
+          {isPM && (
+            <div className="flex items-start gap-2 p-2.5 rounded-md bg-primary/5 border border-primary/20">
+              <AlertTriangle className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
+              <p className="text-[10px] text-muted-foreground leading-relaxed">
+                Pushing a maintenance plan will move <strong>all future occurrences</strong> and cascade to any generated work orders.
+              </p>
+            </div>
+          )}
+
           {/* Date picker */}
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground w-24 shrink-0">Scheduled Date:</span>
@@ -120,39 +179,43 @@ export function ForwardPlanScheduleDialog({ item, initialDate, open, onOpenChang
             <span className="text-xs text-muted-foreground w-24 shrink-0">Push by:</span>
             <Input type="number" value={pushDays} onChange={e => setPushDays(Number(e.target.value))} className="w-16 h-8 text-xs text-center" />
             <span className="text-xs text-muted-foreground">days</span>
-            <Button variant="outline" size="sm" className="h-8 text-xs gap-1" onClick={handlePush}>
-              <ChevronsRight className="w-3.5 h-3.5" /> Push
+            <Button variant="outline" size="sm" className="h-8 text-xs gap-1" onClick={handlePush} disabled={isCascading}>
+              <ChevronsRight className="w-3.5 h-3.5" /> {isCascading ? "Pushing..." : "Push"}
             </Button>
             <Button variant="outline" size="sm" className="h-8 text-xs gap-1" onClick={() => setPushDays(-pushDays)}>
               <ArrowRightLeft className="w-3.5 h-3.5" /> Reverse
             </Button>
           </div>
 
-          {/* Status */}
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground w-24 shrink-0">Status:</span>
-            <Select value={item.status} onValueChange={handleStatusChange}>
-              <SelectTrigger className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {["Planning", "Planned", "Scheduled", "Active", "On Hold", "Completed"].map(s => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Status — WO only */}
+          {isWO && (
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-muted-foreground w-24 shrink-0">Status:</span>
+              <Select value={item.status} onValueChange={handleStatusChange}>
+                <SelectTrigger className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {["Planning", "Planned", "Scheduled", "Active", "On Hold", "Completed"].map(s => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
-          {/* Priority */}
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground w-24 shrink-0">Priority:</span>
-            <Select value={item.priority} onValueChange={handlePriorityChange}>
-              <SelectTrigger className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {["Critical", "High", "Medium", "Standard", "Low"].map(p => (
-                  <SelectItem key={p} value={p}>{p}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Priority — WO only */}
+          {isWO && (
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-muted-foreground w-24 shrink-0">Priority:</span>
+              <Select value={item.priority} onValueChange={handlePriorityChange}>
+                <SelectTrigger className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {["Critical", "High", "Medium", "Standard", "Low"].map(p => (
+                    <SelectItem key={p} value={p}>{p}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
