@@ -31,6 +31,8 @@ interface Props {
   onEditSchedule?: (item: PlannerItem, date: Date) => void;
   onViewWorkOrder?: (item: PlannerItem) => void;
   onSupersededCount?: (count: number) => void;
+  /** Expose the adjust function so the schedule dialog can push PM anchors */
+  onRegisterAdjust?: (adjustFn: (pmId: string, days: number) => void) => void;
 }
 
 function freqToDays(freq: string): number {
