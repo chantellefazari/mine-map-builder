@@ -519,12 +519,25 @@ function CreatePlanDialog({ open, onOpenChange, onCreatePM }: {
 }) {
   const [multiMode, setMultiMode] = useState(false);
   const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
-  const [form, setForm] = useState({
+  const defaultForm = () => ({
     pmName: "", equipmentType: "", frequency: "Monthly", discipline: "Mechanical",
     assetNumber: "", purpose: "", estimatedDuration: "1", dutyType: "Online", skillLevel: "Competent",
     planCategory: "Preventive" as string, workCentre: "MECH",
+    status: "Draft", isolationRequirements: "", lubricationNotes: "", oemReferences: "", resources: "",
+    tasks: [] as { step: number; description: string; section: string }[],
+    requiredTools: [] as string[], requiredPPE: [] as string[], safetyNotes: [] as string[],
+    acceptableCriteria: [] as string[], signsOfFailure: [] as string[], inspectionPoints: [] as any[],
+    crewSize: 1, tradeHours: {} as Record<string, number>,
+    materials: [] as { partNumber: string; description: string; qty: number; stockCode: string }[],
+    permitRequirements: { loto_required: false, confined_space: false, hot_work: false, working_at_heights: false, isolation_required: false, permit_type: "None", environmental_hazards: "", stored_energy_hazards: "" },
+    measurements: [] as { parameter: string; unit: string; min: string; max: string; target: string }[],
+    documents: [] as { title: string; type: string; reference: string; url: string }[],
   });
+  const [form, setForm] = useState(defaultForm);
   const [creating, setCreating] = useState(false);
+
+  const update = (key: string, value: any) => setForm(f => ({ ...f, [key]: value }));
+  const updatePermit = (key: string, value: any) => setForm(f => ({ ...f, permitRequirements: { ...f.permitRequirements, [key]: value } }));
 
   const handleSubmit = async () => {
     if (!form.pmName.trim()) { toast.error("Plan name is required"); return; }
@@ -534,18 +547,11 @@ function CreatePlanDialog({ open, onOpenChange, onCreatePM }: {
     setCreating(true);
     try {
       for (const asset of assets) {
-        await onCreatePM({
-          ...form, assetNumber: asset, id: crypto.randomUUID(),
-          status: "Draft", requiredTools: [], requiredPPE: [],
-          safetyNotes: [], tasks: [], inspectionPoints: [], acceptableCriteria: [], signsOfFailure: [],
-          materials: [], measurements: [], documents: [],
-          permitRequirements: { loto_required: false, confined_space: false, hot_work: false, working_at_heights: false, isolation_required: false, permit_type: "None", environmental_hazards: "", stored_energy_hazards: "" },
-          tradeHours: {}, crewSize: 1,
-        });
+        await onCreatePM({ ...form, assetNumber: asset, id: crypto.randomUUID() });
       }
       toast.success(assets.length > 1 ? `${assets.length} maintenance plans created` : "Maintenance plan created");
       onOpenChange(false);
-      setForm({ pmName: "", equipmentType: "", frequency: "Monthly", discipline: "Mechanical", assetNumber: "", purpose: "", estimatedDuration: "1", dutyType: "Online", skillLevel: "Competent", planCategory: "Preventive", workCentre: "MECH" });
+      setForm(defaultForm());
       setSelectedAssets([]);
     } catch { toast.error("Failed to create plan"); }
     finally { setCreating(false); }
@@ -553,95 +559,247 @@ function CreatePlanDialog({ open, onOpenChange, onCreatePM }: {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader><DialogTitle className="text-base">Create Maintenance Plan</DialogTitle></DialogHeader>
-        <div className="grid gap-3 py-2">
-          {/* Plan Name */}
-          <div>
-            <Label className="text-xs">Plan Name *</Label>
-            <Input value={form.pmName} onChange={e => setForm(f => ({ ...f, pmName: e.target.value }))} placeholder="e.g. Ball Mill Monthly Inspection" className="text-xs h-8" />
-          </div>
+      <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+        <DialogHeader><DialogTitle className="text-base flex items-center gap-2"><Plus className="w-4 h-4 text-primary" /> Create Maintenance Plan</DialogTitle></DialogHeader>
 
-          {/* Asset selection */}
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <Label className="text-xs">{multiMode ? "Assets (Multi-Select)" : "Asset"}</Label>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[9px] text-muted-foreground">Multi-asset</span>
-                <Switch checked={multiMode} onCheckedChange={setMultiMode} className="h-4 w-7" />
+        <Tabs defaultValue="details" className="flex-1 min-h-0 flex flex-col">
+          <TabsList className="w-full justify-start h-8 bg-muted/30 shrink-0 overflow-x-auto">
+            <TabsTrigger value="details" className="text-[10px] h-6 px-2.5">Details</TabsTrigger>
+            <TabsTrigger value="tasks" className="text-[10px] h-6 px-2.5">Tasks ({form.tasks.length})</TabsTrigger>
+            <TabsTrigger value="resources" className="text-[10px] h-6 px-2.5">Resources</TabsTrigger>
+            <TabsTrigger value="materials" className="text-[10px] h-6 px-2.5">Materials ({form.materials.length})</TabsTrigger>
+            <TabsTrigger value="tools" className="text-[10px] h-6 px-2.5">Tools & PPE ({form.requiredTools.length + form.requiredPPE.length})</TabsTrigger>
+            <TabsTrigger value="safety" className="text-[10px] h-6 px-2.5">Safety & Permits</TabsTrigger>
+            <TabsTrigger value="criteria" className="text-[10px] h-6 px-2.5">Criteria ({form.acceptableCriteria.length + form.signsOfFailure.length})</TabsTrigger>
+            <TabsTrigger value="measurements" className="text-[10px] h-6 px-2.5">Measurements ({form.measurements.length})</TabsTrigger>
+            <TabsTrigger value="documents" className="text-[10px] h-6 px-2.5">Documents ({form.documents.length})</TabsTrigger>
+          </TabsList>
+
+          {/* ── Details Tab ── */}
+          <TabsContent value="details" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4 space-y-3">
+            <div>
+              <Label className="text-xs">Plan Name *</Label>
+              <Input value={form.pmName} onChange={e => update("pmName", e.target.value)} placeholder="e.g. Ball Mill Monthly Inspection" className="text-xs h-8" />
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <Label className="text-xs">{multiMode ? "Assets (Multi-Select)" : "Asset"}</Label>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] text-muted-foreground">Multi-asset</span>
+                  <Switch checked={multiMode} onCheckedChange={setMultiMode} className="h-4 w-7" />
+                </div>
+              </div>
+              {multiMode ? (
+                <AssetMultiSelect selected={selectedAssets} onChange={setSelectedAssets} />
+              ) : (
+                <AssetSearchSelect value={form.assetNumber} onChange={v => update("assetNumber", v)} />
+              )}
+              {multiMode && selectedAssets.length > 0 && (
+                <p className="text-[9px] text-muted-foreground mt-1">Will create {selectedAssets.length} identical plans — one per asset</p>
+              )}
+            </div>
+            <div className="grid grid-cols-4 gap-3">
+              <div>
+                <Label className="text-xs">Category</Label>
+                <Select value={form.planCategory} onValueChange={v => update("planCategory", v)}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>{PLAN_CATEGORIES.map(c => <SelectItem key={c} value={c}>{CATEGORY_CONFIG[c].label}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-xs">Frequency</Label>
+                <Select value={form.frequency} onValueChange={v => update("frequency", v)}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>{FREQUENCIES.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-xs">Discipline</Label>
+                <Select value={form.discipline} onValueChange={v => update("discipline", v)}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>{DISCIPLINES.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-xs">Duty Type</Label>
+                <Select value={form.dutyType} onValueChange={v => update("dutyType", v)}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>{DUTY_TYPES.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
+                </Select>
               </div>
             </div>
-            {multiMode ? (
-              <AssetMultiSelect selected={selectedAssets} onChange={setSelectedAssets} />
-            ) : (
-              <AssetSearchSelect value={form.assetNumber} onChange={v => setForm(f => ({ ...f, assetNumber: v }))} />
-            )}
-            {multiMode && selectedAssets.length > 0 && (
-              <p className="text-[9px] text-muted-foreground mt-1">Will create {selectedAssets.length} identical plans — one per asset</p>
-            )}
-          </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <Label className="text-xs">Equipment Type</Label>
+                <Input value={form.equipmentType} onChange={e => update("equipmentType", e.target.value)} placeholder="e.g. Ball Mill" className="text-xs h-8" />
+              </div>
+              <div>
+                <Label className="text-xs">Est. Duration (hrs)</Label>
+                <Input type="number" value={form.estimatedDuration} onChange={e => update("estimatedDuration", e.target.value)} className="text-xs h-8" />
+              </div>
+              <div>
+                <Label className="text-xs">Skill Level</Label>
+                <Select value={form.skillLevel} onValueChange={v => update("skillLevel", v)}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>{SKILL_LEVELS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs">Purpose</Label>
+                <Textarea value={form.purpose} onChange={e => update("purpose", e.target.value)} placeholder="Describe the purpose..." className="text-xs min-h-[60px]" />
+              </div>
+              <div>
+                <Label className="text-xs">OEM References</Label>
+                <Input value={form.oemReferences} onChange={e => update("oemReferences", e.target.value)} className="text-xs h-8 mb-2" />
+                <Label className="text-xs">Lubrication Notes</Label>
+                <Textarea value={form.lubricationNotes} onChange={e => update("lubricationNotes", e.target.value)} className="text-xs min-h-[40px]" />
+              </div>
+            </div>
+          </TabsContent>
 
-          {/* Row: Category, Frequency, Discipline, Duty */}
-          <div className="grid grid-cols-4 gap-3">
-            <div>
-              <Label className="text-xs">Category</Label>
-              <Select value={form.planCategory} onValueChange={v => setForm(f => ({ ...f, planCategory: v }))}>
-                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>{PLAN_CATEGORIES.map(c => <SelectItem key={c} value={c}>{CATEGORY_CONFIG[c].label}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-xs">Frequency</Label>
-              <Select value={form.frequency} onValueChange={v => setForm(f => ({ ...f, frequency: v }))}>
-                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>{FREQUENCIES.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-xs">Discipline</Label>
-              <Select value={form.discipline} onValueChange={v => setForm(f => ({ ...f, discipline: v }))}>
-                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>{DISCIPLINES.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-xs">Duty Type</Label>
-              <Select value={form.dutyType} onValueChange={v => setForm(f => ({ ...f, dutyType: v }))}>
-                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>{DUTY_TYPES.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-          </div>
+          {/* ── Tasks Tab ── */}
+          <TabsContent value="tasks" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4">
+            <EditableTaskList tasks={form.tasks} onChange={t => update("tasks", t)} />
+          </TabsContent>
 
-          {/* Row: Equipment, Duration, Work Centre */}
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <Label className="text-xs">Equipment Type</Label>
-              <Input value={form.equipmentType} onChange={e => setForm(f => ({ ...f, equipmentType: e.target.value }))} placeholder="e.g. Ball Mill" className="text-xs h-8" />
+          {/* ── Resources Tab ── */}
+          <TabsContent value="resources" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label className="text-xs">Work Centre</Label>
+                <Select value={form.workCentre} onValueChange={v => update("workCentre", v)}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>{WORK_CENTRES.map(w => <SelectItem key={w} value={w}>{w}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-xs">Crew Size</Label>
+                <Input type="number" min={1} value={form.crewSize} onChange={e => update("crewSize", parseInt(e.target.value) || 1)} className="text-xs h-8" />
+              </div>
+              <div>
+                <Label className="text-xs">Resources / Notes</Label>
+                <Input value={form.resources} onChange={e => update("resources", e.target.value)} className="text-xs h-8" placeholder="e.g. Crane required" />
+              </div>
             </div>
             <div>
-              <Label className="text-xs">Est. Duration (hrs)</Label>
-              <Input type="number" value={form.estimatedDuration} onChange={e => setForm(f => ({ ...f, estimatedDuration: e.target.value }))} className="text-xs h-8" />
+              <Label className="text-xs mb-2 block">Trade Hours Breakdown</Label>
+              <div className="grid grid-cols-4 gap-3">
+                {["Mechanical", "Electrical", "Boilermaker", "Rigger"].map(trade => (
+                  <div key={trade}>
+                    <Label className="text-[9px] text-muted-foreground">{trade}</Label>
+                    <Input
+                      type="number" min={0} step={0.5}
+                      value={form.tradeHours[trade] || ""}
+                      onChange={e => {
+                        const val = parseFloat(e.target.value);
+                        const next = { ...form.tradeHours };
+                        if (isNaN(val) || val === 0) delete next[trade]; else next[trade] = val;
+                        update("tradeHours", next);
+                      }}
+                      className="text-xs h-7" placeholder="hrs"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-            <div>
-              <Label className="text-xs">Work Centre</Label>
-              <Select value={form.workCentre} onValueChange={v => setForm(f => ({ ...f, workCentre: v }))}>
-                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>{WORK_CENTRES.map(w => <SelectItem key={w} value={w}>{w}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-          </div>
+          </TabsContent>
 
-          {/* Purpose */}
-          <div>
-            <Label className="text-xs">Purpose</Label>
-            <Textarea value={form.purpose} onChange={e => setForm(f => ({ ...f, purpose: e.target.value }))} placeholder="Describe the purpose..." className="text-xs min-h-[60px]" />
-          </div>
-        </div>
-        <DialogFooter>
+          {/* ── Materials Tab ── */}
+          <TabsContent value="materials" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4">
+            <p className="text-[10px] text-muted-foreground mb-3">Spare parts and consumables required for this maintenance plan.</p>
+            <MaterialsEditor materials={form.materials} onChange={m => update("materials", m)} />
+          </TabsContent>
+
+          {/* ── Tools & PPE Tab ── */}
+          <TabsContent value="tools" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
+            <div>
+              <Label className="text-xs mb-1.5 block">Required Tools</Label>
+              <EditableList items={form.requiredTools} onChange={t => update("requiredTools", t)} placeholder="Add a tool..." />
+            </div>
+            <div>
+              <Label className="text-xs mb-1.5 block">Required PPE</Label>
+              <EditableList items={form.requiredPPE} onChange={p => update("requiredPPE", p)} placeholder="Add PPE item..." />
+            </div>
+          </TabsContent>
+
+          {/* ── Safety & Permits Tab ── */}
+          <TabsContent value="safety" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label className="text-xs">Permit Type</Label>
+                <Select value={form.permitRequirements.permit_type} onValueChange={v => updatePermit("permit_type", v)}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>{PERMIT_TYPES.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-xs">Isolation Requirements</Label>
+                <Textarea value={form.isolationRequirements} onChange={e => update("isolationRequirements", e.target.value)} className="text-xs min-h-[60px]" placeholder="Describe isolations needed..." />
+              </div>
+              <div>
+                <Label className="text-xs">Stored Energy Hazards</Label>
+                <Textarea value={form.permitRequirements.stored_energy_hazards} onChange={e => updatePermit("stored_energy_hazards", e.target.value)} className="text-xs min-h-[60px]" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3 bg-muted/20 rounded-lg p-4">
+              <span className="text-xs font-semibold text-foreground col-span-2 mb-1">Hazard Flags</span>
+              {[
+                { key: "loto_required", label: "LOTO Required", icon: Lock },
+                { key: "isolation_required", label: "Isolation Required", icon: ShieldAlert },
+                { key: "confined_space", label: "Confined Space", icon: AlertTriangle },
+                { key: "hot_work", label: "Hot Work", icon: Flame },
+                { key: "working_at_heights", label: "Working at Heights", icon: Mountain },
+              ].map(({ key, label, icon: HIcon }) => (
+                <div key={key} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <HIcon className="w-3.5 h-3.5 text-muted-foreground" />
+                    <span className="text-xs">{label}</span>
+                  </div>
+                  <Switch checked={form.permitRequirements[key as keyof typeof form.permitRequirements] as boolean} onCheckedChange={v => updatePermit(key, v)} className="h-4 w-7" />
+                </div>
+              ))}
+            </div>
+            <div>
+              <Label className="text-xs">Environmental Hazards</Label>
+              <Textarea value={form.permitRequirements.environmental_hazards} onChange={e => updatePermit("environmental_hazards", e.target.value)} className="text-xs min-h-[50px]" placeholder="e.g. Cyanide, acid, high pressure..." />
+            </div>
+            <div>
+              <Label className="text-xs mb-1.5 block">Safety Notes</Label>
+              <EditableList items={form.safetyNotes} onChange={n => update("safetyNotes", n)} placeholder="Add safety note..." />
+            </div>
+          </TabsContent>
+
+          {/* ── Criteria Tab ── */}
+          <TabsContent value="criteria" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
+            <div>
+              <Label className="text-xs mb-1.5 block">Acceptable Criteria</Label>
+              <EditableList items={form.acceptableCriteria} onChange={c => update("acceptableCriteria", c)} placeholder="Add acceptance criteria..." />
+            </div>
+            <div>
+              <Label className="text-xs mb-1.5 block">Signs of Failure</Label>
+              <EditableList items={form.signsOfFailure} onChange={s => update("signsOfFailure", s)} placeholder="Add failure indicator..." />
+            </div>
+          </TabsContent>
+
+          {/* ── Measurements Tab ── */}
+          <TabsContent value="measurements" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4">
+            <p className="text-[10px] text-muted-foreground mb-3">Condition data points to capture during execution.</p>
+            <MeasurementsEditor measurements={form.measurements} onChange={m => update("measurements", m)} />
+          </TabsContent>
+
+          {/* ── Documents Tab ── */}
+          <TabsContent value="documents" className="mt-0 flex-1 min-h-0 overflow-y-auto p-4">
+            <p className="text-[10px] text-muted-foreground mb-3">Linked OEM manuals, SOPs, SWMS, drawings, and procedures.</p>
+            <DocumentsEditor documents={form.documents} onChange={d => update("documents", d)} />
+          </TabsContent>
+        </Tabs>
+
+        <DialogFooter className="border-t border-border pt-3">
           <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button size="sm" onClick={handleSubmit} disabled={creating}>
-            {creating ? "Creating..." : multiMode && selectedAssets.length > 1 ? `Create ${selectedAssets.length} Plans` : "Create Plan"}
+          <Button size="sm" onClick={handleSubmit} disabled={creating} className="gap-1">
+            <Save className="w-3.5 h-3.5" /> {creating ? "Creating..." : multiMode && selectedAssets.length > 1 ? `Create ${selectedAssets.length} Plans` : "Create Plan"}
           </Button>
         </DialogFooter>
       </DialogContent>
