@@ -17,6 +17,8 @@ import {
 } from "date-fns";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import type { WOMaterialSummary } from "@/hooks/useMaterialReadiness";
 import type { WorkOrder } from "@/hooks/useWorkOrders";
@@ -111,6 +113,7 @@ const CALL_HORIZON_DAYS = 91; // 13 weeks / ~3 months
 
 export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, onEditSchedule, onViewWorkOrder, onSupersededCount }: Props) {
   
+  const queryClient = useQueryClient();
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
 
@@ -123,6 +126,7 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
   const [expandedPMs, setExpandedPMs] = useState<Set<string>>(new Set());
   const [expandedWeeks, setExpandedWeeks] = useState<Set<string>>(new Set());
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const NUM_WEEKS = 13;
   const viewStart = useMemo(() => addWeeks(todayWeekStart, weekOffset - 2), [todayWeekStart, weekOffset]);
@@ -439,6 +443,74 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
     toast.success(`${count} PM schedule adjustment${count !== 1 ? "s" : ""} saved`);
   };
 
+  // ── Generate 90-Day Work Orders ──
+  const handleGenerate90Day = useCallback(async () => {
+    setIsGenerating(true);
+    try {
+      // Collect all projected (non-superseded, non-existing) occurrences
+      const toGenerate: { pm: PMRow; day: DayOccurrence }[] = [];
+      for (const pm of allRows) {
+        for (const week of pm.weeks) {
+          for (const day of week.days) {
+            if (day.status === "Projected") {
+              toGenerate.push({ pm, day });
+            }
+          }
+        }
+      }
+
+      if (toGenerate.length === 0) {
+        toast.info("All work orders already generated — nothing to do");
+        setIsGenerating(false);
+        return;
+      }
+
+      let created = 0;
+      let failed = 0;
+
+      for (const { pm, day } of toGenerate) {
+        try {
+          // Allocate WO number via the database function
+          const workType = pm.planType === "Maintenance" ? "Planned" : "PM";
+          const { data: woNumber, error: numErr } = await (supabase as any).rpc("next_wo_number", { p_work_type: workType });
+          if (numErr) { failed++; continue; }
+
+          const dateStr = format(day.date, "yyyy-MM-dd");
+          const { error: insertErr } = await (supabase as any)
+            .from("work_orders")
+            .insert({
+              wo_number: woNumber,
+              work_type: workType,
+              status: "Scheduled",
+              asset_id: pm.assetNumber || "",
+              problem_description: `PM: ${pm.name} (${pm.frequency})`,
+              work_title: pm.name,
+              trade: pm.discipline || "",
+              scheduled_date: dateStr,
+              labour_hours: pm.estimatedHours || 0,
+              duty_type: pm.originalItem.dutyType || "Online",
+              work_centre: pm.discipline === "Electrical" ? "ELEC" : pm.discipline === "Mobile" ? "MOBILE" : "MECH",
+              required_tooling: '[""]',
+            });
+
+          if (insertErr) { failed++; } else { created++; }
+        } catch {
+          failed++;
+        }
+      }
+
+      // Refresh WO data
+      queryClient.invalidateQueries({ queryKey: ["work_orders"] });
+
+      if (created > 0) toast.success(`Generated ${created} work orders across the 90-day horizon`);
+      if (failed > 0) toast.error(`${failed} work orders failed to generate`);
+    } catch (err: any) {
+      toast.error("Generation failed: " + err.message);
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [allRows, queryClient]);
+
   const viewRangeLabel = `W${weekColumns[0]?.weekNum} — ${format(weekColumns[0]?.start, "dd MMM")} – ${format(weekColumns[weekColumns.length - 1]?.end, "dd MMM")}`;
 
   return (
@@ -543,8 +615,17 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
             </div>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button size="sm" className="h-8 text-xs gap-1 bg-foreground text-background hover:bg-foreground/90">
-                  <Sparkles className="w-3.5 h-3.5" /> Generate 90-Day
+                <Button 
+                  size="sm" 
+                  className="h-8 text-xs gap-1 bg-foreground text-background hover:bg-foreground/90"
+                  onClick={handleGenerate90Day}
+                  disabled={isGenerating}
+                >
+                  {isGenerating ? (
+                    <><span className="animate-spin">⏳</span> Generating...</>
+                  ) : (
+                    <><Sparkles className="w-3.5 h-3.5" /> Generate 90-Day</>
+                  )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs max-w-xs">
