@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ interface Props {
   getReadiness?: (workOrderId: string) => WOMaterialSummary;
   onEditSchedule?: (item: PlannerItem, date: Date) => void;
   onViewWorkOrder?: (item: PlannerItem) => void;
+  onSupersededCount?: (count: number) => void;
 }
 
 function freqToDays(freq: string): number {
@@ -105,7 +106,7 @@ type SortKey = typeof SORT_OPTIONS[number]["key"];
 
 const CALL_HORIZON_DAYS = 91; // 13 weeks / ~3 months
 
-export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder }: Props) {
+export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder, onSupersededCount }: Props) {
   
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
@@ -273,6 +274,10 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     }
     return entries.sort((a, b) => a.weekNum - b.weekNum || a.pmName.localeCompare(b.pmName));
   }, [supersessionMap, filteredPMs, weekColumns]);
+
+  useEffect(() => {
+    onSupersededCount?.(supersededEntries.length);
+  }, [supersededEntries.length, onSupersededCount]);
 
   const handleReinstate = useCallback((pmId: string, weekNum: number) => {
     toast.success(`Plan reinstated for W${weekNum} — manual override applied`);
