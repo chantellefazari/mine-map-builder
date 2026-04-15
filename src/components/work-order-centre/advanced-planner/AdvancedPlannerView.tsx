@@ -451,6 +451,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
             onViewWorkOrder={(item) => {
               setFpDetailItem(item);
             }}
+            onRegisterAdjust={(fn) => setFpAdjustPM(() => fn)}
           />
         )}
         {activeTab === "rounds" && (
@@ -494,6 +495,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
           setFpScheduleOpen(open);
           if (!open) { setFpScheduleItem(null); setFpScheduleDate(undefined); }
         }}
+        onAdjustPM={fpAdjustPM || undefined}
       />
 
       {/* Forward Plan Detail Side Panel */}
