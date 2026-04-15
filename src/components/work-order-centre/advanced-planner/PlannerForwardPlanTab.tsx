@@ -534,6 +534,9 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         </div>
       </div>
 
+      {/* Superseded Log — expandable audit trail */}
+      <SupersededLogPanel entries={supersededEntries} onReinstate={handleReinstate} />
+
       {/* Table */}
       <ScrollArea className="flex-1">
         <div className="min-w-[1200px]">
