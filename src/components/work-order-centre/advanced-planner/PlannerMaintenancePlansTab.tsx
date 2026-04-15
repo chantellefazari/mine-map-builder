@@ -4,7 +4,7 @@ import {
   ListChecks, Package, ShieldAlert, AlertTriangle, Settings2,
   Pencil, Trash2, X, Save, Copy, Activity, Power, RefreshCw, Zap,
   Eye, CheckCircle2, FileCheck, ClipboardCheck, Users, Gauge, FileText,
-  Lock, Flame, Mountain, Droplets,
+  Lock, Flame, Mountain, Droplets, Printer,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
