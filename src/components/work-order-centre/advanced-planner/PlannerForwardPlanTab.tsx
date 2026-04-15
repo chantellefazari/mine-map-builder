@@ -286,6 +286,20 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
     toast.success(`Plan reinstated for W${weekNum} — manual override applied`);
   }, []);
 
+  // Build a lookup of existing PM work orders by PM name + date for cross-referencing
+  const pmWOLookup = useMemo(() => {
+    const map = new Map<string, WorkOrder>();
+    for (const wo of workOrders) {
+      if (wo.work_type !== "PM" || !wo.scheduled_date) continue;
+      const match = wo.problem_description?.match(/^PM:\s*(.+?)\s*\(/);
+      if (match) {
+        const key = `${match[1].trim()}::${wo.scheduled_date}`;
+        map.set(key, wo);
+      }
+    }
+    return map;
+  }, [workOrders]);
+
   const pmRows: PMRow[] = useMemo(() => {
     return filteredPMs.map(pm => {
       const freqDays = freqToDays(pm.frequency);
@@ -314,12 +328,31 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
         for (const occ of occDates) {
           if (isWithinInterval(occ, { start: wc.start, end: wc.end })) {
             const dayOfWeek = Math.floor((occ.getTime() - wc.start.getTime()) / 86400000);
+            const dateStr = format(occ, "yyyy-MM-dd");
+            const linkedWO = pmWOLookup.get(`${pm.taskName}::${dateStr}`);
+            
+            let status: DayOccurrence["status"];
+            if (isSuperseded) {
+              status = "Superseded";
+            } else if (linkedWO) {
+              if (linkedWO.status === "Completed" || linkedWO.status === "Closed") {
+                status = "Completed";
+              } else if (occ < now) {
+                status = "Overdue";
+              } else {
+                status = "Scheduled";
+              }
+            } else {
+              status = occ <= now ? "Overdue" : "Projected";
+            }
+
             daysInWeek.push({
               date: occ,
               dayLabel: format(occ, "dd MMM"),
               dayName: dayNames[Math.min(dayOfWeek, 6)] || format(occ, "EEE"),
-              status: isSuperseded ? "Superseded" : occ <= now ? "Scheduled" : "Projected",
+              status,
               supersededBy: supersession?.supersededBy,
+              linkedWO,
             });
           }
         }
