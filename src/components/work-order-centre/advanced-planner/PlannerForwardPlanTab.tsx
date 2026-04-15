@@ -615,8 +615,17 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
             </div>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button size="sm" className="h-8 text-xs gap-1 bg-foreground text-background hover:bg-foreground/90">
-                  <Sparkles className="w-3.5 h-3.5" /> Generate 90-Day
+                <Button 
+                  size="sm" 
+                  className="h-8 text-xs gap-1 bg-foreground text-background hover:bg-foreground/90"
+                  onClick={handleGenerate90Day}
+                  disabled={isGenerating}
+                >
+                  {isGenerating ? (
+                    <><span className="animate-spin">⏳</span> Generating...</>
+                  ) : (
+                    <><Sparkles className="w-3.5 h-3.5" /> Generate 90-Day</>
+                  )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs max-w-xs">
