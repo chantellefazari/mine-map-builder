@@ -106,7 +106,7 @@ type SortKey = typeof SORT_OPTIONS[number]["key"];
 
 const CALL_HORIZON_DAYS = 91; // 13 weeks / ~3 months
 
-export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder }: Props) {
+export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder, onSupersededCount }: Props) {
   
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
