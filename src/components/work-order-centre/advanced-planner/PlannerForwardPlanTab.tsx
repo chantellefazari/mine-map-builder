@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ interface Props {
   getReadiness?: (workOrderId: string) => WOMaterialSummary;
   onEditSchedule?: (item: PlannerItem, date: Date) => void;
   onViewWorkOrder?: (item: PlannerItem) => void;
+  onSupersededCount?: (count: number) => void;
 }
 
 function freqToDays(freq: string): number {
