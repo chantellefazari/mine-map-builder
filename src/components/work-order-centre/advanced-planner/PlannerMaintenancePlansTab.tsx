@@ -241,9 +241,9 @@ export function PlannerMaintenancePlansTab({ items }: Props) {
 }
 
 /* ─── Group Section ─── */
-function GroupSection({ groupKey, plans, expandedPlans, togglePlan, groupBy, onEdit, onDelete, onDuplicate }: {
+function GroupSection({ groupKey, plans, expandedPlans, togglePlan, groupBy, onEdit, onDelete, onDuplicate, onView }: {
   groupKey: string; plans: PlannerItem[]; expandedPlans: Set<string>; togglePlan: (id: string) => void; groupBy: string;
-  onEdit: (p: PlannerItem) => void; onDelete: (p: PlannerItem) => void; onDuplicate: (p: PlannerItem) => void;
+  onEdit: (p: PlannerItem) => void; onDelete: (p: PlannerItem) => void; onDuplicate: (p: PlannerItem) => void; onView: (p: PlannerItem) => void;
 }) {
   const [open, setOpen] = useState(true);
   const totalHrs = plans.reduce((s, p) => s + p.estimatedHours, 0);
@@ -259,7 +259,7 @@ function GroupSection({ groupKey, plans, expandedPlans, togglePlan, groupBy, onE
         <span className="text-[10px] text-muted-foreground ml-auto">{totalHrs.toFixed(0)} hrs total</span>
       </div>
       {open && plans.map(plan => (
-        <PlanRow key={plan.id} plan={plan} expanded={expandedPlans.has(plan.id)} onToggle={() => togglePlan(plan.id)} onEdit={onEdit} onDelete={onDelete} onDuplicate={onDuplicate} />
+        <PlanRow key={plan.id} plan={plan} expanded={expandedPlans.has(plan.id)} onToggle={() => togglePlan(plan.id)} onEdit={onEdit} onDelete={onDelete} onDuplicate={onDuplicate} onView={onView} />
       ))}
     </div>
   );
