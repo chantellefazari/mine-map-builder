@@ -20,6 +20,8 @@ import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import type { WOMaterialSummary } from "@/hooks/useMaterialReadiness";
 
+      {/* Superseded Log — expandable panel */}
+      <SupersededLogPanel entries={supersededEntries} onReinstate={handleReinstate} />
 
 interface Props {
   items: PlannerItem[];
