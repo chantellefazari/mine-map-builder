@@ -155,6 +155,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
   const { pms, isLoading: loadingPMs } = usePMasterList();
   const { getReadiness, readinessMap } = useMaterialReadiness();
   const [activeTab, setActiveTab] = useState<PlannerTab>("overview");
+  const [supersededCount, setSupersededCount] = useState(0);
   const [activeGroup, setActiveGroup] = useState("Planning");
 
   const handleTabChange = useCallback((tab: PlannerTab) => {

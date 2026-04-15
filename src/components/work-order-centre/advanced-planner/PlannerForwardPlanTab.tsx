@@ -275,6 +275,10 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     return entries.sort((a, b) => a.weekNum - b.weekNum || a.pmName.localeCompare(b.pmName));
   }, [supersessionMap, filteredPMs, weekColumns]);
 
+  useEffect(() => {
+    onSupersededCount?.(supersededEntries.length);
+  }, [supersededEntries.length, onSupersededCount]);
+
   const handleReinstate = useCallback((pmId: string, weekNum: number) => {
     toast.success(`Plan reinstated for W${weekNum} — manual override applied`);
   }, []);
