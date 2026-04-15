@@ -561,7 +561,9 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
         <span className="font-semibold uppercase tracking-wider">Legend:</span>
         <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-primary" /> Projected (will generate WO)</div>
         <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-primary/40" /> Scheduled (WO exists)</div>
-        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-muted-foreground/30" /><span className="line-through">Superseded</span> (longer freq overrides)</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-emerald-500" /> Completed</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-destructive" /> Overdue</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-muted-foreground/30" /><span className="line-through">Superseded</span></div>
         <div className="flex items-center gap-1">
           <Badge variant="outline" className="text-[8px] px-1 py-0 border-primary/40 text-primary">INS</Badge> Inspection (12-series)
         </div>
