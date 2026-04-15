@@ -266,9 +266,9 @@ function GroupSection({ groupKey, plans, expandedPlans, togglePlan, groupBy, onE
 }
 
 /* ─── Plan Row ─── */
-function PlanRow({ plan, expanded, onToggle, onEdit, onDelete, onDuplicate }: {
+function PlanRow({ plan, expanded, onToggle, onEdit, onDelete, onDuplicate, onView }: {
   plan: PlannerItem; expanded: boolean; onToggle: () => void;
-  onEdit: (p: PlannerItem) => void; onDelete: (p: PlannerItem) => void; onDuplicate: (p: PlannerItem) => void;
+  onEdit: (p: PlannerItem) => void; onDelete: (p: PlannerItem) => void; onDuplicate: (p: PlannerItem) => void; onView: (p: PlannerItem) => void;
 }) {
   const hasTasks = plan.tasks.length > 0;
   const hasMaterials = plan.materialList.length > 0 && plan.materialList.some(Boolean);
