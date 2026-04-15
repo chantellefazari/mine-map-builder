@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { usePMAutoGenerate } from "@/hooks/usePMAutoGenerate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -80,6 +80,19 @@ export function WOCSchedule() {
   const weekStart = startOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
   const weekEnd = endOfWeek(addWeeks(today, weekOffset), { weekStartsOn: 3 });
   const days = getWeekDays(weekStart);
+
+  // Auto-generate PM WOs for the visible week (runs once per week change)
+  const autoGenRef = useRef<string>("");
+  useEffect(() => {
+    const weekKey = format(weekStart, "yyyy-MM-dd");
+    if (autoGenRef.current === weekKey) return;
+    if (scheduleMode !== "weekly") return;
+    autoGenRef.current = weekKey;
+    // Silently generate PM WOs for the current visible week
+    pmAutoGenerate.mutate(
+      { rangeStart: weekStart, rangeEnd: addDays(weekStart, 6), silent: true },
+    );
+  }, [weekStart, scheduleMode]);
 
   const disciplineWOs = useMemo(() => {
     return workOrders.filter((wo) => {

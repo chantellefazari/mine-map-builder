@@ -19,10 +19,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "sonner";
 import type { PlannerItem } from "./AdvancedPlannerView";
 import type { WOMaterialSummary } from "@/hooks/useMaterialReadiness";
+import type { WorkOrder } from "@/hooks/useWorkOrders";
 
 
 interface Props {
   items: PlannerItem[];
+  workOrders?: WorkOrder[];
   getReadiness?: (workOrderId: string) => WOMaterialSummary;
   onEditSchedule?: (item: PlannerItem, date: Date) => void;
   onViewWorkOrder?: (item: PlannerItem) => void;
@@ -55,8 +57,9 @@ interface DayOccurrence {
   date: Date;
   dayLabel: string;
   dayName: string;
-  status: "Scheduled" | "Projected" | "Superseded";
-  supersededBy?: string; // name of the longer-frequency PM that supersedes this
+  status: "Scheduled" | "Projected" | "Superseded" | "Completed" | "Overdue";
+  supersededBy?: string;
+  linkedWO?: WorkOrder;
 }
 
 interface WeekCell {
@@ -106,7 +109,7 @@ type SortKey = typeof SORT_OPTIONS[number]["key"];
 
 const CALL_HORIZON_DAYS = 91; // 13 weeks / ~3 months
 
-export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onViewWorkOrder, onSupersededCount }: Props) {
+export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, onEditSchedule, onViewWorkOrder, onSupersededCount }: Props) {
   
   const now = useMemo(() => new Date(), []);
   const todayWeekStart = useMemo(() => startOfWeek(now, { weekStartsOn: 3 }), [now]);
@@ -283,6 +286,20 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
     toast.success(`Plan reinstated for W${weekNum} — manual override applied`);
   }, []);
 
+  // Build a lookup of existing PM work orders by PM name + date for cross-referencing
+  const pmWOLookup = useMemo(() => {
+    const map = new Map<string, WorkOrder>();
+    for (const wo of workOrders) {
+      if (wo.work_type !== "PM" || !wo.scheduled_date) continue;
+      const match = wo.problem_description?.match(/^PM:\s*(.+?)\s*\(/);
+      if (match) {
+        const key = `${match[1].trim()}::${wo.scheduled_date}`;
+        map.set(key, wo);
+      }
+    }
+    return map;
+  }, [workOrders]);
+
   const pmRows: PMRow[] = useMemo(() => {
     return filteredPMs.map(pm => {
       const freqDays = freqToDays(pm.frequency);
@@ -311,12 +328,31 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         for (const occ of occDates) {
           if (isWithinInterval(occ, { start: wc.start, end: wc.end })) {
             const dayOfWeek = Math.floor((occ.getTime() - wc.start.getTime()) / 86400000);
+            const dateStr = format(occ, "yyyy-MM-dd");
+            const linkedWO = pmWOLookup.get(`${pm.taskName}::${dateStr}`);
+            
+            let status: DayOccurrence["status"];
+            if (isSuperseded) {
+              status = "Superseded";
+            } else if (linkedWO) {
+              if (linkedWO.status === "Completed" || linkedWO.status === "Closed") {
+                status = "Completed";
+              } else if (occ < now) {
+                status = "Overdue";
+              } else {
+                status = "Scheduled";
+              }
+            } else {
+              status = occ <= now ? "Overdue" : "Projected";
+            }
+
             daysInWeek.push({
               date: occ,
               dayLabel: format(occ, "dd MMM"),
               dayName: dayNames[Math.min(dayOfWeek, 6)] || format(occ, "EEE"),
-              status: isSuperseded ? "Superseded" : occ <= now ? "Scheduled" : "Projected",
+              status,
               supersededBy: supersession?.supersededBy,
+              linkedWO,
             });
           }
         }
@@ -525,7 +561,9 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
         <span className="font-semibold uppercase tracking-wider">Legend:</span>
         <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-primary" /> Projected (will generate WO)</div>
         <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-primary/40" /> Scheduled (WO exists)</div>
-        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-muted-foreground/30" /><span className="line-through">Superseded</span> (longer freq overrides)</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-emerald-500" /> Completed</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-destructive" /> Overdue</div>
+        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-muted-foreground/30" /><span className="line-through">Superseded</span></div>
         <div className="flex items-center gap-1">
           <Badge variant="outline" className="text-[8px] px-1 py-0 border-primary/40 text-primary">INS</Badge> Inspection (12-series)
         </div>
@@ -614,11 +652,14 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                     {pm.weeks.map((week, wIdx) => {
                       const hasOccs = week.actual > 0;
                       const hasSuperseded = week.superseded > 0;
-                      const isComplete = week.actual >= week.expected && hasOccs;
+                      const hasOverdue = week.days.some(d => d.status === "Overdue");
+                      const allCompleted = hasOccs && week.days.every(d => d.status === "Completed" || d.status === "Superseded");
+                      const hasScheduled = week.days.some(d => d.status === "Scheduled");
                       return (
                         <div key={wIdx} className={cn(
                           "flex-1 flex items-center justify-center py-2 border-r border-border/20 last:border-r-0",
-                          week.isCurrent && "bg-primary/5"
+                          week.isCurrent && "bg-primary/5",
+                          hasOverdue && "bg-destructive/5"
                         )}>
                           {hasSuperseded && showSuperseded ? (
                             <Tooltip>
@@ -635,7 +676,11 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                           ) : hasOccs ? (
                             <div className={cn(
                               "flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-mono font-semibold",
-                              isComplete
+                              allCompleted
+                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700"
+                                : hasOverdue
+                                ? "bg-destructive/10 border-destructive/30 text-destructive"
+                                : hasScheduled
                                 ? "bg-primary/10 border-primary/30 text-primary"
                                 : "bg-muted border-border text-muted-foreground"
                             )}>
@@ -765,14 +810,22 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                       </div>
                                       <span className="text-[10px] text-muted-foreground font-medium w-8">{day.dayName}</span>
                                       <span className={cn("text-xs font-bold w-12", isSupersededDay ? "text-muted-foreground line-through" : "text-foreground")}>{format(day.date, "dd/MM")}</span>
-                                      <div className={cn("w-2 h-2 rounded-full flex-shrink-0", isSupersededDay ? "bg-muted-foreground/30" : "bg-primary")} />
+                                      <div className={cn("w-2 h-2 rounded-full flex-shrink-0", 
+                                        isSupersededDay ? "bg-muted-foreground/30" 
+                                        : day.status === "Completed" ? "bg-emerald-500"
+                                        : day.status === "Overdue" ? "bg-destructive"
+                                        : day.status === "Scheduled" ? "bg-primary/60"
+                                        : "bg-primary"
+                                      )} />
                                       <Badge className={cn(
                                         "text-[9px] h-4",
-                                        day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
+                                        day.status === "Completed" ? "bg-emerald-500/15 text-emerald-700 border-emerald-500/30"
+                                          : day.status === "Overdue" ? "bg-destructive/15 text-destructive border-destructive/30"
+                                          : day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
                                           : day.status === "Superseded" ? "bg-muted text-muted-foreground border-muted-foreground/30"
                                           : "bg-muted text-muted-foreground border-border"
                                       )}>
-                                        {day.status}
+                                        {day.status}{day.linkedWO ? ` · ${day.linkedWO.wo_number}` : ""}
                                       </Badge>
                                       {isSupersededDay && day.supersededBy && (
                                         <span className="text-[9px] text-muted-foreground italic">→ {day.supersededBy}</span>
@@ -796,15 +849,22 @@ export function PlannerForwardPlanTab({ items, getReadiness, onEditSchedule, onV
                                               </p>
                                             </div>
                                             <div className="flex items-center gap-1.5">
+                                              {day.linkedWO && (
+                                                <Badge variant="outline" className="text-[9px] font-mono">
+                                                  {day.linkedWO.wo_number}
+                                                </Badge>
+                                              )}
                                               <Badge variant="outline" className={cn(
                                                 "text-[9px]",
                                                 pm.planType === "Inspection" ? "border-primary/40 text-primary" : "border-purple-500/40 text-purple-600"
                                               )}>
-                                                {pm.planType === "Inspection" ? "WO-12xxxx" : "WO-11xxxx"}
+                                                {day.linkedWO ? day.linkedWO.wo_number : pm.planType === "Inspection" ? "WO-12xxxx" : "WO-11xxxx"}
                                               </Badge>
                                               <Badge className={cn(
                                                 "text-[10px]",
-                                                day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
+                                                day.status === "Completed" ? "bg-emerald-500/15 text-emerald-700 border-emerald-500/30"
+                                                  : day.status === "Overdue" ? "bg-destructive/15 text-destructive border-destructive/30"
+                                                  : day.status === "Scheduled" ? "bg-primary/15 text-primary border-primary/30"
                                                   : day.status === "Superseded" ? "bg-muted text-muted-foreground border-muted-foreground/30"
                                                   : "bg-muted text-muted-foreground border-border"
                                               )}>
