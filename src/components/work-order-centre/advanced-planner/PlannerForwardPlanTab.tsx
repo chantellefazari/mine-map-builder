@@ -652,11 +652,14 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
                     {pm.weeks.map((week, wIdx) => {
                       const hasOccs = week.actual > 0;
                       const hasSuperseded = week.superseded > 0;
-                      const isComplete = week.actual >= week.expected && hasOccs;
+                      const hasOverdue = week.days.some(d => d.status === "Overdue");
+                      const allCompleted = hasOccs && week.days.every(d => d.status === "Completed" || d.status === "Superseded");
+                      const hasScheduled = week.days.some(d => d.status === "Scheduled");
                       return (
                         <div key={wIdx} className={cn(
                           "flex-1 flex items-center justify-center py-2 border-r border-border/20 last:border-r-0",
-                          week.isCurrent && "bg-primary/5"
+                          week.isCurrent && "bg-primary/5",
+                          hasOverdue && "bg-destructive/5"
                         )}>
                           {hasSuperseded && showSuperseded ? (
                             <Tooltip>
@@ -673,7 +676,11 @@ export function PlannerForwardPlanTab({ items, workOrders = [], getReadiness, on
                           ) : hasOccs ? (
                             <div className={cn(
                               "flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-mono font-semibold",
-                              isComplete
+                              allCompleted
+                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700"
+                                : hasOverdue
+                                ? "bg-destructive/10 border-destructive/30 text-destructive"
+                                : hasScheduled
                                 ? "bg-primary/10 border-primary/30 text-primary"
                                 : "bg-muted border-border text-muted-foreground"
                             )}>
