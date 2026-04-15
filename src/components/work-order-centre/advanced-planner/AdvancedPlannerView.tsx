@@ -184,6 +184,7 @@ export function AdvancedPlannerView({ onNavigateWOC }: { onNavigateWOC?: (view: 
   const [fpScheduleItem, setFpScheduleItem] = useState<PlannerItem | null>(null);
   const [fpScheduleDate, setFpScheduleDate] = useState<Date | undefined>();
   const [fpDetailItem, setFpDetailItem] = useState<PlannerItem | null>(null);
+  const [fpAdjustPM, setFpAdjustPM] = useState<((pmId: string, days: number) => void) | null>(null);
   // Build unified items
   const allItems: PlannerItem[] = useMemo(() => {
     const items: PlannerItem[] = [];
