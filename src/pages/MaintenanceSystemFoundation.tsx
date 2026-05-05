@@ -534,7 +534,7 @@ const MaintenanceSystemFoundation = () => {
     lines.push("-".repeat(60));
     sectionScores.forEach((s) => {
       lines.push("");
-      lines.push(`${s.title}`);
+      lines.push(`${s.title}  [${s.tier}]`);
       lines.push(`  Coverage: ${s.score}% ${riskIcon(s.score)} ${riskOf(s.score)} RISK`);
       s.calcs.forEach((c) => {
         const gapTxt = c.gap !== undefined && c.gap > 0 ? ` — Gap: ${c.gap.toLocaleString()} ${c.gapLabel}` : "";
