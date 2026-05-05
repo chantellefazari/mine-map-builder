@@ -21,6 +21,7 @@ const WorkOrderTemplates = lazy(() => import("./pages/WorkOrderTemplates"));
 const WorkRequestTemplates = lazy(() => import("./pages/WorkRequestTemplates"));
 const MaintenanceFoundations = lazy(() => import("./pages/MaintenanceFoundations"));
 const MaintenanceSystemFoundation = lazy(() => import("./pages/MaintenanceSystemFoundation"));
+const PMRequirementsMatrix = lazy(() => import("./pages/PMRequirementsMatrix"));
 const SupplierRegister = lazy(() => import("./pages/SupplierRegister"));
 const SuppliersProcurement = lazy(() => import("./pages/SuppliersProcurement"));
 const PlanningRevisionControl = lazy(() => import("./pages/PlanningRevisionControl"));
