@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Layers, AlertTriangle, TrendingUp, Target } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -240,8 +240,23 @@ const SectionCard = ({
   );
 };
 
+const STORAGE_KEY = "maintenance-system-foundation-data";
+
 const MaintenanceSystemFoundation = () => {
-  const [data, setData] = useState<Record<string, Record<string, number>>>({});
+  const [data, setData] = useState<Record<string, Record<string, number>>>(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch {}
+  }, [data]);
 
   const setField = (sectionId: string, key: string, value: number) =>
     setData((prev) => ({ ...prev, [sectionId]: { ...(prev[sectionId] || {}), [key]: value } }));
