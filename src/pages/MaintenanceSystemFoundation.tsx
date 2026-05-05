@@ -940,6 +940,53 @@ ${sectionsHtml}
           </CardContent>
         </Card>
 
+        {/* ===== Coverage Matrix — comparative pairings for presenting ===== */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Target className="w-5 h-5 text-primary" />
+              <CardTitle className="text-lg">Coverage Matrix — Comparative Readiness</CardTitle>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Side-by-side numerators against a single denominator — the view your Steerco needs to see the gap.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {coverageMatrix.map((g) => (
+              <div key={g.title}>
+                <div className="flex items-baseline justify-between mb-2">
+                  <h4 className="text-sm font-semibold text-foreground">{g.title}</h4>
+                  <span className="text-xs text-muted-foreground">
+                    {g.denomLabel}: <strong className="text-foreground">{(g.denom||0).toLocaleString()}</strong>
+                  </span>
+                </div>
+                <div className="space-y-1.5">
+                  {g.rows.map((r: any) => {
+                    const den = r.denomOverride !== undefined ? r.denomOverride : g.denom;
+                    const percent = den > 0 ? Math.round(((r.value||0) / den) * 100) : 0;
+                    const barCls = r.isGap
+                      ? "bg-red-600"
+                      : percent >= 80 ? "bg-green-600"
+                      : percent >= 60 ? "bg-amber-500"
+                      : "bg-red-600";
+                    return (
+                      <div key={r.label} className="relative h-7 rounded bg-muted overflow-hidden border border-border">
+                        <div className={`absolute inset-y-0 left-0 ${barCls}`} style={{ width: `${Math.min(100, percent)}%` }} />
+                        <div className="relative flex items-center justify-between h-full px-2 text-xs font-medium">
+                          <span className={percent > 35 ? "text-white" : "text-foreground"}>{r.label}</span>
+                          <span className={percent > 65 ? "text-white" : "text-foreground"}>
+                            {(r.value||0).toLocaleString()} / {(den||0).toLocaleString()} · {percent}%
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
         {loading ? (
           <div className="flex items-center justify-center py-12 text-muted-foreground">
             <Loader2 className="w-5 h-5 animate-spin mr-2" /> Loading saved data…
