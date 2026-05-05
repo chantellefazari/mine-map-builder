@@ -936,6 +936,63 @@ export type Database = {
         }
         Relationships: []
       }
+      pm_requirement_recommendations: {
+        Row: {
+          approved: boolean
+          approved_at: string | null
+          approved_by: string
+          area_label: string
+          asset_name: string
+          asset_number: string
+          created_at: string
+          criticality: string
+          equipment_class: string
+          id: string
+          notes: string
+          overrides: Json
+          parent_asset_label: string
+          recommended_regime: Json
+          sub_area: string
+          updated_at: string
+        }
+        Insert: {
+          approved?: boolean
+          approved_at?: string | null
+          approved_by?: string
+          area_label?: string
+          asset_name?: string
+          asset_number: string
+          created_at?: string
+          criticality?: string
+          equipment_class?: string
+          id?: string
+          notes?: string
+          overrides?: Json
+          parent_asset_label?: string
+          recommended_regime?: Json
+          sub_area?: string
+          updated_at?: string
+        }
+        Update: {
+          approved?: boolean
+          approved_at?: string | null
+          approved_by?: string
+          area_label?: string
+          asset_name?: string
+          asset_number?: string
+          created_at?: string
+          criticality?: string
+          equipment_class?: string
+          id?: string
+          notes?: string
+          overrides?: Json
+          parent_asset_label?: string
+          recommended_regime?: Json
+          sub_area?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pm_templates: {
         Row: {
           acceptable_criteria: string[]
