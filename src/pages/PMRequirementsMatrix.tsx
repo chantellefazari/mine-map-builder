@@ -179,7 +179,7 @@ export default function PMRequirementsMatrix() {
     });
     const tableRows = Object.entries(stats.byClass)
       .sort(([,a],[,b]) => b-a)
-      .map(([cls, n]) => [cls, String(n), String(byClassPMs[cls] || 0)]);
+      .map(([cls, n]) => [{ text: cls }, { text: String(n) }, { text: String(byClassPMs[cls] || 0) }]);
     s2.addTable([head, ...tableRows], { x: 0.5, y: 1.0, w: 12, fontSize: 11, border: { type: "solid", pt: 0.5, color: "CCCCCC" } });
 
     // One slide per area — list HIGH/MED assets with their PM ladder
