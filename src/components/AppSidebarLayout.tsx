@@ -4,7 +4,7 @@ import {
   TreePine, Wrench, ClipboardList, Warehouse, BookOpen,
   ShoppingCart, Building2, CalendarClock, LogOut, Shield,
   PackageSearch, FileInput, Home, Box, Brain, ChevronLeft,
-  ChevronRight, Radar, ClipboardCheck, ShieldAlert, FileBadge,
+  ChevronRight, Radar, ClipboardCheck, ShieldAlert, FileBadge, Layers,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -14,6 +14,7 @@ import { useState, ReactNode } from "react";
 const NAV_ITEMS = [
   { title: "Home", icon: Home, href: "/" },
   { title: "Maintenance Foundations", icon: BookOpen, href: "/maintenance-foundations", tabKey: "maintenance-foundations" },
+  { title: "Maintenance System Foundation", icon: Layers, href: "/maintenance-system-foundation", tabKey: "maintenance-system-foundation" },
   { title: "Asset Tree", icon: TreePine, href: "/asset-tree", tabKey: "asset-tree" },
   { title: "PM Design", icon: Wrench, href: "/pm-design", tabKey: "pm-design" },
   { title: "Work Orders", icon: ClipboardList, href: "/work-order-templates", tabKey: "work-order-templates" },
