@@ -510,63 +510,164 @@ const MaintenanceSystemFoundation = () => {
 
   const totalAssets = data.asset?.total || 0;
 
+  // Map 22 sections into 8 high-level domains (matches CMMS readiness convention)
+  const DOMAIN_MAP: { key: string; title: string; sectionIds: string[] }[] = [
+    { key: "A", title: "A. Asset & Engineering Data", sectionIds: ["asset", "bom", "asset-spare", "doc", "rcm", "cbm"] },
+    { key: "B", title: "B. Preventive Maintenance", sectionIds: ["pm", "jobplan", "strategy", "shutdown"] },
+    { key: "C", title: "C. Work Management Foundation", sectionIds: ["sop", "failure", "history"] },
+    { key: "D", title: "D. Stores & Inventory", sectionIds: ["spares", "warehouse"] },
+    { key: "E", title: "E. Planning & Scheduling", sectionIds: ["labour"] },
+    { key: "F", title: "F. Finance & Costing", sectionIds: ["finance"] },
+    { key: "G", title: "G. Documentation & Standards", sectionIds: ["permits", "statutory", "warranty"] },
+    { key: "H", title: "H. People & Governance", sectionIds: ["kpi", "governance"] },
+  ];
+
+  const domainStatus = (s: number) =>
+    s >= 80 ? { label: "Ready", color: "#16a34a" } :
+    s >= 60 ? { label: "Partial", color: "#d97706" } :
+    s >= 25 ? { label: "Critical", color: "#dc2626" } :
+              { label: "Not Started", color: "#dc2626" };
+
   const generateReport = () => {
-    const lines: string[] = [];
-    lines.push("MAINTENANCE SYSTEM FOUNDATION AUDIT — TCMG");
-    lines.push("=".repeat(60));
-    lines.push(`Generated: ${new Date().toLocaleString()}`);
-    lines.push("");
-    lines.push("SUMMARY");
-    lines.push("-".repeat(60));
-    lines.push(`Total Assets: ${totalAssets.toLocaleString()}`);
-    lines.push(`CMMS Go-Live Verdict: ${goLiveReady ? "READY ✓" : `NOT READY ✗ (${blockers.length} MUST domain(s) below 80%)`}`);
-    lines.push(`Mandatory (MUST) Score: ${mandatoryScore}%`);
-    lines.push(`Maturity (SHOULD) Score: ${maturityScore}%`);
-    lines.push(`Overall System Coverage: ${overall}% ${riskIcon(overall)} ${riskOf(overall)} RISK`);
-    if (blockers.length) {
-      lines.push("");
-      lines.push("GO-LIVE BLOCKERS (MUST < 80%)");
-      lines.push("-".repeat(60));
-      blockers.forEach((b) => lines.push(`  ✗ ${b.title} — ${b.score}%`));
-    }
-    lines.push("");
-    lines.push("SECTION BREAKDOWN");
-    lines.push("-".repeat(60));
-    sectionScores.forEach((s) => {
-      lines.push("");
-      lines.push(`${s.title}  [${s.tier}]`);
-      lines.push(`  Coverage: ${s.score}% ${riskIcon(s.score)} ${riskOf(s.score)} RISK`);
-      s.calcs.forEach((c) => {
-        const gapTxt = c.gap !== undefined && c.gap > 0 ? ` — Gap: ${c.gap.toLocaleString()} ${c.gapLabel}` : "";
-        lines.push(`    • ${c.label}: ${c.percent}%${gapTxt}`);
-      });
+    const domainRows = DOMAIN_MAP.map((d) => {
+      const items = sectionScores.filter((s) => d.sectionIds.includes(s.id));
+      const score = items.length ? Math.round(items.reduce((a, x) => a + x.score, 0) / items.length) : 0;
+      return { ...d, score, status: domainStatus(score) };
     });
-    lines.push("");
-    lines.push("TOP 5 CRITICAL GAPS (ranked by impact)");
-    lines.push("-".repeat(60));
+
+    // Headline numbers (live from inputs)
+    const a = data.asset || {};
+    const pm = data.pm || {};
+    const bom = data.bom || {};
+    const headline: { label: string; value: string }[] = [
+      { label: "Processing assets in register", value: (a.total || 0).toLocaleString() },
+      { label: "Assets with functional location", value: `${(a.fl||0).toLocaleString()} / ${(a.total||0).toLocaleString()} (${pct(a.fl||0, a.total||0)}%)` },
+      { label: "Assets with BOM / components defined", value: `${(bom.with_bom||0).toLocaleString()} / ${(bom.total||a.total||0).toLocaleString()} (${pct(bom.with_bom||0, bom.total||a.total||0)}%)` },
+      { label: "Assets with criticality rating", value: `${(a.crit||0).toLocaleString()} / ${(a.total||0).toLocaleString()} (${pct(a.crit||0, a.total||0)}%)` },
+      { label: "Assets with equipment class", value: `${(a.cls||0).toLocaleString()} / ${(a.total||0).toLocaleString()} (${pct(a.cls||0, a.total||0)}%)` },
+      { label: "PMs defined", value: `${(pm.defined||0).toLocaleString()}` },
+      { label: "PMs approved", value: `${(pm.approved||0).toLocaleString()} / ${(pm.defined||0).toLocaleString()} (${pct(pm.approved||0, pm.defined||0)}%)` },
+    ];
+
+    const verdict = goLiveReady
+      ? `The TCMG framework is <strong>foundation-ready</strong>. All MUST-tier domains are at or above the 80% threshold. Overall readiness sits at <strong>${overall}%</strong>.`
+      : `The TCMG framework has built strong <strong>structural scaffolding</strong> (asset hierarchy, naming, stock code logic, PM rendering engine) but the <strong>operational data underneath is not CMMS-ready</strong>. A go-live on SAP/Pronto/Maximo/D365 today would <strong>fail within the first PM cycle</strong> because ${blockers.length} mandatory domain(s) sit below the 80% threshold. The framework is approximately <strong>${overall}% ready</strong> overall.`;
+
+    const sectionsHtml = sectionScores.map((s) => {
+      const st = domainStatus(s.score);
+      const bullets = s.calcs.map((c) => {
+        const gap = c.gap && c.gap > 0 ? ` <span style="color:#6b7280">— gap: ${c.gap.toLocaleString()} ${c.gapLabel||""}</span>` : "";
+        return `<li>${c.label}: <strong>${c.percent}%</strong>${gap}</li>`;
+      }).join("");
+      return `
+        <div class="sec">
+          <div class="sec-h">
+            <h3>${s.title} <span class="tier ${s.tier}">${s.tier}</span></h3>
+            <span class="badge" style="color:${st.color};border-color:${st.color}">${s.score}% · ${st.label}</span>
+          </div>
+          <ul>${bullets}</ul>
+        </div>`;
+    }).join("");
+
     const allGaps = sectionScores.flatMap((s) =>
-      s.calcs
-        .filter((c) => (c.gap || 0) > 0)
+      s.calcs.filter((c) => (c.gap || 0) > 0)
         .map((c) => ({ section: s.title, percent: c.percent, gap: c.gap || 0, label: c.gapLabel || c.label }))
     );
     allGaps.sort((a, b) => (a.percent - b.percent) || (b.gap - a.gap));
-    allGaps.slice(0, 5).forEach((g, i) => {
-      lines.push(`${i + 1}. ${g.section} — ${g.gap.toLocaleString()} ${g.label} (${g.percent}%)`);
-    });
-    if (allGaps.length === 0) lines.push("No gaps recorded.");
-    lines.push("");
-    const txt = lines.join("\n");
-    setReport(txt);
+    const top5 = allGaps.slice(0, 5).map((g, i) =>
+      `<tr><td>${i + 1}</td><td>${g.section}</td><td>${g.gap.toLocaleString()} ${g.label}</td><td><strong>${g.percent}%</strong></td></tr>`
+    ).join("");
 
-    // Trigger download
-    const blob = new Blob([txt], { type: "text/plain" });
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>TCMG Maintenance Readiness Gap Assessment</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; color:#111; margin:0; padding: 24px 32px; max-width: 900px; }
+  h1 { font-size: 34px; font-weight: 800; line-height: 1.1; margin: 0 0 14px; letter-spacing: -0.5px; }
+  h2 { font-size: 22px; font-weight: 700; color: #C8960C; margin: 28px 0 10px; }
+  h3 { font-size: 14px; margin: 0; font-weight: 700; }
+  .meta p { margin: 2px 0; font-size: 13px; }
+  .meta strong { display:inline-block; min-width: 90px; }
+  .lede { font-size: 13.5px; line-height: 1.55; margin: 0 0 14px; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 18px; font-size: 12.5px; }
+  th { background:#111; color:#fff; text-align:left; padding: 8px 10px; font-weight: 600; }
+  td { padding: 8px 10px; border-bottom: 1px solid #e5e7eb; }
+  tr:nth-child(even) td { background: #fafafa; }
+  .status { font-weight: 700; }
+  .tier { font-size: 10px; padding: 1px 6px; border-radius: 3px; margin-left: 6px; vertical-align: middle; }
+  .tier.MUST { background:#111; color:#fff; }
+  .tier.SHOULD { background:#e5e7eb; color:#374151; }
+  .badge { font-size: 11px; font-weight:600; padding: 2px 8px; border:1px solid; border-radius: 999px; }
+  .sec { padding: 10px 0; border-bottom: 1px solid #f0f0f0; page-break-inside: avoid; }
+  .sec-h { display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px; }
+  .sec ul { margin: 4px 0 0 18px; padding: 0; font-size: 12px; line-height: 1.6; }
+  .verdict-box { border: 2px solid ${goLiveReady ? "#16a34a" : "#dc2626"}; padding: 12px 14px; margin: 10px 0 16px; border-radius: 4px; background: ${goLiveReady ? "#f0fdf4" : "#fef2f2"}; }
+  .verdict-box strong.v { font-size: 18px; color: ${goLiveReady ? "#16a34a" : "#dc2626"}; display:block; margin-bottom: 4px; }
+  .actions { margin-bottom: 14px; }
+  .actions button { padding: 8px 14px; margin-right: 8px; background:#111; color:#fff; border:0; border-radius: 4px; cursor:pointer; font-weight:600; }
+  @media print { .actions { display:none; } body { padding: 0; } }
+</style></head><body>
+<div class="actions"><button onclick="window.print()">Print / Save as PDF</button></div>
+<h1>TCMG MAINTENANCE READINESS<br/>GAP ASSESSMENT</h1>
+<div class="meta">
+  <p>Foundation Review — Pre-CMMS Implementation</p>
+  <p><strong>Date:</strong> ${new Date().toLocaleDateString("en-AU", { day:"2-digit", month:"long", year:"numeric" })}</p>
+  <p><strong>Scope:</strong> Tropicana / TCMG Framework — full asset, PM, work, stores, planning data</p>
+  <p><strong>Benchmark:</strong> SAP PM, Pronto Xi, IBM Maximo, Microsoft D365 Asset Management</p>
+  <p><strong>Purpose:</strong> Identify ALL foundational gaps that must be closed BEFORE any CMMS go-live</p>
+</div>
+
+<h2>Executive Summary — Brutally Honest Verdict</h2>
+<div class="verdict-box">
+  <strong class="v">${goLiveReady ? "READY FOR CMMS GO-LIVE" : "NOT READY FOR CMMS GO-LIVE"}</strong>
+  Mandatory (MUST) Score: <strong>${mandatoryScore}%</strong> &nbsp;·&nbsp; Maturity (SHOULD) Score: <strong>${maturityScore}%</strong> &nbsp;·&nbsp; Overall: <strong>${overall}%</strong>
+</div>
+<p class="lede">${verdict}</p>
+
+<table>
+  <thead><tr><th>Domain</th><th style="width:120px">Readiness</th><th style="width:140px">Status</th></tr></thead>
+  <tbody>
+    ${domainRows.map((d) => `<tr><td>${d.title}</td><td>${d.score}%</td><td class="status" style="color:${d.status.color}">${d.status.label}</td></tr>`).join("")}
+  </tbody>
+</table>
+
+<h2><em>Headline Numbers (live from TCMG database)</em></h2>
+<table>
+  <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+  <tbody>${headline.map((h) => `<tr><td>${h.label}</td><td>${h.value}</td></tr>`).join("")}</tbody>
+</table>
+
+${blockers.length ? `
+<h2>Go-Live Blockers (MUST domains below 80%)</h2>
+<table>
+  <thead><tr><th>#</th><th>Section</th><th style="width:120px">Score</th></tr></thead>
+  <tbody>${blockers.map((b, i) => `<tr><td>${i+1}</td><td>${b.title}</td><td class="status" style="color:#dc2626">${b.score}%</td></tr>`).join("")}</tbody>
+</table>` : ""}
+
+<h2>Top 5 Critical Gaps (ranked by impact)</h2>
+<table>
+  <thead><tr><th style="width:40px">#</th><th>Section</th><th>Gap</th><th style="width:80px">Coverage</th></tr></thead>
+  <tbody>${top5 || `<tr><td colspan="4">No gaps recorded.</td></tr>`}</tbody>
+</table>
+
+<h2>Section Breakdown (22 Domains)</h2>
+${sectionsHtml}
+
+</body></html>`;
+
+    setReport(html);
+
+    // Open in new tab for print/PDF; also offer .html download
+    const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `TCMG-Foundation-Risk-Report-${new Date().toISOString().slice(0,10)}.txt`;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast({ title: "Report generated", description: "Download started." });
+    const w = window.open(url, "_blank");
+    if (!w) {
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `TCMG-Readiness-Gap-Assessment-${new Date().toISOString().slice(0,10)}.html`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+    toast({ title: "Report generated", description: "Opened in a new tab — use Print to save as PDF." });
   };
 
   const highRisk = [...sectionScores].sort((a, b) => a.score - b.score).slice(0, 3);
