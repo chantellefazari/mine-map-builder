@@ -592,33 +592,58 @@ const MaintenanceSystemFoundation = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex items-center gap-6">
-              <div className="text-center">
-                <div className={`text-6xl font-bold ${scoreColor(overall)}`}>{overall}%</div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">
-                  Overall — {riskIcon(overall)} {riskOf(overall)} RISK
+            {/* Go-Live verdict */}
+            <div className={`rounded-lg border p-4 ${goLiveReady ? "border-emerald-600/40 bg-emerald-500/5" : "border-red-600/40 bg-red-500/5"}`}>
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground">CMMS Go-Live Verdict</div>
+                  <div className={`text-lg font-bold ${goLiveReady ? "text-emerald-700" : "text-red-700"}`}>
+                    {goLiveReady ? "✓ READY — All MUST domains ≥ 80%" : `✗ NOT READY — ${blockers.length} MUST domain(s) below 80%`}
+                  </div>
                 </div>
-              </div>
-              <div className="flex-1">
-                <Progress value={overall} className="h-3" />
-                <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                  <span>🔴 High (&lt;30%)</span><span>🟠 Med (30–70%)</span><span>🟢 Low (&gt;70%)</span>
-                </div>
+                <Badge variant={goLiveReady ? "default" : "destructive"}>
+                  Mandatory: {mandatoryScore}%
+                </Badge>
               </div>
             </div>
+
+            {/* Three-tier scores */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="text-center p-3 rounded border border-primary/30 bg-primary/5">
+                <div className={`text-4xl font-bold ${scoreColor(mandatoryScore)}`}>{mandatoryScore}%</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">MUST – Pre Go-Live</div>
+                <Progress value={mandatoryScore} className="h-1.5 mt-2" />
+              </div>
+              <div className="text-center p-3 rounded border border-border">
+                <div className={`text-4xl font-bold ${scoreColor(maturityScore)}`}>{maturityScore}%</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">SHOULD – Maturity</div>
+                <Progress value={maturityScore} className="h-1.5 mt-2" />
+              </div>
+              <div className="text-center p-3 rounded border border-border">
+                <div className={`text-4xl font-bold ${scoreColor(overall)}`}>{overall}%</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Overall {riskIcon(overall)}</div>
+                <Progress value={overall} className="h-1.5 mt-2" />
+              </div>
+            </div>
+
+            {/* Blockers */}
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <AlertTriangle className="w-4 h-4 text-red-600" />
-                <h4 className="text-sm font-semibold">High Risk Areas</h4>
+                <h4 className="text-sm font-semibold">Go-Live Blockers (MUST domains &lt; 80%)</h4>
               </div>
-              <ul className="space-y-1.5">
-                {highRisk.map((s) => (
-                  <li key={s.id} className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{s.title}</span>
-                    <Badge variant={scoreBadge(s.score) as any}>{riskIcon(s.score)} {s.score}%</Badge>
-                  </li>
-                ))}
-              </ul>
+              {blockers.length === 0 ? (
+                <p className="text-sm text-muted-foreground italic">No blockers — all mandatory foundation data ready.</p>
+              ) : (
+                <ul className="space-y-1.5">
+                  {blockers.map((s) => (
+                    <li key={s.id} className="flex items-center justify-between text-sm">
+                      <span className="text-foreground">{s.title}</span>
+                      <Badge variant={scoreBadge(s.score) as any}>{riskIcon(s.score)} {s.score}%</Badge>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </CardContent>
         </Card>
