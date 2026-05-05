@@ -174,6 +174,171 @@ const SECTIONS: SectionDef[] = [
       { label: "% Shutdown Coverage", percent: pct(v.tasks, v.req), gap: Math.max(0,(v.req||0)-(v.tasks||0)), gapLabel: "assets missing shutdown tasks" },
     ],
   },
+  // ── Extended domains benchmarked against SAP PM, Pronto Xi, IBM Maximo, MS D365, MEX, Mainpac, ISO 14224 / ISO 55000 ──
+  {
+    id: "failure",
+    title: "12. Failure Codes (ISO 14224)",
+    totalKey: "total",
+    inputs: [
+      { key: "total", label: "Total Assets" },
+      { key: "lib", label: "Assets with Failure Code Library" },
+      { key: "hist", label: "Assets with Failure History Captured" },
+    ],
+    calc: (v) => [
+      { label: "% Failure Code Coverage", percent: pct(v.lib, v.total), gap: Math.max(0,(v.total||0)-(v.lib||0)), gapLabel: "assets missing failure codes" },
+      { label: "% Failure History Captured", percent: pct(v.hist, v.total), gap: Math.max(0,(v.total||0)-(v.hist||0)), gapLabel: "assets missing failure history" },
+    ],
+  },
+  {
+    id: "rcm",
+    title: "13. RCM / FMEA Coverage",
+    totalKey: "crit",
+    inputs: [
+      { key: "crit", label: "Critical Assets" },
+      { key: "fmea", label: "Critical Assets with FMEA/RCM Done" },
+    ],
+    calc: (v) => [
+      { label: "% RCM/FMEA Coverage", percent: pct(v.fmea, v.crit), gap: Math.max(0,(v.crit||0)-(v.fmea||0)), gapLabel: "critical assets missing FMEA/RCM" },
+    ],
+  },
+  {
+    id: "cbm",
+    title: "14. Condition Monitoring (CBM)",
+    totalKey: "crit",
+    inputs: [
+      { key: "crit", label: "Critical Assets" },
+      { key: "cbm", label: "Assets with CBM/Condition Triggers" },
+      { key: "meters", label: "Assets with Meter Readings Captured" },
+    ],
+    calc: (v) => [
+      { label: "% CBM Coverage", percent: pct(v.cbm, v.crit), gap: Math.max(0,(v.crit||0)-(v.cbm||0)), gapLabel: "critical assets missing CBM" },
+      { label: "% Meter Coverage", percent: pct(v.meters, v.crit), gap: Math.max(0,(v.crit||0)-(v.meters||0)), gapLabel: "critical assets missing meters" },
+    ],
+  },
+  {
+    id: "labour",
+    title: "15. Labour & Resources",
+    totalKey: "total",
+    inputs: [
+      { key: "total", label: "Total Personnel" },
+      { key: "trade", label: "Personnel with Trade/Skill Assigned" },
+      { key: "wc", label: "Personnel Linked to Work Centre" },
+      { key: "rates", label: "Personnel with Labour Rates Set" },
+    ],
+    calc: (v) => [
+      { label: "% Trade Assigned", percent: pct(v.trade, v.total), gap: Math.max(0,(v.total||0)-(v.trade||0)), gapLabel: "personnel missing trade/skill" },
+      { label: "% Work Centre Linked", percent: pct(v.wc, v.total), gap: Math.max(0,(v.total||0)-(v.wc||0)), gapLabel: "personnel missing work centre" },
+      { label: "% Labour Rates Set", percent: pct(v.rates, v.total), gap: Math.max(0,(v.total||0)-(v.rates||0)), gapLabel: "personnel missing labour rates" },
+    ],
+  },
+  {
+    id: "permits",
+    title: "16. Permits & Safety (HSE)",
+    totalKey: "total",
+    inputs: [
+      { key: "total", label: "Total Assets" },
+      { key: "permit", label: "Assets with Permit Requirements Defined" },
+      { key: "ra", label: "Assets with Risk Assessment / JSA" },
+      { key: "iso", label: "Assets with Isolation Procedures" },
+    ],
+    calc: (v) => [
+      { label: "% Permit Coverage", percent: pct(v.permit, v.total), gap: Math.max(0,(v.total||0)-(v.permit||0)), gapLabel: "assets missing permit requirements" },
+      { label: "% Risk Assessment Coverage", percent: pct(v.ra, v.total), gap: Math.max(0,(v.total||0)-(v.ra||0)), gapLabel: "assets missing risk assessment" },
+      { label: "% Isolation Procedures", percent: pct(v.iso, v.total), gap: Math.max(0,(v.total||0)-(v.iso||0)), gapLabel: "assets missing isolation procedures" },
+    ],
+  },
+  {
+    id: "compliance",
+    title: "17. Statutory & Compliance",
+    totalKey: "stat",
+    inputs: [
+      { key: "stat", label: "Statutory Assets (pressure, lift, gas, etc.)" },
+      { key: "reg", label: "Assets with Registered Inspections" },
+      { key: "cert", label: "Assets with Current Certificates" },
+    ],
+    calc: (v) => [
+      { label: "% Statutory Inspection Coverage", percent: pct(v.reg, v.stat), gap: Math.max(0,(v.stat||0)-(v.reg||0)), gapLabel: "statutory assets missing inspections" },
+      { label: "% Certification Current", percent: pct(v.cert, v.stat), gap: Math.max(0,(v.stat||0)-(v.cert||0)), gapLabel: "statutory assets with expired/missing certs" },
+    ],
+  },
+  {
+    id: "warranty",
+    title: "18. Warranty & Vendor Data",
+    totalKey: "total",
+    inputs: [
+      { key: "total", label: "Total Assets" },
+      { key: "vendor", label: "Assets with Vendor/OEM Linked" },
+      { key: "warr", label: "Assets with Warranty Tracked" },
+      { key: "serial", label: "Assets with Serial Number Recorded" },
+    ],
+    calc: (v) => [
+      { label: "% Vendor Linked", percent: pct(v.vendor, v.total), gap: Math.max(0,(v.total||0)-(v.vendor||0)), gapLabel: "assets missing vendor link" },
+      { label: "% Warranty Tracked", percent: pct(v.warr, v.total), gap: Math.max(0,(v.total||0)-(v.warr||0)), gapLabel: "assets missing warranty data" },
+      { label: "% Serial Numbers Captured", percent: pct(v.serial, v.total), gap: Math.max(0,(v.total||0)-(v.serial||0)), gapLabel: "assets missing serial number" },
+    ],
+  },
+  {
+    id: "finance",
+    title: "19. Finance & Costing",
+    totalKey: "total",
+    inputs: [
+      { key: "total", label: "Total Assets" },
+      { key: "cc", label: "Assets with Cost Centre" },
+      { key: "gl", label: "Assets with GL/Account Code" },
+      { key: "value", label: "Assets with Replacement Value" },
+    ],
+    calc: (v) => [
+      { label: "% Cost Centre Coverage", percent: pct(v.cc, v.total), gap: Math.max(0,(v.total||0)-(v.cc||0)), gapLabel: "assets missing cost centre" },
+      { label: "% GL Code Coverage", percent: pct(v.gl, v.total), gap: Math.max(0,(v.total||0)-(v.gl||0)), gapLabel: "assets missing GL code" },
+      { label: "% Replacement Value", percent: pct(v.value, v.total), gap: Math.max(0,(v.total||0)-(v.value||0)), gapLabel: "assets missing replacement value" },
+    ],
+  },
+  {
+    id: "history",
+    title: "20. Maintenance History / Records",
+    totalKey: "total",
+    inputs: [
+      { key: "total", label: "Total Assets" },
+      { key: "wo", label: "Assets with WO History Captured" },
+      { key: "dt", label: "Assets with Downtime History" },
+      { key: "cost", label: "Assets with Cost History" },
+    ],
+    calc: (v) => [
+      { label: "% WO History Coverage", percent: pct(v.wo, v.total), gap: Math.max(0,(v.total||0)-(v.wo||0)), gapLabel: "assets missing WO history" },
+      { label: "% Downtime Captured", percent: pct(v.dt, v.total), gap: Math.max(0,(v.total||0)-(v.dt||0)), gapLabel: "assets missing downtime data" },
+      { label: "% Cost History Captured", percent: pct(v.cost, v.total), gap: Math.max(0,(v.total||0)-(v.cost||0)), gapLabel: "assets missing cost history" },
+    ],
+  },
+  {
+    id: "kpi",
+    title: "21. KPIs & Reporting",
+    totalKey: "total",
+    inputs: [
+      { key: "total", label: "Total Required KPIs (MTBF, MTTR, PM Compliance, Backlog, Schedule Adherence, Wrench Time)" },
+      { key: "defined", label: "KPIs Defined" },
+      { key: "auto", label: "KPIs Auto-Calculated from System" },
+    ],
+    calc: (v) => [
+      { label: "% KPIs Defined", percent: pct(v.defined, v.total), gap: Math.max(0,(v.total||0)-(v.defined||0)), gapLabel: "KPIs not defined" },
+      { label: "% KPIs Automated", percent: pct(v.auto, v.total), gap: Math.max(0,(v.total||0)-(v.auto||0)), gapLabel: "KPIs not automated" },
+    ],
+  },
+  {
+    id: "governance",
+    title: "22. Governance & Change Control",
+    totalKey: "total",
+    inputs: [
+      { key: "total", label: "Total Master Data Domains (Asset, PM, BOM, Spares, Vendor, Codes)" },
+      { key: "owner", label: "Domains with Data Owner Assigned" },
+      { key: "mdm", label: "Domains under Master Data Governance" },
+      { key: "audit", label: "Domains with Audit Trail Enabled" },
+    ],
+    calc: (v) => [
+      { label: "% Data Ownership", percent: pct(v.owner, v.total), gap: Math.max(0,(v.total||0)-(v.owner||0)), gapLabel: "domains missing data owner" },
+      { label: "% MDM Governance", percent: pct(v.mdm, v.total), gap: Math.max(0,(v.total||0)-(v.mdm||0)), gapLabel: "domains missing MDM" },
+      { label: "% Audit Trail", percent: pct(v.audit, v.total), gap: Math.max(0,(v.total||0)-(v.audit||0)), gapLabel: "domains missing audit trail" },
+    ],
+  },
 ];
 
 const riskOf = (p: number) => (p < 30 ? "HIGH" : p <= 70 ? "MED" : "LOW");
