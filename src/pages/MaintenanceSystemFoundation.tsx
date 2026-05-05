@@ -865,7 +865,10 @@ ${sectionsHtml}
                                           "Auto-save on"}
               </span>
               <Button onClick={generateReport} disabled={loading} className="gap-2">
-                <FileDown className="w-4 h-4" /> Generate Foundation Risk Report
+                <FileDown className="w-4 h-4" /> Foundation Risk Report (PDF)
+              </Button>
+              <Button onClick={generatePptx} disabled={loading} variant="outline" className="gap-2">
+                <FileDown className="w-4 h-4" /> Steerco Pack (PPTX)
               </Button>
             </div>
           </div>
