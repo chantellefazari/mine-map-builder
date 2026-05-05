@@ -98,7 +98,7 @@ export default function PMRequirementsMatrix() {
     // Upsert in chunks of 200
     for (let i = 0; i < payload.length; i += 200) {
       const chunk = payload.slice(i, i + 200);
-      const { error } = await supabase.from("pm_requirement_recommendations").upsert(chunk, { onConflict: "asset_number" });
+      const { error } = await supabase.from("pm_requirement_recommendations").upsert(chunk as any, { onConflict: "asset_number" });
       if (error) { toast({ title: "Generation failed", description: error.message, variant: "destructive" }); setGenerating(false); return; }
     }
     toast({ title: `Generated recommendations for ${payload.length} assets` });
