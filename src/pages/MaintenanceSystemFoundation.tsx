@@ -519,7 +519,16 @@ const MaintenanceSystemFoundation = () => {
     lines.push("SUMMARY");
     lines.push("-".repeat(60));
     lines.push(`Total Assets: ${totalAssets.toLocaleString()}`);
+    lines.push(`CMMS Go-Live Verdict: ${goLiveReady ? "READY ✓" : `NOT READY ✗ (${blockers.length} MUST domain(s) below 80%)`}`);
+    lines.push(`Mandatory (MUST) Score: ${mandatoryScore}%`);
+    lines.push(`Maturity (SHOULD) Score: ${maturityScore}%`);
     lines.push(`Overall System Coverage: ${overall}% ${riskIcon(overall)} ${riskOf(overall)} RISK`);
+    if (blockers.length) {
+      lines.push("");
+      lines.push("GO-LIVE BLOCKERS (MUST < 80%)");
+      lines.push("-".repeat(60));
+      blockers.forEach((b) => lines.push(`  ✗ ${b.title} — ${b.score}%`));
+    }
     lines.push("");
     lines.push("SECTION BREAKDOWN");
     lines.push("-".repeat(60));
