@@ -779,13 +779,15 @@ ${sectionsHtml}
             <CardHeader>
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-primary" />
-                <CardTitle className="text-lg">Foundation Risk Report</CardTitle>
+                <CardTitle className="text-lg">Foundation Risk Report — Preview</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
-              <pre className="text-xs whitespace-pre-wrap font-mono bg-muted p-4 rounded border border-border max-h-[500px] overflow-auto">
-{report}
-              </pre>
+              <iframe
+                title="Foundation Risk Report"
+                srcDoc={report}
+                className="w-full h-[700px] border border-border rounded bg-white"
+              />
             </CardContent>
           </Card>
         )}
