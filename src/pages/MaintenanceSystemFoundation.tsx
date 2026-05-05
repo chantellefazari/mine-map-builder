@@ -715,9 +715,22 @@ ${sectionsHtml}
                 Quantified foundation audit. Inputs save to backend automatically. Generate the Foundation Risk Report when ready.
               </p>
             </div>
-            <Button onClick={generateReport} disabled={loading} className="gap-2">
-              <FileDown className="w-4 h-4" /> Generate Foundation Risk Report
-            </Button>
+            <div className="flex items-center gap-3">
+              <span className={`text-xs px-2 py-1 rounded border ${
+                saveState === "saving" ? "border-amber-500 text-amber-600" :
+                saveState === "saved"  ? "border-green-600 text-green-700" :
+                saveState === "error"  ? "border-red-600 text-red-700" :
+                                          "border-border text-muted-foreground"
+              }`}>
+                {saveState === "saving" ? "Saving…" :
+                 saveState === "saved"  ? "All changes saved" :
+                 saveState === "error"  ? "Save failed — retry" :
+                                          "Auto-save on"}
+              </span>
+              <Button onClick={generateReport} disabled={loading} className="gap-2">
+                <FileDown className="w-4 h-4" /> Generate Foundation Risk Report
+              </Button>
+            </div>
           </div>
         </div>
       </header>
