@@ -14,6 +14,7 @@ type CalcOut = { label: string; percent: number; gap?: number; gapLabel?: string
 type SectionDef = {
   id: string;
   title: string;
+  tier: "MUST" | "SHOULD"; // MUST = non-negotiable foundation data before CMMS go-live
   totalKey: string; // key used as denominator baseline for "impact"
   inputs: FieldDef[];
   calc: (v: Record<string, number>) => CalcOut[];
@@ -25,6 +26,7 @@ const pct = (num: number, den: number) =>
 const SECTIONS: SectionDef[] = [
   {
     id: "asset",
+    tier: "MUST",
     title: "1. Asset Foundation",
     totalKey: "total",
     inputs: [
@@ -43,6 +45,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "pm",
+    tier: "MUST",
     title: "2. PM Coverage",
     totalKey: "total",
     inputs: [
@@ -64,6 +67,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "jobplans",
+    tier: "MUST",
     title: "3. Job Plans",
     totalKey: "pms",
     inputs: [
@@ -76,6 +80,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "sop",
+    tier: "SHOULD",
     title: "4. SOPs",
     totalKey: "pms",
     inputs: [
@@ -88,6 +93,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "strategy",
+    tier: "MUST",
     title: "5. Maintenance Strategy",
     totalKey: "crit",
     inputs: [
@@ -103,6 +109,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "bom",
+    tier: "MUST",
     title: "6. BOM (Bill of Materials)",
     totalKey: "total",
     inputs: [
@@ -115,6 +122,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "spares",
+    tier: "MUST",
     title: "7. Spares (Inventory)",
     totalKey: "total",
     inputs: [
@@ -127,6 +135,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "linkage",
+    tier: "MUST",
     title: "8. Asset ↔ Spare Linkage",
     totalKey: "total",
     inputs: [
@@ -139,6 +148,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "warehouse",
+    tier: "MUST",
     title: "9. Warehouse / Locations",
     totalKey: "total",
     inputs: [
@@ -151,6 +161,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "oem",
+    tier: "SHOULD",
     title: "10. Documentation (OEM)",
     totalKey: "total",
     inputs: [
@@ -163,6 +174,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "shutdown",
+    tier: "MUST",
     title: "11. Shutdown Strategy",
     totalKey: "req",
     inputs: [
@@ -177,6 +189,7 @@ const SECTIONS: SectionDef[] = [
   // ── Extended domains benchmarked against SAP PM, Pronto Xi, IBM Maximo, MS D365, MEX, Mainpac, ISO 14224 / ISO 55000 ──
   {
     id: "failure",
+    tier: "MUST",
     title: "12. Failure Codes (ISO 14224)",
     totalKey: "total",
     inputs: [
@@ -191,6 +204,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "rcm",
+    tier: "SHOULD",
     title: "13. RCM / FMEA Coverage",
     totalKey: "crit",
     inputs: [
@@ -203,6 +217,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "cbm",
+    tier: "SHOULD",
     title: "14. Condition Monitoring (CBM)",
     totalKey: "crit",
     inputs: [
@@ -217,6 +232,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "labour",
+    tier: "MUST",
     title: "15. Labour & Resources",
     totalKey: "total",
     inputs: [
@@ -233,6 +249,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "permits",
+    tier: "MUST",
     title: "16. Permits & Safety (HSE)",
     totalKey: "total",
     inputs: [
@@ -249,6 +266,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "compliance",
+    tier: "MUST",
     title: "17. Statutory & Compliance",
     totalKey: "stat",
     inputs: [
@@ -263,6 +281,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "warranty",
+    tier: "SHOULD",
     title: "18. Warranty & Vendor Data",
     totalKey: "total",
     inputs: [
@@ -279,6 +298,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "finance",
+    tier: "MUST",
     title: "19. Finance & Costing",
     totalKey: "total",
     inputs: [
@@ -295,6 +315,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "history",
+    tier: "SHOULD",
     title: "20. Maintenance History / Records",
     totalKey: "total",
     inputs: [
@@ -311,6 +332,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "kpi",
+    tier: "SHOULD",
     title: "21. KPIs & Reporting",
     totalKey: "total",
     inputs: [
@@ -325,6 +347,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "governance",
+    tier: "MUST",
     title: "22. Governance & Change Control",
     totalKey: "total",
     inputs: [
@@ -358,10 +381,15 @@ const SectionCard = ({
   const calcs = section.calc(values);
   const avg = calcs.length ? Math.round(calcs.reduce((a, c) => a + c.percent, 0) / calcs.length) : 0;
   return (
-    <Card id={section.id} className="scroll-mt-20">
+    <Card id={section.id} className={`scroll-mt-20 ${section.tier === "MUST" ? "border-l-4 border-l-primary" : ""}`}>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">{section.title}</CardTitle>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <CardTitle className="text-lg">{section.title}</CardTitle>
+            <Badge variant={section.tier === "MUST" ? "default" : "outline"} className="text-[10px]">
+              {section.tier === "MUST" ? "MUST – Pre Go-Live" : "SHOULD – Maturity"}
+            </Badge>
+          </div>
           <Badge variant={scoreBadge(avg) as any}>{riskIcon(avg)} {avg}%</Badge>
         </div>
       </CardHeader>
@@ -457,7 +485,7 @@ const MaintenanceSystemFoundation = () => {
       const avg = calcs.length ? Math.round(calcs.reduce((a, c) => a + c.percent, 0) / calcs.length) : 0;
       const totalImpact = (data[s.id]?.[s.totalKey] || 0);
       const totalGap = calcs.reduce((a, c) => a + (c.gap || 0), 0);
-      return { id: s.id, title: s.title, score: avg, calcs, totalImpact, totalGap };
+      return { id: s.id, title: s.title, tier: s.tier, score: avg, calcs, totalImpact, totalGap };
     }),
     [data]
   );
@@ -466,6 +494,19 @@ const MaintenanceSystemFoundation = () => {
     () => sectionScores.length ? Math.round(sectionScores.reduce((a, s) => a + s.score, 0) / sectionScores.length) : 0,
     [sectionScores]
   );
+
+  const mustScores = useMemo(() => sectionScores.filter((s) => s.tier === "MUST"), [sectionScores]);
+  const shouldScores = useMemo(() => sectionScores.filter((s) => s.tier === "SHOULD"), [sectionScores]);
+  const mandatoryScore = useMemo(
+    () => mustScores.length ? Math.round(mustScores.reduce((a, s) => a + s.score, 0) / mustScores.length) : 0,
+    [mustScores]
+  );
+  const maturityScore = useMemo(
+    () => shouldScores.length ? Math.round(shouldScores.reduce((a, s) => a + s.score, 0) / shouldScores.length) : 0,
+    [shouldScores]
+  );
+  const goLiveReady = mustScores.every((s) => s.score >= 80);
+  const blockers = mustScores.filter((s) => s.score < 80);
 
   const totalAssets = data.asset?.total || 0;
 
@@ -478,13 +519,22 @@ const MaintenanceSystemFoundation = () => {
     lines.push("SUMMARY");
     lines.push("-".repeat(60));
     lines.push(`Total Assets: ${totalAssets.toLocaleString()}`);
+    lines.push(`CMMS Go-Live Verdict: ${goLiveReady ? "READY ✓" : `NOT READY ✗ (${blockers.length} MUST domain(s) below 80%)`}`);
+    lines.push(`Mandatory (MUST) Score: ${mandatoryScore}%`);
+    lines.push(`Maturity (SHOULD) Score: ${maturityScore}%`);
     lines.push(`Overall System Coverage: ${overall}% ${riskIcon(overall)} ${riskOf(overall)} RISK`);
+    if (blockers.length) {
+      lines.push("");
+      lines.push("GO-LIVE BLOCKERS (MUST < 80%)");
+      lines.push("-".repeat(60));
+      blockers.forEach((b) => lines.push(`  ✗ ${b.title} — ${b.score}%`));
+    }
     lines.push("");
     lines.push("SECTION BREAKDOWN");
     lines.push("-".repeat(60));
     sectionScores.forEach((s) => {
       lines.push("");
-      lines.push(`${s.title}`);
+      lines.push(`${s.title}  [${s.tier}]`);
       lines.push(`  Coverage: ${s.score}% ${riskIcon(s.score)} ${riskOf(s.score)} RISK`);
       s.calcs.forEach((c) => {
         const gapTxt = c.gap !== undefined && c.gap > 0 ? ` — Gap: ${c.gap.toLocaleString()} ${c.gapLabel}` : "";
@@ -551,33 +601,58 @@ const MaintenanceSystemFoundation = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex items-center gap-6">
-              <div className="text-center">
-                <div className={`text-6xl font-bold ${scoreColor(overall)}`}>{overall}%</div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">
-                  Overall — {riskIcon(overall)} {riskOf(overall)} RISK
+            {/* Go-Live verdict */}
+            <div className={`rounded-lg border p-4 ${goLiveReady ? "border-emerald-600/40 bg-emerald-500/5" : "border-red-600/40 bg-red-500/5"}`}>
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground">CMMS Go-Live Verdict</div>
+                  <div className={`text-lg font-bold ${goLiveReady ? "text-emerald-700" : "text-red-700"}`}>
+                    {goLiveReady ? "✓ READY — All MUST domains ≥ 80%" : `✗ NOT READY — ${blockers.length} MUST domain(s) below 80%`}
+                  </div>
                 </div>
-              </div>
-              <div className="flex-1">
-                <Progress value={overall} className="h-3" />
-                <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                  <span>🔴 High (&lt;30%)</span><span>🟠 Med (30–70%)</span><span>🟢 Low (&gt;70%)</span>
-                </div>
+                <Badge variant={goLiveReady ? "default" : "destructive"}>
+                  Mandatory: {mandatoryScore}%
+                </Badge>
               </div>
             </div>
+
+            {/* Three-tier scores */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="text-center p-3 rounded border border-primary/30 bg-primary/5">
+                <div className={`text-4xl font-bold ${scoreColor(mandatoryScore)}`}>{mandatoryScore}%</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">MUST – Pre Go-Live</div>
+                <Progress value={mandatoryScore} className="h-1.5 mt-2" />
+              </div>
+              <div className="text-center p-3 rounded border border-border">
+                <div className={`text-4xl font-bold ${scoreColor(maturityScore)}`}>{maturityScore}%</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">SHOULD – Maturity</div>
+                <Progress value={maturityScore} className="h-1.5 mt-2" />
+              </div>
+              <div className="text-center p-3 rounded border border-border">
+                <div className={`text-4xl font-bold ${scoreColor(overall)}`}>{overall}%</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Overall {riskIcon(overall)}</div>
+                <Progress value={overall} className="h-1.5 mt-2" />
+              </div>
+            </div>
+
+            {/* Blockers */}
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <AlertTriangle className="w-4 h-4 text-red-600" />
-                <h4 className="text-sm font-semibold">High Risk Areas</h4>
+                <h4 className="text-sm font-semibold">Go-Live Blockers (MUST domains &lt; 80%)</h4>
               </div>
-              <ul className="space-y-1.5">
-                {highRisk.map((s) => (
-                  <li key={s.id} className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{s.title}</span>
-                    <Badge variant={scoreBadge(s.score) as any}>{riskIcon(s.score)} {s.score}%</Badge>
-                  </li>
-                ))}
-              </ul>
+              {blockers.length === 0 ? (
+                <p className="text-sm text-muted-foreground italic">No blockers — all mandatory foundation data ready.</p>
+              ) : (
+                <ul className="space-y-1.5">
+                  {blockers.map((s) => (
+                    <li key={s.id} className="flex items-center justify-between text-sm">
+                      <span className="text-foreground">{s.title}</span>
+                      <Badge variant={scoreBadge(s.score) as any}>{riskIcon(s.score)} {s.score}%</Badge>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </CardContent>
         </Card>
