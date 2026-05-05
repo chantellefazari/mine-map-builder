@@ -84,7 +84,7 @@ const App = () => {
                 <Route path="/work-order-templates" element={<P tabKey="work-order-templates"><WorkOrderTemplates /></P>} />
                 <Route path="/work-request-templates" element={<P tabKey="work-order-templates"><WorkRequestTemplates /></P>} />
                 <Route path="/maintenance-foundations" element={<P tabKey="maintenance-foundations"><MaintenanceFoundations /></P>} />
-                <Route path="/maintenance-system-foundation" element={<P tabKey="maintenance-system-foundation"><MaintenanceSystemFoundation /></P>} />
+                <Route path="/maintenance-system-foundation" element={<P><MaintenanceSystemFoundation /></P>} />
                 <Route path="/supplier-register" element={<P tabKey="suppliers-procurement"><SupplierRegister /></P>} />
                 <Route path="/suppliers-procurement" element={<P tabKey="suppliers-procurement"><SuppliersProcurement /></P>} />
                 <Route path="/stores-warehouse-design" element={<P tabKey="stores-warehouse-design"><StoresWarehouseDesign /></P>} />
