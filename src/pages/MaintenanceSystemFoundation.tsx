@@ -701,6 +701,143 @@ ${sectionsHtml}
 
   const highRisk = [...sectionScores].sort((a, b) => a.score - b.score).slice(0, 3);
 
+  // ===== Coverage Matrix — comparative pairings against a single denominator =====
+  const coverageMatrix = useMemo(() => {
+    const a = data.asset || {}; const pm = data.pm || {}; const jp = data.jobplans || {};
+    const sop = data.sop || {}; const strat = data.strategy || {}; const bom = data.bom || {};
+    const sp = data.spares || {}; const link = data.linkage || {}; const wh = data.warehouse || {};
+    const sd = data.shutdown || {}; const oem = data.oem || {};
+    const totalAssets = a.total || 0;
+    const totalPMs = jp.pms || sop.pms || 0;
+    const totalSpares = sp.total || wh.total || 0;
+    const noPm = Math.max(0, totalAssets - (pm.any || 0));
+    return [
+      { title: "Asset Coverage", denom: totalAssets, denomLabel: "Total Assets", rows: [
+          { label: "On Asset Tree (Functional Location)", value: a.fl || 0 },
+          { label: "With Criticality Assigned", value: a.crit || 0 },
+          { label: "With Equipment Class", value: a.cls || 0 },
+          { label: "With Full Hierarchy", value: a.hier || 0 },
+      ] },
+      { title: "PM Coverage by Type", denom: totalAssets, denomLabel: "Total Assets", rows: [
+          { label: "Assets with ANY PM", value: pm.any || 0 },
+          { label: "Assets with Online PMs", value: pm.online || 0 },
+          { label: "Assets with Offline PMs", value: pm.offline || 0 },
+          { label: "Assets with Shutdown PMs", value: pm.sd || 0 },
+          { label: "Assets with NO PMs", value: noPm, isGap: true },
+      ] },
+      { title: "PM Quality", denom: totalPMs, denomLabel: "Total PMs", rows: [
+          { label: "PMs with Job Plans", value: jp.jp || 0 },
+          { label: "PMs with SOPs", value: sop.sop || 0 },
+      ] },
+      { title: "Materials & Spares (per Asset)", denom: totalAssets, denomLabel: "Total Assets", rows: [
+          { label: "Assets with BOM defined", value: bom.bom || 0 },
+          { label: "Assets with Spares Linked", value: link.linked || 0 },
+          { label: "Assets with OEM Documentation", value: oem.oem || 0 },
+      ] },
+      { title: "Stores Readiness", denom: totalSpares, denomLabel: "Total Spare Items", rows: [
+          { label: "Spares with Min/Max", value: sp.mm || 0 },
+          { label: "Spares with Bin Location", value: wh.loc || 0 },
+      ] },
+      { title: "Critical Asset Strategy", denom: strat.crit || 0, denomLabel: "Critical Assets", rows: [
+          { label: "Critical Assets with Maintenance Plan", value: strat.plan || 0 },
+          { label: "Critical Assets with Replacement Strategy", value: strat.repl || 0 },
+          { label: "Shutdown-Required with Shutdown PMs", value: sd.has || 0, denomOverride: sd.req || 0, denomLabelOverride: "Shutdown-Required Assets" },
+      ] },
+    ];
+  }, [data]);
+
+  // ===== PPTX Steerco Pack =====
+  const generatePptx = async () => {
+    const PptxGenJS = (await import("pptxgenjs")).default;
+    const p: any = new PptxGenJS();
+    p.layout = "LAYOUT_WIDE";
+    const GOLD="C8960C", BLACK="111111", GREY="6B7280", LIGHT="F5F5F5", RED="DC2626", AMBER="D97706", GREEN="16A34A";
+    const colorFor = (s: number) => s >= 80 ? GREEN : s >= 60 ? AMBER : RED;
+    const DOMAIN_MAP_LOCAL = [
+      { title: "A. Asset & Engineering Data", ids: ["asset","bom","linkage","oem"] },
+      { title: "B. Preventive Maintenance",    ids: ["pm","jobplans","strategy","shutdown"] },
+      { title: "C. Work Management Foundation", ids: ["sop"] },
+      { title: "D. Stores & Inventory",        ids: ["spares","warehouse"] },
+    ];
+
+    // 1. Title
+    const t = p.addSlide(); t.background = { color: BLACK };
+    t.addText("TCMG", { x:0.5, y:0.6, w:12, h:0.5, fontSize:14, color:GOLD, bold:true, fontFace:"Calibri" });
+    t.addText("Maintenance Readiness", { x:0.5, y:1.6, w:12, h:1.2, fontSize:54, bold:true, color:"FFFFFF", fontFace:"Calibri" });
+    t.addText("Gap Assessment — Pre-CMMS Implementation", { x:0.5, y:2.9, w:12, h:0.6, fontSize:24, color:GOLD, fontFace:"Calibri" });
+    t.addText(`${new Date().toLocaleDateString("en-AU",{day:"2-digit",month:"long",year:"numeric"})}  ·  Benchmark: SAP PM, Pronto Xi, IBM Maximo, MS D365`, { x:0.5, y:6.5, w:12, h:0.4, fontSize:12, color:"BBBBBB", fontFace:"Calibri" });
+
+    // 2. Verdict
+    const v = p.addSlide(); v.background = { color: goLiveReady ? "F0FDF4" : "FEF2F2" };
+    v.addText(goLiveReady ? "READY FOR CMMS GO-LIVE" : "NOT READY FOR CMMS GO-LIVE", { x:0.5, y:0.6, w:12, h:1, fontSize:40, bold:true, color: goLiveReady ? GREEN : RED, fontFace:"Calibri" });
+    v.addText("Brutally Honest Verdict", { x:0.5, y:1.7, w:12, h:0.4, fontSize:14, color:GREY, italic:true, fontFace:"Calibri" });
+    const stat = (x:number, label:string, val:string, color:string) => {
+      v.addShape(p.ShapeType.rect, { x, y:2.5, w:3.7, h:2.2, fill:{color:"FFFFFF"}, line:{color:"E5E7EB", width:1} });
+      v.addText(val, { x, y:2.7, w:3.7, h:1.3, fontSize:64, bold:true, color, align:"center", fontFace:"Calibri" });
+      v.addText(label, { x, y:4.0, w:3.7, h:0.6, fontSize:13, color:GREY, align:"center", fontFace:"Calibri" });
+    };
+    stat(0.6, "MUST · Pre Go-Live", `${mandatoryScore}%`, colorFor(mandatoryScore));
+    stat(4.8, "SHOULD · Maturity",   `${maturityScore}%`, colorFor(maturityScore));
+    stat(9.0, "Overall Readiness",   `${overall}%`,       colorFor(overall));
+    v.addText(blockers.length ? `${blockers.length} mandatory domain(s) below the 80% threshold — first PM cycle would fail.` : "All mandatory domains meet the 80% threshold.", { x:0.5, y:5.2, w:12, h:1, fontSize:18, color:BLACK, fontFace:"Calibri" });
+
+    // 3. Domain table
+    const d = p.addSlide(); d.background = { color:"FFFFFF" };
+    d.addText("Readiness by Domain", { x:0.5, y:0.4, w:12, h:0.6, fontSize:28, bold:true, color:BLACK, fontFace:"Calibri" });
+    const stFor = (s:number) => s>=80?{l:"Ready",c:GREEN}:s>=60?{l:"Partial",c:AMBER}:s>=25?{l:"Critical",c:RED}:{l:"Not Started",c:RED};
+    const domRows = DOMAIN_MAP_LOCAL.map((dm) => {
+      const items = sectionScores.filter((s) => dm.ids.includes(s.id));
+      const sc = items.length ? Math.round(items.reduce((a,x)=>a+x.score,0)/items.length) : 0;
+      const st = stFor(sc);
+      return [{ text: dm.title }, { text: `${sc}%` }, { text: st.l, options:{ color: st.c, bold:true } }];
+    });
+    d.addTable([
+      [{ text:"Domain", options:{ bold:true, color:"FFFFFF", fill:{color:BLACK} }},{ text:"Readiness", options:{ bold:true, color:"FFFFFF", fill:{color:BLACK} }},{ text:"Status", options:{ bold:true, color:"FFFFFF", fill:{color:BLACK} }}],
+      ...domRows,
+    ], { x:0.5, y:1.2, w:12.3, colW:[7.3, 2.5, 2.5], fontSize:14, fontFace:"Calibri", border:{ type:"solid", pt:0.5, color:"E5E7EB" }, rowH:0.5 });
+
+    // 4..N — One slide per Coverage Matrix group
+    coverageMatrix.forEach((g) => {
+      const s = p.addSlide(); s.background = { color:"FFFFFF" };
+      s.addText(g.title, { x:0.5, y:0.4, w:12, h:0.6, fontSize:28, bold:true, color:BLACK, fontFace:"Calibri" });
+      s.addText(`Denominator: ${g.denomLabel} = ${(g.denom||0).toLocaleString()}`, { x:0.5, y:1.0, w:12, h:0.4, fontSize:14, color:GREY, fontFace:"Calibri" });
+      g.rows.forEach((r:any, i:number) => {
+        const den = r.denomOverride !== undefined ? r.denomOverride : g.denom;
+        const percent = pct(r.value || 0, den || 0);
+        const y = 1.6 + i * 0.85;
+        s.addShape(p.ShapeType.rect, { x:0.5, y, w:12.3, h:0.75, fill:{color:LIGHT}, line:{color:"E5E7EB", width:0.5} });
+        const barW = Math.max(0.05, (percent/100) * 12.3);
+        s.addShape(p.ShapeType.rect, { x:0.5, y, w: barW, h:0.75, fill:{color: r.isGap ? RED : colorFor(percent)} });
+        s.addText(r.label, { x:0.7, y, w:7.5, h:0.75, fontSize:14, bold:true, color:"FFFFFF", fontFace:"Calibri", valign:"middle" });
+        s.addText(`${(r.value||0).toLocaleString()} / ${(den||0).toLocaleString()}  ·  ${percent}%`, { x:8.3, y, w:4.4, h:0.75, fontSize:14, bold:true, color:"FFFFFF", align:"right", fontFace:"Calibri", valign:"middle" });
+      });
+    });
+
+    // Top 5 Gaps
+    const g5 = p.addSlide(); g5.background = { color:"FFFFFF" };
+    g5.addText("Top 5 Critical Gaps", { x:0.5, y:0.4, w:12, h:0.6, fontSize:28, bold:true, color:BLACK, fontFace:"Calibri" });
+    const allGaps = sectionScores.flatMap((s) => s.calcs.filter((c)=>(c.gap||0)>0).map((c)=>({ section:s.title, percent:c.percent, gap:c.gap||0, label:c.gapLabel||c.label })));
+    allGaps.sort((a,b)=> (a.percent-b.percent) || (b.gap-a.gap));
+    const top5 = allGaps.slice(0,5);
+    if (top5.length === 0) {
+      g5.addText("No gaps recorded.", { x:0.5, y:1.5, w:12, h:0.5, fontSize:18, color:GREY, fontFace:"Calibri" });
+    } else {
+      g5.addTable([
+        [{ text:"#", options:{ bold:true, color:"FFFFFF", fill:{color:BLACK} }},{ text:"Section", options:{ bold:true, color:"FFFFFF", fill:{color:BLACK} }},{ text:"Gap", options:{ bold:true, color:"FFFFFF", fill:{color:BLACK} }},{ text:"Coverage", options:{ bold:true, color:"FFFFFF", fill:{color:BLACK} }}],
+        ...top5.map((x,i)=>[`${i+1}`, x.section, `${x.gap.toLocaleString()} ${x.label}`, { text:`${x.percent}%`, options:{ bold:true, color: colorFor(x.percent) }}]),
+      ], { x:0.5, y:1.2, w:12.3, colW:[0.6, 6.7, 3.5, 1.5], fontSize:14, fontFace:"Calibri", border:{ type:"solid", pt:0.5, color:"E5E7EB" }, rowH:0.5 });
+    }
+
+    // Closing
+    const c = p.addSlide(); c.background = { color: BLACK };
+    c.addText("Recommendation", { x:0.5, y:1.2, w:12, h:0.6, fontSize:18, color:GOLD, fontFace:"Calibri" });
+    c.addText(goLiveReady ? "Proceed to CMMS implementation phase." : "DO NOT proceed to CMMS go-live.", { x:0.5, y:1.9, w:12, h:1, fontSize:36, bold:true, color:"FFFFFF", fontFace:"Calibri" });
+    c.addText(goLiveReady ? "All foundational data passes the 80% readiness threshold." : `Close the ${blockers.length} mandatory domain gap(s) before vendor selection or go-live planning.`, { x:0.5, y:3.0, w:12, h:1, fontSize:18, color:"DDDDDD", fontFace:"Calibri" });
+
+    await p.writeFile({ fileName: `TCMG-Steerco-Readiness-${new Date().toISOString().slice(0,10)}.pptx` });
+    toast({ title: "Steerco pack generated", description: "PowerPoint downloaded." });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
@@ -728,7 +865,10 @@ ${sectionsHtml}
                                           "Auto-save on"}
               </span>
               <Button onClick={generateReport} disabled={loading} className="gap-2">
-                <FileDown className="w-4 h-4" /> Generate Foundation Risk Report
+                <FileDown className="w-4 h-4" /> Foundation Risk Report (PDF)
+              </Button>
+              <Button onClick={generatePptx} disabled={loading} variant="outline" className="gap-2">
+                <FileDown className="w-4 h-4" /> Steerco Pack (PPTX)
               </Button>
             </div>
           </div>
@@ -797,6 +937,53 @@ ${sectionsHtml}
                 </ul>
               )}
             </div>
+          </CardContent>
+        </Card>
+
+        {/* ===== Coverage Matrix — comparative pairings for presenting ===== */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Target className="w-5 h-5 text-primary" />
+              <CardTitle className="text-lg">Coverage Matrix — Comparative Readiness</CardTitle>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Side-by-side numerators against a single denominator — the view your Steerco needs to see the gap.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {coverageMatrix.map((g) => (
+              <div key={g.title}>
+                <div className="flex items-baseline justify-between mb-2">
+                  <h4 className="text-sm font-semibold text-foreground">{g.title}</h4>
+                  <span className="text-xs text-muted-foreground">
+                    {g.denomLabel}: <strong className="text-foreground">{(g.denom||0).toLocaleString()}</strong>
+                  </span>
+                </div>
+                <div className="space-y-1.5">
+                  {g.rows.map((r: any) => {
+                    const den = r.denomOverride !== undefined ? r.denomOverride : g.denom;
+                    const percent = den > 0 ? Math.round(((r.value||0) / den) * 100) : 0;
+                    const barCls = r.isGap
+                      ? "bg-red-600"
+                      : percent >= 80 ? "bg-green-600"
+                      : percent >= 60 ? "bg-amber-500"
+                      : "bg-red-600";
+                    return (
+                      <div key={r.label} className="relative h-7 rounded bg-muted overflow-hidden border border-border">
+                        <div className={`absolute inset-y-0 left-0 ${barCls}`} style={{ width: `${Math.min(100, percent)}%` }} />
+                        <div className="relative flex items-center justify-between h-full px-2 text-xs font-medium">
+                          <span className={percent > 35 ? "text-white" : "text-foreground"}>{r.label}</span>
+                          <span className={percent > 65 ? "text-white" : "text-foreground"}>
+                            {(r.value||0).toLocaleString()} / {(den||0).toLocaleString()} · {percent}%
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </CardContent>
         </Card>
 
