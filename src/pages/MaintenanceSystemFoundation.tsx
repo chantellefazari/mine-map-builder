@@ -485,7 +485,7 @@ const MaintenanceSystemFoundation = () => {
       const avg = calcs.length ? Math.round(calcs.reduce((a, c) => a + c.percent, 0) / calcs.length) : 0;
       const totalImpact = (data[s.id]?.[s.totalKey] || 0);
       const totalGap = calcs.reduce((a, c) => a + (c.gap || 0), 0);
-      return { id: s.id, title: s.title, score: avg, calcs, totalImpact, totalGap };
+      return { id: s.id, title: s.title, tier: s.tier, score: avg, calcs, totalImpact, totalGap };
     }),
     [data]
   );
@@ -494,6 +494,19 @@ const MaintenanceSystemFoundation = () => {
     () => sectionScores.length ? Math.round(sectionScores.reduce((a, s) => a + s.score, 0) / sectionScores.length) : 0,
     [sectionScores]
   );
+
+  const mustScores = useMemo(() => sectionScores.filter((s) => s.tier === "MUST"), [sectionScores]);
+  const shouldScores = useMemo(() => sectionScores.filter((s) => s.tier === "SHOULD"), [sectionScores]);
+  const mandatoryScore = useMemo(
+    () => mustScores.length ? Math.round(mustScores.reduce((a, s) => a + s.score, 0) / mustScores.length) : 0,
+    [mustScores]
+  );
+  const maturityScore = useMemo(
+    () => shouldScores.length ? Math.round(shouldScores.reduce((a, s) => a + s.score, 0) / shouldScores.length) : 0,
+    [shouldScores]
+  );
+  const goLiveReady = mustScores.every((s) => s.score >= 80);
+  const blockers = mustScores.filter((s) => s.score < 80);
 
   const totalAssets = data.asset?.total || 0;
 
