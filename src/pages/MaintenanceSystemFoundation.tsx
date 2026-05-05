@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Layers, AlertTriangle, TrendingUp, Target, FileDown, Loader2 } from "lucide-react";
+import { Layers, AlertTriangle, TrendingUp, Target, FileDown, Loader2, ClipboardList } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -864,6 +864,9 @@ ${sectionsHtml}
                  saveState === "error"  ? "Save failed — retry" :
                                           "Auto-save on"}
               </span>
+              <Button asChild variant="outline" className="gap-2">
+                <a href="/pm-requirements-matrix"><ClipboardList className="w-4 h-4" /> PM Requirements Matrix</a>
+              </Button>
               <Button onClick={generateReport} disabled={loading} className="gap-2">
                 <FileDown className="w-4 h-4" /> Foundation Risk Report (PDF)
               </Button>
