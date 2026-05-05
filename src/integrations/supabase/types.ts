@@ -444,6 +444,30 @@ export type Database = {
           },
         ]
       }
+      maintenance_foundation_audit: {
+        Row: {
+          created_at: string
+          data: Json
+          id: string
+          scope: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json
+          id?: string
+          scope?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          id?: string
+          scope?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       normalized_components: {
         Row: {
           alias_descriptions: string | null
