@@ -439,8 +439,11 @@ const MaintenanceSystemFoundation = () => {
   const [data, setData] = useState<Record<string, Record<string, number>>>({});
   const [loading, setLoading] = useState(true);
   const [report, setReport] = useState<string>("");
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const saveTimer = useRef<number | null>(null);
   const dirty = useRef(false);
+  const dataRef = useRef(data);
+  dataRef.current = data;
 
   // Load from Supabase
   useEffect(() => {
@@ -459,23 +462,49 @@ const MaintenanceSystemFoundation = () => {
     })();
   }, []);
 
+  const flushSave = async (payload: Record<string, Record<string, number>>) => {
+    setSaveState("saving");
+    const { error } = await supabase
+      .from("maintenance_foundation_audit")
+      .upsert({ scope: SCOPE, data: payload }, { onConflict: "scope" });
+    if (error) {
+      setSaveState("error");
+      toast({ title: "Save failed", description: error.message, variant: "destructive" });
+      return false;
+    }
+    dirty.current = false;
+    setSaveState("saved");
+    return true;
+  };
+
   // Debounced upsert to Supabase
   useEffect(() => {
     if (loading || !dirty.current) return;
     if (saveTimer.current) window.clearTimeout(saveTimer.current);
-    saveTimer.current = window.setTimeout(async () => {
-      const { error } = await supabase
-        .from("maintenance_foundation_audit")
-        .upsert({ scope: SCOPE, data }, { onConflict: "scope" });
-      if (error) {
-        toast({ title: "Save failed", description: error.message, variant: "destructive" });
-      }
-    }, 500);
+    saveTimer.current = window.setTimeout(() => { flushSave(dataRef.current); }, 500);
     return () => { if (saveTimer.current) window.clearTimeout(saveTimer.current); };
   }, [data, loading]);
 
+  // Flush on tab hide / before unload so nothing is lost
+  useEffect(() => {
+    const flush = () => {
+      if (dirty.current) {
+        // Fire-and-forget; sendBeacon not needed because supabase-js uses fetch keepalive via REST
+        flushSave(dataRef.current);
+      }
+    };
+    const onVisibility = () => { if (document.visibilityState === "hidden") flush(); };
+    window.addEventListener("beforeunload", flush);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("beforeunload", flush);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
   const setField = (sectionId: string, key: string, value: number) => {
     dirty.current = true;
+    setSaveState("saving");
     setData((prev) => ({ ...prev, [sectionId]: { ...(prev[sectionId] || {}), [key]: value } }));
   };
 
