@@ -14,6 +14,7 @@ type CalcOut = { label: string; percent: number; gap?: number; gapLabel?: string
 type SectionDef = {
   id: string;
   title: string;
+  tier: "MUST" | "SHOULD"; // MUST = non-negotiable foundation data before CMMS go-live
   totalKey: string; // key used as denominator baseline for "impact"
   inputs: FieldDef[];
   calc: (v: Record<string, number>) => CalcOut[];
