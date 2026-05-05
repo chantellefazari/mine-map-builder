@@ -113,7 +113,7 @@ export default function PMRequirementsMatrix() {
     next[freq] = { ...eff[freq], ...patch };
     setRows(prev => prev.map(r => r.asset_number === row.asset_number ? { ...r, overrides: next } : r));
     const { error } = await supabase.from("pm_requirement_recommendations")
-      .update({ overrides: next }).eq("asset_number", row.asset_number);
+      .update({ overrides: next as any }).eq("asset_number", row.asset_number);
     if (error) toast({ title: "Save failed", description: error.message, variant: "destructive" });
   };
 
