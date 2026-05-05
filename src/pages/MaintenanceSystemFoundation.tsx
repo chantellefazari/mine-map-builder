@@ -381,10 +381,15 @@ const SectionCard = ({
   const calcs = section.calc(values);
   const avg = calcs.length ? Math.round(calcs.reduce((a, c) => a + c.percent, 0) / calcs.length) : 0;
   return (
-    <Card id={section.id} className="scroll-mt-20">
+    <Card id={section.id} className={`scroll-mt-20 ${section.tier === "MUST" ? "border-l-4 border-l-primary" : ""}`}>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">{section.title}</CardTitle>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <CardTitle className="text-lg">{section.title}</CardTitle>
+            <Badge variant={section.tier === "MUST" ? "default" : "outline"} className="text-[10px]">
+              {section.tier === "MUST" ? "MUST – Pre Go-Live" : "SHOULD – Maturity"}
+            </Badge>
+          </div>
           <Badge variant={scoreBadge(avg) as any}>{riskIcon(avg)} {avg}%</Badge>
         </div>
       </CardHeader>
