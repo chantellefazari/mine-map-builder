@@ -26,6 +26,7 @@ const pct = (num: number, den: number) =>
 const SECTIONS: SectionDef[] = [
   {
     id: "asset",
+    tier: "MUST",
     title: "1. Asset Foundation",
     totalKey: "total",
     inputs: [
@@ -44,6 +45,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "pm",
+    tier: "MUST",
     title: "2. PM Coverage",
     totalKey: "total",
     inputs: [
@@ -65,6 +67,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "jobplans",
+    tier: "MUST",
     title: "3. Job Plans",
     totalKey: "pms",
     inputs: [
@@ -77,6 +80,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "sop",
+    tier: "SHOULD",
     title: "4. SOPs",
     totalKey: "pms",
     inputs: [
@@ -89,6 +93,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "strategy",
+    tier: "MUST",
     title: "5. Maintenance Strategy",
     totalKey: "crit",
     inputs: [
@@ -104,6 +109,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "bom",
+    tier: "MUST",
     title: "6. BOM (Bill of Materials)",
     totalKey: "total",
     inputs: [
@@ -116,6 +122,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "spares",
+    tier: "MUST",
     title: "7. Spares (Inventory)",
     totalKey: "total",
     inputs: [
@@ -128,6 +135,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "linkage",
+    tier: "MUST",
     title: "8. Asset ↔ Spare Linkage",
     totalKey: "total",
     inputs: [
@@ -140,6 +148,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "warehouse",
+    tier: "MUST",
     title: "9. Warehouse / Locations",
     totalKey: "total",
     inputs: [
@@ -152,6 +161,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "oem",
+    tier: "SHOULD",
     title: "10. Documentation (OEM)",
     totalKey: "total",
     inputs: [
@@ -164,6 +174,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "shutdown",
+    tier: "MUST",
     title: "11. Shutdown Strategy",
     totalKey: "req",
     inputs: [
@@ -178,6 +189,7 @@ const SECTIONS: SectionDef[] = [
   // ── Extended domains benchmarked against SAP PM, Pronto Xi, IBM Maximo, MS D365, MEX, Mainpac, ISO 14224 / ISO 55000 ──
   {
     id: "failure",
+    tier: "MUST",
     title: "12. Failure Codes (ISO 14224)",
     totalKey: "total",
     inputs: [
@@ -192,6 +204,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "rcm",
+    tier: "SHOULD",
     title: "13. RCM / FMEA Coverage",
     totalKey: "crit",
     inputs: [
@@ -204,6 +217,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "cbm",
+    tier: "SHOULD",
     title: "14. Condition Monitoring (CBM)",
     totalKey: "crit",
     inputs: [
@@ -218,6 +232,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "labour",
+    tier: "MUST",
     title: "15. Labour & Resources",
     totalKey: "total",
     inputs: [
@@ -234,6 +249,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "permits",
+    tier: "MUST",
     title: "16. Permits & Safety (HSE)",
     totalKey: "total",
     inputs: [
@@ -250,6 +266,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "compliance",
+    tier: "MUST",
     title: "17. Statutory & Compliance",
     totalKey: "stat",
     inputs: [
@@ -264,6 +281,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "warranty",
+    tier: "SHOULD",
     title: "18. Warranty & Vendor Data",
     totalKey: "total",
     inputs: [
@@ -280,6 +298,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "finance",
+    tier: "MUST",
     title: "19. Finance & Costing",
     totalKey: "total",
     inputs: [
@@ -296,6 +315,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "history",
+    tier: "SHOULD",
     title: "20. Maintenance History / Records",
     totalKey: "total",
     inputs: [
@@ -312,6 +332,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "kpi",
+    tier: "SHOULD",
     title: "21. KPIs & Reporting",
     totalKey: "total",
     inputs: [
@@ -326,6 +347,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "governance",
+    tier: "MUST",
     title: "22. Governance & Change Control",
     totalKey: "total",
     inputs: [
