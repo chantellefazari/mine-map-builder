@@ -1031,10 +1031,6 @@ ${sectionsHtml}
           </div>
         )}
 
-        {/* hidden helper sentinel — keeps lint happy if pmReq.loading unused */}
-        {pmReq.loading ? null : null}
-          </div>
-        )}
 
         {report && (
           <Card>
