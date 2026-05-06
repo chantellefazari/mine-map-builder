@@ -61,15 +61,15 @@ interface OwnershipRow {
 }
 
 const OWNERSHIP_MATRIX: OwnershipRow[] = [
-  { dataSet: "Asset Register", description: "All registered equipment, parent/child relationships, and component details", owner: "Engineering", approver: "Site Manager", changeFrequency: "Per engineering change" },
-  { dataSet: "Functional Locations", description: "FL codes that define where assets sit within the site structure", owner: "Engineering", approver: "Site Manager", changeFrequency: "Per engineering change" },
-  { dataSet: "PM Templates", description: "Approved preventive maintenance task lists, frequencies, and checklists", owner: "Maintenance Supervisor", approver: "Maintenance Superintendent", changeFrequency: "Per PM review cycle" },
-  { dataSet: "Spare Parts Catalogue", description: "Site parts register including part numbers, descriptions, and images", owner: "Stores", approver: "Maintenance Superintendent", changeFrequency: "As parts are added or obsoleted" },
+  { dataSet: "Asset Register", description: "All registered equipment, parent/child relationships, and component details", owner: "Planner", approver: "Maintenance Superintendent (Engineering endorse)", changeFrequency: "Per engineering change" },
+  { dataSet: "Functional Locations", description: "FL codes that define where assets sit within the site structure", owner: "Planner", approver: "Maintenance Superintendent (Engineering endorse)", changeFrequency: "Per engineering change" },
+  { dataSet: "PM Templates", description: "Approved preventive maintenance task lists, frequencies, and checklists", owner: "Planner", approver: "Maintenance Superintendent", changeFrequency: "Per PM review cycle" },
+  { dataSet: "Spare Parts Catalogue", description: "Site parts register including part numbers, descriptions, and images", owner: "Stores (Planner endorse)", approver: "Maintenance Superintendent", changeFrequency: "As parts are added or obsoleted" },
   { dataSet: "Supplier Register", description: "Approved supplier details, contacts, payment terms, and freight preferences", owner: "Procurement Officer", approver: "Site Manager", changeFrequency: "Per vendor onboarding or review" },
-  { dataSet: "Naming Conventions", description: "Equipment prefixes, component suffixes, and area codes", owner: "Engineering", approver: "Site Manager", changeFrequency: "Per standard revision" },
-  { dataSet: "P&ID Tag Register", description: "Verified P&ID tags mapped to asset numbers from the drawing set", owner: "Engineering", approver: "Engineering Manager", changeFrequency: "Per P&ID revision only" },
-  { dataSet: "Asset Criticality", description: "Criticality ratings and justifications for each registered asset", owner: "Maintenance Supervisor", approver: "Maintenance Superintendent", changeFrequency: "Annual review" },
-  { dataSet: "Work Orders", description: "Planned and reactive work instructions linked to assets and parts", owner: "Maintenance Supervisor", approver: "Maintenance Superintendent", changeFrequency: "Ongoing operational" },
+  { dataSet: "Naming Conventions", description: "Equipment prefixes, component suffixes, and area codes", owner: "Planner", approver: "Maintenance Superintendent (Engineering endorse)", changeFrequency: "Per standard revision" },
+  { dataSet: "P&ID Tag Register", description: "Verified P&ID tags mapped to asset numbers from the drawing set", owner: "Engineering (Planner maintains register)", approver: "Engineering Manager", changeFrequency: "Per P&ID revision only" },
+  { dataSet: "Asset Criticality", description: "Criticality ratings and justifications for each registered asset", owner: "Planner", approver: "Maintenance Superintendent", changeFrequency: "Annual review" },
+  { dataSet: "Work Orders", description: "Planned and reactive work instructions linked to assets and parts", owner: "Planner", approver: "Maintenance Supervisor", changeFrequency: "Ongoing operational" },
   { dataSet: "Purchase Requests", description: "Procurement requests raised against work orders or stock replenishment", owner: "Requester", approver: "Approver (tiered)", changeFrequency: "Ongoing operational" },
 ];
 
