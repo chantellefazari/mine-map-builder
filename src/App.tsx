@@ -16,6 +16,7 @@ const AssetTree = lazy(() => import("./pages/AssetTree"));
 const PMDesign = lazy(() => import("./pages/PMDesign"));
 const PMPrint = lazy(() => import("./pages/PMPrint"));
 const StoresWarehouseDesign = lazy(() => import("./pages/StoresWarehouseDesign"));
+const StoresOperationalRolloutPhase2 = lazy(() => import("./pages/StoresOperationalRolloutPhase2"));
 const SiteSparesCatalogue = lazy(() => import("./pages/SiteSparesCatalogue"));
 const WorkOrderTemplates = lazy(() => import("./pages/WorkOrderTemplates"));
 const WorkRequestTemplates = lazy(() => import("./pages/WorkRequestTemplates"));
