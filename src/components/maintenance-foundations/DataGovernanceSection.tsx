@@ -36,20 +36,20 @@ interface LockedStandard {
 }
 
 const LOCKED_STANDARDS: LockedStandard[] = [
-  { area: "Asset Hierarchy", standard: "7 level hierarchy structure (Site, Facility, Main Area, Sub Area, Parent Asset, Equipment, Component)", reference: "TCMG-STD-AH-001", owner: "Engineering", status: "Locked" },
-  { area: "Area Codes", standard: "6 approved Main Area codes: SITE, UTL, COM, REC, TAIL, SUP", reference: "TCMG-STD-AH-001", owner: "Engineering", status: "Locked" },
-  { area: "Functional Locations", standard: "FL code format: TCMG-PP-AREA-SUBAREA-SYSTEM (5 segments)", reference: "TCMG-STD-FL-001", owner: "Engineering", status: "Locked" },
-  { area: "Asset Numbering", standard: "Area Prefix First format with sequential numbering per sub area", reference: "TCMG-STD-FL-001", owner: "Engineering", status: "Locked" },
-  { area: "Asset Naming", standard: "Standardised naming convention with equipment type prefixes and component suffixes (MTR, GBX, VSD, SWT, TX)", reference: "TCMG-STD-NAM-001", owner: "Engineering", status: "Locked" },
+  { area: "Asset Hierarchy", standard: "7 level hierarchy structure (Site, Facility, Main Area, Sub Area, Parent Asset, Equipment, Component)", reference: "TCMG-STD-AH-001", owner: "Planner (Engineering endorse)", status: "Locked" },
+  { area: "Area Codes", standard: "6 approved Main Area codes: SITE, UTL, COM, REC, TAIL, SUP", reference: "TCMG-STD-AH-001", owner: "Planner (Engineering endorse)", status: "Locked" },
+  { area: "Functional Locations", standard: "FL code format: TCMG-PP-AREA-SUBAREA-SYSTEM (5 segments)", reference: "TCMG-STD-FL-001", owner: "Planner (Engineering endorse)", status: "Locked" },
+  { area: "Asset Numbering", standard: "Area Prefix First format with sequential numbering per sub area", reference: "TCMG-STD-FL-001", owner: "Planner", status: "Locked" },
+  { area: "Asset Naming", standard: "Standardised naming convention with equipment type prefixes and component suffixes (MTR, GBX, VSD, SWT, TX)", reference: "TCMG-STD-NAM-001", owner: "Planner", status: "Locked" },
   { area: "P&ID Register", standard: "14 page verified P&ID set (PI-001 to PI-014) as sole source of truth for tag assignments", reference: "P&ID Drawing Set", owner: "Engineering", status: "Locked" },
   { area: "Stock Codes", standard: "7 digit numeric SSCCNNN format (Site Code 10, Category Codes CC, Sequential NNN)", reference: "TCMG-STD-SPN-001", owner: "Stores", status: "Locked" },
-  { area: "Asset Tagging", standard: "TYPE A (Major Asset) and TYPE B (Equipment Position) tag standards with Gravotech LS100 production", reference: "TCMG-STD-TAG-002", owner: "Maintenance Supervisor", status: "Locked" },
-  { area: "PM Templates", standard: "88 approved PM templates across 3 disciplines (Mechanical, Electrical, Mobile Equipment)", reference: "PM Master List", owner: "Maintenance Supervisor", status: "Locked" },
+  { area: "Asset Tagging", standard: "TYPE A (Major Asset) and TYPE B (Equipment Position) tag standards with Gravotech LS100 production", reference: "TCMG-STD-TAG-002", owner: "Planner (Maintenance Supervisor endorse)", status: "Locked" },
+  { area: "PM Templates", standard: "88 approved PM templates across 3 disciplines (Mechanical, Electrical, Mobile Equipment)", reference: "PM Master List", owner: "Planner (Maintenance Supervisor endorse)", status: "Locked" },
   { area: "Electrical Identifiers", standard: "Generator series 17-GN-xxx, MCC series 18-MCC-xxx", reference: "TCMG-STD-FL-001", owner: "Engineering", status: "Locked" },
   { area: "Store Locations", standard: "Container coding C01 to C05 with Zone Position format (e.g. C01-EL-A1), Laydown Yard LD-A to LD-F", reference: "Store Layout Plan", owner: "Stores", status: "Locked" },
   { area: "Stock Control", standard: "9 section governance framework: receiving, issuing, nightshift rules, weekly revision cycle (Y26-WXX)", reference: "Stock Control Procedure", owner: "Stores", status: "Locked" },
-  { area: "Work Order Numbering", standard: "WO-XXXXXX sequential format with mandatory work type classification", reference: "TCMG-STD-WO-001", owner: "Maintenance Supervisor", status: "Locked" },
-  { area: "Data Mapping", standard: "Field level mapping to Microsoft Dynamics 365 Asset Management entities", reference: "TCMG-STD-DM-001", owner: "Engineering", status: "Controlled" },
+  { area: "Work Order Numbering", standard: "WO-XXXXXX sequential format with mandatory work type classification", reference: "TCMG-STD-WO-001", owner: "Planner", status: "Locked" },
+  { area: "Data Mapping", standard: "Field level mapping to Microsoft Dynamics 365 Asset Management entities", reference: "TCMG-STD-DM-001", owner: "Planner (Engineering endorse)", status: "Controlled" },
 ];
 
 interface OwnershipRow {
@@ -61,15 +61,15 @@ interface OwnershipRow {
 }
 
 const OWNERSHIP_MATRIX: OwnershipRow[] = [
-  { dataSet: "Asset Register", description: "All registered equipment, parent/child relationships, and component details", owner: "Engineering", approver: "Site Manager", changeFrequency: "Per engineering change" },
-  { dataSet: "Functional Locations", description: "FL codes that define where assets sit within the site structure", owner: "Engineering", approver: "Site Manager", changeFrequency: "Per engineering change" },
-  { dataSet: "PM Templates", description: "Approved preventive maintenance task lists, frequencies, and checklists", owner: "Maintenance Supervisor", approver: "Maintenance Superintendent", changeFrequency: "Per PM review cycle" },
-  { dataSet: "Spare Parts Catalogue", description: "Site parts register including part numbers, descriptions, and images", owner: "Stores", approver: "Maintenance Superintendent", changeFrequency: "As parts are added or obsoleted" },
+  { dataSet: "Asset Register", description: "All registered equipment, parent/child relationships, and component details", owner: "Planner", approver: "Maintenance Superintendent (Engineering endorse)", changeFrequency: "Per engineering change" },
+  { dataSet: "Functional Locations", description: "FL codes that define where assets sit within the site structure", owner: "Planner", approver: "Maintenance Superintendent (Engineering endorse)", changeFrequency: "Per engineering change" },
+  { dataSet: "PM Templates", description: "Approved preventive maintenance task lists, frequencies, and checklists", owner: "Planner", approver: "Maintenance Superintendent", changeFrequency: "Per PM review cycle" },
+  { dataSet: "Spare Parts Catalogue", description: "Site parts register including part numbers, descriptions, and images", owner: "Stores (Planner endorse)", approver: "Maintenance Superintendent", changeFrequency: "As parts are added or obsoleted" },
   { dataSet: "Supplier Register", description: "Approved supplier details, contacts, payment terms, and freight preferences", owner: "Procurement Officer", approver: "Site Manager", changeFrequency: "Per vendor onboarding or review" },
-  { dataSet: "Naming Conventions", description: "Equipment prefixes, component suffixes, and area codes", owner: "Engineering", approver: "Site Manager", changeFrequency: "Per standard revision" },
-  { dataSet: "P&ID Tag Register", description: "Verified P&ID tags mapped to asset numbers from the drawing set", owner: "Engineering", approver: "Engineering Manager", changeFrequency: "Per P&ID revision only" },
-  { dataSet: "Asset Criticality", description: "Criticality ratings and justifications for each registered asset", owner: "Maintenance Supervisor", approver: "Maintenance Superintendent", changeFrequency: "Annual review" },
-  { dataSet: "Work Orders", description: "Planned and reactive work instructions linked to assets and parts", owner: "Maintenance Supervisor", approver: "Maintenance Superintendent", changeFrequency: "Ongoing operational" },
+  { dataSet: "Naming Conventions", description: "Equipment prefixes, component suffixes, and area codes", owner: "Planner", approver: "Maintenance Superintendent (Engineering endorse)", changeFrequency: "Per standard revision" },
+  { dataSet: "P&ID Tag Register", description: "Verified P&ID tags mapped to asset numbers from the drawing set", owner: "Engineering (Planner maintains register)", approver: "Engineering Manager", changeFrequency: "Per P&ID revision only" },
+  { dataSet: "Asset Criticality", description: "Criticality ratings and justifications for each registered asset", owner: "Planner", approver: "Maintenance Superintendent", changeFrequency: "Annual review" },
+  { dataSet: "Work Orders", description: "Planned and reactive work instructions linked to assets and parts", owner: "Planner", approver: "Maintenance Supervisor", changeFrequency: "Ongoing operational" },
   { dataSet: "Purchase Requests", description: "Procurement requests raised against work orders or stock replenishment", owner: "Requester", approver: "Approver (tiered)", changeFrequency: "Ongoing operational" },
 ];
 
@@ -94,8 +94,9 @@ const EDITABLE_DATA = [
 ];
 
 const RESPONSIBILITY_MAP = [
-  { role: "Engineering", items: ["P&ID drawing updates and tag assignments", "Asset naming conventions and numbering rules", "Hierarchy structure changes (adding or removing levels)", "Functional location codes and area code definitions", "Electrical identifier series (generators, MCCs)", "Data mapping for future CMMS migration"] },
-  { role: "Maintenance Supervisors", items: ["PM template content, frequencies, and task lists", "Work order creation, classification, and closure", "Asset criticality ratings and justifications", "Asset tag rollout installation and verification", "Component OEM details and specification updates", "Labour hour estimates and resource allocation"] },
+  { role: "Planners", items: ["Day-to-day custodianship of the asset tree (additions, moves, retirements)", "Maintain naming conventions, area codes, FL codes and asset numbering registers", "PM template authoring, frequency setting and PM-to-asset linking", "Asset criticality ratings (with Maintenance Supervisor endorsement)", "Work order creation, scoping, scheduling and closure quality", "Asset tag rollout register, install status and verification", "Component additions and OEM detail updates via Component Change Requests", "First line of governance — escalate locked-standard changes to Engineering / Superintendent"] },
+  { role: "Engineering", items: ["P&ID drawing updates and master tag assignments", "Endorsement of hierarchy structure changes (add / remove levels)", "Endorsement of naming convention and FL code standard revisions", "Electrical identifier series governance (generators, MCCs)", "Data mapping standard for future CMMS migration", "Technical sign-off on Planner-proposed asset tree changes"] },
+  { role: "Maintenance Supervisors", items: ["Endorse PM template content, frequencies and task lists authored by Planners", "Approve work order classification and closure", "Endorse asset criticality ratings and justifications", "Verify asset tag rollout installation in the field", "Approve labour hour estimates and resource allocation"] },
   { role: "Stores", items: ["Part number allocation using the SSCCNNN format", "Store location coding and bin assignments", "Stock control procedure compliance", "Receiving, issuing, and nightshift withdrawal rules", "Stock levels, min/max quantities, and reorder points"] },
   { role: "Procurement Officer", items: ["Supplier register and vendor onboarding", "Purchase request processing and approvals", "Unit pricing, lead times, and supplier linkages", "Quote management and supplier evaluation"] },
 ];
