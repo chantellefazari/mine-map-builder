@@ -403,13 +403,18 @@ const SectionCard = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {section.inputs.map((f) => (
               <div key={f.key} className="space-y-1">
-                <Label htmlFor={`${section.id}-${f.key}`} className="text-xs">{f.label}</Label>
+                <Label htmlFor={`${section.id}-${f.key}`} className="text-xs">
+                  {f.label}
+                  {f.readOnlyFrom && <span className="ml-1 text-[10px] text-primary">(auto)</span>}
+                </Label>
                 <Input
                   id={`${section.id}-${f.key}`}
                   type="number" min={0}
                   value={values[f.key] ?? ""}
                   onChange={(e) => onChange(f.key, Number(e.target.value) || 0)}
                   placeholder="0"
+                  readOnly={!!f.readOnlyFrom}
+                  className={f.readOnlyFrom ? "bg-muted/50 cursor-not-allowed" : ""}
                 />
               </div>
             ))}
