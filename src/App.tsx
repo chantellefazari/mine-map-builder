@@ -91,6 +91,7 @@ const App = () => {
                 <Route path="/supplier-register" element={<P tabKey="suppliers-procurement"><SupplierRegister /></P>} />
                 <Route path="/suppliers-procurement" element={<P tabKey="suppliers-procurement"><SuppliersProcurement /></P>} />
                 <Route path="/stores-warehouse-design" element={<P tabKey="stores-warehouse-design"><StoresWarehouseDesign /></P>} />
+                <Route path="/stores-operational-rollout-phase-2" element={<P tabKey="stores-warehouse-design"><StoresOperationalRolloutPhase2 /></P>} />
                 <Route path="/planning-revision" element={<P tabKey="planning-revision"><PlanningRevisionControl /></P>} />
                 <Route path="/po-tracker" element={<P tabKey="po-tracker"><POTracker /></P>} />
                 <Route path="/purchase-requests" element={<P tabKey="purchase-requests"><PurchaseRequests /></P>} />
