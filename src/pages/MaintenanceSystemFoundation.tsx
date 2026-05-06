@@ -8,8 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { usePMRequirementsSummary } from "@/hooks/usePMRequirementsSummary";
 
-type FieldDef = { key: string; label: string };
+type FieldDef = { key: string; label: string; readOnlyFrom?: "requireAny" | "requireOnline" | "requireOffline" | "requireShutdown" | "totalRecommended" };
 type CalcOut = { label: string; percent: number; gap?: number; gapLabel?: string };
 type SectionDef = {
   id: string;
