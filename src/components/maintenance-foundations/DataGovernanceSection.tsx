@@ -63,7 +63,7 @@ interface OwnershipRow {
 const OWNERSHIP_MATRIX: OwnershipRow[] = [
   { dataSet: "Asset Register", description: "All registered equipment, parent/child relationships, and component details", owner: "Planner", approver: "Maintenance Superintendent (Engineering endorse)", changeFrequency: "Per engineering change" },
   { dataSet: "Functional Locations", description: "FL codes that define where assets sit within the site structure", owner: "Planner", approver: "Maintenance Superintendent (Engineering endorse)", changeFrequency: "Per engineering change" },
-  { dataSet: "PM Templates", description: "Approved preventive maintenance task lists, frequencies, and checklists", owner: "Planner", approver: "Maintenance Superintendent", changeFrequency: "Per PM review cycle" },
+  { dataSet: "PM Templates", description: "Approved preventive maintenance task lists, frequencies, and checklists", owner: "Maintenance", approver: "Maintenance Superintendent", changeFrequency: "Per PM review cycle" },
   { dataSet: "Spare Parts Catalogue", description: "Site parts register including part numbers, descriptions, and images", owner: "Stores (Planner endorse)", approver: "Maintenance Superintendent", changeFrequency: "As parts are added or obsoleted" },
   { dataSet: "Supplier Register", description: "Approved supplier details, contacts, payment terms, and freight preferences", owner: "Procurement Officer", approver: "Site Manager", changeFrequency: "Per vendor onboarding or review" },
   { dataSet: "Naming Conventions", description: "Equipment prefixes, component suffixes, and area codes", owner: "Planner", approver: "Maintenance Superintendent (Engineering endorse)", changeFrequency: "Per standard revision" },
