@@ -541,7 +541,7 @@ const MaintenanceSystemFoundation = () => {
       const totalGap = calcs.reduce((a, c) => a + (c.gap || 0), 0);
       return { id: s.id, title: s.title, tier: s.tier, score: avg, calcs, totalImpact, totalGap };
     }),
-    [data]
+    [effectiveData]
   );
 
   const overall = useMemo(
