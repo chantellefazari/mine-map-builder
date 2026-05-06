@@ -36,6 +36,12 @@ const StoresWarehouseDesign = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Link to="/stores-operational-rollout-phase-2">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Warehouse className="w-4 h-4" />
+                  <span className="hidden sm:inline">Phase 2 Rollout Plan</span>
+                </Button>
+              </Link>
               <Button variant="outline" size="sm" onClick={() => setShowPrintAllModal(true)} className="gap-2">
                 <Printer className="w-4 h-4" />
                 <span className="hidden sm:inline">Print</span>
