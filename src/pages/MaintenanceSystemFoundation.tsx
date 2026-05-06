@@ -8,8 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { usePMRequirementsSummary } from "@/hooks/usePMRequirementsSummary";
 
-type FieldDef = { key: string; label: string };
+type FieldDef = { key: string; label: string; readOnlyFrom?: "requireAny" | "requireOnline" | "requireOffline" | "requireShutdown" | "totalRecommended" };
 type CalcOut = { label: string; percent: number; gap?: number; gapLabel?: string };
 type SectionDef = {
   id: string;
@@ -46,22 +47,25 @@ const SECTIONS: SectionDef[] = [
   {
     id: "pm",
     tier: "MUST",
-    title: "2. PM Coverage",
-    totalKey: "total",
+    title: "2. PM Coverage (vs Required from Matrix)",
+    totalKey: "reqAny",
     inputs: [
-      { key: "total", label: "Total Assets" },
-      { key: "any", label: "Assets with ANY PM" },
-      { key: "online", label: "Assets with Online PMs" },
-      { key: "offline", label: "Assets with Offline PMs" },
-      { key: "sd", label: "Assets with Shutdown PMs" },
+      { key: "reqAny", label: "Assets REQUIRING any PM (from Matrix)", readOnlyFrom: "requireAny" },
+      { key: "any", label: "Assets WITH any PM built" },
+      { key: "reqOnline", label: "Assets REQUIRING Online PMs (from Matrix)", readOnlyFrom: "requireOnline" },
+      { key: "online", label: "Assets WITH Online PMs built" },
+      { key: "reqOffline", label: "Assets REQUIRING Offline PMs (from Matrix)", readOnlyFrom: "requireOffline" },
+      { key: "offline", label: "Assets WITH Offline PMs built" },
+      { key: "reqSd", label: "Assets REQUIRING Shutdown PMs (from Matrix)", readOnlyFrom: "requireShutdown" },
+      { key: "sd", label: "Assets WITH Shutdown PMs built" },
     ],
     calc: (v) => {
-      const noPm = Math.max(0, (v.total||0) - (v.any||0));
+      const gap = (req: number, have: number) => Math.max(0, (req||0) - (have||0));
       return [
-        { label: "% PM Coverage", percent: pct(v.any, v.total), gap: noPm, gapLabel: "assets have no PMs" },
-        { label: "% Online Coverage", percent: pct(v.online, v.total), gap: Math.max(0,(v.total||0)-(v.online||0)), gapLabel: "assets missing online PMs" },
-        { label: "% Offline Coverage", percent: pct(v.offline, v.total), gap: Math.max(0,(v.total||0)-(v.offline||0)), gapLabel: "assets missing offline PMs" },
-        { label: "% Shutdown Coverage", percent: pct(v.sd, v.total), gap: Math.max(0,(v.total||0)-(v.sd||0)), gapLabel: "assets missing shutdown PMs" },
+        { label: "% PM Coverage (built ÷ required)", percent: pct(v.any, v.reqAny), gap: gap(v.reqAny, v.any), gapLabel: "required PMs not built" },
+        { label: "% Online Coverage (built ÷ required online)", percent: pct(v.online, v.reqOnline), gap: gap(v.reqOnline, v.online), gapLabel: "assets needing Online PMs not built" },
+        { label: "% Offline Coverage (built ÷ required offline)", percent: pct(v.offline, v.reqOffline), gap: gap(v.reqOffline, v.offline), gapLabel: "assets needing Offline PMs not built" },
+        { label: "% Shutdown Coverage (built ÷ required shutdown)", percent: pct(v.sd, v.reqSd), gap: gap(v.reqSd, v.sd), gapLabel: "assets needing Shutdown PMs not built" },
       ];
     },
   },
@@ -399,13 +403,18 @@ const SectionCard = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {section.inputs.map((f) => (
               <div key={f.key} className="space-y-1">
-                <Label htmlFor={`${section.id}-${f.key}`} className="text-xs">{f.label}</Label>
+                <Label htmlFor={`${section.id}-${f.key}`} className="text-xs">
+                  {f.label}
+                  {f.readOnlyFrom && <span className="ml-1 text-[10px] text-primary">(auto)</span>}
+                </Label>
                 <Input
                   id={`${section.id}-${f.key}`}
                   type="number" min={0}
                   value={values[f.key] ?? ""}
                   onChange={(e) => onChange(f.key, Number(e.target.value) || 0)}
                   placeholder="0"
+                  readOnly={!!f.readOnlyFrom}
+                  className={f.readOnlyFrom ? "bg-muted/50 cursor-not-allowed" : ""}
                 />
               </div>
             ))}
@@ -508,15 +517,31 @@ const MaintenanceSystemFoundation = () => {
     setData((prev) => ({ ...prev, [sectionId]: { ...(prev[sectionId] || {}), [key]: value } }));
   };
 
+  // ── Pull required-PM counts from the PM Requirements Matrix ──
+  const pmReq = usePMRequirementsSummary();
+
+  // Merge auto-derived denominators into data so calc() sees them
+  const effectiveData = useMemo(() => {
+    const next = { ...data };
+    next.pm = {
+      ...(data.pm || {}),
+      reqAny: pmReq.requireAny,
+      reqOnline: pmReq.requireOnline,
+      reqOffline: pmReq.requireOffline,
+      reqSd: pmReq.requireShutdown,
+    };
+    return next;
+  }, [data, pmReq.requireAny, pmReq.requireOnline, pmReq.requireOffline, pmReq.requireShutdown]);
+
   const sectionScores = useMemo(
     () => SECTIONS.map((s) => {
-      const calcs = s.calc(data[s.id] || {});
+      const calcs = s.calc(effectiveData[s.id] || {});
       const avg = calcs.length ? Math.round(calcs.reduce((a, c) => a + c.percent, 0) / calcs.length) : 0;
-      const totalImpact = (data[s.id]?.[s.totalKey] || 0);
+      const totalImpact = (effectiveData[s.id]?.[s.totalKey] || 0);
       const totalGap = calcs.reduce((a, c) => a + (c.gap || 0), 0);
       return { id: s.id, title: s.title, tier: s.tier, score: avg, calcs, totalImpact, totalGap };
     }),
-    [data]
+    [effectiveData]
   );
 
   const overall = useMemo(
@@ -999,12 +1024,13 @@ ${sectionsHtml}
             {SECTIONS.map((section) => (
               <SectionCard
                 key={section.id} section={section}
-                values={data[section.id] || {}}
+                values={effectiveData[section.id] || {}}
                 onChange={(key, v) => setField(section.id, key, v)}
               />
             ))}
           </div>
         )}
+
 
         {report && (
           <Card>
