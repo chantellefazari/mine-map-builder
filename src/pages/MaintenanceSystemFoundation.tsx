@@ -517,11 +517,27 @@ const MaintenanceSystemFoundation = () => {
     setData((prev) => ({ ...prev, [sectionId]: { ...(prev[sectionId] || {}), [key]: value } }));
   };
 
+  // ── Pull required-PM counts from the PM Requirements Matrix ──
+  const pmReq = usePMRequirementsSummary();
+
+  // Merge auto-derived denominators into data so calc() sees them
+  const effectiveData = useMemo(() => {
+    const next = { ...data };
+    next.pm = {
+      ...(data.pm || {}),
+      reqAny: pmReq.requireAny,
+      reqOnline: pmReq.requireOnline,
+      reqOffline: pmReq.requireOffline,
+      reqSd: pmReq.requireShutdown,
+    };
+    return next;
+  }, [data, pmReq.requireAny, pmReq.requireOnline, pmReq.requireOffline, pmReq.requireShutdown]);
+
   const sectionScores = useMemo(
     () => SECTIONS.map((s) => {
-      const calcs = s.calc(data[s.id] || {});
+      const calcs = s.calc(effectiveData[s.id] || {});
       const avg = calcs.length ? Math.round(calcs.reduce((a, c) => a + c.percent, 0) / calcs.length) : 0;
-      const totalImpact = (data[s.id]?.[s.totalKey] || 0);
+      const totalImpact = (effectiveData[s.id]?.[s.totalKey] || 0);
       const totalGap = calcs.reduce((a, c) => a + (c.gap || 0), 0);
       return { id: s.id, title: s.title, tier: s.tier, score: avg, calcs, totalImpact, totalGap };
     }),
