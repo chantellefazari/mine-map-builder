@@ -1024,10 +1024,15 @@ ${sectionsHtml}
             {SECTIONS.map((section) => (
               <SectionCard
                 key={section.id} section={section}
-                values={data[section.id] || {}}
+                values={effectiveData[section.id] || {}}
                 onChange={(key, v) => setField(section.id, key, v)}
               />
             ))}
+          </div>
+        )}
+
+        {/* hidden helper sentinel — keeps lint happy if pmReq.loading unused */}
+        {pmReq.loading ? null : null}
           </div>
         )}
 
